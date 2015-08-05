@@ -23,15 +23,15 @@ limitations under the License. -->
 		<version>0.8.2-SNAPSHOT</version>
 	</parent> 
 	
-	<artifactId>vertigo-addons-reactor</artifactId>
-	<name>vertigo-addons-reactor</name>
+	<artifactId>vertigo-x-reactor</artifactId>
+	<name>vertigo-x-reactor</name>
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>vertigo-connectors</module>
-		<module>vertigo-account</module>
-		<module>vertigo-comment</module>
-		<module>vertigo-notification</module>
+		<module>vertigo-x-connectors</module>
+		<module>vertigo-x-account</module>
+		<module>vertigo-x-comment</module>
+		<module>vertigo-x-notification</module>
 	</modules>
 
 	<scm>

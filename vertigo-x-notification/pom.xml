@@ -6,11 +6,11 @@
 		<artifactId>vertigo-parent</artifactId>
 		<version>0.8.2-SNAPSHOT</version>
 	</parent>
-	
-	<artifactId>vertigo-account</artifactId>
+
+	<artifactId>vertigo-x-notification</artifactId>
 	<packaging>jar</packaging>
-	<name>vertigo-account</name>
-	
+	<name>vertigo-x-notification</name>
+
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
@@ -27,22 +27,11 @@
 			<artifactId>vertigo-vega-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+
 		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-connectors</artifactId>
+		    <groupId>io.vertigo</groupId>
+			<artifactId>vertigo-x-account</artifactId>
 			<version>${project.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>org.apache.directory.api</groupId>
-			<artifactId>api-ldap-model</artifactId>
-			<version>1.0.0-M31</version>
-		</dependency>
-		
-		<dependency>
-		    <groupId>redis.clients</groupId>
-		    <artifactId>jedis</artifactId>
-   			 <version>2.7.0</version>
 		</dependency>
 		
 		<dependency>
@@ -53,5 +42,5 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-		
+
 </project>
