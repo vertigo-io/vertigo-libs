@@ -30,6 +30,9 @@ import redis.clients.jedis.Transaction;
 public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	private final RedisConnector redisConnector;
 
+	/**
+	 * @param redisConnector Connector Redis
+	 */
 	@Inject
 	public RedisAccountStorePlugin(final RedisConnector redisConnector) {
 		Assertion.checkNotNull(redisConnector);
@@ -37,13 +40,11 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		this.redisConnector = redisConnector;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void saveAccount(final Account account) {
 		Assertion.checkNotNull(account);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(account);
-		final URI<Account> uri = new URI<>(dtDefinition, account.getId());
-		//----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final Transaction tx = jedis.multi();
 			tx.hmset("account:" + account.getId(), account2Map(account));
@@ -60,12 +61,26 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	}
 
 	private static Account map2Account(final Map<String, String> data) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);
 		return new AccountBuilder(data.get("id"))
 				.withDisplayName(data.get("displayName"))
 				.build();
 	}
 
+	@Override
+	public long getNbAccounts() {
+		try (final Jedis jedis = redisConnector.getResource()) {
+			return jedis.llen("accounts");
+		}
+	}
+
+	@Override
+	public long getNbGroups() {
+		try (final Jedis jedis = redisConnector.getResource()) {
+			return jedis.llen("groups");
+		}
+	}
+
+	/** {@inheritDoc} */
 	@Override
 	public boolean exists(final URI<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
@@ -75,10 +90,9 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Account getAccount(final URI<Account> accountURI) {
-		Assertion.checkNotNull(accountURI);
-		//-----
 		Assertion.checkNotNull(accountURI);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
@@ -86,34 +100,11 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		}
 	}
 
-	@Override
-	public Collection<Account> getAllAccounts() {
-		final List<Response<Map<String, String>>> responses = new ArrayList<>();
-		try (final Jedis jedis = redisConnector.getResource()) {
-			final List<String> ids = jedis.lrange("accounts", 0, -1);
-			final Transaction tx = jedis.multi();
-			for (final String id : ids) {
-				responses.add(tx.hgetAll("account:" + id));
-			}
-			tx.exec();
-		}
-		//----- we are using tx to avoid roundtrips
-		final List<Account> accounts = new ArrayList<>();
-		for (final Response<Map<String, String>> response : responses) {
-			final Map<String, String> data = response.get();
-			if (!data.isEmpty()) {
-				accounts.add(map2Account(data));
-			}
-		}
-		return accounts;
-	}
-
+	/** {@inheritDoc} */
 	@Override
 	public void saveGroup(final AccountGroup group) {
 		Assertion.checkNotNull(group);
 		//-----
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(group);
-		final URI<AccountGroup> uri = new URI<>(dtDefinition, group.getId());
 		//----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final Transaction tx = jedis.multi();
@@ -131,10 +122,10 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	}
 
 	private static AccountGroup map2Group(final Map<String, String> data) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);
 		return new AccountGroup(data.get("id"), data.get("displayName"));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public AccountGroup getGroup(final URI<AccountGroup> groupURI) {
 		Assertion.checkNotNull(groupURI);
@@ -144,6 +135,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Collection<AccountGroup> getAllGroups() {
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
@@ -166,8 +158,9 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		return groups;
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public void attach(URI<Account> accountURI, URI<AccountGroup> groupURI) {
+	public void attach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
 		Assertion.checkNotNull(accountURI);
 		Assertion.checkNotNull(groupURI);
 		//-----
@@ -179,8 +172,9 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public void detach(URI<Account> accountURI, URI<AccountGroup> groupURI) {
+	public void detach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
 		Assertion.checkNotNull(accountURI);
 		Assertion.checkNotNull(groupURI);
 		//-----
@@ -192,33 +186,36 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public Set<URI<Account>> getAccountURIs(URI<AccountGroup> groupURI) {
+	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
 		Assertion.checkNotNull(groupURI);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);
-		Set<URI<Account>> set = new HashSet<>();
+		final Set<URI<Account>> set = new HashSet<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final List<String> ids = jedis.lrange("accountsByGroup:" + groupURI.getId(), 0, -1);
-			for (String id : ids) {
+			for (final String id : ids) {
 				set.add(new URI<Account>(dtDefinition, id));
 			}
 			return set;
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI) {
+	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);
-		Set<URI<AccountGroup>> set = new HashSet<>();
+		final Set<URI<AccountGroup>> set = new HashSet<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final List<String> ids = jedis.lrange("groupsByAccount:" + accountURI.getId(), 0, -1);
-			for (String id : ids) {
+			for (final String id : ids) {
 				set.add(new URI<AccountGroup>(dtDefinition, id));
 			}
 			return set;
 		}
 	}
+
 }

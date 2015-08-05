@@ -9,22 +9,27 @@ import java.util.Set;
  * @author pchretien
  */
 public interface AccountStore {
+
+	long getNbAccounts();
+
 	boolean exists(URI<Account> accountURI);
 
 	Account getAccount(URI<Account> accountURI);
 
-	//il est possible de proposer tous les groupes mais pas tous les accounts ?
-	//a terme faire un chunker.
-	Collection<Account> getAllAccounts();
+	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
 
-	//l'id doit être renseigné !!	
+	//l'id doit être renseigné !!
 	void saveAccount(Account account);
 
 	//-----Gestion des groupes
+	long getNbGroups();
+
 	//il est possible de proposer tous les groupes mais pas tous les accounts ?
 	Collection<AccountGroup> getAllGroups();
 
 	AccountGroup getGroup(URI<AccountGroup> groupURI);
+
+	Set<URI<Account>> getAccountURIs(URI<AccountGroup> groupURI);
 
 	void saveGroup(AccountGroup group);
 
@@ -32,8 +37,4 @@ public interface AccountStore {
 	void attach(URI<Account> accountURI, URI<AccountGroup> groupURI);
 
 	void detach(URI<Account> accountURI, URI<AccountGroup> groupURI);
-
-	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
-
-	Set<URI<Account>> getAccountURIs(URI<AccountGroup> groupURI);
 }
