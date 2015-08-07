@@ -5,8 +5,12 @@ import io.vertigo.addons.account.AccountGroup;
 import io.vertigo.addons.account.AccountManager;
 import io.vertigo.addons.account.AccountStore;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.file.FileManager;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Set;
 
@@ -17,16 +21,19 @@ import javax.inject.Inject;
  */
 public final class AccountManagerImpl implements AccountManager {
 	private final AccountStore accountStore;
+	private final VFile defaultPhoto;
 
 	/**
 	 * Constructor.
 	 * @param accountPlugin Account store plugin
 	 */
 	@Inject
-	public AccountManagerImpl(final AccountStorePlugin accountPlugin) {
+	public AccountManagerImpl(final AccountStorePlugin accountPlugin, final FileManager fileManager) {
 		Assertion.checkNotNull(accountPlugin);
+		Assertion.checkNotNull(fileManager);
 		//-----
 		accountStore = accountPlugin;
+		defaultPhoto = fileManager.createFile("defaultPhoto.png", "image/png", new File(AccountManagerImpl.class.getResource("defaultPhoto.png").getFile()));
 	}
 
 	/** {@inheritDoc} */
@@ -93,6 +100,19 @@ public final class AccountManagerImpl implements AccountManager {
 	@Override
 	public void detach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
 		accountStore.detach(accountURI, groupURI);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setPhoto(final URI<Account> accountURI, final VFile photo) {
+		accountStore.setPhoto(accountURI, photo);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public VFile getPhoto(final URI<Account> accountURI) {
+		final Option<VFile> photo = accountStore.getPhoto(accountURI);
+		return photo.getOrElse(defaultPhoto);
 	}
 
 }

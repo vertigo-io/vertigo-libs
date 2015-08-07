@@ -1,6 +1,7 @@
 package io.vertigo.addons.account;
 
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Component;
 
 import java.util.Collection;
@@ -35,5 +36,10 @@ public interface AccountManager extends Component {
 	void attach(URI<Account> accountURI, URI<AccountGroup> groupURI);
 
 	void detach(URI<Account> accountURI, URI<AccountGroup> groupURI);
+
+	//-----
+	void setPhoto(URI<Account> accountURI, VFile photo);
+
+	VFile getPhoto(URI<Account> accountURI);
 
 }

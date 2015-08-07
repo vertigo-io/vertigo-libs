@@ -12,10 +12,10 @@ import io.vertigo.lang.Assertion;
 public final class AccountGroup implements DtObject {
 	private static final long serialVersionUID = -4463291583101516140L;
 
-	@Field(domain = "DO_FOCUS_ID", type = "PRIMARY_KEY", notNull = true, label = "id")
+	@Field(domain = "DO_X_ACCOUNT_ID", type = "PRIMARY_KEY", notNull = true, label = "id")
 	private final String id;
 
-	@Field(domain = "DO_FOCUS_NAME", label = "displayName")
+	@Field(domain = "DO_X_ACCOUNT_NAME", label = "displayName")
 	private final String displayName;
 
 	public AccountGroup(final String id, final String displayName) {

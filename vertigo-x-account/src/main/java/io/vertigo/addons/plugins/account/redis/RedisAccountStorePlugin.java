@@ -5,14 +5,22 @@ import io.vertigo.addons.account.AccountBuilder;
 import io.vertigo.addons.account.AccountGroup;
 import io.vertigo.addons.connectors.redis.RedisConnector;
 import io.vertigo.addons.impl.account.AccountStorePlugin;
+import io.vertigo.commons.codec.Codec;
+import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 import io.vertigo.util.MapBuilder;
 
+import java.io.InputStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -28,16 +36,22 @@ import redis.clients.jedis.Transaction;
  * @author pchretien
  */
 public final class RedisAccountStorePlugin implements AccountStorePlugin {
+	private static final int CODEC_BUFFER_SIZE = 3 * 1024;
+	private static final String CODEC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	private final RedisConnector redisConnector;
+	private final CodecManager codecManager;
 
 	/**
 	 * @param redisConnector Connector Redis
+	 * @param codecManager Codec manager
 	 */
 	@Inject
-	public RedisAccountStorePlugin(final RedisConnector redisConnector) {
+	public RedisAccountStorePlugin(final RedisConnector redisConnector, final CodecManager codecManager) {
 		Assertion.checkNotNull(redisConnector);
+		Assertion.checkNotNull(codecManager);
 		//-----
 		this.redisConnector = redisConnector;
+		this.codecManager = codecManager;
 	}
 
 	/** {@inheritDoc} */
@@ -53,19 +67,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		}
 	}
 
-	private static Map<String, String> account2Map(final Account account) {
-		return new MapBuilder<String, String>()
-				.put("id", account.getId())
-				.put("displayName", account.getDisplayName())
-				.build();
-	}
-
-	private static Account map2Account(final Map<String, String> data) {
-		return new AccountBuilder(data.get("id"))
-				.withDisplayName(data.get("displayName"))
-				.build();
-	}
-
+	/** {@inheritDoc} */
 	@Override
 	public long getNbAccounts() {
 		try (final Jedis jedis = redisConnector.getResource()) {
@@ -73,6 +75,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public long getNbGroups() {
 		try (final Jedis jedis = redisConnector.getResource()) {
@@ -112,17 +115,6 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 			tx.lpush("groups", group.getId());
 			tx.exec();
 		}
-	}
-
-	private static Map<String, String> group2Map(final AccountGroup group) {
-		return new MapBuilder<String, String>()
-				.put("id", group.getId())
-				.put("displayName", group.getDisplayName())
-				.build();
-	}
-
-	private static AccountGroup map2Group(final Map<String, String> data) {
-		return new AccountGroup(data.get("id"), data.get("displayName"));
 	}
 
 	/** {@inheritDoc} */
@@ -218,4 +210,109 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		}
 	}
 
+	private static Map<String, String> account2Map(final Account account) {
+		return new MapBuilder<String, String>()
+				.put("id", account.getId())
+				.put("displayName", account.getDisplayName())
+				.put("email", account.getEmail())
+				.build();
+	}
+
+	private static Account map2Account(final Map<String, String> data) {
+		return new AccountBuilder(data.get("id"))
+				.withDisplayName(data.get("displayName"))
+				.withEmail(data.get("email"))
+				.build();
+	}
+
+	private static Map<String, String> group2Map(final AccountGroup group) {
+		return new MapBuilder<String, String>()
+				.put("id", group.getId())
+				.put("displayName", group.getDisplayName())
+				.build();
+	}
+
+	private static AccountGroup map2Group(final Map<String, String> data) {
+		return new AccountGroup(data.get("id"), data.get("displayName"));
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setPhoto(final URI<Account> accountURI, final VFile photo) {
+		Assertion.checkNotNull(accountURI);
+		Assertion.checkNotNull(photo);
+		//-----
+		final Map<String, String> vFileMapPhoto = vFile2Map(photo);
+		try (final Jedis jedis = redisConnector.getResource()) {
+			final Transaction tx = jedis.multi();
+			tx.hmset("photoByAccount:" + accountURI.getId(), vFileMapPhoto);
+			tx.exec();
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Option<VFile> getPhoto(final URI<Account> accountURI) {
+		final Map<String, String> result;
+		try (final Jedis jedis = redisConnector.getResource()) {
+			final Transaction tx = jedis.multi();
+			result = tx.hgetAll("photoByAccount:" + accountURI.getId()).get();
+			tx.exec();
+		}
+		if (result.isEmpty()) {
+			return Option.none();
+		}
+		return Option.some(map2vFile(result));
+	}
+
+	private Map<String, String> vFile2Map(final VFile vFile) {
+		final String lastModified = new SimpleDateFormat(CODEC_DATE_FORMAT).format(vFile.getLastModified());
+		final String base64Content = encode2Base64(vFile);
+		return new MapBuilder<String, String>()
+				.put("fileName", vFile.getFileName())
+				.put("mimeType", vFile.getMimeType())
+				.put("length", String.valueOf(vFile.getLength()))
+				.put("lastModified", lastModified)
+				.put("base64Content", base64Content)
+				.build();
+	}
+
+	private VFile map2vFile(final Map<String, String> vFileMap) {
+		try {
+			final String fileName = vFileMap.get("fileName");
+			final String mimeType = vFileMap.get("mimeType");
+			final Long length = Long.valueOf(vFileMap.get("length"));
+			final Date lastModified = new SimpleDateFormat(CODEC_DATE_FORMAT).parse(vFileMap.get("lastModified"));
+
+			final String base64Content = vFileMap.get("base64Content");
+			return new Base64File(fileName, mimeType, length, lastModified, base64Content, codecManager);
+		} catch (final ParseException e) {
+			throw new RuntimeException("Can't decode base64 file", e);
+		}
+	}
+
+	private String encode2Base64(final VFile vFile) {
+		final StringBuilder sb = new StringBuilder();
+		final Codec<byte[], String> base64Codec = codecManager.getBase64Codec();
+		try (InputStream in = vFile.createInputStream()) {
+			final byte[] buf = new byte[CODEC_BUFFER_SIZE];
+			while (true) {
+				final int rc = in.read(buf);
+				if (rc <= 0) {
+					break;
+				}
+				if (rc == CODEC_BUFFER_SIZE) {
+					sb.append(base64Codec.encode(buf));
+				} else {
+					// il faut mettre uniquement la taille pertinente
+					final byte[] buf2 = new byte[rc];
+					System.arraycopy(buf, 0, buf2, 0, rc);
+					sb.append(base64Codec.encode(buf2));
+				}
+			}
+		} catch (final Exception e) {
+			throw new RuntimeException("problème encodage base 64 du fichier", e);
+		}
+		return sb.toString();
+	}
 }

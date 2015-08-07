@@ -7,25 +7,35 @@ import io.vertigo.lang.Builder;
  * @author pchretien
  */
 public final class AccountBuilder implements Builder<Account> {
-	private String myId;
+	private final String myId;
 	private String myDisplayName;
+	private String myEmail;
 
 	public AccountBuilder(final String id) {
 		Assertion.checkArgNotEmpty(id);
 		//-----
-		this.myId = id;
+		myId = id;
 	}
 
 	public AccountBuilder withDisplayName(final String displayName) {
 		Assertion.checkArgument(myDisplayName == null, "displayName already set");
 		Assertion.checkArgNotEmpty(displayName);
 		//-----
-		this.myDisplayName = displayName;
+		myDisplayName = displayName;
 		return this;
 	}
 
+	public AccountBuilder withEmail(final String email) {
+		Assertion.checkArgument(myEmail == null, "email already set");
+		Assertion.checkArgNotEmpty(email);
+		//-----
+		myEmail = email;
+		return this;
+	}
+
+	/** {@inheritDoc} */
 	@Override
 	public Account build() {
-		return new Account(myId, myDisplayName);
+		return new Account(myId, myDisplayName, myEmail);
 	}
 }

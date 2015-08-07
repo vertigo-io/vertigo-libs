@@ -6,7 +6,9 @@ import io.vertigo.addons.impl.account.AccountStorePlugin;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Option;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -24,6 +26,8 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 	//---
 	private final Map<URI<Account>, Set<URI<AccountGroup>>> groupByAccountURI = new HashMap<>();
 	private final Map<URI<AccountGroup>, Set<URI<Account>>> accountBygroupURI = new HashMap<>();
+	//---
+	private final Map<URI<Account>, VFile> photoByAccountURI = new HashMap<>();
 
 	/** {@inheritDoc} */
 	@Override
@@ -153,6 +157,23 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 		final Set<URI<Account>> accountURIs = accountBygroupURI.get(groupURI);
 		Assertion.checkNotNull(accountURIs, "group {0} must be create before this operation", groupURI);
 		return Collections.unmodifiableSet(accountURIs);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void setPhoto(final URI<Account> accountURI, final VFile photo) {
+		Assertion.checkNotNull(accountURI);
+		Assertion.checkNotNull(photo);
+		//-----
+		photoByAccountURI.put(accountURI, photo);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Option<VFile> getPhoto(final URI<Account> accountURI) {
+		Assertion.checkNotNull(accountURI);
+		//-----
+		return Option.option(photoByAccountURI.get(accountURI));
 	}
 
 }
