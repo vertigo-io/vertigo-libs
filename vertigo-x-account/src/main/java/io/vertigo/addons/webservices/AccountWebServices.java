@@ -38,7 +38,8 @@ public final class AccountWebServices implements RestfulService {
 	 */
 	@GET("/api/accounts/{id}")
 	@AnonymousAccessAllowed
-	public Account getAccount(@PathParam("id") final long id) {
+	public Account getAccount(@PathParam("id") final String id) {
+
 		return accountManager.getAccount(DtObjectUtil.createURI(Account.class, id));
 	}
 
@@ -61,7 +62,7 @@ public final class AccountWebServices implements RestfulService {
 	 */
 	@GET("/api/groups/{id}")
 	@AnonymousAccessAllowed
-	public AccountGroup getAccountGroup(@PathParam("id") final long id) {
+	public AccountGroup getAccountGroup(@PathParam("id") final String id) {
 		return accountManager.getGroup(DtObjectUtil.createURI(AccountGroup.class, id));
 	}
 

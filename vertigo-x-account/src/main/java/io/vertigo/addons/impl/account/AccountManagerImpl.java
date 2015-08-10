@@ -4,6 +4,11 @@ import io.vertigo.addons.account.Account;
 import io.vertigo.addons.account.AccountGroup;
 import io.vertigo.addons.account.AccountManager;
 import io.vertigo.addons.account.AccountStore;
+import io.vertigo.core.Home;
+import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
@@ -26,6 +31,7 @@ public final class AccountManagerImpl implements AccountManager {
 	/**
 	 * Constructor.
 	 * @param accountPlugin Account store plugin
+	 * @param fileManager File Manager
 	 */
 	@Inject
 	public AccountManagerImpl(final AccountStorePlugin accountPlugin, final FileManager fileManager) {
@@ -34,6 +40,30 @@ public final class AccountManagerImpl implements AccountManager {
 		//-----
 		accountStore = accountPlugin;
 		defaultPhoto = fileManager.createFile("defaultPhoto.png", "image/png", new File(AccountManagerImpl.class.getResource("defaultPhoto.png").getFile()));
+		registerDefinitions();
+
+	}
+
+	private void registerDefinitions() {
+		final Domain domainAccountId = new Domain("DO_X_ACCOUNT_ID", DataType.String);
+		final Domain domainAccountName = new Domain("DO_X_ACCOUNT_NAME", DataType.String);
+		final Domain domainAccountEmail = new Domain("DO_X_ACCOUNT_EMAIL", DataType.String);
+		Home.getDefinitionSpace().put(domainAccountId);
+		Home.getDefinitionSpace().put(domainAccountName);
+		Home.getDefinitionSpace().put(domainAccountEmail);
+
+		final DtDefinition accountDtDefinition = new DtDefinitionBuilder("DT_ACCOUNT")
+				.addIdField("ID", "id", domainAccountId, false, false)
+				.addDataField("DISPLAY_NAME", "displayName", domainAccountName, false, true, true, true)
+				.addDataField("EMAIL", "email", domainAccountEmail, false, true, false, false)
+				.build();
+		Home.getDefinitionSpace().put(accountDtDefinition);
+
+		final DtDefinition accountGroupDtDefinition = new DtDefinitionBuilder("DT_ACCOUNT_GROUP")
+				.addIdField("ID", "id", domainAccountId, false, false)
+				.addDataField("DISPLAY_NAME", "displayName", domainAccountName, false, true, true, true)
+				.build();
+		Home.getDefinitionSpace().put(accountGroupDtDefinition);
 	}
 
 	/** {@inheritDoc} */
