@@ -14,6 +14,8 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.persona.security.UserSession;
+import io.vertigo.persona.security.VSecurityManager;
 
 import java.io.File;
 import java.util.Collection;
@@ -25,6 +27,8 @@ import javax.inject.Inject;
  * @author pchretien
  */
 public final class AccountManagerImpl implements AccountManager {
+	private static final String X_ACCOUNT_ID = "X_ACCOUNT_ID";
+	private final VSecurityManager securityManager;
 	private final AccountStore accountStore;
 	private final VFile defaultPhoto;
 
@@ -34,14 +38,15 @@ public final class AccountManagerImpl implements AccountManager {
 	 * @param fileManager File Manager
 	 */
 	@Inject
-	public AccountManagerImpl(final AccountStorePlugin accountPlugin, final FileManager fileManager) {
+	public AccountManagerImpl(final AccountStorePlugin accountPlugin, final FileManager fileManager, final VSecurityManager securityManager) {
 		Assertion.checkNotNull(accountPlugin);
 		Assertion.checkNotNull(fileManager);
+		Assertion.checkNotNull(securityManager);
 		//-----
 		accountStore = accountPlugin;
 		defaultPhoto = fileManager.createFile("defaultPhoto.png", "image/png", new File(AccountManagerImpl.class.getResource("defaultPhoto.png").getFile()));
+		this.securityManager = securityManager;
 		registerDefinitions();
-
 	}
 
 	private void registerDefinitions() {
@@ -64,6 +69,22 @@ public final class AccountManagerImpl implements AccountManager {
 				.addDataField("DISPLAY_NAME", "displayName", domainAccountName, false, true, true, true)
 				.build();
 		Home.getDefinitionSpace().put(accountGroupDtDefinition);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void login(final URI<Account> accountURI) {
+		final UserSession userSession = securityManager.getCurrentUserSession().get();
+		userSession.putAttribute(X_ACCOUNT_ID, accountURI);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public URI<Account> getLoggedAccount() {
+		final UserSession userSession = securityManager.getCurrentUserSession().get();
+		final URI<Account> accountUri = userSession.getAttribute(X_ACCOUNT_ID);
+		Assertion.checkNotNull(accountUri, "Account was not logged");
+		return accountUri;
 	}
 
 	/** {@inheritDoc} */

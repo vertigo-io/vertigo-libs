@@ -11,6 +11,13 @@ import java.util.Set;
  * @author pchretien
  */
 public interface AccountManager extends Component {
+
+	void login(URI<Account> accountURI);
+
+	URI<Account> getLoggedAccount();
+
+	//----
+
 	long getNbAccounts();
 
 	Account getAccount(URI<Account> accountURI);
