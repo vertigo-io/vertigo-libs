@@ -6,13 +6,14 @@ import io.vertigo.addons.impl.notification.NotificationEvent;
 import io.vertigo.addons.impl.notification.NotificationPlugin;
 import io.vertigo.addons.notification.Notification;
 import io.vertigo.addons.notification.NotificationBuilder;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.MapBuilder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -27,6 +28,7 @@ import redis.clients.jedis.Transaction;
  * @author pchretien
  */
 public final class RedisNotificationPlugin implements NotificationPlugin {
+	private static final String CODEC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	private final RedisConnector redisConnector;
 
 	@Inject
@@ -55,23 +57,36 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	}
 
 	private static Map<String, String> toMap(final Notification notification) {
+		final String creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT).format(notification.getCreationDate());
 		return new MapBuilder<String, String>()
-				.put("sender", notification.getSender().getId().toString())
 				.put("uuid", notification.getUuid().toString())
+				.put("sender", notification.getSender())
+				.put("type", notification.getType())
 				.put("title", notification.getTitle())
 				.put("msg", notification.getMsg())
+				.put("creationDate", creationDate)
+				.put("ttlInSeconds", String.valueOf(notification.getTTLInSeconds()))
 				.build();
 	}
 
 	private static Notification fromMap(final Map<String, String> data) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);
-		return new NotificationBuilder(UUID.fromString(data.get("uuid")))
-				.withMsg(data.get("msg"))
-				.withTitle(data.get("title"))
-				.withSender(new URI<Account>(dtDefinition, data.get("sender")))
-				.build();
+		try {
+			final Date creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT).parse(data.get("creationDate"));
+
+			return new NotificationBuilder(UUID.fromString(data.get("uuid")))
+					.withSender(data.get("sender"))
+					.withType(data.get("type"))
+					.withTitle(data.get("title"))
+					.withMsg(data.get("msg"))
+					.withCreationDate(creationDate)
+					.withTTLinSeconds(Integer.valueOf(data.get("ttlInSeconds")))
+					.build();
+		} catch (final ParseException e) {
+			throw new RuntimeException("Can't notification", e);
+		}
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<Notification> getCurrentNotifications(final URI<Account> accountURI) {
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
@@ -95,7 +110,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	}
 
 	@Override
-	public void remove(URI<Account> accountURI, UUID notificationUUID) {
+	public void remove(final URI<Account> accountURI, final UUID notificationUUID) {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.lrem("notifs:" + accountURI.getId(), -1, notificationUUID.toString());
 		}

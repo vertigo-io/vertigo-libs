@@ -20,6 +20,10 @@ public final class NotificationManagerImpl implements NotificationManager {
 	private final AccountManager accountManager;
 	private final NotificationPlugin notificationsPlugin;
 
+	/**
+	 * @param accountManager Account manager
+	 * @param notificationsPlugin Notifications plugin
+	 */
 	@Inject
 	public NotificationManagerImpl(final AccountManager accountManager, final NotificationPlugin notificationsPlugin) {
 		Assertion.checkNotNull(accountManager);
@@ -29,12 +33,14 @@ public final class NotificationManagerImpl implements NotificationManager {
 		this.accountManager = accountManager;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void send(final Notification notification, final URI<AccountGroup> groupURI) {
-		final NotificationEvent notificationEvent = new NotificationEvent(notification, accountManager.getStore().getAccountURIs(groupURI));
+		final NotificationEvent notificationEvent = new NotificationEvent(notification, accountManager.getAccountURIs(groupURI));
 		notificationsPlugin.emit(notificationEvent);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<Notification> getCurrentNotifications(final URI<Account> userProfileURI) {
 		Assertion.checkNotNull(userProfileURI);
@@ -42,8 +48,9 @@ public final class NotificationManagerImpl implements NotificationManager {
 		return notificationsPlugin.getCurrentNotifications(userProfileURI);
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public void remove(URI<Account> accountURI, UUID notificationUUID) {
+	public void remove(final URI<Account> accountURI, final UUID notificationUUID) {
 		notificationsPlugin.remove(accountURI, notificationUUID);
 	}
 }

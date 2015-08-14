@@ -1,24 +1,25 @@
 package io.vertigo.addons.notification;
 
-import io.vertigo.addons.account.Account;
-import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 
+import java.util.Date;
 import java.util.UUID;
 
 /**
  * @author pchretien
  */
 public final class NotificationBuilder implements Builder<Notification> {
+	private String myType;
 	private String myTitle;
 	private String myMsg;
-	private URI<Account> mySender;
+	private String mySender;
+	private Date myCreationDate = new Date();
 	private int myTtlInSeconds = -1;
 	private final UUID uuid;
 
 	public NotificationBuilder() {
-		this.uuid = UUID.randomUUID();
+		uuid = UUID.randomUUID();
 	}
 
 	public NotificationBuilder(final UUID uuid) {
@@ -27,11 +28,27 @@ public final class NotificationBuilder implements Builder<Notification> {
 		this.uuid = uuid;
 	}
 
-	public NotificationBuilder withSender(final URI<Account> sender) {
+	public NotificationBuilder withSender(final String sender) {
 		Assertion.checkArgument(mySender == null, "sender already set");
-		Assertion.checkNotNull(sender);
+		Assertion.checkArgNotEmpty(sender);
 		//-----
-		this.mySender = sender;
+		mySender = sender;
+		return this;
+	}
+
+	public NotificationBuilder withType(final String type) {
+		Assertion.checkArgument(myType == null, "type already set");
+		Assertion.checkArgNotEmpty(type);
+		//-----
+		myType = type;
+		return this;
+	}
+
+	public NotificationBuilder withCreationDate(final Date creationDate) {
+		Assertion.checkArgument(myCreationDate == null, "creationDate already set");
+		Assertion.checkNotNull(creationDate);
+		//-----
+		myCreationDate = creationDate;
 		return this;
 	}
 
@@ -39,7 +56,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 		Assertion.checkArgument(myTitle == null, "title already set");
 		Assertion.checkArgNotEmpty(title);
 		//-----
-		this.myTitle = title;
+		myTitle = title;
 		return this;
 	}
 
@@ -47,19 +64,19 @@ public final class NotificationBuilder implements Builder<Notification> {
 		Assertion.checkArgument(myMsg == null, "msg already set");
 		Assertion.checkArgNotEmpty(msg);
 		//-----
-		this.myMsg = msg;
+		myMsg = msg;
 		return this;
 	}
 
 	public NotificationBuilder withTTLinSeconds(final int ttlInSeconds) {
 		Assertion.checkArgument(ttlInSeconds > 0, "ttl must be strictly positive or undefined.");
 		//-----
-		this.myTtlInSeconds = ttlInSeconds;
+		myTtlInSeconds = ttlInSeconds;
 		return this;
 	}
 
 	@Override
 	public Notification build() {
-		return new Notification(uuid, mySender, myTitle, myMsg, myTtlInSeconds);
+		return new Notification(uuid, mySender, myType, myTitle, myMsg, myCreationDate, myTtlInSeconds);
 	}
 }

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -21,6 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class MemoryNotificationPlugin implements NotificationPlugin {
 	private final Map<URI<Account>, List<Notification>> notificationsByAccountURI = new ConcurrentHashMap<>();
 
+	/** {@inheritDoc} */
 	@Override
 	public void emit(final NotificationEvent notificationEvent) {
 		Assertion.checkNotNull(notificationEvent);
@@ -35,6 +37,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 		//2 - gestion globale async des erreurs
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<Notification> getCurrentNotifications(final URI<Account> userProfileURI) {
 		Assertion.checkNotNull(userProfileURI);
@@ -43,7 +46,20 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 		if (notifications == null) {
 			return Collections.emptyList();
 		}
+		cleanOldNotifications(notifications);
 		return notifications;
+	}
+
+	private void cleanOldNotifications(final List<Notification> notifications) {
+		//on commence par la fin, dès qu'un élément est ok on stop les suppressions
+		for (final ListIterator<Notification> it = notifications.listIterator(notifications.size()); it.hasPrevious();) {
+			final Notification notification = it.previous();
+			if (notification.getTTLInSeconds() >= 0 && notification.getCreationDate().getTime() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis()) {
+				it.remove();
+			} else {
+				break; //un élément est ok on stop les suppressions
+			}
+		}
 	}
 
 	private List<Notification> obtainNotifications(final URI<Account> accountURI) {
@@ -54,15 +70,17 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 			notifications = new ArrayList<>();
 			notificationsByAccountURI.put(accountURI, notifications);
 		}
+		cleanOldNotifications(notifications);
 		return notifications;
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public void remove(URI<Account> accountURI, UUID notificationUUID) {
-		List<Notification> notifications = notificationsByAccountURI.get(accountURI);
+	public void remove(final URI<Account> accountURI, final UUID notificationUUID) {
+		final List<Notification> notifications = notificationsByAccountURI.get(accountURI);
 		if (notifications != null) {
-			for (Iterator<Notification> it = notifications.iterator(); it.hasNext();) {
-				Notification notification = it.next();
+			for (final Iterator<Notification> it = notifications.iterator(); it.hasNext();) {
+				final Notification notification = it.next();
 				if (notification.getUuid().equals(notificationUUID)) {
 					it.remove();
 				}

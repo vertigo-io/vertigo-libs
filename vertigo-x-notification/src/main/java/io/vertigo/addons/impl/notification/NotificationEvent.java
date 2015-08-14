@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public final class NotificationEvent {
 	private final Notification notification;
-	public final Set<URI<Account>> accountURIs;
+	private final Set<URI<Account>> accountURIs;
 
 	//private final List<VUserGroup> toUserGroups;
 
