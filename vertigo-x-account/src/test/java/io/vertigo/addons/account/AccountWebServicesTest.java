@@ -90,6 +90,16 @@ public final class AccountWebServicesTest {
 	}
 
 	@Test
+	public void testGetAccountPhotoById() {
+		RestAssured.given()
+				.expect()
+				.statusCode(HttpStatus.SC_OK)
+				.log().ifError()
+				.when()
+				.get("/x/account/api/accounts/1/photo");
+	}
+
+	@Test
 	public void testGetAllGroups() {
 		RestAssured.given()
 				.expect()

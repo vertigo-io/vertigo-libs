@@ -4,6 +4,7 @@ import io.vertigo.addons.account.Account;
 import io.vertigo.addons.account.AccountGroup;
 import io.vertigo.addons.account.AccountManager;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.GET;
@@ -41,6 +42,18 @@ public final class AccountWebServices implements RestfulService {
 	public Account getAccount(@PathParam("id") final String id) {
 
 		return accountManager.getAccount(DtObjectUtil.createURI(Account.class, id));
+	}
+
+	/**
+	 * Get account by id.
+	 *
+	 * @param id account id.
+	 * @return account
+	 */
+	@GET("/api/accounts/{id}/photo")
+	@AnonymousAccessAllowed
+	public VFile getAccountPhoto(@PathParam("id") final String id) {
+		return accountManager.getPhoto(DtObjectUtil.createURI(Account.class, id));
 	}
 
 	/**
