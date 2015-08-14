@@ -26,19 +26,15 @@ import io.vertigo.vega.plugins.rest.routesregister.sparkjava.VegaSparkApplicatio
 
 import org.apache.http.HttpStatus;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import spark.Spark;
 
 import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.filter.session.SessionFilter;
-import com.jayway.restassured.parsing.Parser;
 
 public final class AccountWebServicesTest {
 	private static final int WS_PORT = 8088;
-	private final SessionFilter sessionFilter = new SessionFilter();
 	private static App app;
 
 	@BeforeClass
@@ -47,14 +43,6 @@ public final class AccountWebServicesTest {
 		doSetUp();
 
 		initData();
-	}
-
-	@Before
-	public void preTestLogin() {
-		RestAssured.registerParser("plain/text", Parser.TEXT);
-		RestAssured.given()
-				.filter(sessionFilter)
-				.get("/test/login");
 	}
 
 	@AfterClass
@@ -74,8 +62,8 @@ public final class AccountWebServicesTest {
 	}
 
 	private static void initData() {
-		final Account testAccount1 = new Account("1", "Palmer Luckey", "palmer.luckey@yopmail.com");
-		final Account testAccount2 = new Account("2", "Bill Clinton", "bill.clinton@yopmail.com");
+		final Account testAccount1 = new AccountBuilder("1").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
+		final Account testAccount2 = new AccountBuilder("2").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
 		final URI<Account> account1Uri = DtObjectUtil.createURI(Account.class, testAccount1.getId());
 		final URI<Account> account2Uri = DtObjectUtil.createURI(Account.class, testAccount2.getId());
 
