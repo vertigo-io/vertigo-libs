@@ -28,7 +28,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author npiedeloup
  */
 @RunWith(Suite.class)
-@SuiteClasses({ NotificationWebServicesTest.class })
+@SuiteClasses({ NotificationManagerTest.class, NotificationWebServicesTest.class })
 public final class NotificationTestSuite {
 	//
 }
