@@ -31,13 +31,13 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public long getNbAccounts() {
+	public long getAccountsCount() {
 		return accountByURI.size();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public long getNbGroups() {
+	public long getGroupsCount() {
 		return groupByURI.size();
 	}
 

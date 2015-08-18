@@ -99,8 +99,8 @@ public final class AccountWebServices implements RestfulService {
 	public Map<String, Object> getStats() {
 		final Map<String, Object> stats = new HashMap<>();
 		final Map<String, Object> sizeStats = new HashMap<>();
-		sizeStats.put("accounts", accountManager.getNbAccounts());
-		sizeStats.put("groups", accountManager.getNbGroups());
+		sizeStats.put("accounts", accountManager.getAccountsCount());
+		sizeStats.put("groups", accountManager.getGroupsCount());
 		stats.put("size", sizeStats);
 		return stats;
 	}

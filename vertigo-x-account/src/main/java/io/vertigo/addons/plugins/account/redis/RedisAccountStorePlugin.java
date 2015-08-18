@@ -69,7 +69,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public long getNbAccounts() {
+	public long getAccountsCount() {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			return jedis.llen("accounts");
 		}
@@ -77,7 +77,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public long getNbGroups() {
+	public long getGroupsCount() {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			return jedis.llen("groups");
 		}

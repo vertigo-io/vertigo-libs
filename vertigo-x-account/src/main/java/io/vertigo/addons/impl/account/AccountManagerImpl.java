@@ -3,7 +3,6 @@ package io.vertigo.addons.impl.account;
 import io.vertigo.addons.account.Account;
 import io.vertigo.addons.account.AccountGroup;
 import io.vertigo.addons.account.AccountManager;
-import io.vertigo.addons.account.AccountStore;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -29,21 +28,22 @@ import javax.inject.Inject;
 public final class AccountManagerImpl implements AccountManager {
 	private static final String X_ACCOUNT_ID = "X_ACCOUNT_ID";
 	private final VSecurityManager securityManager;
-	private final AccountStore accountStore;
+	private final AccountStorePlugin accountStorePlugin;
 	private final VFile defaultPhoto;
 
 	/**
 	 * Constructor.
-	 * @param accountPlugin Account store plugin
+	 * @param accountStorePlugin Account store plugin
 	 * @param fileManager File Manager
+	 * @param securityManager Security manager
 	 */
 	@Inject
-	public AccountManagerImpl(final AccountStorePlugin accountPlugin, final FileManager fileManager, final VSecurityManager securityManager) {
-		Assertion.checkNotNull(accountPlugin);
+	public AccountManagerImpl(final AccountStorePlugin accountStorePlugin, final FileManager fileManager, final VSecurityManager securityManager) {
+		Assertion.checkNotNull(accountStorePlugin);
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(securityManager);
 		//-----
-		accountStore = accountPlugin;
+		this.accountStorePlugin = accountStorePlugin;
 		defaultPhoto = fileManager.createFile("defaultPhoto.png", "image/png", new File(AccountManagerImpl.class.getResource("defaultPhoto.png").getFile()));
 		this.securityManager = securityManager;
 		registerDefinitions();
@@ -89,80 +89,80 @@ public final class AccountManagerImpl implements AccountManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public long getNbAccounts() {
-		return accountStore.getNbAccounts();
+	public long getAccountsCount() {
+		return accountStorePlugin.getAccountsCount();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Account getAccount(final URI<Account> accountURI) {
-		return accountStore.getAccount(accountURI);
+		return accountStorePlugin.getAccount(accountURI);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
-		return accountStore.getGroupURIs(accountURI);
+		return accountStorePlugin.getGroupURIs(accountURI);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void saveAccount(final Account account) {
-		accountStore.saveAccount(account);
+		accountStorePlugin.saveAccount(account);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public long getNbGroups() {
-		return accountStore.getNbGroups();
+	public long getGroupsCount() {
+		return accountStorePlugin.getGroupsCount();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Collection<AccountGroup> getAllGroups() {
-		return accountStore.getAllGroups();
+		return accountStorePlugin.getAllGroups();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public AccountGroup getGroup(final URI<AccountGroup> groupURI) {
-		return accountStore.getGroup(groupURI);
+		return accountStorePlugin.getGroup(groupURI);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
-		return accountStore.getAccountURIs(groupURI);
+		return accountStorePlugin.getAccountURIs(groupURI);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void saveGroup(final AccountGroup saveGroup) {
-		accountStore.saveGroup(saveGroup);
+		accountStorePlugin.saveGroup(saveGroup);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void attach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
-		accountStore.attach(accountURI, groupURI);
+		accountStorePlugin.attach(accountURI, groupURI);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void detach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
-		accountStore.detach(accountURI, groupURI);
+		accountStorePlugin.detach(accountURI, groupURI);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void setPhoto(final URI<Account> accountURI, final VFile photo) {
-		accountStore.setPhoto(accountURI, photo);
+		accountStorePlugin.setPhoto(accountURI, photo);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public VFile getPhoto(final URI<Account> accountURI) {
-		final Option<VFile> photo = accountStore.getPhoto(accountURI);
+		final Option<VFile> photo = accountStorePlugin.getPhoto(accountURI);
 		return photo.getOrElse(defaultPhoto);
 	}
 

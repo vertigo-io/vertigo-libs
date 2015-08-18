@@ -87,7 +87,7 @@ public final class AccountManagerTest {
 
 		Assert.assertEquals("zeus", accountManager.getAccount(accountURI0).getDisplayName());
 
-		Assert.assertEquals(3, accountManager.getNbAccounts());
+		Assert.assertEquals(3, accountManager.getAccountsCount());
 	}
 
 	@Test
