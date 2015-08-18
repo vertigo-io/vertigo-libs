@@ -10,21 +10,31 @@ import io.vertigo.lang.Assertion;
  */
 public final class CommentEvent<S extends KeyConcept> {
 	private final Comment comment;
-	public final URI<S> subjectURI;
+	private final URI<S> keyConceptUri;
 
-	CommentEvent(final Comment comment, final URI<S> subjectURI) {
+	/**
+	 * @param comment Comment
+	 * @param keyConceptUri  keyConcept's uri
+	 */
+	CommentEvent(final Comment comment, final URI<S> keyConceptUri) {
 		Assertion.checkNotNull(comment);
-		Assertion.checkNotNull(subjectURI);
+		Assertion.checkNotNull(keyConceptUri);
 		//-----
 		this.comment = comment;
-		this.subjectURI = subjectURI;
+		this.keyConceptUri = keyConceptUri;
 	}
 
+	/**
+	 * @return Comment
+	 */
 	public Comment getComment() {
 		return comment;
 	}
 
-	public URI<S> getSubjectURI() {
-		return subjectURI;
+	/**
+	 * @return keyConcept's uri
+	 */
+	public URI<S> getKeyConceptURI() {
+		return keyConceptUri;
 	}
 }

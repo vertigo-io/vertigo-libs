@@ -4,62 +4,76 @@ import io.vertigo.addons.account.Account;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.util.DateUtil;
 
+import java.util.Date;
 import java.util.UUID;
 
 /**
  * @author pchretien
  */
 public final class CommentBuilder implements Builder<Comment> {
-	//	private URI<? extends DtSubject> mySubjectURI;
-	//	private Comment myParent;
-	private UUID myUuid;
+	private final UUID uuid;
 	private String myMsg;
 	private URI<Account> myAuthor;
+	private Date myCreationDate = DateUtil.newDateTime();
 
-	//	public <S extends DtSubject> CommentBuilder withSubject(final URI<S> subjectURI) {
-	//		Assertion.checkArgument(mySubjectURI == null, "subject already set");
-	//		Assertion.checkNotNull(subjectURI);
-	//		//-----
-	//		this.mySubjectURI = subjectURI;
-	//		return this;
-	//	}
+	/**
+	 * Constructor for new comment.
+	 */
+	public CommentBuilder() {
+		uuid = UUID.randomUUID();
+	}
 
-	//	public CommentBuilder withParent(final Comment comment) {
-	//		Assertion.checkArgument(myParent == null, "parent already set");
-	//		Assertion.checkNotNull(comment);
-	//		//-----
-	//		this.myParent = comment;
-	//		return this;
-	//	}
+	/**
+	 * Constructor for a previously created comment.
+	 * @param uuid comment uuid
+	 */
+	public CommentBuilder(final UUID uuid) {
+		Assertion.checkNotNull(uuid);
+		//-----
+		this.uuid = uuid;
+	}
 
+	/**
+	 * @param author Author account
+	 * @return this builder
+	 */
 	public CommentBuilder withAuthor(final URI<Account> author) {
 		Assertion.checkArgument(myAuthor == null, "author already set");
 		Assertion.checkNotNull(author);
 		//-----
-		this.myAuthor = author;
+		myAuthor = author;
 		return this;
 	}
 
+	/**
+	 * @param msg Comment
+	 * @return this builder
+	 */
 	public CommentBuilder withMsg(final String msg) {
 		Assertion.checkArgument(myMsg == null, "msg already set");
 		Assertion.checkArgNotEmpty(msg);
 		//-----
-		this.myMsg = msg;
+		myMsg = msg;
 		return this;
 	}
 
-	public CommentBuilder withUUID(final UUID uuid) {
-		Assertion.checkArgument(myUuid == null, "uuid already set");
-		Assertion.checkNotNull(uuid);
+	/**
+	 * @param creationDate create date time
+	 * @return this builder
+	 */
+	public CommentBuilder withCreationDate(final Date creationDate) {
+		Assertion.checkArgument(myCreationDate == null, "creationDate already set");
+		Assertion.checkNotNull(creationDate);
 		//-----
-		this.myUuid = uuid;
+		myCreationDate = creationDate;
 		return this;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public Comment build() {
-		myUuid = myUuid == null ? UUID.randomUUID() : myUuid;
-		return new Comment(myUuid, myAuthor, myMsg);
+		return new Comment(uuid, myAuthor, myMsg, myCreationDate);
 	}
 }

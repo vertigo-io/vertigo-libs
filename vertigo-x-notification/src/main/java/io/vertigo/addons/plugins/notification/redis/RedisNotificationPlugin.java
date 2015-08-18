@@ -82,7 +82,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 					.withTTLinSeconds(Integer.valueOf(data.get("ttlInSeconds")))
 					.build();
 		} catch (final ParseException e) {
-			throw new RuntimeException("Can't notification", e);
+			throw new RuntimeException("Can't parse notification", e);
 		}
 	}
 

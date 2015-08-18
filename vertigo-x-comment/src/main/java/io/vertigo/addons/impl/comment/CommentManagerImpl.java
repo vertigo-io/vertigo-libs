@@ -35,16 +35,4 @@ public final class CommentManagerImpl implements CommentManager {
 		//-----
 		return commentsPlugin.getComments(subjectURI);
 	}
-	//
-	//	@Override
-	//	public <S extends DtSubject> void publishResponse(final Comment comment, final UUID uuid) {
-	//		final CommentEvent notificationEvent = new CommentEvent(comment, final UUID uuid subjectURI, );
-	//
-	//		Assertion.checkNotNull(comment);
-	//		Assertion.checkNotNull(subjectURI);
-	//		//-----
-	//		final CommentEvent notificationEvent = new CommentEvent(comment, subjectURI);
-	//		commentsPlugin.emit(notificationEvent);
-	//
-	//	}
 }

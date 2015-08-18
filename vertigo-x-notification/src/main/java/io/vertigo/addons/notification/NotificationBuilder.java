@@ -2,6 +2,7 @@ package io.vertigo.addons.notification;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
+import io.vertigo.util.DateUtil;
 
 import java.util.Date;
 import java.util.UUID;
@@ -14,7 +15,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	private String myTitle;
 	private String myMsg;
 	private String mySender;
-	private Date myCreationDate = new Date();
+	private Date myCreationDate = DateUtil.newDateTime();
 	private int myTtlInSeconds = -1;
 	private final UUID uuid;
 

@@ -4,6 +4,7 @@ import io.vertigo.addons.account.Account;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -13,10 +14,9 @@ public final class Comment {
 	private final UUID uuid;
 	private final URI<Account> author;
 	private final String msg;
+	private final Date creationDate;
 
-	//	private final Date creationDate;
-
-	Comment(final UUID uuid, final URI<Account> author, final String msg) {
+	Comment(final UUID uuid, final URI<Account> author, final String msg, final Date creationDate) {
 		Assertion.checkNotNull(uuid);
 		Assertion.checkNotNull(author);
 		Assertion.checkArgNotEmpty(msg);
@@ -24,22 +24,23 @@ public final class Comment {
 		this.uuid = uuid;
 		this.author = author;
 		this.msg = msg;
-		//	this.creationDate = DateUtil.newDateTime();
+		this.creationDate = creationDate;
+	}
+
+	public UUID getUuid() {
+		return uuid;
 	}
 
 	public URI<Account> getAuthor() {
 		return author;
 	}
 
-	//	public Date getCreationDate() {
-	//		return creationDate;
-	//	}
+	public Date getCreationDate() {
+		return creationDate;
+	}
 
 	public String getMsg() {
 		return msg;
 	}
 
-	public UUID getUuid() {
-		return uuid;
-	}
 }

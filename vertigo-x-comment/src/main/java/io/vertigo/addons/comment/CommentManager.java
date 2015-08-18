@@ -10,9 +10,18 @@ import java.util.List;
  * @author pchretien
  */
 public interface CommentManager extends Component {
-	void publish(Comment comment, URI<? extends KeyConcept> subjectURI);
 
-	//	<S extends DtSubject> void publishResponse(Comment comment, URI<S> subjectURI, UUID uuid);
+	/**
+	 * Publish a comment on a key concept.
+	 * @param comment Comment
+	 * @param keyConceptUri keyConcept's uri
+	 */
+	void publish(Comment comment, URI<? extends KeyConcept> keyConceptUri);
 
-	List<Comment> getComments(URI<? extends KeyConcept> subjectURI);
+	/**
+	 * Get ordered comments list published on this keyConcept.
+	 * @param keyConceptUri keyConcept's uri
+	 * @return ordered comments list
+	 */
+	List<Comment> getComments(URI<? extends KeyConcept> keyConceptUri);
 }
