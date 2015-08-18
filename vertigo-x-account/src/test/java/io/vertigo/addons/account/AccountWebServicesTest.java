@@ -94,7 +94,7 @@ public final class AccountWebServicesTest {
 	}
 
 	@Test
-	public void testGetAccountPhotoById() {
+	public void testGetPhotoByAccountId() {
 		RestAssured.given()
 				.expect()
 				.statusCode(HttpStatus.SC_OK)

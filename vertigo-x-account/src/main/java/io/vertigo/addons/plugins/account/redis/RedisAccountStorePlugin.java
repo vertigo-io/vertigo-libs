@@ -4,6 +4,7 @@ import io.vertigo.addons.account.Account;
 import io.vertigo.addons.account.AccountBuilder;
 import io.vertigo.addons.account.AccountGroup;
 import io.vertigo.addons.connectors.redis.RedisConnector;
+import io.vertigo.addons.connectors.redis.RedisMapBuilder;
 import io.vertigo.addons.impl.account.AccountStorePlugin;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
@@ -211,10 +212,10 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	}
 
 	private static Map<String, String> account2Map(final Account account) {
-		return new MapBuilder<String, String>()
+		return new RedisMapBuilder<String, String>()
 				.put("id", account.getId())
 				.put("displayName", account.getDisplayName())
-				.put("email", account.getEmail())
+				.putNullable("email", account.getEmail())
 				.build();
 	}
 
@@ -255,9 +256,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	public Option<VFile> getPhoto(final URI<Account> accountURI) {
 		final Map<String, String> result;
 		try (final Jedis jedis = redisConnector.getResource()) {
-			final Transaction tx = jedis.multi();
-			result = tx.hgetAll("photoByAccount:" + accountURI.getId()).get();
-			tx.exec();
+			result = jedis.hgetAll("photoByAccount:" + accountURI.getId());
 		}
 		if (result.isEmpty()) {
 			return Option.none();

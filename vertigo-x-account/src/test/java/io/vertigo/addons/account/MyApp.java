@@ -1,7 +1,8 @@
 package io.vertigo.addons.account;
 
+import io.vertigo.addons.connectors.redis.RedisConnector;
 import io.vertigo.addons.impl.account.AccountManagerImpl;
-import io.vertigo.addons.plugins.account.memory.MemoryAccountStorePlugin;
+import io.vertigo.addons.plugins.account.redis.RedisAccountStorePlugin;
 import io.vertigo.addons.webservices.AccountWebServices;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
@@ -63,15 +64,15 @@ public final class MyApp {
 				.beginComponent(CodecManager.class, CodecManagerImpl.class).endComponent()
 				.beginComponent(FileManager.class, FileManagerImpl.class).endComponent()
 			.endModule()
-			/*.beginModule("connector").withNoAPI()
+			.beginModule("connector").withNoAPI()
 				.beginComponent(RedisConnector.class, RedisConnector.class)
 					.addParam("host", "kasper-redis")
 					.addParam("port", "6379")
 				.endComponent()
-			.endModule()*/
+			.endModule()
 			.beginModule("account")
 				.beginComponent(AccountManager.class, AccountManagerImpl.class)
-					.beginPlugin(MemoryAccountStorePlugin.class).endPlugin()
+					.beginPlugin(RedisAccountStorePlugin.class).endPlugin()
 				.endComponent()
 			.endModule()
 			.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class)

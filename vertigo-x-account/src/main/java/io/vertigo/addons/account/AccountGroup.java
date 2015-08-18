@@ -18,6 +18,10 @@ public final class AccountGroup implements DtObject {
 	@Field(domain = "DO_X_ACCOUNT_NAME", label = "displayName")
 	private final String displayName;
 
+	/**
+	 * @param id Id
+	 * @param displayName Display name
+	 */
 	public AccountGroup(final String id, final String displayName) {
 		Assertion.checkArgNotEmpty(id);
 		Assertion.checkArgNotEmpty(displayName);
@@ -26,10 +30,16 @@ public final class AccountGroup implements DtObject {
 		this.id = id;
 	}
 
+	/**
+	 * @return id
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * @return Display name
+	 */
 	public String getDisplayName() {
 		return displayName;
 	}

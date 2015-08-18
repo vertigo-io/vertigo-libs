@@ -86,7 +86,6 @@ public final class AccountManagerTest {
 		accountManager.saveAccount(account2);
 
 		Assert.assertEquals("zeus", accountManager.getAccount(accountURI0).getDisplayName());
-
 		Assert.assertEquals(3, accountManager.getAccountsCount());
 	}
 

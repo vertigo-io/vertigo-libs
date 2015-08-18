@@ -27,7 +27,7 @@ public final class AccountBuilder implements Builder<Account> {
 
 	public AccountBuilder withEmail(final String email) {
 		Assertion.checkArgument(myEmail == null, "email already set");
-		Assertion.checkArgNotEmpty(email);
+		//email is nullable, we accept null value in case this builder is use by deserializer
 		//-----
 		myEmail = email;
 		return this;
