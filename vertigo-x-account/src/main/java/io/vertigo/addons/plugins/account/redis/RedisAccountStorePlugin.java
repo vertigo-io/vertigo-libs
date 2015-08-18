@@ -4,7 +4,6 @@ import io.vertigo.addons.account.Account;
 import io.vertigo.addons.account.AccountBuilder;
 import io.vertigo.addons.account.AccountGroup;
 import io.vertigo.addons.connectors.redis.RedisConnector;
-import io.vertigo.addons.connectors.redis.RedisMapBuilder;
 import io.vertigo.addons.impl.account.AccountStorePlugin;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
@@ -212,7 +211,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	}
 
 	private static Map<String, String> account2Map(final Account account) {
-		return new RedisMapBuilder<String, String>()
+		return new MapBuilder<String, String>()
 				.put("id", account.getId())
 				.put("displayName", account.getDisplayName())
 				.putNullable("email", account.getEmail())
