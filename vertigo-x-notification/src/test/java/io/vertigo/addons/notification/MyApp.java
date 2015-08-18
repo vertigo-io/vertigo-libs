@@ -4,8 +4,8 @@ import io.vertigo.addons.account.AccountManager;
 import io.vertigo.addons.connectors.redis.RedisConnector;
 import io.vertigo.addons.impl.account.AccountManagerImpl;
 import io.vertigo.addons.impl.notification.NotificationManagerImpl;
-import io.vertigo.addons.plugins.account.memory.MemoryAccountStorePlugin;
-import io.vertigo.addons.plugins.notification.memory.MemoryNotificationPlugin;
+import io.vertigo.addons.plugins.account.redis.RedisAccountStorePlugin;
+import io.vertigo.addons.plugins.notification.redis.RedisNotificationPlugin;
 import io.vertigo.addons.webservices.AccountWebServices;
 import io.vertigo.addons.webservices.NotificationWebServices;
 import io.vertigo.commons.codec.CodecManager;
@@ -70,18 +70,18 @@ public final class MyApp {
 			.endModule()
 			.beginModule("connector").withNoAPI()
 				.beginComponent(RedisConnector.class, RedisConnector.class)
-					.addParam("host", "localhost")
+					.addParam("host", "kasper-redis")
 					.addParam("port", "6379")
 				.endComponent()
 			.endModule()
 			.beginModule("account")
 				.beginComponent(AccountManager.class, AccountManagerImpl.class)
-					.beginPlugin(MemoryAccountStorePlugin.class).endPlugin()
+					.beginPlugin(RedisAccountStorePlugin.class).endPlugin()
 				.endComponent()
 			.endModule()
 			.beginModule("notification")
 				.beginComponent(NotificationManager.class, NotificationManagerImpl.class)
-					.beginPlugin(MemoryNotificationPlugin.class).endPlugin()
+					.beginPlugin(RedisNotificationPlugin.class).endPlugin()
 				.endComponent()
 			.endModule()
 			.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class)

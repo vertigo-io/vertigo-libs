@@ -61,7 +61,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		return new MapBuilder<String, String>()
 				.put("uuid", notification.getUuid().toString())
 				.put("sender", notification.getSender())
-				.put("type", notification.getType())
+				.putNullable("type", notification.getType())
 				.put("title", notification.getTitle())
 				.put("msg", notification.getMsg())
 				.put("creationDate", creationDate)

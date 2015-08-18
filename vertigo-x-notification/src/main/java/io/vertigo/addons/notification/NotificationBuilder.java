@@ -15,7 +15,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	private String myTitle;
 	private String myMsg;
 	private String mySender;
-	private Date myCreationDate = DateUtil.newDateTime();
+	private Date myCreationDate;
 	private int myTtlInSeconds = -1;
 	private final UUID uuid;
 
@@ -39,7 +39,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 
 	public NotificationBuilder withType(final String type) {
 		Assertion.checkArgument(myType == null, "type already set");
-		Assertion.checkArgNotEmpty(type);
+		//type is nullable
 		//-----
 		myType = type;
 		return this;
@@ -70,7 +70,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	}
 
 	public NotificationBuilder withTTLinSeconds(final int ttlInSeconds) {
-		Assertion.checkArgument(ttlInSeconds > 0, "ttl must be strictly positive or undefined.");
+		Assertion.checkArgument(ttlInSeconds > 0 || ttlInSeconds == -1, "ttl must be strictly positive or undefined.");
 		//-----
 		myTtlInSeconds = ttlInSeconds;
 		return this;
@@ -78,6 +78,9 @@ public final class NotificationBuilder implements Builder<Notification> {
 
 	@Override
 	public Notification build() {
+		if (myCreationDate == null) {
+			myCreationDate = DateUtil.newDateTime();
+		}
 		return new Notification(uuid, mySender, myType, myTitle, myMsg, myCreationDate, myTtlInSeconds);
 	}
 }
