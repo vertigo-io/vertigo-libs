@@ -33,6 +33,10 @@ import spark.Spark;
 
 import com.jayway.restassured.RestAssured;
 
+/**
+ * Account addon web services tests.
+ * @author npiedeloup
+ */
 public final class AccountWebServicesTest {
 	private static final int WS_PORT = 8088;
 	private static App app;
