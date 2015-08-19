@@ -23,6 +23,7 @@ public final class Notification {
 		Assertion.checkArgNotEmpty(title);
 		Assertion.checkArgNotEmpty(msg);
 		Assertion.checkArgument(ttlInSeconds == -1 || ttlInSeconds > 0, "ttl must be positive or undefined (-1).");
+		Assertion.checkNotNull(creationDate);
 		//-----
 		this.uuid = uuid;
 		this.sender = sender;
