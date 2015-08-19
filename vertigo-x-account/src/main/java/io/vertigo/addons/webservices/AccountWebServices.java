@@ -38,9 +38,7 @@ public final class AccountWebServices implements RestfulService {
 	 * @return account
 	 */
 	@GET("/api/accounts/{id}")
-	@AnonymousAccessAllowed
 	public Account getAccount(@PathParam("id") final String id) {
-
 		return accountManager.getAccount(DtObjectUtil.createURI(Account.class, id));
 	}
 
@@ -51,7 +49,6 @@ public final class AccountWebServices implements RestfulService {
 	 * @return account
 	 */
 	@GET("/api/accounts/{id}/photo")
-	@AnonymousAccessAllowed
 	public VFile getAccountPhoto(@PathParam("id") final String id) {
 		return accountManager.getPhoto(DtObjectUtil.createURI(Account.class, id));
 	}
@@ -62,7 +59,6 @@ public final class AccountWebServices implements RestfulService {
 	 * @return all groups
 	 */
 	@GET("/api/groups")
-	@AnonymousAccessAllowed
 	public Collection<AccountGroup> getAllGroups() {
 		return accountManager.getAllGroups();
 	}
@@ -74,12 +70,12 @@ public final class AccountWebServices implements RestfulService {
 	 * @return group
 	 */
 	@GET("/api/groups/{id}")
-	@AnonymousAccessAllowed
 	public AccountGroup getAccountGroup(@PathParam("id") final String id) {
 		return accountManager.getGroup(DtObjectUtil.createURI(AccountGroup.class, id));
 	}
 
 	//-----
+
 	/**
 	 * Addon status (code 200 or 500)
 	 * @return "OK" or error message
