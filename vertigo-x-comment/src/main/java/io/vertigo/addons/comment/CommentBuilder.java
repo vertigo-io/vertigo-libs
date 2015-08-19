@@ -16,7 +16,8 @@ public final class CommentBuilder implements Builder<Comment> {
 	private final UUID uuid;
 	private String myMsg;
 	private URI<Account> myAuthor;
-	private Date myCreationDate = DateUtil.newDateTime();
+	private Date myCreationDate;
+	private Date myLastModified;
 
 	/**
 	 * Constructor for new comment.
@@ -71,9 +72,23 @@ public final class CommentBuilder implements Builder<Comment> {
 		return this;
 	}
 
+	/**
+	 * @param lastModified Last modify date time
+	 * @return this builder
+	 */
+	public CommentBuilder withLastModified(final Date lastModified) {
+		Assertion.checkNotNull(lastModified);
+		//-----
+		myLastModified = lastModified;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public Comment build() {
-		return new Comment(uuid, myAuthor, myMsg, myCreationDate);
+		if (myCreationDate == null) {
+			myCreationDate = DateUtil.newDateTime();
+		}
+		return new Comment(uuid, myAuthor, myMsg, myCreationDate, myLastModified);
 	}
 }

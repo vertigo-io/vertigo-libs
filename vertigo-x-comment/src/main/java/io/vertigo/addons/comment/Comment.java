@@ -15,16 +15,20 @@ public final class Comment {
 	private final URI<Account> author;
 	private final String msg;
 	private final Date creationDate;
+	private final Date lastModified;
 
-	Comment(final UUID uuid, final URI<Account> author, final String msg, final Date creationDate) {
+	Comment(final UUID uuid, final URI<Account> author, final String msg, final Date creationDate, final Date lastModified) {
 		Assertion.checkNotNull(uuid);
 		Assertion.checkNotNull(author);
 		Assertion.checkArgNotEmpty(msg);
+		Assertion.checkNotNull(creationDate);
+		//lastModified is nullable
 		//-----
 		this.uuid = uuid;
 		this.author = author;
 		this.msg = msg;
 		this.creationDate = creationDate;
+		this.lastModified = lastModified;
 	}
 
 	public UUID getUuid() {
@@ -35,12 +39,16 @@ public final class Comment {
 		return author;
 	}
 
+	public String getMsg() {
+		return msg;
+	}
+
 	public Date getCreationDate() {
 		return creationDate;
 	}
 
-	public String getMsg() {
-		return msg;
+	public Date getLastModified() {
+		return lastModified;
 	}
 
 }

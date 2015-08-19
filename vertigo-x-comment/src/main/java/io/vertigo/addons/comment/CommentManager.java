@@ -12,6 +12,13 @@ import java.util.List;
 public interface CommentManager extends Component {
 
 	/**
+	 * Get ordered comments list published on this keyConcept.
+	 * @param keyConceptUri keyConcept's uri
+	 * @return ordered comments list
+	 */
+	List<Comment> getComments(URI<? extends KeyConcept> keyConceptUri);
+
+	/**
 	 * Publish a comment on a key concept.
 	 * @param comment Comment
 	 * @param keyConceptUri keyConcept's uri
@@ -19,9 +26,8 @@ public interface CommentManager extends Component {
 	void publish(Comment comment, URI<? extends KeyConcept> keyConceptUri);
 
 	/**
-	 * Get ordered comments list published on this keyConcept.
-	 * @param keyConceptUri keyConcept's uri
-	 * @return ordered comments list
+	 * Update comment.
+	 * @param comment updated comment
 	 */
-	List<Comment> getComments(URI<? extends KeyConcept> keyConceptUri);
+	void update(Comment comment);
 }
