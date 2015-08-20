@@ -1,8 +1,5 @@
-package io.vertigo.addons.notification;
+package io.vertigo.x.notification;
 
-import io.vertigo.addons.impl.notification.NotificationManagerImpl;
-import io.vertigo.addons.plugins.notification.redis.RedisNotificationPlugin;
-import io.vertigo.addons.webservices.NotificationWebServices;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
@@ -37,8 +34,11 @@ import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.impl.account.AccountManagerImpl;
+import io.vertigo.x.impl.notification.NotificationManagerImpl;
 import io.vertigo.x.plugins.account.redis.RedisAccountStorePlugin;
-import io.vertigo.x.webservices.AccountWebServices;
+import io.vertigo.x.plugins.notification.redis.RedisNotificationPlugin;
+import io.vertigo.x.webapi.account.AccountWebServices;
+import io.vertigo.x.webapi.notification.NotificationWebServices;
 
 public final class MyApp {
 	public static AppConfig config() {

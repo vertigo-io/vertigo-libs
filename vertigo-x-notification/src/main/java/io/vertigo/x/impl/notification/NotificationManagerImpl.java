@@ -1,12 +1,12 @@
-package io.vertigo.addons.impl.notification;
+package io.vertigo.x.impl.notification;
 
-import io.vertigo.addons.notification.Notification;
-import io.vertigo.addons.notification.NotificationManager;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.notification.Notification;
+import io.vertigo.x.notification.NotificationManager;
 
 import java.util.List;
 import java.util.UUID;

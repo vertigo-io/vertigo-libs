@@ -1,4 +1,4 @@
-package io.vertigo.addons.notification;
+package io.vertigo.x.notification;
 
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Component;

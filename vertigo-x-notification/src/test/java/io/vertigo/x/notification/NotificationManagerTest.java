@@ -1,4 +1,4 @@
-package io.vertigo.addons.notification;
+package io.vertigo.x.notification;
 
 import io.vertigo.core.App;
 import io.vertigo.core.Home;
@@ -10,6 +10,9 @@ import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountBuilder;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.notification.Notification;
+import io.vertigo.x.notification.NotificationBuilder;
+import io.vertigo.x.notification.NotificationManager;
 
 import javax.inject.Inject;
 

@@ -1,4 +1,4 @@
-package io.vertigo.addons.notification;
+package io.vertigo.x.notification;
 
 import io.vertigo.lang.Assertion;
 

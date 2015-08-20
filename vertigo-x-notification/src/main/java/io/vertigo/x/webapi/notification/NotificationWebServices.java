@@ -1,7 +1,5 @@
-package io.vertigo.addons.webservices;
+package io.vertigo.x.webapi.notification;
 
-import io.vertigo.addons.notification.Notification;
-import io.vertigo.addons.notification.NotificationManager;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
@@ -11,6 +9,8 @@ import io.vertigo.vega.rest.stereotype.PathParam;
 import io.vertigo.vega.rest.stereotype.PathPrefix;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.notification.Notification;
+import io.vertigo.x.notification.NotificationManager;
 
 import java.util.HashMap;
 import java.util.List;
