@@ -1,4 +1,4 @@
-package io.vertigo.addons.account.data;
+package io.vertigo.x.account.data;
 
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;

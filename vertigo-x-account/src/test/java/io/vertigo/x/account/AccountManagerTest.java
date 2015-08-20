@@ -18,13 +18,13 @@
  */
 package io.vertigo.x.account;
 
-import io.vertigo.addons.account.data.Accounts;
 import io.vertigo.core.App;
 import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.x.account.data.Accounts;
 
 import javax.inject.Inject;
 
