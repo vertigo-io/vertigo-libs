@@ -1,12 +1,12 @@
-package io.vertigo.addons.impl.comment;
+package io.vertigo.x.impl.comment;
 
-import io.vertigo.addons.comment.Comment;
-import io.vertigo.addons.comment.CommentBuilder;
-import io.vertigo.addons.comment.CommentManager;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.DateUtil;
+import io.vertigo.x.comment.Comment;
+import io.vertigo.x.comment.CommentBuilder;
+import io.vertigo.x.comment.CommentManager;
 
 import java.util.List;
 

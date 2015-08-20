@@ -1,4 +1,4 @@
-package io.vertigo.addons.comment;
+package io.vertigo.x.comment;
 
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;

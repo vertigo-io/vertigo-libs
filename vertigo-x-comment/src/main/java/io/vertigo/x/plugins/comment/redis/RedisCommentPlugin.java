@@ -1,8 +1,5 @@
-package io.vertigo.addons.plugins.comment.redis;
+package io.vertigo.x.plugins.comment.redis;
 
-import io.vertigo.addons.comment.Comment;
-import io.vertigo.addons.comment.CommentBuilder;
-import io.vertigo.addons.impl.comment.CommentPlugin;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
@@ -10,7 +7,10 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.x.account.Account;
+import io.vertigo.x.comment.Comment;
+import io.vertigo.x.comment.CommentBuilder;
 import io.vertigo.x.connectors.redis.RedisConnector;
+import io.vertigo.x.impl.comment.CommentPlugin;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

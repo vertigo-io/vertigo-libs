@@ -1,9 +1,9 @@
-package io.vertigo.addons.impl.comment;
+package io.vertigo.x.impl.comment;
 
-import io.vertigo.addons.comment.Comment;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Plugin;
+import io.vertigo.x.comment.Comment;
 
 import java.util.List;
 import java.util.UUID;

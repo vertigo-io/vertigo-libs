@@ -1,7 +1,5 @@
-package io.vertigo.addons.webservices;
+package io.vertigo.x.webapi.comment;
 
-import io.vertigo.addons.comment.Comment;
-import io.vertigo.addons.comment.CommentManager;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -21,6 +19,8 @@ import io.vertigo.vega.rest.stereotype.PathPrefix;
 import io.vertigo.vega.rest.stereotype.QueryParam;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.comment.Comment;
+import io.vertigo.x.comment.CommentManager;
 
 import java.util.HashMap;
 import java.util.List;
