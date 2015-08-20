@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.addons.account;
+package io.vertigo.x.account;
 
 import io.vertigo.core.App;
 import io.vertigo.core.Home;

@@ -1,6 +1,5 @@
 package io.vertigo.addons.plugins.notification.redis;
 
-import io.vertigo.addons.account.Account;
 import io.vertigo.addons.connectors.redis.RedisConnector;
 import io.vertigo.addons.impl.notification.NotificationEvent;
 import io.vertigo.addons.impl.notification.NotificationPlugin;
@@ -9,6 +8,7 @@ import io.vertigo.addons.notification.NotificationBuilder;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.MapBuilder;
+import io.vertigo.x.account.Account;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

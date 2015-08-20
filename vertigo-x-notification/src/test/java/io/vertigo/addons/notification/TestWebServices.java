@@ -18,8 +18,6 @@
  */
 package io.vertigo.addons.notification;
 
-import io.vertigo.addons.account.Account;
-import io.vertigo.addons.account.AccountManager;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.rest.RestfulService;
@@ -28,6 +26,8 @@ import io.vertigo.vega.rest.stereotype.GET;
 import io.vertigo.vega.rest.stereotype.PathPrefix;
 import io.vertigo.vega.rest.stereotype.QueryParam;
 import io.vertigo.vega.rest.stereotype.SessionInvalidate;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountManager;
 
 import javax.inject.Inject;
 

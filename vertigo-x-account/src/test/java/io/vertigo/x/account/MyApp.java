@@ -1,9 +1,6 @@
-package io.vertigo.addons.account;
+package io.vertigo.x.account;
 
 import io.vertigo.addons.connectors.redis.RedisConnector;
-import io.vertigo.addons.impl.account.AccountManagerImpl;
-import io.vertigo.addons.plugins.account.redis.RedisAccountStorePlugin;
-import io.vertigo.addons.webservices.AccountWebServices;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
@@ -35,6 +32,9 @@ import io.vertigo.vega.rest.RestManager;
 import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.engine.GoogleJsonEngine;
 import io.vertigo.vega.rest.engine.JsonEngine;
+import io.vertigo.x.impl.account.AccountManagerImpl;
+import io.vertigo.x.plugins.account.redis.RedisAccountStorePlugin;
+import io.vertigo.x.webapi.account.AccountWebServices;
 
 public final class MyApp {
 	public static AppConfig config() {

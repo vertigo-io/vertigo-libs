@@ -1,10 +1,6 @@
-package io.vertigo.addons.plugins.account.redis;
+package io.vertigo.x.plugins.account.redis;
 
-import io.vertigo.addons.account.Account;
-import io.vertigo.addons.account.AccountBuilder;
-import io.vertigo.addons.account.AccountGroup;
 import io.vertigo.addons.connectors.redis.RedisConnector;
-import io.vertigo.addons.impl.account.AccountStorePlugin;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -14,6 +10,10 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.MapBuilder;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountBuilder;
+import io.vertigo.x.account.AccountGroup;
+import io.vertigo.x.impl.account.AccountStorePlugin;
 
 import java.io.InputStream;
 import java.text.ParseException;

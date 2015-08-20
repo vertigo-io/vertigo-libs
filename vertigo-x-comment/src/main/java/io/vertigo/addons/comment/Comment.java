@@ -1,8 +1,8 @@
 package io.vertigo.addons.comment;
 
-import io.vertigo.addons.account.Account;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
+import io.vertigo.x.account.Account;
 
 import java.util.Date;
 import java.util.UUID;

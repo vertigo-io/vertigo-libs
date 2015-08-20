@@ -1,4 +1,4 @@
-package io.vertigo.addons.account;
+package io.vertigo.x.account;
 
 import io.vertigo.persona.security.UserSession;
 

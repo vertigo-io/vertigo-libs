@@ -1,4 +1,4 @@
-package io.vertigo.addons.plugins.account.redis;
+package io.vertigo.x.plugins.account.redis;
 
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;

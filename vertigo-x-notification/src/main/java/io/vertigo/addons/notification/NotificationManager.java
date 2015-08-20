@@ -1,9 +1,9 @@
 package io.vertigo.addons.notification;
 
-import io.vertigo.addons.account.Account;
-import io.vertigo.addons.account.AccountGroup;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Component;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountGroup;
 
 import java.util.List;
 import java.util.UUID;

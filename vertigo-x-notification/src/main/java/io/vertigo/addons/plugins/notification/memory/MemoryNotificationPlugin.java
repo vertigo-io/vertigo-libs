@@ -1,11 +1,11 @@
 package io.vertigo.addons.plugins.notification.memory;
 
-import io.vertigo.addons.account.Account;
 import io.vertigo.addons.impl.notification.NotificationEvent;
 import io.vertigo.addons.impl.notification.NotificationPlugin;
 import io.vertigo.addons.notification.Notification;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
+import io.vertigo.x.account.Account;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -1,15 +1,15 @@
 package io.vertigo.addons.notification;
 
-import io.vertigo.addons.account.Account;
-import io.vertigo.addons.account.AccountBuilder;
-import io.vertigo.addons.account.AccountGroup;
-import io.vertigo.addons.account.AccountManager;
 import io.vertigo.core.App;
 import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountBuilder;
+import io.vertigo.x.account.AccountGroup;
+import io.vertigo.x.account.AccountManager;
 
 import javax.inject.Inject;
 

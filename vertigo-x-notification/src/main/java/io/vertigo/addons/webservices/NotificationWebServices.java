@@ -1,7 +1,5 @@
 package io.vertigo.addons.webservices;
 
-import io.vertigo.addons.account.Account;
-import io.vertigo.addons.account.AccountManager;
 import io.vertigo.addons.notification.Notification;
 import io.vertigo.addons.notification.NotificationManager;
 import io.vertigo.dynamo.domain.model.URI;
@@ -11,6 +9,8 @@ import io.vertigo.vega.rest.stereotype.DELETE;
 import io.vertigo.vega.rest.stereotype.GET;
 import io.vertigo.vega.rest.stereotype.PathParam;
 import io.vertigo.vega.rest.stereotype.PathPrefix;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountManager;
 
 import java.util.HashMap;
 import java.util.List;

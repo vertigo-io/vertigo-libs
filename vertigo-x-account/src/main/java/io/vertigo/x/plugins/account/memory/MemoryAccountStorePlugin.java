@@ -1,14 +1,14 @@
-package io.vertigo.addons.plugins.account.memory;
+package io.vertigo.x.plugins.account.memory;
 
-import io.vertigo.addons.account.Account;
-import io.vertigo.addons.account.AccountGroup;
-import io.vertigo.addons.impl.account.AccountStorePlugin;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountGroup;
+import io.vertigo.x.impl.account.AccountStorePlugin;
 
 import java.util.Collection;
 import java.util.Collections;

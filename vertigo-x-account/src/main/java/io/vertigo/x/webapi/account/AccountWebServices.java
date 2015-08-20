@@ -1,8 +1,5 @@
-package io.vertigo.addons.webservices;
+package io.vertigo.x.webapi.account;
 
-import io.vertigo.addons.account.Account;
-import io.vertigo.addons.account.AccountGroup;
-import io.vertigo.addons.account.AccountManager;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.vega.rest.RestfulService;
@@ -10,6 +7,9 @@ import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.GET;
 import io.vertigo.vega.rest.stereotype.PathParam;
 import io.vertigo.vega.rest.stereotype.PathPrefix;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountGroup;
+import io.vertigo.x.account.AccountManager;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,6 +38,7 @@ public final class AccountWebServices implements RestfulService {
 	 * @return account
 	 */
 	@GET("/api/accounts/{id}")
+	@AnonymousAccessAllowed
 	public Account getAccount(@PathParam("id") final String id) {
 		return accountManager.getAccount(DtObjectUtil.createURI(Account.class, id));
 	}
@@ -49,6 +50,7 @@ public final class AccountWebServices implements RestfulService {
 	 * @return account
 	 */
 	@GET("/api/accounts/{id}/photo")
+	@AnonymousAccessAllowed
 	public VFile getAccountPhoto(@PathParam("id") final String id) {
 		return accountManager.getPhoto(DtObjectUtil.createURI(Account.class, id));
 	}
@@ -59,6 +61,7 @@ public final class AccountWebServices implements RestfulService {
 	 * @return all groups
 	 */
 	@GET("/api/groups")
+	@AnonymousAccessAllowed
 	public Collection<AccountGroup> getAllGroups() {
 		return accountManager.getAllGroups();
 	}
@@ -70,6 +73,7 @@ public final class AccountWebServices implements RestfulService {
 	 * @return group
 	 */
 	@GET("/api/groups/{id}")
+	@AnonymousAccessAllowed
 	public AccountGroup getAccountGroup(@PathParam("id") final String id) {
 		return accountManager.getGroup(DtObjectUtil.createURI(AccountGroup.class, id));
 	}

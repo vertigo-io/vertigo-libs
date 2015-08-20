@@ -1,8 +1,5 @@
-package io.vertigo.addons.impl.account;
+package io.vertigo.x.impl.account;
 
-import io.vertigo.addons.account.Account;
-import io.vertigo.addons.account.AccountGroup;
-import io.vertigo.addons.account.AccountManager;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -15,6 +12,9 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountGroup;
+import io.vertigo.x.account.AccountManager;
 
 import java.io.File;
 import java.util.Collection;
