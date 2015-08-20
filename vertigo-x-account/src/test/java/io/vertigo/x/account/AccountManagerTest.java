@@ -39,6 +39,11 @@ public final class AccountManagerTest {
 	@Inject
 	private AccountManager accountManager;
 
+	private URI<Account> accountURI0;
+	private URI<Account> accountURI1;
+	private URI<Account> accountURI2;
+	private URI<AccountGroup> groupURI;
+
 	@Before
 	public void setUp() {
 		app = new App(MyApp.config());
@@ -54,13 +59,9 @@ public final class AccountManagerTest {
 
 	@After
 	public void tearDown() {
-		app.close();
+		if (app != null)
+			app.close();
 	}
-
-	private URI<Account> accountURI0;
-	private URI<Account> accountURI1;
-	private URI<Account> accountURI2;
-	private URI<AccountGroup> groupURI;
 
 	private static URI<Account> createAccountURI(final String id) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);

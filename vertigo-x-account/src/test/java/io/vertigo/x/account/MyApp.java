@@ -33,6 +33,7 @@ import io.vertigo.vega.rest.engine.GoogleJsonEngine;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.x.account.data.TestUserSession;
 import io.vertigo.x.connectors.redis.RedisConnector;
+import io.vertigo.x.impl.account.AccountDefinitionProvider;
 import io.vertigo.x.impl.account.AccountManagerImpl;
 import io.vertigo.x.plugins.account.redis.RedisAccountStorePlugin;
 import io.vertigo.x.webapi.account.AccountWebServices;
@@ -72,6 +73,7 @@ public final class MyApp {
 				.endComponent()
 			.endModule()
 			.beginModule("account")
+				.addDefinitionProvider(AccountDefinitionProvider.class)
 				.beginComponent(AccountManager.class, AccountManagerImpl.class)
 					.beginPlugin(RedisAccountStorePlugin.class).endPlugin()
 				.endComponent()
