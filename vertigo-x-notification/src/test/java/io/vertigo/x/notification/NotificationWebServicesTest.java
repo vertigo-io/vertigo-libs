@@ -27,9 +27,6 @@ import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountBuilder;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
-import io.vertigo.x.notification.Notification;
-import io.vertigo.x.notification.NotificationBuilder;
-import io.vertigo.x.notification.NotificationManager;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
