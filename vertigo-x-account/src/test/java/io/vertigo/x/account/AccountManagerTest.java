@@ -28,25 +28,32 @@ import io.vertigo.x.account.data.Accounts;
 
 import javax.inject.Inject;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public final class AccountManagerTest {
-	private static App app;
+	private App app;
 
 	@Inject
 	private AccountManager accountManager;
 
-	@BeforeClass
-	public static void setUp() {
+	@Before
+	public void setUp() {
 		app = new App(MyApp.config());
+
+		Injector.injectMembers(this, Home.getComponentSpace());
+		accountURI0 = createAccountURI("0");
+		accountURI1 = createAccountURI("1");
+		accountURI2 = createAccountURI("2");
+		groupURI = new URI<>(DtObjectUtil.findDtDefinition(AccountGroup.class), "100");
+
+		Accounts.initData(accountManager);
 	}
 
-	@AfterClass
-	public static void tearDown() {
+	@After
+	public void tearDown() {
 		app.close();
 	}
 
@@ -58,17 +65,6 @@ public final class AccountManagerTest {
 	private static URI<Account> createAccountURI(final String id) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);
 		return new URI<>(dtDefinition, id);
-	}
-
-	@Before
-	public void doSetUp() {
-		Injector.injectMembers(this, Home.getComponentSpace());
-		accountURI0 = createAccountURI("0");
-		accountURI1 = createAccountURI("1");
-		accountURI2 = createAccountURI("2");
-		groupURI = new URI<>(DtObjectUtil.findDtDefinition(AccountGroup.class), "100");
-
-		Accounts.initData(accountManager);
 	}
 
 	@Test
