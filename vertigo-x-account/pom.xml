@@ -85,13 +85,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>io.codearte.jfairy</groupId>
-			<artifactId>jfairy</artifactId>
-			<version>0.5.0</version>
-			<scope>test</scope>
-		</dependency>
-
 	</dependencies>
 
 </project>

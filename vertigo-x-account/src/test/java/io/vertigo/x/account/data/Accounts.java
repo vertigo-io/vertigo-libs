@@ -1,15 +1,13 @@
 package io.vertigo.x.account.data;
 
-import io.codearte.jfairy.Fairy;
-import io.codearte.jfairy.producer.person.Person;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.util.ListBuilder;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountBuilder;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,26 +30,31 @@ public class Accounts {
 		accountManager.attach(account2Uri, group1Uri);
 
 		//---create 5 000 noisy data 	
-		List<Account> accounts = createFairyAccounts();
+		List<Account> accounts = createAccounts();
 		accountManager.saveAccounts(accounts);
 	}
 
 	public static int id = 10;
 
-	private static List<Account> createFairyAccounts() {
-		final Fairy fairy = Fairy.create();
-		final List<Account> accounts = new ArrayList<>();
-		for (int i = 0; i < 5000; i++) {
-			accounts.add(createFairyAccount(fairy));
-		}
-		return accounts;
+	private static List<Account> createAccounts() {
+		return new ListBuilder<Account>()
+				.add(createAccount("Jean Meunier", "jmeunier@yopmail.com"))
+				.add(createAccount("Emeline Granger", "egranger@yopmail.com"))
+				.add(createAccount("Silvia Robert", "sylv.robert@yopmail.com"))
+				.add(createAccount("Manuel Long", "manu@yopmail.com"))
+				.add(createAccount("David Martin", "david.martin@yopmail.com"))
+				.add(createAccount("Véronique LeBourgeois", "vero89@yopmail.com"))
+				.add(createAccount("Bernard Dufour", "bdufour@yopmail.com"))
+				.add(createAccount("Nicolas Legendre", "nicolas.legendre@yopmail.com"))
+				.add(createAccount("Marie Garnier", "marie.garnier@yopmail.com"))
+				.add(createAccount("Hugo Bertrand", "hb@yopmail.com"))
+				.build();
 	}
 
-	private static Account createFairyAccount(Fairy fairy) {
-		Person person = fairy.person();
+	private static Account createAccount(String displayName, String email) {
 		return new AccountBuilder(Integer.toString(id++))
-				.withDisplayName(person.fullName())
-				.withEmail(person.email())
+				.withDisplayName(displayName)
+				.withEmail(email)
 				.build();
 	}
 }
