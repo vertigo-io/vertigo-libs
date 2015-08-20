@@ -28,7 +28,10 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author pchretien
  */
 @RunWith(Suite.class)
-@SuiteClasses({ AccountManagerTest.class, AccountWebServicesTest.class })
+@SuiteClasses({
+		AccountManagerTest.class,
+		AccountWebServicesTest.class
+})
 public final class AccountTestSuite {
 	//
 }

@@ -48,9 +48,6 @@ public interface AccountManager extends Component {
 	void saveAccount(Account account);
 
 	//-----Gestion des groupes
-	/**
-	 * @return
-	 */
 	long getGroupsCount();
 
 	//il est possible de proposer tous les groupes mais pas tous les accounts ?

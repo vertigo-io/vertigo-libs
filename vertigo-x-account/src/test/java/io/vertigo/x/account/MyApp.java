@@ -1,5 +1,6 @@
 package io.vertigo.x.account;
 
+import io.vertigo.addons.account.data.TestUserSession;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
@@ -37,7 +38,7 @@ import io.vertigo.x.plugins.account.redis.RedisAccountStorePlugin;
 import io.vertigo.x.webapi.account.AccountWebServices;
 
 public final class MyApp {
-	public static AppConfig config() {
+	private static AppConfigBuilder createAppConfigBuilder() {
 		// @formatter:off
 		return new AppConfigBuilder()
 			.beginBootModule()
@@ -74,7 +75,18 @@ public final class MyApp {
 				.beginComponent(AccountManager.class, AccountManagerImpl.class)
 					.beginPlugin(RedisAccountStorePlugin.class).endPlugin()
 				.endComponent()
-			.endModule()
+			.endModule();
+		// @formatter:on
+	}
+
+	public static AppConfig config() {
+		// @formatter:off
+		return createAppConfigBuilder().build();
+	}
+
+	public static AppConfig vegaConfig() {
+		// @formatter:off
+		return createAppConfigBuilder()
 			.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class)
 				.beginComponent(AccountWebServices.class).endComponent()
 			.endModule()

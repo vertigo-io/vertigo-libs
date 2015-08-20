@@ -18,6 +18,7 @@
  */
 package io.vertigo.x.account;
 
+import io.vertigo.addons.account.data.Accounts;
 import io.vertigo.core.App;
 import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
@@ -65,46 +66,36 @@ public final class AccountManagerTest {
 		accountURI0 = createAccountURI("0");
 		accountURI1 = createAccountURI("1");
 		accountURI2 = createAccountURI("2");
-		groupURI = new URI<>(DtObjectUtil.findDtDefinition(AccountGroup.class), "all");
+		groupURI = new URI<>(DtObjectUtil.findDtDefinition(AccountGroup.class), "100");
+
+		Accounts.initData(accountManager);
 	}
 
 	@Test
 	public void testAccounts() {
-		final Account account0 = new AccountBuilder("0")
-				.withDisplayName("zeus")
-				.build();
-		accountManager.saveAccount(account0);
-
-		final Account account1 = new AccountBuilder("1")
-				.withDisplayName("hector")
-				.build();
-		accountManager.saveAccount(account1);
-
-		final Account account2 = new AccountBuilder("2")
-				.withDisplayName("Priam")
-				.build();
-		accountManager.saveAccount(account2);
-
-		Assert.assertEquals("zeus", accountManager.getAccount(accountURI0).getDisplayName());
+		Assert.assertEquals("Palmer Luckey", accountManager.getAccount(accountURI1).getDisplayName());
 		Assert.assertEquals(3, accountManager.getAccountsCount());
 	}
 
 	@Test
 	public void testGroups() {
-		testAccounts();
-		final AccountGroup group = new AccountGroup("all", "all groups");
-		accountManager.saveGroup(group);
+		Assert.assertEquals(1, accountManager.getGroupsCount());
+		//----
+		Assert.assertEquals(0, accountManager.getGroupURIs(accountURI0).size());
+		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI1).size());
+		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI2).size());
+		Assert.assertEquals(2, accountManager.getAccountURIs(groupURI).size());
+		//---
+		accountManager.detach(accountURI1, groupURI);
+		Assert.assertEquals(0, accountManager.getGroupURIs(accountURI0).size());
+		Assert.assertEquals(0, accountManager.getGroupURIs(accountURI1).size());
+		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI2).size());
+		Assert.assertEquals(1, accountManager.getAccountURIs(groupURI).size());
+		//---
 		accountManager.attach(accountURI0, groupURI);
-		accountManager.attach(accountURI2, groupURI);
-
 		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI0).size());
 		Assert.assertEquals(0, accountManager.getGroupURIs(accountURI1).size());
-		Assert.assertEquals(2, accountManager.getAccountURIs(groupURI).size());
-		accountManager.detach(accountURI0, groupURI);
-		Assert.assertEquals(0, accountManager.getGroupURIs(accountURI0).size());
-		Assert.assertEquals(1, accountManager.getAccountURIs(groupURI).size());
-		accountManager.attach(accountURI0, groupURI);
-		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI0).size());
+		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI2).size());
 		Assert.assertEquals(2, accountManager.getAccountURIs(groupURI).size());
 	}
 

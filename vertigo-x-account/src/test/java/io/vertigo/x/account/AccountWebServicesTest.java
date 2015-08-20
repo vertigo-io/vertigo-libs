@@ -18,10 +18,9 @@
  */
 package io.vertigo.x.account;
 
+import io.vertigo.addons.account.data.Accounts;
 import io.vertigo.core.App;
 import io.vertigo.core.Home;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.VegaSparkApplication;
 
 import org.apache.http.HttpStatus;
@@ -43,10 +42,11 @@ public final class AccountWebServicesTest {
 
 	@BeforeClass
 	public static void setUp() {
-		app = new App(MyApp.config());
+		app = new App(MyApp.vegaConfig());
 		doSetUp();
 
-		initData();
+		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
+		Accounts.initData(accountManager);
 	}
 
 	@AfterClass
@@ -63,24 +63,6 @@ public final class AccountWebServicesTest {
 
 		//init must be done foreach tests as Home was restarted each times
 		new VegaSparkApplication().init();
-	}
-
-	private static void initData() {
-		final Account testAccount1 = new AccountBuilder("1").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
-		final Account testAccount2 = new AccountBuilder("2").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
-		final URI<Account> account1Uri = DtObjectUtil.createURI(Account.class, testAccount1.getId());
-		final URI<Account> account2Uri = DtObjectUtil.createURI(Account.class, testAccount2.getId());
-
-		final AccountGroup testAccountGroup1 = new AccountGroup("100", "TIME's cover");
-		final URI<AccountGroup> group1Uri = DtObjectUtil.createURI(AccountGroup.class, testAccountGroup1.getId());
-
-		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
-		accountManager.saveAccount(testAccount1);
-		accountManager.saveAccount(testAccount2);
-		accountManager.saveGroup(testAccountGroup1);
-
-		accountManager.attach(account1Uri, group1Uri);
-		accountManager.attach(account2Uri, group1Uri);
 	}
 
 	@Test
@@ -134,7 +116,7 @@ public final class AccountWebServicesTest {
 	}
 
 	@Test
-	public void testGetAddonStats() {
+	public void testGetStats() {
 		RestAssured.given()
 				.expect()
 				.statusCode(HttpStatus.SC_OK)
@@ -144,7 +126,7 @@ public final class AccountWebServicesTest {
 	}
 
 	@Test
-	public void testGetAddonConfig() {
+	public void testGetConfig() {
 		RestAssured.given()
 				.expect()
 				.statusCode(HttpStatus.SC_OK)
@@ -154,7 +136,7 @@ public final class AccountWebServicesTest {
 	}
 
 	@Test
-	public void testGetAddonHelp() {
+	public void testGetHelp() {
 		RestAssured.given()
 				.expect()
 				.statusCode(HttpStatus.SC_OK)
