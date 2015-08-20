@@ -55,10 +55,8 @@ public final class CommentManagerImpl implements CommentManager {
 		if (!originalComment.getAuthor().equals(comment.getAuthor())) {
 			throw new RuntimeException("The comment editing is only available for the comment's author.");
 		}
-		final Comment savedComment = new CommentBuilder(originalComment.getUuid())
-				.withAuthor(originalComment.getAuthor())
+		final Comment savedComment = new CommentBuilder(originalComment.getUuid(), originalComment.getAuthor(), originalComment.getCreationDate())
 				.withMsg(comment.getMsg())
-				.withCreationDate(originalComment.getCreationDate())
 				.withLastModified(DateUtil.newDateTime())
 				.build();
 		commentsPlugin.update(savedComment);
