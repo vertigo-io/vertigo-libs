@@ -38,8 +38,35 @@ import io.vertigo.x.impl.account.AccountManagerImpl;
 import io.vertigo.x.plugins.account.redis.RedisAccountStorePlugin;
 import io.vertigo.x.webapi.account.AccountWebServices;
 
+import java.io.IOException;
+import java.net.InetAddress;
+
 public final class MyApp {
+
+	private static boolean ping(String host) {
+		try {
+			final InetAddress inet = InetAddress.getByName(host);
+			return inet.getAddress() != null;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+
 	private static AppConfigBuilder createAppConfigBuilder() {
+		final String host;
+		final int port;
+		final String password;
+		if (ping("kasper-redis")) {
+			host = "kasper-redis";
+			port = 6379;
+			password = null;
+		} else if (ping("pub-redis-10382.us-east-1-3.2.ec2.garantiadata.com")) {
+			host = "pub-redis-10382.us-east-1-3.2.ec2.garantiadata.com";
+			port = 10382;
+			password = "kleegroup";
+		} else {
+			throw new RuntimeException("no redis server found");
+		}
 		// @formatter:off
 		return new AppConfigBuilder()
 			.beginBootModule()
@@ -68,8 +95,9 @@ public final class MyApp {
 			.endModule()
 			.beginModule("connector").withNoAPI()
 				.beginComponent(RedisConnector.class, RedisConnector.class)
-					.addParam("host", "kasper-redis")
-					.addParam("port", "6379")
+					.addParam("host", host)
+					.addParam("port", Integer.toString(port))
+					.addParam("password", password)
 				.endComponent()
 			.endModule()
 			.beginModule("account")
