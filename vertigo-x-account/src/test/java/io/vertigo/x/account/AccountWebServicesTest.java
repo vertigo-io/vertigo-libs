@@ -65,84 +65,53 @@ public final class AccountWebServicesTest {
 		new VegaSparkApplication().init();
 	}
 
-	@Test
-	public void testGetAccountById() {
+	private static void assertStatusCode(int expectedStatus, String path) {
 		RestAssured.given()
 				.expect()
-				.statusCode(HttpStatus.SC_OK)
+				.statusCode(expectedStatus)
 				.log().ifError()
 				.when()
-				.get("/x/account/api/accounts/1");
+				.get(path);
+	}
+
+	@Test
+	public void testGetAccountById() {
+		assertStatusCode(HttpStatus.SC_OK, "/x/account/api/accounts/1");
 	}
 
 	@Test
 	public void testGetPhotoByAccountId() {
-		RestAssured.given()
-				.expect()
-				.statusCode(HttpStatus.SC_OK)
-				.log().ifError()
-				.when()
-				.get("/x/account/api/accounts/1/photo");
+		assertStatusCode(HttpStatus.SC_OK, "/x/account/api/accounts/1/photo");
 	}
 
 	@Test
 	public void testGetAllGroups() {
-		RestAssured.given()
-				.expect()
-				.statusCode(HttpStatus.SC_OK)
-				.log().ifError()
-				.when()
-				.get("/x/account/api/groups");
+		assertStatusCode(HttpStatus.SC_OK, "/x/account/api/groups");
 	}
 
 	@Test
 	public void testGetGroupById() {
-		RestAssured.given()
-				.expect()
-				.statusCode(HttpStatus.SC_OK)
-				.log().ifError()
-				.when()
-				.get("/x/account/api/groups/100");
+		assertStatusCode(HttpStatus.SC_OK, "/x/account/api/groups/100");
 	}
 
 	@Test
 	public void testGetAddonStatus() {
-		RestAssured.given()
-				.expect()
-				.statusCode(HttpStatus.SC_OK)
-				.log().ifError()
-				.when()
-				.get("/x/account/status");
+		assertStatusCode(HttpStatus.SC_OK, "/x/account/status");
 	}
 
 	@Test
 	public void testGetStats() {
-		RestAssured.given()
-				.expect()
-				.statusCode(HttpStatus.SC_OK)
-				.log().ifError()
-				.when()
-				.get("/x/account/stats");
+		assertStatusCode(HttpStatus.SC_OK, "/x/account/stats");
 	}
 
 	@Test
 	public void testGetConfig() {
-		RestAssured.given()
-				.expect()
-				.statusCode(HttpStatus.SC_OK)
-				.log().ifError()
-				.when()
-				.get("/x/account/config");
+		assertStatusCode(HttpStatus.SC_OK, "/x/account/config");
 	}
 
 	@Test
 	public void testGetHelp() {
-		RestAssured.given()
-				.expect()
-				.statusCode(HttpStatus.SC_OK)
-				.log().ifError()
-				.when()
-				.get("/x/account/help");
+		assertStatusCode(HttpStatus.SC_OK, "/x/account/help");
 	}
 
 }
