@@ -56,13 +56,15 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void saveAccount(final Account account) {
-		Assertion.checkNotNull(account);
+	public void saveAccounts(final List<Account> accounts) {
+		Assertion.checkNotNull(accounts);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final Transaction tx = jedis.multi();
-			tx.hmset("account:" + account.getId(), account2Map(account));
-			tx.lpush("accounts", account.getId());
+			for (Account account : accounts) {
+				tx.hmset("account:" + account.getId(), account2Map(account));
+				tx.lpush("accounts", account.getId());
+			}
 			tx.exec();
 		}
 	}

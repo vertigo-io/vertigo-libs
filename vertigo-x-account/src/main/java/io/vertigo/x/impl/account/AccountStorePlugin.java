@@ -8,6 +8,7 @@ import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -23,8 +24,8 @@ public interface AccountStorePlugin extends Plugin {
 
 	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
 
-	//l'id doit être renseigné !!
-	void saveAccount(Account account);
+	//l'id doit être renseigné  pour chaque account !!
+	void saveAccounts(List<Account> account);
 
 	//-----Gestion des groupes
 	long getGroupsCount();

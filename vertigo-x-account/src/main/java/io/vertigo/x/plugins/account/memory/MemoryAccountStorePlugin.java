@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -59,7 +60,15 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized void saveAccount(final Account account) {
+	public synchronized void saveAccounts(final List<Account> accounts) {
+		Assertion.checkNotNull(accounts);
+		//-----
+		for (Account account : accounts) {
+			saveAccount(account);
+		}
+	}
+
+	private void saveAccount(final Account account) {
 		Assertion.checkNotNull(account);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(account);

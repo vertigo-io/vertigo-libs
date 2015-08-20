@@ -5,6 +5,7 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Component;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -44,8 +45,8 @@ public interface AccountManager extends Component {
 	 */
 	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
 
-	//l'id doit être renseigné !!
-	void saveAccount(Account account);
+	//l'id doit être renseigné pour chaque account !!
+	void saveAccounts(List<Account> accounts);
 
 	//-----Gestion des groupes
 	long getGroupsCount();

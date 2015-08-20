@@ -18,6 +18,7 @@ import io.vertigo.x.account.AccountManager;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -107,8 +108,8 @@ public final class AccountManagerImpl implements AccountManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void saveAccount(final Account account) {
-		accountStorePlugin.saveAccount(account);
+	public void saveAccounts(final List<Account> accounts) {
+		accountStorePlugin.saveAccounts(accounts);
 	}
 
 	/** {@inheritDoc} */
