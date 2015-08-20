@@ -1,6 +1,5 @@
 package io.vertigo.x.plugins.account.redis;
 
-import io.vertigo.addons.connectors.redis.RedisConnector;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -13,6 +12,7 @@ import io.vertigo.util.MapBuilder;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountBuilder;
 import io.vertigo.x.account.AccountGroup;
+import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.impl.account.AccountStorePlugin;
 
 import java.io.InputStream;

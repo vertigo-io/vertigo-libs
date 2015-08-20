@@ -1,6 +1,5 @@
 package io.vertigo.addons.notification;
 
-import io.vertigo.addons.connectors.redis.RedisConnector;
 import io.vertigo.addons.impl.notification.NotificationManagerImpl;
 import io.vertigo.addons.plugins.notification.redis.RedisNotificationPlugin;
 import io.vertigo.addons.webservices.NotificationWebServices;
@@ -36,6 +35,7 @@ import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.engine.GoogleJsonEngine;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.impl.account.AccountManagerImpl;
 import io.vertigo.x.plugins.account.redis.RedisAccountStorePlugin;
 import io.vertigo.x.webservices.AccountWebServices;
