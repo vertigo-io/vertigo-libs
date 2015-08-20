@@ -27,13 +27,15 @@ public final class CommentBuilder implements Builder<Comment> {
 	}
 
 	/**
-	 * Constructor for a previously created comment.
-	 * @param uuid comment uuid
+	 * Constructor for new comment.
+	 * @param uuid Uuid
+	 * @param author Author
+	 * @param creationDate Creation date
 	 */
-	public CommentBuilder(final UUID uuid) {
-		Assertion.checkNotNull(uuid);
-		//-----
+	public CommentBuilder(final UUID uuid, final URI<Account> author, final Date creationDate) {
 		this.uuid = uuid;
+		myAuthor = author;
+		myCreationDate = creationDate;
 	}
 
 	/**
@@ -77,7 +79,8 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * @return this builder
 	 */
 	public CommentBuilder withLastModified(final Date lastModified) {
-		Assertion.checkNotNull(lastModified);
+		Assertion.checkArgument(myLastModified == null, "lastModified already set");
+		//lastModified is optional
 		//-----
 		myLastModified = lastModified;
 		return this;

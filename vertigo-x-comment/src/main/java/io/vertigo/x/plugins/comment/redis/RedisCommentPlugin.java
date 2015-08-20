@@ -59,15 +59,13 @@ public final class RedisCommentPlugin implements CommentPlugin {
 	@Override
 	public void update(final Comment comment) {
 		try (final Jedis jedis = redisConnector.getResource()) {
-			final Transaction tx = jedis.multi();
 			//On vérifie la présence de l'élément en base pour s'assurer la cohérence du stockage,
 			//et notament qu'il soit référencé dans "comments:keyConceptUrn"
-			final boolean elementExist = tx.exists("comment:" + comment.getUuid()).get();
+			final boolean elementExist = jedis.exists("comment:" + comment.getUuid());
 			if (!elementExist) {
 				throw new UnsupportedOperationException("Comment " + comment.getUuid() + " doesn't exists");
 			}
-			tx.hmset("comment:" + comment.getUuid(), toMap(comment));
-			tx.exec();
+			jedis.hmset("comment:" + comment.getUuid(), toMap(comment));
 		}
 	}
 
@@ -104,11 +102,13 @@ public final class RedisCommentPlugin implements CommentPlugin {
 
 	private static Map<String, String> toMap(final Comment comment) {
 		final String creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT).format(comment.getCreationDate());
+		final String lastModified = comment.getLastModified() != null ? new SimpleDateFormat(CODEC_DATE_FORMAT).format(comment.getLastModified()) : null;
 		return new MapBuilder<String, String>()
 				.put("uuid", comment.getUuid().toString())
 				.put("author", String.valueOf(comment.getAuthor().getId()))
 				.put("msg", comment.getMsg())
 				.put("creationDate", creationDate)
+				.putNullable("lastModified", lastModified)
 				.build();
 	}
 
@@ -116,11 +116,11 @@ public final class RedisCommentPlugin implements CommentPlugin {
 		try {
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);
 			final Date creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT).parse(data.get("creationDate"));
+			final Date lastModified = data.get("lastModified") != null ? new SimpleDateFormat(CODEC_DATE_FORMAT).parse(data.get("lastModified")) : null;
 
-			return new CommentBuilder(UUID.fromString(data.get("uuid")))
-					.withAuthor(new URI<Account>(dtDefinition, data.get("author")))
+			return new CommentBuilder(UUID.fromString(data.get("uuid")), new URI<Account>(dtDefinition, data.get("author")), creationDate)
 					.withMsg(data.get("msg"))
-					.withCreationDate(creationDate)
+					.withLastModified(lastModified)
 					.build();
 		} catch (final ParseException e) {
 			throw new RuntimeException("Can't parse comment", e);
