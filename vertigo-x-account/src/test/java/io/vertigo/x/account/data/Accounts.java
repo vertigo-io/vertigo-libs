@@ -11,30 +11,53 @@ import io.vertigo.x.account.AccountManager;
 import java.util.Arrays;
 import java.util.List;
 
-public class Accounts {
+public final class Accounts {
+
+	private Accounts() {
+		//rien
+	}
+
+	public static URI<Account> createAccountURI(final String id) {
+		return DtObjectUtil.createURI(Account.class, id);
+	}
+
+	public static URI<AccountGroup> createGroupURI(final String id) {
+		return DtObjectUtil.createURI(AccountGroup.class, id);
+	}
 
 	public static void initData(final AccountManager accountManager) {
 		final Account testAccount0 = new AccountBuilder("0").withDisplayName("John doe").withEmail("john.doe@yopmail.com").build();
 		final Account testAccount1 = new AccountBuilder("1").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
 		final Account testAccount2 = new AccountBuilder("2").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
-		final URI<Account> account1Uri = DtObjectUtil.createURI(Account.class, testAccount1.getId());
-		final URI<Account> account2Uri = DtObjectUtil.createURI(Account.class, testAccount2.getId());
+		accountManager.saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2));
+
+		final URI<Account> accountURI1 = createAccountURI(testAccount1.getId());
+		final URI<Account> accountURI2 = createAccountURI(testAccount2.getId());
 
 		final AccountGroup testAccountGroup1 = new AccountGroup("100", "TIME's cover");
 		final URI<AccountGroup> group1Uri = DtObjectUtil.createURI(AccountGroup.class, testAccountGroup1.getId());
-
-		accountManager.saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2));
 		accountManager.saveGroup(testAccountGroup1);
 
-		accountManager.attach(account1Uri, group1Uri);
-		accountManager.attach(account2Uri, group1Uri);
+		accountManager.attach(accountURI1, group1Uri);
+		accountManager.attach(accountURI2, group1Uri);
+
+		final AccountGroup groupAll = new AccountGroup("ALL", "Everyone");
+		final URI<AccountGroup> groupAllUri = DtObjectUtil.createURI(AccountGroup.class, groupAll.getId());
+		accountManager.saveGroup(groupAll);
+		accountManager.attach(accountURI1, groupAllUri);
+		accountManager.attach(accountURI2, groupAllUri);
 
 		//---create 5 000 noisy data
 		final List<Account> accounts = createAccounts();
+		for (final Account account : accounts) {
+			final URI<Account> accountUri = createAccountURI(account.getId());
+			accountManager.attach(accountUri, groupAllUri);
+		}
 		accountManager.saveAccounts(accounts);
+
 	}
 
-	public static int id = 10;
+	private static int SEQ_ID = 10;
 
 	private static List<Account> createAccounts() {
 		return new ListBuilder<Account>()
@@ -52,7 +75,7 @@ public class Accounts {
 	}
 
 	private static Account createAccount(final String displayName, final String email) {
-		return new AccountBuilder(Integer.toString(id++))
+		return new AccountBuilder(Integer.toString(SEQ_ID++))
 				.withDisplayName(displayName)
 				.withEmail(email)
 				.build();
