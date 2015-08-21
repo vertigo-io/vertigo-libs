@@ -2,10 +2,8 @@ bin/
 trash/
 target/
 docco/
-.classpath
 .gitignore
 .project
-.settings/
 vertigo-release/
 mvn-release.txt
 vertigo-bundle/src
@@ -13,3 +11,5 @@ vertigo-bundle/src
 **/abak
 **/ubak
 vertigo-site/
+*.classpath
+*/.settings/
