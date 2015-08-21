@@ -27,14 +27,12 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.VegaSparkApplication;
 import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountBuilder;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.comment.data.Accounts;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -59,24 +57,23 @@ public final class CommentWebServicesTest {
 
 	private static String CONCEPT_KEY_NAME;
 	private static URI<Account> account1Uri;
-	private static URI<Account> account2Uri;
 	private static URI<KeyConcept> keyConcept1Uri;
 	private static URI<KeyConcept> keyConcept2Uri;
 
 	@BeforeClass
 	public static void setUp() {
-		app = new App(MyApp.config());
+		app = new App(MyAppConfig.vegaConfig());
 		doSetUp();
 
-		initData();
-	}
+		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
+		Accounts.initData(accountManager);
+		account1Uri = Accounts.createAccountURI("1");
 
-	@Before
-	public void preTestLogin() {
-		RestAssured.registerParser("plain/text", Parser.TEXT);
-		RestAssured.given()
-				.filter(sessionFilter)
-				.get("/test/login?id=1");
+		//on triche un peu, car AcountGroup n'est pas un KeyConcept
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);
+		keyConcept1Uri = new URI<>(dtDefinition, "10");
+		keyConcept2Uri = new URI<>(dtDefinition, "20");
+		CONCEPT_KEY_NAME = dtDefinition.getClassSimpleName();
 	}
 
 	@AfterClass
@@ -95,31 +92,12 @@ public final class CommentWebServicesTest {
 		new VegaSparkApplication().init();
 	}
 
-	private static void initData() {
-
-		final Account testAccount1 = new AccountBuilder("1").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
-		final Account testAccount2 = new AccountBuilder("2").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
-		account1Uri = DtObjectUtil.createURI(Account.class, testAccount1.getId());
-		account2Uri = DtObjectUtil.createURI(Account.class, testAccount2.getId());
-
-		final AccountGroup testAccountGroup1 = new AccountGroup("100", "TIME's cover");
-		final URI<AccountGroup> group1Uri = DtObjectUtil.createURI(AccountGroup.class, testAccountGroup1.getId());
-
-		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
-		final List<Account> accounts = new ArrayList<>();
-		accounts.add(testAccount1);
-		accounts.add(testAccount2);
-		accountManager.saveAccounts(accounts);
-		accountManager.saveGroup(testAccountGroup1);
-
-		accountManager.attach(account1Uri, group1Uri);
-		accountManager.attach(account2Uri, group1Uri);
-
-		//on triche un peu, car AcountGroup n'est pas un KeyConcept
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);
-		keyConcept1Uri = new URI<>(dtDefinition, "10");
-		keyConcept2Uri = new URI<>(dtDefinition, "20");
-		CONCEPT_KEY_NAME = dtDefinition.getClassSimpleName();
+	@Before
+	public void preTestLogin() {
+		RestAssured.registerParser("plain/text", Parser.TEXT);
+		RestAssured.given()
+				.filter(sessionFilter)
+				.get("/test/login?id=1");
 	}
 
 	@Test

@@ -1,4 +1,4 @@
-package io.vertigo.x.comment;
+package io.vertigo.x.comment.data;
 
 import io.vertigo.persona.security.UserSession;
 
