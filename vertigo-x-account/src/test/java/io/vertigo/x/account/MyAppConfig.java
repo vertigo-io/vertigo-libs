@@ -41,7 +41,7 @@ import io.vertigo.x.webapi.account.AccountWebServices;
 import java.io.IOException;
 import java.net.InetAddress;
 
-public final class MyApp {
+public final class MyAppConfig {
 
 	private static boolean ping(String host) {
 		try {
@@ -59,7 +59,7 @@ public final class MyApp {
 		if (ping("kasper-redis")) {
 			host = "kasper-redis";
 			port = 6379;
-			password = null;
+			password = "";
 		} else if (ping("pub-redis-10382.us-east-1-3.2.ec2.garantiadata.com")) {
 			host = "pub-redis-10382.us-east-1-3.2.ec2.garantiadata.com";
 			port = 10382;
@@ -97,7 +97,7 @@ public final class MyApp {
 				.beginComponent(RedisConnector.class, RedisConnector.class)
 					.addParam("host", host)
 					.addParam("port", Integer.toString(port))
-					.addParam("password", password)
+				//	.addParam("password", password)
 				.endComponent()
 			.endModule()
 			.beginModule("account")

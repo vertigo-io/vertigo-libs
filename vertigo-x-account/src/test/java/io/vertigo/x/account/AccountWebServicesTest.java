@@ -42,7 +42,7 @@ public final class AccountWebServicesTest {
 
 	@BeforeClass
 	public static void setUp() {
-		app = new App(MyApp.vegaConfig());
+		app = new App(MyAppConfig.vegaConfig());
 		doSetUp();
 
 		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);

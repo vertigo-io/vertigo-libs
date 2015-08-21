@@ -46,7 +46,7 @@ public final class AccountManagerTest {
 
 	@Before
 	public void setUp() {
-		app = new App(MyApp.config());
+		app = new App(MyAppConfig.config());
 
 		Injector.injectMembers(this, Home.getComponentSpace());
 		accountURI0 = createAccountURI("0");
