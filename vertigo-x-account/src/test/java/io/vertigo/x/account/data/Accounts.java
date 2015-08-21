@@ -13,7 +13,7 @@ import java.util.List;
 
 public class Accounts {
 
-	public static void initData(AccountManager accountManager) {
+	public static void initData(final AccountManager accountManager) {
 		final Account testAccount0 = new AccountBuilder("0").withDisplayName("John doe").withEmail("john.doe@yopmail.com").build();
 		final Account testAccount1 = new AccountBuilder("1").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
 		final Account testAccount2 = new AccountBuilder("2").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
@@ -29,8 +29,8 @@ public class Accounts {
 		accountManager.attach(account1Uri, group1Uri);
 		accountManager.attach(account2Uri, group1Uri);
 
-		//---create 5 000 noisy data 	
-		List<Account> accounts = createAccounts();
+		//---create 5 000 noisy data
+		final List<Account> accounts = createAccounts();
 		accountManager.saveAccounts(accounts);
 	}
 
@@ -51,7 +51,7 @@ public class Accounts {
 				.build();
 	}
 
-	private static Account createAccount(String displayName, String email) {
+	private static Account createAccount(final String displayName, final String email) {
 		return new AccountBuilder(Integer.toString(id++))
 				.withDisplayName(displayName)
 				.withEmail(email)
