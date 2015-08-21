@@ -1,4 +1,4 @@
-package io.vertigo.x.notification;
+package io.vertigo.x.notification.data;
 
 import io.vertigo.persona.security.UserSession;
 

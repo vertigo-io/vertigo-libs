@@ -34,7 +34,7 @@ import javax.inject.Inject;
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
 @PathPrefix("/test")
-public final class TestWebServices implements RestfulService {
+public final class TestLoginWebServices implements RestfulService {
 
 	@Inject
 	private VSecurityManager securityManager;

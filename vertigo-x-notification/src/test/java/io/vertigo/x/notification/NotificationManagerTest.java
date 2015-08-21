@@ -7,19 +7,15 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountBuilder;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
-
-import java.util.ArrayList;
-import java.util.List;
+import io.vertigo.x.notification.data.Accounts;
 
 import javax.inject.Inject;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class NotificationManagerTest {
@@ -30,44 +26,34 @@ public class NotificationManagerTest {
 	@Inject
 	private NotificationManager notificationManager;
 
-	@BeforeClass
-	public static void setUp() {
-		app = new App(MyApp.config());
-	}
-
-	@AfterClass
-	public static void tearDown() {
-		app.close();
-	}
-
 	private URI<Account> accountURI0;
 	private URI<Account> accountURI1;
 	private URI<Account> accountURI2;
 	private URI<AccountGroup> groupURI;
 
-	private static URI<Account> createAccountURI(final String id) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);
-		return new URI<>(dtDefinition, id);
-	}
-
 	@Before
-	public void doSetUp() {
+	public void setUp() {
+		app = new App(MyAppConfig.config());
+
 		Injector.injectMembers(this, Home.getComponentSpace());
 		accountURI0 = createAccountURI("0");
 		accountURI1 = createAccountURI("1");
 		accountURI2 = createAccountURI("2");
-		groupURI = new URI<>(DtObjectUtil.findDtDefinition(AccountGroup.class), "all");
+		groupURI = new URI<>(DtObjectUtil.findDtDefinition(AccountGroup.class), "100");
 
-		final List<Account> accounts = new ArrayList<>();
-		accounts.add(new AccountBuilder("0").withDisplayName("zeus").build());
-		accounts.add(new AccountBuilder("1").withDisplayName("hector").build());
-		accounts.add(new AccountBuilder("2").withDisplayName("Priam").build());
-		accountManager.saveAccounts(accounts);
+		Accounts.initData(accountManager);
+	}
 
-		final AccountGroup group = new AccountGroup("all", "all groups");
-		accountManager.saveGroup(group);
-		accountManager.attach(accountURI0, groupURI);
-		accountManager.attach(accountURI2, groupURI);
+	@After
+	public void tearDown() {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private static URI<Account> createAccountURI(final String id) {
+		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);
+		return new URI<>(dtDefinition, id);
 	}
 
 	@Test
@@ -83,8 +69,8 @@ public class NotificationManagerTest {
 			notificationManager.send(notification, groupURI);
 		}
 
-		Assert.assertEquals(10, notificationManager.getCurrentNotifications(accountURI0).size());
-		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI1).size());
+		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI0).size());
+		Assert.assertEquals(10, notificationManager.getCurrentNotifications(accountURI1).size());
 		Assert.assertEquals(10, notificationManager.getCurrentNotifications(accountURI2).size());
 		Thread.sleep(3000);
 		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI0).size());
@@ -107,11 +93,11 @@ public class NotificationManagerTest {
 
 		notificationManager.send(notification, groupURI);
 
-		Assert.assertEquals(1, notificationManager.getCurrentNotifications(accountURI0).size());
-		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI1).size());
+		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI0).size());
+		Assert.assertEquals(1, notificationManager.getCurrentNotifications(accountURI1).size());
 		Assert.assertEquals(1, notificationManager.getCurrentNotifications(accountURI2).size());
 
-		notificationManager.remove(accountURI0, notificationManager.getCurrentNotifications(accountURI0).get(0).getUuid());
+		notificationManager.remove(accountURI1, notificationManager.getCurrentNotifications(accountURI1).get(0).getUuid());
 
 		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI0).size());
 		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI1).size());
