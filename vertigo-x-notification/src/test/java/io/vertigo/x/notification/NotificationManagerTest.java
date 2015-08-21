@@ -10,9 +10,9 @@ import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountBuilder;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
-import io.vertigo.x.notification.Notification;
-import io.vertigo.x.notification.NotificationBuilder;
-import io.vertigo.x.notification.NotificationManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -58,14 +58,12 @@ public class NotificationManagerTest {
 		accountURI2 = createAccountURI("2");
 		groupURI = new URI<>(DtObjectUtil.findDtDefinition(AccountGroup.class), "all");
 
-		final Account account0 = new AccountBuilder("0").withDisplayName("zeus").build();
-		accountManager.saveAccount(account0);
+		final List<Account> accounts = new ArrayList<>();
+		accounts.add(new AccountBuilder("0").withDisplayName("zeus").build());
+		accounts.add(new AccountBuilder("1").withDisplayName("hector").build());
+		accounts.add(new AccountBuilder("2").withDisplayName("Priam").build());
+		accountManager.saveAccounts(accounts);
 
-		final Account account1 = new AccountBuilder("1").withDisplayName("hector").build();
-		accountManager.saveAccount(account1);
-
-		final Account account2 = new AccountBuilder("2").withDisplayName("Priam").build();
-		accountManager.saveAccount(account2);
 		final AccountGroup group = new AccountGroup("all", "all groups");
 		accountManager.saveGroup(group);
 		accountManager.attach(accountURI0, groupURI);

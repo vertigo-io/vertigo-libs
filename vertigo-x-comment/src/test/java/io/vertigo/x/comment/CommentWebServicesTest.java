@@ -32,7 +32,9 @@ import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -104,8 +106,10 @@ public final class CommentWebServicesTest {
 		final URI<AccountGroup> group1Uri = DtObjectUtil.createURI(AccountGroup.class, testAccountGroup1.getId());
 
 		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
-		accountManager.saveAccount(testAccount1);
-		accountManager.saveAccount(testAccount2);
+		final List<Account> accounts = new ArrayList<>();
+		accounts.add(testAccount1);
+		accounts.add(testAccount2);
+		accountManager.saveAccounts(accounts);
 		accountManager.saveGroup(testAccountGroup1);
 
 		accountManager.attach(account1Uri, group1Uri);
