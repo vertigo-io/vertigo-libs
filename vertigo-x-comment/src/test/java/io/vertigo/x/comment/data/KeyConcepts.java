@@ -1,4 +1,4 @@
-package io.vertigo.x.account.data;
+package io.vertigo.x.comment.data;
 
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -11,19 +11,7 @@ import io.vertigo.x.account.AccountManager;
 import java.util.Arrays;
 import java.util.List;
 
-public final class Accounts {
-
-	private Accounts() {
-		//rien
-	}
-
-	public static URI<Account> createAccountURI(final String id) {
-		return DtObjectUtil.createURI(Account.class, id);
-	}
-
-	public static URI<AccountGroup> createGroupURI(final String id) {
-		return DtObjectUtil.createURI(AccountGroup.class, id);
-	}
+public class KeyConcepts {
 
 	public static void initData(final AccountManager accountManager) {
 		final Account testAccount0 = new AccountBuilder("0").withDisplayName("John doe").withEmail("john.doe@yopmail.com").build();
@@ -31,8 +19,8 @@ public final class Accounts {
 		final Account testAccount2 = new AccountBuilder("2").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
 		accountManager.saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2));
 
-		final URI<Account> accountURI1 = createAccountURI(testAccount1.getId());
-		final URI<Account> accountURI2 = createAccountURI(testAccount2.getId());
+		final URI<Account> accountURI1 = DtObjectUtil.createURI(Account.class, testAccount1.getId());
+		final URI<Account> accountURI2 = DtObjectUtil.createURI(Account.class, testAccount2.getId());
 
 		final AccountGroup testAccountGroup1 = new AccountGroup("100", "TIME's cover");
 		final URI<AccountGroup> group1Uri = DtObjectUtil.createURI(AccountGroup.class, testAccountGroup1.getId());
@@ -50,14 +38,14 @@ public final class Accounts {
 		//---create 5 000 noisy data
 		final List<Account> accounts = createAccounts();
 		for (final Account account : accounts) {
-			final URI<Account> accountUri = createAccountURI(account.getId());
+			final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
 			accountManager.attach(accountUri, groupAllUri);
 		}
 		accountManager.saveAccounts(accounts);
 
 	}
 
-	private static int SEQ_ID = 10;
+	public static int id = 10;
 
 	private static List<Account> createAccounts() {
 		return new ListBuilder<Account>()
@@ -75,7 +63,7 @@ public final class Accounts {
 	}
 
 	private static Account createAccount(final String displayName, final String email) {
-		return new AccountBuilder(Integer.toString(SEQ_ID++))
+		return new AccountBuilder(Integer.toString(id++))
 				.withDisplayName(displayName)
 				.withEmail(email)
 				.build();

@@ -32,7 +32,9 @@ import io.vertigo.vega.rest.RestfulService;
 import io.vertigo.vega.rest.engine.GoogleJsonEngine;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.comment.data.TestUserSession;
 import io.vertigo.x.connectors.redis.RedisConnector;
+import io.vertigo.x.impl.account.AccountDefinitionProvider;
 import io.vertigo.x.impl.account.AccountManagerImpl;
 import io.vertigo.x.impl.comment.CommentManagerImpl;
 import io.vertigo.x.plugins.account.redis.RedisAccountStorePlugin;
@@ -40,8 +42,35 @@ import io.vertigo.x.plugins.comment.redis.RedisCommentPlugin;
 import io.vertigo.x.webapi.account.AccountWebServices;
 import io.vertigo.x.webapi.comment.CommentWebServices;
 
-public final class MyApp {
-	public static AppConfig config() {
+import java.io.IOException;
+import java.net.InetAddress;
+
+public final class MyAppConfig {
+
+	private static boolean ping(final String host) {
+		try {
+			final InetAddress inet = InetAddress.getByName(host);
+			return inet.getAddress() != null;
+		} catch (final IOException e) {
+			return false;
+		}
+	}
+
+	private static AppConfigBuilder createAppConfigBuilder() {
+		final String host;
+		final int port;
+		final String password;
+		if (ping("kasper-redis")) {
+			host = "kasper-redis";
+			port = 6379;
+			password = null;
+		} else if (ping("pub-redis-10382.us-east-1-3.2.ec2.garantiadata.com")) {
+			host = "pub-redis-10382.us-east-1-3.2.ec2.garantiadata.com";
+			port = 10382;
+			password = "kleegroup";
+		} else {
+			throw new RuntimeException("no redis server found");
+		}
 		// @formatter:off
 		return new AppConfigBuilder()
 			.beginBootModule()
@@ -70,24 +99,37 @@ public final class MyApp {
 			.endModule()
 			.beginModule("connector").withNoAPI()
 				.beginComponent(RedisConnector.class, RedisConnector.class)
-					.addParam("host", "kasper-redis")
-					.addParam("port", "6379")
+					.addParam("host", host)
+					.addParam("port", Integer.toString(port))
+					.addParam("password", password)
 				.endComponent()
 			.endModule()
 			.beginModule("account")
+				.addDefinitionProvider(AccountDefinitionProvider.class)
 				.beginComponent(AccountManager.class, AccountManagerImpl.class)
 					.beginPlugin(RedisAccountStorePlugin.class).endPlugin()
 				.endComponent()
 			.endModule()
 			.beginModule("comment")
-				.beginComponent(CommentManager.class, CommentManagerImpl.class)
+			.beginComponent(CommentManager.class, CommentManagerImpl.class)
 					.beginPlugin(RedisCommentPlugin.class).endPlugin()
 				.endComponent()
-			.endModule()
+		.endModule();
+		// @formatter:on
+	}
+
+	public static AppConfig config() {
+		// @formatter:off
+		return createAppConfigBuilder().build();
+	}
+
+	public static AppConfig vegaConfig() {
+		// @formatter:off
+		return createAppConfigBuilder()
 			.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class)
 				.beginComponent(AccountWebServices.class).endComponent()
 				.beginComponent(CommentWebServices.class).endComponent()
-				.beginComponent(TestWebServices.class).endComponent()
+				.beginComponent(TestLoginWebServices.class).endComponent()
 			.endModule()
 			.beginModule("restCore").withNoAPI().withInheritance(Object.class)
 				.beginComponent(JsonEngine.class, GoogleJsonEngine.class).endComponent()

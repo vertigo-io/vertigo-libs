@@ -21,9 +21,7 @@ package io.vertigo.x.account;
 import io.vertigo.core.App;
 import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.data.Accounts;
 
 import javax.inject.Inject;
@@ -49,23 +47,19 @@ public final class AccountManagerTest {
 		app = new App(MyAppConfig.config());
 
 		Injector.injectMembers(this, Home.getComponentSpace());
-		accountURI0 = createAccountURI("0");
-		accountURI1 = createAccountURI("1");
-		accountURI2 = createAccountURI("2");
-		groupURI = new URI<>(DtObjectUtil.findDtDefinition(AccountGroup.class), "100");
+		accountURI0 = Accounts.createAccountURI("0");
+		accountURI1 = Accounts.createAccountURI("1");
+		accountURI2 = Accounts.createAccountURI("2");
+		groupURI = Accounts.createGroupURI("100");
 
 		Accounts.initData(accountManager);
 	}
 
 	@After
 	public void tearDown() {
-		if (app != null)
+		if (app != null) {
 			app.close();
-	}
-
-	private static URI<Account> createAccountURI(final String id) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);
-		return new URI<>(dtDefinition, id);
+		}
 	}
 
 	@Test
