@@ -43,11 +43,11 @@ import java.net.InetAddress;
 
 public final class MyAppConfig {
 
-	private static boolean ping(String host) {
+	private static boolean ping(final String host) {
 		try {
 			final InetAddress inet = InetAddress.getByName(host);
 			return inet.getAddress() != null;
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			return false;
 		}
 	}
@@ -59,7 +59,7 @@ public final class MyAppConfig {
 		if (ping("kasper-redis")) {
 			host = "kasper-redis";
 			port = 6379;
-			password = "";
+			password = null;
 		} else if (ping("pub-redis-10382.us-east-1-3.2.ec2.garantiadata.com")) {
 			host = "pub-redis-10382.us-east-1-3.2.ec2.garantiadata.com";
 			port = 10382;
@@ -97,7 +97,7 @@ public final class MyAppConfig {
 				.beginComponent(RedisConnector.class, RedisConnector.class)
 					.addParam("host", host)
 					.addParam("port", Integer.toString(port))
-				//	.addParam("password", password)
+					.addParam("password", password)
 				.endComponent()
 			.endModule()
 			.beginModule("account")

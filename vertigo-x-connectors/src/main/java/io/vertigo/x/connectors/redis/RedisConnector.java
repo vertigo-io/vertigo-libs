@@ -39,27 +39,31 @@ public final class RedisConnector implements Component, Activeable {
 
 	/**
 	 * Constructor.
-	 * @param redisHost REDIS server host name
-	 * @param redisPort REDIS server port
-	 * @param passwordOption password (optional)
+	 * 
+	 * @param redisHost
+	 *            REDIS server host name
+	 * @param redisPort
+	 *            REDIS server port
+	 * @param passwordOption
+	 *            password (optional)
 	 */
 	@Inject
-	public RedisConnector(
-			final @Named("host") String redisHost,
-			final @Named("port") int redisPort,
-			final @Named("password") Option<String> passwordOption) {
+	public RedisConnector(final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> passwordOption) {
 		Assertion.checkArgNotEmpty(redisHost);
 		Assertion.checkNotNull(passwordOption);
-		//-----
+		// -----
 		final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
 		if (passwordOption.isDefined()) {
 			jedisPool = new JedisPool(jedisPoolConfig, redisHost, redisPort, CONNECT_TIMEOUT, passwordOption.get());
 		} else {
 			jedisPool = new JedisPool(jedisPoolConfig, redisHost, redisPort, CONNECT_TIMEOUT);
 		}
-		//test
+		// test
 		try (Jedis jedis = jedisPool.getResource()) {
 			jedis.ping();
+			// Hack
+			// Hack
+			// Hack
 			jedis.flushAll();
 		}
 	}
