@@ -117,10 +117,7 @@ public final class MyAppConfig {
 	public static AppConfig vegaConfig() {
 		// @formatter:off
 		return createAppConfigBuilder()
-			.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class)
-				.beginComponent(AccountWebServices.class).endComponent()
-			.endModule()
-			.beginModule("restCore").withNoAPI().withInheritance(Object.class)
+			.beginModule("vega").withNoAPI().withInheritance(Object.class)
 				.beginComponent(JsonEngine.class, GoogleJsonEngine.class).endComponent()
 				.beginComponent(RestManager.class, RestManagerImpl.class)
 					.beginPlugin(AnnotationsEndPointIntrospectorPlugin.class).endPlugin()
@@ -136,7 +133,10 @@ public final class MyAppConfig {
 					.beginPlugin(RestfulServiceRestHandlerPlugin.class).endPlugin()
 				.endComponent()
 			.endModule()
-		.build();
+			.beginModule("x-account").withNoAPI().withInheritance(RestfulService.class)
+				.beginComponent(AccountWebServices.class).endComponent()
+			.endModule()
+			.build();
 		// @formatter:on
 	}
 }
