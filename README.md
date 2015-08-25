@@ -1,4 +1,4 @@
-vertigo-incubator
+vertigo-extensions
 =================
 
-All vertigo incubating features, modules, plugins, ...
+All vertigo extensions, ...
