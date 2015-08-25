@@ -25,7 +25,6 @@ import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.util.MapBuilder;
-import io.vertigo.vega.plugins.rest.routesregister.sparkjava.VegaSparkApplication;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
@@ -87,9 +86,6 @@ public final class CommentWebServicesTest {
 		//RestAsssured init
 		RestAssured.baseURI = "http://localhost";
 		RestAssured.port = WS_PORT;
-
-		//init must be done foreach tests as Home was restarted each times
-		new VegaSparkApplication().init();
 	}
 
 	@Before

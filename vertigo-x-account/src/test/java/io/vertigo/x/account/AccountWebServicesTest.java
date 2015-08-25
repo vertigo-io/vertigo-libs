@@ -20,7 +20,6 @@ package io.vertigo.x.account;
 
 import io.vertigo.core.App;
 import io.vertigo.core.Home;
-import io.vertigo.vega.plugins.rest.routesregister.sparkjava.VegaSparkApplication;
 import io.vertigo.x.account.data.Accounts;
 
 import org.apache.http.HttpStatus;
@@ -60,9 +59,6 @@ public final class AccountWebServicesTest {
 		//RestAsssured init
 		RestAssured.baseURI = "http://localhost";
 		RestAssured.port = WS_PORT;
-
-		//init must be done foreach tests as Home was restarted each times
-		new VegaSparkApplication().init();
 	}
 
 	private static void assertStatusCode(final int expectedStatus, final String path) {

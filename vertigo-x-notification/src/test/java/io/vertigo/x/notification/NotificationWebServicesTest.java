@@ -21,7 +21,6 @@ package io.vertigo.x.notification;
 import io.vertigo.core.App;
 import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.vega.plugins.rest.routesregister.sparkjava.VegaSparkApplication;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.notification.data.Accounts;
@@ -72,9 +71,6 @@ public final class NotificationWebServicesTest {
 		//RestAsssured init
 		RestAssured.baseURI = "http://localhost";
 		RestAssured.port = WS_PORT;
-
-		//init must be done foreach tests as Home was restarted each times
-		new VegaSparkApplication().init();
 	}
 
 	@Test
