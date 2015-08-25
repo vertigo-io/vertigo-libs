@@ -20,7 +20,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 /**
- * Webservice for addon Notification.
+ * Webservice for Notification extension.
  *
  * @author npiedeloup
  */
@@ -57,7 +57,7 @@ public final class NotificationWebServices implements RestfulService {
 
 	//-----
 	/**
-	 * Addon status (code 200 or 500)
+	 * Extension status (code 200 or 500)
 	 * @return "OK" or error message
 	 */
 	@GET("/status")
@@ -67,7 +67,7 @@ public final class NotificationWebServices implements RestfulService {
 	}
 
 	/**
-	 * Addon stats.
+	 * Extension stats.
 	 * @return "OK" or error message
 	 */
 	@GET("/stats")
@@ -81,7 +81,7 @@ public final class NotificationWebServices implements RestfulService {
 	}
 
 	/**
-	 * Addon config.
+	 * Extension config.
 	 * @return Config object
 	 */
 	@GET("/config")
@@ -94,14 +94,14 @@ public final class NotificationWebServices implements RestfulService {
 	}
 
 	/**
-	 * Addon help.
+	 * Extension help.
 	 * @return Help object
 	 */
 	@GET("/help")
 	@AnonymousAccessAllowed
 	public String getHelp() {
-		return "##Notification addon"
-				+ "\n This addon manage the notification center.";
+		return "##Notification extension"
+				+ "\n This extension manage the notification center.";
 	}
 
 }

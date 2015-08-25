@@ -18,7 +18,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 /**
- * Webservice for addon Account.
+ * Webservice for account extension.
  *
  * @author npiedeloup
  */
@@ -81,7 +81,7 @@ public final class AccountWebServices implements RestfulService {
 	//-----
 
 	/**
-	 * Addon status (code 200 or 500)
+	 * Extension status (code 200 or 500)
 	 * @return "OK" or error message
 	 */
 	@GET("/status")
@@ -91,7 +91,7 @@ public final class AccountWebServices implements RestfulService {
 	}
 
 	/**
-	 * Addon stats.
+	 * Extension stats.
 	 * @return "OK" or error message
 	 */
 	@GET("/stats")
@@ -106,7 +106,7 @@ public final class AccountWebServices implements RestfulService {
 	}
 
 	/**
-	 * Addon config.
+	 * Extension config.
 	 * @return Config object
 	 */
 	@GET("/config")
@@ -119,14 +119,14 @@ public final class AccountWebServices implements RestfulService {
 	}
 
 	/**
-	 * Addon help.
+	 * Extension help.
 	 * @return Help object
 	 */
 	@GET("/help")
 	@AnonymousAccessAllowed
 	public String getHelp() {
-		return "##Account addon"
-				+ "\n This addon manage a Account transversal concept use by others addons.";
+		return "##Account extension"
+				+ "\n This extension manage a Account transversal concept use by others extensions.";
 	}
 
 }

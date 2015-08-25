@@ -30,7 +30,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 /**
- * Webservice for addon Notification.
+ * Webservice for Notification extension.
  *
  * @author npiedeloup
  */
@@ -53,7 +53,7 @@ public final class CommentWebServices implements RestfulService {
 	 */
 	@GET("/api/comments")
 	public List<Comment> getComments(@QueryParam("concept") final String keyConcept, @QueryParam("id") final String id) {
-		final URI<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
+		final URI<KeyConcept> keyConceptURI = this.readKeyConceptURI(keyConcept, id);
 		return commentManager.getComments(keyConceptURI);
 	}
 
@@ -69,7 +69,7 @@ public final class CommentWebServices implements RestfulService {
 		if (!loggedAccountURI.equals(comment.getAuthor())) {
 			throw new RuntimeException("The comment editing is only available for the comment's author.");
 		}
-		final URI<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
+		final URI<KeyConcept> keyConceptURI = this.readKeyConceptURI(keyConcept, id);
 		commentManager.publish(comment, keyConceptURI);
 	}
 
@@ -92,7 +92,7 @@ public final class CommentWebServices implements RestfulService {
 
 	//-----
 	/**
-	 * Addon status (code 200 or 500)
+	 * Extension status (code 200 or 500)
 	 * @return "OK" or error message
 	 */
 	@GET("/status")
@@ -102,7 +102,7 @@ public final class CommentWebServices implements RestfulService {
 	}
 
 	/**
-	 * Addon stats.
+	 * Extension stats.
 	 * @return "OK" or error message
 	 */
 	@GET("/stats")
@@ -116,7 +116,7 @@ public final class CommentWebServices implements RestfulService {
 	}
 
 	/**
-	 * Addon config.
+	 * Extension config.
 	 * @return Config object
 	 */
 	@GET("/config")
@@ -129,19 +129,19 @@ public final class CommentWebServices implements RestfulService {
 	}
 
 	/**
-	 * Addon help.
+	 * Extension help.
 	 * @return Help object
 	 */
 	@GET("/help")
 	@AnonymousAccessAllowed
 	public String getHelp() {
-		return "##Notification addon"
-				+ "\n This addon manage the notification center.";
+		return "##Notification extension"
+				+ "\n This extension manage the notification center.";
 	}
 
 	private URI<KeyConcept> readKeyConceptURI(final String keyConcept, @QueryParam("id") final String id) {
 		final DtDefinition dtDefinition = Home.getDefinitionSpace().resolve("DT_" + StringUtil.camelToConstCase(keyConcept), DtDefinition.class);
-		final Object keyConceptId = stringToId(id, dtDefinition);
+		final Object keyConceptId = this.stringToId(id, dtDefinition);
 		return new URI<>(dtDefinition, keyConceptId);
 	}
 

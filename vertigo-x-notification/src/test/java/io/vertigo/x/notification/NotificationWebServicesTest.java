@@ -81,7 +81,7 @@ public final class NotificationWebServicesTest {
 	public void testGetCurrentNotifications() {
 		final NotificationManager notificationManager = Home.getComponentSpace().resolve(NotificationManager.class);
 		final Notification notification = new NotificationBuilder()
-				.withSender("AddonTest")
+				.withSender("ExtensionTest")
 				.withType("MSG")
 				.withTitle("Message de Vertigo")
 				.withMsg("Lorem ipsum")
@@ -101,7 +101,7 @@ public final class NotificationWebServicesTest {
 	public void testGetRemovetNotifications() {
 		final NotificationManager notificationManager = Home.getComponentSpace().resolve(NotificationManager.class);
 		final Notification notification = new NotificationBuilder()
-				.withSender("AddonTest")
+				.withSender("ExtensionTest")
 				.withType("MSG")
 				.withTitle("Message de Vertigo")
 				.withMsg("Lorem ipsum")
@@ -134,7 +134,7 @@ public final class NotificationWebServicesTest {
 	}
 
 	@Test
-	public void testGetAddonStatus() {
+	public void testGetStatus() {
 		RestAssured.given()
 				.expect()
 				.statusCode(HttpStatus.SC_OK)
@@ -144,7 +144,7 @@ public final class NotificationWebServicesTest {
 	}
 
 	@Test
-	public void testGetAddonStats() {
+	public void testGetStats() {
 		RestAssured.given()
 				.expect()
 				.statusCode(HttpStatus.SC_OK)
@@ -154,7 +154,7 @@ public final class NotificationWebServicesTest {
 	}
 
 	@Test
-	public void testGetAddonConfig() {
+	public void testGetConfig() {
 		RestAssured.given()
 				.expect()
 				.statusCode(HttpStatus.SC_OK)
@@ -164,7 +164,7 @@ public final class NotificationWebServicesTest {
 	}
 
 	@Test
-	public void testGetAddonHelp() {
+	public void testGetHelp() {
 		RestAssured.given()
 				.expect()
 				.statusCode(HttpStatus.SC_OK)

@@ -215,7 +215,7 @@ public final class CommentWebServicesTest {
 	}
 
 	@Test
-	public void testGetAddonStatus() {
+	public void testGetStatus() {
 		RestAssured.given()
 				.expect()
 				.statusCode(HttpStatus.SC_OK)
@@ -225,7 +225,7 @@ public final class CommentWebServicesTest {
 	}
 
 	@Test
-	public void testGetAddonStats() {
+	public void testGetStats() {
 		RestAssured.given()
 				.expect()
 				.statusCode(HttpStatus.SC_OK)
@@ -235,7 +235,7 @@ public final class CommentWebServicesTest {
 	}
 
 	@Test
-	public void testGetAddonConfig() {
+	public void testGetConfig() {
 		RestAssured.given()
 				.expect()
 				.statusCode(HttpStatus.SC_OK)
@@ -245,7 +245,7 @@ public final class CommentWebServicesTest {
 	}
 
 	@Test
-	public void testGetAddonHelp() {
+	public void testGetHelp() {
 		RestAssured.given()
 				.expect()
 				.statusCode(HttpStatus.SC_OK)

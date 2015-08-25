@@ -33,7 +33,7 @@ import spark.Spark;
 import com.jayway.restassured.RestAssured;
 
 /**
- * Account addon web services tests.
+ * Account extension web services tests.
  * @author npiedeloup
  */
 public final class AccountWebServicesTest {
@@ -95,7 +95,7 @@ public final class AccountWebServicesTest {
 	}
 
 	@Test
-	public void testGetAddonStatus() {
+	public void testGetStatus() {
 		assertStatusCode(HttpStatus.SC_OK, "/x/account/status");
 	}
 
