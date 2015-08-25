@@ -27,8 +27,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import spark.Spark;
-
 import com.jayway.restassured.RestAssured;
 
 /**
@@ -36,19 +34,17 @@ import com.jayway.restassured.RestAssured;
  * @author npiedeloup
  */
 public final class AccountWebServicesTest {
-	private static final int WS_PORT = 8088;
 	private static App app;
 
 	static {
-		RestAssured.baseURI = "http://localhost";
-		RestAssured.port = WS_PORT;
+		RestAssured.port = MyAppConfig.WS_PORT;
 	}
 
 	@BeforeClass
 	public static void setUp() {
-		Spark.setPort(WS_PORT);
 		app = new App(MyAppConfig.vegaConfig());
 
+		//populate accounts 
 		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
 		Accounts.initData(accountManager);
 	}

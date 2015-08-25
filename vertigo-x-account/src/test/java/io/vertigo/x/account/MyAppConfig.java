@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 
 public final class MyAppConfig {
+	public static final int WS_PORT = 8088;
 
 	private static boolean ping(final String host) {
 		try {
@@ -121,7 +122,9 @@ public final class MyAppConfig {
 				.beginComponent(JsonEngine.class, GoogleJsonEngine.class).endComponent()
 				.beginComponent(RestManager.class, RestManagerImpl.class)
 					.beginPlugin(AnnotationsEndPointIntrospectorPlugin.class).endPlugin()
-					.beginPlugin(SparkJavaRoutesRegisterPlugin.class).endPlugin()
+					.beginPlugin(SparkJavaRoutesRegisterPlugin.class)
+						.addParam("port", Integer.toString(WS_PORT))
+					.endPlugin()
 					//-- Handlers plugins
 					.beginPlugin(ExceptionRestHandlerPlugin.class).endPlugin()
 					.beginPlugin(SessionInvalidateRestHandlerPlugin.class).endPlugin()
