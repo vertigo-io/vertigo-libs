@@ -62,8 +62,8 @@ public final class CommentWebServicesTest {
 
 	@BeforeClass
 	public static void setUp() {
+		beforeSetUp();
 		app = new App(MyAppConfig.vegaConfig());
-		doSetUp();
 
 		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
 		Accounts.initData(accountManager);
@@ -81,7 +81,7 @@ public final class CommentWebServicesTest {
 		app.close();
 	}
 
-	private static void doSetUp() {
+	private static void beforeSetUp() {
 		Spark.setPort(WS_PORT);
 
 		//RestAsssured init
