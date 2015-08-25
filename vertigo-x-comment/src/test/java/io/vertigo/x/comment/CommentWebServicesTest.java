@@ -259,20 +259,16 @@ public final class CommentWebServicesTest {
 	}*/
 
 	private static String convertDate(final Date date) {
-		if (date == null) {
-			return null;
-		}
-		return new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(date);
+		return date == null ? null : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(date);
 	}
 
 	private static Map<String, Object> commentToMap(final Comment comment) {
-		final Map<String, Object> commentMap = new MapBuilder<String, Object>()
+		return new MapBuilder<String, Object>()
 				.put("uuid", comment.getUuid())
 				.put("author", comment.getAuthor().toURN())
 				.put("msg", comment.getMsg())
 				.put("creationDate", convertDate(comment.getCreationDate()))
 				.putNullable("lastModified", convertDate(comment.getLastModified()))
 				.build();
-		return commentMap;
 	}
 }
