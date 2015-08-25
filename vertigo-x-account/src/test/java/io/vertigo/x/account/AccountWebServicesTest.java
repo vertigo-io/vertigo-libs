@@ -42,8 +42,8 @@ public final class AccountWebServicesTest {
 
 	@BeforeClass
 	public static void setUp() {
+		beforeSetUp();
 		app = new App(MyAppConfig.vegaConfig());
-		doSetUp();
 
 		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
 		Accounts.initData(accountManager);
@@ -54,7 +54,7 @@ public final class AccountWebServicesTest {
 		app.close();
 	}
 
-	private static void doSetUp() {
+	private static void beforeSetUp() {
 		Spark.setPort(WS_PORT);
 
 		//RestAsssured init
@@ -65,7 +65,7 @@ public final class AccountWebServicesTest {
 		new VegaSparkApplication().init();
 	}
 
-	private static void assertStatusCode(int expectedStatus, String path) {
+	private static void assertStatusCode(final int expectedStatus, final String path) {
 		RestAssured.given()
 				.expect()
 				.statusCode(expectedStatus)

@@ -41,6 +41,7 @@ public final class AccountManagerTest {
 	private URI<Account> accountURI1;
 	private URI<Account> accountURI2;
 	private URI<AccountGroup> groupURI;
+	private URI<AccountGroup> groupAllURI;
 
 	@Before
 	public void setUp() {
@@ -51,6 +52,7 @@ public final class AccountManagerTest {
 		accountURI1 = Accounts.createAccountURI("1");
 		accountURI2 = Accounts.createAccountURI("2");
 		groupURI = Accounts.createGroupURI("100");
+		groupAllURI = Accounts.createGroupURI("ALL");
 
 		Accounts.initData(accountManager);
 	}
@@ -70,24 +72,27 @@ public final class AccountManagerTest {
 
 	@Test
 	public void testGroups() {
-		Assert.assertEquals(1, accountManager.getGroupsCount());
+		Assert.assertEquals(2, accountManager.getGroupsCount());
 		//----
-		Assert.assertEquals(0, accountManager.getGroupURIs(accountURI0).size());
-		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI1).size());
-		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI2).size());
+		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI0).size());
+		Assert.assertEquals(2, accountManager.getGroupURIs(accountURI1).size());
+		Assert.assertEquals(2, accountManager.getGroupURIs(accountURI2).size());
 		Assert.assertEquals(2, accountManager.getAccountURIs(groupURI).size());
+		Assert.assertEquals(10 + 3, accountManager.getAccountURIs(groupAllURI).size());
 		//---
 		accountManager.detach(accountURI1, groupURI);
-		Assert.assertEquals(0, accountManager.getGroupURIs(accountURI0).size());
-		Assert.assertEquals(0, accountManager.getGroupURIs(accountURI1).size());
-		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI2).size());
+		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI0).size());
+		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI1).size());
+		Assert.assertEquals(2, accountManager.getGroupURIs(accountURI2).size());
 		Assert.assertEquals(1, accountManager.getAccountURIs(groupURI).size());
+		Assert.assertEquals(10 + 3, accountManager.getAccountURIs(groupAllURI).size());
 		//---
 		accountManager.attach(accountURI0, groupURI);
-		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI0).size());
-		Assert.assertEquals(0, accountManager.getGroupURIs(accountURI1).size());
-		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI2).size());
+		Assert.assertEquals(2, accountManager.getGroupURIs(accountURI0).size());
+		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI1).size());
+		Assert.assertEquals(2, accountManager.getGroupURIs(accountURI2).size());
 		Assert.assertEquals(2, accountManager.getAccountURIs(groupURI).size());
+		Assert.assertEquals(10 + 3, accountManager.getAccountURIs(groupAllURI).size());
 	}
 
 }

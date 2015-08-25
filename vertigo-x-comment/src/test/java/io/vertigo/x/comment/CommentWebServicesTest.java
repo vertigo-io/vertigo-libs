@@ -109,6 +109,7 @@ public final class CommentWebServicesTest {
 				.build();
 		commentManager.publish(comment, keyConcept1Uri);
 
+		//Check we got this comment
 		RestAssured.given().filter(sessionFilter)
 				.expect()
 				.body("size()", Matchers.greaterThanOrEqualTo(1))

@@ -31,6 +31,7 @@ public final class Accounts {
 		final Account testAccount2 = new AccountBuilder("2").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
 		accountManager.saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2));
 
+		final URI<Account> accountURI0 = createAccountURI(testAccount0.getId());
 		final URI<Account> accountURI1 = createAccountURI(testAccount1.getId());
 		final URI<Account> accountURI2 = createAccountURI(testAccount2.getId());
 
@@ -44,10 +45,11 @@ public final class Accounts {
 		final AccountGroup groupAll = new AccountGroup("ALL", "Everyone");
 		final URI<AccountGroup> groupAllUri = DtObjectUtil.createURI(AccountGroup.class, groupAll.getId());
 		accountManager.saveGroup(groupAll);
+		accountManager.attach(accountURI0, groupAllUri);
 		accountManager.attach(accountURI1, groupAllUri);
 		accountManager.attach(accountURI2, groupAllUri);
 
-		//---create 5 000 noisy data
+		//---create 10 noisy data
 		final List<Account> accounts = createAccounts();
 		for (final Account account : accounts) {
 			final URI<Account> accountUri = createAccountURI(account.getId());
