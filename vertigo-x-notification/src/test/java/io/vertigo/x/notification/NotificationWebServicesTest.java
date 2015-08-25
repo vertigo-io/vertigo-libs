@@ -46,8 +46,8 @@ public final class NotificationWebServicesTest {
 
 	@BeforeClass
 	public static void setUp() {
+		beforeSetUp();
 		app = new App(MyAppConfig.vegaConfig());
-		doSetUp();
 
 		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
 		Accounts.initData(accountManager);
@@ -66,7 +66,7 @@ public final class NotificationWebServicesTest {
 				.get("/test/login?id=1");
 	}
 
-	private static void doSetUp() {
+	private static void beforeSetUp() {
 		Spark.setPort(WS_PORT);
 
 		//RestAsssured init
