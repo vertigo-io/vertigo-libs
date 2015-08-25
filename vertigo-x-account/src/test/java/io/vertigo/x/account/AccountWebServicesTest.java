@@ -39,9 +39,14 @@ public final class AccountWebServicesTest {
 	private static final int WS_PORT = 8088;
 	private static App app;
 
+	static {
+		RestAssured.baseURI = "http://localhost";
+		RestAssured.port = WS_PORT;
+	}
+
 	@BeforeClass
 	public static void setUp() {
-		beforeSetUp();
+		Spark.setPort(WS_PORT);
 		app = new App(MyAppConfig.vegaConfig());
 
 		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
@@ -51,14 +56,6 @@ public final class AccountWebServicesTest {
 	@AfterClass
 	public static void tearDown() {
 		app.close();
-	}
-
-	private static void beforeSetUp() {
-		Spark.setPort(WS_PORT);
-
-		//RestAsssured init
-		RestAssured.baseURI = "http://localhost";
-		RestAssured.port = WS_PORT;
 	}
 
 	private static void assertStatusCode(final int expectedStatus, final String path) {
