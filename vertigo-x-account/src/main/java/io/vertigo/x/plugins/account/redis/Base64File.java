@@ -2,6 +2,7 @@ package io.vertigo.x.plugins.account.redis;
 
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.file.model.VFile;
 
 import java.io.ByteArrayInputStream;
@@ -17,7 +18,7 @@ import java.util.Date;
 final class Base64File implements VFile {
 
 	private static final long serialVersionUID = -6930931781248326088L;
-	private final CodecManager codecManager;
+
 	private final String fileName;
 	private final String mimeType;
 	private final Long length;
@@ -31,15 +32,13 @@ final class Base64File implements VFile {
 	 * @param length File length
 	 * @param lastModified file lastModified date
 	 * @param base64Content encodage en base64.
-	 * @param codecManager Codec manager
 	 */
-	public Base64File(final String fileName, final String mimeType, final Long length, final Date lastModified, final String base64Content, final CodecManager codecManager) {
+	public Base64File(final String fileName, final String mimeType, final Long length, final Date lastModified, final String base64Content) {
 		this.fileName = fileName;
 		this.mimeType = mimeType;
 		this.length = length;
 		this.lastModified = lastModified;
 		this.base64Content = base64Content;
-		this.codecManager = codecManager;
 	}
 
 	/**
@@ -86,7 +85,7 @@ final class Base64File implements VFile {
 	/** {@inheritDoc} */
 	@Override
 	public InputStream createInputStream() throws IOException {
-		final Codec<byte[], String> base64Codec = codecManager.getBase64Codec();
+		final Codec<byte[], String> base64Codec = Home.getComponentSpace().resolve(CodecManager.class).getBase64Codec();
 		return new ByteArrayInputStream(base64Codec.decode(base64Content));
 	}
 

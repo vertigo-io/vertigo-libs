@@ -61,7 +61,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final Transaction tx = jedis.multi();
-			for (Account account : accounts) {
+			for (final Account account : accounts) {
 				tx.hmset("account:" + account.getId(), account2Map(account));
 				tx.lpush("accounts", account.getId());
 			}
@@ -285,7 +285,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 			final Date lastModified = new SimpleDateFormat(CODEC_DATE_FORMAT).parse(vFileMap.get("lastModified"));
 
 			final String base64Content = vFileMap.get("base64Content");
-			return new Base64File(fileName, mimeType, length, lastModified, base64Content, codecManager);
+			return new Base64File(fileName, mimeType, length, lastModified, base64Content);
 		} catch (final ParseException e) {
 			throw new RuntimeException("Can't decode base64 file", e);
 		}
