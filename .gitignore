@@ -13,3 +13,5 @@ vertigo-bundle/src
 vertigo-site/
 *.classpath
 */.settings/
+vertigo-x-connectors/.classpath
+*.prefs
