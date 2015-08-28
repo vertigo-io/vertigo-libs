@@ -69,7 +69,7 @@ public final class MyAppConfig {
 			.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
 			.beginModule(CommonsFeatures.class).endModule()
 			.beginModule(DynamoFeatures.class).endModule()
-			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort).endModule()
+			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort, redisPassword).endModule()
 			.beginModule(AccountFeatures.class).withRedis().endModule();
 		// @formatter:on
 	}
