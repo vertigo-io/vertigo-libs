@@ -82,7 +82,7 @@ public final class MyAppConfig {
 	public static AppConfig vegaConfig() {
 		// @formatter:off
 		return createAppConfigBuilder()
-			.beginModule(VegaFeatures.class).withPort(WS_PORT).endModule()
+			.beginModule(VegaFeatures.class).withEmbeddedServer(WS_PORT).endModule()
 			.beginModule("ws-account").withNoAPI().withInheritance(RestfulService.class)
 				.addComponent(AccountWebServices.class)
 			.endModule()
