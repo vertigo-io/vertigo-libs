@@ -20,7 +20,7 @@ package io.vertigo.x.comment;
 
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.persona.security.VSecurityManager;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.GET;
 import io.vertigo.vega.rest.stereotype.PathPrefix;
@@ -34,7 +34,7 @@ import javax.inject.Inject;
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
 @PathPrefix("/test")
-public final class TestLoginWebServices implements RestfulService {
+public final class TestLoginWebServices implements WebServices {
 
 	@Inject
 	private VSecurityManager securityManager;

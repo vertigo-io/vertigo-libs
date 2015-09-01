@@ -28,7 +28,7 @@ import io.vertigo.vega.plugins.rest.handler.ValidatorRestHandlerPlugin;
 import io.vertigo.vega.plugins.rest.instrospector.annotations.AnnotationsEndPointIntrospectorPlugin;
 import io.vertigo.vega.plugins.rest.routesregister.sparkjava.SparkJavaRoutesRegisterPlugin;
 import io.vertigo.vega.rest.RestManager;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.engine.GoogleJsonEngine;
 import io.vertigo.vega.rest.engine.JsonEngine;
 import io.vertigo.x.account.AccountManager;
@@ -122,7 +122,7 @@ public final class MyAppConfig {
 	public static AppConfig vegaConfig() {
 		// @formatter:off
 		return createAppConfigBuilder()
-			.beginModule("restServices").withNoAPI().withInheritance(RestfulService.class)
+			.beginModule("restServices").withNoAPI().withInheritance(WebServices.class)
 				.addComponent(AccountWebServices.class)
 				.addComponent(NotificationWebServices.class)
 				.addComponent(TestLoginWebServices.class)

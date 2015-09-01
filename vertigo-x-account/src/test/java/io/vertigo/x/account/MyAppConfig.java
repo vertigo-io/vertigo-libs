@@ -15,7 +15,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.vega.VegaFeatures;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.x.account.data.TestUserSession;
 import io.vertigo.x.connectors.ConnectorsFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
@@ -83,7 +83,7 @@ public final class MyAppConfig {
 		// @formatter:off
 		return createAppConfigBuilder()
 			.beginModule(VegaFeatures.class).withEmbeddedServer(WS_PORT).endModule()
-			.beginModule("ws-account").withNoAPI().withInheritance(RestfulService.class)
+			.beginModule("ws-account").withNoAPI().withInheritance(WebServices.class)
 				.addComponent(AccountWebServices.class)
 			.endModule()
 			.build();

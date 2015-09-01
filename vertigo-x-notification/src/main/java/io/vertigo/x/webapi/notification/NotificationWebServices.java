@@ -1,7 +1,7 @@
 package io.vertigo.x.webapi.notification;
 
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.DELETE;
 import io.vertigo.vega.rest.stereotype.GET;
@@ -25,7 +25,7 @@ import javax.inject.Inject;
  * @author npiedeloup
  */
 @PathPrefix("/x/notification")
-public final class NotificationWebServices implements RestfulService {
+public final class NotificationWebServices implements WebServices {
 
 	private static final String API_VERSION = "0.1.0";
 	private static final String IMPL_VERSION = "0.8.2";

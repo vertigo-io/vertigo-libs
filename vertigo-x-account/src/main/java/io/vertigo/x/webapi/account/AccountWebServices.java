@@ -2,7 +2,7 @@ package io.vertigo.x.webapi.account;
 
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.GET;
 import io.vertigo.vega.rest.stereotype.PathParam;
@@ -23,7 +23,7 @@ import javax.inject.Inject;
  * @author npiedeloup
  */
 @PathPrefix("/x/account")
-public final class AccountWebServices implements RestfulService {
+public final class AccountWebServices implements WebServices {
 
 	private static final String API_VERSION = "0.1.0";
 	private static final String IMPL_VERSION = "0.8.2";

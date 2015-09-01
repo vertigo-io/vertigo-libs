@@ -9,7 +9,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
 import io.vertigo.util.StringUtil;
-import io.vertigo.vega.rest.RestfulService;
+import io.vertigo.vega.rest.WebServices;
 import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.rest.stereotype.ExcludedFields;
 import io.vertigo.vega.rest.stereotype.GET;
@@ -35,7 +35,7 @@ import javax.inject.Inject;
  * @author npiedeloup
  */
 @PathPrefix("/x/comment")
-public final class CommentWebServices implements RestfulService {
+public final class CommentWebServices implements WebServices {
 
 	private static final String API_VERSION = "0.1.0";
 	private static final String IMPL_VERSION = "0.8.2";
