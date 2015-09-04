@@ -5,7 +5,7 @@ import io.vertigo.x.comment.CommentManager;
 import io.vertigo.x.plugins.comment.redis.RedisCommentPlugin;
 
 /**
- * Defines extension account.
+ * Defines extension comment.
  * @author pchretien
  */
 public final class CommentFeatures extends Features {
