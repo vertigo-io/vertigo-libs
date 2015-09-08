@@ -20,12 +20,12 @@ package io.vertigo.x.comment;
 
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.persona.security.VSecurityManager;
-import io.vertigo.vega.rest.WebServices;
-import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
-import io.vertigo.vega.rest.stereotype.GET;
-import io.vertigo.vega.rest.stereotype.PathPrefix;
-import io.vertigo.vega.rest.stereotype.QueryParam;
-import io.vertigo.vega.rest.stereotype.SessionInvalidate;
+import io.vertigo.vega.webservice.WebServices;
+import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
+import io.vertigo.vega.webservice.stereotype.GET;
+import io.vertigo.vega.webservice.stereotype.PathPrefix;
+import io.vertigo.vega.webservice.stereotype.QueryParam;
+import io.vertigo.vega.webservice.stereotype.SessionInvalidate;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountManager;
 

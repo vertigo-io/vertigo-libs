@@ -39,7 +39,7 @@ public final class RedisConnector implements Component, Activeable {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param redisHost
 	 *            REDIS server host name
 	 * @param redisPort

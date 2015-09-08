@@ -1,12 +1,12 @@
 package io.vertigo.x.webapi.notification;
 
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.vega.rest.WebServices;
-import io.vertigo.vega.rest.stereotype.AnonymousAccessAllowed;
-import io.vertigo.vega.rest.stereotype.DELETE;
-import io.vertigo.vega.rest.stereotype.GET;
-import io.vertigo.vega.rest.stereotype.PathParam;
-import io.vertigo.vega.rest.stereotype.PathPrefix;
+import io.vertigo.vega.webservice.WebServices;
+import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
+import io.vertigo.vega.webservice.stereotype.DELETE;
+import io.vertigo.vega.webservice.stereotype.GET;
+import io.vertigo.vega.webservice.stereotype.PathParam;
+import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.notification.Notification;
