@@ -38,7 +38,7 @@ import javax.inject.Inject;
 public final class CommentWebServices implements WebServices {
 
 	private static final String API_VERSION = "0.1.0";
-	private static final String IMPL_VERSION = "0.8.2";
+	private static final String IMPL_VERSION = "0.8.3";
 
 	@Inject
 	private CommentManager commentManager;
@@ -53,7 +53,7 @@ public final class CommentWebServices implements WebServices {
 	 */
 	@GET("/api/comments")
 	public List<Comment> getComments(@QueryParam("concept") final String keyConcept, @QueryParam("id") final String id) {
-		final URI<KeyConcept> keyConceptURI = this.readKeyConceptURI(keyConcept, id);
+		final URI<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
 		return commentManager.getComments(keyConceptURI);
 	}
 
@@ -69,7 +69,7 @@ public final class CommentWebServices implements WebServices {
 		if (!loggedAccountURI.equals(comment.getAuthor())) {
 			throw new RuntimeException("The comment editing is only available for the comment's author.");
 		}
-		final URI<KeyConcept> keyConceptURI = this.readKeyConceptURI(keyConcept, id);
+		final URI<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
 		commentManager.publish(comment, keyConceptURI);
 	}
 
@@ -141,7 +141,7 @@ public final class CommentWebServices implements WebServices {
 
 	private URI<KeyConcept> readKeyConceptURI(final String keyConcept, @QueryParam("id") final String id) {
 		final DtDefinition dtDefinition = Home.getDefinitionSpace().resolve("DT_" + StringUtil.camelToConstCase(keyConcept), DtDefinition.class);
-		final Object keyConceptId = this.stringToId(id, dtDefinition);
+		final Object keyConceptId = stringToId(id, dtDefinition);
 		return new URI<>(dtDefinition, keyConceptId);
 	}
 

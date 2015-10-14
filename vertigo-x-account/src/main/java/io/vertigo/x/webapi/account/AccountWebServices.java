@@ -26,7 +26,7 @@ import javax.inject.Inject;
 public final class AccountWebServices implements WebServices {
 
 	private static final String API_VERSION = "0.1.0";
-	private static final String IMPL_VERSION = "0.8.2";
+	private static final String IMPL_VERSION = "0.8.3";
 
 	@Inject
 	private AccountManager accountManager;
