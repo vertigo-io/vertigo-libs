@@ -45,12 +45,11 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 			final String uuid = notification.getUuid().toString();
 			final Transaction tx = jedis.multi();
 			tx.hmset("notif:" + uuid, toMap(notification));
-			if (notification.getTTLInSeconds() > 0) {
-				tx.expire("notif:" + uuid, notification.getTTLInSeconds());
-			}
+			tx.set("type:" + notification.getType() + ";target:" + notification.getTargetUrl() + ";uuid", uuid);
 			for (final URI<Account> accountURI : notificationEvent.getToAccountURIs()) {
 				//On publie la notif
 				tx.lpush("notifs:" + accountURI.getId(), uuid);
+				tx.lpush("type:" + notification.getType() + ";target:" + notification.getTargetUrl(), "notifs:" + accountURI.getId());
 			}
 			tx.exec();
 		}
@@ -65,7 +64,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				.put("title", notification.getTitle())
 				.put("msg", notification.getMsg())
 				.put("creationDate", creationDate)
-				.put("ttlInSeconds", String.valueOf(notification.getTTLInSeconds()))
+				.put("targetUrl", notification.getTargetUrl())
 				.build();
 	}
 
@@ -79,7 +78,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 					.withTitle(data.get("title"))
 					.withMsg(data.get("msg"))
 					.withCreationDate(creationDate)
-					.withTTLinSeconds(Integer.valueOf(data.get("ttlInSeconds")))
+					.withTargetUrl(data.get("targetUrl"))
 					.build();
 		} catch (final ParseException e) {
 			throw new RuntimeException("Can't parse notification", e);
@@ -109,10 +108,23 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		return notifications;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void remove(final URI<Account> accountURI, final UUID notificationUUID) {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.lrem("notifs:" + accountURI.getId(), -1, notificationUUID.toString());
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void removeAll(final String type, final String targetUrl) {
+		try (final Jedis jedis = redisConnector.getResource()) {
+			final String uuid = jedis.get("type:" + type + ";target:" + targetUrl + ";uuid");
+			final List<String> userNotifsKeys = jedis.lrange("type:" + type + ";target:" + targetUrl, 0, -1);
+			for (final String userNotifsKey : userNotifsKeys) {
+				jedis.lrem(userNotifsKey, -1, uuid);
+			}
 		}
 	}
 }

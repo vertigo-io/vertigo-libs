@@ -17,4 +17,6 @@ public interface NotificationPlugin extends Plugin {
 	List<Notification> getCurrentNotifications(URI<Account> account);
 
 	void remove(URI<Account> accountURI, UUID notificationUUID);
+
+	void removeAll(String type, String targetUrl);
 }

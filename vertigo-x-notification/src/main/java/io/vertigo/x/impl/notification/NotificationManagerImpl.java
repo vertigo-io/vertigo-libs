@@ -53,4 +53,10 @@ public final class NotificationManagerImpl implements NotificationManager {
 	public void remove(final URI<Account> accountURI, final UUID notificationUUID) {
 		notificationsPlugin.remove(accountURI, notificationUUID);
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void removeAll(final String type, final String targetUrl) {
+		notificationsPlugin.removeAll(type, targetUrl);
+	}
 }

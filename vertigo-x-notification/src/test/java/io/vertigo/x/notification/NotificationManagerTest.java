@@ -62,7 +62,7 @@ public class NotificationManagerTest {
 				.withSender(accountURI0.toURN())
 				.withTitle("news")
 				.withMsg("discover this amazing app !!")
-				.withTTLinSeconds(2)
+				.withTargetUrl("#keyConcept@2")
 				.build();
 
 		for (int i = 0; i < 10; i++) {
@@ -83,7 +83,7 @@ public class NotificationManagerTest {
 		final Notification notification = new NotificationBuilder()
 				.withSender(accountURI0.toURN())
 				.withTitle("news")
-				.withTTLinSeconds(50)
+				.withTargetUrl("#keyConcept@2")
 				.withMsg("discover this amazing app !!")
 				.build();
 

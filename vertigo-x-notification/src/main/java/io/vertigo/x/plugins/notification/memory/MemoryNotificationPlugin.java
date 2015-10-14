@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,20 +45,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 		if (notifications == null) {
 			return Collections.emptyList();
 		}
-		cleanOldNotifications(notifications);
 		return notifications;
-	}
-
-	private void cleanOldNotifications(final List<Notification> notifications) {
-		//on commence par la fin, dès qu'un élément est ok on stop les suppressions
-		for (final ListIterator<Notification> it = notifications.listIterator(notifications.size()); it.hasPrevious();) {
-			final Notification notification = it.previous();
-			if (notification.getTTLInSeconds() >= 0 && notification.getCreationDate().getTime() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis()) {
-				it.remove();
-			} else {
-				break; //un élément est ok on stop les suppressions
-			}
-		}
 	}
 
 	private List<Notification> obtainNotifications(final URI<Account> accountURI) {
@@ -70,7 +56,6 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 			notifications = new ArrayList<>();
 			notificationsByAccountURI.put(accountURI, notifications);
 		}
-		cleanOldNotifications(notifications);
 		return notifications;
 	}
 
@@ -82,6 +67,19 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 			for (final Iterator<Notification> it = notifications.iterator(); it.hasNext();) {
 				final Notification notification = it.next();
 				if (notification.getUuid().equals(notificationUUID)) {
+					it.remove();
+				}
+			}
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void removeAll(final String type, final String targetUrl) {
+		for (final List<Notification> notifications : notificationsByAccountURI.values()) {
+			for (final Iterator<Notification> it = notifications.iterator(); it.hasNext();) {
+				final Notification notification = it.next();
+				if (notification.getType().equals(type) && notification.getTargetUrl().equals(targetUrl)) {
 					it.remove();
 				}
 			}

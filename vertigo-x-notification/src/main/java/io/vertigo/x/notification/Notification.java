@@ -14,15 +14,15 @@ public final class Notification {
 	private final String type;
 	private final String title;
 	private final String msg;
-	private final int ttlInSeconds;
+	private final String targetUrl;
 	private final Date creationDate;
 
-	public Notification(final UUID uuid, final String sender, final String type, final String title, final String msg, final Date creationDate, final int ttlInSeconds) {
+	public Notification(final UUID uuid, final String sender, final String type, final String title, final String msg, final Date creationDate, final String targetUrl) {
 		Assertion.checkNotNull(uuid);
 		Assertion.checkArgNotEmpty(sender);
 		Assertion.checkArgNotEmpty(title);
 		Assertion.checkArgNotEmpty(msg);
-		Assertion.checkArgument(ttlInSeconds == -1 || ttlInSeconds > 0, "ttl must be positive or undefined (-1).");
+		Assertion.checkArgNotEmpty(targetUrl);
 		Assertion.checkNotNull(creationDate);
 		//-----
 		this.uuid = uuid;
@@ -31,7 +31,7 @@ public final class Notification {
 		this.title = title;
 		this.msg = msg;
 		this.creationDate = creationDate;
-		this.ttlInSeconds = ttlInSeconds;
+		this.targetUrl = targetUrl;
 	}
 
 	public UUID getUuid() {
@@ -58,7 +58,7 @@ public final class Notification {
 		return creationDate;
 	}
 
-	public int getTTLInSeconds() {
-		return ttlInSeconds;
+	public String getTargetUrl() {
+		return targetUrl;
 	}
 }
