@@ -80,6 +80,7 @@ public final class NotificationWebServicesTest {
 				.withSender("ExtensionTest")
 				.withType("MSG")
 				.withTitle("Message de Vertigo")
+				.withTargetUrl("#keyConcept@2")
 				.withMsg("Lorem ipsum")
 				.build();
 		notificationManager.send(notification, DtObjectUtil.createURI(AccountGroup.class, "100"));
@@ -94,12 +95,13 @@ public final class NotificationWebServicesTest {
 	}
 
 	@Test
-	public void testGetRemovetNotifications() {
+	public void testGetRemoveNotifications() {
 		final NotificationManager notificationManager = Home.getComponentSpace().resolve(NotificationManager.class);
 		final Notification notification = new NotificationBuilder()
 				.withSender("ExtensionTest")
 				.withType("MSG")
 				.withTitle("Message de Vertigo")
+				.withTargetUrl("#keyConcept@2")
 				.withMsg("Lorem ipsum")
 				.build();
 		notificationManager.send(notification, DtObjectUtil.createURI(AccountGroup.class, "100"));
