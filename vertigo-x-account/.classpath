@@ -12,28 +12,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="M2_REPO/javax/inject/javax.inject/1/javax.inject-1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/io/vertigo/vertigo-core/0.8.2-SNAPSHOT/vertigo-core-0.8.2-SNAPSHOT.jar" sourcepath="M2_REPO/io/vertigo/vertigo-core/0.8.2-SNAPSHOT/vertigo-core-0.8.2-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/log4j/log4j/1.2.17/log4j-1.2.17.jar" sourcepath="M2_REPO/log4j/log4j/1.2.17/log4j-1.2.17-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/cglib/cglib-nodep/3.1/cglib-nodep-3.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/io/vertigo/vertigo-dynamo-api/0.8.2-SNAPSHOT/vertigo-dynamo-api-0.8.2-SNAPSHOT.jar" sourcepath="M2_REPO/io/vertigo/vertigo-dynamo-api/0.8.2-SNAPSHOT/vertigo-dynamo-api-0.8.2-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/io/vertigo/vertigo-commons-api/0.8.2-SNAPSHOT/vertigo-commons-api-0.8.2-SNAPSHOT.jar" sourcepath="M2_REPO/io/vertigo/vertigo-commons-api/0.8.2-SNAPSHOT/vertigo-commons-api-0.8.2-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/io/vertigo/vertigo-vega-api/0.8.2-SNAPSHOT/vertigo-vega-api-0.8.2-SNAPSHOT.jar" sourcepath="M2_REPO/io/vertigo/vertigo-vega-api/0.8.2-SNAPSHOT/vertigo-vega-api-0.8.2-SNAPSHOT-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/directory/api/api-ldap-model/1.0.0-M31/api-ldap-model-1.0.0-M31.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/directory/api/api-util/1.0.0-M31/api-util-1.0.0-M31.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/directory/api/api-i18n/1.0.0-M31/api-i18n-1.0.0-M31.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/slf4j/slf4j-api/1.7.10/slf4j-api-1.7.10.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/directory/api/api-asn1-api/1.0.0-M31/api-asn1-api-1.0.0-M31.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/directory/api/api-asn1-ber/1.0.0-M31/api-asn1-ber-1.0.0-M31.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/mina/mina-core/2.0.9/mina-core-2.0.9.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/servicemix/bundles/org.apache.servicemix.bundles.antlr/2.7.7_5/org.apache.servicemix.bundles.antlr-2.7.7_5.jar"/>
-	<classpathentry kind="var" path="M2_REPO/commons-lang/commons-lang/2.6/commons-lang-2.6.jar"/>
-	<classpathentry kind="var" path="M2_REPO/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar"/>
-	<classpathentry kind="var" path="M2_REPO/redis/clients/jedis/2.7.0/jedis-2.7.0.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-pool2/2.3/commons-pool2-2.3.jar"/>
-	<classpathentry kind="var" path="M2_REPO/io/vertigo/vertigo-core/0.8.2-SNAPSHOT/vertigo-core-0.8.2-SNAPSHOT-tests.jar"/>
-	<classpathentry kind="var" path="M2_REPO/junit/junit/4.12-beta-1/junit-4.12-beta-1.jar" sourcepath="M2_REPO/junit/junit/4.12-beta-1/junit-4.12-beta-1-sources.jar"/>
-	<classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" sourcepath="M2_REPO/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3-sources.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>

@@ -12,7 +12,7 @@ import io.vertigo.lang.Assertion;
 public final class Account implements DtObject {
 	private static final long serialVersionUID = 7509030642946579907L;
 
-	@Field(domain = "DO_X_ACCOUNT_ID", type = "PRIMARY_KEY", notNull = true, label = "id")
+	@Field(domain = "DO_X_ACCOUNT_ID", type = "PRIMARY_KEY", required = true, label = "id")
 	private final String id;
 
 	@Field(domain = "DO_X_ACCOUNT_NAME", label = "displayName")
