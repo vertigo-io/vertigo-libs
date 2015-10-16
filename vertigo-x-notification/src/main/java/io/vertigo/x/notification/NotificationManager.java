@@ -19,8 +19,6 @@ public interface NotificationManager extends Component {
 	 */
 	void send(Notification notification, URI<AccountGroup> groupURI);
 
-	//	void emit(NotificationEvent notificationEvent);
-
 	/**
 	 * Retrieve all notification for one account
 	 * @param accountURI Account
@@ -28,7 +26,6 @@ public interface NotificationManager extends Component {
 	 */
 	List<Notification> getCurrentNotifications(URI<Account> accountURI);
 
-	//A terme envisager d'avoir un état sur les notifs par exemple : (active, read, archived)
 	/**
 	 * Remove one notification.
 	 * @param accountURI User account

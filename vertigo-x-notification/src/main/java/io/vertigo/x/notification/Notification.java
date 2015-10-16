@@ -17,7 +17,7 @@ public final class Notification {
 	private final String targetUrl;
 	private final Date creationDate;
 
-	public Notification(final UUID uuid, final String sender, final String type, final String title, final String msg, final Date creationDate, final String targetUrl) {
+	Notification(final UUID uuid, final String sender, final String type, final String title, final String msg, final Date creationDate, final String targetUrl) {
 		Assertion.checkNotNull(uuid);
 		Assertion.checkArgNotEmpty(sender);
 		Assertion.checkArgNotEmpty(type);
