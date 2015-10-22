@@ -6,8 +6,6 @@ import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
 import io.vertigo.core.environment.EnvironmentManager;
 import io.vertigo.core.impl.environment.EnvironmentManagerImpl;
-import io.vertigo.core.impl.locale.LocaleManagerImpl;
-import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
@@ -51,11 +49,8 @@ public final class MyAppConfig {
 		}
 		// @formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule()
+			.beginBootModule("fr")
 				.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
-				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
-					.addParam("locales", "fr")
-				.endComponent()
 				.addComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
 					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
 					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
