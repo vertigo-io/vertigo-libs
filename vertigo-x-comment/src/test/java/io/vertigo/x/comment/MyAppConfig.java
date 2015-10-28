@@ -4,8 +4,6 @@ import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
 import io.vertigo.core.config.AppConfig;
 import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.core.environment.EnvironmentManager;
-import io.vertigo.core.impl.environment.EnvironmentManagerImpl;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
@@ -52,7 +50,6 @@ public final class MyAppConfig {
 		return new AppConfigBuilder()
 			.beginBootModule("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.addComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
 				.addPlugin(AnnotationLoaderPlugin.class)
 				.addPlugin(DomainDynamicRegistryPlugin.class)
 			.endModule()
