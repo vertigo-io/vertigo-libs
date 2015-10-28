@@ -55,6 +55,18 @@ public final class NotificationWebServices implements WebServices {
 		notificationManager.remove(loggedAccountURI, UUID.fromString(messageUuid));
 	}
 
+	/**
+	 * Remove multiple messages.
+	 * @param messagesUuid message id list.
+	 */
+	@DELETE("/api/messages")
+	public void removeMessage(final List<String> messagesUuid) {
+		final URI<Account> loggedAccountURI = accountManager.getLoggedAccount();
+		for (final String messageUuid : messagesUuid) {
+			notificationManager.remove(loggedAccountURI, UUID.fromString(messageUuid));
+		}
+	}
+
 	//-----
 	/**
 	 * Extension status (code 200 or 500)
