@@ -1,7 +1,6 @@
 package io.vertigo.x.comment;
 
 import io.vertigo.core.App;
-import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -35,7 +34,7 @@ public class CommentManagerTest {
 	public void setUp() {
 		app = new App(MyAppConfig.config());
 
-		Injector.injectMembers(this, Home.getComponentSpace());
+		Injector.injectMembers(this, app.getComponentSpace());
 		accountURI1 = Accounts.createAccountURI("1");
 
 		Accounts.initData(accountManager);

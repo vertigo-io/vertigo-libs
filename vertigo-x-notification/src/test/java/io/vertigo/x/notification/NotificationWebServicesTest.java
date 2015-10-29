@@ -19,7 +19,6 @@
 package io.vertigo.x.notification;
 
 import io.vertigo.core.App;
-import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
@@ -48,7 +47,7 @@ public final class NotificationWebServicesTest {
 		beforeSetUp();
 		app = new App(MyAppConfig.vegaConfig());
 
-		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
+		final AccountManager accountManager = app.getComponentSpace().resolve(AccountManager.class);
 		Accounts.initData(accountManager);
 	}
 
@@ -75,7 +74,7 @@ public final class NotificationWebServicesTest {
 
 	@Test
 	public void testGetCurrentNotifications() {
-		final NotificationManager notificationManager = Home.getComponentSpace().resolve(NotificationManager.class);
+		final NotificationManager notificationManager = app.getComponentSpace().resolve(NotificationManager.class);
 		final Notification notification = new NotificationBuilder()
 				.withSender("ExtensionTest")
 				.withType("MSG")
@@ -96,7 +95,7 @@ public final class NotificationWebServicesTest {
 
 	@Test
 	public void testGetRemoveNotifications() {
-		final NotificationManager notificationManager = Home.getComponentSpace().resolve(NotificationManager.class);
+		final NotificationManager notificationManager = app.getComponentSpace().resolve(NotificationManager.class);
 		final Notification notification = new NotificationBuilder()
 				.withSender("ExtensionTest")
 				.withType("MSG")

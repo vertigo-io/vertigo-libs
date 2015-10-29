@@ -1,7 +1,6 @@
 package io.vertigo.x.notification;
 
 import io.vertigo.core.App;
-import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
@@ -35,7 +34,7 @@ public class NotificationManagerTest {
 	public void setUp() {
 		app = new App(MyAppConfig.config());
 
-		Injector.injectMembers(this, Home.getComponentSpace());
+		Injector.injectMembers(this, app.getComponentSpace());
 		accountURI0 = createAccountURI("0");
 		accountURI1 = createAccountURI("1");
 		accountURI2 = createAccountURI("2");

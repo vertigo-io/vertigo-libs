@@ -85,7 +85,7 @@ final class Base64File implements VFile {
 	/** {@inheritDoc} */
 	@Override
 	public InputStream createInputStream() throws IOException {
-		final Codec<byte[], String> base64Codec = Home.getComponentSpace().resolve(CodecManager.class).getBase64Codec();
+		final Codec<byte[], String> base64Codec = Home.getApp().getComponentSpace().resolve(CodecManager.class).getBase64Codec();
 		return new ByteArrayInputStream(base64Codec.decode(base64Content));
 	}
 
