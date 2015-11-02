@@ -18,7 +18,7 @@
  */
 package io.vertigo.x.account;
 
-import io.vertigo.core.App;
+import io.vertigo.app.App;
 import io.vertigo.x.account.data.Accounts;
 
 import org.apache.http.HttpStatus;

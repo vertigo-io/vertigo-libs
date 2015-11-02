@@ -18,7 +18,7 @@
  */
 package io.vertigo.x.notification;
 
-import io.vertigo.core.App;
+import io.vertigo.app.App;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;

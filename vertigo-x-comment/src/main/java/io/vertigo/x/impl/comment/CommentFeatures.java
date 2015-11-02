@@ -1,6 +1,6 @@
 package io.vertigo.x.impl.comment;
 
-import io.vertigo.core.config.Features;
+import io.vertigo.app.config.Features;
 import io.vertigo.x.comment.CommentManager;
 import io.vertigo.x.plugins.comment.redis.RedisCommentPlugin;
 
