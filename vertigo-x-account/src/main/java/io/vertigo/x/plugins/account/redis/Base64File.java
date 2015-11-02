@@ -1,8 +1,8 @@
 package io.vertigo.x.plugins.account.redis;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.Home;
 import io.vertigo.dynamo.file.model.VFile;
 
 import java.io.ByteArrayInputStream;
