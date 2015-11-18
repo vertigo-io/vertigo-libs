@@ -1,10 +1,12 @@
 package io.vertigo.x.comment;
 
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.util.DateUtil;
 import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountManager;
 
 import java.util.Date;
 import java.util.UUID;
@@ -16,6 +18,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	private final UUID uuid;
 	private String myMsg;
 	private URI<Account> myAuthor;
+	private String myAuthorDisplayName;
 	private Date myCreationDate;
 	private Date myLastModified;
 
@@ -28,14 +31,19 @@ public final class CommentBuilder implements Builder<Comment> {
 
 	/**
 	 * Constructor for new comment.
-	 * @param uuid Uuid
+	 * @param uuid Uuid Comment unique id
 	 * @param author Author
 	 * @param creationDate Creation date
 	 */
 	public CommentBuilder(final UUID uuid, final URI<Account> author, final Date creationDate) {
 		this.uuid = uuid;
 		myAuthor = author;
+		myAuthorDisplayName = getAccountManager().getAccount(author).getDisplayName();
 		myCreationDate = creationDate;
+	}
+
+	private static AccountManager getAccountManager() {
+		return Home.getComponentSpace().resolve(AccountManager.class);
 	}
 
 	/**
@@ -47,6 +55,7 @@ public final class CommentBuilder implements Builder<Comment> {
 		Assertion.checkNotNull(author);
 		//-----
 		myAuthor = author;
+		myAuthorDisplayName = getAccountManager().getAccount(author).getDisplayName();
 		return this;
 	}
 
@@ -92,6 +101,6 @@ public final class CommentBuilder implements Builder<Comment> {
 		if (myCreationDate == null) {
 			myCreationDate = DateUtil.newDateTime();
 		}
-		return new Comment(uuid, myAuthor, myMsg, myCreationDate, myLastModified);
+		return new Comment(uuid, myAuthor, myAuthorDisplayName, myMsg, myCreationDate, myLastModified);
 	}
 }

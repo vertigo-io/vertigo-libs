@@ -1,6 +1,6 @@
 package io.vertigo.x.impl.account;
 
-import io.vertigo.app.config.DefinitionProvider;
+import io.vertigo.core.config.DefinitionProvider;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;

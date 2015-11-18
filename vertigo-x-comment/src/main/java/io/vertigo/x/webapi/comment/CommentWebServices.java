@@ -1,6 +1,6 @@
 package io.vertigo.x.webapi.comment;
 
-import io.vertigo.app.Home;
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -18,8 +18,6 @@ import io.vertigo.vega.webservice.stereotype.PUT;
 import io.vertigo.vega.webservice.stereotype.PathParam;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
-import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.comment.Comment;
 import io.vertigo.x.comment.CommentManager;
 
@@ -42,8 +40,6 @@ public final class CommentWebServices implements WebServices {
 
 	@Inject
 	private CommentManager commentManager;
-	@Inject
-	private AccountManager accountManager;
 
 	/**
 	 * Get comments for keyConcept.
@@ -65,10 +61,6 @@ public final class CommentWebServices implements WebServices {
 	 */
 	@POST("/api/comments")
 	public void publishComment(@ExcludedFields("uuid") final Comment comment, @QueryParam("concept") final String keyConcept, @QueryParam("id") final String id) {
-		final URI<Account> loggedAccountURI = accountManager.getLoggedAccount();
-		if (!loggedAccountURI.equals(comment.getAuthor())) {
-			throw new RuntimeException("The comment editing is only available for the comment's author.");
-		}
 		final URI<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
 		commentManager.publish(comment, keyConceptURI);
 	}
@@ -80,10 +72,6 @@ public final class CommentWebServices implements WebServices {
 	 */
 	@PUT("/api/comments/{uuid}")
 	public void updateComment(@PathParam("uuid") final String uuid, final Comment comment) {
-		final URI<Account> loggedAccountURI = accountManager.getLoggedAccount();
-		if (!loggedAccountURI.equals(comment.getAuthor())) {
-			throw new RuntimeException("The comment editing is only available for the comment's author.");
-		}
 		if (!uuid.equals(comment.getUuid().toString())) {
 			throw new RuntimeException("Comment uuid (" + comment.getUuid().toString() + ") must match WebService route (" + uuid + ")");
 		}
@@ -110,7 +98,7 @@ public final class CommentWebServices implements WebServices {
 	public Map<String, Object> getStats() {
 		final Map<String, Object> stats = new HashMap<>();
 		final Map<String, Object> sizeStats = new HashMap<>();
-		sizeStats.put("notifications", "not yet");
+		sizeStats.put("comments", "not yet");
 		stats.put("size", sizeStats);
 		return stats;
 	}
@@ -135,12 +123,12 @@ public final class CommentWebServices implements WebServices {
 	@GET("/help")
 	@AnonymousAccessAllowed
 	public String getHelp() {
-		return "##Notification extension"
-				+ "\n This extension manage the notification center.";
+		return "##Comment extension"
+				+ "\n This extension manage the comment center.";
 	}
 
 	private URI<KeyConcept> readKeyConceptURI(final String keyConcept, @QueryParam("id") final String id) {
-		final DtDefinition dtDefinition = Home.getApp().getDefinitionSpace().resolve("DT_" + StringUtil.camelToConstCase(keyConcept), DtDefinition.class);
+		final DtDefinition dtDefinition = Home.getDefinitionSpace().resolve("DT_" + StringUtil.camelToConstCase(keyConcept), DtDefinition.class);
 		final Object keyConceptId = stringToId(id, dtDefinition);
 		return new URI<>(dtDefinition, keyConceptId);
 	}

@@ -18,7 +18,8 @@
  */
 package io.vertigo.x.comment;
 
-import io.vertigo.app.App;
+import io.vertigo.core.App;
+import io.vertigo.core.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
@@ -63,7 +64,7 @@ public final class CommentWebServicesTest {
 		beforeSetUp();
 		app = new App(MyAppConfig.vegaConfig());
 
-		final AccountManager accountManager = app.getComponentSpace().resolve(AccountManager.class);
+		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
 		Accounts.initData(accountManager);
 		account1Uri = Accounts.createAccountURI("1");
 
@@ -97,7 +98,7 @@ public final class CommentWebServicesTest {
 
 	@Test
 	public void testGetComments() {
-		final CommentManager commentManager = app.getComponentSpace().resolve(CommentManager.class);
+		final CommentManager commentManager = Home.getComponentSpace().resolve(CommentManager.class);
 		final Comment comment = new CommentBuilder()
 				.withAuthor(account1Uri)
 				.withMsg("Lorem ipsum")

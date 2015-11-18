@@ -13,19 +13,22 @@ import java.util.UUID;
 public final class Comment {
 	private final UUID uuid;
 	private final URI<Account> author;
+	private final String authorDisplayName;
 	private final String msg;
 	private final Date creationDate;
 	private final Date lastModified;
 
-	Comment(final UUID uuid, final URI<Account> author, final String msg, final Date creationDate, final Date lastModified) {
+	Comment(final UUID uuid, final URI<Account> author, final String authorDisplayName, final String msg, final Date creationDate, final Date lastModified) {
 		Assertion.checkNotNull(uuid);
 		Assertion.checkNotNull(author);
+		Assertion.checkArgNotEmpty(authorDisplayName);
 		Assertion.checkArgNotEmpty(msg);
 		Assertion.checkNotNull(creationDate);
 		//lastModified is nullable
 		//-----
 		this.uuid = uuid;
 		this.author = author;
+		this.authorDisplayName = authorDisplayName;
 		this.msg = msg;
 		this.creationDate = creationDate;
 		this.lastModified = lastModified;
@@ -37,6 +40,10 @@ public final class Comment {
 
 	public URI<Account> getAuthor() {
 		return author;
+	}
+
+	public String getAuthorDisplayName() {
+		return authorDisplayName;
 	}
 
 	public String getMsg() {

@@ -1,6 +1,7 @@
 package io.vertigo.x.comment;
 
-import io.vertigo.app.App;
+import io.vertigo.core.App;
+import io.vertigo.core.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -34,10 +35,11 @@ public class CommentManagerTest {
 	public void setUp() {
 		app = new App(MyAppConfig.config());
 
-		Injector.injectMembers(this, app.getComponentSpace());
+		Injector.injectMembers(this, Home.getComponentSpace());
 		accountURI1 = Accounts.createAccountURI("1");
 
 		Accounts.initData(accountManager);
+		accountManager.login(accountURI1);
 
 		//on triche un peu, car AcountGroup n'est pas un KeyConcept
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);

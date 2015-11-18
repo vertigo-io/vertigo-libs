@@ -1,6 +1,6 @@
 package io.vertigo.x.impl.account;
 
-import io.vertigo.app.config.Features;
+import io.vertigo.core.config.Features;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.plugins.account.redis.RedisAccountStorePlugin;
 

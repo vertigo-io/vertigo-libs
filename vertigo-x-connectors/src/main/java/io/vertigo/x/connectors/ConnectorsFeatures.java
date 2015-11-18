@@ -1,6 +1,6 @@
 package io.vertigo.x.connectors;
 
-import io.vertigo.app.config.Features;
+import io.vertigo.core.config.Features;
 import io.vertigo.x.connectors.redis.RedisConnector;
 
 /**
