@@ -1,6 +1,6 @@
 package io.vertigo.x.impl.notification;
 
-import io.vertigo.core.config.Features;
+import io.vertigo.app.config.Features;
 import io.vertigo.x.notification.NotificationManager;
 import io.vertigo.x.plugins.notification.redis.RedisNotificationPlugin;
 

@@ -1,6 +1,6 @@
 package io.vertigo.x.comment;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -43,7 +43,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	}
 
 	private static AccountManager getAccountManager() {
-		return Home.getComponentSpace().resolve(AccountManager.class);
+		return Home.getApp().getComponentSpace().resolve(AccountManager.class);
 	}
 
 	/**

@@ -18,8 +18,8 @@
  */
 package io.vertigo.x.account;
 
-import io.vertigo.core.App;
-import io.vertigo.core.Home;
+import io.vertigo.app.App;
+import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.x.account.data.Accounts;
@@ -47,7 +47,7 @@ public final class AccountManagerTest {
 	public void setUp() {
 		app = new App(MyAppConfig.config());
 
-		Injector.injectMembers(this, Home.getComponentSpace());
+		Injector.injectMembers(this, Home.getApp().getComponentSpace());
 		accountURI0 = Accounts.createAccountURI("0");
 		accountURI1 = Accounts.createAccountURI("1");
 		accountURI2 = Accounts.createAccountURI("2");

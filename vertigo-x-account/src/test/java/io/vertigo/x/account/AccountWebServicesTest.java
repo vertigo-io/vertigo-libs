@@ -18,8 +18,8 @@
  */
 package io.vertigo.x.account;
 
-import io.vertigo.core.App;
-import io.vertigo.core.Home;
+import io.vertigo.app.App;
+import io.vertigo.app.Home;
 import io.vertigo.x.account.data.Accounts;
 
 import org.apache.http.HttpStatus;
@@ -44,7 +44,7 @@ public final class AccountWebServicesTest {
 	public static void setUp() {
 		app = new App(MyAppConfig.vegaConfig());
 		//populate accounts
-		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
+		final AccountManager accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
 		Accounts.initData(accountManager);
 	}
 

@@ -1,6 +1,6 @@
 package io.vertigo.x.webapi.comment;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -128,7 +128,7 @@ public final class CommentWebServices implements WebServices {
 	}
 
 	private URI<KeyConcept> readKeyConceptURI(final String keyConcept, @QueryParam("id") final String id) {
-		final DtDefinition dtDefinition = Home.getDefinitionSpace().resolve("DT_" + StringUtil.camelToConstCase(keyConcept), DtDefinition.class);
+		final DtDefinition dtDefinition = Home.getApp().getDefinitionSpace().resolve("DT_" + StringUtil.camelToConstCase(keyConcept), DtDefinition.class);
 		final Object keyConceptId = stringToId(id, dtDefinition);
 		return new URI<>(dtDefinition, keyConceptId);
 	}
