@@ -16,6 +16,11 @@ public final class NotificationEvent {
 
 	//private final List<VUserGroup> toUserGroups;
 
+	/**
+	 * Constructor.
+	 * @param notification Notification
+	 * @param accountURIs To accounts uri
+	 */
 	NotificationEvent(final Notification notification, final Set<URI<Account>> accountURIs) {
 		Assertion.checkNotNull(notification);
 		Assertion.checkNotNull(accountURIs);
@@ -24,10 +29,16 @@ public final class NotificationEvent {
 		this.accountURIs = accountURIs;
 	}
 
+	/**
+	 * @return Notification
+	 */
 	public Notification getNotification() {
 		return notification;
 	}
 
+	/**
+	 * @return To accounts uri
+	 */
 	public Set<URI<Account>> getToAccountURIs() {
 		return accountURIs;
 	}

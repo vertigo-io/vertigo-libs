@@ -37,7 +37,7 @@ public final class NotificationManagerImpl implements NotificationManager {
 	@Override
 	public void send(final Notification notification, final URI<AccountGroup> groupURI) {
 		final NotificationEvent notificationEvent = new NotificationEvent(notification, accountManager.getAccountURIs(groupURI));
-		notificationsPlugin.emit(notificationEvent);
+		notificationsPlugin.send(notificationEvent);
 	}
 
 	/** {@inheritDoc} */

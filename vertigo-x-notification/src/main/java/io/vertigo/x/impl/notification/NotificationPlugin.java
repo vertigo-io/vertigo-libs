@@ -12,11 +12,27 @@ import java.util.UUID;
  * @author pchretien
  */
 public interface NotificationPlugin extends Plugin {
-	void emit(NotificationEvent notificationEvent);
 
+	/**
+	 * @param notificationEvent Notification to send
+	 */
+	void send(NotificationEvent notificationEvent);
+
+	/**
+	 * @param account Accout uri
+	 * @return All notifications for this account
+	 */
 	List<Notification> getCurrentNotifications(URI<Account> account);
 
+	/**
+	 * @param accountURI Account uri
+	 * @param notificationUUID Notification uuid
+	 */
 	void remove(URI<Account> accountURI, UUID notificationUUID);
 
+	/**
+	 * @param type Notification's type
+	 * @param targetUrl Target URL, used to filter all notifications to remove
+	 */
 	void removeAll(String type, String targetUrl);
 }

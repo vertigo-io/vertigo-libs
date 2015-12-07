@@ -39,7 +39,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	}
 
 	@Override
-	public void emit(final NotificationEvent notificationEvent) {
+	public void send(final NotificationEvent notificationEvent) {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final Notification notification = notificationEvent.getNotification();
 			final String uuid = notification.getUuid().toString();
@@ -62,7 +62,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				.put("sender", notification.getSender())
 				.putNullable("type", notification.getType())
 				.put("title", notification.getTitle())
-				.put("msg", notification.getMsg())
+				.put("content", notification.getContent())
 				.put("creationDate", creationDate)
 				.put("targetUrl", notification.getTargetUrl())
 				.build();
@@ -76,7 +76,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 					.withSender(data.get("sender"))
 					.withType(data.get("type"))
 					.withTitle(data.get("title"))
-					.withMsg(data.get("msg"))
+					.withContent(data.get("content"))
 					.withCreationDate(creationDate)
 					.withTargetUrl(data.get("targetUrl"))
 					.build();
