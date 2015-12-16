@@ -62,7 +62,7 @@ public class NotificationManagerTest {
 				.withSender(accountURI0.toURN())
 				.withType("Test")
 				.withTitle("news")
-				.withMsg("discover this amazing app !!")
+				.withContent("discover this amazing app !!")
 				.withTargetUrl("#keyConcept@2")
 				.build();
 
@@ -82,7 +82,7 @@ public class NotificationManagerTest {
 				.withType("Test")
 				.withTitle("news")
 				.withTargetUrl("#keyConcept@2")
-				.withMsg("discover this amazing app !!")
+				.withContent("discover this amazing app !!")
 				.build();
 
 		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI0).size());
@@ -110,7 +110,7 @@ public class NotificationManagerTest {
 				.withType("Test")
 				.withTitle("news")
 				.withTargetUrl("#keyConcept@2")
-				.withMsg("discover this amazing app !!")
+				.withContent("discover this amazing app !!")
 				.build();
 
 		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI0).size());
