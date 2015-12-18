@@ -81,7 +81,7 @@ public final class NotificationWebServicesTest {
 				.withType("MSG")
 				.withTitle("Message de Vertigo")
 				.withTargetUrl("#keyConcept@2")
-				.withMsg("Lorem ipsum")
+				.withContent("Lorem ipsum")
 				.build();
 		notificationManager.send(notification, DtObjectUtil.createURI(AccountGroup.class, "100"));
 
@@ -102,7 +102,7 @@ public final class NotificationWebServicesTest {
 				.withType("MSG")
 				.withTitle("Message de Vertigo")
 				.withTargetUrl("#keyConcept@2")
-				.withMsg("Lorem ipsum")
+				.withContent("Lorem ipsum")
 				.build();
 		notificationManager.send(notification, DtObjectUtil.createURI(AccountGroup.class, "100"));
 
