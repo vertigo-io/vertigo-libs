@@ -40,12 +40,9 @@ public final class RedisConnector implements Component, Activeable {
 	/**
 	 * Constructor.
 	 *
-	 * @param redisHost
-	 *            REDIS server host name
-	 * @param redisPort
-	 *            REDIS server port
-	 * @param passwordOption
-	 *            password (optional)
+	 * @param redisHost REDIS server host name
+	 * @param redisPort  REDIS server port
+	 * @param passwordOption password (optional)
 	 */
 	@Inject
 	public RedisConnector(final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> passwordOption) {
