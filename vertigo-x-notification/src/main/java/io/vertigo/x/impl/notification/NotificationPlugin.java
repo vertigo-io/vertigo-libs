@@ -32,7 +32,7 @@ public interface NotificationPlugin extends Plugin {
 
 	/**
 	 * @param type Notification's type
-	 * @param targetUrl Target URL, used to filter all notifications to remove
+	 * @param targetUrl Target URL, use to filter all notifications to remove
 	 */
 	void removeAll(String type, String targetUrl);
 }
