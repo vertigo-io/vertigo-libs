@@ -55,7 +55,9 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 	public synchronized Account getAccount(final URI<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
-		return accountByURI.get(accountURI);
+		final Account account = accountByURI.get(accountURI);
+		Assertion.checkNotNull(account);
+		return account;
 	}
 
 	/** {@inheritDoc} */
@@ -63,7 +65,7 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 	public synchronized void saveAccounts(final List<Account> accounts) {
 		Assertion.checkNotNull(accounts);
 		//-----
-		for (Account account : accounts) {
+		for (final Account account : accounts) {
 			saveAccount(account);
 		}
 	}
@@ -86,7 +88,9 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 	public synchronized AccountGroup getGroup(final URI<AccountGroup> groupURI) {
 		Assertion.checkNotNull(groupURI);
 		//-----
-		return groupByURI.get(groupURI);
+		final AccountGroup accountGroup = groupByURI.get(groupURI);
+		Assertion.checkNotNull(accountGroup);
+		return accountGroup;
 	}
 
 	/** {@inheritDoc} */
