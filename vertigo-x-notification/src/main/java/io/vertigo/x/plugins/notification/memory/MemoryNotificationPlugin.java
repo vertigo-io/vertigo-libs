@@ -23,7 +23,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void emit(final NotificationEvent notificationEvent) {
+	public void send(final NotificationEvent notificationEvent) {
 		Assertion.checkNotNull(notificationEvent);
 		//-----
 		//0 - Remplir la pile des événements
