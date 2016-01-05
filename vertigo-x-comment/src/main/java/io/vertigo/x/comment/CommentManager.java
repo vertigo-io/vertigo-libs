@@ -3,6 +3,7 @@ package io.vertigo.x.comment;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Component;
+import io.vertigo.x.account.Account;
 
 import java.util.List;
 
@@ -23,11 +24,11 @@ public interface CommentManager extends Component {
 	 * @param comment Comment
 	 * @param keyConceptUri keyConcept's uri
 	 */
-	void publish(Comment comment, URI<? extends KeyConcept> keyConceptUri);
+	void publish(final URI<Account> accountURI, Comment comment, URI<? extends KeyConcept> keyConceptUri);
 
 	/**
 	 * Update comment.
 	 * @param comment updated comment
 	 */
-	void update(Comment comment);
+	void update(final URI<Account> accountURI, Comment comment);
 }

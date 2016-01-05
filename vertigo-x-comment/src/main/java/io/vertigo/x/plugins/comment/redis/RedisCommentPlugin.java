@@ -5,6 +5,7 @@ import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.comment.Comment;
@@ -12,6 +13,7 @@ import io.vertigo.x.comment.CommentBuilder;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.impl.comment.CommentPlugin;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,10 +49,13 @@ public final class RedisCommentPlugin implements CommentPlugin {
 	@Override
 	public <S extends KeyConcept> void publish(final Comment comment, final URI<S> keyConceptUri) {
 		try (final Jedis jedis = redisConnector.getResource()) {
-			final Transaction tx = jedis.multi();
-			tx.hmset("comment:" + comment.getUuid(), toMap(comment));
-			tx.lpush("comments:" + keyConceptUri.toURN(), comment.getUuid().toString());
-			tx.exec();
+			try (final Transaction tx = jedis.multi()) {
+				tx.hmset("comment:" + comment.getUuid(), toMap(comment));
+				tx.lpush("comments:" + keyConceptUri.toURN(), comment.getUuid().toString());
+				tx.exec();
+			} catch (final IOException e) {
+				throw WrappedException.wrapIfNeeded(e, "Can't publish comment onto {0}", keyConceptUri.toURN());
+			}
 		}
 
 	}

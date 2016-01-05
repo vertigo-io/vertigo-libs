@@ -18,6 +18,8 @@ import io.vertigo.vega.webservice.stereotype.PUT;
 import io.vertigo.vega.webservice.stereotype.PathParam;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.comment.Comment;
 import io.vertigo.x.comment.CommentManager;
 
@@ -41,6 +43,9 @@ public final class CommentWebServices implements WebServices {
 	@Inject
 	private CommentManager commentManager;
 
+	@Inject
+	private AccountManager accountManager;
+
 	/**
 	 * Get comments for keyConcept.
 	 * @param keyConcept KeyConcept type
@@ -62,7 +67,8 @@ public final class CommentWebServices implements WebServices {
 	@POST("/api/comments")
 	public void publishComment(@ExcludedFields("uuid") final Comment comment, @QueryParam("concept") final String keyConcept, @QueryParam("id") final String id) {
 		final URI<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
-		commentManager.publish(comment, keyConceptURI);
+		final URI<Account> loggedAccountURI = accountManager.getLoggedAccount();
+		commentManager.publish(loggedAccountURI, comment, keyConceptURI);
 	}
 
 	/**
@@ -75,7 +81,8 @@ public final class CommentWebServices implements WebServices {
 		if (!uuid.equals(comment.getUuid().toString())) {
 			throw new RuntimeException("Comment uuid (" + comment.getUuid().toString() + ") must match WebService route (" + uuid + ")");
 		}
-		commentManager.update(comment);
+		final URI<Account> loggedAccountURI = accountManager.getLoggedAccount();
+		commentManager.update(loggedAccountURI, comment);
 	}
 
 	//-----

@@ -29,6 +29,7 @@ import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.comment.data.Accounts;
+import io.vertigo.x.connectors.redis.RedisConnector;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -77,6 +78,8 @@ public final class CommentWebServicesTest {
 
 	@AfterClass
 	public static void tearDown() {
+		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
+		redisConnector.getResource().flushAll();
 		app.close();
 	}
 
@@ -103,7 +106,7 @@ public final class CommentWebServicesTest {
 				.withAuthor(account1Uri)
 				.withMsg("Lorem ipsum")
 				.build();
-		commentManager.publish(comment, keyConcept1Uri);
+		commentManager.publish(account1Uri, comment, keyConcept1Uri);
 
 		//Check we got this comment
 		RestAssured.given().filter(sessionFilter)
