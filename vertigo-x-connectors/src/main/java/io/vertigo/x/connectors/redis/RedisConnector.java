@@ -58,10 +58,6 @@ public final class RedisConnector implements Component, Activeable {
 		// test
 		try (Jedis jedis = jedisPool.getResource()) {
 			jedis.ping();
-			// Hack
-			// Hack
-			// Hack
-			jedis.flushAll();
 		}
 	}
 
