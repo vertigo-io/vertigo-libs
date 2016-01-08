@@ -16,37 +16,13 @@ import io.vertigo.x.impl.notification.NotificationFeatures;
 import io.vertigo.x.notification.data.TestUserSession;
 import io.vertigo.x.webapi.notification.NotificationWebServices;
 
-import java.io.IOException;
-import java.net.InetAddress;
-
 public final class MyAppConfig {
-
 	public static final int WS_PORT = 8088;
 
-	private static boolean ping(final String host) {
-		try {
-			final InetAddress inet = InetAddress.getByName(host);
-			return inet.getAddress() != null;
-		} catch (final IOException e) {
-			return false;
-		}
-	}
-
 	private static AppConfigBuilder createAppConfigBuilder() {
-		final String redisHost;
-		final int redisPort;
-		final String redisPassword;
-		if (ping("kasper-redis")) {
-			redisHost = "kasper-redis";
-			redisPort = 6379;
-			redisPassword = null;
-		} else if (ping("pub-redis-10382.us-east-1-3.2.ec2.garantiadata.com")) {
-			redisHost = "pub-redis-10382.us-east-1-3.2.ec2.garantiadata.com";
-			redisPort = 10382;
-			redisPassword = "kleegroup";
-		} else {
-			throw new RuntimeException("no redis server found");
-		}
+		final String redisHost = "kasper-redis";
+		final int redisPort = 6379;
+
 		// @formatter:off
 		return new AppConfigBuilder()
 			.beginBootModule("fr")
@@ -60,7 +36,7 @@ public final class MyAppConfig {
 			.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
 			.beginModule(CommonsFeatures.class).endModule()
 			.beginModule(DynamoFeatures.class).endModule()
-			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort, redisPassword).endModule()
+			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort).endModule()
 			.beginModule(AccountFeatures.class).withRedis().endModule()
 			.beginModule(NotificationFeatures.class).withRedis().endModule();
 		// @formatter:on

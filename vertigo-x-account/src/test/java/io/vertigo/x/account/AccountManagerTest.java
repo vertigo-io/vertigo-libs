@@ -19,10 +19,10 @@
 package io.vertigo.x.account;
 
 import io.vertigo.app.App;
-import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.x.account.data.Accounts;
+import io.vertigo.x.connectors.redis.RedisConnector;
 
 import javax.inject.Inject;
 
@@ -36,6 +36,8 @@ public final class AccountManagerTest {
 
 	@Inject
 	private AccountManager accountManager;
+	@Inject
+	private RedisConnector redisConnector;
 
 	private URI<Account> accountURI0;
 	private URI<Account> accountURI1;
@@ -47,7 +49,10 @@ public final class AccountManagerTest {
 	public void setUp() {
 		app = new App(MyAppConfig.config());
 
-		Injector.injectMembers(this, Home.getApp().getComponentSpace());
+		Injector.injectMembers(this, app.getComponentSpace());
+
+		redisConnector.getResource().flushAll();
+
 		accountURI0 = Accounts.createAccountURI("0");
 		accountURI1 = Accounts.createAccountURI("1");
 		accountURI2 = Accounts.createAccountURI("2");
