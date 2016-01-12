@@ -65,6 +65,10 @@ public final class CommentWebServicesTest {
 		beforeSetUp();
 		app = new App(MyAppConfig.vegaConfig());
 
+		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
+		//-----
+		redisConnector.getResource().flushAll();
+
 		final AccountManager accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
 		Accounts.initData(accountManager);
 		account1Uri = Accounts.createAccountURI("1");
