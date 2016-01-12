@@ -50,7 +50,6 @@ public final class AccountManagerTest {
 		app = new App(MyAppConfig.config());
 
 		Injector.injectMembers(this, app.getComponentSpace());
-
 		redisConnector.getResource().flushAll();
 
 		accountURI0 = Accounts.createAccountURI("0");
