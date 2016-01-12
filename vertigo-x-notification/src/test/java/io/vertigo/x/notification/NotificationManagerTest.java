@@ -9,6 +9,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.notification.data.Accounts;
 
 import javax.inject.Inject;
@@ -19,12 +20,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class NotificationManagerTest {
-	private static App app;
+	private App app;
 
 	@Inject
 	private AccountManager accountManager;
 	@Inject
 	private NotificationManager notificationManager;
+	@Inject
+	private RedisConnector redisConnector;
 
 	private URI<Account> accountURI0;
 	private URI<Account> accountURI1;
@@ -34,8 +37,9 @@ public class NotificationManagerTest {
 	@Before
 	public void setUp() {
 		app = new App(MyAppConfig.config());
-
 		Injector.injectMembers(this, Home.getApp().getComponentSpace());
+		redisConnector.getResource().flushAll();
+
 		accountURI0 = createAccountURI("0");
 		accountURI1 = createAccountURI("1");
 		accountURI2 = createAccountURI("2");

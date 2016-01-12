@@ -23,6 +23,7 @@ import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.notification.data.Accounts;
 
 import org.apache.http.HttpStatus;
@@ -49,12 +50,17 @@ public final class NotificationWebServicesTest {
 		app = new App(MyAppConfig.vegaConfig());
 
 		final AccountManager accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
+		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
+		//-----
+		redisConnector.getResource().flushAll();
 		Accounts.initData(accountManager);
 	}
 
 	@AfterClass
 	public static void tearDown() {
-		app.close();
+		if (app != null) {
+			app.close();
+		}
 	}
 
 	@Before
