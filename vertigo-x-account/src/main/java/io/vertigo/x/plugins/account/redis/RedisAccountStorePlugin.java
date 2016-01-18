@@ -174,8 +174,8 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final Transaction tx = jedis.multi();
-			tx.lrem("accountsByGroup:" + groupURI.getId(), -1, accountURI.getId().toString());
-			tx.lrem("groupsByAccount:" + accountURI.getId(), 1, groupURI.getId().toString());
+			tx.lrem("accountsByGroup:" + groupURI.getId(), 0, accountURI.getId().toString());
+			tx.lrem("groupsByAccount:" + accountURI.getId(), 0, groupURI.getId().toString());
 			tx.exec();
 		}
 	}
