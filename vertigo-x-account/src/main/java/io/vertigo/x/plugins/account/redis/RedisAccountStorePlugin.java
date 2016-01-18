@@ -277,7 +277,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 				.build();
 	}
 
-	private VFile map2vFile(final Map<String, String> vFileMap) {
+	private static VFile map2vFile(final Map<String, String> vFileMap) {
 		try {
 			final String fileName = vFileMap.get("fileName");
 			final String mimeType = vFileMap.get("mimeType");
