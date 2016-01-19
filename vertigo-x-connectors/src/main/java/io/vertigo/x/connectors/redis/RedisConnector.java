@@ -46,10 +46,10 @@ public final class RedisConnector implements Component, Activeable {
 	 */
 	@Inject
 	public RedisConnector(
-			final @Named("host") String redisHost,
-			final @Named("port") int redisPort,
-			final @Named("database") int redisDatabase,
-			final @Named("password") Option<String> passwordOption) {
+			@Named("host") final String redisHost,
+			@Named("port") final int redisPort,
+			@Named("database") final int redisDatabase,
+			@Named("password") final Option<String> passwordOption) {
 		Assertion.checkArgNotEmpty(redisHost);
 		Assertion.checkNotNull(passwordOption);
 		Assertion.checkArgument(redisDatabase >= 0 && redisDatabase < 16, "there 16 DBs(0 - 15); your index database '{0}' is not inside this range", redisDatabase);
