@@ -50,10 +50,10 @@ public final class Accounts {
 		//---create 5 000 noisy data
 		final List<Account> accounts = createAccounts();
 		for (final Account account : accounts) {
+			accountManager.saveAccounts(accounts);
 			final URI<Account> accountUri = createAccountURI(account.getId());
 			accountManager.attach(accountUri, groupAllUri);
 		}
-		accountManager.saveAccounts(accounts);
 
 	}
 

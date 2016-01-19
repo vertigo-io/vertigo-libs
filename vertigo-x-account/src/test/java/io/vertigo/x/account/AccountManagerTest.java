@@ -43,8 +43,6 @@ public final class AccountManagerTest {
 
 	@Inject
 	private AccountManager accountManager;
-	@Inject
-	private RedisConnector redisConnector;
 
 	private URI<Account> accountURI0;
 	private URI<Account> accountURI1;
@@ -74,7 +72,10 @@ public final class AccountManagerTest {
 		app = new App(MyAppConfig.config(redis));
 
 		Injector.injectMembers(this, app.getComponentSpace());
-		redisConnector.getResource().flushAll();
+		if (redis) {
+			final RedisConnector redisConnector = app.getComponentSpace().resolve(RedisConnector.class);
+			redisConnector.getResource().flushAll();
+		}
 
 		accountURI0 = Accounts.createAccountURI("0");
 		accountURI1 = Accounts.createAccountURI("1");

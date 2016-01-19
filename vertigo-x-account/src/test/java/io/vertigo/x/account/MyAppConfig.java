@@ -43,7 +43,6 @@ public final class MyAppConfig {
 		}
 		//else we use memory
 		return  appConfigBuilder
-			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort).endModule()
 			.beginModule(AccountFeatures.class).getModuleConfigBuilder().addPlugin(MemoryAccountStorePlugin.class).endModule();
 		// @formatter:on
 	}
