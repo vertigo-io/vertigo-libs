@@ -51,11 +51,11 @@ public final class Accounts {
 
 		//---create 10 noisy data
 		final List<Account> accounts = createAccounts();
+		accountManager.saveAccounts(accounts);
 		for (final Account account : accounts) {
 			final URI<Account> accountUri = createAccountURI(account.getId());
 			accountManager.attach(accountUri, groupAllUri);
 		}
-		accountManager.saveAccounts(accounts);
 
 	}
 
