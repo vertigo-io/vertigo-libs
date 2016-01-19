@@ -23,6 +23,8 @@ import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.persona.security.UserSession;
+import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.x.account.data.Accounts;
 import io.vertigo.x.connectors.redis.RedisConnector;
 
@@ -30,6 +32,7 @@ import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -51,6 +54,9 @@ public final class AccountManagerTest {
 	@Inject
 	private FileManager fileManager;
 
+	@Inject
+	private VSecurityManager securityManager;
+
 	private URI<Account> accountURI0;
 	private URI<Account> accountURI1;
 	private URI<Account> accountURI2;
@@ -69,6 +75,10 @@ public final class AccountManagerTest {
 
 	final boolean redis;
 
+	/**
+	 * Constructor
+	 * @param redis use redis or memory
+	 */
 	public AccountManagerTest(final boolean redis) {
 		//params are automatically injected
 		this.redis = redis;
@@ -98,6 +108,21 @@ public final class AccountManagerTest {
 		if (app != null) {
 			app.close();
 		}
+	}
+
+	@Test
+	public void testLogin() {
+		securityManager.startCurrentUserSession(new UserSession() {
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public Locale getLocale() {
+				return null;
+			}
+		});
+		accountManager.login(accountURI1);
+		Assert.assertEquals(accountURI1, accountManager.getLoggedAccount());
+		securityManager.stopCurrentUserSession();
 	}
 
 	@Test
