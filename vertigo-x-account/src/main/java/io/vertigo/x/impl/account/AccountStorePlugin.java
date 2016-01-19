@@ -26,6 +26,10 @@ public interface AccountStorePlugin extends Plugin {
 	 */
 	Account getAccount(URI<Account> accountURI);
 
+	/**
+	 * @param accountURI the account defined by its URI
+	 * @return Set of groups of this account
+	 */
 	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
 
 	//l'id doit être renseigné  pour chaque account !!

@@ -5,15 +5,19 @@ import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.plugins.account.redis.RedisAccountStorePlugin;
 
 /**
- * Defines extension account.
+ * Defines the 'account' extension
  * @author pchretien
  */
 public final class AccountFeatures extends Features {
 
+	/**
+	 * Constructor.
+	 */
 	public AccountFeatures() {
 		super("x-account");
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	protected void setUp() {
 		getModuleConfigBuilder()
@@ -21,6 +25,10 @@ public final class AccountFeatures extends Features {
 				.addComponent(AccountManager.class, AccountManagerImpl.class);
 	}
 
+	/**
+	 * Defines REDIS as the database to store the accounts
+	 * @return the features
+	 */
 	public AccountFeatures withRedis() {
 		getModuleConfigBuilder()
 				.addPlugin(RedisAccountStorePlugin.class);

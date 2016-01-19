@@ -10,7 +10,13 @@ import io.vertigo.util.ListBuilder;
 
 import java.util.Iterator;
 
+/**
+ * Provides all the definitions used in the 'account' module. 
+ * @author pchretien
+ */
 public final class AccountDefinitionProvider implements DefinitionProvider {
+
+	/** {@inheritDoc} */
 	@Override
 	public Iterator<Definition> iterator() {
 		final Domain domainAccountId = new Domain("DO_X_ACCOUNT_ID", DataType.String);

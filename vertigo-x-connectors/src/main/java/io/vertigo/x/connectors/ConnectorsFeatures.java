@@ -9,6 +9,9 @@ import io.vertigo.x.connectors.redis.RedisConnector;
  */
 public final class ConnectorsFeatures extends Features {
 
+	/**
+	 * Constructor
+	 */
 	public ConnectorsFeatures() {
 		super("connectors");
 	}
@@ -18,10 +21,25 @@ public final class ConnectorsFeatures extends Features {
 		//
 	}
 
+	/**
+	 * Adds a REDIS connector.
+	 * @param host the REDIS host
+	 * @param port the REDIS port 
+	 * @param database the index of the REDIS database
+	 * @return the REDIS connector
+	 */
 	public ConnectorsFeatures withRedis(final String host, final int port, final int database) {
 		return withRedis(host, port, null, database);
 	}
 
+	/**
+	 * Adds a REDIS connector.
+	 * @param host the REDIS host
+	 * @param port the REDIS port 
+	 * @param password the REDIS password
+	 * @param database the index of the REDIS database
+	 * @return the REDIS connector
+	 */
 	public ConnectorsFeatures withRedis(final String host, final int port, final String password, final int database) {
 		getModuleConfigBuilder()
 				.withNoAPI()
