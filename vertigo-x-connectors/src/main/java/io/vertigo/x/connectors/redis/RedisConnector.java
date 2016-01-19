@@ -45,7 +45,7 @@ public final class RedisConnector implements Component, Activeable {
 	 * @param passwordOption password (optional)
 	 */
 	@Inject
-	public RedisConnector(final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> passwordOption) {
+	public RedisConnector(@Named("host") final String redisHost, @Named("port") final int redisPort, @Named("password") final Option<String> passwordOption) {
 		Assertion.checkArgNotEmpty(redisHost);
 		Assertion.checkNotNull(passwordOption);
 		// -----

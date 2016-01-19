@@ -61,10 +61,7 @@ public final class CommentManagerImpl implements CommentManager {
 		Assertion.checkNotNull(comment);
 		//-----
 		final Comment originalComment = commentsPlugin.get(comment.getUuid());
-		if (!accountURI.equals(comment.getAuthor())
-				|| !originalComment.getAuthor().equals(comment.getAuthor())) {
-			throw new RuntimeException("The comment editing is only available for the comment's author.");
-		}
+		final boolean authorized = accountURI.equals(comment.getAuthor()) && originalComment.getAuthor().equals(comment.getAuthor());
 
 		final Comment savedComment = new CommentBuilder(originalComment.getUuid(), accountURI, originalComment.getCreationDate())
 				.withMsg(comment.getMsg())

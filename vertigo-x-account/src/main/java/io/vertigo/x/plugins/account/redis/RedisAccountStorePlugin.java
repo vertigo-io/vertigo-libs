@@ -8,6 +8,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountBuilder;
@@ -15,6 +16,7 @@ import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.impl.account.AccountStorePlugin;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -287,14 +289,14 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 			final String base64Content = vFileMap.get("base64Content");
 			return new Base64File(fileName, mimeType, length, lastModified, base64Content);
 		} catch (final ParseException e) {
-			throw new RuntimeException("Can't decode base64 file", e);
+			throw new WrappedException("A problem occured when decoding a file from base64", e);
 		}
 	}
 
 	private String encode2Base64(final VFile vFile) {
 		final StringBuilder sb = new StringBuilder();
 		final Codec<byte[], String> base64Codec = codecManager.getBase64Codec();
-		try (InputStream in = vFile.createInputStream()) {
+		try (final InputStream in = vFile.createInputStream()) {
 			final byte[] buf = new byte[CODEC_BUFFER_SIZE];
 			while (true) {
 				final int rc = in.read(buf);
@@ -310,8 +312,8 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 					sb.append(base64Codec.encode(buf2));
 				}
 			}
-		} catch (final Exception e) {
-			throw new RuntimeException("problème encodage base 64 du fichier", e);
+		} catch (final IOException e) {
+			throw new WrappedException("A problem occured when encoding a file to base64", e);
 		}
 		return sb.toString();
 	}

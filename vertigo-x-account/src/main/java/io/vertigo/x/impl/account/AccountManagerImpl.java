@@ -6,6 +6,7 @@ import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.x.account.Account;
@@ -63,7 +64,7 @@ public final class AccountManagerImpl implements AccountManager {
 				conn.getInputStream().close();
 			}
 		} catch (final IOException e) {
-			throw new RuntimeException("Can't get file size", e);
+			throw new WrappedException("Can't get file size", e);
 		}
 		Assertion.checkArgument(length >= 0, "Can't get file size");
 		final InputStreamBuilder inputStreamBuilder = new InputStreamBuilder() {
