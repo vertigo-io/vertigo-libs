@@ -57,7 +57,7 @@ public final class AccountManagerTest {
 		return Arrays.asList(
 				//redis 
 				new Object[] { true },
-				//memory
+				//memory (redis= false)
 				new Object[] { false }
 				);
 	}

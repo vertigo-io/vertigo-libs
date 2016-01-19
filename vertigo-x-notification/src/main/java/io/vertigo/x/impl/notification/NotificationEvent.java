@@ -14,8 +14,6 @@ public final class NotificationEvent {
 	private final Notification notification;
 	private final Set<URI<Account>> accountURIs;
 
-	//private final List<VUserGroup> toUserGroups;
-
 	/**
 	 * Constructor.
 	 * @param notification Notification

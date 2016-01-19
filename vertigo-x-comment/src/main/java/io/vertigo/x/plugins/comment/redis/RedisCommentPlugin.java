@@ -128,7 +128,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 					.withLastModified(lastModified)
 					.build();
 		} catch (final ParseException e) {
-			throw new RuntimeException("Can't parse comment", e);
+			throw new WrappedException("Can't parse comment", e);
 		}
 	}
 }

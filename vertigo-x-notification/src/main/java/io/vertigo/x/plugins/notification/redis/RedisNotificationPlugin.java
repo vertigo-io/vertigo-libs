@@ -2,6 +2,7 @@ package io.vertigo.x.plugins.notification.redis;
 
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.connectors.redis.RedisConnector;
@@ -81,7 +82,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 					.withTargetUrl(data.get("targetUrl"))
 					.build();
 		} catch (final ParseException e) {
-			throw new RuntimeException("Can't parse notification", e);
+			throw new WrappedException("Can't parse notification", e);
 		}
 	}
 

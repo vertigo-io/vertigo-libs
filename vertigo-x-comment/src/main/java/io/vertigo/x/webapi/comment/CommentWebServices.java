@@ -78,9 +78,10 @@ public final class CommentWebServices implements WebServices {
 	 */
 	@PUT("/api/comments/{uuid}")
 	public void updateComment(@PathParam("uuid") final String uuid, final Comment comment) {
-		if (!uuid.equals(comment.getUuid().toString())) {
-			throw new RuntimeException("Comment uuid (" + comment.getUuid().toString() + ") must match WebService route (" + uuid + ")");
-		}
+		Assertion.checkNotNull(uuid);
+		Assertion.checkNotNull(comment);
+		Assertion.checkArgument(uuid.equals(comment.getUuid().toString()), "Comment uuid ({0}) must match WebService route ({1})", comment.getUuid(), uuid);
+		//-----
 		final URI<Account> loggedAccountURI = accountManager.getLoggedAccount();
 		commentManager.update(loggedAccountURI, comment);
 	}
@@ -134,13 +135,13 @@ public final class CommentWebServices implements WebServices {
 				+ "\n This extension manage the comment center.";
 	}
 
-	private URI<KeyConcept> readKeyConceptURI(final String keyConcept, @QueryParam("id") final String id) {
+	private static URI<KeyConcept> readKeyConceptURI(final String keyConcept, @QueryParam("id") final String id) {
 		final DtDefinition dtDefinition = Home.getApp().getDefinitionSpace().resolve("DT_" + StringUtil.camelToConstCase(keyConcept), DtDefinition.class);
 		final Object keyConceptId = stringToId(id, dtDefinition);
 		return new URI<>(dtDefinition, keyConceptId);
 	}
 
-	private Object stringToId(final String id, final DtDefinition dtDefinition) {
+	private static Object stringToId(final String id, final DtDefinition dtDefinition) {
 		final Option<DtField> keyField = dtDefinition.getIdField();
 		Assertion.checkArgument(keyField.isDefined(), "KeyConcept {0} must have an key field, in order to support Comment extension", dtDefinition.getLocalName());
 
