@@ -21,9 +21,13 @@ package io.vertigo.x.account;
 import io.vertigo.app.App;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.file.FileManager;
+import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.x.account.data.Accounts;
 import io.vertigo.x.connectors.redis.RedisConnector;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -43,6 +47,9 @@ public final class AccountManagerTest {
 
 	@Inject
 	private AccountManager accountManager;
+
+	@Inject
+	private FileManager fileManager;
 
 	private URI<Account> accountURI0;
 	private URI<Account> accountURI1;
@@ -97,6 +104,17 @@ public final class AccountManagerTest {
 	public void testAccounts() {
 		Assert.assertEquals("Palmer Luckey", accountManager.getAccount(accountURI1).getDisplayName());
 		Assert.assertEquals(10 + 3, accountManager.getAccountsCount());
+	}
+
+	@Test
+	public void testPhoto() throws URISyntaxException {
+		//Before the photo is the default photo
+		Assert.assertEquals("defaultPhoto.png", accountManager.getPhoto(accountURI0).getFileName());
+		//-----
+		final VFile photo = fileManager.createFile(new File(this.getClass().getResource("data/marianne.png").toURI()));
+		accountManager.setPhoto(accountURI0, photo);
+		//-----
+		Assert.assertEquals("marianne.png", accountManager.getPhoto(accountURI0).getFileName());
 	}
 
 	@Test
