@@ -18,17 +18,18 @@ public final class ConnectorsFeatures extends Features {
 		//
 	}
 
-	public ConnectorsFeatures withRedis(final String host, final int port) {
-		return withRedis(host, port, null);
+	public ConnectorsFeatures withRedis(final String host, final int port, final int database) {
+		return withRedis(host, port, null, database);
 	}
 
-	public ConnectorsFeatures withRedis(final String host, final int port, final String password) {
+	public ConnectorsFeatures withRedis(final String host, final int port, final String password, final int database) {
 		getModuleConfigBuilder()
 				.withNoAPI()
 				.beginComponent(RedisConnector.class, RedisConnector.class)
 				.addParam("host", host)
 				.addParam("port", Integer.toString(port))
 				.addParam("password", password)
+				.addParam("database", Integer.toString(database))
 				.endComponent();
 		return this;
 	}

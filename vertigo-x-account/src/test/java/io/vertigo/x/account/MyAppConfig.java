@@ -22,6 +22,7 @@ public final class MyAppConfig {
 	private static AppConfigBuilder createAppConfigBuilder(final boolean redis) {
 		final String redisHost = "kasper-redis";
 		final int redisPort = 6379;
+		final int redisDatabase = 15;
 
 		// @formatter:off
 		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder()
@@ -38,7 +39,7 @@ public final class MyAppConfig {
 			.beginModule(DynamoFeatures.class).endModule();
 		if (redis){
 			return  appConfigBuilder
-			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort).endModule()
+			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort, redisDatabase).endModule()
 			.beginModule(AccountFeatures.class).withRedis().endModule();
 		}
 		//else we use memory
