@@ -32,6 +32,10 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	private static final String CODEC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	private final RedisConnector redisConnector;
 
+	/**
+	 * Constructor.
+	 * @param redisConnector the connector to REDIS database
+	 */
 	@Inject
 	public RedisNotificationPlugin(final RedisConnector redisConnector) {
 		Assertion.checkNotNull(redisConnector);

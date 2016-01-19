@@ -29,13 +29,13 @@ public interface AccountManager extends Component {
 	long getAccountsCount();
 
 	/**
-	 * @param accountURI Account uri
-	 * @return Account
+	 * @param accountURI the account defined by its URI
+	 * @return the account
 	 */
 	Account getAccount(URI<Account> accountURI);
 
 	/**
-	 * @param accountURI Account uri
+	 * @param accountURI the account defined by its URI
 	 * @return Set of groups of this account
 	 */
 	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
@@ -80,14 +80,14 @@ public interface AccountManager extends Component {
 
 	/**
 	 * Attaches an account to a group.
-	 * @param accountURI the account
+	 * @param accountURI the account defined by its URI
 	 * @param groupURI the group
 	 */
 	void attach(URI<Account> accountURI, URI<AccountGroup> groupURI);
 
 	/**
 	 * Detaches an account from a group.
-	 * @param accountURI
+	 * @param accountURI the account defined by its URI
 	 * @param groupURI
 	 */
 	void detach(URI<Account> accountURI, URI<AccountGroup> groupURI);
@@ -95,7 +95,7 @@ public interface AccountManager extends Component {
 	/**
 	 * Defines a photo to an account.
 	 * 
-	 * @param accountURI the account 
+	 * @param accountURI the account defined by its URI
 	 * @param photo the photo
 	 */
 	void setPhoto(URI<Account> accountURI, VFile photo);
@@ -103,7 +103,7 @@ public interface AccountManager extends Component {
 	/**
 	 * Gets the photo of an account defined by its URI.
 	 * 
-	 * @param accountURI the account 
+	 * @param accountURI the account defined by its URI
 	 * @return the photo as a file
 	 */
 	VFile getPhoto(URI<Account> accountURI);
