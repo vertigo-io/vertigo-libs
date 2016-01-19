@@ -20,8 +20,6 @@ public interface AccountStorePlugin extends Plugin {
 	 */
 	long getAccountsCount();
 
-	boolean exists(URI<Account> accountURI);
-
 	/**
 	 * @param accountURI Account uri
 	 * @return Account

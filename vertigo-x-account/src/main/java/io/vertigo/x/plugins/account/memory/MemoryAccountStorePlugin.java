@@ -44,14 +44,6 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized boolean exists(final URI<Account> accountURI) {
-		Assertion.checkNotNull(accountURI);
-		//-----
-		return accountByURI.containsKey(accountURI);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public synchronized Account getAccount(final URI<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----

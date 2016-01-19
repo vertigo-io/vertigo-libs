@@ -89,16 +89,6 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean exists(final URI<Account> accountURI) {
-		Assertion.checkNotNull(accountURI);
-		//-----
-		try (final Jedis jedis = redisConnector.getResource()) {
-			return jedis.exists("account:" + accountURI.getId());
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public Account getAccount(final URI<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
