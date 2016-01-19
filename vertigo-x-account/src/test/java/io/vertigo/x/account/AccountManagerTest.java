@@ -44,6 +44,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import redis.clients.jedis.Jedis;
+
 @RunWith(Parameterized.class)
 public final class AccountManagerTest {
 	private App app;
@@ -91,7 +93,9 @@ public final class AccountManagerTest {
 		Injector.injectMembers(this, app.getComponentSpace());
 		if (redis) {
 			final RedisConnector redisConnector = app.getComponentSpace().resolve(RedisConnector.class);
-			redisConnector.getResource().flushAll();
+			try (final Jedis jedis = redisConnector.getResource()) {
+				jedis.flushAll();
+			}
 		}
 
 		accountURI0 = Accounts.createAccountURI("0");

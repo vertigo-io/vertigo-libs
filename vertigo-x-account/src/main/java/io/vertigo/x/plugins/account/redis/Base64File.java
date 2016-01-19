@@ -77,9 +77,8 @@ final class Base64File implements VFile {
 	 * @return base64Content.
 	 */
 	public String getBase64Content() {
-		String base64HtmlContent = base64Content.replace('_', '+');
-		base64HtmlContent = base64HtmlContent.replace('-', '/');
-		return base64HtmlContent;
+		return base64Content.replace('_', '+')
+				.replace('-', '/');
 	}
 
 	/** {@inheritDoc} */

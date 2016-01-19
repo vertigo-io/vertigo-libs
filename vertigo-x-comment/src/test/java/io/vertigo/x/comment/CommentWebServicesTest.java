@@ -43,6 +43,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import redis.clients.jedis.Jedis;
 import spark.Spark;
 
 import com.jayway.restassured.RestAssured;
@@ -67,7 +68,9 @@ public final class CommentWebServicesTest {
 
 		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
 		//-----
-		redisConnector.getResource().flushAll();
+		try (final Jedis jedis = redisConnector.getResource()) {
+			jedis.flushAll();
+		}
 
 		final AccountManager accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
 		Accounts.initData(accountManager);
@@ -82,9 +85,9 @@ public final class CommentWebServicesTest {
 
 	@AfterClass
 	public static void tearDown() {
-		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
-		redisConnector.getResource().flushAll();
-		app.close();
+		if (app != null) {
+			app.close();
+		}
 	}
 
 	private static void beforeSetUp() {

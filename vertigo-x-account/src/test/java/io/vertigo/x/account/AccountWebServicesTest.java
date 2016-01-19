@@ -28,6 +28,8 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import redis.clients.jedis.Jedis;
+
 import com.jayway.restassured.RestAssured;
 
 /**
@@ -47,8 +49,9 @@ public final class AccountWebServicesTest {
 		final AccountManager accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
 		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
 		//-----
-		redisConnector.getResource().flushAll();
-		//populate accounts
+		try (final Jedis jedis = redisConnector.getResource()) {
+			jedis.flushAll();
+		} //populate accounts
 		Accounts.initData(accountManager);
 	}
 

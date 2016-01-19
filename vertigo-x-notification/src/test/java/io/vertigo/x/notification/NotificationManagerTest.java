@@ -25,6 +25,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import redis.clients.jedis.Jedis;
+
 @RunWith(Parameterized.class)
 public class NotificationManagerTest {
 	private App app;
@@ -62,7 +64,9 @@ public class NotificationManagerTest {
 		Injector.injectMembers(this, Home.getApp().getComponentSpace());
 		if (redis) {
 			final RedisConnector redisConnector = app.getComponentSpace().resolve(RedisConnector.class);
-			redisConnector.getResource().flushAll();
+			try (final Jedis jedis = redisConnector.getResource()) {
+				jedis.flushAll();
+			}
 		}
 		accountURI0 = createAccountURI("0");
 		accountURI1 = createAccountURI("1");

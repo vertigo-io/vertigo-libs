@@ -20,6 +20,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import redis.clients.jedis.Jedis;
+
 public class CommentManagerTest {
 
 	@Inject
@@ -38,9 +40,9 @@ public class CommentManagerTest {
 	public void setUp() {
 		app = new App(MyAppConfig.config());
 		Injector.injectMembers(this, Home.getApp().getComponentSpace());
-
-		redisConnector.getResource().flushAll();
-
+		try (final Jedis jedis = redisConnector.getResource()) {
+			jedis.flushAll();
+		}
 		accountURI1 = Accounts.createAccountURI("1");
 		Accounts.initData(accountManager);
 
