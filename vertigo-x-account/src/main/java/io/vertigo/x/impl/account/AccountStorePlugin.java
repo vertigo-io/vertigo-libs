@@ -97,7 +97,7 @@ public interface AccountStorePlugin extends Plugin {
 	/**
 	 * Gets the photo of an account defined by its URI.
 	 * 
-	 * @param accountURI the account 
+	 * @param accountURI the account defined by its URI
 	 * @return the photo as a file
 	 */
 	Option<VFile> getPhoto(URI<Account> accountURI);
