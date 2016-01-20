@@ -1,6 +1,7 @@
 package io.vertigo.x.webapi.notification;
 
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.DELETE;
@@ -87,10 +88,10 @@ public final class NotificationWebServices implements WebServices {
 	@GET("/config")
 	@AnonymousAccessAllowed
 	public Map<String, Object> getConfig() {
-		final Map<String, Object> config = new HashMap<>();
-		config.put("api-version", API_VERSION);
-		config.put("impl-version", IMPL_VERSION);
-		return config;
+		return new MapBuilder<String, Object>()
+				.put("api-version", API_VERSION)
+				.put("impl-version", IMPL_VERSION)
+				.build();
 	}
 
 	/**

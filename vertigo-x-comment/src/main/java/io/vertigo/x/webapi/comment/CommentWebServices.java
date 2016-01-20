@@ -8,6 +8,7 @@ import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Option;
+import io.vertigo.util.MapBuilder;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
@@ -47,7 +48,7 @@ public final class CommentWebServices implements WebServices {
 	private AccountManager accountManager;
 
 	/**
-	 * Get comments for keyConcept.
+	 * Gets comments for keyConcept.
 	 * @param keyConcept KeyConcept type
 	 * @param id KeyConcept id
 	 * @return comments for keyConcept
@@ -59,7 +60,7 @@ public final class CommentWebServices implements WebServices {
 	}
 
 	/**
-	 * Publish a new comment.
+	 * Publishes a new comment.
 	 * @param comment Comment msg
 	 * @param keyConcept KeyConcept type
 	 * @param id KeyConcept id
@@ -72,7 +73,7 @@ public final class CommentWebServices implements WebServices {
 	}
 
 	/**
-	 * Update a comment.
+	 * Updates a comment.
 	 * @param uuid Comment uuid
 	 * @param comment Comment msg
 	 */
@@ -88,7 +89,7 @@ public final class CommentWebServices implements WebServices {
 
 	//-----
 	/**
-	 * Extension status (code 200 or 500)
+	 * Returns status (code 200 or 500)
 	 * @return "OK" or error message
 	 */
 	@GET("/status")
@@ -98,7 +99,7 @@ public final class CommentWebServices implements WebServices {
 	}
 
 	/**
-	 * Extension stats.
+	 * Returns  stats.
 	 * @return "OK" or error message
 	 */
 	@GET("/stats")
@@ -112,20 +113,20 @@ public final class CommentWebServices implements WebServices {
 	}
 
 	/**
-	 * Extension config.
+	 * Returns  config.
 	 * @return Config object
 	 */
 	@GET("/config")
 	@AnonymousAccessAllowed
 	public Map<String, Object> getConfig() {
-		final Map<String, Object> config = new HashMap<>();
-		config.put("api-version", API_VERSION);
-		config.put("impl-version", IMPL_VERSION);
-		return config;
+		return new MapBuilder<String, Object>()
+				.put("api-version", API_VERSION)
+				.put("impl-version", IMPL_VERSION)
+				.build();
 	}
 
 	/**
-	 * Extension help.
+	 * Returns  help.
 	 * @return Help object
 	 */
 	@GET("/help")
@@ -153,7 +154,7 @@ public final class CommentWebServices implements WebServices {
 		} else if (dataType == DataType.Long) {
 			return Long.valueOf(id);
 		}
-		throw new IllegalArgumentException("Key of KeyConcept " + dtDefinition.getLocalName() + " must be String, Long or Integer");
+		throw new IllegalArgumentException("the key of the keyConcept " + dtDefinition.getLocalName() + " must be String, Long or Integer");
 	}
 
 }
