@@ -47,7 +47,7 @@ public final class AccountManagerImpl implements AccountManager {
 
 	private static VFile createDefaultPhoto(final FileManager fileManager) {
 		try {
-			return fileManager.createFile(new File(AccountManagerImpl.class.getResource("defaultPhoto.png").toURI()));
+			return fileManager.createFile(new File(AccountManagerImpl.class.getResource("/io/vertigo/x/impl/account/defaultPhoto.png").toURI()));
 		} catch (final URISyntaxException e) {
 			throw new WrappedException(e);
 		}
