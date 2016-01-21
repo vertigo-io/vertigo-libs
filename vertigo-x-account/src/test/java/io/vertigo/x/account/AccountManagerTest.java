@@ -131,44 +131,46 @@ public final class AccountManagerTest {
 
 	@Test
 	public void testAccounts() {
-		Assert.assertEquals("Palmer Luckey", accountManager.getAccount(accountURI1).getDisplayName());
-		Assert.assertEquals(10 + 3, accountManager.getAccountsCount());
+		Assert.assertEquals("Palmer Luckey", accountManager.getStore().getAccount(accountURI1).getDisplayName());
+		Assert.assertEquals(10 + 3, accountManager.getStore().getAccountsCount());
 	}
 
 	@Test
 	public void testPhoto() throws URISyntaxException {
 		//Before the photo is the default photo
-		Assert.assertEquals("defaultPhoto.png", accountManager.getPhoto(accountURI0).getFileName());
+		Assert.assertTrue(accountManager.getStore().getPhoto(accountURI0).isEmpty());
+		Assert.assertEquals("defaultPhoto.png", accountManager.getDefaultPhoto().getFileName());
 		//-----
 		final VFile photo = fileManager.createFile(new File(this.getClass().getResource("data/marianne.png").toURI()));
-		accountManager.setPhoto(accountURI0, photo);
+		accountManager.getStore().setPhoto(accountURI0, photo);
 		//-----
-		Assert.assertEquals("marianne.png", accountManager.getPhoto(accountURI0).getFileName());
+		Assert.assertTrue(accountManager.getStore().getPhoto(accountURI0).isDefined());
+		Assert.assertEquals("marianne.png", accountManager.getStore().getPhoto(accountURI0).get().getFileName());
 	}
 
 	@Test
 	public void testGroups() {
-		Assert.assertEquals(2, accountManager.getGroupsCount());
+		Assert.assertEquals(2, accountManager.getStore().getGroupsCount());
 		//----
-		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI0).size());
-		Assert.assertEquals(2, accountManager.getGroupURIs(accountURI1).size());
-		Assert.assertEquals(2, accountManager.getGroupURIs(accountURI2).size());
-		Assert.assertEquals(2, accountManager.getAccountURIs(groupURI).size());
-		Assert.assertEquals(10 + 3, accountManager.getAccountURIs(groupAllURI).size());
+		Assert.assertEquals(1, accountManager.getStore().getGroupURIs(accountURI0).size());
+		Assert.assertEquals(2, accountManager.getStore().getGroupURIs(accountURI1).size());
+		Assert.assertEquals(2, accountManager.getStore().getGroupURIs(accountURI2).size());
+		Assert.assertEquals(2, accountManager.getStore().getAccountURIs(groupURI).size());
+		Assert.assertEquals(10 + 3, accountManager.getStore().getAccountURIs(groupAllURI).size());
 		//---
-		accountManager.detach(accountURI1, groupURI);
-		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI0).size());
-		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI1).size());
-		Assert.assertEquals(2, accountManager.getGroupURIs(accountURI2).size());
-		Assert.assertEquals(1, accountManager.getAccountURIs(groupURI).size());
-		Assert.assertEquals(10 + 3, accountManager.getAccountURIs(groupAllURI).size());
+		accountManager.getStore().detach(accountURI1, groupURI);
+		Assert.assertEquals(1, accountManager.getStore().getGroupURIs(accountURI0).size());
+		Assert.assertEquals(1, accountManager.getStore().getGroupURIs(accountURI1).size());
+		Assert.assertEquals(2, accountManager.getStore().getGroupURIs(accountURI2).size());
+		Assert.assertEquals(1, accountManager.getStore().getAccountURIs(groupURI).size());
+		Assert.assertEquals(10 + 3, accountManager.getStore().getAccountURIs(groupAllURI).size());
 		//---
-		accountManager.attach(accountURI0, groupURI);
-		Assert.assertEquals(2, accountManager.getGroupURIs(accountURI0).size());
-		Assert.assertEquals(1, accountManager.getGroupURIs(accountURI1).size());
-		Assert.assertEquals(2, accountManager.getGroupURIs(accountURI2).size());
-		Assert.assertEquals(2, accountManager.getAccountURIs(groupURI).size());
-		Assert.assertEquals(10 + 3, accountManager.getAccountURIs(groupAllURI).size());
+		accountManager.getStore().attach(accountURI0, groupURI);
+		Assert.assertEquals(2, accountManager.getStore().getGroupURIs(accountURI0).size());
+		Assert.assertEquals(1, accountManager.getStore().getGroupURIs(accountURI1).size());
+		Assert.assertEquals(2, accountManager.getStore().getGroupURIs(accountURI2).size());
+		Assert.assertEquals(2, accountManager.getStore().getAccountURIs(groupURI).size());
+		Assert.assertEquals(10 + 3, accountManager.getStore().getAccountURIs(groupAllURI).size());
 	}
 
 }
