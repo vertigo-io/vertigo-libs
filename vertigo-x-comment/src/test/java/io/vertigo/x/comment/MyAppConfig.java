@@ -9,7 +9,6 @@ import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.vega.VegaFeatures;
-import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.x.comment.data.TestUserSession;
 import io.vertigo.x.connectors.ConnectorsFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
@@ -35,8 +34,8 @@ public final class MyAppConfig {
 				.silently()
 			.endBoot()
 			.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
-			.beginModule(DynamoFeatures.class).endModule()
 			.beginModule(CommonsFeatures.class).endModule()
+			.beginModule(DynamoFeatures.class).endModule()
 			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort, redisDatabase).endModule()
 			.beginModule(AccountFeatures.class).withRedis().endModule()
 			.beginModule(CommentFeatures.class).withRedis().endModule();
@@ -51,8 +50,11 @@ public final class MyAppConfig {
 	public static AppConfig vegaConfig() {
 		// @formatter:off
 		return createAppConfigBuilder()
-			.beginModule(VegaFeatures.class).withEmbeddedServer(WS_PORT).endModule()
-			.beginModule("ws-comment").withNoAPI().withInheritance(WebServices.class)
+			.beginModule(VegaFeatures.class)
+				.withSecurity()
+				.withEmbeddedServer(WS_PORT)
+			.endModule()
+			.beginModule("ws-comment").withNoAPI()
 				.addComponent(CommentWebServices.class)
 				.addComponent(TestLoginWebServices.class)
 			.endModule()
