@@ -143,10 +143,10 @@ public final class CommentWebServices implements WebServices {
 	}
 
 	private static Object stringToId(final String id, final DtDefinition dtDefinition) {
-		final Option<DtField> keyField = dtDefinition.getIdField();
-		Assertion.checkArgument(keyField.isDefined(), "KeyConcept {0} must have an key field, in order to support Comment extension", dtDefinition.getLocalName());
+		final Option<DtField> idFieldOption = dtDefinition.getIdField();
+		Assertion.checkArgument(idFieldOption.isDefined(), "KeyConcept {0} must have an id field, in order to support Comment extension", dtDefinition.getLocalName());
 
-		final DataType dataType = keyField.get().getDomain().getDataType();
+		final DataType dataType = idFieldOption.get().getDomain().getDataType();
 		if (dataType == DataType.String) {
 			return id;
 		} else if (dataType == DataType.Integer) {
@@ -154,7 +154,7 @@ public final class CommentWebServices implements WebServices {
 		} else if (dataType == DataType.Long) {
 			return Long.valueOf(id);
 		}
-		throw new IllegalArgumentException("the key of the keyConcept " + dtDefinition.getLocalName() + " must be String, Long or Integer");
+		throw new IllegalArgumentException("the id of the keyConcept " + dtDefinition.getLocalName() + " must be String, Long or Integer");
 	}
 
 }
