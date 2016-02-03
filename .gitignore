@@ -1,11 +1,12 @@
 bin/
 trash/
 target/
+.classpath
 .gitignore
 .project
 vertigo-release/
 mvn-release.txt
 .classpath
 */.settings/
-vertigo-x-connectors/.classpath
 *.prefs
+
