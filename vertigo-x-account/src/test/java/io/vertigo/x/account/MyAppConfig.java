@@ -56,7 +56,7 @@ public final class MyAppConfig {
 		// @formatter:off
 		return createAppConfigBuilder(true)
 			.beginModule(VegaFeatures.class)
-				.withSecurity()
+				//.withSecurity()
 				.withEmbeddedServer(WS_PORT)
 			.endModule()
 			.beginModule("ws-account").withNoAPI()

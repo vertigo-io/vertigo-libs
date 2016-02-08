@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
-		<artifactId>vertigo-parent</artifactId>
-		<version>0.9.1-SNAPSHOT</version>
+		<artifactId>vertigo-x-parent</artifactId>
+		<version>0.9.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-x-notification</artifactId>
@@ -12,22 +12,6 @@
 	<name>vertigo-x-notification</name>
 
 	<dependencies>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-vega-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
 		<dependency>
 		    <groupId>io.vertigo</groupId>
 			<artifactId>vertigo-x-account</artifactId>
@@ -37,14 +21,29 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
-			<version>${project.version}</version>
+			<version>${vertigo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-dynamo-api</artifactId>
+			<version>${vertigo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-vega-api</artifactId>
+			<version>${vertigo.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-core</artifactId>
+			<version>${vertigo.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-dynamo-impl</artifactId>
-			<version>${project.version}</version>
+			<version>${vertigo.version}</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -56,7 +55,7 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-vega-impl</artifactId>
-			<version>${project.version}</version>
+			<version>${vertigo.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- For Rest Webservice testing -->

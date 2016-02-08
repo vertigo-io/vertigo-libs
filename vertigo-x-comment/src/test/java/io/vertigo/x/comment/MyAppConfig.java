@@ -51,7 +51,7 @@ public final class MyAppConfig {
 		// @formatter:off
 		return createAppConfigBuilder()
 			.beginModule(VegaFeatures.class)
-				.withSecurity()
+				//.withSecurity()
 				.withEmbeddedServer(WS_PORT)
 			.endModule()
 			.beginModule("ws-comment").withNoAPI()

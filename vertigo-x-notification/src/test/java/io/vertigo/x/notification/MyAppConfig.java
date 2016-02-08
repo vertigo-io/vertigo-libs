@@ -38,7 +38,7 @@ public final class MyAppConfig {
 			.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
 			.beginModule(CommonsFeatures.class).endModule()
 			.beginModule(DynamoFeatures.class).endModule();
-		if (redis){	
+		if (redis){
 			return  appConfigBuilder
 			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort, redisDatabase).endModule()
 			.beginModule(AccountFeatures.class).withRedis().endModule()
@@ -60,7 +60,7 @@ public final class MyAppConfig {
 		// @formatter:off
 		return createAppConfigBuilder(true)
 			.beginModule(VegaFeatures.class)
-				.withSecurity()	
+				//.withSecurity()
 				.withEmbeddedServer(WS_PORT).endModule()
 			.beginModule("ws-comment").withNoAPI()
 				.addComponent(NotificationWebServices.class)
