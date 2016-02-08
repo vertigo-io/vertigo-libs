@@ -9,6 +9,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.vega.VegaFeatures;
+import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.x.account.data.TestUserSession;
 import io.vertigo.x.connectors.ConnectorsFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
@@ -59,7 +60,7 @@ public final class MyAppConfig {
 				//.withSecurity()
 				.withEmbeddedServer(WS_PORT)
 			.endModule()
-			.beginModule("ws-account").withNoAPI()
+			.beginModule("ws-account").withNoAPI().withInheritance(WebServices.class)
 				.addComponent(AccountWebServices.class)
 			.endModule()
 			.build();
