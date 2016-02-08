@@ -24,7 +24,7 @@ limitations under the License. -->
 	</parent> 
 	
 	<artifactId>vertigo-x-parent</artifactId>
-	<version>0.9.0-SNAPSHOT</version>
+	<version>0.9.0</version>
 	<name>vertigo-extensions</name>
 	<packaging>pom</packaging>
 
@@ -43,7 +43,7 @@ limitations under the License. -->
 		<connection>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</connection>
 		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</developerConnection>
 		<url>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</url>
-		<tag>vertigo-addons-0.1.0</tag>
+		<tag>vertigo-0.9.0</tag>
 	</scm>
 
 	<build>
