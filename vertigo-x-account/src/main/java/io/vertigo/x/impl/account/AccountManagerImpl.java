@@ -5,21 +5,18 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.account.AccountStore;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -29,7 +26,7 @@ import javax.inject.Inject;
 public final class AccountManagerImpl implements AccountManager {
 	private static final String X_ACCOUNT_ID = "X_ACCOUNT_ID";
 	private final VSecurityManager securityManager;
-	private final AccountStorePlugin accountStorePlugin;
+	private final AccountStore accountStorePlugin;
 	private final VFile defaultPhoto;
 
 	/**
@@ -45,9 +42,9 @@ public final class AccountManagerImpl implements AccountManager {
 		Assertion.checkNotNull(securityManager);
 		//-----
 		this.accountStorePlugin = accountStorePlugin;
+		this.securityManager = securityManager;
 		//TODO a remplacer par l'appel a fileManager en v0.9.1
 		defaultPhoto = createFile("defaultPhoto.png", "image/png", AccountManagerImpl.class.getResource("defaultPhoto.png"), fileManager);
-		this.securityManager = securityManager;
 	}
 
 	private static VFile createFile(final String fileName, final String typeMime, final URL ressourceUrl, final FileManager fileManager) {
@@ -63,7 +60,7 @@ public final class AccountManagerImpl implements AccountManager {
 				conn.getInputStream().close();
 			}
 		} catch (final IOException e) {
-			throw new RuntimeException("Can't get file size", e);
+			throw new WrappedException("Can't get file size", e);
 		}
 		Assertion.checkArgument(length >= 0, "Can't get file size");
 		final InputStreamBuilder inputStreamBuilder = new InputStreamBuilder() {
@@ -93,81 +90,13 @@ public final class AccountManagerImpl implements AccountManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public long getAccountsCount() {
-		return accountStorePlugin.getAccountsCount();
+	public VFile getDefaultPhoto() {
+		return defaultPhoto;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Account getAccount(final URI<Account> accountURI) {
-		return accountStorePlugin.getAccount(accountURI);
+	public AccountStore getStore() {
+		return accountStorePlugin;
 	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
-		return accountStorePlugin.getGroupURIs(accountURI);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void saveAccounts(final List<Account> accounts) {
-		accountStorePlugin.saveAccounts(accounts);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public long getGroupsCount() {
-		return accountStorePlugin.getGroupsCount();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Collection<AccountGroup> getAllGroups() {
-		return accountStorePlugin.getAllGroups();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public AccountGroup getGroup(final URI<AccountGroup> groupURI) {
-		return accountStorePlugin.getGroup(groupURI);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
-		return accountStorePlugin.getAccountURIs(groupURI);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void saveGroup(final AccountGroup saveGroup) {
-		accountStorePlugin.saveGroup(saveGroup);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void attach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
-		accountStorePlugin.attach(accountURI, groupURI);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void detach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
-		accountStorePlugin.detach(accountURI, groupURI);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void setPhoto(final URI<Account> accountURI, final VFile photo) {
-		accountStorePlugin.setPhoto(accountURI, photo);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public VFile getPhoto(final URI<Account> accountURI) {
-		final Option<VFile> photo = accountStorePlugin.getPhoto(accountURI);
-		return photo.getOrElse(defaultPhoto);
-	}
-
 }

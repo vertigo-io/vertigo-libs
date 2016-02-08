@@ -1,15 +1,9 @@
 package io.vertigo.x.comment;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
-import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.core.environment.EnvironmentManager;
-import io.vertigo.core.impl.environment.EnvironmentManagerImpl;
-import io.vertigo.core.impl.locale.LocaleManagerImpl;
-import io.vertigo.core.impl.resource.ResourceManagerImpl;
-import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
@@ -22,55 +16,28 @@ import io.vertigo.x.impl.account.AccountFeatures;
 import io.vertigo.x.impl.comment.CommentFeatures;
 import io.vertigo.x.webapi.comment.CommentWebServices;
 
-import java.io.IOException;
-import java.net.InetAddress;
-
 public final class MyAppConfig {
 	public static final int WS_PORT = 8088;
 
-	private static boolean ping(final String host) {
-		try {
-			final InetAddress inet = InetAddress.getByName(host);
-			return inet.getAddress() != null;
-		} catch (final IOException e) {
-			return false;
-		}
-	}
-
 	private static AppConfigBuilder createAppConfigBuilder() {
-		final String redisHost;
-		final int redisPort;
-		final String redisPassword;
-		if (ping("kasper-redis")) {
-			redisHost = "kasper-redis";
-			redisPort = 6379;
-			redisPassword = null;
-		} else if (ping("pub-redis-10382.us-east-1-3.2.ec2.garantiadata.com")) {
-			redisHost = "pub-redis-10382.us-east-1-3.2.ec2.garantiadata.com";
-			redisPort = 10382;
-			redisPassword = "kleegroup";
-		} else {
-			throw new RuntimeException("no redis server found");
-		}
+		final String redisHost = "kasper-redis";
+		final int redisPort = 6379;
+		final int redisDatabase = 15;
+
 		// @formatter:off
 		return new AppConfigBuilder()
-			.beginBootModule()
-				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
-					.addParam("locales", "fr")
-				.endComponent()
-				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
-					.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
-				.addComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
-					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
-					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
+			.beginBootModule("fr")
+				.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
+				.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
+				.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
 			.endModule()
 			.beginBoot()
 				.silently()
 			.endBoot()
 			.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
-			.beginModule(DynamoFeatures.class).endModule()
 			.beginModule(CommonsFeatures.class).endModule()
-			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort, redisPassword).endModule()
+			.beginModule(DynamoFeatures.class).endModule()
+			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort, redisDatabase).endModule()
 			.beginModule(AccountFeatures.class).withRedis().endModule()
 			.beginModule(CommentFeatures.class).withRedis().endModule();
 		// @formatter:on
@@ -84,7 +51,10 @@ public final class MyAppConfig {
 	public static AppConfig vegaConfig() {
 		// @formatter:off
 		return createAppConfigBuilder()
-			.beginModule(VegaFeatures.class).withEmbeddedServer(WS_PORT).endModule()
+			.beginModule(VegaFeatures.class)
+				//.withSecurity()
+				.withEmbeddedServer(WS_PORT)
+			.endModule()
 			.beginModule("ws-comment").withNoAPI().withInheritance(WebServices.class)
 				.addComponent(CommentWebServices.class)
 				.addComponent(TestLoginWebServices.class)

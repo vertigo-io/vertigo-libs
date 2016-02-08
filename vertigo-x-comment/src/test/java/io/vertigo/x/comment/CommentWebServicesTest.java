@@ -18,8 +18,8 @@
  */
 package io.vertigo.x.comment;
 
-import io.vertigo.core.App;
-import io.vertigo.core.Home;
+import io.vertigo.app.App;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
@@ -29,6 +29,7 @@ import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.comment.data.Accounts;
+import io.vertigo.x.connectors.redis.RedisConnector;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -42,6 +43,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import redis.clients.jedis.Jedis;
 import spark.Spark;
 
 import com.jayway.restassured.RestAssured;
@@ -64,7 +66,13 @@ public final class CommentWebServicesTest {
 		beforeSetUp();
 		app = new App(MyAppConfig.vegaConfig());
 
-		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
+		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
+		//-----
+		try (final Jedis jedis = redisConnector.getResource()) {
+			jedis.flushAll();
+		}
+
+		final AccountManager accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
 		Accounts.initData(accountManager);
 		account1Uri = Accounts.createAccountURI("1");
 
@@ -77,7 +85,9 @@ public final class CommentWebServicesTest {
 
 	@AfterClass
 	public static void tearDown() {
-		app.close();
+		if (app != null) {
+			app.close();
+		}
 	}
 
 	private static void beforeSetUp() {
@@ -98,12 +108,12 @@ public final class CommentWebServicesTest {
 
 	@Test
 	public void testGetComments() {
-		final CommentManager commentManager = Home.getComponentSpace().resolve(CommentManager.class);
+		final CommentManager commentManager = Home.getApp().getComponentSpace().resolve(CommentManager.class);
 		final Comment comment = new CommentBuilder()
 				.withAuthor(account1Uri)
 				.withMsg("Lorem ipsum")
 				.build();
-		commentManager.publish(comment, keyConcept1Uri);
+		commentManager.publish(account1Uri, comment, keyConcept1Uri);
 
 		//Check we got this comment
 		RestAssured.given().filter(sessionFilter)

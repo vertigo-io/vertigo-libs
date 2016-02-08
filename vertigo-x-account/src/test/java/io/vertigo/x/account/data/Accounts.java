@@ -29,7 +29,7 @@ public final class Accounts {
 		final Account testAccount0 = new AccountBuilder("0").withDisplayName("John doe").withEmail("john.doe@yopmail.com").build();
 		final Account testAccount1 = new AccountBuilder("1").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
 		final Account testAccount2 = new AccountBuilder("2").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
-		accountManager.saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2));
+		accountManager.getStore().saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2));
 
 		final URI<Account> accountURI0 = createAccountURI(testAccount0.getId());
 		final URI<Account> accountURI1 = createAccountURI(testAccount1.getId());
@@ -37,25 +37,25 @@ public final class Accounts {
 
 		final AccountGroup testAccountGroup1 = new AccountGroup("100", "TIME's cover");
 		final URI<AccountGroup> group1Uri = DtObjectUtil.createURI(AccountGroup.class, testAccountGroup1.getId());
-		accountManager.saveGroup(testAccountGroup1);
+		accountManager.getStore().saveGroup(testAccountGroup1);
 
-		accountManager.attach(accountURI1, group1Uri);
-		accountManager.attach(accountURI2, group1Uri);
+		accountManager.getStore().attach(accountURI1, group1Uri);
+		accountManager.getStore().attach(accountURI2, group1Uri);
 
 		final AccountGroup groupAll = new AccountGroup("ALL", "Everyone");
 		final URI<AccountGroup> groupAllUri = DtObjectUtil.createURI(AccountGroup.class, groupAll.getId());
-		accountManager.saveGroup(groupAll);
-		accountManager.attach(accountURI0, groupAllUri);
-		accountManager.attach(accountURI1, groupAllUri);
-		accountManager.attach(accountURI2, groupAllUri);
+		accountManager.getStore().saveGroup(groupAll);
+		accountManager.getStore().attach(accountURI0, groupAllUri);
+		accountManager.getStore().attach(accountURI1, groupAllUri);
+		accountManager.getStore().attach(accountURI2, groupAllUri);
 
 		//---create 10 noisy data
 		final List<Account> accounts = createAccounts();
+		accountManager.getStore().saveAccounts(accounts);
 		for (final Account account : accounts) {
 			final URI<Account> accountUri = createAccountURI(account.getId());
-			accountManager.attach(accountUri, groupAllUri);
+			accountManager.getStore().attach(accountUri, groupAllUri);
 		}
-		accountManager.saveAccounts(accounts);
 
 	}
 

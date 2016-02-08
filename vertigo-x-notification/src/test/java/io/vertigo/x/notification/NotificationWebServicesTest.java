@@ -18,11 +18,12 @@
  */
 package io.vertigo.x.notification;
 
-import io.vertigo.core.App;
-import io.vertigo.core.Home;
+import io.vertigo.app.App;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.notification.data.Accounts;
 
 import org.apache.http.HttpStatus;
@@ -32,6 +33,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import redis.clients.jedis.Jedis;
 import spark.Spark;
 
 import com.jayway.restassured.RestAssured;
@@ -48,13 +50,20 @@ public final class NotificationWebServicesTest {
 		beforeSetUp();
 		app = new App(MyAppConfig.vegaConfig());
 
-		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
+		final AccountManager accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
+		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
+		//-----
+		try (final Jedis jedis = redisConnector.getResource()) {
+			jedis.flushAll();
+		}
 		Accounts.initData(accountManager);
 	}
 
 	@AfterClass
 	public static void tearDown() {
-		app.close();
+		if (app != null) {
+			app.close();
+		}
 	}
 
 	@Before
@@ -75,7 +84,7 @@ public final class NotificationWebServicesTest {
 
 	@Test
 	public void testGetCurrentNotifications() {
-		final NotificationManager notificationManager = Home.getComponentSpace().resolve(NotificationManager.class);
+		final NotificationManager notificationManager = Home.getApp().getComponentSpace().resolve(NotificationManager.class);
 		final Notification notification = new NotificationBuilder()
 				.withSender("ExtensionTest")
 				.withType("MSG")
@@ -96,7 +105,7 @@ public final class NotificationWebServicesTest {
 
 	@Test
 	public void testGetRemoveNotifications() {
-		final NotificationManager notificationManager = Home.getComponentSpace().resolve(NotificationManager.class);
+		final NotificationManager notificationManager = Home.getApp().getComponentSpace().resolve(NotificationManager.class);
 		final Notification notification = new NotificationBuilder()
 				.withSender("ExtensionTest")
 				.withType("MSG")

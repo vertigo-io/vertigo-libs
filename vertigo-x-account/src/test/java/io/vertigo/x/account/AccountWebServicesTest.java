@@ -18,14 +18,17 @@
  */
 package io.vertigo.x.account;
 
-import io.vertigo.core.App;
-import io.vertigo.core.Home;
+import io.vertigo.app.App;
+import io.vertigo.app.Home;
 import io.vertigo.x.account.data.Accounts;
+import io.vertigo.x.connectors.redis.RedisConnector;
 
 import org.apache.http.HttpStatus;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import redis.clients.jedis.Jedis;
 
 import com.jayway.restassured.RestAssured;
 
@@ -43,14 +46,20 @@ public final class AccountWebServicesTest {
 	@BeforeClass
 	public static void setUp() {
 		app = new App(MyAppConfig.vegaConfig());
-		//populate accounts
-		final AccountManager accountManager = Home.getComponentSpace().resolve(AccountManager.class);
+		final AccountManager accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
+		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
+		//-----
+		try (final Jedis jedis = redisConnector.getResource()) {
+			jedis.flushAll();
+		} //populate accounts
 		Accounts.initData(accountManager);
 	}
 
 	@AfterClass
 	public static void tearDown() {
-		app.close();
+		if (app != null) {
+			app.close();
+		}
 	}
 
 	private static void assertStatusCode(final int expectedStatus, final String path) {

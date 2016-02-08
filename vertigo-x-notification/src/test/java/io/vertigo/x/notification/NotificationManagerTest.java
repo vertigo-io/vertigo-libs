@@ -1,7 +1,7 @@
 package io.vertigo.x.notification;
 
-import io.vertigo.core.App;
-import io.vertigo.core.Home;
+import io.vertigo.app.App;
+import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
@@ -9,7 +9,11 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.notification.data.Accounts;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import javax.inject.Inject;
 
@@ -17,9 +21,15 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
+import redis.clients.jedis.Jedis;
+
+@RunWith(Parameterized.class)
 public class NotificationManagerTest {
-	private static App app;
+	private App app;
 
 	@Inject
 	private AccountManager accountManager;
@@ -31,11 +41,33 @@ public class NotificationManagerTest {
 	private URI<Account> accountURI2;
 	private URI<AccountGroup> groupURI;
 
+	@Parameters
+	public static Collection<Object[]> params() {
+		return Arrays.asList(
+				//redis 
+				new Object[] { true },
+				//memory (redis= false)
+				new Object[] { false }
+				);
+	}
+
+	final boolean redis;
+
+	public NotificationManagerTest(final boolean redis) {
+		//params are automatically injected
+		this.redis = redis;
+	}
+
 	@Before
 	public void setUp() {
-		app = new App(MyAppConfig.config());
-
-		Injector.injectMembers(this, Home.getComponentSpace());
+		app = new App(MyAppConfig.config(redis));
+		Injector.injectMembers(this, Home.getApp().getComponentSpace());
+		if (redis) {
+			final RedisConnector redisConnector = app.getComponentSpace().resolve(RedisConnector.class);
+			try (final Jedis jedis = redisConnector.getResource()) {
+				jedis.flushAll();
+			}
+		}
 		accountURI0 = createAccountURI("0");
 		accountURI1 = createAccountURI("1");
 		accountURI2 = createAccountURI("2");

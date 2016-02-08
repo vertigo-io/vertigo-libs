@@ -6,13 +6,15 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.lang.Assertion;
 
 /**
+ * This class defines the account of a user/organization/system.
+ s* 
  * @author pchretien
  */
 @DtDefinition
 public final class Account implements DtObject {
 	private static final long serialVersionUID = 7509030642946579907L;
 
-	@Field(domain = "DO_X_ACCOUNT_ID", type = "PRIMARY_KEY", required = true, label = "id")
+	@Field(type = "PRIMARY_KEY", domain = "DO_X_ACCOUNT_ID", required = true, label = "id")
 	private final String id;
 
 	@Field(domain = "DO_X_ACCOUNT_NAME", label = "displayName")
@@ -29,14 +31,23 @@ public final class Account implements DtObject {
 		this.email = email;
 	}
 
+	/**
+	 * @return the id of the account
+	 */
 	public String getId() {
 		return id;
 	}
 
+	/**
+	 * @return the diplayName
+	 */
 	public String getDisplayName() {
 		return displayName;
 	}
 
+	/**
+	 * @return the email
+	 */
 	public String getEmail() {
 		return email;
 	}

@@ -1,8 +1,8 @@
 package io.vertigo.x.plugins.account.redis;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.Home;
 import io.vertigo.dynamo.file.model.VFile;
 
 import java.io.ByteArrayInputStream;
@@ -77,15 +77,14 @@ final class Base64File implements VFile {
 	 * @return base64Content.
 	 */
 	public String getBase64Content() {
-		String base64HtmlContent = base64Content.replace('_', '+');
-		base64HtmlContent = base64HtmlContent.replace('-', '/');
-		return base64HtmlContent;
+		return base64Content.replace('_', '+')
+				.replace('-', '/');
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public InputStream createInputStream() throws IOException {
-		final Codec<byte[], String> base64Codec = Home.getComponentSpace().resolve(CodecManager.class).getBase64Codec();
+		final Codec<byte[], String> base64Codec = Home.getApp().getComponentSpace().resolve(CodecManager.class).getBase64Codec();
 		return new ByteArrayInputStream(base64Codec.decode(base64Content));
 	}
 

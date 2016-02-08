@@ -39,23 +39,24 @@ public final class RedisConnector implements Component, Activeable {
 
 	/**
 	 * Constructor.
-	 *
 	 * @param redisHost REDIS server host name
-	 * @param redisPort  REDIS server port
+	 * @param redisPort REDIS server port
+	 * @param redisDatabase REDIS database index 
 	 * @param passwordOption password (optional)
 	 */
 	@Inject
-	public RedisConnector(final @Named("host") String redisHost, final @Named("port") int redisPort, final @Named("password") Option<String> passwordOption) {
+	public RedisConnector(
+			@Named("host") final String redisHost,
+			@Named("port") final int redisPort,
+			@Named("database") final int redisDatabase,
+			@Named("password") final Option<String> passwordOption) {
 		Assertion.checkArgNotEmpty(redisHost);
 		Assertion.checkNotNull(passwordOption);
-		// -----
+		Assertion.checkArgument(redisDatabase >= 0 && redisDatabase < 16, "there 16 DBs(0 - 15); your index database '{0}' is not inside this range", redisDatabase);
+		//-----
 		final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-		if (passwordOption.isDefined()) {
-			jedisPool = new JedisPool(jedisPoolConfig, redisHost, redisPort, CONNECT_TIMEOUT, passwordOption.get());
-		} else {
-			jedisPool = new JedisPool(jedisPoolConfig, redisHost, redisPort, CONNECT_TIMEOUT);
-		}
-		// test
+		jedisPool = new JedisPool(jedisPoolConfig, redisHost, redisPort, CONNECT_TIMEOUT, passwordOption.getOrElse(null), redisDatabase);
+		//test
 		try (Jedis jedis = jedisPool.getResource()) {
 			jedis.ping();
 		}

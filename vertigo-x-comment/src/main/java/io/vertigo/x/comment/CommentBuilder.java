@@ -1,6 +1,6 @@
 package io.vertigo.x.comment;
 
-import io.vertigo.core.Home;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -38,12 +38,12 @@ public final class CommentBuilder implements Builder<Comment> {
 	public CommentBuilder(final UUID uuid, final URI<Account> author, final Date creationDate) {
 		this.uuid = uuid;
 		myAuthor = author;
-		myAuthorDisplayName = getAccountManager().getAccount(author).getDisplayName();
+		myAuthorDisplayName = getAccountManager().getStore().getAccount(author).getDisplayName();
 		myCreationDate = creationDate;
 	}
 
 	private static AccountManager getAccountManager() {
-		return Home.getComponentSpace().resolve(AccountManager.class);
+		return Home.getApp().getComponentSpace().resolve(AccountManager.class);
 	}
 
 	/**
@@ -55,7 +55,7 @@ public final class CommentBuilder implements Builder<Comment> {
 		Assertion.checkNotNull(author);
 		//-----
 		myAuthor = author;
-		myAuthorDisplayName = getAccountManager().getAccount(author).getDisplayName();
+		myAuthorDisplayName = getAccountManager().getStore().getAccount(author).getDisplayName();
 		return this;
 	}
 

@@ -5,7 +5,6 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.DateUtil;
 import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.comment.Comment;
 import io.vertigo.x.comment.CommentBuilder;
 import io.vertigo.x.comment.CommentManager;
@@ -21,31 +20,26 @@ import javax.inject.Inject;
 public final class CommentManagerImpl implements CommentManager {
 	private final CommentPlugin commentsPlugin;
 
-	private final AccountManager accountManager;
-
 	/**
 	 * Constructor.
 	 * @param commentsPlugin Comment plugin
 	 */
 	@Inject
-	public CommentManagerImpl(final CommentPlugin commentsPlugin, final AccountManager accountManager) {
+	public CommentManagerImpl(final CommentPlugin commentsPlugin) {
 		Assertion.checkNotNull(commentsPlugin);
-		Assertion.checkNotNull(accountManager);
 		//-----
 		this.commentsPlugin = commentsPlugin;
-		this.accountManager = accountManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void publish(final Comment comment, final URI<? extends KeyConcept> keyConceptUri) {
+	public void publish(final URI<Account> accountURI, final Comment comment, final URI<? extends KeyConcept> keyConceptUri) {
 		Assertion.checkNotNull(comment);
 		Assertion.checkNotNull(keyConceptUri);
 		//-----
-		final URI<Account> loggedAccountURI = accountManager.getLoggedAccount();
 		final Date creationDate = DateUtil.newDateTime();
 		final Comment savedComment = new CommentBuilder()
-				.withAuthor(loggedAccountURI)
+				.withAuthor(accountURI)
 				.withCreationDate(creationDate)
 				.withLastModified(creationDate)
 				.withMsg(comment.getMsg())
@@ -63,17 +57,14 @@ public final class CommentManagerImpl implements CommentManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void update(final Comment comment) {
+	public void update(final URI<Account> accountURI, final Comment comment) {
 		Assertion.checkNotNull(comment);
 		//-----
-		final URI<Account> loggedAccountURI = accountManager.getLoggedAccount();
 		final Comment originalComment = commentsPlugin.get(comment.getUuid());
-		if (!loggedAccountURI.equals(comment.getAuthor())
-				|| !originalComment.getAuthor().equals(comment.getAuthor())) {
-			throw new RuntimeException("The comment editing is only available for the comment's author.");
-		}
+		final boolean authorized = accountURI.equals(comment.getAuthor()) && originalComment.getAuthor().equals(comment.getAuthor());
+		Assertion.checkState(authorized, "The comment editing is only available for the comment's author.");
 
-		final Comment savedComment = new CommentBuilder(originalComment.getUuid(), loggedAccountURI, originalComment.getCreationDate())
+		final Comment savedComment = new CommentBuilder(originalComment.getUuid(), accountURI, originalComment.getCreationDate())
 				.withMsg(comment.getMsg())
 				.withLastModified(DateUtil.newDateTime())
 				.build();

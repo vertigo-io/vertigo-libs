@@ -44,14 +44,6 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public synchronized boolean exists(final URI<Account> accountURI) {
-		Assertion.checkNotNull(accountURI);
-		//-----
-		return accountByURI.containsKey(accountURI);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public synchronized Account getAccount(final URI<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
@@ -153,13 +145,6 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 		final Set<URI<AccountGroup>> groupURIs = groupByAccountURI.get(accountURI);
 		Assertion.checkNotNull(accountURI, "account {0} must be create before this operation", accountURI);
 		return Collections.unmodifiableSet(groupURIs);
-		//
-		//		Assertion.checkNotNull(groupURIs, "account must be create before this operation");
-		//		List<AccountGroup> groups = new ArrayList<>();
-		//		for (URI<AccountGroup> groupURI : groupURIs) {
-		//			groups.add(groupByURI.get(groupURI));
-		//		}
-		//		return Collections.unmodifiableList(groups);
 	}
 
 	/** {@inheritDoc} */

@@ -1,15 +1,18 @@
 package io.vertigo.x.impl.comment;
 
-import io.vertigo.core.config.Features;
+import io.vertigo.app.config.Features;
 import io.vertigo.x.comment.CommentManager;
 import io.vertigo.x.plugins.comment.redis.RedisCommentPlugin;
 
 /**
- * Defines extension comment.
+ * Defines the 'comment' extension
  * @author pchretien
  */
 public final class CommentFeatures extends Features {
 
+	/**
+	 * cONSTRUCTOR;
+	 */
 	public CommentFeatures() {
 		super("x-comment");
 	}
@@ -21,7 +24,8 @@ public final class CommentFeatures extends Features {
 	}
 
 	/**
-	 * @return Active redis plugin
+	 * Defines REDIS as the database to store the comments
+	 * @return the features
 	 */
 	public CommentFeatures withRedis() {
 		getModuleConfigBuilder()

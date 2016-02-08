@@ -2,6 +2,7 @@ package io.vertigo.x.plugins.notification.redis;
 
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.connectors.redis.RedisConnector;
@@ -31,6 +32,10 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	private static final String CODEC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	private final RedisConnector redisConnector;
 
+	/**
+	 * Constructor.
+	 * @param redisConnector the connector to REDIS database
+	 */
 	@Inject
 	public RedisNotificationPlugin(final RedisConnector redisConnector) {
 		Assertion.checkNotNull(redisConnector);
@@ -81,7 +86,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 					.withTargetUrl(data.get("targetUrl"))
 					.build();
 		} catch (final ParseException e) {
-			throw new RuntimeException("Can't parse notification", e);
+			throw new WrappedException("Can't parse notification", e);
 		}
 	}
 

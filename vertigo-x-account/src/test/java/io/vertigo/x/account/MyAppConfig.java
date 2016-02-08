@@ -1,15 +1,9 @@
 package io.vertigo.x.account;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
-import io.vertigo.commons.plugins.resource.java.ClassPathResourceResolverPlugin;
-import io.vertigo.core.config.AppConfig;
-import io.vertigo.core.config.AppConfigBuilder;
-import io.vertigo.core.environment.EnvironmentManager;
-import io.vertigo.core.impl.environment.EnvironmentManagerImpl;
-import io.vertigo.core.impl.locale.LocaleManagerImpl;
-import io.vertigo.core.impl.resource.ResourceManagerImpl;
-import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
@@ -19,47 +13,21 @@ import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.x.account.data.TestUserSession;
 import io.vertigo.x.connectors.ConnectorsFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
+import io.vertigo.x.plugins.account.memory.MemoryAccountStorePlugin;
 import io.vertigo.x.webapi.account.AccountWebServices;
-
-import java.io.IOException;
-import java.net.InetAddress;
 
 public final class MyAppConfig {
 	public static final int WS_PORT = 8088;
 
-	private static boolean ping(final String host) {
-		try {
-			final InetAddress inet = InetAddress.getByName(host);
-			return inet.getAddress() != null;
-		} catch (final IOException e) {
-			return false;
-		}
-	}
+	private static AppConfigBuilder createAppConfigBuilder(final boolean redis) {
+		final String redisHost = "kasper-redis";
+		final int redisPort = 6379;
+		final int redisDatabase = 15;
 
-	private static AppConfigBuilder createAppConfigBuilder() {
-		final String redisHost;
-		final int redisPort;
-		final String redisPassword;
-		if (ping("kasper-redis")) {
-			redisHost = "kasper-redis";
-			redisPort = 6379;
-			redisPassword = null;
-		} else if (ping("pub-redis-10382.us-east-1-3.2.ec2.garantiadata.com")) {
-			redisHost = "pub-redis-10382.us-east-1-3.2.ec2.garantiadata.com";
-			redisPort = 10382;
-			redisPassword = "kleegroup";
-		} else {
-			throw new RuntimeException("no redis server found");
-		}
 		// @formatter:off
-		return new AppConfigBuilder()
-			.beginBootModule()
-				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
-					.addParam("locales", "fr")
-				.endComponent()
-				.addComponent(ResourceManager.class, ResourceManagerImpl.class)
+		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder()
+			.beginBootModule("fr")
 					.beginPlugin( ClassPathResourceResolverPlugin.class).endPlugin()
-				.addComponent(EnvironmentManager.class, EnvironmentManagerImpl.class)
 					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
 					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
 			.endModule()
@@ -68,23 +36,30 @@ public final class MyAppConfig {
 			.endBoot()
 			.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
 			.beginModule(CommonsFeatures.class).endModule()
-			.beginModule(DynamoFeatures.class).endModule()
-			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort, redisPassword).endModule()
+			.beginModule(DynamoFeatures.class).endModule();
+		if (redis){
+			return  appConfigBuilder
+			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort, redisDatabase).endModule()
 			.beginModule(AccountFeatures.class).withRedis().endModule();
+		}
+		//else we use memory
+		return  appConfigBuilder
+			.beginModule(AccountFeatures.class).getModuleConfigBuilder().addPlugin(MemoryAccountStorePlugin.class).endModule();
 		// @formatter:on
 	}
 
-	public static AppConfig config() {
+	public static AppConfig config(final boolean redis) {
 		// @formatter:off
-		return createAppConfigBuilder().build();
+		return createAppConfigBuilder(redis).build();
 	}
 
 	public static AppConfig vegaConfig() {
 		// @formatter:off
-		return createAppConfigBuilder()
+		return createAppConfigBuilder(true)
 			.beginModule(VegaFeatures.class)
+				//.withSecurity()
 				.withEmbeddedServer(WS_PORT)
-				.endModule()
+			.endModule()
 			.beginModule("ws-account").withNoAPI().withInheritance(WebServices.class)
 				.addComponent(AccountWebServices.class)
 			.endModule()
