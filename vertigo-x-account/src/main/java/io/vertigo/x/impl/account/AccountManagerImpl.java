@@ -20,21 +20,13 @@ package io.vertigo.x.impl.account;
 
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.account.AccountStore;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -61,33 +53,7 @@ public final class AccountManagerImpl implements AccountManager {
 		//-----
 		this.accountStorePlugin = accountStorePlugin;
 		this.securityManager = securityManager;
-		//TODO a remplacer par l'appel a fileManager en v0.9.1
-		defaultPhoto = createFile("defaultPhoto.png", "image/png", AccountManagerImpl.class.getResource("defaultPhoto.png"), fileManager);
-	}
-
-	private static VFile createFile(final String fileName, final String typeMime, final URL ressourceUrl, final FileManager fileManager) {
-		final long length;
-		final long lastModified;
-		final URLConnection conn;
-		try {
-			conn = ressourceUrl.openConnection();
-			try {
-				length = conn.getContentLength();
-				lastModified = conn.getLastModified();
-			} finally {
-				conn.getInputStream().close();
-			}
-		} catch (final IOException e) {
-			throw new WrappedException("Can't get file size", e);
-		}
-		Assertion.checkArgument(length >= 0, "Can't get file size");
-		final InputStreamBuilder inputStreamBuilder = new InputStreamBuilder() {
-			@Override
-			public InputStream createInputStream() throws IOException {
-				return ressourceUrl.openStream();
-			}
-		};
-		return fileManager.createFile(fileName, typeMime, new Date(lastModified), length, inputStreamBuilder);
+		defaultPhoto = fileManager.createFile("defaultPhoto.png", "image/png", AccountManagerImpl.class.getResource("defaultPhoto.png"));
 	}
 
 	/** {@inheritDoc} */

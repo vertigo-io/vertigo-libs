@@ -47,7 +47,7 @@ import javax.inject.Inject;
 public final class NotificationWebServices implements WebServices {
 
 	private static final String API_VERSION = "0.1.0";
-	private static final String IMPL_VERSION = "0.9.0";
+	private static final String IMPL_VERSION = "0.9.1";
 
 	@Inject
 	private NotificationManager notificationManager;
