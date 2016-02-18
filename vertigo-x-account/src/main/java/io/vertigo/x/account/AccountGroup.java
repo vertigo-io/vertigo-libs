@@ -30,7 +30,7 @@ import io.vertigo.lang.Assertion;
 public final class AccountGroup implements DtObject {
 	private static final long serialVersionUID = -4463291583101516140L;
 
-	@Field(type = "PRIMARY_KEY", domain = "DO_X_ACCOUNT_ID", required = true, label = "id")
+	@Field(type = "ID", domain = "DO_X_ACCOUNT_ID", required = true, label = "id")
 	private final String id;
 
 	@Field(domain = "DO_X_ACCOUNT_NAME", label = "displayName")

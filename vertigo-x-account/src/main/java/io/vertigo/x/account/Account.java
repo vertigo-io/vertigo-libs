@@ -25,14 +25,14 @@ import io.vertigo.lang.Assertion;
 
 /**
  * This class defines the account of a user/organization/system.
- s* 
+ s*
  * @author pchretien
  */
 @DtDefinition
 public final class Account implements DtObject {
 	private static final long serialVersionUID = 7509030642946579907L;
 
-	@Field(type = "PRIMARY_KEY", domain = "DO_X_ACCOUNT_ID", required = true, label = "id")
+	@Field(type = "ID", domain = "DO_X_ACCOUNT_ID", required = true, label = "id")
 	private final String id;
 
 	@Field(domain = "DO_X_ACCOUNT_NAME", label = "displayName")
