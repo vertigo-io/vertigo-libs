@@ -27,10 +27,6 @@ limitations under the License. -->
 	<version>0.9.2-SNAPSHOT</version>
 	<name>vertigo-extensions</name>
 	<packaging>pom</packaging>
-
-	<properties>
-		<vertigo.version>0.9.2-SNAPSHOT</vertigo.version>
-	</properties>
 	
 	<modules>
 		<module>vertigo-x-connectors</module>
