@@ -136,7 +136,7 @@ public final class AccountManagerTest {
 	@Test
 	public void testPhoto() throws URISyntaxException {
 		//Before the photo is the default photo
-		Assert.assertTrue(accountManager.getStore().getPhoto(accountURI0).isEmpty());
+		Assert.assertFalse(accountManager.getStore().getPhoto(accountURI0).isPresent());
 		Assert.assertEquals("defaultPhoto.png", accountManager.getDefaultPhoto().getFileName());
 		//-----
 		final VFile photo = fileManager.createFile(new File(this.getClass().getResource("data/marianne.png").toURI()));
