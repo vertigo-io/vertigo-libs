@@ -18,6 +18,14 @@
  */
 package io.vertigo.x.plugins.account.memory;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -27,14 +35,6 @@ import io.vertigo.lang.Option;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.impl.account.AccountStorePlugin;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author pchretien
@@ -189,7 +189,7 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 	public Option<VFile> getPhoto(final URI<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
-		return Option.option(photoByAccountURI.get(accountURI));
+		return Option.ofNullable(photoByAccountURI.get(accountURI));
 	}
 
 }

@@ -18,6 +18,12 @@
  */
 package io.vertigo.x.webapi.account;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.MapBuilder;
@@ -29,12 +35,6 @@ import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.inject.Inject;
 
 /**
  * Webservices for account extension.
@@ -71,7 +71,7 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/accounts/{id}/photo")
 	@AnonymousAccessAllowed
 	public VFile getAccountPhoto(@PathParam("id") final String id) {
-		return accountManager.getStore().getPhoto(DtObjectUtil.createURI(Account.class, id)).getOrElse(accountManager.getDefaultPhoto());
+		return accountManager.getStore().getPhoto(DtObjectUtil.createURI(Account.class, id)).orElse(accountManager.getDefaultPhoto());
 	}
 
 	/**

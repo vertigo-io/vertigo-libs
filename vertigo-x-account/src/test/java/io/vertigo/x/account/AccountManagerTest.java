@@ -18,16 +18,6 @@
  */
 package io.vertigo.x.account;
 
-import io.vertigo.app.App;
-import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.VSecurityManager;
-import io.vertigo.x.account.data.Accounts;
-import io.vertigo.x.connectors.redis.RedisConnector;
-
 import java.io.File;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -44,6 +34,15 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import io.vertigo.app.App;
+import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.file.FileManager;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.persona.security.UserSession;
+import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.x.account.data.Accounts;
+import io.vertigo.x.connectors.redis.RedisConnector;
 import redis.clients.jedis.Jedis;
 
 @RunWith(Parameterized.class)
@@ -68,11 +67,10 @@ public final class AccountManagerTest {
 	@Parameters
 	public static Collection<Object[]> params() {
 		return Arrays.asList(
-				//redis 
+				//redis
 				new Object[] { true },
 				//memory (redis= false)
-				new Object[] { false }
-				);
+				new Object[] { false });
 	}
 
 	final boolean redis;
@@ -144,7 +142,7 @@ public final class AccountManagerTest {
 		final VFile photo = fileManager.createFile(new File(this.getClass().getResource("data/marianne.png").toURI()));
 		accountManager.getStore().setPhoto(accountURI0, photo);
 		//-----
-		Assert.assertTrue(accountManager.getStore().getPhoto(accountURI0).isDefined());
+		Assert.assertTrue(accountManager.getStore().getPhoto(accountURI0).isPresent());
 		Assert.assertEquals("marianne.png", accountManager.getStore().getPhoto(accountURI0).get().getFileName());
 	}
 

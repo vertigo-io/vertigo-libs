@@ -18,19 +18,6 @@
  */
 package io.vertigo.x.comment;
 
-import io.vertigo.app.App;
-import io.vertigo.app.Home;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.util.MapBuilder;
-import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountGroup;
-import io.vertigo.x.account.AccountManager;
-import io.vertigo.x.comment.data.Accounts;
-import io.vertigo.x.connectors.redis.RedisConnector;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
@@ -43,13 +30,25 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import redis.clients.jedis.Jedis;
-import spark.Spark;
-
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.filter.session.SessionFilter;
 import com.jayway.restassured.parsing.Parser;
 import com.jayway.restassured.response.Response;
+
+import io.vertigo.app.App;
+import io.vertigo.app.Home;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.util.MapBuilder;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountGroup;
+import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.comment.data.Accounts;
+import io.vertigo.x.connectors.redis.RedisConnector;
+import redis.clients.jedis.Jedis;
+import spark.Spark;
 
 public final class CommentWebServicesTest {
 	private static final int WS_PORT = 8088;
@@ -275,7 +274,7 @@ public final class CommentWebServicesTest {
 	private static Map<String, Object> commentToMap(final Comment comment) {
 		return new MapBuilder<String, Object>()
 				.put("uuid", comment.getUuid())
-				.put("author", comment.getAuthor().toURN())
+				.put("author", comment.getAuthor().urn())
 				.put("msg", comment.getMsg())
 				.put("creationDate", convertDate(comment.getCreationDate()))
 				.putNullable("lastModified", convertDate(comment.getLastModified()))

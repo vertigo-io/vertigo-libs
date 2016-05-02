@@ -18,6 +18,15 @@
  */
 package io.vertigo.x.plugins.account.redis;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.inject.Inject;
+
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
@@ -31,16 +40,6 @@ import io.vertigo.x.account.AccountBuilder;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.impl.account.AccountStorePlugin;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.inject.Inject;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
@@ -261,9 +260,9 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 			result = jedis.hgetAll("photoByAccount:" + accountURI.getId());
 		}
 		if (result.isEmpty()) {
-			return Option.none();
+			return Option.empty();
 		}
-		return Option.some(PhotoCodec.map2vFile(result));
+		return Option.of(PhotoCodec.map2vFile(result));
 	}
 
 }

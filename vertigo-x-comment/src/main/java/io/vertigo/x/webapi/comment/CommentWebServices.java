@@ -18,6 +18,12 @@
  */
 package io.vertigo.x.webapi.comment;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -41,12 +47,6 @@ import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.comment.Comment;
 import io.vertigo.x.comment.CommentManager;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
 
 /**
  * Webservice for Notification extension.
@@ -162,7 +162,7 @@ public final class CommentWebServices implements WebServices {
 
 	private static Object stringToId(final String id, final DtDefinition dtDefinition) {
 		final Option<DtField> idFieldOption = dtDefinition.getIdField();
-		Assertion.checkArgument(idFieldOption.isDefined(), "KeyConcept {0} must have an id field, in order to support Comment extension", dtDefinition.getLocalName());
+		Assertion.checkArgument(idFieldOption.isPresent(), "KeyConcept {0} must have an id field, in order to support Comment extension", dtDefinition.getLocalName());
 
 		final DataType dataType = idFieldOption.get().getDomain().getDataType();
 		if (dataType == DataType.String) {
