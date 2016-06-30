@@ -34,7 +34,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import io.vertigo.app.App;
+import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.FileManager;
@@ -47,7 +47,7 @@ import redis.clients.jedis.Jedis;
 
 @RunWith(Parameterized.class)
 public final class AccountManagerTest {
-	private App app;
+	private AutoCloseableApp app;
 
 	@Inject
 	private AccountManager accountManager;
@@ -86,7 +86,7 @@ public final class AccountManagerTest {
 
 	@Before
 	public void setUp() {
-		app = new App(MyAppConfig.config(redis));
+		app = new AutoCloseableApp(MyAppConfig.config(redis));
 
 		Injector.injectMembers(this, app.getComponentSpace());
 		if (redis) {

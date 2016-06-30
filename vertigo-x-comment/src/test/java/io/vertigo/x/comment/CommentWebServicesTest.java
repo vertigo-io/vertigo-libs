@@ -35,7 +35,7 @@ import com.jayway.restassured.filter.session.SessionFilter;
 import com.jayway.restassured.parsing.Parser;
 import com.jayway.restassured.response.Response;
 
-import io.vertigo.app.App;
+import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -53,7 +53,7 @@ import spark.Spark;
 public final class CommentWebServicesTest {
 	private static final int WS_PORT = 8088;
 	private final SessionFilter sessionFilter = new SessionFilter();
-	private static App app;
+	private static AutoCloseableApp app;
 
 	private static String CONCEPT_KEY_NAME;
 	private static URI<Account> account1Uri;
@@ -63,7 +63,7 @@ public final class CommentWebServicesTest {
 	@BeforeClass
 	public static void setUp() {
 		beforeSetUp();
-		app = new App(MyAppConfig.vegaConfig());
+		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
 
 		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
 		//-----

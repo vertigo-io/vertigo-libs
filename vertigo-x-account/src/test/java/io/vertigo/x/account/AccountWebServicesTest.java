@@ -18,26 +18,25 @@
  */
 package io.vertigo.x.account;
 
-import io.vertigo.app.App;
-import io.vertigo.app.Home;
-import io.vertigo.x.account.data.Accounts;
-import io.vertigo.x.connectors.redis.RedisConnector;
-
 import org.apache.http.HttpStatus;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import redis.clients.jedis.Jedis;
-
 import com.jayway.restassured.RestAssured;
+
+import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.app.Home;
+import io.vertigo.x.account.data.Accounts;
+import io.vertigo.x.connectors.redis.RedisConnector;
+import redis.clients.jedis.Jedis;
 
 /**
  * Account extension web services tests.
  * @author npiedeloup
  */
 public final class AccountWebServicesTest {
-	private static App app;
+	private static AutoCloseableApp app;
 
 	static {
 		RestAssured.port = MyAppConfig.WS_PORT;
@@ -45,7 +44,7 @@ public final class AccountWebServicesTest {
 
 	@BeforeClass
 	public static void setUp() {
-		app = new App(MyAppConfig.vegaConfig());
+		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
 		final AccountManager accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
 		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
 		//-----
