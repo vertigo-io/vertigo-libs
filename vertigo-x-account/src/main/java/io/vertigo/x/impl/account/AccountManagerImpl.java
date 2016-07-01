@@ -18,6 +18,8 @@
  */
 package io.vertigo.x.impl.account;
 
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
@@ -27,8 +29,6 @@ import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.account.AccountStore;
-
-import javax.inject.Inject;
 
 /**
  * @author pchretien

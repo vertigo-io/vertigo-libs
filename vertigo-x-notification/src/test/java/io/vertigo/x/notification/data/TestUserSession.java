@@ -18,11 +18,11 @@
  */
 package io.vertigo.x.notification.data;
 
-import io.vertigo.persona.security.UserSession;
-
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
+
+import io.vertigo.persona.security.UserSession;
 
 public final class TestUserSession extends UserSession {
 	private static final long serialVersionUID = 1L;

@@ -18,6 +18,8 @@
  */
 package io.vertigo.x.comment;
 
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.webservice.WebServices;
@@ -28,8 +30,6 @@ import io.vertigo.vega.webservice.stereotype.QueryParam;
 import io.vertigo.vega.webservice.stereotype.SessionInvalidate;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountManager;
-
-import javax.inject.Inject;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 

@@ -18,6 +18,13 @@
  */
 package io.vertigo.x.webapi.notification;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.webservice.WebServices;
@@ -30,13 +37,6 @@ import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.notification.Notification;
 import io.vertigo.x.notification.NotificationManager;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.inject.Inject;
 
 /**
  * Webservice for Notification extension.

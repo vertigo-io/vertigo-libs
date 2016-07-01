@@ -18,12 +18,12 @@
  */
 package io.vertigo.x.notification;
 
+import java.util.Date;
+import java.util.UUID;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.util.DateUtil;
-
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * @author pchretien

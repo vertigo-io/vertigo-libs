@@ -18,6 +18,9 @@
  */
 package io.vertigo.x.comment.data;
 
+import java.util.Arrays;
+import java.util.List;
+
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.util.ListBuilder;
@@ -25,9 +28,6 @@ import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountBuilder;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class KeyConcepts {
 

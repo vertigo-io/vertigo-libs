@@ -18,13 +18,13 @@
  */
 package io.vertigo.x.impl.comment;
 
+import java.util.List;
+import java.util.UUID;
+
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Plugin;
 import io.vertigo.x.comment.Comment;
-
-import java.util.List;
-import java.util.UUID;
 
 /**
  * @author pchretien

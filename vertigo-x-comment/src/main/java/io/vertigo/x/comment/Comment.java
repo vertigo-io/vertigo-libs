@@ -18,12 +18,12 @@
  */
 package io.vertigo.x.comment;
 
+import java.util.Date;
+import java.util.UUID;
+
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.account.Account;
-
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * @author pchretien

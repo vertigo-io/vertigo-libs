@@ -18,6 +18,11 @@
  */
 package io.vertigo.x.impl.comment;
 
+import java.util.Date;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
@@ -26,11 +31,6 @@ import io.vertigo.x.account.Account;
 import io.vertigo.x.comment.Comment;
 import io.vertigo.x.comment.CommentBuilder;
 import io.vertigo.x.comment.CommentManager;
-
-import java.util.Date;
-import java.util.List;
-
-import javax.inject.Inject;
 
 /**
  * @author pchretien

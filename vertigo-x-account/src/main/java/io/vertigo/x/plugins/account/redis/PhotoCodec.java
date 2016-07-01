@@ -18,19 +18,19 @@
  */
 package io.vertigo.x.plugins.account.redis;
 
-import io.vertigo.commons.codec.Codec;
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.MapBuilder;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
+
+import io.vertigo.commons.codec.Codec;
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.util.MapBuilder;
 
 final class PhotoCodec {
 	private static final int CODEC_BUFFER_SIZE = 3 * 1024;

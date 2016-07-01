@@ -18,12 +18,12 @@
  */
 package io.vertigo.x.impl.notification;
 
+import java.util.Set;
+
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.notification.Notification;
-
-import java.util.Set;
 
 /**
  * @author pchretien

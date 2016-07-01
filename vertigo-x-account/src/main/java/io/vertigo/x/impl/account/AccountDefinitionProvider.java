@@ -18,6 +18,8 @@
  */
 package io.vertigo.x.impl.account;
 
+import java.util.Iterator;
+
 import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -25,8 +27,6 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.util.ListBuilder;
-
-import java.util.Iterator;
 
 /**
  * Provides all the definitions used in the 'account' module. 

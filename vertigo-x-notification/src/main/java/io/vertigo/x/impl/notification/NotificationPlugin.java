@@ -18,13 +18,13 @@
  */
 package io.vertigo.x.impl.notification;
 
+import java.util.List;
+import java.util.UUID;
+
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Plugin;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.notification.Notification;
-
-import java.util.List;
-import java.util.UUID;
 
 /**
  * @author pchretien

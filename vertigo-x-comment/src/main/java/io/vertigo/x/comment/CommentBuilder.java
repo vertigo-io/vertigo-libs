@@ -18,6 +18,9 @@
  */
 package io.vertigo.x.comment;
 
+import java.util.Date;
+import java.util.UUID;
+
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
@@ -25,9 +28,6 @@ import io.vertigo.lang.Builder;
 import io.vertigo.util.DateUtil;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountManager;
-
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * @author pchretien

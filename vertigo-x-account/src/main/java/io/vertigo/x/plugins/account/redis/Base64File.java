@@ -18,15 +18,15 @@
  */
 package io.vertigo.x.plugins.account.redis;
 
-import io.vertigo.app.Home;
-import io.vertigo.commons.codec.Codec;
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.dynamo.file.model.VFile;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+
+import io.vertigo.app.Home;
+import io.vertigo.commons.codec.Codec;
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.dynamo.file.model.VFile;
 
 /**
  * Objet redis correspondant à un VFile. Le contenu du VFile est stocké sous forme base64.

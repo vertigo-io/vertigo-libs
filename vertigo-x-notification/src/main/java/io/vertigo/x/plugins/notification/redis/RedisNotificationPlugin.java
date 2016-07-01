@@ -18,17 +18,6 @@
  */
 package io.vertigo.x.plugins.notification.redis;
 
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.MapBuilder;
-import io.vertigo.x.account.Account;
-import io.vertigo.x.connectors.redis.RedisConnector;
-import io.vertigo.x.impl.notification.NotificationEvent;
-import io.vertigo.x.impl.notification.NotificationPlugin;
-import io.vertigo.x.notification.Notification;
-import io.vertigo.x.notification.NotificationBuilder;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +28,16 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
+import io.vertigo.util.MapBuilder;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.connectors.redis.RedisConnector;
+import io.vertigo.x.impl.notification.NotificationEvent;
+import io.vertigo.x.impl.notification.NotificationPlugin;
+import io.vertigo.x.notification.Notification;
+import io.vertigo.x.notification.NotificationBuilder;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;

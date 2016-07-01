@@ -18,6 +18,11 @@
  */
 package io.vertigo.x.impl.notification;
 
+import java.util.List;
+import java.util.UUID;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.account.Account;
@@ -25,11 +30,6 @@ import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.notification.Notification;
 import io.vertigo.x.notification.NotificationManager;
-
-import java.util.List;
-import java.util.UUID;
-
-import javax.inject.Inject;
 
 /**
  * @author pchretien

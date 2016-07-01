@@ -18,13 +18,6 @@
  */
 package io.vertigo.x.plugins.notification.memory;
 
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.lang.Assertion;
-import io.vertigo.x.account.Account;
-import io.vertigo.x.impl.notification.NotificationEvent;
-import io.vertigo.x.impl.notification.NotificationPlugin;
-import io.vertigo.x.notification.Notification;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -32,6 +25,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.lang.Assertion;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.impl.notification.NotificationEvent;
+import io.vertigo.x.impl.notification.NotificationPlugin;
+import io.vertigo.x.notification.Notification;
 
 /**
  * @author pchretien

@@ -18,13 +18,13 @@
  */
 package io.vertigo.x.account;
 
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Option;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.Option;
 
 /**
  * This class defines the storage of accounts
