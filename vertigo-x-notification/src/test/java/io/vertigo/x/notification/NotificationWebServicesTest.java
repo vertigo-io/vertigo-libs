@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,6 @@
  */
 package io.vertigo.x.notification;
 
-import io.vertigo.app.App;
-import io.vertigo.app.Home;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.x.account.AccountGroup;
-import io.vertigo.x.account.AccountManager;
-import io.vertigo.x.connectors.redis.RedisConnector;
-import io.vertigo.x.notification.data.Accounts;
-
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
@@ -33,22 +25,29 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import redis.clients.jedis.Jedis;
-import spark.Spark;
-
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.filter.session.SessionFilter;
 import com.jayway.restassured.parsing.Parser;
 
+import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.app.Home;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.x.account.AccountGroup;
+import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.connectors.redis.RedisConnector;
+import io.vertigo.x.notification.data.Accounts;
+import redis.clients.jedis.Jedis;
+import spark.Spark;
+
 public final class NotificationWebServicesTest {
 	private static final int WS_PORT = 8088;
 	private final SessionFilter sessionFilter = new SessionFilter();
-	private static App app;
+	private static AutoCloseableApp app;
 
 	@BeforeClass
 	public static void setUp() {
 		beforeSetUp();
-		app = new App(MyAppConfig.vegaConfig());
+		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
 
 		final AccountManager accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
 		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);

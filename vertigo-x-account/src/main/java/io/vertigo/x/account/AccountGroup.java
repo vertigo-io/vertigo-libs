@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ import io.vertigo.lang.Assertion;
 public final class AccountGroup implements DtObject {
 	private static final long serialVersionUID = -4463291583101516140L;
 
-	@Field(type = "PRIMARY_KEY", domain = "DO_X_ACCOUNT_ID", required = true, label = "id")
+	@Field(type = "ID", domain = "DO_X_ACCOUNT_ID", required = true, label = "id")
 	private final String id;
 
 	@Field(domain = "DO_X_ACCOUNT_NAME", label = "displayName")

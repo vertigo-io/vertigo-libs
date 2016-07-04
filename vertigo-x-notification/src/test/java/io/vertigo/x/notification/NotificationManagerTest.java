@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,18 +18,6 @@
  */
 package io.vertigo.x.notification;
 
-import io.vertigo.app.App;
-import io.vertigo.app.Home;
-import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountGroup;
-import io.vertigo.x.account.AccountManager;
-import io.vertigo.x.connectors.redis.RedisConnector;
-import io.vertigo.x.notification.data.Accounts;
-
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -43,11 +31,22 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.app.Home;
+import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountGroup;
+import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.connectors.redis.RedisConnector;
+import io.vertigo.x.notification.data.Accounts;
 import redis.clients.jedis.Jedis;
 
 @RunWith(Parameterized.class)
 public class NotificationManagerTest {
-	private App app;
+	private AutoCloseableApp app;
 
 	@Inject
 	private AccountManager accountManager;
@@ -62,11 +61,10 @@ public class NotificationManagerTest {
 	@Parameters
 	public static Collection<Object[]> params() {
 		return Arrays.asList(
-				//redis 
+				//redis
 				new Object[] { true },
 				//memory (redis= false)
-				new Object[] { false }
-				);
+				new Object[] { false });
 	}
 
 	final boolean redis;
@@ -78,7 +76,7 @@ public class NotificationManagerTest {
 
 	@Before
 	public void setUp() {
-		app = new App(MyAppConfig.config(redis));
+		app = new AutoCloseableApp(MyAppConfig.config(redis));
 		Injector.injectMembers(this, Home.getApp().getComponentSpace());
 		if (redis) {
 			final RedisConnector redisConnector = app.getComponentSpace().resolve(RedisConnector.class);
@@ -109,7 +107,7 @@ public class NotificationManagerTest {
 	@Test
 	public void testNotifications() {
 		final Notification notification = new NotificationBuilder()
-				.withSender(accountURI0.toURN())
+				.withSender(accountURI0.urn())
 				.withType("Test")
 				.withTitle("news")
 				.withContent("discover this amazing app !!")
@@ -128,7 +126,7 @@ public class NotificationManagerTest {
 	@Test
 	public void testNotificationsWithRemove() {
 		final Notification notification = new NotificationBuilder()
-				.withSender(accountURI0.toURN())
+				.withSender(accountURI0.urn())
 				.withType("Test")
 				.withTitle("news")
 				.withTargetUrl("#keyConcept@2")
@@ -156,7 +154,7 @@ public class NotificationManagerTest {
 	@Test
 	public void testNotificationsWithRemoveFromTargetUrl() {
 		final Notification notification = new NotificationBuilder()
-				.withSender(accountURI0.toURN())
+				.withSender(accountURI0.urn())
 				.withType("Test")
 				.withTitle("news")
 				.withTargetUrl("#keyConcept@2")

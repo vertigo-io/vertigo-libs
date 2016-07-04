@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,17 @@
  */
 package io.vertigo.x.plugins.comment.redis;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
@@ -30,18 +41,6 @@ import io.vertigo.x.comment.Comment;
 import io.vertigo.x.comment.CommentBuilder;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.impl.comment.CommentPlugin;
-
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.inject.Inject;
-
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
@@ -69,10 +68,10 @@ public final class RedisCommentPlugin implements CommentPlugin {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			try (final Transaction tx = jedis.multi()) {
 				tx.hmset("comment:" + comment.getUuid(), toMap(comment));
-				tx.lpush("comments:" + keyConceptUri.toURN(), comment.getUuid().toString());
+				tx.lpush("comments:" + keyConceptUri.urn(), comment.getUuid().toString());
 				tx.exec();
 			} catch (final IOException e) {
-				throw WrappedException.wrapIfNeeded(e, "Can't publish comment onto {0}", keyConceptUri.toURN());
+				throw WrappedException.wrapIfNeeded(e, "Can't publish comment onto {0}", keyConceptUri.urn());
 			}
 		}
 
@@ -105,7 +104,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 	public <S extends KeyConcept> List<Comment> getComments(final URI<S> keyConceptUri) {
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
-			final List<String> uuids = jedis.lrange("comments:" + keyConceptUri.toURN(), 0, -1);
+			final List<String> uuids = jedis.lrange("comments:" + keyConceptUri.urn(), 0, -1);
 			final Transaction tx = jedis.multi();
 			for (final String uuid : uuids) {
 				responses.add(tx.hgetAll("comment:" + uuid));

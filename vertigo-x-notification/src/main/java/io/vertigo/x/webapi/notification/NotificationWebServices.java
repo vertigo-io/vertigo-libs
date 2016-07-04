@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,13 @@
  */
 package io.vertigo.x.webapi.notification;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.webservice.WebServices;
@@ -31,13 +38,6 @@ import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.notification.Notification;
 import io.vertigo.x.notification.NotificationManager;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import javax.inject.Inject;
-
 /**
  * Webservice for Notification extension.
  *
@@ -47,7 +47,7 @@ import javax.inject.Inject;
 public final class NotificationWebServices implements WebServices {
 
 	private static final String API_VERSION = "0.1.0";
-	private static final String IMPL_VERSION = "0.9.1";
+	private static final String IMPL_VERSION = "0.9.2";
 
 	@Inject
 	private NotificationManager notificationManager;

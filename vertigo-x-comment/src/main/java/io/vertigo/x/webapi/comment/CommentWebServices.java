@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,12 @@
  * limitations under the License.
  */
 package io.vertigo.x.webapi.comment;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
 
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -42,12 +48,6 @@ import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.comment.Comment;
 import io.vertigo.x.comment.CommentManager;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-
 /**
  * Webservice for Notification extension.
  *
@@ -57,7 +57,7 @@ import javax.inject.Inject;
 public final class CommentWebServices implements WebServices {
 
 	private static final String API_VERSION = "0.1.0";
-	private static final String IMPL_VERSION = "0.9.1";
+	private static final String IMPL_VERSION = "0.9.2";
 
 	@Inject
 	private CommentManager commentManager;
@@ -162,7 +162,7 @@ public final class CommentWebServices implements WebServices {
 
 	private static Object stringToId(final String id, final DtDefinition dtDefinition) {
 		final Option<DtField> idFieldOption = dtDefinition.getIdField();
-		Assertion.checkArgument(idFieldOption.isDefined(), "KeyConcept {0} must have an id field, in order to support Comment extension", dtDefinition.getLocalName());
+		Assertion.checkArgument(idFieldOption.isPresent(), "KeyConcept {0} must have an id field, in order to support Comment extension", dtDefinition.getLocalName());
 
 		final DataType dataType = idFieldOption.get().getDomain().getDataType();
 		if (dataType == DataType.String) {

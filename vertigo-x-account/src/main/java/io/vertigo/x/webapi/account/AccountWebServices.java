@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,12 @@
  */
 package io.vertigo.x.webapi.account;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.MapBuilder;
@@ -30,12 +36,6 @@ import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.inject.Inject;
-
 /**
  * Webservices for account extension.
  *
@@ -45,7 +45,7 @@ import javax.inject.Inject;
 public final class AccountWebServices implements WebServices {
 
 	private static final String API_VERSION = "0.1.0";
-	private static final String IMPL_VERSION = "0.9.1";
+	private static final String IMPL_VERSION = "0.9.2";
 
 	@Inject
 	private AccountManager accountManager;
@@ -71,7 +71,7 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/accounts/{id}/photo")
 	@AnonymousAccessAllowed
 	public VFile getAccountPhoto(@PathParam("id") final String id) {
-		return accountManager.getStore().getPhoto(DtObjectUtil.createURI(Account.class, id)).getOrElse(accountManager.getDefaultPhoto());
+		return accountManager.getStore().getPhoto(DtObjectUtil.createURI(Account.class, id)).orElse(accountManager.getDefaultPhoto());
 	}
 
 	/**

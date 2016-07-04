@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,14 @@
  */
 package io.vertigo.x.comment;
 
-import io.vertigo.app.App;
+import javax.inject.Inject;
+
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+
+import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -30,14 +37,6 @@ import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.comment.data.Accounts;
 import io.vertigo.x.connectors.redis.RedisConnector;
-
-import javax.inject.Inject;
-
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
 import redis.clients.jedis.Jedis;
 
 public class CommentManagerTest {
@@ -49,14 +48,14 @@ public class CommentManagerTest {
 	@Inject
 	private RedisConnector redisConnector;
 
-	private App app;
+	private AutoCloseableApp app;
 	private URI<KeyConcept> keyConcept1Uri;
 
 	private URI<Account> accountURI1;
 
 	@Before
 	public void setUp() {
-		app = new App(MyAppConfig.config());
+		app = new AutoCloseableApp(MyAppConfig.config());
 		Injector.injectMembers(this, Home.getApp().getComponentSpace());
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();

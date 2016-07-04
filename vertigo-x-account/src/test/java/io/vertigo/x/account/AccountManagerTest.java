@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,16 +17,6 @@
  * limitations under the License.
  */
 package io.vertigo.x.account;
-
-import io.vertigo.app.App;
-import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.persona.security.UserSession;
-import io.vertigo.persona.security.VSecurityManager;
-import io.vertigo.x.account.data.Accounts;
-import io.vertigo.x.connectors.redis.RedisConnector;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -44,11 +34,20 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.file.FileManager;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.persona.security.UserSession;
+import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.x.account.data.Accounts;
+import io.vertigo.x.connectors.redis.RedisConnector;
 import redis.clients.jedis.Jedis;
 
 @RunWith(Parameterized.class)
 public final class AccountManagerTest {
-	private App app;
+	private AutoCloseableApp app;
 
 	@Inject
 	private AccountManager accountManager;
@@ -68,11 +67,10 @@ public final class AccountManagerTest {
 	@Parameters
 	public static Collection<Object[]> params() {
 		return Arrays.asList(
-				//redis 
+				//redis
 				new Object[] { true },
 				//memory (redis= false)
-				new Object[] { false }
-				);
+				new Object[] { false });
 	}
 
 	final boolean redis;
@@ -88,7 +86,7 @@ public final class AccountManagerTest {
 
 	@Before
 	public void setUp() {
-		app = new App(MyAppConfig.config(redis));
+		app = new AutoCloseableApp(MyAppConfig.config(redis));
 
 		Injector.injectMembers(this, app.getComponentSpace());
 		if (redis) {
@@ -138,13 +136,13 @@ public final class AccountManagerTest {
 	@Test
 	public void testPhoto() throws URISyntaxException {
 		//Before the photo is the default photo
-		Assert.assertTrue(accountManager.getStore().getPhoto(accountURI0).isEmpty());
+		Assert.assertFalse(accountManager.getStore().getPhoto(accountURI0).isPresent());
 		Assert.assertEquals("defaultPhoto.png", accountManager.getDefaultPhoto().getFileName());
 		//-----
 		final VFile photo = fileManager.createFile(new File(this.getClass().getResource("data/marianne.png").toURI()));
 		accountManager.getStore().setPhoto(accountURI0, photo);
 		//-----
-		Assert.assertTrue(accountManager.getStore().getPhoto(accountURI0).isDefined());
+		Assert.assertTrue(accountManager.getStore().getPhoto(accountURI0).isPresent());
 		Assert.assertEquals("marianne.png", accountManager.getStore().getPhoto(accountURI0).get().getFileName());
 	}
 
