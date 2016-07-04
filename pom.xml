@@ -20,7 +20,7 @@ limitations under the License. -->
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
-		<version>0.9.2</version>
+		<version>0.9.3-SNAPSHOT</version>
 	</parent> 
 	
 	<artifactId>vertigo-x-parent</artifactId>
@@ -28,10 +28,6 @@ limitations under the License. -->
 	<name>vertigo-extensions</name>
 	<packaging>pom</packaging>
 
-	<properties>
-		<vertigo.version>0.9.2</vertigo.version>
-	</properties>
-	
 	<modules>
 		<module>vertigo-x-connectors</module>
 		<module>vertigo-x-account</module>
