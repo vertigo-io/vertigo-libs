@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -31,7 +32,6 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.impl.account.AccountStorePlugin;
@@ -186,10 +186,10 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<VFile> getPhoto(final URI<Account> accountURI) {
+	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
-		return Option.ofNullable(photoByAccountURI.get(accountURI));
+		return Optional.ofNullable(photoByAccountURI.get(accountURI));
 	}
 
 }

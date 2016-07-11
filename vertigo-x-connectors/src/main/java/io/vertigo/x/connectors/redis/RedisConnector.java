@@ -18,13 +18,14 @@
  */
 package io.vertigo.x.connectors.redis;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Component;
-import io.vertigo.lang.Option;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -48,7 +49,7 @@ public final class RedisConnector implements Component, Activeable {
 			@Named("host") final String redisHost,
 			@Named("port") final int redisPort,
 			@Named("database") final int redisDatabase,
-			@Named("password") final Option<String> passwordOption) {
+			@Named("password") final Optional<String> passwordOption) {
 		Assertion.checkArgNotEmpty(redisHost);
 		Assertion.checkNotNull(passwordOption);
 		Assertion.checkArgument(redisDatabase >= 0 && redisDatabase < 16, "there 16 DBs(0 - 15); your index database '{0}' is not inside this range", redisDatabase);

@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import javax.inject.Inject;
@@ -33,7 +34,6 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountBuilder;
@@ -254,15 +254,15 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public Option<VFile> getPhoto(final URI<Account> accountURI) {
+	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
 		final Map<String, String> result;
 		try (final Jedis jedis = redisConnector.getResource()) {
 			result = jedis.hgetAll("photoByAccount:" + accountURI.getId());
 		}
 		if (result.isEmpty()) {
-			return Option.empty();
+			return Optional.empty();
 		}
-		return Option.of(PhotoCodec.map2vFile(result));
+		return Optional.of(PhotoCodec.map2vFile(result));
 	}
 
 }
