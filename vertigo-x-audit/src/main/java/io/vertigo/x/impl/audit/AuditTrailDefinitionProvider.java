@@ -25,6 +25,7 @@ import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.util.ListBuilder;
@@ -38,12 +39,12 @@ public class AuditTrailDefinitionProvider implements DefinitionProvider {
 
 	@Override
 	public Iterator<Definition> iterator() {
-		final Domain domainAuditId = new Domain("DO_X_AUDIT_ID", DataType.Long);
-		final Domain domainAuditCategory = new Domain("DO_X_AUDIT_CATEGORY", DataType.String);
-		final Domain domainAuditUser = new Domain("DO_X_AUDIT_USER", DataType.String);
-		final Domain domainAuditDate = new Domain("DO_X_AUDIT_DATE", DataType.Date);
-		final Domain domainAuditItem = new Domain("DO_X_AUDIT_ITEM", DataType.Long);
-		final Domain domainAuditContext = new Domain("DO_X_AUDIT_CONTEXT", DataType.String);
+		final Domain domainAuditId = new DomainBuilder("DO_X_AUDIT_ID", DataType.Long).build();
+		final Domain domainAuditCategory = new DomainBuilder("DO_X_AUDIT_CATEGORY", DataType.String).build();
+		final Domain domainAuditUser = new DomainBuilder("DO_X_AUDIT_USER", DataType.String).build();
+		final Domain domainAuditDate = new DomainBuilder("DO_X_AUDIT_DATE", DataType.Date).build();
+		final Domain domainAuditItem = new DomainBuilder("DO_X_AUDIT_ITEM", DataType.Long).build();
+		final Domain domainAuditContext = new DomainBuilder("DO_X_AUDIT_CONTEXT", DataType.String).build();
 		
 
 		final DtDefinition auditTrailDtDefinition = new DtDefinitionBuilder("DT_AUDIT_TRAIL")
