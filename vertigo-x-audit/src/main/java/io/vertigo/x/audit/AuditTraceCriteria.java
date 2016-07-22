@@ -25,55 +25,57 @@ import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
- * This class defines the Audit Trail for an Object.
+ * This class defines the Audit Trace for an Object.
  *
  * @author xdurand
  */
 @DtDefinition
-public final class AuditTrailCriteria implements DtObject {
+public final class AuditTraceCriteria implements DtObject {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
 	private final String category;
-	
+
 	private final String user;
 
-	private final Date dateBusinessStart;
-	
-	private final Date dateBusinessEnd;
+	private final Date startBusinessDate;
 
-	private final Date dateExecutionStart;
-	
-	private final Date dateExecutionEnd;
-	
+	private final Date endBusinessDate;
+
+	private final Date startExecutionDate;
+
+	private final Date endExecutionDate;
+
 	private final Long item;
 
-	AuditTrailCriteria(
-			final String category, 
-			final String user, 
-			final Date dateBusinessDebut, 
-			final Date dateBusinessFin, 
-			final Date dateExecutionDebut, 
-			final Date dateExecutionFin, 
+	AuditTraceCriteria(
+			final String category,
+			final String user,
+			final Date startBusinessDate,
+			final Date endBusinessDate,
+			final Date startExecutionDate,
+			final Date endExecutionDate,
 			final Long item) {
 		this.category = category;
 		this.user = user;
-		this.dateBusinessStart= dateBusinessDebut;
-		this.dateBusinessEnd = dateBusinessFin;
-		this.dateExecutionStart = dateExecutionDebut;
-		this.dateExecutionEnd = dateExecutionFin;
+		this.startBusinessDate = startBusinessDate;
+		this.endBusinessDate = endBusinessDate;
+		this.startExecutionDate = startExecutionDate;
+		this.endExecutionDate = endExecutionDate;
 		this.item = item;
 	}
-	
+
+
 	/**
 	 * @return the category
 	 */
 	public String getCategory() {
 		return category;
 	}
+
 
 	/**
 	 * @return the user
@@ -82,33 +84,38 @@ public final class AuditTrailCriteria implements DtObject {
 		return user;
 	}
 
-	/**
-	 * @return the dateBusinessDebut
-	 */
-	public Date getDateBusinessDebut() {
-		return dateBusinessStart;
-	}
 
 	/**
-	 * @return the dateBusinessFin
+	 * @return the startBusinessDate
 	 */
-	public Date getDateBusinessFin() {
-		return dateBusinessEnd;
+	public Date getStartBusinessDate() {
+		return startBusinessDate;
 	}
 
-	/**
-	 * @return the dateExecutionDebut
-	 */
-	public Date getDateExecutionDebut() {
-		return dateExecutionStart;
-	}
 
 	/**
-	 * @return the dateExecutionFin
+	 * @return the endBusinessDate
 	 */
-	public Date getDateExecutionFin() {
-		return dateExecutionEnd;
+	public Date getEndBusinessDate() {
+		return endBusinessDate;
 	}
+
+
+	/**
+	 * @return the startExecutionDate
+	 */
+	public Date getStartExecutionDate() {
+		return startExecutionDate;
+	}
+
+
+	/**
+	 * @return the endExecutionDate
+	 */
+	public Date getEndExecutionDate() {
+		return endExecutionDate;
+	}
+
 
 	/**
 	 * @return the item
@@ -116,7 +123,7 @@ public final class AuditTrailCriteria implements DtObject {
 	public Long getItem() {
 		return item;
 	}
-	
+
 	@Override
 	public String toString() {
 		return DtObjectUtil.toString(this);

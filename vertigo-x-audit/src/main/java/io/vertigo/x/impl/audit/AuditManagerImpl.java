@@ -23,41 +23,40 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.audit.AuditManager;
-import io.vertigo.x.audit.AuditTrail;
-import io.vertigo.x.audit.AuditTrailCriteria;
+import io.vertigo.x.audit.AuditTrace;
+import io.vertigo.x.audit.AuditTraceCriteria;
 
 /**
  * @author xdurand
  */
 public final class AuditManagerImpl implements AuditManager {
 
-	private AuditTrailStorePlugin auditTrailStorePlugin;
-	
+	private final AuditTraceStorePlugin auditTraceStorePlugin;
+
+	/**
+	 * Construct a new Audit manager
+	 * @param auditTraceStorePlugin
+	 */
 	@Inject
-	public AuditManagerImpl(AuditTrailStorePlugin auditTrailStorePlugin) {
-		this.auditTrailStorePlugin = auditTrailStorePlugin;
-	}
-	
-	@Override
-	public void addAuditTrail(AuditTrail auditTrail) {
-		auditTrailStorePlugin.createAuditTrail(auditTrail);
+	public AuditManagerImpl(final AuditTraceStorePlugin auditTraceStorePlugin) {
+		this.auditTraceStorePlugin = auditTraceStorePlugin;
 	}
 
 	@Override
-	public List<AuditTrail> searchAuditTrail(AuditTrailCriteria atc) {
-		return auditTrailStorePlugin.getAuditTrailByCriteria(atc);
+	public void addTrace(final AuditTrace auditTrace) {
+		auditTraceStorePlugin.createTrace(auditTrace);
 	}
 
 	@Override
-	public AuditTrail getAuditTrail(Long idAuditTrail) {
-		DtDefinition auditTrailDefinition = DtObjectUtil.findDtDefinition(AuditTrail.class);
-		URI<AuditTrail> uriAuditTrail = new URI<>(auditTrailDefinition, idAuditTrail);
-		return auditTrailStorePlugin.getAuditTrail(uriAuditTrail);
+	public List<AuditTrace> findTrace(final AuditTraceCriteria auditTraceCriteria) {
+		return auditTraceStorePlugin.findTraceByCriteria(auditTraceCriteria);
 	}
-	
-	
+
+	@Override
+	public AuditTrace getTrace(final Long idAuditTrace) {
+		return auditTraceStorePlugin.readTrace(idAuditTrace);
+	}
+
+
 }

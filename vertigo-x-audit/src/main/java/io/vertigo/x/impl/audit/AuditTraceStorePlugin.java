@@ -16,38 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.audit;
 
-import java.util.List;
+package io.vertigo.x.impl.audit;
 
-import io.vertigo.dynamo.domain.model.URI;
+
+import io.vertigo.lang.Plugin;
+import io.vertigo.x.audit.AuditTraceStore;
+
 
 /**
- * This class defines the storage of audit trails.
+ * Interface for the audit trail's store plugin  
  * @author xdurand
+ *
  */
-public interface AuditTrailStore {
-	
-	/**
-	 * Get an audit trail.
-	 * @param auditTrailURI the audit trail defined by its URI.
-	 * @return
-	 */
-	AuditTrail getAuditTrail(URI<AuditTrail> auditTrailURI);
-
-	/**
-	 * Save a new audit trail.
-	 * Attention: The audit MUST NOT have an id.
-	 * @param auditTrail the audit trail to save. 
-	 * @return the audit trail created
-	 */
-	URI<AuditTrail> createAuditTrail(AuditTrail auditTrail);
-	
-	/**
-	 * Fetch all Audit Trail mathing the provided criteria 
-	 * @param atc
-	 * @return
-	 */
-	List<AuditTrail> getAuditTrailByCriteria(AuditTrailCriteria atc);
-	
+public interface AuditTraceStorePlugin extends AuditTraceStore, Plugin {
+	// Plugin interface for Audit Trace
 }

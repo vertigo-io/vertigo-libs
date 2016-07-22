@@ -17,18 +17,34 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.impl.audit;
+package io.vertigo.x.audit;
 
-
-import io.vertigo.lang.Plugin;
-import io.vertigo.x.audit.AuditTrailStore;
-
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.x.impl.audit.AuditFeatures;
+import io.vertigo.x.plugins.audit.memory.MemoryAuditTraceStorePlugin;
 
 /**
- * Interface for the audit trail's store plugin  
+ * Config for test
  * @author xdurand
  *
  */
-public interface AuditTrailStorePlugin extends AuditTrailStore, Plugin {
-	
+public class MyAppConfig {
+
+	/**
+	 * Configure the app for testing
+	 * @return the application config for testing
+	 */
+	public static AppConfig config() {
+		final AppConfigBuilder acb = new AppConfigBuilder();
+
+		acb.beginModule(AuditFeatures.class)
+			.getModuleConfigBuilder()
+			.addPlugin(MemoryAuditTraceStorePlugin.class)
+		   .endModule();
+
+		return acb.build();
+	}
+
+
 }

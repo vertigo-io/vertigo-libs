@@ -20,30 +20,30 @@ package io.vertigo.x.audit;
 
 import java.util.List;
 
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 
 /**
  * @author xdurand
  */
-public interface AuditManager extends Component {
-	
+public interface AuditManager extends Manager {
+
 	/**
 	 * Add an audit trail
-	 * @param auditTrail
+	 * @param auditTrace
 	 */
-	void addAuditTrail(AuditTrail auditTrail);
-	
+	void addTrace(AuditTrace auditTrace);
+
 	/**
 	 * Serach an audit trail
-	 * @param atc
-	 * @return
+	 * @param auditTraceCriteria
+	 * @return the matching audit traces
 	 */
-	List<AuditTrail> searchAuditTrail(AuditTrailCriteria atc);
-	
+	List<AuditTrace> findTrace(AuditTraceCriteria auditTraceCriteria);
+
 	/**
 	 * Get an audit trail
-	 * @param idAuditTrail
-	 * @return
+	 * @param idAuditTrace
+	 * @return the autdit trace for the desired id
 	 */
-	AuditTrail getAuditTrail(Long idAuditTrail);
+	AuditTrace getTrace(Long idAuditTrace);
 }

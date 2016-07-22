@@ -21,7 +21,7 @@ public final class AuditFeatures extends Features {
 	@Override
 	protected void setUp() {
 		getModuleConfigBuilder()
-				.addDefinitionProvider(AuditTrailDefinitionProvider.class)
+				.addDefinitionProvider(AuditTraceDefinitionProvider.class)
 				.addComponent(AuditManager.class, AuditManagerImpl.class);
 	}
 

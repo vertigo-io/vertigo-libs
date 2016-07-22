@@ -16,26 +16,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.vertigo.x.audit;
 
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.x.impl.audit.AuditFeatures;
-import io.vertigo.x.plugins.audit.memory.AuditTrailMemoryStorePlugin;
+import java.util.List;
 
-public class JunitAppConfig {
+/**
+ * This class defines the storage of audit trails.
+ * @author xdurand
+ */
+public interface AuditTraceStore {
 
-	public static AppConfig config() {
-		AppConfigBuilder acb = new AppConfigBuilder();
-		
-		acb.beginModule(AuditFeatures.class)
-			.getModuleConfigBuilder()
-			.addPlugin(AuditTrailMemoryStorePlugin.class)
-		   .endModule();
-		
-		return acb.build();
-	}
-	
-	
+	/**
+	 * Get an audit trail.
+	 * @param idAuditTrace the audit trail defined by its id.
+	 * @return the
+	 */
+	AuditTrace readTrace(Long idAuditTrace);
+
+	/**
+	 * Save a new audit trail.
+	 * Attention: The audit MUST NOT have an id.
+	 * @param auditTrace the audit trail to save.
+	 */
+	void createTrace(AuditTrace auditTrace);
+
+	/**
+	 * Fetch all Audit Trace mathing the provided criteria
+	 * @param atc
+	 * @return the matching taces for the provided criteria
+	 */
+	List<AuditTrace> findTraceByCriteria(AuditTraceCriteria atc);
+
 }

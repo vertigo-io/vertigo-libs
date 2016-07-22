@@ -26,73 +26,70 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
- * This class defines the Auditing Trail for an Object.
+ * This class defines the Auditing Trace for an Object.
  *
  * @author xdurand
  */
 @DtDefinition
-public final class AuditTrail implements DtObject {
+public final class AuditTrace implements DtObject {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2280022920606418634L;
 
 	@Field(type = "ID", domain = "DO_X_AUDIT_ID", required = true, label = "id")
-	private final Long id;
+	private Long id;
 
 	@Field(domain = "DO_X_AUDIT_CATEGORY", label = "category")
 	private final String category;
-	
+
 	@Field(domain = "DO_X_AUDIT_USER", label = "user")
 	private final String user;
 
-	@Field(domain = "DO_X_AUDIT_DATE", label = "dateBusiness")
-	private final Date dateBusiness;
+	@Field(domain = "DO_X_AUDIT_DATE", label = "businessDate")
+	private final Date businessDate;
 
-	@Field(domain = "DO_X_AUDIT_DATE", label = "dateExecution")
-	private final Date dateExecution;
-	
+	@Field(domain = "DO_X_AUDIT_DATE", label = "executionDate")
+	private final Date executionDate;
+
 	@Field(domain = "DO_X_AUDIT_ITEM", label = "item")
 	private final Long item;
 
+	@Field(domain = "DO_X_AUDIT_MESSAGE", label = "message")
+	private final String message;
+
 	@Field(domain = "DO_X_AUDIT_CONTEXT", label = "context")
 	private final String context;
-	
-	
-	AuditTrail(final Long id, String category, final String user,Date dateBusiness, final Date dateExecution, Long item, String context) {
+
+
+	AuditTrace(final Long id, final String category, final String user, final Date businessDate, final Date executionDate, final Long item, final String message, final String context) {
 		this.id = id;
 		this.category = category;
 		this.user = user;
-		this.dateBusiness = dateBusiness;
-		this.dateExecution = dateExecution;
+		this.businessDate = businessDate;
+		this.executionDate = executionDate;
 		this.item = item;
+		this.message = message;
 		this.context = context;
 	}
 
+
 	/**
-	 * @return the id of the audit trail
+	 * @return the id
 	 */
 	public Long getId() {
 		return id;
 	}
 
-	
+
 	/**
-	 * @return the user
+	 * @param id the id to set
 	 */
-	public String getUser() {
-		return user;
+	public void setId(final Long id) {
+		this.id = id;
 	}
 
-	
-	/**
-	 * @return the dateExecution
-	 */
-	public Date getDateExecution() {
-		return dateExecution;
-	}
 
-	
 	/**
 	 * @return the category
 	 */
@@ -100,15 +97,31 @@ public final class AuditTrail implements DtObject {
 		return category;
 	}
 
-	
+
 	/**
-	 * @return the dateBusiness
+	 * @return the user
 	 */
-	public Date getDateBusiness() {
-		return dateBusiness;
+	public String getUser() {
+		return user;
 	}
 
-	
+
+	/**
+	 * @return the businessDate
+	 */
+	public Date getBusinessDate() {
+		return businessDate;
+	}
+
+
+	/**
+	 * @return the executionDate
+	 */
+	public Date getExecutionDate() {
+		return executionDate;
+	}
+
+
 	/**
 	 * @return the item
 	 */
@@ -116,7 +129,15 @@ public final class AuditTrail implements DtObject {
 		return item;
 	}
 
-	
+
+	/**
+	 * @return the message
+	 */
+	public String getMessage() {
+		return message;
+	}
+
+
 	/**
 	 * @return the context
 	 */
@@ -124,7 +145,6 @@ public final class AuditTrail implements DtObject {
 		return context;
 	}
 
-	
 	@Override
 	public String toString() {
 		return DtObjectUtil.toString(this);

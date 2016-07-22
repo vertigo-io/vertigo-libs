@@ -32,10 +32,10 @@ import io.vertigo.util.ListBuilder;
 
 
 /**
- * Provides all the definitions used in the 'Audit' module. 
+ * Provides all the definitions used in the 'Audit' module.
  * @author xdurand
  */
-public class AuditTrailDefinitionProvider implements DefinitionProvider {
+public class AuditTraceDefinitionProvider implements DefinitionProvider {
 
 	@Override
 	public Iterator<Definition> iterator() {
@@ -44,16 +44,18 @@ public class AuditTrailDefinitionProvider implements DefinitionProvider {
 		final Domain domainAuditUser = new DomainBuilder("DO_X_AUDIT_USER", DataType.String).build();
 		final Domain domainAuditDate = new DomainBuilder("DO_X_AUDIT_DATE", DataType.Date).build();
 		final Domain domainAuditItem = new DomainBuilder("DO_X_AUDIT_ITEM", DataType.Long).build();
+		final Domain domainAuditMessage = new DomainBuilder("DO_X_AUDIT_MESSAGE", DataType.String).build();
 		final Domain domainAuditContext = new DomainBuilder("DO_X_AUDIT_CONTEXT", DataType.String).build();
-		
 
-		final DtDefinition auditTrailDtDefinition = new DtDefinitionBuilder("DT_AUDIT_TRAIL")
+
+		final DtDefinition auditTraceDtDefinition = new DtDefinitionBuilder("DT_AUDIT_TRACE")
 				.addIdField("ID", "id", domainAuditId, false, false)
 				.addDataField("CATEGORY", "category", domainAuditCategory, true, true, true, true)
 				.addDataField("USER", "user", domainAuditUser, true, true, false, false)
 				.addDataField("DATE_BUSINESS", "dateBusiness", domainAuditDate, false, true, false, false)
 				.addDataField("DATE_EXECUTION", "dateExecution", domainAuditDate, true, true, false, false)
 				.addDataField("ITEM", "item", domainAuditItem, true, true, false, false)
+				.addDataField("MESSAGE", "message", domainAuditMessage, true, true, false, false)
 				.addDataField("CONTEXT", "context", domainAuditContext, false, true, false, false)
 				.build();
 
@@ -64,9 +66,9 @@ public class AuditTrailDefinitionProvider implements DefinitionProvider {
 				.add(domainAuditDate)
 				.add(domainAuditItem)
 				.add(domainAuditContext)
-				.add(auditTrailDtDefinition)
+				.add(auditTraceDtDefinition)
 				.build()
 				.iterator();
 	}
-	
+
 }
