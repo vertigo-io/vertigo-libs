@@ -1,6 +1,5 @@
 package io.vertigo.x.audit;
 
-
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class AuditTraceBuilder implements Builder<AuditTrace> {
 	private final Date executionDate;
 	private final Long item;
 	private final String message;
-	private String context;
+	private String myContext;
 
 	/**
 	 * Builder for AuditTrace
@@ -39,7 +38,7 @@ public class AuditTraceBuilder implements Builder<AuditTrace> {
 		this.user = user;
 		this.message = message;
 		this.item = item;
-		this.executionDate = new Date();
+		executionDate = new Date();
 	}
 
 	/**
@@ -50,14 +49,13 @@ public class AuditTraceBuilder implements Builder<AuditTrace> {
 	public AuditTraceBuilder withDateBusiness(final Date dateBusiness) {
 		Assertion.checkNotNull(dateBusiness);
 		//---
-		this.businessDate = dateBusiness;
+		businessDate = dateBusiness;
 		return this;
 	}
 
 	/**
 	 * Optionnal business date
 	 * @param context context for metadata
-	 * @param dateBusiness
 	 * @return the builder (for fluent style)
 	 */
 	public AuditTraceBuilder withContext(final List<String> context) {
@@ -68,13 +66,13 @@ public class AuditTraceBuilder implements Builder<AuditTrace> {
 		for (final String string : context) {
 			sb.append(string).append("|");
 		}
-		this.context = sb.toString();
+		this.myContext = sb.toString();
 		return this;
 	}
 
 	@Override
 	public AuditTrace build() {
-		return new AuditTrace(this.id, this.category, this.user, this.businessDate, this.executionDate, this.item, this.message, this.context);
+		return new AuditTrace(id, category, user, businessDate, executionDate, item, message, myContext);
 	}
 
 }
