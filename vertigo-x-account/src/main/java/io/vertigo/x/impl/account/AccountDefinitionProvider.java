@@ -24,12 +24,13 @@ import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.core.spaces.definiton.Definition;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.util.ListBuilder;
 
 /**
- * Provides all the definitions used in the 'account' module. 
+ * Provides all the definitions used in the 'account' module.
  * @author pchretien
  */
 public final class AccountDefinitionProvider implements DefinitionProvider {
@@ -37,9 +38,9 @@ public final class AccountDefinitionProvider implements DefinitionProvider {
 	/** {@inheritDoc} */
 	@Override
 	public Iterator<Definition> iterator() {
-		final Domain domainAccountId = new Domain("DO_X_ACCOUNT_ID", DataType.String);
-		final Domain domainAccountName = new Domain("DO_X_ACCOUNT_NAME", DataType.String);
-		final Domain domainAccountEmail = new Domain("DO_X_ACCOUNT_EMAIL", DataType.String);
+		final Domain domainAccountId = new DomainBuilder("DO_X_ACCOUNT_ID", DataType.String).build();
+		final Domain domainAccountName = new DomainBuilder("DO_X_ACCOUNT_NAME", DataType.String).build();
+		final Domain domainAccountEmail = new DomainBuilder("DO_X_ACCOUNT_EMAIL", DataType.String).build();
 
 		final DtDefinition accountDtDefinition = new DtDefinitionBuilder("DT_ACCOUNT")
 				.addIdField("ID", "id", domainAccountId, false, false)

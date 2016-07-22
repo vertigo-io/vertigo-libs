@@ -21,6 +21,7 @@ package io.vertigo.x.webapi.comment;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -31,7 +32,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Option;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServices;
@@ -161,7 +161,7 @@ public final class CommentWebServices implements WebServices {
 	}
 
 	private static Object stringToId(final String id, final DtDefinition dtDefinition) {
-		final Option<DtField> idFieldOption = dtDefinition.getIdField();
+		final Optional<DtField> idFieldOption = dtDefinition.getIdField();
 		Assertion.checkArgument(idFieldOption.isPresent(), "KeyConcept {0} must have an id field, in order to support Comment extension", dtDefinition.getLocalName());
 
 		final DataType dataType = idFieldOption.get().getDomain().getDataType();

@@ -20,11 +20,11 @@ package io.vertigo.x.account;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Option;
 
 /**
  * This class defines the storage of accounts
@@ -32,7 +32,7 @@ import io.vertigo.lang.Option;
  */
 public interface AccountStore {
 	/**
-	 * @return the number of accounts 
+	 * @return the number of accounts
 	 */
 	long getAccountsCount();
 
@@ -67,7 +67,7 @@ public interface AccountStore {
 	Collection<AccountGroup> getAllGroups();
 
 	/**
-	 * Gets the group defined by an URI. 
+	 * Gets the group defined by an URI.
 	 * @param groupURI the group URI
 	 * @return the group
 	 */
@@ -102,7 +102,7 @@ public interface AccountStore {
 
 	/**
 	 * Defines a photo to an account.
-	 * 
+	 *
 	 * @param accountURI the account defined by its URI
 	 * @param photo the photo
 	 */
@@ -110,10 +110,10 @@ public interface AccountStore {
 
 	/**
 	 * Gets the photo of an account defined by its URI.
-	 * 
+	 *
 	 * @param accountURI the account defined by its URI
 	 * @return the photo as a file
 	 */
-	Option<VFile> getPhoto(URI<Account> accountURI);
+	Optional<VFile> getPhoto(URI<Account> accountURI);
 
 }
