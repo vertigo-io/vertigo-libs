@@ -18,7 +18,7 @@
  */
 package io.vertigo.x.account;
 
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.lang.Assertion;
@@ -29,7 +29,7 @@ import io.vertigo.lang.Assertion;
  * @author pchretien
  */
 @DtDefinition
-public final class Account implements DtObject {
+public final class Account implements Entity {
 	private static final long serialVersionUID = 7509030642946579907L;
 
 	@Field(type = "ID", domain = "DO_X_ACCOUNT_ID", required = true, label = "id")
