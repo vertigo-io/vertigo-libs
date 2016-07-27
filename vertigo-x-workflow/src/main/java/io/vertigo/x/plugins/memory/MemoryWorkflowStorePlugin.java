@@ -130,14 +130,12 @@ public class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		inMemoryWorkflowDefinitionStore.put(generatedId, workflowDefinition);
 	}
 
-
 	@Override
 	public WfWorkflowDefinition readWorkflowDefinition(final Long wfwdId) {
 		Assertion.checkNotNull(wfwdId);
 		//---
 		return inMemoryWorkflowDefinitionStore.get(wfwdId);
 	}
-
 
 	@Override
 	public WfWorkflowDefinition readWorkflowDefinition(final String definitionName) {
