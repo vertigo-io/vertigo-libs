@@ -44,7 +44,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 
 	/**
-	 * Construct a new Audit manager
+	 * Construct a new Workflow manager
 	 * @param workflowStorePlugin
 	 */
 	@Inject

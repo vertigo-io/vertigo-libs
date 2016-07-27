@@ -25,10 +25,10 @@ import io.vertigo.x.workflow.WorkflowStore;
 
 
 /**
- * Interface for the audit trail's store plugin
+ * Interface for the workflow store plugin
  * @author xdurand
  *
  */
 public interface WorkflowStorePlugin extends WorkflowStore, Plugin {
-	// Plugin interface for Audit Trace
+	// Plugin interface for Workflow
 }
