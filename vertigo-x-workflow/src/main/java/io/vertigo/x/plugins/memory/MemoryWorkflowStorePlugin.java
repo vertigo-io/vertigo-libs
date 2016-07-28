@@ -1,6 +1,4 @@
 
-
-
 /**
  * vertigo - simple java starter
  *
@@ -40,7 +38,7 @@ import io.vertigo.x.workflow.domain.model.WfWorkflowDefinition;
  * @author xdurand
  *
  */
-public class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
+public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 
 	private final Map<Long, WfWorkflowDefinition> inMemoryWorkflowDefinitionStore = new ConcurrentHashMap<>();
 	private final Map<Long, WfWorkflow> inMemoryWorkflowInstanceStore = new ConcurrentHashMap<>();
@@ -99,7 +97,6 @@ public class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		// TODO Implement with rules
 		return new ArrayList<>();
 	}
-
 
 	//Definition
 	@Override

@@ -1,5 +1,4 @@
 
-
 package io.vertigo.x.workflow;
 
 import io.vertigo.lang.Builder;
@@ -10,7 +9,7 @@ import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
  * @author xdurand
  *
  */
-public class WfActivityDefinitionBuilder implements Builder<WfActivityDefinition> {
+public final class WfActivityDefinitionBuilder implements Builder<WfActivityDefinition> {
 
 	private final Long myWfwdId;
 	private final String myName;
@@ -23,7 +22,7 @@ public class WfActivityDefinitionBuilder implements Builder<WfActivityDefinition
 	 * @param myWfwdId WorkflowDefinition Id
 	 */
 	public WfActivityDefinitionBuilder(final String name, final Long myWfwdId) {
-		this.myName = name;
+		myName = name;
 		this.myWfwdId = myWfwdId;
 	}
 
@@ -33,7 +32,7 @@ public class WfActivityDefinitionBuilder implements Builder<WfActivityDefinition
 	 * @return the builder
 	 */
 	public WfActivityDefinitionBuilder withLevel(final Integer level) {
-		this.myLevel = level;
+		myLevel = level;
 		return this;
 	}
 
@@ -43,7 +42,7 @@ public class WfActivityDefinitionBuilder implements Builder<WfActivityDefinition
 	 * @return the builder
 	 */
 	public WfActivityDefinitionBuilder withMultiplicity(final String wfmdCode) {
-		this.myWfCodeMultiplicityDefinition = WfCodeMultiplicityDefinition.valueOf(wfmdCode);
+		myWfCodeMultiplicityDefinition = WfCodeMultiplicityDefinition.valueOf(wfmdCode);
 		return this;
 	}
 

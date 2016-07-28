@@ -8,6 +8,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
  *
  */
 public class MyDummyDtObject implements DtObject {
+	private static final long serialVersionUID = 764927224121145676L;
 
 	private Long id;
 	private String entity;

@@ -30,12 +30,11 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.util.ListBuilder;
 
-
 /**
  * Provides all the definitions used in the 'Rules' module.
  * @author xdurand
  */
-public class RuleProvider implements DefinitionProvider {
+public final class RuleProvider implements DefinitionProvider {
 
 	@Override
 	public Iterator<Definition> iterator() {
@@ -53,7 +52,6 @@ public class RuleProvider implements DefinitionProvider {
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
 				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true, false, false)
 				.build();
-
 
 		final DtDefinition wfConditionDefinitionDtDefinition = new DtDefinitionBuilder("DT_RULE_CONDITION_DEFINITION")
 				.addIdField("ID", "id", domainWorkflowId, false, false)

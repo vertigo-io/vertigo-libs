@@ -1,5 +1,4 @@
 
-
 package io.vertigo.x.workflow;
 
 import java.util.Date;
@@ -12,7 +11,7 @@ import io.vertigo.x.workflow.domain.model.WfWorkflowDefinition;
  * @author xdurand
  *
  */
-public class WfWorkflowDefinitionBuilder implements Builder<WfWorkflowDefinition> {
+public final class WfWorkflowDefinitionBuilder implements Builder<WfWorkflowDefinition> {
 
 	private final String myName;
 	private final Date myDate;
@@ -23,8 +22,8 @@ public class WfWorkflowDefinitionBuilder implements Builder<WfWorkflowDefinition
 	 * @param name
 	 */
 	public WfWorkflowDefinitionBuilder(final String name) {
-		this.myName = name;
-		this.myDate = new Date();
+		myName = name;
+		myDate = new Date();
 	}
 
 	/**
@@ -33,7 +32,7 @@ public class WfWorkflowDefinitionBuilder implements Builder<WfWorkflowDefinition
 	 * @return the builder
 	 */
 	public WfWorkflowDefinitionBuilder withFirstActivityDefinitionId(final Long wfadId) {
-		this.myWfadId = wfadId;
+		myWfadId = wfadId;
 		return this;
 	}
 
@@ -48,6 +47,5 @@ public class WfWorkflowDefinitionBuilder implements Builder<WfWorkflowDefinition
 		wfTransitionDefinition.setName(myName);
 		return wfTransitionDefinition;
 	}
-
 
 }

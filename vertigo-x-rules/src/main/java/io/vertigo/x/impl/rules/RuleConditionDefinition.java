@@ -11,9 +11,6 @@ import io.vertigo.dynamo.domain.stereotype.Field;
  */
 @DtDefinition
 public final class RuleConditionDefinition implements Entity {
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 2280022920606418634L;
 
 	@Field(type = "ID", domain = "DO_X_RULES_ID", required = true, label = "id")
@@ -46,14 +43,12 @@ public final class RuleConditionDefinition implements Entity {
 		this.rudId = rudId;
 	}
 
-
 	/**
 	 * @return the id
 	 */
 	public Long getId() {
 		return id;
 	}
-
 
 	/**
 	 * @return the field
@@ -62,14 +57,12 @@ public final class RuleConditionDefinition implements Entity {
 		return field;
 	}
 
-
 	/**
 	 * @return the operator
 	 */
 	public String getOperator() {
 		return operator;
 	}
-
 
 	/**
 	 * @return the expression
@@ -78,7 +71,4 @@ public final class RuleConditionDefinition implements Entity {
 		return expression;
 	}
 
-
 }
-
-

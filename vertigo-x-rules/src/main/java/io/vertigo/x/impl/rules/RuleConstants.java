@@ -10,10 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author xdurand
  *
  */
-public class RuleConstants {
-
+public final class RuleConstants {
 	private final Map<String, String> constants = new ConcurrentHashMap<>();
-
 
 	/**
 	 *
@@ -24,10 +22,6 @@ public class RuleConstants {
 		constants.put(key, value);
 	}
 
-	/**
-	 *
-	 * @return
-	 */
 	public List<Map.Entry<String, String>> getValues() {
 		return new ArrayList<>(constants.entrySet());
 	}
