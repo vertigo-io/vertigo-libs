@@ -29,7 +29,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  * @author xdurand
  *
  */
-public class WfDecision implements DtObject {
+public final class WfDecision implements DtObject {
 
 	private static final long serialVersionUID = 120222353819727138L;
 
@@ -52,14 +52,12 @@ public class WfDecision implements DtObject {
 		this.comment = comment;
 	}
 
-
 	/**
 	 * @return the choice
 	 */
 	public Integer getChoice() {
 		return choice;
 	}
-
 
 	/**
 	 * @return the user
@@ -68,14 +66,12 @@ public class WfDecision implements DtObject {
 		return user;
 	}
 
-
 	/**
 	 * @return the businessDate
 	 */
 	public Date getBusinessDate() {
 		return businessDate;
 	}
-
 
 	/**
 	 * @return the commentaire
@@ -88,6 +84,5 @@ public class WfDecision implements DtObject {
 	public String toString() {
 		return DtObjectUtil.toString(this);
 	}
-
 
 }

@@ -30,12 +30,11 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.util.ListBuilder;
 
-
 /**
  * Provides all the definitions used in the 'Rules' module.
  * @author xdurand
  */
-public class RuleProvider implements DefinitionProvider {
+public final class RuleProvider implements DefinitionProvider {
 
 	@Override
 	public Iterator<Definition> iterator() {

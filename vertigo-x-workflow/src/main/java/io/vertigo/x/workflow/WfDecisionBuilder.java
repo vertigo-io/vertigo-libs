@@ -9,7 +9,7 @@ import io.vertigo.lang.Builder;
  * @author xdurand
  *
  */
-public class WfDecisionBuilder implements Builder<WfDecision> {
+public final class WfDecisionBuilder implements Builder<WfDecision> {
 
 	private final Integer myChoice;
 	private final String myUser;
@@ -52,6 +52,5 @@ public class WfDecisionBuilder implements Builder<WfDecision> {
 	public WfDecision build() {
 		return new WfDecision(myChoice, myUser, myBusinessDate, myComment);
 	}
-
 
 }

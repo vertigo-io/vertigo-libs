@@ -46,14 +46,12 @@ public final class RuleConditionDefinition implements Entity {
 		this.rudId = rudId;
 	}
 
-
 	/**
 	 * @return the id
 	 */
 	public Long getId() {
 		return id;
 	}
-
 
 	/**
 	 * @param id the id to set
@@ -70,14 +68,12 @@ public final class RuleConditionDefinition implements Entity {
 		return field;
 	}
 
-
 	/**
 	 * @return the operator
 	 */
 	public String getOperator() {
 		return operator;
 	}
-
 
 	/**
 	 * @return the expression
@@ -94,5 +90,3 @@ public final class RuleConditionDefinition implements Entity {
 	}
 
 }
-
-

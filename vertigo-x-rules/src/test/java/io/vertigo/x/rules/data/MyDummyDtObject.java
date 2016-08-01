@@ -8,7 +8,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
  *
  */
 public class MyDummyDtObject implements DtObject {
-
 	/**
 	 *
 	 */

@@ -30,12 +30,11 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.util.ListBuilder;
 
-
 /**
  * Provides all the definitions used in the 'Workflow' module.
  * @author xdurand
  */
-public class WorkflowProvider implements DefinitionProvider {
+public final class WorkflowProvider implements DefinitionProvider {
 
 	@Override
 	public Iterator<Definition> iterator() {

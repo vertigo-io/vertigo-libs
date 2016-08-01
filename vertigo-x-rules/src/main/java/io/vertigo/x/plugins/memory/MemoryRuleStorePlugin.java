@@ -36,7 +36,7 @@ import io.vertigo.x.impl.rules.SelectorDefinition;
  * @author xdurand
  *
  */
-public class MemoryRuleStorePlugin implements RuleStorePlugin {
+public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 
 	private final Map<Long, RuleConditionDefinition> inMemoryConditionStore = new ConcurrentHashMap<>();
 	private final AtomicLong memoryConditionSequenceGenerator = new AtomicLong(0);
@@ -49,7 +49,6 @@ public class MemoryRuleStorePlugin implements RuleStorePlugin {
 
 	/**
 	 *
-	 * @param idActivityDefinition
 	 * @param ruleDefinition
 	 */
 	@Override
@@ -131,8 +130,6 @@ public class MemoryRuleStorePlugin implements RuleStorePlugin {
 		return ret;
 	}
 
-
-
 	@Override
 	public List<RuleConditionDefinition> findConditionByRuleId(final Long ruleId) {
 		Assertion.checkNotNull(ruleId);
@@ -148,7 +145,6 @@ public class MemoryRuleStorePlugin implements RuleStorePlugin {
 
 		return ret;
 	}
-
 
 
 	/**
