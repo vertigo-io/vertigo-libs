@@ -21,8 +21,13 @@ package io.vertigo.x.workflow;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
 import io.vertigo.x.impl.workflow.WorkflowFeatures;
+import io.vertigo.x.plugins.memory.MemoryRuleStorePlugin;
 import io.vertigo.x.plugins.memory.MemoryWorkflowStorePlugin;
+import io.vertigo.x.plugins.selector.SimpleRuleSelectorPlugin;
+import io.vertigo.x.plugins.validator.SimpleRuleValidatorPlugin;
+import io.vertigo.x.workflow.plugin.MemoryItemStorePlugin;
 
 /**
  * Config for Junit
@@ -41,6 +46,11 @@ public class JunitAppConfig {
 		acb.beginModule(WorkflowFeatures.class)
 			.getModuleConfigBuilder()
 			.addPlugin(MemoryWorkflowStorePlugin.class)
+			.addPlugin(MemoryItemStorePlugin.class)
+			.addPlugin(MemoryRuleStorePlugin.class)
+			.addPlugin(SimpleRuleSelectorPlugin.class)
+			.addPlugin(SimpleRuleValidatorPlugin.class)
+			.addPlugin(JaninoExpressionEvaluatorPlugin.class)
 		   .endModule();
 
 		return acb.build();

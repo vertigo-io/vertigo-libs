@@ -31,7 +31,7 @@ public final class WfWorkflow implements Entity {
 	 * Récupère la valeur de la propriété 'Id Workflow'. 
 	 * @return Long wfwId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "Id Workflow")
+	@Field(domain = "DO_X_WORKFLOW_ID", type = "ID", required = true, label = "Id Workflow")
 	public Long getWfwId() {
 		return wfwId;
 	}
@@ -50,7 +50,7 @@ public final class WfWorkflow implements Entity {
 	 * Récupère la valeur de la propriété 'creation date'. 
 	 * @return java.util.Date creationDate 
 	 */
-	@Field(domain = "DO_DATE", label = "creation date")
+	@Field(domain = "DO_X_WORKFLOW_DATE", label = "creation date")
 	public java.util.Date getCreationDate() {
 		return creationDate;
 	}
@@ -69,7 +69,7 @@ public final class WfWorkflow implements Entity {
 	 * Récupère la valeur de la propriété 'itemId'. 
 	 * @return Long itemId 
 	 */
-	@Field(domain = "DO_ID", label = "itemId")
+	@Field(domain = "DO_X_WORKFLOW_WEAK_ID", label = "itemId")
 	public Long getItemId() {
 		return itemId;
 	}
@@ -88,7 +88,7 @@ public final class WfWorkflow implements Entity {
 	 * Récupère la valeur de la propriété 'user'. 
 	 * @return String user 
 	 */
-	@Field(domain = "DO_CODE", label = "user")
+	@Field(domain = "DO_X_WORKFLOW_USER", label = "user")
 	public String getUser() {
 		return user;
 	}
@@ -104,17 +104,17 @@ public final class WfWorkflow implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'user'. 
+	 * Récupère la valeur de la propriété 'user_logic'. 
 	 * @return Boolean userLogic <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_YES_NO", required = true, label = "user")
+	@Field(domain = "DO_X_WORKFLOW_FLAG", required = true, label = "user_logic")
 	public Boolean getUserLogic() {
 		return userLogic;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'user'.
+	 * Définit la valeur de la propriété 'user_logic'.
 	 * @param userLogic Boolean <b>Obligatoire</b>
 	 */
 	public void setUserLogic(final Boolean userLogic) {
@@ -126,7 +126,7 @@ public final class WfWorkflow implements Entity {
 	 * Récupère la valeur de la propriété 'WfWorkflowDefinition'. 
 	 * @return Long wfwdId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", required = true, label = "WfWorkflowDefinition")
+	@Field(domain = "DO_X_WORKFLOW_ID", type = "FOREIGN_KEY", required = true, label = "WfWorkflowDefinition")
 	public Long getWfwdId() {
 		return wfwdId;
 	}
@@ -145,7 +145,7 @@ public final class WfWorkflow implements Entity {
 	 * Récupère la valeur de la propriété 'WfStatus'. 
 	 * @return String wfsCode <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_CODE", type = "FOREIGN_KEY", required = true, label = "WfStatus")
+	@Field(domain = "DO_X_WORKFLOW_CODE", type = "FOREIGN_KEY", required = true, label = "WfStatus")
 	public String getWfsCode() {
 		return wfsCode;
 	}
@@ -164,7 +164,7 @@ public final class WfWorkflow implements Entity {
 	 * Récupère la valeur de la propriété 'current'. 
 	 * @return Long wfaId2 
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "current")
+	@Field(domain = "DO_X_WORKFLOW_ID", type = "FOREIGN_KEY", label = "current")
 	public Long getWfaId2() {
 		return wfaId2;
 	}

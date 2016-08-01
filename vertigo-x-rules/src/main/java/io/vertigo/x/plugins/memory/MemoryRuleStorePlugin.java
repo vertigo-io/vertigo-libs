@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.x.impl.rules.RuleConditionDefinition;
 import io.vertigo.x.impl.rules.RuleDefinition;
 import io.vertigo.x.impl.rules.RuleStorePlugin;
 import io.vertigo.x.impl.rules.SelectorDefinition;
@@ -36,6 +37,9 @@ import io.vertigo.x.impl.rules.SelectorDefinition;
  *
  */
 public class MemoryRuleStorePlugin implements RuleStorePlugin {
+
+	private final Map<Long, RuleConditionDefinition> inMemoryConditionStore = new ConcurrentHashMap<>();
+	private final AtomicLong memoryConditionSequenceGenerator = new AtomicLong(0);
 
 	private final Map<Long, RuleDefinition> inMemoryRuleStore = new ConcurrentHashMap<>();
 	private final AtomicLong memoryRuleSequenceGenerator = new AtomicLong(0);
@@ -85,6 +89,33 @@ public class MemoryRuleStorePlugin implements RuleStorePlugin {
 	}
 
 	@Override
+	public void addCondition(final RuleConditionDefinition ruleConditionDefinition) {
+		Assertion.checkNotNull(ruleConditionDefinition);
+		Assertion.checkState(ruleConditionDefinition.getId() == null, "A new condition must not have an id");
+		//---
+		final Long generatedId = memoryRuleSequenceGenerator.addAndGet(1);
+		ruleConditionDefinition.setId(generatedId);
+		inMemoryConditionStore.put(generatedId, ruleConditionDefinition);
+	}
+
+	@Override
+	public void removeCondition(final RuleConditionDefinition ruleConditionDefinition) {
+		Assertion.checkNotNull(ruleConditionDefinition);
+		Assertion.checkNotNull(ruleConditionDefinition.getId());
+		//---
+		inMemoryConditionStore.remove(ruleConditionDefinition.getId());
+	}
+
+	@Override
+	public void updateCondition(final RuleConditionDefinition ruleConditionDefinition) {
+		Assertion.checkNotNull(ruleConditionDefinition);
+		Assertion.checkNotNull(ruleConditionDefinition.getId());
+		Assertion.checkState(inMemoryConditionStore.containsKey(ruleConditionDefinition.getId()), "Cannot update this condition : Its id is unknown in the store");
+		//---
+		inMemoryConditionStore.put(ruleConditionDefinition.getId(), ruleConditionDefinition);
+	}
+
+	@Override
 	public List<RuleDefinition> findRulesByItemId(final Long itemId) {
 		Assertion.checkNotNull(itemId);
 		//---
@@ -99,6 +130,25 @@ public class MemoryRuleStorePlugin implements RuleStorePlugin {
 
 		return ret;
 	}
+
+
+
+	@Override
+	public List<RuleConditionDefinition> findConditionByRuleId(final Long ruleId) {
+		Assertion.checkNotNull(ruleId);
+		//---
+		final List<RuleConditionDefinition> ret = new ArrayList<>();
+
+		for (final RuleConditionDefinition ruleDefinition : inMemoryConditionStore.values()) {
+			if (ruleId.equals(ruleDefinition.getRudId())) {
+				//Collect
+				ret.add(ruleDefinition);
+			}
+		}
+
+		return ret;
+	}
+
 
 
 	/**
@@ -156,4 +206,5 @@ public class MemoryRuleStorePlugin implements RuleStorePlugin {
 
 		return ret;
 	}
+
 }

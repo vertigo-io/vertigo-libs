@@ -30,7 +30,7 @@ public final class WfActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Id activity'. 
 	 * @return Long wfaId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "Id activity")
+	@Field(domain = "DO_X_WORKFLOW_ID", type = "ID", required = true, label = "Id activity")
 	public Long getWfaId() {
 		return wfaId;
 	}
@@ -49,7 +49,7 @@ public final class WfActivity implements Entity {
 	 * Récupère la valeur de la propriété 'creation date'. 
 	 * @return java.util.Date creationDate 
 	 */
-	@Field(domain = "DO_DATE", label = "creation date")
+	@Field(domain = "DO_X_WORKFLOW_DATE", label = "creation date")
 	public java.util.Date getCreationDate() {
 		return creationDate;
 	}
@@ -68,7 +68,7 @@ public final class WfActivity implements Entity {
 	 * Récupère la valeur de la propriété 'choice'. 
 	 * @return Integer choice 
 	 */
-	@Field(domain = "DO_INTEGER", label = "choice")
+	@Field(domain = "DO_X_WORKFLOW_CHOICE", label = "choice")
 	public Integer getChoice() {
 		return choice;
 	}
@@ -87,7 +87,7 @@ public final class WfActivity implements Entity {
 	 * Récupère la valeur de la propriété 'decision date'. 
 	 * @return java.util.Date decisionDate 
 	 */
-	@Field(domain = "DO_DATE", label = "decision date")
+	@Field(domain = "DO_X_WORKFLOW_DATE", label = "decision date")
 	public java.util.Date getDecisionDate() {
 		return decisionDate;
 	}
@@ -106,7 +106,7 @@ public final class WfActivity implements Entity {
 	 * Récupère la valeur de la propriété 'comments'. 
 	 * @return String comments 
 	 */
-	@Field(domain = "DO_COMMENT", label = "comments")
+	@Field(domain = "DO_X_WORKFLOW_COMMENTS", label = "comments")
 	public String getComments() {
 		return comments;
 	}
@@ -125,7 +125,7 @@ public final class WfActivity implements Entity {
 	 * Récupère la valeur de la propriété 'user'. 
 	 * @return String user 
 	 */
-	@Field(domain = "DO_CODE", label = "user")
+	@Field(domain = "DO_X_WORKFLOW_USER", label = "user")
 	public String getUser() {
 		return user;
 	}
@@ -144,7 +144,7 @@ public final class WfActivity implements Entity {
 	 * Récupère la valeur de la propriété 'WfWorkflow'. 
 	 * @return Long wfwId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", required = true, label = "WfWorkflow")
+	@Field(domain = "DO_X_WORKFLOW_ID", type = "FOREIGN_KEY", required = true, label = "WfWorkflow")
 	public Long getWfwId() {
 		return wfwId;
 	}
@@ -163,7 +163,7 @@ public final class WfActivity implements Entity {
 	 * Récupère la valeur de la propriété 'WfActivityDefinition'. 
 	 * @return Long wfadId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", required = true, label = "WfActivityDefinition")
+	@Field(domain = "DO_X_WORKFLOW_ID", type = "FOREIGN_KEY", required = true, label = "WfActivityDefinition")
 	public Long getWfadId() {
 		return wfadId;
 	}

@@ -54,20 +54,21 @@ public class RuleProvider implements DefinitionProvider {
 				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true, false, false)
 				.build();
 
-
-		final DtDefinition wfConditionDefinitionDtDefinition = new DtDefinitionBuilder("DT_RULE_CONDITION_DEFINITION")
+		final DtDefinitionBuilder wfConditionDefinitionDtDefinitionBuilder = new DtDefinitionBuilder("DT_RULE_CONDITION_DEFINITION")
 				.addIdField("ID", "id", domainWorkflowId, false, false)
 				.addDataField("FIELD", "field", domainWorkflowField, true, true, false, false)
 				.addDataField("OPERATOR", "operator", domainWorkflowOperator, true, true, false, false)
-				.addDataField("EXPRESSION", "expression", domainWorkflowExpression, true, true, false, false)
-				.addForeignKey("RUD_ID", "rudId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
-				.build();
+				.addDataField("EXPRESSION", "expression", domainWorkflowExpression, true, true, false, false);
 
 		final DtDefinition wfSelectorDefinitionDtDefinition = new DtDefinitionBuilder("DT_SELECTOR_DEFINITION")
 				.addIdField("ID", "id", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
 				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true, false, false)
 				.build();
+
+		final DtDefinition wfConditionDefinitionDtDefinition = wfConditionDefinitionDtDefinitionBuilder.build();
+
+		wfConditionDefinitionDtDefinitionBuilder.addForeignKey("RUD_ID", "rudId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false);
 
 		return new ListBuilder<Definition>()
 				.add(domainWorkflowId)

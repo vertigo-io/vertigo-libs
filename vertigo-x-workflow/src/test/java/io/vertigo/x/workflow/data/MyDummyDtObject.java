@@ -1,4 +1,4 @@
-package io.vertigo.x.rules.data;
+package io.vertigo.x.workflow.data;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 

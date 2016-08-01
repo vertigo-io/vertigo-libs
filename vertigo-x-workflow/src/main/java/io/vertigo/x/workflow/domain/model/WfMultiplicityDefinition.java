@@ -22,7 +22,7 @@ public final class WfMultiplicityDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'Multiplicity code'. 
 	 * @return String wfmdCode <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_CODE", type = "ID", required = true, label = "Multiplicity code")
+	@Field(domain = "DO_X_WORKFLOW_CODE", type = "ID", required = true, label = "Multiplicity code")
 	public String getWfmdCode() {
 		return wfmdCode;
 	}
@@ -41,7 +41,7 @@ public final class WfMultiplicityDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'Label'. 
 	 * @return String label 
 	 */
-	@Field(domain = "DO_LABEL", label = "Label")
+	@Field(domain = "DO_X_WORKFLOW_LABEL", label = "Label")
 	public String getLabel() {
 		return label;
 	}

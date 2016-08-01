@@ -1,11 +1,6 @@
 
 
 
-
-
-
-
-
 /**
  * vertigo - simple java starter
  *
@@ -25,24 +20,22 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.plugins.evaluator;
+package io.vertigo.x.workflow.plugin;
 
-import io.vertigo.x.impl.rules.RuleContext;
-import io.vertigo.x.impl.rules.RuleExpressionEvaluatorPlugin;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.x.impl.workflow.ItemStorePlugin;
+import io.vertigo.x.workflow.data.MyDummyDtObject;
 
 /**
  *
  * @author xdurand
  *
  */
-public class JaninoRuleExpressionEvaluatorPlugin implements RuleExpressionEvaluatorPlugin {
-
+public class MemoryItemStorePlugin implements ItemStorePlugin {
 
 	@Override
-	public String evaluateExpression(final String expression, final RuleContext context) {
-		//TODO
-		return null;
+	public DtObject readItem(final Long itemId) {
+		return new MyDummyDtObject();
 	}
-
 
 }

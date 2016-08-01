@@ -26,7 +26,7 @@ public final class WfWorkflowDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'Id Workflow definition'. 
 	 * @return Long wfwdId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "Id Workflow definition")
+	@Field(domain = "DO_X_WORKFLOW_ID", type = "ID", required = true, label = "Id Workflow definition")
 	public Long getWfwdId() {
 		return wfwdId;
 	}
@@ -45,7 +45,7 @@ public final class WfWorkflowDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'name'. 
 	 * @return String name 
 	 */
-	@Field(domain = "DO_LABEL", label = "name")
+	@Field(domain = "DO_X_WORKFLOW_LABEL", label = "name")
 	public String getName() {
 		return name;
 	}
@@ -64,7 +64,7 @@ public final class WfWorkflowDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'date'. 
 	 * @return java.util.Date date 
 	 */
-	@Field(domain = "DO_DATE", label = "date")
+	@Field(domain = "DO_X_WORKFLOW_DATE", label = "date")
 	public java.util.Date getDate() {
 		return date;
 	}
@@ -83,7 +83,7 @@ public final class WfWorkflowDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'startActivity'. 
 	 * @return Long wfadId 
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "startActivity")
+	@Field(domain = "DO_X_WORKFLOW_ID", type = "FOREIGN_KEY", label = "startActivity")
 	public Long getWfadId() {
 		return wfadId;
 	}

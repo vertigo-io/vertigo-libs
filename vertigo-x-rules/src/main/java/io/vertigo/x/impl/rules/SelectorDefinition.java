@@ -46,6 +46,10 @@ public final class SelectorDefinition implements DtObject {
 	@Field(domain = "DO_X_RULES_WEAK_ID", label = "itemId")
 	private Long itemId;
 
+	/**
+	 * @param id
+	 * @param itemId
+	 */
 	public SelectorDefinition(final Long id, final Long itemId) {
 		this.id = id;
 		this.creationDate = new Date();

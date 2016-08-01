@@ -20,6 +20,7 @@ package io.vertigo.x.workflow;
 
 import java.util.List;
 
+import io.vertigo.x.workflow.domain.instance.WfActivity;
 import io.vertigo.x.workflow.domain.instance.WfWorkflow;
 import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
 import io.vertigo.x.workflow.domain.model.WfTransitionDefinition;
@@ -61,6 +62,35 @@ public interface WorkflowStore {
 	void updateWorkflowInstance(WfWorkflow workflow);
 
 	/**
+	 * Fetch an activity by id
+	 * @param wfadId
+	 * @return the corresponding activity
+	 */
+	WfActivity readActivity(final Long wfadId);
+
+	/**
+	 * Fetch an activity by id
+	 * @param wfActivity
+	 * @param wfadId
+	 */
+	void createActivity(WfActivity wfActivity);
+
+	/**
+	 * Fetch an activity by id
+	 * @param wfActivity
+	 * @param wfadId
+	 */
+	void removeActivity(WfActivity wfActivity);
+
+
+	/**
+	 *
+	 * @param activity
+	 * @return the next activity definition
+	 */
+	WfActivityDefinition findNextActivity(WfActivity activity);
+
+	/**
 	 * Find the list of all the definitions following the default transitions
 	 * @return the list of transitions ordered from start to end.
 	 */
@@ -94,34 +124,41 @@ public interface WorkflowStore {
 	 */
 	WfWorkflowDefinition readWorkflowDefinition(String definitionName);
 
+
+	/**
+	 *
+	 * @param wfWorkflowDefinition
+	 */
+	void updateWorkflowDefinition(final WfWorkflowDefinition wfWorkflowDefinition);
+
 	/**
 	 * Add an activity to the workflow definition.
 	 * @param wfWorkflowDefinition the workflow definition.
 	 * @param wfActivityDefinition
 	 * @param position
 	 */
-	void createActivity(WfWorkflowDefinition wfWorkflowDefinition, WfActivityDefinition wfActivityDefinition);
+	void createActivityDefinition(WfWorkflowDefinition wfWorkflowDefinition, WfActivityDefinition wfActivityDefinition);
 
 	/**
 	 * Remove an activity to the workflow definition.
 	 * @param wfWorkflowDefinition the workflow definition.
 	 * @param wfActivityDefinition the activity to remove
 	 */
-	void removeActivity(WfActivityDefinition wfActivityDefinition);
+	void removeActivityDefinition(WfActivityDefinition wfActivityDefinition);
 
 	/**
 	 * Fetch an activity definition by id
 	 * @param wfadId
 	 * @return the corresponding activityeafinition
 	 */
-	WfActivityDefinition readActivity(final Long wfadId);
+	WfActivityDefinition readActivityDefinition(final Long wfadId);
 
 	/**
 	 * Remove an activity to the workflow definition.
 	 * @param wfWorkflowDefinition the workflow definition.
 	 * @param wfActivityDefinition the activity to remove
 	 */
-	void updateActivity(WfActivityDefinition wfActivityDefinition);
+	void updateActivityDefinition(WfActivityDefinition wfActivityDefinition);
 
 
 	/**

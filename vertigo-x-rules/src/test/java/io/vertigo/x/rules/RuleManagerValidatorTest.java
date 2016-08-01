@@ -147,15 +147,23 @@ public class RuleManagerValidatorTest {
 		final RuleDefinition rule = new RuleDefinition(null, 1L);
 		ruleManager.addRule(rule);
 
-
 		final RuleConditionDefinition condition = new RuleConditionDefinition(null, "division", "=", "BTL", rule.getId());
-		rule.getRuleConditionDefinitionList().add(condition);
+		ruleManager.addCondition(condition);
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 
 		final RuleConstants ruleContants = new RuleConstants();
-		ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
 
+		//The division field is null here
+		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		//The rule should NOT be valid here.
+		assertThat(isValid, is(false));
+
+		//The division is true here
+		myDummyDtObject.setDivision("BTL");
+		//The rule should be valid now
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		assertThat(isValid, is(true));
 	}
 
 }

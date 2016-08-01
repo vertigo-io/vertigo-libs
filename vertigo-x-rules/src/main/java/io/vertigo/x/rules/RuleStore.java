@@ -20,6 +20,7 @@ package io.vertigo.x.rules;
 
 import java.util.List;
 
+import io.vertigo.x.impl.rules.RuleConditionDefinition;
 import io.vertigo.x.impl.rules.RuleDefinition;
 import io.vertigo.x.impl.rules.SelectorDefinition;
 
@@ -55,6 +56,30 @@ public interface RuleStore {
 	 */
 	void updateRule(RuleDefinition ruleDefinition);
 
+	/**
+	 *
+	 * @param ruleConditionDefinition
+	 */
+	void addCondition(final RuleConditionDefinition ruleConditionDefinition);
+
+	/**
+	 *
+	 * @param ruleConditionDefinition
+	 */
+	void removeCondition(final RuleConditionDefinition ruleConditionDefinition);
+
+	/**
+	 *
+	 * @param ruleConditionDefinition
+	 */
+	void updateCondition(final RuleConditionDefinition ruleConditionDefinition);
+
+	/**
+	 *
+	 * @param ruleId
+	 * @return a list of all the conditions defined for this rule id
+	 */
+	List<RuleConditionDefinition> findConditionByRuleId(Long ruleId);
 
 	/**
 	 *

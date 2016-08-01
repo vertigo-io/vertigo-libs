@@ -11,10 +11,10 @@ import io.vertigo.lang.Builder;
  */
 public class WfDecisionBuilder implements Builder<WfDecision> {
 
-	private final String choice;
-	private final String user;
-	private Date businessDate;
-	private String comment;
+	private final Integer myChoice;
+	private final String myUser;
+	private Date myBusinessDate;
+	private String myComment;
 
 	/**
 	 * Build a new builder for WfDecision.
@@ -22,10 +22,10 @@ public class WfDecisionBuilder implements Builder<WfDecision> {
 	 * @param choice
 	 * @param user
 	 */
-	public WfDecisionBuilder(final String choice, final String user) {
+	public WfDecisionBuilder(final Integer choice, final String user) {
 		super();
-		this.choice = choice;
-		this.user = user;
+		this.myChoice = choice;
+		this.myUser = user;
 	}
 
 	/**
@@ -34,7 +34,7 @@ public class WfDecisionBuilder implements Builder<WfDecision> {
 	 * @return the curernt builder
 	 */
 	public WfDecisionBuilder withBusinessDate(final Date businessDate) {
-		this.businessDate = businessDate;
+		this.myBusinessDate = businessDate;
 		return this;
 	}
 
@@ -44,13 +44,13 @@ public class WfDecisionBuilder implements Builder<WfDecision> {
 	 * @return the curernt builder
 	 */
 	public WfDecisionBuilder withComment(final String comment) {
-		this.comment = comment;
+		this.myComment = comment;
 		return this;
 	}
 
 	@Override
 	public WfDecision build() {
-		return new WfDecision(choice, user, businessDate, comment);
+		return new WfDecision(myChoice, myUser, myBusinessDate, myComment);
 	}
 
 

@@ -22,7 +22,7 @@ public final class WfStatus implements Entity {
 	 * Récupère la valeur de la propriété 'Code Status'. 
 	 * @return String wfsCode <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_CODE", type = "ID", required = true, label = "Code Status")
+	@Field(domain = "DO_X_WORKFLOW_CODE", type = "ID", required = true, label = "Code Status")
 	public String getWfsCode() {
 		return wfsCode;
 	}
@@ -41,7 +41,7 @@ public final class WfStatus implements Entity {
 	 * Récupère la valeur de la propriété 'label'. 
 	 * @return String label 
 	 */
-	@Field(domain = "DO_LABEL", label = "label")
+	@Field(domain = "DO_X_WORKFLOW_LABEL", label = "label")
 	public String getLabel() {
 		return label;
 	}

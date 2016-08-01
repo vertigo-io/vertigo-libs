@@ -36,7 +36,6 @@ public final class RuleManagerImpl implements RuleManager {
 	private final RuleSelectorPlugin ruleSelectorPlugin;
 	private final RuleValidatorPlugin ruleValidatorPlugin;
 
-
 	/**
 	 * Construct a new Rule manager
 	 * @param ruleStorePlugin
@@ -85,6 +84,26 @@ public final class RuleManagerImpl implements RuleManager {
 	}
 
 	@Override
+	public void addCondition(final RuleConditionDefinition ruleConditionDefinition) {
+		ruleStorePlugin.addCondition(ruleConditionDefinition);
+	}
+
+	@Override
+	public void removeCondition(final RuleConditionDefinition ruleConditionDefinition) {
+		ruleStorePlugin.removeCondition(ruleConditionDefinition);
+	}
+
+	@Override
+	public void updateCondition(final RuleConditionDefinition ruleConditionDefinition) {
+		ruleStorePlugin.updateCondition(ruleConditionDefinition);
+	}
+
+	@Override
+	public List<RuleConditionDefinition> getConditionsForRuleId(final Long ruleId) {
+		return ruleStorePlugin.findConditionByRuleId(ruleId);
+	}
+
+	@Override
 	public void addSelector(final SelectorDefinition selectorDefinition) {
 		ruleStorePlugin.addSelector(selectorDefinition);
 	}
@@ -103,6 +122,7 @@ public final class RuleManagerImpl implements RuleManager {
 	public void updateSelector(final SelectorDefinition selectorDefinition) {
 		ruleStorePlugin.updateSelector(selectorDefinition);
 	}
+
 
 
 

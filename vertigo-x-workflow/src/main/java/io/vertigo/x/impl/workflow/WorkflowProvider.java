@@ -50,61 +50,73 @@ public class WorkflowProvider implements DefinitionProvider {
 		final Domain domainWorkflowFlag = new DomainBuilder("DO_X_WORKFLOW_FLAG", DataType.Boolean).build();
 		final Domain domainWorkflowLevel = new DomainBuilder("DO_X_WORKFLOW_LEVEL", DataType.Integer).build();
 
-		final DtDefinition wfWorkflowActivityDtDefinition = new DtDefinitionBuilder("DT_WF_ACTIVITY")
+		final DtDefinition wfMultiplicityDefinitionDtDefinition = new DtDefinitionBuilder("DT_WF_MULTIPLICITY_DEFINITION")
+				.addIdField("WFMD_CODE", "wfmdCode", domainWorkflowCode, false, false)
+				.addDataField("LABEL", "label", domainWorkflowLabel, true, true, false, false)
+				.build();
+
+		final DtDefinitionBuilder wfWorkflowDefinitionDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_WORKFLOW_DEFINITION")
+				.addIdField("WFWD_ID", "wfwdId", domainWorkflowId, false, false)
+				.addDataField("NAME", "name", domainWorkflowLabel, true, true, true, true)
+				.addDataField("DATE", "date", domainWorkflowDate, true, true, false, false);
+
+		final DtDefinitionBuilder wfTransitionDefinitionDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_TRANSITION_DEFINITION")
+				.addIdField("WFTD_ID", "wftdId", domainWorkflowId, false, false)
+				.addDataField("NAME", "name", domainWorkflowLabel, true, true, false, false);
+
+		final DtDefinitionBuilder wfActivityDefinitionDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_ACTIVITY_DEFINITION")
+				.addIdField("WFAD_ID", "wfadId", domainWorkflowId, false, false)
+				.addDataField("NAME", "name", domainWorkflowLabel, true, true, false, false)
+				.addDataField("LEVEL", "level", domainWorkflowLevel, false, true, false, false);
+
+		final DtDefinitionBuilder wfWorkflowDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_WORKFLOW")
+				.addIdField("WFW_ID", "wfwId", domainWorkflowId, false, false)
+				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
+				.addDataField("ITEM_ID", "itemId", domainWorkflowId, false, true, false, false)
+				.addDataField("USER", "user", domainWorkflowUser, true, true, false, false)
+				.addDataField("USER_LOGIC", "userLogic", domainWorkflowFlag, true, true, false, false);
+
+		final DtDefinitionBuilder wfWorkflowActivityDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_ACTIVITY")
 				.addIdField("WFA_ID", "wfaId", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
 				.addDataField("CHOICE", "choice", domainWorkflowChoice, false, true, false, false)
 				.addDataField("DECISION_DATE", "decisionDate", domainWorkflowDate, false, true, false, false)
 				.addDataField("COMMENTS", "comments", domainWorkflowComments, false, true, false, false)
-				.addDataField("USER", "user", domainWorkflowUser, true, true, false, false)
-				.addForeignKey("WFW_ID", "wfwId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
-				.addForeignKey("WFAD_ID", "wfadId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
-				.build();
+				.addDataField("USER", "user", domainWorkflowUser, true, true, false, false);
 
 		final DtDefinition wfStatusDtDefinition = new DtDefinitionBuilder("DT_WF_STATUS")
 				.addIdField("WFS_CODE", "wfsCode", domainWorkflowCode, false, false)
 				.addDataField("LABEL", "label", domainWorkflowLabel, true, true, true, true)
 				.build();
 
-		final DtDefinition wfWorkflowDtDefinition = new DtDefinitionBuilder("DT_WF_WORKFLOW")
-				.addIdField("WFW_ID", "wfwId", domainWorkflowId, false, false)
-				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
-				.addDataField("ITEM_ID", "itemId", domainWorkflowId, false, true, false, false)
-				.addDataField("USER", "user", domainWorkflowUser, true, true, false, false)
-				.addDataField("USER_LOGIC", "userLogic", domainWorkflowFlag, true, true, false, false)
-				.addForeignKey("WFWD_ID", "wfwdId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
-				.addForeignKey("WFS_CODE", "wfsCode", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
-				.addForeignKey("WFA_ID2", "wfaId2", domainWorkflowId, false, "DO_X_WORKFLOW_ID", false, false)
-				.build();
+		final DtDefinition wfWorkflowDefinitionDtDefinition = wfWorkflowDefinitionDtDefinitionBuilder.build();
+		final DtDefinition wfTransitionDefinitionDtDefinition = wfTransitionDefinitionDtDefinitionBuilder.build();
+		final DtDefinition wfWorkflowDtDefinition = wfWorkflowDtDefinitionBuilder.build();
+		final DtDefinition wfActivityDefinitionDtDefinition = wfActivityDefinitionDtDefinitionBuilder.build();
+		final DtDefinition wfWorkflowActivityDtDefinition = wfWorkflowActivityDtDefinitionBuilder.build();
 
-		final DtDefinition wfActivityDefinitionDtDefinition = new DtDefinitionBuilder("DT_WF_ACTIVITY_DEFINITION")
-				.addIdField("WFAD_ID", "wfadId", domainWorkflowId, false, false)
-				.addDataField("NAME", "name", domainWorkflowLabel, true, true, false, false)
-				.addDataField("LEVEL", "level", domainWorkflowLevel, false, true, false, false)
-				.addForeignKey("WFMD_CODE", "wfmdCode", domainWorkflowCode, true, "DO_X_WORKFLOW_CODE", false, false)
-				.addForeignKey("WFWD_ID", "wfwdId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
-				.build();
+		wfWorkflowDefinitionDtDefinitionBuilder
+				.addForeignKey("WFAD_ID", "wfadId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false);
 
-		final DtDefinition wfMultiplicityDefinitionDtDefinition = new DtDefinitionBuilder("DT_WF_MULTIPLICITY_DEFINITION")
-				.addIdField("WFMD_CODE", "wfmdCode", domainWorkflowCode, false, false)
-				.addDataField("LABEL", "label", domainWorkflowLabel, true, true, false, false)
-				.build();
-
-		final DtDefinition wfTransitionDefinitionDtDefinition = new DtDefinitionBuilder("DT_WF_TRANSITION_DEFINITION")
-				.addIdField("WFTD_ID", "wftdId", domainWorkflowId, false, false)
-				.addDataField("NAME", "name", domainWorkflowLabel, true, true, false, false)
+		wfTransitionDefinitionDtDefinitionBuilder
 				.addForeignKey("WFWD_ID", "wfwdId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
 				.addForeignKey("WFAD_ID_FROM", "wfadIdFrom", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
-				.addForeignKey("WFAD_ID_TO", "wfadIdTo", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
-				.build();
+				.addForeignKey("WFAD_ID_TO", "wfadIdTo", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false);
 
-		final DtDefinition wfWorkflowDefinitionDtDefinition = new DtDefinitionBuilder("DT_WF_WORKFLOW_DEFINITION")
-				.addIdField("WFWD_ID", "wfwdId", domainWorkflowId, false, false)
-				.addDataField("NAME", "name", domainWorkflowLabel, true, true, true, true)
-				.addDataField("DATE", "date", domainWorkflowDate, true, true, false, false)
-				.addForeignKey("WFAD_ID", "wfadId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
-				.build();
 
+		wfWorkflowDtDefinitionBuilder
+				.addForeignKey("WFWD_ID", "wfwdId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
+				.addForeignKey("WFS_CODE", "wfsCode", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
+				.addForeignKey("WFA_ID", "wfaId", domainWorkflowId, false, "DO_X_WORKFLOW_ID", false, false);
+
+		wfActivityDefinitionDtDefinitionBuilder
+				.addForeignKey("WFMD_CODE", "wfmdCode", domainWorkflowCode, true, "DO_X_WORKFLOW_CODE", false, false)
+				.addForeignKey("WFWD_ID", "wfwdId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false);
+
+
+		wfWorkflowActivityDtDefinitionBuilder
+				.addForeignKey("WFW_ID", "wfwId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
+				.addForeignKey("WFAD_ID", "wfadId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false);
 
 		return new ListBuilder<Definition>()
 				.add(domainWorkflowId)

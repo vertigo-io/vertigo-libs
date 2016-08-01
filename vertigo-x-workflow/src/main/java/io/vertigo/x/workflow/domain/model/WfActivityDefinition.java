@@ -27,7 +27,7 @@ public final class WfActivityDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'Id Activity Definition'. 
 	 * @return Long wfadId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "Id Activity Definition")
+	@Field(domain = "DO_X_WORKFLOW_ID", type = "ID", required = true, label = "Id Activity Definition")
 	public Long getWfadId() {
 		return wfadId;
 	}
@@ -46,7 +46,7 @@ public final class WfActivityDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'name'. 
 	 * @return String name 
 	 */
-	@Field(domain = "DO_LABEL", label = "name")
+	@Field(domain = "DO_X_WORKFLOW_LABEL", label = "name")
 	public String getName() {
 		return name;
 	}
@@ -65,7 +65,7 @@ public final class WfActivityDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'level'. 
 	 * @return Integer level 
 	 */
-	@Field(domain = "DO_INTEGER", label = "level")
+	@Field(domain = "DO_X_WORKFLOW_LEVEL", label = "level")
 	public Integer getLevel() {
 		return level;
 	}
@@ -84,7 +84,7 @@ public final class WfActivityDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'WfMultiplicityDefinition'. 
 	 * @return String wfmdCode 
 	 */
-	@Field(domain = "DO_CODE", type = "FOREIGN_KEY", label = "WfMultiplicityDefinition")
+	@Field(domain = "DO_X_WORKFLOW_CODE", type = "FOREIGN_KEY", label = "WfMultiplicityDefinition")
 	public String getWfmdCode() {
 		return wfmdCode;
 	}
@@ -103,7 +103,7 @@ public final class WfActivityDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'WfWorkflowDefinition'. 
 	 * @return Long wfwdId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", required = true, label = "WfWorkflowDefinition")
+	@Field(domain = "DO_X_WORKFLOW_ID", type = "FOREIGN_KEY", required = true, label = "WfWorkflowDefinition")
 	public Long getWfwdId() {
 		return wfwdId;
 	}
@@ -187,7 +187,7 @@ public final class WfActivityDefinition implements Entity {
 	 * @return io.vertigo.x.workflow.domain.model.WfWorkflowDefinition
 	 */
     @io.vertigo.dynamo.domain.stereotype.Association (
-    	name = "A_WFWD_WFAD_2",
+    	name = "A_WFWD_WFAD_CURRENT",
     	fkFieldName = "WFWD_ID",
     	primaryDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
     	primaryIsNavigable = true,
@@ -225,7 +225,7 @@ public final class WfActivityDefinition implements Entity {
 	 * @return URI de l'association
 	 */
     @io.vertigo.dynamo.domain.stereotype.Association (
-    	name = "A_WFWD_WFAD_2",
+    	name = "A_WFWD_WFAD_CURRENT",
     	fkFieldName = "WFWD_ID",
     	primaryDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
     	primaryIsNavigable = true,
@@ -239,7 +239,7 @@ public final class WfActivityDefinition implements Entity {
     	foreignMultiplicity = "0..*"
     )
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.x.workflow.domain.model.WfWorkflowDefinition> getWfWorkflowDefinitionURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_WFWD_WFAD_2", io.vertigo.x.workflow.domain.model.WfWorkflowDefinition.class);
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_WFWD_WFAD_CURRENT", io.vertigo.x.workflow.domain.model.WfWorkflowDefinition.class);
 	}
 
 	// Association : WfActivity non navigable

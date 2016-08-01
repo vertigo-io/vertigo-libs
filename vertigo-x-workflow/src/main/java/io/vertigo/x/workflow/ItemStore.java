@@ -16,19 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.vertigo.x.workflow;
 
-package io.vertigo.x.impl.rules;
-
-
-import io.vertigo.lang.Plugin;
-import io.vertigo.x.rules.RuleStore;
-
+import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
- * Interface for the rule's store plugin
+ * This class defines the storage of item.
  * @author xdurand
- *
  */
-public interface RuleStorePlugin extends RuleStore, Plugin {
-	// Plugin interface for Rules
+public interface ItemStore {
+
+	/**
+	 * Get an item.
+	 * @param itemId
+	 * @return the DtObject corresponding to the itemId
+	 */
+	DtObject readItem(Long itemId);
+
 }

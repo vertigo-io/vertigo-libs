@@ -33,6 +33,7 @@ import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.x.impl.rules.RuleConditionDefinition;
 import io.vertigo.x.impl.rules.RuleContext;
 import io.vertigo.x.impl.rules.RuleDefinition;
+import io.vertigo.x.impl.rules.RuleStorePlugin;
 import io.vertigo.x.impl.rules.RuleValidatorPlugin;
 
 /**
@@ -44,13 +45,17 @@ public class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 
 	private final ScriptManager scriptManager;
 
+	private final RuleStorePlugin ruleStorePlugin;
+
 	/**
 	 *
 	 * @param scriptManager
+	 * @param ruleStorePlugin
 	 */
 	@Inject
-	public SimpleRuleValidatorPlugin(final ScriptManager scriptManager) {
+	public SimpleRuleValidatorPlugin(final ScriptManager scriptManager, final RuleStorePlugin ruleStorePlugin) {
 		this.scriptManager = scriptManager;
+		this.ruleStorePlugin = ruleStorePlugin;
 	}
 
 	@Override
@@ -63,12 +68,20 @@ public class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 		}
 
 		for (final RuleDefinition ruleDefinition : rules) {
-			for (final RuleConditionDefinition ruleConditionDefinition : ruleDefinition.getRuleConditionDefinitionList()) {
+			final List<RuleConditionDefinition> conditions = ruleStorePlugin.findConditionByRuleId(ruleDefinition.getId());
+			for (final RuleConditionDefinition ruleConditionDefinition : conditions) {
 				final String field = ruleConditionDefinition.getField();
 				final String operator = ruleConditionDefinition.getOperator();
 				final String expression = ruleConditionDefinition.getExpression();
 
-				final Boolean result = scriptManager.evaluateExpression(field + operator + expression, parameters, Boolean.class);
+				String javaExpression = null;
+
+				//TODO: Better implementation
+				if ("=".equals(operator)) {
+					javaExpression = field.toUpperCase() + ".equals(\"" + expression + "\")";
+				}
+
+				final Boolean result = scriptManager.evaluateExpression(javaExpression, parameters, Boolean.class);
 
 				if (Boolean.TRUE.equals(result)) {
 					return true;

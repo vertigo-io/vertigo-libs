@@ -33,7 +33,7 @@ public class WfDecision implements DtObject {
 
 	private static final long serialVersionUID = 120222353819727138L;
 
-	private final String choice;
+	private final Integer choice;
 	private final String user;
 	private final Date businessDate;
 	private final String comment;
@@ -44,7 +44,7 @@ public class WfDecision implements DtObject {
 	 * @param businessDate
 	 * @param comment
 	 */
-	public WfDecision(final String choice, final String user, final Date businessDate, final String comment) {
+	public WfDecision(final Integer choice, final String user, final Date businessDate, final String comment) {
 		super();
 		this.choice = choice;
 		this.user = user;
@@ -56,7 +56,7 @@ public class WfDecision implements DtObject {
 	/**
 	 * @return the choice
 	 */
-	public String getChoice() {
+	public Integer getChoice() {
 		return choice;
 	}
 
@@ -80,7 +80,7 @@ public class WfDecision implements DtObject {
 	/**
 	 * @return the commentaire
 	 */
-	public String getCommentaire() {
+	public String getComment() {
 		return comment;
 	}
 

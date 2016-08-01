@@ -17,18 +17,19 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.impl.rules;
+package io.vertigo.x.impl.workflow;
 
 
 import io.vertigo.lang.Plugin;
-import io.vertigo.x.rules.RuleStore;
+import io.vertigo.x.workflow.ItemStore;
 
 
 /**
- * Interface for the rule's store plugin
+ * Interface for the workflow store plugin
  * @author xdurand
  *
  */
-public interface RuleStorePlugin extends RuleStore, Plugin {
-	// Plugin interface for Rules
+public interface ItemStorePlugin extends ItemStore, Plugin {
+
+	// Plugin interface for Workflow
 }

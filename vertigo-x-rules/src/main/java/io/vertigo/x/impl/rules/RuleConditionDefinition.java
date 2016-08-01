@@ -17,7 +17,7 @@ public final class RuleConditionDefinition implements Entity {
 	private static final long serialVersionUID = 2280022920606418634L;
 
 	@Field(type = "ID", domain = "DO_X_RULES_ID", required = true, label = "id")
-	private final Long id;
+	private Long id;
 
 	@Field(domain = "DO_X_RULES_FIELD", label = "field")
 	private final String field;
@@ -56,6 +56,14 @@ public final class RuleConditionDefinition implements Entity {
 
 
 	/**
+	 * @param id the id to set
+	 */
+	public void setId(final Long id) {
+		this.id = id;
+	}
+
+
+	/**
 	 * @return the field
 	 */
 	public String getField() {
@@ -78,6 +86,12 @@ public final class RuleConditionDefinition implements Entity {
 		return expression;
 	}
 
+	/**
+	 * @return the rudId
+	 */
+	public Long getRudId() {
+		return rudId;
+	}
 
 }
 

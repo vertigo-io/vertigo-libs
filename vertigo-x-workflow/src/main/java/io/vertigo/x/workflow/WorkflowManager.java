@@ -70,8 +70,9 @@ public interface WorkflowManager extends Manager {
 	/**
 	 * Go to the next activity using the default transition
 	 * @param wfWorkflow
+	 * @param wfDecision
 	 */
-	void goToNextActivity(WfWorkflow wfWorkflow);
+	void goToNextActivity(WfWorkflow wfWorkflow, final WfDecision wfDecision);
 
 	/**
 	 * Go to the next activity using the default transition

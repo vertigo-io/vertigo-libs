@@ -27,7 +27,7 @@ public final class WfTransitionDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'Id Transition Definition'. 
 	 * @return Long wftdId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "Id Transition Definition")
+	@Field(domain = "DO_X_WORKFLOW_ID", type = "ID", required = true, label = "Id Transition Definition")
 	public Long getWftdId() {
 		return wftdId;
 	}
@@ -46,7 +46,7 @@ public final class WfTransitionDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'name'. 
 	 * @return String name <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_LABEL", required = true, label = "name")
+	@Field(domain = "DO_X_WORKFLOW_LABEL", required = true, label = "name")
 	public String getName() {
 		return name;
 	}
@@ -65,7 +65,7 @@ public final class WfTransitionDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'WfWorkflowDefinition'. 
 	 * @return Long wfwdId 
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "WfWorkflowDefinition")
+	@Field(domain = "DO_X_WORKFLOW_ID", type = "FOREIGN_KEY", label = "WfWorkflowDefinition")
 	public Long getWfwdId() {
 		return wfwdId;
 	}
@@ -84,7 +84,7 @@ public final class WfTransitionDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'transitionFrom'. 
 	 * @return Long wfadIdFrom <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", required = true, label = "transitionFrom")
+	@Field(domain = "DO_X_WORKFLOW_ID", type = "FOREIGN_KEY", required = true, label = "transitionFrom")
 	public Long getWfadIdFrom() {
 		return wfadIdFrom;
 	}
@@ -103,7 +103,7 @@ public final class WfTransitionDefinition implements Entity {
 	 * Récupère la valeur de la propriété 'transitionTo'. 
 	 * @return Long wfadIdTo <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", required = true, label = "transitionTo")
+	@Field(domain = "DO_X_WORKFLOW_ID", type = "FOREIGN_KEY", required = true, label = "transitionTo")
 	public Long getWfadIdTo() {
 		return wfadIdTo;
 	}
