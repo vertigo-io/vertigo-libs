@@ -39,7 +39,9 @@ import io.vertigo.x.impl.rules.SelectorDefinition;
 public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 
 	private final Map<Long, RuleConditionDefinition> inMemoryConditionStore = new ConcurrentHashMap<>();
-	private final AtomicLong memoryConditionSequenceGenerator = new AtomicLong(0);
+
+	//UNUSED
+	//private final AtomicLong memoryConditionSequenceGenerator = new AtomicLong(0);
 
 	private final Map<Long, RuleDefinition> inMemoryRuleStore = new ConcurrentHashMap<>();
 	private final AtomicLong memoryRuleSequenceGenerator = new AtomicLong(0);
@@ -145,7 +147,6 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 
 		return ret;
 	}
-
 
 	/**
 	 *
