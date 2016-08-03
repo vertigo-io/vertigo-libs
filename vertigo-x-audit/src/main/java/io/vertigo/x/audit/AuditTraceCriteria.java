@@ -21,7 +21,6 @@ package io.vertigo.x.audit;
 import java.util.Date;
 
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
@@ -29,7 +28,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  *
  * @author xdurand
  */
-@DtDefinition
 public final class AuditTraceCriteria implements DtObject {
 
 	/**
@@ -68,14 +66,12 @@ public final class AuditTraceCriteria implements DtObject {
 		this.item = item;
 	}
 
-
 	/**
 	 * @return the category
 	 */
 	public String getCategory() {
 		return category;
 	}
-
 
 	/**
 	 * @return the user
@@ -84,14 +80,12 @@ public final class AuditTraceCriteria implements DtObject {
 		return user;
 	}
 
-
 	/**
 	 * @return the startBusinessDate
 	 */
 	public Date getStartBusinessDate() {
 		return startBusinessDate;
 	}
-
 
 	/**
 	 * @return the endBusinessDate
@@ -100,7 +94,6 @@ public final class AuditTraceCriteria implements DtObject {
 		return endBusinessDate;
 	}
 
-
 	/**
 	 * @return the startExecutionDate
 	 */
@@ -108,14 +101,12 @@ public final class AuditTraceCriteria implements DtObject {
 		return startExecutionDate;
 	}
 
-
 	/**
 	 * @return the endExecutionDate
 	 */
 	public Date getEndExecutionDate() {
 		return endExecutionDate;
 	}
-
 
 	/**
 	 * @return the item

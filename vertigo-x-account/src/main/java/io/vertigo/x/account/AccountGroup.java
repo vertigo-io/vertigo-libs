@@ -19,14 +19,12 @@
 package io.vertigo.x.account;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.lang.Assertion;
 
 /**
  * @author pchretien
  */
-@DtDefinition
 public final class AccountGroup implements Entity {
 	private static final long serialVersionUID = -4463291583101516140L;
 

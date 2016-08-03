@@ -21,7 +21,6 @@ package io.vertigo.x.impl.rules;
 import java.util.Date;
 
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -30,7 +29,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  *
  * @author xdurand
  */
-@DtDefinition
 public final class SelectorDefinition implements DtObject {
 	private static final long serialVersionUID = 2280022920606418634L;
 

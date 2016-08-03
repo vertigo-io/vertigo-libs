@@ -21,7 +21,6 @@ package io.vertigo.x.audit;
 import java.util.Date;
 
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -30,7 +29,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  *
  * @author xdurand
  */
-@DtDefinition
 public final class AuditTrace implements DtObject {
 	/**
 	 *
@@ -61,7 +59,6 @@ public final class AuditTrace implements DtObject {
 	@Field(domain = "DO_X_AUDIT_CONTEXT", label = "context")
 	private final String context;
 
-
 	AuditTrace(final Long id, final String category, final String user, final Date businessDate, final Date executionDate, final Long item, final String message, final String context) {
 		this.id = id;
 		this.category = category;
@@ -73,14 +70,12 @@ public final class AuditTrace implements DtObject {
 		this.context = context;
 	}
 
-
 	/**
 	 * @return the id
 	 */
 	public Long getId() {
 		return id;
 	}
-
 
 	/**
 	 * @param id the id to set
@@ -89,14 +84,12 @@ public final class AuditTrace implements DtObject {
 		this.id = id;
 	}
 
-
 	/**
 	 * @return the category
 	 */
 	public String getCategory() {
 		return category;
 	}
-
 
 	/**
 	 * @return the user
@@ -105,14 +98,12 @@ public final class AuditTrace implements DtObject {
 		return user;
 	}
 
-
 	/**
 	 * @return the businessDate
 	 */
 	public Date getBusinessDate() {
 		return businessDate;
 	}
-
 
 	/**
 	 * @return the executionDate
@@ -121,7 +112,6 @@ public final class AuditTrace implements DtObject {
 		return executionDate;
 	}
 
-
 	/**
 	 * @return the item
 	 */
@@ -129,14 +119,12 @@ public final class AuditTrace implements DtObject {
 		return item;
 	}
 
-
 	/**
 	 * @return the message
 	 */
 	public String getMessage() {
 		return message;
 	}
-
 
 	/**
 	 * @return the context
