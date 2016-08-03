@@ -43,12 +43,14 @@ public final class AccountDefinitionProvider implements DefinitionProvider {
 		final Domain domainAccountEmail = new DomainBuilder("DO_X_ACCOUNT_EMAIL", DataType.String).build();
 
 		final DtDefinition accountDtDefinition = new DtDefinitionBuilder("DT_ACCOUNT")
+				.withPersistent(true)
 				.addIdField("ID", "id", domainAccountId, false, false)
 				.addDataField("DISPLAY_NAME", "displayName", domainAccountName, false, true, true, true)
 				.addDataField("EMAIL", "email", domainAccountEmail, false, true, false, false)
 				.build();
 
 		final DtDefinition accountGroupDtDefinition = new DtDefinitionBuilder("DT_ACCOUNT_GROUP")
+				.withPersistent(true)
 				.addIdField("ID", "id", domainAccountId, false, false)
 				.addDataField("DISPLAY_NAME", "displayName", domainAccountName, false, true, true, true)
 				.build();
