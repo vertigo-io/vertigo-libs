@@ -1,7 +1,6 @@
 package io.vertigo.x.impl.rules;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 
 /**
@@ -9,7 +8,6 @@ import io.vertigo.dynamo.domain.stereotype.Field;
  *
  * @author xdurand
  */
-@DtDefinition
 public final class RuleConditionDefinition implements Entity {
 	/**
 	 *
@@ -59,7 +57,6 @@ public final class RuleConditionDefinition implements Entity {
 	public void setId(final Long id) {
 		this.id = id;
 	}
-
 
 	/**
 	 * @return the field

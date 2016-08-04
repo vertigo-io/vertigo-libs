@@ -21,7 +21,6 @@ package io.vertigo.x.impl.rules;
 import java.util.Date;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -30,7 +29,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  *
  * @author xdurand
  */
-@DtDefinition
 public final class RuleDefinition implements Entity {
 	/**
 	 *
@@ -48,8 +46,6 @@ public final class RuleDefinition implements Entity {
 
 	private io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.impl.rules.RuleConditionDefinition> ruleConditionDefinition;
 
-
-
 	/**
 	 *
 	 * @param id
@@ -58,7 +54,7 @@ public final class RuleDefinition implements Entity {
 	public RuleDefinition(final Long id, final Long itemId) {
 		this.id = id;
 		this.itemId = itemId;
-		this.creationDate = new Date();
+		creationDate = new Date();
 	}
 
 	/**
@@ -100,22 +96,21 @@ public final class RuleDefinition implements Entity {
 	 * Association : WfTransitionDefinition.
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.workflow.domain.model.WfTransitionDefinition>
 	 */
-    @io.vertigo.dynamo.domain.stereotype.Association (
-    	name = "A_RUD_COD",
-    	fkFieldName = "RUD_ID",
-    	primaryDtDefinitionName = "DT_RULE_DEFINITION",
-    	primaryIsNavigable = false,
-    	primaryRole = "RuleDefinition",
-    	primaryLabel = "RuleDefinition",
-    	primaryMultiplicity = "0..1",
-    	foreignDtDefinitionName = "DT_RULE_CONDITION_DEFINITION",
-    	foreignIsNavigable = true,
-    	foreignRole = "RuleConditionDefinition",
-    	foreignLabel = "RuleConditionDefinition",
-    	foreignMultiplicity = "0..*"
-    )
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_RUD_COD",
+			fkFieldName = "RUD_ID",
+			primaryDtDefinitionName = "DT_RULE_DEFINITION",
+			primaryIsNavigable = false,
+			primaryRole = "RuleDefinition",
+			primaryLabel = "RuleDefinition",
+			primaryMultiplicity = "0..1",
+			foreignDtDefinitionName = "DT_RULE_CONDITION_DEFINITION",
+			foreignIsNavigable = true,
+			foreignRole = "RuleConditionDefinition",
+			foreignLabel = "RuleConditionDefinition",
+			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.impl.rules.RuleConditionDefinition> getRuleConditionDefinitionList() {
-//		return this.<io.vertigo.x.workflow.domain.model.WfTransitionDefinition> getList(getWfTransitionDefinitionListURI());
+		//		return this.<io.vertigo.x.workflow.domain.model.WfTransitionDefinition> getList(getWfTransitionDefinitionListURI());
 		// On doit avoir une clé primaire renseignée. Si ce n'est pas le cas, on renvoie une liste vide
 		if (io.vertigo.dynamo.domain.util.DtObjectUtil.getId(this) == null) {
 			return new io.vertigo.dynamo.domain.model.DtList<>(io.vertigo.x.impl.rules.RuleConditionDefinition.class);
@@ -134,20 +129,19 @@ public final class RuleDefinition implements Entity {
 	 * Association URI: WfTransitionDefinition.
 	 * @return URI de l'association
 	 */
-    @io.vertigo.dynamo.domain.stereotype.Association (
-        	name = "A_RUD_COD",
-        	fkFieldName = "RUD_ID",
-        	primaryDtDefinitionName = "DT_RULE_DEFINITION",
-        	primaryIsNavigable = false,
-        	primaryRole = "RuleDefinition",
-        	primaryLabel = "RuleDefinition",
-        	primaryMultiplicity = "0..1",
-        	foreignDtDefinitionName = "DT_RULE_CONDITION_DEFINITION",
-        	foreignIsNavigable = true,
-        	foreignRole = "RuleConditionDefinition",
-        	foreignLabel = "RuleConditionDefinition",
-        	foreignMultiplicity = "0..*"
-    )
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_RUD_COD",
+			fkFieldName = "RUD_ID",
+			primaryDtDefinitionName = "DT_RULE_DEFINITION",
+			primaryIsNavigable = false,
+			primaryRole = "RuleDefinition",
+			primaryLabel = "RuleDefinition",
+			primaryMultiplicity = "0..1",
+			foreignDtDefinitionName = "DT_RULE_CONDITION_DEFINITION",
+			foreignIsNavigable = true,
+			foreignRole = "RuleConditionDefinition",
+			foreignLabel = "RuleConditionDefinition",
+			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation getRuleConditionDefinitionDtListURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createDtListURIForSimpleAssociation(this, "A_RUD_COD", "RuleConditionDefinition");
 	}

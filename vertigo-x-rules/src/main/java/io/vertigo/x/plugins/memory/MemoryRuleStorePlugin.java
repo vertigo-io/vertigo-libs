@@ -150,7 +150,6 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 		return ret;
 	}
 
-
 	/**
 	 *
 	 * @param selectorDefinition

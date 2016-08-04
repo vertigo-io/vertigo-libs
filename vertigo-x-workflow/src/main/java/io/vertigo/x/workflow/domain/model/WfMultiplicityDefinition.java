@@ -1,14 +1,13 @@
 package io.vertigo.x.workflow.domain.model;
 
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
-import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+
 /**
  * Attention cette classe est générée automatiquement !
  * Objet de données WfMultiplicityDefinition
  */
-@DtDefinition
 public final class WfMultiplicityDefinition implements Entity {
 
 	/** SerialVersionUID. */
@@ -19,7 +18,7 @@ public final class WfMultiplicityDefinition implements Entity {
 
 	/**
 	 * Champ : ID.
-	 * Récupère la valeur de la propriété 'Multiplicity code'. 
+	 * Récupère la valeur de la propriété 'Multiplicity code'.
 	 * @return String wfmdCode <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_X_WORKFLOW_CODE", type = "ID", required = true, label = "Multiplicity code")
@@ -38,8 +37,8 @@ public final class WfMultiplicityDefinition implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Label'. 
-	 * @return String label 
+	 * Récupère la valeur de la propriété 'Label'.
+	 * @return String label
 	 */
 	@Field(domain = "DO_X_WORKFLOW_LABEL", label = "Label")
 	public String getLabel() {
@@ -49,12 +48,11 @@ public final class WfMultiplicityDefinition implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Label'.
-	 * @param label String 
+	 * @param label String
 	 */
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-
 
 	// Association : WfActivityDefinition non navigable
 
