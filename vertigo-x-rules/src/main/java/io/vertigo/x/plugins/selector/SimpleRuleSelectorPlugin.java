@@ -22,10 +22,26 @@
 
 package io.vertigo.x.plugins.selector;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import javax.inject.Inject;
+
+import io.vertigo.commons.script.ExpressionParameter;
+import io.vertigo.commons.script.ScriptManager;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountGroup;
+import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.account.AccountStore;
+import io.vertigo.x.impl.rules.RuleContext;
+import io.vertigo.x.impl.rules.RuleFilterDefinition;
 import io.vertigo.x.impl.rules.RuleSelectorPlugin;
+import io.vertigo.x.impl.rules.RuleStorePlugin;
+import io.vertigo.x.impl.rules.SelectorDefinition;
 
 /**
  *
@@ -35,9 +51,81 @@ import io.vertigo.x.impl.rules.RuleSelectorPlugin;
 public class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 
 
+	private final ScriptManager scriptManager;
+
+	private final RuleStorePlugin ruleStorePlugin;
+
+	private final AccountManager accountManager;
+
+	/**
+	 *
+	 * @param scriptManager
+	 * @param ruleStorePlugin
+	 */
+	@Inject
+	public SimpleRuleSelectorPlugin(final ScriptManager scriptManager, final RuleStorePlugin ruleStorePlugin, final AccountManager accountManager) {
+		this.scriptManager = scriptManager;
+		this.ruleStorePlugin = ruleStorePlugin;
+		this.accountManager = accountManager;
+	}
+
+
+	public static URI<AccountGroup> createGroupURI(final String id) {
+		return DtObjectUtil.createURI(AccountGroup.class, id);
+	}
+
+
 	@Override
-	public List<Account> selectAccounts(final Long idActivityDefinition, final Object item) {
-		return null;
+	public List<Account> selectAccounts(final Long idActivityDefinition, final List<SelectorDefinition> selectors, final RuleContext ruleContext) {
+
+		final List<ExpressionParameter> parameters = new ArrayList<>();
+		for (final Map.Entry<String, String> entry : ruleContext.getContext().entrySet()) {
+			final ExpressionParameter ep = new ExpressionParameter(entry.getKey(), String.class, entry.getValue());
+			parameters.add(ep);
+		}
+
+
+		final List<Account> collected = new ArrayList<>();
+		for (final SelectorDefinition selectorDefinition : selectors) {
+
+			final List<RuleFilterDefinition> filters = ruleStorePlugin.findFiltersBySelectorId(selectorDefinition.getId());
+
+			boolean selectorMatch = true;
+
+			for (final RuleFilterDefinition ruleFilterDefinition : filters) {
+				final String field = ruleFilterDefinition.getField();
+				final String operator = ruleFilterDefinition.getOperator();
+				final String expression = ruleFilterDefinition.getExpression();
+
+				String javaExpression = null;
+
+				//TODO: Better implementation and factorize with SimpleRuleValidator
+				if ("=".equals(operator)) {
+					javaExpression = field.toUpperCase() + ".equals(\"" + expression + "\")";
+				}
+
+				final Boolean result = scriptManager.evaluateExpression(javaExpression, parameters, Boolean.class);
+
+				if (Boolean.FALSE.equals(result)) {
+					selectorMatch = false;
+				}
+			}
+
+			if (selectorMatch) {
+
+				final AccountStore accountStore = accountManager.getStore();
+				final Set<URI<Account>> accounts = accountStore.getAccountURIs(createGroupURI(selectorDefinition.getGroupId()));
+
+				for (final URI<Account> accountUri : accounts) {
+
+					final Account account = accountStore.getAccount(accountUri);
+					collected.add(account);
+				}
+
+			}
+		}
+
+		return collected;
 	}
 
 

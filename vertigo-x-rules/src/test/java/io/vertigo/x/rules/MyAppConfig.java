@@ -21,11 +21,20 @@ package io.vertigo.x.rules;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.impl.DynamoFeatures;
+import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
+import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
+import io.vertigo.persona.impl.security.PersonaFeatures;
+import io.vertigo.x.impl.account.AccountFeatures;
 import io.vertigo.x.impl.rules.RuleFeatures;
+import io.vertigo.x.plugins.account.memory.MemoryAccountStorePlugin;
 import io.vertigo.x.plugins.memory.MemoryRuleStorePlugin;
 import io.vertigo.x.plugins.selector.SimpleRuleSelectorPlugin;
 import io.vertigo.x.plugins.validator.SimpleRuleValidatorPlugin;
 import io.vertigo.x.rules.data.MyDummyDtObjectProvider;
+import io.vertigo.x.rules.data.TestUserSession;
 
 /**
  * Config for test
@@ -39,16 +48,31 @@ public class MyAppConfig {
 	 * @return the application config for testing
 	 */
 	public static AppConfig config() {
-		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder();
+
+		final AppConfigBuilder appConfigBuilder =  new AppConfigBuilder()
+				.beginBootModule("fr")
+					.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
+					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
+					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
+				.endModule()
+				.beginBoot()
+					.silently()
+				.endBoot()
+				.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
+				.beginModule(CommonsFeatures.class).endModule()
+				.beginModule(DynamoFeatures.class).endModule()
+				.beginModule(AccountFeatures.class)
+					.getModuleConfigBuilder()
+					.addPlugin(MemoryAccountStorePlugin.class)
+				.endModule();
 
 		appConfigBuilder.beginModule(RuleFeatures.class)
-			.getModuleConfigBuilder()
-			.addDefinitionProvider(MyDummyDtObjectProvider.class)
-			.addPlugin(MemoryRuleStorePlugin.class)
-			.addPlugin(SimpleRuleSelectorPlugin.class)
-			.addPlugin(SimpleRuleValidatorPlugin.class)
-		   .endModule();
-
+							.getModuleConfigBuilder()
+							.addDefinitionProvider(MyDummyDtObjectProvider.class)
+							.addPlugin(MemoryRuleStorePlugin.class)
+							.addPlugin(SimpleRuleSelectorPlugin.class)
+							.addPlugin(SimpleRuleValidatorPlugin.class)
+						.endModule();
 		return appConfigBuilder.build();
 	}
 

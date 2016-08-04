@@ -26,6 +26,15 @@ public final class RuleFeatures extends Features {
 				.addDefinitionProvider(RuleProvider.class)
 				.addComponent(RuleManager.class, RuleManagerImpl.class)
 				.addComponent(ScriptManager.class, ScriptManagerImpl.class)
+				/*.addComponent(AccountManager.class, AccountManagerImpl.class)
+				.addComponent(FileManager.class, FileManagerImpl.class)
+				.beginComponent(VSecurityManager.class, VSecurityManagerImpl.class)
+				.addParam("userSessionClassName", "account")
+				.endComponent()
+				/*.addComponent(DaemonManager.class, DaemonManagerImpl.class)
+				.beginComponent(LocaleManager.class, LocaleManagerImpl.class)
+				.addParam("locales", "fr")
+				.endComponent()*/
 				.addPlugin(JaninoExpressionEvaluatorPlugin.class);
 	}
 

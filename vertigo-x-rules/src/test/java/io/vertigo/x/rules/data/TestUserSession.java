@@ -16,19 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.vertigo.x.rules.data;
 
-package io.vertigo.x.impl.rules;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Map;
 
-
-import io.vertigo.lang.Plugin;
-import io.vertigo.x.rules.RuleExpressionEvaluator;
-
+import io.vertigo.persona.security.UserSession;
 
 /**
- * Interface for the rule selector plugin
+ * User session for JUnit
  * @author xdurand
  *
  */
-public interface RuleExpressionEvaluatorPlugin extends RuleExpressionEvaluator, Plugin {
-	// Plugin interface for Rules
+public final class TestUserSession extends UserSession {
+	private static final long serialVersionUID = 1L;
+
+	@Override
+	public Locale getLocale() {
+		return Locale.FRENCH;
+	}
+
+	/**
+	 * Gestion de la sécurité.
+	 * @return Liste des clés de sécurité et leur valeur.
+	 */
+	@Override
+	public Map<String, String> getSecurityKeys() {
+		return Collections.singletonMap("famId", "12");
+	}
 }

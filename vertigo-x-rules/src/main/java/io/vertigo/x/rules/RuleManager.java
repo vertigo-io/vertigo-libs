@@ -26,6 +26,7 @@ import io.vertigo.x.account.Account;
 import io.vertigo.x.impl.rules.RuleConditionDefinition;
 import io.vertigo.x.impl.rules.RuleConstants;
 import io.vertigo.x.impl.rules.RuleDefinition;
+import io.vertigo.x.impl.rules.RuleFilterDefinition;
 import io.vertigo.x.impl.rules.SelectorDefinition;
 
 /**
@@ -38,9 +39,9 @@ public interface RuleManager extends Manager {
 	 * Select accounts matching the selector for an activity
 	 * @param idActivityDefinition
 	 * @param item
-	 * @return the list of account
+	 * @return a list of account
 	 */
-	List<Account> selectAccounts(Long idActivityDefinition, DtObject item);
+	List<Account> selectAccounts(final Long idActivityDefinition, final DtObject item, final RuleConstants constants);
 
 	/**
 	 * Validate a rulle for an activity
@@ -88,7 +89,6 @@ public interface RuleManager extends Manager {
 	 */
 	void removeCondition(RuleConditionDefinition ruleConditionDefinition);
 
-
 	/**
 	 *
 	 * @param ruleId
@@ -115,7 +115,6 @@ public interface RuleManager extends Manager {
 	 */
 	List<SelectorDefinition> getSelectorsForItemId(Long itemId);
 
-
 	/**
 	 *
 	 * @param selectorDefinition
@@ -127,6 +126,31 @@ public interface RuleManager extends Manager {
 	 * @param selectorDefinition
 	 */
 	void updateSelector(SelectorDefinition selectorDefinition);
+
+	/**
+	 *
+	 * @param ruleFilterDefinition
+	 */
+	void addFilter(RuleFilterDefinition ruleFilterDefinition);
+
+	/**
+	 *
+	 * @param ruleFilterDefinition
+	 */
+	void removeFilter(RuleFilterDefinition ruleFilterDefinition);
+
+	/**
+	 *
+	 * @param selectorId
+	 * @return the all the fitlers associated to the provided selector
+	 */
+	List<RuleFilterDefinition> getFiltersForSelectorId(Long selectorId);
+
+	/**
+	 *
+	 * @param ruleFilterDefinition
+	 */
+	void updateFilter(RuleFilterDefinition ruleFilterDefinition);
 
 
 }

@@ -43,14 +43,18 @@ public final class SelectorDefinition implements DtObject {
 	@Field(domain = "DO_X_RULES_WEAK_ID", label = "itemId")
 	private Long itemId;
 
+	@Field(domain = "DO_X_RULES_WEAK_ID", label = "group")
+	private final String groupId;
+
 	/**
 	 * @param id
 	 * @param itemId
 	 */
-	public SelectorDefinition(final Long id, final Long itemId) {
+	public SelectorDefinition(final Long id, final Long itemId, final String groupId) {
 		this.id = id;
 		creationDate = new Date();
 		this.itemId = itemId;
+		this.groupId = groupId;
 	}
 
 	/**
@@ -86,6 +90,14 @@ public final class SelectorDefinition implements DtObject {
 	 */
 	public void setItemId(final Long itemId) {
 		this.itemId = itemId;
+	}
+
+
+	/**
+	 * @return the groupId
+	 */
+	public String getGroupId() {
+		return groupId;
 	}
 
 	@Override

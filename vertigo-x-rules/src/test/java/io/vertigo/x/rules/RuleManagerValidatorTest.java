@@ -139,7 +139,7 @@ public class RuleManagerValidatorTest {
 
 
 	/**
-	 * Add/Update/Delete Rules for RulesManager
+	 * One simple rule for RulesManager
 	 */
 	@Test
 	public void testValidationOneRuleOneCondition() {
@@ -159,11 +159,190 @@ public class RuleManagerValidatorTest {
 		//The rule should NOT be valid here.
 		assertThat(isValid, is(false));
 
-		//The division is true here
+		//The division is set to "BTL" here
 		myDummyDtObject.setDivision("BTL");
 		//The rule should be valid now
 		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
 		assertThat(isValid, is(true));
+	}
+
+	/**
+	 * No rule for RulesManager
+	 */
+	@Test
+	public void testValidationNoRuleNoCondition() {
+		// Rule created to Item 1
+		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
+
+		final RuleConstants ruleContants = new RuleConstants();
+
+		//The division field is null here
+		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		//The rule should NOT be valid here.
+		assertThat(isValid, is(false));
+
+		//The division is set to "BTL" here
+		myDummyDtObject.setDivision("BTL");
+		//The rule should NOT be valid too
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		assertThat(isValid, is(false));
+
+		//The division is set to "ABC" here
+		myDummyDtObject.setDivision("ABC");
+		//The rule should be valid too
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		assertThat(isValid, is(false));
+	}
+
+
+	/**
+	 * Combining many condition in one rule for RulesManager
+	 */
+	@Test
+	public void testValidationOneRuleManyCondition() {
+		// Rule created to Item 1
+		final RuleDefinition rule = new RuleDefinition(null, 1L);
+		ruleManager.addRule(rule);
+
+		final RuleConditionDefinition condition1 = new RuleConditionDefinition(null, "division", "=", "BTL", rule.getId());
+		ruleManager.addCondition(condition1);
+
+		final RuleConditionDefinition condition2 = new RuleConditionDefinition(null, "entity", "=", "ENT_1", rule.getId());
+		ruleManager.addCondition(condition2);
+
+		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
+
+		final RuleConstants ruleContants = new RuleConstants();
+
+		//The division field is null here
+		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		//The rule should NOT be valid here.
+		assertThat(isValid, is(false));
+
+		//The division is set to "BTL" here
+		myDummyDtObject.setDivision("BTL");
+		//The rule should NOT be valid (no entity defined)
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		assertThat(isValid, is(false));
+
+		//The entity is set to "ENT_1" here
+		myDummyDtObject.setEntity("ENT_1");
+		//The rule should be valid now
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		assertThat(isValid, is(true));
+
+		//The division is set to "UNKNOWN_ENT" here
+		myDummyDtObject.setEntity("UNKNOWN_ENT");
+		//The rule should NOT be valid anymore
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		assertThat(isValid, is(false));
+	}
+
+	/**
+	 * Combining many rules with one condition for RulesManager
+	 */
+	@Test
+	public void testValidationManyRulesOneCondition() {
+		// Rule created to Item 1
+		final RuleDefinition rule_1 = new RuleDefinition(null, 1L);
+		ruleManager.addRule(rule_1);
+
+		final RuleConditionDefinition condition_1 = new RuleConditionDefinition(null, "division", "=", "BTL", rule_1.getId());
+		ruleManager.addCondition(condition_1);
+
+		final RuleDefinition rule_2 = new RuleDefinition(null, 1L);
+		ruleManager.addRule(rule_2);
+
+		final RuleConditionDefinition condition_2 = new RuleConditionDefinition(null, "entity", "=", "ENT_1", rule_2.getId());
+		ruleManager.addCondition(condition_2);
+
+		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
+
+		final RuleConstants ruleContants = new RuleConstants();
+
+		//The division and entity field are null here
+		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		//The rule should NOT be valid here.
+		assertThat(isValid, is(false));
+
+		//The division is set to "BTL" here
+		myDummyDtObject.setDivision("BTL");
+		//The rule should be valid as it match 1 rule
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		assertThat(isValid, is(true));
+
+		//The entity is set to "ENT_1" here
+		myDummyDtObject.setEntity("ENT_1");
+		//The rule should be valid now (2 rules valid)
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		assertThat(isValid, is(true));
+
+		//The division is set to "UNKNOWN_ENT" here
+		myDummyDtObject.setEntity("UNKNOWN_ENT");
+		myDummyDtObject.setDivision("DIV");
+		//The rule should NOT be valid anymore
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		assertThat(isValid, is(false));
+	}
+
+
+	/**
+	 * Combining many rules with many rules for RulesManager
+	 */
+	@Test
+	public void testValidationManyRulesManyCondition() {
+		// Rule created to Item 1
+		final RuleDefinition rule_1 = new RuleDefinition(null, 1L);
+		ruleManager.addRule(rule_1);
+
+		final RuleConditionDefinition condition_1_1 = new RuleConditionDefinition(null, "division", "=", "BTL", rule_1.getId());
+		ruleManager.addCondition(condition_1_1);
+
+		final RuleConditionDefinition condition_2_1 = new RuleConditionDefinition(null, "entity", "=", "ENT", rule_1.getId());
+		ruleManager.addCondition(condition_2_1);
+
+		final RuleDefinition rule_2 = new RuleDefinition(null, 1L);
+		ruleManager.addRule(rule_2);
+
+		final RuleConditionDefinition condition_1_2 = new RuleConditionDefinition(null, "division", "=", "DIV", rule_2.getId());
+		ruleManager.addCondition(condition_1_2);
+
+		final RuleConditionDefinition condition_2_2 = new RuleConditionDefinition(null, "entity", "=", "MAR", rule_2.getId());
+		ruleManager.addCondition(condition_2_2);
+
+		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
+
+		final RuleConstants ruleContants = new RuleConstants();
+
+		//The division and entity field are null here
+		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		//The rule should be valid here.
+		assertThat(isValid, is(false));
+
+		//The division is set to "BTL" here
+		myDummyDtObject.setDivision("BTL");
+		//The rule should NOT be valid as no rule match
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		assertThat(isValid, is(false));
+
+		//The entity is set to "MAR" here
+		myDummyDtObject.setEntity("MAR");
+		//The rule should NOT be valid (only one condition in each rules is valid)
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		assertThat(isValid, is(false));
+
+		//The entity is set to "ENT" here
+		myDummyDtObject.setEntity("ENT");
+		//The rule should be valid (match all conditions of rule 1)
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		assertThat(isValid, is(true));
+
+		//The division is set to "UNKNOWN_ENT" here
+		myDummyDtObject.setEntity("UNKNOWN_ENT");
+		myDummyDtObject.setDivision("DIV");
+		//The rule should NOT be valid anymore
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		assertThat(isValid, is(false));
 	}
 
 }

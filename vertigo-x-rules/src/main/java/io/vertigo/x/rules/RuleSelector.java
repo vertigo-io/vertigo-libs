@@ -3,6 +3,8 @@ package io.vertigo.x.rules;
 import java.util.List;
 
 import io.vertigo.x.account.Account;
+import io.vertigo.x.impl.rules.RuleContext;
+import io.vertigo.x.impl.rules.SelectorDefinition;
 
 /**
  *
@@ -15,9 +17,12 @@ public interface RuleSelector {
 	/**
 	 * Select accounts matching the selector for an activity
 	 * @param idActivityDefinition
-	 * @param item
-	 * @return the list of account
+	 * @param selectors
+	 * @param ruleContext
+	 * @return a group of account (a list of account)
 	 */
-	List<Account> selectAccounts(Long idActivityDefinition, Object item);
+	List<Account> selectAccounts(final Long idActivityDefinition, final List<SelectorDefinition> selectors, final RuleContext ruleContext);
+
+
 
 }

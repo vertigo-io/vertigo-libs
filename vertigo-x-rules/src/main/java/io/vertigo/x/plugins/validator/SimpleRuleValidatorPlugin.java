@@ -69,6 +69,9 @@ public class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 
 		for (final RuleDefinition ruleDefinition : rules) {
 			final List<RuleConditionDefinition> conditions = ruleStorePlugin.findConditionByRuleId(ruleDefinition.getId());
+
+			boolean ruleValid = true;
+
 			for (final RuleConditionDefinition ruleConditionDefinition : conditions) {
 				final String field = ruleConditionDefinition.getField();
 				final String operator = ruleConditionDefinition.getOperator();
@@ -76,17 +79,22 @@ public class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 
 				String javaExpression = null;
 
-				//TODO: Better implementation
+				//TODO: Better implementation and factorize with SimpleRuleValidator
 				if ("=".equals(operator)) {
 					javaExpression = field.toUpperCase() + ".equals(\"" + expression + "\")";
 				}
 
 				final Boolean result = scriptManager.evaluateExpression(javaExpression, parameters, Boolean.class);
 
-				if (Boolean.TRUE.equals(result)) {
-					return true;
+				if (Boolean.FALSE.equals(result)) {
+					ruleValid = false;
 				}
 			}
+
+			if (ruleValid) {
+				return true;
+			}
+
 		}
 
 		return false;

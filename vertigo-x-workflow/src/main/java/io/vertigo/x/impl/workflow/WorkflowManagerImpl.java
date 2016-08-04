@@ -49,9 +49,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	private final ItemStorePlugin itemStorePlugin;
 	private final RuleManager ruleManager;
 
-
 	private static final String USER_AUTO = "auto";
-
 
 	/**
 	 * Construct a new Workflow manager
@@ -126,17 +124,23 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	}
 
 	@Override
-	public void goToNextActivity(final WfWorkflow wfWorkflow, final WfDecision wfDecision ) {
+	public void goToNextActivity(final WfWorkflow wfWorkflow, final WfDecision wfDecision) {
 		// Use Rule engine here
 
-		final WfWorkflowDefinition workFlowDefinition = workflowStorePlugin.readWorkflowDefinition(wfWorkflow.getWfwdId());
 		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
+
+		WfActivityDefinition nextActivityDefinition = workflowStorePlugin.findNextActivity(currentActivity);
+
+		final Date now = new Date();
 
 		currentActivity.setChoice(wfDecision.getChoice());
 		currentActivity.setComments(wfDecision.getComment());
 		currentActivity.setUser(wfDecision.getUser());
+		currentActivity.setCreationDate(now);
+		currentActivity.setDecisionDate(wfDecision.getBusinessDate());
+		currentActivity.setWfadId(nextActivityDefinition.getWfadId());
 
-		final WfActivityDefinition nextActivityDefinition = workflowStorePlugin.findNextActivity(currentActivity);
+		workflowStorePlugin.createActivity(currentActivity);
 
 		//TODO Gestion des constantes
 		final RuleConstants ruleConstants = new RuleConstants();
@@ -144,29 +148,32 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 		boolean ruleValid;
 		boolean atLeastOnePerson;
+		WfActivity wfActivityCurrent = currentActivity;
 		do {
 			ruleValid = ruleManager.isRuleValid(nextActivityDefinition.getWfadId(), object, ruleConstants);
-			final List<Account> matchingAccounts = ruleManager.selectAccounts(nextActivityDefinition.getWfadId(), object);
-			atLeastOnePerson = matchingAccounts.isEmpty() == false;
+			final List<Account> accounts = ruleManager.selectAccounts(nextActivityDefinition.getWfadId(), object, ruleConstants);
+
+			atLeastOnePerson = accounts.isEmpty() == false;
 
 			if (ruleValid == false || atLeastOnePerson == false) {
 				//Automatic validation of this activity
-				final WfActivity wfActivity = new WfActivity();
+				wfActivityCurrent = new WfActivity();
+				wfActivityCurrent.setChoice(1);
+				wfActivityCurrent.setDecisionDate(now);
+				wfActivityCurrent.setCreationDate(now);
+				wfActivityCurrent.setUser(USER_AUTO);
+				wfActivityCurrent.setWfadId(nextActivityDefinition.getWfadId());
 
-				final Date now = new Date();
-				wfActivity.setChoice(1);
-				wfActivity.setDecisionDate(now);
-				wfActivity.setCreationDate(now);
-				wfActivity.setUser(USER_AUTO);
-				/*wfActivity.setWfadId(wfadId);
+				workflowStorePlugin.createActivity(wfActivityCurrent);
 
-
-
-				workflowStorePlugin.createActivity(wfActivity);
-				workFlowDefinition*/
+				nextActivityDefinition = workflowStorePlugin.findNextActivity(currentActivity);
 			}
 
 		} while (ruleValid == false || atLeastOnePerson == false);
+
+
+		wfWorkflow.setWfaId2(wfActivityCurrent.getWfadId());
+		workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
 
 	}
 

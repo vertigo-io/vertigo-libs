@@ -30,5 +30,7 @@ import io.vertigo.x.rules.RuleStore;
  *
  */
 public interface RuleStorePlugin extends RuleStore, Plugin {
+
 	// Plugin interface for Rules
+
 }

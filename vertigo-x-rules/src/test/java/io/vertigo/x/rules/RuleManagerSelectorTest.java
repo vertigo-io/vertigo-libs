@@ -22,9 +22,12 @@ package io.vertigo.x.rules;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,8 +38,18 @@ import org.junit.Test;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountBuilder;
+import io.vertigo.x.account.AccountGroup;
+import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.account.AccountStore;
+import io.vertigo.x.impl.rules.RuleConstants;
 import io.vertigo.x.impl.rules.RuleDefinition;
+import io.vertigo.x.impl.rules.RuleFilterDefinition;
 import io.vertigo.x.impl.rules.SelectorDefinition;
+import io.vertigo.x.rules.data.MyDummyDtObject;
 
 
 /**
@@ -50,6 +63,9 @@ public class RuleManagerSelectorTest {
 
 	@Inject
 	private RuleManager ruleManager;
+
+	@Inject
+	private AccountManager accountManager;
 
 	@Before
 	public void setUp() {
@@ -69,9 +85,9 @@ public class RuleManagerSelectorTest {
 	 */
 	@Test
 	public void testAddRule() {
-		final SelectorDefinition rule1 = new SelectorDefinition(null, 1L);
-		final SelectorDefinition rule2 = new SelectorDefinition(null, 2L);
-		final SelectorDefinition rule3 = new SelectorDefinition(null, 2L);
+		final SelectorDefinition rule1 = new SelectorDefinition(null, 1L, "1");
+		final SelectorDefinition rule2 = new SelectorDefinition(null, 2L, "2");
+		final SelectorDefinition rule3 = new SelectorDefinition(null, 2L, "3");
 
 		ruleManager.addSelector(rule1);
 		ruleManager.addSelector(rule2);
@@ -100,7 +116,7 @@ public class RuleManagerSelectorTest {
 	public void testAddUpdateDelete() {
 
 		// Rule created to Item 1
-		final SelectorDefinition selector = new SelectorDefinition(null, 1L);
+		final SelectorDefinition selector = new SelectorDefinition(null, 1L, "1");
 		ruleManager.addSelector(selector);
 
 		final List<SelectorDefinition> rulesFetch_1_1 = ruleManager.getSelectorsForItemId(1L);
@@ -134,6 +150,54 @@ public class RuleManagerSelectorTest {
 
 		assertNotNull(rulesFetch_2_0);
 		assertThat(rulesFetch_2_0.size(), is(0));
+	}
+
+
+
+	public static URI<Account> createAccountURI(final String id) {
+		return DtObjectUtil.createURI(Account.class, id);
+	}
+
+	public static URI<AccountGroup> createGroupURI(final String id) {
+		return DtObjectUtil.createURI(AccountGroup.class, id);
+	}
+
+	/**
+	 * One simple selector for RulesManager
+	 */
+	@Test
+	public void testValidationOneRuleOneCondition() {
+
+		final AccountGroup accountGroup = new AccountGroup("1", "Group activity 1");
+
+		final Account account = new AccountBuilder("0")
+				.withDisplayName("User 1")
+				.withEmail("user1@account.vertigo.io")
+				.build();
+
+		final AccountStore accountStore = accountManager.getStore();
+		accountStore.saveAccounts(Arrays.asList(account));
+
+		accountStore.saveGroup(accountGroup);
+		accountStore.attach(createAccountURI(account.getId()), createGroupURI(accountGroup.getId()));
+
+		// Selector created to Item 1
+		final SelectorDefinition selector = new SelectorDefinition(null, 1L, accountGroup.getId());
+		ruleManager.addSelector(selector);
+
+		final RuleFilterDefinition filterDefinition = new RuleFilterDefinition(null, "division", "=", "BTL", selector.getId());
+		ruleManager.addFilter(filterDefinition);
+
+		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
+		myDummyDtObject.setDivision("BTL");
+
+		final RuleConstants ruleContants = new RuleConstants();
+
+		final List<Account> selectedAccounts = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+
+		assertThat(selectedAccounts, is(not(nullValue())));
+		assertThat(selectedAccounts.size(), is(1));
+		assertThat(selectedAccounts, hasItem(account));
 	}
 
 

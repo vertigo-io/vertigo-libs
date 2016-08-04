@@ -50,8 +50,12 @@ public final class RuleManagerImpl implements RuleManager {
 	}
 
 	@Override
-	public List<Account> selectAccounts(final Long idActivityDefinition, final DtObject item) {
-		return ruleSelectorPlugin.selectAccounts(idActivityDefinition, item);
+	public List<Account> selectAccounts(final Long idActivityDefinition, final DtObject item, final RuleConstants constants) {
+
+		final List<SelectorDefinition> selectors = ruleStorePlugin.findSelectorsByItemId(idActivityDefinition);
+		final RuleContext context = new RuleContext(item, constants);
+
+		return ruleSelectorPlugin.selectAccounts(idActivityDefinition, selectors, context);
 	}
 
 	@Override
@@ -121,6 +125,26 @@ public final class RuleManagerImpl implements RuleManager {
 	@Override
 	public void updateSelector(final SelectorDefinition selectorDefinition) {
 		ruleStorePlugin.updateSelector(selectorDefinition);
+	}
+
+	@Override
+	public void addFilter(final RuleFilterDefinition ruleFilterDefinition) {
+		ruleStorePlugin.addFilter(ruleFilterDefinition);
+	}
+
+	@Override
+	public void removeFilter(final RuleFilterDefinition ruleFilterDefinition) {
+		ruleStorePlugin.removeFilter(ruleFilterDefinition);
+	}
+
+	@Override
+	public List<RuleFilterDefinition> getFiltersForSelectorId(final Long selectorId) {
+		return ruleStorePlugin.findFiltersBySelectorId(selectorId);
+	}
+
+	@Override
+	public void updateFilter(final RuleFilterDefinition ruleFilterDefinition) {
+		ruleStorePlugin.updateFilter(ruleFilterDefinition);
 	}
 
 

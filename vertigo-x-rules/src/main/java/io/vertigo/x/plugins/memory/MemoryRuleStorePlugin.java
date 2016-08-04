@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.impl.rules.RuleConditionDefinition;
 import io.vertigo.x.impl.rules.RuleDefinition;
+import io.vertigo.x.impl.rules.RuleFilterDefinition;
 import io.vertigo.x.impl.rules.RuleStorePlugin;
 import io.vertigo.x.impl.rules.SelectorDefinition;
 
@@ -38,14 +39,17 @@ import io.vertigo.x.impl.rules.SelectorDefinition;
  */
 public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 
-	private final Map<Long, RuleConditionDefinition> inMemoryConditionStore = new ConcurrentHashMap<>();
-	private final AtomicLong memoryConditionSequenceGenerator = new AtomicLong(0);
-
 	private final Map<Long, RuleDefinition> inMemoryRuleStore = new ConcurrentHashMap<>();
 	private final AtomicLong memoryRuleSequenceGenerator = new AtomicLong(0);
 
+	private final Map<Long, RuleConditionDefinition> inMemoryConditionStore = new ConcurrentHashMap<>();
+	private final AtomicLong memoryConditionSequenceGenerator = new AtomicLong(0);
+
 	private final Map<Long, SelectorDefinition> inMemorySelectorStore = new ConcurrentHashMap<>();
 	private final AtomicLong memorySelectorSequenceGenerator = new AtomicLong(0);
+
+	private final Map<Long, RuleFilterDefinition> inMemoryFilterStore = new ConcurrentHashMap<>();
+	private final AtomicLong memoryFilterSequenceGenerator = new AtomicLong(0);
 
 	/**
 	 *
@@ -92,7 +96,7 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 		Assertion.checkNotNull(ruleConditionDefinition);
 		Assertion.checkState(ruleConditionDefinition.getId() == null, "A new condition must not have an id");
 		//---
-		final Long generatedId = memoryRuleSequenceGenerator.addAndGet(1);
+		final Long generatedId = memoryConditionSequenceGenerator.addAndGet(1);
 		ruleConditionDefinition.setId(generatedId);
 		inMemoryConditionStore.put(generatedId, ruleConditionDefinition);
 	}
@@ -201,6 +205,52 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 		}
 
 		return ret;
+	}
+
+	@Override
+	public void addFilter(final RuleFilterDefinition ruleFilterDefinition) {
+		Assertion.checkNotNull(ruleFilterDefinition);
+		Assertion.checkNotNull(ruleFilterDefinition.getSelId());
+		Assertion.checkState(ruleFilterDefinition.getId() == null, "A new filter must not have an id");
+		//---
+		final Long generatedId = memoryFilterSequenceGenerator.addAndGet(1);
+		ruleFilterDefinition.setId(generatedId);
+		inMemoryFilterStore.put(generatedId, ruleFilterDefinition);
+
+	}
+
+	@Override
+	public void removeFilter(final RuleFilterDefinition ruleFilterDefinition) {
+		Assertion.checkNotNull(ruleFilterDefinition);
+		Assertion.checkNotNull(ruleFilterDefinition.getId());
+		//---
+		inMemoryFilterStore.remove(ruleFilterDefinition.getId());
+
+	}
+
+	@Override
+	public List<RuleFilterDefinition> findFiltersBySelectorId(final Long selectorId) {
+		Assertion.checkNotNull(selectorId);
+		//---
+		final List<RuleFilterDefinition> ret = new ArrayList<>();
+
+		for (final RuleFilterDefinition ruleFilterDefinition : inMemoryFilterStore.values()) {
+			if (selectorId.equals(ruleFilterDefinition.getSelId())) {
+				//Collect
+				ret.add(ruleFilterDefinition);
+			}
+		}
+
+		return ret;
+	}
+
+	@Override
+	public void updateFilter(final RuleFilterDefinition ruleFilterDefinition) {
+		Assertion.checkNotNull(ruleFilterDefinition);
+		Assertion.checkNotNull(ruleFilterDefinition.getId());
+		Assertion.checkState(inMemoryFilterStore.containsKey(ruleFilterDefinition.getId()), "Cannot update this filter : Its id is unknown in the store");
+		//---
+		inMemoryFilterStore.put(ruleFilterDefinition.getId(), ruleFilterDefinition);
 	}
 
 }

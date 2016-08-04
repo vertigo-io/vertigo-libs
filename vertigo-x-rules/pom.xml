@@ -22,6 +22,19 @@
 			<artifactId>vertigo-dynamo-api</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
+		
+		<!-- deb -->
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-dynamo-impl</artifactId>
+			<version>${vertigo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-persona-impl</artifactId>
+			<version>${vertigo.version}</version>
+		</dependency>
+		<!-- fin -->
 
 		<dependency>
 			<groupId>io.vertigo</groupId>

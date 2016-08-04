@@ -22,6 +22,7 @@ import java.util.List;
 
 import io.vertigo.x.impl.rules.RuleConditionDefinition;
 import io.vertigo.x.impl.rules.RuleDefinition;
+import io.vertigo.x.impl.rules.RuleFilterDefinition;
 import io.vertigo.x.impl.rules.SelectorDefinition;
 
 /**
@@ -105,5 +106,31 @@ public interface RuleStore {
 	 * @param selectorDefinition
 	 */
 	void updateSelector(SelectorDefinition selectorDefinition);
+
+
+	/**
+	 *
+	 * @param ruleFilterDefinition
+	 */
+	void addFilter(RuleFilterDefinition ruleFilterDefinition);
+
+	/**
+	 *
+	 * @param ruleFilterDefinition
+	 */
+	void removeFilter(RuleFilterDefinition ruleFilterDefinition);
+
+	/**
+	 *
+	 * @param selectorId
+	 * @return a list of all the filters defined for the selectorId
+	 */
+	List<RuleFilterDefinition> findFiltersBySelectorId(Long selectorId);
+
+	/**
+	 *
+	 * @param ruleFilterDefinition
+	 */
+	void updateFilter(RuleFilterDefinition ruleFilterDefinition);
 
 }
