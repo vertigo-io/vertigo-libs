@@ -30,6 +30,5 @@ import io.vertigo.x.workflow.WorkflowStore;
  *
  */
 public interface WorkflowStorePlugin extends WorkflowStore, Plugin {
-
 	// Plugin interface for Workflow
 }

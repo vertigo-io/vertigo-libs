@@ -82,6 +82,12 @@ public interface WorkflowStore {
 	 */
 	void removeActivity(WfActivity wfActivity);
 
+	/**
+	 * Does the provided has a next activity
+	 * @param activity
+	 * @return true if the activity has a default trsnition to another activity. false if the activity is the last activity
+	 */
+	boolean hasNextActivity(final WfActivity activity);
 
 	/**
 	 *

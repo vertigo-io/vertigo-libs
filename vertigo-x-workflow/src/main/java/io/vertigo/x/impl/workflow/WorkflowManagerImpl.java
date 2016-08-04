@@ -143,8 +143,11 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		Long wfCurrentActivityDefinitionId = wfActivityDefinitionId;
 		while (canAutoValidateActivity(activityDefinition, object)) {
 			WfActivity wfActivityCurrent = autoValidateActivity(activityDefinition);
-			activityDefinition = workflowStorePlugin.findNextActivity(wfActivityCurrent);
 			wfCurrentActivityDefinitionId = wfActivityCurrent.getWfadId();
+			if (workflowStorePlugin.hasNextActivity(wfActivityCurrent) == false) {
+				break;
+			}
+			activityDefinition = workflowStorePlugin.findNextActivity(wfActivityCurrent);
 		}
 
 		wfWorkflow.setWfaId2(wfCurrentActivityDefinitionId);
