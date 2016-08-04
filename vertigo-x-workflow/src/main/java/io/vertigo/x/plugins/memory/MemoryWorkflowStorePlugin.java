@@ -238,7 +238,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		Long idActivity = wfWorkflowDefinition.getWfadId();
 
 		if (idActivity == null) {
-			//The workflow don't have a tarting activity
+			//The workflow don't have a starting activity
 			return null;
 		}
 		WfTransitionDefinition transitionNext = transitionsNext.get(idActivity + "|" + DEFAULT);
@@ -254,8 +254,8 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		if (transitionNext == null) {
 			return null;
 		}
-
-		return readActivityDefinition(idActivity);
+		
+		return readActivityDefinition(transitionNext.getWfadIdTo());
 	}
 
 	@Override

@@ -21,12 +21,22 @@ package io.vertigo.x.workflow;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.impl.DynamoFeatures;
+import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
+import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
+import io.vertigo.persona.impl.security.PersonaFeatures;
+import io.vertigo.x.impl.account.AccountFeatures;
 import io.vertigo.x.impl.workflow.WorkflowFeatures;
+import io.vertigo.x.plugins.account.memory.MemoryAccountStorePlugin;
 import io.vertigo.x.plugins.memory.MemoryRuleStorePlugin;
 import io.vertigo.x.plugins.memory.MemoryWorkflowStorePlugin;
 import io.vertigo.x.plugins.selector.SimpleRuleSelectorPlugin;
 import io.vertigo.x.plugins.validator.SimpleRuleValidatorPlugin;
+import io.vertigo.x.workflow.data.MyDummyDtObjectProvider;
+import io.vertigo.x.workflow.data.TestUserSession;
 import io.vertigo.x.workflow.plugin.MemoryItemStorePlugin;
 
 /**
@@ -34,17 +44,34 @@ import io.vertigo.x.workflow.plugin.MemoryItemStorePlugin;
  * @author xdurand
  *
  */
-public class JunitAppConfig {
+public class MyAppConfig {
 
 	/**
 	 * Configuration de l'application pour Junit
 	 * @return AppConfig for Junit
 	 */
 	public static AppConfig config() {
-		final AppConfigBuilder acb = new AppConfigBuilder();
+		final AppConfigBuilder appConfigBuilder =  new AppConfigBuilder()
+				.beginBootModule("fr")
+					.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
+					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
+					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
+				.endModule()
+				.beginBoot()
+					.silently()
+				.endBoot()
+				.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
+				.beginModule(CommonsFeatures.class).endModule()
+				.beginModule(DynamoFeatures.class).endModule()
+				.beginModule(AccountFeatures.class)
+					.getModuleConfigBuilder()
+					.addPlugin(MemoryAccountStorePlugin.class)
+				.endModule();
 
-		acb.beginModule(WorkflowFeatures.class)
+		
+		appConfigBuilder.beginModule(WorkflowFeatures.class)
 			.getModuleConfigBuilder()
+			.addDefinitionProvider(MyDummyDtObjectProvider.class)
 			.addPlugin(MemoryWorkflowStorePlugin.class)
 			.addPlugin(MemoryItemStorePlugin.class)
 			.addPlugin(MemoryRuleStorePlugin.class)
@@ -53,8 +80,11 @@ public class JunitAppConfig {
 			.addPlugin(JaninoExpressionEvaluatorPlugin.class)
 		   .endModule();
 
-		return acb.build();
+		return appConfigBuilder.build();
 	}
 
+	
+	
+	
 
 }

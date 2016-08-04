@@ -21,6 +21,11 @@ package io.vertigo.x.workflow;
 import java.util.List;
 
 import io.vertigo.lang.Manager;
+import io.vertigo.x.impl.rules.RuleConditionDefinition;
+import io.vertigo.x.impl.rules.RuleDefinition;
+import io.vertigo.x.impl.rules.RuleFilterDefinition;
+import io.vertigo.x.impl.rules.SelectorDefinition;
+import io.vertigo.x.rules.RuleSelector;
 import io.vertigo.x.workflow.domain.instance.WfActivity;
 import io.vertigo.x.workflow.domain.instance.WfWorkflow;
 import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
@@ -102,8 +107,8 @@ public interface WorkflowManager extends Manager {
 	 * @param wfActivityDefinition
 	 * @param position
 	 */
-	void addActivity(WfWorkflowDefinition wfWorkflowDefinition, WfActivityDefinition wfActivityDefinition, int position /*, RuleDefinitionManager, SelectorDefinitionManager */);
-
+	void addActivity(WfWorkflowDefinition wfWorkflowDefinition, WfActivityDefinition wfActivityDefinition, int position);
+	
 	/**
 	 * Remove an activity to the workflow definition.
 	 * @param wfActivityDefinition the activity to remove
@@ -127,5 +132,35 @@ public interface WorkflowManager extends Manager {
 	 * @param after true to move the activity after the referential activity. false before
 	 */
 	void moveActivity(WfWorkflowDefinition wfWorkflowDefinition, WfActivityDefinition wfActivity, WfActivityDefinition wfActivityReferential, boolean after);
+	
+	//Rules/selectors
+	
+	/**
+	 * Add and attach the provided rule to the designed activity
+	 * @param wfActivity
+	 * @param ruleDefinition 
+	 * @param conditions 
+	 */
+	void addRule(WfActivityDefinition wfActivity, RuleDefinition ruleDefinition, List<RuleConditionDefinition> conditions);
+	
+	/**
+	 * Remove and dettach the provided rules from the activity
+	 * @param rule
+	 */
+	void removeRule(RuleDefinition rule);
+	
+	/**
+	 * Add and attach the provided selectors to the designed activity
+	 * @param wfActivity
+	 * @param selector 
+	 * @param filters 
+	 */
+	void addSelector(WfActivityDefinition wfActivity, SelectorDefinition selector, List<RuleFilterDefinition> filters);
+	
+	/**
+	 * Remove and dettach the provided selector from the activity
+	 * @param selector
+	 */
+	void removeSelector(SelectorDefinition selector);
 
 }

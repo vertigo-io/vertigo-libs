@@ -28,7 +28,11 @@ import javax.inject.Inject;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.account.Account;
+import io.vertigo.x.impl.rules.RuleConditionDefinition;
 import io.vertigo.x.impl.rules.RuleConstants;
+import io.vertigo.x.impl.rules.RuleDefinition;
+import io.vertigo.x.impl.rules.RuleFilterDefinition;
+import io.vertigo.x.impl.rules.SelectorDefinition;
 import io.vertigo.x.rules.RuleManager;
 import io.vertigo.x.workflow.WfCodeStatusWorkflow;
 import io.vertigo.x.workflow.WfDecision;
@@ -72,7 +76,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		final WfWorkflow wfWorkflow = new WfWorkflow();
 		wfWorkflow.setCreationDate(new Date());
 		wfWorkflow.setItemId(item);
-		wfWorkflow.setWfsCode("STO");
+		wfWorkflow.setWfsCode(WfCodeStatusWorkflow.CRE.name());
 		wfWorkflow.setWfwdId(wfWorkflowDefinition.getWfwdId());
 		wfWorkflow.setWfaId2(wfWorkflowDefinition.getWfadId());
 		wfWorkflow.setUserLogic(userLogic);
@@ -90,8 +94,10 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		//---
 		wfWorkflow.setWfsCode(WfCodeStatusWorkflow.STA.name());
 		workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
-
-		// TODO : start action and selection with Rule engine
+		
+		WfWorkflowDefinition wfWorkflowDefinition = workflowStorePlugin.readWorkflowDefinition(wfWorkflow.getWfwdId());
+		
+		autoValidateNextActivities(wfWorkflow, wfWorkflowDefinition.getWfadId());
 	}
 
 	@Override
@@ -123,10 +129,73 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	}
 
+	
+	/**
+	 * 
+	 * @param wfWorkflow
+	 * @param wfActivity
+	 */
+	private void autoValidateNextActivities(WfWorkflow wfWorkflow, Long wfActivityDefinitionId) {
+		
+		WfActivityDefinition activityDefinition = workflowStorePlugin.readActivityDefinition(wfActivityDefinitionId);
+		
+		final DtObject object = itemStorePlugin.readItem(wfWorkflow.getItemId());
+		Long wfCurrentActivityDefinitionId = wfActivityDefinitionId;
+		while (canAutoValidateActivity(activityDefinition, object)) {
+			WfActivity wfActivityCurrent = autoValidateActivity(activityDefinition);
+			activityDefinition = workflowStorePlugin.findNextActivity(wfActivityCurrent);
+			wfCurrentActivityDefinitionId = wfActivityCurrent.getWfadId();
+		}
+
+		wfWorkflow.setWfaId2(wfCurrentActivityDefinitionId);
+		workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
+	}
+	
+	/**
+	 * 
+	 * @param activityDefinition
+	 * @param object 
+	 * @return 
+	 */
+	private WfActivity autoValidateActivity(final WfActivityDefinition wfNextActivityDefinition) {
+		//Automatic validation of this activity
+		final Date now = new Date();
+		
+		WfActivity wfActivityCurrent = new WfActivity();
+		wfActivityCurrent.setChoice(1);
+		wfActivityCurrent.setDecisionDate(now);
+		wfActivityCurrent.setCreationDate(now);
+		wfActivityCurrent.setUser(USER_AUTO);
+		wfActivityCurrent.setWfadId(wfNextActivityDefinition.getWfadId());
+
+		workflowStorePlugin.createActivity(wfActivityCurrent);
+		return wfActivityCurrent;
+	}
+
+	
+	/**
+	 * 
+	 * @param activityDefinition
+	 * @param object 
+	 * @return 
+	 */
+	private boolean canAutoValidateActivity(WfActivityDefinition activityDefinition, DtObject object) {
+
+		//TODO Gestion des constantes
+		final RuleConstants ruleConstants = new RuleConstants();
+		
+		boolean ruleValid = ruleManager.isRuleValid(activityDefinition.getWfadId(), object, ruleConstants);
+		final List<Account> accounts = ruleManager.selectAccounts(activityDefinition.getWfadId(), object, ruleConstants);
+
+		boolean atLeastOnePerson = accounts.isEmpty() == false;
+		
+		return ruleValid == false || atLeastOnePerson == false;
+	}
+
 	@Override
 	public void goToNextActivity(final WfWorkflow wfWorkflow, final WfDecision wfDecision) {
-		// Use Rule engine here
-
+		Assertion.checkState(WfCodeStatusWorkflow.STA.name().equals(wfWorkflow.getWfsCode()), "A workflow must be started before going to the next activity");
+		//---
 		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
 
 		WfActivityDefinition nextActivityDefinition = workflowStorePlugin.findNextActivity(currentActivity);
@@ -141,40 +210,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		currentActivity.setWfadId(nextActivityDefinition.getWfadId());
 
 		workflowStorePlugin.createActivity(currentActivity);
-
-		//TODO Gestion des constantes
-		final RuleConstants ruleConstants = new RuleConstants();
-		final DtObject object = itemStorePlugin.readItem(wfWorkflow.getWfwId());
-
-		boolean ruleValid;
-		boolean atLeastOnePerson;
-		WfActivity wfActivityCurrent = currentActivity;
-		do {
-			ruleValid = ruleManager.isRuleValid(nextActivityDefinition.getWfadId(), object, ruleConstants);
-			final List<Account> accounts = ruleManager.selectAccounts(nextActivityDefinition.getWfadId(), object, ruleConstants);
-
-			atLeastOnePerson = accounts.isEmpty() == false;
-
-			if (ruleValid == false || atLeastOnePerson == false) {
-				//Automatic validation of this activity
-				wfActivityCurrent = new WfActivity();
-				wfActivityCurrent.setChoice(1);
-				wfActivityCurrent.setDecisionDate(now);
-				wfActivityCurrent.setCreationDate(now);
-				wfActivityCurrent.setUser(USER_AUTO);
-				wfActivityCurrent.setWfadId(nextActivityDefinition.getWfadId());
-
-				workflowStorePlugin.createActivity(wfActivityCurrent);
-
-				nextActivityDefinition = workflowStorePlugin.findNextActivity(currentActivity);
-			}
-
-		} while (ruleValid == false || atLeastOnePerson == false);
-
-
-		wfWorkflow.setWfaId2(wfActivityCurrent.getWfadId());
-		workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
-
+		autoValidateNextActivities(wfWorkflow, currentActivity.getWfadId());
 	}
 
 	@Override
@@ -203,18 +239,19 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		if (wfActivityDefinition == null) {
 			// Inserting a activity in trail
 			final int size = workflowStorePlugin.countDefaultTransitions(wfWorkflowDefinition);
-			Assertion.checkState(position == (size + 1) , "Position is not valid");
+			Assertion.checkState(size == Math.max(0, position - 2) , "Position is not valid");
 
 			wfActivityDefinitionToAdd.setLevel(position);
 
 			workflowStorePlugin.createActivityDefinition(wfWorkflowDefinition, wfActivityDefinitionToAdd);
 
 			//Find the previous activity to add a link to the newly created
-			if (position > 1) {
-				final WfActivityDefinition wfActivityDefinitionPrevious = workflowStorePlugin.findActivityDefinitionByPosition(wfWorkflowDefinition, position - 1 );
-
+			if (position == 2) {
+				final WfTransitionDefinition wfTransitionDefinition = new WfTransitionBuilder(wfWorkflowDefinition.getWfadId(), wfActivityDefinitionToAdd.getWfadId()).build();
+				workflowStorePlugin.addTransition(wfTransitionDefinition);
+			} else if (position > 2) {
+				final WfActivityDefinition wfActivityDefinitionPrevious = workflowStorePlugin.findActivityDefinitionByPosition(wfWorkflowDefinition, position - 2);
 				final WfTransitionDefinition wfTransitionDefinition = new WfTransitionBuilder(wfActivityDefinitionPrevious.getWfadId(), wfActivityDefinitionToAdd.getWfadId()).build();
-
 				workflowStorePlugin.addTransition(wfTransitionDefinition);
 			} else {
 				//Saving starting activity
@@ -250,6 +287,49 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		// TODO
 	}
 
+	@Override
+	public void addRule(WfActivityDefinition wfActivity, RuleDefinition ruleDefinition, List<RuleConditionDefinition> conditions) {
+		Assertion.checkNotNull(wfActivity);
+		Assertion.checkNotNull(ruleDefinition);
+		Assertion.checkNotNull(conditions);
+		// --
+		ruleDefinition.setItemId(wfActivity.getWfadId());
+		ruleManager.addRule(ruleDefinition);
+		
+		for (RuleConditionDefinition ruleConditionDefinition : conditions) {
+			ruleConditionDefinition.setRudId(ruleDefinition.getId());
+			ruleManager.addCondition(ruleConditionDefinition);
+		}
+	}
+
+	@Override
+	public void removeRule(RuleDefinition rule) {
+		Assertion.checkNotNull(rule);
+		// --
+		ruleManager.removeRule(rule);
+	}
+
+	@Override
+	public void addSelector(WfActivityDefinition wfActivity, SelectorDefinition selector, List<RuleFilterDefinition> filters) {
+		Assertion.checkNotNull(wfActivity);
+		Assertion.checkNotNull(selector);
+		Assertion.checkNotNull(filters);
+		// --
+		selector.setItemId(wfActivity.getWfadId());
+		ruleManager.addSelector(selector);
+		
+		for (RuleFilterDefinition ruleFilterDefinition : filters) {
+			ruleFilterDefinition.setSelId(ruleFilterDefinition.getSelId());
+			ruleManager.addFilter(ruleFilterDefinition);
+		}
+	}
+
+	@Override
+	public void removeSelector(SelectorDefinition selector) {
+		Assertion.checkNotNull(selector);
+		// --
+		ruleManager.removeSelector(selector);
+	}
 
 }
 

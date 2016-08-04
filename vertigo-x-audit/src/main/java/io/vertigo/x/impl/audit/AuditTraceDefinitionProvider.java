@@ -49,6 +49,7 @@ public class AuditTraceDefinitionProvider implements DefinitionProvider {
 
 
 		final DtDefinition auditTraceDtDefinition = new DtDefinitionBuilder("DT_AUDIT_TRACE")
+				.withPersistent(true)
 				.addIdField("ID", "id", domainAuditId, false, false)
 				.addDataField("CATEGORY", "category", domainAuditCategory, true, true, true, true)
 				.addDataField("USER", "user", domainAuditUser, true, true, false, false)

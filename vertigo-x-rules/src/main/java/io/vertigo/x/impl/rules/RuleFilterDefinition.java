@@ -1,7 +1,6 @@
 package io.vertigo.x.impl.rules;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
 import io.vertigo.dynamo.domain.stereotype.Field;
 
 /**
@@ -9,7 +8,6 @@ import io.vertigo.dynamo.domain.stereotype.Field;
  *
  * @author xdurand
  */
-@DtDefinition
 public final class RuleFilterDefinition implements Entity {
 	/**
 	 *
@@ -29,7 +27,7 @@ public final class RuleFilterDefinition implements Entity {
 	private final String expression;
 
 	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "RuleSelectorDefinition")
-	private final Long selId;
+	private Long selId;
 
 	/**
 	 * @param id
@@ -89,6 +87,14 @@ public final class RuleFilterDefinition implements Entity {
 	 */
 	public Long getSelId() {
 		return selId;
+	}
+
+	/**
+	 * 
+	 * @param selId
+	 */
+	public void setSelId(Long selId) {
+		this.selId = selId;
 	}
 
 }

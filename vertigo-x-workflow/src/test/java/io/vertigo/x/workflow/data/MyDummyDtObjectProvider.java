@@ -24,6 +24,7 @@ public class MyDummyDtObjectProvider implements DefinitionProvider {
 		final Domain domainDummyLabel = new DomainBuilder("DO_X_DUMMY_LABEL", DataType.String).build();
 
 		final DtDefinition wfDummyObjectDtDefinition = new DtDefinitionBuilder("DT_MY_DUMMY_DT_OBJECT")
+				.withPersistent(true)
 				.addIdField("ID", "id", domainDummyId, false, false)
 				.addDataField("ENTITY", "entity", domainDummyCode, true, true, false, false)
 				.addDataField("DIVISION", "division", domainDummyCode, true, true, false, false)

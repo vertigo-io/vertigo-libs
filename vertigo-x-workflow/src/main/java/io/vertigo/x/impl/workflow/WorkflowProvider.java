@@ -50,25 +50,30 @@ public final class WorkflowProvider implements DefinitionProvider {
 		final Domain domainWorkflowLevel = new DomainBuilder("DO_X_WORKFLOW_LEVEL", DataType.Integer).build();
 
 		final DtDefinition wfMultiplicityDefinitionDtDefinition = new DtDefinitionBuilder("DT_WF_MULTIPLICITY_DEFINITION")
+				.withPersistent(true)
 				.addIdField("WFMD_CODE", "wfmdCode", domainWorkflowCode, false, false)
 				.addDataField("LABEL", "label", domainWorkflowLabel, true, true, false, false)
 				.build();
 
 		final DtDefinitionBuilder wfWorkflowDefinitionDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_WORKFLOW_DEFINITION")
+				.withPersistent(true)
 				.addIdField("WFWD_ID", "wfwdId", domainWorkflowId, false, false)
 				.addDataField("NAME", "name", domainWorkflowLabel, true, true, true, true)
 				.addDataField("DATE", "date", domainWorkflowDate, true, true, false, false);
 
 		final DtDefinitionBuilder wfTransitionDefinitionDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_TRANSITION_DEFINITION")
+				.withPersistent(true)
 				.addIdField("WFTD_ID", "wftdId", domainWorkflowId, false, false)
 				.addDataField("NAME", "name", domainWorkflowLabel, true, true, false, false);
 
 		final DtDefinitionBuilder wfActivityDefinitionDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_ACTIVITY_DEFINITION")
+				.withPersistent(true)
 				.addIdField("WFAD_ID", "wfadId", domainWorkflowId, false, false)
 				.addDataField("NAME", "name", domainWorkflowLabel, true, true, false, false)
 				.addDataField("LEVEL", "level", domainWorkflowLevel, false, true, false, false);
 
 		final DtDefinitionBuilder wfWorkflowDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_WORKFLOW")
+				.withPersistent(true)
 				.addIdField("WFW_ID", "wfwId", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
 				.addDataField("ITEM_ID", "itemId", domainWorkflowId, false, true, false, false)
@@ -76,6 +81,7 @@ public final class WorkflowProvider implements DefinitionProvider {
 				.addDataField("USER_LOGIC", "userLogic", domainWorkflowFlag, true, true, false, false);
 
 		final DtDefinitionBuilder wfWorkflowActivityDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_ACTIVITY")
+				.withPersistent(true)
 				.addIdField("WFA_ID", "wfaId", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
 				.addDataField("CHOICE", "choice", domainWorkflowChoice, false, true, false, false)
@@ -84,6 +90,7 @@ public final class WorkflowProvider implements DefinitionProvider {
 				.addDataField("USER", "user", domainWorkflowUser, true, true, false, false);
 
 		final DtDefinition wfStatusDtDefinition = new DtDefinitionBuilder("DT_WF_STATUS")
+				.withPersistent(true)
 				.addIdField("WFS_CODE", "wfsCode", domainWorkflowCode, false, false)
 				.addDataField("LABEL", "label", domainWorkflowLabel, true, true, true, true)
 				.build();

@@ -27,13 +27,14 @@ public final class RuleConditionDefinition implements Entity {
 	private final String expression;
 
 	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "RuleDefinition")
-	private final Long rudId;
+	private Long rudId;
 
 	/**
 	 * @param id
 	 * @param field
 	 * @param operator
 	 * @param expression
+	 * @param rudId 
 	 */
 	public RuleConditionDefinition(final Long id, final String field, final String operator, final String expression, final Long rudId) {
 		super();
@@ -77,6 +78,14 @@ public final class RuleConditionDefinition implements Entity {
 	 */
 	public String getExpression() {
 		return expression;
+	}
+
+	/**
+	 * 
+	 * @param rudId
+	 */
+	public void setRudId(Long rudId) {
+		this.rudId = rudId;
 	}
 
 	/**
