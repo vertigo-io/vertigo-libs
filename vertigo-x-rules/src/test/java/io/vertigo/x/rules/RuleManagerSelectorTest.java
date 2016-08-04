@@ -166,7 +166,7 @@ public class RuleManagerSelectorTest {
 	 * One simple selector for RulesManager
 	 */
 	@Test
-	public void testValidationOneRuleOneCondition() {
+	public void testValidationOneSelectorOneFilter() {
 
 		final AccountGroup accountGroup = new AccountGroup("1", "Group activity 1");
 
@@ -198,7 +198,170 @@ public class RuleManagerSelectorTest {
 		assertThat(selectedAccounts, is(not(nullValue())));
 		assertThat(selectedAccounts.size(), is(1));
 		assertThat(selectedAccounts, hasItem(account));
+		
 	}
 
+	/**
+	 * One simple selector with many filters for RulesManager
+	 */
+	@Test
+	public void testValidationOneSelectorManyFilters() {
+
+		final AccountGroup accountGroup = new AccountGroup("1", "Group activity 1");
+
+		final Account account = new AccountBuilder("0")
+				.withDisplayName("User 1")
+				.withEmail("user1@account.vertigo.io")
+				.build();
+
+		final AccountStore accountStore = accountManager.getStore();
+		accountStore.saveAccounts(Arrays.asList(account));
+
+		accountStore.saveGroup(accountGroup);
+		accountStore.attach(createAccountURI(account.getId()), createGroupURI(accountGroup.getId()));
+
+		// Selector created to Item 1
+		final SelectorDefinition selector_1 = new SelectorDefinition(null, 1L, accountGroup.getId());
+		ruleManager.addSelector(selector_1);
+
+		final RuleFilterDefinition filterDefinition_1_1 = new RuleFilterDefinition(null, "division", "=", "BTL", selector_1.getId());
+		ruleManager.addFilter(filterDefinition_1_1);
+
+		final RuleFilterDefinition filterDefinition_1_2 = new RuleFilterDefinition(null, "entity", "=", "ENT", selector_1.getId());
+		ruleManager.addFilter(filterDefinition_1_2);
+
+		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
+		myDummyDtObject.setDivision("BTL");
+
+		final RuleConstants ruleContants = new RuleConstants();
+
+		// The entity is not set to ENT. The selector should not match
+		List<Account> selectedAccounts_1 = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+
+		assertThat(selectedAccounts_1, is(not(nullValue())));
+		assertThat(selectedAccounts_1.size(), is(0));
+
+		//We set the entity to 'ENT'
+		myDummyDtObject.setEntity("ENT");
+		// The selector should match now.
+		List<Account> selectedAccounts_2 = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+		
+		assertThat(selectedAccounts_2, is(not(nullValue())));
+		assertThat(selectedAccounts_2.size(), is(1));
+		assertThat(selectedAccounts_2, hasItem(account));
+
+		//We set the entity to 'XXXT'
+		myDummyDtObject.setEntity("XXX");
+		// The selector should not match .
+		List<Account> selectedAccounts_3 = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+		
+		assertThat(selectedAccounts_3, is(not(nullValue())));
+		assertThat(selectedAccounts_3.size(), is(0));
+	}
+	
+	
+	/**
+	 * Many selectors with many filters for RulesManager
+	 */
+	@Test
+	public void testValidationManySelectorsManyFilters() {
+
+		final AccountGroup accountGroup_1 = new AccountGroup("1", "Group activity 1");
+
+		final Account account_1_1 = new AccountBuilder("0")
+				.withDisplayName("User 1 Group 1")
+				.withEmail("user1@account.vertigo.io")
+				.build();
+
+		final Account account_1_2 = new AccountBuilder("1")
+				.withDisplayName("User 2 Group 1")
+				.withEmail("user1@account.vertigo.io")
+				.build();
+
+		AccountStore accountStore = accountManager.getStore();
+		accountStore.saveAccounts(Arrays.asList(account_1_1, account_1_2));
+		accountStore.saveGroup(accountGroup_1);
+		accountStore.attach(createAccountURI(account_1_1.getId()), createGroupURI(accountGroup_1.getId()));
+		accountStore.attach(createAccountURI(account_1_2.getId()), createGroupURI(accountGroup_1.getId()));
+
+		final AccountGroup accountGroup_2 = new AccountGroup("2", "Group activity 2");
+		
+		final Account account_2_1 = new AccountBuilder("2")
+				.withDisplayName("User 1 Group 2")
+				.withEmail("user1@account.vertigo.io")
+				.build();
+		
+		final Account account_2_2 = new AccountBuilder("3")
+				.withDisplayName("User 2 Group 2")
+				.withEmail("user1@account.vertigo.io")
+				.build();
+		
+		accountStore = accountManager.getStore();
+		accountStore.saveAccounts(Arrays.asList(account_2_1, account_2_2));
+		accountStore.saveGroup(accountGroup_2);
+		accountStore.attach(createAccountURI(account_2_1.getId()), createGroupURI(accountGroup_2.getId()));
+		accountStore.attach(createAccountURI(account_2_2.getId()), createGroupURI(accountGroup_2.getId()));
+
+		// Selector 1 created to Item 1
+		final SelectorDefinition selector_1 = new SelectorDefinition(null, 1L, accountGroup_1.getId());
+		ruleManager.addSelector(selector_1);
+
+		final RuleFilterDefinition filterDefinition_1_1 = new RuleFilterDefinition(null, "division", "=", "BTL", selector_1.getId());
+		ruleManager.addFilter(filterDefinition_1_1);
+
+		final RuleFilterDefinition filterDefinition_1_2 = new RuleFilterDefinition(null, "entity", "=", "ENT", selector_1.getId());
+		ruleManager.addFilter(filterDefinition_1_2);
+
+		// Selector 2 created to Item 1
+		final SelectorDefinition selector_2 = new SelectorDefinition(null, 1L, accountGroup_2.getId());
+		ruleManager.addSelector(selector_2);
+
+		final RuleFilterDefinition filterDefinition_2_1 = new RuleFilterDefinition(null, "division", "=", "BTL", selector_2.getId());
+		ruleManager.addFilter(filterDefinition_2_1);
+		
+		final RuleFilterDefinition filterDefinition_2_2 = new RuleFilterDefinition(null, "nom", "=", "DONALD", selector_2.getId());
+		ruleManager.addFilter(filterDefinition_2_2);
+
+		// 
+		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
+		myDummyDtObject.setDivision("BTL");
+
+		final RuleConstants ruleContants = new RuleConstants();
+
+		// The entity only has entity set to ENT. No selectors should match
+		List<Account> selectedAccounts_1 = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+
+		assertThat(selectedAccounts_1, is(not(nullValue())));
+		assertThat(selectedAccounts_1.size(), is(0));
+
+		// Set entity to ENT
+		myDummyDtObject.setEntity("ENT");
+		// Only Group 1 should match 
+		List<Account> selectedAccounts_2 = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+		
+		assertThat(selectedAccounts_2, is(not(nullValue())));
+		assertThat(selectedAccounts_2.size(), is(2));
+		assertThat(selectedAccounts_2, hasItems(account_1_1, account_1_2));
+
+		// Set entity to XXX
+		myDummyDtObject.setEntity("XXX");
+		myDummyDtObject.setNom("DONALD");
+		// Only Group 2 should match 
+		List<Account> selectedAccounts_3 = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+		
+		assertThat(selectedAccounts_3, is(not(nullValue())));
+		assertThat(selectedAccounts_3.size(), is(2));
+		assertThat(selectedAccounts_3, hasItems(account_2_1, account_2_2));
+
+		// Set entity to ENT
+		myDummyDtObject.setEntity("ENT");
+		// Group 1 and Group 2 should match 
+		List<Account> selectedAccounts_4 = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+		
+		assertThat(selectedAccounts_4, is(not(nullValue())));
+		assertThat(selectedAccounts_4.size(), is(4));
+		assertThat(selectedAccounts_4, hasItems(account_1_1, account_1_2, account_2_2, account_2_2));
+		
+	}
 
 }
