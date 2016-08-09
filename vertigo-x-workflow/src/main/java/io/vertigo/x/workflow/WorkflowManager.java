@@ -87,11 +87,12 @@ public interface WorkflowManager extends Manager {
 	void goToNextActivity(WfWorkflow wfWorkflow, final WfDecision wfDecision);
 
 	/**
-	 * Go to the next activity using the default transition
+	 * Go to the next activity using the provided transition name
 	 * @param wfWorkflow
 	 * @param transitionName
+	 * @param wfDecision 
 	 */
-	void goToNextActivity(WfWorkflow wfWorkflow, String transitionName);
+	void goToNextActivity(final WfWorkflow wfWorkflow, final String transitionName, final WfDecision wfDecision);
 
 	/**
 	 * Get the list of activities following the default transition from the start until then end

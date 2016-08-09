@@ -89,18 +89,35 @@ public interface WorkflowStore {
 	void removeActivity(WfActivity wfActivity);
 
 	/**
-	 * Does the provided has a next activity
+	 * Does the provided activity has a next activity using the default transition 
 	 * @param activity
-	 * @return true if the activity has a default trsnition to another activity. false if the activity is the last activity
+	 * @return true if the activity has a default transition to another activity. false if the activity is the last activity
 	 */
 	boolean hasNextActivity(final WfActivity activity);
+	
+	/**
+	 * Does the provided has a next activity using the provided transition name
+	 * @param activity
+	 * @param transitionName 
+	 * 
+	 * @return true if the activity has a transition to another activity. false if the activity is the last activity
+	 */
+	boolean hasNextActivity(final WfActivity activity, String transitionName);
 
 	/**
-	 *
+	 * Find the next activity using the default transition
 	 * @param activity
 	 * @return the next activity definition
 	 */
 	WfActivityDefinition findNextActivity(WfActivity activity);
+
+	/**
+	 * Find the next activity using the provided transition name
+	 * @param activity
+	 * @param transitionName 
+	 * @return the next activity definition
+	 */
+	WfActivityDefinition findNextActivity(WfActivity activity, String transitionName);
 
 	/**
 	 * Find the list of all the definitions following the default transitions

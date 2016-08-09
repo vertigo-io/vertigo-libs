@@ -20,7 +20,7 @@
 package io.vertigo.x.workflow;
 
 import static org.junit.Assert.assertThat;
-
+import static org.junit.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -95,7 +95,95 @@ public class WorkflowManagerTest {
 	 * 
 	 */
 	@Test
+	public void testWorkflowStateChanges() {
+		
+		final WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
+		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
+
+		final WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1", wfWorkflowDefinition.getWfwdId()).build();
+		wfWorkflowDefinition.setWfadId(firstActivity.getWfadId());
+		
+		AccountGroup accountGroup = new AccountGroup("1", "dummy group");
+		Account account = new AccountBuilder("Acc1").build();
+		accountManager.getStore().saveGroup(accountGroup);
+		accountManager.getStore().saveAccounts(Arrays.asList(account));
+		URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
+		URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
+		accountManager.getStore().attach(accountUri, accountGroupUri);
+		
+		//Step 1 : 1 rule, 1 condition
+		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
+		RuleDefinition rule1Act1 = new RuleDefinition(null, firstActivity.getWfadId());
+		RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition(null, "division", "=", "DIV", null);
+		workflowManager.addRule(firstActivity, rule1Act1, Arrays.asList(condition1Rule1Act1));
+		//Selector/filter to validate the activity (preventing auto validation when no one is linked to an activity)
+		SelectorDefinition selector1 = new SelectorDefinition(null, firstActivity.getWfadId(), accountGroup.getId());
+		workflowManager.addSelector(firstActivity, selector1, Collections.emptyList());
+		
+		MyDummyDtObject myDummyDtObject = createDummyDtObject();
+		
+		WfWorkflow wfWorkflow = workflowManager.createWorkflowInstance("WorkflowRules", "JUnit", false, myDummyDtObject.getId());
+		
+		assertThat(wfWorkflow, is(not(nullValue())));
+		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.CRE.name()));
+		
+		try {
+			workflowManager.resumeInstance(wfWorkflow);
+			fail("Cannot resume an instance that is not started");
+		} catch (IllegalStateException iae) {
+			// We should enter in this exeption case 
+		}
+		
+		try {
+			workflowManager.endInstance(wfWorkflow);
+			fail("Cannot end instance that is not started");
+		} catch (IllegalStateException iae) {
+			// We should enter in this exeption case 
+		}
+		
+		// Starting the workflow
+		workflowManager.startInstance(wfWorkflow);
+		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.STA.name()));
+		
+		try {
+			workflowManager.resumeInstance(wfWorkflow);
+			fail("Cannot resume an instance that is not paused");
+		} catch (IllegalStateException iae) {
+			// We should enter in this exeption case 
+		}
+
+		// Pausing the workflow
+		workflowManager.pauseInstance(wfWorkflow);
+		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.PAU.name()));
+		
+		WfDecision wfDecision = new WfDecisionBuilder(1, "junit").build();
+		try {
+			workflowManager.goToNextActivity(wfWorkflow, wfDecision);
+			fail("Cannot go to next activity while the workflow is paused");
+		} catch (IllegalStateException iae) {
+			// We should enter in this exeption case 
+		}
+
+		try {
+			workflowManager.startInstance(wfWorkflow);
+			fail("Cannot start an already started workflow");
+		} catch (IllegalStateException iae) {
+			// We should enter in this exeption case 
+		}
+		
+		// A workflow in pause can be stopped. 
+		// Ending the workflow while stopped
+		workflowManager.endInstance(wfWorkflow);
+		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.END.name()));
+		
+	}
+	
+	/**
+	 * 
+	 */
+	@Test
 	public void testWorkflowRulesManualValidationActivities() {
+	
 
 		final WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
 		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);

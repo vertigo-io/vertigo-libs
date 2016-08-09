@@ -20,6 +20,7 @@
 package io.vertigo.x.impl.workflow;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -121,7 +122,8 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	@Override
 	public void endInstance(final WfWorkflow wfWorkflow) {
 		Assertion.checkNotNull(wfWorkflow);
-		Assertion.checkState(WfCodeStatusWorkflow.STA.name().equals(wfWorkflow.getWfsCode()), "A workflow must be started before ending");
+		Assertion.checkState(Arrays.asList(WfCodeStatusWorkflow.STA.name(), WfCodeStatusWorkflow.PAU.name()).contains(wfWorkflow.getWfsCode()),
+				"A workflow must be started or paused before ending");
 		//---
 		wfWorkflow.setWfsCode(WfCodeStatusWorkflow.END.name());
 		workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
@@ -132,7 +134,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		Assertion.checkNotNull(wfWorkflow);
 		Assertion.checkState(WfCodeStatusWorkflow.STA.name().equals(wfWorkflow.getWfsCode()), "A workflow must be started before pausing");
 		//---
-		wfWorkflow.setWfsCode(WfCodeStatusWorkflow.END.name());
+		wfWorkflow.setWfsCode(WfCodeStatusWorkflow.PAU.name());
 		workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
 
 	}
@@ -249,12 +251,41 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 			wfWorkflow.setWfsCode(WfCodeStatusWorkflow.END.name());
 			workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
 		}
-		
 	}
 
 	@Override
-	public void goToNextActivity(final WfWorkflow wfWorkflow, final String transitionName) {
-		// Use Rule engine here
+	public void goToNextActivity(final WfWorkflow wfWorkflow, final String transitionName, final WfDecision wfDecision) {
+		Assertion.checkState(WfCodeStatusWorkflow.STA.name().equals(wfWorkflow.getWfsCode()), "A workflow must be started before going to the next activity");
+		//---
+		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
+
+		final Date now = new Date();
+		// Updating the decision
+		currentActivity.setChoice(wfDecision.getChoice());
+		currentActivity.setComments(wfDecision.getComment());
+		currentActivity.setUser(wfDecision.getUser());
+		currentActivity.setDecisionDate(wfDecision.getBusinessDate());
+		workflowStorePlugin.updateActivity(currentActivity);
+		
+		//Autovalidating next activities
+		autoValidateNextActivities(wfWorkflow, currentActivity.getWfadId());
+		
+		if (workflowStorePlugin.hasNextActivity(currentActivity)) {
+			WfActivityDefinition nextActivityDefinition = workflowStorePlugin.findNextActivity(currentActivity);
+			// Creating the next activity to validate.
+			WfActivity nextActivity = new WfActivity();
+			nextActivity.setCreationDate(now);
+			nextActivity.setWfadId(nextActivityDefinition.getWfadId());
+			nextActivity.setWfwId(wfWorkflow.getWfwId());
+			workflowStorePlugin.createActivity(nextActivity);
+			
+			wfWorkflow.setWfaId2(nextActivity.getWfaId());
+			workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
+		} else {
+			// No next activity to go. Ending the workflow
+			wfWorkflow.setWfsCode(WfCodeStatusWorkflow.END.name());
+			workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
+		}
 	}
 
 	@Override

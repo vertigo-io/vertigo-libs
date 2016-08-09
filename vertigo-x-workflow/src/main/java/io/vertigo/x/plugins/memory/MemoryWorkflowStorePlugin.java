@@ -103,13 +103,21 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 
 	
 	public boolean hasNextActivity(final WfActivity activity) {
-		return transitionsNext.containsKey(activity.getWfaId() + "|" + DEFAULT);
+		return hasNextActivity(activity, DEFAULT);
 	}
 	
+	public boolean hasNextActivity(final WfActivity activity, String transitionName) {
+		return transitionsNext.containsKey(activity.getWfaId() + "|" + transitionName);
+	}
 	
 	@Override
 	public WfActivityDefinition findNextActivity(final WfActivity activity) {
-		final WfTransitionDefinition transitionNext = transitionsNext.get(activity.getWfaId() + "|" + DEFAULT);
+		return findNextActivity(activity, DEFAULT);
+	}
+
+	@Override
+	public WfActivityDefinition findNextActivity(final WfActivity activity, String transitionName) {
+		final WfTransitionDefinition transitionNext = transitionsNext.get(activity.getWfaId() + "|" + transitionName);
 		return inMemoryActivityDefinitionStore.get(transitionNext.getWfadIdTo());
 	}
 
