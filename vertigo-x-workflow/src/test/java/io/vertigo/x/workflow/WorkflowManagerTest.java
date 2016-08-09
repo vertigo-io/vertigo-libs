@@ -171,10 +171,29 @@ public class WorkflowManagerTest {
 			// We should enter in this exeption case 
 		}
 		
-		// A workflow in pause can be stopped. 
-		// Ending the workflow while stopped
+		// A workflow in pause can be resumed
+		workflowManager.resumeInstance(wfWorkflow);
+		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.STA.name()));
+		
+		// A workflow started can be ended
 		workflowManager.endInstance(wfWorkflow);
-		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.END.name()));
+		
+		WfWorkflow wfWorkflow2 = workflowManager.createWorkflowInstance("WorkflowRules", "JUnit", false, myDummyDtObject.getId());
+		
+		assertThat(wfWorkflow2, is(not(nullValue())));
+		assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.CRE.name()));
+		
+		// A workflow created can be started. 
+		workflowManager.startInstance(wfWorkflow2);
+		assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.STA.name()));
+		
+		// A workflow started can be paused. 
+		workflowManager.pauseInstance(wfWorkflow2);
+		assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.PAU.name()));
+
+		// A workflow paused can be ended. 
+		workflowManager.endInstance(wfWorkflow2);
+		assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.END.name()));
 		
 	}
 	
