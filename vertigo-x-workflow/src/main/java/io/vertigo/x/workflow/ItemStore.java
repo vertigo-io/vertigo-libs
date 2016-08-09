@@ -27,6 +27,14 @@ import io.vertigo.dynamo.domain.model.DtObject;
 public interface ItemStore {
 
 	/**
+	 * Track a new item
+	 * /!\ No item will be created. It will only be tracked
+	 * @param itemId
+	 * @param item
+	 */
+	void addItem(Long itemId, DtObject item);
+	
+	/**
 	 * Get an item.
 	 * @param itemId
 	 * @return the DtObject corresponding to the itemId

@@ -71,6 +71,11 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	//Instance
 	@Override
 	public WfWorkflow createWorkflowInstance(final String definitionName, final String user, final boolean userLogic, final Long item) {
+		Assertion.checkNotNull(definitionName);
+		Assertion.checkNotNull(user);
+		Assertion.checkNotNull(item);
+		//---
+		
 		final WfWorkflowDefinition wfWorkflowDefinition = workflowStorePlugin.readWorkflowDefinition(definitionName);
 
 		final WfWorkflow wfWorkflow = new WfWorkflow();
@@ -85,6 +90,13 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		workflowStorePlugin.createWorkflowInstance(wfWorkflow);
 
 		return wfWorkflow;
+	}
+	
+	@Override
+	public WfWorkflow getWorkflowInstance(Long wfwId) {
+		Assertion.checkNotNull(wfwId);
+		//---
+		return workflowStorePlugin.readWorkflowInstanceById(wfwId);
 	}
 
 	@Override
@@ -192,6 +204,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 		boolean atLeastOnePerson = accounts.isEmpty() == false;
 		
+		// If no rule is defined for validation or no one can validate this activity, we can autovalidate it.
 		return ruleValid == false || atLeastOnePerson == false;
 	}
 
@@ -333,6 +346,8 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		// --
 		ruleManager.removeSelector(selector);
 	}
+
+
 
 }
 

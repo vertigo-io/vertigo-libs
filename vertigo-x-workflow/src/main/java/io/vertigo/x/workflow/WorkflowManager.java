@@ -25,7 +25,6 @@ import io.vertigo.x.impl.rules.RuleConditionDefinition;
 import io.vertigo.x.impl.rules.RuleDefinition;
 import io.vertigo.x.impl.rules.RuleFilterDefinition;
 import io.vertigo.x.impl.rules.SelectorDefinition;
-import io.vertigo.x.rules.RuleSelector;
 import io.vertigo.x.workflow.domain.instance.WfActivity;
 import io.vertigo.x.workflow.domain.instance.WfWorkflow;
 import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
@@ -48,6 +47,14 @@ public interface WorkflowManager extends Manager {
 	 */
 	WfWorkflow createWorkflowInstance(final String definitionName, final String user, final boolean userLogic, final Long item);
 
+	
+	/**
+	 * Get a workflow instance by its Id
+	 * @param wfwId
+	 * @return the workflow instance
+	 */
+	WfWorkflow getWorkflowInstance(Long wfwId);
+	
 	/**
 	 * Start a workflow instance
 	 * @param wfWorkflow

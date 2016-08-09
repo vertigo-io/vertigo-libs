@@ -22,9 +22,11 @@
 
 package io.vertigo.x.workflow.plugin;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.x.impl.workflow.ItemStorePlugin;
-import io.vertigo.x.workflow.data.MyDummyDtObject;
 
 /**
  *
@@ -33,9 +35,16 @@ import io.vertigo.x.workflow.data.MyDummyDtObject;
  */
 public class MemoryItemStorePlugin implements ItemStorePlugin {
 
+	private final Map<Long, DtObject> inMemoryItemStore = new ConcurrentHashMap<>();
+
+	@Override
+	public void addItem(Long itemId, DtObject item) {
+		inMemoryItemStore.put(itemId, item);
+	}
+	
 	@Override
 	public DtObject readItem(final Long itemId) {
-		return new MyDummyDtObject();
+		return inMemoryItemStore.get(itemId);
 	}
 
 }

@@ -112,7 +112,6 @@ public class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 			}
 
 			if (selectorMatch) {
-
 				final AccountStore accountStore = accountManager.getStore();
 				final Set<URI<Account>> accounts = accountStore.getAccountURIs(createGroupURI(selectorDefinition.getGroupId()));
 
