@@ -105,9 +105,15 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		Assertion.checkState(WfCodeStatusWorkflow.CRE.name().equals(wfWorkflow.getWfsCode()), "A workflow must be created before starting");
 		//---
 		wfWorkflow.setWfsCode(WfCodeStatusWorkflow.STA.name());
-		workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
 		
 		WfWorkflowDefinition wfWorkflowDefinition = workflowStorePlugin.readWorkflowDefinition(wfWorkflow.getWfwdId());
+		
+		WfActivity wfActivityCurrent = new WfActivity();
+		wfActivityCurrent.setCreationDate(new Date());
+		wfActivityCurrent.setWfadId(wfWorkflowDefinition.getWfadId());
+		workflowStorePlugin.createActivity(wfActivityCurrent);
+		wfWorkflow.setWfaId2(wfActivityCurrent.getWfaId());
+		workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
 		
 		autoValidateNextActivities(wfWorkflow, wfWorkflowDefinition.getWfadId());
 	}
@@ -152,7 +158,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		WfActivityDefinition activityDefinition = workflowStorePlugin.readActivityDefinition(wfActivityDefinitionId);
 		
 		final DtObject object = itemStorePlugin.readItem(wfWorkflow.getItemId());
-		Long wfCurrentActivityDefinitionId = wfActivityDefinitionId;
+		Long wfCurrentActivityDefinitionId = null;
 		while (canAutoValidateActivity(activityDefinition, object)) {
 			WfActivity wfActivityCurrent = autoValidateActivity(activityDefinition);
 			wfCurrentActivityDefinitionId = wfActivityCurrent.getWfadId();
@@ -162,8 +168,10 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 			activityDefinition = workflowStorePlugin.findNextActivity(wfActivityCurrent);
 		}
 
-		wfWorkflow.setWfaId2(wfCurrentActivityDefinitionId);
-		workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
+		if (wfCurrentActivityDefinitionId != null) {
+			wfWorkflow.setWfaId2(wfCurrentActivityDefinitionId);
+			workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
+		}
 	}
 	
 	/**
@@ -214,19 +222,34 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		//---
 		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
 
-		WfActivityDefinition nextActivityDefinition = workflowStorePlugin.findNextActivity(currentActivity);
-
 		final Date now = new Date();
-
+		// Updating the decision
 		currentActivity.setChoice(wfDecision.getChoice());
 		currentActivity.setComments(wfDecision.getComment());
 		currentActivity.setUser(wfDecision.getUser());
-		currentActivity.setCreationDate(now);
 		currentActivity.setDecisionDate(wfDecision.getBusinessDate());
-		currentActivity.setWfadId(nextActivityDefinition.getWfadId());
-
-		workflowStorePlugin.createActivity(currentActivity);
+		workflowStorePlugin.updateActivity(currentActivity);
+		
+		//Autovalidating next activities
 		autoValidateNextActivities(wfWorkflow, currentActivity.getWfadId());
+		
+		if (workflowStorePlugin.hasNextActivity(currentActivity)) {
+			WfActivityDefinition nextActivityDefinition = workflowStorePlugin.findNextActivity(currentActivity);
+			// Creating the next activity to validate.
+			WfActivity nextActivity = new WfActivity();
+			nextActivity.setCreationDate(now);
+			nextActivity.setWfadId(nextActivityDefinition.getWfadId());
+			nextActivity.setWfwId(wfWorkflow.getWfwId());
+			workflowStorePlugin.createActivity(nextActivity);
+			
+			wfWorkflow.setWfaId2(nextActivity.getWfaId());
+			workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
+		} else {
+			// No next activity to go. Ending the workflow
+			wfWorkflow.setWfsCode(WfCodeStatusWorkflow.END.name());
+			workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
+		}
+		
 	}
 
 	@Override

@@ -129,6 +129,17 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		wfActivity.setWfaId(generatedId);
 		inMemoryActivityStore.put(generatedId, wfActivity);
 	}
+	
+
+	@Override
+	public void updateActivity(WfActivity wfActivity) {
+		Assertion.checkNotNull(wfActivity);
+		Assertion.checkNotNull(wfActivity.getWfaId());
+		Assertion.checkState(inMemoryActivityStore.containsKey(wfActivity.getWfaId()), "This activity cannot be updated : It does not exist in the store");
+		//---
+		inMemoryActivityStore.put(wfActivity.getWfaId(), wfActivity);
+	}
+
 
 	@Override
 	public void removeActivity(final WfActivity wfActivity) {

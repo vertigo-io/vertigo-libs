@@ -95,7 +95,7 @@ public class WorkflowManagerTest {
 	 * 
 	 */
 	@Test
-	public void testWorkflowRulesManualValiadtionAllActivities() {
+	public void testWorkflowRulesManualValidationActivities() {
 
 		final WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
 		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
@@ -119,7 +119,6 @@ public class WorkflowManagerTest {
 		//Selector/filter to validate the activity (preventing auto validation when no one is linked to an activity)
 		SelectorDefinition selector1 = new SelectorDefinition(null, firstActivity.getWfadId(), accountGroup.getId());
 		workflowManager.addSelector(firstActivity, selector1, Collections.emptyList());
-		
 
 		// Step 2 : No rules/condition
 		final WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2", wfWorkflowDefinition.getWfwdId()).build();
@@ -128,7 +127,6 @@ public class WorkflowManagerTest {
 		SelectorDefinition selector2 = new SelectorDefinition(null, secondActivity.getWfadId(), accountGroup.getId() );
 		workflowManager.addSelector(secondActivity, selector2, Collections.emptyList());
 		
-
 		// Step 3 : 1 rule, 2 conditions 
 		final WfActivityDefinition thirdActivity = new WfActivityDefinitionBuilder("Step 3", wfWorkflowDefinition.getWfwdId()).build();
 		workflowManager.addActivity(wfWorkflowDefinition, thirdActivity, 3);
@@ -157,7 +155,7 @@ public class WorkflowManagerTest {
 		
 		WfWorkflow wfWorkflow = workflowManager.createWorkflowInstance("WorkflowRules", "JUnit", false, myDummyDtObject.getId());
 		
-		//Starting the workflow
+		// Starting the workflow
 		workflowManager.startInstance(wfWorkflow);
 		
 		// Entry actions should NOT validate all activities.		
@@ -166,7 +164,45 @@ public class WorkflowManagerTest {
 		
 		WfWorkflow wfWorkflowFetched = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
 		assertThat(wfWorkflowFetched, is(not(nullValue())));
-		assertThat(currentActivity, is(firstActivity.getWfadId()));
+		assertThat(wfWorkflowFetched.getWfaId2(), is(firstActivity.getWfadId()));
+		
+		// Manually validating activity 1
+		WfDecision wfDecisionAct1 = new WfDecisionBuilder(1, account.getId()).build();
+		workflowManager.goToNextActivity(wfWorkflow, wfDecisionAct1);
+		
+		// Activity 1 should now be validated. The current activity is now activity 2
+		currentActivity = wfWorkflow.getWfaId2();
+		assertThat(currentActivity, is(secondActivity.getWfadId()));
+		
+		WfWorkflow wfWorkflowFetched2 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
+		assertThat(wfWorkflowFetched2, is(not(nullValue())));
+		assertThat(wfWorkflowFetched2.getWfaId2(), is(secondActivity.getWfadId()));
+		
+		//Manually validating activity 2
+		WfDecision wfDecisionAct2 = new WfDecisionBuilder(1, account.getId()).build();
+		workflowManager.goToNextActivity(wfWorkflow, wfDecisionAct2);
+		
+		// Activity 2 should now be validated.
+		// No rule defined for activity 3. Activity 3 should be autovalidated
+		//The current activity should be now activity 4
+		currentActivity = wfWorkflow.getWfaId2();
+		assertThat(currentActivity, is(fourthActivity.getWfadId()));
+		
+		WfWorkflow wfWorkflowFetched3 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
+		assertThat(wfWorkflowFetched3, is(not(nullValue())));
+		assertThat(wfWorkflowFetched3.getWfaId2(), is(fourthActivity.getWfadId()));
+		
+		//Manually validating activity 4
+		WfDecision wfDecisionAct4 = new WfDecisionBuilder(1, account.getId()).build();
+		workflowManager.goToNextActivity(wfWorkflow, wfDecisionAct4);
+		
+		// Activity 4 should now be validated. The current activity is now activity 4
+		currentActivity = wfWorkflow.getWfaId2();
+		assertThat(currentActivity, is(fourthActivity.getWfadId()));
+		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.END.name()));
+		
+		WfWorkflow wfWorkflowFetched5 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
+		assertThat(wfWorkflowFetched5.getWfsCode(), is(WfCodeStatusWorkflow.END.name()));
 	}
 	
 	/**
@@ -227,6 +263,5 @@ public class WorkflowManagerTest {
 		assertThat(currentActivity, is(fourthActivity.getWfadId()));
 	}
 
-	
 
 }

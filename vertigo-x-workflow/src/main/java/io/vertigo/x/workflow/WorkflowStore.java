@@ -69,11 +69,17 @@ public interface WorkflowStore {
 	WfActivity readActivity(final Long wfadId);
 
 	/**
-	 * Fetch an activity by id
+	 * Create a new activity
 	 * @param wfActivity
 	 * @param wfadId
 	 */
 	void createActivity(WfActivity wfActivity);
+
+	/**
+	 * Update an existing activity
+	 * @param wfActivity
+	 */
+	void updateActivity(WfActivity wfActivity);
 
 	/**
 	 * Fetch an activity by id
