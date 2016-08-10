@@ -31,6 +31,7 @@ import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
 import io.vertigo.x.impl.workflow.WorkflowFeatures;
 import io.vertigo.x.plugins.account.memory.MemoryAccountStorePlugin;
+import io.vertigo.x.plugins.memory.MemoryRuleConstantsStorePlugin;
 import io.vertigo.x.plugins.memory.MemoryRuleStorePlugin;
 import io.vertigo.x.plugins.memory.MemoryWorkflowStorePlugin;
 import io.vertigo.x.plugins.selector.SimpleRuleSelectorPlugin;
@@ -75,6 +76,7 @@ public class MyAppConfig {
 			.addPlugin(MemoryWorkflowStorePlugin.class)
 			.addPlugin(MemoryItemStorePlugin.class)
 			.addPlugin(MemoryRuleStorePlugin.class)
+			.addPlugin(MemoryRuleConstantsStorePlugin.class)
 			.addPlugin(SimpleRuleSelectorPlugin.class)
 			.addPlugin(SimpleRuleValidatorPlugin.class)
 			.addPlugin(JaninoExpressionEvaluatorPlugin.class)

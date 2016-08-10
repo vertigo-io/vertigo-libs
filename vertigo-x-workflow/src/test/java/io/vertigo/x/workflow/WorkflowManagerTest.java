@@ -69,12 +69,18 @@ public class WorkflowManagerTest {
 	@Inject
 	private ItemStorePlugin itemStorePlugin;
 
+	/**
+	 * 
+	 */
 	@Before
 	public void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.config());
 		Injector.injectMembers(this, app.getComponentSpace());
 	}
 
+	/**
+	 * 
+	 */
 	@After
 	public void tearDown() {
 		if (app != null) {
@@ -111,12 +117,12 @@ public class WorkflowManagerTest {
 		URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
 		accountManager.getStore().attach(accountUri, accountGroupUri);
 		
-		//Step 1 : 1 rule, 1 condition
+		// Step 1 : 1 rule, 1 condition
 		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
 		RuleDefinition rule1Act1 = new RuleDefinition(null, firstActivity.getWfadId());
 		RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition(null, "division", "=", "DIV", null);
 		workflowManager.addRule(firstActivity, rule1Act1, Arrays.asList(condition1Rule1Act1));
-		//Selector/filter to validate the activity (preventing auto validation when no one is linked to an activity)
+		// Selector/filter to validate the activity (preventing auto validation when no one is linked to an activity)
 		SelectorDefinition selector1 = new SelectorDefinition(null, firstActivity.getWfadId(), accountGroup.getId());
 		workflowManager.addSelector(firstActivity, selector1, Collections.emptyList());
 		
@@ -158,7 +164,7 @@ public class WorkflowManagerTest {
 		
 		WfDecision wfDecision = new WfDecisionBuilder(1, "junit").build();
 		try {
-			workflowManager.goToNextActivity(wfWorkflow, wfDecision);
+			workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, wfDecision);
 			fail("Cannot go to next activity while the workflow is paused");
 		} catch (IllegalStateException iae) {
 			// We should enter in this exeption case 
@@ -202,7 +208,6 @@ public class WorkflowManagerTest {
 	 */
 	@Test
 	public void testWorkflowRulesManualValidationActivities() {
-	
 
 		final WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
 		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
@@ -218,7 +223,7 @@ public class WorkflowManagerTest {
 		URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
 		accountManager.getStore().attach(accountUri, accountGroupUri);
 		
-		//Step 1 : 1 rule, 1 condition
+		// Step 1 : 1 rule, 1 condition
 		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
 		RuleDefinition rule1Act1 = new RuleDefinition(null, firstActivity.getWfadId());
 		RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition(null, "division", "=", "DIV", null);
@@ -275,23 +280,24 @@ public class WorkflowManagerTest {
 		
 		// Manually validating activity 1
 		WfDecision wfDecisionAct1 = new WfDecisionBuilder(1, account.getId()).build();
-		workflowManager.goToNextActivity(wfWorkflow, wfDecisionAct1);
+		workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, wfDecisionAct1);
 		
-		// Activity 1 should now be validated. The current activity is now activity 2
+		// Activity 1 should now be validated.
+		// No rule defined for activity 2. Activity 3 should be autovalidated
+		// The current activity should be now activity 3
 		currentActivity = wfWorkflow.getWfaId2();
-		assertThat(currentActivity, is(secondActivity.getWfadId()));
+		assertThat(currentActivity, is(thirdActivity.getWfadId()));
 		
 		WfWorkflow wfWorkflowFetched2 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
 		assertThat(wfWorkflowFetched2, is(not(nullValue())));
-		assertThat(wfWorkflowFetched2.getWfaId2(), is(secondActivity.getWfadId()));
+		assertThat(wfWorkflowFetched2.getWfaId2(), is(thirdActivity.getWfadId()));
 		
-		//Manually validating activity 2
+		//Manually validating activity 3
 		WfDecision wfDecisionAct2 = new WfDecisionBuilder(1, account.getId()).build();
-		workflowManager.goToNextActivity(wfWorkflow, wfDecisionAct2);
+		workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, wfDecisionAct2);
 		
-		// Activity 2 should now be validated.
-		// No rule defined for activity 3. Activity 3 should be autovalidated
-		//The current activity should be now activity 4
+		// Activity 3 should now be validated.
+		// The current activity should be now activity 4
 		currentActivity = wfWorkflow.getWfaId2();
 		assertThat(currentActivity, is(fourthActivity.getWfadId()));
 		
@@ -299,11 +305,11 @@ public class WorkflowManagerTest {
 		assertThat(wfWorkflowFetched3, is(not(nullValue())));
 		assertThat(wfWorkflowFetched3.getWfaId2(), is(fourthActivity.getWfadId()));
 		
-		//Manually validating activity 4
+		// Manually validating activity 4
 		WfDecision wfDecisionAct4 = new WfDecisionBuilder(1, account.getId()).build();
-		workflowManager.goToNextActivity(wfWorkflow, wfDecisionAct4);
+		workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, wfDecisionAct4);
 		
-		// Activity 4 should now be validated. The current activity is now activity 4
+		// Activity 4 should now be validated. The current activity is now activity 4, with the end status
 		currentActivity = wfWorkflow.getWfaId2();
 		assertThat(currentActivity, is(fourthActivity.getWfadId()));
 		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.END.name()));
@@ -324,7 +330,7 @@ public class WorkflowManagerTest {
 		final WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1", wfWorkflowDefinition.getWfwdId()).build();
 		wfWorkflowDefinition.setWfadId(firstActivity.getWfadId());
 		
-		//Step 1 : 1 rule, 1 condition (NO Selector)
+		// Step 1 : 1 rule, 1 condition (NO Selector)
 		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
 		RuleDefinition rule1Act1 = new RuleDefinition(null, firstActivity.getWfadId());
 		RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition(null, "division", "=", "DIV", null);
@@ -352,16 +358,15 @@ public class WorkflowManagerTest {
 		workflowManager.addRule(fourthActivity, rule1Act4, Arrays.asList(condition1Rule1Act4));
 		workflowManager.addRule(fourthActivity, rule2Act4, Arrays.asList(condition1Rule2Act4));
 		
-		
 		// Creating an object
 		MyDummyDtObject myDummyDtObject = createDummyDtObject();
 		
 		WfWorkflow wfWorkflow = workflowManager.createWorkflowInstance("WorkflowRules", "JUnit", false, myDummyDtObject.getId());
 		
-		//Starting the workflow
+		// Starting the workflow
 		workflowManager.startInstance(wfWorkflow);
 		
-		// Entry actions should validate all activities.		
+		// Entry actions should validate all activities (because no group have been associated).		
 		Long currentActivity = wfWorkflow.getWfaId2();
 		assertThat(currentActivity, is(fourthActivity.getWfadId()));
 		

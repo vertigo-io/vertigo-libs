@@ -30,6 +30,7 @@ import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
 import io.vertigo.x.impl.rules.RuleFeatures;
 import io.vertigo.x.plugins.account.memory.MemoryAccountStorePlugin;
+import io.vertigo.x.plugins.memory.MemoryRuleConstantsStorePlugin;
 import io.vertigo.x.plugins.memory.MemoryRuleStorePlugin;
 import io.vertigo.x.plugins.selector.SimpleRuleSelectorPlugin;
 import io.vertigo.x.plugins.validator.SimpleRuleValidatorPlugin;
@@ -70,6 +71,7 @@ public class MyAppConfig {
 							.getModuleConfigBuilder()
 							.addDefinitionProvider(MyDummyDtObjectProvider.class)
 							.addPlugin(MemoryRuleStorePlugin.class)
+							.addPlugin(MemoryRuleConstantsStorePlugin.class)
 							.addPlugin(SimpleRuleSelectorPlugin.class)
 							.addPlugin(SimpleRuleValidatorPlugin.class)
 						.endModule();

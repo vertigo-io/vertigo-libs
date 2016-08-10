@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.impl.workflow.WorkflowStorePlugin;
+import io.vertigo.x.workflow.WfCodeTransition;
 import io.vertigo.x.workflow.domain.instance.WfActivity;
 import io.vertigo.x.workflow.domain.instance.WfWorkflow;
 import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
@@ -53,8 +54,6 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 	private final AtomicLong memoryActivitySequenceGenerator = new AtomicLong(0);
 	private final AtomicLong memoryWorkflowDefinitionSequenceGenerator = new AtomicLong(0);
 	private final AtomicLong memoryWorkflowInstanceSequenceGenerator = new AtomicLong(0);
-
-	private final static String DEFAULT = "default";
 
 	@Override
 	public void createWorkflowInstance(final WfWorkflow workflow) {
@@ -103,7 +102,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 
 	
 	public boolean hasNextActivity(final WfActivity activity) {
-		return hasNextActivity(activity, DEFAULT);
+		return hasNextActivity(activity, WfCodeTransition.DEFAULT.getTransitionName());
 	}
 	
 	public boolean hasNextActivity(final WfActivity activity, String transitionName) {
@@ -112,7 +111,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 	
 	@Override
 	public WfActivityDefinition findNextActivity(final WfActivity activity) {
-		return findNextActivity(activity, DEFAULT);
+		return findNextActivity(activity, WfCodeTransition.DEFAULT.getTransitionName());
 	}
 
 	@Override
@@ -167,13 +166,13 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 			//The workflow don't have a starting activity
 			return 0;
 		}
-		WfTransitionDefinition transitionNext = transitionsNext.get(idActivity + "|" + DEFAULT);
+		WfTransitionDefinition transitionNext = transitionsNext.get(idActivity + "|" + WfCodeTransition.DEFAULT.getTransitionName());
 
 		int count = 0;
 		while (transitionNext != null) {
 			final WfActivityDefinition wfNextActivityDefinition = inMemoryActivityDefinitionStore.get(transitionNext.getWfadIdTo());
 			idActivity = wfNextActivityDefinition.getWfadId();
-			transitionNext = transitionsNext.get(wfNextActivityDefinition.getWfadId() + "|" + DEFAULT);
+			transitionNext = transitionsNext.get(wfNextActivityDefinition.getWfadId() + "|" + WfCodeTransition.DEFAULT.getTransitionName());
 			count++;
 		}
 
@@ -266,13 +265,13 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 			//The workflow don't have a starting activity
 			return null;
 		}
-		WfTransitionDefinition transitionNext = transitionsNext.get(idActivity + "|" + DEFAULT);
+		WfTransitionDefinition transitionNext = transitionsNext.get(idActivity + "|" + WfCodeTransition.DEFAULT.getTransitionName());
 
 		int i = 1;
 		while (transitionNext != null && i < position) {
 			final WfActivityDefinition wfNextActivityDefinition = inMemoryActivityDefinitionStore.get(transitionNext.getWfadIdTo());
 			idActivity = wfNextActivityDefinition.getWfadId();
-			transitionNext = transitionsNext.get(wfNextActivityDefinition.getWfadId() + "|" + DEFAULT);
+			transitionNext = transitionsNext.get(wfNextActivityDefinition.getWfadId() + "|" + WfCodeTransition.DEFAULT.getTransitionName());
 			i++;
 		}
 
@@ -290,12 +289,12 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		final Long idStartActivity = wfWorkflowDefinition.getWfadId();
 		final List<WfActivityDefinition> retAllDefaultActivities = new ArrayList<>();
 
-		WfTransitionDefinition transitionNext = transitionsNext.get(idStartActivity + "|" + DEFAULT);
+		WfTransitionDefinition transitionNext = transitionsNext.get(idStartActivity + "|" + WfCodeTransition.DEFAULT.getTransitionName());
 
 		while (transitionNext != null) {
 			final WfActivityDefinition wfNextActivityDefinition = inMemoryActivityDefinitionStore.get(transitionNext.getWfadIdTo());
 			retAllDefaultActivities.add(wfNextActivityDefinition);
-			transitionNext = transitionsNext.get(wfNextActivityDefinition.getWfadId() + "|" + DEFAULT);
+			transitionNext = transitionsNext.get(wfNextActivityDefinition.getWfadId() + "|" + WfCodeTransition.DEFAULT.getTransitionName());
 		}
 
 		return retAllDefaultActivities;

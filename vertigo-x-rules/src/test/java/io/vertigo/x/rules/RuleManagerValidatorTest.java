@@ -53,12 +53,18 @@ public class RuleManagerValidatorTest {
 	@Inject
 	private RuleManager ruleManager;
 
+	/**
+	 * Setup
+	 */
 	@Before
 	public void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.config());
 		Injector.injectMembers(this, app.getComponentSpace());
 	}
 
+	/**
+	 * Teardown
+	 */
 	@After
 	public void tearDown() {
 		if (app != null) {
@@ -152,17 +158,15 @@ public class RuleManagerValidatorTest {
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 
-		final RuleConstants ruleContants = new RuleConstants();
-
 		//The division field is null here
-		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		//The rule should NOT be valid here.
 		assertThat(isValid, is(false));
 
 		//The division is set to "BTL" here
 		myDummyDtObject.setDivision("BTL");
 		//The rule should be valid now
-		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(true));
 	}
 
@@ -174,23 +178,21 @@ public class RuleManagerValidatorTest {
 		// Rule created to Item 1
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 
-		final RuleConstants ruleContants = new RuleConstants();
-
 		//The division field is null here
-		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		//The rule should NOT be valid here.
 		assertThat(isValid, is(false));
 
 		//The division is set to "BTL" here
 		myDummyDtObject.setDivision("BTL");
 		//The rule should NOT be valid too
-		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(false));
 
 		//The division is set to "ABC" here
 		myDummyDtObject.setDivision("ABC");
 		//The rule should be valid too
-		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(false));
 	}
 
@@ -212,29 +214,27 @@ public class RuleManagerValidatorTest {
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 
-		final RuleConstants ruleContants = new RuleConstants();
-
 		//The division field is null here
-		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		//The rule should NOT be valid here.
 		assertThat(isValid, is(false));
 
 		//The division is set to "BTL" here
 		myDummyDtObject.setDivision("BTL");
 		//The rule should NOT be valid (no entity defined)
-		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(false));
 
 		//The entity is set to "ENT_1" here
 		myDummyDtObject.setEntity("ENT_1");
 		//The rule should be valid now
-		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(true));
 
 		//The division is set to "UNKNOWN_ENT" here
 		myDummyDtObject.setEntity("UNKNOWN_ENT");
 		//The rule should NOT be valid anymore
-		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(false));
 	}
 
@@ -258,30 +258,28 @@ public class RuleManagerValidatorTest {
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 
-		final RuleConstants ruleContants = new RuleConstants();
-
 		//The division and entity field are null here
-		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		//The rule should NOT be valid here.
 		assertThat(isValid, is(false));
 
 		//The division is set to "BTL" here
 		myDummyDtObject.setDivision("BTL");
 		//The rule should be valid as it match 1 rule
-		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(true));
 
 		//The entity is set to "ENT_1" here
 		myDummyDtObject.setEntity("ENT_1");
 		//The rule should be valid now (2 rules valid)
-		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(true));
 
 		//The division is set to "UNKNOWN_ENT" here
 		myDummyDtObject.setEntity("UNKNOWN_ENT");
 		myDummyDtObject.setDivision("DIV");
 		//The rule should NOT be valid anymore
-		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(false));
 	}
 
@@ -312,36 +310,34 @@ public class RuleManagerValidatorTest {
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 
-		final RuleConstants ruleContants = new RuleConstants();
-
 		//The division and entity field are null here
-		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		boolean isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		//The rule should be valid here.
 		assertThat(isValid, is(false));
 
 		//The division is set to "BTL" here
 		myDummyDtObject.setDivision("BTL");
 		//The rule should NOT be valid as no rule match
-		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(false));
 
 		//The entity is set to "MAR" here
 		myDummyDtObject.setEntity("MAR");
 		//The rule should NOT be valid (only one condition in each rules is valid)
-		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(false));
 
 		//The entity is set to "ENT" here
 		myDummyDtObject.setEntity("ENT");
 		//The rule should be valid (match all conditions of rule 1)
-		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(true));
 
 		//The division is set to "UNKNOWN_ENT" here
 		myDummyDtObject.setEntity("UNKNOWN_ENT");
 		myDummyDtObject.setDivision("DIV");
 		//The rule should NOT be valid anymore
-		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, ruleContants);
+		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(false));
 	}
 

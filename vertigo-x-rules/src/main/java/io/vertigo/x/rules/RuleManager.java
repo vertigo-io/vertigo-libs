@@ -39,6 +39,7 @@ public interface RuleManager extends Manager {
 	 * Select accounts matching the selector for an activity
 	 * @param idActivityDefinition
 	 * @param item
+	 * @param constants 
 	 * @return a list of account
 	 */
 	List<Account> selectAccounts(final Long idActivityDefinition, final DtObject item, final RuleConstants constants);
@@ -152,5 +153,19 @@ public interface RuleManager extends Manager {
 	 */
 	void updateFilter(RuleFilterDefinition ruleFilterDefinition);
 
+	
+	/**
+	 * Define the constants for this key
+	 * @param key
+	 * @param ruleConstants
+	 */
+	void addConstants(Long key, RuleConstants ruleConstants);
+	
+	/**
+	 * 
+	 * @param key
+	 * @return the constants defined for this key
+	 */
+	RuleConstants getConstants(Long key);
 
 }

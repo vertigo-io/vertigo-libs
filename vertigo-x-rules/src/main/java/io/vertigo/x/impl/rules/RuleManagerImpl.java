@@ -33,6 +33,8 @@ import io.vertigo.x.rules.RuleManager;
 public final class RuleManagerImpl implements RuleManager {
 
 	private final RuleStorePlugin ruleStorePlugin;
+	private final RuleConstantsStorePlugin ruleConstantsStorePlugin;
+	
 	private final RuleSelectorPlugin ruleSelectorPlugin;
 	private final RuleValidatorPlugin ruleValidatorPlugin;
 
@@ -43,10 +45,11 @@ public final class RuleManagerImpl implements RuleManager {
 	 * @param ruleValidatorPlugin
 	 */
 	@Inject
-	public RuleManagerImpl(final RuleStorePlugin ruleStorePlugin,final RuleSelectorPlugin ruleSelectorPlugin, final RuleValidatorPlugin ruleValidatorPlugin) {
+	public RuleManagerImpl(final RuleStorePlugin ruleStorePlugin,final RuleSelectorPlugin ruleSelectorPlugin, final RuleValidatorPlugin ruleValidatorPlugin, RuleConstantsStorePlugin ruleConstantsStorePlugin) {
 		this.ruleStorePlugin = ruleStorePlugin;
 		this.ruleSelectorPlugin = ruleSelectorPlugin;
 		this.ruleValidatorPlugin = ruleValidatorPlugin;
+		this.ruleConstantsStorePlugin = ruleConstantsStorePlugin;
 	}
 
 	@Override
@@ -59,7 +62,7 @@ public final class RuleManagerImpl implements RuleManager {
 	}
 
 	@Override
-	public boolean isRuleValid(final Long idActivityDefinition, final DtObject item, final RuleConstants constants ) {
+	public boolean isRuleValid(final Long idActivityDefinition, final DtObject item, final RuleConstants constants) {
 
 		final List<RuleDefinition> rules = ruleStorePlugin.findRulesByItemId(idActivityDefinition);
 		final RuleContext context = new RuleContext(item, constants);
@@ -147,7 +150,15 @@ public final class RuleManagerImpl implements RuleManager {
 		ruleStorePlugin.updateFilter(ruleFilterDefinition);
 	}
 
+	@Override
+	public void addConstants(Long key, RuleConstants ruleConstants) {
+		ruleConstantsStorePlugin.addConstants(key, ruleConstants);
+	}
 
+	@Override
+	public RuleConstants getConstants(Long key) {
+		return ruleConstantsStorePlugin.readConstants(key);
+	}
 
 
 }

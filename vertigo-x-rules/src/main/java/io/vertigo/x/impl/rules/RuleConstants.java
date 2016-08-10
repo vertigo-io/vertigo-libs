@@ -11,7 +11,13 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 public final class RuleConstants {
+	
 	private final Map<String, String> constants = new ConcurrentHashMap<>();
+	
+	/**
+	 * Empty rule constants
+	 */
+	public static final RuleConstants EMPTY_RULE_CONSTANTS = new RuleConstants();
 
 	/**
 	 *
@@ -22,6 +28,10 @@ public final class RuleConstants {
 		constants.put(key, value);
 	}
 
+	/**
+	 * 
+	 * @return list of constants
+	 */
 	public List<Map.Entry<String, String>> getValues() {
 		return new ArrayList<>(constants.entrySet());
 	}

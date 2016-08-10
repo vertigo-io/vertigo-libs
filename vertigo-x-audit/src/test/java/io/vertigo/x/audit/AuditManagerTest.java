@@ -49,12 +49,18 @@ public class AuditManagerTest {
 	@Inject
 	private AuditManager auditManager;
 
+	/**
+	 * Setup
+	 */
 	@Before
 	public void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.config());
 		Injector.injectMembers(this, app.getComponentSpace());
 	}
 
+	/**
+	 * Teardown
+	 */
 	@After
 	public void tearDown() {
 		if (app != null) {

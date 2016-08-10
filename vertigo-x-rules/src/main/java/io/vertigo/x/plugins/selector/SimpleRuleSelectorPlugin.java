@@ -52,15 +52,14 @@ public class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 
 
 	private final ScriptManager scriptManager;
-
 	private final RuleStorePlugin ruleStorePlugin;
-
 	private final AccountManager accountManager;
 
 	/**
 	 *
 	 * @param scriptManager
 	 * @param ruleStorePlugin
+	 * @param accountManager 
 	 */
 	@Inject
 	public SimpleRuleSelectorPlugin(final ScriptManager scriptManager, final RuleStorePlugin ruleStorePlugin, final AccountManager accountManager) {
@@ -70,7 +69,7 @@ public class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 	}
 
 
-	public static URI<AccountGroup> createGroupURI(final String id) {
+	private static URI<AccountGroup> createGroupURI(final String id) {
 		return DtObjectUtil.createURI(AccountGroup.class, id);
 	}
 

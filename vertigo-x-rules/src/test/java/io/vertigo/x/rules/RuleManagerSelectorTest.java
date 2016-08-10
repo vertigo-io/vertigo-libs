@@ -67,12 +67,18 @@ public class RuleManagerSelectorTest {
 	@Inject
 	private AccountManager accountManager;
 
+	/**
+	 * Setup
+	 */
 	@Before
 	public void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.config());
 		Injector.injectMembers(this, app.getComponentSpace());
 	}
 
+	/**
+	 * Teardown
+	 */
 	@After
 	public void tearDown() {
 		if (app != null) {
@@ -154,11 +160,11 @@ public class RuleManagerSelectorTest {
 
 
 
-	public static URI<Account> createAccountURI(final String id) {
+	private static URI<Account> createAccountURI(final String id) {
 		return DtObjectUtil.createURI(Account.class, id);
 	}
 
-	public static URI<AccountGroup> createGroupURI(final String id) {
+	private static URI<AccountGroup> createGroupURI(final String id) {
 		return DtObjectUtil.createURI(AccountGroup.class, id);
 	}
 
@@ -191,9 +197,7 @@ public class RuleManagerSelectorTest {
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 		myDummyDtObject.setDivision("BTL");
 
-		final RuleConstants ruleContants = new RuleConstants();
-
-		final List<Account> selectedAccounts = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+		final List<Account> selectedAccounts = ruleManager.selectAccounts(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 
 		assertThat(selectedAccounts, is(not(nullValue())));
 		assertThat(selectedAccounts.size(), is(1));
@@ -233,10 +237,8 @@ public class RuleManagerSelectorTest {
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 		myDummyDtObject.setDivision("BTL");
 
-		final RuleConstants ruleContants = new RuleConstants();
-
 		// The entity is not set to ENT. The selector should not match
-		List<Account> selectedAccounts_1 = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+		List<Account> selectedAccounts_1 = ruleManager.selectAccounts(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 
 		assertThat(selectedAccounts_1, is(not(nullValue())));
 		assertThat(selectedAccounts_1.size(), is(0));
@@ -244,7 +246,7 @@ public class RuleManagerSelectorTest {
 		//We set the entity to 'ENT'
 		myDummyDtObject.setEntity("ENT");
 		// The selector should match now.
-		List<Account> selectedAccounts_2 = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+		List<Account> selectedAccounts_2 = ruleManager.selectAccounts(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		
 		assertThat(selectedAccounts_2, is(not(nullValue())));
 		assertThat(selectedAccounts_2.size(), is(1));
@@ -253,7 +255,7 @@ public class RuleManagerSelectorTest {
 		//We set the entity to 'XXXT'
 		myDummyDtObject.setEntity("XXX");
 		// The selector should not match .
-		List<Account> selectedAccounts_3 = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+		List<Account> selectedAccounts_3 = ruleManager.selectAccounts(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		
 		assertThat(selectedAccounts_3, is(not(nullValue())));
 		assertThat(selectedAccounts_3.size(), is(0));
@@ -326,10 +328,8 @@ public class RuleManagerSelectorTest {
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 		myDummyDtObject.setDivision("BTL");
 
-		final RuleConstants ruleContants = new RuleConstants();
-
 		// The entity only has entity set to ENT. No selectors should match
-		List<Account> selectedAccounts_1 = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+		List<Account> selectedAccounts_1 = ruleManager.selectAccounts(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 
 		assertThat(selectedAccounts_1, is(not(nullValue())));
 		assertThat(selectedAccounts_1.size(), is(0));
@@ -337,7 +337,7 @@ public class RuleManagerSelectorTest {
 		// Set entity to ENT
 		myDummyDtObject.setEntity("ENT");
 		// Only Group 1 should match 
-		List<Account> selectedAccounts_2 = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+		List<Account> selectedAccounts_2 = ruleManager.selectAccounts(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		
 		assertThat(selectedAccounts_2, is(not(nullValue())));
 		assertThat(selectedAccounts_2.size(), is(2));
@@ -347,7 +347,7 @@ public class RuleManagerSelectorTest {
 		myDummyDtObject.setEntity("XXX");
 		myDummyDtObject.setNom("DONALD");
 		// Only Group 2 should match 
-		List<Account> selectedAccounts_3 = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+		List<Account> selectedAccounts_3 = ruleManager.selectAccounts(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		
 		assertThat(selectedAccounts_3, is(not(nullValue())));
 		assertThat(selectedAccounts_3.size(), is(2));
@@ -356,7 +356,7 @@ public class RuleManagerSelectorTest {
 		// Set entity to ENT
 		myDummyDtObject.setEntity("ENT");
 		// Group 1 and Group 2 should match 
-		List<Account> selectedAccounts_4 = ruleManager.selectAccounts(1L, myDummyDtObject, ruleContants);
+		List<Account> selectedAccounts_4 = ruleManager.selectAccounts(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		
 		assertThat(selectedAccounts_4, is(not(nullValue())));
 		assertThat(selectedAccounts_4.size(), is(4));

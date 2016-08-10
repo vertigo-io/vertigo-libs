@@ -16,3 +16,4 @@ public enum WfCodeStatusWorkflow {
 	/** Ended */
 	END;
 }
+

@@ -20,6 +20,7 @@ package io.vertigo.x.workflow;
 
 import java.util.List;
 
+import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Manager;
 import io.vertigo.x.impl.rules.RuleConditionDefinition;
 import io.vertigo.x.impl.rules.RuleDefinition;
@@ -46,7 +47,6 @@ public interface WorkflowManager extends Manager {
 	 * @return a new workflow instance
 	 */
 	WfWorkflow createWorkflowInstance(final String definitionName, final String user, final boolean userLogic, final Long item);
-
 	
 	/**
 	 * Get a workflow instance by its Id
@@ -80,11 +80,19 @@ public interface WorkflowManager extends Manager {
 	public void resumeInstance(final WfWorkflow wfWorkflow);
 
 	/**
-	 * Go to the next activity using the default transition
+	 * Save the decision for the current activity without moving to the next.
+	 * Use this method when the decision has to be saved before pausing the or ending the worklfow. 
 	 * @param wfWorkflow
 	 * @param wfDecision
 	 */
-	void goToNextActivity(WfWorkflow wfWorkflow, final WfDecision wfDecision);
+	public void saveDecision(final WfWorkflow wfWorkflow, final WfDecision wfDecision);
+	
+	/**
+	 * Save the decision for the current activity and go to the next activity using the default transition
+	 * @param wfWorkflow
+	 * @param wfDecision
+	 */
+	void saveDecisionAndGoToNextActivity(WfWorkflow wfWorkflow, final WfDecision wfDecision);
 
 	/**
 	 * Go to the next activity using the provided transition name
@@ -92,8 +100,24 @@ public interface WorkflowManager extends Manager {
 	 * @param transitionName
 	 * @param wfDecision 
 	 */
-	void goToNextActivity(final WfWorkflow wfWorkflow, final String transitionName, final WfDecision wfDecision);
+	void saveDecisionAndGoToNextActivity(final WfWorkflow wfWorkflow, final String transitionName, final WfDecision wfDecision);
 
+	/**
+	 * Autovalidate all the 
+	 * @param wfWorkflow
+	 * @param wfActivityDefinitionId
+	 */
+	void autoValidateNextActivities(WfWorkflow wfWorkflow, Long wfActivityDefinitionId);
+	
+	
+	/**
+	 * Does the provided activity can be autovalidated
+	 * @param activityDefinition
+	 * @param object 
+	 * @return true if the provided activty can be auto validated, false otherwise
+	 */
+	boolean canAutoValidateActivity(WfActivityDefinition activityDefinition, DtObject object);
+	
 	/**
 	 * Get the list of activities following the default transition from the start until then end
 	 * @param wfWorkflow

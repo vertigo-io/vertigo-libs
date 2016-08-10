@@ -17,7 +17,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  */
 public final class RuleContext {
 
-	public final Map<String, String> context;
+	private final Map<String, String> context;
 
 	/**
 	 *
@@ -38,8 +38,10 @@ public final class RuleContext {
 		}
 
 		//Merge of constants
-		for (final Map.Entry<String, String> entry : constants.getValues()) {
-			mapMerge.put(entry.getKey(), entry.getValue());
+		if (constants != null) {
+			for (final Map.Entry<String, String> entry : constants.getValues()) {
+				mapMerge.put(entry.getKey(), entry.getValue());
+			}
 		}
 
 		context = Collections.unmodifiableMap(mapMerge);
