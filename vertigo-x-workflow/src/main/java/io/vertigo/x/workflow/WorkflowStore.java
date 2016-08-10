@@ -21,6 +21,7 @@ package io.vertigo.x.workflow;
 import java.util.List;
 
 import io.vertigo.x.workflow.domain.instance.WfActivity;
+import io.vertigo.x.workflow.domain.instance.WfDecision;
 import io.vertigo.x.workflow.domain.instance.WfWorkflow;
 import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
 import io.vertigo.x.workflow.domain.model.WfTransitionDefinition;
@@ -86,7 +87,21 @@ public interface WorkflowStore {
 	 * @param wfActivity
 	 * @param wfadId
 	 */
-	void removeActivity(WfActivity wfActivity);
+	void deleteActivity(WfActivity wfActivity);
+	
+	
+	/**
+	 * Create a new decision
+	 * @param wfDecision
+	 */
+	void createDecision(WfDecision wfDecision);
+
+	/**
+	 * Create a new decision
+	 * @param wfActivity
+	 * @return All the decision link to the provided activity
+	 */
+	List<WfDecision> findAllDecisionByActivity(WfActivity wfActivity);
 
 	/**
 	 * Does the provided activity has a next activity using the default transition 
@@ -173,7 +188,7 @@ public interface WorkflowStore {
 	 * @param wfWorkflowDefinition the workflow definition.
 	 * @param wfActivityDefinition the activity to remove
 	 */
-	void removeActivityDefinition(WfActivityDefinition wfActivityDefinition);
+	void deleteActivityDefinition(WfActivityDefinition wfActivityDefinition);
 
 	/**
 	 * Fetch an activity definition by id

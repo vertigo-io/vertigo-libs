@@ -35,12 +35,13 @@ import io.vertigo.x.impl.rules.RuleDefinition;
 import io.vertigo.x.impl.rules.RuleFilterDefinition;
 import io.vertigo.x.impl.rules.SelectorDefinition;
 import io.vertigo.x.rules.RuleManager;
+import io.vertigo.x.workflow.WfCodeMultiplicityDefinition;
 import io.vertigo.x.workflow.WfCodeStatusWorkflow;
 import io.vertigo.x.workflow.WfCodeTransition;
-import io.vertigo.x.workflow.WfDecision;
 import io.vertigo.x.workflow.WfTransitionBuilder;
 import io.vertigo.x.workflow.WorkflowManager;
 import io.vertigo.x.workflow.domain.instance.WfActivity;
+import io.vertigo.x.workflow.domain.instance.WfDecision;
 import io.vertigo.x.workflow.domain.instance.WfWorkflow;
 import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
 import io.vertigo.x.workflow.domain.model.WfTransitionDefinition;
@@ -190,13 +191,15 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		final Date now = new Date();
 		
 		WfActivity wfActivityCurrent = new WfActivity();
-		wfActivityCurrent.setChoice(1);
-		wfActivityCurrent.setDecisionDate(now);
 		wfActivityCurrent.setCreationDate(now);
-		wfActivityCurrent.setUser(USER_AUTO);
 		wfActivityCurrent.setWfadId(wfNextActivityDefinition.getWfadId());
-
+		
 		workflowStorePlugin.createActivity(wfActivityCurrent);
+
+		WfDecision decision = new WfDecision();
+		decision.setUser(USER_AUTO);
+		decision.setDecisionDate(now);
+		
 		return wfActivityCurrent;
 	}
 
@@ -227,12 +230,9 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		//---
 		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
 
-		// Updating the decision
-		currentActivity.setChoice(wfDecision.getChoice());
-		currentActivity.setComments(wfDecision.getComment());
-		currentActivity.setUser(wfDecision.getUser());
-		currentActivity.setDecisionDate(wfDecision.getBusinessDate());
-		workflowStorePlugin.updateActivity(currentActivity);
+		// Attach decision to the activity
+		wfDecision.setWfaId(currentActivity.getWfaId());
+		workflowStorePlugin.createDecision(wfDecision);
 	}
 
 	@Override
@@ -249,30 +249,64 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		// Updating the decision
 		saveDecision(wfWorkflow, wfDecision);
 		
-		if (workflowStorePlugin.hasNextActivity(currentActivity, transitionName)) {
-			WfActivityDefinition nextActivityDefinition = workflowStorePlugin.findNextActivity(currentActivity, transitionName);
+		WfActivityDefinition currentActivityDefinition = workflowStorePlugin.readActivityDefinition(currentActivity.getWfadId());
+		
+		WfCodeMultiplicityDefinition wfCodeMultiplicityDefinition = WfCodeMultiplicityDefinition.valueOf(currentActivityDefinition.getWfmdCode());
+		
+		boolean canGoToNextActivity = false;
+		
+		if (wfCodeMultiplicityDefinition == WfCodeMultiplicityDefinition.MUL) {
+			List<WfDecision> wfDecisions = workflowStorePlugin.findAllDecisionByActivity(currentActivity);
+			final DtObject object = itemStorePlugin.readItem(wfWorkflow.getItemId());
+			RuleConstants ruleConstants = ruleManager.getConstants(wfWorkflow.getWfwdId());
+			List<Account> accounts = ruleManager.selectAccounts(currentActivity.getWfadId(), object, ruleConstants);
 			
-			//Autovalidating next activities
-			autoValidateNextActivities(wfWorkflow, nextActivityDefinition.getWfadId());
+			//TODO : better impl than O(n²)
+			int match = 0;
+			for (Account account : accounts) {
+				for (WfDecision decision : wfDecisions) {
+					if (account.getId().equals(decision.getUser())) {
+						match++;
+						break;
+					}
+				}
+			}
 			
-			final WfActivity lastAutoValidateActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
-			WfActivityDefinition nextActivityDefinitionPrepare = workflowStorePlugin.findNextActivity(lastAutoValidateActivity);
-			
-			final Date now = new Date();
-			// Creating the next activity to validate.
-			WfActivity nextActivity = new WfActivity();
-			nextActivity.setCreationDate(now);
-			nextActivity.setWfadId(nextActivityDefinitionPrepare.getWfadId());
-			nextActivity.setWfwId(wfWorkflow.getWfwId());
-			workflowStorePlugin.createActivity(nextActivity);
-			
-			wfWorkflow.setWfaId2(nextActivity.getWfaId());
-			workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
+			if (match == accounts.size()) {
+				canGoToNextActivity = true;
+			}
 			
 		} else {
-			// No next activity to go. Ending the workflow
-			wfWorkflow.setWfsCode(WfCodeStatusWorkflow.END.name());
-			workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
+			canGoToNextActivity = true;
+		}
+		
+		if (canGoToNextActivity) {
+		
+			if (workflowStorePlugin.hasNextActivity(currentActivity, transitionName)) {
+				WfActivityDefinition nextActivityDefinition = workflowStorePlugin.findNextActivity(currentActivity, transitionName);
+
+				//Autovalidating next activities
+				autoValidateNextActivities(wfWorkflow, nextActivityDefinition.getWfadId());
+
+				final WfActivity lastAutoValidateActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
+				WfActivityDefinition nextActivityDefinitionPrepare = workflowStorePlugin.findNextActivity(lastAutoValidateActivity);
+
+				final Date now = new Date();
+				// Creating the next activity to validate.
+				WfActivity nextActivity = new WfActivity();
+				nextActivity.setCreationDate(now);
+				nextActivity.setWfadId(nextActivityDefinitionPrepare.getWfadId());
+				nextActivity.setWfwId(wfWorkflow.getWfwId());
+				workflowStorePlugin.createActivity(nextActivity);
+
+				wfWorkflow.setWfaId2(nextActivity.getWfaId());
+				workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
+
+			} else {
+				// No next activity to go. Ending the workflow
+				wfWorkflow.setWfsCode(WfCodeStatusWorkflow.END.name());
+				workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
+			}
 		}
 	}
 
@@ -329,7 +363,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	@Override
 	public void removeActivity(final WfActivityDefinition wfActivityDefinition) {
-		workflowStorePlugin.removeActivityDefinition(wfActivityDefinition);
+		workflowStorePlugin.deleteActivityDefinition(wfActivityDefinition);
 	}
 
 	@Override
@@ -343,6 +377,9 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	public void moveActivity(final WfWorkflowDefinition wfWorkflowDefinition, final WfActivityDefinition wfActivity,
 			final WfActivityDefinition wfActivityReferential, final boolean after) {
 		//
+		
+		
+		
 	}
 
 	@Override

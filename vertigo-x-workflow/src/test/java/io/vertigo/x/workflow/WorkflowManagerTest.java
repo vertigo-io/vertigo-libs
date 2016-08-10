@@ -47,6 +47,7 @@ import io.vertigo.x.impl.rules.RuleDefinition;
 import io.vertigo.x.impl.rules.SelectorDefinition;
 import io.vertigo.x.impl.workflow.ItemStorePlugin;
 import io.vertigo.x.workflow.data.MyDummyDtObject;
+import io.vertigo.x.workflow.domain.instance.WfDecision;
 import io.vertigo.x.workflow.domain.instance.WfWorkflow;
 import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
 import io.vertigo.x.workflow.domain.model.WfWorkflowDefinition;
@@ -162,7 +163,9 @@ public class WorkflowManagerTest {
 		workflowManager.pauseInstance(wfWorkflow);
 		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.PAU.name()));
 		
-		WfDecision wfDecision = new WfDecisionBuilder(1, "junit").build();
+		WfDecision wfDecision = new WfDecision();
+		wfDecision.setChoice(1);
+		wfDecision.setUser("junit");
 		try {
 			workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, wfDecision);
 			fail("Cannot go to next activity while the workflow is paused");
@@ -279,7 +282,9 @@ public class WorkflowManagerTest {
 		assertThat(wfWorkflowFetched.getWfaId2(), is(firstActivity.getWfadId()));
 		
 		// Manually validating activity 1
-		WfDecision wfDecisionAct1 = new WfDecisionBuilder(1, account.getId()).build();
+		WfDecision wfDecisionAct1 = new WfDecision();
+		wfDecisionAct1.setChoice(1);
+		wfDecisionAct1.setUser(account.getId());
 		workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, wfDecisionAct1);
 		
 		// Activity 1 should now be validated.
@@ -293,7 +298,9 @@ public class WorkflowManagerTest {
 		assertThat(wfWorkflowFetched2.getWfaId2(), is(thirdActivity.getWfadId()));
 		
 		//Manually validating activity 3
-		WfDecision wfDecisionAct2 = new WfDecisionBuilder(1, account.getId()).build();
+		WfDecision wfDecisionAct2 = new WfDecision();
+		wfDecisionAct2.setChoice(1);
+		wfDecisionAct2.setUser(account.getId());
 		workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, wfDecisionAct2);
 		
 		// Activity 3 should now be validated.
@@ -306,7 +313,9 @@ public class WorkflowManagerTest {
 		assertThat(wfWorkflowFetched3.getWfaId2(), is(fourthActivity.getWfadId()));
 		
 		// Manually validating activity 4
-		WfDecision wfDecisionAct4 = new WfDecisionBuilder(1, account.getId()).build();
+		WfDecision wfDecisionAct4 = new WfDecision();
+		wfDecisionAct4.setChoice(1);
+		wfDecisionAct4.setUser(account.getId());
 		workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, wfDecisionAct4);
 		
 		// Activity 4 should now be validated. The current activity is now activity 4, with the end status

@@ -30,6 +30,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.x.impl.workflow.WorkflowStorePlugin;
 import io.vertigo.x.workflow.WfCodeTransition;
 import io.vertigo.x.workflow.domain.instance.WfActivity;
+import io.vertigo.x.workflow.domain.instance.WfDecision;
 import io.vertigo.x.workflow.domain.instance.WfWorkflow;
 import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
 import io.vertigo.x.workflow.domain.model.WfTransitionDefinition;
@@ -42,18 +43,30 @@ import io.vertigo.x.workflow.domain.model.WfWorkflowDefinition;
  */
 public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 
-	private final Map<Long, WfWorkflowDefinition> inMemoryWorkflowDefinitionStore = new ConcurrentHashMap<>();
+	
+	
+	// WorkflowInstance
+	private final AtomicLong memoryWorkflowInstanceSequenceGenerator = new AtomicLong(0);
 	private final Map<Long, WfWorkflow> inMemoryWorkflowInstanceStore = new ConcurrentHashMap<>();
 
+	// Transition
 	private final Map<String, WfTransitionDefinition> transitionsNext = new ConcurrentHashMap<>();
 
-	private final Map<Long, WfActivityDefinition> inMemoryActivityDefinitionStore = new ConcurrentHashMap<>();
+	// Activity
 	private final Map<Long, WfActivity> inMemoryActivityStore = new ConcurrentHashMap<>();
-
-	private final AtomicLong memoryActivityDefinitionSequenceGenerator = new AtomicLong(0);
 	private final AtomicLong memoryActivitySequenceGenerator = new AtomicLong(0);
+	
+	// Decision
+	private final Map<Long, WfDecision> inMemoryDecisionStore = new ConcurrentHashMap<>();
+	private final AtomicLong memoryDecisionSequenceGenerator = new AtomicLong(0);
+
+	// ActivityDefinition
+	private final Map<Long, WfActivityDefinition> inMemoryActivityDefinitionStore = new ConcurrentHashMap<>();
+	private final AtomicLong memoryActivityDefinitionSequenceGenerator = new AtomicLong(0);
+	
+	// WorkflowDefinition
+	private final Map<Long, WfWorkflowDefinition> inMemoryWorkflowDefinitionStore = new ConcurrentHashMap<>();
 	private final AtomicLong memoryWorkflowDefinitionSequenceGenerator = new AtomicLong(0);
-	private final AtomicLong memoryWorkflowInstanceSequenceGenerator = new AtomicLong(0);
 
 	@Override
 	public void createWorkflowInstance(final WfWorkflow workflow) {
@@ -149,14 +162,41 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 
 
 	@Override
-	public void removeActivity(final WfActivity wfActivity) {
+	public void deleteActivity(final WfActivity wfActivity) {
 		Assertion.checkNotNull(wfActivity);
 		Assertion.checkNotNull(wfActivity.getWfaId());
 		//---
 		inMemoryActivityStore.remove(wfActivity.getWfaId());
 	}
+	
+	
+	@Override
+	public void createDecision(WfDecision wfDecision) {
+		Assertion.checkNotNull(wfDecision);
+		Assertion.checkNotNull(wfDecision.getWfaId());
+		Assertion.checkState(wfDecision.getWfeId() == null, "A new decision must not have an id");
+		//---
+		final long generatedId = memoryDecisionSequenceGenerator.addAndGet(1);
+		wfDecision.setWfeId(generatedId);
+		inMemoryDecisionStore.put(wfDecision.getWfeId(), wfDecision);
+	}
 
-	//Definition
+	@Override
+	public List<WfDecision> findAllDecisionByActivity(WfActivity wfActivity) {
+		Assertion.checkNotNull(wfActivity);
+		Assertion.checkNotNull(wfActivity.getWfaId());
+		//---
+		List<WfDecision> wfDecisions = new ArrayList<>();
+		for (WfDecision wfDecision: inMemoryDecisionStore.values()) {
+			if (wfActivity.getWfaId().equals(wfDecision.getWfaId())) {
+				wfDecisions.add(wfDecision);
+			}
+		}
+		
+		return wfDecisions;
+	}
+	
+	// Definition
 	@Override
 	public int countDefaultTransitions(final WfWorkflowDefinition wfWorkflowDefinition) {
 		Assertion.checkNotNull(wfWorkflowDefinition);
@@ -231,7 +271,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 	}
 
 	@Override
-	public void removeActivityDefinition(final WfActivityDefinition wfActivityDefinition) {
+	public void deleteActivityDefinition(final WfActivityDefinition wfActivityDefinition) {
 		Assertion.checkNotNull(wfActivityDefinition);
 		Assertion.checkNotNull(wfActivityDefinition.getWfadId());
 		//---
@@ -317,5 +357,6 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		//---
 		transitionsNext.remove(transition.getWfadIdFrom() + "|" + transition.getName());
 	}
+
 
 }
