@@ -43,15 +43,15 @@ public interface WorkflowStore {
 
 	/**
 	 * Get a workflow instance.
-	 * @param wfwId identifinat de l'instance du workflow
-	 * @return the correponding workflow id
+	 * @param wfwId id of the workflow instance
+	 * @return the corresponding workflow
 	 */
 	WfWorkflow readWorkflowInstanceById(Long wfwId);
 
 	/**
-	 * Get a workflow instance.
-	 * @param itemId identifinat de l'instance du workflow
-	 * @return the correponding workflow id
+	 * Get a workflow instance by an item id.
+	 * @param itemId id of the item id
+	 * @return the corresponding workflow
 	 */
 	WfWorkflow readWorkflowInstanceByItemId(Long itemId);
 
@@ -83,9 +83,8 @@ public interface WorkflowStore {
 	void updateActivity(WfActivity wfActivity);
 
 	/**
-	 * Fetch an activity by id
+	 * Delete an activity
 	 * @param wfActivity
-	 * @param wfadId
 	 */
 	void deleteActivity(WfActivity wfActivity);
 	
@@ -97,7 +96,7 @@ public interface WorkflowStore {
 	void createDecision(WfDecision wfDecision);
 
 	/**
-	 * Create a new decision
+	 * Find all decision for an activity
 	 * @param wfActivity
 	 * @return All the decision link to the provided activity
 	 */
@@ -142,7 +141,7 @@ public interface WorkflowStore {
 
     // Definition
 	/**
-	 *
+	 * Count the number of default transitions for the provided Workflow 
 	 * @param wfWorkflowDefinition
 	 * @return the number of default transition in the workflow
 	 */
@@ -164,13 +163,13 @@ public interface WorkflowStore {
 	/**
 	 * Get an definition of workflow.
 	 * @param definitionName the name of the workflow definition.
-	 * @return the
+	 * @return the corresponding Workflow definition
 	 */
 	WfWorkflowDefinition readWorkflowDefinition(String definitionName);
 
 
 	/**
-	 *
+	 * Update the definition of a workflow
 	 * @param wfWorkflowDefinition
 	 */
 	void updateWorkflowDefinition(final WfWorkflowDefinition wfWorkflowDefinition);
@@ -193,14 +192,14 @@ public interface WorkflowStore {
 	/**
 	 * Fetch an activity definition by id
 	 * @param wfadId
-	 * @return the corresponding activityeafinition
+	 * @return the corresponding activity definition
 	 */
 	WfActivityDefinition readActivityDefinition(final Long wfadId);
 
 	/**
-	 * Remove an activity to the workflow definition.
+	 * Update an activity definition.
 	 * @param wfWorkflowDefinition the workflow definition.
-	 * @param wfActivityDefinition the activity to remove
+	 * @param wfActivityDefinition the activity to update
 	 */
 	void updateActivityDefinition(WfActivityDefinition wfActivityDefinition);
 

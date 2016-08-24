@@ -37,133 +37,133 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Select accounts matching the selector for an activity
-	 * @param idActivityDefinition
-	 * @param item
-	 * @param constants 
+	 * @param idActivityDefinition Activity definition id
+	 * @param item Business object
+	 * @param constants constants
 	 * @return a list of account
 	 */
 	List<Account> selectAccounts(final Long idActivityDefinition, final DtObject item, final RuleConstants constants);
 
 	/**
-	 * Validate a rulle for an activity
-	 * @param idActivityDefinition
-	 * @param item
-	 * @param constants
+	 * Validate a rule for an activity
+	 * @param idActivityDefinition Activity definition id
+	 * @param item Business object
+	 * @param constants constants
 	 * @return true is the rule is valid, false otherwise
 	 */
 	boolean isRuleValid(Long idActivityDefinition, DtObject item, final RuleConstants constants);
 
 	/**
-	 *
-	 * @param ruleDefinition
+	 * Add a new rule
+	 * @param ruleDefinition the rule to add
 	 */
 	void addRule(RuleDefinition ruleDefinition);
 
 	/**
-	 *
+	 * Get the rules for an itemId
 	 * @param itemId
-	 * @return the all the rules defined for the provided itemId
+	 * @return all the rules defined for the provided itemId
 	 */
 	List<RuleDefinition> getRulesForItemId(Long itemId);
 
 	/**
-	 *
-	 * @param ruleDefinition
+	 * Remove a rule
+	 * @param ruleDefinition rule to remove
 	 */
 	void removeRule(RuleDefinition ruleDefinition);
 
 	/**
-	 *
+	 * Update a rule
 	 * @param ruleDefinition
 	 */
 	void updateRule(RuleDefinition ruleDefinition);
 
 	/**
-	 *
-	 * @param ruleConditionDefinition
+	 * Add a new condition 
+	 * @param ruleConditionDefinition condition to add
 	 */
 	void addCondition(RuleConditionDefinition ruleConditionDefinition);
 
 	/**
-	 *
-	 * @param ruleConditionDefinition
+	 * Remove a condition
+	 * @param ruleConditionDefinition condition to remove
 	 */
 	void removeCondition(RuleConditionDefinition ruleConditionDefinition);
 
 	/**
-	 *
-	 * @param ruleId
-	 * @return the all the condition associated to the provided rule
+	 * Get all the conditions for a specified rule
+	 * @param ruleId the rule Id
+	 * @return all the conditions associated to the provided rule
 	 */
 	List<RuleConditionDefinition> getConditionsForRuleId(Long ruleId);
 
 	/**
-	 *
-	 * @param ruleConditionDefinition
+	 * Update a rule
+	 * @param ruleConditionDefinition the rule to update
 	 */
 	void updateCondition(RuleConditionDefinition ruleConditionDefinition);
 
 	/**
-	 *
-	 * @param selectorDefinition
+	 * Add a new selector
+	 * @param selectorDefinition the selector to add
 	 */
 	void addSelector(SelectorDefinition selectorDefinition);
 
 	/**
-	 *
-	 * @param itemId
+	 * Get the selectors for the specified item Id.
+	 * @param itemId itemId
 	 * @return the all the rules defined for the provided itemId
 	 */
 	List<SelectorDefinition> getSelectorsForItemId(Long itemId);
 
 	/**
-	 *
-	 * @param selectorDefinition
+	 * Remove a selector
+	 * @param selectorDefinition the selector to remove
 	 */
 	void removeSelector(SelectorDefinition selectorDefinition);
 
 	/**
-	 *
-	 * @param selectorDefinition
+	 * Update a selector
+	 * @param selectorDefinition the selector to update
 	 */
 	void updateSelector(SelectorDefinition selectorDefinition);
 
 	/**
-	 *
-	 * @param ruleFilterDefinition
+	 * Add a new filter
+	 * @param ruleFilterDefinition the filter to add
 	 */
 	void addFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	/**
-	 *
-	 * @param ruleFilterDefinition
+	 * Remove a filter
+	 * @param ruleFilterDefinition the filter to remove
 	 */
 	void removeFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	/**
-	 *
-	 * @param selectorId
-	 * @return the all the fitlers associated to the provided selector
+	 * Get filters for the selectors id
+	 * @param selectorId the selector id
+	 * @return the all the filters associated to the provided selector
 	 */
 	List<RuleFilterDefinition> getFiltersForSelectorId(Long selectorId);
 
 	/**
-	 *
-	 * @param ruleFilterDefinition
+	 * Update the provided Filter
+	 * @param ruleFilterDefinition the filter to update 
 	 */
 	void updateFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	
 	/**
 	 * Define the constants for this key
-	 * @param key
-	 * @param ruleConstants
+	 * @param key the key
+	 * @param ruleConstants constants to associate
 	 */
 	void addConstants(Long key, RuleConstants ruleConstants);
 	
 	/**
-	 * 
-	 * @param key
+	 * Get the constants associated to a key
+	 * @param key the key
 	 * @return the constants defined for this key
 	 */
 	RuleConstants getConstants(Long key);

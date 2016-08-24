@@ -108,7 +108,6 @@ public class WorkflowManagerTest {
 		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
 
 		final WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1", wfWorkflowDefinition.getWfwdId()).build();
-		wfWorkflowDefinition.setWfadId(firstActivity.getWfadId());
 		
 		AccountGroup accountGroup = new AccountGroup("1", "dummy group");
 		Account account = new AccountBuilder("Acc1").build();
@@ -216,7 +215,6 @@ public class WorkflowManagerTest {
 		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
 
 		final WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1", wfWorkflowDefinition.getWfwdId()).build();
-		wfWorkflowDefinition.setWfadId(firstActivity.getWfadId());
 		
 		AccountGroup accountGroup = new AccountGroup("1", "dummy group");
 		Account account = new AccountBuilder("Acc1").build();
@@ -253,7 +251,7 @@ public class WorkflowManagerTest {
 		SelectorDefinition selector3 = new SelectorDefinition(null, thirdActivity.getWfadId(), accountGroup.getId() );
 		workflowManager.addSelector(thirdActivity, selector3, Collections.emptyList());
 
-		// Step 4 : 2 rule, 1 condition 
+		// Step 4 : 2 rules, 1 condition 
 		final WfActivityDefinition fourthActivity = new WfActivityDefinitionBuilder("Step 4", wfWorkflowDefinition.getWfwdId()).build();
 		workflowManager.addActivity(wfWorkflowDefinition, fourthActivity, 4);
 		RuleDefinition rule1Act4 = new RuleDefinition(null, fourthActivity.getWfadId());
@@ -337,7 +335,6 @@ public class WorkflowManagerTest {
 		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
 
 		final WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1", wfWorkflowDefinition.getWfwdId()).build();
-		wfWorkflowDefinition.setWfadId(firstActivity.getWfadId());
 		
 		// Step 1 : 1 rule, 1 condition (NO Selector)
 		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
@@ -357,7 +354,7 @@ public class WorkflowManagerTest {
 		RuleConditionDefinition condition2Rule1Act3 = new RuleConditionDefinition(null, "entity", "=", "ENT", null);
 		workflowManager.addRule(thirdActivity, rule1Act3, Arrays.asList(condition1Rule1Act3, condition2Rule1Act3));
 
-		// Step 4 : 2 rule, 1 condition (NO Selector)
+		// Step 4 : 2 rules, 1 condition (NO Selector)
 		final WfActivityDefinition fourthActivity = new WfActivityDefinitionBuilder("Step 4", wfWorkflowDefinition.getWfwdId()).build();
 		workflowManager.addActivity(wfWorkflowDefinition, fourthActivity, 4);
 		RuleDefinition rule1Act4 = new RuleDefinition(null, fourthActivity.getWfadId());

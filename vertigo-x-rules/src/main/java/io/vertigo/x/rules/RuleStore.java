@@ -32,103 +32,103 @@ import io.vertigo.x.impl.rules.SelectorDefinition;
 public interface RuleStore {
 
 	/**
-	 *
+	 * Add a rule
 	 * @param idActivityDefinition
 	 * @param ruleDefinition
 	 */
 	void addRule(RuleDefinition ruleDefinition);
 
 	/**
-	 *
+	 * Find rules
 	 * @param itemId
 	 * @return a list of all the rules defined for the itemId
 	 */
 	List<RuleDefinition> findRulesByItemId(Long itemId);
 
 	/**
-	 *
+	 * Removes a rule
 	 * @param ruleDefinition
 	 */
 	void removeRule(RuleDefinition ruleDefinition);
 
 	/**
-	 *
+	 * Update a rule
 	 * @param ruleDefinition
 	 */
 	void updateRule(RuleDefinition ruleDefinition);
 
 	/**
-	 *
+	 * Add a condition
 	 * @param ruleConditionDefinition
 	 */
 	void addCondition(final RuleConditionDefinition ruleConditionDefinition);
 
 	/**
-	 *
+	 * Remove a condition
 	 * @param ruleConditionDefinition
 	 */
 	void removeCondition(final RuleConditionDefinition ruleConditionDefinition);
 
 	/**
-	 *
+	 * Update a condition
 	 * @param ruleConditionDefinition
 	 */
 	void updateCondition(final RuleConditionDefinition ruleConditionDefinition);
 
 	/**
-	 *
+	 * Find all conditions for a specified rule Id 
 	 * @param ruleId
 	 * @return a list of all the conditions defined for this rule id
 	 */
 	List<RuleConditionDefinition> findConditionByRuleId(Long ruleId);
 
 	/**
-	 *
+	 * Add a selector
 	 * @param selectorDefinition
 	 */
 	void addSelector(SelectorDefinition selectorDefinition);
 
 	/**
-	 *
+	 * Find all selectors for an item Id
 	 * @param itemId
 	 * @return a list of all the selectors defined for the itemId
 	 */
 	List<SelectorDefinition> findSelectorsByItemId(Long itemId);
 
 	/**
-	 *
+	 * Remove a Selector
 	 * @param selectorDefinition
 	 */
 	void removeSelector(SelectorDefinition selectorDefinition);
 
 	/**
-	 *
+	 * Update a Selector
 	 * @param selectorDefinition
 	 */
 	void updateSelector(SelectorDefinition selectorDefinition);
 
 
 	/**
-	 *
+	 * Add a filter
 	 * @param ruleFilterDefinition
 	 */
 	void addFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	/**
-	 *
+	 * Remove a filter
 	 * @param ruleFilterDefinition
 	 */
 	void removeFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	/**
-	 *
+	 * Find the filters associated to a selector id
 	 * @param selectorId
 	 * @return a list of all the filters defined for the selectorId
 	 */
 	List<RuleFilterDefinition> findFiltersBySelectorId(Long selectorId);
 
 	/**
-	 *
+	 * Update a filter
 	 * @param ruleFilterDefinition
 	 */
 	void updateFilter(RuleFilterDefinition ruleFilterDefinition);

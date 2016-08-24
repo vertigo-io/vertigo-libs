@@ -34,7 +34,7 @@ public interface AuditManager extends Manager {
 	void addTrace(AuditTrace auditTrace);
 
 	/**
-	 * Serach an audit trail
+	 * Search an audit trail
 	 * @param auditTraceCriteria
 	 * @return the matching audit traces
 	 */

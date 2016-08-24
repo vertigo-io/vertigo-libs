@@ -32,7 +32,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 public final class SelectorDefinition implements DtObject {
 	private static final long serialVersionUID = 2280022920606418634L;
 
-	@Field(type = "ID", domain = "DO_X_AUDIT_ID", required = true, label = "id")
+	@Field(type = "ID", domain = "DO_X_RULES_ID", required = true, label = "id")
 	private Long id;
 
 	@Field(domain = "DO_X_RULES_DATE", label = "creationDate")

@@ -38,7 +38,7 @@ import io.vertigo.util.DateBuilder;
 
 
 /**
- * Junti for audit manager
+ * Junit for audit manager
  * @author xdurand
  *
  */

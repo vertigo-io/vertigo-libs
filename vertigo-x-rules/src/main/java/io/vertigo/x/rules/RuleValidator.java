@@ -13,7 +13,7 @@ import io.vertigo.x.impl.rules.RuleDefinition;
 public interface RuleValidator {
 
 	/**
-	 * Validate a rulle for an activity
+	 * Validate a rule for an activity
 	 * @param idActivityDefinition
 	 * @param rules
 	 * @param ruleContext

@@ -19,7 +19,7 @@ public interface RuleSelector {
 	 * @param idActivityDefinition
 	 * @param selectors
 	 * @param ruleContext
-	 * @return a group of account (a list of account)
+	 * @return a list of account
 	 */
 	List<Account> selectAccounts(final Long idActivityDefinition, final List<SelectorDefinition> selectors, final RuleContext ruleContext);
 

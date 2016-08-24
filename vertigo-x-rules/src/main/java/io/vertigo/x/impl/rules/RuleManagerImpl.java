@@ -43,6 +43,7 @@ public final class RuleManagerImpl implements RuleManager {
 	 * @param ruleStorePlugin
 	 * @param ruleSelectorPlugin
 	 * @param ruleValidatorPlugin
+	 * @param ruleConstantsStorePlugin 
 	 */
 	@Inject
 	public RuleManagerImpl(final RuleStorePlugin ruleStorePlugin,final RuleSelectorPlugin ruleSelectorPlugin, final RuleValidatorPlugin ruleValidatorPlugin, RuleConstantsStorePlugin ruleConstantsStorePlugin) {
