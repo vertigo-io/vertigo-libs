@@ -31,6 +31,6 @@ import io.vertigo.x.rules.RuleConstantsStore;
  */
 public interface RuleConstantsStorePlugin extends RuleConstantsStore, Plugin {
 
-	// Plugin interface for Rules
+	// Plugin interface for Rules constants
 
 }

@@ -20,10 +20,6 @@ package io.vertigo.x.rules;
 
 import java.util.List;
 
-import io.vertigo.x.impl.rules.RuleConditionDefinition;
-import io.vertigo.x.impl.rules.RuleDefinition;
-import io.vertigo.x.impl.rules.RuleFilterDefinition;
-import io.vertigo.x.impl.rules.SelectorDefinition;
 
 /**
  * This class defines the storage of workflow.

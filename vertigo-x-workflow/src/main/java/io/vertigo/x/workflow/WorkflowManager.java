@@ -22,10 +22,10 @@ import java.util.List;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Manager;
-import io.vertigo.x.impl.rules.RuleConditionDefinition;
-import io.vertigo.x.impl.rules.RuleDefinition;
-import io.vertigo.x.impl.rules.RuleFilterDefinition;
-import io.vertigo.x.impl.rules.SelectorDefinition;
+import io.vertigo.x.rules.RuleConditionDefinition;
+import io.vertigo.x.rules.RuleDefinition;
+import io.vertigo.x.rules.RuleFilterDefinition;
+import io.vertigo.x.rules.SelectorDefinition;
 import io.vertigo.x.workflow.domain.instance.WfActivity;
 import io.vertigo.x.workflow.domain.instance.WfDecision;
 import io.vertigo.x.workflow.domain.instance.WfWorkflow;
@@ -104,7 +104,8 @@ public interface WorkflowManager extends Manager {
 	void saveDecisionAndGoToNextActivity(final WfWorkflow wfWorkflow, final String transitionName, final WfDecision wfDecision);
 
 	/**
-	 * Autovalidate all the 
+	 * Autovalidate all the next activities using the default transition the the provided activity.
+	 * This autovalidation can validate 0, 1 or N activities.
 	 * @param wfWorkflow
 	 * @param wfActivityDefinitionId
 	 */
@@ -120,7 +121,7 @@ public interface WorkflowManager extends Manager {
 	boolean canAutoValidateActivity(WfActivityDefinition activityDefinition, DtObject object);
 	
 	/**
-	 * Get the list of activities following the default transition from the start until then end
+	 * Get the list of activities following the default transition from the start until the end
 	 * @param wfWorkflow
 	 * @param transitionName
 	 * @return the list of activities following the default path from the start until the end
@@ -129,7 +130,7 @@ public interface WorkflowManager extends Manager {
 
 	// Definitions:
 	/**
-	 *
+	 * Create a new Workflow Definition.
 	 * @param wfWorkflowDefinition
 	 */
 	void createWorkflowDefinition(final WfWorkflowDefinition wfWorkflowDefinition);

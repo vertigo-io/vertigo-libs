@@ -46,9 +46,6 @@ import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.account.AccountStore;
 import io.vertigo.x.impl.rules.RuleConstants;
-import io.vertigo.x.impl.rules.RuleDefinition;
-import io.vertigo.x.impl.rules.RuleFilterDefinition;
-import io.vertigo.x.impl.rules.SelectorDefinition;
 import io.vertigo.x.rules.data.MyDummyDtObject;
 
 

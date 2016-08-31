@@ -35,9 +35,7 @@ import org.junit.Test;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.Injector;
-import io.vertigo.x.impl.rules.RuleConditionDefinition;
 import io.vertigo.x.impl.rules.RuleConstants;
-import io.vertigo.x.impl.rules.RuleDefinition;
 import io.vertigo.x.rules.data.MyDummyDtObject;
 
 

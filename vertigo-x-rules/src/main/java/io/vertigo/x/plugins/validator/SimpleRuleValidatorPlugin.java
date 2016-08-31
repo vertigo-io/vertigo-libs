@@ -1,6 +1,3 @@
-
-
-
 /**
  * vertigo - simple java starter
  *
@@ -30,11 +27,11 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.commons.script.ScriptManager;
-import io.vertigo.x.impl.rules.RuleConditionDefinition;
 import io.vertigo.x.impl.rules.RuleContext;
-import io.vertigo.x.impl.rules.RuleDefinition;
 import io.vertigo.x.impl.rules.RuleStorePlugin;
 import io.vertigo.x.impl.rules.RuleValidatorPlugin;
+import io.vertigo.x.rules.RuleConditionDefinition;
+import io.vertigo.x.rules.RuleDefinition;
 
 /**
  *

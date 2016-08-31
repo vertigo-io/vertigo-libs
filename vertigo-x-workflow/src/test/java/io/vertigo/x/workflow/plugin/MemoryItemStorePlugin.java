@@ -1,6 +1,3 @@
-
-
-
 /**
  * vertigo - simple java starter
  *

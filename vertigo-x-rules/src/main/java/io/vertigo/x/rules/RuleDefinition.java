@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.impl.rules;
+package io.vertigo.x.rules;
 
 import java.util.Date;
 
@@ -44,7 +44,7 @@ public final class RuleDefinition implements Entity {
 	@Field(domain = "DO_X_RULES_WEAK_ID", label = "itemId")
 	private Long itemId;
 
-	private io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.impl.rules.RuleConditionDefinition> ruleConditionDefinition;
+	private io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.rules.RuleConditionDefinition> ruleConditionDefinition;
 
 	/**
 	 *
@@ -109,11 +109,11 @@ public final class RuleDefinition implements Entity {
 			foreignRole = "RuleConditionDefinition",
 			foreignLabel = "RuleConditionDefinition",
 			foreignMultiplicity = "0..*")
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.impl.rules.RuleConditionDefinition> getRuleConditionDefinitionList() {
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.rules.RuleConditionDefinition> getRuleConditionDefinitionList() {
 		//		return this.<io.vertigo.x.workflow.domain.model.WfTransitionDefinition> getList(getWfTransitionDefinitionListURI());
 		// On doit avoir une clé primaire renseignée. Si ce n'est pas le cas, on renvoie une liste vide
 		if (io.vertigo.dynamo.domain.util.DtObjectUtil.getId(this) == null) {
-			return new io.vertigo.dynamo.domain.model.DtList<>(io.vertigo.x.impl.rules.RuleConditionDefinition.class);
+			return new io.vertigo.dynamo.domain.model.DtList<>(io.vertigo.x.rules.RuleConditionDefinition.class);
 		}
 		final io.vertigo.dynamo.domain.model.DtListURI fkDtListURI = getRuleConditionDefinitionDtListURI();
 		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);

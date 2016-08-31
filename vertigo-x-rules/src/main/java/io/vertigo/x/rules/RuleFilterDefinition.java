@@ -16,44 +16,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.impl.rules;
 
-import java.util.Date;
+package io.vertigo.x.rules;
 
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
- * This class defines the Auditing Trace for an Object.
+ * This class defines the Rule definition for an Object.
  *
  * @author xdurand
  */
-public final class SelectorDefinition implements DtObject {
+public final class RuleFilterDefinition implements Entity {
+	/**
+	 *
+	 */
 	private static final long serialVersionUID = 2280022920606418634L;
 
 	@Field(type = "ID", domain = "DO_X_RULES_ID", required = true, label = "id")
 	private Long id;
 
-	@Field(domain = "DO_X_RULES_DATE", label = "creationDate")
-	private final Date creationDate;
+	@Field(domain = "DO_X_RULES_FIELD", label = "field")
+	private final String field;
 
-	@Field(domain = "DO_X_RULES_WEAK_ID", label = "itemId")
-	private Long itemId;
+	@Field(domain = "DO_X_RULES_OPERATOR", label = "operator")
+	private final String operator;
 
-	@Field(domain = "DO_X_RULES_WEAK_ID", label = "group")
-	private final String groupId;
+	@Field(domain = "DO_X_RULES_EXPRESSION", label = "expression")
+	private final String expression;
+
+	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "RuleSelectorDefinition")
+	private Long selId;
 
 	/**
 	 * @param id
-	 * @param itemId
+	 * @param field
+	 * @param operator
+	 * @param expression
 	 * @param groupId
+	 * @param selId
 	 */
-	public SelectorDefinition(final Long id, final Long itemId, final String groupId) {
+	public RuleFilterDefinition(final Long id, final String field, final String operator, final String expression, final Long selId) {
+		super();
 		this.id = id;
-		creationDate = new Date();
-		this.itemId = itemId;
-		this.groupId = groupId;
+		this.field = field;
+		this.operator = operator;
+		this.expression = expression;
+		this.selId = selId;
 	}
 
 	/**
@@ -70,37 +79,41 @@ public final class SelectorDefinition implements DtObject {
 		this.id = id;
 	}
 
-	/**
-	 * @return the creationDate
-	 */
-	public Date getCreationDate() {
-		return creationDate;
-	}
 
 	/**
-	 * @return the itemId
+	 * @return the field
 	 */
-	public Long getItemId() {
-		return itemId;
+	public String getField() {
+		return field;
 	}
 
 	/**
-	 * @param itemId the itemId to set
+	 * @return the operator
 	 */
-	public void setItemId(final Long itemId) {
-		this.itemId = itemId;
+	public String getOperator() {
+		return operator;
 	}
-
 
 	/**
-	 * @return the groupId
+	 * @return the expression
 	 */
-	public String getGroupId() {
-		return groupId;
+	public String getExpression() {
+		return expression;
 	}
 
-	@Override
-	public String toString() {
-		return DtObjectUtil.toString(this);
+	/**
+	 * @return the rudId
+	 */
+	public Long getSelId() {
+		return selId;
 	}
+
+	/**
+	 * 
+	 * @param selId
+	 */
+	public void setSelId(Long selId) {
+		this.selId = selId;
+	}
+
 }

@@ -31,5 +31,5 @@ import io.vertigo.x.workflow.ItemStore;
  */
 public interface ItemStorePlugin extends ItemStore, Plugin {
 
-	// Plugin interface for Workflow
+	// Plugin interface for Item Store
 }

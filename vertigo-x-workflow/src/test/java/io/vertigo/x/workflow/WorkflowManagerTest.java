@@ -19,11 +19,11 @@
 
 package io.vertigo.x.workflow;
 
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,10 +42,10 @@ import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountBuilder;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
-import io.vertigo.x.impl.rules.RuleConditionDefinition;
-import io.vertigo.x.impl.rules.RuleDefinition;
-import io.vertigo.x.impl.rules.SelectorDefinition;
 import io.vertigo.x.impl.workflow.ItemStorePlugin;
+import io.vertigo.x.rules.RuleConditionDefinition;
+import io.vertigo.x.rules.RuleDefinition;
+import io.vertigo.x.rules.SelectorDefinition;
 import io.vertigo.x.workflow.data.MyDummyDtObject;
 import io.vertigo.x.workflow.domain.instance.WfDecision;
 import io.vertigo.x.workflow.domain.instance.WfWorkflow;

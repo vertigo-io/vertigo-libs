@@ -25,7 +25,11 @@ import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.x.account.Account;
+import io.vertigo.x.rules.RuleConditionDefinition;
+import io.vertigo.x.rules.RuleDefinition;
+import io.vertigo.x.rules.RuleFilterDefinition;
 import io.vertigo.x.rules.RuleManager;
+import io.vertigo.x.rules.SelectorDefinition;
 
 /**
  * @author xdurand
@@ -53,6 +57,7 @@ public final class RuleManagerImpl implements RuleManager {
 		this.ruleConstantsStorePlugin = ruleConstantsStorePlugin;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<Account> selectAccounts(final Long idActivityDefinition, final DtObject item, final RuleConstants constants) {
 
@@ -62,6 +67,7 @@ public final class RuleManagerImpl implements RuleManager {
 		return ruleSelectorPlugin.selectAccounts(idActivityDefinition, selectors, context);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public boolean isRuleValid(final Long idActivityDefinition, final DtObject item, final RuleConstants constants) {
 
@@ -71,91 +77,109 @@ public final class RuleManagerImpl implements RuleManager {
 		return ruleValidatorPlugin.isRuleValid(idActivityDefinition, rules, context);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addRule(final RuleDefinition ruleDefinition) {
 		ruleStorePlugin.addRule(ruleDefinition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<RuleDefinition> getRulesForItemId(final Long itemId) {
 		return ruleStorePlugin.findRulesByItemId(itemId);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void removeRule(final RuleDefinition ruleDefinition) {
 		ruleStorePlugin.removeRule(ruleDefinition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateRule(final RuleDefinition ruleDefinition) {
 		ruleStorePlugin.updateRule(ruleDefinition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addCondition(final RuleConditionDefinition ruleConditionDefinition) {
 		ruleStorePlugin.addCondition(ruleConditionDefinition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void removeCondition(final RuleConditionDefinition ruleConditionDefinition) {
 		ruleStorePlugin.removeCondition(ruleConditionDefinition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateCondition(final RuleConditionDefinition ruleConditionDefinition) {
 		ruleStorePlugin.updateCondition(ruleConditionDefinition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<RuleConditionDefinition> getConditionsForRuleId(final Long ruleId) {
 		return ruleStorePlugin.findConditionByRuleId(ruleId);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addSelector(final SelectorDefinition selectorDefinition) {
 		ruleStorePlugin.addSelector(selectorDefinition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<SelectorDefinition> getSelectorsForItemId(final Long itemId) {
 		return ruleStorePlugin.findSelectorsByItemId(itemId);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void removeSelector(final SelectorDefinition selectorDefinition) {
 		ruleStorePlugin.removeSelector(selectorDefinition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateSelector(final SelectorDefinition selectorDefinition) {
 		ruleStorePlugin.updateSelector(selectorDefinition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addFilter(final RuleFilterDefinition ruleFilterDefinition) {
 		ruleStorePlugin.addFilter(ruleFilterDefinition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void removeFilter(final RuleFilterDefinition ruleFilterDefinition) {
 		ruleStorePlugin.removeFilter(ruleFilterDefinition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<RuleFilterDefinition> getFiltersForSelectorId(final Long selectorId) {
 		return ruleStorePlugin.findFiltersBySelectorId(selectorId);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void updateFilter(final RuleFilterDefinition ruleFilterDefinition) {
 		ruleStorePlugin.updateFilter(ruleFilterDefinition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void addConstants(Long key, RuleConstants ruleConstants) {
 		ruleConstantsStorePlugin.addConstants(key, ruleConstants);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public RuleConstants getConstants(Long key) {
 		return ruleConstantsStorePlugin.readConstants(key);

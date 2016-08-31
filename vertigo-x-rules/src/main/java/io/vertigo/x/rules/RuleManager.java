@@ -23,11 +23,7 @@ import java.util.List;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Manager;
 import io.vertigo.x.account.Account;
-import io.vertigo.x.impl.rules.RuleConditionDefinition;
 import io.vertigo.x.impl.rules.RuleConstants;
-import io.vertigo.x.impl.rules.RuleDefinition;
-import io.vertigo.x.impl.rules.RuleFilterDefinition;
-import io.vertigo.x.impl.rules.SelectorDefinition;
 
 /**
  * @author xdurand

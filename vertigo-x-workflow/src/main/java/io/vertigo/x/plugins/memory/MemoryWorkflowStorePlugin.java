@@ -42,8 +42,6 @@ import io.vertigo.x.workflow.domain.model.WfWorkflowDefinition;
  *
  */
 public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
-
-	
 	
 	// WorkflowInstance
 	private final AtomicLong memoryWorkflowInstanceSequenceGenerator = new AtomicLong(0);

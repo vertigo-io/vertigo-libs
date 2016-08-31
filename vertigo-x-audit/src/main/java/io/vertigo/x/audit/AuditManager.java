@@ -47,3 +47,4 @@ public interface AuditManager extends Manager {
 	 */
 	AuditTrace getTrace(Long idAuditTrace);
 }
+

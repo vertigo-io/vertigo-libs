@@ -26,11 +26,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.x.impl.rules.RuleConditionDefinition;
-import io.vertigo.x.impl.rules.RuleDefinition;
-import io.vertigo.x.impl.rules.RuleFilterDefinition;
 import io.vertigo.x.impl.rules.RuleStorePlugin;
-import io.vertigo.x.impl.rules.SelectorDefinition;
+import io.vertigo.x.rules.RuleConditionDefinition;
+import io.vertigo.x.rules.RuleDefinition;
+import io.vertigo.x.rules.RuleFilterDefinition;
+import io.vertigo.x.rules.SelectorDefinition;
 
 /**
  *

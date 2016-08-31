@@ -1,6 +1,3 @@
-
-
-
 /**
  * vertigo - simple java starter
  *
@@ -38,10 +35,10 @@ import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.account.AccountStore;
 import io.vertigo.x.impl.rules.RuleContext;
-import io.vertigo.x.impl.rules.RuleFilterDefinition;
 import io.vertigo.x.impl.rules.RuleSelectorPlugin;
 import io.vertigo.x.impl.rules.RuleStorePlugin;
-import io.vertigo.x.impl.rules.SelectorDefinition;
+import io.vertigo.x.rules.RuleFilterDefinition;
+import io.vertigo.x.rules.SelectorDefinition;
 
 /**
  *
