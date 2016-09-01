@@ -31,13 +31,13 @@ import io.vertigo.lang.Builder;
  */
 public class AuditTraceBuilder implements Builder<AuditTrace> {
 
-	private Long id;
-	private final String category;
-	private final String user;
-	private Date businessDate;
-	private final Date executionDate;
-	private final Long item;
-	private final String message;
+	private Long myId;
+	private final String myCategory;
+	private final String myUser;
+	private Date myBusinessDate;
+	private final Date myExecutionDate;
+	private final Long myItem;
+	private final String myMessage;
 	private String myContext;
 
 	/**
@@ -52,11 +52,11 @@ public class AuditTraceBuilder implements Builder<AuditTrace> {
 		Assertion.checkArgNotEmpty(category);
 		Assertion.checkArgNotEmpty(user);
 		//---
-		this.category = category;
-		this.user = user;
-		this.message = message;
-		this.item = item;
-		executionDate = new Date();
+		this.myCategory = category;
+		this.myUser = user;
+		this.myMessage = message;
+		this.myItem = item;
+		myExecutionDate = new Date();
 	}
 
 	/**
@@ -67,12 +67,12 @@ public class AuditTraceBuilder implements Builder<AuditTrace> {
 	public AuditTraceBuilder withDateBusiness(final Date dateBusiness) {
 		Assertion.checkNotNull(dateBusiness);
 		//---
-		businessDate = dateBusiness;
+		myBusinessDate = dateBusiness;
 		return this;
 	}
 
 	/**
-	 * Optionnal business date
+	 * Optionnal context
 	 * @param context context for metadata
 	 * @return the builder (for fluent style)
 	 */
@@ -90,7 +90,7 @@ public class AuditTraceBuilder implements Builder<AuditTrace> {
 
 	@Override
 	public AuditTrace build() {
-		return new AuditTrace(id, category, user, businessDate, executionDate, item, message, myContext);
+		return new AuditTrace(myId, myCategory, myUser, myBusinessDate, myExecutionDate, myItem, myMessage, myContext);
 	}
 
 }
