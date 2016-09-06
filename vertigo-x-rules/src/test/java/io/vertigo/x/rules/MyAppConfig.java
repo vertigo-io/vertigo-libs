@@ -49,7 +49,7 @@ public class MyAppConfig {
 	 * @return the application config for testing
 	 */
 	public static AppConfig config() {
-
+		// @formatter:off
 		final AppConfigBuilder appConfigBuilder =  new AppConfigBuilder()
 				.beginBootModule("fr")
 					.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
@@ -76,7 +76,6 @@ public class MyAppConfig {
 							.addPlugin(SimpleRuleValidatorPlugin.class)
 						.endModule();
 		return appConfigBuilder.build();
+		// @formatter:on
 	}
-
-
 }
