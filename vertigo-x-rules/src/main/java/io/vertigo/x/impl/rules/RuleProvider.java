@@ -48,21 +48,18 @@ public final class RuleProvider implements DefinitionProvider {
 		final Domain domainWorkflowExpression = new DomainBuilder("DO_X_RULES_EXPRESSION", DataType.String).build();
 
 		final DtDefinition wfRuleDefinitionDtDefinition = new DtDefinitionBuilder("DT_RULE_DEFINITION")
-				.withPersistent(true)
 				.addIdField("ID", "id", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
 				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true, false, false)
 				.build();
 
 		final DtDefinitionBuilder wfConditionDefinitionDtDefinitionBuilder = new DtDefinitionBuilder("DT_RULE_CONDITION_DEFINITION")
-				.withPersistent(true)
 				.addIdField("ID", "id", domainWorkflowId, false, false)
 				.addDataField("FIELD", "field", domainWorkflowField, true, true, false, false)
 				.addDataField("OPERATOR", "operator", domainWorkflowOperator, true, true, false, false)
 				.addDataField("EXPRESSION", "expression", domainWorkflowExpression, true, true, false, false);
 
 		final DtDefinition wfSelectorDefinitionDtDefinition = new DtDefinitionBuilder("DT_SELECTOR_DEFINITION")
-				.withPersistent(true)
 				.addIdField("ID", "id", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
 				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true, false, false)

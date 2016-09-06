@@ -30,7 +30,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.util.ListBuilder;
 
-
 /**
  * Provides all the definitions used in the 'Audit' module.
  * @author xdurand
@@ -47,9 +46,7 @@ public class AuditTraceDefinitionProvider implements DefinitionProvider {
 		final Domain domainAuditMessage = new DomainBuilder("DO_X_AUDIT_MESSAGE", DataType.String).build();
 		final Domain domainAuditContext = new DomainBuilder("DO_X_AUDIT_CONTEXT", DataType.String).build();
 
-
 		final DtDefinition auditTraceDtDefinition = new DtDefinitionBuilder("DT_AUDIT_TRACE")
-				.withPersistent(true)
 				.addIdField("ID", "id", domainAuditId, false, false)
 				.addDataField("CATEGORY", "category", domainAuditCategory, true, true, true, true)
 				.addDataField("USER", "user", domainAuditUser, true, true, false, false)

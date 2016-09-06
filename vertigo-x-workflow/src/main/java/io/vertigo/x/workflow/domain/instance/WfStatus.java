@@ -1,8 +1,10 @@
 package io.vertigo.x.workflow.domain.instance;
 
-import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+
 /**
  * Attention cette classe est générée automatiquement !
  * Objet de données WfStatus
@@ -15,9 +17,15 @@ public final class WfStatus implements Entity {
 	private String wfsCode;
 	private String label;
 
+	/** {@inheritDoc} */
+	@Override
+	public URI<WfStatus> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
+
 	/**
 	 * Champ : ID.
-	 * Récupère la valeur de la propriété 'Code Status'. 
+	 * Récupère la valeur de la propriété 'Code Status'.
 	 * @return String wfsCode <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_X_WORKFLOW_CODE", type = "ID", required = true, label = "Code Status")
@@ -36,8 +44,8 @@ public final class WfStatus implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'label'. 
-	 * @return String label 
+	 * Récupère la valeur de la propriété 'label'.
+	 * @return String label
 	 */
 	@Field(domain = "DO_X_WORKFLOW_LABEL", label = "label")
 	public String getLabel() {
@@ -47,12 +55,11 @@ public final class WfStatus implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'label'.
-	 * @param label String 
+	 * @param label String
 	 */
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-
 
 	// Association : WfWorkflow non navigable
 

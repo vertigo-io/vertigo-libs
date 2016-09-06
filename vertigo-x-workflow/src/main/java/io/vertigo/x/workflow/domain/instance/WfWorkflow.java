@@ -2,6 +2,7 @@ package io.vertigo.x.workflow.domain.instance;
 
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 /**
  * Attention cette classe est générée automatiquement !
@@ -24,6 +25,12 @@ public final class WfWorkflow implements Entity {
 	private io.vertigo.x.workflow.domain.instance.WfStatus wfStatus;
 	private io.vertigo.x.workflow.domain.instance.WfActivity current;
 
+	/** {@inheritDoc} */
+	@Override
+	public URI<WfWorkflow> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id Workflow'. 

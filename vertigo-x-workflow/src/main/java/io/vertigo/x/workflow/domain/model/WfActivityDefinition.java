@@ -2,6 +2,7 @@ package io.vertigo.x.workflow.domain.model;
 
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 /**
  * Attention cette classe est générée automatiquement !
@@ -20,6 +21,12 @@ public final class WfActivityDefinition implements Entity {
 	private io.vertigo.x.workflow.domain.model.WfMultiplicityDefinition wfMultiplicityDefinition;
 	private io.vertigo.x.workflow.domain.model.WfWorkflowDefinition wfWorkflowDefinition;
 
+	/** {@inheritDoc} */
+	@Override
+	public URI<WfActivityDefinition> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id Activity Definition'. 

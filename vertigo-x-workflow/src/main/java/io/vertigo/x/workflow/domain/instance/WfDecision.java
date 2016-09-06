@@ -1,8 +1,10 @@
 package io.vertigo.x.workflow.domain.instance;
 
-import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+
 /**
  * Attention cette classe est générée automatiquement !
  * Objet de données WfDecision
@@ -19,9 +21,15 @@ public final class WfDecision implements Entity {
 	private String comments;
 	private Long wfaId;
 
+	/** {@inheritDoc} */
+	@Override
+	public URI<WfDecision> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
+
 	/**
 	 * Champ : ID.
-	 * Récupère la valeur de la propriété 'Id Decision'. 
+	 * Récupère la valeur de la propriété 'Id Decision'.
 	 * @return Long wfeId <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_X_WORKFLOW_ID", type = "ID", required = true, label = "Id Decision")
@@ -40,8 +48,8 @@ public final class WfDecision implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'user'. 
-	 * @return String user 
+	 * Récupère la valeur de la propriété 'user'.
+	 * @return String user
 	 */
 	@Field(domain = "DO_X_WORKFLOW_USER", label = "user")
 	public String getUser() {
@@ -51,7 +59,7 @@ public final class WfDecision implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'user'.
-	 * @param user String 
+	 * @param user String
 	 */
 	public void setUser(final String user) {
 		this.user = user;
@@ -59,8 +67,8 @@ public final class WfDecision implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'choice'. 
-	 * @return Integer choice 
+	 * Récupère la valeur de la propriété 'choice'.
+	 * @return Integer choice
 	 */
 	@Field(domain = "DO_X_WORKFLOW_CHOICE", label = "choice")
 	public Integer getChoice() {
@@ -70,7 +78,7 @@ public final class WfDecision implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'choice'.
-	 * @param choice Integer 
+	 * @param choice Integer
 	 */
 	public void setChoice(final Integer choice) {
 		this.choice = choice;
@@ -78,8 +86,8 @@ public final class WfDecision implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'decision date'. 
-	 * @return java.util.Date decisionDate 
+	 * Récupère la valeur de la propriété 'decision date'.
+	 * @return java.util.Date decisionDate
 	 */
 	@Field(domain = "DO_X_WORKFLOW_DATE", label = "decision date")
 	public java.util.Date getDecisionDate() {
@@ -89,7 +97,7 @@ public final class WfDecision implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'decision date'.
-	 * @param decisionDate java.util.Date 
+	 * @param decisionDate java.util.Date
 	 */
 	public void setDecisionDate(final java.util.Date decisionDate) {
 		this.decisionDate = decisionDate;
@@ -97,8 +105,8 @@ public final class WfDecision implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'comments'. 
-	 * @return String comments 
+	 * Récupère la valeur de la propriété 'comments'.
+	 * @return String comments
 	 */
 	@Field(domain = "DO_X_WORKFLOW_COMMENTS", label = "comments")
 	public String getComments() {
@@ -108,7 +116,7 @@ public final class WfDecision implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'comments'.
-	 * @param comments String 
+	 * @param comments String
 	 */
 	public void setComments(final String comments) {
 		this.comments = comments;
@@ -116,8 +124,8 @@ public final class WfDecision implements Entity {
 
 	/**
 	 * Champ : FOREIGN_KEY.
-	 * Récupère la valeur de la propriété 'WfActivity'. 
-	 * @return Long wfaId 
+	 * Récupère la valeur de la propriété 'WfActivity'.
+	 * @return Long wfaId
 	 */
 	@Field(domain = "DO_X_WORKFLOW_ID", type = "FOREIGN_KEY", label = "WfActivity")
 	public Long getWfaId() {
@@ -127,12 +135,11 @@ public final class WfDecision implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Définit la valeur de la propriété 'WfActivity'.
-	 * @param wfaId Long 
+	 * @param wfaId Long
 	 */
 	public void setWfaId(final Long wfaId) {
 		this.wfaId = wfaId;
 	}
-
 
 	// Association : WfActivity non navigable
 

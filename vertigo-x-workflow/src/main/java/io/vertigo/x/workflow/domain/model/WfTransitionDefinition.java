@@ -2,6 +2,7 @@ package io.vertigo.x.workflow.domain.model;
 
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 /**
  * Attention cette classe est générée automatiquement !
@@ -20,6 +21,12 @@ public final class WfTransitionDefinition implements Entity {
 	private io.vertigo.x.workflow.domain.model.WfActivityDefinition transitionFrom;
 	private io.vertigo.x.workflow.domain.model.WfActivityDefinition transitionTo;
 
+	/** {@inheritDoc} */
+	@Override
+	public URI<WfTransitionDefinition> getURI() {
+		return DtObjectUtil.createURI(this);
+	}
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id Transition Definition'. 
