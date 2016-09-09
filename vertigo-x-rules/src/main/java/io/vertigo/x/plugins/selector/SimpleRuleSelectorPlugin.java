@@ -21,6 +21,7 @@ package io.vertigo.x.plugins.selector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -97,7 +98,7 @@ public class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 
 				//TODO: Better implementation and factorize with SimpleRuleValidator
 				if ("=".equals(operator)) {
-					javaExpression = field.toUpperCase() + ".equals(\"" + expression + "\")";
+					javaExpression = field.toUpperCase(Locale.ENGLISH) + ".equals(\"" + expression + "\")";
 				}
 
 				final Boolean result = scriptManager.evaluateExpression(javaExpression, parameters, Boolean.class);
