@@ -55,7 +55,6 @@ public final class RuleFilterDefinition implements Entity {
 	 * @param field
 	 * @param operator
 	 * @param expression
-	 * @param groupId
 	 * @param selId
 	 */
 	public RuleFilterDefinition(final Long id, final String field, final String operator, final String expression, final Long selId) {
