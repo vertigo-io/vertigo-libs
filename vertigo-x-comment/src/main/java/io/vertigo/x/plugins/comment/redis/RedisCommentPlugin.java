@@ -105,11 +105,14 @@ public final class RedisCommentPlugin implements CommentPlugin {
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final List<String> uuids = jedis.lrange("comments:" + keyConceptUri.urn(), 0, -1);
-			final Transaction tx = jedis.multi();
-			for (final String uuid : uuids) {
-				responses.add(tx.hgetAll("comment:" + uuid));
+			try (final Transaction tx = jedis.multi()) {
+				for (final String uuid : uuids) {
+					responses.add(tx.hgetAll("comment:" + uuid));
+				}
+				tx.exec();
+			} catch (final IOException e) {
+				throw new WrappedException(e);
 			}
-			tx.exec();
 		}
 		//----- we are using tx to avoid roundtrips
 		final List<Comment> comments = new ArrayList<>();

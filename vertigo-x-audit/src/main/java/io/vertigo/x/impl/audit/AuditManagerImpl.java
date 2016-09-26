@@ -23,6 +23,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.vertigo.lang.Assertion;
 import io.vertigo.x.audit.AuditManager;
 import io.vertigo.x.audit.AuditTrace;
 import io.vertigo.x.audit.AuditTraceCriteria;
@@ -31,15 +32,16 @@ import io.vertigo.x.audit.AuditTraceCriteria;
  * @author xdurand
  */
 public final class AuditManagerImpl implements AuditManager {
-
 	private final AuditTraceStorePlugin auditTraceStorePlugin;
 
 	/**
-	 * Construct a new Audit manager
+	 * Constructor.
 	 * @param auditTraceStorePlugin
 	 */
 	@Inject
 	public AuditManagerImpl(final AuditTraceStorePlugin auditTraceStorePlugin) {
+		Assertion.checkNotNull(auditTraceStorePlugin);
+		//---
 		this.auditTraceStorePlugin = auditTraceStorePlugin;
 	}
 
@@ -57,6 +59,5 @@ public final class AuditManagerImpl implements AuditManager {
 	public AuditTrace getTrace(final Long idAuditTrace) {
 		return auditTraceStorePlugin.readTrace(idAuditTrace);
 	}
-
 
 }
