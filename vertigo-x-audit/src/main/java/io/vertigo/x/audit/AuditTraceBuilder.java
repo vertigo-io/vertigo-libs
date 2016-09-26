@@ -20,6 +20,7 @@ package io.vertigo.x.audit;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -29,7 +30,7 @@ import io.vertigo.lang.Builder;
  * @author xdurand
  *
  */
-public class AuditTraceBuilder implements Builder<AuditTrace> {
+public final class AuditTraceBuilder implements Builder<AuditTrace> {
 
 	private Long myId;
 	private final String myCategory;
@@ -52,10 +53,10 @@ public class AuditTraceBuilder implements Builder<AuditTrace> {
 		Assertion.checkArgNotEmpty(category);
 		Assertion.checkArgNotEmpty(user);
 		//---
-		this.myCategory = category;
-		this.myUser = user;
-		this.myMessage = message;
-		this.myItem = item;
+		myCategory = category;
+		myUser = user;
+		myMessage = message;
+		myItem = item;
 		myExecutionDate = new Date();
 	}
 
@@ -80,11 +81,9 @@ public class AuditTraceBuilder implements Builder<AuditTrace> {
 		Assertion.checkNotNull(context);
 		Assertion.checkArgument(context.isEmpty() == false, "The provided context is empty");
 		//---
-		final StringBuilder sb = new StringBuilder();
-		for (final String string : context) {
-			sb.append(string).append("|");
-		}
-		this.myContext = sb.toString();
+		myContext = context
+				.stream()
+				.collect(Collectors.joining("|"));
 		return this;
 	}
 
