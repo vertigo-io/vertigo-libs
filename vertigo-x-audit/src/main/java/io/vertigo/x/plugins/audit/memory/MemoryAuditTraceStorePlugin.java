@@ -36,7 +36,7 @@ import io.vertigo.x.impl.audit.AuditTraceStorePlugin;
  * @author xdurand
  *
  */
-public class MemoryAuditTraceStorePlugin implements AuditTraceStorePlugin {
+public final class MemoryAuditTraceStorePlugin implements AuditTraceStorePlugin {
 
 	private final Map<Long, AuditTrace> inMemoryStore = new ConcurrentHashMap<>();
 	private final AtomicLong memorySequenceGenerator = new AtomicLong(0);

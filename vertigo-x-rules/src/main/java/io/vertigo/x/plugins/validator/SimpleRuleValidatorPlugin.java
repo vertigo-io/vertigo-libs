@@ -39,10 +39,9 @@ import io.vertigo.x.rules.RuleDefinition;
  * @author xdurand
  *
  */
-public class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
+public final class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 
 	private final ScriptManager scriptManager;
-
 	private final RuleStorePlugin ruleStorePlugin;
 
 	/**

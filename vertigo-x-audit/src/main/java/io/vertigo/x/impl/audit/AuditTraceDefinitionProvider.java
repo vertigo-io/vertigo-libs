@@ -34,7 +34,7 @@ import io.vertigo.util.ListBuilder;
  * Provides all the definitions used in the 'Audit' module.
  * @author xdurand
  */
-public class AuditTraceDefinitionProvider implements DefinitionProvider {
+public final class AuditTraceDefinitionProvider implements DefinitionProvider {
 
 	@Override
 	public Iterator<Definition> iterator() {
