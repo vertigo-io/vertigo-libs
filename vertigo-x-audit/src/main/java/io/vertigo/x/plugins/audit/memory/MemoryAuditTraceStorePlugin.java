@@ -19,13 +19,13 @@
 
 package io.vertigo.x.plugins.audit.memory;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ListBuilder;
 import io.vertigo.util.StringUtil;
 import io.vertigo.x.audit.AuditTrace;
 import io.vertigo.x.audit.AuditTraceCriteria;
@@ -37,17 +37,16 @@ import io.vertigo.x.impl.audit.AuditTraceStorePlugin;
  *
  */
 public final class MemoryAuditTraceStorePlugin implements AuditTraceStorePlugin {
-
 	private final Map<Long, AuditTrace> inMemoryStore = new ConcurrentHashMap<>();
 	private final AtomicLong memorySequenceGenerator = new AtomicLong(0);
 
 	@Override
-	public AuditTrace readTrace(final Long idAuditTrace) {
+	public AuditTrace read(final Long idAuditTrace) {
 		return inMemoryStore.get(idAuditTrace);
 	}
 
 	@Override
-	public void createTrace(final AuditTrace auditTrace) {
+	public void create(final AuditTrace auditTrace) {
 		Assertion.checkNotNull(auditTrace);
 		Assertion.checkState(auditTrace.getId() == null, "A new audit trail must not have an id");
 		//---
@@ -57,48 +56,51 @@ public final class MemoryAuditTraceStorePlugin implements AuditTraceStorePlugin 
 	}
 
 	@Override
-	public List<AuditTrace> findTraceByCriteria(final AuditTraceCriteria auditTraceCriteria) {
+	public List<AuditTrace> findByCriteria(final AuditTraceCriteria auditTraceCriteria) {
+		final ListBuilder<AuditTrace> auditTracesBuilder = new ListBuilder<>();
 
-		final List<AuditTrace> ret = new ArrayList<>();
-
-		for (final AuditTrace audit : inMemoryStore.values()) {
-			if (!StringUtil.isEmpty(auditTraceCriteria.getCategory()) && auditTraceCriteria.getCategory().equals(audit.getCategory())) {
-				ret.add(audit);
-				continue;
+		for (final AuditTrace auditTrace : inMemoryStore.values()) {
+			final boolean categoryMatched = matchCategory(auditTraceCriteria, auditTrace);
+			final boolean userMatched = matchUser(auditTraceCriteria, auditTrace);
+			final boolean businessDateMatched = matchBusinessDate(auditTraceCriteria, auditTrace);
+			final boolean executionDateMatched = matchExecutionDate(auditTraceCriteria, auditTrace);
+			final boolean itemMatched = matchItem(auditTraceCriteria, auditTrace);
+			if (categoryMatched || userMatched || businessDateMatched || executionDateMatched || itemMatched) {
+				auditTracesBuilder.add(auditTrace);
 			}
-
-			if (!StringUtil.isEmpty(auditTraceCriteria.getUser()) && auditTraceCriteria.getUser().equals(audit.getUser())) {
-				ret.add(audit);
-				continue;
-			}
-
-			if (audit.getBusinessDate() != null && auditTraceCriteria.getStartBusinessDate() != null && auditTraceCriteria.getStartBusinessDate().before(audit.getBusinessDate())) {
-				if (auditTraceCriteria.getEndBusinessDate() == null) {
-					ret.add(audit);
-					continue;
-				} else if (auditTraceCriteria.getEndBusinessDate().after(audit.getBusinessDate())) {
-					ret.add(audit);
-					continue;
-				}
-			}
-
-			if (audit.getExecutionDate() != null && auditTraceCriteria.getStartExecutionDate() != null && auditTraceCriteria.getStartExecutionDate().before(audit.getExecutionDate())) {
-				if (auditTraceCriteria.getEndExecutionDate() == null) {
-					ret.add(audit);
-					continue;
-				} else if (auditTraceCriteria.getEndExecutionDate().after(audit.getExecutionDate())) {
-					ret.add(audit);
-					continue;
-				}
-			}
-
-			if (auditTraceCriteria.getItem() != null && auditTraceCriteria.getItem().equals(audit.getItem())) {
-				ret.add(audit);
-			}
-
 		}
 
-		return ret;
+		return auditTracesBuilder
+				.unmodifiable()
+				.build();
 	}
 
+	private static boolean matchItem(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
+		return auditTraceCriteria.getItem() != null
+				&& auditTraceCriteria.getItem().equals(auditTrace.getItem());
+	}
+
+	private static boolean matchExecutionDate(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
+		return auditTrace.getExecutionDate() != null
+				&& auditTraceCriteria.getStartExecutionDate() != null
+				&& auditTraceCriteria.getStartExecutionDate().before(auditTrace.getExecutionDate())
+				&& (auditTraceCriteria.getEndExecutionDate() == null || auditTraceCriteria.getEndExecutionDate().after(auditTrace.getExecutionDate()));
+	}
+
+	private static boolean matchBusinessDate(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
+		return auditTrace.getBusinessDate() != null
+				&& auditTraceCriteria.getStartBusinessDate() != null
+				&& auditTraceCriteria.getStartBusinessDate().before(auditTrace.getBusinessDate())
+				&& (auditTraceCriteria.getEndBusinessDate() == null || auditTraceCriteria.getEndBusinessDate().after(auditTrace.getBusinessDate()));
+	}
+
+	private static boolean matchUser(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
+		return !StringUtil.isEmpty(auditTraceCriteria.getUser())
+				&& auditTraceCriteria.getUser().equals(auditTrace.getUser());
+	}
+
+	private static boolean matchCategory(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
+		return !StringUtil.isEmpty(auditTraceCriteria.getCategory())
+				&& auditTraceCriteria.getCategory().equals(auditTrace.getCategory());
+	}
 }

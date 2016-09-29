@@ -47,17 +47,17 @@ public final class AuditManagerImpl implements AuditManager {
 
 	@Override
 	public void addTrace(final AuditTrace auditTrace) {
-		auditTraceStorePlugin.createTrace(auditTrace);
+		auditTraceStorePlugin.create(auditTrace);
 	}
 
 	@Override
 	public List<AuditTrace> findTrace(final AuditTraceCriteria auditTraceCriteria) {
-		return auditTraceStorePlugin.findTraceByCriteria(auditTraceCriteria);
+		return auditTraceStorePlugin.findByCriteria(auditTraceCriteria);
 	}
 
 	@Override
-	public AuditTrace getTrace(final Long idAuditTrace) {
-		return auditTraceStorePlugin.readTrace(idAuditTrace);
+	public AuditTrace getTrace(final Long auditTraceId) {
+		return auditTraceStorePlugin.read(auditTraceId);
 	}
 
 }

@@ -31,7 +31,6 @@ import io.vertigo.lang.Builder;
  *
  */
 public final class AuditTraceBuilder implements Builder<AuditTrace> {
-
 	private Long myId;
 	private final String myCategory;
 	private final String myUser;
