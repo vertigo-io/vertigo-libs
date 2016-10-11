@@ -18,16 +18,16 @@
  */
 package io.vertigo.x.account;
 
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.stereotype.DtDefinition;
+import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 
 /**
  * @author pchretien
  */
-@DtDefinition
-public final class AccountGroup implements DtObject {
+public final class AccountGroup implements Entity {
 	private static final long serialVersionUID = -4463291583101516140L;
 
 	@Field(type = "ID", domain = "DO_X_ACCOUNT_ID", required = true, label = "id")
@@ -46,6 +46,12 @@ public final class AccountGroup implements DtObject {
 		//-----
 		this.displayName = displayName;
 		this.id = id;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public URI<AccountGroup> getURI() {
+		return DtObjectUtil.createURI(this);
 	}
 
 	/**

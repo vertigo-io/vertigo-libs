@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.vertigo</groupId>
+		<artifactId>vertigo-x-parent</artifactId>
+		<version>0.9.3-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>vertigo-x-rules</artifactId>
+	<packaging>jar</packaging>
+	<name>vertigo-x-rules</name>
+	
+	<dependencies>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-core</artifactId>
+			<version>${vertigo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-dynamo-api</artifactId>
+			<version>${vertigo.version}</version>
+		</dependency>
+		
+		<!-- deb -->
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-dynamo-impl</artifactId>
+			<version>${vertigo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-persona-impl</artifactId>
+			<version>${vertigo.version}</version>
+		</dependency>
+		<!-- fin -->
+
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-commons-impl</artifactId>
+			<version>${vertigo.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-x-account</artifactId>
+			<version>${vertigo.version}</version>
+		</dependency>
+		
+		<!-- Tests -->
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-core</artifactId>
+			<version>${vertigo.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+</project>

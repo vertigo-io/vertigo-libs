@@ -45,7 +45,7 @@ public interface AccountManager extends Component {
 	VFile getDefaultPhoto();
 
 	/**
-	 * @return the tore of accounts
+	 * @return the store of accounts
 	 */
 	AccountStore getStore();
 }
