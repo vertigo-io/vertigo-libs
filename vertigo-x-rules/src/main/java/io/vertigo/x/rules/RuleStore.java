@@ -1,5 +1,5 @@
 /**
- *	 vertigo - simple java starter
+ * vertigo - simple java starter
  *
  * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
