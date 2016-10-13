@@ -13,11 +13,11 @@ Release 0.9.3 - 2016/10/11
 __In Bold__ : Potential compatibility problems 
 * [All] Updated to vertigo 0.9.3
 * [All] Fixed URI and persistence on Data/Entity objects
-*	[All] Updated to java 8
-*	[Audit] Initial release for vertigo-x-audit
-*	[Workflow] Initial release for vertigo-x-workflow
-*	[Rules] Initial release for vertigo-x-rules
-*	[All] Updated jedis
+* [All] Updated to java 8
+* [Audit] Initial release for vertigo-x-audit
+* [Workflow] Initial release for vertigo-x-workflow
+* [Rules] Initial release for vertigo-x-rules
+* [All] Updated jedis
 
 
 Release 0.9.2 - 2016/07/04
