@@ -357,7 +357,7 @@ public class RuleManagerSelectorTest {
 		
 		assertThat(selectedAccounts_4, is(not(nullValue())));
 		assertThat(selectedAccounts_4.size(), is(4));
-		assertThat(selectedAccounts_4, hasItems(account_1_1, account_1_2, account_2_2, account_2_2));
+		assertThat(selectedAccounts_4, hasItems(account_1_1, account_1_2, account_2_1, account_2_2));
 		
 	}
 

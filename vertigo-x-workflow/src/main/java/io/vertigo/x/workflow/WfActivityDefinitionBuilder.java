@@ -36,11 +36,11 @@ public final class WfActivityDefinitionBuilder implements Builder<WfActivityDefi
 	/**
 	 * Builder for Workflow Definition
 	 * @param name
-	 * @param myWfwdId WorkflowDefinition Id
+	 * @param wfwdId WorkflowDefinition Id
 	 */
-	public WfActivityDefinitionBuilder(final String name, final Long myWfwdId) {
+	public WfActivityDefinitionBuilder(final String name, final Long wfwdId) {
 		myName = name;
-		this.myWfwdId = myWfwdId;
+		this.myWfwdId = wfwdId;
 	}
 
 	/**
