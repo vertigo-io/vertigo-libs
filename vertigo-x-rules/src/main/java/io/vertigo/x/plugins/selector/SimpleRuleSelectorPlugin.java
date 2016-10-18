@@ -21,6 +21,7 @@ package io.vertigo.x.plugins.selector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -45,8 +46,7 @@ import io.vertigo.x.rules.SelectorDefinition;
  * @author xdurand
  *
  */
-public class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
-
+public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 
 	private final ScriptManager scriptManager;
 	private final RuleStorePlugin ruleStorePlugin;
@@ -56,7 +56,7 @@ public class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 	 *
 	 * @param scriptManager
 	 * @param ruleStorePlugin
-	 * @param accountManager 
+	 * @param accountManager
 	 */
 	@Inject
 	public SimpleRuleSelectorPlugin(final ScriptManager scriptManager, final RuleStorePlugin ruleStorePlugin, final AccountManager accountManager) {
@@ -65,11 +65,9 @@ public class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 		this.accountManager = accountManager;
 	}
 
-
 	private static URI<AccountGroup> createGroupURI(final String id) {
 		return DtObjectUtil.createURI(AccountGroup.class, id);
 	}
-
 
 	@Override
 	public List<Account> selectAccounts(final Long idActivityDefinition, final List<SelectorDefinition> selectors, final RuleContext ruleContext) {
@@ -79,7 +77,6 @@ public class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 			final ExpressionParameter ep = new ExpressionParameter(entry.getKey(), String.class, entry.getValue());
 			parameters.add(ep);
 		}
-
 
 		final List<Account> collected = new ArrayList<>();
 		for (final SelectorDefinition selectorDefinition : selectors) {
@@ -97,7 +94,7 @@ public class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 
 				//TODO: Better implementation and factorize with SimpleRuleValidator
 				if ("=".equals(operator)) {
-					javaExpression = field.toUpperCase() + ".equals(\"" + expression + "\")";
+					javaExpression = field.toUpperCase(Locale.ENGLISH) + ".equals(\"" + expression + "\")";
 				}
 
 				final Boolean result = scriptManager.evaluateExpression(javaExpression, parameters, Boolean.class);
@@ -122,6 +119,5 @@ public class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 
 		return collected;
 	}
-
 
 }

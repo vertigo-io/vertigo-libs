@@ -117,9 +117,10 @@ public final class AccountWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	public Map<String, Object> getStats() {
 		final Map<String, Object> stats = new HashMap<>();
-		final Map<String, Object> sizeStats = new HashMap<>();
-		sizeStats.put("accounts", accountManager.getStore().getAccountsCount());
-		sizeStats.put("groups", accountManager.getStore().getGroupsCount());
+		final Map<String, Object> sizeStats = new MapBuilder<String, Object>()
+				.put("accounts", accountManager.getStore().getAccountsCount())
+				.put("groups", accountManager.getStore().getGroupsCount())
+				.build();
 		stats.put("size", sizeStats);
 		return stats;
 	}

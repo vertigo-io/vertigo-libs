@@ -16,19 +16,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.vertigo.x.impl.audit;
 
+import java.util.List;
 
 import io.vertigo.lang.Plugin;
-import io.vertigo.x.audit.AuditTraceStore;
-
+import io.vertigo.x.audit.AuditTrace;
+import io.vertigo.x.audit.AuditTraceCriteria;
 
 /**
- * Interface for the audit trail's store plugin  
+ * This class defines the storage of audit trails.
  * @author xdurand
- *
  */
-public interface AuditTraceStorePlugin extends AuditTraceStore, Plugin {
-	// Plugin interface for Audit Trace
+public interface AuditTraceStorePlugin extends Plugin {
+	/**
+	 * Gets an audit trail.
+	 * @param idAuditTrace the audit trail defined by its id.
+	 * @return the
+	 */
+	AuditTrace read(Long auditTraceId);
+
+	/**
+	 * Saves a new audit trail.
+	 * Attention: The audit MUST NOT have an id.
+	 * @param auditTrace the audit trail to save.
+	 */
+	void create(AuditTrace auditTrace);
+
+	/**
+	 * Fetchs all Audit Trace mathing the provided criteria
+	 * @param auditTraceCriteria
+	 * @return the matching taces for the provided criteria
+	 */
+	List<AuditTrace> findByCriteria(AuditTraceCriteria auditTraceCriteria);
+
 }

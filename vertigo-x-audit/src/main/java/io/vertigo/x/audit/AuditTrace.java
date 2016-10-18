@@ -30,9 +30,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  * @author xdurand
  */
 public final class AuditTrace implements DtObject {
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 2280022920606418634L;
 
 	@Field(type = "ID", domain = "DO_X_AUDIT_ID", required = true, label = "id")

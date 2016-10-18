@@ -35,10 +35,10 @@ public class MemoryItemStorePlugin implements ItemStorePlugin {
 	private final Map<Long, DtObject> inMemoryItemStore = new ConcurrentHashMap<>();
 
 	@Override
-	public void addItem(Long itemId, DtObject item) {
+	public void addItem(final Long itemId, final DtObject item) {
 		inMemoryItemStore.put(itemId, item);
 	}
-	
+
 	@Override
 	public DtObject readItem(final Long itemId) {
 		return inMemoryItemStore.get(itemId);

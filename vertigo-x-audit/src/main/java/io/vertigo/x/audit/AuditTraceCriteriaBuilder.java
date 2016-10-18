@@ -18,7 +18,6 @@
  */
 package io.vertigo.x.audit;
 
-
 import java.util.Date;
 
 import io.vertigo.lang.Assertion;
@@ -30,7 +29,6 @@ import io.vertigo.lang.Builder;
  *
  */
 public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriteria> {
-
 	private String myCategory;
 	private String myUser;
 	private Date myStartBusinessDate;
@@ -47,7 +45,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	public AuditTraceCriteriaBuilder withCategory(final String category) {
 		Assertion.checkNotNull(category);
 		//---
-		this.myCategory = category;
+		myCategory = category;
 		return this;
 	}
 
@@ -59,7 +57,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	public AuditTraceCriteriaBuilder withUser(final String user) {
 		Assertion.checkNotNull(user);
 		//---
-		this.myUser = user;
+		myUser = user;
 		return this;
 	}
 
@@ -71,7 +69,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	public AuditTraceCriteriaBuilder withDateBusinessStart(final Date startBusinessDate) {
 		Assertion.checkNotNull(startBusinessDate);
 		//---
-		this.myStartBusinessDate = startBusinessDate;
+		myStartBusinessDate = startBusinessDate;
 		return this;
 	}
 
@@ -83,7 +81,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	public AuditTraceCriteriaBuilder withDateBusinessEnd(final Date endBusinessDate) {
 		Assertion.checkNotNull(endBusinessDate);
 		//---
-		this.myEndBusinessDate = endBusinessDate;
+		myEndBusinessDate = endBusinessDate;
 		return this;
 	}
 
@@ -95,7 +93,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	public AuditTraceCriteriaBuilder withDateExecutionStart(final Date startExecutionDate) {
 		Assertion.checkNotNull(startExecutionDate);
 		//---
-		this.myStartExecutionDate = startExecutionDate;
+		myStartExecutionDate = startExecutionDate;
 		return this;
 	}
 
@@ -107,7 +105,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	public AuditTraceCriteriaBuilder withDateExecutionEnd(final Date endExecutionDate) {
 		Assertion.checkNotNull(endExecutionDate);
 		//---
-		this.myEndExecutionDate = endExecutionDate;
+		myEndExecutionDate = endExecutionDate;
 		return this;
 	}
 
@@ -119,14 +117,14 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	public AuditTraceCriteriaBuilder withItem(final Long item) {
 		Assertion.checkNotNull(item);
 		//---
-		this.myItem = item;
+		myItem = item;
 		return this;
 	}
 
 	@Override
 	public AuditTraceCriteria build() {
-		return new AuditTraceCriteria(this.myCategory, this.myUser, this.myStartBusinessDate,
-				this.myEndBusinessDate, this.myStartExecutionDate, this.myEndExecutionDate, this.myItem);
+		return new AuditTraceCriteria(myCategory, myUser, myStartBusinessDate,
+				myEndBusinessDate, myStartExecutionDate, myEndExecutionDate, myItem);
 	}
 
 }

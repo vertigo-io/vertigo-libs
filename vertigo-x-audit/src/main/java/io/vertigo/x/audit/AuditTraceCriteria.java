@@ -29,24 +29,14 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  * @author xdurand
  */
 public final class AuditTraceCriteria implements DtObject {
-
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private final String category;
-
 	private final String user;
-
 	private final Date startBusinessDate;
-
 	private final Date endBusinessDate;
-
 	private final Date startExecutionDate;
-
 	private final Date endExecutionDate;
-
 	private final Long item;
 
 	AuditTraceCriteria(

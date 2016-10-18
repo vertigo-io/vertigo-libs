@@ -52,6 +52,7 @@ public class MyAppConfig {
 	 * @return AppConfig for Junit
 	 */
 	public static AppConfig config() {
+		// @formatter:off
 		final AppConfigBuilder appConfigBuilder =  new AppConfigBuilder()
 				.beginBootModule("fr")
 					.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
@@ -69,7 +70,7 @@ public class MyAppConfig {
 					.addPlugin(MemoryAccountStorePlugin.class)
 				.endModule();
 
-		
+
 		appConfigBuilder.beginModule(WorkflowFeatures.class)
 			.getModuleConfigBuilder()
 			.addDefinitionProvider(MyDummyDtObjectProvider.class)
@@ -81,12 +82,8 @@ public class MyAppConfig {
 			.addPlugin(SimpleRuleValidatorPlugin.class)
 			.addPlugin(JaninoExpressionEvaluatorPlugin.class)
 		   .endModule();
-
+		// @formatter:on
 		return appConfigBuilder.build();
 	}
-
-	
-	
-	
 
 }

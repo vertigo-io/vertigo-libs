@@ -42,7 +42,7 @@ import io.vertigo.x.workflow.domain.model.WfWorkflowDefinition;
  *
  */
 public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
-	
+
 	// WorkflowInstance
 	private final AtomicLong memoryWorkflowInstanceSequenceGenerator = new AtomicLong(0);
 	private final Map<Long, WfWorkflow> inMemoryWorkflowInstanceStore = new ConcurrentHashMap<>();
@@ -53,7 +53,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 	// Activity
 	private final Map<Long, WfActivity> inMemoryActivityStore = new ConcurrentHashMap<>();
 	private final AtomicLong memoryActivitySequenceGenerator = new AtomicLong(0);
-	
+
 	// Decision
 	private final Map<Long, WfDecision> inMemoryDecisionStore = new ConcurrentHashMap<>();
 	private final AtomicLong memoryDecisionSequenceGenerator = new AtomicLong(0);
@@ -61,7 +61,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 	// ActivityDefinition
 	private final Map<Long, WfActivityDefinition> inMemoryActivityDefinitionStore = new ConcurrentHashMap<>();
 	private final AtomicLong memoryActivityDefinitionSequenceGenerator = new AtomicLong(0);
-	
+
 	// WorkflowDefinition
 	private final Map<Long, WfWorkflowDefinition> inMemoryWorkflowDefinitionStore = new ConcurrentHashMap<>();
 	private final AtomicLong memoryWorkflowDefinitionSequenceGenerator = new AtomicLong(0);
@@ -111,22 +111,23 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		return new ArrayList<>();
 	}
 
-	
+	@Override
 	public boolean hasNextActivity(final WfActivity activity) {
 		return hasNextActivity(activity, WfCodeTransition.DEFAULT.getTransitionName());
 	}
-	
-	public boolean hasNextActivity(final WfActivity activity, String transitionName) {
+
+	@Override
+	public boolean hasNextActivity(final WfActivity activity, final String transitionName) {
 		return transitionsNext.containsKey(activity.getWfaId() + "|" + transitionName);
 	}
-	
+
 	@Override
 	public WfActivityDefinition findNextActivity(final WfActivity activity) {
 		return findNextActivity(activity, WfCodeTransition.DEFAULT.getTransitionName());
 	}
 
 	@Override
-	public WfActivityDefinition findNextActivity(final WfActivity activity, String transitionName) {
+	public WfActivityDefinition findNextActivity(final WfActivity activity, final String transitionName) {
 		final WfTransitionDefinition transitionNext = transitionsNext.get(activity.getWfaId() + "|" + transitionName);
 		return inMemoryActivityDefinitionStore.get(transitionNext.getWfadIdTo());
 	}
@@ -147,17 +148,15 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		wfActivity.setWfaId(generatedId);
 		inMemoryActivityStore.put(generatedId, wfActivity);
 	}
-	
 
 	@Override
-	public void updateActivity(WfActivity wfActivity) {
+	public void updateActivity(final WfActivity wfActivity) {
 		Assertion.checkNotNull(wfActivity);
 		Assertion.checkNotNull(wfActivity.getWfaId());
 		Assertion.checkState(inMemoryActivityStore.containsKey(wfActivity.getWfaId()), "This activity cannot be updated : It does not exist in the store");
 		//---
 		inMemoryActivityStore.put(wfActivity.getWfaId(), wfActivity);
 	}
-
 
 	@Override
 	public void deleteActivity(final WfActivity wfActivity) {
@@ -166,10 +165,9 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		//---
 		inMemoryActivityStore.remove(wfActivity.getWfaId());
 	}
-	
-	
+
 	@Override
-	public void createDecision(WfDecision wfDecision) {
+	public void createDecision(final WfDecision wfDecision) {
 		Assertion.checkNotNull(wfDecision);
 		Assertion.checkNotNull(wfDecision.getWfaId());
 		Assertion.checkState(wfDecision.getWfeId() == null, "A new decision must not have an id");
@@ -180,27 +178,27 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 	}
 
 	@Override
-	public List<WfDecision> findAllDecisionByActivity(WfActivity wfActivity) {
+	public List<WfDecision> findAllDecisionByActivity(final WfActivity wfActivity) {
 		Assertion.checkNotNull(wfActivity);
 		Assertion.checkNotNull(wfActivity.getWfaId());
 		//---
-		List<WfDecision> wfDecisions = new ArrayList<>();
-		for (WfDecision wfDecision: inMemoryDecisionStore.values()) {
+		final List<WfDecision> wfDecisions = new ArrayList<>();
+		for (final WfDecision wfDecision : inMemoryDecisionStore.values()) {
 			if (wfActivity.getWfaId().equals(wfDecision.getWfaId())) {
 				wfDecisions.add(wfDecision);
 			}
 		}
-		
+
 		return wfDecisions;
 	}
-	
+
 	// Definition
 	@Override
 	public int countDefaultTransitions(final WfWorkflowDefinition wfWorkflowDefinition) {
 		Assertion.checkNotNull(wfWorkflowDefinition);
 		//---
 		Long idActivity = wfWorkflowDefinition.getWfadId();
-		if(idActivity == null) {
+		if (idActivity == null) {
 			//The workflow don't have a starting activity
 			return 0;
 		}
@@ -316,7 +314,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		if (transitionNext == null) {
 			return null;
 		}
-		
+
 		return readActivityDefinition(transitionNext.getWfadIdTo());
 	}
 
@@ -355,6 +353,5 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		//---
 		transitionsNext.remove(transition.getWfadIdFrom() + "|" + transition.getName());
 	}
-
 
 }

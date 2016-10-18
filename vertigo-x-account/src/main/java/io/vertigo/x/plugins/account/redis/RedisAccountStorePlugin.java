@@ -18,6 +18,7 @@
  */
 package io.vertigo.x.plugins.account.redis;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -34,6 +35,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountBuilder;
@@ -70,12 +72,15 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		Assertion.checkNotNull(accounts);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
-			final Transaction tx = jedis.multi();
-			for (final Account account : accounts) {
-				tx.hmset("account:" + account.getId(), account2Map(account));
-				tx.lpush("accounts", account.getId());
+			try (final Transaction tx = jedis.multi()) {
+				for (final Account account : accounts) {
+					tx.hmset("account:" + account.getId(), account2Map(account));
+					tx.lpush("accounts", account.getId());
+				}
+				tx.exec();
+			} catch (final IOException ex) {
+				throw new WrappedException(ex);
 			}
-			tx.exec();
 		}
 	}
 
@@ -112,10 +117,14 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		//-----
 		//----
 		try (final Jedis jedis = redisConnector.getResource()) {
-			final Transaction tx = jedis.multi();
-			tx.hmset("group:" + group.getId(), group2Map(group));
-			tx.lpush("groups", group.getId());
-			tx.exec();
+			try (final Transaction tx = jedis.multi()) {
+				tx.hmset("group:" + group.getId(), group2Map(group));
+				tx.lpush("groups", group.getId());
+				tx.exec();
+			} catch (final IOException ex) {
+				throw new WrappedException(ex);
+			}
+
 		}
 	}
 
@@ -135,11 +144,15 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final List<String> ids = jedis.lrange("accounts", 0, -1);
-			final Transaction tx = jedis.multi();
-			for (final String id : ids) {
-				responses.add(tx.hgetAll("account:" + id));
+			try (final Transaction tx = jedis.multi()) {
+				for (final String id : ids) {
+					responses.add(tx.hgetAll("account:" + id));
+				}
+				tx.exec();
+			} catch (final IOException ex) {
+				throw new WrappedException(ex);
 			}
-			tx.exec();
+
 		}
 		//----- we are using tx to avoid roundtrips
 		final List<AccountGroup> groups = new ArrayList<>();
@@ -159,10 +172,14 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		Assertion.checkNotNull(groupURI);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
-			final Transaction tx = jedis.multi();
-			tx.lpush("accountsByGroup:" + groupURI.getId(), accountURI.getId().toString());
-			tx.lpush("groupsByAccount:" + accountURI.getId(), groupURI.getId().toString());
-			tx.exec();
+			try (final Transaction tx = jedis.multi()) {
+				tx.lpush("accountsByGroup:" + groupURI.getId(), accountURI.getId().toString());
+				tx.lpush("groupsByAccount:" + accountURI.getId(), groupURI.getId().toString());
+				tx.exec();
+			} catch (final IOException ex) {
+				throw new WrappedException(ex);
+			}
+
 		}
 	}
 
@@ -173,10 +190,14 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		Assertion.checkNotNull(groupURI);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
-			final Transaction tx = jedis.multi();
-			tx.lrem("accountsByGroup:" + groupURI.getId(), 0, accountURI.getId().toString());
-			tx.lrem("groupsByAccount:" + accountURI.getId(), 0, groupURI.getId().toString());
-			tx.exec();
+			try (final Transaction tx = jedis.multi()) {
+				tx.lrem("accountsByGroup:" + groupURI.getId(), 0, accountURI.getId().toString());
+				tx.lrem("groupsByAccount:" + accountURI.getId(), 0, groupURI.getId().toString());
+				tx.exec();
+			} catch (final IOException ex) {
+				throw new WrappedException(ex);
+			}
+
 		}
 	}
 
@@ -246,9 +267,13 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		//-----
 		final Map<String, String> vFileMapPhoto = photoCodec.vFile2Map(photo);
 		try (final Jedis jedis = redisConnector.getResource()) {
-			final Transaction tx = jedis.multi();
-			tx.hmset("photoByAccount:" + accountURI.getId(), vFileMapPhoto);
-			tx.exec();
+			try (final Transaction tx = jedis.multi()) {
+				tx.hmset("photoByAccount:" + accountURI.getId(), vFileMapPhoto);
+				tx.exec();
+			} catch (final IOException ex) {
+				throw new WrappedException(ex);
+			}
+
 		}
 	}
 
@@ -264,5 +289,4 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		}
 		return Optional.of(PhotoCodec.map2vFile(result));
 	}
-
 }

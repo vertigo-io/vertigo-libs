@@ -19,7 +19,9 @@
 package io.vertigo.x.account;
 
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -45,6 +47,12 @@ public final class Account implements Entity {
 		this.id = id;
 		this.displayName = displayName;
 		this.email = email;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public URI<Account> getURI() {
+		return DtObjectUtil.createURI(this);
 	}
 
 	/**

@@ -20,7 +20,9 @@
 package io.vertigo.x.rules;
 
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
  * This class defines the Rule definition for an Object.
@@ -53,7 +55,6 @@ public final class RuleFilterDefinition implements Entity {
 	 * @param field
 	 * @param operator
 	 * @param expression
-	 * @param groupId
 	 * @param selId
 	 */
 	public RuleFilterDefinition(final Long id, final String field, final String operator, final String expression, final Long selId) {
@@ -63,6 +64,12 @@ public final class RuleFilterDefinition implements Entity {
 		this.operator = operator;
 		this.expression = expression;
 		this.selId = selId;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public URI<RuleFilterDefinition> getURI() {
+		return DtObjectUtil.createURI(this);
 	}
 
 	/**
@@ -78,7 +85,6 @@ public final class RuleFilterDefinition implements Entity {
 	public void setId(final Long id) {
 		this.id = id;
 	}
-
 
 	/**
 	 * @return the field
@@ -109,10 +115,10 @@ public final class RuleFilterDefinition implements Entity {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param selId
 	 */
-	public void setSelId(Long selId) {
+	public void setSelId(final Long selId) {
 		this.selId = selId;
 	}
 
