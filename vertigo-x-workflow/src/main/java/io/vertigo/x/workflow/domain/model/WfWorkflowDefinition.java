@@ -18,10 +18,11 @@
  */
 package io.vertigo.x.workflow.domain.model;
 
-import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+
 /**
  * Attention cette classe est générée automatiquement !
  * Objet de données WfWorkflowDefinition
@@ -43,10 +44,10 @@ public final class WfWorkflowDefinition implements Entity {
 	public URI<WfWorkflowDefinition> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
-	 * Récupère la valeur de la propriété 'Id Workflow definition'. 
+	 * Récupère la valeur de la propriété 'Id Workflow definition'.
 	 * @return Long wfwdId <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_X_WORKFLOW_ID", type = "ID", required = true, label = "Id Workflow definition")
@@ -65,8 +66,8 @@ public final class WfWorkflowDefinition implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'name'. 
-	 * @return String name 
+	 * Récupère la valeur de la propriété 'name'.
+	 * @return String name
 	 */
 	@Field(domain = "DO_X_WORKFLOW_LABEL", label = "name")
 	public String getName() {
@@ -76,7 +77,7 @@ public final class WfWorkflowDefinition implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'name'.
-	 * @param name String 
+	 * @param name String
 	 */
 	public void setName(final String name) {
 		this.name = name;
@@ -84,8 +85,8 @@ public final class WfWorkflowDefinition implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'date'. 
-	 * @return java.util.Date date 
+	 * Récupère la valeur de la propriété 'date'.
+	 * @return java.util.Date date
 	 */
 	@Field(domain = "DO_X_WORKFLOW_DATE", label = "date")
 	public java.util.Date getDate() {
@@ -95,7 +96,7 @@ public final class WfWorkflowDefinition implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'date'.
-	 * @param date java.util.Date 
+	 * @param date java.util.Date
 	 */
 	public void setDate(final java.util.Date date) {
 		this.date = date;
@@ -103,8 +104,8 @@ public final class WfWorkflowDefinition implements Entity {
 
 	/**
 	 * Champ : FOREIGN_KEY.
-	 * Récupère la valeur de la propriété 'startActivity'. 
-	 * @return Long wfadId 
+	 * Récupère la valeur de la propriété 'startActivity'.
+	 * @return Long wfadId
 	 */
 	@Field(domain = "DO_X_WORKFLOW_ID", type = "FOREIGN_KEY", label = "startActivity")
 	public Long getWfadId() {
@@ -114,7 +115,7 @@ public final class WfWorkflowDefinition implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Définit la valeur de la propriété 'startActivity'.
-	 * @param wfadId Long 
+	 * @param wfadId Long
 	 */
 	public void setWfadId(final Long wfadId) {
 		this.wfadId = wfadId;
@@ -124,22 +125,21 @@ public final class WfWorkflowDefinition implements Entity {
 	 * Association : WfTransitionDefinition.
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.workflow.domain.model.WfTransitionDefinition>
 	 */
-    @io.vertigo.dynamo.domain.stereotype.Association (
-    	name = "A_WFWD_WFTD",
-    	fkFieldName = "WFWD_ID",
-    	primaryDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
-    	primaryIsNavigable = false,
-    	primaryRole = "WfWorkflowDefinition",
-    	primaryLabel = "WfWorkflowDefinition",
-    	primaryMultiplicity = "0..1",
-    	foreignDtDefinitionName = "DT_WF_TRANSITION_DEFINITION",
-    	foreignIsNavigable = true,
-    	foreignRole = "WfTransitionDefinition",
-    	foreignLabel = "WfTransitionDefinition",
-    	foreignMultiplicity = "0..*"
-    )
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_WFWD_WFTD",
+			fkFieldName = "WFWD_ID",
+			primaryDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
+			primaryIsNavigable = false,
+			primaryRole = "WfWorkflowDefinition",
+			primaryLabel = "WfWorkflowDefinition",
+			primaryMultiplicity = "0..1",
+			foreignDtDefinitionName = "DT_WF_TRANSITION_DEFINITION",
+			foreignIsNavigable = true,
+			foreignRole = "WfTransitionDefinition",
+			foreignLabel = "WfTransitionDefinition",
+			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.workflow.domain.model.WfTransitionDefinition> getWfTransitionDefinitionList() {
-//		return this.<io.vertigo.x.workflow.domain.model.WfTransitionDefinition> getList(getWfTransitionDefinitionListURI());
+		//		return this.<io.vertigo.x.workflow.domain.model.WfTransitionDefinition> getList(getWfTransitionDefinitionListURI());
 		// On doit avoir une clé primaire renseignée. Si ce n'est pas le cas, on renvoie une liste vide
 		if (io.vertigo.dynamo.domain.util.DtObjectUtil.getId(this) == null) {
 			return new io.vertigo.dynamo.domain.model.DtList<>(io.vertigo.x.workflow.domain.model.WfTransitionDefinition.class);
@@ -158,41 +158,40 @@ public final class WfWorkflowDefinition implements Entity {
 	 * Association URI: WfTransitionDefinition.
 	 * @return URI de l'association
 	 */
-    @io.vertigo.dynamo.domain.stereotype.Association (
-    	name = "A_WFWD_WFTD",
-    	fkFieldName = "WFWD_ID",
-    	primaryDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
-    	primaryIsNavigable = false,
-    	primaryRole = "WfWorkflowDefinition",
-    	primaryLabel = "WfWorkflowDefinition",
-    	primaryMultiplicity = "0..1",
-    	foreignDtDefinitionName = "DT_WF_TRANSITION_DEFINITION",
-    	foreignIsNavigable = true,
-    	foreignRole = "WfTransitionDefinition",
-    	foreignLabel = "WfTransitionDefinition",
-    	foreignMultiplicity = "0..*"
-    )
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_WFWD_WFTD",
+			fkFieldName = "WFWD_ID",
+			primaryDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
+			primaryIsNavigable = false,
+			primaryRole = "WfWorkflowDefinition",
+			primaryLabel = "WfWorkflowDefinition",
+			primaryMultiplicity = "0..1",
+			foreignDtDefinitionName = "DT_WF_TRANSITION_DEFINITION",
+			foreignIsNavigable = true,
+			foreignRole = "WfTransitionDefinition",
+			foreignLabel = "WfTransitionDefinition",
+			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation getWfTransitionDefinitionDtListURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createDtListURIForSimpleAssociation(this, "A_WFWD_WFTD", "WfTransitionDefinition");
 	}
+
 	/**
 	 * Association : startActivity.
 	 * @return io.vertigo.x.workflow.domain.model.WfActivityDefinition
 	 */
-    @io.vertigo.dynamo.domain.stereotype.Association (
-    	name = "A_WFWD_WFAD",
-    	fkFieldName = "WFAD_ID",
-    	primaryDtDefinitionName = "DT_WF_ACTIVITY_DEFINITION",
-    	primaryIsNavigable = true,
-    	primaryRole = "StartActivity",
-    	primaryLabel = "startActivity",
-    	primaryMultiplicity = "0..1",
-    	foreignDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
-    	foreignIsNavigable = false,
-    	foreignRole = "WfWorkflowDefinition",
-    	foreignLabel = "WfWorkflowDefinition",
-    	foreignMultiplicity = "0..*"
-    )
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_WFWD_WFAD",
+			fkFieldName = "WFAD_ID",
+			primaryDtDefinitionName = "DT_WF_ACTIVITY_DEFINITION",
+			primaryIsNavigable = true,
+			primaryRole = "StartActivity",
+			primaryLabel = "startActivity",
+			primaryMultiplicity = "0..1",
+			foreignDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
+			foreignIsNavigable = false,
+			foreignRole = "WfWorkflowDefinition",
+			foreignLabel = "WfWorkflowDefinition",
+			foreignMultiplicity = "0..*")
 	public io.vertigo.x.workflow.domain.model.WfActivityDefinition getStartActivity() {
 		final io.vertigo.dynamo.domain.model.URI<io.vertigo.x.workflow.domain.model.WfActivityDefinition> fkURI = getStartActivityURI();
 		if (fkURI == null) {
@@ -201,14 +200,12 @@ public final class WfWorkflowDefinition implements Entity {
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
 		if (startActivity != null) {
 			// On s'assure que l'objet correspond à la bonne clé
-			final io.vertigo.dynamo.domain.model.URI<io.vertigo.x.workflow.domain.model.WfActivityDefinition> uri;
-			uri = io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(startActivity);
-			if (!fkURI.urn().equals(uri.urn())) {
+			if (!fkURI.equals(startActivity.getURI())) {
 				startActivity = null;
 			}
-		}		
+		}
 		if (startActivity == null) {
-			startActivity = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().read(fkURI);
+			startActivity = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return startActivity;
 	}
@@ -217,20 +214,19 @@ public final class WfWorkflowDefinition implements Entity {
 	 * Retourne l'URI: startActivity.
 	 * @return URI de l'association
 	 */
-    @io.vertigo.dynamo.domain.stereotype.Association (
-    	name = "A_WFWD_WFAD",
-    	fkFieldName = "WFAD_ID",
-    	primaryDtDefinitionName = "DT_WF_ACTIVITY_DEFINITION",
-    	primaryIsNavigable = true,
-    	primaryRole = "StartActivity",
-    	primaryLabel = "startActivity",
-    	primaryMultiplicity = "0..1",
-    	foreignDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
-    	foreignIsNavigable = false,
-    	foreignRole = "WfWorkflowDefinition",
-    	foreignLabel = "WfWorkflowDefinition",
-    	foreignMultiplicity = "0..*"
-    )
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_WFWD_WFAD",
+			fkFieldName = "WFAD_ID",
+			primaryDtDefinitionName = "DT_WF_ACTIVITY_DEFINITION",
+			primaryIsNavigable = true,
+			primaryRole = "StartActivity",
+			primaryLabel = "startActivity",
+			primaryMultiplicity = "0..1",
+			foreignDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
+			foreignIsNavigable = false,
+			foreignRole = "WfWorkflowDefinition",
+			foreignLabel = "WfWorkflowDefinition",
+			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.x.workflow.domain.model.WfActivityDefinition> getStartActivityURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_WFWD_WFAD", io.vertigo.x.workflow.domain.model.WfActivityDefinition.class);
 	}
