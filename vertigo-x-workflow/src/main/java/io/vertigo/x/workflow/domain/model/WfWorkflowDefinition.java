@@ -198,13 +198,7 @@ public final class WfWorkflowDefinition implements Entity {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (startActivity != null) {
-			// On s'assure que l'objet correspond à la bonne clé
-			if (!fkURI.equals(startActivity.getURI())) {
-				startActivity = null;
-			}
-		}
-		if (startActivity == null) {
+		if (startActivity == null || !fkURI.equals(startActivity.getURI())) {
 			startActivity = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return startActivity;

@@ -165,13 +165,7 @@ public final class WfTransitionDefinition implements Entity {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (transitionFrom != null) {
-			// On s'assure que l'objet correspond à la bonne clé
-			if (!fkURI.equals(transitionFrom.getURI())) {
-				transitionFrom = null;
-			}
-		}
-		if (transitionFrom == null) {
+		if (transitionFrom == null || !fkURI.equals(transitionFrom.getURI())) {
 			transitionFrom = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return transitionFrom;
@@ -221,13 +215,7 @@ public final class WfTransitionDefinition implements Entity {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (transitionTo != null) {
-			// On s'assure que l'objet correspond à la bonne clé
-			if (!fkURI.equals(transitionTo.getURI())) {
-				transitionTo = null;
-			}
-		}
-		if (transitionTo == null) {
+		if (transitionTo == null || !fkURI.equals(transitionTo.getURI())) {
 			transitionTo = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return transitionTo;

@@ -169,13 +169,7 @@ public final class WfActivityDefinition implements Entity {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (wfMultiplicityDefinition != null) {
-			// On s'assure que l'objet correspond à la bonne clé
-			if (!fkURI.equals(wfMultiplicityDefinition.getURI())) {
-				wfMultiplicityDefinition = null;
-			}
-		}
-		if (wfMultiplicityDefinition == null) {
+		if (wfMultiplicityDefinition == null || !fkURI.equals(wfMultiplicityDefinition.getURI())) {
 			wfMultiplicityDefinition = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return wfMultiplicityDefinition;
@@ -225,13 +219,7 @@ public final class WfActivityDefinition implements Entity {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (wfWorkflowDefinition != null) {
-			// On s'assure que l'objet correspond à la bonne clé
-			if (!fkURI.equals(wfWorkflowDefinition.getURI())) {
-				wfWorkflowDefinition = null;
-			}
-		}
-		if (wfWorkflowDefinition == null) {
+		if (wfWorkflowDefinition == null || !fkURI.equals(wfWorkflowDefinition.getURI())) {
 			wfWorkflowDefinition = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return wfWorkflowDefinition;
