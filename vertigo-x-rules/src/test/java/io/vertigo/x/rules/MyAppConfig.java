@@ -51,12 +51,11 @@ public class MyAppConfig {
 	public static AppConfig config() {
 		// @formatter:off
 		final AppConfigBuilder appConfigBuilder =  new AppConfigBuilder()
-				.beginBootModule("fr")
+				.beginBoot()
+				.withLocales("fr")
 					.beginPlugin(ClassPathResourceResolverPlugin.class).endPlugin()
 					.beginPlugin(AnnotationLoaderPlugin.class).endPlugin()
 					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
-				.endModule()
-				.beginBoot()
 					.silently()
 				.endBoot()
 				.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
