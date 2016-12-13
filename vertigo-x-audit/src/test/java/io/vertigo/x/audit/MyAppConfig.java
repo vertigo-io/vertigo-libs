@@ -36,15 +36,12 @@ public class MyAppConfig {
 	 * @return the application config for testing
 	 */
 	public static AppConfig config() {
-		final AppConfigBuilder acb = new AppConfigBuilder();
-
-		acb.beginModule(AuditFeatures.class)
-			.getModuleConfigBuilder()
-			.addPlugin(MemoryAuditTraceStorePlugin.class)
-		   .endModule();
-
-		return acb.build();
+		return new AppConfigBuilder()
+				.beginModule(AuditFeatures.class)
+				.getModuleConfigBuilder()
+				.addPlugin(MemoryAuditTraceStorePlugin.class)
+				.endModule()
+				.build();
 	}
-
 
 }
