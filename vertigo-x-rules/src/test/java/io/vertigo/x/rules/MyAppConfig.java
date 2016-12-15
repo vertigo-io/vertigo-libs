@@ -58,22 +58,24 @@ public class MyAppConfig {
 					.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
 					.silently()
 				.endBoot()
-				.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
-				.beginModule(CommonsFeatures.class).endModule()
-				.beginModule(DynamoFeatures.class).endModule()
-				.beginModule(AccountFeatures.class)
+				.addModule(new PersonaFeatures()
+						.withUserSession(TestUserSession.class)
+						.build())
+				.addModule(new CommonsFeatures().build())
+				.addModule(new DynamoFeatures().build())
+				.addModule(new AccountFeatures()
 					.getModuleConfigBuilder()
 					.addPlugin(MemoryAccountStorePlugin.class)
-				.endModule();
+				.build());
 
-		appConfigBuilder.beginModule(RuleFeatures.class)
+		appConfigBuilder.addModule(new RuleFeatures()
 							.getModuleConfigBuilder()
 							.addDefinitionProvider(MyDummyDtObjectProvider.class)
 							.addPlugin(MemoryRuleStorePlugin.class)
 							.addPlugin(MemoryRuleConstantsStorePlugin.class)
 							.addPlugin(SimpleRuleSelectorPlugin.class)
 							.addPlugin(SimpleRuleValidatorPlugin.class)
-						.endModule();
+						.build());
 		return appConfigBuilder.build();
 		// @formatter:on
 	}

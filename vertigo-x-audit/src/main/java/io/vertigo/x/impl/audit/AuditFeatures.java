@@ -18,7 +18,6 @@
  */
 package io.vertigo.x.impl.audit;
 
-
 import io.vertigo.app.config.Features;
 import io.vertigo.x.audit.AuditManager;
 
@@ -37,7 +36,7 @@ public final class AuditFeatures extends Features {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void setUp() {
+	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.addDefinitionProvider(AuditTraceDefinitionProvider.class)
 				.addComponent(AuditManager.class, AuditManagerImpl.class);

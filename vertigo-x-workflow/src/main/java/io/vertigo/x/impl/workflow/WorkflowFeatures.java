@@ -40,7 +40,7 @@ public final class WorkflowFeatures extends Features {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void setUp() {
+	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.addDefinitionProvider(WorkflowProvider.class)
 				.addComponent(WorkflowManager.class, WorkflowManagerImpl.class)
@@ -49,4 +49,3 @@ public final class WorkflowFeatures extends Features {
 	}
 
 }
-

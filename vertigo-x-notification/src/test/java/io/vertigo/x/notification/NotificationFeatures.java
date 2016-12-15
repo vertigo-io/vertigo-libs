@@ -35,13 +35,6 @@ public final class NotificationFeatures extends Features {
 		super("x-notification");
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected void setUp() {
-		getModuleConfigBuilder()
-				.addComponent(NotificationManager.class, NotificationManagerImpl.class);
-	}
-
 	/**
 	 * @return Active redis plugin
 	 */
@@ -49,5 +42,12 @@ public final class NotificationFeatures extends Features {
 		getModuleConfigBuilder()
 				.addPlugin(RedisNotificationPlugin.class);
 		return this;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected void buildFeatures() {
+		getModuleConfigBuilder()
+				.addComponent(NotificationManager.class, NotificationManagerImpl.class);
 	}
 }

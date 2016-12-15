@@ -35,14 +35,6 @@ public final class AccountFeatures extends Features {
 		super("x-account");
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected void setUp() {
-		getModuleConfigBuilder()
-				.addDefinitionProvider(AccountDefinitionProvider.class)
-				.addComponent(AccountManager.class, AccountManagerImpl.class);
-	}
-
 	/**
 	 * Defines REDIS as the database to store the accounts
 	 * @return the features
@@ -52,4 +44,13 @@ public final class AccountFeatures extends Features {
 				.addPlugin(RedisAccountStorePlugin.class);
 		return this;
 	}
+
+	/** {@inheritDoc} */
+	@Override
+	protected void buildFeatures() {
+		getModuleConfigBuilder()
+				.addDefinitionProvider(AccountDefinitionProvider.class)
+				.addComponent(AccountManager.class, AccountManagerImpl.class);
+	}
+
 }

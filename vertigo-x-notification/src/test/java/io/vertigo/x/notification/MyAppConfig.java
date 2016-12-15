@@ -20,6 +20,7 @@ package io.vertigo.x.notification;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
@@ -52,19 +53,33 @@ public final class MyAppConfig {
 				.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
 				.silently()
 			.endBoot()
-			.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
-			.beginModule(CommonsFeatures.class).endModule()
-			.beginModule(DynamoFeatures.class).endModule();
+			.addModule(new PersonaFeatures()
+					.withUserSession(TestUserSession.class)
+					.build())
+			.addModule(new CommonsFeatures().build())
+			.addModule(new DynamoFeatures().build());
 		if (redis){
 			return  appConfigBuilder
-			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort, redisDatabase).endModule()
-			.beginModule(AccountFeatures.class).withRedis().endModule()
-			.beginModule(NotificationFeatures.class).withRedis().endModule();
+			.addModule(new ConnectorsFeatures()
+				.withRedis(redisHost, redisPort, redisDatabase)
+				.build())
+			.addModule(new AccountFeatures()
+					.withRedis()
+					.build())
+			.addModule(new NotificationFeatures()
+					.withRedis()
+					.build());
 		}
 		//else we use memory
 		return  appConfigBuilder
-				.beginModule(AccountFeatures.class).getModuleConfigBuilder().addPlugin(MemoryAccountStorePlugin.class).endModule()
-				.beginModule(NotificationFeatures.class).getModuleConfigBuilder().addPlugin(MemoryNotificationPlugin.class).endModule();
+				.addModule(new AccountFeatures()
+						.getModuleConfigBuilder()
+						.addPlugin(MemoryAccountStorePlugin.class)
+						.build())
+				.addModule(new NotificationFeatures()
+						.getModuleConfigBuilder()
+						.addPlugin(MemoryNotificationPlugin.class)
+						.build());
 		// @formatter:on
 	}
 
@@ -76,14 +91,15 @@ public final class MyAppConfig {
 	public static AppConfig vegaConfig() {
 		// @formatter:off
 		return createAppConfigBuilder(true)
-			.beginModule(VegaFeatures.class)
+			.addModule(new VegaFeatures()
 				.withSecurity()
 				.withEmbeddedServer(WS_PORT)
-			.endModule()
-			.beginModule("ws-comment").withNoAPI()
+				.build())
+			.addModule(new ModuleConfigBuilder("ws-comment")
+				.withNoAPI()
 				.addComponent(NotificationWebServices.class)
 				.addComponent(TestLoginWebServices.class)
-			.endModule()
+				.build())
 			.build();
 		// @formatter:on
 	}

@@ -37,10 +37,10 @@ public class MyAppConfig {
 	 */
 	public static AppConfig config() {
 		return new AppConfigBuilder()
-				.beginModule(AuditFeatures.class)
-				.getModuleConfigBuilder()
-				.addPlugin(MemoryAuditTraceStorePlugin.class)
-				.endModule()
+				.addModule(new AuditFeatures()
+						.getModuleConfigBuilder()
+						.addPlugin(MemoryAuditTraceStorePlugin.class)
+						.build())
 				.build();
 	}
 

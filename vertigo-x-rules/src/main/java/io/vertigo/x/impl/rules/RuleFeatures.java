@@ -40,7 +40,7 @@ public final class RuleFeatures extends Features {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void setUp() {
+	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.addDefinitionProvider(RuleProvider.class)
 				.addComponent(RuleManager.class, RuleManagerImpl.class)
@@ -58,4 +58,3 @@ public final class RuleFeatures extends Features {
 	}
 
 }
-

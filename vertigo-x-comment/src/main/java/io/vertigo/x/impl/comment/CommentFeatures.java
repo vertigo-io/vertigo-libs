@@ -35,12 +35,6 @@ public final class CommentFeatures extends Features {
 		super("x-comment");
 	}
 
-	@Override
-	protected void setUp() {
-		getModuleConfigBuilder()
-				.addComponent(CommentManager.class, CommentManagerImpl.class);
-	}
-
 	/**
 	 * Defines REDIS as the database to store the comments
 	 * @return the features
@@ -49,5 +43,11 @@ public final class CommentFeatures extends Features {
 		getModuleConfigBuilder()
 				.addPlugin(RedisCommentPlugin.class);
 		return this;
+	}
+
+	@Override
+	protected void buildFeatures() {
+		getModuleConfigBuilder()
+				.addComponent(CommentManager.class, CommentManagerImpl.class);
 	}
 }

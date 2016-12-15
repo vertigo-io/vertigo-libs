@@ -20,6 +20,7 @@ package io.vertigo.x.comment;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
@@ -50,12 +51,12 @@ public final class MyAppConfig {
 				.beginPlugin(DomainDynamicRegistryPlugin.class).endPlugin()
 				.silently()
 			.endBoot()
-			.beginModule(PersonaFeatures.class).withUserSession(TestUserSession.class).endModule()
-			.beginModule(CommonsFeatures.class).endModule()
-			.beginModule(DynamoFeatures.class).endModule()
-			.beginModule(ConnectorsFeatures.class).withRedis(redisHost, redisPort, redisDatabase).endModule()
-			.beginModule(AccountFeatures.class).withRedis().endModule()
-			.beginModule(CommentFeatures.class).withRedis().endModule();
+			.addModule( new PersonaFeatures().withUserSession(TestUserSession.class).build())
+			.addModule(new CommonsFeatures().build())
+			.addModule(new DynamoFeatures().build())
+			.addModule(new ConnectorsFeatures().withRedis(redisHost, redisPort, redisDatabase).build())
+			.addModule(new AccountFeatures().withRedis().build())
+			.addModule(new CommentFeatures().withRedis().build());
 		// @formatter:on
 	}
 
@@ -67,14 +68,15 @@ public final class MyAppConfig {
 	public static AppConfig vegaConfig() {
 		// @formatter:off
 		return createAppConfigBuilder()
-			.beginModule(VegaFeatures.class)
+			.addModule(new VegaFeatures()
 				.withSecurity()
 				.withEmbeddedServer(WS_PORT)
-			.endModule()
-			.beginModule("ws-comment").withNoAPI()
+				.build())
+			.addModule(new ModuleConfigBuilder("ws-comment")
+				.withNoAPI()
 				.addComponent(CommentWebServices.class)
 				.addComponent(TestLoginWebServices.class)
-			.endModule()
+				.build())
 			.build();
 		// @formatter:on
 	}

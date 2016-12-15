@@ -34,15 +34,10 @@ public final class ConnectorsFeatures extends Features {
 		super("connectors");
 	}
 
-	@Override
-	protected void setUp() {
-		//
-	}
-
 	/**
 	 * Adds a REDIS connector.
 	 * @param host the REDIS host
-	 * @param port the REDIS port 
+	 * @param port the REDIS port
 	 * @param database the index of the REDIS database
 	 * @return the REDIS connector
 	 */
@@ -53,7 +48,7 @@ public final class ConnectorsFeatures extends Features {
 	/**
 	 * Adds a REDIS connector.
 	 * @param host the REDIS host
-	 * @param port the REDIS port 
+	 * @param port the REDIS port
 	 * @param password the REDIS password
 	 * @param database the index of the REDIS database
 	 * @return the REDIS connector
@@ -69,4 +64,10 @@ public final class ConnectorsFeatures extends Features {
 				.endComponent();
 		return this;
 	}
+
+	@Override
+	protected void buildFeatures() {
+		//
+	}
+
 }
