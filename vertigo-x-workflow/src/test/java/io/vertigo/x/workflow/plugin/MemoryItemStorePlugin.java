@@ -19,8 +19,11 @@
 
 package io.vertigo.x.workflow.plugin;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.x.impl.workflow.ItemStorePlugin;
@@ -42,6 +45,14 @@ public class MemoryItemStorePlugin implements ItemStorePlugin {
 	@Override
 	public DtObject readItem(final Long itemId) {
 		return inMemoryItemStore.get(itemId);
+	}
+
+	@Override
+	public Map<Long, DtObject> readItems(List<Long> itemIds) {
+		return itemIds.stream()
+					  .collect(
+							  	Collectors.toMap(Function.identity(), this::readItem)
+							  );
 	}
 
 }

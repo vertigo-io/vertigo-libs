@@ -129,4 +129,29 @@ public interface RuleStore {
 	 */
 	void updateFilter(RuleFilterDefinition ruleFilterDefinition);
 
+	/**
+	 * Find rules by criteria
+	 * @param criteria
+	 * @param items
+	 * @return a list of Rule Definition
+	 */
+	List<RuleDefinition> findRulesByCriteria(RuleCriteria criteria, List<Long> items);
+	
+	/**
+	 * Removes all the specified rules
+	 * @param list list of ids
+	 */
+	void removeRules(List<Long> list);
+	
+	/**
+	 * Removes all the specified Selectors
+	 * @param list list of ids
+	 */
+	void removeSelectors(List<Long> list);
+	
+	/**
+	 * Removes all Selectors and linked filters associated to the provided groupId
+	 * @param groupId groupId
+	 */
+	void removeSelectorsFiltersByGroupId(String groupId);
 }

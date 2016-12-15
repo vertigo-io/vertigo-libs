@@ -135,7 +135,7 @@ public class AuditManagerTest {
 		assertThat(auditTraceFetch4).usingFieldByFieldElementComparator().contains(auditTrace1);
 
 		//Criteria User
-		final AuditTraceCriteria auditTraceCriteria5 = new AuditTraceCriteriaBuilder().withUser("USER3").build();
+		final AuditTraceCriteria auditTraceCriteria5 = new AuditTraceCriteriaBuilder().withUsername("USER3").build();
 		final List<AuditTrace> auditTraceFetch5 = auditManager.findTrace(auditTraceCriteria5);
 
 		assertThat(auditTraceFetch5).hasSize(1);

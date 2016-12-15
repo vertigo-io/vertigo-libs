@@ -185,24 +185,6 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void detach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
-		Assertion.checkNotNull(accountURI);
-		Assertion.checkNotNull(groupURI);
-		//-----
-		try (final Jedis jedis = redisConnector.getResource()) {
-			try (final Transaction tx = jedis.multi()) {
-				tx.lrem("accountsByGroup:" + groupURI.getId(), 0, accountURI.getId().toString());
-				tx.lrem("groupsByAccount:" + accountURI.getId(), 0, groupURI.getId().toString());
-				tx.exec();
-			} catch (final IOException ex) {
-				throw new WrappedException(ex);
-			}
-
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
 		Assertion.checkNotNull(groupURI);
 		//-----
@@ -288,5 +270,17 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 			return Optional.empty();
 		}
 		return Optional.of(PhotoCodec.map2vFile(result));
+	}
+
+	@Override
+	public void reset() {
+		try (final Jedis jedis = redisConnector.getResource()) {
+			try (final Transaction tx = jedis.multi()) {
+				tx.del("accounts", "groups","accountsByGroup","photoByAccount");
+				tx.exec();
+			} catch (final IOException ex) {
+				throw new WrappedException(ex);
+			}
+		}
 	}
 }

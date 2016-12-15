@@ -33,7 +33,7 @@ public final class WfDecision implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long wfeId;
-	private String user;
+	private String username;
 	private Integer choice;
 	private java.util.Date decisionDate;
 	private String comments;
@@ -70,17 +70,17 @@ public final class WfDecision implements Entity {
 	 * @return String user
 	 */
 	@Field(domain = "DO_X_WORKFLOW_USER", label = "user")
-	public String getUser() {
-		return user;
+	public String getUsername() {
+		return username;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'user'.
+	 * Définit la valeur de la propriété 'username'.
 	 * @param user String
 	 */
-	public void setUser(final String user) {
-		this.user = user;
+	public void setUsername(final String username) {
+		this.username = username;
 	}
 
 	/**

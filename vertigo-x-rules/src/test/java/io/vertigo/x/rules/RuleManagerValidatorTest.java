@@ -151,7 +151,7 @@ public class RuleManagerValidatorTest {
 		final RuleDefinition rule = new RuleDefinition(null, 1L);
 		ruleManager.addRule(rule);
 
-		final RuleConditionDefinition condition = new RuleConditionDefinition(null, "division", "=", "BTL", rule.getId());
+		final RuleConditionDefinition condition = new RuleConditionDefinition(null, "DIVISION", "=", "BTL", rule.getId());
 		ruleManager.addCondition(condition);
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
@@ -204,10 +204,10 @@ public class RuleManagerValidatorTest {
 		final RuleDefinition rule = new RuleDefinition(null, 1L);
 		ruleManager.addRule(rule);
 
-		final RuleConditionDefinition condition1 = new RuleConditionDefinition(null, "division", "=", "BTL", rule.getId());
+		final RuleConditionDefinition condition1 = new RuleConditionDefinition(null, "DIVISION", "=", "BTL", rule.getId());
 		ruleManager.addCondition(condition1);
 
-		final RuleConditionDefinition condition2 = new RuleConditionDefinition(null, "entity", "=", "ENT_1", rule.getId());
+		final RuleConditionDefinition condition2 = new RuleConditionDefinition(null, "ENTITY", "=", "ENT_1", rule.getId());
 		ruleManager.addCondition(condition2);
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
@@ -245,13 +245,13 @@ public class RuleManagerValidatorTest {
 		final RuleDefinition rule_1 = new RuleDefinition(null, 1L);
 		ruleManager.addRule(rule_1);
 
-		final RuleConditionDefinition condition_1 = new RuleConditionDefinition(null, "division", "=", "BTL", rule_1.getId());
+		final RuleConditionDefinition condition_1 = new RuleConditionDefinition(null, "DIVISION", "=", "BTL", rule_1.getId());
 		ruleManager.addCondition(condition_1);
 
 		final RuleDefinition rule_2 = new RuleDefinition(null, 1L);
 		ruleManager.addRule(rule_2);
 
-		final RuleConditionDefinition condition_2 = new RuleConditionDefinition(null, "entity", "=", "ENT_1", rule_2.getId());
+		final RuleConditionDefinition condition_2 = new RuleConditionDefinition(null, "ENTITY", "=", "ENT_1", rule_2.getId());
 		ruleManager.addCondition(condition_2);
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
@@ -291,19 +291,19 @@ public class RuleManagerValidatorTest {
 		final RuleDefinition rule_1 = new RuleDefinition(null, 1L);
 		ruleManager.addRule(rule_1);
 
-		final RuleConditionDefinition condition_1_1 = new RuleConditionDefinition(null, "division", "=", "BTL", rule_1.getId());
+		final RuleConditionDefinition condition_1_1 = new RuleConditionDefinition(null, "DIVISION", "=", "BTL", rule_1.getId());
 		ruleManager.addCondition(condition_1_1);
 
-		final RuleConditionDefinition condition_2_1 = new RuleConditionDefinition(null, "entity", "=", "ENT", rule_1.getId());
+		final RuleConditionDefinition condition_2_1 = new RuleConditionDefinition(null, "ENTITY", "=", "ENT", rule_1.getId());
 		ruleManager.addCondition(condition_2_1);
 
 		final RuleDefinition rule_2 = new RuleDefinition(null, 1L);
 		ruleManager.addRule(rule_2);
 
-		final RuleConditionDefinition condition_1_2 = new RuleConditionDefinition(null, "division", "=", "DIV", rule_2.getId());
+		final RuleConditionDefinition condition_1_2 = new RuleConditionDefinition(null, "DIVISION", "=", "DIV", rule_2.getId());
 		ruleManager.addCondition(condition_1_2);
 
-		final RuleConditionDefinition condition_2_2 = new RuleConditionDefinition(null, "entity", "=", "MAR", rule_2.getId());
+		final RuleConditionDefinition condition_2_2 = new RuleConditionDefinition(null, "ENTITY", "=", "MAR", rule_2.getId());
 		ruleManager.addCondition(condition_2_2);
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();

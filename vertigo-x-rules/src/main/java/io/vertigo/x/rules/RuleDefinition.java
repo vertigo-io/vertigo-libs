@@ -43,6 +43,9 @@ public final class RuleDefinition implements Entity {
 	@Field(domain = "DO_X_RULES_WEAK_ID", label = "itemId")
 	private Long itemId;
 
+	@Field(domain = "DO_X_RULES_LABEL", label = "Label")
+	private String label;
+
 	private io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.rules.RuleConditionDefinition> ruleConditionDefinition;
 	
 	/** {@inheritDoc} */
@@ -95,6 +98,20 @@ public final class RuleDefinition implements Entity {
 	 */
 	public void setItemId(final Long itemId) {
 		this.itemId = itemId;
+	}
+
+	/**
+	 * @return the label
+	 */
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * @param label the label to set
+	 */
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	/**

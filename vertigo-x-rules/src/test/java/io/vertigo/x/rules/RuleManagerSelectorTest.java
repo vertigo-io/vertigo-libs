@@ -188,7 +188,7 @@ public class RuleManagerSelectorTest {
 		final SelectorDefinition selector = new SelectorDefinition(null, 1L, accountGroup.getId());
 		ruleManager.addSelector(selector);
 
-		final RuleFilterDefinition filterDefinition = new RuleFilterDefinition(null, "division", "=", "BTL", selector.getId());
+		final RuleFilterDefinition filterDefinition = new RuleFilterDefinition(null, "DIVISION", "=", "BTL", selector.getId());
 		ruleManager.addFilter(filterDefinition);
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
@@ -225,10 +225,10 @@ public class RuleManagerSelectorTest {
 		final SelectorDefinition selector_1 = new SelectorDefinition(null, 1L, accountGroup.getId());
 		ruleManager.addSelector(selector_1);
 
-		final RuleFilterDefinition filterDefinition_1_1 = new RuleFilterDefinition(null, "division", "=", "BTL", selector_1.getId());
+		final RuleFilterDefinition filterDefinition_1_1 = new RuleFilterDefinition(null, "DIVISION", "=", "BTL", selector_1.getId());
 		ruleManager.addFilter(filterDefinition_1_1);
 
-		final RuleFilterDefinition filterDefinition_1_2 = new RuleFilterDefinition(null, "entity", "=", "ENT", selector_1.getId());
+		final RuleFilterDefinition filterDefinition_1_2 = new RuleFilterDefinition(null, "ENTITY", "=", "ENT", selector_1.getId());
 		ruleManager.addFilter(filterDefinition_1_2);
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
@@ -305,20 +305,20 @@ public class RuleManagerSelectorTest {
 		final SelectorDefinition selector_1 = new SelectorDefinition(null, 1L, accountGroup_1.getId());
 		ruleManager.addSelector(selector_1);
 
-		final RuleFilterDefinition filterDefinition_1_1 = new RuleFilterDefinition(null, "division", "=", "BTL", selector_1.getId());
+		final RuleFilterDefinition filterDefinition_1_1 = new RuleFilterDefinition(null, "DIVISION", "=", "BTL", selector_1.getId());
 		ruleManager.addFilter(filterDefinition_1_1);
 
-		final RuleFilterDefinition filterDefinition_1_2 = new RuleFilterDefinition(null, "entity", "=", "ENT", selector_1.getId());
+		final RuleFilterDefinition filterDefinition_1_2 = new RuleFilterDefinition(null, "ENTITY", "=", "ENT", selector_1.getId());
 		ruleManager.addFilter(filterDefinition_1_2);
 
 		// Selector 2 created to Item 1
 		final SelectorDefinition selector_2 = new SelectorDefinition(null, 1L, accountGroup_2.getId());
 		ruleManager.addSelector(selector_2);
 
-		final RuleFilterDefinition filterDefinition_2_1 = new RuleFilterDefinition(null, "division", "=", "BTL", selector_2.getId());
+		final RuleFilterDefinition filterDefinition_2_1 = new RuleFilterDefinition(null, "DIVISION", "=", "BTL", selector_2.getId());
 		ruleManager.addFilter(filterDefinition_2_1);
 		
-		final RuleFilterDefinition filterDefinition_2_2 = new RuleFilterDefinition(null, "nom", "=", "DONALD", selector_2.getId());
+		final RuleFilterDefinition filterDefinition_2_2 = new RuleFilterDefinition(null, "NOM", "=", "DONALD", selector_2.getId());
 		ruleManager.addFilter(filterDefinition_2_2);
 
 		// 

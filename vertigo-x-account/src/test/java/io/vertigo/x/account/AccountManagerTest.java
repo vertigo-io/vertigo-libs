@@ -156,18 +156,11 @@ public final class AccountManagerTest {
 		Assert.assertEquals(2, accountManager.getStore().getAccountURIs(groupURI).size());
 		Assert.assertEquals(10 + 3, accountManager.getStore().getAccountURIs(groupAllURI).size());
 		//---
-		accountManager.getStore().detach(accountURI1, groupURI);
-		Assert.assertEquals(1, accountManager.getStore().getGroupURIs(accountURI0).size());
-		Assert.assertEquals(1, accountManager.getStore().getGroupURIs(accountURI1).size());
-		Assert.assertEquals(2, accountManager.getStore().getGroupURIs(accountURI2).size());
-		Assert.assertEquals(1, accountManager.getStore().getAccountURIs(groupURI).size());
-		Assert.assertEquals(10 + 3, accountManager.getStore().getAccountURIs(groupAllURI).size());
-		//---
 		accountManager.getStore().attach(accountURI0, groupURI);
 		Assert.assertEquals(2, accountManager.getStore().getGroupURIs(accountURI0).size());
-		Assert.assertEquals(1, accountManager.getStore().getGroupURIs(accountURI1).size());
+		Assert.assertEquals(2, accountManager.getStore().getGroupURIs(accountURI1).size());
 		Assert.assertEquals(2, accountManager.getStore().getGroupURIs(accountURI2).size());
-		Assert.assertEquals(2, accountManager.getStore().getAccountURIs(groupURI).size());
+		Assert.assertEquals(3, accountManager.getStore().getAccountURIs(groupURI).size());
 		Assert.assertEquals(10 + 3, accountManager.getStore().getAccountURIs(groupAllURI).size());
 	}
 

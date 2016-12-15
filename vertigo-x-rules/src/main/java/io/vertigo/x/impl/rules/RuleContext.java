@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -35,7 +36,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  */
 public final class RuleContext {
 
-	private final Map<String, String> context;
+	private final Map<String, Object> context;
 
 	/**
 	 *
@@ -45,14 +46,25 @@ public final class RuleContext {
 	public RuleContext(final DtObject dtObject, final RuleConstants constants) {
 		// Merging Object fields with constants
 
-		final Map<String, String> mapMerge = new HashMap<>();
+		final Map<String, Object> mapMerge = new HashMap<>();
 
 		//Merge of data fields
 		final DtDefinition definition = DtObjectUtil.findDtDefinition(dtObject);
 		final List<DtField> fields = definition.getFields();
 
 		for (final DtField dtField : fields) {
-			mapMerge.put(dtField.name(), String.valueOf(dtField.getDataAccessor().getValue(dtObject))); //TODO: ne pas utiliser toString
+			
+			Object val = dtField.getDataAccessor().getValue(dtObject);
+			if (val != null) {
+				if (val instanceof List) {
+					List<Object> valList = (List<Object>) val;
+					List<String> valListString = valList.stream().map( v -> v.toString()).collect(Collectors.toList());
+					mapMerge.put(dtField.getName(), valListString);
+				} else {
+					mapMerge.put(dtField.getName(), val.toString());
+				}
+			}
+
 		}
 
 		//Merge of constants
@@ -68,7 +80,7 @@ public final class RuleContext {
 	/**
 	 * @return the context
 	 */
-	public Map<String, String> getContext() {
+	public Map<String, Object> getContext() {
 		return context;
 	}
 

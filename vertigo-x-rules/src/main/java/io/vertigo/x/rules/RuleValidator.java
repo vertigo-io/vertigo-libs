@@ -20,6 +20,7 @@
 package io.vertigo.x.rules;
 
 import java.util.List;
+import java.util.Map;
 
 import io.vertigo.x.impl.rules.RuleContext;
 import io.vertigo.x.rules.RuleDefinition;
@@ -38,6 +39,15 @@ public interface RuleValidator {
 	 * @param ruleContext
 	 * @return true is the rule is valid, false otherwise
 	 */
-	boolean isRuleValid(Long idActivityDefinition, final List<RuleDefinition> rules, RuleContext ruleContext);
+	boolean isRuleValid(final List<RuleDefinition> rules, RuleContext ruleContext);
 
+	
+	/**
+	 * Validate a rule for an activity using rules and conditions provided
+	 * @param rules rules
+	 * @param mapConditions conditions linked to the rules
+	 * @param ruleContext ruleContext
+	 * @return true is the rule is valid
+	 */
+	boolean isRuleValid(List<RuleDefinition> rules, Map<Long, List<RuleConditionDefinition>> mapConditions, RuleContext ruleContext);
 }

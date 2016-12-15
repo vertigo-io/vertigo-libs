@@ -31,15 +31,18 @@ public final class WfTransitionBuilder implements Builder<WfTransitionDefinition
 	private final static String DEFAULT_VALUE_NAME = "default";
 
 	private String myName;
+	private final Long wfwdId;
 	private final Long wfadIdFrom;
 	private final Long wfadIdTo;
 
 	/**
 	 * Builder for transitions
+	 * @param wfwdId 
 	 * @param wfadIdFrom
 	 * @param wfadIdTo
 	 */
-	public WfTransitionBuilder(final Long wfadIdFrom, final Long wfadIdTo) {
+	public WfTransitionBuilder(final Long wfwdId, final Long wfadIdFrom, final Long wfadIdTo) {
+		this.wfwdId = wfwdId;
 		this.wfadIdFrom = wfadIdFrom;
 		this.wfadIdTo = wfadIdTo;
 	}
@@ -61,6 +64,7 @@ public final class WfTransitionBuilder implements Builder<WfTransitionDefinition
 		wfTransitionDefinition.setName(myName == null ? DEFAULT_VALUE_NAME : myName);
 		wfTransitionDefinition.setWfadIdFrom(wfadIdFrom);
 		wfTransitionDefinition.setWfadIdTo(wfadIdTo);
+		wfTransitionDefinition.setWfwdId(wfwdId);
 
 		return wfTransitionDefinition;
 	}

@@ -31,6 +31,7 @@ import io.vertigo.dynamo.file.model.VFile;
  * @author pchretien
  */
 public interface AccountStore {
+	
 	/**
 	 * @return the number of accounts
 	 */
@@ -47,13 +48,6 @@ public interface AccountStore {
 	 * @return Set of groups of this account
 	 */
 	Set<URI<AccountGroup>> getGroupURIs(URI<Account> accountURI);
-
-	/**
-	 * Saves a collection of accounts.
-	 * Caution : all the accounts must have an id.
-	 * @param accounts the list of accounts
-	 */
-	void saveAccounts(List<Account> accounts);
 
 	/**
 	 * @return the number of groups.
@@ -79,7 +73,22 @@ public interface AccountStore {
 	 * @return the list of acccounts.
 	 */
 	Set<URI<Account>> getAccountURIs(URI<AccountGroup> groupURI);
+	
+	/**
+	 * Gets the photo of an account defined by its URI.
+	 *
+	 * @param accountURI the account defined by its URI
+	 * @return the photo as a file
+	 */
+	Optional<VFile> getPhoto(URI<Account> accountURI);
 
+	/**
+	 * Saves a collection of accounts.
+	 * Caution : all the accounts must have an id.
+	 * @param accounts the list of accounts
+	 */
+	void saveAccounts(List<Account> accounts);
+	
 	/**
 	 * Saves a group.
 	 * @param group the group
@@ -92,13 +101,15 @@ public interface AccountStore {
 	 * @param groupURI the group
 	 */
 	void attach(URI<Account> accountURI, URI<AccountGroup> groupURI);
-
+	
 	/**
-	 * Detaches an account from a group.
-	 * @param accountURI the account defined by its URI
-	 * @param groupURI
+	 * Reset:
+	 * - All the accounts
+	 * - All the groups
+	 * - All the links accounts-group
+	 * - All the Photos
 	 */
-	void detach(URI<Account> accountURI, URI<AccountGroup> groupURI);
+	void reset();
 
 	/**
 	 * Defines a photo to an account.
@@ -107,13 +118,5 @@ public interface AccountStore {
 	 * @param photo the photo
 	 */
 	void setPhoto(URI<Account> accountURI, VFile photo);
-
-	/**
-	 * Gets the photo of an account defined by its URI.
-	 *
-	 * @param accountURI the account defined by its URI
-	 * @return the photo as a file
-	 */
-	Optional<VFile> getPhoto(URI<Account> accountURI);
 
 }

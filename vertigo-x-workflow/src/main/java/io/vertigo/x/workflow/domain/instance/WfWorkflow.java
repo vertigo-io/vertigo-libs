@@ -35,7 +35,7 @@ public final class WfWorkflow implements Entity {
 	private Long wfwId;
 	private java.util.Date creationDate;
 	private Long itemId;
-	private String user;
+	private String username;
 	private Boolean userLogic;
 	private Long wfwdId;
 	private String wfsCode;
@@ -109,21 +109,21 @@ public final class WfWorkflow implements Entity {
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'user'.
-	 * @return String user
+	 * Récupère la valeur de la propriété 'username'.
+	 * @return String username
 	 */
-	@Field(domain = "DO_X_WORKFLOW_USER", label = "user")
-	public String getUser() {
-		return user;
+	@Field(domain = "DO_X_WORKFLOW_USER", label = "username")
+	public String getUsername() {
+		return username;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'user'.
-	 * @param user String
+	 * @param username String
 	 */
-	public void setUser(final String user) {
-		this.user = user;
+	public void setUsername(final String username) {
+		this.username = username;
 	}
 
 	/**

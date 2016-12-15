@@ -30,7 +30,7 @@ import io.vertigo.lang.Builder;
  */
 public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriteria> {
 	private String myCategory;
-	private String myUser;
+	private String myUsername;
 	private Date myStartBusinessDate;
 	private Date myEndBusinessDate;
 	private Date myStartExecutionDate;
@@ -51,13 +51,13 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 
 	/**
 	 * Optionnal user
-	 * @param user
+	 * @param username
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceCriteriaBuilder withUser(final String user) {
-		Assertion.checkNotNull(user);
+	public AuditTraceCriteriaBuilder withUsername(final String username) {
+		Assertion.checkNotNull(username);
 		//---
-		myUser = user;
+		myUsername = username;
 		return this;
 	}
 
@@ -123,7 +123,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 
 	@Override
 	public AuditTraceCriteria build() {
-		return new AuditTraceCriteria(myCategory, myUser, myStartBusinessDate,
+		return new AuditTraceCriteria(myCategory, myUsername, myStartBusinessDate,
 				myEndBusinessDate, myStartExecutionDate, myEndExecutionDate, myItem);
 	}
 

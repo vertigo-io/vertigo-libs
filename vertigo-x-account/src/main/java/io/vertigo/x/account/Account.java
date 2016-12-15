@@ -26,7 +26,7 @@ import io.vertigo.lang.Assertion;
 
 /**
  * This class defines the account of a user/organization/system.
- s*
+ *
  * @author pchretien
  */
 public final class Account implements Entity {

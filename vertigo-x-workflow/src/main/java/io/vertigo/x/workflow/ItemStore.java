@@ -18,6 +18,9 @@
  */
 package io.vertigo.x.workflow;
 
+import java.util.List;
+import java.util.Map;
+
 import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
@@ -40,5 +43,12 @@ public interface ItemStore {
 	 * @return the DtObject corresponding to the itemId
 	 */
 	DtObject readItem(Long itemId);
+	
+	/**
+	 * Get a list of items
+	 * @param itemIds List of Items Ids.
+	 * @return A dictionary with the itemId as a key the the object as the associated value.
+	 */
+	Map<Long, DtObject> readItems(List<Long> itemIds);
 
 }

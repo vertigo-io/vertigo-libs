@@ -24,10 +24,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.impl.rules.RuleStorePlugin;
 import io.vertigo.x.rules.RuleConditionDefinition;
+import io.vertigo.x.rules.RuleCriteria;
 import io.vertigo.x.rules.RuleDefinition;
 import io.vertigo.x.rules.RuleFilterDefinition;
 import io.vertigo.x.rules.SelectorDefinition;
@@ -250,6 +253,81 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 		Assertion.checkState(inMemoryFilterStore.containsKey(ruleFilterDefinition.getId()), "Cannot update this filter : Its id is unknown in the store");
 		//---
 		inMemoryFilterStore.put(ruleFilterDefinition.getId(), ruleFilterDefinition);
+	}
+
+
+	public List<RuleDefinition> findRulesByCriteria(RuleCriteria criteria, List<Long> items) {
+		Assertion.checkNotNull(criteria);
+		//---
+		List<RuleDefinition> ret = new ArrayList<RuleDefinition>();
+		for (Long itemId : items) {
+
+			List<RuleDefinition> rules = inMemoryRuleStore.entrySet()
+					.stream()
+					.filter(r -> r.getValue().equals(itemId))
+					.map(es -> es.getValue())
+					.collect(Collectors.toList());
+			for(RuleDefinition rule : rules) {
+
+				Map<String, RuleConditionDefinition> mapConditions = inMemoryConditionStore.entrySet()
+						.stream()
+						.filter(r -> r.getValue().getRudId().equals(rule.getId()))
+						.map(es -> es.getValue())
+						.collect(Collectors.toMap(RuleConditionDefinition::getField, Function.identity()));
+
+				int match = 0;
+				RuleConditionDefinition currentRule1 = mapConditions.get(criteria.getConditionCriteria1().getField());
+
+				if (currentRule1 != null && currentRule1.getExpression().equals(criteria.getConditionCriteria1().getValue()))
+				{
+					match++;
+				}
+
+				if (criteria.getConditionCriteria2() != null)
+				{
+					RuleConditionDefinition currentRule2 = mapConditions.get(criteria.getConditionCriteria2().getField());
+					if (currentRule2 != null && currentRule2.getExpression().equals(criteria.getConditionCriteria2().getValue()))
+					{
+						match++;
+					}
+				}
+
+				int expectedMatch = criteria.getConditionCriteria2() != null ? 2 : 1;
+
+				if (match == expectedMatch)
+				{
+					ret.add(rule);
+					break;
+				}
+			}
+		}
+
+		return ret;            
+	}
+
+	public void removeRules(List<Long> list) {
+		for (Long id : list) {
+			inMemoryRuleStore.remove(id);
+		}
+	}
+
+	public void removeSelectors(List<Long> list) {
+		for(Long id : list) {
+			inMemorySelectorStore.remove(id);
+		}
+	}
+
+	public void removeSelectorsFiltersByGroupId(String groupId) {
+		
+		for (SelectorDefinition sel : inMemorySelectorStore.values()) {
+			if (sel.getGroupId().equals(groupId)) {
+				for(RuleFilterDefinition filter : inMemoryFilterStore.values())	{
+					if (filter.getSelId().equals(sel.getId())) {
+						inMemoryFilterStore.remove(filter.getId());
+					}
+				}
+			}
+		}
 	}
 
 }

@@ -19,10 +19,12 @@
 package io.vertigo.x.rules;
 
 import java.util.List;
+import java.util.Map;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Manager;
 import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.impl.rules.RuleConstants;
 
 /**
@@ -40,6 +42,40 @@ public interface RuleManager extends Manager {
 	 */
 	List<Account> selectAccounts(final Long idActivityDefinition, final DtObject item, final RuleConstants constants);
 
+
+	/**
+	 * Select accounts an activity using the provided selectors and filters.
+	 * Version without IO, used in workflow recalculation
+	 * @param idActivityDefinition Activity definition id
+	 * @param item Business object
+	 * @param constants constants
+	 * @param mapSelectors Selectors to use
+	 * @param mapFilters Filters associated to Selectors
+	 * @return list of matching accounts
+	 */
+	List<Account> selectAccounts(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters);
+	
+	/**
+	 * Select groups matching the selector for an activity
+	 * @param idActivityDefinition Activity definition id
+	 * @param item Business object
+	 * @param constants constants
+	 * @return a list of groups
+	 */
+	List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants);
+	
+	/**
+	 * Select groups matching the selector for an activity
+	 * @param idActivityDefinition Activity definition id
+	 * @param item Business object
+	 * @param constants constants
+	 * @param mapSelectors Selectors to use
+	 * @param mapFilters Filters associated to Selectors
+	 * 
+	 * @return  a list of groups
+	 */
+	List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters);
+	
 	/**
 	 * Validate a rule for an activity
 	 * @param idActivityDefinition Activity definition id
@@ -49,6 +85,18 @@ public interface RuleManager extends Manager {
 	 */
 	boolean isRuleValid(Long idActivityDefinition, DtObject item, final RuleConstants constants);
 
+	/**
+	 * Validate a rule for an activity using the provided rules and conditions.
+	 * Version sans IO, optimisÃ©e vitesse execution, utilisÃ©e dans le cadre d'un recalcul de workflow
+	 * @param idActivityDefinition Activity definition id
+	 * @param item Business object
+	 * @param constants constants
+	 * @param mapRules Rules to use
+	 * @param mapConditions Conditions associated to rules
+	 * @return true is a rule match, false otherwise
+	 */
+	boolean isRuleValid(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<RuleDefinition>> mapRules, Map<Long, List<RuleConditionDefinition>> mapConditions);
+	
 	/**
 	 * Add a new rule
 	 * @param ruleDefinition the rule to add
@@ -68,6 +116,12 @@ public interface RuleManager extends Manager {
 	 */
 	void removeRule(RuleDefinition ruleDefinition);
 
+	/**
+	 * Remove a lst of rules
+	 * @param ruleDefinitions
+	 */
+	void removeRules(List<RuleDefinition> ruleDefinitions);
+	
 	/**
 	 * Update a rule
 	 * @param ruleDefinition
@@ -117,6 +171,12 @@ public interface RuleManager extends Manager {
 	 * @param selectorDefinition the selector to remove
 	 */
 	void removeSelector(SelectorDefinition selectorDefinition);
+	
+	/**
+	 * Remove a list of rules.
+	 * @param ruleDefinitions list of rules to remove.
+	 */
+    void removeSelectors(List<SelectorDefinition> ruleDefinitions);
 
 	/**
 	 * Update a selector
@@ -163,5 +223,19 @@ public interface RuleManager extends Manager {
 	 * @return the constants defined for this key
 	 */
 	RuleConstants getConstants(Long key);
+	
+	/**
+	 * Find itemIds using the specified criteria and in the specified sublist itemsIds
+	 * @param criteria rules criteria
+	 * @param items sublist of itemsId
+	 * @return list of itemIds
+	 */
+	List<Long> findItemsByCriteria(RuleCriteria criteria, List<Long> items);
+	
+	/**
+	 * Remove all selectors and filters for a specified groupId
+	 * @param groupId groupId
+	 */
+	void removeSelectorsFiltersByGroupId(String groupId);
 
 }

@@ -20,8 +20,10 @@
 package io.vertigo.x.rules;
 
 import java.util.List;
+import java.util.Map;
 
 import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.impl.rules.RuleContext;
 
 /**
@@ -33,14 +35,37 @@ public interface RuleSelector {
 
 
 	/**
-	 * Select accounts matching the selector for an activity
-	 * @param idActivityDefinition
-	 * @param selectors
-	 * @param ruleContext
+	 * Select accounts matching the selector provided from an activity.
+	 * @param selectors Selectors.
+	 * @param ruleContext ruleContext
 	 * @return a list of account
 	 */
-	List<Account> selectAccounts(final Long idActivityDefinition, final List<SelectorDefinition> selectors, final RuleContext ruleContext);
+	List<Account> selectAccounts(List<SelectorDefinition> selectors, RuleContext ruleContext);
 
-
+	/**
+	 * Select accounts for an activity using selectors and filters provided.
+	 * @param selectors selectors
+	 * @param mapFilters filters linked to the selectors
+	 * @param ruleContext ruleContext
+	 * @return a list of account
+	 */
+	List<Account> selectAccounts(List<SelectorDefinition> selectors, Map<Long, List<RuleFilterDefinition>> mapFilters, RuleContext ruleContext);
+	
+	/**
+	 * Select groups matching the selectors provided from an activity
+	 * @param selectors
+	 * @param ruleContext
+	 * @return All the groups matching the selectors and rules
+	 */
+	List<AccountGroup> selectGroups(List<SelectorDefinition> selectors, RuleContext ruleContext);
+	
+	/**
+	 * Select groups for an activity using selectors and filters provided
+	 * @param selectors selectors
+	 * @param mapFilters filters linked to the selectors
+	 * @param ruleContext ruleContext
+	 * @return All the groups matching the selectors and rules
+	 */
+	List<AccountGroup> selectGroups(List<SelectorDefinition> selectors, Map<Long, List<RuleFilterDefinition>> mapFilters, RuleContext ruleContext);
 
 }

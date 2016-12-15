@@ -38,8 +38,8 @@ public final class AuditTrace implements DtObject {
 	@Field(domain = "DO_X_AUDIT_CATEGORY", label = "category")
 	private final String category;
 
-	@Field(domain = "DO_X_AUDIT_USER", label = "user")
-	private final String user;
+	@Field(domain = "DO_X_AUDIT_USERNAME", label = "username")
+	private final String username;
 
 	@Field(domain = "DO_X_AUDIT_DATE", label = "businessDate")
 	private final Date businessDate;
@@ -56,10 +56,10 @@ public final class AuditTrace implements DtObject {
 	@Field(domain = "DO_X_AUDIT_CONTEXT", label = "context")
 	private final String context;
 
-	AuditTrace(final Long id, final String category, final String user, final Date businessDate, final Date executionDate, final Long item, final String message, final String context) {
+	AuditTrace(final Long id, final String category, final String username, final Date businessDate, final Date executionDate, final Long item, final String message, final String context) {
 		this.id = id;
 		this.category = category;
-		this.user = user;
+		this.username = username;
 		this.businessDate = businessDate;
 		this.executionDate = executionDate;
 		this.item = item;
@@ -91,8 +91,8 @@ public final class AuditTrace implements DtObject {
 	/**
 	 * @return the user
 	 */
-	public String getUser() {
-		return user;
+	public String getUsername() {
+		return username;
 	}
 
 	/**

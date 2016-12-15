@@ -49,11 +49,26 @@ public interface WorkflowStore {
 	WfWorkflow readWorkflowInstanceById(Long wfwId);
 
 	/**
+	 * Get and lock a workflow instance.
+	 * @param wfwId id of the workflow instance
+	 * @return the corresponding workflow
+	 */
+	WfWorkflow readWorkflowInstanceForUpdateById(Long wfwId);
+	
+	/**
+	 * Get and lock all workflows instances for a definition.
+	 * @param wfwdId id of the workflow instance
+	 * @return the corresponding workflow
+	 */
+	List<WfWorkflow> readWorkflowsInstanceForUpdateById(Long wfwdId);
+	
+	/**
 	 * Get a workflow instance by an item id.
+	 * @param wfwdId id of the workflow definition
 	 * @param itemId id of the item id
 	 * @return the corresponding workflow
 	 */
-	WfWorkflow readWorkflowInstanceByItemId(Long itemId);
+	WfWorkflow readWorkflowInstanceByItemId(Long wfwdId, Long itemId);
 
 	/**
 	 * Update a workflow instance.
@@ -68,6 +83,13 @@ public interface WorkflowStore {
 	 * @return the corresponding activity
 	 */
 	WfActivity readActivity(final Long wfadId);
+	
+	/**
+	 * Get all the decisions associated to an Activity
+	 * @param wfaId
+	 * @return all the decisions linked to the activity
+	 */
+	List<WfDecision> readDecisionsByActivityId(Long wfaId);
 
 	/**
 	 * Create a new activity
@@ -88,6 +110,27 @@ public interface WorkflowStore {
 	 */
 	void deleteActivity(WfActivity wfActivity);
 	
+	/**
+	 * Delete all activities for the ActivityDefinition id.
+	 * @param wfadId ActivityDefinition id
+	 */
+	void deleteActivities(Long wfadId);
+	
+	/**
+	 * Increment position by 1 for all activity definition >= position
+	 * @param wfwdId
+	 * @param position
+	 */
+	void incrementActivityDefinitionPositionsAfter(Long wfwdId, int position);
+	
+	/**
+	 * Shift position number between 2 positions
+	 * @param wfwdId
+	 * @param posStart
+	 * @param posEnd
+	 * @param shift
+	 */
+	void shiftActivityDefinitionPositionsBetween(Long wfwdId, int posStart, int posEnd, int shift);
 	
 	/**
 	 * Create a new decision
@@ -95,6 +138,18 @@ public interface WorkflowStore {
 	 */
 	void createDecision(WfDecision wfDecision);
 
+	/**
+	 * Update a decision
+	 * @param wfDecision wfDecision
+	 */
+    void updateDecision(WfDecision wfDecision);
+    
+    /**
+     * Delete a Decision
+     * @param wfDecision Decision to delete
+     */
+    void deleteDecision(WfDecision wfDecision);
+	
 	/**
 	 * Find all decision for an activity
 	 * @param wfActivity
@@ -118,26 +173,22 @@ public interface WorkflowStore {
 	 */
 	boolean hasNextActivity(final WfActivity activity, String transitionName);
 
-	/**
-	 * Find the next activity using the default transition
-	 * @param activity
-	 * @return the next activity definition
-	 */
-	WfActivityDefinition findNextActivity(WfActivity activity);
 
 	/**
-	 * Find the next activity using the provided transition name
-	 * @param activity
-	 * @param transitionName 
-	 * @return the next activity definition
+	 * Find the activities from a list of activity definition ids for a workflow.
+	 * @param wfWorkflow
+	 * @param wfadIds
+	 * @return All matching activities
 	 */
-	WfActivityDefinition findNextActivity(WfActivity activity, String transitionName);
-
-	/**
-	 * Find the list of all the definitions following the default transitions
-	 * @return the list of transitions ordered from start to end.
-	 */
-	List<WfActivityDefinition> findActivityMatchingRules();
+    List<WfActivity> findActivitiesByDefinitionId(WfWorkflow wfWorkflow, List<Long> wfadIds);
+	
+    /**
+     * Find All active workflow (Started, or Paused)
+     * @param wfWorkflowDefinition
+     * @param isForUpdate
+     * @return All active workflow (Started, or Paused)
+     */
+	List<WfWorkflow> findActiveWorkflows(WfWorkflowDefinition wfWorkflowDefinition, boolean isForUpdate);
 
     // Definition
 	/**
@@ -219,7 +270,6 @@ public interface WorkflowStore {
 	 */
 	List<WfActivityDefinition> findAllDefaultActivityDefinitions(WfWorkflowDefinition wfWorkflowDefinition);
 
-
 	/**
 	 * Add a transition
 	 * @param transition
@@ -232,5 +282,75 @@ public interface WorkflowStore {
 	 */
 	void removeTransition(WfTransitionDefinition transition);
 
-
+	/**
+	 * Find an activity by its definition for a workflow
+	 * @param wfWorkflow
+	 * @param wfActivityDefinition
+	 * @return activity
+	 */
+     WfActivity findActivityByDefinitionWorkflow(WfWorkflow wfWorkflow, WfActivityDefinition wfActivityDefinition);
+     
+     /**
+      * Update a transition
+      * @param transition transition
+      */
+     void updateTransition(WfTransitionDefinition transition);
+     
+     /**
+      * Find a transition by criteria
+      * @param wfTransitionCriteria criteria
+      * @return a transition
+      */
+     WfTransitionDefinition findTransition(WfTransitionCriteria wfTransitionCriteria);
+     
+     /**
+      * Find the next activity using the default transition
+      * @param wfadId wfadId
+      * @return the next activity definition
+      */
+     WfActivityDefinition findNextActivity(Long wfadId);
+     
+     /**
+      * Find the next activity using the provided transition name
+      * @param wfadId activity
+      * @param transitionName transitionName
+      * @return the next activity definition
+      */
+     WfActivityDefinition findNextActivity(Long wfadId, String transitionName);
+     
+     /**
+      * Find all activities for a workflow definition.
+      * This method must be only used for the workflow recalculation
+      * @param wfWorkflowDefinition wfWorkflowDefinition
+      * @return all activities for a workflow definition
+      */
+     List<WfActivity> findAllActivitiesByWorkflowDefinitionId(WfWorkflowDefinition wfWorkflowDefinition);
+     
+     /**
+      * Find all decisions for a workflow definition.
+      * This method must be only used for the workflow recalculation
+      * @param wfWorkflowDefinition wfWorkflowDefinition
+      * @return all decisions for a workflow definition
+      */
+     List<WfDecision> findAllDecisionsByWorkflowDefinitionId(WfWorkflowDefinition wfWorkflowDefinition);
+     
+     /**
+      * Find all activities for a workflow
+      * @param wfWorkflow wfWorkflow
+      * @return all activities for a workflow
+      */
+     List<WfActivity> findActivitiesByWorkflowId(WfWorkflow wfWorkflow);
+     
+     /**
+      * Find All Decisions for a workflow
+      * @param wfWorkflow 
+      * @return All Decisions for a workflow
+      */
+     List<WfDecision> findDecisionsByWorkflowId(WfWorkflow wfWorkflow);
+     
+     /**
+      * Reset (set to null) the current activity (wfaid2) of all worklow for the activity linked to the provided activityDefinition
+      * @param wfActivityDefinition
+      */
+     void unsetCurrentActivity(WfActivityDefinition wfActivityDefinition);
 }

@@ -44,7 +44,7 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 	private final Map<URI<AccountGroup>, AccountGroup> groupByURI = new HashMap<>();
 	//---
 	private final Map<URI<Account>, Set<URI<AccountGroup>>> groupByAccountURI = new HashMap<>();
-	private final Map<URI<AccountGroup>, Set<URI<Account>>> accountBygroupURI = new HashMap<>();
+	private final Map<URI<AccountGroup>, Set<URI<Account>>> accountByGroupURI = new HashMap<>();
 	//---
 	private final Map<URI<Account>, VFile> photoByAccountURI = new HashMap<>();
 
@@ -119,7 +119,7 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 		//----
 		Assertion.checkArgument(!accountByURI.containsKey(uri), "this group is already registered, you can't create it");
 		//-----
-		accountBygroupURI.put(uri, new HashSet<URI<Account>>());
+		accountByGroupURI.put(uri, new HashSet<URI<Account>>());
 		groupByURI.put(uri, group);
 	}
 
@@ -134,25 +134,9 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 		Assertion.checkNotNull(groupURIs, "account must be create before this operation");
 		groupURIs.add(groupURI);
 		//-----
-		final Set<URI<Account>> accountURIs = accountBygroupURI.get(groupURI);
+		final Set<URI<Account>> accountURIs = accountByGroupURI.get(groupURI);
 		Assertion.checkNotNull(accountURIs, "group must be create before this operation");
 		accountURIs.add(accountURI);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public synchronized void detach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
-		Assertion.checkNotNull(accountURI);
-		Assertion.checkNotNull(groupURI);
-		//-----
-		final Set<URI<AccountGroup>> groupURIs = groupByAccountURI.get(accountURI);
-		Assertion.checkNotNull(groupURIs, "account does not long exist");
-		groupURIs.remove(groupURI);
-
-		//-----
-		final Set<URI<Account>> accountURIs = accountBygroupURI.get(groupURI);
-		Assertion.checkNotNull(accountURIs, "group does not long exist");
-		accountURIs.remove(accountURI);
 	}
 
 	/** {@inheritDoc} */
@@ -170,7 +154,7 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 	public synchronized Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
 		Assertion.checkNotNull(groupURI);
 		//-----
-		final Set<URI<Account>> accountURIs = accountBygroupURI.get(groupURI);
+		final Set<URI<Account>> accountURIs = accountByGroupURI.get(groupURI);
 		Assertion.checkNotNull(accountURIs, "group {0} must be create before this operation", groupURI);
 		return Collections.unmodifiableSet(accountURIs);
 	}
@@ -190,6 +174,15 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 		Assertion.checkNotNull(accountURI);
 		//-----
 		return Optional.ofNullable(photoByAccountURI.get(accountURI));
+	}
+
+	@Override
+	public void reset() {
+		photoByAccountURI.clear();
+        accountByGroupURI.clear();
+        accountByURI.clear();
+        groupByAccountURI.clear();
+        groupByURI.clear();
 	}
 
 }

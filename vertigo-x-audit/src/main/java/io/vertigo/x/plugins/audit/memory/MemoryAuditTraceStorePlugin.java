@@ -95,8 +95,8 @@ public final class MemoryAuditTraceStorePlugin implements AuditTraceStorePlugin 
 	}
 
 	private static boolean matchUser(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
-		return !StringUtil.isEmpty(auditTraceCriteria.getUser())
-				&& auditTraceCriteria.getUser().equals(auditTrace.getUser());
+		return !StringUtil.isEmpty(auditTraceCriteria.getUsername())
+				&& auditTraceCriteria.getUsername().equals(auditTrace.getUsername());
 	}
 
 	private static boolean matchCategory(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
