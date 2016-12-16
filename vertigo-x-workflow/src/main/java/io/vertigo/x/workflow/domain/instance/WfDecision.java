@@ -77,7 +77,7 @@ public final class WfDecision implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'username'.
-	 * @param user String
+	 * @param username String
 	 */
 	public void setUsername(final String username) {
 		this.username = username;

@@ -21,14 +21,15 @@ package io.vertigo.x.workflow;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
-import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
+import io.vertigo.x.impl.rules.RulesFeatures;
 import io.vertigo.x.impl.workflow.WorkflowFeatures;
 import io.vertigo.x.plugins.account.memory.MemoryAccountStorePlugin;
 import io.vertigo.x.plugins.memory.MemoryRuleConstantsStorePlugin;
@@ -62,26 +63,26 @@ public class MyAppConfig {
 					.silently()
 				.endBoot()
 				.addModule(new PersonaFeatures().withUserSession(TestUserSession.class).build())
-				.addModule(new CommonsFeatures().build())
+				.addModule(new CommonsFeatures()
+						.withScript()
+						.build())
 				.addModule(new DynamoFeatures().build())
 				.addModule(new AccountFeatures()
-					.getModuleConfigBuilder()
-					.addPlugin(MemoryAccountStorePlugin.class)
-					.build());
-
-
-		appConfigBuilder.addModule( new WorkflowFeatures()
-			.getModuleConfigBuilder()
-				.addDefinitionProvider(MyDummyDtObjectProvider.class)
-				.addPlugin(MemoryWorkflowStorePlugin.class)
-				.addPlugin(MemoryItemStorePlugin.class)
-				.addPlugin(MemoryRuleStorePlugin.class)
-				.addPlugin(MemoryRuleConstantsStorePlugin.class)
-				.addPlugin(SimpleRuleSelectorPlugin.class)
-				.addPlugin(SimpleRuleValidatorPlugin.class)
-				.addPlugin(JaninoExpressionEvaluatorPlugin.class)
-		   .build());
-		// @formatter:on
+					.withAccountStorePlugin(MemoryAccountStorePlugin.class)
+					.build())
+				.addModule(new RulesFeatures()
+						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)
+						.withRuleStorePlugin(MemoryRuleStorePlugin.class)
+						.withRuleSelectorPlugin(SimpleRuleSelectorPlugin.class)
+						.withRuleValidatorPlugin(SimpleRuleValidatorPlugin.class)
+						.build())
+				.addModule( new WorkflowFeatures()
+						.withWorkflowStorePlugin(MemoryWorkflowStorePlugin.class)
+						.withItemStorePlugin(MemoryItemStorePlugin.class)
+						.build())
+				.addModule(new ModuleConfigBuilder("dummy")
+						.addDefinitionProvider(MyDummyDtObjectProvider.class)
+						.build());
 		return appConfigBuilder.build();
 	}
 

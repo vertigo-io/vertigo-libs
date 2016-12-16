@@ -19,6 +19,7 @@
 package io.vertigo.x.impl.audit;
 
 import io.vertigo.app.config.Features;
+import io.vertigo.app.config.Param;
 import io.vertigo.x.audit.AuditManager;
 
 /**
@@ -32,6 +33,18 @@ public final class AuditFeatures extends Features {
 	 */
 	public AuditFeatures() {
 		super("x-audit");
+	}
+
+	/**
+	 * Specifies the auditTraceStorePlugin.
+	 * @param auditTraceStorePluginClass the type of plugin to use
+	 * @param params the params
+	 * @return these features
+	 */
+	public AuditFeatures withAuditStorePlugin(final Class<? extends AuditTraceStorePlugin> auditTraceStorePluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(auditTraceStorePluginClass, params);
+		return this;
 	}
 
 	/** {@inheritDoc} */

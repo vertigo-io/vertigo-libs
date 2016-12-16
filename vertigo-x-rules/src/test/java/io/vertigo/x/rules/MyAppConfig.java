@@ -21,6 +21,7 @@ package io.vertigo.x.rules;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
@@ -28,7 +29,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
-import io.vertigo.x.impl.rules.RuleFeatures;
+import io.vertigo.x.impl.rules.RulesFeatures;
 import io.vertigo.x.plugins.account.memory.MemoryAccountStorePlugin;
 import io.vertigo.x.plugins.memory.MemoryRuleConstantsStorePlugin;
 import io.vertigo.x.plugins.memory.MemoryRuleStorePlugin;
@@ -49,14 +50,13 @@ public class MyAppConfig {
 	 * @return the application config for testing
 	 */
 	public static AppConfig config() {
-		// @formatter:off
-		final AppConfigBuilder appConfigBuilder =  new AppConfigBuilder()
+		return new AppConfigBuilder()
 				.beginBoot()
 				.withLocales("fr")
-					.addPlugin(ClassPathResourceResolverPlugin.class)
-					.addPlugin(AnnotationLoaderPlugin.class)
-					.addPlugin(DomainDynamicRegistryPlugin.class)
-					.silently()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.addPlugin(AnnotationLoaderPlugin.class)
+				.addPlugin(DomainDynamicRegistryPlugin.class)
+				.silently()
 				.endBoot()
 				.addModule(new PersonaFeatures()
 						.withUserSession(TestUserSession.class)
@@ -64,19 +64,18 @@ public class MyAppConfig {
 				.addModule(new CommonsFeatures().build())
 				.addModule(new DynamoFeatures().build())
 				.addModule(new AccountFeatures()
-					.getModuleConfigBuilder()
-					.addPlugin(MemoryAccountStorePlugin.class)
-				.build());
+						.withAccountStorePlugin(MemoryAccountStorePlugin.class)
+						.build())
+				.addModule(new ModuleConfigBuilder("dummy")
+						.addDefinitionProvider(MyDummyDtObjectProvider.class)
+						.build())
+				.addModule(new RulesFeatures()
+						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)
+						.withRuleStorePlugin(MemoryRuleStorePlugin.class)
+						.withRuleSelectorPlugin(SimpleRuleSelectorPlugin.class)
+						.withRuleValidatorPlugin(SimpleRuleValidatorPlugin.class)
+						.build())
+				.build();
 
-		appConfigBuilder.addModule(new RuleFeatures()
-							.getModuleConfigBuilder()
-							.addDefinitionProvider(MyDummyDtObjectProvider.class)
-							.addPlugin(MemoryRuleStorePlugin.class)
-							.addPlugin(MemoryRuleConstantsStorePlugin.class)
-							.addPlugin(SimpleRuleSelectorPlugin.class)
-							.addPlugin(SimpleRuleValidatorPlugin.class)
-						.build());
-		return appConfigBuilder.build();
-		// @formatter:on
 	}
 }

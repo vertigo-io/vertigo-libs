@@ -43,7 +43,6 @@ public final class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 
 	/**
 	 *
-	 * @param scriptManager
 	 * @param ruleStorePlugin
 	 */
 	@Inject
@@ -52,10 +51,10 @@ public final class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 	}
 
 	@Override
-	public boolean isRuleValid(List<RuleDefinition> rules, RuleContext ruleContext) {
-		for (RuleDefinition ruleDefinition : rules) {
-			List<RuleConditionDefinition> conditions = ruleStorePlugin.findConditionByRuleId(ruleDefinition.getId());
-			boolean ruleValid = checkRules(conditions, ruleContext);
+	public boolean isRuleValid(final List<RuleDefinition> rules, final RuleContext ruleContext) {
+		for (final RuleDefinition ruleDefinition : rules) {
+			final List<RuleConditionDefinition> conditions = ruleStorePlugin.findConditionByRuleId(ruleDefinition.getId());
+			final boolean ruleValid = checkRules(conditions, ruleContext);
 
 			if (ruleValid) {
 				return true;
@@ -66,14 +65,14 @@ public final class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 	}
 
 	@Override
-	public boolean isRuleValid(List<RuleDefinition> rules, Map<Long, List<RuleConditionDefinition>> mapConditions, RuleContext ruleContext) {
-		for (RuleDefinition ruleDefinition : rules) {
+	public boolean isRuleValid(final List<RuleDefinition> rules, final Map<Long, List<RuleConditionDefinition>> mapConditions, final RuleContext ruleContext) {
+		for (final RuleDefinition ruleDefinition : rules) {
 			List<RuleConditionDefinition> conditions = mapConditions.get(ruleDefinition.getId());
 			if (conditions == null) {
 				conditions = new ArrayList<>();
 			}
 
-			boolean ruleValid = checkRules(conditions, ruleContext);
+			final boolean ruleValid = checkRules(conditions, ruleContext);
 
 			if (ruleValid) {
 				return true;
@@ -83,39 +82,39 @@ public final class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 		return false;
 	}
 
-	private boolean checkRules(List<RuleConditionDefinition> conditions, RuleContext ruleContext) {
+	private boolean checkRules(final List<RuleConditionDefinition> conditions, final RuleContext ruleContext) {
 		boolean ruleValid = true;
 
-		for (RuleConditionDefinition ruleConditionDefinition : conditions) {
-			String field = ruleConditionDefinition.getField();
-			String operat = ruleConditionDefinition.getOperator();
-			String expression = ruleConditionDefinition.getExpression();
+		for (final RuleConditionDefinition ruleConditionDefinition : conditions) {
+			final String field = ruleConditionDefinition.getField();
+			final String operat = ruleConditionDefinition.getOperator();
+			final String expression = ruleConditionDefinition.getExpression();
 
 			boolean result = false;
-			Object fieldToTest = ruleContext.getContext().get(field);
+			final Object fieldToTest = ruleContext.getContext().get(field);
 			if (fieldToTest != null) {
 				switch (operat) {
 					case "=":
 						result = fieldToTest.equals(expression);
 						break;
 					case "IN":
-						String[] expressions = expression.split(",");
+						final String[] expressions = expression.split(",");
 						if (fieldToTest instanceof List) {
-							List<String> valueList = (List<String>) fieldToTest;
+							final List<String> valueList = (List<String>) fieldToTest;
 							result = Arrays.stream(expressions).filter(valueList::contains).count() > 0;
 						} else {
-							String valStr = (String) fieldToTest;
+							final String valStr = (String) fieldToTest;
 							result = Arrays.stream(expressions).anyMatch(valStr::equals);
 						}
 						break;
 					case "<":
-						double doubleExpressionInf = Double.parseDouble(expression);
-						double doubleFieldInf = Double.parseDouble((String) fieldToTest);
+						final double doubleExpressionInf = Double.parseDouble(expression);
+						final double doubleFieldInf = Double.parseDouble((String) fieldToTest);
 						result = doubleFieldInf < doubleExpressionInf;
 						break;
 					case ">":
-						double doubleExpressionSup = Double.parseDouble(expression);
-						double doubleFieldSup = Double.parseDouble((String) fieldToTest);
+						final double doubleExpressionSup = Double.parseDouble(expression);
+						final double doubleFieldSup = Double.parseDouble((String) fieldToTest);
 						result = doubleFieldSup > doubleExpressionSup;
 						break;
 					default:

@@ -61,7 +61,7 @@ public final class MyAppConfig {
 		if (redis){
 			return  appConfigBuilder
 			.addModule(new ConnectorsFeatures()
-				.withRedis(redisHost, redisPort, redisDatabase)
+				.withRedisConnector(redisHost, redisPort, redisDatabase)
 				.build())
 			.addModule(new AccountFeatures()
 					.withRedisAccountStorePlugin()

@@ -19,10 +19,7 @@
 package io.vertigo.x.impl.workflow;
 
 import io.vertigo.app.config.Features;
-import io.vertigo.commons.impl.script.ScriptManagerImpl;
-import io.vertigo.commons.script.ScriptManager;
-import io.vertigo.x.impl.rules.RuleManagerImpl;
-import io.vertigo.x.rules.RuleManager;
+import io.vertigo.app.config.Param;
 import io.vertigo.x.workflow.WorkflowManager;
 
 /**
@@ -38,14 +35,36 @@ public final class WorkflowFeatures extends Features {
 		super("x-workflow");
 	}
 
+	/**
+	 * Specifies the workflowStorePlugin.
+	 * @param workflowStorePluginClass the type of plugin to use
+	 * @param params the params
+	 * @return these features
+	 */
+	public WorkflowFeatures withWorkflowStorePlugin(final Class<? extends WorkflowStorePlugin> workflowStorePluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(workflowStorePluginClass, params);
+		return this;
+	}
+
+	/**
+	 * Specifies the itemStorePlugin.
+	 * @param itemStorePluginClass the type of plugin to use
+	 * @param params the params
+	 * @return these features
+	 */
+	public WorkflowFeatures withItemStorePlugin(final Class<? extends ItemStorePlugin> itemStorePluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(itemStorePluginClass, params);
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.addDefinitionProvider(WorkflowProvider.class)
-				.addComponent(WorkflowManager.class, WorkflowManagerImpl.class)
-				.addComponent(RuleManager.class, RuleManagerImpl.class)
-				.addComponent(ScriptManager.class, ScriptManagerImpl.class);
+				.addComponent(WorkflowManager.class, WorkflowManagerImpl.class);
 	}
 
 }

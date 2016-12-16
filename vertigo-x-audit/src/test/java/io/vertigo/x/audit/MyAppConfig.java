@@ -38,8 +38,7 @@ public class MyAppConfig {
 	public static AppConfig config() {
 		return new AppConfigBuilder()
 				.addModule(new AuditFeatures()
-						.getModuleConfigBuilder()
-						.addPlugin(MemoryAuditTraceStorePlugin.class)
+						.withAuditStorePlugin(MemoryAuditTraceStorePlugin.class)
 						.build())
 				.build();
 	}

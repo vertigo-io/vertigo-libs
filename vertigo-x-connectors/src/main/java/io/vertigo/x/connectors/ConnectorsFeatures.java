@@ -18,6 +18,9 @@
  */
 package io.vertigo.x.connectors;
 
+import java.util.Optional;
+
+import io.vertigo.app.config.ComponentConfigBuilder;
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.Param;
 import io.vertigo.x.connectors.redis.RedisConnector;
@@ -42,8 +45,8 @@ public final class ConnectorsFeatures extends Features {
 	 * @param database the index of the REDIS database
 	 * @return the REDIS connector
 	 */
-	public ConnectorsFeatures withRedis(final String host, final int port, final int database) {
-		return withRedis(host, port, null, database);
+	public ConnectorsFeatures withRedisConnector(final String host, final int port, final int database) {
+		return withRedisConnector(host, port, null, database);
 	}
 
 	/**
@@ -54,15 +57,20 @@ public final class ConnectorsFeatures extends Features {
 	 * @param database the index of the REDIS database
 	 * @return the REDIS connector
 	 */
-	public ConnectorsFeatures withRedis(final String host, final int port, final String password, final int database) {
+	public ConnectorsFeatures withRedisConnector(final String host, final int port, final String password, final int database) {
+		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(Optional.empty(), RedisConnector.class)
+				.addParam(Param.create("host", host))
+				.addParam(Param.create("port", Integer.toString(port)))
+				.addParam(Param.create("database", Integer.toString(database)));
+		if (password != null) {
+			componentConfigBuilder
+					.addParam(Param.create("password", password));
+		}
 		getModuleConfigBuilder()
 				.withNoAPI()
-				.addComponent(RedisConnector.class, RedisConnector.class,
-						Param.create("host", host),
-						Param.create("port", Integer.toString(port)),
-						Param.create("password", password),
-						Param.create("database", Integer.toString(database)));
+				.addComponent(componentConfigBuilder.build());
 		return this;
+
 	}
 
 	@Override
