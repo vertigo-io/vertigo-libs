@@ -19,6 +19,7 @@
 package io.vertigo.x.impl.account;
 
 import io.vertigo.app.config.Features;
+import io.vertigo.app.config.Param;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.plugins.account.redis.RedisAccountStorePlugin;
 
@@ -39,9 +40,16 @@ public final class AccountFeatures extends Features {
 	 * Defines REDIS as the database to store the accounts
 	 * @return the features
 	 */
-	public AccountFeatures withRedis() {
+	public AccountFeatures withRedisAccountStorePlugin() {
+		return withAccountStorePlugin(RedisAccountStorePlugin.class);
+	}
+
+	/**
+	 * @return the features
+	 */
+	public AccountFeatures withAccountStorePlugin(Class<? extends AccountStorePlugin> accountStorePluginClass, Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(RedisAccountStorePlugin.class);
+				.addPlugin(accountStorePluginClass, params);
 		return this;
 	}
 

@@ -64,21 +64,19 @@ public final class MyAppConfig {
 				.withRedis(redisHost, redisPort, redisDatabase)
 				.build())
 			.addModule(new AccountFeatures()
-					.withRedis()
+					.withRedisAccountStorePlugin()
 					.build())
 			.addModule(new NotificationFeatures()
-					.withRedis()
+					.withRedisNotificationPlugin()
 					.build());
 		}
 		//else we use memory
 		return  appConfigBuilder
 				.addModule(new AccountFeatures()
-						.getModuleConfigBuilder()
-						.addPlugin(MemoryAccountStorePlugin.class)
+						.withAccountStorePlugin(MemoryAccountStorePlugin.class)
 						.build())
 				.addModule(new NotificationFeatures()
-						.getModuleConfigBuilder()
-						.addPlugin(MemoryNotificationPlugin.class)
+						.withNotificationPlugin(MemoryNotificationPlugin.class)
 						.build());
 		// @formatter:on
 	}

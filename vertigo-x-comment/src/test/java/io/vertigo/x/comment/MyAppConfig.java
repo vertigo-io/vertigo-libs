@@ -55,8 +55,8 @@ public final class MyAppConfig {
 			.addModule(new CommonsFeatures().build())
 			.addModule(new DynamoFeatures().build())
 			.addModule(new ConnectorsFeatures().withRedis(redisHost, redisPort, redisDatabase).build())
-			.addModule(new AccountFeatures().withRedis().build())
-			.addModule(new CommentFeatures().withRedis().build());
+			.addModule(new AccountFeatures().withRedisAccountStorePlugin().build())
+			.addModule(new CommentFeatures().withRedisCommentPlugin().build());
 		// @formatter:on
 	}
 

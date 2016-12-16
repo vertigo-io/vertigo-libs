@@ -19,6 +19,7 @@
 package io.vertigo.x.impl.notification;
 
 import io.vertigo.app.config.Features;
+import io.vertigo.app.config.Param;
 import io.vertigo.x.notification.NotificationManager;
 import io.vertigo.x.plugins.notification.redis.RedisNotificationPlugin;
 
@@ -39,9 +40,16 @@ public final class NotificationFeatures extends Features {
 	 * Defines REDIS as the database to store the notifications
 	 * @return the features
 	 */
-	public NotificationFeatures withRedis() {
+	public NotificationFeatures withRedisNotificationPlugin() {
+		return withNotificationPlugin(RedisNotificationPlugin.class);
+	}
+
+	/**
+	 * @return the features
+	 */
+	public NotificationFeatures withNotificationPlugin(Class<? extends NotificationPlugin> notificationPluginClass, Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(RedisNotificationPlugin.class);
+				.addPlugin(notificationPluginClass, params);
 		return this;
 	}
 

@@ -39,7 +39,7 @@ public final class CommentFeatures extends Features {
 	 * Defines REDIS as the database to store the comments
 	 * @return the features
 	 */
-	public CommentFeatures withRedis() {
+	public CommentFeatures withRedisCommentPlugin() {
 		getModuleConfigBuilder()
 				.addPlugin(RedisCommentPlugin.class);
 		return this;
