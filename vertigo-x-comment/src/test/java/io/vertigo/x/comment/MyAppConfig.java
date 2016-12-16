@@ -54,7 +54,7 @@ public final class MyAppConfig {
 			.addModule( new PersonaFeatures().withUserSession(TestUserSession.class).build())
 			.addModule(new CommonsFeatures().build())
 			.addModule(new DynamoFeatures().build())
-			.addModule(new ConnectorsFeatures().withRedis(redisHost, redisPort, redisDatabase).build())
+			.addModule(new ConnectorsFeatures().withRedisConnector(redisHost, redisPort, redisDatabase).build())
 			.addModule(new AccountFeatures().withRedisAccountStorePlugin().build())
 			.addModule(new CommentFeatures().withRedisCommentPlugin().build());
 		// @formatter:on
