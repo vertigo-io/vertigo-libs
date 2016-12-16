@@ -31,7 +31,7 @@ import io.vertigo.dynamo.file.model.VFile;
  * @author pchretien
  */
 public interface AccountStore {
-	
+
 	/**
 	 * @return the number of accounts
 	 */
@@ -73,7 +73,7 @@ public interface AccountStore {
 	 * @return the list of acccounts.
 	 */
 	Set<URI<Account>> getAccountURIs(URI<AccountGroup> groupURI);
-	
+
 	/**
 	 * Gets the photo of an account defined by its URI.
 	 *
@@ -88,7 +88,7 @@ public interface AccountStore {
 	 * @param accounts the list of accounts
 	 */
 	void saveAccounts(List<Account> accounts);
-	
+
 	/**
 	 * Saves a group.
 	 * @param group the group
@@ -101,7 +101,7 @@ public interface AccountStore {
 	 * @param groupURI the group
 	 */
 	void attach(URI<Account> accountURI, URI<AccountGroup> groupURI);
-	
+
 	/**
 	 * Reset:
 	 * - All the accounts

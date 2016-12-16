@@ -255,11 +255,11 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 		inMemoryFilterStore.put(ruleFilterDefinition.getId(), ruleFilterDefinition);
 	}
 
-
+	@Override
 	public List<RuleDefinition> findRulesByCriteria(RuleCriteria criteria, List<Long> items) {
 		Assertion.checkNotNull(criteria);
 		//---
-		List<RuleDefinition> ret = new ArrayList<RuleDefinition>();
+		List<RuleDefinition> ret = new ArrayList<>();
 		for (Long itemId : items) {
 
 			List<RuleDefinition> rules = inMemoryRuleStore.entrySet()
@@ -267,7 +267,7 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 					.filter(r -> r.getValue().equals(itemId))
 					.map(es -> es.getValue())
 					.collect(Collectors.toList());
-			for(RuleDefinition rule : rules) {
+			for (RuleDefinition rule : rules) {
 
 				Map<String, RuleConditionDefinition> mapConditions = inMemoryConditionStore.entrySet()
 						.stream()
@@ -278,50 +278,49 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 				int match = 0;
 				RuleConditionDefinition currentRule1 = mapConditions.get(criteria.getConditionCriteria1().getField());
 
-				if (currentRule1 != null && currentRule1.getExpression().equals(criteria.getConditionCriteria1().getValue()))
-				{
+				if (currentRule1 != null && currentRule1.getExpression().equals(criteria.getConditionCriteria1().getValue())) {
 					match++;
 				}
 
-				if (criteria.getConditionCriteria2() != null)
-				{
+				if (criteria.getConditionCriteria2() != null) {
 					RuleConditionDefinition currentRule2 = mapConditions.get(criteria.getConditionCriteria2().getField());
-					if (currentRule2 != null && currentRule2.getExpression().equals(criteria.getConditionCriteria2().getValue()))
-					{
+					if (currentRule2 != null && currentRule2.getExpression().equals(criteria.getConditionCriteria2().getValue())) {
 						match++;
 					}
 				}
 
 				int expectedMatch = criteria.getConditionCriteria2() != null ? 2 : 1;
 
-				if (match == expectedMatch)
-				{
+				if (match == expectedMatch) {
 					ret.add(rule);
 					break;
 				}
 			}
 		}
 
-		return ret;            
+		return ret;
 	}
 
+	@Override
 	public void removeRules(List<Long> list) {
 		for (Long id : list) {
 			inMemoryRuleStore.remove(id);
 		}
 	}
 
+	@Override
 	public void removeSelectors(List<Long> list) {
-		for(Long id : list) {
+		for (Long id : list) {
 			inMemorySelectorStore.remove(id);
 		}
 	}
 
+	@Override
 	public void removeSelectorsFiltersByGroupId(String groupId) {
-		
+
 		for (SelectorDefinition sel : inMemorySelectorStore.values()) {
 			if (sel.getGroupId().equals(groupId)) {
-				for(RuleFilterDefinition filter : inMemoryFilterStore.values())	{
+				for (RuleFilterDefinition filter : inMemoryFilterStore.values()) {
 					if (filter.getSelId().equals(sel.getId())) {
 						inMemoryFilterStore.remove(filter.getId());
 					}

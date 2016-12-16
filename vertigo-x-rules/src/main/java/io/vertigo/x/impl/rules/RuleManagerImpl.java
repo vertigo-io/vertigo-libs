@@ -44,7 +44,7 @@ public final class RuleManagerImpl implements RuleManager {
 
 	private final RuleStorePlugin ruleStorePlugin;
 	private final RuleConstantsStorePlugin ruleConstantsStorePlugin;
-	
+
 	private final RuleSelectorPlugin ruleSelectorPlugin;
 	private final RuleValidatorPlugin ruleValidatorPlugin;
 
@@ -56,7 +56,7 @@ public final class RuleManagerImpl implements RuleManager {
 	 * @param ruleConstantsStorePlugin 
 	 */
 	@Inject
-	public RuleManagerImpl(final RuleStorePlugin ruleStorePlugin,final RuleSelectorPlugin ruleSelectorPlugin, final RuleValidatorPlugin ruleValidatorPlugin, RuleConstantsStorePlugin ruleConstantsStorePlugin) {
+	public RuleManagerImpl(final RuleStorePlugin ruleStorePlugin, final RuleSelectorPlugin ruleSelectorPlugin, final RuleValidatorPlugin ruleValidatorPlugin, RuleConstantsStorePlugin ruleConstantsStorePlugin) {
 		this.ruleStorePlugin = ruleStorePlugin;
 		this.ruleSelectorPlugin = ruleSelectorPlugin;
 		this.ruleValidatorPlugin = ruleValidatorPlugin;
@@ -72,39 +72,42 @@ public final class RuleManagerImpl implements RuleManager {
 
 		return ruleSelectorPlugin.selectAccounts(selectors, context);
 	}
-	
+
 	/** {@inheritDoc} */
+	@Override
 	public List<Account> selectAccounts(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters) {
 		RuleContext context = new RuleContext(item, constants);
 		List<SelectorDefinition> selectors = mapSelectors.get(idActivityDefinition);
 
 		if (selectors == null) {
-			selectors = new ArrayList<SelectorDefinition>();
+			selectors = new ArrayList<>();
 		}
 
 		return ruleSelectorPlugin.selectAccounts(selectors, mapFilters, context);
 	}
-	
+
 	/** {@inheritDoc} */
+	@Override
 	public List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants) {
-        List<SelectorDefinition> selectors = ruleStorePlugin.findSelectorsByItemId(idActivityDefinition);
-        RuleContext context = new RuleContext(item, constants);
+		List<SelectorDefinition> selectors = ruleStorePlugin.findSelectorsByItemId(idActivityDefinition);
+		RuleContext context = new RuleContext(item, constants);
 
-        return ruleSelectorPlugin.selectGroups(selectors, context);
+		return ruleSelectorPlugin.selectGroups(selectors, context);
 	}
-	
+
 	/** {@inheritDoc} */
-    public List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters) {
-    	RuleContext context = new RuleContext(item, constants);
+	@Override
+	public List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters) {
+		RuleContext context = new RuleContext(item, constants);
 
-    	List<SelectorDefinition> selectors = mapSelectors.get(idActivityDefinition); 
+		List<SelectorDefinition> selectors = mapSelectors.get(idActivityDefinition);
 
-    	if (selectors == null) {
-    		selectors = new ArrayList<SelectorDefinition>();
-    	}
+		if (selectors == null) {
+			selectors = new ArrayList<>();
+		}
 
-    	return ruleSelectorPlugin.selectGroups(selectors, mapFilters, context);
-    }
+		return ruleSelectorPlugin.selectGroups(selectors, mapFilters, context);
+	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -115,18 +118,18 @@ public final class RuleManagerImpl implements RuleManager {
 
 		return ruleValidatorPlugin.isRuleValid(rules, context);
 	}
-	
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean isRuleValid(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<RuleDefinition>> mapRules, Map<Long, List<RuleConditionDefinition>> mapConditions) {
 		RuleContext context = new RuleContext(item, constants);
-		
+
 		List<RuleDefinition> rules = mapRules.get(idActivityDefinition);
-	
+
 		if (rules == null) {
-			rules = new ArrayList<RuleDefinition>();
+			rules = new ArrayList<>();
 		}
-	
+
 		return ruleValidatorPlugin.isRuleValid(rules, mapConditions, context);
 	}
 
@@ -171,40 +174,44 @@ public final class RuleManagerImpl implements RuleManager {
 	public void updateCondition(final RuleConditionDefinition ruleConditionDefinition) {
 		ruleStorePlugin.updateCondition(ruleConditionDefinition);
 	}
-	
+
 	/** {@inheritDoc} */
+	@Override
 	public List<Long> findItemsByCriteria(RuleCriteria criteria, List<Long> items) {
 		List<RuleDefinition> rules = ruleStorePlugin.findRulesByCriteria(criteria, items);
 
 		return rules.stream()
-					.map(r -> r.getItemId())
-					.distinct()
-					.collect(Collectors.toList());
+				.map(r -> r.getItemId())
+				.distinct()
+				.collect(Collectors.toList());
 	}
-	
+
 	/** {@inheritDoc} */
+	@Override
 	public void removeRules(List<RuleDefinition> ruleDefinitions) {
 		List<Long> ids = ruleDefinitions.stream()
-										.filter(r -> r.getId() != null)
-										.map(RuleDefinition::getId)
-										.collect(Collectors.toList());
+				.filter(r -> r.getId() != null)
+				.map(RuleDefinition::getId)
+				.collect(Collectors.toList());
 		ruleStorePlugin.removeRules(ids);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void removeSelectors(List<SelectorDefinition> selectorDefinitions) {
 		List<Long> ids = selectorDefinitions.stream()
-											.filter(r -> r.getId() != null)
-											.map(SelectorDefinition::getId)
-											.collect(Collectors.toList());
-	    ruleStorePlugin.removeSelectors(ids);
+				.filter(r -> r.getId() != null)
+				.map(SelectorDefinition::getId)
+				.collect(Collectors.toList());
+		ruleStorePlugin.removeSelectors(ids);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public void removeSelectorsFiltersByGroupId(String groupId) {
 		ruleStorePlugin.removeSelectorsFiltersByGroupId(groupId);
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public List<RuleConditionDefinition> getConditionsForRuleId(final Long ruleId) {
@@ -271,6 +278,4 @@ public final class RuleManagerImpl implements RuleManager {
 		return ruleConstantsStorePlugin.readConstants(key);
 	}
 
-
 }
-

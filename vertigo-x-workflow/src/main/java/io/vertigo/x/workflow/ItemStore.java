@@ -36,14 +36,14 @@ public interface ItemStore {
 	 * @param item
 	 */
 	void addItem(Long itemId, DtObject item);
-	
+
 	/**
 	 * Get an item.
 	 * @param itemId
 	 * @return the DtObject corresponding to the itemId
 	 */
 	DtObject readItem(Long itemId);
-	
+
 	/**
 	 * Get a list of items
 	 * @param itemIds List of Items Ids.

@@ -18,7 +18,6 @@
  */
 package io.vertigo.x.workflow;
 
-
 /**
  * Enum for the workflow specific transition .
  * @author xdurand
@@ -27,9 +26,9 @@ package io.vertigo.x.workflow;
 public enum WfCodeTransition {
 	/** Default transition name */
 	DEFAULT("default");
-	
+
 	private final String transitionName;
-	
+
 	WfCodeTransition(String transitionName) {
 		this.transitionName = transitionName;
 	}
@@ -41,6 +40,5 @@ public enum WfCodeTransition {
 	public String getTransitionName() {
 		return transitionName;
 	}
-	
 
 }

@@ -19,10 +19,8 @@
 
 package io.vertigo.x.impl.rules;
 
-
 import io.vertigo.lang.Plugin;
 import io.vertigo.x.rules.RuleStore;
-
 
 /**
  * Interface for the rule's store plugin

@@ -31,7 +31,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  * @author xdurand
  */
 public final class RuleDefinition implements Entity {
-	
+
 	private static final long serialVersionUID = 2280022920606418634L;
 
 	@Field(type = "ID", domain = "DO_X_RULES_ID", required = true, label = "id")
@@ -47,13 +47,13 @@ public final class RuleDefinition implements Entity {
 	private String label;
 
 	private io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.rules.RuleConditionDefinition> ruleConditionDefinition;
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public URI<RuleDefinition> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
-	
+
 	/**
 	 *
 	 * @param id

@@ -19,10 +19,8 @@
 
 package io.vertigo.x.impl.workflow;
 
-
 import io.vertigo.lang.Plugin;
 import io.vertigo.x.workflow.ItemStore;
-
 
 /**
  * Interface for the workflow store plugin

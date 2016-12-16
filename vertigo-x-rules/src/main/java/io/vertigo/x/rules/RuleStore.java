@@ -20,7 +20,6 @@ package io.vertigo.x.rules;
 
 import java.util.List;
 
-
 /**
  * This class defines the storage of workflow.
  * @author xdurand
@@ -103,7 +102,6 @@ public interface RuleStore {
 	 */
 	void updateSelector(SelectorDefinition selectorDefinition);
 
-
 	/**
 	 * Add a filter
 	 * @param ruleFilterDefinition
@@ -136,19 +134,19 @@ public interface RuleStore {
 	 * @return a list of Rule Definition
 	 */
 	List<RuleDefinition> findRulesByCriteria(RuleCriteria criteria, List<Long> items);
-	
+
 	/**
 	 * Removes all the specified rules
 	 * @param list list of ids
 	 */
 	void removeRules(List<Long> list);
-	
+
 	/**
 	 * Removes all the specified Selectors
 	 * @param list list of ids
 	 */
 	void removeSelectors(List<Long> list);
-	
+
 	/**
 	 * Removes all Selectors and linked filters associated to the provided groupId
 	 * @param groupId groupId

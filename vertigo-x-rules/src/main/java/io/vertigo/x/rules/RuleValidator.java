@@ -41,7 +41,6 @@ public interface RuleValidator {
 	 */
 	boolean isRuleValid(final List<RuleDefinition> rules, RuleContext ruleContext);
 
-	
 	/**
 	 * Validate a rule for an activity using rules and conditions provided
 	 * @param rules rules

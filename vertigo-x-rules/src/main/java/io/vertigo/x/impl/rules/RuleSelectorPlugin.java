@@ -19,10 +19,8 @@
 
 package io.vertigo.x.impl.rules;
 
-
 import io.vertigo.lang.Plugin;
 import io.vertigo.x.rules.RuleSelector;
-
 
 /**
  * Interface for the rule selector plugin

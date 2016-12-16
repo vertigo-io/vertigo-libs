@@ -1,6 +1,5 @@
 package io.vertigo.x.workflow;
 
-
 /**
  * 
  * @author xdurand
@@ -9,8 +8,8 @@ package io.vertigo.x.workflow;
 public class WfTransitionCriteria {
 
 	private String transitionName;
-    private Long wfadIdFrom;
-    private Long wfadIdTo;
+	private Long wfadIdFrom;
+	private Long wfadIdTo;
 
 	/**
 	 * @return the transitionName
@@ -53,5 +52,5 @@ public class WfTransitionCriteria {
 	public void setWfadIdTo(Long wfadIdTo) {
 		this.wfadIdTo = wfadIdTo;
 	}
-    
+
 }

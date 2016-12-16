@@ -26,5 +26,5 @@ public class WfActivityCriteria {
 	public void setConditionCriteria(List<RuleConditionCriteria> conditionCriteria) {
 		this.conditionCriteria = conditionCriteria;
 	}
-	
+
 }

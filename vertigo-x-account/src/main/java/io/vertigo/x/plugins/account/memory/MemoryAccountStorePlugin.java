@@ -179,10 +179,10 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 	@Override
 	public void reset() {
 		photoByAccountURI.clear();
-        accountByGroupURI.clear();
-        accountByURI.clear();
-        groupByAccountURI.clear();
-        groupByURI.clear();
+		accountByGroupURI.clear();
+		accountByURI.clear();
+		groupByAccountURI.clear();
+		groupByURI.clear();
 	}
 
 }

@@ -56,7 +56,7 @@ public final class MemoryRuleConstantsStorePlugin implements RuleConstantsStoreP
 		Assertion.checkNotNull(ruleConstants);
 		Assertion.checkState(inMemoryConstantsStore.containsKey(key), "Cannot update this RuleConstant : Its id is unknown in the store");
 		//---
-		inMemoryConstantsStore.put(key, ruleConstants);		
+		inMemoryConstantsStore.put(key, ruleConstants);
 	}
 
 	@Override

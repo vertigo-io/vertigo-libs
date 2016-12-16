@@ -53,12 +53,12 @@ public final class RuleContext {
 		final List<DtField> fields = definition.getFields();
 
 		for (final DtField dtField : fields) {
-			
+
 			Object val = dtField.getDataAccessor().getValue(dtObject);
 			if (val != null) {
 				if (val instanceof List) {
 					List<Object> valList = (List<Object>) val;
-					List<String> valListString = valList.stream().map( v -> v.toString()).collect(Collectors.toList());
+					List<String> valListString = valList.stream().map(v -> v.toString()).collect(Collectors.toList());
 					mapMerge.put(dtField.getName(), valListString);
 				} else {
 					mapMerge.put(dtField.getName(), val.toString());

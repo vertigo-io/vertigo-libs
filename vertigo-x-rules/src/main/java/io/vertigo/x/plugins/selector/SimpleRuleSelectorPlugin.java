@@ -66,14 +66,13 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 	}
 
 	private List<SelectorDefinition> findMatchingSelectors(List<SelectorDefinition> selectors, RuleContext ruleContext) {
-		List<SelectorDefinition> collected = new ArrayList<SelectorDefinition>();
+		List<SelectorDefinition> collected = new ArrayList<>();
 
 		for (SelectorDefinition selectorDefinition : selectors) {
 			List<RuleFilterDefinition> filters = ruleStorePlugin.findFiltersBySelectorId(selectorDefinition.getId());
 
 			boolean selectorMatch = checkFilters(filters, ruleContext);
-			if (selectorMatch)
-			{
+			if (selectorMatch) {
 				collected.add(selectorDefinition);
 			}
 		}
@@ -82,13 +81,13 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 	}
 
 	private List<SelectorDefinition> findMatchingSelectors(List<SelectorDefinition> selectors, Map<Long, List<RuleFilterDefinition>> mapFilters, RuleContext ruleContext) {
-		List<SelectorDefinition> collected = new ArrayList<SelectorDefinition>();
+		List<SelectorDefinition> collected = new ArrayList<>();
 
 		for (SelectorDefinition selectorDefinition : selectors) {
 
 			List<RuleFilterDefinition> filters = mapFilters.get(selectorDefinition.getId());
 			if (filters == null) {
-				filters = new ArrayList<RuleFilterDefinition>();
+				filters = new ArrayList<>();
 			}
 
 			boolean selectorMatch = checkFilters(filters, ruleContext);
@@ -100,15 +99,14 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 		return collected;
 	}
 
-
-
+	@Override
 	public List<Account> selectAccounts(List<SelectorDefinition> selectors, RuleContext ruleContext) {
-		List<Account> collected = new ArrayList<Account>();
+		List<Account> collected = new ArrayList<>();
 		List<SelectorDefinition> matchingSelectors = findMatchingSelectors(selectors, ruleContext);
 
 		AccountStore accountStore = accountManager.getStore();
 
-		for (SelectorDefinition selectorDefinition : matchingSelectors) { 
+		for (SelectorDefinition selectorDefinition : matchingSelectors) {
 			Set<URI<Account>> accounts = accountStore.getAccountURIs(createGroupURI(selectorDefinition.getGroupId()));
 			for (URI<Account> accountUri : accounts) {
 				Account account = accountStore.getAccount(accountUri);
@@ -119,15 +117,16 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 		return collected;
 	}
 
+	@Override
 	public List<Account> selectAccounts(List<SelectorDefinition> selectors, Map<Long, List<RuleFilterDefinition>> mapFilters, RuleContext ruleContext) {
-		List<Account> collected = new ArrayList<Account>();
+		List<Account> collected = new ArrayList<>();
 		List<SelectorDefinition> matchingSelectors = findMatchingSelectors(selectors, mapFilters, ruleContext);
 
 		AccountStore accountStore = accountManager.getStore();
 
 		for (SelectorDefinition selectorDefinition : matchingSelectors) {
 			Set<URI<Account>> accounts = accountStore.getAccountURIs(createGroupURI(selectorDefinition.getGroupId()));
-			for (URI<Account> accountURI: accounts) {
+			for (URI<Account> accountURI : accounts) {
 				Account account = accountStore.getAccount(accountURI);
 				collected.add(account);
 			}
@@ -136,9 +135,9 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 		return collected;
 	}
 
-
+	@Override
 	public List<AccountGroup> selectGroups(List<SelectorDefinition> selectors, RuleContext ruleContext) {
-		List<AccountGroup> collected = new ArrayList<AccountGroup>();
+		List<AccountGroup> collected = new ArrayList<>();
 		List<SelectorDefinition> matchingSelectors = findMatchingSelectors(selectors, ruleContext);
 
 		AccountStore accountStore = accountManager.getStore();
@@ -150,15 +149,15 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 
 		return collected;
 	}
-	
 
+	@Override
 	public List<AccountGroup> selectGroups(List<SelectorDefinition> selectors, Map<Long, List<RuleFilterDefinition>> mapFilters, RuleContext ruleContext) {
-		List<AccountGroup> collected = new ArrayList<AccountGroup>();
+		List<AccountGroup> collected = new ArrayList<>();
 		List<SelectorDefinition> matchingSelectors = findMatchingSelectors(selectors, mapFilters, ruleContext);
 
 		AccountStore accountStore = accountManager.getStore();
 
-		for(SelectorDefinition selectorDefinition : matchingSelectors) {
+		for (SelectorDefinition selectorDefinition : matchingSelectors) {
 			collected.add(accountStore.getGroup(createGroupURI(selectorDefinition.getGroupId())));
 		}
 
@@ -177,31 +176,31 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 			Object fieldToTest = ruleContext.getContext().get(field);
 			if (fieldToTest != null) {
 				switch (operat) {
-				case "=":
-					result = fieldToTest.equals(expression);
-					break;
-				case "IN":
-					String[] expressions = expression.split(",");
-					if (fieldToTest instanceof List) {
-						List<String> valueList = (List<String>) fieldToTest;
-						result = Arrays.stream(expressions).filter(valueList::contains).count() > 0;
-					} else {
-						String valStr = (String) fieldToTest;
-						result =  Arrays.stream(expressions).anyMatch(valStr::equals);
-					}
-					break;
-				case "<":
-					double doubleExpressionInf = Double.parseDouble(expression);
-					double doubleFieldInf = Double.parseDouble((String)fieldToTest);
-					result = doubleFieldInf < doubleExpressionInf;
-					break;
-				case ">":
-					double doubleExpressionSup = Double.parseDouble(expression);
-					double doubleFieldSup = Double.parseDouble((String)fieldToTest);
-					result = doubleFieldSup > doubleExpressionSup;
-					break;
-				default:
-					break;
+					case "=":
+						result = fieldToTest.equals(expression);
+						break;
+					case "IN":
+						String[] expressions = expression.split(",");
+						if (fieldToTest instanceof List) {
+							List<String> valueList = (List<String>) fieldToTest;
+							result = Arrays.stream(expressions).filter(valueList::contains).count() > 0;
+						} else {
+							String valStr = (String) fieldToTest;
+							result = Arrays.stream(expressions).anyMatch(valStr::equals);
+						}
+						break;
+					case "<":
+						double doubleExpressionInf = Double.parseDouble(expression);
+						double doubleFieldInf = Double.parseDouble((String) fieldToTest);
+						result = doubleFieldInf < doubleExpressionInf;
+						break;
+					case ">":
+						double doubleExpressionSup = Double.parseDouble(expression);
+						double doubleFieldSup = Double.parseDouble((String) fieldToTest);
+						result = doubleFieldSup > doubleExpressionSup;
+						break;
+					default:
+						break;
 				}
 
 				if (!result) {
@@ -214,6 +213,5 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 
 		return selectorMatch;
 	}
-
 
 }

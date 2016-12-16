@@ -1,13 +1,12 @@
 package io.vertigo.x.rules;
 
-
 /**
  * 
  * @author xdurand
  *
  */
 public class RuleCriteria {
-	
+
 	private long wfwdId;
 
 	private RuleConditionCriteria conditionCriteria1;

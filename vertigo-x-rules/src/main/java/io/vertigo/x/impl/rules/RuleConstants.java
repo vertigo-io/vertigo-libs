@@ -29,9 +29,9 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  */
 public final class RuleConstants {
-	
+
 	private final Map<String, String> constants = new ConcurrentHashMap<>();
-	
+
 	/**
 	 * Empty rule constants
 	 */

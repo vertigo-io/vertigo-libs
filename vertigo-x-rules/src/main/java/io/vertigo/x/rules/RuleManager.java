@@ -32,7 +32,6 @@ import io.vertigo.x.impl.rules.RuleConstants;
  */
 public interface RuleManager extends Manager {
 
-
 	/**
 	 * Select accounts matching the selector for an activity
 	 * @param idActivityDefinition Activity definition id
@@ -41,7 +40,6 @@ public interface RuleManager extends Manager {
 	 * @return a list of account
 	 */
 	List<Account> selectAccounts(final Long idActivityDefinition, final DtObject item, final RuleConstants constants);
-
 
 	/**
 	 * Select accounts an activity using the provided selectors and filters.
@@ -54,7 +52,7 @@ public interface RuleManager extends Manager {
 	 * @return list of matching accounts
 	 */
 	List<Account> selectAccounts(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters);
-	
+
 	/**
 	 * Select groups matching the selector for an activity
 	 * @param idActivityDefinition Activity definition id
@@ -63,7 +61,7 @@ public interface RuleManager extends Manager {
 	 * @return a list of groups
 	 */
 	List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants);
-	
+
 	/**
 	 * Select groups matching the selector for an activity
 	 * @param idActivityDefinition Activity definition id
@@ -75,7 +73,7 @@ public interface RuleManager extends Manager {
 	 * @return  a list of groups
 	 */
 	List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters);
-	
+
 	/**
 	 * Validate a rule for an activity
 	 * @param idActivityDefinition Activity definition id
@@ -96,7 +94,7 @@ public interface RuleManager extends Manager {
 	 * @return true is a rule match, false otherwise
 	 */
 	boolean isRuleValid(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<RuleDefinition>> mapRules, Map<Long, List<RuleConditionDefinition>> mapConditions);
-	
+
 	/**
 	 * Add a new rule
 	 * @param ruleDefinition the rule to add
@@ -121,7 +119,7 @@ public interface RuleManager extends Manager {
 	 * @param ruleDefinitions
 	 */
 	void removeRules(List<RuleDefinition> ruleDefinitions);
-	
+
 	/**
 	 * Update a rule
 	 * @param ruleDefinition
@@ -171,12 +169,12 @@ public interface RuleManager extends Manager {
 	 * @param selectorDefinition the selector to remove
 	 */
 	void removeSelector(SelectorDefinition selectorDefinition);
-	
+
 	/**
 	 * Remove a list of rules.
 	 * @param ruleDefinitions list of rules to remove.
 	 */
-    void removeSelectors(List<SelectorDefinition> ruleDefinitions);
+	void removeSelectors(List<SelectorDefinition> ruleDefinitions);
 
 	/**
 	 * Update a selector
@@ -209,21 +207,20 @@ public interface RuleManager extends Manager {
 	 */
 	void updateFilter(RuleFilterDefinition ruleFilterDefinition);
 
-	
 	/**
 	 * Define the constants for this key
 	 * @param key the key
 	 * @param ruleConstants constants to associate
 	 */
 	void addConstants(Long key, RuleConstants ruleConstants);
-	
+
 	/**
 	 * Get the constants associated to a key
 	 * @param key the key
 	 * @return the constants defined for this key
 	 */
 	RuleConstants getConstants(Long key);
-	
+
 	/**
 	 * Find itemIds using the specified criteria and in the specified sublist itemsIds
 	 * @param criteria rules criteria
@@ -231,7 +228,7 @@ public interface RuleManager extends Manager {
 	 * @return list of itemIds
 	 */
 	List<Long> findItemsByCriteria(RuleCriteria criteria, List<Long> items);
-	
+
 	/**
 	 * Remove all selectors and filters for a specified groupId
 	 * @param groupId groupId

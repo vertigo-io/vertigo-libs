@@ -33,7 +33,6 @@ import io.vertigo.x.impl.rules.RuleContext;
  */
 public interface RuleSelector {
 
-
 	/**
 	 * Select accounts matching the selector provided from an activity.
 	 * @param selectors Selectors.
@@ -50,7 +49,7 @@ public interface RuleSelector {
 	 * @return a list of account
 	 */
 	List<Account> selectAccounts(List<SelectorDefinition> selectors, Map<Long, List<RuleFilterDefinition>> mapFilters, RuleContext ruleContext);
-	
+
 	/**
 	 * Select groups matching the selectors provided from an activity
 	 * @param selectors
@@ -58,7 +57,7 @@ public interface RuleSelector {
 	 * @return All the groups matching the selectors and rules
 	 */
 	List<AccountGroup> selectGroups(List<SelectorDefinition> selectors, RuleContext ruleContext);
-	
+
 	/**
 	 * Select groups for an activity using selectors and filters provided
 	 * @param selectors selectors

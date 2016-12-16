@@ -38,7 +38,6 @@ import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.x.impl.rules.RuleConstants;
 import io.vertigo.x.rules.data.MyDummyDtObject;
 
-
 /**
  * Junit for rule manager
  * @author xdurand
@@ -141,7 +140,6 @@ public class RuleManagerValidatorTest {
 		assertThat(rulesFetch_2_0.size(), is(0));
 	}
 
-
 	/**
 	 * One simple rule for RulesManager
 	 */
@@ -193,7 +191,6 @@ public class RuleManagerValidatorTest {
 		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(false));
 	}
-
 
 	/**
 	 * Combining many condition in one rule for RulesManager
@@ -280,7 +277,6 @@ public class RuleManagerValidatorTest {
 		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		assertThat(isValid, is(false));
 	}
-
 
 	/**
 	 * Combining many rules with many rules for RulesManager

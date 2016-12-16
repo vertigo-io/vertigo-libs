@@ -91,7 +91,6 @@ public final class SelectorDefinition implements DtObject {
 		this.itemId = itemId;
 	}
 
-
 	/**
 	 * @return the groupId
 	 */

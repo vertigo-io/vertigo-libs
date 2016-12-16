@@ -276,7 +276,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	public void reset() {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			try (final Transaction tx = jedis.multi()) {
-				tx.del("accounts", "groups","accountsByGroup","photoByAccount");
+				tx.del("accounts", "groups", "accountsByGroup", "photoByAccount");
 				tx.exec();
 			} catch (final IOException ex) {
 				throw new WrappedException(ex);

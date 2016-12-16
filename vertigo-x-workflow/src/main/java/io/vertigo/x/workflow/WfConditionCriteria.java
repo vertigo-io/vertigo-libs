@@ -1,16 +1,14 @@
 package io.vertigo.x.workflow;
 
-
 /**
  * 
  * @author xdurand
  *
  */
-public class WfConditionCriteria
-{
-    private String field;
+public class WfConditionCriteria {
+	private String field;
 
-    private String value;
+	private String value;
 
 	/**
 	 * @return the field
@@ -39,5 +37,5 @@ public class WfConditionCriteria
 	public void setValue(String value) {
 		this.value = value;
 	}
-    
+
 }

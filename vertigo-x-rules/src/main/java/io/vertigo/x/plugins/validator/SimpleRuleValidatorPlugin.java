@@ -51,6 +51,7 @@ public final class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 		this.ruleStorePlugin = ruleStorePlugin;
 	}
 
+	@Override
 	public boolean isRuleValid(List<RuleDefinition> rules, RuleContext ruleContext) {
 		for (RuleDefinition ruleDefinition : rules) {
 			List<RuleConditionDefinition> conditions = ruleStorePlugin.findConditionByRuleId(ruleDefinition.getId());
@@ -64,11 +65,12 @@ public final class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 		return false;
 	}
 
+	@Override
 	public boolean isRuleValid(List<RuleDefinition> rules, Map<Long, List<RuleConditionDefinition>> mapConditions, RuleContext ruleContext) {
 		for (RuleDefinition ruleDefinition : rules) {
 			List<RuleConditionDefinition> conditions = mapConditions.get(ruleDefinition.getId());
 			if (conditions == null) {
-				conditions = new ArrayList<RuleConditionDefinition>();
+				conditions = new ArrayList<>();
 			}
 
 			boolean ruleValid = checkRules(conditions, ruleContext);
@@ -92,39 +94,38 @@ public final class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 			boolean result = false;
 			Object fieldToTest = ruleContext.getContext().get(field);
 			if (fieldToTest != null) {
-				switch (operat)
-				{
-				case "=":
-					result = fieldToTest.equals(expression);
-					break;
-				case "IN":
-					String[] expressions = expression.split(",");
-					if (fieldToTest instanceof List) {
-						List<String> valueList = (List<String>) fieldToTest;
-						result = Arrays.stream(expressions).filter(valueList::contains).count() > 0;
-					} else {
-						String valStr = (String) fieldToTest;
-						result =  Arrays.stream(expressions).anyMatch(valStr::equals);
-					}
-					break;
-				case "<":
-					double doubleExpressionInf = Double.parseDouble(expression);
-					double doubleFieldInf = Double.parseDouble((String) fieldToTest);
-					result = doubleFieldInf < doubleExpressionInf;
-					break;
-				case ">":
-					double doubleExpressionSup = Double.parseDouble(expression);
-					double doubleFieldSup = Double.parseDouble((String) fieldToTest);
-					result = doubleFieldSup > doubleExpressionSup;
-					break;
-				default:
-					break;
+				switch (operat) {
+					case "=":
+						result = fieldToTest.equals(expression);
+						break;
+					case "IN":
+						String[] expressions = expression.split(",");
+						if (fieldToTest instanceof List) {
+							List<String> valueList = (List<String>) fieldToTest;
+							result = Arrays.stream(expressions).filter(valueList::contains).count() > 0;
+						} else {
+							String valStr = (String) fieldToTest;
+							result = Arrays.stream(expressions).anyMatch(valStr::equals);
+						}
+						break;
+					case "<":
+						double doubleExpressionInf = Double.parseDouble(expression);
+						double doubleFieldInf = Double.parseDouble((String) fieldToTest);
+						result = doubleFieldInf < doubleExpressionInf;
+						break;
+					case ">":
+						double doubleExpressionSup = Double.parseDouble(expression);
+						double doubleFieldSup = Double.parseDouble((String) fieldToTest);
+						result = doubleFieldSup > doubleExpressionSup;
+						break;
+					default:
+						break;
 				}
 
 				if (!result) {
 					ruleValid = false;
 				}
-				
+
 			} else {
 				ruleValid = false;
 			}
@@ -132,6 +133,5 @@ public final class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 
 		return ruleValid;
 	}
-
 
 }
