@@ -22,13 +22,13 @@ import java.util.List;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 import io.vertigo.x.account.Account;
 
 /**
  * @author pchretien
  */
-public interface CommentManager extends Component {
+public interface CommentManager extends Manager {
 
 	/**
 	 * Gets a list of sorted comments published on this keyConcept.

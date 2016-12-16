@@ -22,14 +22,14 @@ import java.util.List;
 import java.util.UUID;
 
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.lang.Component;
+import io.vertigo.lang.Manager;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 
 /**
  * @author pchretien
  */
-public interface NotificationManager extends Component {
+public interface NotificationManager extends Manager {
 	/**
 	 * Send a notification to a group
 	 * @param notification Notification
