@@ -19,7 +19,7 @@
 package io.vertigo.x.impl.workflow;
 
 import io.vertigo.app.config.Features;
-import io.vertigo.app.config.Param;
+import io.vertigo.core.param.Param;
 import io.vertigo.x.workflow.WorkflowManager;
 
 /**

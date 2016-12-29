@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import io.vertigo.app.config.ComponentConfigBuilder;
 import io.vertigo.app.config.Features;
-import io.vertigo.app.config.Param;
+import io.vertigo.core.param.Param;
 import io.vertigo.x.connectors.redis.RedisConnector;
 
 /**
