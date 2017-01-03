@@ -64,7 +64,7 @@ public class MyAppConfig {
 				.endBoot()
 				.addModule(new PersonaFeatures().withUserSession(TestUserSession.class).build())
 				.addModule(new CommonsFeatures()
-						.withScript()
+						//.withScript()
 						.build())
 				.addModule(new DynamoFeatures().build())
 				.addModule(new AccountFeatures()
