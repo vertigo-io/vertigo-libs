@@ -436,7 +436,7 @@ public class WorkflowManagerTest {
 	 * 
 	 */
 	@Test
-	public void TestWorkflowMove3ActivitiesBefore()	{
+	public void testWorkflowMove3ActivitiesBefore()	{
 		WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
 		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
 
@@ -522,7 +522,7 @@ public class WorkflowManagerTest {
 	 * 
 	 */
 	@Test
-	public void TestWorkflowMove3ActivitiesAfter() {
+	public void testWorkflowMove3ActivitiesAfter() {
 		WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
 		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
 
@@ -610,7 +610,7 @@ public class WorkflowManagerTest {
 	 * 
 	 */
 	@Test
-	public void TestWorkflowMoveActivity5ActivitiesWorkflow() {
+	public void testWorkflowMoveActivity5ActivitiesWorkflow() {
 		WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
 		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
 

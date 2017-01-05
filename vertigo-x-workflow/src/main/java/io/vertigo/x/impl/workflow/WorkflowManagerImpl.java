@@ -363,8 +363,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 		WfCodeMultiplicityDefinition wfCodeMultiplicityDefinition = WfCodeMultiplicityDefinition.valueOf(currentActivityDefinition.getWfmdCode());
 
-		//A refactorer
-		WfDecision wfDecision = null;
+		WfDecision wfDecision;
 		if (wfCodeMultiplicityDefinition == WfCodeMultiplicityDefinition.SIN) {
 			wfDecision = getDecision(currentActivity);
 			if (wfDecision == null) {
@@ -606,10 +605,8 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 				transitionTo.setWfadIdTo(transitionFrom.getWfadIdTo());
 				workflowStorePlugin.updateTransition(transitionTo);
 			} else {
-				// Last acitivity
-				workflowStorePlugin.removeTransition(transitionFrom);
-				transitionTo.setWfadIdTo(transitionFrom.getWfadIdTo());
-				workflowStorePlugin.updateTransition(transitionTo);
+				// Last activity
+				workflowStorePlugin.removeTransition(transitionTo);
 			}
 		}
 

@@ -264,7 +264,7 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 
 			List<RuleDefinition> rules = inMemoryRuleStore.entrySet()
 					.stream()
-					.filter(r -> r.getValue().equals(itemId))
+					.filter(r -> r.getValue().getItemId().equals(itemId))
 					.map(es -> es.getValue())
 					.collect(Collectors.toList());
 			for (RuleDefinition rule : rules) {

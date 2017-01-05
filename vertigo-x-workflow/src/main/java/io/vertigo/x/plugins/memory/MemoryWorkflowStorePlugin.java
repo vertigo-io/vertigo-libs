@@ -218,6 +218,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		for (Entry<String, WfTransitionDefinition> entry : transitionsNext.entrySet()) {
 			if (entry.getValue().getWftdId().equals(transition.getWftdId())) {
 				key = entry.getKey();
+				break;
 			}
 		}
 
