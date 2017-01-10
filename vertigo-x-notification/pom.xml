@@ -17,7 +17,11 @@
 			<artifactId>vertigo-x-account</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+		<dependency>
+		    <groupId>io.vertigo</groupId>
+			<artifactId>vertigo-x-connectors</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
