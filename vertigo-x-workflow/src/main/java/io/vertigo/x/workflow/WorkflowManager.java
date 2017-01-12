@@ -292,5 +292,13 @@ public interface WorkflowManager extends Manager {
 	 * @param selectors
 	 */
 	void removeSelectors(List<SelectorDefinition> selectors);
+	
+	
+	/**
+	 * Get a workflow with all the associated elements
+	 * @param wfwId
+	 * @return All the WorkflowDecision where activities are manual 
+	 */
+    List<WfWorkflowDecision> getWorkflowDecision(long wfwId);
 
 }

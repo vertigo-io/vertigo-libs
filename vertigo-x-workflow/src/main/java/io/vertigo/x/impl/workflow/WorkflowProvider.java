@@ -35,7 +35,7 @@ import io.vertigo.util.ListBuilder;
  * @author xdurand
  */
 public final class WorkflowProvider implements DefinitionProvider {
-
+	
 	@Override
 	public Iterator<Definition> iterator() {
 		final Domain domainWorkflowId = new DomainBuilder("DO_X_WORKFLOW_ID", DataType.Long).build();
@@ -91,6 +91,8 @@ public final class WorkflowProvider implements DefinitionProvider {
 				.addIdField("WFS_CODE", "wfsCode", domainWorkflowCode, false, false)
 				.addDataField("LABEL", "label", domainWorkflowLabel, true, true, true, true)
 				.build();
+		
+		
 
 		final DtDefinition wfWorkflowDefinitionDtDefinition = wfWorkflowDefinitionDtDefinitionBuilder.build();
 		final DtDefinition wfTransitionDefinitionDtDefinition = wfTransitionDefinitionDtDefinitionBuilder.build();

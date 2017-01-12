@@ -20,6 +20,10 @@ package io.vertigo.x.workflow;
 
 import java.util.List;
 
+import io.vertigo.x.rules.RuleConditionDefinition;
+import io.vertigo.x.rules.RuleDefinition;
+import io.vertigo.x.rules.RuleFilterDefinition;
+import io.vertigo.x.rules.SelectorDefinition;
 import io.vertigo.x.workflow.domain.instance.WfActivity;
 import io.vertigo.x.workflow.domain.instance.WfDecision;
 import io.vertigo.x.workflow.domain.instance.WfWorkflow;
@@ -350,4 +354,14 @@ public interface WorkflowStore {
 	 * @param wfActivityDefinition
 	 */
 	void unsetCurrentActivity(WfActivityDefinition wfActivityDefinition);
+	
+	 // Custom
+	
+	 List<RuleDefinition> findAllRulesByWorkflowDefinitionId(long wfwdId);
+	 
+	 List<RuleConditionDefinition> findAllConditionsByWorkflowDefinitionId(long wfwdId);
+	 
+	 List<SelectorDefinition> findAllSelectorsByWorkflowDefinitionId(long wfwdId);
+	 
+	 List<RuleFilterDefinition> findAllFiltersByWorkflowDefinitionId(long wfwdId);
 }

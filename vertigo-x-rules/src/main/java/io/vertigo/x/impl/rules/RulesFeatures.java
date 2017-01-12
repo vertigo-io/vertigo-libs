@@ -87,6 +87,7 @@ public final class RulesFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
+				.addDefinitionProvider(RuleProvider.class)
 				.addComponent(RuleManager.class, RuleManagerImpl.class);
 	}
 

@@ -31,7 +31,7 @@ import javax.inject.Inject;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.impl.rules.RuleConstants;
 import io.vertigo.x.rules.RuleConditionDefinition;
 import io.vertigo.x.rules.RuleCriteria;
@@ -44,6 +44,7 @@ import io.vertigo.x.workflow.WfCodeStatusWorkflow;
 import io.vertigo.x.workflow.WfCodeTransition;
 import io.vertigo.x.workflow.WfTransitionBuilder;
 import io.vertigo.x.workflow.WfTransitionCriteria;
+import io.vertigo.x.workflow.WfWorkflowDecision;
 import io.vertigo.x.workflow.WorkflowManager;
 import io.vertigo.x.workflow.domain.instance.WfActivity;
 import io.vertigo.x.workflow.domain.instance.WfDecision;
@@ -60,7 +61,6 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	private final WorkflowStorePlugin workflowStorePlugin;
 	private final ItemStorePlugin itemStorePlugin;
 	private final RuleManager ruleManager;
-	//private final AccountManager accountManager;
 
 	private static final String USER_AUTO = "<AUTO>";
 
@@ -69,13 +69,13 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	 * @param workflowStorePlugin
 	 * @param itemStorePlugin
 	 * @param ruleManager
+	 * @param accountManager 
 	 */
 	@Inject
-	public WorkflowManagerImpl(final WorkflowStorePlugin workflowStorePlugin, final ItemStorePlugin itemStorePlugin, final RuleManager ruleManager, AccountManager accountManager) {
+	public WorkflowManagerImpl(final WorkflowStorePlugin workflowStorePlugin, final ItemStorePlugin itemStorePlugin, final RuleManager ruleManager) {
 		this.workflowStorePlugin = workflowStorePlugin;
 		this.itemStorePlugin = itemStorePlugin;
 		this.ruleManager = ruleManager;
-		//this.accountManager = accountManager;
 	}
 
 	//Instance
@@ -869,5 +869,90 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	public void removeSelectors(List<SelectorDefinition> selectors) {
 		ruleManager.removeSelectors(selectors);
 	}
+	
+    private Map<Long, List<RuleDefinition>> constructDicRulesForWorkflowDefinition(long wfwdId) {
+        List<RuleDefinition> rules = workflowStorePlugin.findAllRulesByWorkflowDefinitionId(wfwdId);
+        //Build a dictionary from the rules: WfadId => List<RuleDefinition>
+        Map<Long, List<RuleDefinition>> dicRules = rules.stream().collect(Collectors.groupingBy(RuleDefinition::getItemId));
+        return dicRules;
+    }
+
+    private Map<Long, List<RuleConditionDefinition>> constructDicConditionsForWorkflowDefinition(long wfwdId) {
+        List<RuleConditionDefinition> conditions = workflowStorePlugin.findAllConditionsByWorkflowDefinitionId(wfwdId);
+        //Build a dictionary from the conditions: RudId => List<RuleConditionDefinition>
+        Map<Long, List<RuleConditionDefinition>> dicConditions = conditions.stream().collect(Collectors.groupingBy(RuleConditionDefinition::getRudId));
+        return dicConditions;
+    }
+    
+    private Map<Long, List<SelectorDefinition>> constructDicSelectorsForWorkflowDefinition(long wfwdId) {
+        List<SelectorDefinition> selectors = workflowStorePlugin.findAllSelectorsByWorkflowDefinitionId(wfwdId);
+        //Build a dictionary from the selectors: WfadId => List<SelectorDefinition>
+        Map<Long, List<SelectorDefinition>> dicSelectors = selectors.stream().collect(Collectors.groupingBy(SelectorDefinition::getItemId));
+        return dicSelectors;
+    }
+
+    private Map<Long, List<RuleFilterDefinition>> constructDicFiltersForWorkflowDefinition(long wfwdId) {
+        List<RuleFilterDefinition> filters = workflowStorePlugin.findAllFiltersByWorkflowDefinitionId(wfwdId);
+        //Build a dictionary from the filters: SelId => List<RuleFilterDefinition>
+        Map<Long, List<RuleFilterDefinition>> dicConditions = filters.stream().collect(Collectors.groupingBy(RuleFilterDefinition::getSelId));
+        return dicConditions;
+    }
+
+    public List<WfWorkflowDecision> getWorkflowDecision(long wfwId) {
+        //Get the workflow from id
+        WfWorkflow wfWorkflow = workflowStorePlugin.readWorkflowInstanceById(wfwId);
+
+        long wfwdId = wfWorkflow.getWfwdId();
+        //Get the definition
+        WfWorkflowDefinition wfDefinition = workflowStorePlugin.readWorkflowDefinition(wfwdId);
+
+        //Get all the activity definitions for the workflow definition
+        List<WfActivityDefinition> activityDefinitions = workflowStorePlugin.findAllDefaultActivityDefinitions(wfDefinition);
+
+        //Build a map : WfadId => WfActivity
+        List<WfActivity> activities = workflowStorePlugin.findActivitiesByWorkflowId(wfWorkflow);
+        Map<Long, WfActivity> dicActivities = activities.stream().collect(Collectors.toMap(WfActivity::getWfadId, Function.identity()));
+
+        //Get all decisions for the workflow instance
+        List<WfDecision> allDecisions = workflowStorePlugin.findDecisionsByWorkflowId(wfWorkflow);
+        //Build a dictionary from the decisions: WfaId => List<WfDecision>
+        Map<Long, List<WfDecision>> dicDecision = allDecisions.stream().collect(Collectors.groupingBy(d -> d.getWfaId()));
+
+        Map<Long, List<RuleDefinition>> dicRules = constructDicRulesForWorkflowDefinition(wfwdId);
+        Map<Long, List<RuleConditionDefinition>> dicConditions = constructDicConditionsForWorkflowDefinition(wfwdId);
+        Map<Long, List<SelectorDefinition>> dicSelectors = constructDicSelectorsForWorkflowDefinition(wfwdId);
+        Map<Long, List<RuleFilterDefinition>> dicFilters = constructDicFiltersForWorkflowDefinition(wfwdId);
+
+        // Fetch the object linked to the workflow instance.
+        DtObject obj = itemStorePlugin.readItem(wfWorkflow.getItemId());
+
+        RuleConstants ruleConstants = ruleManager.getConstants(wfwdId);
+
+        List<WfWorkflowDecision> workflowDecisions = new ArrayList<WfWorkflowDecision>();
+
+        for(WfActivityDefinition activityDefinition :activityDefinitions) {
+            long actDefId = activityDefinition.getWfadId();
+            boolean ruleValid = ruleManager.isRuleValid(actDefId, obj, ruleConstants, dicRules, dicConditions);
+
+            if (ruleValid) {
+                List<AccountGroup> groups = ruleManager.selectGroups(actDefId, obj, ruleConstants, dicSelectors, dicFilters);
+
+                WfWorkflowDecision wfWorkflowDecision = new WfWorkflowDecision();
+                wfWorkflowDecision.setActivityDefinition(activityDefinition);
+                WfActivity wfActivity = dicActivities.get(activityDefinition.getWfadId());
+                wfWorkflowDecision.setActivity(wfActivity);
+                wfWorkflowDecision.setGroups(groups);
+                List<WfDecision> decisions;
+                if (wfActivity != null) {
+                	decisions = dicDecision.get(wfActivity.getWfaId());
+                	wfWorkflowDecision.setDecisions(decisions);
+                }
+                workflowDecisions.add(wfWorkflowDecision);
+            }
+        }
+
+
+        return workflowDecisions;
+    }
 
 }

@@ -28,8 +28,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.impl.workflow.WorkflowStorePlugin;
+import io.vertigo.x.rules.RuleConditionDefinition;
+import io.vertigo.x.rules.RuleDefinition;
+import io.vertigo.x.rules.RuleFilterDefinition;
+import io.vertigo.x.rules.RuleManager;
+import io.vertigo.x.rules.SelectorDefinition;
 import io.vertigo.x.workflow.WfCodeStatusWorkflow;
 import io.vertigo.x.workflow.WfCodeTransition;
 import io.vertigo.x.workflow.WfTransitionCriteria;
@@ -70,6 +77,9 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 	// WorkflowDefinition
 	private final Map<Long, WfWorkflowDefinition> inMemoryWorkflowDefinitionStore = new ConcurrentHashMap<>();
 	private final AtomicLong memoryWorkflowDefinitionSequenceGenerator = new AtomicLong(0);
+	
+	@Inject
+	private RuleManager ruleManager;
 
 	@Override
 	public void createWorkflowInstance(final WfWorkflow workflow) {
@@ -572,8 +582,79 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 
 	@Override
 	public List<WfDecision> findAllDecisionsByWorkflowDefinitionId(WfWorkflowDefinition wfWorkflowDefinition) {
-		// TODO: implementation for memory plugin
-		return null;
+		List<WfActivityDefinition> activities = findAllDefaultActivityDefinitions(wfWorkflowDefinition);
+		List<WfDecision> ret = new ArrayList<>();
+		for (WfActivityDefinition wfActivityDefinition : activities) {
+			for (WfDecision decision : inMemoryDecisionStore.values()) {
+				WfActivity act = inMemoryActivityStore.get(decision.getWfaId());
+				if (act.getWfadId().equals(wfActivityDefinition.getWfadId())) {
+					ret.add(decision);
+				}
+			}
+		}
+		return ret;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.vertigo.x.workflow.WorkflowStore#findAllRulesByWorkflowDefinitionId(long)
+	 */
+	@Override
+	public List<RuleDefinition> findAllRulesByWorkflowDefinitionId(long wfwdId) {
+		WfWorkflowDefinition wfWorkflowDefinition = inMemoryWorkflowDefinitionStore.get(wfwdId);
+		List<WfActivityDefinition> activities = findAllDefaultActivityDefinitions(wfWorkflowDefinition);
+		List<RuleDefinition> ret = new ArrayList<>();
+		
+		for (WfActivityDefinition activity : activities) {
+			ret.addAll(ruleManager.getRulesForItemId(activity.getWfadId()));
+		}
+		return ret;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.vertigo.x.workflow.WorkflowStore#findAllConditionsByWorkflowDefinitionId(long)
+	 */
+	@Override
+	public List<RuleConditionDefinition> findAllConditionsByWorkflowDefinitionId(long wfwdId) {
+		List<RuleDefinition> rules = findAllRulesByWorkflowDefinitionId(wfwdId);
+		
+		List<RuleConditionDefinition> ret = new ArrayList<>();
+		
+		for (RuleDefinition rule : rules) {
+			ret.addAll(ruleManager.getConditionsForRuleId(rule.getId()));
+		}
+		
+		return ret;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.vertigo.x.workflow.WorkflowStore#findAllSelectorsByWorkflowDefinitionId(long)
+	 */
+	@Override
+	public List<SelectorDefinition> findAllSelectorsByWorkflowDefinitionId(long wfwdId) {
+		WfWorkflowDefinition wfWorkflowDefinition = inMemoryWorkflowDefinitionStore.get(wfwdId);
+		List<WfActivityDefinition> activities = findAllDefaultActivityDefinitions(wfWorkflowDefinition);
+		List<SelectorDefinition> ret = new ArrayList<>();
+		
+		for (WfActivityDefinition activity : activities) {
+			ret.addAll(ruleManager.getSelectorsForItemId(activity.getWfadId()));
+		}
+		return ret;
+	}
+
+	/* (non-Javadoc)
+	 * @see io.vertigo.x.workflow.WorkflowStore#findAllFiltersByWorkflowDefinitionId(long)
+	 */
+	@Override
+	public List<RuleFilterDefinition> findAllFiltersByWorkflowDefinitionId(long wfwdId) {
+		List<RuleDefinition> rules = findAllRulesByWorkflowDefinitionId(wfwdId);
+		
+		List<RuleFilterDefinition> ret = new ArrayList<>();
+		
+		for (RuleDefinition rule : rules) {
+			ret.addAll(ruleManager.getFiltersForSelectorId(rule.getId()));
+		}
+		
+		return ret;
 	}
 
 }
