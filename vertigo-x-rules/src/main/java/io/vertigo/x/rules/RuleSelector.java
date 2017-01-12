@@ -25,6 +25,8 @@ import java.util.Map;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.impl.rules.RuleContext;
+import io.vertigo.x.rules.domain.RuleFilterDefinition;
+import io.vertigo.x.rules.domain.SelectorDefinition;
 
 /**
  *
@@ -35,23 +37,32 @@ public interface RuleSelector {
 
 	/**
 	 * Select accounts matching the selector provided from an activity.
-	 * @param selectors Selectors.
-	 * @param ruleContext ruleContext
+	 * 
+	 * @param selectors
+	 *            Selectors.
+	 * @param ruleContext
+	 *            ruleContext
 	 * @return a list of account
 	 */
 	List<Account> selectAccounts(List<SelectorDefinition> selectors, RuleContext ruleContext);
 
 	/**
 	 * Select accounts for an activity using selectors and filters provided.
-	 * @param selectors selectors
-	 * @param mapFilters filters linked to the selectors
-	 * @param ruleContext ruleContext
+	 * 
+	 * @param selectors
+	 *            selectors
+	 * @param mapFilters
+	 *            filters linked to the selectors
+	 * @param ruleContext
+	 *            ruleContext
 	 * @return a list of account
 	 */
-	List<Account> selectAccounts(List<SelectorDefinition> selectors, Map<Long, List<RuleFilterDefinition>> mapFilters, RuleContext ruleContext);
+	List<Account> selectAccounts(List<SelectorDefinition> selectors, Map<Long, List<RuleFilterDefinition>> mapFilters,
+			RuleContext ruleContext);
 
 	/**
 	 * Select groups matching the selectors provided from an activity
+	 * 
 	 * @param selectors
 	 * @param ruleContext
 	 * @return All the groups matching the selectors and rules
@@ -60,11 +71,16 @@ public interface RuleSelector {
 
 	/**
 	 * Select groups for an activity using selectors and filters provided
-	 * @param selectors selectors
-	 * @param mapFilters filters linked to the selectors
-	 * @param ruleContext ruleContext
+	 * 
+	 * @param selectors
+	 *            selectors
+	 * @param mapFilters
+	 *            filters linked to the selectors
+	 * @param ruleContext
+	 *            ruleContext
 	 * @return All the groups matching the selectors and rules
 	 */
-	List<AccountGroup> selectGroups(List<SelectorDefinition> selectors, Map<Long, List<RuleFilterDefinition>> mapFilters, RuleContext ruleContext);
+	List<AccountGroup> selectGroups(List<SelectorDefinition> selectors,
+			Map<Long, List<RuleFilterDefinition>> mapFilters, RuleContext ruleContext);
 
 }

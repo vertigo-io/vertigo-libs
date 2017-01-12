@@ -29,8 +29,8 @@ import javax.inject.Inject;
 import io.vertigo.x.impl.rules.RuleContext;
 import io.vertigo.x.impl.rules.RuleStorePlugin;
 import io.vertigo.x.impl.rules.RuleValidatorPlugin;
-import io.vertigo.x.rules.RuleConditionDefinition;
-import io.vertigo.x.rules.RuleDefinition;
+import io.vertigo.x.rules.domain.RuleConditionDefinition;
+import io.vertigo.x.rules.domain.RuleDefinition;
 
 /**
  *
@@ -53,7 +53,8 @@ public final class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 	@Override
 	public boolean isRuleValid(final List<RuleDefinition> rules, final RuleContext ruleContext) {
 		for (final RuleDefinition ruleDefinition : rules) {
-			final List<RuleConditionDefinition> conditions = ruleStorePlugin.findConditionByRuleId(ruleDefinition.getId());
+			final List<RuleConditionDefinition> conditions = ruleStorePlugin
+					.findConditionByRuleId(ruleDefinition.getId());
 			final boolean ruleValid = checkRules(conditions, ruleContext);
 
 			if (ruleValid) {
@@ -65,7 +66,8 @@ public final class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 	}
 
 	@Override
-	public boolean isRuleValid(final List<RuleDefinition> rules, final Map<Long, List<RuleConditionDefinition>> mapConditions, final RuleContext ruleContext) {
+	public boolean isRuleValid(final List<RuleDefinition> rules,
+			final Map<Long, List<RuleConditionDefinition>> mapConditions, final RuleContext ruleContext) {
 		for (final RuleDefinition ruleDefinition : rules) {
 			List<RuleConditionDefinition> conditions = mapConditions.get(ruleDefinition.getId());
 			if (conditions == null) {
@@ -94,31 +96,31 @@ public final class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 			final Object fieldToTest = ruleContext.getContext().get(field);
 			if (fieldToTest != null) {
 				switch (operat) {
-					case "=":
-						result = fieldToTest.equals(expression);
-						break;
-					case "IN":
-						final String[] expressions = expression.split(",");
-						if (fieldToTest instanceof List) {
-							final List<String> valueList = (List<String>) fieldToTest;
-							result = Arrays.stream(expressions).filter(valueList::contains).count() > 0;
-						} else {
-							final String valStr = (String) fieldToTest;
-							result = Arrays.stream(expressions).anyMatch(valStr::equals);
-						}
-						break;
-					case "<":
-						final double doubleExpressionInf = Double.parseDouble(expression);
-						final double doubleFieldInf = Double.parseDouble((String) fieldToTest);
-						result = doubleFieldInf < doubleExpressionInf;
-						break;
-					case ">":
-						final double doubleExpressionSup = Double.parseDouble(expression);
-						final double doubleFieldSup = Double.parseDouble((String) fieldToTest);
-						result = doubleFieldSup > doubleExpressionSup;
-						break;
-					default:
-						break;
+				case "=":
+					result = fieldToTest.equals(expression);
+					break;
+				case "IN":
+					final String[] expressions = expression.split(",");
+					if (fieldToTest instanceof List) {
+						final List<String> valueList = (List<String>) fieldToTest;
+						result = Arrays.stream(expressions).filter(valueList::contains).count() > 0;
+					} else {
+						final String valStr = (String) fieldToTest;
+						result = Arrays.stream(expressions).anyMatch(valStr::equals);
+					}
+					break;
+				case "<":
+					final double doubleExpressionInf = Double.parseDouble(expression);
+					final double doubleFieldInf = Double.parseDouble((String) fieldToTest);
+					result = doubleFieldInf < doubleExpressionInf;
+					break;
+				case ">":
+					final double doubleExpressionSup = Double.parseDouble(expression);
+					final double doubleFieldSup = Double.parseDouble((String) fieldToTest);
+					result = doubleFieldSup > doubleExpressionSup;
+					break;
+				default:
+					break;
 				}
 
 				if (!result) {

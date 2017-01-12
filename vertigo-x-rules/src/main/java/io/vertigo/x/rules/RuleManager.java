@@ -26,6 +26,10 @@ import io.vertigo.lang.Manager;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.impl.rules.RuleConstants;
+import io.vertigo.x.rules.domain.RuleConditionDefinition;
+import io.vertigo.x.rules.domain.RuleDefinition;
+import io.vertigo.x.rules.domain.RuleFilterDefinition;
+import io.vertigo.x.rules.domain.SelectorDefinition;
 
 /**
  * @author xdurand
@@ -34,9 +38,13 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Select accounts matching the selector for an activity
-	 * @param idActivityDefinition Activity definition id
-	 * @param item Business object
-	 * @param constants constants
+	 * 
+	 * @param idActivityDefinition
+	 *            Activity definition id
+	 * @param item
+	 *            Business object
+	 * @param constants
+	 *            constants
 	 * @return a list of account
 	 */
 	List<Account> selectAccounts(final Long idActivityDefinition, final DtObject item, final RuleConstants constants);
@@ -44,65 +52,98 @@ public interface RuleManager extends Manager {
 	/**
 	 * Select accounts an activity using the provided selectors and filters.
 	 * Version without IO, used in workflow recalculation
-	 * @param idActivityDefinition Activity definition id
-	 * @param item Business object
-	 * @param constants constants
-	 * @param mapSelectors Selectors to use
-	 * @param mapFilters Filters associated to Selectors
+	 * 
+	 * @param idActivityDefinition
+	 *            Activity definition id
+	 * @param item
+	 *            Business object
+	 * @param constants
+	 *            constants
+	 * @param mapSelectors
+	 *            Selectors to use
+	 * @param mapFilters
+	 *            Filters associated to Selectors
 	 * @return list of matching accounts
 	 */
-	List<Account> selectAccounts(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters);
+	List<Account> selectAccounts(Long idActivityDefinition, DtObject item, RuleConstants constants,
+			Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters);
 
 	/**
 	 * Select groups matching the selector for an activity
-	 * @param idActivityDefinition Activity definition id
-	 * @param item Business object
-	 * @param constants constants
+	 * 
+	 * @param idActivityDefinition
+	 *            Activity definition id
+	 * @param item
+	 *            Business object
+	 * @param constants
+	 *            constants
 	 * @return a list of groups
 	 */
 	List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants);
 
 	/**
 	 * Select groups matching the selector for an activity
-	 * @param idActivityDefinition Activity definition id
-	 * @param item Business object
-	 * @param constants constants
-	 * @param mapSelectors Selectors to use
-	 * @param mapFilters Filters associated to Selectors
 	 * 
-	 * @return  a list of groups
+	 * @param idActivityDefinition
+	 *            Activity definition id
+	 * @param item
+	 *            Business object
+	 * @param constants
+	 *            constants
+	 * @param mapSelectors
+	 *            Selectors to use
+	 * @param mapFilters
+	 *            Filters associated to Selectors
+	 * 
+	 * @return a list of groups
 	 */
-	List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters);
+	List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants,
+			Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters);
 
 	/**
 	 * Validate a rule for an activity
-	 * @param idActivityDefinition Activity definition id
-	 * @param item Business object
-	 * @param constants constants
+	 * 
+	 * @param idActivityDefinition
+	 *            Activity definition id
+	 * @param item
+	 *            Business object
+	 * @param constants
+	 *            constants
 	 * @return true is the rule is valid, false otherwise
 	 */
 	boolean isRuleValid(Long idActivityDefinition, DtObject item, final RuleConstants constants);
 
 	/**
 	 * Validate a rule for an activity using the provided rules and conditions.
-	 * Version sans IO, optimisÃ©e vitesse execution, utilisÃ©e dans le cadre d'un recalcul de workflow
-	 * @param idActivityDefinition Activity definition id
-	 * @param item Business object
-	 * @param constants constants
-	 * @param mapRules Rules to use
-	 * @param mapConditions Conditions associated to rules
+	 * Version sans IO, optimisÃ©e vitesse execution, utilisÃ©e dans le
+	 * cadre d'un recalcul de workflow
+	 * 
+	 * @param idActivityDefinition
+	 *            Activity definition id
+	 * @param item
+	 *            Business object
+	 * @param constants
+	 *            constants
+	 * @param mapRules
+	 *            Rules to use
+	 * @param mapConditions
+	 *            Conditions associated to rules
 	 * @return true is a rule match, false otherwise
 	 */
-	boolean isRuleValid(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<RuleDefinition>> mapRules, Map<Long, List<RuleConditionDefinition>> mapConditions);
+	boolean isRuleValid(Long idActivityDefinition, DtObject item, RuleConstants constants,
+			Map<Long, List<RuleDefinition>> mapRules, Map<Long, List<RuleConditionDefinition>> mapConditions);
 
 	/**
 	 * Add a new rule
-	 * @param ruleDefinition the rule to add
+	 * 
+	 * @param ruleDefinition
+	 *            the rule to add
 	 */
 	void addRule(RuleDefinition ruleDefinition);
 
 	/**
 	 * Get the rules for an itemId
+	 * 
 	 * @param itemId
 	 * @return all the rules defined for the provided itemId
 	 */
@@ -110,128 +151,169 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Remove a rule
-	 * @param ruleDefinition rule to remove
+	 * 
+	 * @param ruleDefinition
+	 *            rule to remove
 	 */
 	void removeRule(RuleDefinition ruleDefinition);
 
 	/**
 	 * Remove a lst of rules
+	 * 
 	 * @param ruleDefinitions
 	 */
 	void removeRules(List<RuleDefinition> ruleDefinitions);
 
 	/**
 	 * Update a rule
+	 * 
 	 * @param ruleDefinition
 	 */
 	void updateRule(RuleDefinition ruleDefinition);
 
 	/**
-	 * Add a new condition 
-	 * @param ruleConditionDefinition condition to add
+	 * Add a new condition
+	 * 
+	 * @param ruleConditionDefinition
+	 *            condition to add
 	 */
 	void addCondition(RuleConditionDefinition ruleConditionDefinition);
 
 	/**
 	 * Remove a condition
-	 * @param ruleConditionDefinition condition to remove
+	 * 
+	 * @param ruleConditionDefinition
+	 *            condition to remove
 	 */
 	void removeCondition(RuleConditionDefinition ruleConditionDefinition);
 
 	/**
 	 * Get all the conditions for a specified rule
-	 * @param ruleId the rule Id
+	 * 
+	 * @param ruleId
+	 *            the rule Id
 	 * @return all the conditions associated to the provided rule
 	 */
 	List<RuleConditionDefinition> getConditionsForRuleId(Long ruleId);
 
 	/**
 	 * Update a rule
-	 * @param ruleConditionDefinition the rule to update
+	 * 
+	 * @param ruleConditionDefinition
+	 *            the rule to update
 	 */
 	void updateCondition(RuleConditionDefinition ruleConditionDefinition);
 
 	/**
 	 * Add a new selector
-	 * @param selectorDefinition the selector to add
+	 * 
+	 * @param selectorDefinition
+	 *            the selector to add
 	 */
 	void addSelector(SelectorDefinition selectorDefinition);
 
 	/**
 	 * Get the selectors for the specified item Id.
-	 * @param itemId itemId
+	 * 
+	 * @param itemId
+	 *            itemId
 	 * @return the all the rules defined for the provided itemId
 	 */
 	List<SelectorDefinition> getSelectorsForItemId(Long itemId);
 
 	/**
 	 * Remove a selector
-	 * @param selectorDefinition the selector to remove
+	 * 
+	 * @param selectorDefinition
+	 *            the selector to remove
 	 */
 	void removeSelector(SelectorDefinition selectorDefinition);
 
 	/**
 	 * Remove a list of rules.
-	 * @param ruleDefinitions list of rules to remove.
+	 * 
+	 * @param ruleDefinitions
+	 *            list of rules to remove.
 	 */
 	void removeSelectors(List<SelectorDefinition> ruleDefinitions);
 
 	/**
 	 * Update a selector
-	 * @param selectorDefinition the selector to update
+	 * 
+	 * @param selectorDefinition
+	 *            the selector to update
 	 */
 	void updateSelector(SelectorDefinition selectorDefinition);
 
 	/**
 	 * Add a new filter
-	 * @param ruleFilterDefinition the filter to add
+	 * 
+	 * @param ruleFilterDefinition
+	 *            the filter to add
 	 */
 	void addFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	/**
 	 * Remove a filter
-	 * @param ruleFilterDefinition the filter to remove
+	 * 
+	 * @param ruleFilterDefinition
+	 *            the filter to remove
 	 */
 	void removeFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	/**
 	 * Get filters for the selectors id
-	 * @param selectorId the selector id
+	 * 
+	 * @param selectorId
+	 *            the selector id
 	 * @return the all the filters associated to the provided selector
 	 */
 	List<RuleFilterDefinition> getFiltersForSelectorId(Long selectorId);
 
 	/**
 	 * Update the provided Filter
-	 * @param ruleFilterDefinition the filter to update 
+	 * 
+	 * @param ruleFilterDefinition
+	 *            the filter to update
 	 */
 	void updateFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	/**
 	 * Define the constants for this key
-	 * @param key the key
-	 * @param ruleConstants constants to associate
+	 * 
+	 * @param key
+	 *            the key
+	 * @param ruleConstants
+	 *            constants to associate
 	 */
 	void addConstants(Long key, RuleConstants ruleConstants);
 
 	/**
 	 * Get the constants associated to a key
-	 * @param key the key
+	 * 
+	 * @param key
+	 *            the key
 	 * @return the constants defined for this key
 	 */
 	RuleConstants getConstants(Long key);
 
 	/**
-	 * Find itemIds using the specified criteria and in the specified sublist itemsIds
-	 * @param criteria rules criteria
-	 * @param items sublist of itemsId
+	 * Find itemIds using the specified criteria and in the specified sublist
+	 * itemsIds
+	 * 
+	 * @param criteria
+	 *            rules criteria
+	 * @param items
+	 *            sublist of itemsId
 	 * @return list of itemIds
 	 */
 	List<Long> findItemsByCriteria(RuleCriteria criteria, List<Long> items);
 
 	/**
 	 * Remove all selectors and filters for a specified groupId
-	 * @param groupId groupId
+	 * 
+	 * @param groupId
+	 *            groupId
 	 */
 	void removeSelectorsFiltersByGroupId(String groupId);
 

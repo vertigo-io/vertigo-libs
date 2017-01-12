@@ -30,12 +30,12 @@ import javax.inject.Inject;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
-import io.vertigo.x.rules.RuleConditionDefinition;
 import io.vertigo.x.rules.RuleCriteria;
-import io.vertigo.x.rules.RuleDefinition;
-import io.vertigo.x.rules.RuleFilterDefinition;
 import io.vertigo.x.rules.RuleManager;
-import io.vertigo.x.rules.SelectorDefinition;
+import io.vertigo.x.rules.domain.RuleConditionDefinition;
+import io.vertigo.x.rules.domain.RuleDefinition;
+import io.vertigo.x.rules.domain.RuleFilterDefinition;
+import io.vertigo.x.rules.domain.SelectorDefinition;
 
 /**
  * @author xdurand
@@ -50,13 +50,15 @@ public final class RuleManagerImpl implements RuleManager {
 
 	/**
 	 * Construct a new Rule manager
+	 * 
 	 * @param ruleStorePlugin
 	 * @param ruleSelectorPlugin
 	 * @param ruleValidatorPlugin
-	 * @param ruleConstantsStorePlugin 
+	 * @param ruleConstantsStorePlugin
 	 */
 	@Inject
-	public RuleManagerImpl(final RuleStorePlugin ruleStorePlugin, final RuleSelectorPlugin ruleSelectorPlugin, final RuleValidatorPlugin ruleValidatorPlugin, RuleConstantsStorePlugin ruleConstantsStorePlugin) {
+	public RuleManagerImpl(final RuleStorePlugin ruleStorePlugin, final RuleSelectorPlugin ruleSelectorPlugin,
+			final RuleValidatorPlugin ruleValidatorPlugin, RuleConstantsStorePlugin ruleConstantsStorePlugin) {
 		this.ruleStorePlugin = ruleStorePlugin;
 		this.ruleSelectorPlugin = ruleSelectorPlugin;
 		this.ruleValidatorPlugin = ruleValidatorPlugin;
@@ -65,7 +67,8 @@ public final class RuleManagerImpl implements RuleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<Account> selectAccounts(final Long idActivityDefinition, final DtObject item, final RuleConstants constants) {
+	public List<Account> selectAccounts(final Long idActivityDefinition, final DtObject item,
+			final RuleConstants constants) {
 
 		final List<SelectorDefinition> selectors = ruleStorePlugin.findSelectorsByItemId(idActivityDefinition);
 		final RuleContext context = new RuleContext(item, constants);
@@ -75,7 +78,8 @@ public final class RuleManagerImpl implements RuleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<Account> selectAccounts(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters) {
+	public List<Account> selectAccounts(Long idActivityDefinition, DtObject item, RuleConstants constants,
+			Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters) {
 		RuleContext context = new RuleContext(item, constants);
 		List<SelectorDefinition> selectors = mapSelectors.getOrDefault(idActivityDefinition, new ArrayList<>());
 
@@ -93,7 +97,8 @@ public final class RuleManagerImpl implements RuleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters) {
+	public List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants,
+			Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters) {
 		RuleContext context = new RuleContext(item, constants);
 
 		List<SelectorDefinition> selectors = mapSelectors.getOrDefault(idActivityDefinition, new ArrayList<>());
@@ -113,7 +118,8 @@ public final class RuleManagerImpl implements RuleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean isRuleValid(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<RuleDefinition>> mapRules, Map<Long, List<RuleConditionDefinition>> mapConditions) {
+	public boolean isRuleValid(Long idActivityDefinition, DtObject item, RuleConstants constants,
+			Map<Long, List<RuleDefinition>> mapRules, Map<Long, List<RuleConditionDefinition>> mapConditions) {
 		RuleContext context = new RuleContext(item, constants);
 
 		List<RuleDefinition> rules = mapRules.getOrDefault(idActivityDefinition, new ArrayList<>());
@@ -168,18 +174,13 @@ public final class RuleManagerImpl implements RuleManager {
 	public List<Long> findItemsByCriteria(RuleCriteria criteria, List<Long> items) {
 		List<RuleDefinition> rules = ruleStorePlugin.findRulesByCriteria(criteria, items);
 
-		return rules.stream()
-				.map(r -> r.getItemId())
-				.distinct()
-				.collect(Collectors.toList());
+		return rules.stream().map(r -> r.getItemId()).distinct().collect(Collectors.toList());
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void removeRules(List<RuleDefinition> ruleDefinitions) {
-		List<Long> ids = ruleDefinitions.stream()
-				.filter(r -> r.getId() != null)
-				.map(RuleDefinition::getId)
+		List<Long> ids = ruleDefinitions.stream().filter(r -> r.getId() != null).map(RuleDefinition::getId)
 				.collect(Collectors.toList());
 		ruleStorePlugin.removeRules(ids);
 	}
@@ -187,9 +188,7 @@ public final class RuleManagerImpl implements RuleManager {
 	/** {@inheritDoc} */
 	@Override
 	public void removeSelectors(List<SelectorDefinition> selectorDefinitions) {
-		List<Long> ids = selectorDefinitions.stream()
-				.filter(r -> r.getId() != null)
-				.map(SelectorDefinition::getId)
+		List<Long> ids = selectorDefinitions.stream().filter(r -> r.getId() != null).map(SelectorDefinition::getId)
 				.collect(Collectors.toList());
 		ruleStorePlugin.removeSelectors(ids);
 	}

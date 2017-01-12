@@ -1,0 +1,17 @@
+package io.vertigo.x.rules.dao.rules
+
+create Task TK_FIND_ALL_RULES_BY_WORKFLOW_DEFINITION_ID {
+	className : "io.vertigo.dynamox.task.TaskEngineSelect"
+	request : "
+		SELECT 
+			RUD.*
+		FROM 
+			RULE_DEFINITION RUD
+			JOIN WF_ACTIVITY_DEFINITION WAD ON (RUD.ITEM_ID = WAD.WFAD_ID)
+		WHERE 
+			WAD.WFWD_ID = #WFWD_ID#
+	"
+	attribute WFWD_ID					{domain : DO_X_RULES_ID			  			  notNull:"true" 	  inOut:"in"}
+	attribute RULE_DEFINITION_LIST    {domain:DO_DT_RULE_DEFINITION_DTC,            notNull:"false",     inOut :"out"}
+
+}
