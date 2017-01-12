@@ -29,6 +29,10 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 			WfWorkflow(io.vertigo.x.workflow.domain.instance.WfWorkflow.class),
 			/** Objet de données WfWorkflowDefinition. */
 			WfWorkflowDefinition(io.vertigo.x.workflow.domain.model.WfWorkflowDefinition.class),
+			/** Objet de données WorkflowDummy. */
+			WorkflowDummy(io.vertigo.x.workflow.domain.common.WorkflowDummy.class),
+			/** Objet de données WorkflowDummyBoolean. */
+			WorkflowDummyBoolean(io.vertigo.x.workflow.domain.common.WorkflowDummyBoolean.class),
 		;
 		
 		private final Class<?> clazz;
@@ -44,28 +48,6 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 			return clazz;
 		}
     }
-
-	/**
-	 * Enumération des champs de SearchCriteria.
-	 */
-	public enum SearchCriteriaFields implements DtFieldName {
-		/** Propriété 'The Scope'. */
-		SCOPE,
-		/** Propriété 'query'. */
-		QUERY,
-	}
-
-	/**
-	 * Enumération des champs de SelectedFacet.
-	 */
-	public enum SelectedFacetFields implements DtFieldName {
-		/** Propriété 'Facet Name'. */
-		KEY,
-		/** Propriété 'Facet query'. */
-		FACET_QUERY,
-		/** Propriété 'Facet key value'. */
-		VALUE,
-	}
 
 	/**
 	 * Enumération des champs de WfActivity.
@@ -185,6 +167,22 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		DATE,
 		/** Propriété 'startActivity'. */
 		WFAD_ID,
+	}
+
+	/**
+	 * Enumération des champs de WorkflowDummy.
+	 */
+	public enum WorkflowDummyFields implements DtFieldName {
+		/** Propriété 'dummy long'. */
+		DUMMY_LONG,
+	}
+
+	/**
+	 * Enumération des champs de WorkflowDummyBoolean.
+	 */
+	public enum WorkflowDummyBooleanFields implements DtFieldName {
+		/** Propriété 'dummy boolean'. */
+		DUMMY_BOOLEAN,
 	}
 
 	    

@@ -1,15 +1,9 @@
-package fr.bollore.domain.common
+package io.vertigo.x.workflow.domain.common
 
-
-create DtDefinition DT_SEARCH_CRITERIA {
-	persistent:"false"
-	field SCOPE {domain: DO_LABEL_SHORT label: "The Scope" notNull:"false" }
-	field QUERY {domain: DO_COMMENT label: "query" notNull:"false"}
+create DtDefinition DT_WORKFLOW_DUMMY {
+       field DUMMY_LONG {domain: DO_ID label: "dummy long" notNull:"false" }
 }
 
-create DtDefinition DT_SELECTED_FACET {
-	persistent:"false"
-	field KEY {domain: DO_LABEL_LONG label: "Facet Name" notNull:"false" }
-	field FACET_QUERY  {domain: DO_LABEL_LONG label: "Facet query" notNull:"false"}
-	field VALUE  {domain: DO_LABEL_LONG label: "Facet key value" notNull:"false"}
+create DtDefinition DT_WORKFLOW_DUMMY_BOOLEAN {
+       field DUMMY_BOOLEAN {domain: DO_BOOLEEN label: "dummy boolean" notNull:"false" }
 }

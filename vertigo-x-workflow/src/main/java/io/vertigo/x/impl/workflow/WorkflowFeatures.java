@@ -19,11 +19,26 @@
 package io.vertigo.x.impl.workflow;
 
 import io.vertigo.app.config.Features;
+import io.vertigo.commons.impl.script.ScriptManagerImpl;
+import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
+import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.core.param.Param;
+import io.vertigo.x.plugins.sql.SQLWorkflowStorePlugin;
 import io.vertigo.x.workflow.WorkflowManager;
+import io.vertigo.x.workflow.dao.instance.WfActivityDAO;
+import io.vertigo.x.workflow.dao.instance.WfDecisionDAO;
+import io.vertigo.x.workflow.dao.instance.WfStatusDAO;
+import io.vertigo.x.workflow.dao.instance.WfWorkflowDAO;
+import io.vertigo.x.workflow.dao.model.WfActivityDefinitionDAO;
+import io.vertigo.x.workflow.dao.model.WfMultiplicityDefinitionDAO;
+import io.vertigo.x.workflow.dao.model.WfTransitionDefinitionDAO;
+import io.vertigo.x.workflow.dao.model.WfWorkflowDefinitionDAO;
+import io.vertigo.x.workflow.dao.workflow.WorkflowPAO;
+import io.vertigo.x.workflow.domain.DtDefinitions;
 
 /**
  * Defines the 'workflow' extension
+ * 
  * @author xdurand
  */
 public final class WorkflowFeatures extends Features {
@@ -37,34 +52,67 @@ public final class WorkflowFeatures extends Features {
 
 	/**
 	 * Specifies the workflowStorePlugin.
-	 * @param workflowStorePluginClass the type of plugin to use
-	 * @param params the params
+	 * 
+	 * @param workflowStorePluginClass
+	 *            the type of plugin to use
+	 * @param params
+	 *            the params
 	 * @return these features
 	 */
-	public WorkflowFeatures withWorkflowStorePlugin(final Class<? extends WorkflowStorePlugin> workflowStorePluginClass, final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(workflowStorePluginClass, params);
+	public WorkflowFeatures withWorkflowStorePlugin(final Class<? extends WorkflowStorePlugin> workflowStorePluginClass,
+			final Param... params) {
+		getModuleConfigBuilder().addPlugin(workflowStorePluginClass, params);
+		return this;
+	}
+
+	/**
+	 * Specifies the workflowStorePlugin.
+	 * 
+	 * @param workflowStorePluginClass
+	 *            the type of plugin to use
+	 * @param params
+	 *            the params
+	 * @return these features
+	 */
+	public WorkflowFeatures withDAOSupportWorkflowStorePlugin() {
+		getModuleConfigBuilder().withNoAPI()//
+				.addPlugin(SQLWorkflowStorePlugin.class) //
+				.addComponent(WfActivityDAO.class) //
+				.addComponent(WfActivityDefinitionDAO.class) //
+				.addComponent(WfWorkflowDAO.class) //
+				.addComponent(WfWorkflowDefinitionDAO.class) //
+				.addComponent(WfStatusDAO.class) //
+				.addComponent(WfMultiplicityDefinitionDAO.class) //
+				.addComponent(WfTransitionDefinitionDAO.class) //
+				.addComponent(WfDecisionDAO.class)//
+				.addComponent(WorkflowPAO.class);
 		return this;
 	}
 
 	/**
 	 * Specifies the itemStorePlugin.
-	 * @param itemStorePluginClass the type of plugin to use
-	 * @param params the params
+	 * 
+	 * @param itemStorePluginClass
+	 *            the type of plugin to use
+	 * @param params
+	 *            the params
 	 * @return these features
 	 */
-	public WorkflowFeatures withItemStorePlugin(final Class<? extends ItemStorePlugin> itemStorePluginClass, final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(itemStorePluginClass, params);
+	public WorkflowFeatures withItemStorePlugin(final Class<? extends ItemStorePlugin> itemStorePluginClass,
+			final Param... params) {
+		getModuleConfigBuilder().addPlugin(itemStorePluginClass, params);
 		return this;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		getModuleConfigBuilder()
-				.addDefinitionProvider(WorkflowProvider.class)
-				.addComponent(WorkflowManager.class, WorkflowManagerImpl.class);
+		getModuleConfigBuilder().addDefinitionResource("kpr", "boot/definitions/application.kpr")
+				.addDefinitionResource("classes", DtDefinitions.class.getName())
+				.addComponent(WorkflowManager.class, WorkflowManagerImpl.class)
+				.addComponent(ScriptManager.class, ScriptManagerImpl.class)
+				.addPlugin(JaninoExpressionEvaluatorPlugin.class);
+		;
 	}
 
 }

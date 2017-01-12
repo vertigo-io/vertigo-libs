@@ -1,4 +1,4 @@
-package io.vertigo.x.plugins.sql.dao.model;
+package io.vertigo.x.workflow.dao.model;
 
 import javax.inject.Inject;
 import io.vertigo.dynamo.impl.store.util.DAO;

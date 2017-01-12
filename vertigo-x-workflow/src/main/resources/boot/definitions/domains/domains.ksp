@@ -14,7 +14,7 @@ create Formatter FMT_DATE {
 
 create Formatter FMT_DATE_HEURE {
      className :"io.vertigo.dynamox.domain.formatter.FormatterDate"
-     args : "dd/MM/yyyy 'à' HH'h'mm"
+     args : "dd/MM/yyyy 'Ã ' HH'h'mm"
 }
 
 /**************************************************************************************************/
@@ -172,13 +172,6 @@ create Domain DO_X_WORKFLOW_CODE {
 	indexType : "code"
 }
 
-create Domain DO_MULTI_VALUES_FIELD {
-	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_3000]
-	storeType : "VARCHAR(3000)"
-    indexType : "sep_pipe"
-}
 
 create Domain DO_NAME {
 	dataType : String
@@ -248,4 +241,29 @@ create Domain DO_FILE_PATH {
 	formatter : FMT_DEFAULT
 	constraint : [CK_MAX_LENGTH_250]
 	storeType : "VARCHAR(250)"
+}
+
+create Domain DO_ID {
+	dataType : Long
+	formatter : FMT_DEFAULT
+	storeType : "NUMERIC"
+}
+
+create Domain DO_BOOLEEN {
+	dataType : Boolean
+	formatter : FMT_DEFAULT
+	storeType : "bool"
+}
+
+create Domain DO_ENTIER {
+	dataType : Integer
+	formatter : FMT_DEFAULT
+	storeType : "NUMERIC"
+}
+
+create Domain DO_LIBELLE {
+	dataType : String
+	formatter : FMT_DEFAULT
+	constraint : [CK_MAX_LENGTH_100]
+	storeType : "VARCHAR(100)"
 }

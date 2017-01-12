@@ -1,21 +1,3 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.x.workflow.domain.model;
 
 import io.vertigo.dynamo.domain.model.Entity;
@@ -125,21 +107,8 @@ public final class WfWorkflowDefinition implements Entity {
 	 * Association : WfTransitionDefinition.
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.workflow.domain.model.WfTransitionDefinition>
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_WFWD_WFTD",
-			fkFieldName = "WFWD_ID",
-			primaryDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
-			primaryIsNavigable = false,
-			primaryRole = "WfWorkflowDefinition",
-			primaryLabel = "WfWorkflowDefinition",
-			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_WF_TRANSITION_DEFINITION",
-			foreignIsNavigable = true,
-			foreignRole = "WfTransitionDefinition",
-			foreignLabel = "WfTransitionDefinition",
-			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.workflow.domain.model.WfTransitionDefinition> getWfTransitionDefinitionList() {
-		//		return this.<io.vertigo.x.workflow.domain.model.WfTransitionDefinition> getList(getWfTransitionDefinitionListURI());
+//		return this.<io.vertigo.x.workflow.domain.model.WfTransitionDefinition> getList(getWfTransitionDefinitionListURI());
 		// On doit avoir une clé primaire renseignée. Si ce n'est pas le cas, on renvoie une liste vide
 		if (io.vertigo.dynamo.domain.util.DtObjectUtil.getId(this) == null) {
 			return new io.vertigo.dynamo.domain.model.DtList<>(io.vertigo.x.workflow.domain.model.WfTransitionDefinition.class);
@@ -158,7 +127,7 @@ public final class WfWorkflowDefinition implements Entity {
 	 * Association URI: WfTransitionDefinition.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association(
+	@io.vertigo.dynamo.domain.stereotype.Association (
 			name = "A_WFWD_WFTD",
 			fkFieldName = "WFWD_ID",
 			primaryDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
@@ -174,24 +143,10 @@ public final class WfWorkflowDefinition implements Entity {
 	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation getWfTransitionDefinitionDtListURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createDtListURIForSimpleAssociation(this, "A_WFWD_WFTD", "WfTransitionDefinition");
 	}
-
 	/**
 	 * Association : startActivity.
 	 * @return io.vertigo.x.workflow.domain.model.WfActivityDefinition
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_WFWD_WFAD",
-			fkFieldName = "WFAD_ID",
-			primaryDtDefinitionName = "DT_WF_ACTIVITY_DEFINITION",
-			primaryIsNavigable = true,
-			primaryRole = "StartActivity",
-			primaryLabel = "startActivity",
-			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
-			foreignIsNavigable = false,
-			foreignRole = "WfWorkflowDefinition",
-			foreignLabel = "WfWorkflowDefinition",
-			foreignMultiplicity = "0..*")
 	public io.vertigo.x.workflow.domain.model.WfActivityDefinition getStartActivity() {
 		final io.vertigo.dynamo.domain.model.URI<io.vertigo.x.workflow.domain.model.WfActivityDefinition> fkURI = getStartActivityURI();
 		if (fkURI == null) {
@@ -208,7 +163,7 @@ public final class WfWorkflowDefinition implements Entity {
 	 * Retourne l'URI: startActivity.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association(
+	@io.vertigo.dynamo.domain.stereotype.Association (
 			name = "A_WFWD_WFAD",
 			fkFieldName = "WFAD_ID",
 			primaryDtDefinitionName = "DT_WF_ACTIVITY_DEFINITION",
