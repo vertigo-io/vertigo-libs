@@ -1,6 +1,6 @@
 -- ============================================================
 --   Nom de SGBD      :  sqlserver                     
---   Date de création :  4 janv. 2017  18:07:26                     
+--   Date de création :  12 janv. 2017  15:10:08                     
 -- ============================================================
 
 
@@ -27,11 +27,9 @@ comment on column WF_ACTIVITY.CREATION_DATE is
 comment on column WF_ACTIVITY.WFW_ID is
 'WfWorkflow';
 
-create index WF_ACTIVITY_WFW_ID_FK on WF_ACTIVITY (WFW_ID asc);
 comment on column WF_ACTIVITY.WFAD_ID is
 'WfActivityDefinition';
 
-create index WF_ACTIVITY_WFAD_ID_FK on WF_ACTIVITY (WFAD_ID asc);
 -- ============================================================
 --   Table : WF_ACTIVITY_DEFINITION                                        
 -- ============================================================
@@ -57,11 +55,9 @@ comment on column WF_ACTIVITY_DEFINITION.LEVEL is
 comment on column WF_ACTIVITY_DEFINITION.WFMD_CODE is
 'WfMultiplicityDefinition';
 
-create index WF_ACTIVITY_DEFINITION_WFMD_CODE_FK on WF_ACTIVITY_DEFINITION (WFMD_CODE asc);
 comment on column WF_ACTIVITY_DEFINITION.WFWD_ID is
 'WfWorkflowDefinition';
 
-create index WF_ACTIVITY_DEFINITION_WFWD_ID_FK on WF_ACTIVITY_DEFINITION (WFWD_ID asc);
 -- ============================================================
 --   Table : WF_DECISION                                        
 -- ============================================================
@@ -94,7 +90,6 @@ comment on column WF_DECISION.COMMENTS is
 comment on column WF_DECISION.WFA_ID is
 'WfActivity';
 
-create index WF_DECISION_WFA_ID_FK on WF_DECISION (WFA_ID asc);
 -- ============================================================
 --   Table : WF_MULTIPLICITY_DEFINITION                                        
 -- ============================================================
@@ -149,15 +144,12 @@ comment on column WF_TRANSITION_DEFINITION.NAME is
 comment on column WF_TRANSITION_DEFINITION.WFWD_ID is
 'WfWorkflowDefinition';
 
-create index WF_TRANSITION_DEFINITION_WFWD_ID_FK on WF_TRANSITION_DEFINITION (WFWD_ID asc);
 comment on column WF_TRANSITION_DEFINITION.WFAD_ID_FROM is
 'transitionFrom';
 
-create index WF_TRANSITION_DEFINITION_WFAD_ID_FROM_FK on WF_TRANSITION_DEFINITION (WFAD_ID_FROM asc);
 comment on column WF_TRANSITION_DEFINITION.WFAD_ID_TO is
 'transitionTo';
 
-create index WF_TRANSITION_DEFINITION_WFAD_ID_TO_FK on WF_TRANSITION_DEFINITION (WFAD_ID_TO asc);
 -- ============================================================
 --   Table : WF_WORKFLOW                                        
 -- ============================================================
@@ -192,15 +184,12 @@ comment on column WF_WORKFLOW.USER_LOGIC is
 comment on column WF_WORKFLOW.WFWD_ID is
 'WfWorkflowDefinition';
 
-create index WF_WORKFLOW_WFWD_ID_FK on WF_WORKFLOW (WFWD_ID asc);
 comment on column WF_WORKFLOW.WFS_CODE is
 'WfStatus';
 
-create index WF_WORKFLOW_WFS_CODE_FK on WF_WORKFLOW (WFS_CODE asc);
 comment on column WF_WORKFLOW.WFA_ID_2 is
 'current';
 
-create index WF_WORKFLOW_WFA_ID_2_FK on WF_WORKFLOW (WFA_ID_2 asc);
 -- ============================================================
 --   Table : WF_WORKFLOW_DEFINITION                                        
 -- ============================================================
@@ -225,54 +214,77 @@ comment on column WF_WORKFLOW_DEFINITION.DATE is
 comment on column WF_WORKFLOW_DEFINITION.WFAD_ID is
 'startActivity';
 
-create index WF_WORKFLOW_DEFINITION_WFAD_ID_FK on WF_WORKFLOW_DEFINITION (WFAD_ID asc);
-
 
 alter table WF_ACTIVITY
-	add constraint FK_WFAD_WFA foreign key (WFAD_ID)
+	add constraint FK_WFAD_WFA_WF_ACTIVITY_DEFINITION foreign key (WFAD_ID)
 	references WF_ACTIVITY_DEFINITION (WFAD_ID);
 
+create index WFAD_WFA_WF_ACTIVITY_DEFINITION_FK on WF_ACTIVITY (WFAD_ID asc);
+
 alter table WF_ACTIVITY_DEFINITION
-	add constraint FK_WFAD_WFMD foreign key (WFMD_CODE)
+	add constraint FK_WFAD_WFMD_WF_MULTIPLICITY_DEFINITION foreign key (WFMD_CODE)
 	references WF_MULTIPLICITY_DEFINITION (WFMD_CODE);
 
+create index WFAD_WFMD_WF_MULTIPLICITY_DEFINITION_FK on WF_ACTIVITY_DEFINITION (WFMD_CODE asc);
+
 alter table WF_DECISION
-	add constraint FK_WFE_WFA foreign key (WFA_ID)
+	add constraint FK_WFE_WFA_WF_ACTIVITY foreign key (WFA_ID)
 	references WF_ACTIVITY (WFA_ID);
 
-alter table WF_TRANSITION_DEFINITION
-	add constraint FK_WFT_WFA_FROM foreign key (WFAD_ID_FROM)
-	references WF_ACTIVITY_DEFINITION (WFAD_ID);
+create index WFE_WFA_WF_ACTIVITY_FK on WF_DECISION (WFA_ID asc);
 
 alter table WF_TRANSITION_DEFINITION
-	add constraint FK_WFT_WFA_TO foreign key (WFAD_ID_TO)
+	add constraint FK_WFT_WFA_FROM_WF_ACTIVITY_DEFINITION foreign key (WFAD_ID_FROM)
 	references WF_ACTIVITY_DEFINITION (WFAD_ID);
+
+create index WFT_WFA_FROM_WF_ACTIVITY_DEFINITION_FK on WF_TRANSITION_DEFINITION (WFAD_ID_FROM asc);
+
+alter table WF_TRANSITION_DEFINITION
+	add constraint FK_WFT_WFA_TO_WF_ACTIVITY_DEFINITION foreign key (WFAD_ID_TO)
+	references WF_ACTIVITY_DEFINITION (WFAD_ID);
+
+create index WFT_WFA_TO_WF_ACTIVITY_DEFINITION_FK on WF_TRANSITION_DEFINITION (WFAD_ID_TO asc);
 
 alter table WF_WORKFLOW_DEFINITION
-	add constraint FK_WFWD_WFAD foreign key (WFAD_ID)
+	add constraint FK_WFWD_WFAD_WF_ACTIVITY_DEFINITION foreign key (WFAD_ID)
 	references WF_ACTIVITY_DEFINITION (WFAD_ID);
 
+create index WFWD_WFAD_WF_ACTIVITY_DEFINITION_FK on WF_WORKFLOW_DEFINITION (WFAD_ID asc);
+
 alter table WF_ACTIVITY_DEFINITION
-	add constraint FK_WFWD_WFAD_CURRENT foreign key (WFWD_ID)
+	add constraint FK_WFWD_WFAD_CURRENT_WF_WORKFLOW_DEFINITION foreign key (WFWD_ID)
 	references WF_WORKFLOW_DEFINITION (WFWD_ID);
+
+create index WFWD_WFAD_CURRENT_WF_WORKFLOW_DEFINITION_FK on WF_ACTIVITY_DEFINITION (WFWD_ID asc);
 
 alter table WF_TRANSITION_DEFINITION
-	add constraint FK_WFWD_WFTD foreign key (WFWD_ID)
+	add constraint FK_WFWD_WFTD_WF_WORKFLOW_DEFINITION foreign key (WFWD_ID)
 	references WF_WORKFLOW_DEFINITION (WFWD_ID);
 
+create index WFWD_WFTD_WF_WORKFLOW_DEFINITION_FK on WF_TRANSITION_DEFINITION (WFWD_ID asc);
+
 alter table WF_WORKFLOW
-	add constraint FK_WFWD_WFW foreign key (WFWD_ID)
+	add constraint FK_WFWD_WFW_WF_WORKFLOW_DEFINITION foreign key (WFWD_ID)
 	references WF_WORKFLOW_DEFINITION (WFWD_ID);
+
+create index WFWD_WFW_WF_WORKFLOW_DEFINITION_FK on WF_WORKFLOW (WFWD_ID asc);
 
 alter table WF_ACTIVITY
-	add constraint FK_WFW_WFA foreign key (WFW_ID)
+	add constraint FK_WFW_WFA_WF_WORKFLOW foreign key (WFW_ID)
 	references WF_WORKFLOW (WFW_ID);
 
-alter table WF_WORKFLOW
-	add constraint FK_WFW_WFA_2 foreign key (WFA_ID_2)
-	references WF_ACTIVITY (WFA_ID);
+create index WFW_WFA_WF_WORKFLOW_FK on WF_ACTIVITY (WFW_ID asc);
 
 alter table WF_WORKFLOW
-	add constraint FK_WFW_WFS foreign key (WFS_CODE)
+	add constraint FK_WFW_WFA_2_WF_ACTIVITY foreign key (WFA_ID_2)
+	references WF_ACTIVITY (WFA_ID);
+
+create index WFW_WFA_2_WF_ACTIVITY_FK on WF_WORKFLOW (WFA_ID_2 asc);
+
+alter table WF_WORKFLOW
+	add constraint FK_WFW_WFS_WF_STATUS foreign key (WFS_CODE)
 	references WF_STATUS (WFS_CODE);
+
+create index WFW_WFS_WF_STATUS_FK on WF_WORKFLOW (WFS_CODE asc);
+
 
