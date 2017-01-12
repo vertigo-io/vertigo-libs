@@ -540,13 +540,16 @@ public class WorkflowManagerTest {
 		// Starting the workflow
 		workflowManager.startInstance(wfWorkflow);
 
-		// Entry actions should validate all activities (because no group have been associated).
+		List<WfWorkflowDecision> workflowDecisions1 = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
+		assertNotNull(workflowDecisions1);
+		assertThat(workflowDecisions1.size(), is(3));
+		
 		final Long currentActivity = wfWorkflow.getWfaId2();
-		assertThat(currentActivity, is(fourthActivity.getWfadId()));
+		assertThat(currentActivity, is(firstActivity.getWfadId()));
 
 		final WfWorkflow wfWorkflowFetched = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
 		assertThat(wfWorkflowFetched, is(not(nullValue())));
-		assertThat(currentActivity, is(fourthActivity.getWfadId()));
+		assertThat(currentActivity, is(firstActivity.getWfadId()));
 	}
 
 

@@ -77,11 +77,7 @@ public final class RuleManagerImpl implements RuleManager {
 	@Override
 	public List<Account> selectAccounts(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters) {
 		RuleContext context = new RuleContext(item, constants);
-		List<SelectorDefinition> selectors = mapSelectors.get(idActivityDefinition);
-
-		if (selectors == null) {
-			selectors = new ArrayList<>();
-		}
+		List<SelectorDefinition> selectors = mapSelectors.getOrDefault(idActivityDefinition, new ArrayList<>());
 
 		return ruleSelectorPlugin.selectAccounts(selectors, mapFilters, context);
 	}
@@ -100,11 +96,7 @@ public final class RuleManagerImpl implements RuleManager {
 	public List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters) {
 		RuleContext context = new RuleContext(item, constants);
 
-		List<SelectorDefinition> selectors = mapSelectors.get(idActivityDefinition);
-
-		if (selectors == null) {
-			selectors = new ArrayList<>();
-		}
+		List<SelectorDefinition> selectors = mapSelectors.getOrDefault(idActivityDefinition, new ArrayList<>());
 
 		return ruleSelectorPlugin.selectGroups(selectors, mapFilters, context);
 	}
@@ -124,11 +116,7 @@ public final class RuleManagerImpl implements RuleManager {
 	public boolean isRuleValid(Long idActivityDefinition, DtObject item, RuleConstants constants, Map<Long, List<RuleDefinition>> mapRules, Map<Long, List<RuleConditionDefinition>> mapConditions) {
 		RuleContext context = new RuleContext(item, constants);
 
-		List<RuleDefinition> rules = mapRules.get(idActivityDefinition);
-
-		if (rules == null) {
-			rules = new ArrayList<>();
-		}
+		List<RuleDefinition> rules = mapRules.getOrDefault(idActivityDefinition, new ArrayList<>());
 
 		return ruleValidatorPlugin.isRuleValid(rules, mapConditions, context);
 	}

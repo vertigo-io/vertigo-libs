@@ -277,12 +277,12 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		final RuleConstants ruleConstants = ruleManager.getConstants(activityDefinition.getWfwdId());
 
 		final boolean ruleValid = ruleManager.isRuleValid(activityDefinition.getWfadId(), object, ruleConstants);
-		final List<Account> accounts = ruleManager.selectAccounts(activityDefinition.getWfadId(), object, ruleConstants);
+		//final List<Account> accounts = ruleManager.selectAccounts(activityDefinition.getWfadId(), object, ruleConstants);
 
-		final boolean atLeastOnePerson = accounts.isEmpty() == false;
+		//final boolean atLeastOnePerson = accounts.isEmpty() == false;
 
 		// If no rule is defined for validation or no one can validate this activity, we can autovalidate it.
-		return ruleValid == false || atLeastOnePerson == false;
+		return ruleValid == false;
 	}
 
 	/**
