@@ -47,7 +47,7 @@ create DtDefinition DT_SELECTOR_DEFINITION {
 	key ID				{domain : DO_X_RULES_ID, 		label :"id", 					notNull:"true"  }
 	field CREATION_DATE {domain : DO_X_RULES_DATE, 		label :"creationDate", 			notNull:"false" }
 	field ITEM_ID   	{domain : DO_X_RULES_WEAK_ID, 	label :"itemId", 				notNull:"false" }
-	field GROUP_ID   	{domain : DO_X_RULES_WEAK_ID, 	label :"groupId", 				notNull:"false" }
+	field GROUP_ID   	{domain : DO_X_RULES_FIELD, 	label :"groupId", 				notNull:"false" }
 }
 
 

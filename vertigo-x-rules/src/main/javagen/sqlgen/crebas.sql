@@ -1,6 +1,6 @@
 -- ============================================================
 --   Nom de SGBD      :  sqlserver                     
---   Date de création :  12 janv. 2017  18:07:29                     
+--   Date de création :  13 janv. 2017  09:09:27                     
 -- ============================================================
 
 
@@ -94,7 +94,7 @@ create table SELECTOR_DEFINITION
     ID          	 NUMERIC     	identity,
     CREATION_DATE	 DATE        	,
     ITEM_ID     	 NUMERIC     	,
-    GROUP_ID    	 NUMERIC     	,
+    GROUP_ID    	 VARCHAR(100)	,
     constraint PK_SELECTOR_DEFINITION primary key nonclustered (ID)
 );
 

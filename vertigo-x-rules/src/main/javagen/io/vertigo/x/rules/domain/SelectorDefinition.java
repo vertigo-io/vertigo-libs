@@ -17,7 +17,7 @@ public final class SelectorDefinition implements Entity {
 	private Long id;
 	private java.util.Date creationDate;
 	private Long itemId;
-	private Long groupId;
+	private String groupId;
 	private io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.rules.domain.RuleFilterDefinition> ruleFilterDefinition;
 
 	/** {@inheritDoc} */
@@ -86,19 +86,19 @@ public final class SelectorDefinition implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'groupId'.
-	 * @return Long groupId
+	 * @return String groupId
 	 */
-	@Field(domain = "DO_X_RULES_WEAK_ID", label = "groupId")
-	public Long getGroupId() {
+	@Field(domain = "DO_X_RULES_FIELD", label = "groupId")
+	public String getGroupId() {
 		return groupId;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'groupId'.
-	 * @param groupId Long
+	 * @param groupId String
 	 */
-	public void setGroupId(final Long groupId) {
+	public void setGroupId(final String groupId) {
 		this.groupId = groupId;
 	}
 

@@ -60,7 +60,7 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 		this.accountManager = accountManager;
 	}
 
-	private static URI<AccountGroup> createGroupURI(final Long id) {
+	private static URI<AccountGroup> createGroupURI(final String id) {
 		return DtObjectUtil.createURI(AccountGroup.class, id);
 	}
 
