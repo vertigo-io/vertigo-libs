@@ -64,10 +64,10 @@ public class MyAppConfig {
 				.addPlugin(AnnotationLoaderPlugin.class).addPlugin(DomainDynamicRegistryPlugin.class)
 				.addPlugin(TaskDynamicRegistryPlugin.class).silently().endBoot()
 				.addModule(new PersonaFeatures().withUserSession(TestUserSession.class).build())
-				.addModule(
-						new CommonsFeatures().withCache(io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin.class)
-								// .withScript()
-								.build())
+				.addModule(new CommonsFeatures()//
+						.withCache(io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin.class)
+						// .withScript()
+						.build())
 				.addModule(new DynamoFeatures()//
 						.withStore()//
 						.withSqlDataBase()//
@@ -78,16 +78,18 @@ public class MyAppConfig {
 								Param.create("jdbcUrl",
 										"jdbc:postgresql://laura.dev.klee.lan.net:5432/dgac_blanche?user=blanche&password=blanche"))
 						.build())
-				.addModule(new AccountFeatures().withAccountStorePlugin(MemoryAccountStorePlugin.class).build())
+				.addModule(new AccountFeatures()//
+						.withAccountStorePlugin(MemoryAccountStorePlugin.class).build())
 				.addModule(new RulesFeatures()//
 						.withDAOSupportRuleStorePlugin()//
 						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)//
 						.withRuleSelectorPlugin(SimpleRuleSelectorPlugin.class)
 						.withRuleValidatorPlugin(SimpleRuleValidatorPlugin.class).build())
-				.addModule(new WorkflowFeatures().withDAOSupportWorkflowStorePlugin()
+				.addModule(new WorkflowFeatures()//
+						.withDAOSupportWorkflowStorePlugin()//
 						.withItemStorePlugin(MemoryItemStorePlugin.class).build())
-				.addModule(
-						new ModuleConfigBuilder("dummy").addDefinitionProvider(MyDummyDtObjectProvider.class).build());
+				.addModule(new ModuleConfigBuilder("dummy")//
+						.addDefinitionProvider(MyDummyDtObjectProvider.class).build());
 
 		return appConfigBuilder.build();
 	}

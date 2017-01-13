@@ -94,21 +94,6 @@ ORDER BY WAD.LEVEL;
 	attribute WORKFLOW_ACTIVITY_LIST    {domain:DO_DT_WF_ACTIVITY_DTC,            notNull:"false",     inOut :"out"}
 }
 
-create Task TK_FIND_ALL_CONDITIONS_BY_WORKFLOW_DEFINITION_ID {
-	className : "io.vertigo.dynamox.task.TaskEngineSelect"
-	request : "
-		SELECT 
-			RCD.*
-		FROM 
-			RULE_CONDITION_DEFINITION RCD
-			JOIN RULE_DEFINITION RUD ON (RCD.RUD_ID = RUD.ID)
-			JOIN WF_ACTIVITY_DEFINITION WAD ON (RUD.ITEM_ID = WAD.WFAD_ID)
-		WHERE 
-			WAD.WFWD_ID = #WFWD_ID#
-	"
-	attribute WFWD_ID 					{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
-}
-
 create Task TK_FIND_ALL_DEFAULT_ACTIVITY_DEFINITIONS {
 	className : "io.vertigo.dynamox.task.TaskEngineSelect"
 	request : "
@@ -130,34 +115,6 @@ create Task TK_FIND_ALL_DEFAULT_ACTIVITY_DEFINITIONS {
 	attribute WORKFLOW_ACTIVITY_DEFINITION_LIST    {domain:DO_DT_WF_ACTIVITY_DEFINITION_DTC,            notNull:"false",     inOut :"out"}
 }
 
-create Task TK_FIND_ALL_FILTERS_BY_WORKFLOW_DEFINITION_ID {
-	className : "io.vertigo.dynamox.task.TaskEngineSelect"
-	request : "
-		SELECT 
-			RFD.*
-		FROM 
-			RULE_FILTER_DEFINITION RFD
-			JOIN SELECTOR_DEFINITION SEL ON (RFD.SEL_ID = SEL.ID)
-			JOIN WF_ACTIVITY_DEFINITION WAD ON (SEL.ITEM_ID = WAD.WFAD_ID)
-		WHERE 
-			WAD.WFWD_ID = #WFWD_ID#
-	"
-	attribute WFWD_ID 					{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
-}
-
-create Task TK_FIND_ALL_SELECTORS_BY_WORKFLOW_DEFINITION_ID {
-	className : "io.vertigo.dynamox.task.TaskEngineSelect"
-	request : "
-		SELECT 
-			SEL.*
-		FROM 
-			SELECTOR_DEFINITION SEL
-			JOIN WF_ACTIVITY_DEFINITION WAD ON (SEL.ITEM_ID = WAD.WFAD_ID)
-		WHERE 
-			WAD.WFWD_ID = #WFWD_ID#
-	"
-	attribute WFWD_ID 					{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
-}
 
 create Task TK_FIND_DECISIONS_BY_WORKFLOW_ID {
 	className : "io.vertigo.dynamox.task.TaskEngineSelect"

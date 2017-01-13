@@ -10,6 +10,10 @@ import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.x.impl.workflow.WorkflowStorePlugin;
+import io.vertigo.x.rules.dao.RuleConditionDefinitionDAO;
+import io.vertigo.x.rules.dao.RuleDefinitionDAO;
+import io.vertigo.x.rules.dao.RuleFilterDefinitionDAO;
+import io.vertigo.x.rules.dao.SelectorDefinitionDAO;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
@@ -50,6 +54,14 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	private WfMultiplicityDefinitionDAO wfMultiplicityDefinitionDAO;
 	@Inject
 	private WfWorkflowDefinitionDAO wfWorkflowDefinitionDAO;
+	@Inject
+	private RuleDefinitionDAO ruleDefinitionDAO;
+	@Inject
+	private RuleConditionDefinitionDAO ruleConditionDefinitionDAO;
+	@Inject
+	private SelectorDefinitionDAO selectorDefinitionDAO;
+	@Inject
+	private RuleFilterDefinitionDAO ruleFilterDefinitionDAO;
 	@Inject
 	private WfActivityDAO wfActivityDAO;
 	@Inject
@@ -391,25 +403,21 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 
 	@Override
 	public List<RuleDefinition> findAllRulesByWorkflowDefinitionId(long wfwdId) {
-
-		return null;
+		return ruleDefinitionDAO.findAllRulesByWorkflowDefinitionId(wfwdId);
 	}
 
 	@Override
 	public List<RuleConditionDefinition> findAllConditionsByWorkflowDefinitionId(long wfwdId) {
-		// TODO Auto-generated method stub
-		return null;
+		return ruleConditionDefinitionDAO.findAllConditionsByWorkflowDefinitionId(wfwdId);
 	}
 
 	@Override
 	public List<SelectorDefinition> findAllSelectorsByWorkflowDefinitionId(long wfwdId) {
-		// TODO Auto-generated method stub
-		return null;
+		return selectorDefinitionDAO.findAllSelectorsByWorkflowDefinitionId(wfwdId);
 	}
 
 	@Override
 	public List<RuleFilterDefinition> findAllFiltersByWorkflowDefinitionId(long wfwdId) {
-		// TODO Auto-generated method stub
-		return null;
+		return ruleFilterDefinitionDAO.findAllFiltersByWorkflowDefinitionId(wfwdId);
 	}
 }

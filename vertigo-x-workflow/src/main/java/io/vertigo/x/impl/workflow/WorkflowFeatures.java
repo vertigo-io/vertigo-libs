@@ -78,13 +78,13 @@ public final class WorkflowFeatures extends Features {
 		getModuleConfigBuilder().withNoAPI()//
 				.addPlugin(SQLWorkflowStorePlugin.class) //
 				.addComponent(WfActivityDAO.class) //
-				.addComponent(WfActivityDefinitionDAO.class) //
 				.addComponent(WfWorkflowDAO.class) //
-				.addComponent(WfWorkflowDefinitionDAO.class) //
 				.addComponent(WfStatusDAO.class) //
+				.addComponent(WfDecisionDAO.class)//
+				.addComponent(WfActivityDefinitionDAO.class) //
+				.addComponent(WfWorkflowDefinitionDAO.class) //
 				.addComponent(WfMultiplicityDefinitionDAO.class) //
 				.addComponent(WfTransitionDefinitionDAO.class) //
-				.addComponent(WfDecisionDAO.class)//
 				.addComponent(WorkflowPAO.class);
 		return this;
 	}
@@ -107,7 +107,7 @@ public final class WorkflowFeatures extends Features {
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		getModuleConfigBuilder().addDefinitionResource("kpr", "boot/definitions/application.kpr")
+		getModuleConfigBuilder().addDefinitionResource("kpr", "boot/definitions/application-workflow-test.kpr")
 				.addDefinitionResource("classes", DtDefinitions.class.getName())
 				.addComponent(WorkflowManager.class, WorkflowManagerImpl.class)
 				.addComponent(ScriptManager.class, ScriptManagerImpl.class)

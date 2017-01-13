@@ -46,6 +46,8 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.Injector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.transaction.VTransactionManager;
+import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountBuilder;
 import io.vertigo.x.account.AccountGroup;
@@ -81,6 +83,9 @@ public class WorkflowManagerTest {
 	@Inject
 	private ItemStorePlugin itemStorePlugin;
 
+	@Inject
+	private VTransactionManager transactionManager;
+
 	/**
 	 *
 	 */
@@ -114,111 +119,122 @@ public class WorkflowManagerTest {
 	 */
 	@Test
 	public void testWorkflowStateChanges() {
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
+			workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
 
-		final WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
-		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
+			final WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1",
+					wfWorkflowDefinition.getWfwdId()).build();
 
-		final WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1",
-				wfWorkflowDefinition.getWfwdId()).build();
+			final AccountGroup accountGroup = new AccountGroup("1", "dummy group");
+			final Account account = new AccountBuilder("Acc1").build();
+			accountManager.getStore().saveGroup(accountGroup);
+			accountManager.getStore().saveAccounts(Arrays.asList(account));
+			final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
+			final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
+			accountManager.getStore().attach(accountUri, accountGroupUri);
 
-		final AccountGroup accountGroup = new AccountGroup("1", "dummy group");
-		final Account account = new AccountBuilder("Acc1").build();
-		accountManager.getStore().saveGroup(accountGroup);
-		accountManager.getStore().saveAccounts(Arrays.asList(account));
-		final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
-		final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
-		accountManager.getStore().attach(accountUri, accountGroupUri);
+			// Step 1 : 1 rule, 1 condition
+			workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
+			final RuleDefinition rule1Act1 = new RuleDefinition();
+			rule1Act1.setItemId(firstActivity.getWfadId());
 
-		// Step 1 : 1 rule, 1 condition
-		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
-		final RuleDefinition rule1Act1 = new RuleDefinition(null, firstActivity.getWfadId());
-		final RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition(null, "DIVISION", "=", "DIV",
-				null);
-		workflowManager.addRule(firstActivity, rule1Act1, Arrays.asList(condition1Rule1Act1));
-		// Selector/filter to validate the activity (preventing auto validation
-		// when no one is linked to an activity)
-		final SelectorDefinition selector1 = new SelectorDefinition(null, firstActivity.getWfadId(),
-				accountGroup.getId());
-		workflowManager.addSelector(firstActivity, selector1, Collections.emptyList());
+			RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition();
+			condition1Rule1Act1.setField("DIVISION");
+			condition1Rule1Act1.setOperator("=");
+			condition1Rule1Act1.setExpression("DIV");
 
-		final MyDummyDtObject myDummyDtObject = createDummyDtObject(1);
+			workflowManager.addRule(firstActivity, rule1Act1, Arrays.asList(condition1Rule1Act1));
+			// Selector/filter to validate the activity (preventing auto
+			// validation
+			// when no one is linked to an activity)
 
-		final WfWorkflow wfWorkflow = workflowManager.createWorkflowInstance("WorkflowRules", "JUnit", false,
-				myDummyDtObject.getId());
+			SelectorDefinition selector1 = new SelectorDefinition();
+			selector1.setItemId(firstActivity.getWfadId());
+			selector1.setGroupId(accountGroup.getId());
 
-		assertThat(wfWorkflow, is(not(nullValue())));
-		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.CRE.name()));
+			workflowManager.addSelector(firstActivity, selector1, Collections.emptyList());
 
-		try {
-			workflowManager.resumeInstance(wfWorkflow);
-			fail("Cannot resume an instance that is not started");
-		} catch (final IllegalStateException iae) {
-			// We should enter in this exeption case
-		}
+			final MyDummyDtObject myDummyDtObject = createDummyDtObject(1);
 
-		try {
-			workflowManager.endInstance(wfWorkflow);
-			fail("Cannot end instance that is not started");
-		} catch (final IllegalStateException iae) {
-			// We should enter in this exeption case
-		}
+			final WfWorkflow wfWorkflow = workflowManager.createWorkflowInstance("WorkflowRules", "JUnit", false,
+					myDummyDtObject.getId());
 
-		// Starting the workflow
-		workflowManager.startInstance(wfWorkflow);
-		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.STA.name()));
+			assertThat(wfWorkflow, is(not(nullValue())));
+			assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.CRE.name()));
 
-		try {
-			workflowManager.resumeInstance(wfWorkflow);
-			fail("Cannot resume an instance that is not paused");
-		} catch (final IllegalStateException iae) {
-			// We should enter in this exeption case
-		}
+			try {
+				workflowManager.resumeInstance(wfWorkflow);
+				fail("Cannot resume an instance that is not started");
+			} catch (final IllegalStateException iae) {
+				// We should enter in this exeption case
+			}
 
-		// Pausing the workflow
-		workflowManager.pauseInstance(wfWorkflow);
-		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.PAU.name()));
+			try {
+				workflowManager.endInstance(wfWorkflow);
+				fail("Cannot end instance that is not started");
+			} catch (final IllegalStateException iae) {
+				// We should enter in this exeption case
+			}
 
-		final WfDecision wfDecision = new WfDecision();
-		wfDecision.setChoice(1);
-		wfDecision.setUsername("junit");
-		try {
-			workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, wfDecision);
-			fail("Cannot go to next activity while the workflow is paused");
-		} catch (final IllegalStateException iae) {
-			// We should enter in this exeption case
-		}
-
-		try {
+			// Starting the workflow
 			workflowManager.startInstance(wfWorkflow);
-			fail("Cannot start an already started workflow");
-		} catch (final IllegalStateException iae) {
-			// We should enter in this exeption case
+			assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.STA.name()));
+
+			try {
+				workflowManager.resumeInstance(wfWorkflow);
+				fail("Cannot resume an instance that is not paused");
+			} catch (final IllegalStateException iae) {
+				// We should enter in this exeption case
+			}
+
+			// Pausing the workflow
+			workflowManager.pauseInstance(wfWorkflow);
+			assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.PAU.name()));
+
+			final WfDecision wfDecision = new WfDecision();
+			wfDecision.setChoice(1);
+			wfDecision.setUsername("junit");
+			try {
+				workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, wfDecision);
+				fail("Cannot go to next activity while the workflow is paused");
+			} catch (final IllegalStateException iae) {
+				// We should enter in this exeption case
+			}
+
+			try {
+				workflowManager.startInstance(wfWorkflow);
+				fail("Cannot start an already started workflow");
+			} catch (final IllegalStateException iae) {
+				// We should enter in this exeption case
+			}
+
+			// A workflow in pause can be resumed
+			workflowManager.resumeInstance(wfWorkflow);
+			assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.STA.name()));
+
+			// A workflow started can be ended
+			workflowManager.endInstance(wfWorkflow);
+
+			final WfWorkflow wfWorkflow2 = workflowManager.createWorkflowInstance("WorkflowRules", "JUnit", false,
+					myDummyDtObject.getId());
+
+			assertThat(wfWorkflow2, is(not(nullValue())));
+			assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.CRE.name()));
+
+			// A workflow created can be started.
+			workflowManager.startInstance(wfWorkflow2);
+			assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.STA.name()));
+
+			// A workflow started can be paused.
+			workflowManager.pauseInstance(wfWorkflow2);
+			assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.PAU.name()));
+
+			// A workflow paused can be ended.
+			workflowManager.endInstance(wfWorkflow2);
+			assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.END.name()));
+			transaction.rollback();
 		}
-
-		// A workflow in pause can be resumed
-		workflowManager.resumeInstance(wfWorkflow);
-		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.STA.name()));
-
-		// A workflow started can be ended
-		workflowManager.endInstance(wfWorkflow);
-
-		final WfWorkflow wfWorkflow2 = workflowManager.createWorkflowInstance("WorkflowRules", "JUnit", false,
-				myDummyDtObject.getId());
-
-		assertThat(wfWorkflow2, is(not(nullValue())));
-		assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.CRE.name()));
-
-		// A workflow created can be started.
-		workflowManager.startInstance(wfWorkflow2);
-		assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.STA.name()));
-
-		// A workflow started can be paused.
-		workflowManager.pauseInstance(wfWorkflow2);
-		assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.PAU.name()));
-
-		// A workflow paused can be ended.
-		workflowManager.endInstance(wfWorkflow2);
-		assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.END.name()));
 
 	}
 
@@ -253,262 +269,324 @@ public class WorkflowManagerTest {
 	@Test
 	public void testWorkflowRulesManualValidationActivities() {
 
-		WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
-		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
+			workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
 
-		WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1", wfWorkflowDefinition.getWfwdId())
-				.build();
+			WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1",
+					wfWorkflowDefinition.getWfwdId()).build();
 
-		AccountGroup accountGroup = new AccountGroup("1", "dummy group");
-		Account account = new AccountBuilder("Acc1").build();
-		accountManager.getStore().saveGroup(accountGroup);
-		accountManager.getStore().saveAccounts(Arrays.asList(account));
-		final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
-		final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
-		accountManager.getStore().attach(accountUri, accountGroupUri);
+			AccountGroup accountGroup = new AccountGroup("1", "dummy group");
+			Account account = new AccountBuilder("Acc1").build();
+			accountManager.getStore().saveGroup(accountGroup);
+			accountManager.getStore().saveAccounts(Arrays.asList(account));
+			final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
+			final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
+			accountManager.getStore().attach(accountUri, accountGroupUri);
 
-		// Step 1 : 1 rule, 1 condition
-		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
-		final RuleDefinition rule1Act1 = new RuleDefinition(null, firstActivity.getWfadId());
-		RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition(null, "ENTITY", "IN", "ENT,FED,GFE",
-				null);
-		workflowManager.addRule(firstActivity, rule1Act1, Arrays.asList(condition1Rule1Act1));
-		// Selector/filter to validate the activity (preventing auto validation
-		// when no one is linked to an activity)
-		SelectorDefinition selector1 = new SelectorDefinition(null, firstActivity.getWfadId(), accountGroup.getId());
-		RuleFilterDefinition filter1 = new RuleFilterDefinition(null, "ENTITY", "=", "ENT", null);
-		workflowManager.addSelector(firstActivity, selector1, Arrays.asList(filter1));
+			// Step 1 : 1 rule, 1 condition
+			workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
+			final RuleDefinition rule1Act1 = new RuleDefinition();
+			rule1Act1.setItemId(firstActivity.getWfadId());
 
-		// Step 2 : No rules/condition
-		WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2",
-				wfWorkflowDefinition.getWfwdId()).build();
-		workflowManager.addActivity(wfWorkflowDefinition, secondActivity, 2);
-		// Selector/filter to validate the activity (preventing auto validation
-		// when no one is linked to an activity)
-		SelectorDefinition selector2 = new SelectorDefinition(null, secondActivity.getWfadId(), accountGroup.getId());
-		workflowManager.addSelector(secondActivity, selector2, new ArrayList<RuleFilterDefinition>());
+			RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition();
+			condition1Rule1Act1.setField("ENTITY");
+			condition1Rule1Act1.setOperator("IN");
+			condition1Rule1Act1.setExpression("ENT,FED,GFE");
 
-		// Step 3 : 1 rule, 2 conditions
-		WfActivityDefinition thirdActivity = new WfActivityDefinitionBuilder("Step 3", wfWorkflowDefinition.getWfwdId())
-				.build();
-		workflowManager.addActivity(wfWorkflowDefinition, thirdActivity, 3);
-		RuleDefinition rule1Act3 = new RuleDefinition(null, thirdActivity.getWfadId());
-		RuleConditionDefinition condition1Rule1Act3 = new RuleConditionDefinition(null, "ENTITY", "=", "ENT", null);
-		RuleConditionDefinition condition2Rule1Act3 = new RuleConditionDefinition(null, "ENTITY", "=", "ENT", null);
-		workflowManager.addRule(thirdActivity, rule1Act3, Arrays.asList(condition1Rule1Act3, condition2Rule1Act3));
-		// Selector/filter to validate the activity (preventing auto validation
-		// when no one is linked to an activity)
-		SelectorDefinition selector3 = new SelectorDefinition(null, thirdActivity.getWfadId(), accountGroup.getId());
-		RuleFilterDefinition filter3 = new RuleFilterDefinition(null, "ENTITY", "=", "ENT", null);
-		workflowManager.addSelector(thirdActivity, selector3, Arrays.asList(filter3));
+			workflowManager.addRule(firstActivity, rule1Act1, Arrays.asList(condition1Rule1Act1));
+			// Selector/filter to validate the activity (preventing auto
+			// validation
+			// when no one is linked to an activity)
 
-		// Step 4 : 2 rules, 1 condition
-		WfActivityDefinition fourthActivity = new WfActivityDefinitionBuilder("Step 4",
-				wfWorkflowDefinition.getWfwdId()).build();
-		workflowManager.addActivity(wfWorkflowDefinition, fourthActivity, 4);
-		RuleDefinition rule1Act4 = new RuleDefinition(null, fourthActivity.getWfadId());
-		RuleConditionDefinition condition1Rule1Act4 = new RuleConditionDefinition(null, "ENTITY", "=", "ENT", null);
-		RuleDefinition rule2Act4 = new RuleDefinition(null, fourthActivity.getWfadId());
-		RuleConditionDefinition condition1Rule2Act4 = new RuleConditionDefinition(null, "ENTITY", "=", "ENT", null);
-		workflowManager.addRule(fourthActivity, rule1Act4, Arrays.asList(condition1Rule1Act4));
-		workflowManager.addRule(fourthActivity, rule2Act4, Arrays.asList(condition1Rule2Act4));
-		// Selector/filter to validate the activity (preventing auto validation
-		// when no one is linked to an activity)
-		SelectorDefinition selector41 = new SelectorDefinition(null, fourthActivity.getWfadId(), accountGroup.getId());
-		RuleFilterDefinition filter4 = new RuleFilterDefinition(null, "ENTITY", "=", "ENT", null);
-		workflowManager.addSelector(fourthActivity, selector41, Arrays.asList(filter4));
+			SelectorDefinition selector1 = new SelectorDefinition();
+			selector1.setItemId(firstActivity.getWfadId());
+			selector1.setGroupId(accountGroup.getId());
 
-		MyDummyDtObject myDummyDtObject = createDummyDtObject(1);
+			RuleFilterDefinition filter1 = new RuleFilterDefinition();
+			filter1.setField("ENTITY");
+			filter1.setOperator("=");
+			filter1.setExpression("ENT");
 
-		WfWorkflow wfWorkflow = workflowManager.createWorkflowInstance(wfWorkflowDefinition.getWfwdId(), "JUnit", false,
-				myDummyDtObject.getId());
+			workflowManager.addSelector(firstActivity, selector1, Arrays.asList(filter1));
 
-		// Starting the workflow
-		workflowManager.startInstance(wfWorkflow);
+			// Step 2 : No rules/condition
+			WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, secondActivity, 2);
+			// Selector/filter to validate the activity (preventing auto
+			// validation
+			// when no one is linked to an activity)
 
-		List<WfWorkflowDecision> workflowDecisions = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
+			SelectorDefinition selector2 = new SelectorDefinition();
+			selector2.setItemId(secondActivity.getWfadId());
+			selector2.setGroupId(accountGroup.getId());
 
-		// Step 1,3,4 should be Manual, Step 2 should be auto
-		// No decisons for now
-		assertNotNull(workflowDecisions);
-		assertThat(workflowDecisions.size(), is(3));
-		// Check Step 1
-		assertActivityExist(firstActivity, workflowDecisions.get(0));
-		assertNull(workflowDecisions.get(0).getDecisions());
-		assertHasOneGroup(accountGroup, workflowDecisions.get(0));
-		// Check Step 3
-		assertThat(thirdActivity.getWfadId(), is(workflowDecisions.get(1).getActivityDefinition().getWfadId()));
-		assertNull(workflowDecisions.get(1).getActivity());
-		assertNull(workflowDecisions.get(1).getDecisions());
-		assertHasOneGroup(accountGroup, workflowDecisions.get(1));
-		// Check Step 4
-		assertThat(fourthActivity.getWfadId(), is(workflowDecisions.get(2).getActivityDefinition().getWfadId()));
-		assertNull(workflowDecisions.get(2).getActivity());
-		assertNull(workflowDecisions.get(2).getDecisions());
-		assertHasOneGroup(accountGroup, workflowDecisions.get(2));
+			workflowManager.addSelector(secondActivity, selector2, new ArrayList<RuleFilterDefinition>());
 
-		// Entry actions should NOT validate all activities.
-		long currentActivityId = wfWorkflow.getWfaId2();
-		WfActivity currentActivity = workflowManager.getActivity(currentActivityId);
-		assertThat(currentActivity.getWfadId(), is(firstActivity.getWfadId()));
+			// Step 3 : 1 rule, 2 conditions
+			WfActivityDefinition thirdActivity = new WfActivityDefinitionBuilder("Step 3",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, thirdActivity, 3);
+			final RuleDefinition rule1Act3 = new RuleDefinition();
+			rule1Act1.setItemId(thirdActivity.getWfadId());
 
-		WfWorkflow wfWorkflowFetched = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
-		assertNotNull(wfWorkflowFetched);
+			RuleConditionDefinition condition1Rule1Act3 = new RuleConditionDefinition();
+			condition1Rule1Act3.setField("ENTITY");
+			condition1Rule1Act3.setOperator("=");
+			condition1Rule1Act3.setExpression("ENT");
+			RuleConditionDefinition condition2Rule1Act3 = new RuleConditionDefinition();
+			condition2Rule1Act3.setField("ENTITY");
+			condition2Rule1Act3.setOperator("=");
+			condition2Rule1Act3.setExpression("ENT");
 
-		currentActivityId = wfWorkflow.getWfaId2();
-		currentActivity = workflowManager.getActivity(currentActivityId);
-		assertThat(currentActivity.getWfadId(), is(firstActivity.getWfadId()));
+			workflowManager.addRule(thirdActivity, rule1Act3, Arrays.asList(condition1Rule1Act3, condition2Rule1Act3));
+			// Selector/filter to validate the activity (preventing auto
+			// validation
+			// when no one is linked to an activity)
 
-		WfDecision decision = new WfDecision();
-		decision.setChoice(1);
-		decision.setComments("abc");
-		decision.setUsername("AA");
-		decision.setDecisionDate(new Date());
+			SelectorDefinition selector3 = new SelectorDefinition();
+			selector3.setItemId(thirdActivity.getWfadId());
+			selector3.setGroupId(accountGroup.getId());
 
-		workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, decision);
+			RuleFilterDefinition filter3 = new RuleFilterDefinition();
+			filter3.setField("ENTITY");
+			filter3.setOperator("=");
+			filter3.setExpression("ENT");
 
-		workflowDecisions = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
+			workflowManager.addSelector(thirdActivity, selector3, Arrays.asList(filter3));
 
-		// Step 1,3,4 should be Manual, Step 2 should be auto
-		// 1 Decisions for Step 1
-		assertNotNull(workflowDecisions);
-		assertThat(workflowDecisions.size(), is(3));
-		// Check Step 1
-		assertActivityExist(firstActivity, workflowDecisions.get(0));
-		// 1 Decision
-		assertHasOneDecision(workflowDecisions.get(0));
-		assertFirstDecisionEquals(decision, workflowDecisions.get(0));
-		assertHasOneGroup(accountGroup, workflowDecisions.get(0));
-		// Check Step 3
-		assertActivityExist(thirdActivity, workflowDecisions.get(1));
-		assertNull(workflowDecisions.get(1).getDecisions());
-		assertHasOneGroup(accountGroup, workflowDecisions.get(1));
-		// Check Step 4
-		assertThat(fourthActivity.getWfadId(), is(workflowDecisions.get(2).getActivityDefinition().getWfadId()));
-		assertNull(workflowDecisions.get(2).getActivity());
-		assertNull(workflowDecisions.get(2).getDecisions());
-		assertHasOneGroup(accountGroup, workflowDecisions.get(2));
+			// Step 4 : 2 rules, 1 condition
+			WfActivityDefinition fourthActivity = new WfActivityDefinitionBuilder("Step 4",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, fourthActivity, 4);
 
-		// Activity 1 should now be validated.
-		// No rule defined for activity 2. Activity 2 should be autovalidated
-		// The current activity should be now activity 3
-		currentActivityId = wfWorkflow.getWfaId2();
-		currentActivity = workflowManager.getActivity(currentActivityId);
-		assertThat(currentActivity.getWfadId(), is(thirdActivity.getWfadId()));
+			final RuleDefinition rule1Act4 = new RuleDefinition();
+			rule1Act1.setItemId(fourthActivity.getWfadId());
+			RuleConditionDefinition condition1Rule1Act4 = new RuleConditionDefinition();
+			condition1Rule1Act4.setField("ENTITY");
+			condition1Rule1Act4.setOperator("=");
+			condition1Rule1Act4.setExpression("ENT");
+			RuleConditionDefinition condition1Rule2Act4 = new RuleConditionDefinition();
+			condition1Rule2Act4.setField("ENTITY");
+			condition1Rule2Act4.setOperator("=");
+			condition1Rule2Act4.setExpression("ENT");
 
-		WfWorkflow wfWorkflowFetched2 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
-		assertNotNull(wfWorkflowFetched2);
+			final RuleDefinition rule2Act4 = new RuleDefinition();
+			rule2Act4.setItemId(fourthActivity.getWfadId());
 
-		currentActivityId = wfWorkflow.getWfaId2();
-		currentActivity = workflowManager.getActivity(currentActivityId);
-		assertThat(currentActivity.getWfadId(), is(thirdActivity.getWfadId()));
+			workflowManager.addRule(fourthActivity, rule1Act4, Arrays.asList(condition1Rule1Act4));
+			workflowManager.addRule(fourthActivity, rule2Act4, Arrays.asList(condition1Rule2Act4));
+			// Selector/filter to validate the activity (preventing auto
+			// validation
+			// when no one is linked to an activity)
 
-		// Manually validating activity 3
-		WfDecision wfDecisionAct3 = new WfDecision();
-		wfDecisionAct3.setChoice(1);
-		wfDecisionAct3.setUsername(account.getId());
-		wfDecisionAct3.setWfaId(currentActivity.getWfaId());
+			SelectorDefinition selector41 = new SelectorDefinition();
+			selector41.setItemId(fourthActivity.getWfadId());
+			selector41.setGroupId(accountGroup.getId());
 
-		// Using CanGo, SaveDecision and GoToNext
-		boolean canGo = workflowManager.canGoToNextActivity(wfWorkflow);
-		assertFalse(canGo);
+			RuleFilterDefinition filter4 = new RuleFilterDefinition();
+			filter4.setField("ENTITY");
+			filter4.setOperator("=");
+			filter4.setExpression("ENT");
 
-		workflowManager.saveDecision(wfWorkflow, wfDecisionAct3);
-		canGo = workflowManager.canGoToNextActivity(wfWorkflow);
-		assertTrue(canGo);
-		workflowManager.canGoToNextActivity(wfWorkflow);
-		workflowManager.goToNextActivity(wfWorkflow);
+			workflowManager.addSelector(fourthActivity, selector41, Arrays.asList(filter4));
 
-		workflowDecisions = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
+			MyDummyDtObject myDummyDtObject = createDummyDtObject(1);
 
-		// Step 1,3,4 should be Manual, Step 2 should be auto
-		// Decisions for Step 1, Step 3
-		assertNotNull(workflowDecisions);
-		assertThat(workflowDecisions.size(), is(3));
-		// Check Step 1
-		assertActivityExist(firstActivity, workflowDecisions.get(0));
-		// 1 Decision
-		assertHasOneDecision(workflowDecisions.get(0));
-		assertFirstDecisionEquals(decision, workflowDecisions.get(0));
-		assertHasOneGroup(accountGroup, workflowDecisions.get(0));
-		// Check Step 3
-		assertActivityExist(thirdActivity, workflowDecisions.get(1));
-		// Decisions for Step 3
-		assertHasOneDecision(workflowDecisions.get(1));
-		assertFirstDecisionEquals(wfDecisionAct3, workflowDecisions.get(1));
-		assertHasOneGroup(accountGroup, workflowDecisions.get(1));
-		// Check Step 4
-		assertThat(fourthActivity.getWfadId(), is(workflowDecisions.get(2).getActivityDefinition().getWfadId()));
-		assertNotNull(workflowDecisions.get(2).getActivity());
-		assertNull(workflowDecisions.get(2).getDecisions());
-		assertHasOneGroup(accountGroup, workflowDecisions.get(2));
+			WfWorkflow wfWorkflow = workflowManager.createWorkflowInstance(wfWorkflowDefinition.getWfwdId(), "JUnit",
+					false, myDummyDtObject.getId());
 
-		// Activity 3 should now be validated.
-		// The current activity should be now activity 4
-		currentActivityId = wfWorkflow.getWfaId2();
-		currentActivity = workflowManager.getActivity(currentActivityId);
-		assertThat(currentActivity.getWfadId(), is(fourthActivity.getWfadId()));
+			// Starting the workflow
+			workflowManager.startInstance(wfWorkflow);
 
-		WfWorkflow wfWorkflowFetched3 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
-		assertNotNull(wfWorkflowFetched3);
+			List<WfWorkflowDecision> workflowDecisions = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
 
-		currentActivityId = wfWorkflow.getWfaId2();
-		currentActivity = workflowManager.getActivity(currentActivityId);
-		assertThat(currentActivity.getWfadId(), is(fourthActivity.getWfadId()));
+			// Step 1,3,4 should be Manual, Step 2 should be auto
+			// No decisons for now
+			assertNotNull(workflowDecisions);
+			assertThat(workflowDecisions.size(), is(3));
+			// Check Step 1
+			assertActivityExist(firstActivity, workflowDecisions.get(0));
+			assertNull(workflowDecisions.get(0).getDecisions());
+			assertHasOneGroup(accountGroup, workflowDecisions.get(0));
+			// Check Step 3
+			assertThat(thirdActivity.getWfadId(), is(workflowDecisions.get(1).getActivityDefinition().getWfadId()));
+			assertNull(workflowDecisions.get(1).getActivity());
+			assertNull(workflowDecisions.get(1).getDecisions());
+			assertHasOneGroup(accountGroup, workflowDecisions.get(1));
+			// Check Step 4
+			assertThat(fourthActivity.getWfadId(), is(workflowDecisions.get(2).getActivityDefinition().getWfadId()));
+			assertNull(workflowDecisions.get(2).getActivity());
+			assertNull(workflowDecisions.get(2).getDecisions());
+			assertHasOneGroup(accountGroup, workflowDecisions.get(2));
 
-		// Manually validating activity 4
-		WfDecision wfDecisionAct4 = new WfDecision();
-		wfDecisionAct4.setChoice(1);
-		wfDecisionAct4.setUsername(account.getId());
-		workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, wfDecisionAct4);
+			// Entry actions should NOT validate all activities.
+			long currentActivityId = wfWorkflow.getWfaId2();
+			WfActivity currentActivity = workflowManager.getActivity(currentActivityId);
+			assertThat(currentActivity.getWfadId(), is(firstActivity.getWfadId()));
 
-		workflowDecisions = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
+			WfWorkflow wfWorkflowFetched = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
+			assertNotNull(wfWorkflowFetched);
 
-		// Step 1,3,4 should be Manual, Step 2 should be auto
-		// Decisions for Step 1, Step 3
-		assertNotNull(workflowDecisions);
-		assertThat(workflowDecisions.size(), is(3));
-		// Check Step 1
-		assertActivityExist(firstActivity, workflowDecisions.get(0));
-		// 1 Decision
-		assertHasOneDecision(workflowDecisions.get(0));
-		assertFirstDecisionEquals(decision, workflowDecisions.get(0));
-		assertHasOneGroup(accountGroup, workflowDecisions.get(0));
-		// Check Step 3
-		assertActivityExist(thirdActivity, workflowDecisions.get(1));
-		// Decisions for Step 3
-		assertHasOneDecision(workflowDecisions.get(1));
-		assertFirstDecisionEquals(wfDecisionAct3, workflowDecisions.get(1));
-		assertHasOneGroup(accountGroup, workflowDecisions.get(1));
-		// Check Step 4
-		assertActivityExist(fourthActivity, workflowDecisions.get(2));
-		// Decisions for Step 4
-		assertHasOneDecision(workflowDecisions.get(2));
-		assertFirstDecisionEquals(wfDecisionAct4, workflowDecisions.get(2));
+			currentActivityId = wfWorkflow.getWfaId2();
+			currentActivity = workflowManager.getActivity(currentActivityId);
+			assertThat(currentActivity.getWfadId(), is(firstActivity.getWfadId()));
 
-		assertNotNull(workflowDecisions.get(2).getGroups());
-		assertThat(workflowDecisions.get(2).getGroups().size(), is(1));
-		assertThat(accountGroup.getId(), is(workflowDecisions.get(2).getGroups().get(0).getId()));
+			WfDecision decision = new WfDecision();
+			decision.setChoice(1);
+			decision.setComments("abc");
+			decision.setUsername("AA");
+			decision.setDecisionDate(new Date());
 
-		// Activity 4 should now be validated. The current activity is now
-		// activity 4, with the end status
-		currentActivityId = wfWorkflow.getWfaId2();
-		currentActivity = workflowManager.getActivity(currentActivityId);
-		assertThat(currentActivity.getWfadId(), is(fourthActivity.getWfadId()));
+			workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, decision);
 
-		// No Automatic ending.
-		// Assert.AreEqual(wfWorkflow.WfsCode,
-		// WfCodeStatusWorkflow.End.ToString());
-		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.STA.toString()));
+			workflowDecisions = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
 
-		WfWorkflow wfWorkflowFetched5 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
-		// Assert.AreEqual(wfWorkflowFetched5.WfsCode,
-		// WfCodeStatusWorkflow.End.ToString());
-		assertThat(wfWorkflowFetched5.getWfsCode(), is(WfCodeStatusWorkflow.STA.toString()));
+			// Step 1,3,4 should be Manual, Step 2 should be auto
+			// 1 Decisions for Step 1
+			assertNotNull(workflowDecisions);
+			assertThat(workflowDecisions.size(), is(3));
+			// Check Step 1
+			assertActivityExist(firstActivity, workflowDecisions.get(0));
+			// 1 Decision
+			assertHasOneDecision(workflowDecisions.get(0));
+			assertFirstDecisionEquals(decision, workflowDecisions.get(0));
+			assertHasOneGroup(accountGroup, workflowDecisions.get(0));
+			// Check Step 3
+			assertActivityExist(thirdActivity, workflowDecisions.get(1));
+			assertNull(workflowDecisions.get(1).getDecisions());
+			assertHasOneGroup(accountGroup, workflowDecisions.get(1));
+			// Check Step 4
+			assertThat(fourthActivity.getWfadId(), is(workflowDecisions.get(2).getActivityDefinition().getWfadId()));
+			assertNull(workflowDecisions.get(2).getActivity());
+			assertNull(workflowDecisions.get(2).getDecisions());
+			assertHasOneGroup(accountGroup, workflowDecisions.get(2));
 
-		// List<WfListWorkflowDecision> allDecisions =
-		// workflowManager.getAllWorkflowDecisions(wfWorkflow.getWfwdId());
-		// assertThat(allDecisions.size(), is(1));
+			// Activity 1 should now be validated.
+			// No rule defined for activity 2. Activity 2 should be
+			// autovalidated
+			// The current activity should be now activity 3
+			currentActivityId = wfWorkflow.getWfaId2();
+			currentActivity = workflowManager.getActivity(currentActivityId);
+			assertThat(currentActivity.getWfadId(), is(thirdActivity.getWfadId()));
+
+			WfWorkflow wfWorkflowFetched2 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
+			assertNotNull(wfWorkflowFetched2);
+
+			currentActivityId = wfWorkflow.getWfaId2();
+			currentActivity = workflowManager.getActivity(currentActivityId);
+			assertThat(currentActivity.getWfadId(), is(thirdActivity.getWfadId()));
+
+			// Manually validating activity 3
+			WfDecision wfDecisionAct3 = new WfDecision();
+			wfDecisionAct3.setChoice(1);
+			wfDecisionAct3.setUsername(account.getId());
+			wfDecisionAct3.setWfaId(currentActivity.getWfaId());
+
+			// Using CanGo, SaveDecision and GoToNext
+			boolean canGo = workflowManager.canGoToNextActivity(wfWorkflow);
+			assertFalse(canGo);
+
+			workflowManager.saveDecision(wfWorkflow, wfDecisionAct3);
+			canGo = workflowManager.canGoToNextActivity(wfWorkflow);
+			assertTrue(canGo);
+			workflowManager.canGoToNextActivity(wfWorkflow);
+			workflowManager.goToNextActivity(wfWorkflow);
+
+			workflowDecisions = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
+
+			// Step 1,3,4 should be Manual, Step 2 should be auto
+			// Decisions for Step 1, Step 3
+			assertNotNull(workflowDecisions);
+			assertThat(workflowDecisions.size(), is(3));
+			// Check Step 1
+			assertActivityExist(firstActivity, workflowDecisions.get(0));
+			// 1 Decision
+			assertHasOneDecision(workflowDecisions.get(0));
+			assertFirstDecisionEquals(decision, workflowDecisions.get(0));
+			assertHasOneGroup(accountGroup, workflowDecisions.get(0));
+			// Check Step 3
+			assertActivityExist(thirdActivity, workflowDecisions.get(1));
+			// Decisions for Step 3
+			assertHasOneDecision(workflowDecisions.get(1));
+			assertFirstDecisionEquals(wfDecisionAct3, workflowDecisions.get(1));
+			assertHasOneGroup(accountGroup, workflowDecisions.get(1));
+			// Check Step 4
+			assertThat(fourthActivity.getWfadId(), is(workflowDecisions.get(2).getActivityDefinition().getWfadId()));
+			assertNotNull(workflowDecisions.get(2).getActivity());
+			assertNull(workflowDecisions.get(2).getDecisions());
+			assertHasOneGroup(accountGroup, workflowDecisions.get(2));
+
+			// Activity 3 should now be validated.
+			// The current activity should be now activity 4
+			currentActivityId = wfWorkflow.getWfaId2();
+			currentActivity = workflowManager.getActivity(currentActivityId);
+			assertThat(currentActivity.getWfadId(), is(fourthActivity.getWfadId()));
+
+			WfWorkflow wfWorkflowFetched3 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
+			assertNotNull(wfWorkflowFetched3);
+
+			currentActivityId = wfWorkflow.getWfaId2();
+			currentActivity = workflowManager.getActivity(currentActivityId);
+			assertThat(currentActivity.getWfadId(), is(fourthActivity.getWfadId()));
+
+			// Manually validating activity 4
+			WfDecision wfDecisionAct4 = new WfDecision();
+			wfDecisionAct4.setChoice(1);
+			wfDecisionAct4.setUsername(account.getId());
+			workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, wfDecisionAct4);
+
+			workflowDecisions = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
+
+			// Step 1,3,4 should be Manual, Step 2 should be auto
+			// Decisions for Step 1, Step 3
+			assertNotNull(workflowDecisions);
+			assertThat(workflowDecisions.size(), is(3));
+			// Check Step 1
+			assertActivityExist(firstActivity, workflowDecisions.get(0));
+			// 1 Decision
+			assertHasOneDecision(workflowDecisions.get(0));
+			assertFirstDecisionEquals(decision, workflowDecisions.get(0));
+			assertHasOneGroup(accountGroup, workflowDecisions.get(0));
+			// Check Step 3
+			assertActivityExist(thirdActivity, workflowDecisions.get(1));
+			// Decisions for Step 3
+			assertHasOneDecision(workflowDecisions.get(1));
+			assertFirstDecisionEquals(wfDecisionAct3, workflowDecisions.get(1));
+			assertHasOneGroup(accountGroup, workflowDecisions.get(1));
+			// Check Step 4
+			assertActivityExist(fourthActivity, workflowDecisions.get(2));
+			// Decisions for Step 4
+			assertHasOneDecision(workflowDecisions.get(2));
+			assertFirstDecisionEquals(wfDecisionAct4, workflowDecisions.get(2));
+
+			assertNotNull(workflowDecisions.get(2).getGroups());
+			assertThat(workflowDecisions.get(2).getGroups().size(), is(1));
+			assertThat(accountGroup.getId(), is(workflowDecisions.get(2).getGroups().get(0).getId()));
+
+			// Activity 4 should now be validated. The current activity is now
+			// activity 4, with the end status
+			currentActivityId = wfWorkflow.getWfaId2();
+			currentActivity = workflowManager.getActivity(currentActivityId);
+			assertThat(currentActivity.getWfadId(), is(fourthActivity.getWfadId()));
+
+			// No Automatic ending.
+			// Assert.AreEqual(wfWorkflow.WfsCode,
+			// WfCodeStatusWorkflow.End.ToString());
+			assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.STA.toString()));
+
+			WfWorkflow wfWorkflowFetched5 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
+			// Assert.AreEqual(wfWorkflowFetched5.WfsCode,
+			// WfCodeStatusWorkflow.End.ToString());
+			assertThat(wfWorkflowFetched5.getWfsCode(), is(WfCodeStatusWorkflow.STA.toString()));
+
+			// List<WfListWorkflowDecision> allDecisions =
+			// workflowManager.getAllWorkflowDecisions(wfWorkflow.getWfwdId());
+			// assertThat(allDecisions.size(), is(1));
+
+			transaction.rollback();
+		}
 	}
 
 	/**
@@ -517,67 +595,98 @@ public class WorkflowManagerTest {
 	@Test
 	public void testWorkflowRulesAutoValidationNoSelectorAllActivities() {
 
-		final WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
-		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 
-		final WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1",
-				wfWorkflowDefinition.getWfwdId()).build();
+			final WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
+			workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
 
-		// Step 1 : 1 rule, 1 condition (NO Selector)
-		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
-		final RuleDefinition rule1Act1 = new RuleDefinition(null, firstActivity.getWfadId());
-		final RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition(null, "DIVISION", "=", "DIV",
-				null);
-		workflowManager.addRule(firstActivity, rule1Act1, Arrays.asList(condition1Rule1Act1));
+			final WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1",
+					wfWorkflowDefinition.getWfwdId()).build();
 
-		// Step 2 : No rules/condition (NO Selector)
-		final WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2",
-				wfWorkflowDefinition.getWfwdId()).build();
-		workflowManager.addActivity(wfWorkflowDefinition, secondActivity, 2);
+			// Step 1 : 1 rule, 1 condition (NO Selector)
+			workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
 
-		// Step 3 : 1 rule, 2 conditions (NO Selector)
-		final WfActivityDefinition thirdActivity = new WfActivityDefinitionBuilder("Step 3",
-				wfWorkflowDefinition.getWfwdId()).build();
-		workflowManager.addActivity(wfWorkflowDefinition, thirdActivity, 3);
-		final RuleDefinition rule1Act3 = new RuleDefinition(null, thirdActivity.getWfadId());
-		final RuleConditionDefinition condition1Rule1Act3 = new RuleConditionDefinition(null, "DIVISION", "=", "DIV",
-				null);
-		final RuleConditionDefinition condition2Rule1Act3 = new RuleConditionDefinition(null, "ENTITY", "=", "ENT",
-				null);
-		workflowManager.addRule(thirdActivity, rule1Act3, Arrays.asList(condition1Rule1Act3, condition2Rule1Act3));
+			final RuleDefinition rule1Act1 = new RuleDefinition();
+			rule1Act1.setItemId(firstActivity.getWfadId());
 
-		// Step 4 : 2 rules, 1 condition (NO Selector)
-		final WfActivityDefinition fourthActivity = new WfActivityDefinitionBuilder("Step 4",
-				wfWorkflowDefinition.getWfwdId()).build();
-		workflowManager.addActivity(wfWorkflowDefinition, fourthActivity, 4);
-		final RuleDefinition rule1Act4 = new RuleDefinition(null, fourthActivity.getWfadId());
-		final RuleConditionDefinition condition1Rule1Act4 = new RuleConditionDefinition(null, "DIVISION", "=", "DIV",
-				null);
-		final RuleDefinition rule2Act4 = new RuleDefinition(null, fourthActivity.getWfadId());
-		final RuleConditionDefinition condition1Rule2Act4 = new RuleConditionDefinition(null, "DIVISION", "=", "ABC",
-				null);
-		workflowManager.addRule(fourthActivity, rule1Act4, Arrays.asList(condition1Rule1Act4));
-		workflowManager.addRule(fourthActivity, rule2Act4, Arrays.asList(condition1Rule2Act4));
+			RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition();
+			condition1Rule1Act1.setField("DIVISION");
+			condition1Rule1Act1.setOperator("=");
+			condition1Rule1Act1.setExpression("DIV");
 
-		// Creating an object
-		final MyDummyDtObject myDummyDtObject = createDummyDtObject(1);
+			workflowManager.addRule(firstActivity, rule1Act1, Arrays.asList(condition1Rule1Act1));
 
-		final WfWorkflow wfWorkflow = workflowManager.createWorkflowInstance("WorkflowRules", "JUnit", false,
-				myDummyDtObject.getId());
+			// Step 2 : No rules/condition (NO Selector)
+			final WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, secondActivity, 2);
 
-		// Starting the workflow
-		workflowManager.startInstance(wfWorkflow);
+			// Step 3 : 1 rule, 2 conditions (NO Selector)
+			final WfActivityDefinition thirdActivity = new WfActivityDefinitionBuilder("Step 3",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, thirdActivity, 3);
 
-		List<WfWorkflowDecision> workflowDecisions1 = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
-		assertNotNull(workflowDecisions1);
-		assertThat(workflowDecisions1.size(), is(3));
+			final RuleDefinition rule1Act3 = new RuleDefinition();
+			rule1Act1.setItemId(thirdActivity.getWfadId());
 
-		final Long currentActivity = wfWorkflow.getWfaId2();
-		assertThat(currentActivity, is(firstActivity.getWfadId()));
+			RuleConditionDefinition condition1Rule1Act3 = new RuleConditionDefinition();
+			condition1Rule1Act3.setField("DIVISION");
+			condition1Rule1Act3.setOperator("=");
+			condition1Rule1Act3.setExpression("DIV");
 
-		final WfWorkflow wfWorkflowFetched = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
-		assertThat(wfWorkflowFetched, is(not(nullValue())));
-		assertThat(currentActivity, is(firstActivity.getWfadId()));
+			RuleConditionDefinition condition2Rule1Act3 = new RuleConditionDefinition();
+			condition2Rule1Act3.setField("ENTITY");
+			condition2Rule1Act3.setOperator("=");
+			condition2Rule1Act3.setExpression("ENT");
+
+			workflowManager.addRule(thirdActivity, rule1Act3, Arrays.asList(condition1Rule1Act3, condition2Rule1Act3));
+
+			// Step 4 : 2 rules, 1 condition (NO Selector)
+			final WfActivityDefinition fourthActivity = new WfActivityDefinitionBuilder("Step 4",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, fourthActivity, 4);
+
+			final RuleDefinition rule1Act4 = new RuleDefinition();
+			rule1Act1.setItemId(fourthActivity.getWfadId());
+
+			RuleConditionDefinition condition1Rule1Act4 = new RuleConditionDefinition();
+			condition1Rule1Act4.setField("DIVISION");
+			condition1Rule1Act4.setOperator("=");
+			condition1Rule1Act4.setExpression("DIV");
+
+			final RuleDefinition rule2Act4 = new RuleDefinition();
+			rule2Act4.setItemId(fourthActivity.getWfadId());
+
+			RuleConditionDefinition condition1Rule2Act4 = new RuleConditionDefinition();
+			condition1Rule2Act4.setField("DIVISION");
+			condition1Rule2Act4.setOperator("=");
+			condition1Rule2Act4.setExpression("ABC");
+
+			workflowManager.addRule(fourthActivity, rule1Act4, Arrays.asList(condition1Rule1Act4));
+			workflowManager.addRule(fourthActivity, rule2Act4, Arrays.asList(condition1Rule2Act4));
+
+			// Creating an object
+			final MyDummyDtObject myDummyDtObject = createDummyDtObject(1);
+
+			final WfWorkflow wfWorkflow = workflowManager.createWorkflowInstance("WorkflowRules", "JUnit", false,
+					myDummyDtObject.getId());
+
+			// Starting the workflow
+			workflowManager.startInstance(wfWorkflow);
+
+			List<WfWorkflowDecision> workflowDecisions1 = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
+			assertNotNull(workflowDecisions1);
+			assertThat(workflowDecisions1.size(), is(3));
+
+			final Long currentActivity = wfWorkflow.getWfaId2();
+			assertThat(currentActivity, is(firstActivity.getWfadId()));
+
+			final WfWorkflow wfWorkflowFetched = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
+			assertThat(wfWorkflowFetched, is(not(nullValue())));
+			assertThat(currentActivity, is(firstActivity.getWfadId()));
+
+			transaction.rollback();
+		}
 	}
 
 	/**
@@ -585,48 +694,50 @@ public class WorkflowManagerTest {
 	 */
 	@Test
 	public void testWorkflowMove2ActivitiesFirstLastPosition() {
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
+			workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
 
-		WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
-		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
+			AccountGroup accountGroup = new AccountGroup("1", "dummy group");
+			Account account = new AccountBuilder("100").build();
+			accountManager.getStore().saveGroup(accountGroup);
+			accountManager.getStore().saveAccounts(Arrays.asList(account));
+			final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
+			final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
+			accountManager.getStore().attach(accountUri, accountGroupUri);
 
-		AccountGroup accountGroup = new AccountGroup("1", "dummy group");
-		Account account = new AccountBuilder("100").build();
-		accountManager.getStore().saveGroup(accountGroup);
-		accountManager.getStore().saveAccounts(Arrays.asList(account));
-		final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
-		final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
-		accountManager.getStore().attach(accountUri, accountGroupUri);
+			// Step 1
+			WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
 
-		// Step 1
-		WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1", wfWorkflowDefinition.getWfwdId())
-				.build();
-		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
+			// Step 2
+			WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, secondActivity, 2);
 
-		// Step 2
-		WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2",
-				wfWorkflowDefinition.getWfwdId()).build();
-		workflowManager.addActivity(wfWorkflowDefinition, secondActivity, 2);
+			List<WfActivityDefinition> activities = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
-		List<WfActivityDefinition> activities = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			assertEquals(2, activities.size());
+			assertEquals(firstActivity.getWfadId(), activities.get(0).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities.get(1).getWfadId());
 
-		assertEquals(2, activities.size());
-		assertEquals(firstActivity.getWfadId(), activities.get(0).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities.get(1).getWfadId());
+			workflowManager.moveActivity(wfWorkflowDefinition, 2, 1, false);
 
-		workflowManager.moveActivity(wfWorkflowDefinition, 2, 1, false);
+			List<WfActivityDefinition> activities2 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
-		List<WfActivityDefinition> activities2 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			assertEquals(2, activities2.size());
+			assertEquals(secondActivity.getWfadId(), activities2.get(0).getWfadId());
+			assertEquals(firstActivity.getWfadId(), activities2.get(1).getWfadId());
 
-		assertEquals(2, activities2.size());
-		assertEquals(secondActivity.getWfadId(), activities2.get(0).getWfadId());
-		assertEquals(firstActivity.getWfadId(), activities2.get(1).getWfadId());
+			workflowManager.moveActivity(wfWorkflowDefinition, 1, 2, true);
+			List<WfActivityDefinition> activities3 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
-		workflowManager.moveActivity(wfWorkflowDefinition, 1, 2, true);
-		List<WfActivityDefinition> activities3 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
-
-		assertEquals(2, activities3.size());
-		assertEquals(firstActivity.getWfadId(), activities3.get(0).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities3.get(1).getWfadId());
+			assertEquals(2, activities3.size());
+			assertEquals(firstActivity.getWfadId(), activities3.get(0).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities3.get(1).getWfadId());
+			transaction.rollback();
+		}
 
 	}
 
@@ -635,89 +746,93 @@ public class WorkflowManagerTest {
 	 */
 	@Test
 	public void testWorkflowMove3ActivitiesBefore() {
-		WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
-		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 
-		AccountGroup accountGroup = new AccountGroup("1", "dummy group");
-		Account account = new AccountBuilder("100").build();
-		accountManager.getStore().saveGroup(accountGroup);
-		accountManager.getStore().saveAccounts(Arrays.asList(account));
-		final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
-		final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
-		accountManager.getStore().attach(accountUri, accountGroupUri);
+			WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
+			workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
 
-		// Step 1
-		WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1", wfWorkflowDefinition.getWfwdId())
-				.build();
-		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
+			AccountGroup accountGroup = new AccountGroup("1", "dummy group");
+			Account account = new AccountBuilder("100").build();
+			accountManager.getStore().saveGroup(accountGroup);
+			accountManager.getStore().saveAccounts(Arrays.asList(account));
+			final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
+			final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
+			accountManager.getStore().attach(accountUri, accountGroupUri);
 
-		// Step 2
-		WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2",
-				wfWorkflowDefinition.getWfwdId()).build();
-		workflowManager.addActivity(wfWorkflowDefinition, secondActivity, 2);
+			// Step 1
+			WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
 
-		// Step 3
-		WfActivityDefinition thirdActivity = new WfActivityDefinitionBuilder("Step 3", wfWorkflowDefinition.getWfwdId())
-				.build();
-		workflowManager.addActivity(wfWorkflowDefinition, thirdActivity, 3);
+			// Step 2
+			WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, secondActivity, 2);
 
-		List<WfActivityDefinition> activities = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			// Step 3
+			WfActivityDefinition thirdActivity = new WfActivityDefinitionBuilder("Step 3",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, thirdActivity, 3);
 
-		// We should have 1,2,3
-		assertEquals(3, activities.size());
-		assertEquals(firstActivity.getWfadId(), activities.get(0).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities.get(1).getWfadId());
-		assertEquals(thirdActivity.getWfadId(), activities.get(2).getWfadId());
+			List<WfActivityDefinition> activities = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
-		workflowManager.moveActivity(wfWorkflowDefinition, 2, 1, false);
+			// We should have 1,2,3
+			assertEquals(3, activities.size());
+			assertEquals(firstActivity.getWfadId(), activities.get(0).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities.get(1).getWfadId());
+			assertEquals(thirdActivity.getWfadId(), activities.get(2).getWfadId());
 
-		List<WfActivityDefinition> activities2 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			workflowManager.moveActivity(wfWorkflowDefinition, 2, 1, false);
 
-		// We should have 2,1,3
-		assertEquals(3, activities2.size());
-		assertEquals(secondActivity.getWfadId(), activities2.get(0).getWfadId());
-		assertEquals(firstActivity.getWfadId(), activities2.get(1).getWfadId());
-		assertEquals(thirdActivity.getWfadId(), activities2.get(2).getWfadId());
+			List<WfActivityDefinition> activities2 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
-		workflowManager.moveActivity(wfWorkflowDefinition, 2, 3, false);
+			// We should have 2,1,3
+			assertEquals(3, activities2.size());
+			assertEquals(secondActivity.getWfadId(), activities2.get(0).getWfadId());
+			assertEquals(firstActivity.getWfadId(), activities2.get(1).getWfadId());
+			assertEquals(thirdActivity.getWfadId(), activities2.get(2).getWfadId());
 
-		List<WfActivityDefinition> activities3 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			workflowManager.moveActivity(wfWorkflowDefinition, 2, 3, false);
 
-		// We should have 2,1,3 again
-		assertEquals(3, activities3.size());
-		assertEquals(secondActivity.getWfadId(), activities3.get(0).getWfadId());
-		assertEquals(firstActivity.getWfadId(), activities3.get(1).getWfadId());
-		assertEquals(thirdActivity.getWfadId(), activities3.get(2).getWfadId());
+			List<WfActivityDefinition> activities3 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
-		workflowManager.moveActivity(wfWorkflowDefinition, 1, 3, false);
+			// We should have 2,1,3 again
+			assertEquals(3, activities3.size());
+			assertEquals(secondActivity.getWfadId(), activities3.get(0).getWfadId());
+			assertEquals(firstActivity.getWfadId(), activities3.get(1).getWfadId());
+			assertEquals(thirdActivity.getWfadId(), activities3.get(2).getWfadId());
 
-		List<WfActivityDefinition> activities4 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			workflowManager.moveActivity(wfWorkflowDefinition, 1, 3, false);
 
-		// We should have 1,2,3 again
-		assertEquals(3, activities4.size());
-		assertEquals(firstActivity.getWfadId(), activities4.get(0).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities4.get(1).getWfadId());
-		assertEquals(thirdActivity.getWfadId(), activities4.get(2).getWfadId());
+			List<WfActivityDefinition> activities4 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
-		workflowManager.moveActivity(wfWorkflowDefinition, 3, 1, false);
+			// We should have 1,2,3 again
+			assertEquals(3, activities4.size());
+			assertEquals(firstActivity.getWfadId(), activities4.get(0).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities4.get(1).getWfadId());
+			assertEquals(thirdActivity.getWfadId(), activities4.get(2).getWfadId());
 
-		List<WfActivityDefinition> activities5 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			workflowManager.moveActivity(wfWorkflowDefinition, 3, 1, false);
 
-		// We should have 3,1,2
-		assertEquals(3, activities5.size());
-		assertEquals(thirdActivity.getWfadId(), activities5.get(0).getWfadId());
-		assertEquals(firstActivity.getWfadId(), activities5.get(1).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities5.get(2).getWfadId());
+			List<WfActivityDefinition> activities5 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
-		workflowManager.moveActivity(wfWorkflowDefinition, 3, 2, false);
+			// We should have 3,1,2
+			assertEquals(3, activities5.size());
+			assertEquals(thirdActivity.getWfadId(), activities5.get(0).getWfadId());
+			assertEquals(firstActivity.getWfadId(), activities5.get(1).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities5.get(2).getWfadId());
 
-		List<WfActivityDefinition> activities6 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			workflowManager.moveActivity(wfWorkflowDefinition, 3, 2, false);
 
-		// We should have 3,2,1
-		assertEquals(3, activities6.size());
-		assertEquals(thirdActivity.getWfadId(), activities6.get(0).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities6.get(1).getWfadId());
-		assertEquals(firstActivity.getWfadId(), activities6.get(2).getWfadId());
+			List<WfActivityDefinition> activities6 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+
+			// We should have 3,2,1
+			assertEquals(3, activities6.size());
+			assertEquals(thirdActivity.getWfadId(), activities6.get(0).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities6.get(1).getWfadId());
+			assertEquals(firstActivity.getWfadId(), activities6.get(2).getWfadId());
+			transaction.rollback();
+		}
 	}
 
 	/**
@@ -725,89 +840,92 @@ public class WorkflowManagerTest {
 	 */
 	@Test
 	public void testWorkflowMove3ActivitiesAfter() {
-		WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
-		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 
-		AccountGroup accountGroup = new AccountGroup("1", "dummy group");
-		Account account = new AccountBuilder("100").build();
-		accountManager.getStore().saveGroup(accountGroup);
-		accountManager.getStore().saveAccounts(Arrays.asList(account));
-		final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
-		final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
-		accountManager.getStore().attach(accountUri, accountGroupUri);
+			WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
+			workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
 
-		// Step 1
-		WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1", wfWorkflowDefinition.getWfwdId())
-				.build();
-		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
+			AccountGroup accountGroup = new AccountGroup("1", "dummy group");
+			Account account = new AccountBuilder("100").build();
+			accountManager.getStore().saveGroup(accountGroup);
+			accountManager.getStore().saveAccounts(Arrays.asList(account));
+			final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
+			final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
+			accountManager.getStore().attach(accountUri, accountGroupUri);
 
-		// Step 2
-		WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2",
-				wfWorkflowDefinition.getWfwdId()).build();
-		workflowManager.addActivity(wfWorkflowDefinition, secondActivity, 2);
+			// Step 1
+			WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
 
-		// Step 3
-		WfActivityDefinition thirdActivity = new WfActivityDefinitionBuilder("Step 3", wfWorkflowDefinition.getWfwdId())
-				.build();
-		workflowManager.addActivity(wfWorkflowDefinition, thirdActivity, 3);
+			// Step 2
+			WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, secondActivity, 2);
 
-		List<WfActivityDefinition> activities = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			// Step 3
+			WfActivityDefinition thirdActivity = new WfActivityDefinitionBuilder("Step 3",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, thirdActivity, 3);
 
-		assertEquals(3, activities.size());
-		assertEquals(firstActivity.getWfadId(), activities.get(0).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities.get(1).getWfadId());
-		assertEquals(thirdActivity.getWfadId(), activities.get(2).getWfadId());
+			List<WfActivityDefinition> activities = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
-		workflowManager.moveActivity(wfWorkflowDefinition, 2, 1, true);
+			assertEquals(3, activities.size());
+			assertEquals(firstActivity.getWfadId(), activities.get(0).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities.get(1).getWfadId());
+			assertEquals(thirdActivity.getWfadId(), activities.get(2).getWfadId());
 
-		List<WfActivityDefinition> activities2 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			workflowManager.moveActivity(wfWorkflowDefinition, 2, 1, true);
 
-		// We should have 1,2,3 again
-		assertEquals(3, activities2.size());
-		assertEquals(firstActivity.getWfadId(), activities2.get(0).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities2.get(1).getWfadId());
-		assertEquals(thirdActivity.getWfadId(), activities2.get(2).getWfadId());
+			List<WfActivityDefinition> activities2 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
-		workflowManager.moveActivity(wfWorkflowDefinition, 2, 3, true);
+			// We should have 1,2,3 again
+			assertEquals(3, activities2.size());
+			assertEquals(firstActivity.getWfadId(), activities2.get(0).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities2.get(1).getWfadId());
+			assertEquals(thirdActivity.getWfadId(), activities2.get(2).getWfadId());
 
-		List<WfActivityDefinition> activities3 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			workflowManager.moveActivity(wfWorkflowDefinition, 2, 3, true);
 
-		// We should have 1,3,2
-		assertEquals(3, activities3.size());
-		assertEquals(firstActivity.getWfadId(), activities3.get(0).getWfadId());
-		assertEquals(thirdActivity.getWfadId(), activities3.get(1).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities3.get(2).getWfadId());
+			List<WfActivityDefinition> activities3 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
-		workflowManager.moveActivity(wfWorkflowDefinition, 1, 3, true);
+			// We should have 1,3,2
+			assertEquals(3, activities3.size());
+			assertEquals(firstActivity.getWfadId(), activities3.get(0).getWfadId());
+			assertEquals(thirdActivity.getWfadId(), activities3.get(1).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities3.get(2).getWfadId());
 
-		List<WfActivityDefinition> activities4 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			workflowManager.moveActivity(wfWorkflowDefinition, 1, 3, true);
 
-		// We should have 3,2,1
-		assertEquals(3, activities4.size());
-		assertEquals(thirdActivity.getWfadId(), activities4.get(0).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities4.get(1).getWfadId());
-		assertEquals(firstActivity.getWfadId(), activities4.get(2).getWfadId());
+			List<WfActivityDefinition> activities4 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
-		workflowManager.moveActivity(wfWorkflowDefinition, 3, 1, true);
+			// We should have 3,2,1
+			assertEquals(3, activities4.size());
+			assertEquals(thirdActivity.getWfadId(), activities4.get(0).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities4.get(1).getWfadId());
+			assertEquals(firstActivity.getWfadId(), activities4.get(2).getWfadId());
 
-		List<WfActivityDefinition> activities5 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			workflowManager.moveActivity(wfWorkflowDefinition, 3, 1, true);
 
-		// We should have 3,1,2
-		assertEquals(3, activities5.size());
-		assertEquals(thirdActivity.getWfadId(), activities5.get(0).getWfadId());
-		assertEquals(firstActivity.getWfadId(), activities5.get(1).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities5.get(2).getWfadId());
+			List<WfActivityDefinition> activities5 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
-		workflowManager.moveActivity(wfWorkflowDefinition, 3, 2, true);
+			// We should have 3,1,2
+			assertEquals(3, activities5.size());
+			assertEquals(thirdActivity.getWfadId(), activities5.get(0).getWfadId());
+			assertEquals(firstActivity.getWfadId(), activities5.get(1).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities5.get(2).getWfadId());
 
-		List<WfActivityDefinition> activities6 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			workflowManager.moveActivity(wfWorkflowDefinition, 3, 2, true);
 
-		// We should have 3,1,2 again
-		assertEquals(3, activities6.size());
-		assertEquals(thirdActivity.getWfadId(), activities6.get(0).getWfadId());
-		assertEquals(firstActivity.getWfadId(), activities6.get(1).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities6.get(2).getWfadId());
+			List<WfActivityDefinition> activities6 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
+			// We should have 3,1,2 again
+			assertEquals(3, activities6.size());
+			assertEquals(thirdActivity.getWfadId(), activities6.get(0).getWfadId());
+			assertEquals(firstActivity.getWfadId(), activities6.get(1).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities6.get(2).getWfadId());
+			transaction.rollback();
+		}
 	}
 
 	/**
@@ -815,111 +933,115 @@ public class WorkflowManagerTest {
 	 */
 	@Test
 	public void testWorkflowMoveActivity5ActivitiesWorkflow() {
-		WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
-		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 
-		AccountGroup accountGroup = new AccountGroup("1", "dummy group");
-		Account account = new AccountBuilder("100").build();
-		accountManager.getStore().saveGroup(accountGroup);
-		accountManager.getStore().saveAccounts(Arrays.asList(account));
-		final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
-		final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
-		accountManager.getStore().attach(accountUri, accountGroupUri);
+			WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
+			workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
 
-		// Step 1
-		WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1", wfWorkflowDefinition.getWfwdId())
-				.build();
-		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
+			AccountGroup accountGroup = new AccountGroup("1", "dummy group");
+			Account account = new AccountBuilder("100").build();
+			accountManager.getStore().saveGroup(accountGroup);
+			accountManager.getStore().saveAccounts(Arrays.asList(account));
+			final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
+			final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
+			accountManager.getStore().attach(accountUri, accountGroupUri);
 
-		// Step 2
-		WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2",
-				wfWorkflowDefinition.getWfwdId()).build();
-		workflowManager.addActivity(wfWorkflowDefinition, secondActivity, 2);
+			// Step 1
+			WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
 
-		// Step 3
-		WfActivityDefinition thirdActivity = new WfActivityDefinitionBuilder("Step 3", wfWorkflowDefinition.getWfwdId())
-				.build();
-		workflowManager.addActivity(wfWorkflowDefinition, thirdActivity, 3);
+			// Step 2
+			WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, secondActivity, 2);
 
-		// Step 4
-		WfActivityDefinition fourthActivity = new WfActivityDefinitionBuilder("Step 4",
-				wfWorkflowDefinition.getWfwdId()).build();
-		workflowManager.addActivity(wfWorkflowDefinition, fourthActivity, 4);
+			// Step 3
+			WfActivityDefinition thirdActivity = new WfActivityDefinitionBuilder("Step 3",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, thirdActivity, 3);
 
-		// Step 5
-		WfActivityDefinition fifthActivity = new WfActivityDefinitionBuilder("Step 5", wfWorkflowDefinition.getWfwdId())
-				.build();
-		workflowManager.addActivity(wfWorkflowDefinition, fifthActivity, 5);
+			// Step 4
+			WfActivityDefinition fourthActivity = new WfActivityDefinitionBuilder("Step 4",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, fourthActivity, 4);
 
-		List<WfActivityDefinition> activities = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			// Step 5
+			WfActivityDefinition fifthActivity = new WfActivityDefinitionBuilder("Step 5",
+					wfWorkflowDefinition.getWfwdId()).build();
+			workflowManager.addActivity(wfWorkflowDefinition, fifthActivity, 5);
 
-		// We should have 1,2,3,4,5
-		assertEquals(5, activities.size());
-		assertEquals(firstActivity.getWfadId(), activities.get(0).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities.get(1).getWfadId());
-		assertEquals(thirdActivity.getWfadId(), activities.get(2).getWfadId());
-		assertEquals(fourthActivity.getWfadId(), activities.get(3).getWfadId());
-		assertEquals(fifthActivity.getWfadId(), activities.get(4).getWfadId());
+			List<WfActivityDefinition> activities = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
 
-		// We move 2 after 4
-		workflowManager.moveActivity(wfWorkflowDefinition, 2, 4, true);
+			// We should have 1,2,3,4,5
+			assertEquals(5, activities.size());
+			assertEquals(firstActivity.getWfadId(), activities.get(0).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities.get(1).getWfadId());
+			assertEquals(thirdActivity.getWfadId(), activities.get(2).getWfadId());
+			assertEquals(fourthActivity.getWfadId(), activities.get(3).getWfadId());
+			assertEquals(fifthActivity.getWfadId(), activities.get(4).getWfadId());
 
-		List<WfActivityDefinition> activities2 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
-		// We should have 1,3,4,2,5
-		assertEquals(5, activities2.size());
-		assertEquals(firstActivity.getWfadId(), activities2.get(0).getWfadId());
-		assertEquals(thirdActivity.getWfadId(), activities2.get(1).getWfadId());
-		assertEquals(fourthActivity.getWfadId(), activities2.get(2).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities2.get(3).getWfadId());
-		assertEquals(fifthActivity.getWfadId(), activities2.get(4).getWfadId());
+			// We move 2 after 4
+			workflowManager.moveActivity(wfWorkflowDefinition, 2, 4, true);
 
-		// We move 2 before 4
-		workflowManager.moveActivity(wfWorkflowDefinition, 4, 2, false);
+			List<WfActivityDefinition> activities2 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			// We should have 1,3,4,2,5
+			assertEquals(5, activities2.size());
+			assertEquals(firstActivity.getWfadId(), activities2.get(0).getWfadId());
+			assertEquals(thirdActivity.getWfadId(), activities2.get(1).getWfadId());
+			assertEquals(fourthActivity.getWfadId(), activities2.get(2).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities2.get(3).getWfadId());
+			assertEquals(fifthActivity.getWfadId(), activities2.get(4).getWfadId());
 
-		List<WfActivityDefinition> activities3 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
-		// We should have 1,2,3,4,5
-		assertEquals(5, activities3.size());
-		assertEquals(firstActivity.getWfadId(), activities3.get(0).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities3.get(1).getWfadId());
-		assertEquals(thirdActivity.getWfadId(), activities3.get(2).getWfadId());
-		assertEquals(fourthActivity.getWfadId(), activities3.get(3).getWfadId());
-		assertEquals(fifthActivity.getWfadId(), activities3.get(4).getWfadId());
+			// We move 2 before 4
+			workflowManager.moveActivity(wfWorkflowDefinition, 4, 2, false);
 
-		// We move 1 before 5
-		workflowManager.moveActivity(wfWorkflowDefinition, 1, 5, true);
+			List<WfActivityDefinition> activities3 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			// We should have 1,2,3,4,5
+			assertEquals(5, activities3.size());
+			assertEquals(firstActivity.getWfadId(), activities3.get(0).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities3.get(1).getWfadId());
+			assertEquals(thirdActivity.getWfadId(), activities3.get(2).getWfadId());
+			assertEquals(fourthActivity.getWfadId(), activities3.get(3).getWfadId());
+			assertEquals(fifthActivity.getWfadId(), activities3.get(4).getWfadId());
 
-		List<WfActivityDefinition> activities4 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
-		// We should have 2,3,4,5,1
-		assertEquals(5, activities4.size());
-		assertEquals(secondActivity.getWfadId(), activities4.get(0).getWfadId());
-		assertEquals(thirdActivity.getWfadId(), activities4.get(1).getWfadId());
-		assertEquals(fourthActivity.getWfadId(), activities4.get(2).getWfadId());
-		assertEquals(fifthActivity.getWfadId(), activities4.get(3).getWfadId());
-		assertEquals(firstActivity.getWfadId(), activities4.get(4).getWfadId());
+			// We move 1 before 5
+			workflowManager.moveActivity(wfWorkflowDefinition, 1, 5, true);
 
-		// We move 5 before 1
-		workflowManager.moveActivity(wfWorkflowDefinition, 5, 1, false);
+			List<WfActivityDefinition> activities4 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			// We should have 2,3,4,5,1
+			assertEquals(5, activities4.size());
+			assertEquals(secondActivity.getWfadId(), activities4.get(0).getWfadId());
+			assertEquals(thirdActivity.getWfadId(), activities4.get(1).getWfadId());
+			assertEquals(fourthActivity.getWfadId(), activities4.get(2).getWfadId());
+			assertEquals(fifthActivity.getWfadId(), activities4.get(3).getWfadId());
+			assertEquals(firstActivity.getWfadId(), activities4.get(4).getWfadId());
 
-		List<WfActivityDefinition> activities5 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
-		// We should have 1,2,3,4,5,
-		assertEquals(5, activities5.size());
-		assertEquals(firstActivity.getWfadId(), activities5.get(0).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities5.get(1).getWfadId());
-		assertEquals(thirdActivity.getWfadId(), activities5.get(2).getWfadId());
-		assertEquals(fourthActivity.getWfadId(), activities5.get(3).getWfadId());
-		assertEquals(fifthActivity.getWfadId(), activities5.get(4).getWfadId());
+			// We move 5 before 1
+			workflowManager.moveActivity(wfWorkflowDefinition, 5, 1, false);
 
-		// We move 3 after 4
-		workflowManager.moveActivity(wfWorkflowDefinition, 3, 4, true);
+			List<WfActivityDefinition> activities5 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			// We should have 1,2,3,4,5,
+			assertEquals(5, activities5.size());
+			assertEquals(firstActivity.getWfadId(), activities5.get(0).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities5.get(1).getWfadId());
+			assertEquals(thirdActivity.getWfadId(), activities5.get(2).getWfadId());
+			assertEquals(fourthActivity.getWfadId(), activities5.get(3).getWfadId());
+			assertEquals(fifthActivity.getWfadId(), activities5.get(4).getWfadId());
 
-		List<WfActivityDefinition> activities6 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
-		// We should have 1,2,4,3,5
-		assertEquals(5, activities6.size());
-		assertEquals(firstActivity.getWfadId(), activities6.get(0).getWfadId());
-		assertEquals(secondActivity.getWfadId(), activities6.get(1).getWfadId());
-		assertEquals(fourthActivity.getWfadId(), activities6.get(2).getWfadId());
-		assertEquals(thirdActivity.getWfadId(), activities6.get(3).getWfadId());
-		assertEquals(fifthActivity.getWfadId(), activities6.get(4).getWfadId());
+			// We move 3 after 4
+			workflowManager.moveActivity(wfWorkflowDefinition, 3, 4, true);
+
+			List<WfActivityDefinition> activities6 = workflowManager.getAllDefaultActivities(wfWorkflowDefinition);
+			// We should have 1,2,4,3,5
+			assertEquals(5, activities6.size());
+			assertEquals(firstActivity.getWfadId(), activities6.get(0).getWfadId());
+			assertEquals(secondActivity.getWfadId(), activities6.get(1).getWfadId());
+			assertEquals(fourthActivity.getWfadId(), activities6.get(2).getWfadId());
+			assertEquals(thirdActivity.getWfadId(), activities6.get(3).getWfadId());
+			assertEquals(fifthActivity.getWfadId(), activities6.get(4).getWfadId());
+			transaction.rollback();
+		}
 	}
 
 }

@@ -139,7 +139,7 @@ public final class RulesFeatures extends Features {
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		getModuleConfigBuilder().addDefinitionResource("kpr", "io/vertigo/x/rules/application.kpr")
+		getModuleConfigBuilder().addDefinitionResource("kpr", "boot/definitions/application-rules-test.kpr")
 				.addDefinitionResource("classes", DtDefinitions.class.getName())
 				.addComponent(RuleManager.class, RuleManagerImpl.class);
 	}
