@@ -329,7 +329,7 @@ public class WorkflowManagerTest {
 					wfWorkflowDefinition.getWfwdId()).build();
 			workflowManager.addActivity(wfWorkflowDefinition, thirdActivity, 3);
 			final RuleDefinition rule1Act3 = new RuleDefinition();
-			rule1Act1.setItemId(thirdActivity.getWfadId());
+			rule1Act3.setItemId(thirdActivity.getWfadId());
 
 			RuleConditionDefinition condition1Rule1Act3 = new RuleConditionDefinition();
 			condition1Rule1Act3.setField("ENTITY");
@@ -362,7 +362,7 @@ public class WorkflowManagerTest {
 			workflowManager.addActivity(wfWorkflowDefinition, fourthActivity, 4);
 
 			final RuleDefinition rule1Act4 = new RuleDefinition();
-			rule1Act1.setItemId(fourthActivity.getWfadId());
+			rule1Act4.setItemId(fourthActivity.getWfadId());
 			RuleConditionDefinition condition1Rule1Act4 = new RuleConditionDefinition();
 			condition1Rule1Act4.setField("ENTITY");
 			condition1Rule1Act4.setOperator("=");
@@ -627,7 +627,7 @@ public class WorkflowManagerTest {
 			workflowManager.addActivity(wfWorkflowDefinition, thirdActivity, 3);
 
 			final RuleDefinition rule1Act3 = new RuleDefinition();
-			rule1Act1.setItemId(thirdActivity.getWfadId());
+			rule1Act3.setItemId(thirdActivity.getWfadId());
 
 			RuleConditionDefinition condition1Rule1Act3 = new RuleConditionDefinition();
 			condition1Rule1Act3.setField("DIVISION");
@@ -647,7 +647,7 @@ public class WorkflowManagerTest {
 			workflowManager.addActivity(wfWorkflowDefinition, fourthActivity, 4);
 
 			final RuleDefinition rule1Act4 = new RuleDefinition();
-			rule1Act1.setItemId(fourthActivity.getWfadId());
+			rule1Act4.setItemId(fourthActivity.getWfadId());
 
 			RuleConditionDefinition condition1Rule1Act4 = new RuleConditionDefinition();
 			condition1Rule1Act4.setField("DIVISION");

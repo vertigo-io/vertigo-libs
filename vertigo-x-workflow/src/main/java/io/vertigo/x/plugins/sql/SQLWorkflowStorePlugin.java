@@ -22,10 +22,8 @@ import io.vertigo.x.workflow.WfCodeTransition;
 import io.vertigo.x.workflow.WfTransitionCriteria;
 import io.vertigo.x.workflow.dao.instance.WfActivityDAO;
 import io.vertigo.x.workflow.dao.instance.WfDecisionDAO;
-import io.vertigo.x.workflow.dao.instance.WfStatusDAO;
 import io.vertigo.x.workflow.dao.instance.WfWorkflowDAO;
 import io.vertigo.x.workflow.dao.model.WfActivityDefinitionDAO;
-import io.vertigo.x.workflow.dao.model.WfMultiplicityDefinitionDAO;
 import io.vertigo.x.workflow.dao.model.WfTransitionDefinitionDAO;
 import io.vertigo.x.workflow.dao.model.WfWorkflowDefinitionDAO;
 import io.vertigo.x.workflow.dao.workflow.WorkflowPAO;
@@ -51,8 +49,6 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	@Inject
 	private WfActivityDefinitionDAO wfActivityDefinitionDAO;
 	@Inject
-	private WfMultiplicityDefinitionDAO wfMultiplicityDefinitionDAO;
-	@Inject
 	private WfWorkflowDefinitionDAO wfWorkflowDefinitionDAO;
 	@Inject
 	private RuleDefinitionDAO ruleDefinitionDAO;
@@ -68,8 +64,6 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	private WfDecisionDAO wfDecisionDAO;
 	@Inject
 	private WfWorkflowDAO wfWorkflowDAO;
-	@Inject
-	private WfStatusDAO wfStatusDAO;
 
 	/** {@inheritDoc} */
 	@Override

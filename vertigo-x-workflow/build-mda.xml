@@ -3,7 +3,7 @@
 <!-- ====================================================================== -->
 <!-- Ant build file (http://ant.apache.org/) for Ant 1.6.2 or above.        -->
 <!-- ====================================================================== -->
-<project name="dgac-mda" default="clean-generate">
+<project name="vertigo-x-workflow-mda" default="clean-generate">
 	<!-- =================================================================== -->
 	<!-- Proprietes                                                          -->
 	<!-- =================================================================== -->
@@ -14,7 +14,7 @@
 	
 	<pathconvert property="class.path">
 		<path>
-            <fileset dir="./src/main/webapp/WEB-INF/lib">
+            <fileset dir="./src/dev/lib">
                 <include name="*.jar" />
             </fileset>          	
 		</path>

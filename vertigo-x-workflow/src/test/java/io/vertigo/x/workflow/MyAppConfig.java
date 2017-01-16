@@ -23,22 +23,20 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
-import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
-import io.vertigo.dynamo.impl.database.vendor.postgresql.PostgreSqlDataBase;
-import io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin;
-import io.vertigo.dynamo.plugins.store.datastore.postgresql.PostgreSqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
 import io.vertigo.x.impl.rules.RulesFeatures;
 import io.vertigo.x.impl.workflow.WorkflowFeatures;
 import io.vertigo.x.plugins.account.memory.MemoryAccountStorePlugin;
 import io.vertigo.x.plugins.memory.MemoryRuleConstantsStorePlugin;
+import io.vertigo.x.plugins.memory.MemoryRuleStorePlugin;
+import io.vertigo.x.plugins.memory.MemoryWorkflowStorePlugin;
 import io.vertigo.x.plugins.selector.SimpleRuleSelectorPlugin;
 import io.vertigo.x.plugins.validator.SimpleRuleValidatorPlugin;
 import io.vertigo.x.workflow.data.MyDummyDtObjectProvider;
@@ -68,7 +66,7 @@ public class MyAppConfig {
 						.withCache(io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin.class)
 						// .withScript()
 						.build())
-				.addModule(new DynamoFeatures()//
+				/*.addModule(new DynamoFeatures()//
 						.withStore()//
 						.withSqlDataBase()//
 						.addDataStorePlugin(PostgreSqlDataStorePlugin.class, Param.create("sequencePrefix", "SEQ_"))
@@ -77,16 +75,19 @@ public class MyAppConfig {
 								Param.create("jdbcDriver", org.postgresql.Driver.class.getName()),
 								Param.create("jdbcUrl",
 										"jdbc:postgresql://laura.dev.klee.lan.net:5432/dgac_blanche?user=blanche&password=blanche"))
-						.build())
+						.build())*/
+				.addModule(new DynamoFeatures().build())
 				.addModule(new AccountFeatures()//
 						.withAccountStorePlugin(MemoryAccountStorePlugin.class).build())
 				.addModule(new RulesFeatures()//
-						.withDAOSupportRuleStorePlugin()//
+						//.withDAOSupportRuleStorePlugin()//
+						.withRuleStorePlugin(MemoryRuleStorePlugin.class)
 						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)//
 						.withRuleSelectorPlugin(SimpleRuleSelectorPlugin.class)
 						.withRuleValidatorPlugin(SimpleRuleValidatorPlugin.class).build())
 				.addModule(new WorkflowFeatures()//
-						.withDAOSupportWorkflowStorePlugin()//
+						//.withDAOSupportWorkflowStorePlugin()//
+						.withWorkflowStorePlugin(MemoryWorkflowStorePlugin.class)
 						.withItemStorePlugin(MemoryItemStorePlugin.class).build())
 				.addModule(new ModuleConfigBuilder("dummy")//
 						.addDefinitionProvider(MyDummyDtObjectProvider.class).build());

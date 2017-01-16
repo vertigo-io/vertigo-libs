@@ -112,7 +112,6 @@ public final class WorkflowFeatures extends Features {
 				.addComponent(WorkflowManager.class, WorkflowManagerImpl.class)
 				.addComponent(ScriptManager.class, ScriptManagerImpl.class)
 				.addPlugin(JaninoExpressionEvaluatorPlugin.class);
-		;
 	}
 
 }

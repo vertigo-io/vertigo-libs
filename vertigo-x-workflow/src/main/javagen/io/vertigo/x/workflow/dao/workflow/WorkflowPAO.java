@@ -65,39 +65,6 @@ public final class WorkflowPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_FIND_ALL_CONDITIONS_BY_WORKFLOW_DEFINITION_ID.
-	 * @param wfwdId Long 
-	*/
-	public void findAllConditionsByWorkflowDefinitionId(final Long wfwdId) {
-		final Task task = createTaskBuilder("TK_FIND_ALL_CONDITIONS_BY_WORKFLOW_DEFINITION_ID")
-				.addValue("WFWD_ID", wfwdId)
-				.build();
-		getTaskManager().execute(task);
-	}
-
-	/**
-	 * Execute la tache TK_FIND_ALL_FILTERS_BY_WORKFLOW_DEFINITION_ID.
-	 * @param wfwdId Long 
-	*/
-	public void findAllFiltersByWorkflowDefinitionId(final Long wfwdId) {
-		final Task task = createTaskBuilder("TK_FIND_ALL_FILTERS_BY_WORKFLOW_DEFINITION_ID")
-				.addValue("WFWD_ID", wfwdId)
-				.build();
-		getTaskManager().execute(task);
-	}
-
-	/**
-	 * Execute la tache TK_FIND_ALL_SELECTORS_BY_WORKFLOW_DEFINITION_ID.
-	 * @param wfwdId Long 
-	*/
-	public void findAllSelectorsByWorkflowDefinitionId(final Long wfwdId) {
-		final Task task = createTaskBuilder("TK_FIND_ALL_SELECTORS_BY_WORKFLOW_DEFINITION_ID")
-				.addValue("WFWD_ID", wfwdId)
-				.build();
-		getTaskManager().execute(task);
-	}
-
-	/**
 	 * Execute la tache TK_INCREMENT_ACTIVITY_DEFINITION_POSITIONS_AFTER.
 	 * @param wfwdId Long 
 	 * @param level Integer 
