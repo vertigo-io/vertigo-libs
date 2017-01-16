@@ -18,6 +18,7 @@
  */
 package io.vertigo.x.plugins.notification.redis;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -65,15 +66,23 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final Notification notification = notificationEvent.getNotification();
 			final String uuid = notification.getUuid().toString();
-			final Transaction tx = jedis.multi();
-			tx.hmset("notif:" + uuid, toMap(notification));
-			tx.set("type:" + notification.getType() + ";target:" + notification.getTargetUrl() + ";uuid", uuid);
-			for (final URI<Account> accountURI : notificationEvent.getToAccountURIs()) {
-				//On publie la notif
-				tx.lpush("notifs:" + accountURI.getId(), uuid);
-				tx.lpush("type:" + notification.getType() + ";target:" + notification.getTargetUrl(), "notifs:" + accountURI.getId());
+			final String typedTarget = "type:" + notification.getType() + ";target:" + notification.getTargetUrl();
+			try (final Transaction tx = jedis.multi()) {
+				tx.hmset("notif:" + uuid, toMap(notification));
+				tx.set(typedTarget + ";uuid", uuid);
+				for (final URI<Account> accountURI : notificationEvent.getToAccountURIs()) {
+					final String notifiedAccount = "notifs:" + accountURI.getId();
+					//On publie la notif (the last wins)
+					tx.lrem(notifiedAccount, 0, uuid);
+					tx.lpush(notifiedAccount, uuid);
+					tx.lrem(typedTarget, 0, notifiedAccount);
+					tx.lpush(typedTarget, notifiedAccount);
+				}
+				tx.exec();
+			} catch (final IOException ex) {
+				throw new WrappedException(ex);
 			}
-			tx.exec();
+
 		}
 	}
 
@@ -92,8 +101,8 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 
 	private static Notification fromMap(final Map<String, String> data) {
 		try {
-			final Date creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT).parse(data.get("creationDate"));
-
+			final Date creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT)
+					.parse(data.get("creationDate"));
 			return new NotificationBuilder(UUID.fromString(data.get("uuid")))
 					.withSender(data.get("sender"))
 					.withType(data.get("type"))
