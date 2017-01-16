@@ -29,7 +29,7 @@ public enum WfCodeTransition {
 
 	private final String transitionName;
 
-	WfCodeTransition(String transitionName) {
+	WfCodeTransition(final String transitionName) {
 		this.transitionName = transitionName;
 	}
 

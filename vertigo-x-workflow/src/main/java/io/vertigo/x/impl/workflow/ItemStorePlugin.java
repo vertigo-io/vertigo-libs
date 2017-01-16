@@ -16,18 +16,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.vertigo.x.impl.workflow;
 
+import java.util.List;
+import java.util.Map;
+
+import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Plugin;
-import io.vertigo.x.workflow.ItemStore;
 
 /**
- * Interface for the workflow store plugin
+ * This class defines the storage of item.
  * @author xdurand
- *
  */
-public interface ItemStorePlugin extends ItemStore, Plugin {
+public interface ItemStorePlugin extends Plugin {
 
-	// Plugin interface for Item Store
+	/**
+	 * Track a new item
+	 * /!\ No item will be created. It will only be tracked
+	 * @param itemId
+	 * @param item
+	 */
+	void addItem(Long itemId, DtObject item);
+
+	/**
+	 * Get an item.
+	 * @param itemId
+	 * @return the DtObject corresponding to the itemId
+	 */
+	DtObject readItem(Long itemId);
+
+	/**
+	 * Get a list of items
+	 * @param itemIds List of Items Ids.
+	 * @return A dictionary with the itemId as a key the the object as the associated value.
+	 */
+	Map<Long, DtObject> readItems(List<Long> itemIds);
+
 }

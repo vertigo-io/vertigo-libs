@@ -66,7 +66,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	/**
 	 * Construct a new Workflow manager
-	 * 
+	 *
 	 * @param workflowStorePlugin
 	 * @param itemStorePlugin
 	 * @param ruleManager
@@ -83,12 +83,12 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	// Instance
 
 	@Override
-	public WfWorkflow createWorkflowInstance(String definitionName, String username, boolean userLogic,
+	public WfWorkflow createWorkflowInstance(final String definitionName, final String username, final boolean userLogic,
 			final Long item) {
 		Assertion.checkNotNull(definitionName);
 		Assertion.checkNotNull(username);
 		// ---
-		WfWorkflowDefinition wfWorkflowDefinition = workflowStorePlugin.readWorkflowDefinition(definitionName);
+		final WfWorkflowDefinition wfWorkflowDefinition = workflowStorePlugin.readWorkflowDefinition(definitionName);
 
 		return createWorkflowInstance(wfWorkflowDefinition.getWfwdId(), username, userLogic, item);
 	}
@@ -144,7 +144,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	@Override
 	public void endInstance(final WfWorkflow wfWorkflow) {
 		Assertion.checkNotNull(wfWorkflow);
-		WfCodeStatusWorkflow wcsw = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
+		final WfCodeStatusWorkflow wcsw = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
 		Assertion.checkState(wcsw == WfCodeStatusWorkflow.STA || wcsw == WfCodeStatusWorkflow.PAU,
 				"A workflow must be started or paused before ending");
 		// ---
@@ -155,7 +155,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	@Override
 	public void pauseInstance(final WfWorkflow wfWorkflow) {
 		Assertion.checkNotNull(wfWorkflow);
-		WfCodeStatusWorkflow wcsw = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
+		final WfCodeStatusWorkflow wcsw = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
 		Assertion.checkState(wcsw == WfCodeStatusWorkflow.STA, "A workflow must be started before pausing");
 		// ---
 		wfWorkflow.setWfsCode(WfCodeStatusWorkflow.PAU.name());
@@ -166,7 +166,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	@Override
 	public void resumeInstance(final WfWorkflow wfWorkflow) {
 		Assertion.checkNotNull(wfWorkflow);
-		WfCodeStatusWorkflow wcsw = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
+		final WfCodeStatusWorkflow wcsw = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
 		Assertion.checkState(wcsw == WfCodeStatusWorkflow.PAU, "A workflow must be paused before resuming");
 		// ---
 		wfWorkflow.setWfsCode(WfCodeStatusWorkflow.STA.name());
@@ -180,15 +180,15 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	}
 
 	@Override
-	public List<WfActivityDefinition> getActivityDefinitions(WfWorkflow wfWorkflow) {
+	public List<WfActivityDefinition> getActivityDefinitions(final WfWorkflow wfWorkflow) {
 
-		WfWorkflowDefinition wfDefinition = workflowStorePlugin.readWorkflowDefinition(wfWorkflow.getWfwdId());
-		List<WfActivityDefinition> activities = workflowStorePlugin.findAllDefaultActivityDefinitions(wfDefinition);
+		final WfWorkflowDefinition wfDefinition = workflowStorePlugin.readWorkflowDefinition(wfWorkflow.getWfwdId());
+		final List<WfActivityDefinition> activities = workflowStorePlugin.findAllDefaultActivityDefinitions(wfDefinition);
 
-		DtObject obj = itemStorePlugin.readItem(wfWorkflow.getItemId());
+		final DtObject obj = itemStorePlugin.readItem(wfWorkflow.getItemId());
 
-		List<WfActivityDefinition> ret = new ArrayList<>();
-		for (WfActivityDefinition activity : activities) {
+		final List<WfActivityDefinition> ret = new ArrayList<>();
+		for (final WfActivityDefinition activity : activities) {
 			if (canAutoValidateActivity(activity, obj) == false) {
 				ret.add(activity);
 			}
@@ -198,12 +198,12 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	}
 
 	@Override
-	public List<WfActivity> getActivities(WfWorkflow wfWorkflow, List<Long> wfadId) {
+	public List<WfActivity> getActivities(final WfWorkflow wfWorkflow, final List<Long> wfadId) {
 		return workflowStorePlugin.findActivitiesByDefinitionId(wfWorkflow, wfadId);
 	}
 
-	private WfActivity getNewActivity(WfActivityDefinition activityDefinition, WfWorkflow wfWorkflow, boolean isAuto) {
-		WfActivity wfActivity = new WfActivity();
+	private WfActivity getNewActivity(final WfActivityDefinition activityDefinition, final WfWorkflow wfWorkflow, final boolean isAuto) {
+		final WfActivity wfActivity = new WfActivity();
 		wfActivity.setCreationDate(new Date());
 		wfActivity.setWfadId(activityDefinition.getWfadId());
 		wfActivity.setWfwId(wfWorkflow.getWfwId());
@@ -211,8 +211,8 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		return wfActivity;
 	}
 
-	private WfActivity createActivity(WfActivityDefinition activityDefinition, WfWorkflow wfWorkflow, boolean isAuto) {
-		WfActivity wfActivity = getNewActivity(activityDefinition, wfWorkflow, isAuto);
+	private WfActivity createActivity(final WfActivityDefinition activityDefinition, final WfWorkflow wfWorkflow, final boolean isAuto) {
+		final WfActivity wfActivity = getNewActivity(activityDefinition, wfWorkflow, isAuto);
 		workflowStorePlugin.createActivity(wfActivity);
 		return wfActivity;
 	}
@@ -221,7 +221,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	 * Auto-validate all the next activities that can be autovalidated. An
 	 * activity can be autovalidated when no rule is defined AND no user is
 	 * attached for this validation
-	 * 
+	 *
 	 * @param wfWorkflow
 	 * @param wfActivityDefinitionId
 	 */
@@ -246,7 +246,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 			}
 			activityDefinition = workflowStorePlugin.findNextActivity(wfActivityCurrent.getWfadId());
 
-			WfActivity nextActivity = workflowStorePlugin.findActivityByDefinitionWorkflow(wfWorkflow,
+			final WfActivity nextActivity = workflowStorePlugin.findActivityByDefinitionWorkflow(wfWorkflow,
 					activityDefinition);
 			if (nextActivity == null) {
 				wfActivityCurrent = createActivity(activityDefinition, wfWorkflow, false);
@@ -267,11 +267,11 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	/**
 	 * Autovalidate a decision
-	 * 
+	 *
 	 * @param activityDefinition
 	 * @param object
 	 */
-	private void autoValidateDecision(WfActivity wfActivityCurrent) {
+	private void autoValidateDecision(final WfActivity wfActivityCurrent) {
 		// wfActivityCurrent.setIsAuto(true);
 		// workflowStorePlugin.updateActivity(wfActivityCurrent);
 
@@ -307,19 +307,19 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	 */
 	@Override
 	public void saveDecision(final WfWorkflow wfWorkflow, final WfDecision wfDecision) {
-		WfCodeStatusWorkflow wcsw = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
+		final WfCodeStatusWorkflow wcsw = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
 		if (wcsw != WfCodeStatusWorkflow.STA) {
 			throw new IllegalStateException("A workflow must be started before saving decision");
 		}
 
 		// ---
-		WfWorkflow wfWorkflowFetch = workflowStorePlugin.readWorkflowInstanceForUpdateById(wfWorkflow.getWfwId());
+		final WfWorkflow wfWorkflowFetch = workflowStorePlugin.readWorkflowInstanceForUpdateById(wfWorkflow.getWfwId());
 
 		if (wfWorkflowFetch.getWfaId2() != null && !wfWorkflow.getWfaId2().equals(wfWorkflow.getWfaId2())) {
 			throw new IllegalStateException("Concurrent workflow modification");
 		}
 
-		WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
+		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
 
 		// Attach decision to the activity
 		// currentActivity.IsAuto = false;
@@ -334,18 +334,18 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	}
 
 	@Override
-	public WfDecision getDecision(WfActivity wfActivity) {
+	public WfDecision getDecision(final WfActivity wfActivity) {
 		Assertion.checkNotNull(wfActivity);
 		// ---
-		WfActivityDefinition wfActivityDefinition = workflowStorePlugin.readActivityDefinition(wfActivity.getWfadId());
+		final WfActivityDefinition wfActivityDefinition = workflowStorePlugin.readActivityDefinition(wfActivity.getWfadId());
 
-		WfCodeMultiplicityDefinition multiplicity = WfCodeMultiplicityDefinition
+		final WfCodeMultiplicityDefinition multiplicity = WfCodeMultiplicityDefinition
 				.valueOf(wfActivityDefinition.getWfmdCode());
 
 		if (multiplicity != WfCodeMultiplicityDefinition.SIN) {
 			throw new IllegalArgumentException();
 		}
-		List<WfDecision> decision = workflowStorePlugin.readDecisionsByActivityId(wfActivity.getWfaId());
+		final List<WfDecision> decision = workflowStorePlugin.readDecisionsByActivityId(wfActivity.getWfaId());
 		if (decision.isEmpty()) {
 			return null;
 		}
@@ -354,12 +354,12 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	}
 
 	@Override
-	public List<WfDecision> getDecisions(WfActivity wfActivity) {
+	public List<WfDecision> getDecisions(final WfActivity wfActivity) {
 		Assertion.checkNotNull(wfActivity);
 		// ---
-		WfActivityDefinition wfActivityDefinition = workflowStorePlugin.readActivityDefinition(wfActivity.getWfadId());
+		final WfActivityDefinition wfActivityDefinition = workflowStorePlugin.readActivityDefinition(wfActivity.getWfadId());
 
-		WfCodeMultiplicityDefinition multiplicity = WfCodeMultiplicityDefinition
+		final WfCodeMultiplicityDefinition multiplicity = WfCodeMultiplicityDefinition
 				.valueOf(wfActivityDefinition.getWfmdCode());
 
 		if (multiplicity != WfCodeMultiplicityDefinition.MUL) {
@@ -374,12 +374,12 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	}
 
 	@Override
-	public boolean canGoToNextActivity(WfWorkflow wfWorkflow) {
-		WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
-		WfActivityDefinition currentActivityDefinition = workflowStorePlugin
+	public boolean canGoToNextActivity(final WfWorkflow wfWorkflow) {
+		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
+		final WfActivityDefinition currentActivityDefinition = workflowStorePlugin
 				.readActivityDefinition(currentActivity.getWfadId());
 
-		WfCodeMultiplicityDefinition wfCodeMultiplicityDefinition = WfCodeMultiplicityDefinition
+		final WfCodeMultiplicityDefinition wfCodeMultiplicityDefinition = WfCodeMultiplicityDefinition
 				.valueOf(currentActivityDefinition.getWfmdCode());
 
 		WfDecision wfDecision;
@@ -393,24 +393,24 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		return canGoToNextActivity(wfWorkflow, currentActivity);
 	}
 
-	private boolean canGoToNextActivity(WfWorkflow wfWorkflow, WfActivity currentActivity) {
-		WfActivityDefinition currentActivityDefinition = workflowStorePlugin
+	private boolean canGoToNextActivity(final WfWorkflow wfWorkflow, final WfActivity currentActivity) {
+		final WfActivityDefinition currentActivityDefinition = workflowStorePlugin
 				.readActivityDefinition(currentActivity.getWfadId());
 
-		WfCodeMultiplicityDefinition wfCodeMultiplicityDefinition = WfCodeMultiplicityDefinition
+		final WfCodeMultiplicityDefinition wfCodeMultiplicityDefinition = WfCodeMultiplicityDefinition
 				.valueOf(currentActivityDefinition.getWfmdCode());
 
 		boolean canGoToNextActivity = false;
 
 		if (wfCodeMultiplicityDefinition == WfCodeMultiplicityDefinition.MUL) {
-			List<WfDecision> wfDecisions = workflowStorePlugin.findAllDecisionByActivity(currentActivity);
-			DtObject obj = itemStorePlugin.readItem(wfWorkflow.getItemId());
-			RuleConstants ruleConstants = ruleManager.getConstants(wfWorkflow.getWfwdId());
-			List<Account> accounts = ruleManager.selectAccounts(currentActivity.getWfadId(), obj, ruleConstants);
+			final List<WfDecision> wfDecisions = workflowStorePlugin.findAllDecisionByActivity(currentActivity);
+			final DtObject obj = itemStorePlugin.readItem(wfWorkflow.getItemId());
+			final RuleConstants ruleConstants = ruleManager.getConstants(wfWorkflow.getWfwdId());
+			final List<Account> accounts = ruleManager.selectAccounts(currentActivity.getWfadId(), obj, ruleConstants);
 
 			int match = 0;
-			for (Account account : accounts) {
-				for (WfDecision decision : wfDecisions) {
+			for (final Account account : accounts) {
+				for (final WfDecision decision : wfDecisions) {
 					if (account.getId().equals(decision.getUsername())) {
 						match++;
 						break;
@@ -430,10 +430,10 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	}
 
 	@Override
-	public void goToNextActivity(WfWorkflow wfWorkflow) {
-		WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
+	public void goToNextActivity(final WfWorkflow wfWorkflow) {
+		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
 
-		boolean canGoToNext = canGoToNextActivity(wfWorkflow);
+		final boolean canGoToNext = canGoToNextActivity(wfWorkflow);
 		if (!canGoToNext) {
 			throw new IllegalStateException("Can't go to the next activity");
 		}
@@ -441,9 +441,9 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		goToNextActivity(wfWorkflow, currentActivity, WfCodeTransition.DEFAULT.getTransitionName());
 	}
 
-	private void goToNextActivity(WfWorkflow wfWorkflow, WfActivity currentActivity, String transitionName) {
+	private void goToNextActivity(final WfWorkflow wfWorkflow, final WfActivity currentActivity, final String transitionName) {
 		if (workflowStorePlugin.hasNextActivity(currentActivity, transitionName)) {
-			WfActivityDefinition nextActivityDefinition = workflowStorePlugin
+			final WfActivityDefinition nextActivityDefinition = workflowStorePlugin
 					.findNextActivity(currentActivity.getWfadId(), transitionName);
 
 			WfActivity nextActivity = workflowStorePlugin.findActivityByDefinitionWorkflow(wfWorkflow,
@@ -466,7 +466,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 			workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
 
 			// Autovalidating next activities
-			boolean endReached = autoValidateNextActivities(wfWorkflow, nextActivity,
+			final boolean endReached = autoValidateNextActivities(wfWorkflow, nextActivity,
 					nextActivityDefinition.getWfadId());
 
 			if (endReached) {
@@ -487,20 +487,20 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	}
 
 	@Override
-	public void saveDecisionAndGoToNextActivity(WfWorkflow wfWorkflow, String transitionName, WfDecision wfDecision) {
+	public void saveDecisionAndGoToNextActivity(final WfWorkflow wfWorkflow, final String transitionName, final WfDecision wfDecision) {
 
-		WfCodeStatusWorkflow wfCodeMultiplicityDefinition = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
+		final WfCodeStatusWorkflow wfCodeMultiplicityDefinition = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
 
 		if (wfCodeMultiplicityDefinition != WfCodeStatusWorkflow.STA) {
 			throw new IllegalStateException("A workflow must be started before saving a decision");
 		}
 		// ---
-		WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
+		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
 
 		// Updating the decision
 		saveDecision(wfWorkflow, wfDecision);
 
-		boolean canGoToNextActivity = canGoToNextActivity(wfWorkflow, currentActivity);
+		final boolean canGoToNextActivity = canGoToNextActivity(wfWorkflow, currentActivity);
 
 		if (canGoToNextActivity) {
 			goToNextActivity(wfWorkflow, currentActivity, transitionName);
@@ -509,31 +509,31 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	/**
 	 * Find the workflow by itemId
-	 * 
+	 *
 	 * @param wfwdId
 	 * @param itemId
 	 * @return the matching workflow
 	 */
 	@Override
-	public WfWorkflow getWorkflowInstanceByItemId(Long wfwdId, Long itemId) {
+	public WfWorkflow getWorkflowInstanceByItemId(final Long wfwdId, final Long itemId) {
 		return workflowStorePlugin.readWorkflowInstanceByItemId(wfwdId, itemId);
 	}
 
 	/**
 	 * Find activities matching the criteria in parameters
-	 * 
+	 *
 	 * @param criteria
 	 * @return the mathcinf activity definitions
 	 */
-	public List<WfActivityDefinition> findActivitiesByCriteria(RuleCriteria criteria) {
-		WfWorkflowDefinition workflow = new WfWorkflowDefinition();
+	public List<WfActivityDefinition> findActivitiesByCriteria(final RuleCriteria criteria) {
+		final WfWorkflowDefinition workflow = new WfWorkflowDefinition();
 		workflow.setWfwdId(criteria.getWfwdId());
 
-		List<WfActivityDefinition> activities = getAllDefaultActivities(workflow);
-		Map<Long, WfActivityDefinition> mapAct = activities.stream()
+		final List<WfActivityDefinition> activities = getAllDefaultActivities(workflow);
+		final Map<Long, WfActivityDefinition> mapAct = activities.stream()
 				.collect(Collectors.toMap(WfActivityDefinition::getWfadId, Function.identity()));
 
-		List<Long> matchingActivities = ruleManager.findItemsByCriteria(criteria, new ArrayList<>(mapAct.keySet()));
+		final List<Long> matchingActivities = ruleManager.findItemsByCriteria(criteria, new ArrayList<>(mapAct.keySet()));
 
 		return matchingActivities.stream().map(mapAct::get).collect(Collectors.toList());
 	}
@@ -591,7 +591,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 				insertActivityBefore(wfWorkflowDefinition, wfActivityDefinitionToAdd, wfActivityDefinition);
 			} else {
 				// position == 1
-				WfTransitionDefinition wfTransitionDefinition = new WfTransitionBuilder(
+				final WfTransitionDefinition wfTransitionDefinition = new WfTransitionBuilder(
 						wfWorkflowDefinition.getWfwdId(), wfActivityDefinitionToAdd.getWfadId(),
 						wfActivityDefinition.getWfadId()).build();
 				workflowStorePlugin.addTransition(wfTransitionDefinition);
@@ -605,10 +605,10 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	@Override
 	public void removeActivity(final WfActivityDefinition wfActivityDefinition) {
 
-		WfWorkflowDefinition wfD = workflowStorePlugin.readWorkflowDefinition(wfActivityDefinition.getWfwdId());
+		final WfWorkflowDefinition wfD = workflowStorePlugin.readWorkflowDefinition(wfActivityDefinition.getWfwdId());
 
-		List<RuleDefinition> rules = ruleManager.getRulesForItemId(wfActivityDefinition.getWfadId());
-		List<SelectorDefinition> selectors = ruleManager.getSelectorsForItemId(wfActivityDefinition.getWfadId());
+		final List<RuleDefinition> rules = ruleManager.getRulesForItemId(wfActivityDefinition.getWfadId());
+		final List<SelectorDefinition> selectors = ruleManager.getSelectorsForItemId(wfActivityDefinition.getWfadId());
 		ruleManager.removeRules(rules);
 		ruleManager.removeSelectors(selectors);
 
@@ -618,10 +618,10 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 		workflowStorePlugin.deleteActivities(wfActivityDefinition.getWfadId());
 
-		WfTransitionCriteria critFrom = new WfTransitionCriteria();
+		final WfTransitionCriteria critFrom = new WfTransitionCriteria();
 		critFrom.setWfadIdFrom(wfActivityDefinition.getWfadId());
 		critFrom.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
-		WfTransitionDefinition transitionFrom = workflowStorePlugin.findTransition(critFrom);
+		final WfTransitionDefinition transitionFrom = workflowStorePlugin.findTransition(critFrom);
 
 		if (wfD.getWfwdId().equals(wfActivityDefinition.getWfwdId())) {
 			// The Activity Definition to remove is the start activity
@@ -634,10 +634,10 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 			}
 		} else {
 			// The Activity Definition to remove is NOT the start activity
-			WfTransitionCriteria critTo = new WfTransitionCriteria();
+			final WfTransitionCriteria critTo = new WfTransitionCriteria();
 			critTo.setWfadIdFrom(wfActivityDefinition.getWfadId());
 			critTo.setTransitionName(WfCodeTransition.DEFAULT.toString());
-			WfTransitionDefinition transitionTo = workflowStorePlugin.findTransition(critTo);
+			final WfTransitionDefinition transitionTo = workflowStorePlugin.findTransition(critTo);
 
 			if (transitionFrom != null) {
 				workflowStorePlugin.removeTransition(transitionFrom);
@@ -662,25 +662,25 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		moveActivity(wfWorkflowDefinition, wfActivityDefinitionFrom, wfActivityDefinitionTo, after);
 	}
 
-	private void insertActivityBefore(WfWorkflowDefinition wfWorkflowDefinition, WfActivityDefinition wfActivityToAdd,
-			WfActivityDefinition wfActivityReferential) {
-		WfTransitionCriteria wfTransitionCriteria = new WfTransitionCriteria();
+	private void insertActivityBefore(final WfWorkflowDefinition wfWorkflowDefinition, final WfActivityDefinition wfActivityToAdd,
+			final WfActivityDefinition wfActivityReferential) {
+		final WfTransitionCriteria wfTransitionCriteria = new WfTransitionCriteria();
 		wfTransitionCriteria.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
 		wfTransitionCriteria.setWfadIdTo(wfActivityReferential.getWfadId());
 
-		WfTransitionDefinition transition = workflowStorePlugin.findTransition(wfTransitionCriteria);
+		final WfTransitionDefinition transition = workflowStorePlugin.findTransition(wfTransitionCriteria);
 		transition.setWfadIdTo(wfActivityToAdd.getWfadId());
 
 		workflowStorePlugin.updateTransition(transition);
 
-		WfTransitionDefinition wfTransitionDefinition = new WfTransitionBuilder(wfWorkflowDefinition.getWfwdId(),
+		final WfTransitionDefinition wfTransitionDefinition = new WfTransitionBuilder(wfWorkflowDefinition.getWfwdId(),
 				wfActivityToAdd.getWfadId(), wfActivityReferential.getWfadId()).build();
 		workflowStorePlugin.addTransition(wfTransitionDefinition);
 	}
 
 	@Override
-	public void moveActivity(WfWorkflowDefinition wfWorkflowDefinition, WfActivityDefinition wfActivityToMove,
-			WfActivityDefinition wfActivityReferential, boolean after) {
+	public void moveActivity(final WfWorkflowDefinition wfWorkflowDefinition, final WfActivityDefinition wfActivityToMove,
+			final WfActivityDefinition wfActivityReferential, final boolean after) {
 		Assertion.checkNotNull(wfActivityToMove);
 		Assertion.checkNotNull(wfActivityToMove.getWfadId());
 		Assertion.checkState(!wfActivityToMove.getWfadId().equals(wfActivityReferential.getWfadId()),
@@ -721,13 +721,13 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		workflowStorePlugin.updateActivityDefinition(wfActivityToMove);
 	}
 
-	private void moveActivityAfter(WfWorkflowDefinition wfWorkflowDefinition, WfActivityDefinition wfActivityToMove,
-			WfActivityDefinition wfActivityReferential) {
+	private void moveActivityAfter(final WfWorkflowDefinition wfWorkflowDefinition, final WfActivityDefinition wfActivityToMove,
+			final WfActivityDefinition wfActivityReferential) {
 		// T1
-		WfTransitionCriteria critTrFromRef = new WfTransitionCriteria();
+		final WfTransitionCriteria critTrFromRef = new WfTransitionCriteria();
 		critTrFromRef.setWfadIdFrom(wfActivityReferential.getWfadId());
 		critTrFromRef.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
-		WfTransitionDefinition trFromRef = workflowStorePlugin.findTransition(critTrFromRef);
+		final WfTransitionDefinition trFromRef = workflowStorePlugin.findTransition(critTrFromRef);
 
 		if (trFromRef != null && trFromRef.getWfadIdTo().equals(wfActivityToMove.getWfadId())) {
 			// The activity is already positonned after the ref activity.
@@ -736,16 +736,16 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		}
 
 		// T2
-		WfTransitionCriteria critTrFromMove = new WfTransitionCriteria();
+		final WfTransitionCriteria critTrFromMove = new WfTransitionCriteria();
 		critTrFromMove.setWfadIdFrom(wfActivityToMove.getWfadId());
 		critTrFromMove.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
-		WfTransitionDefinition trFromMove = workflowStorePlugin.findTransition(critTrFromMove);
+		final WfTransitionDefinition trFromMove = workflowStorePlugin.findTransition(critTrFromMove);
 
 		// T3
-		WfTransitionCriteria critTrToMove = new WfTransitionCriteria();
+		final WfTransitionCriteria critTrToMove = new WfTransitionCriteria();
 		critTrToMove.setWfadIdTo(wfActivityToMove.getWfadId());
 		critTrToMove.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
-		WfTransitionDefinition trToMove = workflowStorePlugin.findTransition(critTrToMove);
+		final WfTransitionDefinition trToMove = workflowStorePlugin.findTransition(critTrToMove);
 
 		// Update T3
 		if (trToMove == null) {
@@ -787,14 +787,14 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	}
 
-	private void moveActivityBefore(WfWorkflowDefinition wfWorkflowDefinition, WfActivityDefinition wfActivityToMove,
-			WfActivityDefinition wfActivityReferential) {
+	private void moveActivityBefore(final WfWorkflowDefinition wfWorkflowDefinition, final WfActivityDefinition wfActivityToMove,
+			final WfActivityDefinition wfActivityReferential) {
 
 		// T1
-		WfTransitionCriteria critTrToRef = new WfTransitionCriteria();
+		final WfTransitionCriteria critTrToRef = new WfTransitionCriteria();
 		critTrToRef.setWfadIdTo(wfActivityReferential.getWfadId());
 		critTrToRef.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
-		WfTransitionDefinition trToRef = workflowStorePlugin.findTransition(critTrToRef);
+		final WfTransitionDefinition trToRef = workflowStorePlugin.findTransition(critTrToRef);
 
 		if (trToRef != null && trToRef.getWfadIdFrom().equals(wfActivityToMove.getWfadId())) {
 			// The activity is already positonned before the ref activity.
@@ -803,16 +803,16 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		}
 
 		// T2
-		WfTransitionCriteria critTrFromMove = new WfTransitionCriteria();
+		final WfTransitionCriteria critTrFromMove = new WfTransitionCriteria();
 		critTrFromMove.setWfadIdFrom(wfActivityToMove.getWfadId());
 		critTrFromMove.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
-		WfTransitionDefinition trFromMove = workflowStorePlugin.findTransition(critTrFromMove);
+		final WfTransitionDefinition trFromMove = workflowStorePlugin.findTransition(critTrFromMove);
 
 		// T3
-		WfTransitionCriteria critTrToMove = new WfTransitionCriteria();
+		final WfTransitionCriteria critTrToMove = new WfTransitionCriteria();
 		critTrToMove.setWfadIdTo(wfActivityToMove.getWfadId());
 		critTrToMove.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
-		WfTransitionDefinition trToMove = workflowStorePlugin.findTransition(critTrToMove);
+		final WfTransitionDefinition trToMove = workflowStorePlugin.findTransition(critTrToMove);
 
 		// Update T1
 		if (trToRef == null) {
@@ -902,111 +902,109 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	}
 
 	@Override
-	public List<WfActivityDefinition> getAllDefaultActivities(WfWorkflowDefinition wfWorkflowDefinition) {
+	public List<WfActivityDefinition> getAllDefaultActivities(final WfWorkflowDefinition wfWorkflowDefinition) {
 		return workflowStorePlugin.findAllDefaultActivityDefinitions(wfWorkflowDefinition);
 	}
 
 	@Override
-	public WfActivity getActivity(Long wfaId) {
+	public WfActivity getActivity(final Long wfaId) {
 		return workflowStorePlugin.readActivity(wfaId);
 	}
 
 	@Override
-	public WfActivity getActivity(WfWorkflow wfWorkflow, WfActivityDefinition wfActivityDefinition) {
+	public WfActivity getActivity(final WfWorkflow wfWorkflow, final WfActivityDefinition wfActivityDefinition) {
 		return workflowStorePlugin.findActivityByDefinitionWorkflow(wfWorkflow, wfActivityDefinition);
 	}
 
 	@Override
-	public void removeRules(List<RuleDefinition> rules) {
+	public void removeRules(final List<RuleDefinition> rules) {
 		ruleManager.removeRules(rules);
 	}
 
 	@Override
-	public void removeSelectors(List<SelectorDefinition> selectors) {
+	public void removeSelectors(final List<SelectorDefinition> selectors) {
 		ruleManager.removeSelectors(selectors);
 	}
 
-	private Map<Long, List<RuleDefinition>> constructDicRulesForWorkflowDefinition(long wfwdId) {
-		List<RuleDefinition> rules = workflowStorePlugin.findAllRulesByWorkflowDefinitionId(wfwdId);
+	private Map<Long, List<RuleDefinition>> constructDicRulesForWorkflowDefinition(final long wfwdId) {
+		final List<RuleDefinition> rules = workflowStorePlugin.findAllRulesByWorkflowDefinitionId(wfwdId);
 		// Build a dictionary from the rules: WfadId => List<RuleDefinition>
-		Map<Long, List<RuleDefinition>> dicRules = rules.stream()
+		return rules.stream()
 				.collect(Collectors.groupingBy(RuleDefinition::getItemId));
-		return dicRules;
 	}
 
-	private Map<Long, List<RuleConditionDefinition>> constructDicConditionsForWorkflowDefinition(long wfwdId) {
-		List<RuleConditionDefinition> conditions = workflowStorePlugin.findAllConditionsByWorkflowDefinitionId(wfwdId);
+	private Map<Long, List<RuleConditionDefinition>> constructDicConditionsForWorkflowDefinition(final long wfwdId) {
+		final List<RuleConditionDefinition> conditions = workflowStorePlugin.findAllConditionsByWorkflowDefinitionId(wfwdId);
 		// Build a dictionary from the conditions: RudId =>
 		// List<RuleConditionDefinition>
-		Map<Long, List<RuleConditionDefinition>> dicConditions = conditions.stream()
+		final Map<Long, List<RuleConditionDefinition>> dicConditions = conditions.stream()
 				.collect(Collectors.groupingBy(RuleConditionDefinition::getRudId));
 		return dicConditions;
 	}
 
-	private Map<Long, List<SelectorDefinition>> constructDicSelectorsForWorkflowDefinition(long wfwdId) {
-		List<SelectorDefinition> selectors = workflowStorePlugin.findAllSelectorsByWorkflowDefinitionId(wfwdId);
+	private Map<Long, List<SelectorDefinition>> constructDicSelectorsForWorkflowDefinition(final long wfwdId) {
+		final List<SelectorDefinition> selectors = workflowStorePlugin.findAllSelectorsByWorkflowDefinitionId(wfwdId);
 		// Build a dictionary from the selectors: WfadId =>
 		// List<SelectorDefinition>
-		Map<Long, List<SelectorDefinition>> dicSelectors = selectors.stream()
+		return selectors.stream()
 				.collect(Collectors.groupingBy(SelectorDefinition::getItemId));
-		return dicSelectors;
 	}
 
-	private Map<Long, List<RuleFilterDefinition>> constructDicFiltersForWorkflowDefinition(long wfwdId) {
-		List<RuleFilterDefinition> filters = workflowStorePlugin.findAllFiltersByWorkflowDefinitionId(wfwdId);
+	private Map<Long, List<RuleFilterDefinition>> constructDicFiltersForWorkflowDefinition(final long wfwdId) {
+		final List<RuleFilterDefinition> filters = workflowStorePlugin.findAllFiltersByWorkflowDefinitionId(wfwdId);
 		// Build a dictionary from the filters: SelId =>
 		// List<RuleFilterDefinition>
-		Map<Long, List<RuleFilterDefinition>> dicConditions = filters.stream()
+		return filters.stream()
 				.collect(Collectors.groupingBy(RuleFilterDefinition::getSelId));
-		return dicConditions;
 	}
 
-	public List<WfWorkflowDecision> getWorkflowDecision(long wfwId) {
+	@Override
+	public List<WfWorkflowDecision> getWorkflowDecision(final long wfwId) {
 		// Get the workflow from id
-		WfWorkflow wfWorkflow = workflowStorePlugin.readWorkflowInstanceById(wfwId);
+		final WfWorkflow wfWorkflow = workflowStorePlugin.readWorkflowInstanceById(wfwId);
 
-		long wfwdId = wfWorkflow.getWfwdId();
+		final long wfwdId = wfWorkflow.getWfwdId();
 		// Get the definition
-		WfWorkflowDefinition wfDefinition = workflowStorePlugin.readWorkflowDefinition(wfwdId);
+		final WfWorkflowDefinition wfDefinition = workflowStorePlugin.readWorkflowDefinition(wfwdId);
 
 		// Get all the activity definitions for the workflow definition
-		List<WfActivityDefinition> activityDefinitions = workflowStorePlugin
+		final List<WfActivityDefinition> activityDefinitions = workflowStorePlugin
 				.findAllDefaultActivityDefinitions(wfDefinition);
 
 		// Build a map : WfadId => WfActivity
-		List<WfActivity> activities = workflowStorePlugin.findActivitiesByWorkflowId(wfWorkflow);
-		Map<Long, WfActivity> dicActivities = activities.stream()
+		final List<WfActivity> activities = workflowStorePlugin.findActivitiesByWorkflowId(wfWorkflow);
+		final Map<Long, WfActivity> dicActivities = activities.stream()
 				.collect(Collectors.toMap(WfActivity::getWfadId, Function.identity()));
 
 		// Get all decisions for the workflow instance
-		List<WfDecision> allDecisions = workflowStorePlugin.findDecisionsByWorkflowId(wfWorkflow);
+		final List<WfDecision> allDecisions = workflowStorePlugin.findDecisionsByWorkflowId(wfWorkflow);
 		// Build a dictionary from the decisions: WfaId => List<WfDecision>
-		Map<Long, List<WfDecision>> dicDecision = allDecisions.stream()
+		final Map<Long, List<WfDecision>> dicDecision = allDecisions.stream()
 				.collect(Collectors.groupingBy(d -> d.getWfaId()));
 
-		Map<Long, List<RuleDefinition>> dicRules = constructDicRulesForWorkflowDefinition(wfwdId);
-		Map<Long, List<RuleConditionDefinition>> dicConditions = constructDicConditionsForWorkflowDefinition(wfwdId);
-		Map<Long, List<SelectorDefinition>> dicSelectors = constructDicSelectorsForWorkflowDefinition(wfwdId);
-		Map<Long, List<RuleFilterDefinition>> dicFilters = constructDicFiltersForWorkflowDefinition(wfwdId);
+		final Map<Long, List<RuleDefinition>> dicRules = constructDicRulesForWorkflowDefinition(wfwdId);
+		final Map<Long, List<RuleConditionDefinition>> dicConditions = constructDicConditionsForWorkflowDefinition(wfwdId);
+		final Map<Long, List<SelectorDefinition>> dicSelectors = constructDicSelectorsForWorkflowDefinition(wfwdId);
+		final Map<Long, List<RuleFilterDefinition>> dicFilters = constructDicFiltersForWorkflowDefinition(wfwdId);
 
 		// Fetch the object linked to the workflow instance.
-		DtObject obj = itemStorePlugin.readItem(wfWorkflow.getItemId());
+		final DtObject obj = itemStorePlugin.readItem(wfWorkflow.getItemId());
 
-		RuleConstants ruleConstants = ruleManager.getConstants(wfwdId);
+		final RuleConstants ruleConstants = ruleManager.getConstants(wfwdId);
 
-		List<WfWorkflowDecision> workflowDecisions = new ArrayList<WfWorkflowDecision>();
+		final List<WfWorkflowDecision> workflowDecisions = new ArrayList<>();
 
-		for (WfActivityDefinition activityDefinition : activityDefinitions) {
-			long actDefId = activityDefinition.getWfadId();
-			boolean ruleValid = ruleManager.isRuleValid(actDefId, obj, ruleConstants, dicRules, dicConditions);
+		for (final WfActivityDefinition activityDefinition : activityDefinitions) {
+			final long actDefId = activityDefinition.getWfadId();
+			final boolean ruleValid = ruleManager.isRuleValid(actDefId, obj, ruleConstants, dicRules, dicConditions);
 
 			if (ruleValid) {
-				List<AccountGroup> groups = ruleManager.selectGroups(actDefId, obj, ruleConstants, dicSelectors,
+				final List<AccountGroup> groups = ruleManager.selectGroups(actDefId, obj, ruleConstants, dicSelectors,
 						dicFilters);
 
-				WfWorkflowDecision wfWorkflowDecision = new WfWorkflowDecision();
+				final WfWorkflowDecision wfWorkflowDecision = new WfWorkflowDecision();
 				wfWorkflowDecision.setActivityDefinition(activityDefinition);
-				WfActivity wfActivity = dicActivities.get(activityDefinition.getWfadId());
+				final WfActivity wfActivity = dicActivities.get(activityDefinition.getWfadId());
 				wfWorkflowDecision.setActivity(wfActivity);
 				wfWorkflowDecision.setGroups(groups);
 				List<WfDecision> decisions;
