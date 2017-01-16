@@ -9,4 +9,4 @@ mvn-release.txt
 .classpath
 */.settings/
 *.prefs
-
+*.jar
