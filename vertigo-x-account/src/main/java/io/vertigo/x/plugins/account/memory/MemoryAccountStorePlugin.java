@@ -117,7 +117,7 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(group);
 		final URI<AccountGroup> uri = new URI<>(dtDefinition, group.getId());
 		//----
-		Assertion.checkArgument(!accountByURI.containsKey(uri), "this group is already registered, you can't create it");
+		Assertion.checkArgument(!groupByURI.containsKey(uri), "this group is already registered, you can't create it");
 		//-----
 		accountByGroupURI.put(uri, new HashSet<URI<Account>>());
 		groupByURI.put(uri, group);

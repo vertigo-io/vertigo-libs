@@ -20,14 +20,21 @@ package io.vertigo.x.rules;
 
 import java.util.List;
 
+import io.vertigo.x.rules.domain.RuleConditionDefinition;
+import io.vertigo.x.rules.domain.RuleDefinition;
+import io.vertigo.x.rules.domain.RuleFilterDefinition;
+import io.vertigo.x.rules.domain.SelectorDefinition;
+
 /**
  * This class defines the storage of workflow.
+ * 
  * @author xdurand
  */
 public interface RuleStore {
 
 	/**
 	 * Add a rule
+	 * 
 	 * @param idActivityDefinition
 	 * @param ruleDefinition
 	 */
@@ -35,6 +42,7 @@ public interface RuleStore {
 
 	/**
 	 * Find rules
+	 * 
 	 * @param itemId
 	 * @return a list of all the rules defined for the itemId
 	 */
@@ -42,36 +50,42 @@ public interface RuleStore {
 
 	/**
 	 * Removes a rule
+	 * 
 	 * @param ruleDefinition
 	 */
 	void removeRule(RuleDefinition ruleDefinition);
 
 	/**
 	 * Update a rule
+	 * 
 	 * @param ruleDefinition
 	 */
 	void updateRule(RuleDefinition ruleDefinition);
 
 	/**
 	 * Add a condition
+	 * 
 	 * @param ruleConditionDefinition
 	 */
 	void addCondition(final RuleConditionDefinition ruleConditionDefinition);
 
 	/**
 	 * Remove a condition
+	 * 
 	 * @param ruleConditionDefinition
 	 */
 	void removeCondition(final RuleConditionDefinition ruleConditionDefinition);
 
 	/**
 	 * Update a condition
+	 * 
 	 * @param ruleConditionDefinition
 	 */
 	void updateCondition(final RuleConditionDefinition ruleConditionDefinition);
 
 	/**
-	 * Find all conditions for a specified rule Id 
+	 * Find all conditions for a specified rule Id
+	 * 
 	 * @param ruleId
 	 * @return a list of all the conditions defined for this rule id
 	 */
@@ -79,12 +93,14 @@ public interface RuleStore {
 
 	/**
 	 * Add a selector
+	 * 
 	 * @param selectorDefinition
 	 */
 	void addSelector(SelectorDefinition selectorDefinition);
 
 	/**
 	 * Find all selectors for an item Id
+	 * 
 	 * @param itemId
 	 * @return a list of all the selectors defined for the itemId
 	 */
@@ -92,30 +108,35 @@ public interface RuleStore {
 
 	/**
 	 * Remove a Selector
+	 * 
 	 * @param selectorDefinition
 	 */
 	void removeSelector(SelectorDefinition selectorDefinition);
 
 	/**
 	 * Update a Selector
+	 * 
 	 * @param selectorDefinition
 	 */
 	void updateSelector(SelectorDefinition selectorDefinition);
 
 	/**
 	 * Add a filter
+	 * 
 	 * @param ruleFilterDefinition
 	 */
 	void addFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	/**
 	 * Remove a filter
+	 * 
 	 * @param ruleFilterDefinition
 	 */
 	void removeFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	/**
 	 * Find the filters associated to a selector id
+	 * 
 	 * @param selectorId
 	 * @return a list of all the filters defined for the selectorId
 	 */
@@ -123,12 +144,14 @@ public interface RuleStore {
 
 	/**
 	 * Update a filter
+	 * 
 	 * @param ruleFilterDefinition
 	 */
 	void updateFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	/**
 	 * Find rules by criteria
+	 * 
 	 * @param criteria
 	 * @param items
 	 * @return a list of Rule Definition
@@ -137,19 +160,26 @@ public interface RuleStore {
 
 	/**
 	 * Removes all the specified rules
-	 * @param list list of ids
+	 * 
+	 * @param list
+	 *            list of ids
 	 */
 	void removeRules(List<Long> list);
 
 	/**
 	 * Removes all the specified Selectors
-	 * @param list list of ids
+	 * 
+	 * @param list
+	 *            list of ids
 	 */
 	void removeSelectors(List<Long> list);
 
 	/**
-	 * Removes all Selectors and linked filters associated to the provided groupId
-	 * @param groupId groupId
+	 * Removes all Selectors and linked filters associated to the provided
+	 * groupId
+	 * 
+	 * @param groupId
+	 *            groupId
 	 */
 	void removeSelectorsFiltersByGroupId(String groupId);
 }

@@ -32,6 +32,7 @@ import io.vertigo.util.ListBuilder;
 
 /**
  * Provides all the definitions used in the 'Rules' module.
+ * 
  * @author xdurand
  */
 public final class RuleProvider implements DefinitionProvider {
@@ -50,36 +51,27 @@ public final class RuleProvider implements DefinitionProvider {
 		final DtDefinition wfRuleDefinitionDtDefinition = new DtDefinitionBuilder("DT_RULE_DEFINITION")
 				.addIdField("ID", "id", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
-				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true, false, false)
-				.build();
+				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true, false, false).build();
 
-		final DtDefinitionBuilder wfConditionDefinitionDtDefinitionBuilder = new DtDefinitionBuilder("DT_RULE_CONDITION_DEFINITION")
-				.addIdField("ID", "id", domainWorkflowId, false, false)
-				.addDataField("FIELD", "field", domainWorkflowField, true, true, false, false)
-				.addDataField("OPERATOR", "operator", domainWorkflowOperator, true, true, false, false)
-				.addDataField("EXPRESSION", "expression", domainWorkflowExpression, true, true, false, false);
+		final DtDefinitionBuilder wfConditionDefinitionDtDefinitionBuilder = new DtDefinitionBuilder(
+				"DT_RULE_CONDITION_DEFINITION").addIdField("ID", "id", domainWorkflowId, false, false)
+						.addDataField("FIELD", "field", domainWorkflowField, true, true, false, false)
+						.addDataField("OPERATOR", "operator", domainWorkflowOperator, true, true, false, false)
+						.addDataField("EXPRESSION", "expression", domainWorkflowExpression, true, true, false, false);
 
 		final DtDefinition wfSelectorDefinitionDtDefinition = new DtDefinitionBuilder("DT_SELECTOR_DEFINITION")
 				.addIdField("ID", "id", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
-				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true, false, false)
-				.build();
+				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true, false, false).build();
 
 		final DtDefinition wfConditionDefinitionDtDefinition = wfConditionDefinitionDtDefinitionBuilder.build();
 
-		wfConditionDefinitionDtDefinitionBuilder.addForeignKey("RUD_ID", "rudId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false);
+		wfConditionDefinitionDtDefinitionBuilder.addForeignKey("RUD_ID", "rudId", domainWorkflowId, true,
+				"DO_X_WORKFLOW_ID", false, false);
 
-		return new ListBuilder<Definition>()
-				.add(domainWorkflowId)
-				.add(domainWorkflowCode)
-				.add(domainWorkflowDate)
-				.add(domainWorkflowWeakId)
-				.add(domainWorkflowLabel)
-				.add(wfRuleDefinitionDtDefinition)
-				.add(wfConditionDefinitionDtDefinition)
-				.add(wfSelectorDefinitionDtDefinition)
-				.build()
-				.iterator();
+		return new ListBuilder<Definition>().add(domainWorkflowId).add(domainWorkflowCode).add(domainWorkflowDate)
+				.add(domainWorkflowWeakId).add(domainWorkflowLabel).add(wfRuleDefinitionDtDefinition)
+				.add(wfConditionDefinitionDtDefinition).add(wfSelectorDefinitionDtDefinition).build().iterator();
 	}
 
 }

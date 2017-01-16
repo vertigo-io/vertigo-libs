@@ -29,11 +29,11 @@ import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.impl.rules.RuleStorePlugin;
-import io.vertigo.x.rules.RuleConditionDefinition;
 import io.vertigo.x.rules.RuleCriteria;
-import io.vertigo.x.rules.RuleDefinition;
-import io.vertigo.x.rules.RuleFilterDefinition;
-import io.vertigo.x.rules.SelectorDefinition;
+import io.vertigo.x.rules.domain.RuleConditionDefinition;
+import io.vertigo.x.rules.domain.RuleDefinition;
+import io.vertigo.x.rules.domain.RuleFilterDefinition;
+import io.vertigo.x.rules.domain.SelectorDefinition;
 
 /**
  *
@@ -63,7 +63,7 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 		Assertion.checkNotNull(ruleDefinition);
 		Assertion.checkNotNull(ruleDefinition.getItemId());
 		Assertion.checkState(ruleDefinition.getId() == null, "A new rule must not have an id");
-		//---
+		// ---
 		final Long generatedId = memoryRuleSequenceGenerator.addAndGet(1);
 		ruleDefinition.setId(generatedId);
 		inMemoryRuleStore.put(generatedId, ruleDefinition);
@@ -77,7 +77,7 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 	public void removeRule(final RuleDefinition ruleDefinition) {
 		Assertion.checkNotNull(ruleDefinition);
 		Assertion.checkNotNull(ruleDefinition.getId());
-		//---
+		// ---
 		inMemoryRuleStore.remove(ruleDefinition.getId());
 	}
 
@@ -89,8 +89,9 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 	public void updateRule(final RuleDefinition ruleDefinition) {
 		Assertion.checkNotNull(ruleDefinition);
 		Assertion.checkNotNull(ruleDefinition.getId());
-		Assertion.checkState(inMemoryRuleStore.containsKey(ruleDefinition.getId()), "Cannot update this rule : Its id is unknown in the store");
-		//---
+		Assertion.checkState(inMemoryRuleStore.containsKey(ruleDefinition.getId()),
+				"Cannot update this rule : Its id is unknown in the store");
+		// ---
 		inMemoryRuleStore.put(ruleDefinition.getId(), ruleDefinition);
 	}
 
@@ -98,7 +99,7 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 	public void addCondition(final RuleConditionDefinition ruleConditionDefinition) {
 		Assertion.checkNotNull(ruleConditionDefinition);
 		Assertion.checkState(ruleConditionDefinition.getId() == null, "A new condition must not have an id");
-		//---
+		// ---
 		final Long generatedId = memoryConditionSequenceGenerator.addAndGet(1);
 		ruleConditionDefinition.setId(generatedId);
 		inMemoryConditionStore.put(generatedId, ruleConditionDefinition);
@@ -108,7 +109,7 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 	public void removeCondition(final RuleConditionDefinition ruleConditionDefinition) {
 		Assertion.checkNotNull(ruleConditionDefinition);
 		Assertion.checkNotNull(ruleConditionDefinition.getId());
-		//---
+		// ---
 		inMemoryConditionStore.remove(ruleConditionDefinition.getId());
 	}
 
@@ -116,20 +117,21 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 	public void updateCondition(final RuleConditionDefinition ruleConditionDefinition) {
 		Assertion.checkNotNull(ruleConditionDefinition);
 		Assertion.checkNotNull(ruleConditionDefinition.getId());
-		Assertion.checkState(inMemoryConditionStore.containsKey(ruleConditionDefinition.getId()), "Cannot update this condition : Its id is unknown in the store");
-		//---
+		Assertion.checkState(inMemoryConditionStore.containsKey(ruleConditionDefinition.getId()),
+				"Cannot update this condition : Its id is unknown in the store");
+		// ---
 		inMemoryConditionStore.put(ruleConditionDefinition.getId(), ruleConditionDefinition);
 	}
 
 	@Override
 	public List<RuleDefinition> findRulesByItemId(final Long itemId) {
 		Assertion.checkNotNull(itemId);
-		//---
+		// ---
 		final List<RuleDefinition> ret = new ArrayList<>();
 
 		for (final RuleDefinition ruleDefinition : inMemoryRuleStore.values()) {
 			if (itemId.equals(ruleDefinition.getItemId())) {
-				//Collect
+				// Collect
 				ret.add(ruleDefinition);
 			}
 		}
@@ -140,12 +142,12 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 	@Override
 	public List<RuleConditionDefinition> findConditionByRuleId(final Long ruleId) {
 		Assertion.checkNotNull(ruleId);
-		//---
+		// ---
 		final List<RuleConditionDefinition> ret = new ArrayList<>();
 
 		for (final RuleConditionDefinition ruleDefinition : inMemoryConditionStore.values()) {
 			if (ruleId.equals(ruleDefinition.getRudId())) {
-				//Collect
+				// Collect
 				ret.add(ruleDefinition);
 			}
 		}
@@ -162,7 +164,7 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 		Assertion.checkNotNull(selectorDefinition);
 		Assertion.checkNotNull(selectorDefinition.getItemId());
 		Assertion.checkState(selectorDefinition.getId() == null, "A new rule must not have an id");
-		//---
+		// ---
 		final Long generatedId = memorySelectorSequenceGenerator.addAndGet(1);
 		selectorDefinition.setId(generatedId);
 		inMemorySelectorStore.put(generatedId, selectorDefinition);
@@ -176,7 +178,7 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 	public void removeSelector(final SelectorDefinition selectorDefinition) {
 		Assertion.checkNotNull(selectorDefinition);
 		Assertion.checkNotNull(selectorDefinition.getId());
-		//---
+		// ---
 		inMemorySelectorStore.remove(selectorDefinition.getId());
 	}
 
@@ -188,20 +190,21 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 	public void updateSelector(final SelectorDefinition selectorDefinition) {
 		Assertion.checkNotNull(selectorDefinition);
 		Assertion.checkNotNull(selectorDefinition.getId());
-		Assertion.checkState(inMemorySelectorStore.containsKey(selectorDefinition.getId()), "Cannot update this selector : Its id is unknown in the store");
-		//---
+		Assertion.checkState(inMemorySelectorStore.containsKey(selectorDefinition.getId()),
+				"Cannot update this selector : Its id is unknown in the store");
+		// ---
 		inMemorySelectorStore.put(selectorDefinition.getId(), selectorDefinition);
 	}
 
 	@Override
 	public List<SelectorDefinition> findSelectorsByItemId(final Long itemId) {
 		Assertion.checkNotNull(itemId);
-		//---
+		// ---
 		final List<SelectorDefinition> ret = new ArrayList<>();
 
 		for (final SelectorDefinition selectorDefinition : inMemorySelectorStore.values()) {
 			if (itemId.equals(selectorDefinition.getItemId())) {
-				//Collect
+				// Collect
 				ret.add(selectorDefinition);
 			}
 		}
@@ -214,7 +217,7 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 		Assertion.checkNotNull(ruleFilterDefinition);
 		Assertion.checkNotNull(ruleFilterDefinition.getSelId());
 		Assertion.checkState(ruleFilterDefinition.getId() == null, "A new filter must not have an id");
-		//---
+		// ---
 		final Long generatedId = memoryFilterSequenceGenerator.addAndGet(1);
 		ruleFilterDefinition.setId(generatedId);
 		inMemoryFilterStore.put(generatedId, ruleFilterDefinition);
@@ -225,7 +228,7 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 	public void removeFilter(final RuleFilterDefinition ruleFilterDefinition) {
 		Assertion.checkNotNull(ruleFilterDefinition);
 		Assertion.checkNotNull(ruleFilterDefinition.getId());
-		//---
+		// ---
 		inMemoryFilterStore.remove(ruleFilterDefinition.getId());
 
 	}
@@ -233,12 +236,12 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 	@Override
 	public List<RuleFilterDefinition> findFiltersBySelectorId(final Long selectorId) {
 		Assertion.checkNotNull(selectorId);
-		//---
+		// ---
 		final List<RuleFilterDefinition> ret = new ArrayList<>();
 
 		for (final RuleFilterDefinition ruleFilterDefinition : inMemoryFilterStore.values()) {
 			if (selectorId.equals(ruleFilterDefinition.getSelId())) {
-				//Collect
+				// Collect
 				ret.add(ruleFilterDefinition);
 			}
 		}
@@ -250,41 +253,41 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 	public void updateFilter(final RuleFilterDefinition ruleFilterDefinition) {
 		Assertion.checkNotNull(ruleFilterDefinition);
 		Assertion.checkNotNull(ruleFilterDefinition.getId());
-		Assertion.checkState(inMemoryFilterStore.containsKey(ruleFilterDefinition.getId()), "Cannot update this filter : Its id is unknown in the store");
-		//---
+		Assertion.checkState(inMemoryFilterStore.containsKey(ruleFilterDefinition.getId()),
+				"Cannot update this filter : Its id is unknown in the store");
+		// ---
 		inMemoryFilterStore.put(ruleFilterDefinition.getId(), ruleFilterDefinition);
 	}
 
 	@Override
 	public List<RuleDefinition> findRulesByCriteria(RuleCriteria criteria, List<Long> items) {
 		Assertion.checkNotNull(criteria);
-		//---
+		// ---
 		List<RuleDefinition> ret = new ArrayList<>();
 		for (Long itemId : items) {
 
-			List<RuleDefinition> rules = inMemoryRuleStore.entrySet()
-					.stream()
-					.filter(r -> r.getValue().equals(itemId))
-					.map(es -> es.getValue())
+			List<RuleDefinition> rules = inMemoryRuleStore.entrySet().stream()
+					.filter(r -> r.getValue().getItemId().equals(itemId)).map(es -> es.getValue())
 					.collect(Collectors.toList());
 			for (RuleDefinition rule : rules) {
 
-				Map<String, RuleConditionDefinition> mapConditions = inMemoryConditionStore.entrySet()
-						.stream()
-						.filter(r -> r.getValue().getRudId().equals(rule.getId()))
-						.map(es -> es.getValue())
+				Map<String, RuleConditionDefinition> mapConditions = inMemoryConditionStore.entrySet().stream()
+						.filter(r -> r.getValue().getRudId().equals(rule.getId())).map(es -> es.getValue())
 						.collect(Collectors.toMap(RuleConditionDefinition::getField, Function.identity()));
 
 				int match = 0;
 				RuleConditionDefinition currentRule1 = mapConditions.get(criteria.getConditionCriteria1().getField());
 
-				if (currentRule1 != null && currentRule1.getExpression().equals(criteria.getConditionCriteria1().getValue())) {
+				if (currentRule1 != null
+						&& currentRule1.getExpression().equals(criteria.getConditionCriteria1().getValue())) {
 					match++;
 				}
 
 				if (criteria.getConditionCriteria2() != null) {
-					RuleConditionDefinition currentRule2 = mapConditions.get(criteria.getConditionCriteria2().getField());
-					if (currentRule2 != null && currentRule2.getExpression().equals(criteria.getConditionCriteria2().getValue())) {
+					RuleConditionDefinition currentRule2 = mapConditions
+							.get(criteria.getConditionCriteria2().getField());
+					if (currentRule2 != null
+							&& currentRule2.getExpression().equals(criteria.getConditionCriteria2().getValue())) {
 						match++;
 					}
 				}
