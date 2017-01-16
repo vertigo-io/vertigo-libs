@@ -50,6 +50,16 @@ import redis.clients.jedis.Transaction;
  * @author pchretien
  */
 public final class RedisAccountStorePlugin implements AccountStorePlugin {
+	private static final String HPHOTO_BY_ACCOUNT_START_KEY = "photoByAccount:";
+	private static final String HGROUP_START_KEY = "group:";
+	private static final String HACCOUNT_START_KEY = "account:";
+
+	private static final String SGROUPS_BY_ACCOUNT_START_KEY = "groupsByAccount:";
+	private static final String SACCOUNTS_BY_GROUP_START_KEY = "accountsByGroup:";
+
+	private static final String SGROUPS_KEY = "groups";
+	private static final String SACCOUNTS_KEY = "accounts";
+
 	private final RedisConnector redisConnector;
 	private final PhotoCodec photoCodec;
 
@@ -74,8 +84,8 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			try (final Transaction tx = jedis.multi()) {
 				for (final Account account : accounts) {
-					tx.hmset("account:" + account.getId(), account2Map(account));
-					tx.lpush("accounts", account.getId());
+					tx.hmset(HACCOUNT_START_KEY + account.getId(), account2Map(account));
+					tx.sadd(SACCOUNTS_KEY, account.getId());
 				}
 				tx.exec();
 			} catch (final IOException ex) {
@@ -88,7 +98,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	@Override
 	public long getAccountsCount() {
 		try (final Jedis jedis = redisConnector.getResource()) {
-			return jedis.llen("accounts");
+			return jedis.scard(SACCOUNTS_KEY);
 		}
 	}
 
@@ -96,7 +106,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	@Override
 	public long getGroupsCount() {
 		try (final Jedis jedis = redisConnector.getResource()) {
-			return jedis.llen("groups");
+			return jedis.scard(SGROUPS_KEY);
 		}
 	}
 
@@ -106,7 +116,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		Assertion.checkNotNull(accountURI);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
-			return map2Account(jedis.hgetAll("account:" + accountURI.getId()));
+			return map2Account(jedis.hgetAll(HACCOUNT_START_KEY + accountURI.getId()));
 		}
 	}
 
@@ -118,8 +128,8 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		//----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			try (final Transaction tx = jedis.multi()) {
-				tx.hmset("group:" + group.getId(), group2Map(group));
-				tx.lpush("groups", group.getId());
+				tx.hmset(HGROUP_START_KEY + group.getId(), group2Map(group));
+				tx.sadd(SGROUPS_KEY, group.getId());
 				tx.exec();
 			} catch (final IOException ex) {
 				throw new WrappedException(ex);
@@ -134,7 +144,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		Assertion.checkNotNull(groupURI);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
-			return map2Group(jedis.hgetAll("group:" + groupURI.getId()));
+			return map2Group(jedis.hgetAll(HGROUP_START_KEY + groupURI.getId()));
 		}
 	}
 
@@ -143,10 +153,10 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	public Collection<AccountGroup> getAllGroups() {
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
-			final List<String> ids = jedis.lrange("accounts", 0, -1);
+			final Set<String> ids = jedis.smembers(SACCOUNTS_KEY);
 			try (final Transaction tx = jedis.multi()) {
 				for (final String id : ids) {
-					responses.add(tx.hgetAll("account:" + id));
+					responses.add(tx.hgetAll(HACCOUNT_START_KEY + id));
 				}
 				tx.exec();
 			} catch (final IOException ex) {
@@ -173,8 +183,8 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			try (final Transaction tx = jedis.multi()) {
-				tx.lpush("accountsByGroup:" + groupURI.getId(), accountURI.getId().toString());
-				tx.lpush("groupsByAccount:" + accountURI.getId(), groupURI.getId().toString());
+				tx.sadd(SACCOUNTS_BY_GROUP_START_KEY + groupURI.getId(), accountURI.getId().toString());
+				tx.sadd(SGROUPS_BY_ACCOUNT_START_KEY + accountURI.getId(), groupURI.getId().toString());
 				tx.exec();
 			} catch (final IOException ex) {
 				throw new WrappedException(ex);
@@ -191,7 +201,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);
 		final Set<URI<Account>> set = new HashSet<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
-			final List<String> ids = jedis.lrange("accountsByGroup:" + groupURI.getId(), 0, -1);
+			final Set<String> ids = jedis.smembers(SACCOUNTS_BY_GROUP_START_KEY + groupURI.getId());
 			for (final String id : ids) {
 				set.add(new URI<Account>(dtDefinition, id));
 			}
@@ -207,7 +217,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);
 		final Set<URI<AccountGroup>> set = new HashSet<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
-			final List<String> ids = jedis.lrange("groupsByAccount:" + accountURI.getId(), 0, -1);
+			final Set<String> ids = jedis.smembers(SGROUPS_BY_ACCOUNT_START_KEY + accountURI.getId());
 			for (final String id : ids) {
 				set.add(new URI<AccountGroup>(dtDefinition, id));
 			}
@@ -250,7 +260,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		final Map<String, String> vFileMapPhoto = photoCodec.vFile2Map(photo);
 		try (final Jedis jedis = redisConnector.getResource()) {
 			try (final Transaction tx = jedis.multi()) {
-				tx.hmset("photoByAccount:" + accountURI.getId(), vFileMapPhoto);
+				tx.hmset(HPHOTO_BY_ACCOUNT_START_KEY + accountURI.getId(), vFileMapPhoto);
 				tx.exec();
 			} catch (final IOException ex) {
 				throw new WrappedException(ex);
@@ -264,7 +274,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
 		final Map<String, String> result;
 		try (final Jedis jedis = redisConnector.getResource()) {
-			result = jedis.hgetAll("photoByAccount:" + accountURI.getId());
+			result = jedis.hgetAll(HPHOTO_BY_ACCOUNT_START_KEY + accountURI.getId());
 		}
 		if (result.isEmpty()) {
 			return Optional.empty();
@@ -276,7 +286,8 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	public void reset() {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			try (final Transaction tx = jedis.multi()) {
-				tx.del("accounts", "groups", "accountsByGroup", "photoByAccount");
+				//todo : les haccount, photos et accountsByGroup", "photoByAccount ne sont pas supprimées
+				tx.del(SACCOUNTS_KEY, SGROUPS_KEY, "accountsByGroup", "photoByAccount");
 				tx.exec();
 			} catch (final IOException ex) {
 				throw new WrappedException(ex);
