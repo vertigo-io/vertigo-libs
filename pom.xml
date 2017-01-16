@@ -24,7 +24,6 @@ limitations under the License. -->
 	</parent> 
 	
 	<artifactId>vertigo-x-parent</artifactId>
-	<version>0.9.4-SNAPSHOT</version>
 	<name>vertigo-extensions</name>
 	<packaging>pom</packaging>
 
