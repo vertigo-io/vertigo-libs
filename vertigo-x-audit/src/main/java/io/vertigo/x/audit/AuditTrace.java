@@ -56,7 +56,15 @@ public final class AuditTrace implements DtObject {
 	@Field(domain = "DO_X_AUDIT_CONTEXT", label = "context")
 	private final String context;
 
-	AuditTrace(final Long id, final String category, final String username, final Date businessDate, final Date executionDate, final Long item, final String message, final String context) {
+	AuditTrace(
+			final Long id,
+			final String category,
+			final String username,
+			final Date businessDate,
+			final Date executionDate,
+			final Long item,
+			final String message,
+			final String context) {
 		this.id = id;
 		this.category = category;
 		this.username = username;
