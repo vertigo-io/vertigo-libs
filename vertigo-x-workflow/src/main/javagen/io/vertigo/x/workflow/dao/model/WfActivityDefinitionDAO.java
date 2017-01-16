@@ -59,16 +59,16 @@ public final class WfActivityDefinitionDAO extends DAO<WfActivityDefinition, jav
 	 * Execute la tache TK_FIND_ALL_DEFAULT_ACTIVITY_DEFINITIONS.
 	 * @param wfwdId Long 
 	 * @param name String 
-	 * @return Option de io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.workflow.domain.model.WfActivityDefinition> workflowActivityDefinitionList
+	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.workflow.domain.model.WfActivityDefinition> workflowActivityDefinitionList
 	*/
-	public Optional<io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.workflow.domain.model.WfActivityDefinition>> findAllDefaultActivityDefinitions(final Long wfwdId, final String name) {
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.workflow.domain.model.WfActivityDefinition> findAllDefaultActivityDefinitions(final Long wfwdId, final String name) {
 		final Task task = createTaskBuilder("TK_FIND_ALL_DEFAULT_ACTIVITY_DEFINITIONS")
 				.addValue("WFWD_ID", wfwdId)
 				.addValue("NAME", name)
 				.build();
-		return Optional.ofNullable((io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.workflow.domain.model.WfActivityDefinition>)getTaskManager()
+		return getTaskManager()
 				.execute(task)
-				.getResult());
+				.getResult();
 	}
 
 

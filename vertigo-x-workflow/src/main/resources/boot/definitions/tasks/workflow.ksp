@@ -9,8 +9,8 @@ create Task TK_COUNT_DEFAULT_TRANSACTIONS {
 					WF_TRANSITION_DEFINITION TRA
 				WHERE TRA.WFWD_ID = #WFWD_ID#
 	"
-	attribute WFWD_ID 						{domain : DO_ID			  			  			notNull:"true" 	  inOut:"in"}
-	attribute NUMBER			{domain : DO_ENTIER       notNull:"true"      inOut :"out"}
+	attribute WFWD_ID 		{domain : DO_ID			notNull:"true" 	inOut:"in"}
+	attribute NUMBER		{domain : DO_ENTIER     notNull:"true"  inOut:"out"}
 }
 
 create Task TK_DELETE_ACTIVITIES_BY_DEFINTIONS_IDS {  
@@ -24,7 +24,7 @@ create Task TK_DELETE_ACTIVITIES_BY_DEFINTIONS_IDS {
 		  FROM WF_ACTIVITY 
 		 WHERE WFAD_ID = #WFAD_ID#
     "
-           attribute WFAD_ID		{domain : DO_ID       notNull:"true"      inOut :"in"}
+	attribute WFAD_ID		{domain : DO_ID       notNull:"true"    inOut :"in"}
 }
 
 create Task TK_FIND_ACTIVE_WORKFLOWS_FOR_UPDATES {
@@ -37,8 +37,8 @@ create Task TK_FIND_ACTIVE_WORKFLOWS_FOR_UPDATES {
 			WHERE WFW.WFWD_ID = #WFWD_ID#
 			  AND (WFW.WFS_CODE = 'Sta' OR WFW.WFS_CODE = 'Pau');
 	"
-	attribute WFWD_ID 					{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
-	attribute DT_WF_WORKFLOW    			{domain : DO_DT_WF_WORKFLOW_DTC,            notNull:"true",     inOut :"out"}
+	attribute WFWD_ID 					{domain : DO_ID			  			  notNull:"true"	inOut:"in"}
+	attribute DT_WF_WORKFLOW    		{domain : DO_DT_WF_WORKFLOW_DTC       notNull:"true"    inOut :"out"}
 }
 
 create Task TK_FIND_ACTIVITIES_BY_DEFINITION_ID {
@@ -55,9 +55,9 @@ create Task TK_FIND_ACTIVITIES_BY_DEFINITION_ID {
 			ORDER BY
 				ACD.LEVEL
 	"
-	attribute WFW_ID 					{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
-	attribute ACT_DEF_IDS    			{domain:DO_DT_WORKFLOW_DUMMY_DTC,            notNull:"true",     inOut :"in"}
-	attribute WORKFLOW_ACTIVITY_LIST    {domain:DO_DT_WF_ACTIVITY_DTC,            notNull:"true",     inOut :"out"}
+	attribute WFW_ID 					{domain : DO_ID			  			  notNull:"true" 	 inOut:"in"}
+	attribute ACT_DEF_IDS    			{domain:DO_DT_WORKFLOW_DUMMY_DTC      notNull:"true"     inOut :"in"}
+	attribute WORKFLOW_ACTIVITY_LIST    {domain:DO_DT_WF_ACTIVITY_DTC         notNull:"true"     inOut :"out"}
 }
 
 create Task TK_FIND_ACTIVITY_DEFINITION_BY_POSITION {
@@ -71,9 +71,9 @@ create Task TK_FIND_ACTIVITY_DEFINITION_BY_POSITION {
 				  AND WAD.LEVEL = #LEVEL#
 			LIMIT 1
 	"
-	attribute WFWD_ID 					{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
-	attribute LEVEL						{domain : DO_ENTIER      			notNull:"true"      inOut :"in"}
-	attribute WORKFLOW_ACTIVITY_DEFINITION    {domain:DO_DT_WF_ACTIVITY_DEFINITION_DTO,            notNull:"false",     inOut :"out"}
+	attribute WFWD_ID 							{domain : DO_ID			  			  		notNull:"true"	inOut:"in"}
+	attribute LEVEL								{domain : DO_ENTIER      					notNull:"true"  inOut:"in"}
+	attribute WORKFLOW_ACTIVITY_DEFINITION    	{domain:DO_DT_WF_ACTIVITY_DEFINITION_DTO    notNull:"false" inOut:"out"}
 }
 
 create Task TK_FIND_ALL_ACTIVITIES_BY_WORKFLOW_DEFINITION_ID {
@@ -90,8 +90,8 @@ create Task TK_FIND_ALL_ACTIVITIES_BY_WORKFLOW_DEFINITION_ID {
 
 ORDER BY WAD.LEVEL;
 	"
-	attribute WFWD_ID 					{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
-	attribute WORKFLOW_ACTIVITY_LIST    {domain:DO_DT_WF_ACTIVITY_DTC,            notNull:"false",     inOut :"out"}
+	attribute WFWD_ID 					{domain : DO_ID			  		notNull:"true" 	  inOut:"in"}
+	attribute WORKFLOW_ACTIVITY_LIST    {domain:DO_DT_WF_ACTIVITY_DTC   notNull:"true"    inOut:"out"}
 }
 
 create Task TK_FIND_ALL_DEFAULT_ACTIVITY_DEFINITIONS {
@@ -110,9 +110,9 @@ create Task TK_FIND_ALL_DEFAULT_ACTIVITY_DEFINITIONS {
 		ORDER BY WAD.LEVEL
 		
 	"
-	attribute WFWD_ID 					{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
-	attribute NAME 						{domain : DO_LIBELLE			  			  notNull:"true" 	  inOut:"in"}
-	attribute WORKFLOW_ACTIVITY_DEFINITION_LIST    {domain:DO_DT_WF_ACTIVITY_DEFINITION_DTC,            notNull:"false",     inOut :"out"}
+	attribute WFWD_ID 							{domain : DO_ID	  			  				notNull:"true" 	inOut:"in"}
+	attribute NAME 								{domain : DO_LIBELLE	  			  		notNull:"true" 	inOut:"in"}
+	attribute WORKFLOW_ACTIVITY_DEFINITION_LIST	{domain:DO_DT_WF_ACTIVITY_DEFINITION_DTC	notNull:"true"	inOut:"out"}
 }
 
 
@@ -127,8 +127,8 @@ create Task TK_FIND_DECISIONS_BY_WORKFLOW_ID {
 		WHERE 
 			WAC.WFW_ID = #WFW_ID#
 	"
-	attribute WFW_ID 					{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
-	attribute WORKFLOW_DECISION_LIST    {domain:DO_DT_WF_DECISION_DTC,            notNull:"true",     inOut :"out"}
+	attribute WFW_ID 					{domain : DO_ID			  			  	notNull:"true" 	  inOut:"in"}
+	attribute WORKFLOW_DECISION_LIST    {domain:DO_DT_WF_DECISION_DTC,          notNull:"true"    inOut :"out"}
 }
 
 create Task TK_HAS_NEXT_TRANSITION {
@@ -140,9 +140,9 @@ create Task TK_HAS_NEXT_TRANSITION {
 			WF_TRANSITION_DEFINITION TRA
 		WHERE TRA.NAME = #NAME# AND TRA.WFAD_ID_FROM = #WFAD_ID_FROM#
 	"
-	attribute WFAD_ID_FROM				{domain : DO_ID			  			  		notNull:"true" 	  inOut:"in"}
-	attribute NAME 						{domain : DO_LIBELLE			  			  notNull:"true" 	  inOut:"in"}
-	attribute WF_TRANSITION_DEFINITION_LIST    {domain:DO_DT_WF_TRANSITION_DEFINITION_DTC,            notNull:"false",     inOut :"out"}
+	attribute WFAD_ID_FROM				{domain : DO_ID			  			  				notNull:"true" 	  inOut:"in"}
+	attribute NAME 						{domain : DO_LIBELLE			  			  		notNull:"true" 	  inOut:"in"}
+	attribute WF_TRANSITION_DEFINITION_LIST    {domain:DO_DT_WF_TRANSITION_DEFINITION_DTC	notNull:"true"     inOut :"out"}
 }
 
 create Task TK_INCREMENT_ACTIVITY_DEFINITION_POSITIONS_AFTER {
@@ -151,8 +151,8 @@ create Task TK_INCREMENT_ACTIVITY_DEFINITION_POSITIONS_AFTER {
 		UPDATE WF_ACTIVITY_DEFINITION SET LEVEL = LEVEL + 1
 		 WHERE LEVEL >= #LEVEL# AND WFWD_ID = #WFWD_ID#
 	"
-	attribute WFWD_ID 					{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
-	attribute LEVEL						{domain : DO_ENTIER      			notNull:"true"      inOut :"in"}
+	attribute WFWD_ID 					{domain:DO_ID			  			notNull:"true" 	  	inOut:"in"}
+	attribute LEVEL						{domain:DO_ENTIER      			notNull:"true"      inOut:"in"}
 }
 
 create Task TK_INSERT_ACTIVITY_UPDATE_WORKFLOW {
@@ -187,8 +187,8 @@ create Task TK_READ_WORKFLOW_FOR_UPDATE {
 		  FROM WF_WORKFLOW WFW
 		 WHERE WFW.WFW_ID = #WFW_ID#;
 	"
-	attribute WFW_ID 					{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
-	attribute WORKFLOW    				{domain:DO_DT_WF_WORKFLOW_DTO,            notNull:"true",     inOut :"out"}
+	attribute WFW_ID 			{domain:DO_ID			  			  notNull:"true" 	  inOut:"in"}
+	attribute WORKFLOW    		{domain:DO_DT_WF_WORKFLOW_DTO         notNull:"true"     inOut :"out"}
 }
 
 create Task TK_UNSET_CURRENT_ACTIVITY {
@@ -237,10 +237,10 @@ create Task TK_FIND_TRANSITION {
 		and WFAD_ID_FROM = #WFAD_ID_FROM#
 		<% } %>
 	"
-	attribute NAME 						{domain : DO_LIBELLE			  			  notNull:"true" 	  inOut:"in"}
-	attribute WFAD_ID_TO					{domain : DO_ID			  			  notNull:"false" 	  inOut:"in"}
-	attribute WFAD_ID_FROM					{domain : DO_ID			  			  notNull:"false" 	  inOut:"in"}
-	attribute WORKFLOW_TRANSITION_DEFINITIN_LIST    {domain:DO_DT_WF_TRANSITION_DEFINITION_DTO,            notNull:"false",     inOut :"out"}
+	attribute NAME 									{domain : DO_LIBELLE			  			notNull:"true" 		inOut:"in"}
+	attribute WFAD_ID_TO							{domain : DO_ID			  			  		notNull:"false"		inOut:"in"}
+	attribute WFAD_ID_FROM							{domain : DO_ID			  			  		notNull:"false"	  	inOut:"in"}
+	attribute WORKFLOW_TRANSITION_DEFINITIN_LIST	{domain:DO_DT_WF_TRANSITION_DEFINITION_DTO	notNull:"false"     inOut:"out"}
 }
 
 create Task TK_SHIFT_ACTIVITY_DEFINITION_POSITIONS_BETWEEN {
@@ -251,10 +251,10 @@ create Task TK_SHIFT_ACTIVITY_DEFINITION_POSITIONS_BETWEEN {
 		   AND LEVEL <= #LEVEL_END#
 		   AND WFWD_ID = #WFWD_ID#
 	"
-	attribute SHIFT			{domain : DO_ENTIER       notNull:"true"      inOut :"in"}
-	attribute LEVEL_START			{domain : DO_ENTIER       notNull:"true"      inOut :"in"}
-	attribute LEVEL_END			{domain : DO_ENTIER       notNull:"true"      inOut :"in"}
-	attribute WFWD_ID					{domain : DO_ID			  			  notNull:"false" 	  inOut:"in"}
+	attribute SHIFT			{domain : DO_ENTIER       notNull:"true"      inOut:"in"}
+	attribute LEVEL_START	{domain : DO_ENTIER       notNull:"true"      inOut:"in"}
+	attribute LEVEL_END		{domain : DO_ENTIER       notNull:"true"      inOut:"in"}
+	attribute WFWD_ID		{domain : DO_ID			  notNull:"false" 	  inOut:"in"}
 
 }
 
@@ -266,9 +266,9 @@ create Task TK_FIND_NEXT_ACTIVITY {
 	where WFAD_ID_FROM = #WFAD_ID#
 	AND NAME = #NAME#
 	"
-	attribute WFAD_ID					{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
-	attribute NAME 						{domain : DO_LIBELLE			  			  notNull:"true" 	  inOut:"in"}
-	attribute WF_TRANSITION_DEFINITION   				{domain:DO_DT_WF_TRANSITION_DEFINITION_DTO,            notNull:"true",     inOut :"out"}
+	attribute WFAD_ID					{domain : DO_ID			  			  		notNull:"true" 	inOut:"in"}
+	attribute NAME 						{domain : DO_LIBELLE			  			notNull:"true" 	inOut:"in"}
+	attribute WF_TRANSITION_DEFINITION  {domain:DO_DT_WF_TRANSITION_DEFINITION_DTO  notNull:"true"	inOut:"out"}
 
 }
 
@@ -281,6 +281,6 @@ create Task TK_HAS_WORKFLOW_DEFINITION_BY_NAME {
 	LIMIT 1
 	"
 	attribute NAME 						{domain : DO_LIBELLE			  			  notNull:"true" 	  inOut:"in"}
-	attribute WF_WORKFLOW_DEFINITION   				{domain:DO_DT_WF_WORKFLOW_DEFINITION_DTO,            notNull:"false",     inOut :"out"}
+	attribute WF_WORKFLOW_DEFINITION   	{domain:DO_DT_WF_WORKFLOW_DEFINITION_DTO      notNull:"false"     inOut :"out"}
 
 }
