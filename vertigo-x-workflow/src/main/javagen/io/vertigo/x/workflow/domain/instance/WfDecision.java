@@ -89,7 +89,7 @@ public final class WfDecision implements Entity {
 	 * Récupère la valeur de la propriété 'decision date'.
 	 * @return java.util.Date decisionDate
 	 */
-	@Field(domain = "DO_X_WORKFLOW_DATE", label = "decision date")
+	@Field(domain = "DO_TIMESTAMP", label = "decision date")
 	public java.util.Date getDecisionDate() {
 		return decisionDate;
 	}

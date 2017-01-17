@@ -66,5 +66,21 @@ public final class WfWorkflowDAO extends DAO<WfWorkflow, java.lang.Long> impleme
 				.getResult();
 	}
 
+	/**
+	 * Execute la tache TK_READ_WORKFLOW_INSTANCE_BY_ITEM_ID.
+	 * @param wfwdId Long 
+	 * @param itemId Long 
+	 * @return io.vertigo.x.workflow.domain.instance.WfWorkflow wfWorkflow
+	*/
+	public io.vertigo.x.workflow.domain.instance.WfWorkflow readWorkflowInstanceByItemId(final Long wfwdId, final Long itemId) {
+		final Task task = createTaskBuilder("TK_READ_WORKFLOW_INSTANCE_BY_ITEM_ID")
+				.addValue("WFWD_ID", wfwdId)
+				.addValue("ITEM_ID", itemId)
+				.build();
+		return getTaskManager()
+				.execute(task)
+				.getResult();
+	}
+
 
 }

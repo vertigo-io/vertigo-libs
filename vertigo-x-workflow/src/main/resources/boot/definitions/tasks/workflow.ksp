@@ -284,3 +284,31 @@ create Task TK_HAS_WORKFLOW_DEFINITION_BY_NAME {
 	attribute WF_WORKFLOW_DEFINITION   	{domain:DO_DT_WF_WORKFLOW_DEFINITION_DTO      notNull:"false"     inOut :"out"}
 
 }
+
+create Task TK_READ_WORKFLOW_INSTANCE_BY_ITEM_ID {
+	className : "io.vertigo.dynamox.task.TaskEngineSelect"
+	request : "
+	SELECT *
+	FROM WF_WORKFLOW
+	WHERE ITEM_ID = #ITEM_ID#
+	AND WFWD_ID = #WFWD_ID#
+	"
+	attribute WFWD_ID						{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
+	attribute ITEM_ID 						{domain : DO_ID				  			notNull:"true" 	  inOut:"in"}
+	attribute WF_WORKFLOW   				{domain:DO_DT_WF_WORKFLOW_DTO,            notNull:"true",     inOut :"out"}
+
+}
+
+create Task TK_FIND_ACTIVITY_BY_DEFINITION_WORKFLOW {
+	className : "io.vertigo.dynamox.task.TaskEngineSelect"
+	request : "
+	SELECT *
+		FROM WF_ACTIVITY
+	WHERE WFW_ID = #WFW_ID#
+	AND WFAD_ID = #WFAD_ID#
+	"
+	attribute WFW_ID						{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
+	attribute WFAD_ID 						{domain : DO_ID				  			notNull:"true" 	  inOut:"in"}
+	attribute WF_ACTIVITY   				{domain:DO_DT_WF_ACTIVITY_DTO,            notNull:"false",     inOut :"out"}
+
+}

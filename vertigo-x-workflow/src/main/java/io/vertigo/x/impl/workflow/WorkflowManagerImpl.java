@@ -520,6 +520,17 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	}
 
 	/**
+	 * Find the workflowDefinition by name
+	 * 
+	 * @param definitionName
+	 * @return the matching workflow
+	 */
+	@Override
+	public WfWorkflowDefinition getWorkflowDefinitionByName(String definitionName) {
+		return workflowStorePlugin.readWorkflowDefinition(definitionName);
+	}
+
+	/**
 	 * Find activities matching the criteria in parameters
 	 *
 	 * @param criteria

@@ -96,13 +96,6 @@ create Domain DO_LABEL_LONG {
     indexType : "text_fr"
 }
 
-create Domain DO_EMAIL {
-	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_EMAIL, CK_MAX_LENGTH_150]
-	indexType: "string"
-	storeType : "VARCHAR(150)"
-}
 
 create Domain DO_X_WORKFLOW_CODE {
 	dataType : String
@@ -112,99 +105,9 @@ create Domain DO_X_WORKFLOW_CODE {
 	indexType : "code"
 }
 
-
-create Domain DO_NAME {
-	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_50]
-	storeType : "VARCHAR(50)"
-    indexType : "text_fr"
-}
-
-create Domain DO_FIRSTNAME {
-	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_50]
-	storeType : "VARCHAR(50)"
-    indexType : "text_fr"
-}
-
-create Domain DO_PASSWORD {
-	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_32]
-	storeType : "VARCHAR(32)"
-}
-
-create Domain DO_TEXT {
-	dataType : String
-	formatter : FMT_DEFAULT
-	storeType : "TEXT"
-    indexType : "text_fr"
-}
-
-create Domain DO_TEXT_NOT_ANALYZED {
-	dataType : String
-	formatter : FMT_DEFAULT
-    indexType : "sort_only"
-}
-
 create Domain DO_X_WORKFLOW_FLAG {
 	dataType : Boolean
 	formatter : FMT_DEFAULT
 	indexType : "boolean"
 	storeType : "bool"
 }
-
-
-create Domain DO_FILE_NAME {
-	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_100]
-	storeType : "VARCHAR(100)"
-}
-
-create Domain DO_TIMESTAMP {
-	dataType : Date
-	formatter : FMT_DATE_HEURE
-	storeType : "TIMESTAMP"
-}
-
-create Domain DO_FILE_LENGTH {
-	dataType : Long
-	formatter : FMT_DEFAULT
-	storeType : "NUMERIC"
-}
-
-create Domain DO_FILE_PATH {
-	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_250]
-	storeType : "VARCHAR(250)"
-}
-
-create Domain DO_ID {
-	dataType : Long
-	formatter : FMT_DEFAULT
-	storeType : "NUMERIC"
-}
-
-create Domain DO_BOOLEEN {
-	dataType : Boolean
-	formatter : FMT_DEFAULT
-	storeType : "bool"
-}
-
-create Domain DO_ENTIER {
-	dataType : Integer
-	formatter : FMT_DEFAULT
-	storeType : "NUMERIC"
-}
-
-create Domain DO_LIBELLE {
-	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_100]
-	storeType : "VARCHAR(100)"
-}
-

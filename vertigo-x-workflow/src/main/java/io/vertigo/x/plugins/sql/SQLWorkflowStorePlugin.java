@@ -116,8 +116,7 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public List<WfDecision> findAllDecisionByActivity(final WfActivity wfActivity) {
-		return wfDecisionDAO.getListByDtField(WfDecisionFields.WFA_ID.name(),
-				wfActivity.getWfaId(), Integer.MAX_VALUE);
+		return wfDecisionDAO.getListByDtField(WfDecisionFields.WFA_ID.name(), wfActivity.getWfaId(), Integer.MAX_VALUE);
 	}
 
 	/** {@inheritDoc} */
@@ -130,9 +129,7 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public boolean hasNextActivity(final WfActivity activity, final String transitionName) {
-		return wfTransitionDefinitionDAO
-				.hasNextTransition(activity.getWfadId(), transitionName)
-				.size() > 0;
+		return wfTransitionDefinitionDAO.hasNextTransition(activity.getWfadId(), transitionName).size() > 0;
 	}
 
 	/** {@inheritDoc} */
@@ -202,18 +199,20 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	@Override
 	public WfActivityDefinition findActivityDefinitionByPosition(final WfWorkflowDefinition wfWorkflowDefinition,
 			final int position) {
-		return wfActivityDefinitionDAO
-				.findActivityDefinitionByPosition(wfWorkflowDefinition.getWfwdId(), position)
-				.orElseThrow(() -> new IllegalArgumentException("No ActivityDefinition found for " + wfWorkflowDefinition));
+		Optional<WfActivityDefinition> activityDefinition = wfActivityDefinitionDAO
+				.findActivityDefinitionByPosition(wfWorkflowDefinition.getWfwdId(), position);
+		if (activityDefinition.isPresent()) {
+			return activityDefinition.get();
+		}
+		return null;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public List<WfActivityDefinition> findAllDefaultActivityDefinitions(
 			final WfWorkflowDefinition wfWorkflowDefinition) {
-		return wfActivityDefinitionDAO
-				.findAllDefaultActivityDefinitions(wfWorkflowDefinition.getWfwdId(),
-						WfCodeTransition.DEFAULT.name().toLowerCase());
+		return wfActivityDefinitionDAO.findAllDefaultActivityDefinitions(wfWorkflowDefinition.getWfwdId(),
+				WfCodeTransition.DEFAULT.name().toLowerCase());
 	}
 
 	/** {@inheritDoc} */
@@ -264,7 +263,12 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public WfActivity findActivityByDefinitionWorkflow(final WfWorkflow arg0, final WfActivityDefinition arg1) {
-		throw new UnsupportedOperationException();
+		Optional<WfActivity> activity = wfActivityDAO.findActivityByDefinitionWorkflow(arg0.getWfwId(),
+				arg1.getWfadId());
+		if (activity.isPresent()) {
+			return activity.get();
+		}
+		return null;
 	}
 
 	/** {@inheritDoc} */
@@ -301,10 +305,14 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public WfTransitionDefinition findTransition(final WfTransitionCriteria arg0) {
-		return wfTransitionDefinitionDAO.findTransition(
+		Optional<WfTransitionDefinition> wfTransitionDefinition = wfTransitionDefinitionDAO.findTransition(
 				arg0.getTransitionName(), Optional.ofNullable(arg0.getWfadIdTo()),
-				Optional.ofNullable(arg0.getWfadIdFrom()))
-				.orElseThrow(() -> new IllegalArgumentException("No transition found"));
+				Optional.ofNullable(arg0.getWfadIdFrom()));
+		if (wfTransitionDefinition.isPresent()) {
+			return wfTransitionDefinition.get();
+		}
+		return null;
+
 	}
 
 	/** {@inheritDoc} */
@@ -316,31 +324,26 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public List<WfDecision> readDecisionsByActivityId(final Long arg0) {
-		// final WfWorkflowDefinition wfWorkflowDefinition = new
-		// WfWorkflowDefinition();
-		// final DtList<WfWorkflowDefinition> list =
-		// wfWorkflowDefinitionDAO.getListByDtField("NAME", definitionName, 1);
-		// final List<WfDecision> wfDecisionList = new ArrayList<>();
-		// return wfWorkflowDefinition;
-		throw new UnsupportedOperationException();
+		return wfDecisionDAO.getListByDtField(WfDecisionFields.WFA_ID.name(), arg0, Integer.MAX_VALUE);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public WfWorkflow readWorkflowInstanceByItemId(final Long arg0, final Long arg1) {
-		throw new UnsupportedOperationException();
+		return wfWorkflowDAO.readWorkflowInstanceByItemId(arg0, arg1);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public WfWorkflow readWorkflowInstanceForUpdateById(final Long arg0) {
-		throw new UnsupportedOperationException();
+		return wfWorkflowDAO.readWorkflowForUpdate(arg0);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public List<WfWorkflow> readWorkflowsInstanceForUpdateById(final Long arg0) {
-		throw new UnsupportedOperationException();
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/** {@inheritDoc} */

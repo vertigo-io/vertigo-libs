@@ -85,7 +85,7 @@ public class SQLRuleStorePlugin implements RuleStorePlugin {
 
 	@Override
 	public void addSelector(SelectorDefinition selectorDefinition) {
-		// TODO Auto-generated method stub
+		selectorDefinitionDAO.save(selectorDefinition);
 
 	}
 
@@ -110,7 +110,7 @@ public class SQLRuleStorePlugin implements RuleStorePlugin {
 
 	@Override
 	public void addFilter(RuleFilterDefinition ruleFilterDefinition) {
-		// TODO Auto-generated method stub
+		ruleFilterDefinitionDAO.save(ruleFilterDefinition);
 
 	}
 

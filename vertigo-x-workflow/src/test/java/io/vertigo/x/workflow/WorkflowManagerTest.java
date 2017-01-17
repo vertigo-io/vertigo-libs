@@ -678,13 +678,13 @@ public class WorkflowManagerTest {
 			assertNotNull(workflowDecisions1);
 			assertThat(workflowDecisions1.size(), is(3));
 
-			final Long currentActivity = wfWorkflow.getWfaId2();
-			assertThat(currentActivity, is(firstActivity.getWfadId()));
+			WfActivity currentActivity = workflowManager.getActivity(wfWorkflow.getWfaId2());
+			assertThat(currentActivity.getWfadId(), is(firstActivity.getWfadId()));
 
 			final WfWorkflow wfWorkflowFetched = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
 			assertThat(wfWorkflowFetched, is(not(nullValue())));
-			assertThat(currentActivity, is(firstActivity.getWfadId()));
-
+			WfActivity currentActivityFetched = workflowManager.getActivity(wfWorkflowFetched.getWfaId2());
+			assertThat(currentActivityFetched.getWfadId(), is(firstActivity.getWfadId()));
 			transaction.rollback();
 		}
 	}

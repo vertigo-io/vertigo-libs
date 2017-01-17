@@ -1,6 +1,7 @@
 package io.vertigo.x.workflow.dao.instance;
 
 import javax.inject.Inject;
+import java.util.Optional;
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
@@ -66,6 +67,22 @@ public final class WfActivityDAO extends DAO<WfActivity, java.lang.Long> impleme
 		return getTaskManager()
 				.execute(task)
 				.getResult();
+	}
+
+	/**
+	 * Execute la tache TK_FIND_ACTIVITY_BY_DEFINITION_WORKFLOW.
+	 * @param wfwId Long 
+	 * @param wfadId Long 
+	 * @return Option de io.vertigo.x.workflow.domain.instance.WfActivity wfActivity
+	*/
+	public Optional<io.vertigo.x.workflow.domain.instance.WfActivity> findActivityByDefinitionWorkflow(final Long wfwId, final Long wfadId) {
+		final Task task = createTaskBuilder("TK_FIND_ACTIVITY_BY_DEFINITION_WORKFLOW")
+				.addValue("WFW_ID", wfwId)
+				.addValue("WFAD_ID", wfadId)
+				.build();
+		return Optional.ofNullable((io.vertigo.x.workflow.domain.instance.WfActivity)getTaskManager()
+				.execute(task)
+				.getResult());
 	}
 
 

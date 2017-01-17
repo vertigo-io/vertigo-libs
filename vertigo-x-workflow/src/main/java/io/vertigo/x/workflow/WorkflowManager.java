@@ -374,4 +374,12 @@ public interface WorkflowManager extends Manager {
 	 */
 	List<WfWorkflowDecision> getWorkflowDecision(long wfwId);
 
+	/**
+	 * Find the workflowDefinition by name
+	 * 
+	 * @param definitionName
+	 * @param itemId
+	 * @return the matching workflowDefinition
+	 */
+	WfWorkflowDefinition getWorkflowDefinitionByName(String definitionName);
 }
