@@ -5,7 +5,7 @@ package io.vertigo.x.workflow;
  * @author xdurand
  *
  */
-public class WfTransitionCriteria {
+public final class WfTransitionCriteria {
 
 	private String transitionName;
 	private Long wfadIdFrom;

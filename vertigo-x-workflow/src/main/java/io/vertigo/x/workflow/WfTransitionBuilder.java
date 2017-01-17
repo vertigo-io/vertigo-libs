@@ -28,7 +28,7 @@ import io.vertigo.x.workflow.domain.model.WfTransitionDefinition;
  */
 public final class WfTransitionBuilder implements Builder<WfTransitionDefinition> {
 
-	private final static String DEFAULT_VALUE_NAME = "default";
+	private static final String DEFAULT_VALUE_NAME = "default";
 
 	private String myName;
 	private final Long wfwdId;
@@ -37,7 +37,7 @@ public final class WfTransitionBuilder implements Builder<WfTransitionDefinition
 
 	/**
 	 * Builder for transitions
-	 * @param wfwdId 
+	 * @param wfwdId
 	 * @param wfadIdFrom
 	 * @param wfadIdTo
 	 */

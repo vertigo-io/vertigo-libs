@@ -8,11 +8,11 @@ import io.vertigo.x.workflow.domain.instance.WfDecision;
 import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
 
 /**
- * 
+ *
  * @author xdurand
  *
  */
-public class WfWorkflowDecision {
+public final class WfWorkflowDecision {
 
 	private WfActivity activity;
 	private WfActivityDefinition activityDefinition;
@@ -29,7 +29,7 @@ public class WfWorkflowDecision {
 	/**
 	 * @param activity the activity to set
 	 */
-	public void setActivity(WfActivity activity) {
+	public void setActivity(final WfActivity activity) {
 		this.activity = activity;
 	}
 
@@ -43,7 +43,7 @@ public class WfWorkflowDecision {
 	/**
 	 * @param activityDefinition the activityDefinition to set
 	 */
-	public void setActivityDefinition(WfActivityDefinition activityDefinition) {
+	public void setActivityDefinition(final WfActivityDefinition activityDefinition) {
 		this.activityDefinition = activityDefinition;
 	}
 
@@ -57,7 +57,7 @@ public class WfWorkflowDecision {
 	/**
 	 * @param decisions the decisions to set
 	 */
-	public void setDecisions(List<WfDecision> decisions) {
+	public void setDecisions(final List<WfDecision> decisions) {
 		this.decisions = decisions;
 	}
 
@@ -71,7 +71,7 @@ public class WfWorkflowDecision {
 	/**
 	 * @param groups the groups to set
 	 */
-	public void setGroups(List<AccountGroup> groups) {
+	public void setGroups(final List<AccountGroup> groups) {
 		this.groups = groups;
 	}
 

@@ -5,11 +5,11 @@ import java.util.List;
 import io.vertigo.x.rules.RuleConditionCriteria;
 
 /**
- * 
+ *
  * @author xdurand
  *
  */
-public class WfActivityCriteria {
+public final class WfActivityCriteria {
 
 	private List<RuleConditionCriteria> conditionCriteria;
 
@@ -23,7 +23,7 @@ public class WfActivityCriteria {
 	/**
 	 * @param conditionCriteria the conditionCriteria to set
 	 */
-	public void setConditionCriteria(List<RuleConditionCriteria> conditionCriteria) {
+	public void setConditionCriteria(final List<RuleConditionCriteria> conditionCriteria) {
 		this.conditionCriteria = conditionCriteria;
 	}
 
