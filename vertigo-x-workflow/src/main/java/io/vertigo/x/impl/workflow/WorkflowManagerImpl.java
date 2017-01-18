@@ -64,6 +64,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	private final RuleManager ruleManager;
 
 	private static final String USER_AUTO = "<AUTO>";
+	private static final String TRANSITION_BACK_NAME = "back";
 
 	/**
 	 * Construct a new Workflow manager
@@ -437,12 +438,12 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	public void goToNextActivity(final WfWorkflow wfWorkflow, String transitionName) {
 		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
-		
+
 		final boolean canGoToNext = canGoToNextActivity(wfWorkflow);
 		if (!canGoToNext) {
 			throw new IllegalStateException("Can't go to the next activity");
 		}
-		
+
 		goToNextActivity(wfWorkflow, currentActivity, transitionName);
 	}
 
@@ -586,6 +587,10 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 				final WfTransitionDefinition wfTransitionDefinition = new WfTransitionBuilder(
 						wfWorkflowDefinition.getWfwdId(), wfWorkflowDefinition.getWfadId(),
 						wfActivityDefinitionToAdd.getWfadId()).build();
+				final WfTransitionDefinition wfTransitionDefinitionBack = new WfTransitionBuilder(
+						wfWorkflowDefinition.getWfwdId(), wfActivityDefinitionToAdd.getWfadId(),
+						wfWorkflowDefinition.getWfadId()).withName(TRANSITION_BACK_NAME).build();
+				workflowStorePlugin.addTransition(wfTransitionDefinitionBack);
 				workflowStorePlugin.addTransition(wfTransitionDefinition);
 			} else if (position > 2) {
 				final WfActivityDefinition wfActivityDefinitionPrevious = workflowStorePlugin
@@ -593,6 +598,10 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 				final WfTransitionDefinition wfTransitionDefinition = new WfTransitionBuilder(
 						wfWorkflowDefinition.getWfwdId(), wfActivityDefinitionPrevious.getWfadId(),
 						wfActivityDefinitionToAdd.getWfadId()).build();
+				final WfTransitionDefinition wfTransitionDefinitionBack = new WfTransitionBuilder(
+						wfWorkflowDefinition.getWfwdId(), wfActivityDefinitionToAdd.getWfadId(),
+						wfActivityDefinitionPrevious.getWfadId()).withName(TRANSITION_BACK_NAME).build();
+				workflowStorePlugin.addTransition(wfTransitionDefinitionBack);
 				workflowStorePlugin.addTransition(wfTransitionDefinition);
 			} else {
 				// Saving starting activity

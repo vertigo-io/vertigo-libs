@@ -8,6 +8,7 @@ create Task TK_COUNT_DEFAULT_TRANSACTIONS {
 				FROM 
 					WF_TRANSITION_DEFINITION TRA
 				WHERE TRA.WFWD_ID = #WFWD_ID#
+				AND NAME  = 'default'
 	"
 	attribute WFWD_ID 		{domain : DO_ID			notNull:"true" 	inOut:"in"}
 	attribute NUMBER		{domain : DO_ENTIER     notNull:"true"  inOut:"out"}
