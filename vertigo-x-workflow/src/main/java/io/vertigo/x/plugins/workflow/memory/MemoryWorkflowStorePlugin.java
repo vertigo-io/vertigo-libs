@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.plugins.memory;
+package io.vertigo.x.plugins.workflow.memory;
 
 import java.util.ArrayList;
 import java.util.List;

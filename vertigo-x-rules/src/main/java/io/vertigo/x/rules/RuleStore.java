@@ -86,13 +86,6 @@ public interface RuleStore {
 	void addFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	/**
-	 * Remove a filter
-	 * 
-	 * @param ruleFilterDefinition
-	 */
-	void removeFilter(RuleFilterDefinition ruleFilterDefinition);
-
-	/**
 	 * Find the filters associated to a selector id
 	 * 
 	 * @param selectorId

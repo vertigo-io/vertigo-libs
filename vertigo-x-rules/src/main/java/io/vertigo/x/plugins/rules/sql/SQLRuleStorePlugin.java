@@ -1,4 +1,4 @@
-package io.vertigo.x.plugins.sql;
+package io.vertigo.x.plugins.rules.sql;
 
 import java.util.List;
 
@@ -22,16 +22,16 @@ import io.vertigo.x.rules.domain.SelectorDefinition;
 public class SQLRuleStorePlugin implements RuleStorePlugin {
 
 	@Inject
-	RuleDefinitionDAO ruleDefinitionDAO;
+	private RuleDefinitionDAO ruleDefinitionDAO;
 
 	@Inject
-	RuleConditionDefinitionDAO ruleConditionDefinitionDAO;
+	private RuleConditionDefinitionDAO ruleConditionDefinitionDAO;
 
 	@Inject
-	SelectorDefinitionDAO selectorDefinitionDAO;
+	private SelectorDefinitionDAO selectorDefinitionDAO;
 
 	@Inject
-	RuleFilterDefinitionDAO ruleFilterDefinitionDAO;
+	private RuleFilterDefinitionDAO ruleFilterDefinitionDAO;
 
 	@Override
 	public void addRule(RuleDefinition ruleDefinition) {
@@ -75,12 +75,6 @@ public class SQLRuleStorePlugin implements RuleStorePlugin {
 	@Override
 	public void addFilter(RuleFilterDefinition ruleFilterDefinition) {
 		ruleFilterDefinitionDAO.save(ruleFilterDefinition);
-
-	}
-
-	@Override
-	public void removeFilter(RuleFilterDefinition ruleFilterDefinition) {
-		// TODO Auto-generated method stub
 
 	}
 

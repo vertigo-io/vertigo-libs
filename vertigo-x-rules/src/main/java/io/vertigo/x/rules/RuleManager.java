@@ -160,14 +160,6 @@ public interface RuleManager extends Manager {
 	void addFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	/**
-	 * Remove a filter
-	 * 
-	 * @param ruleFilterDefinition
-	 *            the filter to remove
-	 */
-	void removeFilter(RuleFilterDefinition ruleFilterDefinition);
-
-	/**
 	 * Get filters for the selectors id
 	 * 
 	 * @param selectorId

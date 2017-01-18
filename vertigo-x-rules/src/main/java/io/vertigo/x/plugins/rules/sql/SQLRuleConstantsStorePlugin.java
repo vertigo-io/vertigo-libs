@@ -1,4 +1,4 @@
-package io.vertigo.x.plugins.sql;
+package io.vertigo.x.plugins.rules.sql;
 
 import io.vertigo.x.impl.rules.RuleConstants;
 import io.vertigo.x.impl.rules.RuleConstantsStorePlugin;

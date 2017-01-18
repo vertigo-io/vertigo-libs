@@ -1,7 +1,7 @@
 /**
  *
  */
-package io.vertigo.x.plugins.sql;
+package io.vertigo.x.plugins.workflow.sql;
 
 import java.util.List;
 import java.util.Optional;

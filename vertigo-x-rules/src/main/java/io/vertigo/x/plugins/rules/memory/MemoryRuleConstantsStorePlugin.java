@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.plugins.memory;
+package io.vertigo.x.plugins.rules.memory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

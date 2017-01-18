@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.plugins.memory;
+package io.vertigo.x.plugins.rules.memory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,15 +135,6 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 		final Long generatedId = memoryFilterSequenceGenerator.addAndGet(1);
 		ruleFilterDefinition.setId(generatedId);
 		inMemoryFilterStore.put(generatedId, ruleFilterDefinition);
-
-	}
-
-	@Override
-	public void removeFilter(final RuleFilterDefinition ruleFilterDefinition) {
-		Assertion.checkNotNull(ruleFilterDefinition);
-		Assertion.checkNotNull(ruleFilterDefinition.getId());
-		// ---
-		inMemoryFilterStore.remove(ruleFilterDefinition.getId());
 
 	}
 

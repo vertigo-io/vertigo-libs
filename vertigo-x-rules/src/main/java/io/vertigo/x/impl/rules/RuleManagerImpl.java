@@ -159,12 +159,6 @@ public final class RuleManagerImpl implements RuleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void removeFilter(final RuleFilterDefinition ruleFilterDefinition) {
-		ruleStorePlugin.removeFilter(ruleFilterDefinition);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public List<RuleFilterDefinition> getFiltersForSelectorId(final Long selectorId) {
 		return ruleStorePlugin.findFiltersBySelectorId(selectorId);
 	}

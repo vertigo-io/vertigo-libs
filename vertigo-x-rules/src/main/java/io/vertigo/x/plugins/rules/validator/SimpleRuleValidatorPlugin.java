@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.plugins.validator;
+package io.vertigo.x.plugins.rules.validator;
 
 import java.util.ArrayList;
 import java.util.Arrays;

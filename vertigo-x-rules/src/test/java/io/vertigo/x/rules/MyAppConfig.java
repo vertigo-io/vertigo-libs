@@ -33,10 +33,10 @@ import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
 import io.vertigo.x.impl.rules.RulesFeatures;
 import io.vertigo.x.plugins.account.memory.MemoryAccountStorePlugin;
-import io.vertigo.x.plugins.memory.MemoryRuleConstantsStorePlugin;
-import io.vertigo.x.plugins.memory.MemoryRuleStorePlugin;
-import io.vertigo.x.plugins.selector.SimpleRuleSelectorPlugin;
-import io.vertigo.x.plugins.validator.SimpleRuleValidatorPlugin;
+import io.vertigo.x.plugins.rules.memory.MemoryRuleConstantsStorePlugin;
+import io.vertigo.x.plugins.rules.memory.MemoryRuleStorePlugin;
+import io.vertigo.x.plugins.rules.selector.SimpleRuleSelectorPlugin;
+import io.vertigo.x.plugins.rules.validator.SimpleRuleValidatorPlugin;
 import io.vertigo.x.rules.data.MyDummyDtObjectProvider;
 import io.vertigo.x.rules.data.TestUserSession;
 

@@ -20,8 +20,8 @@ package io.vertigo.x.impl.rules;
 
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.x.plugins.sql.SQLRuleConstantsStorePlugin;
-import io.vertigo.x.plugins.sql.SQLRuleStorePlugin;
+import io.vertigo.x.plugins.rules.sql.SQLRuleConstantsStorePlugin;
+import io.vertigo.x.plugins.rules.sql.SQLRuleStorePlugin;
 import io.vertigo.x.rules.RuleManager;
 import io.vertigo.x.rules.dao.RuleConditionDefinitionDAO;
 import io.vertigo.x.rules.dao.RuleDefinitionDAO;

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.plugins.selector;
+package io.vertigo.x.plugins.rules.selector;
 
 import java.util.ArrayList;
 import java.util.Arrays;

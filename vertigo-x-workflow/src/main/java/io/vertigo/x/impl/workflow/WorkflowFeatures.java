@@ -23,7 +23,7 @@ import io.vertigo.commons.impl.script.ScriptManagerImpl;
 import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.core.param.Param;
-import io.vertigo.x.plugins.sql.SQLWorkflowStorePlugin;
+import io.vertigo.x.plugins.workflow.sql.SQLWorkflowStorePlugin;
 import io.vertigo.x.workflow.WorkflowManager;
 import io.vertigo.x.workflow.dao.instance.WfActivityDAO;
 import io.vertigo.x.workflow.dao.instance.WfDecisionDAO;
