@@ -183,6 +183,13 @@ public interface WorkflowManager extends Manager {
 	 * @param wfWorkflow workflow
 	 */
 	void goToNextActivity(WfWorkflow wfWorkflow);
+	
+	/**
+	 * Go to the next activity using the provinded transition name
+	 * @param wfWorkflow
+	 * @param transitionName
+	 */
+	void goToNextActivity(final WfWorkflow wfWorkflow, String transitionName);
 
 	/**
 	 * Predicate method to test if we can go to the next activity.

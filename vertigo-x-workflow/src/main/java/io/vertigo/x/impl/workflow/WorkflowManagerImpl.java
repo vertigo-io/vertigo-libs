@@ -432,14 +432,18 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	@Override
 	public void goToNextActivity(final WfWorkflow wfWorkflow) {
-		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
+		goToNextActivity(wfWorkflow, WfCodeTransition.DEFAULT.getTransitionName());
+	}
 
+	public void goToNextActivity(final WfWorkflow wfWorkflow, String transitionName) {
+		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
+		
 		final boolean canGoToNext = canGoToNextActivity(wfWorkflow);
 		if (!canGoToNext) {
 			throw new IllegalStateException("Can't go to the next activity");
 		}
-
-		goToNextActivity(wfWorkflow, currentActivity, WfCodeTransition.DEFAULT.getTransitionName());
+		
+		goToNextActivity(wfWorkflow, currentActivity, transitionName);
 	}
 
 	private void goToNextActivity(final WfWorkflow wfWorkflow, final WfActivity currentActivity, final String transitionName) {
