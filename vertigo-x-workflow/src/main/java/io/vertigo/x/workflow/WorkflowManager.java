@@ -41,34 +41,29 @@ public interface WorkflowManager extends Manager {
 	// Instances:
 	/**
 	 * Instantiate a new workflow instance
-	 * 
-	 * @param wfwdId
-	 *            wfwdId
-	 * @param username
-	 *            username
-	 * @param userLogic
-	 *            userLogic
-	 * @param item
-	 *            item
+	 *
+	 * @param wfwdId wfwdId
+	 * @param username  username
+	 * @param userLogic userLogic
+	 * @param item item
 	 * @return a new workflow instance
 	 */
 	WfWorkflow createWorkflowInstance(Long wfwdId, String username, boolean userLogic, Long item);
 
 	/**
 	 * Instantiate a new workflow instance
-	 * 
+	 *
 	 * @param definitionName
 	 * @param user
 	 * @param userLogic
 	 * @param item
 	 * @return a new workflow instance
 	 */
-	WfWorkflow createWorkflowInstance(final String definitionName, final String user, final boolean userLogic,
-			final Long item);
+	WfWorkflow createWorkflowInstance(final String definitionName, final String user, final boolean userLogic, final Long item);
 
 	/**
 	 * Get a workflow instance by its Id
-	 * 
+	 *
 	 * @param wfwId
 	 * @return the workflow instance
 	 */
@@ -76,7 +71,7 @@ public interface WorkflowManager extends Manager {
 
 	/**
 	 * Get a workflow instance by the item Id.
-	 * 
+	 *
 	 * @param wfwdId
 	 *            wfwdId of the item
 	 * @param itemId
@@ -87,57 +82,53 @@ public interface WorkflowManager extends Manager {
 
 	/**
 	 * Start a workflow instance
-	 * 
+	 *
 	 * @param wfWorkflow
 	 */
 	void startInstance(WfWorkflow wfWorkflow);
 
 	/**
 	 * Stop a workflow instance
-	 * 
+	 *
 	 * @param wfWorkflow
 	 */
 	void endInstance(WfWorkflow wfWorkflow);
 
 	/**
 	 * Pause a workflow instance
-	 * 
+	 *
 	 * @param wfWorkflow
 	 */
 	void pauseInstance(WfWorkflow wfWorkflow);
 
 	/**
 	 * Resume a paused workflow instance
-	 * 
+	 *
 	 * @param wfWorkflow
 	 */
 	public void resumeInstance(final WfWorkflow wfWorkflow);
 
 	/**
 	 * Get The User Id used for autovalidating activities.
-	 * 
+	 *
 	 * @return User Id
 	 */
 	String getUserAuto();
 
 	/**
 	 * Get an activity from Id
-	 * 
-	 * @param wfaId
-	 *            Activity Id
+	 *
+	 * @param wfaId Activity Id
 	 * @return activity corresponding to provided key
 	 */
 	WfActivity getActivity(Long wfaId);
 
 	/**
 	 * Get an activity from a definition and a workflow instance
-	 * 
-	 * @param wfWorkflow
-	 *            workflow instance
-	 * @param wfActivityDefinition
-	 *            Activity Definition
-	 * @return activity corresponding to the definition fot the provided
-	 *         instance
+	 *
+	 * @param wfWorkflow  workflow instance
+	 * @param wfActivityDefinition Activity Definition
+	 * @return activity corresponding to the definition fot the provided instance
 	 */
 	Optional<WfActivity> getActivity(WfWorkflow wfWorkflow, WfActivityDefinition wfActivityDefinition);
 
@@ -145,7 +136,7 @@ public interface WorkflowManager extends Manager {
 	 * Save the decision for the current activity without moving to the next.
 	 * Use this method when the decision has to be saved before pausing the or
 	 * ending the worklfow.
-	 * 
+	 *
 	 * @param wfWorkflow
 	 * @param wfDecision
 	 */
@@ -153,18 +144,16 @@ public interface WorkflowManager extends Manager {
 
 	/**
 	 * Get the decision for a single activity.
-	 * 
-	 * @param wfActivity
-	 *            Activity
+	 *
+	 * @param wfActivity Activity
 	 * @return The decision for this activity
 	 */
 	WfDecision getDecision(WfActivity wfActivity);
 
 	/**
 	 * Get the decisions for a multiple activity
-	 * 
-	 * @param wfActivity
-	 *            Activity
+	 *
+	 * @param wfActivity Activity
 	 * @return All the decisions for this activity
 	 */
 	List<WfDecision> getDecisions(WfActivity wfActivity);
@@ -172,7 +161,7 @@ public interface WorkflowManager extends Manager {
 	/**
 	 * Save the decision for the current activity and go to the next activity
 	 * using the default transition
-	 * 
+	 *
 	 * @param wfWorkflow
 	 * @param wfDecision
 	 */
@@ -180,7 +169,7 @@ public interface WorkflowManager extends Manager {
 
 	/**
 	 * Go to the next activity using the provided transition name
-	 * 
+	 *
 	 * @param wfWorkflow
 	 * @param transitionName
 	 * @param wfDecision
@@ -190,17 +179,15 @@ public interface WorkflowManager extends Manager {
 
 	/**
 	 * Go To the next activity
-	 * 
-	 * @param wfWorkflow
-	 *            workflow
+	 *
+	 * @param wfWorkflow workflow
 	 */
 	void goToNextActivity(WfWorkflow wfWorkflow);
 
 	/**
 	 * Predicate method to test if we can go to the next activity.
-	 * 
-	 * @param wfWorkflow
-	 *            workflow
+	 *
+	 * @param wfWorkflow workflow
 	 * @return For a single activity: True when a decision exist for the current
 	 *         activity, False otherwise For a multiple activity: True when all
 	 *         the decisions exist for the accounts linked to this activity,
@@ -211,7 +198,7 @@ public interface WorkflowManager extends Manager {
 	/**
 	 * Autovalidate all the next activities using the default transition the the
 	 * provided activity. This autovalidation can validate 0, 1 or N activities.
-	 * 
+	 *
 	 * @param wfWorkflow
 	 * @param wfActivity
 	 * @param wfActivityDefinitionId
@@ -222,7 +209,7 @@ public interface WorkflowManager extends Manager {
 
 	/**
 	 * Does the provided activity can be autovalidated
-	 * 
+	 *
 	 * @param activityDefinition
 	 * @param object
 	 * @return true if the provided activty can be auto validated, false
@@ -233,7 +220,7 @@ public interface WorkflowManager extends Manager {
 	/**
 	 * Get the list of activities matching the rules following the default
 	 * transition from the start until the end.
-	 * 
+	 *
 	 * @param wfWorkflow
 	 * @return the list of activities matching the rules following the default
 	 *         path from the start until the end
@@ -243,7 +230,7 @@ public interface WorkflowManager extends Manager {
 	/**
 	 * Get the list of activities following the default transition from the
 	 * start until the end
-	 * 
+	 *
 	 * @param wfWorkflow
 	 * @param wfadIds
 	 * @param transitionName
@@ -255,16 +242,15 @@ public interface WorkflowManager extends Manager {
 	// Definitions:
 	/**
 	 * Create a new Workflow Definition.
-	 * 
+	 *
 	 * @param wfWorkflowDefinition
 	 */
 	void createWorkflowDefinition(final WfWorkflowDefinition wfWorkflowDefinition);
 
 	/**
 	 * Add an activity to the workflow definition.
-	 * 
-	 * @param wfWorkflowDefinition
-	 *            the workflow definition.
+	 *
+	 * @param wfWorkflowDefinition  the workflow definition.
 	 * @param wfActivityDefinition
 	 * @param position
 	 */
@@ -273,7 +259,7 @@ public interface WorkflowManager extends Manager {
 
 	/**
 	 * Get all default activity definitions
-	 * 
+	 *
 	 * @param wfWorkflowDefinition
 	 * @return The list of all the definitions matching or not the rules
 	 */
@@ -283,7 +269,7 @@ public interface WorkflowManager extends Manager {
 
 	/**
 	 * Add and attach the provided rule to the designed activity
-	 * 
+	 *
 	 * @param wfActivity
 	 * @param ruleDefinition
 	 * @param conditions
@@ -293,7 +279,7 @@ public interface WorkflowManager extends Manager {
 
 	/**
 	 * Add and attach the provided selectors to the designed activity
-	 * 
+	 *
 	 * @param wfActivity
 	 * @param selector
 	 * @param filters
@@ -302,7 +288,7 @@ public interface WorkflowManager extends Manager {
 
 	/**
 	 * Get a workflow with all the associated elements
-	 * 
+	 *
 	 * @param wfwId
 	 * @return All the WorkflowDecision where activities are manual
 	 */
@@ -310,7 +296,7 @@ public interface WorkflowManager extends Manager {
 
 	/**
 	 * Find the workflowDefinition by name
-	 * 
+	 *
 	 * @param definitionName
 	 * @param itemId
 	 * @return the matching workflowDefinition
