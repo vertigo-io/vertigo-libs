@@ -20,7 +20,6 @@
 package io.vertigo.x.impl.rules;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -78,25 +77,6 @@ public final class RuleManagerImpl implements RuleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<Account> selectAccounts(Long idActivityDefinition, DtObject item, RuleConstants constants,
-			Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters) {
-		RuleContext context = new RuleContext(item, constants);
-		List<SelectorDefinition> selectors = mapSelectors.getOrDefault(idActivityDefinition, new ArrayList<>());
-
-		return ruleSelectorPlugin.selectAccounts(selectors, mapFilters, context);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants) {
-		List<SelectorDefinition> selectors = ruleStorePlugin.findSelectorsByItemId(idActivityDefinition);
-		RuleContext context = new RuleContext(item, constants);
-
-		return ruleSelectorPlugin.selectGroups(selectors, context);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants,
 			Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters) {
 		RuleContext context = new RuleContext(item, constants);
@@ -141,32 +121,8 @@ public final class RuleManagerImpl implements RuleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void removeRule(final RuleDefinition ruleDefinition) {
-		removeRules(Arrays.asList(ruleDefinition));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void updateRule(final RuleDefinition ruleDefinition) {
-		ruleStorePlugin.updateRule(ruleDefinition);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public void addCondition(final RuleConditionDefinition ruleConditionDefinition) {
 		ruleStorePlugin.addCondition(ruleConditionDefinition);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void removeCondition(final RuleConditionDefinition ruleConditionDefinition) {
-		ruleStorePlugin.removeCondition(ruleConditionDefinition);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void updateCondition(final RuleConditionDefinition ruleConditionDefinition) {
-		ruleStorePlugin.updateCondition(ruleConditionDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -175,28 +131,6 @@ public final class RuleManagerImpl implements RuleManager {
 		List<RuleDefinition> rules = ruleStorePlugin.findRulesByCriteria(criteria, items);
 
 		return rules.stream().map(r -> r.getItemId()).distinct().collect(Collectors.toList());
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void removeRules(List<RuleDefinition> ruleDefinitions) {
-		List<Long> ids = ruleDefinitions.stream().filter(r -> r.getId() != null).map(RuleDefinition::getId)
-				.collect(Collectors.toList());
-		ruleStorePlugin.removeRules(ids);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void removeSelectors(List<SelectorDefinition> selectorDefinitions) {
-		List<Long> ids = selectorDefinitions.stream().filter(r -> r.getId() != null).map(SelectorDefinition::getId)
-				.collect(Collectors.toList());
-		ruleStorePlugin.removeSelectors(ids);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void removeSelectorsFiltersByGroupId(String groupId) {
-		ruleStorePlugin.removeSelectorsFiltersByGroupId(groupId);
 	}
 
 	/** {@inheritDoc} */
@@ -219,18 +153,6 @@ public final class RuleManagerImpl implements RuleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public void removeSelector(final SelectorDefinition selectorDefinition) {
-		ruleStorePlugin.removeSelector(selectorDefinition);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void updateSelector(final SelectorDefinition selectorDefinition) {
-		ruleStorePlugin.updateSelector(selectorDefinition);
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public void addFilter(final RuleFilterDefinition ruleFilterDefinition) {
 		ruleStorePlugin.addFilter(ruleFilterDefinition);
 	}
@@ -245,12 +167,6 @@ public final class RuleManagerImpl implements RuleManager {
 	@Override
 	public List<RuleFilterDefinition> getFiltersForSelectorId(final Long selectorId) {
 		return ruleStorePlugin.findFiltersBySelectorId(selectorId);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void updateFilter(final RuleFilterDefinition ruleFilterDefinition) {
-		ruleStorePlugin.updateFilter(ruleFilterDefinition);
 	}
 
 	/** {@inheritDoc} */

@@ -617,64 +617,6 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	}
 
-	@Override
-	public void removeActivity(final WfActivityDefinition wfActivityDefinition) {
-
-		final WfWorkflowDefinition wfD = workflowStorePlugin.readWorkflowDefinition(wfActivityDefinition.getWfwdId());
-
-		final List<RuleDefinition> rules = ruleManager.getRulesForItemId(wfActivityDefinition.getWfadId());
-		final List<SelectorDefinition> selectors = ruleManager.getSelectorsForItemId(wfActivityDefinition.getWfadId());
-		ruleManager.removeRules(rules);
-		ruleManager.removeSelectors(selectors);
-
-		// The current activity will be unset. The workflow recalculation will
-		// correct the current activity
-		workflowStorePlugin.unsetCurrentActivity(wfActivityDefinition);
-
-		workflowStorePlugin.deleteActivities(wfActivityDefinition.getWfadId());
-
-		final WfTransitionCriteria critFrom = new WfTransitionCriteria();
-		critFrom.setWfadIdFrom(wfActivityDefinition.getWfadId());
-		critFrom.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
-		final Optional<WfTransitionDefinition> transitionFrom = workflowStorePlugin.findTransition(critFrom);
-
-		if (wfD.getWfwdId().equals(wfActivityDefinition.getWfwdId())) {
-			// The Activity Definition to remove is the start activity
-
-			if (transitionFrom.isPresent()) {
-				// The first activity definition will be the next definition
-				wfD.setWfadId(transitionFrom.get().getWfadIdTo());
-				workflowStorePlugin.updateWorkflowDefinition(wfD);
-				workflowStorePlugin.removeTransition(transitionFrom.get());
-			}
-		} else {
-			// The Activity Definition to remove is NOT the start activity
-			final WfTransitionCriteria critTo = new WfTransitionCriteria();
-			critTo.setWfadIdFrom(wfActivityDefinition.getWfadId());
-			critTo.setTransitionName(WfCodeTransition.DEFAULT.toString());
-			final WfTransitionDefinition transitionTo = workflowStorePlugin.findTransition(critTo).orElseThrow(() -> new IllegalArgumentException("No transition found for " + critTo));
-
-			if (transitionFrom.isPresent()) {
-				workflowStorePlugin.removeTransition(transitionFrom.get());
-				transitionTo.setWfadIdTo(transitionFrom.get().getWfadIdTo());
-				workflowStorePlugin.updateTransition(transitionTo);
-			} else {
-				// Last activity
-				workflowStorePlugin.removeTransition(transitionTo);
-			}
-		}
-
-		workflowStorePlugin.deleteActivityDefinition(wfActivityDefinition);
-	}
-
-	@Override
-	public void moveActivity(final WfWorkflowDefinition wfWorkflowDefinition, final int src, final int dst,
-			final boolean after) {
-		final WfActivityDefinition wfActivityDefinitionFrom = workflowStorePlugin.findActivityDefinitionByPosition(wfWorkflowDefinition, src).orElseThrow(() -> new IllegalArgumentException("No ActivityDefiniyion found for " + wfWorkflowDefinition.getName() + "at Postion : " + src));
-		final WfActivityDefinition wfActivityDefinitionTo = workflowStorePlugin.findActivityDefinitionByPosition(wfWorkflowDefinition, dst).orElseThrow(() -> new IllegalArgumentException("No ActivityDefiniyion found for " + wfWorkflowDefinition.getName() + "at Postion : " + dst));
-		moveActivity(wfWorkflowDefinition, wfActivityDefinitionFrom, wfActivityDefinitionTo, after);
-	}
-
 	private void insertActivityBefore(final WfWorkflowDefinition wfWorkflowDefinition, final WfActivityDefinition wfActivityToAdd,
 			final WfActivityDefinition wfActivityReferential) {
 		final WfTransitionCriteria wfTransitionCriteria = new WfTransitionCriteria();
@@ -689,182 +631,6 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		final WfTransitionDefinition wfTransitionDefinition = new WfTransitionBuilder(wfWorkflowDefinition.getWfwdId(),
 				wfActivityToAdd.getWfadId(), wfActivityReferential.getWfadId()).build();
 		workflowStorePlugin.addTransition(wfTransitionDefinition);
-	}
-
-	@Override
-	public void moveActivity(final WfWorkflowDefinition wfWorkflowDefinition, final WfActivityDefinition wfActivityToMove,
-			final WfActivityDefinition wfActivityReferential, final boolean after) {
-		Assertion.checkNotNull(wfActivityToMove);
-		Assertion.checkNotNull(wfActivityToMove.getWfadId());
-		Assertion.checkState(!wfActivityToMove.getWfadId().equals(wfActivityReferential.getWfadId()),
-				"Can't move an activity to the same place");
-		// ---
-		if (after) {
-			moveActivityAfter(wfWorkflowDefinition, wfActivityToMove, wfActivityReferential);
-		} else {
-			moveActivityBefore(wfWorkflowDefinition, wfActivityToMove, wfActivityReferential);
-		}
-
-		// Shifting position number
-		int shift;
-		int posStart;
-		int posEnd;
-		if (wfActivityToMove.getLevel() < wfActivityReferential.getLevel()) {
-			shift = -1;
-			posStart = wfActivityToMove.getLevel();
-			if (after) {
-				posEnd = wfActivityReferential.getLevel();
-			} else {
-				posEnd = wfActivityReferential.getLevel() - 1;
-			}
-			wfActivityToMove.setLevel(posEnd);
-		} else {
-			shift = 1;
-			posEnd = wfActivityToMove.getLevel() - 1;
-			if (after) {
-				posStart = wfActivityReferential.getLevel() + 1;
-			} else {
-				posStart = wfActivityReferential.getLevel();
-			}
-			wfActivityToMove.setLevel(posStart);
-		}
-
-		workflowStorePlugin.shiftActivityDefinitionPositionsBetween(wfWorkflowDefinition.getWfwdId(), posStart, posEnd,
-				shift);
-		workflowStorePlugin.updateActivityDefinition(wfActivityToMove);
-	}
-
-	private void moveActivityAfter(final WfWorkflowDefinition wfWorkflowDefinition, final WfActivityDefinition wfActivityToMove,
-			final WfActivityDefinition wfActivityReferential) {
-		// T1
-		final WfTransitionCriteria critTrFromRef = new WfTransitionCriteria();
-		critTrFromRef.setWfadIdFrom(wfActivityReferential.getWfadId());
-		critTrFromRef.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
-		final Optional<WfTransitionDefinition> trFromRef = workflowStorePlugin.findTransition(critTrFromRef);
-
-		if (trFromRef.isPresent() && trFromRef.get().getWfadIdTo().equals(wfActivityToMove.getWfadId())) {
-			// The activity is already positonned after the ref activity.
-			// Nothing to do in that case.
-			return;
-		}
-
-		// T2
-		final WfTransitionCriteria critTrFromMove = new WfTransitionCriteria();
-		critTrFromMove.setWfadIdFrom(wfActivityToMove.getWfadId());
-		critTrFromMove.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
-		final Optional<WfTransitionDefinition> trFromMove = workflowStorePlugin.findTransition(critTrFromMove);
-
-		// T3
-		final WfTransitionCriteria critTrToMove = new WfTransitionCriteria();
-		critTrToMove.setWfadIdTo(wfActivityToMove.getWfadId());
-		critTrToMove.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
-		final Optional<WfTransitionDefinition> trToMove = workflowStorePlugin.findTransition(critTrToMove);
-
-		// Update T3
-		if (!trToMove.isPresent() && trFromMove.isPresent()) {
-			// No transition before Move. Move is the first Activity of the
-			// WorkflowDefinition
-			wfWorkflowDefinition.setWfadId(trFromMove.get().getWfadIdTo());
-			workflowStorePlugin.updateWorkflowDefinition(wfWorkflowDefinition);
-		} else {
-			// Update T3
-			if (!trFromMove.isPresent()) {
-				trToMove.get().setWfadIdFrom(wfActivityToMove.getWfadId());
-				trToMove.get().setWfadIdTo(trFromRef.get().getWfadIdTo());
-			} else {
-				trToMove.get().setWfadIdTo(trFromMove.get().getWfadIdTo());
-			}
-			// Moving T3
-			workflowStorePlugin.updateTransition(trToMove.get());
-		}
-
-		// Update T1/T2
-		if (!trFromRef.isPresent() && trFromMove.isPresent()) {
-			// No transition after T1.
-			trFromMove.get().setWfadIdFrom(wfActivityReferential.getWfadId());
-			trFromMove.get().setWfadIdTo(wfActivityToMove.getWfadId());
-			workflowStorePlugin.updateTransition(trFromMove.get());
-		} else {
-			// Moving T2
-			// If there is no Activity after the activity to move. No transition
-			// should be modified
-			if (trFromMove.isPresent()) {
-				trFromMove.get().setWfadIdTo(trFromRef.get().getWfadIdTo());
-				workflowStorePlugin.updateTransition(trFromMove.get());
-			}
-			// Moving T1
-			trFromRef.get().setWfadIdTo(wfActivityToMove.getWfadId());
-			workflowStorePlugin.updateTransition(trFromRef.get());
-		}
-
-	}
-
-	private void moveActivityBefore(final WfWorkflowDefinition wfWorkflowDefinition, final WfActivityDefinition wfActivityToMove,
-			final WfActivityDefinition wfActivityReferential) {
-
-		// T1
-		final WfTransitionCriteria critTrToRef = new WfTransitionCriteria();
-		critTrToRef.setWfadIdTo(wfActivityReferential.getWfadId());
-		critTrToRef.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
-		final Optional<WfTransitionDefinition> trToRef = workflowStorePlugin.findTransition(critTrToRef);
-
-		if (trToRef.isPresent() && trToRef.get().getWfadIdFrom().equals(wfActivityToMove.getWfadId())) {
-			// The activity is already positonned before the ref activity.
-			// Nothing to do in that case.
-			return;
-		}
-
-		// T2
-		final WfTransitionCriteria critTrFromMove = new WfTransitionCriteria();
-		critTrFromMove.setWfadIdFrom(wfActivityToMove.getWfadId());
-		critTrFromMove.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
-		final Optional<WfTransitionDefinition> trFromMove = workflowStorePlugin.findTransition(critTrFromMove);
-
-		// T3
-		final WfTransitionCriteria critTrToMove = new WfTransitionCriteria();
-		critTrToMove.setWfadIdTo(wfActivityToMove.getWfadId());
-		critTrToMove.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
-		final Optional<WfTransitionDefinition> trToMove = workflowStorePlugin.findTransition(critTrToMove);
-
-		// Update T1
-		if (!trToRef.isPresent()) {
-			// No transition before Ref. Ref is the first Activity of the
-			// WorkflowDefinition
-			wfWorkflowDefinition.setWfadId(wfActivityToMove.getWfadId());
-			workflowStorePlugin.updateWorkflowDefinition(wfWorkflowDefinition);
-		} else {
-			// Moving T1
-			trToRef.get().setWfadIdTo(wfActivityToMove.getWfadId());
-			workflowStorePlugin.updateTransition(trToRef.get());
-		}
-
-		// Update T3
-		if (!trToMove.isPresent() && trFromMove.isPresent()) {
-			// No transition before T3. Move is the first Activity of the
-			// WorkflowDefinition
-			// wfWorkflowDefinition.WfadId = wfActivityToMove.getWfadId();
-			wfWorkflowDefinition.setWfadId(trFromMove.get().getWfadIdTo());
-			workflowStorePlugin.updateWorkflowDefinition(wfWorkflowDefinition);
-		} else {
-			// Moving T3
-			if (!trFromMove.isPresent()) {
-				trToMove.get().setWfadIdFrom(wfActivityToMove.getWfadId());
-				trToMove.get().setWfadIdTo(wfActivityReferential.getWfadId());
-			} else {
-				trToMove.get().setWfadIdTo(trFromMove.get().getWfadIdTo());
-			}
-
-			workflowStorePlugin.updateTransition(trToMove.get());
-		}
-
-		// Update T2
-		// If there is no Activity after the activity to move. No transition
-		// should be modified
-		if (trFromMove.isPresent()) {
-			// Moving T2
-			trFromMove.get().setWfadIdTo(wfActivityReferential.getWfadId());
-			workflowStorePlugin.updateTransition(trFromMove.get());
-		}
 	}
 
 	@Override
@@ -884,13 +650,6 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	}
 
 	@Override
-	public void removeRule(final RuleDefinition rule) {
-		Assertion.checkNotNull(rule);
-		// --
-		ruleManager.removeRule(rule);
-	}
-
-	@Override
 	public void addSelector(final WfActivityDefinition wfActivity, final SelectorDefinition selector,
 			final List<RuleFilterDefinition> filters) {
 		Assertion.checkNotNull(wfActivity);
@@ -907,13 +666,6 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	}
 
 	@Override
-	public void removeSelector(final SelectorDefinition selector) {
-		Assertion.checkNotNull(selector);
-		// --
-		ruleManager.removeSelector(selector);
-	}
-
-	@Override
 	public List<WfActivityDefinition> getAllDefaultActivities(final WfWorkflowDefinition wfWorkflowDefinition) {
 		return workflowStorePlugin.findAllDefaultActivityDefinitions(wfWorkflowDefinition);
 	}
@@ -926,16 +678,6 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	@Override
 	public Optional<WfActivity> getActivity(final WfWorkflow wfWorkflow, final WfActivityDefinition wfActivityDefinition) {
 		return workflowStorePlugin.findActivityByDefinitionWorkflow(wfWorkflow, wfActivityDefinition);
-	}
-
-	@Override
-	public void removeRules(final List<RuleDefinition> rules) {
-		ruleManager.removeRules(rules);
-	}
-
-	@Override
-	public void removeSelectors(final List<SelectorDefinition> selectors) {
-		ruleManager.removeSelectors(selectors);
 	}
 
 	private Map<Long, List<RuleDefinition>> constructDicRulesForWorkflowDefinition(final long wfwdId) {
@@ -1030,5 +772,4 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 		return workflowDecisions;
 	}
-
 }

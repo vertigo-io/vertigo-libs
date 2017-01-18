@@ -128,37 +128,12 @@ public interface WorkflowStorePlugin extends Plugin {
 	void updateActivity(WfActivity wfActivity);
 
 	/**
-	 * Delete an activity
-	 *
-	 * @param wfActivity
-	 */
-	void deleteActivity(WfActivity wfActivity);
-
-	/**
-	 * Delete all activities for the ActivityDefinition id.
-	 *
-	 * @param wfadId
-	 *            ActivityDefinition id
-	 */
-	void deleteActivities(Long wfadId);
-
-	/**
 	 * Increment position by 1 for all activity definition >= position
 	 *
 	 * @param wfwdId
 	 * @param position
 	 */
 	void incrementActivityDefinitionPositionsAfter(Long wfwdId, int position);
-
-	/**
-	 * Shift position number between 2 positions
-	 *
-	 * @param wfwdId
-	 * @param posStart
-	 * @param posEnd
-	 * @param shift
-	 */
-	void shiftActivityDefinitionPositionsBetween(Long wfwdId, int posStart, int posEnd, int shift);
 
 	/**
 	 * Create a new decision
@@ -174,14 +149,6 @@ public interface WorkflowStorePlugin extends Plugin {
 	 *            wfDecision
 	 */
 	void updateDecision(WfDecision wfDecision);
-
-	/**
-	 * Delete a Decision
-	 *
-	 * @param wfDecision
-	 *            Decision to delete
-	 */
-	void deleteDecision(WfDecision wfDecision);
 
 	/**
 	 * Find all decision for an activity
@@ -283,32 +250,12 @@ public interface WorkflowStorePlugin extends Plugin {
 	void createActivityDefinition(WfWorkflowDefinition wfWorkflowDefinition, WfActivityDefinition wfActivityDefinition);
 
 	/**
-	 * Remove an activity to the workflow definition.
-	 *
-	 * @param wfWorkflowDefinition
-	 *            the workflow definition.
-	 * @param wfActivityDefinition
-	 *            the activity to remove
-	 */
-	void deleteActivityDefinition(WfActivityDefinition wfActivityDefinition);
-
-	/**
 	 * Fetch an activity definition by id
 	 *
 	 * @param wfadId
 	 * @return the corresponding activity definition
 	 */
 	WfActivityDefinition readActivityDefinition(final Long wfadId);
-
-	/**
-	 * Update an activity definition.
-	 *
-	 * @param wfWorkflowDefinition
-	 *            the workflow definition.
-	 * @param wfActivityDefinition
-	 *            the activity to update
-	 */
-	void updateActivityDefinition(WfActivityDefinition wfActivityDefinition);
 
 	/**
 	 * Find an activity by its positon in the default transition chain
@@ -334,13 +281,6 @@ public interface WorkflowStorePlugin extends Plugin {
 	 * @param transition
 	 */
 	void addTransition(WfTransitionDefinition transition);
-
-	/**
-	 * Remove a transition
-	 *
-	 * @param transition
-	 */
-	void removeTransition(WfTransitionDefinition transition);
 
 	/**
 	 * Find an activity by its definition for a workflow
@@ -389,26 +329,6 @@ public interface WorkflowStorePlugin extends Plugin {
 	WfActivityDefinition findNextActivity(Long wfadId, String transitionName);
 
 	/**
-	 * Find all activities for a workflow definition. This method must be only
-	 * used for the workflow recalculation
-	 *
-	 * @param wfWorkflowDefinition
-	 *            wfWorkflowDefinition
-	 * @return all activities for a workflow definition
-	 */
-	List<WfActivity> findAllActivitiesByWorkflowDefinitionId(WfWorkflowDefinition wfWorkflowDefinition);
-
-	/**
-	 * Find all decisions for a workflow definition. This method must be only
-	 * used for the workflow recalculation
-	 *
-	 * @param wfWorkflowDefinition
-	 *            wfWorkflowDefinition
-	 * @return all decisions for a workflow definition
-	 */
-	List<WfDecision> findAllDecisionsByWorkflowDefinitionId(WfWorkflowDefinition wfWorkflowDefinition);
-
-	/**
 	 * Find all activities for a workflow
 	 *
 	 * @param wfWorkflow
@@ -424,14 +344,6 @@ public interface WorkflowStorePlugin extends Plugin {
 	 * @return All Decisions for a workflow
 	 */
 	List<WfDecision> findDecisionsByWorkflowId(WfWorkflow wfWorkflow);
-
-	/**
-	 * Reset (set to null) the current activity (wfaid2) of all worklow for the
-	 * activity linked to the provided activityDefinition
-	 *
-	 * @param wfActivityDefinition
-	 */
-	void unsetCurrentActivity(WfActivityDefinition wfActivityDefinition);
 
 	// Custom
 

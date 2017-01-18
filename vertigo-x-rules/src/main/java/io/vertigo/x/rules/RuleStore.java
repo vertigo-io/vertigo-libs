@@ -49,39 +49,11 @@ public interface RuleStore {
 	List<RuleDefinition> findRulesByItemId(Long itemId);
 
 	/**
-	 * Removes a rule
-	 * 
-	 * @param ruleDefinition
-	 */
-	void removeRule(RuleDefinition ruleDefinition);
-
-	/**
-	 * Update a rule
-	 * 
-	 * @param ruleDefinition
-	 */
-	void updateRule(RuleDefinition ruleDefinition);
-
-	/**
 	 * Add a condition
 	 * 
 	 * @param ruleConditionDefinition
 	 */
 	void addCondition(final RuleConditionDefinition ruleConditionDefinition);
-
-	/**
-	 * Remove a condition
-	 * 
-	 * @param ruleConditionDefinition
-	 */
-	void removeCondition(final RuleConditionDefinition ruleConditionDefinition);
-
-	/**
-	 * Update a condition
-	 * 
-	 * @param ruleConditionDefinition
-	 */
-	void updateCondition(final RuleConditionDefinition ruleConditionDefinition);
 
 	/**
 	 * Find all conditions for a specified rule Id
@@ -107,20 +79,6 @@ public interface RuleStore {
 	List<SelectorDefinition> findSelectorsByItemId(Long itemId);
 
 	/**
-	 * Remove a Selector
-	 * 
-	 * @param selectorDefinition
-	 */
-	void removeSelector(SelectorDefinition selectorDefinition);
-
-	/**
-	 * Update a Selector
-	 * 
-	 * @param selectorDefinition
-	 */
-	void updateSelector(SelectorDefinition selectorDefinition);
-
-	/**
 	 * Add a filter
 	 * 
 	 * @param ruleFilterDefinition
@@ -143,13 +101,6 @@ public interface RuleStore {
 	List<RuleFilterDefinition> findFiltersBySelectorId(Long selectorId);
 
 	/**
-	 * Update a filter
-	 * 
-	 * @param ruleFilterDefinition
-	 */
-	void updateFilter(RuleFilterDefinition ruleFilterDefinition);
-
-	/**
 	 * Find rules by criteria
 	 * 
 	 * @param criteria
@@ -158,28 +109,4 @@ public interface RuleStore {
 	 */
 	List<RuleDefinition> findRulesByCriteria(RuleCriteria criteria, List<Long> items);
 
-	/**
-	 * Removes all the specified rules
-	 * 
-	 * @param list
-	 *            list of ids
-	 */
-	void removeRules(List<Long> list);
-
-	/**
-	 * Removes all the specified Selectors
-	 * 
-	 * @param list
-	 *            list of ids
-	 */
-	void removeSelectors(List<Long> list);
-
-	/**
-	 * Removes all Selectors and linked filters associated to the provided
-	 * groupId
-	 * 
-	 * @param groupId
-	 *            groupId
-	 */
-	void removeSelectorsFiltersByGroupId(String groupId);
 }

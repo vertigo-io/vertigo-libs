@@ -39,20 +39,6 @@ public final class WfWorkflowDAO extends DAO<WfWorkflow, java.lang.Long> impleme
 	}
 
 	/**
-	 * Execute la tache TK_FIND_ACTIVE_WORKFLOWS_FOR_UPDATES.
-	 * @param wfwdId Long 
-	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.workflow.domain.instance.WfWorkflow> dtWfWorkflow
-	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.workflow.domain.instance.WfWorkflow> findActiveWorkflowsForUpdates(final Long wfwdId) {
-		final Task task = createTaskBuilder("TK_FIND_ACTIVE_WORKFLOWS_FOR_UPDATES")
-				.addValue("WFWD_ID", wfwdId)
-				.build();
-		return getTaskManager()
-				.execute(task)
-				.getResult();
-	}
-
-	/**
 	 * Execute la tache TK_READ_WORKFLOW_FOR_UPDATE.
 	 * @param wfwId Long 
 	 * @return io.vertigo.x.workflow.domain.instance.WfWorkflow workflow

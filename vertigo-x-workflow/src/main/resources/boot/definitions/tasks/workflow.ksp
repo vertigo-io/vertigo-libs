@@ -13,53 +13,6 @@ create Task TK_COUNT_DEFAULT_TRANSACTIONS {
 	attribute NUMBER		{domain : DO_ENTIER     notNull:"true"  inOut:"out"}
 }
 
-create Task TK_DELETE_ACTIVITIES_BY_DEFINTIONS_IDS {  
-    className : "io.vertigo.dynamox.task.TaskEngineProc",
-    request : "  
-		DELETE WF_DECISION WDE 
-		using WF_ACTIVITY as WFA
-		WHERE WFA.WFA_ID = WDE.WFA_ID and WFAD_ID = #WFAD_ID#
-	
-		DELETE 
-		  FROM WF_ACTIVITY 
-		 WHERE WFAD_ID = #WFAD_ID#
-    "
-	attribute WFAD_ID		{domain : DO_ID       notNull:"true"    inOut :"in"}
-}
-
-create Task TK_FIND_ACTIVE_WORKFLOWS_FOR_UPDATES {
-	className : "io.vertigo.dynamox.task.TaskEngineSelect"
-	request : "
-			SELECT 
-				WFW.*
-			FROM 
-				WF_WORKFLOW WFW
-			WHERE WFW.WFWD_ID = #WFWD_ID#
-			  AND (WFW.WFS_CODE = 'Sta' OR WFW.WFS_CODE = 'Pau');
-	"
-	attribute WFWD_ID 					{domain : DO_ID			  			  notNull:"true"	inOut:"in"}
-	attribute DT_WF_WORKFLOW    		{domain : DO_DT_WF_WORKFLOW_DTC       notNull:"true"    inOut :"out"}
-}
-
-create Task TK_FIND_ACTIVITIES_BY_DEFINITION_ID {
-	className : "io.vertigo.dynamox.task.TaskEngineSelect"
-	request : "
-			SELECT 
-				ACT.*
-			FROM 
-				WF_ACTIVITY ACT
-				JOIN WF_ACTIVITY_DEFINITION ACD ON (ACT.WFAD_ID = ACD.WFAD_ID)
-			WHERE 
-				ACD.WFAD_ID IN (SELECT VAL FROM #ACT_DEF_IDS.ROWNUM.DUMMY_LONG#)
-				AND ACT.WFW_ID = #WFW_ID#
-			ORDER BY
-				ACD.LEVEL
-	"
-	attribute WFW_ID 					{domain : DO_ID			  			  notNull:"true" 	 inOut:"in"}
-	attribute ACT_DEF_IDS    			{domain:DO_DT_WORKFLOW_DUMMY_DTC      notNull:"true"     inOut :"in"}
-	attribute WORKFLOW_ACTIVITY_LIST    {domain:DO_DT_WF_ACTIVITY_DTC         notNull:"true"     inOut :"out"}
-}
-
 create Task TK_FIND_ACTIVITY_DEFINITION_BY_POSITION {
 	className : "io.vertigo.dynamox.task.TaskEngineSelect"
 	request : "
@@ -74,24 +27,6 @@ create Task TK_FIND_ACTIVITY_DEFINITION_BY_POSITION {
 	attribute WFWD_ID 							{domain : DO_ID			  			  		notNull:"true"	inOut:"in"}
 	attribute LEVEL								{domain : DO_ENTIER      					notNull:"true"  inOut:"in"}
 	attribute WORKFLOW_ACTIVITY_DEFINITION    	{domain:DO_DT_WF_ACTIVITY_DEFINITION_DTO    notNull:"false" inOut:"out"}
-}
-
-create Task TK_FIND_ALL_ACTIVITIES_BY_WORKFLOW_DEFINITION_ID {
-	className : "io.vertigo.dynamox.task.TaskEngineSelect"
-	request : "
-
-		SELECT 
-			WFA.*
-		FROM 
-			WF_ACTIVITY WFA
-			JOIN WF_ACTIVITY_DEFINITION WAD ON (WFA.WFAD_ID = WAD.WFAD_ID)
-		WHERE 
-			WAD.WFWD_ID = #WFWD_ID#
-
-ORDER BY WAD.LEVEL;
-	"
-	attribute WFWD_ID 					{domain : DO_ID			  		notNull:"true" 	  inOut:"in"}
-	attribute WORKFLOW_ACTIVITY_LIST    {domain:DO_DT_WF_ACTIVITY_DTC   notNull:"true"    inOut:"out"}
 }
 
 create Task TK_FIND_ALL_DEFAULT_ACTIVITY_DEFINITIONS {
@@ -145,40 +80,6 @@ create Task TK_HAS_NEXT_TRANSITION {
 	attribute WF_TRANSITION_DEFINITION_LIST    {domain:DO_DT_WF_TRANSITION_DEFINITION_DTC	notNull:"true"     inOut :"out"}
 }
 
-create Task TK_INCREMENT_ACTIVITY_DEFINITION_POSITIONS_AFTER {
-    className : "io.vertigo.dynamox.task.TaskEngineProc",
-	request : "
-		UPDATE WF_ACTIVITY_DEFINITION SET LEVEL = LEVEL + 1
-		 WHERE LEVEL >= #LEVEL# AND WFWD_ID = #WFWD_ID#
-	"
-	attribute WFWD_ID 					{domain:DO_ID			  			notNull:"true" 	  	inOut:"in"}
-	attribute LEVEL						{domain:DO_ENTIER      			notNull:"true"      inOut:"in"}
-}
-
-create Task TK_INSERT_ACTIVITY_UPDATE_WORKFLOW {
-    className : "io.vertigo.dynamox.task.TaskEngineProc",
-	request : "
-		Declare @WFA_ID_WFW_ID_LIST as table(WFA_ID int, WFW_ID int);	
-		
-		INSERT INTO WF_ACTIVITY (
-			CREATION_DATE,
-			WFW_ID,
-			WFAD_ID,
-			IS_AUTO
-		)
-		Output
-			inserted.WFA_ID, inserted.WFW_ID
-		into
-			@WFA_ID_WFW_ID_LIST
-		Select CREATION_DATE, WFW_ID, WFAD_ID, IS_AUTO
-		  FROM @table tab;
-		
-		UPDATE WFW
-		   SET WFA_ID_2 = wfa_wfw.WFA_ID
-		  FROM WF_WORKFLOW WFW
-		  JOIN @WFA_ID_WFW_ID_LIST wfa_wfw ON (WFW.WFW_ID = wfa_wfw.WFW_ID)
-	"
-}
 
 create Task TK_READ_WORKFLOW_FOR_UPDATE {
 	className : "io.vertigo.dynamox.task.TaskEngineSelect"
@@ -191,37 +92,6 @@ create Task TK_READ_WORKFLOW_FOR_UPDATE {
 	attribute WORKFLOW    		{domain:DO_DT_WF_WORKFLOW_DTO         notNull:"true"     inOut :"out"}
 }
 
-create Task TK_UNSET_CURRENT_ACTIVITY {
-    className : "io.vertigo.dynamox.task.TaskEngineProc",
-	request : "
-		UPDATE WF_WORKFLOW 
-		   SET WFA_ID_2=NULL 
-		 WHERE WFA_ID_2 IN (SELECT WFA_ID 
-							 FROM WF_ACTIVITY WFA
-							WHERE WFA.WFAD_ID = #WFAD_ID#);
-	"
-	attribute WFAD_ID 					{domain : DO_ID			  			  notNull:"true" 	  inOut:"in"}
-}
-
-create Task TK_UPDATE_ACTIVITIES_IS_AUTO {
-    className : "io.vertigo.dynamox.task.TaskEngineProc",
-	request : "
-		UPDATE WFA
-		   SET WFA.IS_AUTO = tab.IS_AUTO
-		  FROM WF_ACTIVITY WFA
-		  JOIN @table tab ON (WFA.WFA_ID = tab.WFA_ID)
-	"
-}
-
-create Task TK_UPDATE_WORKFLOW_CURRENT_ACTIVITIES {
-    className : "io.vertigo.dynamox.task.TaskEngineProc",
-	request : "
-		UPDATE WFW
-		   SET WFW.WFA_ID_2 = tab.WFA_ID_2
-		  FROM WF_WORKFLOW WFW
-		  JOIN @table tab ON (WFW.WFW_ID = tab.WFW_ID);
-	"
-}
 
 create Task TK_FIND_TRANSITION {
 	className : "io.vertigo.dynamox.task.TaskEngineSelect"
@@ -241,21 +111,6 @@ create Task TK_FIND_TRANSITION {
 	attribute WFAD_ID_TO							{domain : DO_ID			  			  		notNull:"false"		inOut:"in"}
 	attribute WFAD_ID_FROM							{domain : DO_ID			  			  		notNull:"false"	  	inOut:"in"}
 	attribute WORKFLOW_TRANSITION_DEFINITIN_LIST	{domain:DO_DT_WF_TRANSITION_DEFINITION_DTO	notNull:"false"     inOut:"out"}
-}
-
-create Task TK_SHIFT_ACTIVITY_DEFINITION_POSITIONS_BETWEEN {
-	    className : "io.vertigo.dynamox.task.TaskEngineProc",
-	request : "
-		UPDATE WF_ACTIVITY_DEFINITION SET LEVEL = LEVEL + #SHIFT#
-		 WHERE LEVEL >= #LEVEL_START# 
-		   AND LEVEL <= #LEVEL_END#
-		   AND WFWD_ID = #WFWD_ID#
-	"
-	attribute SHIFT			{domain : DO_ENTIER       notNull:"true"      inOut:"in"}
-	attribute LEVEL_START	{domain : DO_ENTIER       notNull:"true"      inOut:"in"}
-	attribute LEVEL_END		{domain : DO_ENTIER       notNull:"true"      inOut:"in"}
-	attribute WFWD_ID		{domain : DO_ID			  notNull:"false" 	  inOut:"in"}
-
 }
 
 create Task TK_FIND_NEXT_ACTIVITY {

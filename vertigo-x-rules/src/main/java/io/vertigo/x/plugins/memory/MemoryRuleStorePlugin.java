@@ -69,32 +69,6 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 		inMemoryRuleStore.put(generatedId, ruleDefinition);
 	}
 
-	/**
-	 *
-	 * @param ruleDefinition
-	 */
-	@Override
-	public void removeRule(final RuleDefinition ruleDefinition) {
-		Assertion.checkNotNull(ruleDefinition);
-		Assertion.checkNotNull(ruleDefinition.getId());
-		// ---
-		inMemoryRuleStore.remove(ruleDefinition.getId());
-	}
-
-	/**
-	 *
-	 * @param ruleDefinition
-	 */
-	@Override
-	public void updateRule(final RuleDefinition ruleDefinition) {
-		Assertion.checkNotNull(ruleDefinition);
-		Assertion.checkNotNull(ruleDefinition.getId());
-		Assertion.checkState(inMemoryRuleStore.containsKey(ruleDefinition.getId()),
-				"Cannot update this rule : Its id is unknown in the store");
-		// ---
-		inMemoryRuleStore.put(ruleDefinition.getId(), ruleDefinition);
-	}
-
 	@Override
 	public void addCondition(final RuleConditionDefinition ruleConditionDefinition) {
 		Assertion.checkNotNull(ruleConditionDefinition);
@@ -103,40 +77,6 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 		final Long generatedId = memoryConditionSequenceGenerator.addAndGet(1);
 		ruleConditionDefinition.setId(generatedId);
 		inMemoryConditionStore.put(generatedId, ruleConditionDefinition);
-	}
-
-	@Override
-	public void removeCondition(final RuleConditionDefinition ruleConditionDefinition) {
-		Assertion.checkNotNull(ruleConditionDefinition);
-		Assertion.checkNotNull(ruleConditionDefinition.getId());
-		// ---
-		inMemoryConditionStore.remove(ruleConditionDefinition.getId());
-	}
-
-	@Override
-	public void updateCondition(final RuleConditionDefinition ruleConditionDefinition) {
-		Assertion.checkNotNull(ruleConditionDefinition);
-		Assertion.checkNotNull(ruleConditionDefinition.getId());
-		Assertion.checkState(inMemoryConditionStore.containsKey(ruleConditionDefinition.getId()),
-				"Cannot update this condition : Its id is unknown in the store");
-		// ---
-		inMemoryConditionStore.put(ruleConditionDefinition.getId(), ruleConditionDefinition);
-	}
-
-	@Override
-	public List<RuleDefinition> findRulesByItemId(final Long itemId) {
-		Assertion.checkNotNull(itemId);
-		// ---
-		final List<RuleDefinition> ret = new ArrayList<>();
-
-		for (final RuleDefinition ruleDefinition : inMemoryRuleStore.values()) {
-			if (itemId.equals(ruleDefinition.getItemId())) {
-				// Collect
-				ret.add(ruleDefinition);
-			}
-		}
-
-		return ret;
 	}
 
 	@Override
@@ -168,32 +108,6 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 		final Long generatedId = memorySelectorSequenceGenerator.addAndGet(1);
 		selectorDefinition.setId(generatedId);
 		inMemorySelectorStore.put(generatedId, selectorDefinition);
-	}
-
-	/**
-	 *
-	 * @param selectorDefinition
-	 */
-	@Override
-	public void removeSelector(final SelectorDefinition selectorDefinition) {
-		Assertion.checkNotNull(selectorDefinition);
-		Assertion.checkNotNull(selectorDefinition.getId());
-		// ---
-		inMemorySelectorStore.remove(selectorDefinition.getId());
-	}
-
-	/**
-	 *
-	 * @param selectorDefinition
-	 */
-	@Override
-	public void updateSelector(final SelectorDefinition selectorDefinition) {
-		Assertion.checkNotNull(selectorDefinition);
-		Assertion.checkNotNull(selectorDefinition.getId());
-		Assertion.checkState(inMemorySelectorStore.containsKey(selectorDefinition.getId()),
-				"Cannot update this selector : Its id is unknown in the store");
-		// ---
-		inMemorySelectorStore.put(selectorDefinition.getId(), selectorDefinition);
 	}
 
 	@Override
@@ -250,16 +164,6 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 	}
 
 	@Override
-	public void updateFilter(final RuleFilterDefinition ruleFilterDefinition) {
-		Assertion.checkNotNull(ruleFilterDefinition);
-		Assertion.checkNotNull(ruleFilterDefinition.getId());
-		Assertion.checkState(inMemoryFilterStore.containsKey(ruleFilterDefinition.getId()),
-				"Cannot update this filter : Its id is unknown in the store");
-		// ---
-		inMemoryFilterStore.put(ruleFilterDefinition.getId(), ruleFilterDefinition);
-	}
-
-	@Override
 	public List<RuleDefinition> findRulesByCriteria(RuleCriteria criteria, List<Long> items) {
 		Assertion.checkNotNull(criteria);
 		// ---
@@ -305,31 +209,18 @@ public final class MemoryRuleStorePlugin implements RuleStorePlugin {
 	}
 
 	@Override
-	public void removeRules(List<Long> list) {
-		for (Long id : list) {
-			inMemoryRuleStore.remove(id);
-		}
-	}
+	public List<RuleDefinition> findRulesByItemId(final Long itemId) {
+		Assertion.checkNotNull(itemId);
+		// ---
+		final List<RuleDefinition> ret = new ArrayList<>();
 
-	@Override
-	public void removeSelectors(List<Long> list) {
-		for (Long id : list) {
-			inMemorySelectorStore.remove(id);
-		}
-	}
-
-	@Override
-	public void removeSelectorsFiltersByGroupId(String groupId) {
-
-		for (SelectorDefinition sel : inMemorySelectorStore.values()) {
-			if (sel.getGroupId().equals(groupId)) {
-				for (RuleFilterDefinition filter : inMemoryFilterStore.values()) {
-					if (filter.getSelId().equals(sel.getId())) {
-						inMemoryFilterStore.remove(filter.getId());
-					}
-				}
+		for (final RuleDefinition ruleDefinition : inMemoryRuleStore.values()) {
+			if (itemId.equals(ruleDefinition.getItemId())) {
+				// Collect
+				ret.add(ruleDefinition);
 			}
 		}
-	}
 
+		return ret;
+	}
 }

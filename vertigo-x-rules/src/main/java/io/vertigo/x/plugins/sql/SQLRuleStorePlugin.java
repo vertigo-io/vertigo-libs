@@ -47,32 +47,8 @@ public class SQLRuleStorePlugin implements RuleStorePlugin {
 	}
 
 	@Override
-	public void removeRule(RuleDefinition ruleDefinition) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void updateRule(RuleDefinition ruleDefinition) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void addCondition(RuleConditionDefinition ruleConditionDefinition) {
 		ruleConditionDefinitionDAO.save(ruleConditionDefinition);
-
-	}
-
-	@Override
-	public void removeCondition(RuleConditionDefinition ruleConditionDefinition) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void updateCondition(RuleConditionDefinition ruleConditionDefinition) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -97,18 +73,6 @@ public class SQLRuleStorePlugin implements RuleStorePlugin {
 	}
 
 	@Override
-	public void removeSelector(SelectorDefinition selectorDefinition) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void updateSelector(SelectorDefinition selectorDefinition) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public void addFilter(RuleFilterDefinition ruleFilterDefinition) {
 		ruleFilterDefinitionDAO.save(ruleFilterDefinition);
 
@@ -127,33 +91,9 @@ public class SQLRuleStorePlugin implements RuleStorePlugin {
 	}
 
 	@Override
-	public void updateFilter(RuleFilterDefinition ruleFilterDefinition) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
 	public List<RuleDefinition> findRulesByCriteria(RuleCriteria criteria, List<Long> items) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public void removeRules(List<Long> list) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void removeSelectors(List<Long> list) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void removeSelectorsFiltersByGroupId(String groupId) {
-		// TODO Auto-generated method stub
-
 	}
 
 }

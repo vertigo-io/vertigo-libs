@@ -47,7 +47,6 @@ import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.account.AccountStore;
 import io.vertigo.x.impl.rules.RuleConstants;
 import io.vertigo.x.rules.data.MyDummyDtObject;
-import io.vertigo.x.rules.domain.RuleDefinition;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
 import io.vertigo.x.rules.domain.SelectorDefinition;
 
@@ -119,51 +118,6 @@ public class RuleManagerSelectorTest {
 		assertNotNull(selectorFetch2);
 		assertThat(selectorFetch2.size(), is(2));
 		assertThat(selectorFetch2, hasItems(rule2, rule3));
-	}
-
-	/**
-	 * Add/Update/Delete Rules for RulesManager
-	 */
-	@Test
-	public void testAddUpdateDelete() {
-
-		// Rule created to Item 1
-		SelectorDefinition selector = new SelectorDefinition();
-		selector.setItemId(1L);
-		selector.setGroupId("1");
-		ruleManager.addSelector(selector);
-
-		final List<SelectorDefinition> rulesFetch_1_1 = ruleManager.getSelectorsForItemId(1L);
-
-		assertNotNull(rulesFetch_1_1);
-		assertThat(rulesFetch_1_1.size(), is(1));
-		assertThat(rulesFetch_1_1, hasItem(selector));
-
-		// Update rule. This is now associated with Item 2
-		selector.setItemId(2L);
-		ruleManager.updateSelector(selector);
-
-		// The rule is not associated to item 1 anymore
-		final List<SelectorDefinition> rulesFetch_1_0 = ruleManager.getSelectorsForItemId(1L);
-
-		assertNotNull(rulesFetch_1_0);
-		assertThat(rulesFetch_1_0.size(), is(0));
-
-		// The rule should be associated with item 2
-		final List<SelectorDefinition> rulesFetch_2_1 = ruleManager.getSelectorsForItemId(2L);
-
-		assertNotNull(rulesFetch_2_1);
-		assertThat(rulesFetch_2_1.size(), is(1));
-		assertThat(rulesFetch_2_1, hasItem(selector));
-
-		// Update rule. This is now associated with Item 2
-		ruleManager.removeSelector(selector);
-
-		// No rule should be associated with item 2
-		final List<RuleDefinition> rulesFetch_2_0 = ruleManager.getRulesForItemId(2L);
-
-		assertNotNull(rulesFetch_2_0);
-		assertThat(rulesFetch_2_0.size(), is(0));
 	}
 
 	private static URI<Account> createAccountURI(final String id) {

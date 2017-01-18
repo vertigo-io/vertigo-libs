@@ -50,38 +50,6 @@ public interface RuleManager extends Manager {
 	List<Account> selectAccounts(final Long idActivityDefinition, final DtObject item, final RuleConstants constants);
 
 	/**
-	 * Select accounts an activity using the provided selectors and filters.
-	 * Version without IO, used in workflow recalculation
-	 * 
-	 * @param idActivityDefinition
-	 *            Activity definition id
-	 * @param item
-	 *            Business object
-	 * @param constants
-	 *            constants
-	 * @param mapSelectors
-	 *            Selectors to use
-	 * @param mapFilters
-	 *            Filters associated to Selectors
-	 * @return list of matching accounts
-	 */
-	List<Account> selectAccounts(Long idActivityDefinition, DtObject item, RuleConstants constants,
-			Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters);
-
-	/**
-	 * Select groups matching the selector for an activity
-	 * 
-	 * @param idActivityDefinition
-	 *            Activity definition id
-	 * @param item
-	 *            Business object
-	 * @param constants
-	 *            constants
-	 * @return a list of groups
-	 */
-	List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants);
-
-	/**
 	 * Select groups matching the selector for an activity
 	 * 
 	 * @param idActivityDefinition
@@ -150,42 +118,12 @@ public interface RuleManager extends Manager {
 	List<RuleDefinition> getRulesForItemId(Long itemId);
 
 	/**
-	 * Remove a rule
-	 * 
-	 * @param ruleDefinition
-	 *            rule to remove
-	 */
-	void removeRule(RuleDefinition ruleDefinition);
-
-	/**
-	 * Remove a lst of rules
-	 * 
-	 * @param ruleDefinitions
-	 */
-	void removeRules(List<RuleDefinition> ruleDefinitions);
-
-	/**
-	 * Update a rule
-	 * 
-	 * @param ruleDefinition
-	 */
-	void updateRule(RuleDefinition ruleDefinition);
-
-	/**
 	 * Add a new condition
 	 * 
 	 * @param ruleConditionDefinition
 	 *            condition to add
 	 */
 	void addCondition(RuleConditionDefinition ruleConditionDefinition);
-
-	/**
-	 * Remove a condition
-	 * 
-	 * @param ruleConditionDefinition
-	 *            condition to remove
-	 */
-	void removeCondition(RuleConditionDefinition ruleConditionDefinition);
 
 	/**
 	 * Get all the conditions for a specified rule
@@ -195,14 +133,6 @@ public interface RuleManager extends Manager {
 	 * @return all the conditions associated to the provided rule
 	 */
 	List<RuleConditionDefinition> getConditionsForRuleId(Long ruleId);
-
-	/**
-	 * Update a rule
-	 * 
-	 * @param ruleConditionDefinition
-	 *            the rule to update
-	 */
-	void updateCondition(RuleConditionDefinition ruleConditionDefinition);
 
 	/**
 	 * Add a new selector
@@ -220,30 +150,6 @@ public interface RuleManager extends Manager {
 	 * @return the all the rules defined for the provided itemId
 	 */
 	List<SelectorDefinition> getSelectorsForItemId(Long itemId);
-
-	/**
-	 * Remove a selector
-	 * 
-	 * @param selectorDefinition
-	 *            the selector to remove
-	 */
-	void removeSelector(SelectorDefinition selectorDefinition);
-
-	/**
-	 * Remove a list of rules.
-	 * 
-	 * @param ruleDefinitions
-	 *            list of rules to remove.
-	 */
-	void removeSelectors(List<SelectorDefinition> ruleDefinitions);
-
-	/**
-	 * Update a selector
-	 * 
-	 * @param selectorDefinition
-	 *            the selector to update
-	 */
-	void updateSelector(SelectorDefinition selectorDefinition);
 
 	/**
 	 * Add a new filter
@@ -269,14 +175,6 @@ public interface RuleManager extends Manager {
 	 * @return the all the filters associated to the provided selector
 	 */
 	List<RuleFilterDefinition> getFiltersForSelectorId(Long selectorId);
-
-	/**
-	 * Update the provided Filter
-	 * 
-	 * @param ruleFilterDefinition
-	 *            the filter to update
-	 */
-	void updateFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	/**
 	 * Define the constants for this key
@@ -308,13 +206,5 @@ public interface RuleManager extends Manager {
 	 * @return list of itemIds
 	 */
 	List<Long> findItemsByCriteria(RuleCriteria criteria, List<Long> items);
-
-	/**
-	 * Remove all selectors and filters for a specified groupId
-	 * 
-	 * @param groupId
-	 *            groupId
-	 */
-	void removeSelectorsFiltersByGroupId(String groupId);
 
 }

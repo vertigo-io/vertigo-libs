@@ -103,12 +103,6 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void deleteActivity(final WfActivity wfActivity) {
-		wfActivityDAO.delete(wfActivity.getWfaId());
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public void createDecision(final WfDecision wfDecision) {
 		wfDecisionDAO.save(wfDecision);
 	}
@@ -179,20 +173,8 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void deleteActivityDefinition(final WfActivityDefinition wfActivityDefinition) {
-		wfActivityDefinitionDAO.delete(wfActivityDefinition.getWfadId());
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public WfActivityDefinition readActivityDefinition(final Long wfadId) {
 		return wfActivityDefinitionDAO.get(wfadId);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void updateActivityDefinition(final WfActivityDefinition wfActivityDefinition) {
-		wfActivityDefinitionDAO.save(wfActivityDefinition);
 	}
 
 	/** {@inheritDoc} */
@@ -215,24 +197,6 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	@Override
 	public void addTransition(final WfTransitionDefinition transition) {
 		wfTransitionDefinitionDAO.save(transition);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void removeTransition(final WfTransitionDefinition transition) {
-		wfTransitionDefinitionDAO.delete(transition.getWftdId());
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void deleteActivities(final Long arg0) {
-		// TODO Auto-generated method stub
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void deleteDecision(final WfDecision arg0) {
-		wfDecisionDAO.delete(arg0.getWfeId());
 	}
 
 	/** {@inheritDoc} */
@@ -261,18 +225,6 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	public Optional<WfActivity> findActivityByDefinitionWorkflow(final WfWorkflow arg0, final WfActivityDefinition arg1) {
 		return wfActivityDAO.findActivityByDefinitionWorkflow(arg0.getWfwId(),
 				arg1.getWfadId());
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<WfActivity> findAllActivitiesByWorkflowDefinitionId(final WfWorkflowDefinition arg0) {
-		throw new UnsupportedOperationException();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<WfDecision> findAllDecisionsByWorkflowDefinitionId(final WfWorkflowDefinition arg0) {
-		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
@@ -331,19 +283,6 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	public List<WfWorkflow> readWorkflowsInstanceForUpdateById(final Long arg0) {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void shiftActivityDefinitionPositionsBetween(final Long arg0, final int arg1, final int arg2,
-			final int arg3) {
-		workflowPAO.shiftActivityDefinitionPositionsBetween(arg3, arg1, arg2, Optional.ofNullable(arg0));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void unsetCurrentActivity(final WfActivityDefinition arg0) {
-		// TODO Auto-generated method stub
 	}
 
 	/** {@inheritDoc} */

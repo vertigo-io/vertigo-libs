@@ -272,44 +272,6 @@ public interface WorkflowManager extends Manager {
 			int position);
 
 	/**
-	 * Remove an activity to the workflow definition.
-	 * 
-	 * @param wfActivityDefinition
-	 *            the activity to remove
-	 */
-	void removeActivity(WfActivityDefinition wfActivityDefinition);
-
-	/**
-	 * Move an activity from a position to another position
-	 * 
-	 * @param wfWorkflowDefinition
-	 * @param src
-	 *            activity original position
-	 * @param dst
-	 *            activity destination position
-	 * @param after
-	 *            true to move the activity after the referential activity.
-	 *            false before
-	 */
-	void moveActivity(WfWorkflowDefinition wfWorkflowDefinition, int src, int dst, boolean after);
-
-	/**
-	 * Move an activity from a position to another position
-	 * 
-	 * @param wfWorkflowDefinition
-	 * @param wfActivityToMove
-	 *            activity to move
-	 * @param wfActivityReferential
-	 *            the referential activity where the activity should move
-	 *            (before or after)
-	 * @param after
-	 *            true to move the activity after the referential activity.
-	 *            false before
-	 */
-	void moveActivity(WfWorkflowDefinition wfWorkflowDefinition, WfActivityDefinition wfActivityToMove,
-			WfActivityDefinition wfActivityReferential, boolean after);
-
-	/**
 	 * Get all default activity definitions
 	 * 
 	 * @param wfWorkflowDefinition
@@ -330,13 +292,6 @@ public interface WorkflowManager extends Manager {
 			List<RuleConditionDefinition> conditions);
 
 	/**
-	 * Remove and dettach the provided rules from the activity
-	 * 
-	 * @param rule
-	 */
-	void removeRule(RuleDefinition rule);
-
-	/**
 	 * Add and attach the provided selectors to the designed activity
 	 * 
 	 * @param wfActivity
@@ -344,28 +299,6 @@ public interface WorkflowManager extends Manager {
 	 * @param filters
 	 */
 	void addSelector(WfActivityDefinition wfActivity, SelectorDefinition selector, List<RuleFilterDefinition> filters);
-
-	/**
-	 * Remove and dettach the provided selector from the activity
-	 * 
-	 * @param selector
-	 */
-	void removeSelector(SelectorDefinition selector);
-
-	/**
-	 * Remove rules
-	 * 
-	 * @param rules
-	 *            rules to remove
-	 */
-	void removeRules(List<RuleDefinition> rules);
-
-	/**
-	 * Remove selectors
-	 * 
-	 * @param selectors
-	 */
-	void removeSelectors(List<SelectorDefinition> selectors);
 
 	/**
 	 * Get a workflow with all the associated elements

@@ -80,9 +80,9 @@ public class RuleManagerValidatorTest {
 		RuleDefinition rule1 = new RuleDefinition();
 		rule1.setItemId(1L);
 		RuleDefinition rule2 = new RuleDefinition();
-		rule1.setItemId(2L);
+		rule2.setItemId(2L);
 		RuleDefinition rule3 = new RuleDefinition();
-		rule1.setItemId(2L);
+		rule3.setItemId(2L);
 
 		ruleManager.addRule(rule1);
 		ruleManager.addRule(rule2);
@@ -101,50 +101,6 @@ public class RuleManagerValidatorTest {
 		assertNotNull(rulesFetch2);
 		assertThat(rulesFetch2.size(), is(2));
 		assertThat(rulesFetch2, hasItems(rule2, rule3));
-	}
-
-	/**
-	 * Add/Update/Delete Rules for RulesManager
-	 */
-	@Test
-	public void testAddUpdateDelete() {
-
-		// Rule created to Item 1
-		RuleDefinition rule = new RuleDefinition();
-		rule.setItemId(1L);
-		ruleManager.addRule(rule);
-
-		final List<RuleDefinition> rulesFetch_1_1 = ruleManager.getRulesForItemId(1L);
-
-		assertNotNull(rulesFetch_1_1);
-		assertThat(rulesFetch_1_1.size(), is(1));
-		assertThat(rulesFetch_1_1, hasItem(rule));
-
-		// Update rule. This is now associated with Item 2
-		rule.setItemId(2L);
-		ruleManager.updateRule(rule);
-
-		// The rule is not associated to item 1 anymore
-		final List<RuleDefinition> rulesFetch_1_0 = ruleManager.getRulesForItemId(1L);
-
-		assertNotNull(rulesFetch_1_0);
-		assertThat(rulesFetch_1_0.size(), is(0));
-
-		// The rule should be associated with item 2
-		final List<RuleDefinition> rulesFetch_2_1 = ruleManager.getRulesForItemId(2L);
-
-		assertNotNull(rulesFetch_2_1);
-		assertThat(rulesFetch_2_1.size(), is(1));
-		assertThat(rulesFetch_2_1, hasItem(rule));
-
-		// Update rule. This is now associated with Item 2
-		ruleManager.removeRule(rule);
-
-		// No rule should be associated with item 2
-		final List<RuleDefinition> rulesFetch_2_0 = ruleManager.getRulesForItemId(2L);
-
-		assertNotNull(rulesFetch_2_0);
-		assertThat(rulesFetch_2_0.size(), is(0));
 	}
 
 	/**
@@ -267,10 +223,6 @@ public class RuleManagerValidatorTest {
 		condition_1.setRudId(rule_1.getId());
 		ruleManager.addCondition(condition_1);
 
-		RuleDefinition rule = new RuleDefinition();
-		rule.setItemId(1L);
-		ruleManager.addRule(rule);
-
 		RuleDefinition rule_2 = new RuleDefinition();
 		rule_2.setItemId(1L);
 		ruleManager.addRule(rule_2);
@@ -368,7 +320,7 @@ public class RuleManagerValidatorTest {
 		// The rule should NOT be valid (only one condition in each rules is
 		// valid)
 		isValid = ruleManager.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
-		assertThat(isValid, is(false));
+		assertThat(isValid, is(true));
 
 		// The entity is set to "ENT" here
 		myDummyDtObject.setEntity("ENT");
