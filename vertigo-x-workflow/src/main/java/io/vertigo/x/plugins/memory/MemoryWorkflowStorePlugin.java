@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
@@ -199,16 +200,16 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 	}
 
 	@Override
-	public WfActivity findActivityByDefinitionWorkflow(WfWorkflow wfWorkflow,
+	public Optional<WfActivity> findActivityByDefinitionWorkflow(WfWorkflow wfWorkflow,
 			WfActivityDefinition wfActivityDefinition) {
 
 		for (WfActivity wfActivity : inMemoryActivityStore.values()) {
 			if (wfActivityDefinition.getWfadId().equals(wfActivity.getWfadId())) {
-				return wfActivity;
+				return Optional.of(wfActivity);
 			}
 		}
 
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
@@ -241,7 +242,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 	}
 
 	@Override
-	public WfTransitionDefinition findTransition(WfTransitionCriteria wfTransitionCriteria) {
+	public Optional<WfTransitionDefinition> findTransition(WfTransitionCriteria wfTransitionCriteria) {
 		Assertion.checkNotNull(wfTransitionCriteria);
 		// ---
 
@@ -252,10 +253,10 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 					|| wfTransitionCriteria.getWfadIdTo().equals(tr.getWfadIdTo());
 
 			if (wfTransitionCriteria.getTransitionName().equals(tr.getName()) && matchFrom && matchTo) {
-				return tr;
+				return Optional.of(tr);
 			}
 		}
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
@@ -479,7 +480,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 	}
 
 	@Override
-	public WfActivityDefinition findActivityDefinitionByPosition(final WfWorkflowDefinition wfWorkflowDefinition,
+	public Optional<WfActivityDefinition> findActivityDefinitionByPosition(final WfWorkflowDefinition wfWorkflowDefinition,
 			final int position) {
 		Assertion.checkNotNull(wfWorkflowDefinition);
 		// ---
@@ -488,11 +489,11 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 
 		if (idActivity == null) {
 			// The workflow don't have a starting activity
-			return null;
+			return Optional.empty();
 		}
 
 		if (position == 1) {
-			return readActivityDefinition(idActivity);
+			return Optional.of(readActivityDefinition(idActivity));
 		}
 
 		WfTransitionDefinition transitionNext = transitionsNext
@@ -509,10 +510,10 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		}
 
 		if (transitionNext == null) {
-			return null;
+			return Optional.empty();
 		}
 
-		return readActivityDefinition(transitionNext.getWfadIdTo());
+		return Optional.of(readActivityDefinition(transitionNext.getWfadIdTo()));
 	}
 
 	@Override

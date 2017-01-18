@@ -19,6 +19,7 @@
 package io.vertigo.x.workflow;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Manager;
@@ -138,7 +139,7 @@ public interface WorkflowManager extends Manager {
 	 * @return activity corresponding to the definition fot the provided
 	 *         instance
 	 */
-	WfActivity getActivity(WfWorkflow wfWorkflow, WfActivityDefinition wfActivityDefinition);
+	Optional<WfActivity> getActivity(WfWorkflow wfWorkflow, WfActivityDefinition wfActivityDefinition);
 
 	/**
 	 * Save the decision for the current activity without moving to the next.

@@ -197,14 +197,10 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public WfActivityDefinition findActivityDefinitionByPosition(final WfWorkflowDefinition wfWorkflowDefinition,
+	public Optional<WfActivityDefinition> findActivityDefinitionByPosition(final WfWorkflowDefinition wfWorkflowDefinition,
 			final int position) {
-		Optional<WfActivityDefinition> activityDefinition = wfActivityDefinitionDAO
+		return wfActivityDefinitionDAO
 				.findActivityDefinitionByPosition(wfWorkflowDefinition.getWfwdId(), position);
-		if (activityDefinition.isPresent()) {
-			return activityDefinition.get();
-		}
-		return null;
 	}
 
 	/** {@inheritDoc} */
@@ -262,13 +258,9 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public WfActivity findActivityByDefinitionWorkflow(final WfWorkflow arg0, final WfActivityDefinition arg1) {
-		Optional<WfActivity> activity = wfActivityDAO.findActivityByDefinitionWorkflow(arg0.getWfwId(),
+	public Optional<WfActivity> findActivityByDefinitionWorkflow(final WfWorkflow arg0, final WfActivityDefinition arg1) {
+		return wfActivityDAO.findActivityByDefinitionWorkflow(arg0.getWfwId(),
 				arg1.getWfadId());
-		if (activity.isPresent()) {
-			return activity.get();
-		}
-		return null;
 	}
 
 	/** {@inheritDoc} */
@@ -304,15 +296,10 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public WfTransitionDefinition findTransition(final WfTransitionCriteria arg0) {
-		Optional<WfTransitionDefinition> wfTransitionDefinition = wfTransitionDefinitionDAO.findTransition(
+	public Optional<WfTransitionDefinition> findTransition(final WfTransitionCriteria arg0) {
+		return wfTransitionDefinitionDAO.findTransition(
 				arg0.getTransitionName(), Optional.ofNullable(arg0.getWfadIdTo()),
 				Optional.ofNullable(arg0.getWfadIdFrom()));
-		if (wfTransitionDefinition.isPresent()) {
-			return wfTransitionDefinition.get();
-		}
-		return null;
-
 	}
 
 	/** {@inheritDoc} */

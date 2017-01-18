@@ -19,6 +19,7 @@
 package io.vertigo.x.impl.workflow;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.vertigo.lang.Plugin;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
@@ -316,7 +317,7 @@ public interface WorkflowStorePlugin extends Plugin {
 	 * @param position
 	 * @return the matching definition
 	 */
-	WfActivityDefinition findActivityDefinitionByPosition(final WfWorkflowDefinition wfWorkflowDefinition,
+	Optional<WfActivityDefinition> findActivityDefinitionByPosition(final WfWorkflowDefinition wfWorkflowDefinition,
 			final int position);
 
 	/**
@@ -348,7 +349,7 @@ public interface WorkflowStorePlugin extends Plugin {
 	 * @param wfActivityDefinition
 	 * @return activity
 	 */
-	WfActivity findActivityByDefinitionWorkflow(WfWorkflow wfWorkflow, WfActivityDefinition wfActivityDefinition);
+	Optional<WfActivity> findActivityByDefinitionWorkflow(WfWorkflow wfWorkflow, WfActivityDefinition wfActivityDefinition);
 
 	/**
 	 * Update a transition
@@ -365,7 +366,7 @@ public interface WorkflowStorePlugin extends Plugin {
 	 *            criteria
 	 * @return a transition
 	 */
-	WfTransitionDefinition findTransition(WfTransitionCriteria wfTransitionCriteria);
+	Optional<WfTransitionDefinition> findTransition(WfTransitionCriteria wfTransitionCriteria);
 
 	/**
 	 * Find the next activity using the default transition
