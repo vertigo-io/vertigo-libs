@@ -107,7 +107,7 @@ public final class WorkflowFeatures extends Features {
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		getModuleConfigBuilder().addDefinitionResource("kpr", "boot/definitions/application-workflow-test.kpr")
+		getModuleConfigBuilder().addDefinitionResource("kpr", "boot/definitions/application-workflow.kpr")
 				.addDefinitionResource("classes", DtDefinitions.class.getName())
 				.addComponent(WorkflowManager.class, WorkflowManagerImpl.class)
 				.addComponent(ScriptManager.class, ScriptManagerImpl.class)

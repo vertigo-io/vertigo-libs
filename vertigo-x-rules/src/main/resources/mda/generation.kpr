@@ -1,2 +1,2 @@
-../boot/definitions/application.kpr
+../boot/definitions/application-generation.kpr
 model/common.ksp

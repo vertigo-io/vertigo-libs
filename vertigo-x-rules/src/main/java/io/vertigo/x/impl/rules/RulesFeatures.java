@@ -139,7 +139,7 @@ public final class RulesFeatures extends Features {
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		getModuleConfigBuilder().addDefinitionResource("kpr", "boot/definitions/application-rules-test.kpr")
+		getModuleConfigBuilder().addDefinitionResource("kpr", "boot/definitions/application-generation.kpr")
 				.addDefinitionResource("classes", DtDefinitions.class.getName())
 				.addComponent(RuleManager.class, RuleManagerImpl.class);
 	}
