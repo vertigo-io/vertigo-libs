@@ -183,7 +183,7 @@ public interface WorkflowManager extends Manager {
 	 * @param wfWorkflow workflow
 	 */
 	void goToNextActivity(WfWorkflow wfWorkflow);
-	
+
 	/**
 	 * Go to the next activity using the provinded transition name
 	 * @param wfWorkflow
@@ -209,10 +209,11 @@ public interface WorkflowManager extends Manager {
 	 * @param wfWorkflow
 	 * @param wfActivity
 	 * @param wfActivityDefinitionId
+	 * @param transitionName
 	 * @return true if all the default activities has been reached, false
 	 *         otherwise
 	 */
-	boolean autoValidateNextActivities(WfWorkflow wfWorkflow, WfActivity wfActivity, Long wfActivityDefinitionId);
+	boolean autoValidateNextActivities(WfWorkflow wfWorkflow, WfActivity wfActivity, Long wfActivityDefinitionId, String transitionName);
 
 	/**
 	 * Does the provided activity can be autovalidated

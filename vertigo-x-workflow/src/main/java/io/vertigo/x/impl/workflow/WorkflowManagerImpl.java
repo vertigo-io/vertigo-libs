@@ -140,7 +140,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		wfWorkflow.setWfaId2(wfActivityCurrent.getWfaId());
 		workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
 
-		autoValidateNextActivities(wfWorkflow, wfActivityCurrent, wfWorkflowDefinition.getWfadId());
+		autoValidateNextActivities(wfWorkflow, wfActivityCurrent, wfWorkflowDefinition.getWfadId(), WfCodeTransition.DEFAULT.name().toLowerCase());
 	}
 
 	@Override
@@ -229,7 +229,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	 */
 	@Override
 	public boolean autoValidateNextActivities(final WfWorkflow wfWorkflow, final WfActivity currentActivity,
-			final Long wfActivityDefinitionId) {
+			final Long wfActivityDefinitionId, String transitionName) {
 
 		WfActivityDefinition activityDefinition = workflowStorePlugin.readActivityDefinition(wfActivityDefinitionId);
 
@@ -246,7 +246,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 				endReached = true;
 				break;
 			}
-			activityDefinition = workflowStorePlugin.findNextActivity(wfActivityCurrent.getWfadId());
+			activityDefinition = workflowStorePlugin.findNextActivity(wfActivityCurrent.getWfadId(), transitionName);
 
 			final Optional<WfActivity> nextActivity = workflowStorePlugin.findActivityByDefinitionWorkflow(wfWorkflow,
 					activityDefinition);
@@ -476,7 +476,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 			// Autovalidating next activities
 			final boolean endReached = autoValidateNextActivities(wfWorkflow, nextActivity,
-					nextActivityDefinition.getWfadId());
+					nextActivityDefinition.getWfadId(), transitionName);
 
 			if (endReached) {
 				// Stepping back : No Automatic ending.
