@@ -32,7 +32,7 @@ import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin;
-import io.vertigo.dynamo.plugins.store.datastore.postgresql.PostgreSqlDataStorePlugin;
+import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
 import io.vertigo.x.impl.rules.RulesFeatures;
@@ -66,30 +66,29 @@ public class MyAppConfig {
 				.addModule(new PersonaFeatures().withUserSession(TestUserSession.class).build())
 				.addModule(new CommonsFeatures()//
 						.withCache(io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin.class)
-						// .withScript()
+						.withScript()
 						.build())
 				.addModule(new DynamoFeatures()//
 						.withStore()//
 						.withSqlDataBase()//
-						.addDataStorePlugin(PostgreSqlDataStorePlugin.class, Param.create("sequencePrefix", "SEQ_"))
+						.addDataStorePlugin(SqlDataStorePlugin.class)
 						.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
 								Param.create("dataBaseClass", PostgreSqlDataBase.class.getName()),
 								Param.create("jdbcDriver", org.postgresql.Driver.class.getName()),
 								Param.create("jdbcUrl",
 										"jdbc:postgresql://laura.dev.klee.lan.net:5432/dgac_blanche?user=blanche&password=blanche"))
 						.build())
-				// .addModule(new DynamoFeatures().build())
 				.addModule(new AccountFeatures()//
 						.withAccountStorePlugin(MemoryAccountStorePlugin.class).build())
 				.addModule(new RulesFeatures()//
 						.withDAOSupportRuleStorePlugin()//
-						// .withRuleStorePlugin(MemoryRuleStorePlugin.class)
+						//.withRuleStorePlugin(MemoryRuleStorePlugin.class)
 						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)//
 						.withRuleSelectorPlugin(SimpleRuleSelectorPlugin.class)
 						.withRuleValidatorPlugin(SimpleRuleValidatorPlugin.class).build())
 				.addModule(new WorkflowFeatures()//
 						.withDAOSupportWorkflowStorePlugin()//
-						// .withWorkflowStorePlugin(MemoryWorkflowStorePlugin.class)
+						//.withWorkflowStorePlugin(MemoryWorkflowStorePlugin.class)
 						.withItemStorePlugin(MemoryItemStorePlugin.class).build())
 				.addModule(new ModuleConfigBuilder("dummy")//
 						.addDefinitionProvider(MyDummyDtObjectProvider.class).build());

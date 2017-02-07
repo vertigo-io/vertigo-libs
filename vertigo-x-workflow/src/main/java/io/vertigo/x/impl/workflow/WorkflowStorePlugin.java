@@ -42,7 +42,6 @@ import io.vertigo.x.workflow.domain.model.WfWorkflowDefinition;
 public interface WorkflowStorePlugin extends Plugin {
 
 	// Instance
-
 	/**
 	 * Create a new workflow.
 	 *
@@ -67,15 +66,6 @@ public interface WorkflowStorePlugin extends Plugin {
 	 * @return the corresponding workflow
 	 */
 	WfWorkflow readWorkflowInstanceForUpdateById(Long wfwId);
-
-	/**
-	 * Get and lock all workflows instances for a definition.
-	 *
-	 * @param wfwdId
-	 *            id of the workflow instance
-	 * @return the corresponding workflow
-	 */
-	List<WfWorkflow> readWorkflowsInstanceForUpdateById(Long wfwdId);
 
 	/**
 	 * Get a workflow instance by an item id.
@@ -178,25 +168,6 @@ public interface WorkflowStorePlugin extends Plugin {
 	 *         if the activity is the last activity
 	 */
 	boolean hasNextActivity(final WfActivity activity, String transitionName);
-
-	/**
-	 * Find the activities from a list of activity definition ids for a
-	 * workflow.
-	 *
-	 * @param wfWorkflow
-	 * @param wfadIds
-	 * @return All matching activities
-	 */
-	List<WfActivity> findActivitiesByDefinitionId(WfWorkflow wfWorkflow, List<Long> wfadIds);
-
-	/**
-	 * Find All active workflow (Started, or Paused)
-	 *
-	 * @param wfWorkflowDefinition
-	 * @param isForUpdate
-	 * @return All active workflow (Started, or Paused)
-	 */
-	List<WfWorkflow> findActiveWorkflows(WfWorkflowDefinition wfWorkflowDefinition, boolean isForUpdate);
 
 	// Definition
 	/**

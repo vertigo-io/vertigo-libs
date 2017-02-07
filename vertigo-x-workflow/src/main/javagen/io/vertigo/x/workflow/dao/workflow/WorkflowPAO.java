@@ -52,6 +52,22 @@ public final class WorkflowPAO implements StoreServices {
 				.getResult();
 	}
 
+	/**
+	 * Execute la tache TK_HAS_NEXT_TRANSITION.
+	 * @param wfadIdFrom Long 
+	 * @param name String 
+	 * @return Integer wfTransitionDefinitionCount
+	*/
+	public Integer hasNextTransition(final Long wfadIdFrom, final String name) {
+		final Task task = createTaskBuilder("TK_HAS_NEXT_TRANSITION")
+				.addValue("WFAD_ID_FROM", wfadIdFrom)
+				.addValue("NAME", name)
+				.build();
+		return getTaskManager()
+				.execute(task)
+				.getResult();
+	}
+
     
     private TaskManager getTaskManager(){
     	return taskManager;

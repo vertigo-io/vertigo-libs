@@ -19,9 +19,6 @@
 package io.vertigo.x.impl.workflow;
 
 import io.vertigo.app.config.Features;
-import io.vertigo.commons.impl.script.ScriptManagerImpl;
-import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
-import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.core.param.Param;
 import io.vertigo.x.plugins.workflow.sql.SQLWorkflowStorePlugin;
 import io.vertigo.x.workflow.WorkflowManager;
@@ -109,9 +106,7 @@ public final class WorkflowFeatures extends Features {
 	protected void buildFeatures() {
 		getModuleConfigBuilder().addDefinitionResource("kpr", "boot/definitions/application-workflow.kpr")
 				.addDefinitionResource("classes", DtDefinitions.class.getName())
-				.addComponent(WorkflowManager.class, WorkflowManagerImpl.class)
-				.addComponent(ScriptManager.class, ScriptManagerImpl.class)
-				.addPlugin(JaninoExpressionEvaluatorPlugin.class);
+				.addComponent(WorkflowManager.class, WorkflowManagerImpl.class);
 	}
 
 }

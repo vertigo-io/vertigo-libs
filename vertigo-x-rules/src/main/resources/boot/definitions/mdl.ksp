@@ -1,2 +1,18 @@
 package io.vertigo.x.rules
 
+create DtDefinition DT_ITEM_ID {
+	field ITEM_ID   	{domain : DO_X_RULES_WEAK_ID, 	label :"itemId", 				notNull:"true" }
+}
+
+create DtDefinition DT_RULE_CRITERIA {
+	field WFWD_ID		{domain : DO_X_RULES_WEAK_ID, 				label :"id", 			notNull:"true"  }
+	field CONDITION_CRITERIA_1 		{domain : DO_DT_RULE_CONDITION_CRITERIA_DTO, 	label :"Field 1", 		notNull:"false" }
+	field CONDITION_CRITERIA_2 		{domain : DO_DT_RULE_CONDITION_CRITERIA_DTO, 	label :"Field 2", 		notNull:"false" }
+}
+
+
+create DtDefinition DT_RULE_CONDITION_CRITERIA {
+	field FIELD 		{domain : DO_X_RULES_FIELD, 		label :"Field", 		notNull:"false" }
+	field VALUE 		{domain : DO_X_RULES_EXPRESSION, 	label :"Value", 		notNull:"false" }
+}
+

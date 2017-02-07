@@ -28,8 +28,6 @@ import io.vertigo.x.workflow.domain.model.WfTransitionDefinition;
  */
 public final class WfTransitionBuilder implements Builder<WfTransitionDefinition> {
 
-	private static final String DEFAULT_VALUE_NAME = "default";
-
 	private String myName;
 	private final Long wfwdId;
 	private final Long wfadIdFrom;
@@ -61,7 +59,7 @@ public final class WfTransitionBuilder implements Builder<WfTransitionDefinition
 	public WfTransitionDefinition build() {
 		final WfTransitionDefinition wfTransitionDefinition = new WfTransitionDefinition();
 
-		wfTransitionDefinition.setName(myName == null ? DEFAULT_VALUE_NAME : myName);
+		wfTransitionDefinition.setName(myName == null ? WfCodeTransition.DEFAULT.getTransitionName() : myName);
 		wfTransitionDefinition.setWfadIdFrom(wfadIdFrom);
 		wfTransitionDefinition.setWfadIdTo(wfadIdTo);
 		wfTransitionDefinition.setWfwdId(wfwdId);

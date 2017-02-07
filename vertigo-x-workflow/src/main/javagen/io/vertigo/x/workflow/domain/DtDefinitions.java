@@ -29,10 +29,6 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 			WfWorkflow(io.vertigo.x.workflow.domain.instance.WfWorkflow.class),
 			/** Objet de données WfWorkflowDefinition. */
 			WfWorkflowDefinition(io.vertigo.x.workflow.domain.model.WfWorkflowDefinition.class),
-			/** Objet de données WorkflowDummy. */
-			WorkflowDummy(io.vertigo.x.workflow.domain.common.WorkflowDummy.class),
-			/** Objet de données WorkflowDummyBoolean. */
-			WorkflowDummyBoolean(io.vertigo.x.workflow.domain.common.WorkflowDummyBoolean.class),
 		;
 		
 		private final Class<?> clazz;
@@ -167,22 +163,6 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		DATE,
 		/** Propriété 'startActivity'. */
 		WFAD_ID,
-	}
-
-	/**
-	 * Enumération des champs de WorkflowDummy.
-	 */
-	public enum WorkflowDummyFields implements DtFieldName {
-		/** Propriété 'dummy long'. */
-		DUMMY_LONG,
-	}
-
-	/**
-	 * Enumération des champs de WorkflowDummyBoolean.
-	 */
-	public enum WorkflowDummyBooleanFields implements DtFieldName {
-		/** Propriété 'dummy boolean'. */
-		DUMMY_BOOLEAN,
 	}
 
 	    

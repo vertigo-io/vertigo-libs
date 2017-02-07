@@ -80,3 +80,5 @@ create Domain DO_X_RULES_ID {
 	formatter : FMT_DEFAULT
 	storeType : "NUMERIC"
 }
+
+

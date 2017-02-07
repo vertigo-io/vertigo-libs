@@ -235,18 +235,6 @@ public interface WorkflowManager extends Manager {
 	 */
 	List<WfActivityDefinition> getActivityDefinitions(WfWorkflow wfWorkflow);
 
-	/**
-	 * Get the list of activities following the default transition from the
-	 * start until the end
-	 *
-	 * @param wfWorkflow
-	 * @param wfadIds
-	 * @param transitionName
-	 * @return the list of activities following the default path from the start
-	 *         until the end
-	 */
-	List<WfActivity> getActivities(WfWorkflow wfWorkflow, List<Long> wfadIds);
-
 	// Definitions:
 	/**
 	 * Create a new Workflow Definition.

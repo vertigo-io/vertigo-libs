@@ -38,7 +38,6 @@ import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
 import io.vertigo.x.rules.domain.SelectorDefinition;
-import io.vertigo.x.workflow.WfCodeStatusWorkflow;
 import io.vertigo.x.workflow.WfCodeTransition;
 import io.vertigo.x.workflow.WfTransitionCriteria;
 import io.vertigo.x.workflow.domain.instance.WfActivity;
@@ -110,21 +109,6 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 	}
 
 	@Override
-	public List<WfActivity> findActivitiesByDefinitionId(WfWorkflow wfWorkflow, List<Long> wfadIds) {
-		Assertion.checkNotNull(wfWorkflow);
-		Assertion.checkNotNull(wfadIds);
-		// ---
-		List<WfActivity> wfActivities = new ArrayList<>();
-		for (WfActivity wfActivity : inMemoryActivityStore.values()) {
-			if (wfadIds.contains(wfActivity.getWfaId()) && wfWorkflow.getWfwId().equals(wfActivity.getWfwId())) {
-				wfActivities.add(wfActivity);
-			}
-		}
-
-		return wfActivities;
-	}
-
-	@Override
 	public List<WfActivity> findActivitiesByWorkflowId(WfWorkflow wfWorkflow) {
 		Assertion.checkNotNull(wfWorkflow);
 		// ---
@@ -191,21 +175,6 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		}
 
 		return Optional.empty();
-	}
-
-	@Override
-	public List<WfWorkflow> findActiveWorkflows(WfWorkflowDefinition wfWorkflowDefinition, boolean isForUpdate) {
-		List<WfWorkflow> collect = new ArrayList<>();
-		for (WfWorkflow wfWorkflow : inMemoryWorkflowInstanceStore.values()) {
-			WfCodeStatusWorkflow status = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
-
-			if (wfWorkflowDefinition.getWfwdId().equals(wfWorkflow.getWfwId())
-					&& (status == WfCodeStatusWorkflow.STA || status == WfCodeStatusWorkflow.PAU)) {
-				collect.add(wfWorkflow);
-			}
-		}
-
-		return collect;
 	}
 
 	@Override
@@ -478,12 +447,6 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 	public WfWorkflow readWorkflowInstanceForUpdateById(Long wfwId) {
 		// No lock for Memory Plugin
 		return readWorkflowInstanceById(wfwId);
-	}
-
-	@Override
-	public List<WfWorkflow> readWorkflowsInstanceForUpdateById(Long wfwdId) {
-		// No lock for Memory Plugin
-		return new ArrayList<>(inMemoryWorkflowInstanceStore.values());
 	}
 
 	@Override

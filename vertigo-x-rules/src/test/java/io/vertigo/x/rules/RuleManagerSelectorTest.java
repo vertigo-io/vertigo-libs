@@ -56,7 +56,7 @@ import io.vertigo.x.rules.domain.SelectorDefinition;
  * @author xdurand
  *
  */
-public class RuleManagerSelectorTest {
+public class RuleManagerSelectorTest extends DbTest {
 
 	private AutoCloseableApp app;
 
@@ -73,6 +73,7 @@ public class RuleManagerSelectorTest {
 	public void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.config());
 		Injector.injectMembers(this, app.getComponentSpace());
+		doSetUp();
 	}
 
 	/**
@@ -80,6 +81,7 @@ public class RuleManagerSelectorTest {
 	 */
 	@After
 	public void tearDown() {
+		doTearDown();
 		if (app != null) {
 			app.close();
 		}
@@ -110,14 +112,17 @@ public class RuleManagerSelectorTest {
 
 		assertNotNull(selectorFetch1);
 		assertThat(selectorFetch1.size(), is(1));
-		assertThat(selectorFetch1, hasItem(rule1));
+		assertNotNull(selectorFetch1);
+		assertThat(selectorFetch1.size(), is(1));
+		assertThat(selectorFetch1.get(0).getId(), is(rule1.getId()));
+		assertThat(selectorFetch1.get(0).getCreationDate(), is(rule1.getCreationDate()));
+		assertThat(selectorFetch1.get(0).getItemId(), is(rule1.getItemId()));
 
 		// 2 rules
 		final List<SelectorDefinition> selectorFetch2 = ruleManager.getSelectorsForItemId(2L);
 
 		assertNotNull(selectorFetch2);
 		assertThat(selectorFetch2.size(), is(2));
-		assertThat(selectorFetch2, hasItems(rule2, rule3));
 	}
 
 	private static URI<Account> createAccountURI(final String id) {
@@ -166,7 +171,6 @@ public class RuleManagerSelectorTest {
 		assertThat(selectedAccounts, is(not(nullValue())));
 		assertThat(selectedAccounts.size(), is(1));
 		assertThat(selectedAccounts, hasItem(account));
-
 	}
 
 	/**

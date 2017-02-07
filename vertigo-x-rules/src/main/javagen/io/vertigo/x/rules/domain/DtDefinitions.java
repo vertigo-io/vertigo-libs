@@ -13,8 +13,14 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 * Enumération des DtDefinitions.
 	 */
 	public enum Definitions {
+			/** Objet de données ItemId. */
+			ItemId(io.vertigo.x.rules.ItemId.class),
+			/** Objet de données RuleConditionCriteria. */
+			RuleConditionCriteria(io.vertigo.x.rules.RuleConditionCriteria.class),
 			/** Objet de données RuleConditionDefinition. */
 			RuleConditionDefinition(io.vertigo.x.rules.domain.RuleConditionDefinition.class),
+			/** Objet de données RuleCriteria. */
+			RuleCriteria(io.vertigo.x.rules.RuleCriteria.class),
 			/** Objet de données RuleDefinition. */
 			RuleDefinition(io.vertigo.x.rules.domain.RuleDefinition.class),
 			/** Objet de données RuleFilterDefinition. */
@@ -38,6 +44,24 @@ public final class DtDefinitions implements Iterable<Class<?>> {
     }
 
 	/**
+	 * Enumération des champs de ItemId.
+	 */
+	public enum ItemIdFields implements DtFieldName {
+		/** Propriété 'itemId'. */
+		ITEM_ID,
+	}
+
+	/**
+	 * Enumération des champs de RuleConditionCriteria.
+	 */
+	public enum RuleConditionCriteriaFields implements DtFieldName {
+		/** Propriété 'Field'. */
+		FIELD,
+		/** Propriété 'Value'. */
+		VALUE,
+	}
+
+	/**
 	 * Enumération des champs de RuleConditionDefinition.
 	 */
 	public enum RuleConditionDefinitionFields implements DtFieldName {
@@ -51,6 +75,18 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		EXPRESSION,
 		/** Propriété 'RuleDefinition'. */
 		RUD_ID,
+	}
+
+	/**
+	 * Enumération des champs de RuleCriteria.
+	 */
+	public enum RuleCriteriaFields implements DtFieldName {
+		/** Propriété 'id'. */
+		WFWD_ID,
+		/** Propriété 'Field 1'. */
+		CONDITION_CRITERIA_1,
+		/** Propriété 'Field 2'. */
+		CONDITION_CRITERIA_2,
 	}
 
 	/**

@@ -15,7 +15,7 @@
 	
 	<module name="API">
 	<definitions>
-		<resource type ="oom" path="file:./src/main/database/model/diane.oom"/>
+		<resource type ="oom" path="file:./src/main/database/model/workflow.oom"/>
 		<resource type ="kpr" path="file:./src/main/resources/mda/generation.kpr"/>
 		 
 		</definitions>

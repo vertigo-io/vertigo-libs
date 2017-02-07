@@ -199,11 +199,6 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		return ret;
 	}
 
-	@Override
-	public List<WfActivity> getActivities(final WfWorkflow wfWorkflow, final List<Long> wfadId) {
-		return workflowStorePlugin.findActivitiesByDefinitionId(wfWorkflow, wfadId);
-	}
-
 	private WfActivity getNewActivity(final WfActivityDefinition activityDefinition, final WfWorkflow wfWorkflow, final boolean isAuto) {
 		final WfActivity wfActivity = new WfActivity();
 		wfActivity.setCreationDate(new Date());
@@ -785,4 +780,5 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 		return workflowDecisions;
 	}
+
 }

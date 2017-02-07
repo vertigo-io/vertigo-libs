@@ -20,7 +20,6 @@ package io.vertigo.x.impl.rules;
 
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.x.plugins.rules.sql.SQLRuleConstantsStorePlugin;
 import io.vertigo.x.plugins.rules.sql.SQLRuleStorePlugin;
 import io.vertigo.x.rules.RuleManager;
 import io.vertigo.x.rules.dao.RuleConditionDefinitionDAO;
@@ -92,19 +91,6 @@ public final class RulesFeatures extends Features {
 		return this;
 	}
 
-	/**
-	 * Specifies the ruleConstantsStorePlugin.
-	 * 
-	 * @param ruleConstantsStorePluginClass
-	 *            the type of plugin to use
-	 * @param params
-	 *            the params
-	 * @return these features
-	 */
-	public RulesFeatures withDAOSupportRuleConstantsStorePlugin() {
-		getModuleConfigBuilder().addPlugin(SQLRuleConstantsStorePlugin.class);
-		return this;
-	}
 
 	/**
 	 * Specifies the ruleSelectorPlugin.
@@ -139,7 +125,7 @@ public final class RulesFeatures extends Features {
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		getModuleConfigBuilder().addDefinitionResource("kpr", "boot/definitions/application-generation.kpr")
+		getModuleConfigBuilder().addDefinitionResource("kpr", "boot/definitions/application-rules-test.kpr")
 				.addDefinitionResource("classes", DtDefinitions.class.getName())
 				.addComponent(RuleManager.class, RuleManagerImpl.class);
 	}

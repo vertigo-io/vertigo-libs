@@ -1,9 +1,0 @@
-package io.vertigo.x.workflow.domain.common
-
-create DtDefinition DT_WORKFLOW_DUMMY {
-       field DUMMY_LONG {domain: DO_ID label: "dummy long" notNull:"false" }
-}
-
-create DtDefinition DT_WORKFLOW_DUMMY_BOOLEAN {
-       field DUMMY_BOOLEAN {domain: DO_BOOLEEN label: "dummy boolean" notNull:"false" }
-}

@@ -24,7 +24,6 @@ create Association A_RUD_COD {
 	labelB : "RuleConditionDefinition"
 	roleA : "RuleDefinition"
 	roleB : "RuleConditionDefinition"
-			
 }
 
 
@@ -70,4 +69,6 @@ create Association A_SEL_FID {
 			
 }
 	
+	
+
 	

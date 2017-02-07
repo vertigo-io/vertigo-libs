@@ -52,5 +52,23 @@ public final class RuleDefinitionDAO extends DAO<RuleDefinition, java.lang.Long>
 				.getResult();
 	}
 
+	/**
+	 * Execute la tache TK_FIND_ITEMS_BY_CRITERIA.
+	 * @param ruleConditionCriteria1 io.vertigo.x.rules.RuleConditionCriteria 
+	 * @param ruleConditionCriteria2 io.vertigo.x.rules.RuleConditionCriteria 
+	 * @param itemsId io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.rules.ItemId> 
+	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.rules.domain.RuleDefinition> ruleDefinition
+	*/
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.rules.domain.RuleDefinition> findItemsByCriteria(final io.vertigo.x.rules.RuleConditionCriteria ruleConditionCriteria1, final io.vertigo.x.rules.RuleConditionCriteria ruleConditionCriteria2, final io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.rules.ItemId> itemsId) {
+		final Task task = createTaskBuilder("TK_FIND_ITEMS_BY_CRITERIA")
+				.addValue("RULE_CONDITION_CRITERIA_1", ruleConditionCriteria1)
+				.addValue("RULE_CONDITION_CRITERIA_2", ruleConditionCriteria2)
+				.addValue("ITEMS_ID", itemsId)
+				.build();
+		return getTaskManager()
+				.execute(task)
+				.getResult();
+	}
+
 
 }

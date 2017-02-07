@@ -55,11 +55,5 @@ module.exports = {
         name: "name",
         date: "date",
         wfadId: "startActivity"
-    },
-    workflowDummy: {
-        dummyLong: "dummy long"
-    },
-    workflowDummyBoolean: {
-        dummyBoolean: "dummy boolean"
     }
 };

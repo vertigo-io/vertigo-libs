@@ -19,8 +19,6 @@
 
 package io.vertigo.x.rules;
 
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -46,7 +44,7 @@ import io.vertigo.x.rules.domain.RuleDefinition;
  * @author xdurand
  *
  */
-public class RuleManagerValidatorTest {
+public class RuleManagerValidatorTest extends DbTest {
 
 	private AutoCloseableApp app;
 
@@ -60,6 +58,7 @@ public class RuleManagerValidatorTest {
 	public void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.config());
 		Injector.injectMembers(this, app.getComponentSpace());
+		doSetUp();
 	}
 
 	/**
@@ -67,6 +66,7 @@ public class RuleManagerValidatorTest {
 	 */
 	@After
 	public void tearDown() {
+		doTearDown();
 		if (app != null) {
 			app.close();
 		}
@@ -93,14 +93,17 @@ public class RuleManagerValidatorTest {
 
 		assertNotNull(rulesFetch1);
 		assertThat(rulesFetch1.size(), is(1));
-		assertThat(rulesFetch1, hasItem(rule1));
+		assertThat(rulesFetch1.get(0).getId(), is(rule1.getId()));
+		assertThat(rulesFetch1.get(0).getCreationDate(), is(rule1.getCreationDate()));
+		assertThat(rulesFetch1.get(0).getItemId(), is(rule1.getItemId()));
+		assertThat(rulesFetch1.get(0).getLabel(), is(rule1.getLabel()));
 
 		// 2 rules
 		final List<RuleDefinition> rulesFetch2 = ruleManager.getRulesForItemId(2L);
 
 		assertNotNull(rulesFetch2);
 		assertThat(rulesFetch2.size(), is(2));
-		assertThat(rulesFetch2, hasItems(rule2, rule3));
+		
 	}
 
 	/**

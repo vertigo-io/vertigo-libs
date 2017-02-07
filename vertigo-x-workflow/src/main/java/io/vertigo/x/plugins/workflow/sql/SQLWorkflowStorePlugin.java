@@ -8,7 +8,8 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.store.criteria.Criteria;
+import io.vertigo.dynamo.store.criteria.Criterions;
 import io.vertigo.x.impl.workflow.WorkflowStorePlugin;
 import io.vertigo.x.rules.dao.RuleConditionDefinitionDAO;
 import io.vertigo.x.rules.dao.RuleDefinitionDAO;
@@ -110,7 +111,7 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public List<WfDecision> findAllDecisionByActivity(final WfActivity wfActivity) {
-		return wfDecisionDAO.getListByDtField(WfDecisionFields.WFA_ID.name(), wfActivity.getWfaId(), Integer.MAX_VALUE);
+		return wfDecisionDAO.getListByDtFieldName(WfDecisionFields.WFA_ID, wfActivity.getWfaId(), Integer.MAX_VALUE);
 	}
 
 	/** {@inheritDoc} */
@@ -123,14 +124,13 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public boolean hasNextActivity(final WfActivity activity, final String transitionName) {
-		return wfTransitionDefinitionDAO.hasNextTransition(activity.getWfadId(), transitionName).size() > 0;
+		return workflowPAO.hasNextTransition(activity.getWfadId(), transitionName) > 0;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public int countDefaultTransitions(final WfWorkflowDefinition wfWorkflowDefinition) {
-		final Integer dummyInterger = workflowPAO.countDefaultTransactions(wfWorkflowDefinition.getWfwdId());
-		return dummyInterger.intValue();
+		return workflowPAO.countDefaultTransactions(wfWorkflowDefinition.getWfwdId());
 	}
 
 	/** {@inheritDoc} */
@@ -148,12 +148,8 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public WfWorkflowDefinition readWorkflowDefinition(final String definitionName) {
-		WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinition();
-		final DtList<WfWorkflowDefinition> list = wfWorkflowDefinitionDAO
-				.getListByDtField(WfWorkflowDefinitionFields.NAME.name(), definitionName, 1);
-		if (list != null && !list.isEmpty()) {
-			wfWorkflowDefinition = list.get(0);
-		}
+		final Criteria<WfWorkflowDefinition> criteria = Criterions.isEqualTo(WfWorkflowDefinitionFields.NAME, definitionName);
+		WfWorkflowDefinition wfWorkflowDefinition = wfWorkflowDefinitionDAO.find(criteria);
 		return wfWorkflowDefinition;
 	}
 
@@ -199,102 +195,82 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 		wfTransitionDefinitionDAO.save(transition);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public List<WfWorkflow> findActiveWorkflows(final WfWorkflowDefinition arg0, final boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	/** {@inheritDoc} */
 	@Override
-	public List<WfActivity> findActivitiesByDefinitionId(final WfWorkflow arg0, final List<Long> arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<WfActivity> findActivitiesByWorkflowId(final WfWorkflow arg0) {
-		return wfActivityDAO.getListByDtField(WfWorkflowFields.WFW_ID.name(), arg0.getWfwId(), Integer.MAX_VALUE);
+	public List<WfActivity> findActivitiesByWorkflowId(final WfWorkflow wfWorkflow) {
+		return wfActivityDAO.getListByDtFieldName(WfWorkflowFields.WFW_ID, wfWorkflow.getWfwId(), Integer.MAX_VALUE);
 
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<WfActivity> findActivityByDefinitionWorkflow(final WfWorkflow arg0, final WfActivityDefinition arg1) {
-		return wfActivityDAO.findActivityByDefinitionWorkflow(arg0.getWfwId(),
-				arg1.getWfadId());
+	public Optional<WfActivity> findActivityByDefinitionWorkflow(final WfWorkflow wfWorkflow, final WfActivityDefinition wfActivityDefinition) {
+		return wfActivityDAO.findActivityByDefinitionWorkflow(wfWorkflow.getWfwId(),
+				wfActivityDefinition.getWfadId());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public List<WfDecision> findDecisionsByWorkflowId(final WfWorkflow arg0) {
-		return wfDecisionDAO.findDecisionsByWorkflowId(arg0.getWfwId());
+	public List<WfDecision> findDecisionsByWorkflowId(final WfWorkflow wfWorkflow) {
+		return wfDecisionDAO.findDecisionsByWorkflowId(wfWorkflow.getWfwId());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public WfActivityDefinition findNextActivity(final Long arg0) {
-		return findNextActivity(arg0, WfCodeTransition.DEFAULT.name().toLowerCase());
+	public WfActivityDefinition findNextActivity(final Long wfadId) {
+		return findNextActivity(wfadId, WfCodeTransition.DEFAULT.name().toLowerCase());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public WfActivityDefinition findNextActivity(final Long arg0, final String arg1) {
-		final WfTransitionDefinition wfTransitionDefinition = wfTransitionDefinitionDAO.findNextActivity(arg0, arg1);
+	public WfActivityDefinition findNextActivity(final Long wfadId, final String transitionName) {
+		final WfTransitionDefinition wfTransitionDefinition = wfTransitionDefinitionDAO.findNextActivity(wfadId, transitionName);
 		return wfActivityDefinitionDAO.get(wfTransitionDefinition.getWfadIdTo());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<WfTransitionDefinition> findTransition(final WfTransitionCriteria arg0) {
+	public Optional<WfTransitionDefinition> findTransition(final WfTransitionCriteria wfTransitionCriteria) {
 		return wfTransitionDefinitionDAO.findTransition(
-				arg0.getTransitionName(), Optional.ofNullable(arg0.getWfadIdTo()),
-				Optional.ofNullable(arg0.getWfadIdFrom()));
+				wfTransitionCriteria.getTransitionName(), Optional.ofNullable(wfTransitionCriteria.getWfadIdTo()),
+				Optional.ofNullable(wfTransitionCriteria.getWfadIdFrom()));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void incrementActivityDefinitionPositionsAfter(final Long arg0, final int arg1) {
+	public void incrementActivityDefinitionPositionsAfter(final Long wfwdId, final int position) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public List<WfDecision> readDecisionsByActivityId(final Long arg0) {
-		return wfDecisionDAO.getListByDtField(WfDecisionFields.WFA_ID.name(), arg0, Integer.MAX_VALUE);
+	public List<WfDecision> readDecisionsByActivityId(final Long wfaId) {
+		return wfDecisionDAO.getListByDtFieldName(WfDecisionFields.WFA_ID, wfaId, Integer.MAX_VALUE);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public WfWorkflow readWorkflowInstanceByItemId(final Long arg0, final Long arg1) {
-		return wfWorkflowDAO.readWorkflowInstanceByItemId(arg0, arg1);
+	public WfWorkflow readWorkflowInstanceByItemId(final Long wfwdId, final Long itemId) {
+		return wfWorkflowDAO.readWorkflowInstanceByItemId(wfwdId, itemId);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public WfWorkflow readWorkflowInstanceForUpdateById(final Long arg0) {
-		return wfWorkflowDAO.readWorkflowForUpdate(arg0);
+	public WfWorkflow readWorkflowInstanceForUpdateById(final Long wfwId) {
+		return wfWorkflowDAO.readWorkflowForUpdate(wfwId);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public List<WfWorkflow> readWorkflowsInstanceForUpdateById(final Long arg0) {
-		// TODO Auto-generated method stub
-		return null;
+	public void updateDecision(final WfDecision wfDecision) {
+		wfDecisionDAO.save(wfDecision);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void updateDecision(final WfDecision arg0) {
-		wfDecisionDAO.save(arg0);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void updateTransition(final WfTransitionDefinition arg0) {
-		wfTransitionDefinitionDAO.save(arg0);
+	public void updateTransition(final WfTransitionDefinition wfTransitionDefinition) {
+		wfTransitionDefinitionDAO.save(wfTransitionDefinition);
 	}
 
 	@Override
@@ -316,4 +292,9 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	public List<RuleFilterDefinition> findAllFiltersByWorkflowDefinitionId(final long wfwdId) {
 		return ruleFilterDefinitionDAO.findAllFiltersByWorkflowDefinitionId(wfwdId);
 	}
+	
+	
+
+	
+
 }

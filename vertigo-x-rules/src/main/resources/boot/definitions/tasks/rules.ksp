@@ -63,3 +63,28 @@ create Task TK_FIND_ALL_FILTERS_BY_WORKFLOW_DEFINITION_ID {
 	attribute WFWD_ID 					{domain : DO_X_RULES_ID			  			  notNull:"true" 	  inOut:"in"}
 	attribute RULE_FILTER_DEFINITION_LIST    {domain:DO_DT_RULE_FILTER_DEFINITION_DTC,            notNull:"true",     inOut :"out"}
 }
+
+create Task TK_FIND_ITEMS_BY_CRITERIA {
+	className : "io.vertigo.dynamox.task.TaskEngineSelect"
+	request : "
+		SELECT 
+			RUD.*
+		FROM 
+			RULE_DEFINITION RUD
+			JOIN RULE_CONDITION_DEFINITION RCD ON (RCD.RUD_ID = RUD.ID)
+		WHERE 
+			RUD.ITEM_ID IN (#ITEMS_ID.ROWNUM.ITEM_ID#)
+		AND	RCD.FIELD = #RULE_CONDITION_CRITERIA_1.FIELD#
+		AND RCD.EXPRESSION = #RULE_CONDITION_CRITERIA_1.VALUE#
+		<%if (#RULE_CONDITION_CRITERIA_2# != null) { %>
+		AND EXIST (SELECT 1 FROM RULE_CONDITION_DEFINITION RCD2 RCD2.FIELD = #RULE_CONDITION_CRITERIA_2.FIELD# AND RCD.EXPRESSION = #RULE_CONDITION_CRITERIA_1.VALUE# AND RCD2.ID = RUD.ID)
+		<% } %>
+	"
+	attribute RULE_DEFINITION			{domain: DO_DT_RULE_DEFINITION_DTC,			notNull:"true",	  inOut:"out"}
+	attribute RULE_CONDITION_CRITERIA_1 {domain: DO_DT_RULE_CONDITION_CRITERIA_DTO,	notNull:"true",   inOut:"in"}
+	attribute RULE_CONDITION_CRITERIA_2	{domain: DO_DT_RULE_CONDITION_CRITERIA_DTO,	notNull:"true",   inOut:"in"}
+	attribute ITEMS_ID    				{domain: DO_DT_ITEM_ID_DTC,    				notNull:"true",   inOut:"in"}
+}
+
+
+

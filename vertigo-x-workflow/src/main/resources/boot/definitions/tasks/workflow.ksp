@@ -70,15 +70,13 @@ create Task TK_FIND_DECISIONS_BY_WORKFLOW_ID {
 create Task TK_HAS_NEXT_TRANSITION {
 	className : "io.vertigo.dynamox.task.TaskEngineSelect"
 	request : "
-		SELECT 
-			TRA.*
-		FROM 
-			WF_TRANSITION_DEFINITION TRA
-		WHERE TRA.NAME = #NAME# AND TRA.WFAD_ID_FROM = #WFAD_ID_FROM#
+		SELECT COUNT(*)
+		  FROM WF_TRANSITION_DEFINITION TRA
+		 WHERE TRA.NAME = #NAME# AND TRA.WFAD_ID_FROM = #WFAD_ID_FROM#
 	"
-	attribute WFAD_ID_FROM				{domain : DO_ID			  			  				notNull:"true" 	  inOut:"in"}
-	attribute NAME 						{domain : DO_LIBELLE			  			  		notNull:"true" 	  inOut:"in"}
-	attribute WF_TRANSITION_DEFINITION_LIST    {domain:DO_DT_WF_TRANSITION_DEFINITION_DTC	notNull:"true"     inOut :"out"}
+	attribute WFAD_ID_FROM						{domain : DO_ID			notNull:"true" 	  inOut:"in"}
+	attribute NAME 								{domain : DO_LIBELLE	notNull:"true" 	  inOut:"in"}
+	attribute WF_TRANSITION_DEFINITION_COUNT	{domain: DO_ENTIER		notNull:"true"    inOut:"out"}
 }
 
 

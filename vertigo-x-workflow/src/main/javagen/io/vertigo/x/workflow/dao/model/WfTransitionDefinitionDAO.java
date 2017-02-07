@@ -40,22 +40,6 @@ public final class WfTransitionDefinitionDAO extends DAO<WfTransitionDefinition,
 	}
 
 	/**
-	 * Execute la tache TK_HAS_NEXT_TRANSITION.
-	 * @param wfadIdFrom Long 
-	 * @param name String 
-	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.workflow.domain.model.WfTransitionDefinition> wfTransitionDefinitionList
-	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.x.workflow.domain.model.WfTransitionDefinition> hasNextTransition(final Long wfadIdFrom, final String name) {
-		final Task task = createTaskBuilder("TK_HAS_NEXT_TRANSITION")
-				.addValue("WFAD_ID_FROM", wfadIdFrom)
-				.addValue("NAME", name)
-				.build();
-		return getTaskManager()
-				.execute(task)
-				.getResult();
-	}
-
-	/**
 	 * Execute la tache TK_FIND_TRANSITION.
 	 * @param name String 
 	 * @param wfadIdTo Long (peut être null)

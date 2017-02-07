@@ -5,6 +5,11 @@ import java.util.List;
 
 import io.vertigo.x.workflow.domain.instance.WfWorkflow;
 
+/**
+ * 
+ * @author xdurand
+ *
+ */
 public final class WfListWorkflowDecision {
 	private WfWorkflow WfWorkflow;
 

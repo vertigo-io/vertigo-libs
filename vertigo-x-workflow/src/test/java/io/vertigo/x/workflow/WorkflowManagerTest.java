@@ -67,7 +67,7 @@ import io.vertigo.x.workflow.domain.model.WfWorkflowDefinition;
  * @author xdurand
  *
  */
-public class WorkflowManagerTest extends TestHelper {
+public class WorkflowManagerTest extends DbTest {
 
 	private AutoCloseableApp app;
 

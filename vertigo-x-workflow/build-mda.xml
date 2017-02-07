@@ -60,9 +60,6 @@
 			<arg value="/mda/applicationConfiguration.properties" />
 		</java>
 		<copy file="${targetGenDir}\${sqlGen}\crebas.sql" tofile="${sqlCrebasGenDir}\01_CREBAS.sql" />
-		<echo message="Copie des fichiers JS générés" />
-		<copy file="${targetGenDir}\${project.packagepath}\domain/DtDefinitions.js" tofile="${spaDtDefinitionsGenDir}\index.js" />
-		<copy file="${targetGenDir}\${project.packagepath}\domain/DtDefinitionsLabel.js" tofile="${spaDtLabelsGenDir}\fr-FR.generated.js" />
 	</target>
 
 	<target name="clean-generate" description="Clean puis genere tout">

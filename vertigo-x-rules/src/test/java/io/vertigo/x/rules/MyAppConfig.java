@@ -23,18 +23,21 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
+import io.vertigo.dynamo.impl.database.vendor.postgresql.PostgreSqlDataBase;
+import io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
 import io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin;
+import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
 import io.vertigo.x.impl.rules.RulesFeatures;
 import io.vertigo.x.plugins.account.memory.MemoryAccountStorePlugin;
 import io.vertigo.x.plugins.rules.memory.MemoryRuleConstantsStorePlugin;
-import io.vertigo.x.plugins.rules.memory.MemoryRuleStorePlugin;
 import io.vertigo.x.plugins.rules.selector.SimpleRuleSelectorPlugin;
 import io.vertigo.x.plugins.rules.validator.SimpleRuleValidatorPlugin;
 import io.vertigo.x.rules.data.MyDummyDtObjectProvider;
@@ -65,8 +68,20 @@ public class MyAppConfig {
 				.addModule(new PersonaFeatures()
 						.withUserSession(TestUserSession.class)
 						.build())
-				.addModule(new CommonsFeatures().build())
-				.addModule(new DynamoFeatures().build())
+				.addModule(new CommonsFeatures()//
+						.withCache(io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin.class)
+						.withScript()
+						.build())
+				.addModule(new DynamoFeatures()//
+						.withStore()//
+						.withSqlDataBase()//
+						.addDataStorePlugin(SqlDataStorePlugin.class)
+						.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
+								Param.create("dataBaseClass", PostgreSqlDataBase.class.getName()),
+								Param.create("jdbcDriver", org.postgresql.Driver.class.getName()),
+								Param.create("jdbcUrl",
+										"jdbc:postgresql://laura.dev.klee.lan.net:5432/dgac_blanche?user=blanche&password=blanche"))
+						.build())				
 				.addModule(new AccountFeatures()
 						.withAccountStorePlugin(MemoryAccountStorePlugin.class)
 						.build())
@@ -75,7 +90,8 @@ public class MyAppConfig {
 						.build())
 				.addModule(new RulesFeatures()
 						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)
-						.withRuleStorePlugin(MemoryRuleStorePlugin.class)
+						//.withRuleStorePlugin(MemoryRuleStorePlugin.class)
+						.withDAOSupportRuleStorePlugin()//
 						.withRuleSelectorPlugin(SimpleRuleSelectorPlugin.class)
 						.withRuleValidatorPlugin(SimpleRuleValidatorPlugin.class)
 						.build())

@@ -162,17 +162,5 @@ module.exports = {
             domain: "DO_X_WORKFLOW_ID",
             required: false
         }
-    },
-    workflowDummy: {
-        dummyLong: {
-            domain: "DO_ID",
-            required: false
-        }
-    },
-    workflowDummyBoolean: {
-        dummyBoolean: {
-            domain: "DO_BOOLEEN",
-            required: false
-        }
     }
 };

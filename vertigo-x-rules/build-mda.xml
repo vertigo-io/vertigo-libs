@@ -14,7 +14,7 @@
 	
 	<pathconvert property="class.path">
 		<path>
-            <fileset dir="./src/main/webapp/WEB-INF/lib">
+            <fileset dir="./src/dev/lib">
                 <include name="*.jar" />
             </fileset>          	
 		</path>
@@ -59,6 +59,7 @@
 		<java dir="." fork="true" maxmemory="128m" classname="io.vertigo.studio.tools.NameSpace2Java" failonerror="true" classpath=".;${build.dir};${class.path};${compile_classpath}">
 			<arg value="/mda/applicationConfiguration.properties" />
 		</java>
+		<copy file="${targetGenDir}\${sqlGen}\crebas.sql" tofile="${sqlCrebasGenDir}\01_CREBAS.sql" />
 	</target>
 
 	<target name="clean-generate" description="Clean puis genere tout">
