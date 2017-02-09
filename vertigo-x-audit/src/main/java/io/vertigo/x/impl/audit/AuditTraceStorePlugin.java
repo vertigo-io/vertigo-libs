@@ -31,7 +31,7 @@ import io.vertigo.x.audit.AuditTraceCriteria;
 public interface AuditTraceStorePlugin extends Plugin {
 	/**
 	 * Gets an audit trail.
-	 * @param idAuditTrace the audit trail defined by its id.
+	 * @param auditTraceId the audit trail defined by its id.
 	 * @return the
 	 */
 	AuditTrace read(Long auditTraceId);

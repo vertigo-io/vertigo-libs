@@ -11,15 +11,15 @@ import io.vertigo.x.workflow.domain.instance.WfWorkflow;
  *
  */
 public final class WfListWorkflowDecision {
-	private WfWorkflow WfWorkflow;
+	private WfWorkflow wfWorkflow;
 
-	private List<WfWorkflowDecision> WorkflowDecisions = new ArrayList<>();
+	private List<WfWorkflowDecision> workflowDecisions = new ArrayList<>();
 
 	/**
 	 * @return the wfWorkflow
 	 */
 	public WfWorkflow getWfWorkflow() {
-		return WfWorkflow;
+		return wfWorkflow;
 	}
 
 	/**
@@ -27,14 +27,14 @@ public final class WfListWorkflowDecision {
 	 *            the wfWorkflow to set
 	 */
 	public void setWfWorkflow(final WfWorkflow wfWorkflow) {
-		WfWorkflow = wfWorkflow;
+		this.wfWorkflow = wfWorkflow;
 	}
 
 	/**
 	 * @return the workflowDecisions
 	 */
 	public List<WfWorkflowDecision> getWorkflowDecisions() {
-		return WorkflowDecisions;
+		return workflowDecisions;
 	}
 
 	/**
@@ -42,7 +42,7 @@ public final class WfListWorkflowDecision {
 	 *            the workflowDecisions to set
 	 */
 	public void setWorkflowDecisions(final List<WfWorkflowDecision> workflowDecisions) {
-		WorkflowDecisions = workflowDecisions;
+		this.workflowDecisions = workflowDecisions;
 	}
 
 }

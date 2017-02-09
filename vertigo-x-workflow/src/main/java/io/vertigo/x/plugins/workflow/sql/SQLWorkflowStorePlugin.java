@@ -194,7 +194,6 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 		wfTransitionDefinitionDAO.save(transition);
 	}
 
-
 	/** {@inheritDoc} */
 	@Override
 	public List<WfActivity> findActivitiesByWorkflowId(final WfWorkflow wfWorkflow) {
@@ -272,28 +271,28 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 		wfTransitionDefinitionDAO.save(wfTransitionDefinition);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<RuleDefinition> findAllRulesByWorkflowDefinitionId(final long wfwdId) {
 		return ruleDefinitionDAO.findAllRulesByWorkflowDefinitionId(wfwdId);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<RuleConditionDefinition> findAllConditionsByWorkflowDefinitionId(final long wfwdId) {
 		return ruleConditionDefinitionDAO.findAllConditionsByWorkflowDefinitionId(wfwdId);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<SelectorDefinition> findAllSelectorsByWorkflowDefinitionId(final long wfwdId) {
 		return selectorDefinitionDAO.findAllSelectorsByWorkflowDefinitionId(wfwdId);
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public List<RuleFilterDefinition> findAllFiltersByWorkflowDefinitionId(final long wfwdId) {
 		return ruleFilterDefinitionDAO.findAllFiltersByWorkflowDefinitionId(wfwdId);
 	}
-	
-	
-
-	
 
 }
