@@ -187,7 +187,9 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 			}
 		}
 
-		transitionsNext.remove(key);
+		if (key != null) {
+			transitionsNext.remove(key);
+		}
 		transitionsNext.put(transition.getWfadIdFrom() + "|" + transition.getName(), transition);
 	}
 
