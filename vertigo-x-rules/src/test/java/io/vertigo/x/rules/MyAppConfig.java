@@ -38,6 +38,7 @@ import io.vertigo.x.impl.account.AccountFeatures;
 import io.vertigo.x.impl.rules.RulesFeatures;
 import io.vertigo.x.plugins.account.memory.MemoryAccountStorePlugin;
 import io.vertigo.x.plugins.rules.memory.MemoryRuleConstantsStorePlugin;
+import io.vertigo.x.plugins.rules.memory.MemoryRuleStorePlugin;
 import io.vertigo.x.plugins.rules.selector.SimpleRuleSelectorPlugin;
 import io.vertigo.x.plugins.rules.validator.SimpleRuleValidatorPlugin;
 import io.vertigo.x.rules.data.MyDummyDtObjectProvider;
@@ -90,8 +91,8 @@ public class MyAppConfig {
 						.build())
 				.addModule(new RulesFeatures()
 						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)
-						//.withRuleStorePlugin(MemoryRuleStorePlugin.class)
-						.withDAOSupportRuleStorePlugin()//
+						.withRuleStorePlugin(MemoryRuleStorePlugin.class)
+						//.withDAOSupportRuleStorePlugin()//
 						.withRuleSelectorPlugin(SimpleRuleSelectorPlugin.class)
 						.withRuleValidatorPlugin(SimpleRuleValidatorPlugin.class)
 						.build())
