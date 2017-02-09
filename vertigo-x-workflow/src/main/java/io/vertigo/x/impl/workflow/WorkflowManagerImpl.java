@@ -140,7 +140,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		wfWorkflow.setWfaId2(wfActivityCurrent.getWfaId());
 		workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
 
-		autoValidateNextActivities(wfWorkflow, wfActivityCurrent, wfWorkflowDefinition.getWfadId(), WfCodeTransition.DEFAULT.name().toLowerCase());
+		autoValidateNextActivities(wfWorkflow, wfActivityCurrent, wfWorkflowDefinition.getWfadId(), WfCodeTransition.DEFAULT.getTransitionName());
 	}
 
 	@Override
