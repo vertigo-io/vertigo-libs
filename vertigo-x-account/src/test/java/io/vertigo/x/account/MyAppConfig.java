@@ -38,7 +38,7 @@ public final class MyAppConfig {
 	public static final int WS_PORT = 8088;
 
 	private static AppConfigBuilder createAppConfigBuilder(final boolean redis) {
-		final String redisHost = "kasper-redis";
+		final String redisHost = "redis-pic.part.klee.lan.net";
 		final int redisPort = 6379;
 		final int redisDatabase = 15;
 
