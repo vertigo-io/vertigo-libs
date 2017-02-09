@@ -431,6 +431,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		goToNextActivity(wfWorkflow, WfCodeTransition.DEFAULT.getTransitionName());
 	}
 
+	@Override
 	public void goToNextActivity(final WfWorkflow wfWorkflow, String transitionName) {
 		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
 
@@ -631,7 +632,8 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		wfTransitionCriteria.setTransitionName(WfCodeTransition.DEFAULT.getTransitionName());
 		wfTransitionCriteria.setWfadIdTo(wfActivityReferential.getWfadId());
 
-		final WfTransitionDefinition transition = workflowStorePlugin.findTransition(wfTransitionCriteria).orElseThrow(() -> new IllegalArgumentException("No transition found for " + wfTransitionCriteria.getTransitionName()));
+		final WfTransitionDefinition transition = workflowStorePlugin.findTransition(wfTransitionCriteria)
+				.orElseThrow(() -> new IllegalArgumentException("No transition found for " + wfTransitionCriteria.getTransitionName()));
 		transition.setWfadIdTo(wfActivityToAdd.getWfadId());
 
 		workflowStorePlugin.updateTransition(transition);
@@ -697,25 +699,20 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	private Map<Long, List<RuleConditionDefinition>> constructDicConditionsForWorkflowDefinition(final long wfwdId) {
 		final List<RuleConditionDefinition> conditions = workflowStorePlugin.findAllConditionsByWorkflowDefinitionId(wfwdId);
-		// Build a dictionary from the conditions: RudId =>
-		// List<RuleConditionDefinition>
-		final Map<Long, List<RuleConditionDefinition>> dicConditions = conditions.stream()
-				.collect(Collectors.groupingBy(RuleConditionDefinition::getRudId));
-		return dicConditions;
+		// Build a dictionary from the conditions: RudId => List<RuleConditionDefinition>
+		return conditions.stream().collect(Collectors.groupingBy(RuleConditionDefinition::getRudId));
 	}
 
 	private Map<Long, List<SelectorDefinition>> constructDicSelectorsForWorkflowDefinition(final long wfwdId) {
 		final List<SelectorDefinition> selectors = workflowStorePlugin.findAllSelectorsByWorkflowDefinitionId(wfwdId);
-		// Build a dictionary from the selectors: WfadId =>
-		// List<SelectorDefinition>
+		// Build a dictionary from the selectors: WfadId => List<SelectorDefinition>
 		return selectors.stream()
 				.collect(Collectors.groupingBy(SelectorDefinition::getItemId));
 	}
 
 	private Map<Long, List<RuleFilterDefinition>> constructDicFiltersForWorkflowDefinition(final long wfwdId) {
 		final List<RuleFilterDefinition> filters = workflowStorePlugin.findAllFiltersByWorkflowDefinitionId(wfwdId);
-		// Build a dictionary from the filters: SelId =>
-		// List<RuleFilterDefinition>
+		// Build a dictionary from the filters: SelId => List<RuleFilterDefinition>
 		return filters.stream()
 				.collect(Collectors.groupingBy(RuleFilterDefinition::getSelId));
 	}

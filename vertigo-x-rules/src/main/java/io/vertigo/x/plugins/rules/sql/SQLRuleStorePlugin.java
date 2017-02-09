@@ -86,7 +86,7 @@ public class SQLRuleStorePlugin implements RuleStorePlugin {
 
 	@Override
 	public List<RuleFilterDefinition> findFiltersBySelectorId(Long selectorId) {
-        return ruleFilterDefinitionDAO.getListByDtFieldName(RuleFilterDefinitionFields.SEL_ID, selectorId, Integer.MAX_VALUE);
+		return ruleFilterDefinitionDAO.getListByDtFieldName(RuleFilterDefinitionFields.SEL_ID, selectorId, Integer.MAX_VALUE);
 	}
 	
 	private static ItemId getItemId(long i) {

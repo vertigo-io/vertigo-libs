@@ -176,7 +176,7 @@ public interface WorkflowStorePlugin extends Plugin {
 	 * @param wfWorkflowDefinition
 	 * @return the number of default transition in the workflow
 	 */
-	public int countDefaultTransitions(final WfWorkflowDefinition wfWorkflowDefinition);
+	int countDefaultTransitions(final WfWorkflowDefinition wfWorkflowDefinition);
 
 	/**
 	 * Create a new workflow definition.
@@ -317,12 +317,31 @@ public interface WorkflowStorePlugin extends Plugin {
 	List<WfDecision> findDecisionsByWorkflowId(WfWorkflow wfWorkflow);
 
 	// Custom
-
+	/**
+	 * Find all the rules for a workflow definition
+	 * @param wfwdId Workflow Definition Id
+	 * @return a list of rules linked to the workflow definition
+	 */
 	List<RuleDefinition> findAllRulesByWorkflowDefinitionId(long wfwdId);
 
+	/**
+	 * Find all the conditions for a workflow definition
+	 * @param wfwdId Workflow Definition Id
+	 * @return a list of conditions linked to the workflow definition
+	 */
 	List<RuleConditionDefinition> findAllConditionsByWorkflowDefinitionId(long wfwdId);
 
+	/**
+	 * Find all the selectors for a workflow definition
+	 * @param wfwdId Workflow Definition Id
+	 * @return a list of selectors linked to the workflow definition
+	 */
 	List<SelectorDefinition> findAllSelectorsByWorkflowDefinitionId(long wfwdId);
 
+	/**
+	 * Find all the filters for a workflow definition
+	 * @param wfwdId Workflow Definition Id
+	 * @return a list of selectors linked to the workflow definition
+	 */
 	List<RuleFilterDefinition> findAllFiltersByWorkflowDefinitionId(long wfwdId);
 }

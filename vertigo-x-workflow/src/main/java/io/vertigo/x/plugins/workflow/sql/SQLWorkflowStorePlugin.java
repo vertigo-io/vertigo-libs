@@ -149,8 +149,7 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	@Override
 	public WfWorkflowDefinition readWorkflowDefinition(final String definitionName) {
 		final Criteria<WfWorkflowDefinition> criteria = Criterions.isEqualTo(WfWorkflowDefinitionFields.NAME, definitionName);
-		WfWorkflowDefinition wfWorkflowDefinition = wfWorkflowDefinitionDAO.find(criteria);
-		return wfWorkflowDefinition;
+		return wfWorkflowDefinitionDAO.find(criteria);
 	}
 
 	/** {@inheritDoc} */
