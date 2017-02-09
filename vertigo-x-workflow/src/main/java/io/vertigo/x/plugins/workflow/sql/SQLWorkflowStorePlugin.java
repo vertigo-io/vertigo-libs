@@ -117,7 +117,7 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public boolean hasNextActivity(final WfActivity activity) {
-		return hasNextActivity(activity, WfCodeTransition.DEFAULT.name().toLowerCase());
+		return hasNextActivity(activity, WfCodeTransition.DEFAULT.getTransitionName());
 
 	}
 
@@ -186,7 +186,7 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	public List<WfActivityDefinition> findAllDefaultActivityDefinitions(
 			final WfWorkflowDefinition wfWorkflowDefinition) {
 		return wfActivityDefinitionDAO.findAllDefaultActivityDefinitions(wfWorkflowDefinition.getWfwdId(),
-				WfCodeTransition.DEFAULT.name().toLowerCase());
+				WfCodeTransition.DEFAULT.getTransitionName());
 	}
 
 	/** {@inheritDoc} */
@@ -219,7 +219,7 @@ public class SQLWorkflowStorePlugin implements WorkflowStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public WfActivityDefinition findNextActivity(final Long wfadId) {
-		return findNextActivity(wfadId, WfCodeTransition.DEFAULT.name().toLowerCase());
+		return findNextActivity(wfadId, WfCodeTransition.DEFAULT.getTransitionName());
 	}
 
 	/** {@inheritDoc} */

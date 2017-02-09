@@ -204,7 +204,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 			boolean matchTo = wfTransitionCriteria.getWfadIdTo() == null
 					|| wfTransitionCriteria.getWfadIdTo().equals(tr.getWfadIdTo());
 
-			if (wfTransitionCriteria.getTransitionName().equals(tr.getName()) && matchFrom && matchTo) {
+			if (matchFrom && matchTo && wfTransitionCriteria.getTransitionName().equals(tr.getName())) {
 				return Optional.of(tr);
 			}
 		}
@@ -301,7 +301,6 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		while (transitionNext != null) {
 			final WfActivityDefinition wfNextActivityDefinition = inMemoryActivityDefinitionStore
 					.get(transitionNext.getWfadIdTo());
-			idActivityDefinition = wfNextActivityDefinition.getWfadId();
 			transitionNext = transitionsNext
 					.get(wfNextActivityDefinition.getWfadId() + "|" + WfCodeTransition.DEFAULT.getTransitionName());
 			count++;
@@ -394,7 +393,6 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 		while (transitionNext != null && i < (position - 1)) {
 			final WfActivityDefinition wfNextActivityDefinition = inMemoryActivityDefinitionStore
 					.get(transitionNext.getWfadIdTo());
-			idActivity = wfNextActivityDefinition.getWfadId();
 			transitionNext = transitionsNext
 					.get(wfNextActivityDefinition.getWfadId() + "|" + WfCodeTransition.DEFAULT.getTransitionName());
 			i++;
