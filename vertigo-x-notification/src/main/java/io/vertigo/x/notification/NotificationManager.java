@@ -19,6 +19,7 @@
 package io.vertigo.x.notification;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import io.vertigo.dynamo.domain.model.URI;
@@ -34,8 +35,17 @@ public interface NotificationManager extends Manager {
 	 * Send a notification to a group
 	 * @param notification Notification
 	 * @param groupURI Destination group
+	 * @deprecated Use send with a Set<URI<Account>> instead
 	 */
+	@Deprecated
 	void send(Notification notification, URI<AccountGroup> groupURI);
+
+	/**
+	 * Send a notification to a user
+	 * @param notification Notification
+	 * @param accountURIs Destination users
+	 */
+	void send(final Notification notification, final Set<URI<Account>> accountURIs);
 
 	/**
 	 * Retrieve all notification for one account
