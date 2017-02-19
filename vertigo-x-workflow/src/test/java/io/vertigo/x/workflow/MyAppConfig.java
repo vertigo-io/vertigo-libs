@@ -60,11 +60,15 @@ public class MyAppConfig {
 	 * @return AppConfig for Junit
 	 */
 	public static AppConfig config() {
-		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder().beginBoot().withLocales("fr")
-				.addPlugin(ClassPathResourceResolverPlugin.class).addPlugin(KprLoaderPlugin.class)
+		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder()
+				.beginBoot()
+				.withLocales("fr")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.addPlugin(KprLoaderPlugin.class)
 				.addPlugin(AnnotationLoaderPlugin.class)
 				.addPlugin(DynamoDynamicRegistryPlugin.class)
-				.silently().endBoot()
+				.silently()
+				.endBoot()
 				.addModule(new PersonaFeatures().withUserSession(TestUserSession.class).build())
 				.addModule(new CommonsFeatures()//
 						.withCache(io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin.class)
