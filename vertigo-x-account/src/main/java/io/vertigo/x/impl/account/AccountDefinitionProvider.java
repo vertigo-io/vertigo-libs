@@ -18,7 +18,7 @@
  */
 package io.vertigo.x.impl.account;
 
-import java.util.Iterator;
+import java.util.List;
 
 import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -37,7 +37,7 @@ public final class AccountDefinitionProvider implements DefinitionProvider {
 
 	/** {@inheritDoc} */
 	@Override
-	public Iterator<Definition> iterator() {
+	public List<Definition> get() {
 		final Domain domainAccountId = new DomainBuilder("DO_X_ACCOUNT_ID", DataType.String).build();
 		final Domain domainAccountName = new DomainBuilder("DO_X_ACCOUNT_NAME", DataType.String).build();
 		final Domain domainAccountEmail = new DomainBuilder("DO_X_ACCOUNT_EMAIL", DataType.String).build();
@@ -59,7 +59,7 @@ public final class AccountDefinitionProvider implements DefinitionProvider {
 				.add(domainAccountEmail)
 				.add(accountDtDefinition)
 				.add(accountGroupDtDefinition)
-				.build()
-				.iterator();
+				.build();
 	}
+
 }

@@ -25,7 +25,7 @@ import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
-import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
+import io.vertigo.dynamo.plugins.environment.registries.DynamoDynamicRegistryPlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.vega.VegaFeatures;
 import io.vertigo.x.account.data.TestUserSession;
@@ -48,7 +48,7 @@ public final class MyAppConfig {
 				.withLocales("fr")
 				.addPlugin( ClassPathResourceResolverPlugin.class)
 				.addPlugin(AnnotationLoaderPlugin.class)
-				.addPlugin(DomainDynamicRegistryPlugin.class)
+				.addPlugin(DynamoDynamicRegistryPlugin.class)
 				.silently()
 			.endBoot()
 			.addModule(new PersonaFeatures()

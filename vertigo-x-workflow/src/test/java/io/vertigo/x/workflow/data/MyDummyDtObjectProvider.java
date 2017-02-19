@@ -18,7 +18,7 @@
  */
 package io.vertigo.x.workflow.data;
 
-import java.util.Iterator;
+import java.util.List;
 
 import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -36,7 +36,7 @@ import io.vertigo.util.ListBuilder;
 public class MyDummyDtObjectProvider implements DefinitionProvider {
 
 	@Override
-	public Iterator<Definition> iterator() {
+	public List<Definition> get() {
 		final Domain domainDummyId = new DomainBuilder("DO_X_DUMMY_ID", DataType.Long).build();
 		final Domain domainDummyCode = new DomainBuilder("DO_X_DUMMY_CODE", DataType.String).build();
 		final Domain domainDummyLabel = new DomainBuilder("DO_X_DUMMY_LABEL", DataType.String).build();
@@ -53,8 +53,7 @@ public class MyDummyDtObjectProvider implements DefinitionProvider {
 				.add(domainDummyCode)
 				.add(domainDummyLabel)
 				.add(wfDummyObjectDtDefinition)
-				.build()
-				.iterator();
+				.build();
 	}
 
 }

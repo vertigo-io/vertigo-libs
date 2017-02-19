@@ -30,8 +30,7 @@ import io.vertigo.dynamo.impl.database.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
-import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
-import io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin;
+import io.vertigo.dynamo.plugins.environment.registries.DynamoDynamicRegistryPlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
@@ -49,7 +48,7 @@ import io.vertigo.x.workflow.plugin.MemoryItemStorePlugin;
 
 /**
  * Config for Junit
- * 
+ *
  * @author xdurand
  *
  */
@@ -57,14 +56,15 @@ public class MyAppConfig {
 
 	/**
 	 * Configuration de l'application pour Junit
-	 * 
+	 *
 	 * @return AppConfig for Junit
 	 */
 	public static AppConfig config() {
 		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder().beginBoot().withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class).addPlugin(KprLoaderPlugin.class)
-				.addPlugin(AnnotationLoaderPlugin.class).addPlugin(DomainDynamicRegistryPlugin.class)
-				.addPlugin(TaskDynamicRegistryPlugin.class).silently().endBoot()
+				.addPlugin(AnnotationLoaderPlugin.class)
+				.addPlugin(DynamoDynamicRegistryPlugin.class)
+				.silently().endBoot()
 				.addModule(new PersonaFeatures().withUserSession(TestUserSession.class).build())
 				.addModule(new CommonsFeatures()//
 						.withCache(io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin.class)

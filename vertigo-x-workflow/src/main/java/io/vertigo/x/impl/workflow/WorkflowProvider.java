@@ -19,7 +19,7 @@
 
 package io.vertigo.x.impl.workflow;
 
-import java.util.Iterator;
+import java.util.List;
 
 import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -37,7 +37,7 @@ import io.vertigo.util.ListBuilder;
 public final class WorkflowProvider implements DefinitionProvider {
 
 	@Override
-	public Iterator<Definition> iterator() {
+	public List<Definition> get() {
 		final Domain domainWorkflowId = new DomainBuilder("DO_X_WORKFLOW_ID", DataType.Long).build();
 		final Domain domainWorkflowCode = new DomainBuilder("DO_X_WORKFLOW_CODE", DataType.String).build();
 		final Domain domainWorkflowDate = new DomainBuilder("DO_X_WORKFLOW_DATE", DataType.Date).build();
@@ -142,8 +142,7 @@ public final class WorkflowProvider implements DefinitionProvider {
 				.add(wfMultiplicityDefinitionDtDefinition)
 				.add(wfTransitionDefinitionDtDefinition)
 				.add(wfWorkflowDefinitionDtDefinition)
-				.build()
-				.iterator();
+				.build();
 	}
 
 }

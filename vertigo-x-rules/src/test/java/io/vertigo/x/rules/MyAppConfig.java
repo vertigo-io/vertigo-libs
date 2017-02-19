@@ -30,8 +30,7 @@ import io.vertigo.dynamo.impl.database.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
-import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin;
-import io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin;
+import io.vertigo.dynamo.plugins.environment.registries.DynamoDynamicRegistryPlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
@@ -62,8 +61,7 @@ public class MyAppConfig {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin(KprLoaderPlugin.class)
 				.addPlugin(AnnotationLoaderPlugin.class)
-				.addPlugin(DomainDynamicRegistryPlugin.class)
-				.addPlugin(TaskDynamicRegistryPlugin.class)
+				.addPlugin(DynamoDynamicRegistryPlugin.class)
 				.silently()
 				.endBoot()
 				.addModule(new PersonaFeatures()
@@ -82,7 +80,7 @@ public class MyAppConfig {
 								Param.create("jdbcDriver", org.postgresql.Driver.class.getName()),
 								Param.create("jdbcUrl",
 										"jdbc:postgresql://laura.dev.klee.lan.net:5432/dgac_blanche?user=blanche&password=blanche"))
-						.build())				
+						.build())
 				.addModule(new AccountFeatures()
 						.withAccountStorePlugin(MemoryAccountStorePlugin.class)
 						.build())

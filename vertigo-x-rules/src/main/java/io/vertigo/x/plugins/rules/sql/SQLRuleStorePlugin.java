@@ -43,61 +43,63 @@ public class SQLRuleStorePlugin implements RuleStorePlugin {
 	private RuleFilterDefinitionDAO ruleFilterDefinitionDAO;
 
 	@Override
-	public void addRule(RuleDefinition ruleDefinition) {
+	public void addRule(final RuleDefinition ruleDefinition) {
 		ruleDefinitionDAO.save(ruleDefinition);
 
 	}
 
 	@Override
-	public List<RuleDefinition> findRulesByItemId(Long itemId) {
+	public List<RuleDefinition> findRulesByItemId(final Long itemId) {
 		final DtList<RuleDefinition> ruleDefinitionList = ruleDefinitionDAO
 				.getListByDtFieldName(RuleDefinitionFields.ITEM_ID, itemId, Integer.MAX_VALUE);
 		return ruleDefinitionList;
 	}
 
 	@Override
-	public void addCondition(RuleConditionDefinition ruleConditionDefinition) {
+	public void addCondition(final RuleConditionDefinition ruleConditionDefinition) {
 		ruleConditionDefinitionDAO.save(ruleConditionDefinition);
 	}
 
 	@Override
-	public List<RuleConditionDefinition> findConditionByRuleId(Long ruleId) {
+	public List<RuleConditionDefinition> findConditionByRuleId(final Long ruleId) {
 		final DtList<RuleConditionDefinition> ruleConditionDefinitionList = ruleConditionDefinitionDAO
 				.getListByDtFieldName(RuleConditionDefinitionFields.RUD_ID, ruleId, Integer.MAX_VALUE);
 		return ruleConditionDefinitionList;
 	}
 
 	@Override
-	public void addSelector(SelectorDefinition selectorDefinition) {
+	public void addSelector(final SelectorDefinition selectorDefinition) {
 		selectorDefinitionDAO.save(selectorDefinition);
 	}
 
 	@Override
-	public List<SelectorDefinition> findSelectorsByItemId(Long itemId) {
+	public List<SelectorDefinition> findSelectorsByItemId(final Long itemId) {
 		final DtList<SelectorDefinition> selectorDefinitionList = selectorDefinitionDAO
 				.getListByDtFieldName(SelectorDefinitionFields.ITEM_ID, itemId, Integer.MAX_VALUE);
 		return selectorDefinitionList;
 	}
 
 	@Override
-	public void addFilter(RuleFilterDefinition ruleFilterDefinition) {
+	public void addFilter(final RuleFilterDefinition ruleFilterDefinition) {
 		ruleFilterDefinitionDAO.save(ruleFilterDefinition);
 	}
 
 	@Override
-	public List<RuleFilterDefinition> findFiltersBySelectorId(Long selectorId) {
+	public List<RuleFilterDefinition> findFiltersBySelectorId(final Long selectorId) {
 		return ruleFilterDefinitionDAO.getListByDtFieldName(RuleFilterDefinitionFields.SEL_ID, selectorId, Integer.MAX_VALUE);
 	}
-	
-	private static ItemId getItemId(long i) {
-		ItemId itemId = new ItemId();
+
+	private static ItemId getItemId(final long i) {
+		final ItemId itemId = new ItemId();
 		itemId.setItemId(i);
 		return itemId;
 	}
 
 	@Override
-	public List<RuleDefinition> findRulesByCriteria(RuleCriteria criteria, List<Long> items) {
-		DtList<ItemId> itemsIds = items.stream().map(SQLRuleStorePlugin::getItemId).collect(VCollectors.toDtList(ItemId.class));
+	public List<RuleDefinition> findRulesByCriteria(final RuleCriteria criteria, final List<Long> items) {
+		final DtList<ItemId> itemsIds = items.stream()
+				.map(SQLRuleStorePlugin::getItemId)
+				.collect(VCollectors.toDtList(ItemId.class));
 		return ruleDefinitionDAO.findItemsByCriteria(criteria.getConditionCriteria1(), criteria.getConditionCriteria1(), itemsIds);
 	}
 

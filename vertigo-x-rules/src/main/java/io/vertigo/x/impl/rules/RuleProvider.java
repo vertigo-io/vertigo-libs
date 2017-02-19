@@ -19,7 +19,7 @@
 
 package io.vertigo.x.impl.rules;
 
-import java.util.Iterator;
+import java.util.List;
 
 import io.vertigo.app.config.DefinitionProvider;
 import io.vertigo.core.spaces.definiton.Definition;
@@ -32,13 +32,13 @@ import io.vertigo.util.ListBuilder;
 
 /**
  * Provides all the definitions used in the 'Rules' module.
- * 
+ *
  * @author xdurand
  */
 public final class RuleProvider implements DefinitionProvider {
 
 	@Override
-	public Iterator<Definition> iterator() {
+	public List<Definition> get() {
 		final Domain domainWorkflowId = new DomainBuilder("DO_X_RULES_ID", DataType.Long).build();
 		final Domain domainWorkflowCode = new DomainBuilder("DO_X_RULES_CODE", DataType.String).build();
 		final Domain domainWorkflowDate = new DomainBuilder("DO_X_RULES_DATE", DataType.Date).build();
@@ -71,7 +71,7 @@ public final class RuleProvider implements DefinitionProvider {
 
 		return new ListBuilder<Definition>().add(domainWorkflowId).add(domainWorkflowCode).add(domainWorkflowDate)
 				.add(domainWorkflowWeakId).add(domainWorkflowLabel).add(wfRuleDefinitionDtDefinition)
-				.add(wfConditionDefinitionDtDefinition).add(wfSelectorDefinitionDtDefinition).build().iterator();
+				.add(wfConditionDefinitionDtDefinition).add(wfSelectorDefinitionDtDefinition).build();
 	}
 
 }
