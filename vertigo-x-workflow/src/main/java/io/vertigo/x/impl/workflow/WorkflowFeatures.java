@@ -18,8 +18,10 @@
  */
 package io.vertigo.x.impl.workflow;
 
+import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.x.plugins.workflow.sql.SQLWorkflowStorePlugin;
 import io.vertigo.x.workflow.WorkflowManager;
 import io.vertigo.x.workflow.dao.instance.WfActivityDAO;
@@ -35,7 +37,7 @@ import io.vertigo.x.workflow.domain.DtDefinitions;
 
 /**
  * Defines the 'workflow' extension
- * 
+ *
  * @author xdurand
  */
 public final class WorkflowFeatures extends Features {
@@ -49,7 +51,7 @@ public final class WorkflowFeatures extends Features {
 
 	/**
 	 * Specifies the workflowStorePlugin.
-	 * 
+	 *
 	 * @param workflowStorePluginClass
 	 *            the type of plugin to use
 	 * @param params
@@ -64,11 +66,7 @@ public final class WorkflowFeatures extends Features {
 
 	/**
 	 * Specifies the workflowStorePlugin.
-	 * 
-	 * @param workflowStorePluginClass
-	 *            the type of plugin to use
-	 * @param params
-	 *            the params
+	 *
 	 * @return these features
 	 */
 	public WorkflowFeatures withDAOSupportWorkflowStorePlugin() {
@@ -88,7 +86,7 @@ public final class WorkflowFeatures extends Features {
 
 	/**
 	 * Specifies the itemStorePlugin.
-	 * 
+	 *
 	 * @param itemStorePluginClass
 	 *            the type of plugin to use
 	 * @param params
@@ -104,8 +102,11 @@ public final class WorkflowFeatures extends Features {
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		getModuleConfigBuilder().addDefinitionResource("kpr", "boot/definitions/application-workflow.kpr")
-				.addDefinitionResource("classes", DtDefinitions.class.getName())
+		getModuleConfigBuilder()
+				.addDefinitionProvider(new DefinitionProviderConfigBuilder(DynamoDefinitionProvider.class)
+						.addDefinitionResource("kpr", "boot/definitions/application-workflow.kpr")
+						.addDefinitionResource("classes", DtDefinitions.class.getName())
+						.build())
 				.addComponent(WorkflowManager.class, WorkflowManagerImpl.class);
 	}
 

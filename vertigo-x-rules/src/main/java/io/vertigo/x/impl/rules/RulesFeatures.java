@@ -18,8 +18,10 @@
  */
 package io.vertigo.x.impl.rules;
 
+import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.x.plugins.rules.sql.SQLRuleStorePlugin;
 import io.vertigo.x.rules.RuleManager;
 import io.vertigo.x.rules.dao.RuleConditionDefinitionDAO;
@@ -30,7 +32,7 @@ import io.vertigo.x.rules.domain.DtDefinitions;
 
 /**
  * Defines the 'workflow' extension
- * 
+ *
  * @author xdurand
  */
 public final class RulesFeatures extends Features {
@@ -44,7 +46,7 @@ public final class RulesFeatures extends Features {
 
 	/**
 	 * Specifies the ruleStorePlugin.
-	 * 
+	 *
 	 * @param ruleStorePluginClass
 	 *            the type of plugin to use
 	 * @param params
@@ -59,11 +61,7 @@ public final class RulesFeatures extends Features {
 
 	/**
 	 * Specifies the ruleStorePlugin.
-	 * 
-	 * @param ruleStorePluginClass
-	 *            the type of plugin to use
-	 * @param params
-	 *            the params
+	 *
 	 * @return these features
 	 */
 	public RulesFeatures withDAOSupportRuleStorePlugin() {
@@ -78,7 +76,7 @@ public final class RulesFeatures extends Features {
 
 	/**
 	 * Specifies the ruleConstantsStorePlugin.
-	 * 
+	 *
 	 * @param ruleConstantsStorePluginClass
 	 *            the type of plugin to use
 	 * @param params
@@ -91,10 +89,9 @@ public final class RulesFeatures extends Features {
 		return this;
 	}
 
-
 	/**
 	 * Specifies the ruleSelectorPlugin.
-	 * 
+	 *
 	 * @param ruleSelectorPluginClass
 	 *            the type of plugin to use
 	 * @param params
@@ -109,7 +106,7 @@ public final class RulesFeatures extends Features {
 
 	/**
 	 * Specifies the ruleValidatorPlugin.
-	 * 
+	 *
 	 * @param ruleValidatorPluginClass
 	 *            the type of plugin to use
 	 * @param params
@@ -125,8 +122,11 @@ public final class RulesFeatures extends Features {
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		getModuleConfigBuilder().addDefinitionResource("kpr", "boot/definitions/application-rules-test.kpr")
-				.addDefinitionResource("classes", DtDefinitions.class.getName())
+		getModuleConfigBuilder()
+				.addDefinitionProvider(new DefinitionProviderConfigBuilder(DynamoDefinitionProvider.class)
+						.addDefinitionResource("kpr", "boot/definitions/application-rules-test.kpr")
+						.addDefinitionResource("classes", DtDefinitions.class.getName())
+						.build())
 				.addComponent(RuleManager.class, RuleManagerImpl.class);
 	}
 

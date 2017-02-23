@@ -21,6 +21,7 @@ package io.vertigo.x.rules;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.ModuleConfigBuilder;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.param.Param;
@@ -28,9 +29,6 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.impl.database.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin;
-import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoaderPlugin;
-import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin;
-import io.vertigo.dynamo.plugins.environment.registries.DynamoDynamicRegistryPlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
@@ -59,9 +57,6 @@ public class MyAppConfig {
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.addPlugin(KprLoaderPlugin.class)
-				.addPlugin(AnnotationLoaderPlugin.class)
-				.addPlugin(DynamoDynamicRegistryPlugin.class)
 				.silently()
 				.endBoot()
 				.addModule(new PersonaFeatures()
@@ -85,7 +80,7 @@ public class MyAppConfig {
 						.withAccountStorePlugin(MemoryAccountStorePlugin.class)
 						.build())
 				.addModule(new ModuleConfigBuilder("dummy")
-						.addDefinitionProvider(MyDummyDtObjectProvider.class)
+						.addDefinitionProvider(new DefinitionProviderConfigBuilder(MyDummyDtObjectProvider.class).build())
 						.build())
 				.addModule(new RulesFeatures()
 						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)

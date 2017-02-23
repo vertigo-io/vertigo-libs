@@ -20,9 +20,12 @@
 package io.vertigo.x.impl.rules;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.app.config.DefinitionProvider;
+import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
@@ -38,7 +41,7 @@ import io.vertigo.util.ListBuilder;
 public final class RuleProvider implements DefinitionProvider {
 
 	@Override
-	public List<Definition> get() {
+	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
 		final Domain domainWorkflowId = new DomainBuilder("DO_X_RULES_ID", DataType.Long).build();
 		final Domain domainWorkflowCode = new DomainBuilder("DO_X_RULES_CODE", DataType.String).build();
 		final Domain domainWorkflowDate = new DomainBuilder("DO_X_RULES_DATE", DataType.Date).build();
@@ -71,7 +74,10 @@ public final class RuleProvider implements DefinitionProvider {
 
 		return new ListBuilder<Definition>().add(domainWorkflowId).add(domainWorkflowCode).add(domainWorkflowDate)
 				.add(domainWorkflowWeakId).add(domainWorkflowLabel).add(wfRuleDefinitionDtDefinition)
-				.add(wfConditionDefinitionDtDefinition).add(wfSelectorDefinitionDtDefinition).build();
+				.add(wfConditionDefinitionDtDefinition).add(wfSelectorDefinitionDtDefinition).build()
+				.stream()
+				.map(definition -> (DefinitionSupplier) dS -> definition)
+				.collect(Collectors.toList());
 	}
 
 }

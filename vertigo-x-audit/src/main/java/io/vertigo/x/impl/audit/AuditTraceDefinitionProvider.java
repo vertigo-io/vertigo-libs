@@ -20,9 +20,12 @@
 package io.vertigo.x.impl.audit;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.app.config.DefinitionProvider;
+import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
@@ -37,7 +40,7 @@ import io.vertigo.util.ListBuilder;
 public final class AuditTraceDefinitionProvider implements DefinitionProvider {
 
 	@Override
-	public List<Definition> get() {
+	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
 		final Domain domainAuditId = new DomainBuilder("DO_X_AUDIT_ID", DataType.Long).build();
 		final Domain domainAuditCategory = new DomainBuilder("DO_X_AUDIT_CATEGORY", DataType.String).build();
 		final Domain domainAuditUser = new DomainBuilder("DO_X_AUDIT_USER", DataType.String).build();
@@ -65,7 +68,10 @@ public final class AuditTraceDefinitionProvider implements DefinitionProvider {
 				.add(domainAuditItem)
 				.add(domainAuditContext)
 				.add(auditTraceDtDefinition)
-				.build();
+				.build()
+				.stream()
+				.map(definition -> (DefinitionSupplier) dS -> definition)
+				.collect(Collectors.toList());
 	}
 
 }

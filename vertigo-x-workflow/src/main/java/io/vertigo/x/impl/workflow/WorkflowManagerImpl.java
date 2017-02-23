@@ -72,7 +72,6 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	 * @param workflowStorePlugin
 	 * @param itemStorePlugin
 	 * @param ruleManager
-	 * @param accountManager
 	 */
 	@Inject
 	public WorkflowManagerImpl(final WorkflowStorePlugin workflowStorePlugin, final ItemStorePlugin itemStorePlugin,
@@ -224,7 +223,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	 */
 	@Override
 	public boolean autoValidateNextActivities(final WfWorkflow wfWorkflow, final WfActivity currentActivity,
-			final Long wfActivityDefinitionId, String transitionName) {
+			final Long wfActivityDefinitionId, final String transitionName) {
 
 		WfActivityDefinition activityDefinition = workflowStorePlugin.readActivityDefinition(wfActivityDefinitionId);
 
@@ -432,7 +431,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	}
 
 	@Override
-	public void goToNextActivity(final WfWorkflow wfWorkflow, String transitionName) {
+	public void goToNextActivity(final WfWorkflow wfWorkflow, final String transitionName) {
 		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
 
 		final boolean canGoToNext = canGoToNextActivity(wfWorkflow);
@@ -449,7 +448,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 			final WfActivityDefinition nextActivityDefinition = workflowStorePlugin
 					.findNextActivity(currentActivity.getWfadId(), transitionName);
 
-			Optional<WfActivity> nextActivityOpt = workflowStorePlugin.findActivityByDefinitionWorkflow(wfWorkflow,
+			final Optional<WfActivity> nextActivityOpt = workflowStorePlugin.findActivityByDefinitionWorkflow(wfWorkflow,
 					nextActivityDefinition);
 			if (!nextActivityOpt.isPresent()) {
 				nextActivity = new WfActivity();
@@ -526,12 +525,12 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	/**
 	 * Find the workflowDefinition by name
-	 * 
+	 *
 	 * @param definitionName
 	 * @return the matching workflow
 	 */
 	@Override
-	public WfWorkflowDefinition getWorkflowDefinitionByName(String definitionName) {
+	public WfWorkflowDefinition getWorkflowDefinitionByName(final String definitionName) {
 		return workflowStorePlugin.readWorkflowDefinition(definitionName);
 	}
 
@@ -590,7 +589,8 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 				workflowStorePlugin.addTransition(wfTransitionDefinition);
 			} else if (position > 2) {
 				final WfActivityDefinition wfActivityDefinitionPrevious = workflowStorePlugin
-						.findActivityDefinitionByPosition(wfWorkflowDefinition, position - 1).orElseThrow(() -> new IllegalArgumentException("No ActivityDefiniyion found for " + wfWorkflowDefinition.getName() + "at Postion : " + (position - 1)));
+						.findActivityDefinitionByPosition(wfWorkflowDefinition, position - 1)
+						.orElseThrow(() -> new IllegalArgumentException("No ActivityDefiniyion found for " + wfWorkflowDefinition.getName() + "at Postion : " + (position - 1)));
 				final WfTransitionDefinition wfTransitionDefinition = new WfTransitionBuilder(
 						wfWorkflowDefinition.getWfwdId(), wfActivityDefinitionPrevious.getWfadId(),
 						wfActivityDefinitionToAdd.getWfadId()).build();

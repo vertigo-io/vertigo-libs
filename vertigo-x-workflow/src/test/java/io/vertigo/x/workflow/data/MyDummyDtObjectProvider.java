@@ -19,9 +19,12 @@
 package io.vertigo.x.workflow.data;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import io.vertigo.app.config.DefinitionProvider;
+import io.vertigo.app.config.DefinitionSupplier;
 import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.spaces.definiton.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
@@ -36,7 +39,7 @@ import io.vertigo.util.ListBuilder;
 public class MyDummyDtObjectProvider implements DefinitionProvider {
 
 	@Override
-	public List<Definition> get() {
+	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
 		final Domain domainDummyId = new DomainBuilder("DO_X_DUMMY_ID", DataType.Long).build();
 		final Domain domainDummyCode = new DomainBuilder("DO_X_DUMMY_CODE", DataType.String).build();
 		final Domain domainDummyLabel = new DomainBuilder("DO_X_DUMMY_LABEL", DataType.String).build();
@@ -53,7 +56,10 @@ public class MyDummyDtObjectProvider implements DefinitionProvider {
 				.add(domainDummyCode)
 				.add(domainDummyLabel)
 				.add(wfDummyObjectDtDefinition)
-				.build();
+				.build()
+				.stream()
+				.map(definition -> (DefinitionSupplier) dS -> definition)
+				.collect(Collectors.toList());
 	}
 
 }
