@@ -19,12 +19,10 @@
 package io.vertigo.x.impl.account;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import io.vertigo.app.config.DefinitionProvider;
-import io.vertigo.app.config.DefinitionSupplier;
-import io.vertigo.core.spaces.definiton.Definition;
-import io.vertigo.core.spaces.definiton.DefinitionSpace;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
@@ -36,11 +34,11 @@ import io.vertigo.util.ListBuilder;
  * Provides all the definitions used in the 'account' module.
  * @author pchretien
  */
-public final class AccountDefinitionProvider implements DefinitionProvider {
+public final class AccountDefinitionProvider extends SimpleDefinitionProvider {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
+	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final Domain domainAccountId = new DomainBuilder("DO_X_ACCOUNT_ID", DataType.String).build();
 		final Domain domainAccountName = new DomainBuilder("DO_X_ACCOUNT_NAME", DataType.String).build();
 		final Domain domainAccountEmail = new DomainBuilder("DO_X_ACCOUNT_EMAIL", DataType.String).build();
@@ -62,10 +60,7 @@ public final class AccountDefinitionProvider implements DefinitionProvider {
 				.add(domainAccountEmail)
 				.add(accountDtDefinition)
 				.add(accountGroupDtDefinition)
-				.build()
-				.stream()
-				.map(definition -> (DefinitionSupplier) dS -> definition)
-				.collect(Collectors.toList());
+				.build();
 	}
 
 }
