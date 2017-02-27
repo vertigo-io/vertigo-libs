@@ -141,7 +141,6 @@ public final class WfDecision implements Entity {
 		this.wfaId = wfaId;
 	}
 
-
 	// Association : WfActivity non navigable
 
 	/** {@inheritDoc} */

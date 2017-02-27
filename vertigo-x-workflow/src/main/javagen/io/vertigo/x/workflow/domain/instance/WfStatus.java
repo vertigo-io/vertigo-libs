@@ -61,7 +61,6 @@ public final class WfStatus implements Entity {
 		this.label = label;
 	}
 
-
 	// Association : WfWorkflow non navigable
 
 	/** {@inheritDoc} */

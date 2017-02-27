@@ -121,7 +121,6 @@ public final class RuleConditionDefinition implements Entity {
 		this.rudId = rudId;
 	}
 
-
 	// Association : RuleDefinition non navigable
 
 	/** {@inheritDoc} */

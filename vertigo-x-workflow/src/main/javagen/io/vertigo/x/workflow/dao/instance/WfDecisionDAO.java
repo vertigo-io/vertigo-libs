@@ -16,7 +16,7 @@ import io.vertigo.x.workflow.domain.instance.WfDecision;
  * WfDecisionDAO
  */
 public final class WfDecisionDAO extends DAO<WfDecision, java.lang.Long> implements StoreServices {
-	 
+
 	/**
 	 * Contructeur.
 	 * @param storeManager Manager de persistance
@@ -26,7 +26,7 @@ public final class WfDecisionDAO extends DAO<WfDecision, java.lang.Long> impleme
 	public WfDecisionDAO(final StoreManager storeManager, final TaskManager taskManager) {
 		super(WfDecision.class, storeManager, taskManager);
 	}
-	
+
 
 	/**
 	 * Creates a taskBuilder.
@@ -51,6 +51,5 @@ public final class WfDecisionDAO extends DAO<WfDecision, java.lang.Long> impleme
 				.execute(task)
 				.getResult();
 	}
-
 
 }

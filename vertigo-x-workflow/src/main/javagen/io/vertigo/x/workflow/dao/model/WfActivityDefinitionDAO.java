@@ -17,7 +17,7 @@ import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
  * WfActivityDefinitionDAO
  */
 public final class WfActivityDefinitionDAO extends DAO<WfActivityDefinition, java.lang.Long> implements StoreServices {
-	 
+
 	/**
 	 * Contructeur.
 	 * @param storeManager Manager de persistance
@@ -27,7 +27,7 @@ public final class WfActivityDefinitionDAO extends DAO<WfActivityDefinition, jav
 	public WfActivityDefinitionDAO(final StoreManager storeManager, final TaskManager taskManager) {
 		super(WfActivityDefinition.class, storeManager, taskManager);
 	}
-	
+
 
 	/**
 	 * Creates a taskBuilder.
@@ -50,7 +50,7 @@ public final class WfActivityDefinitionDAO extends DAO<WfActivityDefinition, jav
 				.addValue("WFWD_ID", wfwdId)
 				.addValue("LEVEL", level)
 				.build();
-		return Optional.ofNullable((io.vertigo.x.workflow.domain.model.WfActivityDefinition)getTaskManager()
+		return Optional.ofNullable((io.vertigo.x.workflow.domain.model.WfActivityDefinition) getTaskManager()
 				.execute(task)
 				.getResult());
 	}
@@ -70,6 +70,5 @@ public final class WfActivityDefinitionDAO extends DAO<WfActivityDefinition, jav
 				.execute(task)
 				.getResult();
 	}
-
 
 }

@@ -121,7 +121,6 @@ public final class RuleFilterDefinition implements Entity {
 		this.selId = selId;
 	}
 
-
 	// Association : SelectorDefinition non navigable
 
 	/** {@inheritDoc} */

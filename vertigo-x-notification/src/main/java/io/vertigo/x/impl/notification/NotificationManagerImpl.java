@@ -37,7 +37,6 @@ public final class NotificationManagerImpl implements NotificationManager {
 	private final NotificationPlugin notificationsPlugin;
 
 	/**
-	 * @param accountManager Account manager
 	 * @param notificationsPlugin Notifications plugin
 	 */
 	@Inject

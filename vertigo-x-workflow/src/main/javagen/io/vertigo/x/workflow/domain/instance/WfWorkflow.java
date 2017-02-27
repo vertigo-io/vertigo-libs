@@ -23,8 +23,8 @@ public final class WfWorkflow implements Entity {
 	private String wfsCode;
 	private Long wfaId2;
 	private io.vertigo.x.workflow.domain.model.WfWorkflowDefinition wfWorkflowDefinition;
-	private io.vertigo.x.workflow.domain.instance.WfStatus wfStatus;
 	private io.vertigo.x.workflow.domain.instance.WfActivity current;
+	private io.vertigo.x.workflow.domain.instance.WfStatus wfStatus;
 
 	/** {@inheritDoc} */
 	@Override
@@ -184,8 +184,6 @@ public final class WfWorkflow implements Entity {
 		this.wfaId2 = wfaId2;
 	}
 
-
-	// Association : WfActivity non navigable
 	/**
 	 * Association : WfWorkflowDefinition.
 	 * @return io.vertigo.x.workflow.domain.model.WfWorkflowDefinition
@@ -206,7 +204,7 @@ public final class WfWorkflow implements Entity {
 	 * Retourne l'URI: WfWorkflowDefinition.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association (
+	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_WFWD_WFW",
 			fkFieldName = "WFWD_ID",
 			primaryDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
@@ -222,42 +220,8 @@ public final class WfWorkflow implements Entity {
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.x.workflow.domain.model.WfWorkflowDefinition> getWfWorkflowDefinitionURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_WFWD_WFW", io.vertigo.x.workflow.domain.model.WfWorkflowDefinition.class);
 	}
-	/**
-	 * Association : WfStatus.
-	 * @return io.vertigo.x.workflow.domain.instance.WfStatus
-	 */
-	public io.vertigo.x.workflow.domain.instance.WfStatus getWfStatus() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.x.workflow.domain.instance.WfStatus> fkURI = getWfStatusURI();
-		if (fkURI == null) {
-			return null;
-		}
-		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (wfStatus == null || !fkURI.equals(wfStatus.getURI())) {
-			wfStatus = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
-		}
-		return wfStatus;
-	}
 
-	/**
-	 * Retourne l'URI: WfStatus.
-	 * @return URI de l'association
-	 */
-	@io.vertigo.dynamo.domain.stereotype.Association (
-			name = "A_WFW_WFS",
-			fkFieldName = "WFS_CODE",
-			primaryDtDefinitionName = "DT_WF_STATUS",
-			primaryIsNavigable = true,
-			primaryRole = "WfStatus",
-			primaryLabel = "WfStatus",
-			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_WF_WORKFLOW",
-			foreignIsNavigable = false,
-			foreignRole = "WfWorkflow",
-			foreignLabel = "WfWorkflow",
-			foreignMultiplicity = "1..*")
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.x.workflow.domain.instance.WfStatus> getWfStatusURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_WFW_WFS", io.vertigo.x.workflow.domain.instance.WfStatus.class);
-	}
+	// Association : WfActivity non navigable
 	/**
 	 * Association : current.
 	 * @return io.vertigo.x.workflow.domain.instance.WfActivity
@@ -278,7 +242,7 @@ public final class WfWorkflow implements Entity {
 	 * Retourne l'URI: current.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association (
+	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_WFW_WFA_2",
 			fkFieldName = "WFA_ID_2",
 			primaryDtDefinitionName = "DT_WF_ACTIVITY",
@@ -294,6 +258,44 @@ public final class WfWorkflow implements Entity {
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.x.workflow.domain.instance.WfActivity> getCurrentURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_WFW_WFA_2", io.vertigo.x.workflow.domain.instance.WfActivity.class);
 	}
+
+	/**
+	 * Association : WfStatus.
+	 * @return io.vertigo.x.workflow.domain.instance.WfStatus
+	 */
+	public io.vertigo.x.workflow.domain.instance.WfStatus getWfStatus() {
+		final io.vertigo.dynamo.domain.model.URI<io.vertigo.x.workflow.domain.instance.WfStatus> fkURI = getWfStatusURI();
+		if (fkURI == null) {
+			return null;
+		}
+		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
+		if (wfStatus == null || !fkURI.equals(wfStatus.getURI())) {
+			wfStatus = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
+		}
+		return wfStatus;
+	}
+
+	/**
+	 * Retourne l'URI: WfStatus.
+	 * @return URI de l'association
+	 */
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_WFW_WFS",
+			fkFieldName = "WFS_CODE",
+			primaryDtDefinitionName = "DT_WF_STATUS",
+			primaryIsNavigable = true,
+			primaryRole = "WfStatus",
+			primaryLabel = "WfStatus",
+			primaryMultiplicity = "1..1",
+			foreignDtDefinitionName = "DT_WF_WORKFLOW",
+			foreignIsNavigable = false,
+			foreignRole = "WfWorkflow",
+			foreignLabel = "WfWorkflow",
+			foreignMultiplicity = "1..*")
+	public io.vertigo.dynamo.domain.model.URI<io.vertigo.x.workflow.domain.instance.WfStatus> getWfStatusURI() {
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_WFW_WFS", io.vertigo.x.workflow.domain.instance.WfStatus.class);
+	}
+
 
 	/** {@inheritDoc} */
 	@Override

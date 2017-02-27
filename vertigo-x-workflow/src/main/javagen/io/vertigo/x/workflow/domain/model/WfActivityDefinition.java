@@ -123,12 +123,7 @@ public final class WfActivityDefinition implements Entity {
 		this.wfwdId = wfwdId;
 	}
 
-
-	// Association : WfTransitionDefinition non navigable
-
-	// Association : WfTransitionDefinition non navigable
-
-	// Association : WfWorkflowDefinition non navigable
+	// Association : WfActivity non navigable
 	/**
 	 * Association : WfMultiplicityDefinition.
 	 * @return io.vertigo.x.workflow.domain.model.WfMultiplicityDefinition
@@ -149,7 +144,7 @@ public final class WfActivityDefinition implements Entity {
 	 * Retourne l'URI: WfMultiplicityDefinition.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association (
+	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_WFAD_WFMD",
 			fkFieldName = "WFMD_CODE",
 			primaryDtDefinitionName = "DT_WF_MULTIPLICITY_DEFINITION",
@@ -165,6 +160,10 @@ public final class WfActivityDefinition implements Entity {
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.x.workflow.domain.model.WfMultiplicityDefinition> getWfMultiplicityDefinitionURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_WFAD_WFMD", io.vertigo.x.workflow.domain.model.WfMultiplicityDefinition.class);
 	}
+
+	// Association : WfTransitionDefinition non navigable
+	// Association : WfTransitionDefinition non navigable
+	// Association : WfWorkflowDefinition non navigable
 	/**
 	 * Association : WfWorkflowDefinition.
 	 * @return io.vertigo.x.workflow.domain.model.WfWorkflowDefinition
@@ -185,7 +184,7 @@ public final class WfActivityDefinition implements Entity {
 	 * Retourne l'URI: WfWorkflowDefinition.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association (
+	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_WFWD_WFAD_CURRENT",
 			fkFieldName = "WFWD_ID",
 			primaryDtDefinitionName = "DT_WF_WORKFLOW_DEFINITION",
@@ -202,7 +201,6 @@ public final class WfActivityDefinition implements Entity {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_WFWD_WFAD_CURRENT", io.vertigo.x.workflow.domain.model.WfWorkflowDefinition.class);
 	}
 
-	// Association : WfActivity non navigable
 
 	/** {@inheritDoc} */
 	@Override

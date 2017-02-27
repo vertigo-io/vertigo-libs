@@ -126,7 +126,7 @@ public final class RuleDefinition implements Entity {
 	 * Association URI: RuleConditionDefinition.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association (
+	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_RUD_COD",
 			fkFieldName = "RUD_ID",
 			primaryDtDefinitionName = "DT_RULE_DEFINITION",
@@ -142,6 +142,7 @@ public final class RuleDefinition implements Entity {
 	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation getRuleConditionDefinitionDtListURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createDtListURIForSimpleAssociation(this, "A_RUD_COD", "RuleConditionDefinition");
 	}
+
 
 	/** {@inheritDoc} */
 	@Override

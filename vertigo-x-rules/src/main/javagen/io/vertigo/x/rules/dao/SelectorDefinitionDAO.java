@@ -16,7 +16,7 @@ import io.vertigo.x.rules.domain.SelectorDefinition;
  * SelectorDefinitionDAO
  */
 public final class SelectorDefinitionDAO extends DAO<SelectorDefinition, java.lang.Long> implements StoreServices {
-	 
+
 	/**
 	 * Contructeur.
 	 * @param storeManager Manager de persistance
@@ -26,7 +26,7 @@ public final class SelectorDefinitionDAO extends DAO<SelectorDefinition, java.la
 	public SelectorDefinitionDAO(final StoreManager storeManager, final TaskManager taskManager) {
 		super(SelectorDefinition.class, storeManager, taskManager);
 	}
-	
+
 
 	/**
 	 * Creates a taskBuilder.
@@ -51,6 +51,5 @@ public final class SelectorDefinitionDAO extends DAO<SelectorDefinition, java.la
 				.execute(task)
 				.getResult();
 	}
-
 
 }

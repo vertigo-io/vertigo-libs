@@ -123,8 +123,6 @@ public final class WfTransitionDefinition implements Entity {
 		this.wfadIdTo = wfadIdTo;
 	}
 
-
-	// Association : WfWorkflowDefinition non navigable
 	/**
 	 * Association : transitionFrom.
 	 * @return io.vertigo.x.workflow.domain.model.WfActivityDefinition
@@ -145,7 +143,7 @@ public final class WfTransitionDefinition implements Entity {
 	 * Retourne l'URI: transitionFrom.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association (
+	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_WFT_WFA_FROM",
 			fkFieldName = "WFAD_ID_FROM",
 			primaryDtDefinitionName = "DT_WF_ACTIVITY_DEFINITION",
@@ -161,6 +159,7 @@ public final class WfTransitionDefinition implements Entity {
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.x.workflow.domain.model.WfActivityDefinition> getTransitionFromURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_WFT_WFA_FROM", io.vertigo.x.workflow.domain.model.WfActivityDefinition.class);
 	}
+
 	/**
 	 * Association : transitionTo.
 	 * @return io.vertigo.x.workflow.domain.model.WfActivityDefinition
@@ -181,7 +180,7 @@ public final class WfTransitionDefinition implements Entity {
 	 * Retourne l'URI: transitionTo.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association (
+	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_WFT_WFA_TO",
 			fkFieldName = "WFAD_ID_TO",
 			primaryDtDefinitionName = "DT_WF_ACTIVITY_DEFINITION",
@@ -197,6 +196,8 @@ public final class WfTransitionDefinition implements Entity {
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.x.workflow.domain.model.WfActivityDefinition> getTransitionToURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_WFT_WFA_TO", io.vertigo.x.workflow.domain.model.WfActivityDefinition.class);
 	}
+
+	// Association : WfWorkflowDefinition non navigable
 
 	/** {@inheritDoc} */
 	@Override

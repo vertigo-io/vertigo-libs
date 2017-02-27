@@ -16,7 +16,7 @@ import io.vertigo.x.rules.domain.RuleConditionDefinition;
  * RuleConditionDefinitionDAO
  */
 public final class RuleConditionDefinitionDAO extends DAO<RuleConditionDefinition, java.lang.Long> implements StoreServices {
-	 
+
 	/**
 	 * Contructeur.
 	 * @param storeManager Manager de persistance
@@ -26,7 +26,7 @@ public final class RuleConditionDefinitionDAO extends DAO<RuleConditionDefinitio
 	public RuleConditionDefinitionDAO(final StoreManager storeManager, final TaskManager taskManager) {
 		super(RuleConditionDefinition.class, storeManager, taskManager);
 	}
-	
+
 
 	/**
 	 * Creates a taskBuilder.
@@ -51,6 +51,5 @@ public final class RuleConditionDefinitionDAO extends DAO<RuleConditionDefinitio
 				.execute(task)
 				.getResult();
 	}
-
 
 }

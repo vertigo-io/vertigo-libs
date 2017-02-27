@@ -61,7 +61,6 @@ public final class WfMultiplicityDefinition implements Entity {
 		this.label = label;
 	}
 
-
 	// Association : WfActivityDefinition non navigable
 
 	/** {@inheritDoc} */

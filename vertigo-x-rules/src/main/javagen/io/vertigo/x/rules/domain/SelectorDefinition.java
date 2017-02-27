@@ -126,7 +126,7 @@ public final class SelectorDefinition implements Entity {
 	 * Association URI: RuleFilterDefinition.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association (
+	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_SEL_FID",
 			fkFieldName = "SEL_ID",
 			primaryDtDefinitionName = "DT_SELECTOR_DEFINITION",
@@ -142,6 +142,7 @@ public final class SelectorDefinition implements Entity {
 	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation getRuleFilterDefinitionDtListURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createDtListURIForSimpleAssociation(this, "A_SEL_FID", "RuleFilterDefinition");
 	}
+
 
 	/** {@inheritDoc} */
 	@Override

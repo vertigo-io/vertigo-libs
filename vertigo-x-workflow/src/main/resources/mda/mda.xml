@@ -3,20 +3,15 @@
 	<boot locales="fr_FR">
 		<plugin class="io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin" />
 		<plugin class="io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.poweramc.OOMLoaderPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoaderPlugin">
-			<param name="encoding" value="UTF-8" />
-		</plugin>
-		<plugin class="io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistryPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistryPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.registries.file.FileDynamicRegistryPlugin" />
-		<plugin class="io.vertigo.dynamo.plugins.environment.registries.search.SearchDynamicRegistryPlugin" />
 	</boot>
 	
 	<module name="API">
 	<definitions>
-		<resource type ="oom" path="file:./src/main/database/model/workflow.oom"/>
-		<resource type ="kpr" path="file:./src/main/resources/mda/generation.kpr"/>
+		<provider class="io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider" >
+			<param name="encoding" value="UTF-8" />
+			<resource type ="oom" path="file:./src/main/database/model/workflow.oom"/>
+			<resource type ="kpr" path="file:./src/main/resources/mda/generation.kpr"/>
+		</provider>
 		 
 		</definitions>
 	</module>  

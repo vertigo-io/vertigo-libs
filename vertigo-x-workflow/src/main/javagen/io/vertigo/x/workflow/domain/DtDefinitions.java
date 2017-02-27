@@ -8,42 +8,43 @@ import io.vertigo.dynamo.domain.metamodel.DtFieldName;
  * Attention cette classe est générée automatiquement !
  */
 public final class DtDefinitions implements Iterable<Class<?>> {
-	
+
 	/**
 	 * Enumération des DtDefinitions.
 	 */
 	public enum Definitions {
-			/** Objet de données WfActivity. */
-			WfActivity(io.vertigo.x.workflow.domain.instance.WfActivity.class),
-			/** Objet de données WfActivityDefinition. */
-			WfActivityDefinition(io.vertigo.x.workflow.domain.model.WfActivityDefinition.class),
-			/** Objet de données WfDecision. */
-			WfDecision(io.vertigo.x.workflow.domain.instance.WfDecision.class),
-			/** Objet de données WfMultiplicityDefinition. */
-			WfMultiplicityDefinition(io.vertigo.x.workflow.domain.model.WfMultiplicityDefinition.class),
-			/** Objet de données WfStatus. */
-			WfStatus(io.vertigo.x.workflow.domain.instance.WfStatus.class),
-			/** Objet de données WfTransitionDefinition. */
-			WfTransitionDefinition(io.vertigo.x.workflow.domain.model.WfTransitionDefinition.class),
-			/** Objet de données WfWorkflow. */
-			WfWorkflow(io.vertigo.x.workflow.domain.instance.WfWorkflow.class),
-			/** Objet de données WfWorkflowDefinition. */
-			WfWorkflowDefinition(io.vertigo.x.workflow.domain.model.WfWorkflowDefinition.class),
+		/** Objet de données WfActivity. */
+		WfActivity(io.vertigo.x.workflow.domain.instance.WfActivity.class),
+		/** Objet de données WfActivityDefinition. */
+		WfActivityDefinition(io.vertigo.x.workflow.domain.model.WfActivityDefinition.class),
+		/** Objet de données WfDecision. */
+		WfDecision(io.vertigo.x.workflow.domain.instance.WfDecision.class),
+		/** Objet de données WfMultiplicityDefinition. */
+		WfMultiplicityDefinition(io.vertigo.x.workflow.domain.model.WfMultiplicityDefinition.class),
+		/** Objet de données WfStatus. */
+		WfStatus(io.vertigo.x.workflow.domain.instance.WfStatus.class),
+		/** Objet de données WfTransitionDefinition. */
+		WfTransitionDefinition(io.vertigo.x.workflow.domain.model.WfTransitionDefinition.class),
+		/** Objet de données WfWorkflow. */
+		WfWorkflow(io.vertigo.x.workflow.domain.instance.WfWorkflow.class),
+		/** Objet de données WfWorkflowDefinition. */
+		WfWorkflowDefinition(io.vertigo.x.workflow.domain.model.WfWorkflowDefinition.class),
 		;
-		
+
 		private final Class<?> clazz;
+
 		private Definitions(final Class<?> clazz) {
 			this.clazz = clazz;
 		}
-		
+
 		/** 
-		  * Classe associée.
-		  * @return Class d'implémentation de l'objet 
-		  */
+		 * Classe associée.
+		 * @return Class d'implémentation de l'objet 
+		 */
 		public Class<?> getDtClass() {
 			return clazz;
 		}
-    }
+	}
 
 	/**
 	 * Enumération des champs de WfActivity.
@@ -165,30 +166,29 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		WFAD_ID,
 	}
 
-	    
-    /** {@inheritDoc} */
-    @Override
-    public Iterator<Class<?>> iterator() {
-        return new Iterator<Class<?>>() {
-            private Iterator<Definitions> it = Arrays.asList(Definitions.values()).iterator();
+	/** {@inheritDoc} */
+	@Override
+	public Iterator<Class<?>> iterator() {
+		return new Iterator<Class<?>>() {
+			private Iterator<Definitions> it = Arrays.asList(Definitions.values()).iterator();
 
-            /** {@inheritDoc} */
-            @Override
-            public boolean hasNext() {
+			/** {@inheritDoc} */
+			@Override
+			public boolean hasNext() {
 				return it.hasNext();
-            }
+			}
 
-            /** {@inheritDoc} */
-            @Override
-            public Class<?> next() {
-            	return it.next().getDtClass();
-            }
+			/** {@inheritDoc} */
+			@Override
+			public Class<?> next() {
+				return it.next().getDtClass();
+			}
 
-            /** {@inheritDoc} */
-            @Override
-            public void remove() {
-            	//unsupported
-            }
-        };
-    }                      
+			/** {@inheritDoc} */
+			@Override
+			public void remove() {
+				//unsupported
+			}
+		};
+	}
 }

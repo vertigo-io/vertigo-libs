@@ -12,7 +12,7 @@ import io.vertigo.x.workflow.domain.model.WfMultiplicityDefinition;
  * WfMultiplicityDefinitionDAO
  */
 public final class WfMultiplicityDefinitionDAO extends DAO<WfMultiplicityDefinition, java.lang.String> implements StoreServices {
-	 
+
 	/**
 	 * Contructeur.
 	 * @param storeManager Manager de persistance
@@ -22,6 +22,5 @@ public final class WfMultiplicityDefinitionDAO extends DAO<WfMultiplicityDefinit
 	public WfMultiplicityDefinitionDAO(final StoreManager storeManager, final TaskManager taskManager) {
 		super(WfMultiplicityDefinition.class, storeManager, taskManager);
 	}
-	
 
 }

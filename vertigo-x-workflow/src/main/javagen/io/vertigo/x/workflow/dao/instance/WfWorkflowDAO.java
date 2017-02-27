@@ -16,7 +16,7 @@ import io.vertigo.x.workflow.domain.instance.WfWorkflow;
  * WfWorkflowDAO
  */
 public final class WfWorkflowDAO extends DAO<WfWorkflow, java.lang.Long> implements StoreServices {
-	 
+
 	/**
 	 * Contructeur.
 	 * @param storeManager Manager de persistance
@@ -26,7 +26,7 @@ public final class WfWorkflowDAO extends DAO<WfWorkflow, java.lang.Long> impleme
 	public WfWorkflowDAO(final StoreManager storeManager, final TaskManager taskManager) {
 		super(WfWorkflow.class, storeManager, taskManager);
 	}
-	
+
 
 	/**
 	 * Creates a taskBuilder.
@@ -67,6 +67,5 @@ public final class WfWorkflowDAO extends DAO<WfWorkflow, java.lang.Long> impleme
 				.execute(task)
 				.getResult();
 	}
-
 
 }

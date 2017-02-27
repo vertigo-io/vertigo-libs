@@ -12,7 +12,7 @@ import io.vertigo.x.workflow.domain.instance.WfStatus;
  * WfStatusDAO
  */
 public final class WfStatusDAO extends DAO<WfStatus, java.lang.String> implements StoreServices {
-	 
+
 	/**
 	 * Contructeur.
 	 * @param storeManager Manager de persistance
@@ -22,6 +22,5 @@ public final class WfStatusDAO extends DAO<WfStatus, java.lang.String> implement
 	public WfStatusDAO(final StoreManager storeManager, final TaskManager taskManager) {
 		super(WfStatus.class, storeManager, taskManager);
 	}
-	
 
 }
