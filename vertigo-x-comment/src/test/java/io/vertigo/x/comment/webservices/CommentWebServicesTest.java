@@ -23,6 +23,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
@@ -36,7 +38,7 @@ import com.jayway.restassured.parsing.Parser;
 import com.jayway.restassured.response.Response;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.Home;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
@@ -64,18 +66,25 @@ public final class CommentWebServicesTest {
 	private static URI<KeyConcept> keyConcept1Uri;
 	private static URI<KeyConcept> keyConcept2Uri;
 
+	@Inject
+	private RedisConnector redisConnector;
+	@Inject
+	private CommentManager commentManager;
+	@Inject
+	private AccountManager accountManager;
+
 	@BeforeClass
 	public static void setUp() {
 		beforeSetUp();
 		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
+	}
 
-		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
-		//-----
+	@Before
+	public void setUpInstance() {
+		DIInjector.injectMembers(this, app.getComponentSpace());
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		}
-
-		final AccountManager accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
 		Accounts.initData(accountManager);
 		account1Uri = Accounts.createAccountURI("1");
 
@@ -111,7 +120,6 @@ public final class CommentWebServicesTest {
 
 	@Test
 	public void testGetComments() {
-		final CommentManager commentManager = Home.getApp().getComponentSpace().resolve(CommentManager.class);
 		final Comment comment = new CommentBuilder()
 				.withAuthor(account1Uri)
 				.withMsg("Lorem ipsum")

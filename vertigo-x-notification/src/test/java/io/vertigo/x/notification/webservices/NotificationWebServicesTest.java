@@ -34,7 +34,6 @@ import com.jayway.restassured.filter.session.SessionFilter;
 import com.jayway.restassured.parsing.Parser;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -70,7 +69,7 @@ public final class NotificationWebServicesTest {
 
 	@Before
 	public void setUpInstance() {
-		DIInjector.injectMembers(this, Home.getApp().getComponentSpace());
+		DIInjector.injectMembers(this, app.getComponentSpace());
 		//---
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();

@@ -18,15 +18,18 @@
  */
 package io.vertigo.x.account.webservices;
 
+import javax.inject.Inject;
+
 import org.apache.http.HttpStatus;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.jayway.restassured.RestAssured;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.Home;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.account.MyAppConfig;
 import io.vertigo.x.account.data.Accounts;
@@ -39,6 +42,10 @@ import redis.clients.jedis.Jedis;
  */
 public final class AccountWebServicesTest {
 	private static AutoCloseableApp app;
+	@Inject
+	private AccountManager accountManager;
+	@Inject
+	private RedisConnector redisConnector;
 
 	static {
 		RestAssured.port = MyAppConfig.WS_PORT;
@@ -47,8 +54,11 @@ public final class AccountWebServicesTest {
 	@BeforeClass
 	public static void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
-		final AccountManager accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
-		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
+	}
+
+	@Before
+	public void setUpInstance() {
+		DIInjector.injectMembers(this, app.getComponentSpace());
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
