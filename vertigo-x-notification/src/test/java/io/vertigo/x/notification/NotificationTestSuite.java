@@ -22,13 +22,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import io.vertigo.x.notification.services.NotificationManagerTest;
+import io.vertigo.x.notification.webservices.NotificationWebServicesTest;
+
 /**
  * Test de l'implementation standard.
  *
  * @author npiedeloup
  */
 @RunWith(Suite.class)
-@SuiteClasses({ NotificationManagerTest.class, NotificationWebServicesTest.class })
+@SuiteClasses({
+		NotificationManagerTest.class,
+		NotificationWebServicesTest.class })
 public final class NotificationTestSuite {
 	//
 }

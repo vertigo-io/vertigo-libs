@@ -30,6 +30,7 @@ import io.vertigo.x.connectors.ConnectorsFeatures;
 import io.vertigo.x.impl.account.AccountFeatures;
 import io.vertigo.x.impl.notification.NotificationFeatures;
 import io.vertigo.x.notification.data.TestUserSession;
+import io.vertigo.x.notification.webservices.TestLoginWebServices;
 import io.vertigo.x.plugins.account.memory.MemoryAccountStorePlugin;
 import io.vertigo.x.plugins.notification.memory.MemoryNotificationPlugin;
 import io.vertigo.x.webapi.notification.NotificationWebServices;

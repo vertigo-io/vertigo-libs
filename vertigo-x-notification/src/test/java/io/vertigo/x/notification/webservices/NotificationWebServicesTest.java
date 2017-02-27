@@ -16,7 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.notification;
+package io.vertigo.x.notification.webservices;
+
+import java.util.Set;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
@@ -31,10 +33,16 @@ import com.jayway.restassured.parsing.Parser;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.connectors.redis.RedisConnector;
+import io.vertigo.x.notification.MyAppConfig;
+import io.vertigo.x.notification.Notification;
+import io.vertigo.x.notification.NotificationBuilder;
+import io.vertigo.x.notification.NotificationManager;
 import io.vertigo.x.notification.data.Accounts;
 import redis.clients.jedis.Jedis;
 import spark.Spark;
@@ -43,14 +51,18 @@ public final class NotificationWebServicesTest {
 	private static final int WS_PORT = 8088;
 	private final SessionFilter sessionFilter = new SessionFilter();
 	private static AutoCloseableApp app;
+	private static AccountManager accountManager;
+	private static RedisConnector redisConnector;
+	private static NotificationManager notificationManager;
 
 	@BeforeClass
 	public static void setUp() {
 		beforeSetUp();
 		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
 
-		final AccountManager accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
-		final RedisConnector redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
+		accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
+		redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
+		notificationManager = Home.getApp().getComponentSpace().resolve(NotificationManager.class);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
@@ -83,7 +95,6 @@ public final class NotificationWebServicesTest {
 
 	@Test
 	public void testGetCurrentNotifications() {
-		final NotificationManager notificationManager = Home.getApp().getComponentSpace().resolve(NotificationManager.class);
 		final Notification notification = new NotificationBuilder()
 				.withSender("ExtensionTest")
 				.withType("MSG")
@@ -91,7 +102,8 @@ public final class NotificationWebServicesTest {
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		notificationManager.send(notification, DtObjectUtil.createURI(AccountGroup.class, "100"));
+		final Set<URI<Account>> accountURIs = accountManager.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
+		notificationManager.send(notification, accountURIs);
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()
@@ -104,7 +116,6 @@ public final class NotificationWebServicesTest {
 
 	@Test
 	public void testGetRemoveNotifications() {
-		final NotificationManager notificationManager = Home.getApp().getComponentSpace().resolve(NotificationManager.class);
 		final Notification notification = new NotificationBuilder()
 				.withSender("ExtensionTest")
 				.withType("MSG")
@@ -112,7 +123,8 @@ public final class NotificationWebServicesTest {
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		notificationManager.send(notification, DtObjectUtil.createURI(AccountGroup.class, "100"));
+		final Set<URI<Account>> accountURIs = accountManager.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
+		notificationManager.send(notification, accountURIs);
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()

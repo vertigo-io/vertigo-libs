@@ -25,44 +25,34 @@ import java.util.UUID;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Manager;
 import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountGroup;
 
 /**
  * @author pchretien
  */
 public interface NotificationManager extends Manager {
 	/**
-	 * Send a notification to a group
-	 * @param notification Notification
-	 * @param groupURI Destination group
-	 * @deprecated Use send with a Set<URI<Account>> instead
-	 */
-	@Deprecated
-	void send(Notification notification, URI<AccountGroup> groupURI);
-
-	/**
-	 * Send a notification to a user
+	 * Sends a notification to a set of users
 	 * @param notification Notification
 	 * @param accountURIs Destination users
 	 */
 	void send(final Notification notification, final Set<URI<Account>> accountURIs);
 
 	/**
-	 * Retrieve all notification for one account
+	 * Retrieves all notifications for one account
 	 * @param accountURI Account
 	 * @return List notifications
 	 */
 	List<Notification> getCurrentNotifications(URI<Account> accountURI);
 
 	/**
-	 * Remove one notification.
+	 * Removes one notification.
 	 * @param accountURI User account
 	 * @param notificationUUID Notification uid
 	 */
 	void remove(URI<Account> accountURI, UUID notificationUUID);
 
 	/**
-	 * Remove all notifications by type and targetUrl.
+	 * Removes all notifications by type and targetUrl.
 	 * Could be use when a business module need to revoke its notifications
 	 * @param type Notification type
 	 * @param targetUrl Notification's target Url

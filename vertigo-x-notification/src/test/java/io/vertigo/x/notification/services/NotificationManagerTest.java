@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.notification;
+package io.vertigo.x.notification.services;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,6 +41,10 @@ import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.connectors.redis.RedisConnector;
+import io.vertigo.x.notification.MyAppConfig;
+import io.vertigo.x.notification.Notification;
+import io.vertigo.x.notification.NotificationBuilder;
+import io.vertigo.x.notification.NotificationManager;
 import io.vertigo.x.notification.data.Accounts;
 import redis.clients.jedis.Jedis;
 
@@ -115,7 +119,7 @@ public class NotificationManagerTest {
 				.build();
 
 		for (int i = 0; i < 10; i++) {
-			notificationManager.send(notification, groupURI);
+			notificationManager.send(notification, accountManager.getStore().getAccountURIs(groupURI));
 		}
 
 		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI0).size());
@@ -137,7 +141,7 @@ public class NotificationManagerTest {
 		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI1).size());
 		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI2).size());
 
-		notificationManager.send(notification, groupURI);
+		notificationManager.send(notification, accountManager.getStore().getAccountURIs(groupURI));
 
 		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI0).size());
 		Assert.assertEquals(1, notificationManager.getCurrentNotifications(accountURI1).size());
@@ -165,7 +169,7 @@ public class NotificationManagerTest {
 		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI1).size());
 		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI2).size());
 
-		notificationManager.send(notification, groupURI);
+		notificationManager.send(notification, accountManager.getStore().getAccountURIs(groupURI));
 
 		Assert.assertEquals(0, notificationManager.getCurrentNotifications(accountURI0).size());
 		Assert.assertEquals(1, notificationManager.getCurrentNotifications(accountURI1).size());

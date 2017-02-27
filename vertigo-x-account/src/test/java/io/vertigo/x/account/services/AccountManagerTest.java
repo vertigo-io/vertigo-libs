@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.account;
+package io.vertigo.x.account.services;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -41,6 +41,10 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.x.account.Account;
+import io.vertigo.x.account.AccountGroup;
+import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.account.MyAppConfig;
 import io.vertigo.x.account.data.Accounts;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import redis.clients.jedis.Jedis;
@@ -139,7 +143,7 @@ public final class AccountManagerTest {
 		Assert.assertFalse(accountManager.getStore().getPhoto(accountURI0).isPresent());
 		Assert.assertEquals("defaultPhoto.png", accountManager.getDefaultPhoto().getFileName());
 		//-----
-		final VFile photo = fileManager.createFile(new File(this.getClass().getResource("data/marianne.png").toURI()));
+		final VFile photo = fileManager.createFile(new File(this.getClass().getResource("../data/marianne.png").toURI()));
 		accountManager.getStore().setPhoto(accountURI0, photo);
 		//-----
 		Assert.assertTrue(accountManager.getStore().getPhoto(accountURI0).isPresent());

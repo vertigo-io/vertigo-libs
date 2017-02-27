@@ -22,6 +22,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import io.vertigo.x.account.services.AccountManagerTest;
+import io.vertigo.x.account.webservices.AccountWebServicesTest;
+
 /**
  * Test de l'implementation standard.
  *

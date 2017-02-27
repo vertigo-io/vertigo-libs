@@ -27,8 +27,6 @@ import javax.inject.Inject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountGroup;
-import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.notification.Notification;
 import io.vertigo.x.notification.NotificationManager;
 
@@ -36,7 +34,6 @@ import io.vertigo.x.notification.NotificationManager;
  * @author pchretien
  */
 public final class NotificationManagerImpl implements NotificationManager {
-	private final AccountManager accountManager;
 	private final NotificationPlugin notificationsPlugin;
 
 	/**
@@ -44,20 +41,10 @@ public final class NotificationManagerImpl implements NotificationManager {
 	 * @param notificationsPlugin Notifications plugin
 	 */
 	@Inject
-	public NotificationManagerImpl(final AccountManager accountManager, final NotificationPlugin notificationsPlugin) {
-		Assertion.checkNotNull(accountManager);
+	public NotificationManagerImpl(final NotificationPlugin notificationsPlugin) {
 		Assertion.checkNotNull(notificationsPlugin);
 		//-----
 		this.notificationsPlugin = notificationsPlugin;
-		this.accountManager = accountManager;
-	}
-
-	/** {@inheritDoc} 
-	 *  @deprecated Use send with a Set<URI<Account>> instead */
-	@Override
-	@Deprecated
-	public void send(final Notification notification, final URI<AccountGroup> groupURI) {
-		send(notification, accountManager.getStore().getAccountURIs(groupURI));
 	}
 
 	/** {@inheritDoc} */

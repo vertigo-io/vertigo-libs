@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.account;
+package io.vertigo.x.account.webservices;
 
 import org.apache.http.HttpStatus;
 import org.junit.AfterClass;
@@ -27,6 +27,8 @@ import com.jayway.restassured.RestAssured;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
+import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.account.MyAppConfig;
 import io.vertigo.x.account.data.Accounts;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import redis.clients.jedis.Jedis;
