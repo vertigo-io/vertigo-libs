@@ -110,15 +110,15 @@ public class NotificationManagerTest {
 
 	@Test
 	public void testNotifications() {
-		final Notification notification = new NotificationBuilder()
-				.withSender(accountURI0.urn())
-				.withType("Test")
-				.withTitle("news")
-				.withContent("discover this amazing app !!")
-				.withTargetUrl("#keyConcept@2")
-				.build();
 
 		for (int i = 0; i < 10; i++) {
+			final Notification notification = new NotificationBuilder()
+					.withSender(accountURI0.urn())
+					.withType("Test")
+					.withTitle("news")
+					.withContent("discover this amazing app !!")
+					.withTargetUrl("#keyConcept@2")
+					.build();
 			notificationManager.send(notification, accountManager.getStore().getAccountURIs(groupURI));
 		}
 
