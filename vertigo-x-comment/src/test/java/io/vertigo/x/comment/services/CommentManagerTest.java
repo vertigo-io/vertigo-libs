@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.comment;
+package io.vertigo.x.comment.services;
 
 import javax.inject.Inject;
 
@@ -35,6 +35,10 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.comment.Comment;
+import io.vertigo.x.comment.CommentBuilder;
+import io.vertigo.x.comment.CommentManager;
+import io.vertigo.x.comment.MyAppConfig;
 import io.vertigo.x.comment.data.Accounts;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import redis.clients.jedis.Jedis;

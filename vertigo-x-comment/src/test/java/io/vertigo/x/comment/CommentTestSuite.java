@@ -22,13 +22,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import io.vertigo.x.comment.services.CommentManagerTest;
+import io.vertigo.x.comment.webservices.CommentWebServicesTest;
+
 /**
  * Test de l'implementation standard.
  *
  * @author npiedeloup
  */
 @RunWith(Suite.class)
-@SuiteClasses({ CommentManagerTest.class, CommentWebServicesTest.class })
+@SuiteClasses({
+		CommentManagerTest.class,
+		CommentWebServicesTest.class })
 public final class CommentTestSuite {
 	//
 }
