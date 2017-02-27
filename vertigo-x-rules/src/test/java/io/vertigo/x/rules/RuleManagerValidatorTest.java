@@ -32,7 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.x.impl.rules.RuleConstants;
 import io.vertigo.x.rules.data.MyDummyDtObject;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
@@ -57,7 +57,7 @@ public class RuleManagerValidatorTest extends DbTest {
 	@Before
 	public void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.config());
-		Injector.injectMembers(this, app.getComponentSpace());
+		DIInjector.injectMembers(this, app.getComponentSpace());
 		doSetUp();
 	}
 

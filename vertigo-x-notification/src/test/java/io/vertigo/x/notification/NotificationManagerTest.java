@@ -33,7 +33,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
-import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -77,7 +77,7 @@ public class NotificationManagerTest {
 	@Before
 	public void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.config(redis));
-		Injector.injectMembers(this, Home.getApp().getComponentSpace());
+		DIInjector.injectMembers(this, Home.getApp().getComponentSpace());
 		if (redis) {
 			final RedisConnector redisConnector = app.getComponentSpace().resolve(RedisConnector.class);
 			try (final Jedis jedis = redisConnector.getResource()) {

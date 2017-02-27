@@ -35,7 +35,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
@@ -88,7 +88,7 @@ public final class AccountManagerTest {
 	public void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.config(redis));
 
-		Injector.injectMembers(this, app.getComponentSpace());
+		DIInjector.injectMembers(this, app.getComponentSpace());
 		if (redis) {
 			final RedisConnector redisConnector = app.getComponentSpace().resolve(RedisConnector.class);
 			try (final Jedis jedis = redisConnector.getResource()) {

@@ -42,7 +42,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.Account;
@@ -87,7 +87,7 @@ public class WorkflowManagerTest extends DbTest {
 	@Before
 	public void setUp() throws Exception {
 		app = new AutoCloseableApp(MyAppConfig.config());
-		Injector.injectMembers(this, app.getComponentSpace());
+		DIInjector.injectMembers(this, app.getComponentSpace());
 		doSetUp();
 	}
 
