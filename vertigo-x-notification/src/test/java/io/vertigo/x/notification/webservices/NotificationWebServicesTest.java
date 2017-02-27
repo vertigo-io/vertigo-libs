@@ -20,6 +20,8 @@ package io.vertigo.x.notification.webservices;
 
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
 import org.junit.AfterClass;
@@ -33,6 +35,7 @@ import com.jayway.restassured.parsing.Parser;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.Account;
@@ -51,19 +54,24 @@ public final class NotificationWebServicesTest {
 	private static final int WS_PORT = 8088;
 	private final SessionFilter sessionFilter = new SessionFilter();
 	private static AutoCloseableApp app;
-	private static AccountManager accountManager;
-	private static RedisConnector redisConnector;
-	private static NotificationManager notificationManager;
+
+	@Inject
+	private AccountManager accountManager;
+	@Inject
+	private RedisConnector redisConnector;
+	@Inject
+	private NotificationManager notificationManager;
 
 	@BeforeClass
 	public static void setUp() {
 		beforeSetUp();
 		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
+	}
 
-		accountManager = Home.getApp().getComponentSpace().resolve(AccountManager.class);
-		redisConnector = Home.getApp().getComponentSpace().resolve(RedisConnector.class);
-		notificationManager = Home.getApp().getComponentSpace().resolve(NotificationManager.class);
-		//-----
+	@Before
+	public void setUpInstance() {
+		DIInjector.injectMembers(this, Home.getApp().getComponentSpace());
+		//---
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		}
