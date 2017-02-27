@@ -18,12 +18,15 @@
  */
 package io.vertigo.x.notification.webservices;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import javax.inject.Inject;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -75,6 +78,15 @@ public final class NotificationWebServicesTest {
 			jedis.flushAll();
 		}
 		Accounts.initData(accountManager);
+	}
+
+	@After
+	public void purgeNotifications() {
+		final URI<Account> accountURI = DtObjectUtil.createURI(Account.class, "1");
+		final List<Notification> notifications = notificationManager.getCurrentNotifications(accountURI);
+		for (final Notification notification : notifications) {
+			notificationManager.remove(accountURI, notification.getUuid());
+		}
 	}
 
 	@AfterClass
@@ -147,6 +159,56 @@ public final class NotificationWebServicesTest {
 				.log().ifError()
 				.when()
 				.delete("/x/notification/api/messages/" + notification.getUuid().toString());
+
+		RestAssured.given().filter(sessionFilter)
+				.expect()
+				.body("size()", Matchers.equalTo(0))
+				.statusCode(HttpStatus.SC_OK)
+				.log().ifError()
+				.when()
+				.get("/x/notification/api/messages");
+
+	}
+
+	@Test
+	public void testGetRemoveManyNotifications() {
+		final Notification notification1 = new NotificationBuilder()
+				.withSender("ExtensionTest")
+				.withType("MSG")
+				.withTitle("Message de Vertigo")
+				.withTargetUrl("#keyConcept@2")
+				.withContent("Lorem ipsum")
+				.build();
+		final Notification notification2 = new NotificationBuilder()
+				.withSender("ExtensionTest")
+				.withType("MSG")
+				.withTitle("Message de Vertigo")
+				.withTargetUrl("#keyConcept@2")
+				.withContent("Lorem ipsum")
+				.build();
+		final Set<URI<Account>> accountURIs = accountManager.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
+		notificationManager.send(notification1, accountURIs);
+		notificationManager.send(notification2, accountURIs);
+
+		RestAssured.given().filter(sessionFilter)
+				.expect()
+				.body("size()", Matchers.equalTo(2))
+				.statusCode(HttpStatus.SC_OK)
+				.log().ifError()
+				.when()
+				.get("/x/notification/api/messages");
+
+		final List<String> notificationUuids = new ArrayList<>();
+		notificationUuids.add(notification1.getUuid().toString());
+		notificationUuids.add(notification2.getUuid().toString());
+
+		RestAssured.given().filter(sessionFilter)
+				.body(notificationUuids)
+				.expect()
+				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.log().ifError()
+				.when()
+				.delete("/x/notification/api/messages");
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()
