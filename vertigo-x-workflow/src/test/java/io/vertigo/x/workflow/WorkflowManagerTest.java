@@ -193,7 +193,7 @@ public class WorkflowManagerTest extends DbTest {
 		wfDecision.setChoice(1);
 		wfDecision.setUsername("junit");
 		try {
-			workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, wfDecision);
+			workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, WfCodeTransition.DEFAULT.getTransitionName(), wfDecision);
 			fail("Cannot go to next activity while the workflow is paused");
 		} catch (final IllegalStateException iae) {
 			// We should enter in this exeption case
@@ -233,26 +233,26 @@ public class WorkflowManagerTest extends DbTest {
 
 	}
 
-	private void assertHasOneDecision(WfWorkflowDecision wfWorkflowDecision) {
+	private static void assertHasOneDecision(WfWorkflowDecision wfWorkflowDecision) {
 		assertNotNull(wfWorkflowDecision.getDecisions());
 		assertThat(wfWorkflowDecision.getDecisions().size(), is(1));
 	}
 
-	private void assertActivityExist(WfActivityDefinition activityDefinition, WfWorkflowDecision wfWorkflowDecision) {
+	private static void assertActivityExist(WfActivityDefinition activityDefinition, WfWorkflowDecision wfWorkflowDecision) {
 		assertThat(activityDefinition.getWfadId(), is(wfWorkflowDecision.getActivityDefinition().getWfadId()));
 		assertNotNull(wfWorkflowDecision.getActivity());
 		assertNotNull(wfWorkflowDecision.getActivity().getWfaId());
 		assertThat(activityDefinition.getWfadId(), is(wfWorkflowDecision.getActivity().getWfadId()));
 	}
 
-	private void assertFirstDecisionEquals(WfDecision wfDecisionAct, WfWorkflowDecision wfWorkflowDecision) {
+	private static void assertFirstDecisionEquals(WfDecision wfDecisionAct, WfWorkflowDecision wfWorkflowDecision) {
 		assertThat(wfDecisionAct.getWfaId(), is(wfWorkflowDecision.getDecisions().get(0).getWfaId()));
 		assertThat(wfDecisionAct.getChoice(), is(wfWorkflowDecision.getDecisions().get(0).getChoice()));
 		assertThat(wfDecisionAct.getComments(), is(wfWorkflowDecision.getDecisions().get(0).getComments()));
 		assertThat(wfDecisionAct.getDecisionDate(), is(wfWorkflowDecision.getDecisions().get(0).getDecisionDate()));
 	}
 
-	private void assertHasOneGroup(AccountGroup accountGroup, WfWorkflowDecision wfWorkflowDecision) {
+	private static void assertHasOneGroup(AccountGroup accountGroup, WfWorkflowDecision wfWorkflowDecision) {
 		assertNotNull(wfWorkflowDecision.getGroups());
 		assertThat(1, is(wfWorkflowDecision.getGroups().size()));
 		assertThat(accountGroup.getId(), is(wfWorkflowDecision.getGroups().get(0).getId()));
@@ -433,7 +433,7 @@ public class WorkflowManagerTest extends DbTest {
 		decision.setUsername("AA");
 		decision.setDecisionDate(new Date());
 
-		workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, decision);
+		workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, WfCodeTransition.DEFAULT.getTransitionName(), decision);
 
 		workflowDecisions = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
 
@@ -486,7 +486,7 @@ public class WorkflowManagerTest extends DbTest {
 		canGo = workflowManager.canGoToNextActivity(wfWorkflow);
 		assertTrue(canGo);
 		workflowManager.canGoToNextActivity(wfWorkflow);
-		workflowManager.goToNextActivity(wfWorkflow);
+		workflowManager.goToNextActivity(wfWorkflow, WfCodeTransition.DEFAULT.getTransitionName());
 
 		workflowDecisions = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
 
@@ -529,7 +529,7 @@ public class WorkflowManagerTest extends DbTest {
 		WfDecision wfDecisionAct4 = new WfDecision();
 		wfDecisionAct4.setChoice(1);
 		wfDecisionAct4.setUsername(account.getId());
-		workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, wfDecisionAct4);
+		workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, WfCodeTransition.DEFAULT.getTransitionName(), wfDecisionAct4);
 
 		workflowDecisions = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
 
@@ -565,19 +565,12 @@ public class WorkflowManagerTest extends DbTest {
 		currentActivity = workflowManager.getActivity(currentActivityId);
 		assertThat(currentActivity.getWfadId(), is(fourthActivity.getWfadId()));
 
-		// No Automatic ending.
-		// Assert.AreEqual(wfWorkflow.WfsCode,
-		// WfCodeStatusWorkflow.End.ToString());
-		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.STA.toString()));
+		// Automatic ending.
+		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.END.toString()));
 
 		WfWorkflow wfWorkflowFetched5 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
-		// Assert.AreEqual(wfWorkflowFetched5.WfsCode,
-		// WfCodeStatusWorkflow.End.ToString());
-		assertThat(wfWorkflowFetched5.getWfsCode(), is(WfCodeStatusWorkflow.STA.toString()));
+		assertThat(wfWorkflowFetched5.getWfsCode(), is(WfCodeStatusWorkflow.END.toString()));
 
-		// List<WfListWorkflowDecision> allDecisions =
-		// workflowManager.getAllWorkflowDecisions(wfWorkflow.getWfwdId());
-		// assertThat(allDecisions.size(), is(1));
 	}
 
 	/**

@@ -40,6 +40,7 @@ import io.vertigo.x.plugins.rules.memory.MemoryRuleStorePlugin;
 import io.vertigo.x.plugins.rules.selector.SimpleRuleSelectorPlugin;
 import io.vertigo.x.plugins.rules.validator.SimpleRuleValidatorPlugin;
 import io.vertigo.x.plugins.workflow.memory.MemoryWorkflowStorePlugin;
+import io.vertigo.x.plugins.workflow.validate.RuleWorkflowPredicateAutoValidatePlugin;
 import io.vertigo.x.workflow.data.MyDummyDtObjectProvider;
 import io.vertigo.x.workflow.data.TestUserSession;
 import io.vertigo.x.workflow.plugin.MemoryItemStorePlugin;
@@ -90,6 +91,7 @@ public class MyAppConfig {
 				.addModule(new WorkflowFeatures()//
 						//.withDAOSupportWorkflowStorePlugin()//
 						.withWorkflowStorePlugin(MemoryWorkflowStorePlugin.class)
+						.withWorkflowPredicateAutoValidatePlugin(RuleWorkflowPredicateAutoValidatePlugin.class)
 						.withItemStorePlugin(MemoryItemStorePlugin.class).build())
 				.addModule(new ModuleConfigBuilder("dummy")//
 						.addDefinitionProvider(new DefinitionProviderConfigBuilder(MyDummyDtObjectProvider.class).build())

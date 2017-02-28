@@ -21,7 +21,6 @@ package io.vertigo.x.workflow;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Manager;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
@@ -106,14 +105,7 @@ public interface WorkflowManager extends Manager {
 	 *
 	 * @param wfWorkflow
 	 */
-	public void resumeInstance(final WfWorkflow wfWorkflow);
-
-	/**
-	 * Get The User Id used for autovalidating activities.
-	 *
-	 * @return User Id
-	 */
-	String getUserAuto();
+	void resumeInstance(final WfWorkflow wfWorkflow);
 
 	/**
 	 * Get an activity from Id
@@ -122,15 +114,6 @@ public interface WorkflowManager extends Manager {
 	 * @return activity corresponding to provided key
 	 */
 	WfActivity getActivity(Long wfaId);
-
-	/**
-	 * Get an activity from a definition and a workflow instance
-	 *
-	 * @param wfWorkflow  workflow instance
-	 * @param wfActivityDefinition Activity Definition
-	 * @return activity corresponding to the definition fot the provided instance
-	 */
-	Optional<WfActivity> getActivity(WfWorkflow wfWorkflow, WfActivityDefinition wfActivityDefinition);
 
 	/**
 	 * Save the decision for the current activity without moving to the next.
@@ -148,7 +131,7 @@ public interface WorkflowManager extends Manager {
 	 * @param wfActivity Activity
 	 * @return The decision for this activity
 	 */
-	WfDecision getDecision(WfActivity wfActivity);
+	Optional<WfDecision> getDecision(WfActivity wfActivity);
 
 	/**
 	 * Get the decisions for a multiple activity
@@ -157,16 +140,7 @@ public interface WorkflowManager extends Manager {
 	 * @return All the decisions for this activity
 	 */
 	List<WfDecision> getDecisions(WfActivity wfActivity);
-
-	/**
-	 * Save the decision for the current activity and go to the next activity
-	 * using the default transition
-	 *
-	 * @param wfWorkflow
-	 * @param wfDecision
-	 */
-	void saveDecisionAndGoToNextActivity(WfWorkflow wfWorkflow, final WfDecision wfDecision);
-
+	
 	/**
 	 * Go to the next activity using the provided transition name
 	 *
@@ -176,13 +150,6 @@ public interface WorkflowManager extends Manager {
 	 */
 	void saveDecisionAndGoToNextActivity(final WfWorkflow wfWorkflow, final String transitionName,
 			final WfDecision wfDecision);
-
-	/**
-	 * Go To the next activity
-	 *
-	 * @param wfWorkflow workflow
-	 */
-	void goToNextActivity(WfWorkflow wfWorkflow);
 
 	/**
 	 * Go to the next activity using the provinded transition name
@@ -201,29 +168,6 @@ public interface WorkflowManager extends Manager {
 	 *         False otherwise
 	 */
 	boolean canGoToNextActivity(WfWorkflow wfWorkflow);
-
-	/**
-	 * Autovalidate all the next activities using the default transition the the
-	 * provided activity. This autovalidation can validate 0, 1 or N activities.
-	 *
-	 * @param wfWorkflow
-	 * @param wfActivity
-	 * @param wfActivityDefinitionId
-	 * @param transitionName
-	 * @return true if all the default activities has been reached, false
-	 *         otherwise
-	 */
-	boolean autoValidateNextActivities(WfWorkflow wfWorkflow, WfActivity wfActivity, Long wfActivityDefinitionId, String transitionName);
-
-	/**
-	 * Does the provided activity can be autovalidated
-	 *
-	 * @param activityDefinition
-	 * @param object
-	 * @return true if the provided activty can be auto validated, false
-	 *         otherwise
-	 */
-	boolean canAutoValidateActivity(WfActivityDefinition activityDefinition, DtObject object);
 
 	/**
 	 * Get the list of activities matching the rules following the default
@@ -252,14 +196,6 @@ public interface WorkflowManager extends Manager {
 	 */
 	void addActivity(WfWorkflowDefinition wfWorkflowDefinition, WfActivityDefinition wfActivityDefinition,
 			int position);
-
-	/**
-	 * Get all default activity definitions
-	 *
-	 * @param wfWorkflowDefinition
-	 * @return The list of all the definitions matching or not the rules
-	 */
-	List<WfActivityDefinition> getAllDefaultActivities(WfWorkflowDefinition wfWorkflowDefinition);
 
 	// Rules/selectors
 

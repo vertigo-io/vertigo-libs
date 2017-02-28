@@ -23,6 +23,7 @@ import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.x.plugins.workflow.sql.SQLWorkflowStorePlugin;
+import io.vertigo.x.plugins.workflow.validate.RuleWorkflowPredicateAutoValidatePlugin;
 import io.vertigo.x.workflow.WorkflowManager;
 import io.vertigo.x.workflow.dao.instance.WfActivityDAO;
 import io.vertigo.x.workflow.dao.instance.WfDecisionDAO;
@@ -58,6 +59,21 @@ public final class WorkflowFeatures extends Features {
 	 *            the params
 	 * @return these features
 	 */
+	public WorkflowFeatures withWorkflowPredicateAutoValidatePlugin(final Class<? extends WorkflowPredicateAutoValidatePlugin> workflowPredicateAutoValidatePlugin,
+			final Param... params) {
+		getModuleConfigBuilder().addPlugin(workflowPredicateAutoValidatePlugin, params);
+		return this;
+	}
+
+	/**
+	 * Specifies the workflowStorePlugin.
+	 *
+	 * @param workflowStorePluginClass
+	 *            the type of plugin to use
+	 * @param params
+	 *            the params
+	 * @return these features
+	 */
 	public WorkflowFeatures withWorkflowStorePlugin(final Class<? extends WorkflowStorePlugin> workflowStorePluginClass,
 			final Param... params) {
 		getModuleConfigBuilder().addPlugin(workflowStorePluginClass, params);
@@ -72,6 +88,7 @@ public final class WorkflowFeatures extends Features {
 	public WorkflowFeatures withDAOSupportWorkflowStorePlugin() {
 		getModuleConfigBuilder().withNoAPI()//
 				.addPlugin(SQLWorkflowStorePlugin.class) //
+				.addPlugin(RuleWorkflowPredicateAutoValidatePlugin.class)
 				.addComponent(WfActivityDAO.class) //
 				.addComponent(WfWorkflowDAO.class) //
 				.addComponent(WfStatusDAO.class) //

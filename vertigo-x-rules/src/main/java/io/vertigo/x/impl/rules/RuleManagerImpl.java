@@ -130,7 +130,7 @@ public final class RuleManagerImpl implements RuleManager {
 	public List<Long> findItemsByCriteria(RuleCriteria criteria, List<Long> items) {
 		List<RuleDefinition> rules = ruleStorePlugin.findRulesByCriteria(criteria, items);
 
-		return rules.stream().map(r -> r.getItemId()).distinct().collect(Collectors.toList());
+		return rules.stream().map(RuleDefinition::getItemId).distinct().collect(Collectors.toList());
 	}
 
 	/** {@inheritDoc} */
@@ -163,7 +163,6 @@ public final class RuleManagerImpl implements RuleManager {
 		return ruleStorePlugin.findFiltersBySelectorId(selectorId);
 	}
 
-	/** {@inheritDoc} */
 	@Override
 	public void addConstants(Long key, RuleConstants ruleConstants) {
 		ruleConstantsStorePlugin.addConstants(key, ruleConstants);

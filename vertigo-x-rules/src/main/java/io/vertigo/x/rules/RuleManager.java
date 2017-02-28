@@ -177,7 +177,7 @@ public interface RuleManager extends Manager {
 	 *            constants to associate
 	 */
 	void addConstants(Long key, RuleConstants ruleConstants);
-
+	
 	/**
 	 * Get the constants associated to a key
 	 * 
