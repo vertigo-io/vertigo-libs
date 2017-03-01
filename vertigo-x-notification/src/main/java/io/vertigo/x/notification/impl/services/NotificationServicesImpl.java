@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.impl.notification;
+package io.vertigo.x.notification.impl.services;
 
 import java.util.List;
 import java.util.Set;
@@ -27,20 +27,20 @@ import javax.inject.Inject;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.account.Account;
-import io.vertigo.x.notification.Notification;
-import io.vertigo.x.notification.NotificationManager;
+import io.vertigo.x.notification.services.Notification;
+import io.vertigo.x.notification.services.NotificationServices;
 
 /**
  * @author pchretien
  */
-public final class NotificationManagerImpl implements NotificationManager {
+public final class NotificationServicesImpl implements NotificationServices {
 	private final NotificationPlugin notificationsPlugin;
 
 	/**
 	 * @param notificationsPlugin Notifications plugin
 	 */
 	@Inject
-	public NotificationManagerImpl(final NotificationPlugin notificationsPlugin) {
+	public NotificationServicesImpl(final NotificationPlugin notificationsPlugin) {
 		Assertion.checkNotNull(notificationsPlugin);
 		//-----
 		this.notificationsPlugin = notificationsPlugin;

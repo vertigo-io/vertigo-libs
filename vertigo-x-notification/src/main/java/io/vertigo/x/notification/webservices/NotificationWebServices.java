@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.webapi.notification;
+package io.vertigo.x.notification.webservices;
 
 import java.util.HashMap;
 import java.util.List;
@@ -35,22 +35,22 @@ import io.vertigo.vega.webservice.stereotype.PathParam;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.account.AccountManager;
-import io.vertigo.x.notification.Notification;
-import io.vertigo.x.notification.NotificationManager;
+import io.vertigo.x.notification.services.Notification;
+import io.vertigo.x.notification.services.NotificationServices;
 
 /**
  * Webservice for Notification extension.
  *
  * @author npiedeloup
  */
-@PathPrefix("/x/notification")
+@PathPrefix("/x/notifications")
 public final class NotificationWebServices implements WebServices {
 
 	private static final String API_VERSION = "0.1.0";
 	private static final String IMPL_VERSION = "0.9.2";
 
 	@Inject
-	private NotificationManager notificationManager;
+	private NotificationServices notificationManager;
 	@Inject
 	private AccountManager accountManager;
 
@@ -58,7 +58,7 @@ public final class NotificationWebServices implements WebServices {
 	 * Get messages for logged user.
 	 * @return messages for logged user
 	 */
-	@GET("/api/messages")
+	@GET("/messages")
 	public List<Notification> getMessages() {
 		final URI<Account> loggedAccountURI = accountManager.getLoggedAccount();
 		return notificationManager.getCurrentNotifications(loggedAccountURI);
@@ -68,7 +68,7 @@ public final class NotificationWebServices implements WebServices {
 	 * Remove a message.
 	 * @param messageUuid message id.
 	 */
-	@DELETE("/api/messages/{uuid}")
+	@DELETE("/messages/{uuid}")
 	public void removeMessage(@PathParam("uuid") final String messageUuid) {
 		final URI<Account> loggedAccountURI = accountManager.getLoggedAccount();
 		notificationManager.remove(loggedAccountURI, UUID.fromString(messageUuid));
@@ -78,7 +78,7 @@ public final class NotificationWebServices implements WebServices {
 	 * Remove a message.
 	 * @param messageUuids messages id.
 	 */
-	@DELETE("/api/messages")
+	@DELETE("/messages")
 	public void removeMessage(final List<String> messageUuids) {
 		final URI<Account> loggedAccountURI = accountManager.getLoggedAccount();
 		for (final String messageUuid : messageUuids) {
@@ -91,7 +91,7 @@ public final class NotificationWebServices implements WebServices {
 	 * Extension status (code 200 or 500)
 	 * @return "OK" or error message
 	 */
-	@GET("/status")
+	@GET("/infos/status")
 	@AnonymousAccessAllowed
 	public String getStatus() {
 		return "OK";
@@ -101,7 +101,7 @@ public final class NotificationWebServices implements WebServices {
 	 * Extension stats.
 	 * @return "OK" or error message
 	 */
-	@GET("/stats")
+	@GET("/infos/stats")
 	@AnonymousAccessAllowed
 	public Map<String, Object> getStats() {
 		final Map<String, Object> stats = new HashMap<>();
@@ -115,7 +115,7 @@ public final class NotificationWebServices implements WebServices {
 	 * Extension config.
 	 * @return Config object
 	 */
-	@GET("/config")
+	@GET("/infos/config")
 	@AnonymousAccessAllowed
 	public Map<String, Object> getConfig() {
 		return new MapBuilder<String, Object>()
@@ -128,7 +128,7 @@ public final class NotificationWebServices implements WebServices {
 	 * Extension help.
 	 * @return Help object
 	 */
-	@GET("/help")
+	@GET("/infos/help")
 	@AnonymousAccessAllowed
 	public String getHelp() {
 		return "##Notification extension"

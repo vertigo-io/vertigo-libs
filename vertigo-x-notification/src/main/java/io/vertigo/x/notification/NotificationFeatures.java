@@ -16,12 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.impl.notification;
+package io.vertigo.x.notification;
 
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.x.notification.NotificationManager;
-import io.vertigo.x.plugins.notification.redis.RedisNotificationPlugin;
+import io.vertigo.x.notification.impl.services.NotificationPlugin;
+import io.vertigo.x.notification.impl.services.NotificationServicesImpl;
+import io.vertigo.x.notification.plugins.redis.RedisNotificationPlugin;
+import io.vertigo.x.notification.services.NotificationServices;
 
 /**
  * Defines the 'notification' extension
@@ -40,7 +42,7 @@ public final class NotificationFeatures extends Features {
 	 * Defines REDIS as the database to store the notifications
 	 * @return the features
 	 */
-	public NotificationFeatures withRedisNotificationPlugin() {
+	public NotificationFeatures withRedis() {
 		return withNotificationPlugin(RedisNotificationPlugin.class);
 	}
 
@@ -57,6 +59,6 @@ public final class NotificationFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addComponent(NotificationManager.class, NotificationManagerImpl.class);
+				.addComponent(NotificationServices.class, NotificationServicesImpl.class);
 	}
 }

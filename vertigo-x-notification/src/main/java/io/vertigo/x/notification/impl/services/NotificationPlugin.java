@@ -16,46 +16,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.notification;
+package io.vertigo.x.notification.impl.services;
 
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Plugin;
 import io.vertigo.x.account.Account;
+import io.vertigo.x.notification.services.Notification;
 
 /**
  * @author pchretien
  */
-public interface NotificationManager extends Manager {
-	/**
-	 * Sends a notification to a set of users
-	 * @param notification Notification
-	 * @param accountURIs Destination users
-	 */
-	void send(final Notification notification, final Set<URI<Account>> accountURIs);
+public interface NotificationPlugin extends Plugin {
 
 	/**
-	 * Retrieves all notifications for one account
-	 * @param accountURI Account
-	 * @return List notifications
+	 * @param notificationEvent Notification to send
 	 */
-	List<Notification> getCurrentNotifications(URI<Account> accountURI);
+	void send(NotificationEvent notificationEvent);
 
 	/**
-	 * Removes one notification.
-	 * @param accountURI User account
-	 * @param notificationUUID Notification uid
+	 * @param account Accout uri
+	 * @return All notifications for this account
+	 */
+	List<Notification> getCurrentNotifications(URI<Account> account);
+
+	/**
+	 * @param accountURI Account uri
+	 * @param notificationUUID Notification uuid
 	 */
 	void remove(URI<Account> accountURI, UUID notificationUUID);
 
 	/**
-	 * Removes all notifications by type and targetUrl.
-	 * Could be use when a business module need to revoke its notifications
-	 * @param type Notification type
-	 * @param targetUrl Notification's target Url
+	 * @param type Notification's type
+	 * @param targetUrl Target URL, use to filter all notifications to remove
 	 */
 	void removeAll(String type, String targetUrl);
 }

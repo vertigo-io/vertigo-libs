@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.plugins.notification.redis;
+package io.vertigo.x.notification.plugins.redis;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -35,10 +35,10 @@ import io.vertigo.lang.WrappedException;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.x.account.Account;
 import io.vertigo.x.connectors.redis.RedisConnector;
-import io.vertigo.x.impl.notification.NotificationEvent;
-import io.vertigo.x.impl.notification.NotificationPlugin;
-import io.vertigo.x.notification.Notification;
-import io.vertigo.x.notification.NotificationBuilder;
+import io.vertigo.x.notification.impl.services.NotificationEvent;
+import io.vertigo.x.notification.impl.services.NotificationPlugin;
+import io.vertigo.x.notification.services.Notification;
+import io.vertigo.x.notification.services.NotificationBuilder;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;

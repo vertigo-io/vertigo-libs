@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.plugins.notification.memory;
+package io.vertigo.x.notification.plugins.memory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,9 +29,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.account.Account;
-import io.vertigo.x.impl.notification.NotificationEvent;
-import io.vertigo.x.impl.notification.NotificationPlugin;
-import io.vertigo.x.notification.Notification;
+import io.vertigo.x.notification.impl.services.NotificationEvent;
+import io.vertigo.x.notification.impl.services.NotificationPlugin;
+import io.vertigo.x.notification.services.Notification;
 
 /**
  * @author pchretien

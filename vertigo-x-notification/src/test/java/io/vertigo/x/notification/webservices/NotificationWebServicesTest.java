@@ -45,10 +45,10 @@ import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.notification.MyAppConfig;
-import io.vertigo.x.notification.Notification;
-import io.vertigo.x.notification.NotificationBuilder;
-import io.vertigo.x.notification.NotificationManager;
 import io.vertigo.x.notification.data.Accounts;
+import io.vertigo.x.notification.services.Notification;
+import io.vertigo.x.notification.services.NotificationBuilder;
+import io.vertigo.x.notification.services.NotificationServices;
 import redis.clients.jedis.Jedis;
 import spark.Spark;
 
@@ -62,7 +62,7 @@ public final class NotificationWebServicesTest {
 	@Inject
 	private RedisConnector redisConnector;
 	@Inject
-	private NotificationManager notificationManager;
+	private NotificationServices notificationManager;
 
 	@BeforeClass
 	public static void setUp() {

@@ -42,20 +42,17 @@ import io.vertigo.x.account.AccountGroup;
 import io.vertigo.x.account.AccountManager;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.notification.MyAppConfig;
-import io.vertigo.x.notification.Notification;
-import io.vertigo.x.notification.NotificationBuilder;
-import io.vertigo.x.notification.NotificationManager;
 import io.vertigo.x.notification.data.Accounts;
 import redis.clients.jedis.Jedis;
 
 @RunWith(Parameterized.class)
-public class NotificationManagerTest {
+public class NotificationServicesTest {
 	private AutoCloseableApp app;
 
 	@Inject
 	private AccountManager accountManager;
 	@Inject
-	private NotificationManager notificationManager;
+	private NotificationServices notificationManager;
 
 	private URI<Account> accountURI0;
 	private URI<Account> accountURI1;
@@ -73,7 +70,7 @@ public class NotificationManagerTest {
 
 	final boolean redis;
 
-	public NotificationManagerTest(final boolean redis) {
+	public NotificationServicesTest(final boolean redis) {
 		//params are automatically injected
 		this.redis = redis;
 	}
