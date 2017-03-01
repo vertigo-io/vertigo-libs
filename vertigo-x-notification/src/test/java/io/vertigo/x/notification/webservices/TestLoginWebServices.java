@@ -28,8 +28,8 @@ import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
 import io.vertigo.vega.webservice.stereotype.SessionInvalidate;
-import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.account.services.Account;
+import io.vertigo.x.account.services.AccountServices;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
@@ -39,14 +39,14 @@ public final class TestLoginWebServices implements WebServices {
 	@Inject
 	private VSecurityManager securityManager;
 	@Inject
-	private AccountManager accountManager;
+	private AccountServices accountServices;
 
 	@AnonymousAccessAllowed
 	@GET("/login")
 	public void login(@QueryParam("id") final String id) {
 		//code 200
 		securityManager.getCurrentUserSession().get().authenticate();
-		accountManager.login(DtObjectUtil.createURI(Account.class, id));
+		accountServices.login(DtObjectUtil.createURI(Account.class, id));
 	}
 
 	@SessionInvalidate

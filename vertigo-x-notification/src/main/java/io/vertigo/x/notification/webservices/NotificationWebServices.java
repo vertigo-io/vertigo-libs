@@ -33,8 +33,8 @@ import io.vertigo.vega.webservice.stereotype.DELETE;
 import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.PathParam;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
-import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.account.services.Account;
+import io.vertigo.x.account.services.AccountServices;
 import io.vertigo.x.notification.services.Notification;
 import io.vertigo.x.notification.services.NotificationServices;
 
@@ -50,9 +50,9 @@ public final class NotificationWebServices implements WebServices {
 	private static final String IMPL_VERSION = "0.9.2";
 
 	@Inject
-	private NotificationServices notificationManager;
+	private NotificationServices notificationServices;
 	@Inject
-	private AccountManager accountManager;
+	private AccountServices accountServices;
 
 	/**
 	 * Get messages for logged user.
@@ -60,8 +60,8 @@ public final class NotificationWebServices implements WebServices {
 	 */
 	@GET("/messages")
 	public List<Notification> getMessages() {
-		final URI<Account> loggedAccountURI = accountManager.getLoggedAccount();
-		return notificationManager.getCurrentNotifications(loggedAccountURI);
+		final URI<Account> loggedAccountURI = accountServices.getLoggedAccount();
+		return notificationServices.getCurrentNotifications(loggedAccountURI);
 	}
 
 	/**
@@ -70,8 +70,8 @@ public final class NotificationWebServices implements WebServices {
 	 */
 	@DELETE("/messages/{uuid}")
 	public void removeMessage(@PathParam("uuid") final String messageUuid) {
-		final URI<Account> loggedAccountURI = accountManager.getLoggedAccount();
-		notificationManager.remove(loggedAccountURI, UUID.fromString(messageUuid));
+		final URI<Account> loggedAccountURI = accountServices.getLoggedAccount();
+		notificationServices.remove(loggedAccountURI, UUID.fromString(messageUuid));
 	}
 
 	/**
@@ -80,9 +80,9 @@ public final class NotificationWebServices implements WebServices {
 	 */
 	@DELETE("/messages")
 	public void removeMessage(final List<String> messageUuids) {
-		final URI<Account> loggedAccountURI = accountManager.getLoggedAccount();
+		final URI<Account> loggedAccountURI = accountServices.getLoggedAccount();
 		for (final String messageUuid : messageUuids) {
-			notificationManager.remove(loggedAccountURI, UUID.fromString(messageUuid));
+			notificationServices.remove(loggedAccountURI, UUID.fromString(messageUuid));
 		}
 	}
 

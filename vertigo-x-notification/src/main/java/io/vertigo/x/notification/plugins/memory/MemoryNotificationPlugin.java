@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
-import io.vertigo.x.account.Account;
+import io.vertigo.x.account.services.Account;
 import io.vertigo.x.notification.impl.services.NotificationEvent;
 import io.vertigo.x.notification.impl.services.NotificationPlugin;
 import io.vertigo.x.notification.services.Notification;

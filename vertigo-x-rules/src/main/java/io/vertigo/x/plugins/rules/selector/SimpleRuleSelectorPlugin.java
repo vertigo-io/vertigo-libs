@@ -29,10 +29,10 @@ import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountGroup;
-import io.vertigo.x.account.AccountManager;
-import io.vertigo.x.account.AccountStore;
+import io.vertigo.x.account.services.Account;
+import io.vertigo.x.account.services.AccountGroup;
+import io.vertigo.x.account.services.AccountServices;
+import io.vertigo.x.account.services.AccountStore;
 import io.vertigo.x.impl.rules.RuleContext;
 import io.vertigo.x.impl.rules.RuleSelectorPlugin;
 import io.vertigo.x.impl.rules.RuleStorePlugin;
@@ -47,17 +47,17 @@ import io.vertigo.x.rules.domain.SelectorDefinition;
 public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 
 	private final RuleStorePlugin ruleStorePlugin;
-	private final AccountManager accountManager;
+	private final AccountServices accountServices;
 
 	/**
 	 *
 	 * @param ruleStorePlugin
-	 * @param accountManager
+	 * @param accountServices
 	 */
 	@Inject
-	public SimpleRuleSelectorPlugin(final RuleStorePlugin ruleStorePlugin, final AccountManager accountManager) {
+	public SimpleRuleSelectorPlugin(final RuleStorePlugin ruleStorePlugin, final AccountServices accountServices) {
 		this.ruleStorePlugin = ruleStorePlugin;
-		this.accountManager = accountManager;
+		this.accountServices = accountServices;
 	}
 
 	private static URI<AccountGroup> createGroupURI(final String id) {
@@ -106,7 +106,7 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 		final List<Account> collected = new ArrayList<>();
 		final List<SelectorDefinition> matchingSelectors = findMatchingSelectors(selectors, ruleContext);
 
-		final AccountStore accountStore = accountManager.getStore();
+		final AccountStore accountStore = accountServices.getStore();
 
 		for (final SelectorDefinition selectorDefinition : matchingSelectors) {
 			final Set<URI<Account>> accounts = accountStore
@@ -126,7 +126,7 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 		final List<Account> collected = new ArrayList<>();
 		final List<SelectorDefinition> matchingSelectors = findMatchingSelectors(selectors, mapFilters, ruleContext);
 
-		final AccountStore accountStore = accountManager.getStore();
+		final AccountStore accountStore = accountServices.getStore();
 
 		for (final SelectorDefinition selectorDefinition : matchingSelectors) {
 			final Set<URI<Account>> accounts = accountStore
@@ -145,7 +145,7 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 		final List<AccountGroup> collected = new ArrayList<>();
 		final List<SelectorDefinition> matchingSelectors = findMatchingSelectors(selectors, ruleContext);
 
-		final AccountStore accountStore = accountManager.getStore();
+		final AccountStore accountStore = accountServices.getStore();
 
 		for (final SelectorDefinition selectorDefinition : matchingSelectors) {
 			final AccountGroup accountGroup = accountStore.getGroup(createGroupURI(selectorDefinition.getGroupId()));
@@ -161,7 +161,7 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 		final List<AccountGroup> collected = new ArrayList<>();
 		final List<SelectorDefinition> matchingSelectors = findMatchingSelectors(selectors, mapFilters, ruleContext);
 
-		final AccountStore accountStore = accountManager.getStore();
+		final AccountStore accountStore = accountServices.getStore();
 
 		for (final SelectorDefinition selectorDefinition : matchingSelectors) {
 			collected.add(accountStore.getGroup(createGroupURI(selectorDefinition.getGroupId())));

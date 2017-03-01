@@ -33,7 +33,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.MapBuilder;
-import io.vertigo.x.account.Account;
+import io.vertigo.x.account.services.Account;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.notification.impl.services.NotificationEvent;
 import io.vertigo.x.notification.impl.services.NotificationPlugin;

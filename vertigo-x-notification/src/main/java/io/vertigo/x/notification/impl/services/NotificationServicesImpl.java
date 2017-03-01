@@ -26,7 +26,7 @@ import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
-import io.vertigo.x.account.Account;
+import io.vertigo.x.account.services.Account;
 import io.vertigo.x.notification.services.Notification;
 import io.vertigo.x.notification.services.NotificationServices;
 

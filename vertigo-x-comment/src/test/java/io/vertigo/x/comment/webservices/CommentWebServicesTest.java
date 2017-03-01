@@ -44,14 +44,14 @@ import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.util.MapBuilder;
-import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountGroup;
-import io.vertigo.x.account.AccountManager;
-import io.vertigo.x.comment.Comment;
-import io.vertigo.x.comment.CommentBuilder;
-import io.vertigo.x.comment.CommentManager;
+import io.vertigo.x.account.services.Account;
+import io.vertigo.x.account.services.AccountGroup;
+import io.vertigo.x.account.services.AccountServices;
 import io.vertigo.x.comment.MyAppConfig;
 import io.vertigo.x.comment.data.Accounts;
+import io.vertigo.x.comment.services.Comment;
+import io.vertigo.x.comment.services.CommentBuilder;
+import io.vertigo.x.comment.services.CommentServices;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import redis.clients.jedis.Jedis;
 import spark.Spark;
@@ -69,9 +69,9 @@ public final class CommentWebServicesTest {
 	@Inject
 	private RedisConnector redisConnector;
 	@Inject
-	private CommentManager commentManager;
+	private CommentServices commentServices;
 	@Inject
-	private AccountManager accountManager;
+	private AccountServices accountServices;
 
 	@BeforeClass
 	public static void setUp() {
@@ -85,7 +85,7 @@ public final class CommentWebServicesTest {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		}
-		Accounts.initData(accountManager);
+		Accounts.initData(accountServices);
 		account1Uri = Accounts.createAccountURI("1");
 
 		//on triche un peu, car AcountGroup n'est pas un KeyConcept
@@ -124,7 +124,7 @@ public final class CommentWebServicesTest {
 				.withAuthor(account1Uri)
 				.withMsg("Lorem ipsum")
 				.build();
-		commentManager.publish(account1Uri, comment, keyConcept1Uri);
+		commentServices.publish(account1Uri, comment, keyConcept1Uri);
 
 		//Check we got this comment
 		RestAssured.given().filter(sessionFilter)

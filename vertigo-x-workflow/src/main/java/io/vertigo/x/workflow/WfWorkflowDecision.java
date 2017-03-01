@@ -2,7 +2,7 @@ package io.vertigo.x.workflow;
 
 import java.util.List;
 
-import io.vertigo.x.account.AccountGroup;
+import io.vertigo.x.account.services.AccountGroup;
 import io.vertigo.x.workflow.domain.instance.WfActivity;
 import io.vertigo.x.workflow.domain.instance.WfDecision;
 import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
