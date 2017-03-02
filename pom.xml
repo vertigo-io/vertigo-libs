@@ -30,7 +30,7 @@ limitations under the License. -->
 	
 	
 	<properties>
-		<sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco-it.exec"</sonar.jacoco.reportPaths>
+		<sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.reportPaths>
 	</properties>
 		
 	
