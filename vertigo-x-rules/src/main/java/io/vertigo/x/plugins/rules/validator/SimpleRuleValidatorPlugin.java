@@ -96,31 +96,31 @@ public final class SimpleRuleValidatorPlugin implements RuleValidatorPlugin {
 			final Object fieldToTest = ruleContext.getContext().get(field);
 			if (fieldToTest != null) {
 				switch (operat) {
-				case "=":
-					result = fieldToTest.equals(expression);
-					break;
-				case "IN":
-					final String[] expressions = expression.split(",");
-					if (fieldToTest instanceof List) {
-						final List<String> valueList = (List<String>) fieldToTest;
-						result = Arrays.stream(expressions).filter(valueList::contains).count() > 0;
-					} else {
-						final String valStr = (String) fieldToTest;
-						result = Arrays.stream(expressions).anyMatch(valStr::equals);
-					}
-					break;
-				case "<":
-					final double doubleExpressionInf = Double.parseDouble(expression);
-					final double doubleFieldInf = Double.parseDouble((String) fieldToTest);
-					result = doubleFieldInf < doubleExpressionInf;
-					break;
-				case ">":
-					final double doubleExpressionSup = Double.parseDouble(expression);
-					final double doubleFieldSup = Double.parseDouble((String) fieldToTest);
-					result = doubleFieldSup > doubleExpressionSup;
-					break;
-				default:
-					break;
+					case "=":
+						result = fieldToTest.equals(expression);
+						break;
+					case "IN":
+						final String[] expressions = expression.split(",");
+						if (fieldToTest instanceof List) {
+							final List<String> valueList = (List<String>) fieldToTest;
+							result = Arrays.stream(expressions).anyMatch(valueList::contains);
+						} else {
+							final String valStr = (String) fieldToTest;
+							result = Arrays.stream(expressions).anyMatch(valStr::equals);
+						}
+						break;
+					case "<":
+						final double doubleExpressionInf = Double.parseDouble(expression);
+						final double doubleFieldInf = Double.parseDouble((String) fieldToTest);
+						result = doubleFieldInf < doubleExpressionInf;
+						break;
+					case ">":
+						final double doubleExpressionSup = Double.parseDouble(expression);
+						final double doubleFieldSup = Double.parseDouble((String) fieldToTest);
+						result = doubleFieldSup > doubleExpressionSup;
+						break;
+					default:
+						break;
 				}
 
 				if (!result) {
