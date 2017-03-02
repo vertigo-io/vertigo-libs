@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.rules;
+package io.vertigo.x.rules.services;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNotNull;
@@ -34,6 +34,8 @@ import org.junit.Test;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.x.impl.rules.RuleConstants;
+import io.vertigo.x.rules.MyAppConfig;
+import io.vertigo.x.rules.RuleManager;
 import io.vertigo.x.rules.data.MyDummyDtObject;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;

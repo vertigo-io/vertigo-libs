@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.rules;
+package io.vertigo.x.rules.services;
 
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.hasItems;
@@ -46,6 +46,8 @@ import io.vertigo.x.account.services.AccountGroup;
 import io.vertigo.x.account.services.AccountServices;
 import io.vertigo.x.account.services.AccountStore;
 import io.vertigo.x.impl.rules.RuleConstants;
+import io.vertigo.x.rules.MyAppConfig;
+import io.vertigo.x.rules.RuleManager;
 import io.vertigo.x.rules.data.MyDummyDtObject;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
 import io.vertigo.x.rules.domain.SelectorDefinition;

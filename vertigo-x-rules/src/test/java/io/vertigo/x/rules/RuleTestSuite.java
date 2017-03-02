@@ -22,6 +22,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import io.vertigo.x.rules.services.RuleManagerSelectorTest;
+import io.vertigo.x.rules.services.RuleManagerValidatorTest;
+
 /**
  *
  * @author pchretien

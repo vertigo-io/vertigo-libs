@@ -1,4 +1,4 @@
-package io.vertigo.x.rules;
+package io.vertigo.x.rules.services;
 
 import javax.inject.Inject;
 
