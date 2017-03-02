@@ -130,7 +130,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
-				.get("/x/notification/api/messages");
+				.get("/x/notifications/messages");
 	}
 
 	@Test
@@ -151,14 +151,14 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
-				.get("/x/notification/api/messages");
+				.get("/x/notifications/messages");
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()
 				.statusCode(HttpStatus.SC_NO_CONTENT)
 				.log().ifError()
 				.when()
-				.delete("/x/notification/api/messages/" + notification.getUuid().toString());
+				.delete("/x/notifications/messages/" + notification.getUuid().toString());
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()
@@ -166,7 +166,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
-				.get("/x/notification/api/messages");
+				.get("/x/notifications/messages");
 
 	}
 
@@ -196,7 +196,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
-				.get("/x/notification/api/messages");
+				.get("/x/notifications/messages");
 
 		final List<String> notificationUuids = new ArrayList<>();
 		notificationUuids.add(notification1.getUuid().toString());
@@ -208,7 +208,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_NO_CONTENT)
 				.log().ifError()
 				.when()
-				.delete("/x/notification/api/messages");
+				.delete("/x/notifications/messages");
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()
@@ -216,7 +216,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
-				.get("/x/notification/api/messages");
+				.get("/x/notifications/messages");
 
 	}
 
@@ -227,7 +227,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
-				.get("/x/notification/status");
+				.get("/x/notifications/infos/status");
 	}
 
 	@Test
@@ -237,7 +237,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
-				.get("/x/notification/stats");
+				.get("/x/notifications/infos/stats");
 	}
 
 	@Test
@@ -247,7 +247,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
-				.get("/x/notification/config");
+				.get("/x/notifications/infos/config");
 	}
 
 	@Test
@@ -257,7 +257,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
-				.get("/x/notification/help");
+				.get("/x/notifications/infos/help");
 	}
 
 }
