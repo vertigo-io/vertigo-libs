@@ -77,7 +77,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	 */
 	@Inject
 	public WorkflowManagerImpl(final WorkflowStorePlugin workflowStorePlugin, final ItemStorePlugin itemStorePlugin,
-			final RuleManager ruleManager, WorkflowPredicateAutoValidatePlugin workflowPredicateAutoValidatePlugin) {
+			final RuleManager ruleManager, final WorkflowPredicateAutoValidatePlugin workflowPredicateAutoValidatePlugin) {
 		this.workflowStorePlugin = workflowStorePlugin;
 		this.itemStorePlugin = itemStorePlugin;
 		this.ruleManager = ruleManager;
@@ -214,9 +214,9 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	 * attached for this validation
 	 *
 	 * @param wfWorkflow
-	 * @param currentActivity 
+	 * @param currentActivity
 	 * @param wfActivityDefinitionId
-	 * @param transitionName 
+	 * @param transitionName
 	 * @return true if the end is reached, false otherwise
 	 */
 	public boolean autoValidateNextActivities(final WfWorkflow wfWorkflow, final WfActivity currentActivity,
@@ -318,12 +318,9 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		if (multiplicity != WfCodeMultiplicityDefinition.SIN) {
 			throw new IllegalArgumentException();
 		}
-		final List<WfDecision> decision = workflowStorePlugin.readDecisionsByActivityId(wfActivity.getWfaId());
-		if (decision.isEmpty()) {
-			return Optional.empty();
-		}
-
-		return Optional.of(decision.iterator().next());
+		return workflowStorePlugin.readDecisionsByActivityId(wfActivity.getWfaId())
+				.stream()
+				.findFirst();
 	}
 
 	@Override
@@ -376,7 +373,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 			final RuleConstants ruleConstants = ruleManager.getConstants(wfWorkflow.getWfwdId());
 			final List<Account> accounts = ruleManager.selectAccounts(currentActivity.getWfadId(), obj, ruleConstants);
 
-			int match = (int) accounts.stream()
+			final int match = (int) accounts.stream()
 					.filter(filterAccountEqualsDecisionUsername(wfDecisions))
 					.count();
 			if (match == accounts.size()) {
