@@ -27,7 +27,6 @@ public final class RuleConditionDefinitionDAO extends DAO<RuleConditionDefinitio
 		super(RuleConditionDefinition.class, storeManager, taskManager);
 	}
 
-
 	/**
 	 * Creates a taskBuilder.
 	 * @param name  the name of the task

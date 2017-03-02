@@ -50,9 +50,8 @@ public class MemoryItemStorePlugin implements ItemStorePlugin {
 	@Override
 	public Map<Long, DtObject> readItems(List<Long> itemIds) {
 		return itemIds.stream()
-					  .collect(
-							  	Collectors.toMap(Function.identity(), this::readItem)
-							  );
+				.collect(
+						Collectors.toMap(Function.identity(), this::readItem));
 	}
 
 }

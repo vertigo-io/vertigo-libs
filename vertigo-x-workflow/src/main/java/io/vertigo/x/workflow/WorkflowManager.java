@@ -140,7 +140,7 @@ public interface WorkflowManager extends Manager {
 	 * @return All the decisions for this activity
 	 */
 	List<WfDecision> getDecisions(WfActivity wfActivity);
-	
+
 	/**
 	 * Go to the next activity using the provided transition name
 	 *

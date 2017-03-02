@@ -27,7 +27,6 @@ public final class RuleDefinitionDAO extends DAO<RuleDefinition, java.lang.Long>
 		super(RuleDefinition.class, storeManager, taskManager);
 	}
 
-
 	/**
 	 * Creates a taskBuilder.
 	 * @param name  the name of the task

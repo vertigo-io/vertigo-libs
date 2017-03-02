@@ -103,7 +103,7 @@ public class RuleManagerValidatorTest extends DbTest {
 
 		assertNotNull(rulesFetch2);
 		assertThat(rulesFetch2.size(), is(2));
-		
+
 	}
 
 	/**
