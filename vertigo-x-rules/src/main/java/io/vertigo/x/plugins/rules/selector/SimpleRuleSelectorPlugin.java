@@ -178,7 +178,7 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 			final String operat = ruleFilterDefinition.getOperator();
 			final String expression = ruleFilterDefinition.getExpression();
 
-			boolean result = false;
+			final boolean result;
 			final Object fieldToTest = ruleContext.getContext().get(field);
 			if (fieldToTest != null) {
 				switch (operat) {
@@ -206,9 +206,9 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 						result = doubleFieldSup > doubleExpressionSup;
 						break;
 					default:
+						result = false;
 						break;
 				}
-
 				if (!result) {
 					selectorMatch = false;
 				}

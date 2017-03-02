@@ -19,7 +19,6 @@
 package io.vertigo.x.account.plugins.redis;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
@@ -101,7 +100,7 @@ final class Base64File implements VFile {
 
 	/** {@inheritDoc} */
 	@Override
-	public InputStream createInputStream() throws IOException {
+	public InputStream createInputStream() {
 		final Codec<byte[], String> base64Codec = Home.getApp().getComponentSpace().resolve(CodecManager.class).getBase64Codec();
 		return new ByteArrayInputStream(base64Codec.decode(base64Content));
 	}
