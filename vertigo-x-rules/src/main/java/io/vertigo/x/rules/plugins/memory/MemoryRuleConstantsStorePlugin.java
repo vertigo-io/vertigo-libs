@@ -17,14 +17,14 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.plugins.rules.memory;
+package io.vertigo.x.rules.plugins.memory;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.x.impl.rules.RuleConstants;
-import io.vertigo.x.impl.rules.RuleConstantsStorePlugin;
+import io.vertigo.x.rules.impl.RuleConstantsStorePlugin;
+import io.vertigo.x.rules.services.RuleConstants;
 
 /**
  *
@@ -36,7 +36,7 @@ public final class MemoryRuleConstantsStorePlugin implements RuleConstantsStoreP
 	private final Map<Long, RuleConstants> inMemoryConstantsStore = new ConcurrentHashMap<>();
 
 	@Override
-	public void addConstants(Long key, RuleConstants ruleConstants) {
+	public void addConstants(final Long key, final RuleConstants ruleConstants) {
 		Assertion.checkNotNull(key);
 		Assertion.checkNotNull(ruleConstants);
 		//---
@@ -44,14 +44,14 @@ public final class MemoryRuleConstantsStorePlugin implements RuleConstantsStoreP
 	}
 
 	@Override
-	public void removeConstants(Long key) {
+	public void removeConstants(final Long key) {
 		Assertion.checkNotNull(key);
 		//---
 		inMemoryConstantsStore.remove(key);
 	}
 
 	@Override
-	public void updateConstants(Long key, RuleConstants ruleConstants) {
+	public void updateConstants(final Long key, final RuleConstants ruleConstants) {
 		Assertion.checkNotNull(key);
 		Assertion.checkNotNull(ruleConstants);
 		Assertion.checkState(inMemoryConstantsStore.containsKey(key), "Cannot update this RuleConstant : Its id is unknown in the store");
@@ -60,7 +60,7 @@ public final class MemoryRuleConstantsStorePlugin implements RuleConstantsStoreP
 	}
 
 	@Override
-	public RuleConstants readConstants(Long key) {
+	public RuleConstants readConstants(final Long key) {
 		return inMemoryConstantsStore.get(key);
 	}
 

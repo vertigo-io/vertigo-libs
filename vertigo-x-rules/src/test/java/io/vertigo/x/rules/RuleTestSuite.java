@@ -22,8 +22,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import io.vertigo.x.rules.services.RuleManagerSelectorTest;
-import io.vertigo.x.rules.services.RuleManagerValidatorTest;
+import io.vertigo.x.rules.services.RuleServicesSelectorTest;
+import io.vertigo.x.rules.services.RuleServicesValidatorTest;
 
 /**
  *
@@ -31,8 +31,8 @@ import io.vertigo.x.rules.services.RuleManagerValidatorTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-		RuleManagerSelectorTest.class,
-		RuleManagerValidatorTest.class
+		RuleServicesSelectorTest.class,
+		RuleServicesValidatorTest.class
 })
 public final class RuleTestSuite {
 	//

@@ -16,10 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.rules;
+package io.vertigo.x.rules.impl;
 
 import java.util.List;
 
+import io.vertigo.x.rules.RuleCriteria;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;

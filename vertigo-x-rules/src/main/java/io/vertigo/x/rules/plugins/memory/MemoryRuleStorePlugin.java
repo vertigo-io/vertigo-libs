@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.plugins.rules.memory;
+package io.vertigo.x.rules.plugins.memory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,12 +28,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.x.impl.rules.RuleStorePlugin;
 import io.vertigo.x.rules.RuleCriteria;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
 import io.vertigo.x.rules.domain.SelectorDefinition;
+import io.vertigo.x.rules.impl.RuleStorePlugin;
 
 /**
  *

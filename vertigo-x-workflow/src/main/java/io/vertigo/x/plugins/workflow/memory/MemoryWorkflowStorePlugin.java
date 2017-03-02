@@ -33,11 +33,11 @@ import javax.inject.Inject;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.impl.workflow.WorkflowStorePlugin;
-import io.vertigo.x.rules.RuleManager;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
 import io.vertigo.x.rules.domain.SelectorDefinition;
+import io.vertigo.x.rules.services.RuleServices;
 import io.vertigo.x.workflow.WfCodeTransition;
 import io.vertigo.x.workflow.WfTransitionCriteria;
 import io.vertigo.x.workflow.domain.instance.WfActivity;
@@ -79,7 +79,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 	private final AtomicLong memoryWorkflowDefinitionSequenceGenerator = new AtomicLong(0);
 
 	@Inject
-	private RuleManager ruleManager;
+	private RuleServices ruleManager;
 
 	@Override
 	public void createWorkflowInstance(final WfWorkflow workflow) {

@@ -33,13 +33,13 @@ import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.x.account.AccountFeatures;
 import io.vertigo.x.account.plugins.memory.MemoryAccountStorePlugin;
-import io.vertigo.x.impl.rules.RulesFeatures;
-import io.vertigo.x.plugins.rules.memory.MemoryRuleConstantsStorePlugin;
-import io.vertigo.x.plugins.rules.memory.MemoryRuleStorePlugin;
-import io.vertigo.x.plugins.rules.selector.SimpleRuleSelectorPlugin;
-import io.vertigo.x.plugins.rules.validator.SimpleRuleValidatorPlugin;
 import io.vertigo.x.rules.data.MyDummyDtObjectProvider;
 import io.vertigo.x.rules.data.TestUserSession;
+import io.vertigo.x.rules.impl.RulesFeatures;
+import io.vertigo.x.rules.plugins.memory.MemoryRuleConstantsStorePlugin;
+import io.vertigo.x.rules.plugins.memory.MemoryRuleStorePlugin;
+import io.vertigo.x.rules.plugins.selector.SimpleRuleSelectorPlugin;
+import io.vertigo.x.rules.plugins.validator.SimpleRuleValidatorPlugin;
 
 /**
  * Config for test

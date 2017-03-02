@@ -34,13 +34,13 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.account.services.Account;
 import io.vertigo.x.account.services.AccountGroup;
-import io.vertigo.x.impl.rules.RuleConstants;
 import io.vertigo.x.rules.RuleCriteria;
-import io.vertigo.x.rules.RuleManager;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
 import io.vertigo.x.rules.domain.SelectorDefinition;
+import io.vertigo.x.rules.impl.RuleConstants;
+import io.vertigo.x.rules.services.RuleServices;
 import io.vertigo.x.workflow.WfCodeMultiplicityDefinition;
 import io.vertigo.x.workflow.WfCodeStatusWorkflow;
 import io.vertigo.x.workflow.WfCodeTransition;
@@ -62,7 +62,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	private final WorkflowStorePlugin workflowStorePlugin;
 	private final ItemStorePlugin itemStorePlugin;
-	private final RuleManager ruleManager;
+	private final RuleServices ruleManager;
 	private final WorkflowPredicateAutoValidatePlugin workflowPredicateAutoValidatePlugin;
 
 	private static final String USER_AUTO = "<AUTO>";
@@ -77,7 +77,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	 */
 	@Inject
 	public WorkflowManagerImpl(final WorkflowStorePlugin workflowStorePlugin, final ItemStorePlugin itemStorePlugin,
-			final RuleManager ruleManager, final WorkflowPredicateAutoValidatePlugin workflowPredicateAutoValidatePlugin) {
+			final RuleServices ruleManager, final WorkflowPredicateAutoValidatePlugin workflowPredicateAutoValidatePlugin) {
 		this.workflowStorePlugin = workflowStorePlugin;
 		this.itemStorePlugin = itemStorePlugin;
 		this.ruleManager = ruleManager;

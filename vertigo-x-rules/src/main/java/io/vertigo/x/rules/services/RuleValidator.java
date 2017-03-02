@@ -17,12 +17,11 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.rules;
+package io.vertigo.x.rules.services;
 
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.x.impl.rules.RuleContext;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
 
@@ -35,7 +34,7 @@ public interface RuleValidator {
 
 	/**
 	 * Validate a rule for an activity
-	 * 
+	 *
 	 * @param idActivityDefinition
 	 * @param rules
 	 * @param ruleContext
@@ -45,7 +44,7 @@ public interface RuleValidator {
 
 	/**
 	 * Validate a rule for an activity using rules and conditions provided
-	 * 
+	 *
 	 * @param rules
 	 *            rules
 	 * @param mapConditions

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.rules;
+package io.vertigo.x.rules.services;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +25,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Manager;
 import io.vertigo.x.account.services.Account;
 import io.vertigo.x.account.services.AccountGroup;
-import io.vertigo.x.impl.rules.RuleConstants;
+import io.vertigo.x.rules.RuleCriteria;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
@@ -34,11 +34,11 @@ import io.vertigo.x.rules.domain.SelectorDefinition;
 /**
  * @author xdurand
  */
-public interface RuleManager extends Manager {
+public interface RuleServices extends Manager {
 
 	/**
 	 * Select accounts matching the selector for an activity
-	 * 
+	 *
 	 * @param idActivityDefinition
 	 *            Activity definition id
 	 * @param item
@@ -51,7 +51,7 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Select groups matching the selector for an activity
-	 * 
+	 *
 	 * @param idActivityDefinition
 	 *            Activity definition id
 	 * @param item
@@ -62,7 +62,7 @@ public interface RuleManager extends Manager {
 	 *            Selectors to use
 	 * @param mapFilters
 	 *            Filters associated to Selectors
-	 * 
+	 *
 	 * @return a list of groups
 	 */
 	List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants,
@@ -70,7 +70,7 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Validate a rule for an activity
-	 * 
+	 *
 	 * @param idActivityDefinition
 	 *            Activity definition id
 	 * @param item
@@ -85,7 +85,7 @@ public interface RuleManager extends Manager {
 	 * Validate a rule for an activity using the provided rules and conditions.
 	 * Version sans IO, optimisÃ©e vitesse execution, utilisÃ©e dans le
 	 * cadre d'un recalcul de workflow
-	 * 
+	 *
 	 * @param idActivityDefinition
 	 *            Activity definition id
 	 * @param item
@@ -103,7 +103,7 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Add a new rule
-	 * 
+	 *
 	 * @param ruleDefinition
 	 *            the rule to add
 	 */
@@ -111,7 +111,7 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Get the rules for an itemId
-	 * 
+	 *
 	 * @param itemId
 	 * @return all the rules defined for the provided itemId
 	 */
@@ -119,7 +119,7 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Add a new condition
-	 * 
+	 *
 	 * @param ruleConditionDefinition
 	 *            condition to add
 	 */
@@ -127,7 +127,7 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Get all the conditions for a specified rule
-	 * 
+	 *
 	 * @param ruleId
 	 *            the rule Id
 	 * @return all the conditions associated to the provided rule
@@ -136,7 +136,7 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Add a new selector
-	 * 
+	 *
 	 * @param selectorDefinition
 	 *            the selector to add
 	 */
@@ -144,7 +144,7 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Get the selectors for the specified item Id.
-	 * 
+	 *
 	 * @param itemId
 	 *            itemId
 	 * @return the all the rules defined for the provided itemId
@@ -153,7 +153,7 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Add a new filter
-	 * 
+	 *
 	 * @param ruleFilterDefinition
 	 *            the filter to add
 	 */
@@ -161,7 +161,7 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Get filters for the selectors id
-	 * 
+	 *
 	 * @param selectorId
 	 *            the selector id
 	 * @return the all the filters associated to the provided selector
@@ -170,7 +170,7 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Define the constants for this key
-	 * 
+	 *
 	 * @param key
 	 *            the key
 	 * @param ruleConstants
@@ -180,7 +180,7 @@ public interface RuleManager extends Manager {
 
 	/**
 	 * Get the constants associated to a key
-	 * 
+	 *
 	 * @param key
 	 *            the key
 	 * @return the constants defined for this key
@@ -190,7 +190,7 @@ public interface RuleManager extends Manager {
 	/**
 	 * Find itemIds using the specified criteria and in the specified sublist
 	 * itemsIds
-	 * 
+	 *
 	 * @param criteria
 	 *            rules criteria
 	 * @param items

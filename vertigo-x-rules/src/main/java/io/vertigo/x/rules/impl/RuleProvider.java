@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.impl.rules;
+package io.vertigo.x.rules.impl;
 
 import java.util.List;
 

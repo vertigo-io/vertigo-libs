@@ -45,25 +45,23 @@ import io.vertigo.x.account.services.AccountBuilder;
 import io.vertigo.x.account.services.AccountGroup;
 import io.vertigo.x.account.services.AccountServices;
 import io.vertigo.x.account.services.AccountStore;
-import io.vertigo.x.impl.rules.RuleConstants;
 import io.vertigo.x.rules.MyAppConfig;
-import io.vertigo.x.rules.RuleManager;
 import io.vertigo.x.rules.data.MyDummyDtObject;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
 import io.vertigo.x.rules.domain.SelectorDefinition;
 
 /**
  * Junit for rule manager
- * 
+ *
  * @author xdurand
  *
  */
-public class RuleManagerSelectorTest extends DbTest {
+public class RuleServicesSelectorTest extends DbTest {
 
 	private AutoCloseableApp app;
 
 	@Inject
-	private RuleManager ruleManager;
+	private RuleServices ruleServices;
 
 	@Inject
 	private AccountServices accountServices;
@@ -95,22 +93,22 @@ public class RuleManagerSelectorTest extends DbTest {
 	@Test
 	public void testAddRule() {
 
-		SelectorDefinition rule1 = new SelectorDefinition();
+		final SelectorDefinition rule1 = new SelectorDefinition();
 		rule1.setItemId(1L);
 		rule1.setGroupId("1");
-		SelectorDefinition rule2 = new SelectorDefinition();
+		final SelectorDefinition rule2 = new SelectorDefinition();
 		rule2.setItemId(2L);
 		rule2.setGroupId("2");
-		SelectorDefinition rule3 = new SelectorDefinition();
+		final SelectorDefinition rule3 = new SelectorDefinition();
 		rule3.setItemId(2L);
 		rule3.setGroupId("3");
 
-		ruleManager.addSelector(rule1);
-		ruleManager.addSelector(rule2);
-		ruleManager.addSelector(rule3);
+		ruleServices.addSelector(rule1);
+		ruleServices.addSelector(rule2);
+		ruleServices.addSelector(rule3);
 
 		// Only 1 rule
-		final List<SelectorDefinition> selectorFetch1 = ruleManager.getSelectorsForItemId(1L);
+		final List<SelectorDefinition> selectorFetch1 = ruleServices.getSelectorsForItemId(1L);
 
 		assertNotNull(selectorFetch1);
 		assertThat(selectorFetch1.size(), is(1));
@@ -121,7 +119,7 @@ public class RuleManagerSelectorTest extends DbTest {
 		assertThat(selectorFetch1.get(0).getItemId(), is(rule1.getItemId()));
 
 		// 2 rules
-		final List<SelectorDefinition> selectorFetch2 = ruleManager.getSelectorsForItemId(2L);
+		final List<SelectorDefinition> selectorFetch2 = ruleServices.getSelectorsForItemId(2L);
 
 		assertNotNull(selectorFetch2);
 		assertThat(selectorFetch2.size(), is(2));
@@ -153,21 +151,21 @@ public class RuleManagerSelectorTest extends DbTest {
 		accountStore.attach(createAccountURI(account.getId()), createGroupURI(accountGroup.getId()));
 
 		// Selector created to Item 1
-		SelectorDefinition selector = new SelectorDefinition();
+		final SelectorDefinition selector = new SelectorDefinition();
 		selector.setItemId(1L);
 		selector.setGroupId(accountGroup.getId());
-		ruleManager.addSelector(selector);
-		RuleFilterDefinition filterDefinition = new RuleFilterDefinition();
+		ruleServices.addSelector(selector);
+		final RuleFilterDefinition filterDefinition = new RuleFilterDefinition();
 		filterDefinition.setField("DIVISION");
 		filterDefinition.setOperator("=");
 		filterDefinition.setExpression("BTL");
 		filterDefinition.setSelId(selector.getId());
-		ruleManager.addFilter(filterDefinition);
+		ruleServices.addFilter(filterDefinition);
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 		myDummyDtObject.setDivision("BTL");
 
-		final List<Account> selectedAccounts = ruleManager.selectAccounts(1L, myDummyDtObject,
+		final List<Account> selectedAccounts = ruleServices.selectAccounts(1L, myDummyDtObject,
 				RuleConstants.EMPTY_RULE_CONSTANTS);
 
 		assertThat(selectedAccounts, is(not(nullValue())));
@@ -193,28 +191,28 @@ public class RuleManagerSelectorTest extends DbTest {
 		accountStore.attach(createAccountURI(account.getId()), createGroupURI(accountGroup.getId()));
 
 		// Selector created to Item 1
-		SelectorDefinition selector_1 = new SelectorDefinition();
+		final SelectorDefinition selector_1 = new SelectorDefinition();
 		selector_1.setItemId(1L);
 		selector_1.setGroupId(accountGroup.getId());
-		ruleManager.addSelector(selector_1);
-		RuleFilterDefinition filterDefinition_1_1 = new RuleFilterDefinition();
+		ruleServices.addSelector(selector_1);
+		final RuleFilterDefinition filterDefinition_1_1 = new RuleFilterDefinition();
 		filterDefinition_1_1.setField("DIVISION");
 		filterDefinition_1_1.setOperator("=");
 		filterDefinition_1_1.setExpression("BTL");
 		filterDefinition_1_1.setSelId(selector_1.getId());
-		ruleManager.addFilter(filterDefinition_1_1);
-		RuleFilterDefinition filterDefinition_1_2 = new RuleFilterDefinition();
+		ruleServices.addFilter(filterDefinition_1_1);
+		final RuleFilterDefinition filterDefinition_1_2 = new RuleFilterDefinition();
 		filterDefinition_1_2.setField("ENTITY");
 		filterDefinition_1_2.setOperator("=");
 		filterDefinition_1_2.setExpression("ENT");
 		filterDefinition_1_2.setSelId(selector_1.getId());
-		ruleManager.addFilter(filterDefinition_1_2);
+		ruleServices.addFilter(filterDefinition_1_2);
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 		myDummyDtObject.setDivision("BTL");
 
 		// The entity is not set to ENT. The selector should not match
-		List<Account> selectedAccounts_1 = ruleManager.selectAccounts(1L, myDummyDtObject,
+		final List<Account> selectedAccounts_1 = ruleServices.selectAccounts(1L, myDummyDtObject,
 				RuleConstants.EMPTY_RULE_CONSTANTS);
 
 		assertThat(selectedAccounts_1, is(not(nullValue())));
@@ -223,7 +221,7 @@ public class RuleManagerSelectorTest extends DbTest {
 		// We set the entity to 'ENT'
 		myDummyDtObject.setEntity("ENT");
 		// The selector should match now.
-		List<Account> selectedAccounts_2 = ruleManager.selectAccounts(1L, myDummyDtObject,
+		final List<Account> selectedAccounts_2 = ruleServices.selectAccounts(1L, myDummyDtObject,
 				RuleConstants.EMPTY_RULE_CONSTANTS);
 
 		assertThat(selectedAccounts_2, is(not(nullValue())));
@@ -233,7 +231,7 @@ public class RuleManagerSelectorTest extends DbTest {
 		// We set the entity to 'XXXT'
 		myDummyDtObject.setEntity("XXX");
 		// The selector should not match .
-		List<Account> selectedAccounts_3 = ruleManager.selectAccounts(1L, myDummyDtObject,
+		final List<Account> selectedAccounts_3 = ruleServices.selectAccounts(1L, myDummyDtObject,
 				RuleConstants.EMPTY_RULE_CONSTANTS);
 
 		assertThat(selectedAccounts_3, is(not(nullValue())));
@@ -275,49 +273,49 @@ public class RuleManagerSelectorTest extends DbTest {
 		accountStore.attach(createAccountURI(account_2_2.getId()), createGroupURI(accountGroup_2.getId()));
 
 		// Selector 1 created to Item 1
-		SelectorDefinition selector_1 = new SelectorDefinition();
+		final SelectorDefinition selector_1 = new SelectorDefinition();
 		selector_1.setItemId(1L);
 		selector_1.setGroupId(accountGroup_1.getId());
-		ruleManager.addSelector(selector_1);
-		RuleFilterDefinition filterDefinition_1_1 = new RuleFilterDefinition();
+		ruleServices.addSelector(selector_1);
+		final RuleFilterDefinition filterDefinition_1_1 = new RuleFilterDefinition();
 		filterDefinition_1_1.setField("DIVISION");
 		filterDefinition_1_1.setOperator("=");
 		filterDefinition_1_1.setExpression("BTL");
 		filterDefinition_1_1.setSelId(selector_1.getId());
-		ruleManager.addFilter(filterDefinition_1_1);
+		ruleServices.addFilter(filterDefinition_1_1);
 
-		RuleFilterDefinition filterDefinition_1_2 = new RuleFilterDefinition();
+		final RuleFilterDefinition filterDefinition_1_2 = new RuleFilterDefinition();
 		filterDefinition_1_2.setField("ENTITY");
 		filterDefinition_1_2.setOperator("=");
 		filterDefinition_1_2.setExpression("ENT");
 		filterDefinition_1_2.setSelId(selector_1.getId());
-		ruleManager.addFilter(filterDefinition_1_2);
+		ruleServices.addFilter(filterDefinition_1_2);
 
 		// Selector 2 created to Item 1
-		SelectorDefinition selector_2 = new SelectorDefinition();
+		final SelectorDefinition selector_2 = new SelectorDefinition();
 		selector_2.setItemId(1L);
 		selector_2.setGroupId(accountGroup_2.getId());
-		ruleManager.addSelector(selector_2);
-		RuleFilterDefinition filterDefinition_2_1 = new RuleFilterDefinition();
+		ruleServices.addSelector(selector_2);
+		final RuleFilterDefinition filterDefinition_2_1 = new RuleFilterDefinition();
 		filterDefinition_2_1.setField("DIVISION");
 		filterDefinition_2_1.setOperator("=");
 		filterDefinition_2_1.setExpression("BTL");
 		filterDefinition_2_1.setSelId(selector_2.getId());
 
-		ruleManager.addFilter(filterDefinition_2_1);
-		RuleFilterDefinition filterDefinition_2_2 = new RuleFilterDefinition();
+		ruleServices.addFilter(filterDefinition_2_1);
+		final RuleFilterDefinition filterDefinition_2_2 = new RuleFilterDefinition();
 		filterDefinition_2_2.setField("NOM");
 		filterDefinition_2_2.setOperator("=");
 		filterDefinition_2_2.setExpression("DONALD");
 		filterDefinition_2_2.setSelId(selector_2.getId());
-		ruleManager.addFilter(filterDefinition_2_2);
+		ruleServices.addFilter(filterDefinition_2_2);
 
 		//
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 		myDummyDtObject.setDivision("BTL");
 
 		// The entity only has entity set to ENT. No selectors should match
-		List<Account> selectedAccounts_1 = ruleManager.selectAccounts(1L, myDummyDtObject,
+		final List<Account> selectedAccounts_1 = ruleServices.selectAccounts(1L, myDummyDtObject,
 				RuleConstants.EMPTY_RULE_CONSTANTS);
 
 		assertThat(selectedAccounts_1, is(not(nullValue())));
@@ -326,7 +324,7 @@ public class RuleManagerSelectorTest extends DbTest {
 		// Set entity to ENT
 		myDummyDtObject.setEntity("ENT");
 		// Only Group 1 should match
-		List<Account> selectedAccounts_2 = ruleManager.selectAccounts(1L, myDummyDtObject,
+		final List<Account> selectedAccounts_2 = ruleServices.selectAccounts(1L, myDummyDtObject,
 				RuleConstants.EMPTY_RULE_CONSTANTS);
 
 		assertThat(selectedAccounts_2, is(not(nullValue())));
@@ -337,7 +335,7 @@ public class RuleManagerSelectorTest extends DbTest {
 		myDummyDtObject.setEntity("XXX");
 		myDummyDtObject.setNom("DONALD");
 		// Only Group 2 should match
-		List<Account> selectedAccounts_3 = ruleManager.selectAccounts(1L, myDummyDtObject,
+		final List<Account> selectedAccounts_3 = ruleServices.selectAccounts(1L, myDummyDtObject,
 				RuleConstants.EMPTY_RULE_CONSTANTS);
 
 		assertThat(selectedAccounts_3, is(not(nullValue())));
@@ -347,7 +345,7 @@ public class RuleManagerSelectorTest extends DbTest {
 		// Set entity to ENT
 		myDummyDtObject.setEntity("ENT");
 		// Group 1 and Group 2 should match
-		List<Account> selectedAccounts_4 = ruleManager.selectAccounts(1L, myDummyDtObject,
+		final List<Account> selectedAccounts_4 = ruleServices.selectAccounts(1L, myDummyDtObject,
 				RuleConstants.EMPTY_RULE_CONSTANTS);
 
 		assertThat(selectedAccounts_4, is(not(nullValue())));

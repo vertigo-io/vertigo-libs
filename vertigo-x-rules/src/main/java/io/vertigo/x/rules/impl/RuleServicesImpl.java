@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.impl.rules;
+package io.vertigo.x.rules.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,16 +30,18 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.x.account.services.Account;
 import io.vertigo.x.account.services.AccountGroup;
 import io.vertigo.x.rules.RuleCriteria;
-import io.vertigo.x.rules.RuleManager;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
 import io.vertigo.x.rules.domain.SelectorDefinition;
+import io.vertigo.x.rules.services.RuleConstants;
+import io.vertigo.x.rules.services.RuleContext;
+import io.vertigo.x.rules.services.RuleServices;
 
 /**
  * @author xdurand
  */
-public final class RuleManagerImpl implements RuleManager {
+public final class RuleServicesImpl implements RuleServices {
 
 	private final RuleStorePlugin ruleStorePlugin;
 	private final RuleConstantsStorePlugin ruleConstantsStorePlugin;
@@ -49,15 +51,15 @@ public final class RuleManagerImpl implements RuleManager {
 
 	/**
 	 * Construct a new Rule manager
-	 * 
+	 *
 	 * @param ruleStorePlugin
 	 * @param ruleSelectorPlugin
 	 * @param ruleValidatorPlugin
 	 * @param ruleConstantsStorePlugin
 	 */
 	@Inject
-	public RuleManagerImpl(final RuleStorePlugin ruleStorePlugin, final RuleSelectorPlugin ruleSelectorPlugin,
-			final RuleValidatorPlugin ruleValidatorPlugin, RuleConstantsStorePlugin ruleConstantsStorePlugin) {
+	public RuleServicesImpl(final RuleStorePlugin ruleStorePlugin, final RuleSelectorPlugin ruleSelectorPlugin,
+			final RuleValidatorPlugin ruleValidatorPlugin, final RuleConstantsStorePlugin ruleConstantsStorePlugin) {
 		this.ruleStorePlugin = ruleStorePlugin;
 		this.ruleSelectorPlugin = ruleSelectorPlugin;
 		this.ruleValidatorPlugin = ruleValidatorPlugin;
@@ -77,11 +79,11 @@ public final class RuleManagerImpl implements RuleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants,
-			Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters) {
-		RuleContext context = new RuleContext(item, constants);
+	public List<AccountGroup> selectGroups(final Long idActivityDefinition, final DtObject item, final RuleConstants constants,
+			final Map<Long, List<SelectorDefinition>> mapSelectors, final Map<Long, List<RuleFilterDefinition>> mapFilters) {
+		final RuleContext context = new RuleContext(item, constants);
 
-		List<SelectorDefinition> selectors = mapSelectors.getOrDefault(idActivityDefinition, new ArrayList<>());
+		final List<SelectorDefinition> selectors = mapSelectors.getOrDefault(idActivityDefinition, new ArrayList<>());
 
 		return ruleSelectorPlugin.selectGroups(selectors, mapFilters, context);
 	}
@@ -98,11 +100,11 @@ public final class RuleManagerImpl implements RuleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean isRuleValid(Long idActivityDefinition, DtObject item, RuleConstants constants,
-			Map<Long, List<RuleDefinition>> mapRules, Map<Long, List<RuleConditionDefinition>> mapConditions) {
-		RuleContext context = new RuleContext(item, constants);
+	public boolean isRuleValid(final Long idActivityDefinition, final DtObject item, final RuleConstants constants,
+			final Map<Long, List<RuleDefinition>> mapRules, final Map<Long, List<RuleConditionDefinition>> mapConditions) {
+		final RuleContext context = new RuleContext(item, constants);
 
-		List<RuleDefinition> rules = mapRules.getOrDefault(idActivityDefinition, new ArrayList<>());
+		final List<RuleDefinition> rules = mapRules.getOrDefault(idActivityDefinition, new ArrayList<>());
 
 		return ruleValidatorPlugin.isRuleValid(rules, mapConditions, context);
 	}
@@ -127,8 +129,8 @@ public final class RuleManagerImpl implements RuleManager {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<Long> findItemsByCriteria(RuleCriteria criteria, List<Long> items) {
-		List<RuleDefinition> rules = ruleStorePlugin.findRulesByCriteria(criteria, items);
+	public List<Long> findItemsByCriteria(final RuleCriteria criteria, final List<Long> items) {
+		final List<RuleDefinition> rules = ruleStorePlugin.findRulesByCriteria(criteria, items);
 
 		return rules.stream().map(RuleDefinition::getItemId).distinct().collect(Collectors.toList());
 	}
@@ -164,13 +166,13 @@ public final class RuleManagerImpl implements RuleManager {
 	}
 
 	@Override
-	public void addConstants(Long key, RuleConstants ruleConstants) {
+	public void addConstants(final Long key, final RuleConstants ruleConstants) {
 		ruleConstantsStorePlugin.addConstants(key, ruleConstants);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public RuleConstants getConstants(Long key) {
+	public RuleConstants getConstants(final Long key) {
 		return ruleConstantsStorePlugin.readConstants(key);
 	}
 

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.impl.rules;
+package io.vertigo.x.rules.services;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +47,7 @@ public final class RuleConstants {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return list of constants
 	 */
 	public List<Map.Entry<String, String>> getValues() {

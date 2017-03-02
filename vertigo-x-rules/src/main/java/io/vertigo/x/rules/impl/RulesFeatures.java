@@ -16,19 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.impl.rules;
+package io.vertigo.x.rules.impl;
 
 import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
-import io.vertigo.x.plugins.rules.sql.SQLRuleStorePlugin;
-import io.vertigo.x.rules.RuleManager;
 import io.vertigo.x.rules.dao.RuleConditionDefinitionDAO;
 import io.vertigo.x.rules.dao.RuleDefinitionDAO;
 import io.vertigo.x.rules.dao.RuleFilterDefinitionDAO;
 import io.vertigo.x.rules.dao.SelectorDefinitionDAO;
 import io.vertigo.x.rules.domain.DtDefinitions;
+import io.vertigo.x.rules.plugins.sql.SQLRuleStorePlugin;
+import io.vertigo.x.rules.services.RuleServices;
 
 /**
  * Defines the 'workflow' extension
@@ -127,7 +127,7 @@ public final class RulesFeatures extends Features {
 						.addDefinitionResource("kpr", "boot/definitions/application-rules-test.kpr")
 						.addDefinitionResource("classes", DtDefinitions.class.getName())
 						.build())
-				.addComponent(RuleManager.class, RuleManagerImpl.class);
+				.addComponent(RuleServices.class, RuleServicesImpl.class);
 	}
 
 }

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.plugins.rules.validator;
+package io.vertigo.x.rules.plugins.validator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,11 +26,11 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import io.vertigo.x.impl.rules.RuleContext;
-import io.vertigo.x.impl.rules.RuleStorePlugin;
-import io.vertigo.x.impl.rules.RuleValidatorPlugin;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
+import io.vertigo.x.rules.impl.RuleStorePlugin;
+import io.vertigo.x.rules.impl.RuleValidatorPlugin;
+import io.vertigo.x.rules.services.RuleContext;
 
 /**
  *

@@ -17,14 +17,13 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.rules;
+package io.vertigo.x.rules.services;
 
 import java.util.List;
 import java.util.Map;
 
 import io.vertigo.x.account.services.Account;
 import io.vertigo.x.account.services.AccountGroup;
-import io.vertigo.x.impl.rules.RuleContext;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
 import io.vertigo.x.rules.domain.SelectorDefinition;
 
@@ -37,7 +36,7 @@ public interface RuleSelector {
 
 	/**
 	 * Select accounts matching the selector provided from an activity.
-	 * 
+	 *
 	 * @param selectors
 	 *            Selectors.
 	 * @param ruleContext
@@ -48,7 +47,7 @@ public interface RuleSelector {
 
 	/**
 	 * Select accounts for an activity using selectors and filters provided.
-	 * 
+	 *
 	 * @param selectors
 	 *            selectors
 	 * @param mapFilters
@@ -62,7 +61,7 @@ public interface RuleSelector {
 
 	/**
 	 * Select groups matching the selectors provided from an activity
-	 * 
+	 *
 	 * @param selectors
 	 * @param ruleContext
 	 * @return All the groups matching the selectors and rules
@@ -71,7 +70,7 @@ public interface RuleSelector {
 
 	/**
 	 * Select groups for an activity using selectors and filters provided
-	 * 
+	 *
 	 * @param selectors
 	 *            selectors
 	 * @param mapFilters

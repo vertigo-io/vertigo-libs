@@ -1,4 +1,4 @@
-package io.vertigo.x.plugins.rules.sql;
+package io.vertigo.x.rules.plugins.sql;
 
 import java.util.List;
 
@@ -6,7 +6,6 @@ import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.util.VCollectors;
-import io.vertigo.x.impl.rules.RuleStorePlugin;
 import io.vertigo.x.rules.ItemId;
 import io.vertigo.x.rules.RuleCriteria;
 import io.vertigo.x.rules.dao.RuleConditionDefinitionDAO;
@@ -17,6 +16,7 @@ import io.vertigo.x.rules.domain.DtDefinitions.RuleConditionDefinitionFields;
 import io.vertigo.x.rules.domain.DtDefinitions.RuleDefinitionFields;
 import io.vertigo.x.rules.domain.DtDefinitions.RuleFilterDefinitionFields;
 import io.vertigo.x.rules.domain.DtDefinitions.SelectorDefinitionFields;
+import io.vertigo.x.rules.impl.RuleStorePlugin;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;

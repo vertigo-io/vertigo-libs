@@ -17,18 +17,16 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.impl.rules;
+package io.vertigo.x.rules.impl;
 
 import io.vertigo.lang.Plugin;
-import io.vertigo.x.rules.RuleStore;
+import io.vertigo.x.rules.services.RuleSelector;
 
 /**
- * Interface for the rule's store plugin
+ * Interface for the rule selector plugin
  * @author xdurand
  *
  */
-public interface RuleStorePlugin extends RuleStore, Plugin {
-
+public interface RuleSelectorPlugin extends RuleSelector, Plugin {
 	// Plugin interface for Rules
-
 }

@@ -16,42 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.rules;
 
-import io.vertigo.x.impl.rules.RuleConstants;
+package io.vertigo.x.rules.impl;
+
+import io.vertigo.lang.Plugin;
+import io.vertigo.x.rules.services.RuleValidator;
 
 /**
- * This class defines the storage of rules constants.
+ * Interface for the rule selector plugin
  * @author xdurand
+ *
  */
-public interface RuleConstantsStore {
-
-	/**
-	 * Add constants
-	 * @param key 
-	 * @param ruleConstants 
-	 */
-	void addConstants(Long key, RuleConstants ruleConstants);
-
-	/**
-	 * Remove constants
-	 * @param key 
-	 */
-	void removeConstants(Long key);
-
-	/**
-	 * Update constants
-	 * @param key 
-	 * @param ruleConstants 
-	 */
-	void updateConstants(Long key, RuleConstants ruleConstants);
-
-	/**
-	 * Get constants
-	 * @param key 
-	 * @return the rule constants matching the key
-	 *  
-	 */
-	RuleConstants readConstants(Long key);
-
+public interface RuleValidatorPlugin extends RuleValidator, Plugin {
+	// Plugin interface for Rules
 }

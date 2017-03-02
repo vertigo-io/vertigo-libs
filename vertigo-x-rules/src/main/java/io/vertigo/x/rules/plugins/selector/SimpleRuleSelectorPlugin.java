@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.plugins.rules.selector;
+package io.vertigo.x.rules.plugins.selector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,11 +33,11 @@ import io.vertigo.x.account.services.Account;
 import io.vertigo.x.account.services.AccountGroup;
 import io.vertigo.x.account.services.AccountServices;
 import io.vertigo.x.account.services.AccountStore;
-import io.vertigo.x.impl.rules.RuleContext;
-import io.vertigo.x.impl.rules.RuleSelectorPlugin;
-import io.vertigo.x.impl.rules.RuleStorePlugin;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
 import io.vertigo.x.rules.domain.SelectorDefinition;
+import io.vertigo.x.rules.impl.RuleSelectorPlugin;
+import io.vertigo.x.rules.impl.RuleStorePlugin;
+import io.vertigo.x.rules.services.RuleContext;
 
 /**
  *

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.impl.rules;
+package io.vertigo.x.rules.services;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -54,11 +54,14 @@ public final class RuleContext {
 
 		for (final DtField dtField : fields) {
 
-			Object val = dtField.getDataAccessor().getValue(dtObject);
+			final Object val = dtField.getDataAccessor().getValue(dtObject);
 			if (val != null) {
 				if (val instanceof List) {
-					List<Object> valList = (List<Object>) val;
-					List<String> valListString = valList.stream().map(v -> v.toString()).collect(Collectors.toList());
+					final List<Object> valList = (List<Object>) val;
+					final List<String> valListString = valList
+							.stream()
+							.map(Object::toString)
+							.collect(Collectors.toList());
 					mapMerge.put(dtField.getName(), valListString);
 				} else {
 					mapMerge.put(dtField.getName(), val.toString());
