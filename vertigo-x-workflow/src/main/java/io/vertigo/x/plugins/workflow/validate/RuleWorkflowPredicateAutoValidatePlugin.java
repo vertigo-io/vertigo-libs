@@ -4,7 +4,7 @@ import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.x.impl.workflow.WorkflowPredicateAutoValidatePlugin;
-import io.vertigo.x.rules.impl.RuleConstants;
+import io.vertigo.x.rules.services.RuleConstants;
 import io.vertigo.x.rules.services.RuleServices;
 import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
 

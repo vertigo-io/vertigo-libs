@@ -39,7 +39,7 @@ import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
 import io.vertigo.x.rules.domain.SelectorDefinition;
-import io.vertigo.x.rules.impl.RuleConstants;
+import io.vertigo.x.rules.services.RuleConstants;
 import io.vertigo.x.rules.services.RuleServices;
 import io.vertigo.x.workflow.WfCodeMultiplicityDefinition;
 import io.vertigo.x.workflow.WfCodeStatusWorkflow;
