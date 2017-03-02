@@ -1,4 +1,4 @@
-package io.vertigo.x.workflow;
+package io.vertigo.x.workflow.services;
 
 import javax.inject.Inject;
 

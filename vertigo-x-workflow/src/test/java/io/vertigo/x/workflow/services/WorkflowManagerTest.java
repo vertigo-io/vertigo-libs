@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.x.workflow;
+package io.vertigo.x.workflow.services;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -54,6 +54,13 @@ import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
 import io.vertigo.x.rules.domain.SelectorDefinition;
+import io.vertigo.x.workflow.MyAppConfig;
+import io.vertigo.x.workflow.WfActivityDefinitionBuilder;
+import io.vertigo.x.workflow.WfCodeStatusWorkflow;
+import io.vertigo.x.workflow.WfCodeTransition;
+import io.vertigo.x.workflow.WfWorkflowDecision;
+import io.vertigo.x.workflow.WfWorkflowDefinitionBuilder;
+import io.vertigo.x.workflow.WorkflowManager;
 import io.vertigo.x.workflow.data.MyDummyDtObject;
 import io.vertigo.x.workflow.domain.instance.WfActivity;
 import io.vertigo.x.workflow.domain.instance.WfDecision;
