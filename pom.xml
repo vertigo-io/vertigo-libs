@@ -27,7 +27,13 @@ limitations under the License. -->
 	<version>0.9.4-SNAPSHOT</version>
 	<name>vertigo-extensions</name>
 	<packaging>pom</packaging>
-
+	
+	
+	<properties>
+		<sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco-it.exec"</sonar.jacoco.reportPaths>
+	</properties>
+		
+	
 	<modules>
 		<module>vertigo-x-connectors</module>
 		<module>vertigo-x-account</module>
@@ -45,5 +51,19 @@ limitations under the License. -->
 		<url>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</url>
 		<tag>vertigo-x-0.9.4-SNAPSHOT</tag>
 	</scm>
+	
+	<build>
+		<plugins>
+			<!-- Sonar for a global coverage of Junit tests -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.2.201409121644</version>
+				<configuration>
+					<append>true</append>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 	
 </project>
