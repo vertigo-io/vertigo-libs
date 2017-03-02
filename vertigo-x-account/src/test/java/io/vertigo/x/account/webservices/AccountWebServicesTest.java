@@ -84,42 +84,42 @@ public final class AccountWebServicesTest {
 
 	@Test
 	public void testGetAccountById() {
-		assertStatusCode(HttpStatus.SC_OK, "/x/account/api/accounts/1");
+		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/1");
 	}
 
 	@Test
 	public void testGetPhotoByAccountId() {
-		assertStatusCode(HttpStatus.SC_OK, "/x/account/api/accounts/1/photo");
+		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/1/photo");
 	}
 
 	@Test
 	public void testGetAllGroups() {
-		assertStatusCode(HttpStatus.SC_OK, "/x/account/api/groups");
+		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/groups");
 	}
 
 	@Test
 	public void testGetGroupById() {
-		assertStatusCode(HttpStatus.SC_OK, "/x/account/api/groups/100");
+		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/groups/100");
 	}
 
 	@Test
 	public void testGetStatus() {
-		assertStatusCode(HttpStatus.SC_OK, "/x/account/status");
+		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/infos/status");
 	}
 
 	@Test
 	public void testGetStats() {
-		assertStatusCode(HttpStatus.SC_OK, "/x/account/stats");
+		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/infos/stats");
 	}
 
 	@Test
 	public void testGetConfig() {
-		assertStatusCode(HttpStatus.SC_OK, "/x/account/config");
+		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/infos/config");
 	}
 
 	@Test
 	public void testGetHelp() {
-		assertStatusCode(HttpStatus.SC_OK, "/x/account/help");
+		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/infos/help");
 	}
 
 }
