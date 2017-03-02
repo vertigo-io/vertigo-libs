@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import io.vertigo.x.notification.services.NotificationManagerTest;
+import io.vertigo.x.notification.services.NotificationServicesTest;
 import io.vertigo.x.notification.webservices.NotificationWebServicesTest;
 
 /**
@@ -32,7 +32,7 @@ import io.vertigo.x.notification.webservices.NotificationWebServicesTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-		NotificationManagerTest.class,
+		NotificationServicesTest.class,
 		NotificationWebServicesTest.class })
 public final class NotificationTestSuite {
 	//

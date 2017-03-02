@@ -40,15 +40,15 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountGroup;
-import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.account.services.Account;
+import io.vertigo.x.account.services.AccountGroup;
+import io.vertigo.x.account.services.AccountServices;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.notification.MyAppConfig;
-import io.vertigo.x.notification.Notification;
-import io.vertigo.x.notification.NotificationBuilder;
-import io.vertigo.x.notification.NotificationManager;
 import io.vertigo.x.notification.data.Accounts;
+import io.vertigo.x.notification.services.Notification;
+import io.vertigo.x.notification.services.NotificationBuilder;
+import io.vertigo.x.notification.services.NotificationServices;
 import redis.clients.jedis.Jedis;
 import spark.Spark;
 
@@ -58,11 +58,11 @@ public final class NotificationWebServicesTest {
 	private static AutoCloseableApp app;
 
 	@Inject
-	private AccountManager accountManager;
+	private AccountServices accountServices;
 	@Inject
 	private RedisConnector redisConnector;
 	@Inject
-	private NotificationManager notificationManager;
+	private NotificationServices notificationServices;
 
 	@BeforeClass
 	public static void setUp() {
@@ -77,15 +77,15 @@ public final class NotificationWebServicesTest {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		}
-		Accounts.initData(accountManager);
+		Accounts.initData(accountServices);
 	}
 
 	@After
 	public void purgeNotifications() {
 		final URI<Account> accountURI = DtObjectUtil.createURI(Account.class, "1");
-		final List<Notification> notifications = notificationManager.getCurrentNotifications(accountURI);
+		final List<Notification> notifications = notificationServices.getCurrentNotifications(accountURI);
 		for (final Notification notification : notifications) {
-			notificationManager.remove(accountURI, notification.getUuid());
+			notificationServices.remove(accountURI, notification.getUuid());
 		}
 	}
 
@@ -121,8 +121,8 @@ public final class NotificationWebServicesTest {
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		final Set<URI<Account>> accountURIs = accountManager.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
-		notificationManager.send(notification, accountURIs);
+		final Set<URI<Account>> accountURIs = accountServices.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
+		notificationServices.send(notification, accountURIs);
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()
@@ -142,8 +142,8 @@ public final class NotificationWebServicesTest {
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		final Set<URI<Account>> accountURIs = accountManager.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
-		notificationManager.send(notification, accountURIs);
+		final Set<URI<Account>> accountURIs = accountServices.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
+		notificationServices.send(notification, accountURIs);
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()
@@ -186,9 +186,9 @@ public final class NotificationWebServicesTest {
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		final Set<URI<Account>> accountURIs = accountManager.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
-		notificationManager.send(notification1, accountURIs);
-		notificationManager.send(notification2, accountURIs);
+		final Set<URI<Account>> accountURIs = accountServices.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
+		notificationServices.send(notification1, accountURIs);
+		notificationServices.send(notification2, accountURIs);
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()

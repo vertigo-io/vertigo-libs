@@ -26,12 +26,11 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.vega.VegaFeatures;
+import io.vertigo.x.account.AccountFeatures;
 import io.vertigo.x.comment.data.TestUserSession;
+import io.vertigo.x.comment.webservices.CommentWebServices;
 import io.vertigo.x.comment.webservices.TestLoginWebServices;
 import io.vertigo.x.connectors.ConnectorsFeatures;
-import io.vertigo.x.impl.account.AccountFeatures;
-import io.vertigo.x.impl.comment.CommentFeatures;
-import io.vertigo.x.webapi.comment.CommentWebServices;
 
 public final class MyAppConfig {
 	public static final int WS_PORT = 8088;

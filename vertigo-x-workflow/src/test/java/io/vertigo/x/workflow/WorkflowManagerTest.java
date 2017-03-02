@@ -45,10 +45,10 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountBuilder;
-import io.vertigo.x.account.AccountGroup;
-import io.vertigo.x.account.AccountManager;
+import io.vertigo.x.account.services.Account;
+import io.vertigo.x.account.services.AccountBuilder;
+import io.vertigo.x.account.services.AccountGroup;
+import io.vertigo.x.account.services.AccountServices;
 import io.vertigo.x.impl.workflow.ItemStorePlugin;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
@@ -75,7 +75,7 @@ public class WorkflowManagerTest extends DbTest {
 	private WorkflowManager workflowManager;
 
 	@Inject
-	private AccountManager accountManager;
+	private AccountServices accountServices;
 
 	@Inject
 	private ItemStorePlugin itemStorePlugin;
@@ -125,11 +125,11 @@ public class WorkflowManagerTest extends DbTest {
 
 		final AccountGroup accountGroup = new AccountGroup("1", "dummy group");
 		final Account account = new AccountBuilder("Acc1").build();
-		accountManager.getStore().saveGroup(accountGroup);
-		accountManager.getStore().saveAccounts(Arrays.asList(account));
+		accountServices.getStore().saveGroup(accountGroup);
+		accountServices.getStore().saveAccounts(Arrays.asList(account));
 		final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
 		final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
-		accountManager.getStore().attach(accountUri, accountGroupUri);
+		accountServices.getStore().attach(accountUri, accountGroupUri);
 
 		// Step 1 : 1 rule, 1 condition
 		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
@@ -272,11 +272,11 @@ public class WorkflowManagerTest extends DbTest {
 
 		AccountGroup accountGroup = new AccountGroup("1", "dummy group");
 		Account account = new AccountBuilder("Acc1").build();
-		accountManager.getStore().saveGroup(accountGroup);
-		accountManager.getStore().saveAccounts(Arrays.asList(account));
+		accountServices.getStore().saveGroup(accountGroup);
+		accountServices.getStore().saveAccounts(Arrays.asList(account));
 		final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
 		final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
-		accountManager.getStore().attach(accountUri, accountGroupUri);
+		accountServices.getStore().attach(accountUri, accountGroupUri);
 
 		// Step 1 : 1 rule, 1 condition
 		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);

@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import io.vertigo.x.account.services.AccountManagerTest;
+import io.vertigo.x.account.services.AccountServicesTest;
 import io.vertigo.x.account.webservices.AccountWebServicesTest;
 
 /**
@@ -32,7 +32,7 @@ import io.vertigo.x.account.webservices.AccountWebServicesTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-		AccountManagerTest.class,
+		AccountServicesTest.class,
 		AccountWebServicesTest.class
 })
 public final class AccountTestSuite {

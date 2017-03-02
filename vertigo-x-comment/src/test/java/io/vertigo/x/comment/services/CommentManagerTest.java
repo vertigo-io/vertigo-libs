@@ -32,12 +32,9 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.x.account.Account;
-import io.vertigo.x.account.AccountGroup;
-import io.vertigo.x.account.AccountManager;
-import io.vertigo.x.comment.Comment;
-import io.vertigo.x.comment.CommentBuilder;
-import io.vertigo.x.comment.CommentManager;
+import io.vertigo.x.account.services.Account;
+import io.vertigo.x.account.services.AccountGroup;
+import io.vertigo.x.account.services.AccountServices;
 import io.vertigo.x.comment.MyAppConfig;
 import io.vertigo.x.comment.data.Accounts;
 import io.vertigo.x.connectors.redis.RedisConnector;
@@ -46,9 +43,9 @@ import redis.clients.jedis.Jedis;
 public class CommentManagerTest {
 
 	@Inject
-	private AccountManager accountManager;
+	private AccountServices accountServices;
 	@Inject
-	private CommentManager commentManager;
+	private CommentServices commentServices;
 	@Inject
 	private RedisConnector redisConnector;
 
@@ -65,7 +62,7 @@ public class CommentManagerTest {
 			jedis.flushAll();
 		}
 		accountURI1 = Accounts.createAccountURI("1");
-		Accounts.initData(accountManager);
+		Accounts.initData(accountServices);
 
 		//on triche un peu, car AcountGroup n'est pas un KeyConcept
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);
@@ -88,9 +85,9 @@ public class CommentManagerTest {
 				.withMsg("Tu as bien fait de partir, Arthur Rimbaud! Tes dix-huit ans réfractaires à l'amitié, à la malveillance, à la sottise des poètes de Paris ainsi qu'au ronronnement d'abeille stérile de ta famille ardennaise un peu folle, tu as bien fait de les éparpiller aux vents du large..")
 				.build();
 		for (int i = 0; i < 10; i++) {
-			commentManager.publish(accountURI1, comment, keyConcept1Uri);
+			commentServices.publish(accountURI1, comment, keyConcept1Uri);
 		}
 
-		Assert.assertEquals(10, commentManager.getComments(keyConcept1Uri).size());
+		Assert.assertEquals(10, commentServices.getComments(keyConcept1Uri).size());
 	}
 }
