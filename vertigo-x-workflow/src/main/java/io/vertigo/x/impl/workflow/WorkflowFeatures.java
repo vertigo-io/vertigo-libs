@@ -53,10 +53,8 @@ public final class WorkflowFeatures extends Features {
 	/**
 	 * Specifies the workflowStorePlugin.
 	 *
-	 * @param workflowStorePluginClass
-	 *            the type of plugin to use
-	 * @param params
-	 *            the params
+	 * @param params the params
+	 * @param workflowPredicateAutoValidatePlugin
 	 * @return these features
 	 */
 	public WorkflowFeatures withWorkflowPredicateAutoValidatePlugin(final Class<? extends WorkflowPredicateAutoValidatePlugin> workflowPredicateAutoValidatePlugin,

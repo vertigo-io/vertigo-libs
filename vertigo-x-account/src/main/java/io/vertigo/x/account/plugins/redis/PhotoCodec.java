@@ -38,7 +38,7 @@ final class PhotoCodec {
 	private final CodecManager codecManager;
 
 	/**
-	 * Constructor 
+	 * Constructor
 	 * @param codecManager the codecManager
 	 */
 	PhotoCodec(final CodecManager codecManager) {
@@ -50,7 +50,7 @@ final class PhotoCodec {
 	/**
 	 * Encodes a photo to a map of metadata.
 	 * The photo is encoded in base64.
-	 * @param vFile the photo 
+	 * @param vFile the photo
 	 * @return the photo as a map of metadata
 	 */
 	Map<String, String> vFile2Map(final VFile vFile) {
@@ -84,7 +84,7 @@ final class PhotoCodec {
 			final String base64Content = vFileMap.get("base64Content");
 			return new Base64File(fileName, mimeType, length, lastModified, base64Content);
 		} catch (final ParseException e) {
-			throw new WrappedException("A problem occured when decoding a file from base64", e);
+			throw WrappedException.wrap(e, "A problem occured when decoding a file from base64");
 		}
 	}
 
@@ -108,7 +108,7 @@ final class PhotoCodec {
 				}
 			}
 		} catch (final IOException e) {
-			throw new WrappedException("A problem occured when encoding a file to base64", e);
+			throw WrappedException.wrap(e, "A problem occured when encoding a file to base64");
 		}
 		return sb.toString();
 	}

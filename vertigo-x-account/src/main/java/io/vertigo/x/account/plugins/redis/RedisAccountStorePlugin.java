@@ -89,7 +89,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 				}
 				tx.exec();
 			} catch (final IOException ex) {
-				throw new WrappedException(ex);
+				throw WrappedException.wrap(ex);
 			}
 		}
 	}
@@ -132,7 +132,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 				tx.sadd(SGROUPS_KEY, group.getId());
 				tx.exec();
 			} catch (final IOException ex) {
-				throw new WrappedException(ex);
+				throw WrappedException.wrap(ex);
 			}
 
 		}
@@ -160,7 +160,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 				}
 				tx.exec();
 			} catch (final IOException ex) {
-				throw new WrappedException(ex);
+				throw WrappedException.wrap(ex);
 			}
 
 		}
@@ -187,7 +187,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 				tx.sadd(SGROUPS_BY_ACCOUNT_START_KEY + accountURI.getId(), groupURI.getId().toString());
 				tx.exec();
 			} catch (final IOException ex) {
-				throw new WrappedException(ex);
+				throw WrappedException.wrap(ex);
 			}
 
 		}
@@ -263,7 +263,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 				tx.hmset(HPHOTO_BY_ACCOUNT_START_KEY + accountURI.getId(), vFileMapPhoto);
 				tx.exec();
 			} catch (final IOException ex) {
-				throw new WrappedException(ex);
+				throw WrappedException.wrap(ex);
 			}
 
 		}
@@ -290,7 +290,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 				tx.del(SACCOUNTS_KEY, SGROUPS_KEY, "accountsByGroup", "photoByAccount");
 				tx.exec();
 			} catch (final IOException ex) {
-				throw new WrappedException(ex);
+				throw WrappedException.wrap(ex);
 			}
 		}
 	}

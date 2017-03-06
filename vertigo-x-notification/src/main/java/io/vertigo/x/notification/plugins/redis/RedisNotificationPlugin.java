@@ -80,7 +80,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				}
 				tx.exec();
 			} catch (final IOException ex) {
-				throw new WrappedException(ex);
+				throw WrappedException.wrap(ex);
 			}
 
 		}
@@ -112,7 +112,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 					.withTargetUrl(data.get("targetUrl"))
 					.build();
 		} catch (final ParseException e) {
-			throw new WrappedException("Can't parse notification", e);
+			throw WrappedException.wrap(e, "Can't parse notification");
 		}
 	}
 

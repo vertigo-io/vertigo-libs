@@ -71,7 +71,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 				tx.lpush("comments:" + keyConceptUri.urn(), comment.getUuid().toString());
 				tx.exec();
 			} catch (final IOException e) {
-				throw WrappedException.wrapIfNeeded(e, "Can't publish comment onto {0}", keyConceptUri.urn());
+				throw WrappedException.wrap(e, "Can't publish comment onto {0}", keyConceptUri.urn());
 			}
 		}
 
@@ -111,7 +111,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 				}
 				tx.exec();
 			} catch (final IOException e) {
-				throw new WrappedException(e);
+				throw WrappedException.wrap(e);
 			}
 		}
 		//----- we are using tx to avoid roundtrips
@@ -148,7 +148,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 					.withLastModified(lastModified)
 					.build();
 		} catch (final ParseException e) {
-			throw new WrappedException("Can't parse comment", e);
+			throw WrappedException.wrap(e, "Can't parse comment");
 		}
 	}
 }
