@@ -75,6 +75,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	 * @param workflowStorePlugin
 	 * @param itemStorePlugin
 	 * @param ruleManager
+	 * @param workflowPredicateAutoValidatePlugin 
 	 */
 	@Inject
 	public WorkflowManagerImpl(final WorkflowStorePlugin workflowStorePlugin, final ItemStorePlugin itemStorePlugin,
@@ -274,7 +275,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		workflowStorePlugin.createDecision(decision);
 	}
 
-	public boolean canAutoValidateActivity(final WfActivityDefinition activityDefinition, final DtObject object) {
+	private boolean canAutoValidateActivity(final WfActivityDefinition activityDefinition, final DtObject object) {
 		return workflowPredicateAutoValidatePlugin.canAutoValidateActivity(activityDefinition, object);
 	}
 

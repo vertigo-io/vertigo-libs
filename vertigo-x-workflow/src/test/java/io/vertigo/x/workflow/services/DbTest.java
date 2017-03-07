@@ -7,6 +7,11 @@ import org.junit.Assert;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 
+/**
+ * Base Class for Database unit test
+ * @author xdurand
+ *
+ */
 public class DbTest {
 
 	@Inject

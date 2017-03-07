@@ -40,10 +40,8 @@ public interface RuleServices extends Manager {
 	 *
 	 * @param idActivityDefinition
 	 *            Activity definition id
-	 * @param item
-	 *            Business object
-	 * @param constants
-	 *            constants
+	 * @param context
+	 *            Context : Business Object + Constants
 	 * @return a list of account
 	 */
 	List<Account> selectAccounts(final Long idActivityDefinition, final RuleContext context);
@@ -53,10 +51,8 @@ public interface RuleServices extends Manager {
 	 *
 	 * @param idActivityDefinition
 	 *            Activity definition id
-	 * @param item
-	 *            Business object
-	 * @param constants
-	 *            constants
+	 * @param context
+	 *            Context : Business Object + Constants
 	 * @param mapSelectors
 	 *            Selectors to use
 	 * @param mapFilters
@@ -72,10 +68,8 @@ public interface RuleServices extends Manager {
 	 *
 	 * @param idActivityDefinition
 	 *            Activity definition id
-	 * @param item
-	 *            Business object
-	 * @param constants
-	 *            constants
+	 * @param context
+	 *            Context : Business Object + Constants
 	 * @return true is the rule is valid, false otherwise
 	 */
 	boolean isRuleValid(Long idActivityDefinition, RuleContext context);
@@ -89,8 +83,8 @@ public interface RuleServices extends Manager {
 	 *            Activity definition id
 	 * @param item
 	 *            Business object
-	 * @param constants
-	 *            constants
+	 * @param context
+	 *            Context : Business Object + Constants
 	 * @param mapRules
 	 *            Rules to use
 	 * @param mapConditions

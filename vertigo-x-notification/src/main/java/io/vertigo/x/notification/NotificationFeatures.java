@@ -47,9 +47,11 @@ public final class NotificationFeatures extends Features {
 	}
 
 	/**
+	 * @param notificationPluginClass 
+	 * @param params 
 	 * @return the features
 	 */
-	public NotificationFeatures withNotificationPlugin(Class<? extends NotificationPlugin> notificationPluginClass, Param... params) {
+	public NotificationFeatures withNotificationPlugin(final Class<? extends NotificationPlugin> notificationPluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(notificationPluginClass, params);
 		return this;

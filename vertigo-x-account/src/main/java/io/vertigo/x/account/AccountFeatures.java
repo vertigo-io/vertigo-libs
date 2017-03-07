@@ -49,6 +49,8 @@ public final class AccountFeatures extends Features {
 	}
 
 	/**
+	 * @param accountStorePluginClass 
+	 * @param params 
 	 * @return the features
 	 */
 	public AccountFeatures withAccountStorePlugin(final Class<? extends AccountStorePlugin> accountStorePluginClass, final Param... params) {
