@@ -21,7 +21,6 @@ package io.vertigo.x.rules.services;
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Manager;
 import io.vertigo.x.account.services.Account;
 import io.vertigo.x.account.services.AccountGroup;
@@ -47,7 +46,7 @@ public interface RuleServices extends Manager {
 	 *            constants
 	 * @return a list of account
 	 */
-	List<Account> selectAccounts(final Long idActivityDefinition, final DtObject item, final RuleConstants constants);
+	List<Account> selectAccounts(final Long idActivityDefinition, final RuleContext context);
 
 	/**
 	 * Select groups matching the selector for an activity
@@ -65,7 +64,7 @@ public interface RuleServices extends Manager {
 	 *
 	 * @return a list of groups
 	 */
-	List<AccountGroup> selectGroups(Long idActivityDefinition, DtObject item, RuleConstants constants,
+	List<AccountGroup> selectGroups(Long idActivityDefinition, RuleContext context,
 			Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters);
 
 	/**
@@ -79,7 +78,7 @@ public interface RuleServices extends Manager {
 	 *            constants
 	 * @return true is the rule is valid, false otherwise
 	 */
-	boolean isRuleValid(Long idActivityDefinition, DtObject item, final RuleConstants constants);
+	boolean isRuleValid(Long idActivityDefinition, RuleContext context);
 
 	/**
 	 * Validate a rule for an activity using the provided rules and conditions.
@@ -98,7 +97,7 @@ public interface RuleServices extends Manager {
 	 *            Conditions associated to rules
 	 * @return true is a rule match, false otherwise
 	 */
-	boolean isRuleValid(Long idActivityDefinition, DtObject item, RuleConstants constants,
+	boolean isRuleValid(Long idActivityDefinition, RuleContext context,
 			Map<Long, List<RuleDefinition>> mapRules, Map<Long, List<RuleConditionDefinition>> mapConditions);
 
 	/**

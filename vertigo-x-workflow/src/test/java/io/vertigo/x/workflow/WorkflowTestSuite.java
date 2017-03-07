@@ -25,7 +25,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import io.vertigo.x.workflow.services.WorkflowManagerTest;
 
 /**
- * Tests .
+ * Tests Workflow.
  *
  */
 @RunWith(Suite.class)

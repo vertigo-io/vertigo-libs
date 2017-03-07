@@ -164,9 +164,8 @@ public class RuleServicesSelectorTest extends DbTest {
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 		myDummyDtObject.setDivision("BTL");
-
-		final List<Account> selectedAccounts = ruleServices.selectAccounts(1L, myDummyDtObject,
-				RuleConstants.EMPTY_RULE_CONSTANTS);
+		RuleContext ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		final List<Account> selectedAccounts = ruleServices.selectAccounts(1L, ruleContext);
 
 		assertThat(selectedAccounts, is(not(nullValue())));
 		assertThat(selectedAccounts.size(), is(1));
@@ -210,19 +209,18 @@ public class RuleServicesSelectorTest extends DbTest {
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 		myDummyDtObject.setDivision("BTL");
-
+		RuleContext ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The entity is not set to ENT. The selector should not match
-		final List<Account> selectedAccounts_1 = ruleServices.selectAccounts(1L, myDummyDtObject,
-				RuleConstants.EMPTY_RULE_CONSTANTS);
+		final List<Account> selectedAccounts_1 = ruleServices.selectAccounts(1L, ruleContext);
 
 		assertThat(selectedAccounts_1, is(not(nullValue())));
 		assertThat(selectedAccounts_1.size(), is(0));
 
 		// We set the entity to 'ENT'
 		myDummyDtObject.setEntity("ENT");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The selector should match now.
-		final List<Account> selectedAccounts_2 = ruleServices.selectAccounts(1L, myDummyDtObject,
-				RuleConstants.EMPTY_RULE_CONSTANTS);
+		final List<Account> selectedAccounts_2 = ruleServices.selectAccounts(1L, ruleContext);
 
 		assertThat(selectedAccounts_2, is(not(nullValue())));
 		assertThat(selectedAccounts_2.size(), is(1));
@@ -230,9 +228,9 @@ public class RuleServicesSelectorTest extends DbTest {
 
 		// We set the entity to 'XXXT'
 		myDummyDtObject.setEntity("XXX");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The selector should not match .
-		final List<Account> selectedAccounts_3 = ruleServices.selectAccounts(1L, myDummyDtObject,
-				RuleConstants.EMPTY_RULE_CONSTANTS);
+		final List<Account> selectedAccounts_3 = ruleServices.selectAccounts(1L, ruleContext);
 
 		assertThat(selectedAccounts_3, is(not(nullValue())));
 		assertThat(selectedAccounts_3.size(), is(0));
@@ -313,19 +311,19 @@ public class RuleServicesSelectorTest extends DbTest {
 		//
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 		myDummyDtObject.setDivision("BTL");
+		RuleContext ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 
 		// The entity only has entity set to ENT. No selectors should match
-		final List<Account> selectedAccounts_1 = ruleServices.selectAccounts(1L, myDummyDtObject,
-				RuleConstants.EMPTY_RULE_CONSTANTS);
+		final List<Account> selectedAccounts_1 = ruleServices.selectAccounts(1L, ruleContext);
 
 		assertThat(selectedAccounts_1, is(not(nullValue())));
 		assertThat(selectedAccounts_1.size(), is(0));
 
 		// Set entity to ENT
 		myDummyDtObject.setEntity("ENT");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// Only Group 1 should match
-		final List<Account> selectedAccounts_2 = ruleServices.selectAccounts(1L, myDummyDtObject,
-				RuleConstants.EMPTY_RULE_CONSTANTS);
+		final List<Account> selectedAccounts_2 = ruleServices.selectAccounts(1L, ruleContext);
 
 		assertThat(selectedAccounts_2, is(not(nullValue())));
 		assertThat(selectedAccounts_2.size(), is(2));
@@ -334,9 +332,9 @@ public class RuleServicesSelectorTest extends DbTest {
 		// Set entity to XXX
 		myDummyDtObject.setEntity("XXX");
 		myDummyDtObject.setNom("DONALD");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// Only Group 2 should match
-		final List<Account> selectedAccounts_3 = ruleServices.selectAccounts(1L, myDummyDtObject,
-				RuleConstants.EMPTY_RULE_CONSTANTS);
+		final List<Account> selectedAccounts_3 = ruleServices.selectAccounts(1L, ruleContext);
 
 		assertThat(selectedAccounts_3, is(not(nullValue())));
 		assertThat(selectedAccounts_3.size(), is(2));
@@ -344,9 +342,9 @@ public class RuleServicesSelectorTest extends DbTest {
 
 		// Set entity to ENT
 		myDummyDtObject.setEntity("ENT");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// Group 1 and Group 2 should match
-		final List<Account> selectedAccounts_4 = ruleServices.selectAccounts(1L, myDummyDtObject,
-				RuleConstants.EMPTY_RULE_CONSTANTS);
+		final List<Account> selectedAccounts_4 = ruleServices.selectAccounts(1L, ruleContext);
 
 		assertThat(selectedAccounts_4, is(not(nullValue())));
 		assertThat(selectedAccounts_4.size(), is(4));

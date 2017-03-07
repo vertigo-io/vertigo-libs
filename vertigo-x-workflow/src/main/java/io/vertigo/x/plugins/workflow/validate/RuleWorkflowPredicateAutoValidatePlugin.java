@@ -5,6 +5,7 @@ import javax.inject.Inject;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.x.impl.workflow.WorkflowPredicateAutoValidatePlugin;
 import io.vertigo.x.rules.services.RuleConstants;
+import io.vertigo.x.rules.services.RuleContext;
 import io.vertigo.x.rules.services.RuleServices;
 import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
 
@@ -22,7 +23,7 @@ public final class RuleWorkflowPredicateAutoValidatePlugin implements WorkflowPr
 	public boolean canAutoValidateActivity(final WfActivityDefinition activityDefinition, final DtObject object) {
 
 		final RuleConstants ruleConstants = ruleManager.getConstants(activityDefinition.getWfwdId());
-
-		return !ruleManager.isRuleValid(activityDefinition.getWfadId(), object, ruleConstants);
+		final RuleContext ruleContext = new RuleContext(object, ruleConstants);
+		return !ruleManager.isRuleValid(activityDefinition.getWfadId(), ruleContext);
 	}
 }

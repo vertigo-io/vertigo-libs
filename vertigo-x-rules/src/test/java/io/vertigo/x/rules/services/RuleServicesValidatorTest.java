@@ -123,16 +123,17 @@ public class RuleServicesValidatorTest extends DbTest {
 		ruleServices.addCondition(condition);
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
-
+		RuleContext ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The division field is null here
-		boolean isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		boolean isValid = ruleServices.isRuleValid(1L, ruleContext);
 		// The rule should NOT be valid here.
 		assertThat(isValid, is(false));
 
 		// The division is set to "BTL" here
 		myDummyDtObject.setDivision("BTL");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The rule should be valid now
-		isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		isValid = ruleServices.isRuleValid(1L, ruleContext);
 		assertThat(isValid, is(true));
 	}
 
@@ -143,22 +144,24 @@ public class RuleServicesValidatorTest extends DbTest {
 	public void testValidationNoRuleNoCondition() {
 		// Rule created to Item 1
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
-
+		RuleContext ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The division field is null here
-		boolean isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		boolean isValid = ruleServices.isRuleValid(1L, ruleContext);
 		// The rule should NOT be valid here.
 		assertThat(isValid, is(false));
 
 		// The division is set to "BTL" here
 		myDummyDtObject.setDivision("BTL");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The rule should NOT be valid too
-		isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		isValid = ruleServices.isRuleValid(1L, ruleContext);
 		assertThat(isValid, is(false));
 
 		// The division is set to "ABC" here
 		myDummyDtObject.setDivision("ABC");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The rule should be valid too
-		isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		isValid = ruleServices.isRuleValid(1L, ruleContext);
 		assertThat(isValid, is(false));
 	}
 
@@ -186,27 +189,32 @@ public class RuleServicesValidatorTest extends DbTest {
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 
+		RuleContext ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+
 		// The division field is null here
-		boolean isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		boolean isValid = ruleServices.isRuleValid(1L, ruleContext);
 		// The rule should NOT be valid here.
 		assertThat(isValid, is(false));
 
 		// The division is set to "BTL" here
 		myDummyDtObject.setDivision("BTL");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The rule should NOT be valid (no entity defined)
-		isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		isValid = ruleServices.isRuleValid(1L, ruleContext);
 		assertThat(isValid, is(false));
 
 		// The entity is set to "ENT_1" here
 		myDummyDtObject.setEntity("ENT_1");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The rule should be valid now
-		isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		isValid = ruleServices.isRuleValid(1L, ruleContext);
 		assertThat(isValid, is(true));
 
 		// The division is set to "UNKNOWN_ENT" here
 		myDummyDtObject.setEntity("UNKNOWN_ENT");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The rule should NOT be valid anymore
-		isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		isValid = ruleServices.isRuleValid(1L, ruleContext);
 		assertThat(isValid, is(false));
 	}
 
@@ -238,29 +246,32 @@ public class RuleServicesValidatorTest extends DbTest {
 		ruleServices.addCondition(condition_2);
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
-
+		RuleContext ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The division and entity field are null here
-		boolean isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		boolean isValid = ruleServices.isRuleValid(1L, ruleContext);
 		// The rule should NOT be valid here.
 		assertThat(isValid, is(false));
 
 		// The division is set to "BTL" here
 		myDummyDtObject.setDivision("BTL");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The rule should be valid as it match 1 rule
-		isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		isValid = ruleServices.isRuleValid(1L, ruleContext);
 		assertThat(isValid, is(true));
 
 		// The entity is set to "ENT_1" here
 		myDummyDtObject.setEntity("ENT_1");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The rule should be valid now (2 rules valid)
-		isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		isValid = ruleServices.isRuleValid(1L, ruleContext);
 		assertThat(isValid, is(true));
 
 		// The division is set to "UNKNOWN_ENT" here
 		myDummyDtObject.setEntity("UNKNOWN_ENT");
 		myDummyDtObject.setDivision("DIV");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The rule should NOT be valid anymore
-		isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		isValid = ruleServices.isRuleValid(1L, ruleContext);
 		assertThat(isValid, is(false));
 	}
 
@@ -306,36 +317,40 @@ public class RuleServicesValidatorTest extends DbTest {
 		ruleServices.addCondition(condition_2_2);
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
-
+		RuleContext ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The division and entity field are null here
-		boolean isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		boolean isValid = ruleServices.isRuleValid(1L, ruleContext);
 		// The rule should be valid here.
 		assertThat(isValid, is(false));
 
 		// The division is set to "BTL" here
 		myDummyDtObject.setDivision("BTL");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The rule should NOT be valid as no rule match
-		isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		isValid = ruleServices.isRuleValid(1L, ruleContext);
 		assertThat(isValid, is(false));
 
 		// The entity is set to "MAR" here
 		myDummyDtObject.setEntity("MAR");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The rule should NOT be valid (only one condition in each rules is
 		// valid)
-		isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		isValid = ruleServices.isRuleValid(1L, ruleContext);
 		assertThat(isValid, is(true));
 
 		// The entity is set to "ENT" here
 		myDummyDtObject.setEntity("ENT");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The rule should be valid (match all conditions of rule 1)
-		isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		isValid = ruleServices.isRuleValid(1L, ruleContext);
 		assertThat(isValid, is(true));
 
 		// The division is set to "UNKNOWN_ENT" here
 		myDummyDtObject.setEntity("UNKNOWN_ENT");
 		myDummyDtObject.setDivision("DIV");
+		ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		// The rule should NOT be valid anymore
-		isValid = ruleServices.isRuleValid(1L, myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		isValid = ruleServices.isRuleValid(1L, ruleContext);
 		assertThat(isValid, is(false));
 	}
 

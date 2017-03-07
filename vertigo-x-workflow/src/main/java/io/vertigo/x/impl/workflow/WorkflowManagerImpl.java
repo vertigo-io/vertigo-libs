@@ -40,6 +40,7 @@ import io.vertigo.x.rules.domain.RuleDefinition;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
 import io.vertigo.x.rules.domain.SelectorDefinition;
 import io.vertigo.x.rules.services.RuleConstants;
+import io.vertigo.x.rules.services.RuleContext;
 import io.vertigo.x.rules.services.RuleServices;
 import io.vertigo.x.workflow.WfCodeMultiplicityDefinition;
 import io.vertigo.x.workflow.WfCodeStatusWorkflow;
@@ -371,7 +372,8 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 			final List<WfDecision> wfDecisions = workflowStorePlugin.findAllDecisionByActivity(currentActivity);
 			final DtObject obj = itemStorePlugin.readItem(wfWorkflow.getItemId());
 			final RuleConstants ruleConstants = ruleManager.getConstants(wfWorkflow.getWfwdId());
-			final List<Account> accounts = ruleManager.selectAccounts(currentActivity.getWfadId(), obj, ruleConstants);
+			final RuleContext ruleContext = new RuleContext(obj, ruleConstants);
+			final List<Account> accounts = ruleManager.selectAccounts(currentActivity.getWfadId(), ruleContext);
 
 			final int match = (int) accounts.stream()
 					.filter(filterAccountEqualsDecisionUsername(wfDecisions))
@@ -696,15 +698,16 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		final DtObject obj = itemStorePlugin.readItem(wfWorkflow.getItemId());
 
 		final RuleConstants ruleConstants = ruleManager.getConstants(wfwdId);
+		final RuleContext ruleContext = new RuleContext(obj, ruleConstants);
 
 		final List<WfWorkflowDecision> workflowDecisions = new ArrayList<>();
 
 		for (final WfActivityDefinition activityDefinition : activityDefinitions) {
 			final long actDefId = activityDefinition.getWfadId();
-			final boolean ruleValid = ruleManager.isRuleValid(actDefId, obj, ruleConstants, dicRules, dicConditions);
+			final boolean ruleValid = ruleManager.isRuleValid(actDefId, ruleContext, dicRules, dicConditions);
 
 			if (ruleValid) {
-				final List<AccountGroup> groups = ruleManager.selectGroups(actDefId, obj, ruleConstants, dicSelectors,
+				final List<AccountGroup> groups = ruleManager.selectGroups(actDefId, ruleContext, dicSelectors,
 						dicFilters);
 
 				final WfWorkflowDecision wfWorkflowDecision = new WfWorkflowDecision();

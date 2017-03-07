@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.x.account.services.Account;
 import io.vertigo.x.account.services.AccountGroup;
 import io.vertigo.x.rules.RuleCriteria;
@@ -68,20 +67,17 @@ public final class RuleServicesImpl implements RuleServices {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<Account> selectAccounts(final Long idActivityDefinition, final DtObject item,
-			final RuleConstants constants) {
+	public List<Account> selectAccounts(final Long idActivityDefinition, final RuleContext context) {
 
 		final List<SelectorDefinition> selectors = ruleStorePlugin.findSelectorsByItemId(idActivityDefinition);
-		final RuleContext context = new RuleContext(item, constants);
 
 		return ruleSelectorPlugin.selectAccounts(selectors, context);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public List<AccountGroup> selectGroups(final Long idActivityDefinition, final DtObject item, final RuleConstants constants,
+	public List<AccountGroup> selectGroups(final Long idActivityDefinition, final RuleContext context,
 			final Map<Long, List<SelectorDefinition>> mapSelectors, final Map<Long, List<RuleFilterDefinition>> mapFilters) {
-		final RuleContext context = new RuleContext(item, constants);
 
 		final List<SelectorDefinition> selectors = mapSelectors.getOrDefault(idActivityDefinition, new ArrayList<>());
 
@@ -90,20 +86,17 @@ public final class RuleServicesImpl implements RuleServices {
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean isRuleValid(final Long idActivityDefinition, final DtObject item, final RuleConstants constants) {
+	public boolean isRuleValid(final Long idActivityDefinition, final RuleContext context) {
 
 		final List<RuleDefinition> rules = ruleStorePlugin.findRulesByItemId(idActivityDefinition);
-		final RuleContext context = new RuleContext(item, constants);
 
 		return ruleValidatorPlugin.isRuleValid(rules, context);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public boolean isRuleValid(final Long idActivityDefinition, final DtObject item, final RuleConstants constants,
+	public boolean isRuleValid(final Long idActivityDefinition, final RuleContext context,
 			final Map<Long, List<RuleDefinition>> mapRules, final Map<Long, List<RuleConditionDefinition>> mapConditions) {
-		final RuleContext context = new RuleContext(item, constants);
-
 		final List<RuleDefinition> rules = mapRules.getOrDefault(idActivityDefinition, new ArrayList<>());
 
 		return ruleValidatorPlugin.isRuleValid(rules, mapConditions, context);
