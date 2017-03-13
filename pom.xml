@@ -20,13 +20,20 @@ limitations under the License. -->
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
-		<version>0.9.3</version>
+		<version>0.9.4-SNAPSHOT</version>
 	</parent> 
 	
-	<artifactId>vertigo-x-parent</artifactId>
+	<artifactId>vertigo-extensions</artifactId>
+	<version>0.9.4-SNAPSHOT</version>
 	<name>vertigo-extensions</name>
 	<packaging>pom</packaging>
-
+	
+	<properties>
+		<!-- For global junit test coverage -->
+		<jacoco.destFile>${project.basedir}/../target/jacoco-it.exec</jacoco.destFile>
+		<sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.reportPaths>
+	</properties>
+	
 	<modules>
 		<module>vertigo-x-connectors</module>
 		<module>vertigo-x-account</module>
@@ -42,7 +49,7 @@ limitations under the License. -->
 		<connection>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</connection>
 		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</developerConnection>
 		<url>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</url>
-		<tag>vertigo-addons-0.1.0</tag>
+		<tag>vertigo-x-0.9.4-SNAPSHOT</tag>
 	</scm>
 	
 </project>

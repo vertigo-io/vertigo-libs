@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,11 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.vertigo.x.workflow.plugin;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.x.impl.workflow.ItemStorePlugin;
@@ -42,6 +44,13 @@ public class MemoryItemStorePlugin implements ItemStorePlugin {
 	@Override
 	public DtObject readItem(final Long itemId) {
 		return inMemoryItemStore.get(itemId);
+	}
+
+	@Override
+	public Map<Long, DtObject> readItems(List<Long> itemIds) {
+		return itemIds.stream()
+				.collect(
+						Collectors.toMap(Function.identity(), this::readItem));
 	}
 
 }

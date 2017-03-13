@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.vertigo.x.audit;
 
 import io.vertigo.app.config.AppConfig;
@@ -36,15 +35,11 @@ public class MyAppConfig {
 	 * @return the application config for testing
 	 */
 	public static AppConfig config() {
-		final AppConfigBuilder acb = new AppConfigBuilder();
-
-		acb.beginModule(AuditFeatures.class)
-			.getModuleConfigBuilder()
-			.addPlugin(MemoryAuditTraceStorePlugin.class)
-		   .endModule();
-
-		return acb.build();
+		return new AppConfigBuilder()
+				.addModule(new AuditFeatures()
+						.withAuditStorePlugin(MemoryAuditTraceStorePlugin.class)
+						.build())
+				.build();
 	}
-
 
 }

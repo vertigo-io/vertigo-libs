@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,13 +22,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import io.vertigo.x.comment.services.CommentManagerTest;
+import io.vertigo.x.comment.webservices.CommentWebServicesTest;
+
 /**
  * Test de l'implementation standard.
  *
  * @author npiedeloup
  */
 @RunWith(Suite.class)
-@SuiteClasses({ CommentManagerTest.class, CommentWebServicesTest.class })
+@SuiteClasses({
+		CommentManagerTest.class,
+		CommentWebServicesTest.class })
 public final class CommentTestSuite {
 	//
 }

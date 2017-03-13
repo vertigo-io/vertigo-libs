@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,7 +32,7 @@ public final class AuditTraceCriteria implements DtObject {
 	private static final long serialVersionUID = 1L;
 
 	private final String category;
-	private final String user;
+	private final String username;
 	private final Date startBusinessDate;
 	private final Date endBusinessDate;
 	private final Date startExecutionDate;
@@ -41,14 +41,14 @@ public final class AuditTraceCriteria implements DtObject {
 
 	AuditTraceCriteria(
 			final String category,
-			final String user,
+			final String username,
 			final Date startBusinessDate,
 			final Date endBusinessDate,
 			final Date startExecutionDate,
 			final Date endExecutionDate,
 			final Long item) {
 		this.category = category;
-		this.user = user;
+		this.username = username;
 		this.startBusinessDate = startBusinessDate;
 		this.endBusinessDate = endBusinessDate;
 		this.startExecutionDate = startExecutionDate;
@@ -66,8 +66,8 @@ public final class AuditTraceCriteria implements DtObject {
 	/**
 	 * @return the user
 	 */
-	public String getUser() {
-		return user;
+	public String getUsername() {
+		return username;
 	}
 
 	/**

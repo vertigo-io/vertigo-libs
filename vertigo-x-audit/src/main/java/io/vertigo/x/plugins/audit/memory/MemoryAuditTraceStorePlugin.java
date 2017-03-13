@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,7 +16,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.vertigo.x.plugins.audit.memory;
 
 import java.util.List;
@@ -95,8 +94,8 @@ public final class MemoryAuditTraceStorePlugin implements AuditTraceStorePlugin 
 	}
 
 	private static boolean matchUser(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
-		return !StringUtil.isEmpty(auditTraceCriteria.getUser())
-				&& auditTraceCriteria.getUser().equals(auditTrace.getUser());
+		return !StringUtil.isEmpty(auditTraceCriteria.getUsername())
+				&& auditTraceCriteria.getUsername().equals(auditTrace.getUsername());
 	}
 
 	private static boolean matchCategory(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {

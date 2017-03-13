@@ -3,8 +3,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
-		<artifactId>vertigo-x-parent</artifactId>
-		<version>0.9.3</version>
+		<artifactId>vertigo-extensions</artifactId>
+		<version>0.9.4-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>vertigo-x-rules</artifactId>
@@ -23,7 +23,6 @@
 			<version>${vertigo.version}</version>
 		</dependency>
 		
-		<!-- deb -->
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-dynamo-impl</artifactId>
@@ -34,7 +33,6 @@
 			<artifactId>vertigo-persona-impl</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
-		<!-- fin -->
 
 		<dependency>
 			<groupId>io.vertigo</groupId>
@@ -48,14 +46,68 @@
 			<version>${vertigo.version}</version>
 		</dependency>
 		
-		<!-- Tests -->
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-core</artifactId>
+			<artifactId>vertigo-studio</artifactId>
 			<version>${vertigo.version}</version>
-			<type>test-jar</type>
+		</dependency>
+		<!-- Tests -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.3-1102-jdbc41</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.5.2</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>src/main/javagen</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.1</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>src/dev/lib</outputDirectory>
+							<overWriteReleases>false</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+							<overWriteIfNewer>true</overWriteIfNewer>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 </project>

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@ import io.vertigo.lang.Builder;
  */
 public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriteria> {
 	private String myCategory;
-	private String myUser;
+	private String myUsername;
 	private Date myStartBusinessDate;
 	private Date myEndBusinessDate;
 	private Date myStartExecutionDate;
@@ -51,13 +51,13 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 
 	/**
 	 * Optionnal user
-	 * @param user
+	 * @param username
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceCriteriaBuilder withUser(final String user) {
-		Assertion.checkNotNull(user);
+	public AuditTraceCriteriaBuilder withUsername(final String username) {
+		Assertion.checkNotNull(username);
 		//---
-		myUser = user;
+		myUsername = username;
 		return this;
 	}
 
@@ -123,7 +123,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 
 	@Override
 	public AuditTraceCriteria build() {
-		return new AuditTraceCriteria(myCategory, myUser, myStartBusinessDate,
+		return new AuditTraceCriteria(myCategory, myUsername, myStartBusinessDate,
 				myEndBusinessDate, myStartExecutionDate, myEndExecutionDate, myItem);
 	}
 

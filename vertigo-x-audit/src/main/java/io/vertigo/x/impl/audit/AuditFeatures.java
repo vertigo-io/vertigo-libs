@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,9 @@
  */
 package io.vertigo.x.impl.audit;
 
-
+import io.vertigo.app.config.DefinitionProviderConfigBuilder;
 import io.vertigo.app.config.Features;
+import io.vertigo.core.param.Param;
 import io.vertigo.x.audit.AuditManager;
 
 /**
@@ -35,11 +36,23 @@ public final class AuditFeatures extends Features {
 		super("x-audit");
 	}
 
+	/**
+	 * Specifies the auditTraceStorePlugin.
+	 * @param auditTraceStorePluginClass the type of plugin to use
+	 * @param params the params
+	 * @return these features
+	 */
+	public AuditFeatures withAuditStorePlugin(final Class<? extends AuditTraceStorePlugin> auditTraceStorePluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(auditTraceStorePluginClass, params);
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
-	protected void setUp() {
+	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addDefinitionProvider(AuditTraceDefinitionProvider.class)
+				.addDefinitionProvider(new DefinitionProviderConfigBuilder(AuditTraceDefinitionProvider.class).build())
 				.addComponent(AuditManager.class, AuditManagerImpl.class);
 	}
 

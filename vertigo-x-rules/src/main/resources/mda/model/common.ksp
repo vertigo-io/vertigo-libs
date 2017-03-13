@@ -1,0 +1,74 @@
+package io.vertigo.x.rules.domain
+
+create DtDefinition DT_RULE_DEFINITION {
+	key ID				{domain : DO_X_RULES_ID, 		label :"id", 					notNull:"true"  }
+	field CREATION_DATE {domain : DO_X_RULES_DATE, 		label :"creationDate", 			notNull:"false" }
+	field ITEM_ID   	{domain : DO_X_RULES_WEAK_ID, 	label :"itemId", 				notNull:"false" }
+	field LABEL   		{domain : DO_X_RULES_LABEL, 	label :"Label", 				notNull:"false" }
+}
+
+
+create Association A_RUD_COD {
+  fkFieldName : "RUD_ID"
+    
+ 	dtDefinitionA : DT_RULE_DEFINITION
+	dtDefinitionB : DT_RULE_CONDITION_DEFINITION
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..1"
+	multiplicityB:"0..*"
+	
+	labelA : "RuleDefinition"
+	labelB : "RuleConditionDefinition"
+	roleA : "RuleDefinition"
+	roleB : "RuleConditionDefinition"
+}
+
+
+create DtDefinition DT_RULE_FILTER_DEFINITION {
+	key ID				{domain : DO_X_RULES_ID, 			label :"id", 					notNull:"true"  }
+	field FIELD 		{domain : DO_X_RULES_FIELD, 		label :"field", 					notNull:"false" }
+	field OPERATOR   	{domain : DO_X_RULES_OPERATOR, 		label :"operator", 				notNull:"false" }
+	field EXPRESSION   	{domain : DO_X_RULES_EXPRESSION, 	label :"expression", 	notNull:"false" }
+}
+
+create DtDefinition DT_RULE_CONDITION_DEFINITION {
+	key ID				{domain : DO_X_RULES_ID, 			label :"id", 			notNull:"true"  }
+	field FIELD 		{domain : DO_X_RULES_FIELD, 		label :"field", 		notNull:"false" }
+	field OPERATOR   	{domain : DO_X_RULES_OPERATOR, 		label :"operator", 		notNull:"false" }
+	field EXPRESSION   	{domain : DO_X_RULES_EXPRESSION, 	label :"expression", 	notNull:"false" }
+}
+
+
+create DtDefinition DT_SELECTOR_DEFINITION {
+	key ID				{domain : DO_X_RULES_ID, 		label :"id", 					notNull:"true"  }
+	field CREATION_DATE {domain : DO_X_RULES_DATE, 		label :"creationDate", 			notNull:"false" }
+	field ITEM_ID   	{domain : DO_X_RULES_WEAK_ID, 	label :"itemId", 				notNull:"false" }
+	field GROUP_ID   	{domain : DO_X_RULES_FIELD, 	label :"groupId", 				notNull:"false" }
+}
+
+
+create Association A_SEL_FID {
+  fkFieldName : "SEL_ID"
+    
+ 	dtDefinitionA : DT_SELECTOR_DEFINITION
+	dtDefinitionB : DT_RULE_FILTER_DEFINITION
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..1"
+	multiplicityB:"0..*"
+	
+	labelA : "SelectorDefinition"
+	labelB : "RuleFilterDefinition"
+	roleA : "SelectorDefinition"
+	roleB : "RuleFilterDefinition"
+			
+}
+	
+	
+
+	

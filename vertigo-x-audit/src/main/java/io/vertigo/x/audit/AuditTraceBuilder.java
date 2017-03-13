@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,6 @@ import io.vertigo.lang.Builder;
  *
  */
 public final class AuditTraceBuilder implements Builder<AuditTrace> {
-	private Long myId;
 	private final String myCategory;
 	private final String myUser;
 	private Date myBusinessDate;
@@ -88,7 +87,7 @@ public final class AuditTraceBuilder implements Builder<AuditTrace> {
 
 	@Override
 	public AuditTrace build() {
-		return new AuditTrace(myId, myCategory, myUser, myBusinessDate, myExecutionDate, myItem, myMessage, myContext);
+		return new AuditTrace(null, myCategory, myUser, myBusinessDate, myExecutionDate, myItem, myMessage, myContext);
 	}
 
 }

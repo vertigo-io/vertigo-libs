@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,9 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.vertigo.x.audit;
-
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -33,9 +31,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.core.component.di.injector.Injector;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.util.DateBuilder;
-
 
 /**
  * Junit for audit manager
@@ -55,7 +52,7 @@ public class AuditManagerTest {
 	@Before
 	public void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.config());
-		Injector.injectMembers(this, app.getComponentSpace());
+		DIInjector.injectMembers(this, app.getComponentSpace());
 	}
 
 	/**
@@ -135,7 +132,7 @@ public class AuditManagerTest {
 		assertThat(auditTraceFetch4).usingFieldByFieldElementComparator().contains(auditTrace1);
 
 		//Criteria User
-		final AuditTraceCriteria auditTraceCriteria5 = new AuditTraceCriteriaBuilder().withUser("USER3").build();
+		final AuditTraceCriteria auditTraceCriteria5 = new AuditTraceCriteriaBuilder().withUsername("USER3").build();
 		final List<AuditTrace> auditTraceFetch5 = auditManager.findTrace(auditTraceCriteria5);
 
 		assertThat(auditTraceFetch5).hasSize(1);

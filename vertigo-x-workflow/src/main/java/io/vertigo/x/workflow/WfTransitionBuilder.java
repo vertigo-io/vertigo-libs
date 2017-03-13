@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,18 +28,19 @@ import io.vertigo.x.workflow.domain.model.WfTransitionDefinition;
  */
 public final class WfTransitionBuilder implements Builder<WfTransitionDefinition> {
 
-	private final static String DEFAULT_VALUE_NAME = "default";
-
 	private String myName;
+	private final Long wfwdId;
 	private final Long wfadIdFrom;
 	private final Long wfadIdTo;
 
 	/**
 	 * Builder for transitions
+	 * @param wfwdId
 	 * @param wfadIdFrom
 	 * @param wfadIdTo
 	 */
-	public WfTransitionBuilder(final Long wfadIdFrom, final Long wfadIdTo) {
+	public WfTransitionBuilder(final Long wfwdId, final Long wfadIdFrom, final Long wfadIdTo) {
+		this.wfwdId = wfwdId;
 		this.wfadIdFrom = wfadIdFrom;
 		this.wfadIdTo = wfadIdTo;
 	}
@@ -58,9 +59,10 @@ public final class WfTransitionBuilder implements Builder<WfTransitionDefinition
 	public WfTransitionDefinition build() {
 		final WfTransitionDefinition wfTransitionDefinition = new WfTransitionDefinition();
 
-		wfTransitionDefinition.setName(myName == null ? DEFAULT_VALUE_NAME : myName);
+		wfTransitionDefinition.setName(myName == null ? WfCodeTransition.DEFAULT.getTransitionName() : myName);
 		wfTransitionDefinition.setWfadIdFrom(wfadIdFrom);
 		wfTransitionDefinition.setWfadIdTo(wfadIdTo);
+		wfTransitionDefinition.setWfwdId(wfwdId);
 
 		return wfTransitionDefinition;
 	}

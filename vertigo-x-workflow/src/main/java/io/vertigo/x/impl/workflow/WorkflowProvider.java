@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package io.vertigo.x.impl.workflow;
 
-import java.util.Iterator;
+import java.util.List;
 
-import io.vertigo.app.config.DefinitionProvider;
-import io.vertigo.core.spaces.definiton.Definition;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
@@ -34,10 +34,10 @@ import io.vertigo.util.ListBuilder;
  * Provides all the definitions used in the 'Workflow' module.
  * @author xdurand
  */
-public final class WorkflowProvider implements DefinitionProvider {
+public final class WorkflowProvider extends SimpleDefinitionProvider {
 
 	@Override
-	public Iterator<Definition> iterator() {
+	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final Domain domainWorkflowId = new DomainBuilder("DO_X_WORKFLOW_ID", DataType.Long).build();
 		final Domain domainWorkflowCode = new DomainBuilder("DO_X_WORKFLOW_CODE", DataType.String).build();
 		final Domain domainWorkflowDate = new DomainBuilder("DO_X_WORKFLOW_DATE", DataType.Date).build();
@@ -72,16 +72,20 @@ public final class WorkflowProvider implements DefinitionProvider {
 				.addIdField("WFW_ID", "wfwId", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
 				.addDataField("ITEM_ID", "itemId", domainWorkflowId, false, true, false, false)
-				.addDataField("USER", "user", domainWorkflowUser, true, true, false, false)
+				.addDataField("USERNAME", "username", domainWorkflowUser, true, true, false, false)
 				.addDataField("USER_LOGIC", "userLogic", domainWorkflowFlag, true, true, false, false);
 
 		final DtDefinitionBuilder wfWorkflowActivityDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_ACTIVITY")
 				.addIdField("WFA_ID", "wfaId", domainWorkflowId, false, false)
+				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false);
+
+		final DtDefinitionBuilder wfWorkflowDecisionDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_DECISION")
+				.addIdField("WFE_ID", "wfaId", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
 				.addDataField("CHOICE", "choice", domainWorkflowChoice, false, true, false, false)
 				.addDataField("DECISION_DATE", "decisionDate", domainWorkflowDate, false, true, false, false)
 				.addDataField("COMMENTS", "comments", domainWorkflowComments, false, true, false, false)
-				.addDataField("USER", "user", domainWorkflowUser, true, true, false, false);
+				.addDataField("USERNAME", "username", domainWorkflowUser, true, true, false, false);
 
 		final DtDefinition wfStatusDtDefinition = new DtDefinitionBuilder("DT_WF_STATUS")
 				.addIdField("WFS_CODE", "wfsCode", domainWorkflowCode, false, false)
@@ -93,6 +97,7 @@ public final class WorkflowProvider implements DefinitionProvider {
 		final DtDefinition wfWorkflowDtDefinition = wfWorkflowDtDefinitionBuilder.build();
 		final DtDefinition wfActivityDefinitionDtDefinition = wfActivityDefinitionDtDefinitionBuilder.build();
 		final DtDefinition wfWorkflowActivityDtDefinition = wfWorkflowActivityDtDefinitionBuilder.build();
+		final DtDefinition wfWorkflowDecisionDtDefinition = wfWorkflowDecisionDtDefinitionBuilder.build();
 
 		wfWorkflowDefinitionDtDefinitionBuilder
 				.addForeignKey("WFAD_ID", "wfadId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false);
@@ -107,13 +112,16 @@ public final class WorkflowProvider implements DefinitionProvider {
 				.addForeignKey("WFS_CODE", "wfsCode", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
 				.addForeignKey("WFA_ID", "wfaId", domainWorkflowId, false, "DO_X_WORKFLOW_ID", false, false);
 
+		wfWorkflowActivityDtDefinitionBuilder
+				.addForeignKey("WFW_ID", "wfwId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
+				.addForeignKey("WFAD_ID", "wfadId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false);
+
 		wfActivityDefinitionDtDefinitionBuilder
 				.addForeignKey("WFMD_CODE", "wfmdCode", domainWorkflowCode, true, "DO_X_WORKFLOW_CODE", false, false)
 				.addForeignKey("WFWD_ID", "wfwdId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false);
 
-		wfWorkflowActivityDtDefinitionBuilder
-				.addForeignKey("WFW_ID", "wfwId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false)
-				.addForeignKey("WFAD_ID", "wfadId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false);
+		wfWorkflowDecisionDtDefinitionBuilder
+				.addForeignKey("WFA_ID", "wfaId", domainWorkflowId, true, "DO_X_WORKFLOW_ID", false, false);
 
 		return new ListBuilder<Definition>()
 				.add(domainWorkflowId)
@@ -127,14 +135,14 @@ public final class WorkflowProvider implements DefinitionProvider {
 				.add(domainWorkflowFlag)
 				.add(domainWorkflowLevel)
 				.add(wfWorkflowActivityDtDefinition)
+				.add(wfWorkflowDecisionDtDefinition)
 				.add(wfStatusDtDefinition)
 				.add(wfWorkflowDtDefinition)
 				.add(wfActivityDefinitionDtDefinition)
 				.add(wfMultiplicityDefinitionDtDefinition)
 				.add(wfTransitionDefinitionDtDefinition)
 				.add(wfWorkflowDefinitionDtDefinition)
-				.build()
-				.iterator();
+				.build();
 	}
 
 }

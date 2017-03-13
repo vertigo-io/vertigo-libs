@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2016, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,11 @@
  */
 package io.vertigo.x.connectors;
 
+import java.util.Optional;
+
+import io.vertigo.app.config.ComponentConfigBuilder;
 import io.vertigo.app.config.Features;
+import io.vertigo.core.param.Param;
 import io.vertigo.x.connectors.redis.RedisConnector;
 
 /**
@@ -34,39 +38,44 @@ public final class ConnectorsFeatures extends Features {
 		super("connectors");
 	}
 
-	@Override
-	protected void setUp() {
-		//
-	}
-
 	/**
 	 * Adds a REDIS connector.
 	 * @param host the REDIS host
-	 * @param port the REDIS port 
+	 * @param port the REDIS port
 	 * @param database the index of the REDIS database
 	 * @return the REDIS connector
 	 */
-	public ConnectorsFeatures withRedis(final String host, final int port, final int database) {
-		return withRedis(host, port, null, database);
+	public ConnectorsFeatures withRedisConnector(final String host, final int port, final int database) {
+		return withRedisConnector(host, port, null, database);
 	}
 
 	/**
 	 * Adds a REDIS connector.
 	 * @param host the REDIS host
-	 * @param port the REDIS port 
+	 * @param port the REDIS port
 	 * @param password the REDIS password
 	 * @param database the index of the REDIS database
 	 * @return the REDIS connector
 	 */
-	public ConnectorsFeatures withRedis(final String host, final int port, final String password, final int database) {
+	public ConnectorsFeatures withRedisConnector(final String host, final int port, final String password, final int database) {
+		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(Optional.empty(), RedisConnector.class)
+				.addParam(Param.create("host", host))
+				.addParam(Param.create("port", Integer.toString(port)))
+				.addParam(Param.create("database", Integer.toString(database)));
+		if (password != null) {
+			componentConfigBuilder
+					.addParam(Param.create("password", password));
+		}
 		getModuleConfigBuilder()
 				.withNoAPI()
-				.beginComponent(RedisConnector.class, RedisConnector.class)
-				.addParam("host", host)
-				.addParam("port", Integer.toString(port))
-				.addParam("password", password)
-				.addParam("database", Integer.toString(database))
-				.endComponent();
+				.addComponent(componentConfigBuilder.build());
 		return this;
+
 	}
+
+	@Override
+	protected void buildFeatures() {
+		//
+	}
+
 }

@@ -1,0 +1,113 @@
+package io.vertigo.x.workflow
+
+
+
+/**************************************************************************************************/
+/********************************* Domains ********************************************************/
+/**************************************************************************************************/
+
+create Domain DO_X_WORKFLOW_ID {
+	dataType : Long
+	formatter : FMT_DEFAULT
+	storeType : "NUMERIC"
+}
+
+create Domain DO_X_WORKFLOW_WEAK_ID {
+	dataType : Long
+	formatter : FMT_DEFAULT
+	storeType : "NUMERIC"
+}
+
+create Domain DO_X_WORKFLOW_CHOICE {
+	dataType : Integer
+	formatter : FMT_DEFAULT
+	storeType : "NUMERIC"
+}
+
+create Domain DO_X_WORKFLOW_LEVEL {
+	dataType : Integer
+	formatter : FMT_DEFAULT
+	storeType : "NUMERIC"
+}
+
+create Domain DO_X_WORKFLOW_DATE {
+	dataType : Date
+	formatter : FMT_DATE
+	storeType : "DATE"
+}
+
+create Domain DO_YEAR {
+	dataType : Integer
+	formatter : FMT_DEFAULT
+	storeType : "NUMERIC"
+}
+
+create Domain DO_DURATION {
+	dataType : Integer
+	formatter : FMT_DEFAULT
+	storeType : "NUMERIC"
+}
+
+create Domain DO_COMMENT {
+	dataType : String
+	formatter : FMT_DEFAULT
+	constraint : [CK_MAX_LENGTH_3000]
+	storeType : "VARCHAR(3000)"
+    indexType : "text_fr"
+}
+
+create Domain DO_X_WORKFLOW_COMMENTS {
+	dataType : String
+	formatter : FMT_DEFAULT
+	constraint : [CK_MAX_LENGTH_3000]
+	storeType : "VARCHAR(3000)"
+    indexType : "text_fr"
+}
+
+create Domain DO_LABEL_SHORT {
+	dataType : String
+	formatter : FMT_DEFAULT
+	constraint : [CK_MAX_LENGTH_50]
+	storeType : "VARCHAR(50)"
+    indexType : "text_fr"
+}
+
+create Domain DO_X_WORKFLOW_LABEL {
+	dataType : String
+	formatter : FMT_DEFAULT
+	constraint : [CK_MAX_LENGTH_100]
+	storeType : "VARCHAR(100)"
+    indexType : "text_fr"
+}
+
+create Domain DO_X_WORKFLOW_USER {
+	dataType : String
+	formatter : FMT_DEFAULT
+	constraint : [CK_MAX_LENGTH_100]
+	storeType : "VARCHAR(100)"
+    indexType : "text_fr"
+}
+
+create Domain DO_LABEL_LONG {
+	dataType : String
+	formatter : FMT_DEFAULT
+	constraint : [CK_MAX_LENGTH_250]
+	storeType : "VARCHAR(250)"
+    indexType : "text_fr"
+}
+
+
+create Domain DO_X_WORKFLOW_CODE {
+	dataType : String
+	formatter : FMT_DEFAULT
+	constraint : [CK_MAX_LENGTH_100]
+	storeType : "VARCHAR(100)"
+	indexType : "code"
+}
+
+create Domain DO_X_WORKFLOW_FLAG {
+	dataType : Boolean
+	formatter : FMT_DEFAULT
+	indexType : "boolean"
+	storeType : "bool"
+}
