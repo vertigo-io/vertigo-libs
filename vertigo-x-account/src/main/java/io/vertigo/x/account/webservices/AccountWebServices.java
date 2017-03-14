@@ -56,7 +56,7 @@ public final class AccountWebServices implements WebServices {
 	 * @param id the account id.
 	 * @return the account
 	 */
-	@GET("/{id}")
+	@GET("/api/{id}")
 	@AnonymousAccessAllowed
 	public Account getAccount(@PathParam("id") final String id) {
 		return accountServices.getStore().getAccount(DtObjectUtil.createURI(Account.class, id));
@@ -68,7 +68,7 @@ public final class AccountWebServices implements WebServices {
 	 * @param id account id.
 	 * @return the photo of an account
 	 */
-	@GET("/{id}/photo")
+	@GET("/api/{id}/photo")
 	@AnonymousAccessAllowed
 	public VFile getAccountPhoto(@PathParam("id") final String id) {
 		return accountServices.getStore().getPhoto(DtObjectUtil.createURI(Account.class, id))
@@ -80,7 +80,7 @@ public final class AccountWebServices implements WebServices {
 	 *
 	 * @return all groups
 	 */
-	@GET("/groups")
+	@GET("/api/groups")
 	@AnonymousAccessAllowed
 	public Collection<AccountGroup> getAllGroups() {
 		return accountServices.getStore().getAllGroups();
@@ -92,7 +92,7 @@ public final class AccountWebServices implements WebServices {
 	 * @param id the group id.
 	 * @return the group
 	 */
-	@GET("/groups/{id}")
+	@GET("/api/groups/{id}")
 	@AnonymousAccessAllowed
 	public AccountGroup getAccountGroup(@PathParam("id") final String id) {
 		return accountServices.getStore().getGroup(DtObjectUtil.createURI(AccountGroup.class, id));

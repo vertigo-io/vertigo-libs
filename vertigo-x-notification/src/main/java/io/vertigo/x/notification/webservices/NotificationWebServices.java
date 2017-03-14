@@ -58,7 +58,7 @@ public final class NotificationWebServices implements WebServices {
 	 * Get messages for logged user.
 	 * @return messages for logged user
 	 */
-	@GET("/messages")
+	@GET("/api/messages")
 	public List<Notification> getMessages() {
 		final URI<Account> loggedAccountURI = accountServices.getLoggedAccount();
 		return notificationServices.getCurrentNotifications(loggedAccountURI);
@@ -68,7 +68,7 @@ public final class NotificationWebServices implements WebServices {
 	 * Remove a message.
 	 * @param messageUuid message id.
 	 */
-	@DELETE("/messages/{uuid}")
+	@DELETE("/api/messages/{uuid}")
 	public void removeMessage(@PathParam("uuid") final String messageUuid) {
 		final URI<Account> loggedAccountURI = accountServices.getLoggedAccount();
 		notificationServices.remove(loggedAccountURI, UUID.fromString(messageUuid));
@@ -78,7 +78,7 @@ public final class NotificationWebServices implements WebServices {
 	 * Remove a message.
 	 * @param messageUuids messages id.
 	 */
-	@DELETE("/messages")
+	@DELETE("/api/messages")
 	public void removeMessage(final List<String> messageUuids) {
 		final URI<Account> loggedAccountURI = accountServices.getLoggedAccount();
 		for (final String messageUuid : messageUuids) {
