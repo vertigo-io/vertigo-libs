@@ -62,7 +62,6 @@ public class MyAppConfig {
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.silently()
 				.endBoot()
 				.addModule(new PersonaFeatures().withUserSession(TestUserSession.class).build())
 				.addModule(new CommonsFeatures()//
