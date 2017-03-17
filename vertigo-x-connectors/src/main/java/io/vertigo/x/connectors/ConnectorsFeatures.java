@@ -59,12 +59,12 @@ public final class ConnectorsFeatures extends Features {
 	 */
 	public ConnectorsFeatures withRedisConnector(final String host, final int port, final String password, final int database) {
 		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(Optional.empty(), RedisConnector.class)
-				.addParam(Param.create("host", host))
-				.addParam(Param.create("port", Integer.toString(port)))
-				.addParam(Param.create("database", Integer.toString(database)));
+				.addParam(Param.of("host", host))
+				.addParam(Param.of("port", Integer.toString(port)))
+				.addParam(Param.of("database", Integer.toString(database)));
 		if (password != null) {
 			componentConfigBuilder
-					.addParam(Param.create("password", password));
+					.addParam(Param.of("password", password));
 		}
 		getModuleConfigBuilder()
 				.withNoAPI()

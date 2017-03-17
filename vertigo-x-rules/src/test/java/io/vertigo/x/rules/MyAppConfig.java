@@ -69,9 +69,9 @@ public class MyAppConfig {
 						.withSqlDataBase()//
 						.addDataStorePlugin(SqlDataStorePlugin.class)
 						.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
-								Param.create("dataBaseClass", PostgreSqlDataBase.class.getName()),
-								Param.create("jdbcDriver", org.postgresql.Driver.class.getName()),
-								Param.create("jdbcUrl",
+								Param.of("dataBaseClass", PostgreSqlDataBase.class.getName()),
+								Param.of("jdbcDriver", org.postgresql.Driver.class.getName()),
+								Param.of("jdbcUrl",
 										"jdbc:postgresql://laura.dev.klee.lan.net:5432/dgac_blanche?user=blanche&password=blanche"))
 						.build())
 				.addModule(new AccountFeatures()
