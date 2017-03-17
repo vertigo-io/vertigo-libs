@@ -16,6 +16,7 @@ __In Bold__ : Potential compatibility problems
 * [All] Code cleaning, refactoring and documenting (and Stream java8, Optionnal, Methods refs, ...)
 * [All] Always use WrappedException (wrap & unwrap), and params order changed
 * [All] Updating Workflow, Rules, Audit, Account with the latest sources from Kinetix
+* [All] Moved impl package into extension's root package
 * [Parent] Renamed 	vertigo-x-parent==> vertigo-extensions
 * [WF] Added oom, crebase and DAO for WfEntities
 * [WF] Refactored vertigo-x-workflow, many updates, tests and fixes
