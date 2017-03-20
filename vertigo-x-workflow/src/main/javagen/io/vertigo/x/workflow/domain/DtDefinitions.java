@@ -67,7 +67,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de WfActivity.
 	 */
-	public enum WfActivityFields implements DtFieldName {
+	public enum WfActivityFields implements DtFieldName<io.vertigo.x.workflow.domain.instance.WfActivity> {
 		/** Propriété 'Id activity'. */
 		WFA_ID,
 		/** Propriété 'creation date'. */
@@ -81,7 +81,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de WfActivityDefinition.
 	 */
-	public enum WfActivityDefinitionFields implements DtFieldName {
+	public enum WfActivityDefinitionFields implements DtFieldName<io.vertigo.x.workflow.domain.model.WfActivityDefinition> {
 		/** Propriété 'Id Activity Definition'. */
 		WFAD_ID,
 		/** Propriété 'name'. */
@@ -97,7 +97,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de WfDecision.
 	 */
-	public enum WfDecisionFields implements DtFieldName {
+	public enum WfDecisionFields implements DtFieldName<io.vertigo.x.workflow.domain.instance.WfDecision> {
 		/** Propriété 'Id Decision'. */
 		WFE_ID,
 		/** Propriété 'username'. */
@@ -115,7 +115,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de WfMultiplicityDefinition.
 	 */
-	public enum WfMultiplicityDefinitionFields implements DtFieldName {
+	public enum WfMultiplicityDefinitionFields implements DtFieldName<io.vertigo.x.workflow.domain.model.WfMultiplicityDefinition> {
 		/** Propriété 'Multiplicity code'. */
 		WFMD_CODE,
 		/** Propriété 'Label'. */
@@ -125,7 +125,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de WfStatus.
 	 */
-	public enum WfStatusFields implements DtFieldName {
+	public enum WfStatusFields implements DtFieldName<io.vertigo.x.workflow.domain.instance.WfStatus> {
 		/** Propriété 'Code Status'. */
 		WFS_CODE,
 		/** Propriété 'label'. */
@@ -135,7 +135,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de WfTransitionDefinition.
 	 */
-	public enum WfTransitionDefinitionFields implements DtFieldName {
+	public enum WfTransitionDefinitionFields implements DtFieldName<io.vertigo.x.workflow.domain.model.WfTransitionDefinition> {
 		/** Propriété 'Id Transition Definition'. */
 		WFTD_ID,
 		/** Propriété 'name'. */
@@ -151,7 +151,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de WfWorkflow.
 	 */
-	public enum WfWorkflowFields implements DtFieldName {
+	public enum WfWorkflowFields implements DtFieldName<io.vertigo.x.workflow.domain.instance.WfWorkflow> {
 		/** Propriété 'Id Workflow'. */
 		WFW_ID,
 		/** Propriété 'creation date'. */
@@ -173,7 +173,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de WfWorkflowDefinition.
 	 */
-	public enum WfWorkflowDefinitionFields implements DtFieldName {
+	public enum WfWorkflowDefinitionFields implements DtFieldName<io.vertigo.x.workflow.domain.model.WfWorkflowDefinition> {
 		/** Propriété 'Id Workflow definition'. */
 		WFWD_ID,
 		/** Propriété 'name'. */

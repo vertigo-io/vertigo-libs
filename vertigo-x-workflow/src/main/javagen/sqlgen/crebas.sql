@@ -1,6 +1,6 @@
 -- ============================================================
 --   Nom de SGBD      :  sqlserver                     
---   Date de création :  27 févr. 2017  16:24:57                     
+--   Date de création :  20 mars 2017  15:51:38                     
 -- ============================================================
 
 
@@ -66,7 +66,7 @@ create table WF_DECISION
     WFE_ID      	 NUMERIC     	identity,
     USERNAME    	 VARCHAR(100)	,
     CHOICE      	 NUMERIC     	,
-    DECISION_DATE	 TIMESTAMP   	,
+    DECISION_DATE	 DATE        	,
     COMMENTS    	 VARCHAR(3000)	,
     WFA_ID      	 NUMERIC     	,
     constraint PK_WF_DECISION primary key nonclustered (WFE_ID)

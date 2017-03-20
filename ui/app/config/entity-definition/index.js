@@ -57,7 +57,7 @@ module.exports = {
             required: false
         },
         decisionDate: {
-            domain: "DO_X_WORKFLOW_DATE",
+            domain: "DO_TIMESTAMP",
             required: false
         },
         comments: {

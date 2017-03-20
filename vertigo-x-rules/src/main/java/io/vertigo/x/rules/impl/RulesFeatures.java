@@ -124,7 +124,7 @@ public final class RulesFeatures extends Features {
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.addDefinitionProvider(new DefinitionProviderConfigBuilder(DynamoDefinitionProvider.class)
-						.addDefinitionResource("kpr", "boot/definitions/application-rules-test.kpr")
+						.addDefinitionResource("kpr", "boot/definitions/application-rules.kpr")
 						.addDefinitionResource("classes", DtDefinitions.class.getName())
 						.build())
 				.addComponent(RuleServices.class, RuleServicesImpl.class);

@@ -65,7 +65,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de ItemId.
 	 */
-	public enum ItemIdFields implements DtFieldName {
+	public enum ItemIdFields implements DtFieldName<io.vertigo.x.rules.ItemId> {
 		/** Propriété 'itemId'. */
 		ITEM_ID,
 	}
@@ -73,7 +73,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de RuleConditionCriteria.
 	 */
-	public enum RuleConditionCriteriaFields implements DtFieldName {
+	public enum RuleConditionCriteriaFields implements DtFieldName<io.vertigo.x.rules.RuleConditionCriteria> {
 		/** Propriété 'Field'. */
 		FIELD,
 		/** Propriété 'Value'. */
@@ -83,7 +83,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de RuleConditionDefinition.
 	 */
-	public enum RuleConditionDefinitionFields implements DtFieldName {
+	public enum RuleConditionDefinitionFields implements DtFieldName<io.vertigo.x.rules.domain.RuleConditionDefinition> {
 		/** Propriété 'id'. */
 		ID,
 		/** Propriété 'field'. */
@@ -99,7 +99,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de RuleCriteria.
 	 */
-	public enum RuleCriteriaFields implements DtFieldName {
+	public enum RuleCriteriaFields implements DtFieldName<io.vertigo.x.rules.RuleCriteria> {
 		/** Propriété 'id'. */
 		WFWD_ID,
 		/** Propriété 'Field 1'. */
@@ -111,7 +111,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de RuleDefinition.
 	 */
-	public enum RuleDefinitionFields implements DtFieldName {
+	public enum RuleDefinitionFields implements DtFieldName<io.vertigo.x.rules.domain.RuleDefinition> {
 		/** Propriété 'id'. */
 		ID,
 		/** Propriété 'creationDate'. */
@@ -125,7 +125,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de RuleFilterDefinition.
 	 */
-	public enum RuleFilterDefinitionFields implements DtFieldName {
+	public enum RuleFilterDefinitionFields implements DtFieldName<io.vertigo.x.rules.domain.RuleFilterDefinition> {
 		/** Propriété 'id'. */
 		ID,
 		/** Propriété 'field'. */
@@ -141,7 +141,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/**
 	 * Enumération des champs de SelectorDefinition.
 	 */
-	public enum SelectorDefinitionFields implements DtFieldName {
+	public enum SelectorDefinitionFields implements DtFieldName<io.vertigo.x.rules.domain.SelectorDefinition> {
 		/** Propriété 'id'. */
 		ID,
 		/** Propriété 'creationDate'. */

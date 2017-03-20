@@ -62,7 +62,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	private final WorkflowStorePlugin workflowStorePlugin;
 	private final ItemStorePlugin itemStorePlugin;
-	private final RuleServices ruleManager;
+	private final RuleServices ruleServices;
 	private final WorkflowPredicateAutoValidatePlugin workflowPredicateAutoValidatePlugin;
 
 	private static final String USER_AUTO = "<AUTO>";
@@ -73,15 +73,15 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	 *
 	 * @param workflowStorePlugin
 	 * @param itemStorePlugin
-	 * @param ruleManager
+	 * @param ruleServices
 	 * @param workflowPredicateAutoValidatePlugin 
 	 */
 	@Inject
 	public WorkflowManagerImpl(final WorkflowStorePlugin workflowStorePlugin, final ItemStorePlugin itemStorePlugin,
-			final RuleServices ruleManager, final WorkflowPredicateAutoValidatePlugin workflowPredicateAutoValidatePlugin) {
+			final RuleServices ruleServices, final WorkflowPredicateAutoValidatePlugin workflowPredicateAutoValidatePlugin) {
 		this.workflowStorePlugin = workflowStorePlugin;
 		this.itemStorePlugin = itemStorePlugin;
-		this.ruleManager = ruleManager;
+		this.ruleServices = ruleServices;
 		this.workflowPredicateAutoValidatePlugin = workflowPredicateAutoValidatePlugin;
 	}
 
@@ -371,9 +371,9 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		if (wfCodeMultiplicityDefinition == WfCodeMultiplicityDefinition.MUL) {
 			final List<WfDecision> wfDecisions = workflowStorePlugin.findAllDecisionByActivity(currentActivity);
 			final DtObject obj = itemStorePlugin.readItem(wfWorkflow.getItemId());
-			final RuleConstants ruleConstants = ruleManager.getConstants(wfWorkflow.getWfwdId());
+			final RuleConstants ruleConstants = ruleServices.getConstants(wfWorkflow.getWfwdId());
 			final RuleContext ruleContext = new RuleContext(obj, ruleConstants);
-			final List<Account> accounts = ruleManager.selectAccounts(currentActivity.getWfadId(), ruleContext);
+			final List<Account> accounts = ruleServices.selectAccounts(currentActivity.getWfadId(), ruleContext);
 
 			final int match = (int) accounts.stream()
 					.filter(filterAccountEqualsDecisionUsername(wfDecisions))
@@ -502,7 +502,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		final Map<Long, WfActivityDefinition> mapAct = activities.stream()
 				.collect(Collectors.toMap(WfActivityDefinition::getWfadId, Function.identity()));
 
-		final List<Long> matchingActivities = ruleManager.findItemsByCriteria(criteria, new ArrayList<>(mapAct.keySet()));
+		final List<Long> matchingActivities = ruleServices.findItemsByCriteria(criteria, new ArrayList<>(mapAct.keySet()));
 
 		return matchingActivities.stream().map(mapAct::get).collect(Collectors.toList());
 	}
@@ -605,11 +605,11 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		Assertion.checkNotNull(conditions);
 		// --
 		ruleDefinition.setItemId(wfActivity.getWfadId());
-		ruleManager.addRule(ruleDefinition);
+		ruleServices.addRule(ruleDefinition);
 
 		for (final RuleConditionDefinition ruleConditionDefinition : conditions) {
 			ruleConditionDefinition.setRudId(ruleDefinition.getId());
-			ruleManager.addCondition(ruleConditionDefinition);
+			ruleServices.addCondition(ruleConditionDefinition);
 		}
 	}
 
@@ -621,11 +621,11 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		Assertion.checkNotNull(filters);
 		// --
 		selector.setItemId(wfActivity.getWfadId());
-		ruleManager.addSelector(selector);
+		ruleServices.addSelector(selector);
 
 		for (final RuleFilterDefinition ruleFilterDefinition : filters) {
 			ruleFilterDefinition.setSelId(selector.getId());
-			ruleManager.addFilter(ruleFilterDefinition);
+			ruleServices.addFilter(ruleFilterDefinition);
 		}
 	}
 
@@ -697,17 +697,17 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		// Fetch the object linked to the workflow instance.
 		final DtObject obj = itemStorePlugin.readItem(wfWorkflow.getItemId());
 
-		final RuleConstants ruleConstants = ruleManager.getConstants(wfwdId);
+		final RuleConstants ruleConstants = ruleServices.getConstants(wfwdId);
 		final RuleContext ruleContext = new RuleContext(obj, ruleConstants);
 
 		final List<WfWorkflowDecision> workflowDecisions = new ArrayList<>();
 
 		for (final WfActivityDefinition activityDefinition : activityDefinitions) {
 			final long actDefId = activityDefinition.getWfadId();
-			final boolean ruleValid = ruleManager.isRuleValid(actDefId, ruleContext, dicRules, dicConditions);
+			final boolean ruleValid = ruleServices.isRuleValid(actDefId, ruleContext, dicRules, dicConditions);
 
 			if (ruleValid) {
-				final List<AccountGroup> groups = ruleManager.selectGroups(actDefId, ruleContext, dicSelectors,
+				final List<AccountGroup> groups = ruleServices.selectGroups(actDefId, ruleContext, dicSelectors,
 						dicFilters);
 
 				final WfWorkflowDecision wfWorkflowDecision = new WfWorkflowDecision();

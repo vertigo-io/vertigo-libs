@@ -35,13 +35,13 @@ import io.vertigo.x.workflow.domain.model.WfActivityDefinition;
 public final class RuleWorkflowPredicateAutoValidatePlugin implements WorkflowPredicateAutoValidatePlugin {
 
 	@Inject
-	private RuleServices ruleManager;
+	private RuleServices ruleServices;
 
 	@Override
 	public boolean canAutoValidateActivity(final WfActivityDefinition activityDefinition, final DtObject object) {
 
-		final RuleConstants ruleConstants = ruleManager.getConstants(activityDefinition.getWfwdId());
+		final RuleConstants ruleConstants = ruleServices.getConstants(activityDefinition.getWfwdId());
 		final RuleContext ruleContext = new RuleContext(object, ruleConstants);
-		return !ruleManager.isRuleValid(activityDefinition.getWfadId(), ruleContext);
+		return !ruleServices.isRuleValid(activityDefinition.getWfadId(), ruleContext);
 	}
 }

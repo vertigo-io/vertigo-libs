@@ -57,7 +57,7 @@
 		<echo message="Génération des classes Java" />
 		<!-- il faut fork="true" si exécution avec "same JRE" dans eclipse -->
 		<java dir="." fork="true" maxmemory="128m" classname="io.vertigo.studio.tools.NameSpace2Java" failonerror="true" classpath=".;${build.dir};${class.path};${compile_classpath}">
-			<arg value="/mda/applicationConfiguration.properties" />
+			<arg value="/io/vertigo/x/workflow/mda/applicationConfiguration.properties" />
 		</java>
 		<copy file="${targetGenDir}\${sqlGen}\crebas.sql" tofile="${sqlCrebasGenDir}\01_CREBAS.sql" />
 	</target>
