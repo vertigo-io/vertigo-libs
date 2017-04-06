@@ -72,7 +72,7 @@ final class PhotoCodec {
 	 * @param vFileMap the metadata as a map of String
 	 * @return the photo
 	 */
-	static VFile map2vFile(final Map<String, String> vFileMap) {
+	VFile map2vFile(final Map<String, String> vFileMap) {
 		Assertion.checkNotNull(vFileMap);
 		//-----
 		try {
@@ -82,7 +82,7 @@ final class PhotoCodec {
 			final Date lastModified = new SimpleDateFormat(CODEC_DATE_FORMAT).parse(vFileMap.get("lastModified"));
 
 			final String base64Content = vFileMap.get("base64Content");
-			return new Base64File(fileName, mimeType, length, lastModified, base64Content);
+			return new Base64File(codecManager, fileName, mimeType, length, lastModified, base64Content);
 		} catch (final ParseException e) {
 			throw WrappedException.wrap(e, "A problem occured when decoding a file from base64");
 		}

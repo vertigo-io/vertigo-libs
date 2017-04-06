@@ -279,7 +279,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 		if (result.isEmpty()) {
 			return Optional.empty();
 		}
-		return Optional.of(PhotoCodec.map2vFile(result));
+		return Optional.of(photoCodec.map2vFile(result));
 	}
 
 	@Override

@@ -22,10 +22,9 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Date;
 
-import io.vertigo.app.Home;
-import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.Assertion;
 
 /**
  * Objet redis correspondant à un VFile. Le contenu du VFile est stocké sous forme base64.
@@ -41,6 +40,7 @@ final class Base64File implements VFile {
 	private final Long length;
 	private final Date lastModified;
 	private final String base64Content;
+	private final CodecManager codecManager;
 
 	/**
 	 * File read from a base64 content.
@@ -50,7 +50,15 @@ final class Base64File implements VFile {
 	 * @param lastModified file lastModified date
 	 * @param base64Content encodage en base64.
 	 */
-	public Base64File(final String fileName, final String mimeType, final Long length, final Date lastModified, final String base64Content) {
+	public Base64File(final CodecManager codecManager,
+			final String fileName,
+			final String mimeType,
+			final Long length,
+			final Date lastModified,
+			final String base64Content) {
+		Assertion.checkNotNull(codecManager);
+		//---
+		this.codecManager = codecManager;
 		this.fileName = fileName;
 		this.mimeType = mimeType;
 		this.length = length;
@@ -101,8 +109,6 @@ final class Base64File implements VFile {
 	/** {@inheritDoc} */
 	@Override
 	public InputStream createInputStream() {
-		final Codec<byte[], String> base64Codec = Home.getApp().getComponentSpace().resolve(CodecManager.class).getBase64Codec();
-		return new ByteArrayInputStream(base64Codec.decode(base64Content));
+		return new ByteArrayInputStream(codecManager.getBase64Codec().decode(base64Content));
 	}
-
 }
