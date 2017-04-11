@@ -22,10 +22,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.inject.Inject;
+
+import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.x.account.services.Account;
@@ -38,6 +43,16 @@ import io.vertigo.x.notification.services.Notification;
  */
 public final class MemoryNotificationPlugin implements NotificationPlugin {
 	private final Map<URI<Account>, List<Notification>> notificationsByAccountURI = new ConcurrentHashMap<>();
+
+	/**
+	 * @param daemonManager Daemon Manager
+	 */
+	@Inject
+	public MemoryNotificationPlugin(final DaemonManager daemonManager) {
+		Assertion.checkNotNull(daemonManager);
+		//-----
+		daemonManager.registerDaemon("cleanTooOldMemoryNotification", () -> new RemoveTooOldNotificationsDaemon(this), 1000);
+	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -63,6 +78,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 		if (notifications == null) {
 			return Collections.emptyList();
 		}
+		cleanTooOldNotifications(notifications);
 		return notifications;
 	}
 
@@ -74,6 +90,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 			notifications = new ArrayList<>();
 			notificationsByAccountURI.put(accountURI, notifications);
 		}
+		cleanTooOldNotifications(notifications);
 		return notifications;
 	}
 
@@ -100,6 +117,46 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 				if (notification.getType().equals(type) && notification.getTargetUrl().equals(targetUrl)) {
 					it.remove();
 				}
+			}
+		}
+	}
+
+	/**
+	 * @author npiedeloup
+	 */
+	public static final class RemoveTooOldNotificationsDaemon implements Daemon {
+		private final MemoryNotificationPlugin memoryNotificationPlugin;
+
+		/**
+		 * @param memoryNotificationPlugin This plugin
+		 */
+		public RemoveTooOldNotificationsDaemon(final MemoryNotificationPlugin memoryNotificationPlugin) {
+			Assertion.checkNotNull(memoryNotificationPlugin);
+			//------
+			this.memoryNotificationPlugin = memoryNotificationPlugin;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public void run() {
+			memoryNotificationPlugin.cleanTooOldNotifications();
+		}
+	}
+
+	void cleanTooOldNotifications() {
+		for (final List<Notification> notifications : notificationsByAccountURI.values()) {
+			cleanTooOldNotifications(notifications);
+		}
+	}
+
+	private static void cleanTooOldNotifications(final List<Notification> notifications) {
+		//on commence par la fin, dès qu'un élément est ok on stop les suppressions
+		for (final ListIterator<Notification> it = notifications.listIterator(notifications.size()); it.hasPrevious();) {
+			final Notification notification = it.previous();
+			if (notification.getTTLInSeconds() >= 0 && notification.getCreationDate().getTime() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis()) {
+				it.remove();
+			} else {
+				break; //un élément est ok on stop les suppressions
 			}
 		}
 	}

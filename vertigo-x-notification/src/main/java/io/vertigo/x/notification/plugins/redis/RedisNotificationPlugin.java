@@ -24,11 +24,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
+import io.vertigo.commons.daemon.Daemon;
+import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -53,30 +56,45 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	/**
 	 * Constructor.
 	 * @param redisConnector the connector to REDIS database
+	 * @param daemonManager Daemon Manager
 	 */
 	@Inject
-	public RedisNotificationPlugin(final RedisConnector redisConnector) {
+	public RedisNotificationPlugin(final RedisConnector redisConnector, final DaemonManager daemonManager) {
 		Assertion.checkNotNull(redisConnector);
+		Assertion.checkNotNull(daemonManager);
 		//-----
 		this.redisConnector = redisConnector;
+		daemonManager.registerDaemon("cleanTooOldRedisNotification", () -> new RemoveTooOldElementsDaemon(this), 60 * 1000); //every minute
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void send(final NotificationEvent notificationEvent) {
+		//1 notif is store 5 times :
+		// - data in map with key= notif:$uuid
+		// - uuid in queue with key= notifs:all (for purge)
+		// - uuid in queue with key= notifs:$accountId
+		// - uuid in queue with key= type:$type;target:$target;uuid
+		// - accountId in queue with key= accounts:$uuid
+
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final Notification notification = notificationEvent.getNotification();
 			final String uuid = notification.getUuid().toString();
-			final String typedTarget = "type:" + notification.getType() + ";target:" + notification.getTargetUrl();
+			final String typedTarget = "type:" + notification.getType() + ";target:" + notification.getTargetUrl() + ";uuid";
 			try (final Transaction tx = jedis.multi()) {
 				tx.hmset("notif:" + uuid, toMap(notification));
-				tx.set(typedTarget + ";uuid", uuid);
+				tx.lrem("notifs:all", 0, uuid);
+				tx.lpush("notifs:all", uuid);
+
 				for (final URI<Account> accountURI : notificationEvent.getToAccountURIs()) {
 					final String notifiedAccount = "notifs:" + accountURI.getId();
 					//On publie la notif (the last wins)
 					tx.lrem(notifiedAccount, 0, uuid);
 					tx.lpush(notifiedAccount, uuid);
-					tx.lrem(typedTarget, 0, notifiedAccount);
-					tx.lpush(typedTarget, notifiedAccount);
+					tx.lrem("accounts:" + uuid, 0, notifiedAccount);
+					tx.lpush("accounts:" + uuid, notifiedAccount);
+					tx.lrem(typedTarget, 0, uuid);
+					tx.lpush(typedTarget, uuid);
 				}
 				tx.exec();
 			} catch (final IOException ex) {
@@ -95,6 +113,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				.put("title", notification.getTitle())
 				.put("content", notification.getContent())
 				.put("creationDate", creationDate)
+				.put("ttlInSeconds", String.valueOf(notification.getTTLInSeconds()))
 				.put("targetUrl", notification.getTargetUrl())
 				.build();
 	}
@@ -109,6 +128,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 					.withTitle(data.get("title"))
 					.withContent(data.get("content"))
 					.withCreationDate(creationDate)
+					.withTTLInSeconds(Integer.valueOf(data.get("ttlInSeconds")))
 					.withTargetUrl(data.get("targetUrl"))
 					.build();
 		} catch (final ParseException e) {
@@ -136,6 +156,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				notifications.add(fromMap(data));
 			}
 		}
+		cleanTooOldElements(notifications);
 		return notifications;
 	}
 
@@ -143,7 +164,27 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	@Override
 	public void remove(final URI<Account> accountURI, final UUID notificationUUID) {
 		try (final Jedis jedis = redisConnector.getResource()) {
-			jedis.lrem("notifs:" + accountURI.getId(), -1, notificationUUID.toString());
+			final String notifiedAccount = "notifs:" + accountURI.getId();
+			final String uuid = notificationUUID.toString();
+			//we remove notif from account stack and account from notif stack
+			jedis.lrem(notifiedAccount, -1, uuid);
+			jedis.lrem("accounts:" + uuid, -1, notifiedAccount);
+
+			final List<String> notifiedAccounts = jedis.lrange("accounts:" + uuid, 0, -1);
+			if (notifiedAccounts.isEmpty()) { //if no more account ref this notif we remove it
+				//we remove list account for this notif
+				jedis.del("accounts:" + uuid);
+
+				//we remove uuid from queue by type and targetUrl
+				final Notification notification = fromMap(jedis.hgetAll("notif:" + uuid));
+				jedis.lrem("type:" + notification.getType() + ";target:" + notification.getTargetUrl() + ";uuid", -1, uuid);
+
+				//we remove data of this notif
+				jedis.del("notif:" + uuid);
+
+				//we remove notif from global index (looking from tail)
+				jedis.lrem("notifs:all", -1, uuid);
+			}
 		}
 	}
 
@@ -151,11 +192,93 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	@Override
 	public void removeAll(final String type, final String targetUrl) {
 		try (final Jedis jedis = redisConnector.getResource()) {
-			final String uuid = jedis.get("type:" + type + ";target:" + targetUrl + ";uuid");
-			final List<String> userNotifsKeys = jedis.lrange("type:" + type + ";target:" + targetUrl, 0, -1);
-			for (final String userNotifsKey : userNotifsKeys) {
-				jedis.lrem(userNotifsKey, -1, uuid);
+			final List<String> uuids = jedis.lrange("type:" + type + ";target:" + targetUrl + ";uuid", 0, -1);
+			for (final String uuid : uuids) {
+				//we search accounts for this notif
+				final List<String> notifiedAccounts = jedis.lrange("accounts:" + uuid, 0, -1);
+				for (final String notifiedAccount : notifiedAccounts) {
+					//we remove this notifs from accounts queue
+					jedis.lrem(notifiedAccount, -1, uuid);
+				}
+				//we remove list account for this notif
+				jedis.del("accounts:" + uuid);
+				//we remove data of this notif
+				jedis.del("notif:" + uuid);
+
+				//we remove notif from global index (looking from tail)
+				jedis.lrem("notifs:all", -1, uuid);
+			}
+			//we remove list notifId for this type and targetUrl
+			jedis.del("type:" + type + ";target:" + targetUrl + ";uuid");
+		}
+	}
+
+	/**
+	 * @author npiedeloup
+	 */
+	public static final class RemoveTooOldElementsDaemon implements Daemon {
+		private final RedisNotificationPlugin redisNotificationPlugin;
+
+		/**
+		 * @param redisNotificationPlugin This plugin
+		 */
+		public RemoveTooOldElementsDaemon(final RedisNotificationPlugin redisNotificationPlugin) {
+			Assertion.checkNotNull(redisNotificationPlugin);
+			//------
+			this.redisNotificationPlugin = redisNotificationPlugin;
+		}
+
+		/** {@inheritDoc} */
+		@Override
+		public void run() {
+			redisNotificationPlugin.cleanTooOldElements();
+		}
+	}
+
+	void cleanTooOldElements() {
+
+		boolean foundOneTooYoung = false;
+		do {
+			try (final Jedis jedis = redisConnector.getResource()) {
+				final List<String> uuids = jedis.lrange("notifs:all", -1, 10); //return last (older) 10 uuid (but not sorted)
+				for (final String uuid : uuids) {
+					final Notification notification = fromMap(jedis.hgetAll("notif:" + uuid));
+					if (isTooOld(notification)) {
+						//we search accounts for this notif
+						final List<String> notifiedAccounts = jedis.lrange("accounts:" + uuid, 0, -1);
+						for (final String notifiedAccount : notifiedAccounts) {
+							//we remove this notifs from accounts queue (looking from tail)
+							jedis.lrem(notifiedAccount, -1, uuid);
+						}
+						//we remove list account for this notif
+						jedis.del("accounts:" + uuid);
+						//we remove data of this notif
+						jedis.del("notif:" + uuid);
+						//we remove notif from global index (looking from tail)
+						jedis.lrem("notifs:all", -1, uuid);
+						//we remove uuid from queue by type and targetUrl (looking from tail)
+						jedis.lrem("type:" + notification.getType() + ";target:" + notification.getTargetUrl() + ";uuid", -1, uuid);
+					} else {
+						foundOneTooYoung = true; //we found one too recent, we stop after this loop
+					}
+				}
+			}
+		} while (!foundOneTooYoung);
+	}
+
+	private static void cleanTooOldElements(final List<Notification> notifications) {
+		//on commence par la fin, dès qu'un élément est ok on stop les suppressions
+		for (final ListIterator<Notification> it = notifications.listIterator(notifications.size()); it.hasPrevious();) {
+			final Notification notification = it.previous();
+			if (isTooOld(notification)) {
+				it.remove();
+			} else {
+				break; //un élément est ok on stop les suppressions
 			}
 		}
+	}
+
+	private static boolean isTooOld(final Notification notification) {
+		return notification.getTTLInSeconds() >= 0 && notification.getCreationDate().getTime() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis();
 	}
 }

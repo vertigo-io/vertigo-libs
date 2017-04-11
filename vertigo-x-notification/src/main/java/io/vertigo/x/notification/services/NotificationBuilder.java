@@ -34,6 +34,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	private String myContent;
 	private String mySender;
 	private Date myCreationDate;
+	private int myTtlInSeconds = -1;
 	private String myTargetUrl;
 	private final UUID uuid;
 
@@ -115,6 +116,17 @@ public final class NotificationBuilder implements Builder<Notification> {
 	}
 
 	/**
+	 * @param ttlInSeconds Notification's TimeToLive
+	 * @return this builder
+	 */
+	public NotificationBuilder withTTLInSeconds(final int ttlInSeconds) {
+		Assertion.checkArgument(ttlInSeconds > 0 || ttlInSeconds == -1, "ttl must be strictly positive or undefined.");
+		//-----
+		myTtlInSeconds = ttlInSeconds;
+		return this;
+	}
+
+	/**
 	 * @param targetUrl Notification's target url
 	 * @return this builder
 	 */
@@ -132,6 +144,6 @@ public final class NotificationBuilder implements Builder<Notification> {
 		if (myCreationDate == null) {
 			myCreationDate = DateUtil.newDateTime();
 		}
-		return new Notification(uuid, mySender, myType, myTitle, myContent, myCreationDate, myTargetUrl);
+		return new Notification(uuid, mySender, myType, myTitle, myContent, myTtlInSeconds, myCreationDate, myTargetUrl);
 	}
 }

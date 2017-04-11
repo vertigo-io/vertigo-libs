@@ -179,4 +179,49 @@ public class NotificationServicesTest {
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
 
 	}
+
+	@Test
+	public void testNotificationsWithTTL() {
+		final Notification notification = new NotificationBuilder()
+				.withSender(accountURI0.urn())
+				.withType("Test")
+				.withTitle("news")
+				.withTargetUrl("#keyConcept@2")
+				.withTTLInSeconds(5) //5s
+				.withContent("discover this amazing app !!")
+				.build();
+
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
+
+		notificationServices.send(notification, accountServices.getStore().getAccountURIs(groupURI));
+
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
+		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
+		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
+
+		sleep(3000);
+
+		//not expired yet
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
+		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
+		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
+
+		sleep(3000);
+
+		//expired
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
+
+	}
+
+	private static void sleep(final int time) {
+		try {
+			Thread.sleep(time);
+		} catch (final InterruptedException e) {
+			//nothing
+		}
+	}
 }
