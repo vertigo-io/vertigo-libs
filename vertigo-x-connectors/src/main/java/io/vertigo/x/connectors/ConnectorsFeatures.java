@@ -65,7 +65,6 @@ public final class ConnectorsFeatures extends Features {
 					.addParam(Param.of("password", password));
 		}
 		getModuleConfigBuilder()
-				.withNoAPI()
 				.addComponent(componentConfigBuilder.build());
 		return this;
 

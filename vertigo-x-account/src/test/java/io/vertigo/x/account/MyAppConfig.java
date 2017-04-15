@@ -80,7 +80,6 @@ public final class MyAppConfig {
 				.withEmbeddedServer(WS_PORT)
 				.build())
 			.addModule(new ModuleConfigBuilder("ws-account")
-				.withNoAPI()
 				.addComponent(AccountWebServices.class)
 				.build())
 			.build();

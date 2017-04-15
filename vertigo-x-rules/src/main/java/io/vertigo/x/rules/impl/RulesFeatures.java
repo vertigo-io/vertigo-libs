@@ -65,7 +65,7 @@ public final class RulesFeatures extends Features {
 	 * @return these features
 	 */
 	public RulesFeatures withDAOSupportRuleStorePlugin() {
-		getModuleConfigBuilder().withNoAPI()//
+		getModuleConfigBuilder()
 				.addComponent(RuleConditionDefinitionDAO.class)//
 				.addComponent(RuleDefinitionDAO.class)//
 				.addComponent(SelectorDefinitionDAO.class)//

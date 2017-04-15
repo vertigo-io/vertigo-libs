@@ -84,7 +84,7 @@ public final class WorkflowFeatures extends Features {
 	 * @return these features
 	 */
 	public WorkflowFeatures withDAOSupportWorkflowStorePlugin() {
-		getModuleConfigBuilder().withNoAPI()//
+		getModuleConfigBuilder()
 				.addPlugin(SQLWorkflowStorePlugin.class) //
 				.addPlugin(RuleWorkflowPredicateAutoValidatePlugin.class)
 				.addComponent(WfActivityDAO.class) //

@@ -89,7 +89,6 @@ public final class MyAppConfig {
 				.withEmbeddedServer(WS_PORT)
 				.build())
 			.addModule(new ModuleConfigBuilder("ws-comment")
-				.withNoAPI()
 				.addComponent(NotificationWebServices.class)
 				.addComponent(TestLoginWebServices.class)
 				.build())
