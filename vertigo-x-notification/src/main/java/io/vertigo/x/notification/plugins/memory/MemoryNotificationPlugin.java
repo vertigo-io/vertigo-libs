@@ -20,7 +20,6 @@ package io.vertigo.x.notification.plugins.memory;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -99,12 +98,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	public void remove(final URI<Account> accountURI, final UUID notificationUUID) {
 		final List<Notification> notifications = notificationsByAccountURI.get(accountURI);
 		if (notifications != null) {
-			for (final Iterator<Notification> it = notifications.iterator(); it.hasNext();) {
-				final Notification notification = it.next();
-				if (notification.getUuid().equals(notificationUUID)) {
-					it.remove();
-				}
-			}
+			notifications.removeIf(notification -> notification.getUuid().equals(notificationUUID));
 		}
 	}
 
@@ -112,12 +106,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	@Override
 	public void removeAll(final String type, final String targetUrl) {
 		for (final List<Notification> notifications : notificationsByAccountURI.values()) {
-			for (final Iterator<Notification> it = notifications.iterator(); it.hasNext();) {
-				final Notification notification = it.next();
-				if (notification.getType().equals(type) && notification.getTargetUrl().equals(targetUrl)) {
-					it.remove();
-				}
-			}
+			notifications.removeIf(notification -> notification.getType().equals(type) && notification.getTargetUrl().equals(targetUrl));
 		}
 	}
 
