@@ -1,0 +1,103 @@
+package io.vertigo.orchestra.dao.planification
+
+
+create Task TK_GET_PROCESS_TO_EXECUTE {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	select prp.*
+        	from o_process_planification prp
+        	where prp.SST_CD = 'RESERVED'
+        	and prp.NOD_ID = #NOD_ID#
+        	
+			"
+	attribute DTC_O_PROCESS_PLANIFICATION	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC		notNull:"true" 	inOut :"out"}
+	attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+}
+
+
+create Task TK_RESERVE_PROCESS_TO_EXECUTE {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineProc"
+        request : "
+        	update o_process_planification
+        	set SST_CD = 'RESERVED', NOD_ID = #NOD_ID#
+        	where (SST_CD = 'WAITING' and expected_time >= #LOWER_LIMIT# and expected_time <= #UPPER_LIMIT#) 
+        			or (SST_CD = 'RESCUED')
+			"
+	 attribute LOWER_LIMIT	 	{domain : DO_O_TIMESTAMP 		notNull:"true" 	inOut :"in"}
+	 attribute UPPER_LIMIT	 	{domain : DO_O_TIMESTAMP 		notNull:"true" 	inOut :"in"}
+	 attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+}
+
+create Task TK_GET_LAST_PLANIFICATION_BY_PRO_ID {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	select prp.* from  o_process_planification prp
+        	
+        	inner join (
+				    select pro_id, max(expected_time) as MaxDate
+				    from o_process_planification
+				    group by pro_id
+				) pp on pp.pro_id = prp.pro_id and pp.MaxDate = prp.expected_time
+        	where prp.PRO_ID = #PRO_ID# and prp.SST_CD = 'WAITING'
+			"
+		attribute PRO_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+		attribute DT_O_PROCESS_PLANIFICATION	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTO		notNull:"false" 	inOut :"out"}
+}
+
+
+create Task TK_GET_ALL_LAST_PAST_PLANIFICATIONS {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	select prp.* from  o_process_planification prp
+        	inner join (
+				    select pro_id, max(expected_time) as MaxDate
+				    from o_process_planification
+				    where expected_time < #CURRENT_DATE# and SST_CD = 'WAITING'
+				    group by pro_id
+				) pp on pp.pro_id = prp.pro_id and pp.MaxDate = prp.expected_time
+			
+			"
+		attribute CURRENT_DATE 	{domain : DO_O_TIMESTAMP 			notNull:"true" 	inOut :"in"}
+		attribute PROCESS_PLANIFICATIONS	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC		notNull:"true" 	inOut :"out"}
+}
+
+
+create Task TK_CLEAN_PLANIFICATIONS_ON_BOOT {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineProc"
+        request : "
+        	update o_process_planification set 
+			SST_CD = 'MISFIRED'
+			where SST_CD = 'WAITING' and expected_time < #CURRENT_DATE# and prp_id not in (select prp.PRP_ID from  o_process_planification prp
+        	inner join (
+				    select pro_id, max(expected_time) as MaxDate
+				    from o_process_planification
+				    group by pro_id
+				) pp on pp.pro_id = prp.pro_id and pp.MaxDate = prp.expected_time)
+			"
+		attribute CURRENT_DATE 	{domain : DO_O_TIMESTAMP 			notNull:"true" 	inOut :"in"}
+}
+
+
+create Task TK_CLEAN_FUTURE_PLANIFICATIONS {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineProc"
+        request : "
+        	delete from o_process_planification prp
+        	where prp.PRO_ID in (select pro.PRO_ID from o_process pro where pro.NAME = #PROCESS_NAME#) and prp.SST_CD = 'WAITING' and prp.expected_time > current_timestamp
+			"
+	 attribute PROCESS_NAME	 	{domain : DO_O_LIBELLE 		notNull:"true" 	inOut :"in"}
+}
+
+
+
+
+
+
+
+
+

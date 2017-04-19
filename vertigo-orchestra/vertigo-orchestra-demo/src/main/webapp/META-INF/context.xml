@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context  path="/orchestra-webapi" debug="0" reloadable="true" allowCasualMultipartParsing="true">
+	<Resource name="jdbc/DataSource" auth="SERVLET" type="javax.sql.DataSource" 
+			factory="org.apache.tomcat.jdbc.pool.DataSourceFactory"
+		 driverClassName="org.postgresql.Driver" 
+		 url="jdbc:postgresql://localhost:5432/orchestra" username="orchestra" password="orchestra"
+		 maxActive="30" maxIdle="0" maxWait="10000" removeAbandoned="true" logAbandoned="true"/>
+		 
+	<Parameter name="boot.nodeName" value="NODE_TEST_1" override="false" />	 
+	<Parameter name="boot.timerPeriod" value="30" override="false" />	 
+	<Parameter name="boot.forecastDuration" value="1200" override="false" />	
+	<Parameter name="boot.workersCount" value="10" override="false" />
+	<Parameter name="orchestra.root.directory" value="D:\\tmp\\orchestra\\"/>	
+</Context>

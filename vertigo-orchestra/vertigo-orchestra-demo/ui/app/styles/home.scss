@@ -1,0 +1,48 @@
+@import './_variables.scss';
+
+[data-demo='homepage'] {
+    h1 {
+        margin-top: -20px;
+        color: $primary-text-color;
+        font-size: 30px;
+        margin-left: 5px;
+        line-height: 30px;
+    }
+    [data-focus="selection-list"] {
+        margin: 0px 10%;
+    }
+
+    & > [data-orchestra='header'] {
+      text-align: center;
+      [data-focus='button-action']{
+          color:$primary-color-text;
+          background-color: $primary-color-light;
+      }
+
+      & > [data-orchestra='filter'], [data-orchestra='time-filter'] {
+        margin: 0px 10%;
+        margin-top: 10px;
+        margin-bottom: 10px;
+
+        &> button{
+          margin: 0 5px;
+        }
+
+        & > [data-orchestra='previous'] {
+            float: left;
+            margin-top: 15px;
+            width: 192px;
+        }
+        & > [data-orchestra='next'] {
+          float: right;
+          margin-top: 15px;
+          width: 192px;
+        }
+
+      }
+
+
+
+
+    }
+}

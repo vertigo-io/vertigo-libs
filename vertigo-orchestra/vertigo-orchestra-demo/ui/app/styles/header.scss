@@ -1,0 +1,85 @@
+@import "variables";
+@import "mixins";
+
+$header-content-summary-padding-top: 5px;
+
+[data-focus="header-scrolling"] {
+    z-index: 1;
+    .key-concept {
+        font-size: 28px;
+        color: $accent-color;
+        text-transform: uppercase;
+        margin: 0;
+        margin-right: 20px;
+        margin-bottom: 20px;
+    }
+
+    [data-focus="header-actions"] {
+        [data-focus="button-action"] {
+            background-color: $accent-color;
+            &[shape='fab']{
+                color:$primary-color-text !important;
+                background-color: $primary-color-light !important;
+            }
+        }
+    }
+
+    [data-demo="header-content-expanded"] {
+        display: flex;
+        align-content:center;
+        padding: 0 100px;
+        [data-demo="header-content-expanded__infos"] {
+            width: 700px;
+            padding: 0 20px;
+            @include headings {
+                margin-bottom: 20px;
+                color: $accent-color;
+            }
+            h3, h4 {
+                color: $secondary-text-color;
+            }
+            h5, h6 {
+                color: $secondary-text-color;
+            }
+        }
+    }
+
+    [data-focus="header-top-row"] {
+        form {
+            height: 100%;
+            fieldset {
+                height: 100%;
+            }
+        }
+        [data-demo="header-content-summary"] {
+            display: flex;
+            align-content:center;
+            height: calc(100% - $header-content-summary-padding-top * 2);
+            padding: $header-content-summary-padding-top 0;
+            .key-concept {
+                font-size: 22px;
+                align-self: flex-end;
+                margin: 0;
+                margin-right: 20px;
+            }
+            @include headings {
+                color: $secondary-text-color;
+                align-self: flex-end;
+                margin: 0;
+            }
+            h4 {
+                margin-right: 20px;
+            }
+        }
+
+    }
+
+    [data-focus='cartridge-search'] {
+        @include headings {
+            font-size: 42px;
+            line-height: 50px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    }
+}

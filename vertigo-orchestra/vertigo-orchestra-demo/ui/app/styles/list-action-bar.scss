@@ -1,0 +1,5 @@
+@import "mixins";
+
+[data-focus="list-action-bar"] {
+    @include shadow(2, 0.2, 0.02, 0.02);
+}

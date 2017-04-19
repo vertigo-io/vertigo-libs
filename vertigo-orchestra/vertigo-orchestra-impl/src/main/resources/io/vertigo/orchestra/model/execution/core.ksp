@@ -1,0 +1,12 @@
+package io.vertigo.orchestra.domain.execution
+
+create DtDefinition DT_O_NODE {
+	storeName : "orchestra"
+	key NOD_ID			{domain : DO_O_IDENTIFIANT, label :"Id du noeud", notNull:"true",}
+	field NAME			{domain : DO_O_LIBELLE, label :"Nom du noeud", notNull:"true",}
+	field HEARTBEAT   	{domain : DO_O_TIMESTAMP, label :"Date de dernière activité", notNull:"false",}
+	
+  
+},
+
+

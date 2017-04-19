@@ -1,0 +1,33 @@
+@import "variables";
+@import "mixins";
+
+
+[data-focus="selection-list"] {
+    [data-focus="sl-line"] {
+        border: 0px solid transparent !important;
+        margin-bottom: 7px;
+        min-height: auto;
+        .level1 {
+            font-size: 15px;
+            color: $accent-color;
+        }
+        .level2 {
+            font-size: 13px;
+            color: $primary-text-color
+        }
+        .level3 {
+            font-size: 13px;
+            color: $secondary-text-color;
+        }
+    }
+}
+
+[data-focus='quick-search'] {
+    [data-focus="selection-list"] {
+        [data-focus="sl-line"] {
+            @include shadow(2);
+            border: 0px solid transparent !important;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+    }
+}

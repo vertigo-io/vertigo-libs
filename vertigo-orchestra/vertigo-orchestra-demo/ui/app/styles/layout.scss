@@ -1,0 +1,10 @@
+@import "variables";
+@import "mixins";
+
+.orchestra-app {
+
+    [data-focus='layout'] {
+        background-color: #EEEEEE;
+        min-height: 100%;
+    }
+}

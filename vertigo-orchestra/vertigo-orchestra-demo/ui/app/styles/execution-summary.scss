@@ -1,0 +1,81 @@
+@import "mixins";
+@import "variables";
+
+
+[data-orchestra='summary-line-content']{
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      >span{
+          font-style: italic;
+      }
+      >div[data-orchestra='name']{
+          width: 30%;
+          text-align: left;
+          text-transform: uppercase;
+          font-weight: bold;
+      }
+      >div[data-orchestra='counts']{
+          width: 30%;
+      }
+      >div[data-orchestra='last']{
+          width: 20%;
+          text-align: center;
+      }
+      >div[data-orchestra='next']{
+          width: 20%;
+          text-align: center;
+      }
+}
+
+[data-orchestra='execution-summary']{
+
+        display: flex;
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        & > div {
+          width: 32px;
+          height: 32px;
+          margin: 5px 10px;
+
+          &[data-orchestra='execution-summary-icon'] {
+          border-radius: 100%;
+          &.successfulCount {
+            color: green;
+            cursor: pointer;
+          }
+          &.errorsCount {
+            color: red;
+            cursor: pointer;
+          }
+          &.misfiredCount {
+            color: grey;
+            cursor: default;
+          }
+          &.health-success {
+            color: green;
+          }
+          &.health-warning {
+            color: orange;
+          }
+          &.health-error {
+            color: red;
+          }
+          & > span {
+            vertical-align: middle;
+            font-weight: bold;
+            line-height: 32px;
+            color: $primary-text-color;
+          }
+        }
+    }
+
+    & > [data-orchestra='execution-summary-average']{
+        text-align: center;
+          & > span {
+            vertical-align: middle;
+            font-weight: bold;
+          }
+    }
+}

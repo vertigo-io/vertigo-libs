@@ -1,0 +1,41 @@
+@import "variables";
+@import "mixins";
+
+
+[data-focus='advanced-search'] {
+    [data-focus="facet-container"] {
+        [data-focus='facet-box'] {
+            [data-focus='facet-box-body'] {
+                [data-focus='facet'] {
+                    [data-focus="facet-title"] {
+                        h3 {
+                            color: $secondary-text-color;
+                        }
+                    }
+                    [data-focus='facet-data-list'] {
+                        ul {
+                            li:hover{
+                                color: $accent-color;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    [data-focus='result-container'] {
+        [data-focus="group-container"] {
+            h3 {
+                span:nth-child(2) {
+                    color: $secondary-text-color;
+                    &:after {
+                        content: ')';
+                    }
+                    &:before {
+                        content: '(';
+                    }
+                }
+            }
+        }
+    }
+}

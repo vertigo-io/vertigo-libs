@@ -1,0 +1,10 @@
+@import "variables";
+
+[data-focus="list-summary"] {
+    [data-focus="topic-displayer"] {
+        [data-focus="button-action"] {
+            background-color: $accent-color;
+            color: #FFF;
+        }
+    }
+}

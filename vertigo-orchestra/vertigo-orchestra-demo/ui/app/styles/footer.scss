@@ -1,0 +1,16 @@
+@import "variables";
+
+$footer-height:150px;
+$footer-menu-left:70px;
+
+[data-focus='layout'] {
+    padding-bottom:$footer-height;
+    [data-focus="footer"] {
+        background-color: #FFF;
+        position: absolute;
+        bottom: 0;
+        padding: 0;
+        width: calc(100% - 60px);
+        
+    }
+}

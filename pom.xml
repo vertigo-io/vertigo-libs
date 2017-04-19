@@ -43,6 +43,7 @@ limitations under the License. -->
 		<module>vertigo-x-audit</module>
 		<module>vertigo-x-rules</module>
 		<module>vertigo-x-workflow</module>
+		<module>vertigo-orchestra</module>
 	</modules>
 
 	<scm>

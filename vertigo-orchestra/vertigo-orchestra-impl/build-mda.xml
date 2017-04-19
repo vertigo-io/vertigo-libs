@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- ====================================================================== -->
+<!-- Ant build file (http://ant.apache.org/) for Ant 1.6.2 or above.        -->
+<!-- ====================================================================== -->
+<project name="orchestra-mda" default="clean-generate">
+	<!-- =================================================================== -->
+	<!-- Proprietes                                                          -->
+	<!-- =================================================================== -->
+
+	<property name="build.compiler" value="extJavac"/>
+	
+	<mkdir dir="./lib"/>
+	<pathconvert property="class.path">
+		<path>
+            <fileset dir="./lib">
+                <include name="*.jar" />
+            </fileset>          	
+		</path>
+	</pathconvert>
+	
+	<property name="targetGenDir" location="./src/main/javagen/" />
+	<property name="compile_classpath" location="./target/classes" />
+	<property name="src.dir" location="./src/main/java"/>
+	<property name="resources.dir" location="./src/main/resources"/>
+
+	<!-- ====================================================================== -->
+	<!-- Generation des classes de tests                                        -->
+	<!-- ====================================================================== -->
+	<target name="generate-clean" description="Nettoyage des repertoires avant la génération du code">
+		<echo message="Suppression de .java et .properties du répertoire ${targetGenDir}" />
+		<delete dir="${targetGenDir}" includeemptydirs="true">
+			<!--<include name="**/*.java" />
+			<include name="**/*.properties" />
+			<include name="**/*.js" />
+			<include name="**/*.sql" />-->
+			<include name="**/*" />
+		</delete>
+	</target>
+	
+	<target name="compile-whatisneeded" description="Compile les classes spécifiques pour la génération de code">
+		<echo message="compile classpath: ${compile_classpath}"/>
+		<mkdir dir="${compile_classpath}"/>
+		<javac srcdir="${src.dir}"
+		         destdir="${compile_classpath}"
+		         includes="**/TaskEngineSelectDyn.java"		         
+				 		 includeantruntime="false"
+		         classpath="${class.path};${compile_classpath}"
+		         debug="on"
+		  />
+	</target>
+		
+	<target name="generate-sources" depends="compile-whatisneeded" description="Generation des sources">
+		
+		<echo message="Génération des classes Java" />
+		<!-- il faut fork="true" si exécution avec "same JRE" dans eclipse -->
+		<java dir="." fork="true" maxmemory="128m" classname="io.vertigo.studio.tools.NameSpace2Java" failonerror="true" classpath=".;${class.path};${compile_classpath}">
+			<arg value="/io/vertigo/orchestra/mda/build-mda.properties" />
+		</java>
+	</target>
+
+	<target name="clean-generate" description="Clean puis genere tout">
+			<antcall target="generate-clean" />
+			<antcall target="generate-sources" />
+	</target>
+	
+	<target name="copy-dependencies" description="Copy dependencies to /lib">
+		<delete dir="lib" includeemptydirs="true">
+				<include name="**/*" />
+		</delete>
+		<exec executable="cmd">
+		        <arg value="/C"/>
+		        <arg value="mvn"/>
+		        <arg line="dependency:copy-dependencies -DoutputDirectory=lib" />
+		</exec>
+	</target>
+</project>

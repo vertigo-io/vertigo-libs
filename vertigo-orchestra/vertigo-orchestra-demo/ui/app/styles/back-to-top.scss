@@ -1,0 +1,8 @@
+@import "variables";
+
+[data-focus="back-to-top"] {
+    z-index: 1;
+    button[data-focus="button-action"] {
+        background-color: $accent-color;
+    }
+}

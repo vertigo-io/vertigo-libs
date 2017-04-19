@@ -1,0 +1,40 @@
+@import "variables";
+
+$scrollspy-container-menu-size:220px;
+$media-desktop-breakpoint: 840px !default;
+
+[data-focus="scrollspy-container"] {
+    [data-focus="sticky-menu"] {
+        ul {
+            border-right: 1px solid #cbcbcb;
+            margin-right: 20px;
+            li {
+                color: $primary-text-color;
+                text-align: right;
+                font-size: 11pt;
+                margin: 0;
+                padding: 10px 20px 10px 5px;
+                position: relative;
+                right: -2px;
+                border:0;
+                border-right: 3px solid transparent;
+                &[data-active="true"] {
+                    font-size: 20px;
+                    color: $accent-color;
+                    border-right: 3px solid $accent-color;
+                }
+            }
+        }
+    }
+}
+
+@media (min-width: $media-desktop-breakpoint - 1) {
+    [data-focus="scrollspy-container"] {
+        [data-focus="sticky-menu"] {
+            width: $scrollspy-container-menu-size;
+        }
+        [data-focus="scrollspy-container-content"] {
+            margin-left: #{$scrollspy-container-menu-size + 10px};
+        }
+    }
+}

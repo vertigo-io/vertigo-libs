@@ -1,0 +1,74 @@
+package io.vertigo.orchestra.dao.execution
+
+create Task TK_GET_ACTIVITIES_TO_LAUNCH {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	select 
+        		ace.*
+        	from o_activity_execution ace
+        	where ace.EST_CD = 'RESERVED'
+        	and ace.NOD_ID = #NOD_ID#
+        	
+			"
+	attribute DTC_ACTIVITY_EXECUTION	 	{domain : DO_DT_O_ACTIVITY_EXECUTION_DTC 		notNull:"true" 	inOut :"out"}
+	attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+},
+
+
+create Task TK_GET_ACTIVITY_EXECUTION_BY_TOKEN {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	select 
+        		ace.*
+        	from o_activity_execution ace
+        	where ace.ACE_ID = #ACE_ID#
+        	and ace.TOKEN = #TOKEN#
+        	
+			"
+	attribute DT_ACTIVITY_EXECUTION	 	{domain : DO_DT_O_ACTIVITY_EXECUTION_DTO 		notNull:"true" 	inOut :"out"}
+	attribute ACE_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+	attribute TOKEN	 	{domain : DO_O_TOKEN 		notNull:"true" 	inOut :"in"}
+},
+
+create Task TK_RESERVE_ACTIVITIES_TO_LAUNCH {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineProc"
+        request : "
+        	update  o_activity_execution 
+        	set EST_CD = 'RESERVED',
+        		NOD_ID = #NOD_ID#
+        		
+        	where ace_id in (
+        			select ace_id 
+        			from o_activity_execution
+        			where EST_CD = 'WAITING' or EST_CD = 'RESERVED'
+        			order by creation_time asc
+        			limit #MAX_NUMBER#
+        			for update
+        	)
+        	
+			"
+			
+		attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+		attribute MAX_NUMBER	 	{domain : DO_O_NOMBRE 		notNull:"true" 	inOut :"in"}
+}
+
+
+create Task TK_GET_ACTIVITY_WORKSPACE {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	select acw.*
+        	 from o_activity_workspace acw
+        	 where acw.ACE_ID = #ACE_ID#
+        	 and   acw.IS_IN = #IN#
+        	
+			"
+			
+		attribute ACE_ID	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+		attribute IN	 	{domain : DO_O_BOOLEEN 			notNull:"true" 	inOut :"in"}
+		attribute DT_O_ACTIVITY_WORKSPACE	 	{domain : DO_DT_O_ACTIVITY_WORKSPACE_DTO 		notNull:"false" 	inOut :"out"}
+}
+

@@ -1,0 +1,31 @@
+package io.vertigo.orchestra.monitoring.domain.uiexecutions
+
+create DtDefinition DT_O_PROCESS_EXECUTION_UI {
+	field PRE_ID   				{domain : DO_O_IDENTIFIANT, label :"Id de l'activité", notNull:"true",},
+	field BEGIN_TIME   			{domain : DO_O_TIMESTAMP, label :"Nom du processus", notNull:"true",},
+	field END_TIME   			{domain : DO_O_TIMESTAMP, label :"Nom du processus", notNull:"true",},
+	field EXECUTION_TIME   		{domain : DO_O_NOMBRE, label :"Durée", notNull:"false",},
+	field STATUS   				{domain : DO_O_CODE_IDENTIFIANT, label :"Statut", notNull:"false",},
+	field CHECKED				{domain : DO_O_BOOLEEN, label :"Pris en charge", notNull:"false",},
+	field CHECKING_DATE			{domain : DO_O_TIMESTAMP, label :"Date de prise en charge", notNull:"false",},
+	field CHECKING_COMMENT		{domain : DO_O_TEXT, label :"Commentaire", notNull:"false",},
+	field HAS_ATTACHMENT			{domain : DO_O_BOOLEEN, label :"Fichier de log", notNull:"false",},
+  	
+},
+
+create DtDefinition DT_O_ACTIVITY_EXECUTION_UI {
+	field ACE_ID   					{domain : DO_O_IDENTIFIANT, label :"Id de l'activité", notNull:"true",},
+	field LABEL   				{domain : DO_O_LIBELLE, label :"Libellé", notNull:"false",},
+	field BEGIN_TIME   			{domain : DO_O_TIMESTAMP, label :"Nom du processus", notNull:"true",},
+	field END_TIME   			{domain : DO_O_TIMESTAMP, label :"Nom du processus", notNull:"true",},
+	field EXECUTION_TIME   		{domain : DO_O_NOMBRE, label :"Durée", notNull:"false",},
+	field STATUS   				{domain : DO_O_CODE_IDENTIFIANT, label :"Statut", notNull:"false",},
+	field WORKSPACE_IN 			{domain : DO_O_JSON_TEXT, label :"Paramètres entrants", notNull:"false",},
+	field WORKSPACE_OUT 		{domain : DO_O_JSON_TEXT, label :"Paramètres sortants", notNull:"false",},
+	field HAS_ATTACHMENT			{domain : DO_O_BOOLEEN, label :"Fichier de log", notNull:"false",},
+	field HAS_TECHNICAL_LOG 	{domain : DO_O_BOOLEEN, label :"Log technique", notNull:"false",},
+  
+},
+
+
+
