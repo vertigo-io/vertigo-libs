@@ -28,10 +28,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
-import io.vertigo.orchestra.definitions.ProcessDefinition;
-import io.vertigo.orchestra.definitions.ProcessDefinitionBuilder;
-import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
-import io.vertigo.orchestra.definitions.ProcessType;
 import io.vertigo.util.MapBuilder;
 
 /**

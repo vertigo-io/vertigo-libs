@@ -24,7 +24,6 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.orchestra.services.OrchestraServices;
 
 /**
  * Activity Logger.
@@ -32,10 +31,6 @@ import io.vertigo.orchestra.services.OrchestraServices;
  * @author mlaroche.
  */
 public final class ActivityLogger {
-
-	private static final String LOG_FILE_EXTENSION = ".log";
-	private static final Logger LOGGER = Logger.getLogger(OrchestraServices.class);
-
 	private final Logger loggerActivity;
 	private final StringBuilder log = new StringBuilder();
 	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
