@@ -79,7 +79,6 @@ public final class OrchestraFeatures extends Features {
 	 */
 	public OrchestraFeatures withDataBase(final String nodeName, final int daemonPeriodSeconds, final int workersCount, final int forecastDurationSeconds) {
 		getModuleConfigBuilder()
-				.withNoAPI()
 				.addPlugin(DbProcessDefinitionStorePlugin.class)
 				.addPlugin(DbProcessSchedulerPlugin.class,
 						Param.of("nodeName", nodeName),

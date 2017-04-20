@@ -73,7 +73,8 @@ public final class MyAppConfig {
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.build())
 				// we build h2 mem
-				.addModule(new ModuleConfigBuilder("databaseInitializer").withNoAPI().addComponent(DataBaseInitializer.class).build())
+				.addModule(new ModuleConfigBuilder("databaseInitializer")
+						.addComponent(DataBaseInitializer.class).build())
 				//
 				.addModule(new OrchestraFeatures()
 						.withDataBase("NODE_TEST_1", 1, 3, 60)
@@ -101,7 +102,6 @@ public final class MyAppConfig {
 	public static void addWebServices(final AppConfigBuilder appConfigBuilder) {
 		appConfigBuilder
 				.addModule(new ModuleConfigBuilder("orchestra-ws")
-						.withNoAPI()
 						.addComponent(WsDefinition.class)
 						.addComponent(WsExecution.class)
 						.addComponent(WsExecutionControl.class)
