@@ -35,25 +35,26 @@ limitations under the License. -->
 	</properties>
 	
 	<modules>
-		<module>vertigo-x-connectors</module>
-		<module>vertigo-x-account</module>
-		<module>vertigo-x-comment</module>
-		<module>vertigo-x-notification</module>		
-		<module>vertigo-x-audit</module>
-		<module>vertigo-x-rules</module>
-		<module>vertigo-x-workflow</module>
+		<module>vertigo-connectors</module>
+		<module>vertigo-account</module>
+		<module>vertigo-comment</module>
+		<module>vertigo-notification</module>		
+		<module>vertigo-audit</module>
+		<module>vertigo-rules</module>
+		<module>vertigo-workflow</module>
 		<module>vertigo-orchestra</module>
 		<module>vertigo-struts2</module>
 		<module>vertigo-quarto</module>
 		<module>vertigo-stella</module>
 		<module>vertigo-geo</module>
+		<module>vertigo-adapters</module>
 	</modules>
 
 	<scm>
 		<connection>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</connection>
 		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</developerConnection>
 		<url>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</url>
-		<tag>vertigo-x-0.9.5-SNAPSHOT</tag>
+		<tag>vertigo-extensions-0.9.5-SNAPSHOT</tag>
 	</scm>
 	
 </project>

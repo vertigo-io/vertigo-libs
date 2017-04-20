@@ -1,9 +1,0 @@
-@import "variables";
-
-div[data-focus="field"] {
-    color: $primary-text-color;
-}
-
-div[data-domain="DO_O_JSON_TEXT"][data-focus="field"] > div[data-focus="field-value-container"] > div[data-orchestra="jsonInput"] {
-  width: auto;
-}
