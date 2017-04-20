@@ -1,0 +1,39 @@
+package io.vertigo.demo.domain
+
+/**************************************************************************************************/
+/* 											Gestion des domaines pour le FileInfo								  */
+/**************************************************************************************************/
+	
+create Domain DO_GED_LABEL {
+	dataType : String
+	formatter : FMT_DEFAULT
+    storeType : "VARCHAR(30)"
+}
+
+create Domain DO_GED_DATE {
+	dataType : Date
+	formatter : FMT_DATE
+    storeType : "DATE"
+}
+
+create Domain DO_GED_URI {
+	dataType : Long
+	formatter : FMT_DEFAULT
+    storeType : "BIGINT"
+}
+
+create Domain DO_GED_SIZE {
+	dataType : Long
+	formatter : FMT_DEFAULT
+    storeType : "BIGINT"
+}
+
+create Domain DO_GED_DATA_STREAM {
+	dataType : DataStream
+	formatter : FMT_DEFAULT
+	storeType : "BLOB"
+}
+
+create FileInfo FI_FILE_INFO_STD {
+	storeName : "main"
+}

@@ -1,0 +1,10 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<config>
+	<module name="stella">
+		<component api="WorkManager" class="io.vertigo.stella.impl.work.WorkManagerImpl">
+			<param name="workerCount" value="5" />
+			<!-- plugin name = "DistributedPlugin" class = "io.vertigo.stella.impl.work.plugins.redis.RedisDistributedPlugin"> <param name="host" value="localhost" /> </plugin -->
+		</component>
+	</module>
+</config>
+

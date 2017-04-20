@@ -19,41 +19,17 @@ limitations under the License. -->
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
-		<artifactId>vertigo-parent</artifactId>
+		<artifactId>vertigo-extensions</artifactId>
 		<version>0.9.5-SNAPSHOT</version>
 	</parent> 
 	
-	<artifactId>vertigo-extensions</artifactId>
+	<artifactId>vertigo-quarto</artifactId>
 	<version>0.9.5-SNAPSHOT</version>
-	<name>vertigo-extensions</name>
+	<name>vertigo-quarto</name>
 	<packaging>pom</packaging>
 	
-	<properties>
-		<!-- For global junit test coverage -->
-		<jacoco.destFile>${project.basedir}/../target/jacoco-it.exec</jacoco.destFile>
-		<sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco-it.exec</sonar.jacoco.reportPaths>
-	</properties>
-	
 	<modules>
-		<module>vertigo-x-connectors</module>
-		<module>vertigo-x-account</module>
-		<module>vertigo-x-comment</module>
-		<module>vertigo-x-notification</module>		
-		<module>vertigo-x-audit</module>
-		<module>vertigo-x-rules</module>
-		<module>vertigo-x-workflow</module>
-		<module>vertigo-orchestra</module>
-		<module>vertigo-struts2</module>
-		<module>vertigo-quarto</module>
-		<module>vertigo-stella</module>
-		<module>vertigo-geo</module>
-	</modules>
-
-	<scm>
-		<connection>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</connection>
-		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</developerConnection>
-		<url>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</url>
-		<tag>vertigo-x-0.9.5-SNAPSHOT</tag>
-	</scm>
-	
+		<module>vertigo-quarto-api</module>
+		<module>vertigo-quarto-impl</module>
+	</modules>	
 </project>
