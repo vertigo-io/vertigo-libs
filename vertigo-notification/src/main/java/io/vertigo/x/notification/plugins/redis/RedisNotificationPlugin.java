@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 
@@ -75,7 +74,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		// - uuid in queue with key= notifs:all (for purge)
 		// - uuid in queue with key= notifs:$accountId
 		// - uuid in queue with key= type:$type;target:$target;uuid
-		// - accountId in queue with key= accounts:$uuid
+		// - notifs:$accountId in queue with key= accounts:$uuid
 
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final Notification notification = notificationEvent.getNotification();
@@ -83,6 +82,11 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 			final String typedTarget = "type:" + notification.getType() + ";target:" + notification.getTargetUrl() + ";uuid";
 			try (final Transaction tx = jedis.multi()) {
 				tx.hmset("notif:" + uuid, toMap(notification));
+
+				//TODO add expire on data
+				//retirer notifs:all qui ne sert plus à rien
+				//loop on type:$type;target:$target;uuid et on déduit les autres queues de là
+				tx.expire("notif:" + uuid, notification.getTTLInSeconds());
 				tx.lrem("notifs:all", 0, uuid);
 				tx.lpush("notifs:all", uuid);
 
@@ -156,7 +160,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				notifications.add(fromMap(data));
 			}
 		}
-		cleanTooOldElements(notifications);
+		cleanTooOldNotifications(notifications);
 		return notifications;
 	}
 
@@ -266,16 +270,8 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		} while (!foundOneTooYoung);
 	}
 
-	private static void cleanTooOldElements(final List<Notification> notifications) {
-		//on commence par la fin, dès qu'un élément est ok on stop les suppressions
-		for (final ListIterator<Notification> it = notifications.listIterator(notifications.size()); it.hasPrevious();) {
-			final Notification notification = it.previous();
-			if (isTooOld(notification)) {
-				it.remove();
-			} else {
-				break; //un élément est ok on stop les suppressions
-			}
-		}
+	private static void cleanTooOldNotifications(final List<Notification> notifications) {
+		notifications.removeIf(RedisNotificationPlugin::isTooOld);
 	}
 
 	private static boolean isTooOld(final Notification notification) {
