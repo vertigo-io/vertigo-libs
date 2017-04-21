@@ -21,7 +21,6 @@ package io.vertigo.x.notification.plugins.memory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -62,7 +61,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 
 		//1 - Dépiler les événemnts en asynchrone FIFO
 		for (final URI<Account> accountURI : notificationEvent.getToAccountURIs()) {
-			obtainNotifications(accountURI).add(notificationEvent.getNotification());
+			obtainNotifications(accountURI).add(0, notificationEvent.getNotification());
 		}
 
 		//2 - gestion globale async des erreurs
@@ -139,14 +138,10 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	}
 
 	private static void cleanTooOldNotifications(final List<Notification> notifications) {
-		//on commence par la fin, dès qu'un élément est ok on stop les suppressions
-		for (final ListIterator<Notification> it = notifications.listIterator(notifications.size()); it.hasPrevious();) {
-			final Notification notification = it.previous();
-			if (notification.getTTLInSeconds() >= 0 && notification.getCreationDate().getTime() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis()) {
-				it.remove();
-			} else {
-				break; //un élément est ok on stop les suppressions
-			}
-		}
+		notifications.removeIf(MemoryNotificationPlugin::isTooOld);
+	}
+
+	private static boolean isTooOld(final Notification notification) {
+		return notification.getTTLInSeconds() >= 0 && notification.getCreationDate().getTime() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis();
 	}
 }
