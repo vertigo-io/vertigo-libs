@@ -19,7 +19,6 @@
 package io.vertigo.x.audit;
 
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.x.impl.audit.AuditFeatures;
 import io.vertigo.x.plugins.audit.memory.MemoryAuditTraceStorePlugin;
 
@@ -35,7 +34,7 @@ public class MyAppConfig {
 	 * @return the application config for testing
 	 */
 	public static AppConfig config() {
-		return new AppConfigBuilder()
+		return AppConfig.builder()
 				.addModule(new AuditFeatures()
 						.withAuditStorePlugin(MemoryAuditTraceStorePlugin.class)
 						.build())

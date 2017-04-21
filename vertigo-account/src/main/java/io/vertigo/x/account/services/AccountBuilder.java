@@ -33,11 +33,13 @@ public final class AccountBuilder implements Builder<Account> {
 	 * constructor
 	 * @param id the id of the account
 	 */
-	public AccountBuilder(final String id) {
+	AccountBuilder(final String id) {
 		Assertion.checkArgNotEmpty(id);
 		//-----
 		myId = id;
 	}
+	
+	
 
 	/**
 	 * Adds a displayName 

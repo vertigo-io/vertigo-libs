@@ -19,9 +19,8 @@
 package io.vertigo.x.rules;
 
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.app.config.DefinitionProviderConfigBuilder;
-import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -52,7 +51,7 @@ public class MyAppConfig {
 	 * @return the application config for testing
 	 */
 	public static AppConfig config() {
-		return new AppConfigBuilder()
+		return AppConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -77,8 +76,8 @@ public class MyAppConfig {
 				.addModule(new AccountFeatures()
 						.withAccountStorePlugin(MemoryAccountStorePlugin.class)
 						.build())
-				.addModule(new ModuleConfigBuilder("dummy")
-						.addDefinitionProvider(new DefinitionProviderConfigBuilder(MyDummyDtObjectProvider.class).build())
+				.addModule(ModuleConfig.builder("dummy")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(MyDummyDtObjectProvider.class).build())
 						.build())
 				.addModule(new RulesFeatures()
 						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)

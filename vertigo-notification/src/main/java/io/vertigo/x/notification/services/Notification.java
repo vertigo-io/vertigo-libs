@@ -68,6 +68,23 @@ public final class Notification {
 	}
 
 	/**
+	 * Static method factory for NotificationBuilder
+	 * @return NotificationBuilder
+	 */
+	public static NotificationBuilder builder() {
+		return new NotificationBuilder();
+	}
+
+	/**
+	 * Static method factory for NotificationBuilder
+	 * @param uuid Notification uuid
+	 * @return NotificationBuilder
+	 */
+	public static NotificationBuilder builder(final UUID uuid) {
+		return new NotificationBuilder(uuid);
+	}
+
+	/**
 	 * @return Uuid
 	 */
 	public UUID getUuid() {

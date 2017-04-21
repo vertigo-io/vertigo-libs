@@ -25,16 +25,15 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountBuilder;
 import io.vertigo.x.account.services.AccountGroup;
 import io.vertigo.x.account.services.AccountServices;
 
 public class KeyConcepts {
 
 	public static void initData(final AccountServices accountServices) {
-		final Account testAccount0 = new AccountBuilder("0").withDisplayName("John doe").withEmail("john.doe@yopmail.com").build();
-		final Account testAccount1 = new AccountBuilder("1").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
-		final Account testAccount2 = new AccountBuilder("2").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
+		final Account testAccount0 = Account.builder("0").withDisplayName("John doe").withEmail("john.doe@yopmail.com").build();
+		final Account testAccount1 = Account.builder("1").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
+		final Account testAccount2 = Account.builder("2").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
 		accountServices.getStore().saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2));
 
 		final URI<Account> accountURI1 = DtObjectUtil.createURI(Account.class, testAccount1.getId());
@@ -81,7 +80,7 @@ public class KeyConcepts {
 	}
 
 	private static Account createAccount(final String displayName, final String email) {
-		return new AccountBuilder(Integer.toString(id++))
+		return Account.builder(Integer.toString(id++))
 				.withDisplayName(displayName)
 				.withEmail(email)
 				.build();

@@ -41,7 +41,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	/**
 	 * Constructor.
 	 */
-	public NotificationBuilder() {
+	NotificationBuilder() {
 		uuid = UUID.randomUUID();
 	}
 
@@ -49,7 +49,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 * Constructor.
 	 * @param uuid Notification uuid
 	 */
-	public NotificationBuilder(final UUID uuid) {
+	NotificationBuilder(final UUID uuid) {
 		Assertion.checkNotNull(uuid);
 		//-----
 		this.uuid = uuid;

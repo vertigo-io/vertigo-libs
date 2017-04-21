@@ -18,7 +18,7 @@
  */
 package io.vertigo.x.account;
 
-import io.vertigo.app.config.DefinitionProviderConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.x.account.impl.services.AccountDefinitionProvider;
@@ -63,7 +63,7 @@ public final class AccountFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addDefinitionProvider(new DefinitionProviderConfigBuilder(AccountDefinitionProvider.class).build())
+				.addDefinitionProvider(DefinitionProviderConfig.builder(AccountDefinitionProvider.class).build())
 				.addComponent(AccountServices.class, AccountServicesImpl.class);
 	}
 

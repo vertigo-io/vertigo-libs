@@ -50,7 +50,6 @@ import io.vertigo.x.account.services.AccountServices;
 import io.vertigo.x.comment.MyAppConfig;
 import io.vertigo.x.comment.data.Accounts;
 import io.vertigo.x.comment.services.Comment;
-import io.vertigo.x.comment.services.CommentBuilder;
 import io.vertigo.x.comment.services.CommentServices;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import redis.clients.jedis.Jedis;
@@ -120,7 +119,7 @@ public final class CommentWebServicesTest {
 
 	@Test
 	public void testGetComments() {
-		final Comment comment = new CommentBuilder()
+		final Comment comment = Comment.builder()
 				.withAuthor(account1Uri)
 				.withMsg("Lorem ipsum")
 				.build();
@@ -138,7 +137,7 @@ public final class CommentWebServicesTest {
 
 	@Test
 	public void testPublishComment() {
-		final Comment newComment = new CommentBuilder()
+		final Comment newComment = Comment.builder()
 				.withAuthor(account1Uri)
 				.withMsg("Lorem ipsum")
 				.build();
@@ -162,7 +161,7 @@ public final class CommentWebServicesTest {
 
 	@Test
 	public void testEditComment() {
-		final Comment newComment = new CommentBuilder()
+		final Comment newComment = Comment.builder()
 				.withAuthor(account1Uri)
 				.withMsg("Lorem ipsum")
 				.build();
@@ -184,7 +183,7 @@ public final class CommentWebServicesTest {
 				.get("/x/comment/api/comments?concept=" + CONCEPT_KEY_NAME + "&id=" + keyConcept1Uri.getId());
 		final String uuid = response.body().path("get(0).uuid");
 
-		final Comment editComment = new CommentBuilder(UUID.fromString(uuid), account1Uri, newComment.getCreationDate())
+		final Comment editComment = Comment.builder(UUID.fromString(uuid), account1Uri, newComment.getCreationDate())
 				.withMsg("edited Lorem ipsum edited")
 				.build();
 
@@ -209,7 +208,7 @@ public final class CommentWebServicesTest {
 
 	@Test
 	public void testSeparationComment() {
-		final Comment newComment = new CommentBuilder()
+		final Comment newComment = Comment.builder()
 				.withAuthor(account1Uri)
 				.withMsg("Lorem ipsum")
 				.build();

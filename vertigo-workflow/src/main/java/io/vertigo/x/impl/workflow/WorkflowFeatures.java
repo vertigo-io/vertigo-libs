@@ -18,7 +18,7 @@
  */
 package io.vertigo.x.impl.workflow;
 
-import io.vertigo.app.config.DefinitionProviderConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
@@ -118,7 +118,7 @@ public final class WorkflowFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addDefinitionProvider(new DefinitionProviderConfigBuilder(DynamoDefinitionProvider.class)
+				.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 						.addDefinitionResource("kpr", "boot/definitions/application-workflow.kpr")
 						.addDefinitionResource("classes", DtDefinitions.class.getName())
 						.build())

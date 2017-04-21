@@ -94,7 +94,7 @@ public class AuditManagerTest {
 		auditManager.addTrace(auditTrace2);
 
 		//Criteria Category
-		final AuditTraceCriteria atc1 = new AuditTraceCriteriaBuilder().withCategory("CAT2").build();
+		final AuditTraceCriteria atc1 = AuditTraceCriteria.builder().withCategory("CAT2").build();
 		final List<AuditTrace> auditTraceFetch1 = auditManager.findTrace(atc1);
 
 		assertThat(auditTraceFetch1).hasSize(1);
@@ -104,7 +104,7 @@ public class AuditManagerTest {
 		final Date dateJPlus1 = new DateBuilder(new Date()).addDays(1).build();
 
 		//Criteria Business Date
-		final AuditTraceCriteria auditTraceCriteria2 = new AuditTraceCriteriaBuilder()
+		final AuditTraceCriteria auditTraceCriteria2 = AuditTraceCriteria.builder()
 				.withDateBusinessStart(dateJMinus1)
 				.withDateBusinessEnd(dateJPlus1)
 				.build();
@@ -115,7 +115,7 @@ public class AuditManagerTest {
 		assertThat(auditTraceFetch2).usingFieldByFieldElementComparator().contains(auditTrace2);
 
 		//Criteria Exec Date
-		final AuditTraceCriteria auditTraceCriteria3 = new AuditTraceCriteriaBuilder()
+		final AuditTraceCriteria auditTraceCriteria3 = AuditTraceCriteria.builder()
 				.withDateExecutionStart(dateJMinus1)
 				.withDateExecutionEnd(dateJPlus1)
 				.build();
@@ -125,14 +125,14 @@ public class AuditManagerTest {
 		assertThat(auditTraceFetch3).usingFieldByFieldElementComparator().contains(auditTrace1, auditTrace2);
 
 		//Criteria Item
-		final AuditTraceCriteria auditTraceCriteria4 = new AuditTraceCriteriaBuilder().withItem(2L).build();
+		final AuditTraceCriteria auditTraceCriteria4 = AuditTraceCriteria.builder().withItem(2L).build();
 		final List<AuditTrace> auditTraceFetch4 = auditManager.findTrace(auditTraceCriteria4);
 
 		assertThat(auditTraceFetch4).hasSize(1);
 		assertThat(auditTraceFetch4).usingFieldByFieldElementComparator().contains(auditTrace1);
 
 		//Criteria User
-		final AuditTraceCriteria auditTraceCriteria5 = new AuditTraceCriteriaBuilder().withUsername("USER3").build();
+		final AuditTraceCriteria auditTraceCriteria5 = AuditTraceCriteria.builder().withUsername("USER3").build();
 		final List<AuditTrace> auditTraceFetch5 = auditManager.findTrace(auditTraceCriteria5);
 
 		assertThat(auditTraceFetch5).hasSize(1);

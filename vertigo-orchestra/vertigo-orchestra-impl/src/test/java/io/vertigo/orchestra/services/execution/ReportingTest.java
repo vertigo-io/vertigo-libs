@@ -26,9 +26,8 @@ import javax.inject.Inject;
 import org.junit.Assert;
 
 import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
-import io.vertigo.orchestra.definitions.ProcessDefinition;
-import io.vertigo.orchestra.definitions.ProcessDefinitionBuilder;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
+import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.OrchestraServices;
 import io.vertigo.orchestra.services.report.ActivityExecution;
 import io.vertigo.orchestra.services.report.ExecutionSummary;
@@ -50,7 +49,7 @@ public class ReportingTest extends AbstractOrchestraTestCaseJU4 {
 	private OrchestraServices processExecutionManager;
 
 	private ProcessDefinition executeProcess() throws InterruptedException {
-		final ProcessDefinition processDefinition = new ProcessDefinitionBuilder("TEST_SINGLE", "TEST_SINGLE")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_SINGLE", "TEST_SINGLE")
 				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
 

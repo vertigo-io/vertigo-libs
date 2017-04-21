@@ -20,8 +20,8 @@ package io.vertigo.x.workflow;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.app.config.DefinitionProviderConfigBuilder;
-import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -58,7 +58,7 @@ public class MyAppConfig {
 	 * @return AppConfig for Junit
 	 */
 	public static AppConfig config() {
-		final AppConfigBuilder appConfigBuilder = new AppConfigBuilder()
+		final AppConfigBuilder appConfigBuilder = AppConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -91,8 +91,8 @@ public class MyAppConfig {
 						.withWorkflowStorePlugin(MemoryWorkflowStorePlugin.class)
 						.withWorkflowPredicateAutoValidatePlugin(RuleWorkflowPredicateAutoValidatePlugin.class)
 						.withItemStorePlugin(MemoryItemStorePlugin.class).build())
-				.addModule(new ModuleConfigBuilder("dummy")//
-						.addDefinitionProvider(new DefinitionProviderConfigBuilder(MyDummyDtObjectProvider.class).build())
+				.addModule(ModuleConfig.builder("dummy")//
+						.addDefinitionProvider(DefinitionProviderConfig.builder(MyDummyDtObjectProvider.class).build())
 						.build());
 
 		return appConfigBuilder.build();

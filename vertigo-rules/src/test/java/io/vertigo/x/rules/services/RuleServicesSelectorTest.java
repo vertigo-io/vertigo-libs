@@ -40,7 +40,6 @@ import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountBuilder;
 import io.vertigo.x.account.services.AccountGroup;
 import io.vertigo.x.account.services.AccountServices;
 import io.vertigo.x.account.services.AccountStore;
@@ -140,7 +139,7 @@ public class RuleServicesSelectorTest extends DbTest {
 
 		final AccountGroup accountGroup = new AccountGroup("1", "Group activity 1");
 
-		final Account account = new AccountBuilder("0").withDisplayName("User 1").withEmail("user1@account.vertigo.io")
+		final Account account = Account.builder("0").withDisplayName("User 1").withEmail("user1@account.vertigo.io")
 				.build();
 
 		final AccountStore accountStore = accountServices.getStore();
@@ -163,7 +162,7 @@ public class RuleServicesSelectorTest extends DbTest {
 
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 		myDummyDtObject.setDivision("BTL");
-		RuleContext ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
+		final RuleContext ruleContext = new RuleContext(myDummyDtObject, RuleConstants.EMPTY_RULE_CONSTANTS);
 		final List<Account> selectedAccounts = ruleServices.selectAccounts(1L, ruleContext);
 
 		assertThat(selectedAccounts, is(not(nullValue())));
@@ -179,7 +178,7 @@ public class RuleServicesSelectorTest extends DbTest {
 
 		final AccountGroup accountGroup = new AccountGroup("1", "Group activity 1");
 
-		final Account account = new AccountBuilder("0").withDisplayName("User 1").withEmail("user1@account.vertigo.io")
+		final Account account = Account.builder("0").withDisplayName("User 1").withEmail("user1@account.vertigo.io")
 				.build();
 
 		final AccountStore accountStore = accountServices.getStore();
@@ -243,10 +242,10 @@ public class RuleServicesSelectorTest extends DbTest {
 
 		final AccountGroup accountGroup_1 = new AccountGroup("1", "Group activity 1");
 
-		final Account account_1_1 = new AccountBuilder("0").withDisplayName("User 1 Group 1")
+		final Account account_1_1 = Account.builder("0").withDisplayName("User 1 Group 1")
 				.withEmail("user1@account.vertigo.io").build();
 
-		final Account account_1_2 = new AccountBuilder("1").withDisplayName("User 2 Group 1")
+		final Account account_1_2 = Account.builder("1").withDisplayName("User 2 Group 1")
 				.withEmail("user1@account.vertigo.io").build();
 
 		AccountStore accountStore = accountServices.getStore();
@@ -257,10 +256,10 @@ public class RuleServicesSelectorTest extends DbTest {
 
 		final AccountGroup accountGroup_2 = new AccountGroup("2", "Group activity 2");
 
-		final Account account_2_1 = new AccountBuilder("2").withDisplayName("User 1 Group 2")
+		final Account account_2_1 = Account.builder("2").withDisplayName("User 1 Group 2")
 				.withEmail("user1@account.vertigo.io").build();
 
-		final Account account_2_2 = new AccountBuilder("3").withDisplayName("User 2 Group 2")
+		final Account account_2_2 = Account.builder("3").withDisplayName("User 2 Group 2")
 				.withEmail("user1@account.vertigo.io").build();
 
 		accountStore = accountServices.getStore();

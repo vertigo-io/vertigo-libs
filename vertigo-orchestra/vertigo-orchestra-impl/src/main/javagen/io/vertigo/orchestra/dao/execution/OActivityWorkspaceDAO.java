@@ -1,15 +1,17 @@
 package io.vertigo.orchestra.dao.execution;
 
-import javax.inject.Inject;
 import java.util.Optional;
+
+import javax.inject.Inject;
+
 import io.vertigo.app.Home;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
+import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.dynamo.task.model.Task;
+import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.orchestra.domain.execution.OActivityWorkspace;
 
 /**
@@ -28,7 +30,6 @@ public final class OActivityWorkspaceDAO extends DAO<OActivityWorkspace, java.la
 		super(OActivityWorkspace.class, storeManager, taskManager);
 	}
 
-
 	/**
 	 * Creates a taskBuilder.
 	 * @param name  the name of the task
@@ -36,7 +37,7 @@ public final class OActivityWorkspaceDAO extends DAO<OActivityWorkspace, java.la
 	 */
 	private static TaskBuilder createTaskBuilder(final String name) {
 		final TaskDefinition taskDefinition = Home.getApp().getDefinitionSpace().resolve(name, TaskDefinition.class);
-		return new TaskBuilder(taskDefinition);
+		return Task.builder(taskDefinition);
 	}
 
 	/**

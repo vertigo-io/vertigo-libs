@@ -3,12 +3,12 @@ package io.vertigo.orchestra.monitoring.dao.summary;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
-import io.vertigo.lang.Assertion;
+import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamo.store.StoreServices;
+import io.vertigo.lang.Assertion;
 
 /**
  * PAO : Accès aux objects du package. 
@@ -35,7 +35,7 @@ public final class SummaryPAO implements StoreServices {
 	 */
 	private static TaskBuilder createTaskBuilder(final String name) {
 		final TaskDefinition taskDefinition = Home.getApp().getDefinitionSpace().resolve(name, TaskDefinition.class);
-		return new TaskBuilder(taskDefinition);
+		return Task.builder(taskDefinition);
 	}
 
 	/**

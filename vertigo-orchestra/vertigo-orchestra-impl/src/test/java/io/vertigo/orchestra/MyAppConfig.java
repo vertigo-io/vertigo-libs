@@ -20,7 +20,7 @@ package io.vertigo.orchestra;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
@@ -46,7 +46,7 @@ public final class MyAppConfig {
 	public static final int WS_PORT = 8088;
 
 	public static AppConfigBuilder createAppConfigBuilder() {
-		return new AppConfigBuilder().beginBoot()
+		return AppConfig.builder().beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin(URLResourceResolverPlugin.class)
@@ -73,14 +73,13 @@ public final class MyAppConfig {
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.build())
 				// we build h2 mem
-				.addModule(new ModuleConfigBuilder("databaseInitializer")
-						.addComponent(DataBaseInitializer.class).build())
+				.addModule(ModuleConfig.builder("databaseInitializer").addComponent(DataBaseInitializer.class).build())
 				//
 				.addModule(new OrchestraFeatures()
 						.withDataBase("NODE_TEST_1", 1, 3, 60)
 						.withMemory(1)
 						.build())
-				.addModule(new ModuleConfigBuilder("orchestra-test")
+				.addModule(ModuleConfig.builder("orchestra-test")
 						//---Services
 						.addComponent(MonitoringServices.class, MonitoringServicesImpl.class)
 						.build());
@@ -101,7 +100,7 @@ public final class MyAppConfig {
 
 	public static void addWebServices(final AppConfigBuilder appConfigBuilder) {
 		appConfigBuilder
-				.addModule(new ModuleConfigBuilder("orchestra-ws")
+				.addModule(ModuleConfig.builder("orchestra-ws")
 						.addComponent(WsDefinition.class)
 						.addComponent(WsExecution.class)
 						.addComponent(WsExecutionControl.class)

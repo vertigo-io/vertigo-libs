@@ -80,7 +80,7 @@ public class CommentManagerTest {
 
 	@Test
 	public void testComments() {
-		final Comment comment = new CommentBuilder()
+		final Comment comment = Comment.builder()
 				.withAuthor(accountURI1)
 				.withMsg("Tu as bien fait de partir, Arthur Rimbaud! Tes dix-huit ans réfractaires à l'amitié, à la malveillance, à la sottise des poètes de Paris ainsi qu'au ronronnement d'abeille stérile de ta famille ardennaise un peu folle, tu as bien fait de les éparpiller aux vents du large..")
 				.build();

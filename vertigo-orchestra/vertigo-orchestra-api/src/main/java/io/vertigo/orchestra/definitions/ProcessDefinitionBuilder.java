@@ -53,7 +53,7 @@ public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition
 	 * @param processName le nom du processus
 	 * @param processLabel le libellé du processus
 	 */
-	public ProcessDefinitionBuilder(final String processName, final String processLabel) {
+	ProcessDefinitionBuilder(final String processName, final String processLabel) {
 		this(processName, processLabel, ProcessType.SUPERVISED);
 	}
 
@@ -63,7 +63,7 @@ public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition
 	 * @param processLabel le libellé du processus
 	 * @param processType le type de processus
 	 */
-	public ProcessDefinitionBuilder(final String processName, final String processLabel, final ProcessType processType) {
+	ProcessDefinitionBuilder(final String processName, final String processLabel, final ProcessType processType) {
 		Assertion.checkArgNotEmpty(processName);
 		Assertion.checkNotNull(processType);
 		//-----

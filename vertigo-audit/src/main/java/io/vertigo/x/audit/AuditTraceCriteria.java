@@ -57,6 +57,14 @@ public final class AuditTraceCriteria implements DtObject {
 	}
 
 	/**
+	 * Static method factory for AuditTraceCriteriaBuilder
+	 * @return AuditTraceCriteriaBuilder
+	 */
+	public static AuditTraceCriteriaBuilder builder() {
+		return new AuditTraceCriteriaBuilder();
+	}
+
+	/**
 	 * @return the category
 	 */
 	public String getCategory() {

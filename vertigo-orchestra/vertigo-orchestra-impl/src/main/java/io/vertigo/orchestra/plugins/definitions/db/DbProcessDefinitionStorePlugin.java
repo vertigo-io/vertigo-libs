@@ -150,7 +150,7 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 		Assertion.checkNotNull(process);
 		Assertion.checkNotNull(oActivities);
 		// ---
-		final ProcessDefinitionBuilder processDefinitionBuilder = new ProcessDefinitionBuilder(process.getName(), process.getLabel(), ProcessType.SUPERVISED);
+		final ProcessDefinitionBuilder processDefinitionBuilder = ProcessDefinition.builder(process.getName(), process.getLabel(), ProcessType.SUPERVISED);
 		processDefinitionBuilder.withRescuePeriod(process.getRescuePeriod());
 		if (!StringUtil.isEmpty(process.getCronExpression())) {
 			processDefinitionBuilder.withCronExpression(process.getCronExpression());

@@ -36,7 +36,6 @@ import io.vertigo.app.Home;
 import io.vertigo.orchestra.MyAppConfig;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
-import io.vertigo.orchestra.definitions.ProcessDefinitionBuilder;
 import io.vertigo.orchestra.definitions.ProcessType;
 import io.vertigo.orchestra.services.OrchestraServices;
 import io.vertigo.orchestra.services.execution.engine.EmptyActivityEngine;
@@ -65,11 +64,11 @@ public class OrchestraWsTest {
 		final OrchestraDefinitionManager orchestraDefinitionManager = Home.getApp().getComponentSpace().resolve(OrchestraDefinitionManager.class);
 		final OrchestraServices orchestraServices = Home.getApp().getComponentSpace().resolve(OrchestraServices.class);
 
-		final ProcessDefinition processDefinition = new ProcessDefinitionBuilder("TEST_BASIC", "TEST BASIC", ProcessType.SUPERVISED)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_BASIC", "TEST BASIC", ProcessType.SUPERVISED)
 				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", EmptyActivityEngine.class)
 				.build();
 
-		final ProcessDefinition processDefinition2 = new ProcessDefinitionBuilder("TEST_BASIC_2", "TEST BASIC_2", ProcessType.SUPERVISED)
+		final ProcessDefinition processDefinition2 = ProcessDefinition.builder("TEST_BASIC_2", "TEST BASIC_2", ProcessType.SUPERVISED)
 				.addActivity("DUMB ACTIVITY_2", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.EmptyActivityEngine.class)
 				.addActivity("DUMB ACTIVITY_3", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();

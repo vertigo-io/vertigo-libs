@@ -39,7 +39,6 @@ import io.vertigo.lang.WrappedException;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.x.account.impl.services.AccountStorePlugin;
 import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountBuilder;
 import io.vertigo.x.account.services.AccountGroup;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import redis.clients.jedis.Jedis;
@@ -234,7 +233,7 @@ public final class RedisAccountStorePlugin implements AccountStorePlugin {
 	}
 
 	private static Account map2Account(final Map<String, String> data) {
-		return new AccountBuilder(data.get("id"))
+		return Account.builder(data.get("id"))
 				.withDisplayName(data.get("displayName"))
 				.withEmail(data.get("email"))
 				.build();

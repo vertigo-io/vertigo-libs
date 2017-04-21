@@ -109,7 +109,7 @@ public class NotificationServicesTest {
 	public void testNotifications() {
 
 		for (int i = 0; i < 10; i++) {
-			final Notification notification = new NotificationBuilder()
+			final Notification notification = Notification.builder()
 					.withSender(accountURI0.urn())
 					.withType("Test")
 					.withTitle("news")
@@ -126,7 +126,7 @@ public class NotificationServicesTest {
 
 	@Test
 	public void testNotificationsWithRemove() {
-		final Notification notification = new NotificationBuilder()
+		final Notification notification = Notification.builder()
 				.withSender(accountURI0.urn())
 				.withType("Test")
 				.withTitle("news")
@@ -154,7 +154,7 @@ public class NotificationServicesTest {
 
 	@Test
 	public void testNotificationsWithRemoveFromTargetUrl() {
-		final Notification notification = new NotificationBuilder()
+		final Notification notification = Notification.builder()
 				.withSender(accountURI0.urn())
 				.withType("Test")
 				.withTitle("news")

@@ -18,7 +18,7 @@
  */
 package io.vertigo.x.rules.impl;
 
-import io.vertigo.app.config.DefinitionProviderConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
@@ -123,7 +123,7 @@ public final class RulesFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addDefinitionProvider(new DefinitionProviderConfigBuilder(DynamoDefinitionProvider.class)
+				.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 						.addDefinitionResource("kpr", "boot/definitions/application-rules.kpr")
 						.addDefinitionResource("classes", DtDefinitions.class.getName())
 						.build())

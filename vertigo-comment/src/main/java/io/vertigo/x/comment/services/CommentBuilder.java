@@ -43,7 +43,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	/**
 	 * Constructor for new comment.
 	 */
-	public CommentBuilder() {
+	CommentBuilder() {
 		uuid = UUID.randomUUID();
 	}
 
@@ -53,7 +53,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * @param author Author
 	 * @param creationDate Creation date
 	 */
-	public CommentBuilder(final UUID uuid, final URI<Account> author, final Date creationDate) {
+	CommentBuilder(final UUID uuid, final URI<Account> author, final Date creationDate) {
 		this.uuid = uuid;
 		myAuthor = author;
 		myAuthorDisplayName = getAccountManager().getStore().getAccount(author).getDisplayName();

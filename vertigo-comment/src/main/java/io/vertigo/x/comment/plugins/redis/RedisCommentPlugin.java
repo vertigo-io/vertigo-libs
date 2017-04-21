@@ -39,7 +39,6 @@ import io.vertigo.util.MapBuilder;
 import io.vertigo.x.account.services.Account;
 import io.vertigo.x.comment.impl.CommentPlugin;
 import io.vertigo.x.comment.services.Comment;
-import io.vertigo.x.comment.services.CommentBuilder;
 import io.vertigo.x.connectors.redis.RedisConnector;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Response;
@@ -143,7 +142,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 			final Date creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT).parse(data.get("creationDate"));
 			final Date lastModified = data.get("lastModified") != null ? new SimpleDateFormat(CODEC_DATE_FORMAT).parse(data.get("lastModified")) : null;
 
-			return new CommentBuilder(UUID.fromString(data.get("uuid")), new URI<Account>(dtDefinition, data.get("author")), creationDate)
+			return Comment.builder(UUID.fromString(data.get("uuid")), new URI<Account>(dtDefinition, data.get("author")), creationDate)
 					.withMsg(data.get("msg"))
 					.withLastModified(lastModified)
 					.build();

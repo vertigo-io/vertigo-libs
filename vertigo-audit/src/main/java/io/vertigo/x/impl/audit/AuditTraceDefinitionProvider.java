@@ -25,9 +25,7 @@ import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.util.ListBuilder;
 
 /**
@@ -38,15 +36,15 @@ public final class AuditTraceDefinitionProvider extends SimpleDefinitionProvider
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final Domain domainAuditId = new DomainBuilder("DO_X_AUDIT_ID", DataType.Long).build();
-		final Domain domainAuditCategory = new DomainBuilder("DO_X_AUDIT_CATEGORY", DataType.String).build();
-		final Domain domainAuditUser = new DomainBuilder("DO_X_AUDIT_USER", DataType.String).build();
-		final Domain domainAuditDate = new DomainBuilder("DO_X_AUDIT_DATE", DataType.Date).build();
-		final Domain domainAuditItem = new DomainBuilder("DO_X_AUDIT_ITEM", DataType.Long).build();
-		final Domain domainAuditMessage = new DomainBuilder("DO_X_AUDIT_MESSAGE", DataType.String).build();
-		final Domain domainAuditContext = new DomainBuilder("DO_X_AUDIT_CONTEXT", DataType.String).build();
+		final Domain domainAuditId = Domain.builder("DO_X_AUDIT_ID", DataType.Long).build();
+		final Domain domainAuditCategory = Domain.builder("DO_X_AUDIT_CATEGORY", DataType.String).build();
+		final Domain domainAuditUser = Domain.builder("DO_X_AUDIT_USER", DataType.String).build();
+		final Domain domainAuditDate = Domain.builder("DO_X_AUDIT_DATE", DataType.Date).build();
+		final Domain domainAuditItem = Domain.builder("DO_X_AUDIT_ITEM", DataType.Long).build();
+		final Domain domainAuditMessage = Domain.builder("DO_X_AUDIT_MESSAGE", DataType.String).build();
+		final Domain domainAuditContext = Domain.builder("DO_X_AUDIT_CONTEXT", DataType.String).build();
 
-		final DtDefinition auditTraceDtDefinition = new DtDefinitionBuilder("DT_AUDIT_TRACE")
+		final DtDefinition auditTraceDtDefinition = DtDefinition.builder("DT_AUDIT_TRACE")
 				.addIdField("ID", "id", domainAuditId, false, false)
 				.addDataField("CATEGORY", "category", domainAuditCategory, true, true, true, true)
 				.addDataField("USER", "user", domainAuditUser, true, true, false, false)

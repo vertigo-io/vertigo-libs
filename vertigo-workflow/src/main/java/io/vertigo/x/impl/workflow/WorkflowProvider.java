@@ -25,7 +25,6 @@ import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.util.ListBuilder;
@@ -38,48 +37,48 @@ public final class WorkflowProvider extends SimpleDefinitionProvider {
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final Domain domainWorkflowId = new DomainBuilder("DO_X_WORKFLOW_ID", DataType.Long).build();
-		final Domain domainWorkflowCode = new DomainBuilder("DO_X_WORKFLOW_CODE", DataType.String).build();
-		final Domain domainWorkflowDate = new DomainBuilder("DO_X_WORKFLOW_DATE", DataType.Date).build();
-		final Domain domainWorkflowWeakId = new DomainBuilder("DO_X_WORKFLOW_WEAK_ID", DataType.Long).build();
-		final Domain domainWorkflowChoice = new DomainBuilder("DO_X_WORKFLOW_CHOICE", DataType.Long).build();
-		final Domain domainWorkflowUser = new DomainBuilder("DO_X_WORKFLOW_USER", DataType.String).build();
-		final Domain domainWorkflowLabel = new DomainBuilder("DO_X_WORKFLOW_LABEL", DataType.String).build();
-		final Domain domainWorkflowComments = new DomainBuilder("DO_X_WORKFLOW_COMMENTS", DataType.String).build();
-		final Domain domainWorkflowFlag = new DomainBuilder("DO_X_WORKFLOW_FLAG", DataType.Boolean).build();
-		final Domain domainWorkflowLevel = new DomainBuilder("DO_X_WORKFLOW_LEVEL", DataType.Integer).build();
+		final Domain domainWorkflowId = Domain.builder("DO_X_WORKFLOW_ID", DataType.Long).build();
+		final Domain domainWorkflowCode = Domain.builder("DO_X_WORKFLOW_CODE", DataType.String).build();
+		final Domain domainWorkflowDate = Domain.builder("DO_X_WORKFLOW_DATE", DataType.Date).build();
+		final Domain domainWorkflowWeakId = Domain.builder("DO_X_WORKFLOW_WEAK_ID", DataType.Long).build();
+		final Domain domainWorkflowChoice = Domain.builder("DO_X_WORKFLOW_CHOICE", DataType.Long).build();
+		final Domain domainWorkflowUser = Domain.builder("DO_X_WORKFLOW_USER", DataType.String).build();
+		final Domain domainWorkflowLabel = Domain.builder("DO_X_WORKFLOW_LABEL", DataType.String).build();
+		final Domain domainWorkflowComments = Domain.builder("DO_X_WORKFLOW_COMMENTS", DataType.String).build();
+		final Domain domainWorkflowFlag = Domain.builder("DO_X_WORKFLOW_FLAG", DataType.Boolean).build();
+		final Domain domainWorkflowLevel = Domain.builder("DO_X_WORKFLOW_LEVEL", DataType.Integer).build();
 
-		final DtDefinition wfMultiplicityDefinitionDtDefinition = new DtDefinitionBuilder("DT_WF_MULTIPLICITY_DEFINITION")
+		final DtDefinition wfMultiplicityDefinitionDtDefinition = DtDefinition.builder("DT_WF_MULTIPLICITY_DEFINITION")
 				.addIdField("WFMD_CODE", "wfmdCode", domainWorkflowCode, false, false)
 				.addDataField("LABEL", "label", domainWorkflowLabel, true, true, false, false)
 				.build();
 
-		final DtDefinitionBuilder wfWorkflowDefinitionDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_WORKFLOW_DEFINITION")
+		final DtDefinitionBuilder wfWorkflowDefinitionDtDefinitionBuilder = DtDefinition.builder("DT_WF_WORKFLOW_DEFINITION")
 				.addIdField("WFWD_ID", "wfwdId", domainWorkflowId, false, false)
 				.addDataField("NAME", "name", domainWorkflowLabel, true, true, true, true)
 				.addDataField("DATE", "date", domainWorkflowDate, true, true, false, false);
 
-		final DtDefinitionBuilder wfTransitionDefinitionDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_TRANSITION_DEFINITION")
+		final DtDefinitionBuilder wfTransitionDefinitionDtDefinitionBuilder = DtDefinition.builder("DT_WF_TRANSITION_DEFINITION")
 				.addIdField("WFTD_ID", "wftdId", domainWorkflowId, false, false)
 				.addDataField("NAME", "name", domainWorkflowLabel, true, true, false, false);
 
-		final DtDefinitionBuilder wfActivityDefinitionDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_ACTIVITY_DEFINITION")
+		final DtDefinitionBuilder wfActivityDefinitionDtDefinitionBuilder = DtDefinition.builder("DT_WF_ACTIVITY_DEFINITION")
 				.addIdField("WFAD_ID", "wfadId", domainWorkflowId, false, false)
 				.addDataField("NAME", "name", domainWorkflowLabel, true, true, false, false)
 				.addDataField("LEVEL", "level", domainWorkflowLevel, false, true, false, false);
 
-		final DtDefinitionBuilder wfWorkflowDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_WORKFLOW")
+		final DtDefinitionBuilder wfWorkflowDtDefinitionBuilder = DtDefinition.builder("DT_WF_WORKFLOW")
 				.addIdField("WFW_ID", "wfwId", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
 				.addDataField("ITEM_ID", "itemId", domainWorkflowId, false, true, false, false)
 				.addDataField("USERNAME", "username", domainWorkflowUser, true, true, false, false)
 				.addDataField("USER_LOGIC", "userLogic", domainWorkflowFlag, true, true, false, false);
 
-		final DtDefinitionBuilder wfWorkflowActivityDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_ACTIVITY")
+		final DtDefinitionBuilder wfWorkflowActivityDtDefinitionBuilder = DtDefinition.builder("DT_WF_ACTIVITY")
 				.addIdField("WFA_ID", "wfaId", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false);
 
-		final DtDefinitionBuilder wfWorkflowDecisionDtDefinitionBuilder = new DtDefinitionBuilder("DT_WF_DECISION")
+		final DtDefinitionBuilder wfWorkflowDecisionDtDefinitionBuilder = DtDefinition.builder("DT_WF_DECISION")
 				.addIdField("WFE_ID", "wfaId", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
 				.addDataField("CHOICE", "choice", domainWorkflowChoice, false, true, false, false)
@@ -87,7 +86,7 @@ public final class WorkflowProvider extends SimpleDefinitionProvider {
 				.addDataField("COMMENTS", "comments", domainWorkflowComments, false, true, false, false)
 				.addDataField("USERNAME", "username", domainWorkflowUser, true, true, false, false);
 
-		final DtDefinition wfStatusDtDefinition = new DtDefinitionBuilder("DT_WF_STATUS")
+		final DtDefinition wfStatusDtDefinition = DtDefinition.builder("DT_WF_STATUS")
 				.addIdField("WFS_CODE", "wfsCode", domainWorkflowCode, false, false)
 				.addDataField("LABEL", "label", domainWorkflowLabel, true, true, true, true)
 				.build();

@@ -49,6 +49,15 @@ public final class Account implements Entity {
 		this.email = email;
 	}
 
+	/**
+	 * Static method factory for AccountBuilder
+	 * @param id the id of the account
+	 * @return AccountBuilder
+	 */
+	public static AccountBuilder builder(final String id) {
+		return new AccountBuilder(id);
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public URI<Account> getURI() {

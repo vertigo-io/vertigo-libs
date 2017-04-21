@@ -81,6 +81,27 @@ public final class ProcessDefinition implements Definition {
 		this.triggeringStrategy = triggeringStrategy;
 	}
 
+	/**
+	 * Static method factory for ProcessDefinitionBuilder
+	 * @param processName le nom du processus
+	 * @param processLabel le libellé du processus
+	 * @return ProcessDefinitionBuilder
+	 */
+	public static ProcessDefinitionBuilder builder(final String processName, final String processLabel) {
+		return new ProcessDefinitionBuilder(processName, processLabel);
+	}
+
+	/**
+	 * Static method factory for ProcessDefinitionBuilder
+	 * @param processName le nom du processus
+	 * @param processLabel le libellé du processus
+	 * @param processType le type de processus
+	 * @return ProcessDefinitionBuilder
+	 */
+	public static ProcessDefinitionBuilder builder(final String processName, final String processLabel, final ProcessType processType) {
+		return new ProcessDefinitionBuilder(processName, processLabel, processType);
+	}
+
 	public long getId() {
 		return id;
 	}

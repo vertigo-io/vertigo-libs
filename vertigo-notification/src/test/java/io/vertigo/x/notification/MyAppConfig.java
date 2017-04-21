@@ -20,7 +20,7 @@ package io.vertigo.x.notification;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
@@ -43,7 +43,7 @@ public final class MyAppConfig {
 		final int redisDatabase = 15;
 
 		// @formatter:off
-		final AppConfigBuilder appConfigBuilder =  new AppConfigBuilder()
+		final AppConfigBuilder appConfigBuilder =  AppConfig.builder()
 			.beginBoot()
 				.withLocales("fr")
 				.addPlugin( ClassPathResourceResolverPlugin.class)
@@ -88,7 +88,7 @@ public final class MyAppConfig {
 				.withSecurity()
 				.withEmbeddedServer(WS_PORT)
 				.build())
-			.addModule(new ModuleConfigBuilder("ws-comment")
+			.addModule(ModuleConfig.builder("ws-comment")
 				.addComponent(NotificationWebServices.class)
 				.addComponent(TestLoginWebServices.class)
 				.build())

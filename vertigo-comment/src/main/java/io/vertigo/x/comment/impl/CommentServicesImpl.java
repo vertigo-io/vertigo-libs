@@ -29,7 +29,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.util.DateUtil;
 import io.vertigo.x.account.services.Account;
 import io.vertigo.x.comment.services.Comment;
-import io.vertigo.x.comment.services.CommentBuilder;
 import io.vertigo.x.comment.services.CommentServices;
 
 /**
@@ -56,7 +55,7 @@ public final class CommentServicesImpl implements CommentServices {
 		Assertion.checkNotNull(keyConceptUri);
 		//-----
 		final Date creationDate = DateUtil.newDateTime();
-		final Comment savedComment = new CommentBuilder()
+		final Comment savedComment = Comment.builder()
 				.withAuthor(accountURI)
 				.withCreationDate(creationDate)
 				.withLastModified(creationDate)
@@ -82,7 +81,7 @@ public final class CommentServicesImpl implements CommentServices {
 		final boolean authorized = accountURI.equals(comment.getAuthor()) && originalComment.getAuthor().equals(comment.getAuthor());
 		Assertion.checkState(authorized, "The comment editing is only available for the comment's author.");
 
-		final Comment savedComment = new CommentBuilder(originalComment.getUuid(), accountURI, originalComment.getCreationDate())
+		final Comment savedComment = Comment.builder(originalComment.getUuid(), accountURI, originalComment.getCreationDate())
 				.withMsg(comment.getMsg())
 				.withLastModified(DateUtil.newDateTime())
 				.build();

@@ -45,7 +45,6 @@ import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountBuilder;
 import io.vertigo.x.account.services.AccountGroup;
 import io.vertigo.x.account.services.AccountServices;
 import io.vertigo.x.impl.workflow.ItemStorePlugin;
@@ -109,7 +108,7 @@ public class WorkflowManagerTest extends DbTest {
 		doTearDown();
 	}
 
-	private MyDummyDtObject createDummyDtObject(long itemId) {
+	private MyDummyDtObject createDummyDtObject(final long itemId) {
 		final MyDummyDtObject myDummyDtObject = new MyDummyDtObject();
 		myDummyDtObject.setId(itemId);
 		myDummyDtObject.setDivision("DIV");
@@ -130,7 +129,7 @@ public class WorkflowManagerTest extends DbTest {
 				wfWorkflowDefinition.getWfwdId()).build();
 
 		final AccountGroup accountGroup = new AccountGroup("1", "dummy group");
-		final Account account = new AccountBuilder("Acc1").build();
+		final Account account = Account.builder("Acc1").build();
 		accountServices.getStore().saveGroup(accountGroup);
 		accountServices.getStore().saveAccounts(Arrays.asList(account));
 		final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
@@ -142,7 +141,7 @@ public class WorkflowManagerTest extends DbTest {
 		final RuleDefinition rule1Act1 = new RuleDefinition();
 		rule1Act1.setItemId(firstActivity.getWfadId());
 
-		RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition();
+		final RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition();
 		condition1Rule1Act1.setField("DIVISION");
 		condition1Rule1Act1.setOperator("=");
 		condition1Rule1Act1.setExpression("DIV");
@@ -152,7 +151,7 @@ public class WorkflowManagerTest extends DbTest {
 		// validation
 		// when no one is linked to an activity)
 
-		SelectorDefinition selector1 = new SelectorDefinition();
+		final SelectorDefinition selector1 = new SelectorDefinition();
 		selector1.setItemId(firstActivity.getWfadId());
 		selector1.setGroupId(accountGroup.getId());
 
@@ -239,26 +238,26 @@ public class WorkflowManagerTest extends DbTest {
 
 	}
 
-	private static void assertHasOneDecision(WfWorkflowDecision wfWorkflowDecision) {
+	private static void assertHasOneDecision(final WfWorkflowDecision wfWorkflowDecision) {
 		assertNotNull(wfWorkflowDecision.getDecisions());
 		assertThat(wfWorkflowDecision.getDecisions().size(), is(1));
 	}
 
-	private static void assertActivityExist(WfActivityDefinition activityDefinition, WfWorkflowDecision wfWorkflowDecision) {
+	private static void assertActivityExist(final WfActivityDefinition activityDefinition, final WfWorkflowDecision wfWorkflowDecision) {
 		assertThat(activityDefinition.getWfadId(), is(wfWorkflowDecision.getActivityDefinition().getWfadId()));
 		assertNotNull(wfWorkflowDecision.getActivity());
 		assertNotNull(wfWorkflowDecision.getActivity().getWfaId());
 		assertThat(activityDefinition.getWfadId(), is(wfWorkflowDecision.getActivity().getWfadId()));
 	}
 
-	private static void assertFirstDecisionEquals(WfDecision wfDecisionAct, WfWorkflowDecision wfWorkflowDecision) {
+	private static void assertFirstDecisionEquals(final WfDecision wfDecisionAct, final WfWorkflowDecision wfWorkflowDecision) {
 		assertThat(wfDecisionAct.getWfaId(), is(wfWorkflowDecision.getDecisions().get(0).getWfaId()));
 		assertThat(wfDecisionAct.getChoice(), is(wfWorkflowDecision.getDecisions().get(0).getChoice()));
 		assertThat(wfDecisionAct.getComments(), is(wfWorkflowDecision.getDecisions().get(0).getComments()));
 		assertThat(wfDecisionAct.getDecisionDate(), is(wfWorkflowDecision.getDecisions().get(0).getDecisionDate()));
 	}
 
-	private static void assertHasOneGroup(AccountGroup accountGroup, WfWorkflowDecision wfWorkflowDecision) {
+	private static void assertHasOneGroup(final AccountGroup accountGroup, final WfWorkflowDecision wfWorkflowDecision) {
 		assertNotNull(wfWorkflowDecision.getGroups());
 		assertThat(1, is(wfWorkflowDecision.getGroups().size()));
 		assertThat(accountGroup.getId(), is(wfWorkflowDecision.getGroups().get(0).getId()));
@@ -270,14 +269,14 @@ public class WorkflowManagerTest extends DbTest {
 	@Test
 	public void testWorkflowRulesManualValidationActivities() {
 
-		WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
+		final WfWorkflowDefinition wfWorkflowDefinition = new WfWorkflowDefinitionBuilder("WorkflowRules").build();
 		workflowManager.createWorkflowDefinition(wfWorkflowDefinition);
 
-		WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1", wfWorkflowDefinition.getWfwdId())
+		final WfActivityDefinition firstActivity = new WfActivityDefinitionBuilder("Step 1", wfWorkflowDefinition.getWfwdId())
 				.build();
 
-		AccountGroup accountGroup = new AccountGroup("1", "dummy group");
-		Account account = new AccountBuilder("Acc1").build();
+		final AccountGroup accountGroup = new AccountGroup("1", "dummy group");
+		final Account account = Account.builder("Acc1").build();
 		accountServices.getStore().saveGroup(accountGroup);
 		accountServices.getStore().saveAccounts(Arrays.asList(account));
 		final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
@@ -289,7 +288,7 @@ public class WorkflowManagerTest extends DbTest {
 		final RuleDefinition rule1Act1 = new RuleDefinition();
 		rule1Act1.setItemId(firstActivity.getWfadId());
 
-		RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition();
+		final RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition();
 		condition1Rule1Act1.setField("ENTITY");
 		condition1Rule1Act1.setOperator("IN");
 		condition1Rule1Act1.setExpression("ENT,FED,GFE");
@@ -299,11 +298,11 @@ public class WorkflowManagerTest extends DbTest {
 		// validation
 		// when no one is linked to an activity)
 
-		SelectorDefinition selector1 = new SelectorDefinition();
+		final SelectorDefinition selector1 = new SelectorDefinition();
 		selector1.setItemId(firstActivity.getWfadId());
 		selector1.setGroupId(accountGroup.getId());
 
-		RuleFilterDefinition filter1 = new RuleFilterDefinition();
+		final RuleFilterDefinition filter1 = new RuleFilterDefinition();
 		filter1.setField("ENTITY");
 		filter1.setOperator("=");
 		filter1.setExpression("ENT");
@@ -311,31 +310,31 @@ public class WorkflowManagerTest extends DbTest {
 		workflowManager.addSelector(firstActivity, selector1, Arrays.asList(filter1));
 
 		// Step 2 : No rules/condition
-		WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2",
+		final WfActivityDefinition secondActivity = new WfActivityDefinitionBuilder("Step 2",
 				wfWorkflowDefinition.getWfwdId()).build();
 		workflowManager.addActivity(wfWorkflowDefinition, secondActivity, 2);
 		// Selector/filter to validate the activity (preventing auto
 		// validation
 		// when no one is linked to an activity)
 
-		SelectorDefinition selector2 = new SelectorDefinition();
+		final SelectorDefinition selector2 = new SelectorDefinition();
 		selector2.setItemId(secondActivity.getWfadId());
 		selector2.setGroupId(accountGroup.getId());
 
 		workflowManager.addSelector(secondActivity, selector2, new ArrayList<RuleFilterDefinition>());
 
 		// Step 3 : 1 rule, 2 conditions
-		WfActivityDefinition thirdActivity = new WfActivityDefinitionBuilder("Step 3", wfWorkflowDefinition.getWfwdId())
+		final WfActivityDefinition thirdActivity = new WfActivityDefinitionBuilder("Step 3", wfWorkflowDefinition.getWfwdId())
 				.build();
 		workflowManager.addActivity(wfWorkflowDefinition, thirdActivity, 3);
 		final RuleDefinition rule1Act3 = new RuleDefinition();
 		rule1Act3.setItemId(thirdActivity.getWfadId());
 
-		RuleConditionDefinition condition1Rule1Act3 = new RuleConditionDefinition();
+		final RuleConditionDefinition condition1Rule1Act3 = new RuleConditionDefinition();
 		condition1Rule1Act3.setField("ENTITY");
 		condition1Rule1Act3.setOperator("=");
 		condition1Rule1Act3.setExpression("ENT");
-		RuleConditionDefinition condition2Rule1Act3 = new RuleConditionDefinition();
+		final RuleConditionDefinition condition2Rule1Act3 = new RuleConditionDefinition();
 		condition2Rule1Act3.setField("ENTITY");
 		condition2Rule1Act3.setOperator("=");
 		condition2Rule1Act3.setExpression("ENT");
@@ -345,11 +344,11 @@ public class WorkflowManagerTest extends DbTest {
 		// validation
 		// when no one is linked to an activity)
 
-		SelectorDefinition selector3 = new SelectorDefinition();
+		final SelectorDefinition selector3 = new SelectorDefinition();
 		selector3.setItemId(thirdActivity.getWfadId());
 		selector3.setGroupId(accountGroup.getId());
 
-		RuleFilterDefinition filter3 = new RuleFilterDefinition();
+		final RuleFilterDefinition filter3 = new RuleFilterDefinition();
 		filter3.setField("ENTITY");
 		filter3.setOperator("=");
 		filter3.setExpression("ENT");
@@ -357,17 +356,17 @@ public class WorkflowManagerTest extends DbTest {
 		workflowManager.addSelector(thirdActivity, selector3, Arrays.asList(filter3));
 
 		// Step 4 : 2 rules, 1 condition
-		WfActivityDefinition fourthActivity = new WfActivityDefinitionBuilder("Step 4",
+		final WfActivityDefinition fourthActivity = new WfActivityDefinitionBuilder("Step 4",
 				wfWorkflowDefinition.getWfwdId()).build();
 		workflowManager.addActivity(wfWorkflowDefinition, fourthActivity, 4);
 
 		final RuleDefinition rule1Act4 = new RuleDefinition();
 		rule1Act4.setItemId(fourthActivity.getWfadId());
-		RuleConditionDefinition condition1Rule1Act4 = new RuleConditionDefinition();
+		final RuleConditionDefinition condition1Rule1Act4 = new RuleConditionDefinition();
 		condition1Rule1Act4.setField("ENTITY");
 		condition1Rule1Act4.setOperator("=");
 		condition1Rule1Act4.setExpression("ENT");
-		RuleConditionDefinition condition1Rule2Act4 = new RuleConditionDefinition();
+		final RuleConditionDefinition condition1Rule2Act4 = new RuleConditionDefinition();
 		condition1Rule2Act4.setField("ENTITY");
 		condition1Rule2Act4.setOperator("=");
 		condition1Rule2Act4.setExpression("ENT");
@@ -381,20 +380,20 @@ public class WorkflowManagerTest extends DbTest {
 		// validation
 		// when no one is linked to an activity)
 
-		SelectorDefinition selector41 = new SelectorDefinition();
+		final SelectorDefinition selector41 = new SelectorDefinition();
 		selector41.setItemId(fourthActivity.getWfadId());
 		selector41.setGroupId(accountGroup.getId());
 
-		RuleFilterDefinition filter4 = new RuleFilterDefinition();
+		final RuleFilterDefinition filter4 = new RuleFilterDefinition();
 		filter4.setField("ENTITY");
 		filter4.setOperator("=");
 		filter4.setExpression("ENT");
 
 		workflowManager.addSelector(fourthActivity, selector41, Arrays.asList(filter4));
 
-		MyDummyDtObject myDummyDtObject = createDummyDtObject(1);
+		final MyDummyDtObject myDummyDtObject = createDummyDtObject(1);
 
-		WfWorkflow wfWorkflow = workflowManager.createWorkflowInstance(wfWorkflowDefinition.getWfwdId(), "JUnit", false,
+		final WfWorkflow wfWorkflow = workflowManager.createWorkflowInstance(wfWorkflowDefinition.getWfwdId(), "JUnit", false,
 				myDummyDtObject.getId());
 
 		// Starting the workflow
@@ -426,14 +425,14 @@ public class WorkflowManagerTest extends DbTest {
 		WfActivity currentActivity = workflowManager.getActivity(currentActivityId);
 		assertThat(currentActivity.getWfadId(), is(firstActivity.getWfadId()));
 
-		WfWorkflow wfWorkflowFetched = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
+		final WfWorkflow wfWorkflowFetched = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
 		assertNotNull(wfWorkflowFetched);
 
 		currentActivityId = wfWorkflow.getWfaId2();
 		currentActivity = workflowManager.getActivity(currentActivityId);
 		assertThat(currentActivity.getWfadId(), is(firstActivity.getWfadId()));
 
-		WfDecision decision = new WfDecision();
+		final WfDecision decision = new WfDecision();
 		decision.setChoice(1);
 		decision.setComments("abc");
 		decision.setUsername("AA");
@@ -471,7 +470,7 @@ public class WorkflowManagerTest extends DbTest {
 		currentActivity = workflowManager.getActivity(currentActivityId);
 		assertThat(currentActivity.getWfadId(), is(thirdActivity.getWfadId()));
 
-		WfWorkflow wfWorkflowFetched2 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
+		final WfWorkflow wfWorkflowFetched2 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
 		assertNotNull(wfWorkflowFetched2);
 
 		currentActivityId = wfWorkflow.getWfaId2();
@@ -479,7 +478,7 @@ public class WorkflowManagerTest extends DbTest {
 		assertThat(currentActivity.getWfadId(), is(thirdActivity.getWfadId()));
 
 		// Manually validating activity 3
-		WfDecision wfDecisionAct3 = new WfDecision();
+		final WfDecision wfDecisionAct3 = new WfDecision();
 		wfDecisionAct3.setChoice(1);
 		wfDecisionAct3.setUsername(account.getId());
 		wfDecisionAct3.setWfaId(currentActivity.getWfaId());
@@ -524,7 +523,7 @@ public class WorkflowManagerTest extends DbTest {
 		currentActivity = workflowManager.getActivity(currentActivityId);
 		assertThat(currentActivity.getWfadId(), is(fourthActivity.getWfadId()));
 
-		WfWorkflow wfWorkflowFetched3 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
+		final WfWorkflow wfWorkflowFetched3 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
 		assertNotNull(wfWorkflowFetched3);
 
 		currentActivityId = wfWorkflow.getWfaId2();
@@ -532,7 +531,7 @@ public class WorkflowManagerTest extends DbTest {
 		assertThat(currentActivity.getWfadId(), is(fourthActivity.getWfadId()));
 
 		// Manually validating activity 4
-		WfDecision wfDecisionAct4 = new WfDecision();
+		final WfDecision wfDecisionAct4 = new WfDecision();
 		wfDecisionAct4.setChoice(1);
 		wfDecisionAct4.setUsername(account.getId());
 		workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, WfCodeTransition.DEFAULT.getTransitionName(), wfDecisionAct4);
@@ -574,7 +573,7 @@ public class WorkflowManagerTest extends DbTest {
 		// Automatic ending.
 		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.END.toString()));
 
-		WfWorkflow wfWorkflowFetched5 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
+		final WfWorkflow wfWorkflowFetched5 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
 		assertThat(wfWorkflowFetched5.getWfsCode(), is(WfCodeStatusWorkflow.END.toString()));
 
 	}
@@ -597,7 +596,7 @@ public class WorkflowManagerTest extends DbTest {
 		final RuleDefinition rule1Act1 = new RuleDefinition();
 		rule1Act1.setItemId(firstActivity.getWfadId());
 
-		RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition();
+		final RuleConditionDefinition condition1Rule1Act1 = new RuleConditionDefinition();
 		condition1Rule1Act1.setField("DIVISION");
 		condition1Rule1Act1.setOperator("=");
 		condition1Rule1Act1.setExpression("DIV");
@@ -617,12 +616,12 @@ public class WorkflowManagerTest extends DbTest {
 		final RuleDefinition rule1Act3 = new RuleDefinition();
 		rule1Act3.setItemId(thirdActivity.getWfadId());
 
-		RuleConditionDefinition condition1Rule1Act3 = new RuleConditionDefinition();
+		final RuleConditionDefinition condition1Rule1Act3 = new RuleConditionDefinition();
 		condition1Rule1Act3.setField("DIVISION");
 		condition1Rule1Act3.setOperator("=");
 		condition1Rule1Act3.setExpression("DIV");
 
-		RuleConditionDefinition condition2Rule1Act3 = new RuleConditionDefinition();
+		final RuleConditionDefinition condition2Rule1Act3 = new RuleConditionDefinition();
 		condition2Rule1Act3.setField("ENTITY");
 		condition2Rule1Act3.setOperator("=");
 		condition2Rule1Act3.setExpression("ENT");
@@ -637,7 +636,7 @@ public class WorkflowManagerTest extends DbTest {
 		final RuleDefinition rule1Act4 = new RuleDefinition();
 		rule1Act4.setItemId(fourthActivity.getWfadId());
 
-		RuleConditionDefinition condition1Rule1Act4 = new RuleConditionDefinition();
+		final RuleConditionDefinition condition1Rule1Act4 = new RuleConditionDefinition();
 		condition1Rule1Act4.setField("DIVISION");
 		condition1Rule1Act4.setOperator("=");
 		condition1Rule1Act4.setExpression("DIV");
@@ -645,7 +644,7 @@ public class WorkflowManagerTest extends DbTest {
 		final RuleDefinition rule2Act4 = new RuleDefinition();
 		rule2Act4.setItemId(fourthActivity.getWfadId());
 
-		RuleConditionDefinition condition1Rule2Act4 = new RuleConditionDefinition();
+		final RuleConditionDefinition condition1Rule2Act4 = new RuleConditionDefinition();
 		condition1Rule2Act4.setField("DIVISION");
 		condition1Rule2Act4.setOperator("=");
 		condition1Rule2Act4.setExpression("ABC");
@@ -662,16 +661,16 @@ public class WorkflowManagerTest extends DbTest {
 		// Starting the workflow
 		workflowManager.startInstance(wfWorkflow);
 
-		List<WfWorkflowDecision> workflowDecisions1 = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
+		final List<WfWorkflowDecision> workflowDecisions1 = workflowManager.getWorkflowDecision(wfWorkflow.getWfwId());
 		assertNotNull(workflowDecisions1);
 		assertThat(workflowDecisions1.size(), is(3));
 
-		WfActivity currentActivity = workflowManager.getActivity(wfWorkflow.getWfaId2());
+		final WfActivity currentActivity = workflowManager.getActivity(wfWorkflow.getWfaId2());
 		assertThat(currentActivity.getWfadId(), is(firstActivity.getWfadId()));
 
 		final WfWorkflow wfWorkflowFetched = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
 		assertThat(wfWorkflowFetched, is(not(nullValue())));
-		WfActivity currentActivityFetched = workflowManager.getActivity(wfWorkflowFetched.getWfaId2());
+		final WfActivity currentActivityFetched = workflowManager.getActivity(wfWorkflowFetched.getWfaId2());
 		assertThat(currentActivityFetched.getWfadId(), is(firstActivity.getWfadId()));
 
 	}

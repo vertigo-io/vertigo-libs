@@ -18,6 +18,7 @@
  */
 package io.vertigo.x.connectors;
 
+import io.vertigo.app.config.ComponentConfig;
 import io.vertigo.app.config.ComponentConfigBuilder;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
@@ -56,7 +57,7 @@ public final class ConnectorsFeatures extends Features {
 	 * @return the REDIS connector
 	 */
 	public ConnectorsFeatures withRedisConnector(final String host, final int port, final String password, final int database) {
-		final ComponentConfigBuilder componentConfigBuilder = new ComponentConfigBuilder(RedisConnector.class)
+		final ComponentConfigBuilder componentConfigBuilder = ComponentConfig.builder(RedisConnector.class)
 				.addParam(Param.of("host", host))
 				.addParam(Param.of("port", Integer.toString(port)))
 				.addParam(Param.of("database", Integer.toString(database)));

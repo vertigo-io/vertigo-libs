@@ -40,7 +40,6 @@ import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.notification.impl.services.NotificationEvent;
 import io.vertigo.x.notification.impl.services.NotificationPlugin;
 import io.vertigo.x.notification.services.Notification;
-import io.vertigo.x.notification.services.NotificationBuilder;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;
@@ -126,7 +125,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		try {
 			final Date creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT)
 					.parse(data.get("creationDate"));
-			return new NotificationBuilder(UUID.fromString(data.get("uuid")))
+			return Notification.builder(UUID.fromString(data.get("uuid")))
 					.withSender(data.get("sender"))
 					.withType(data.get("type"))
 					.withTitle(data.get("title"))

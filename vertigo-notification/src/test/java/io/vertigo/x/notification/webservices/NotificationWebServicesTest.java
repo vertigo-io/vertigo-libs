@@ -47,7 +47,6 @@ import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.notification.MyAppConfig;
 import io.vertigo.x.notification.data.Accounts;
 import io.vertigo.x.notification.services.Notification;
-import io.vertigo.x.notification.services.NotificationBuilder;
 import io.vertigo.x.notification.services.NotificationServices;
 import redis.clients.jedis.Jedis;
 import spark.Spark;
@@ -114,7 +113,7 @@ public final class NotificationWebServicesTest {
 
 	@Test
 	public void testGetCurrentNotifications() {
-		final Notification notification = new NotificationBuilder()
+		final Notification notification = Notification.builder()
 				.withSender("ExtensionTest")
 				.withType("MSG")
 				.withTitle("Message de Vertigo")
@@ -135,7 +134,7 @@ public final class NotificationWebServicesTest {
 
 	@Test
 	public void testGetRemoveNotifications() {
-		final Notification notification = new NotificationBuilder()
+		final Notification notification = Notification.builder()
 				.withSender("ExtensionTest")
 				.withType("MSG")
 				.withTitle("Message de Vertigo")
@@ -172,14 +171,14 @@ public final class NotificationWebServicesTest {
 
 	@Test
 	public void testGetRemoveManyNotifications() {
-		final Notification notification1 = new NotificationBuilder()
+		final Notification notification1 = Notification.builder()
 				.withSender("ExtensionTest")
 				.withType("MSG")
 				.withTitle("Message de Vertigo")
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		final Notification notification2 = new NotificationBuilder()
+		final Notification notification2 = Notification.builder()
 				.withSender("ExtensionTest")
 				.withType("MSG")
 				.withTitle("Message de Vertigo")

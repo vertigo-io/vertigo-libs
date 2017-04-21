@@ -19,9 +19,8 @@
 package io.vertigo.quarto.publisher.docx;
 
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.app.config.DefinitionProviderConfigBuilder;
-import io.vertigo.app.config.ModuleConfigBuilder;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
@@ -34,7 +33,7 @@ import io.vertigo.quarto.publisher.impl.PublisherManagerImpl;
 class MyAppConfig {
 
 	public static AppConfig config() {
-		return new AppConfigBuilder().beginBoot()
+		return AppConfig.builder().beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
@@ -43,13 +42,13 @@ class MyAppConfig {
 						.build())
 				.addModule(new DynamoFeatures()
 						.build())
-				.addModule(new ModuleConfigBuilder("myApp")
+				.addModule(ModuleConfig.builder("myApp")
 						.addComponent(PublisherManager.class, PublisherManagerImpl.class)
 						.addPlugin(DOCXMergerPlugin.class)
-						.addDefinitionProvider(new DefinitionProviderConfigBuilder(DynamoDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/quarto/publisher/data/execution.kpr")
 								.build())
-						.addDefinitionProvider(new DefinitionProviderConfigBuilder(TestPublisherDefinitionProvider.class).build())
+						.addDefinitionProvider(DefinitionProviderConfig.builder(TestPublisherDefinitionProvider.class).build())
 						.build())
 				.build();
 

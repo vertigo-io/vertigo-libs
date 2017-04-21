@@ -25,7 +25,6 @@ import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DomainBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinitionBuilder;
 import io.vertigo.util.ListBuilder;
@@ -39,30 +38,32 @@ public final class RuleProvider extends SimpleDefinitionProvider {
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final Domain domainWorkflowId = new DomainBuilder("DO_X_RULES_ID", DataType.Long).build();
-		final Domain domainWorkflowCode = new DomainBuilder("DO_X_RULES_CODE", DataType.String).build();
-		final Domain domainWorkflowDate = new DomainBuilder("DO_X_RULES_DATE", DataType.Date).build();
-		final Domain domainWorkflowWeakId = new DomainBuilder("DO_X_RULES_WEAK_ID", DataType.Long).build();
-		final Domain domainWorkflowLabel = new DomainBuilder("DO_X_RULES_LABEL", DataType.String).build();
-		final Domain domainWorkflowField = new DomainBuilder("DO_X_RULES_FIELD", DataType.String).build();
-		final Domain domainWorkflowOperator = new DomainBuilder("DO_X_RULES_OPERATOR", DataType.String).build();
-		final Domain domainWorkflowExpression = new DomainBuilder("DO_X_RULES_EXPRESSION", DataType.String).build();
+		final Domain domainWorkflowId = Domain.builder("DO_X_RULES_ID", DataType.Long).build();
+		final Domain domainWorkflowCode = Domain.builder("DO_X_RULES_CODE", DataType.String).build();
+		final Domain domainWorkflowDate = Domain.builder("DO_X_RULES_DATE", DataType.Date).build();
+		final Domain domainWorkflowWeakId = Domain.builder("DO_X_RULES_WEAK_ID", DataType.Long).build();
+		final Domain domainWorkflowLabel = Domain.builder("DO_X_RULES_LABEL", DataType.String).build();
+		final Domain domainWorkflowField = Domain.builder("DO_X_RULES_FIELD", DataType.String).build();
+		final Domain domainWorkflowOperator = Domain.builder("DO_X_RULES_OPERATOR", DataType.String).build();
+		final Domain domainWorkflowExpression = Domain.builder("DO_X_RULES_EXPRESSION", DataType.String).build();
 
-		final DtDefinition wfRuleDefinitionDtDefinition = new DtDefinitionBuilder("DT_RULE_DEFINITION")
+		final DtDefinition wfRuleDefinitionDtDefinition = DtDefinition.builder("DT_RULE_DEFINITION")
 				.addIdField("ID", "id", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
 				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true, false, false).build();
 
-		final DtDefinitionBuilder wfConditionDefinitionDtDefinitionBuilder = new DtDefinitionBuilder(
-				"DT_RULE_CONDITION_DEFINITION").addIdField("ID", "id", domainWorkflowId, false, false)
-						.addDataField("FIELD", "field", domainWorkflowField, true, true, false, false)
-						.addDataField("OPERATOR", "operator", domainWorkflowOperator, true, true, false, false)
-						.addDataField("EXPRESSION", "expression", domainWorkflowExpression, true, true, false, false);
+		// @formatter:off
+		final DtDefinitionBuilder wfConditionDefinitionDtDefinitionBuilder = DtDefinition.builder("DT_RULE_CONDITION_DEFINITION")
+				.addIdField("ID", "id", domainWorkflowId, false, false)
+				.addDataField("FIELD", "field", domainWorkflowField, true, true, false, false)
+				.addDataField("OPERATOR", "operator", domainWorkflowOperator, true, true, false, false)
+				.addDataField("EXPRESSION", "expression", domainWorkflowExpression, true, true, false, false);
 
-		final DtDefinition wfSelectorDefinitionDtDefinition = new DtDefinitionBuilder("DT_SELECTOR_DEFINITION")
+		final DtDefinition wfSelectorDefinitionDtDefinition = DtDefinition.builder("DT_SELECTOR_DEFINITION")
 				.addIdField("ID", "id", domainWorkflowId, false, false)
 				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
 				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true, false, false).build();
+		// @formatter:on
 
 		final DtDefinition wfConditionDefinitionDtDefinition = wfConditionDefinitionDtDefinitionBuilder.build();
 

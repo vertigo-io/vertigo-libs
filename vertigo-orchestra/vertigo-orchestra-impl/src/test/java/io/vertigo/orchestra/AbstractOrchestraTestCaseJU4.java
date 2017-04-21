@@ -31,9 +31,7 @@ import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.dynamox.task.TaskEngineProc;
@@ -87,12 +85,12 @@ public abstract class AbstractOrchestraTestCaseJU4 {
 					.build();
 
 			for (final String request : requests) {
-				final TaskDefinition taskDefinition = new TaskDefinitionBuilder("TK_CLEAN")
+				final TaskDefinition taskDefinition = TaskDefinition.builder("TK_CLEAN")
 						.withDataSpace("orchestra")
 						.withEngine(TaskEngineProc.class)
 						.withRequest(request)
 						.build();
-				final Task task = new TaskBuilder(taskDefinition).build();
+				final Task task = Task.builder(taskDefinition).build();
 				taskManager.execute(task);
 			}
 			transaction.commit();
