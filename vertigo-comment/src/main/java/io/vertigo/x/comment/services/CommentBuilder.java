@@ -33,7 +33,7 @@ import io.vertigo.x.account.services.AccountServices;
  * @author pchretien
  */
 public final class CommentBuilder implements Builder<Comment> {
-	private final UUID uuid;
+	private UUID myUuid;
 	private String myMsg;
 	private URI<Account> myAuthor;
 	private String myAuthorDisplayName;
@@ -44,20 +44,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * Constructor for new comment.
 	 */
 	CommentBuilder() {
-		uuid = UUID.randomUUID();
-	}
-
-	/**
-	 * Constructor for new comment.
-	 * @param uuid Uuid Comment unique id
-	 * @param author Author
-	 * @param creationDate Creation date
-	 */
-	CommentBuilder(final UUID uuid, final URI<Account> author, final Date creationDate) {
-		this.uuid = uuid;
-		myAuthor = author;
-		myAuthorDisplayName = getAccountManager().getStore().getAccount(author).getDisplayName();
-		myCreationDate = creationDate;
+		//RAF
 	}
 
 	private static AccountServices getAccountManager() {
@@ -74,6 +61,18 @@ public final class CommentBuilder implements Builder<Comment> {
 		//-----
 		myAuthor = author;
 		myAuthorDisplayName = getAccountManager().getStore().getAccount(author).getDisplayName();
+		return this;
+	}
+
+	/**
+	 * @param uuid UUID identifier
+	 * @return this builder
+	 */
+	public CommentBuilder withUuid(final UUID uuid) {
+		Assertion.checkArgument(uuid == null, "UUID already set");
+		Assertion.checkNotNull(uuid);
+		//-----
+		myUuid = uuid;
 		return this;
 	}
 
@@ -119,6 +118,9 @@ public final class CommentBuilder implements Builder<Comment> {
 		if (myCreationDate == null) {
 			myCreationDate = DateUtil.newDateTime();
 		}
-		return new Comment(uuid, myAuthor, myAuthorDisplayName, myMsg, myCreationDate, myLastModified);
+		if (myUuid == null) {
+			myUuid = UUID.randomUUID();
+		}
+		return new Comment(myUuid, myAuthor, myAuthorDisplayName, myMsg, myCreationDate, myLastModified);
 	}
 }

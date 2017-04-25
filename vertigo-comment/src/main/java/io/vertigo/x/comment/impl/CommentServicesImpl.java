@@ -81,7 +81,10 @@ public final class CommentServicesImpl implements CommentServices {
 		final boolean authorized = accountURI.equals(comment.getAuthor()) && originalComment.getAuthor().equals(comment.getAuthor());
 		Assertion.checkState(authorized, "The comment editing is only available for the comment's author.");
 
-		final Comment savedComment = Comment.builder(originalComment.getUuid(), accountURI, originalComment.getCreationDate())
+		final Comment savedComment = Comment.builder()
+				.withUuid(originalComment.getUuid())
+				.withAuthor(accountURI)
+				.withCreationDate(originalComment.getCreationDate())
 				.withMsg(comment.getMsg())
 				.withLastModified(DateUtil.newDateTime())
 				.build();

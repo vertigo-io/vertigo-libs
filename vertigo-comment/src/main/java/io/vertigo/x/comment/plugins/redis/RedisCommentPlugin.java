@@ -142,10 +142,14 @@ public final class RedisCommentPlugin implements CommentPlugin {
 			final Date creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT).parse(data.get("creationDate"));
 			final Date lastModified = data.get("lastModified") != null ? new SimpleDateFormat(CODEC_DATE_FORMAT).parse(data.get("lastModified")) : null;
 
-			return Comment.builder(UUID.fromString(data.get("uuid")), new URI<Account>(dtDefinition, data.get("author")), creationDate)
+			return Comment.builder()
+					.withUuid(UUID.fromString(data.get("uuid")))
+					.withAuthor(new URI<Account>(dtDefinition, data.get("author")))
+					.withCreationDate(creationDate)
 					.withMsg(data.get("msg"))
 					.withLastModified(lastModified)
 					.build();
+
 		} catch (final ParseException e) {
 			throw WrappedException.wrap(e, "Can't parse comment");
 		}

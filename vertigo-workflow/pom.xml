@@ -94,7 +94,7 @@
 						</goals>
 						<configuration>
 							<outputDirectory>src/dev/lib</outputDirectory>
-							<overWriteReleases>false</overWriteReleases>
+							<overWriteReleases>true</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
 							<overWriteIfNewer>true</overWriteIfNewer>
 						</configuration>
