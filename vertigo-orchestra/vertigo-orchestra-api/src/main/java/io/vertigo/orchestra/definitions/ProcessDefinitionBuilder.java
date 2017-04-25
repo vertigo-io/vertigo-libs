@@ -37,7 +37,7 @@ import io.vertigo.util.MapBuilder;
 public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition> {
 	private final String name;
 	private final String label;
-	private final ProcessType type;
+	private ProcessType myType;
 	private boolean myActive;
 	private Optional<String> myCronExpression = Optional.empty();
 	private final MapBuilder<String, String> myInitialParams = new MapBuilder<>();
@@ -54,22 +54,10 @@ public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition
 	 * @param processLabel le libellé du processus
 	 */
 	ProcessDefinitionBuilder(final String processName, final String processLabel) {
-		this(processName, processLabel, ProcessType.SUPERVISED);
-	}
-
-	/**
-	 * Constructor.
-	 * @param processName le nom du processus
-	 * @param processLabel le libellé du processus
-	 * @param processType le type de processus
-	 */
-	ProcessDefinitionBuilder(final String processName, final String processLabel, final ProcessType processType) {
 		Assertion.checkArgNotEmpty(processName);
-		Assertion.checkNotNull(processType);
 		//-----
 		name = processName;
 		label = processLabel;
-		type = processType;
 		// active by default
 		myActive = true;
 	}
@@ -80,6 +68,17 @@ public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition
 	 */
 	public ProcessDefinitionBuilder inactive() {
 		myActive = false;
+		return this;
+	}
+
+	/**
+	 * 
+	 * @param type
+	 * @return this
+	 */
+	public ProcessDefinitionBuilder withProcessType(final ProcessType type) {
+		Assertion.checkNotNull(type);
+		myType = type;
 		return this;
 	}
 
@@ -172,11 +171,16 @@ public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition
 	/** {@inheritDoc} */
 	@Override
 	public ProcessDefinition build() {
+
+		if (myType == null) {
+			myType = ProcessType.SUPERVISED;
+		}
+
 		return new ProcessDefinition(
 				name,
 				label,
 				myActive,
-				type,
+				myType,
 				myMetadatas,
 				needUpdate,
 				new ProcessTriggeringStrategy(

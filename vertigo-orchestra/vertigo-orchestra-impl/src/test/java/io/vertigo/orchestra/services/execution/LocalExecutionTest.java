@@ -28,7 +28,6 @@ import org.junit.Test;
 import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
-import io.vertigo.orchestra.definitions.ProcessType;
 import io.vertigo.orchestra.services.OrchestraServices;
 
 /**
@@ -50,7 +49,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void singleExecution() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("PRO_TEST_UNSUPERVISED_MANUAL", "PRO_TEST_UNSUPERVISED_MANUAL", ProcessType.UNSUPERVISED)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("PRO_TEST_UNSUPERVISED_MANUAL", "PRO_TEST_UNSUPERVISED_MANUAL")
 				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
 
@@ -71,7 +70,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void recurrentExecution() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("PRO_TEST_UNSUPERVISED_SCHEDULED", "PRO_TEST_UNSUPERVISED_SCHEDULED", ProcessType.UNSUPERVISED)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("PRO_TEST_UNSUPERVISED_SCHEDULED", "PRO_TEST_UNSUPERVISED_SCHEDULED")
 				.withCronExpression("*/15 * * * * ?")
 				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
