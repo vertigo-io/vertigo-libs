@@ -109,7 +109,7 @@ public class AccueilAction extends AbstractTestActionSupport {
 
 	public String uploadFile() {
 		if (!fileTestFileRef.exists()) {
-			throw new VUserException(new MessageText("Aucun fichier uploadé.", null));
+			throw new VUserException(MessageText.of("Aucun fichier uploadé."));
 		}
 		final VFile vFile = fileTestFileRef.get();
 		getUiMessageStack().addGlobalMessage(Level.INFO, "Fichier recu : " + vFile.getFileName() + " (" + vFile.getMimeType() + ")");

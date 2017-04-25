@@ -68,7 +68,7 @@ public final class ContextVFile {
 		Assertion.checkState(!action.getModel().containsKey(contextKeyVFile), "File {0} already extracted. Extract it once and keep it, think about store it", contextKeyFile);
 		final UploadedFile[] filesRef = UploadedFile[].class.cast(action.getModel().get(contextKeyFile));
 		if (filesRef == null || filesRef.length == 0) {
-			throw new VUserException(new MessageText("Le fichier attendu ({0}) n'a pas été envoyé", null, contextKeyFile));
+			throw new VUserException(MessageText.of("Le fichier attendu ({0}) n'a pas été envoyé", contextKeyFile));
 		}
 		final String[] filesName = String[].class.cast(action.getModel().get(contextKeyFileName));
 		final String[] filesContentType = String[].class.cast(action.getModel().get(contextKeyContentType));

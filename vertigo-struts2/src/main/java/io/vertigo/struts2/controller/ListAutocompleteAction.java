@@ -70,7 +70,7 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 		final String searchString = termRef.get();
 		final Object contextList = getModel().get(listRef.get());
 		if (!(contextList instanceof UiList)) {
-			throw new VUserException(new MessageText("La liste n'est pas du bon type {0}", null, listRef.get()));
+			throw new VUserException(MessageText.of("La liste n'est pas du bon type {0}", listRef.get()));
 		}
 		final DtList<D> list = ((UiList<D>) contextList).mergeAndCheckInput(Collections.EMPTY_LIST, getUiMessageStack());
 		final DtDefinition dtDefinition = list.getDefinition();

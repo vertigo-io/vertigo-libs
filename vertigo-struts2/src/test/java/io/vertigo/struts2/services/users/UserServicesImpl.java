@@ -40,7 +40,7 @@ public class UserServicesImpl implements UserServices {
 		if (login == null || password == null
 				|| login.isEmpty() || password.isEmpty()
 				|| login.startsWith(password) || password.startsWith(login)) {
-			throw new VUserException(new MessageText(UserResources.INVALID_CREDENTIALS));
+			throw new VUserException(MessageText.of(UserResources.INVALID_CREDENTIALS));
 		}
 
 		final ApplicationUser applicationUser = new ApplicationUser();

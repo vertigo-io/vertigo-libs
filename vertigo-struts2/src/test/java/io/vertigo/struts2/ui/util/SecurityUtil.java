@@ -52,7 +52,7 @@ public final class SecurityUtil {
 	 */
 	public static void checkAccess(final Object value, final String operation) throws VSecurityException {
 		if (!hasAccess(value, operation)) {
-			throw new VSecurityException(new MessageText("Vous ne posséder pas les droits suffisant pour réaliser cette opération. (" + operation + " sur " + value.getClass().getSimpleName() + ")", null));
+			throw new VSecurityException(MessageText.of("Vous ne posséder pas les droits suffisant pour réaliser cette opération. (" + operation + " sur " + value.getClass().getSimpleName() + ")"));
 		}
 	}
 
