@@ -183,7 +183,10 @@ public final class CommentWebServicesTest {
 				.get("/x/comment/api/comments?concept=" + CONCEPT_KEY_NAME + "&id=" + keyConcept1Uri.getId());
 		final String uuid = response.body().path("get(0).uuid");
 
-		final Comment editComment = Comment.builder(UUID.fromString(uuid), account1Uri, newComment.getCreationDate())
+		final Comment editComment = Comment.builder()
+				.withUuid(UUID.fromString(uuid))
+				.withAuthor(account1Uri)
+				.withCreationDate(newComment.getCreationDate())
 				.withMsg("edited Lorem ipsum edited")
 				.build();
 

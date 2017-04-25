@@ -49,7 +49,7 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 		final Map<String, String> metadatas = new HashMap<>();
 		metadatas.put("test", "toto");
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_BASIC", "TEST BASIC", ProcessType.SUPERVISED)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_BASIC", "TEST BASIC")
 				.withMetadatas(metadatas)
 				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
@@ -68,7 +68,7 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 	public void testUpateInitialParams() {
 		//Before : 0
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_BASIC", "TEST BASIC", ProcessType.SUPERVISED)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_BASIC", "TEST BASIC")
 				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 
@@ -84,7 +84,7 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void testUpateProperties() {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_UPDATE_CRON", "TEST_UPDATE_CRON", ProcessType.SUPERVISED)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_UPDATE_CRON", "TEST_UPDATE_CRON")
 				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 

@@ -60,17 +60,6 @@ public final class Comment {
 		return new CommentBuilder();
 	}
 
-	/**
-	 * Static method factory for CommentBuilder
-	 * @param uuid Uuid Comment unique id
-	 * @param author Author
-	 * @param creationDate Creation date
-	 * @return CommentBuilder
-	 */
-	public static CommentBuilder builder(final UUID uuid, final URI<Account> author, final Date creationDate) {
-		return new CommentBuilder(uuid, author, creationDate);
-	}
-
 	public UUID getUuid() {
 		return uuid;
 	}
