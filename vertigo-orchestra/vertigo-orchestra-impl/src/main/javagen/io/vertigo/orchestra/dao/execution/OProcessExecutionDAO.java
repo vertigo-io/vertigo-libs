@@ -1,15 +1,14 @@
 package io.vertigo.orchestra.dao.execution;
 
 import javax.inject.Inject;
-
 import io.vertigo.app.Home;
+import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.dynamo.task.model.Task;
+import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.orchestra.domain.execution.OProcessExecution;
 
 /**
@@ -27,6 +26,7 @@ public final class OProcessExecutionDAO extends DAO<OProcessExecution, java.lang
 	public OProcessExecutionDAO(final StoreManager storeManager, final TaskManager taskManager) {
 		super(OProcessExecution.class, storeManager, taskManager);
 	}
+
 
 	/**
 	 * Creates a taskBuilder.
