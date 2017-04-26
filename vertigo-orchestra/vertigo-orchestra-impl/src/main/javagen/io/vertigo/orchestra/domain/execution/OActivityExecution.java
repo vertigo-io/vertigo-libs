@@ -2,17 +2,17 @@ package io.vertigo.orchestra.domain.execution;
 
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.lang.Generated;
 
 /**
- * Attention cette classe est générée automatiquement !
- * Objet de données OActivityExecution
+ * This class is automatically generated.
  */
+ @Generated
 @io.vertigo.dynamo.domain.stereotype.DataSpace("orchestra")
 public final class OActivityExecution implements Entity {
-
-	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	private Long aceId;
@@ -21,14 +21,10 @@ public final class OActivityExecution implements Entity {
 	private java.util.Date endTime;
 	private String engine;
 	private String token;
-	private Long actId;
-	private Long preId;
-	private Long nodId;
-	private String estCd;
-	private io.vertigo.orchestra.domain.definition.OActivity activity;
-	private io.vertigo.orchestra.domain.referential.OExecutionState executionState;
-	private io.vertigo.orchestra.domain.execution.ONode node;
-	private io.vertigo.orchestra.domain.execution.OProcessExecution processusExecution;
+	private final VAccessor<io.vertigo.orchestra.domain.definition.OActivity> activityAccessor = new VAccessor(io.vertigo.orchestra.domain.definition.OActivity.class);
+	private final VAccessor<io.vertigo.orchestra.domain.execution.OProcessExecution> processusExecutionAccessor = new VAccessor(io.vertigo.orchestra.domain.execution.OProcessExecution.class);
+	private final VAccessor<io.vertigo.orchestra.domain.execution.ONode> nodeAccessor = new VAccessor(io.vertigo.orchestra.domain.execution.ONode.class);
+	private final VAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> executionStateAccessor = new VAccessor(io.vertigo.orchestra.domain.referential.OExecutionState.class);
 
 	/** {@inheritDoc} */
 	@Override
@@ -157,7 +153,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Activity")
 	public Long getActId() {
-		return actId;
+		return (Long)  activityAccessor.getId();
 	}
 
 	/**
@@ -166,7 +162,7 @@ public final class OActivityExecution implements Entity {
 	 * @param actId Long
 	 */
 	public void setActId(final Long actId) {
-		this.actId = actId;
+		activityAccessor.setId(actId);
 	}
 
 	/**
@@ -176,7 +172,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Processus")
 	public Long getPreId() {
-		return preId;
+		return (Long)  processusExecutionAccessor.getId();
 	}
 
 	/**
@@ -185,7 +181,7 @@ public final class OActivityExecution implements Entity {
 	 * @param preId Long
 	 */
 	public void setPreId(final Long preId) {
-		this.preId = preId;
+		processusExecutionAccessor.setId(preId);
 	}
 
 	/**
@@ -195,7 +191,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Node")
 	public Long getNodId() {
-		return nodId;
+		return (Long)  nodeAccessor.getId();
 	}
 
 	/**
@@ -204,7 +200,7 @@ public final class OActivityExecution implements Entity {
 	 * @param nodId Long
 	 */
 	public void setNodId(final Long nodId) {
-		this.nodId = nodId;
+		nodeAccessor.setId(nodId);
 	}
 
 	/**
@@ -214,7 +210,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "ExecutionState")
 	public String getEstCd() {
-		return estCd;
+		return (String)  executionStateAccessor.getId();
 	}
 
 	/**
@@ -223,7 +219,7 @@ public final class OActivityExecution implements Entity {
 	 * @param estCd String
 	 */
 	public void setEstCd(final String estCd) {
-		this.estCd = estCd;
+		executionStateAccessor.setId(estCd);
 	}
 
 	/**
@@ -231,15 +227,7 @@ public final class OActivityExecution implements Entity {
 	 * @return io.vertigo.orchestra.domain.definition.OActivity
 	 */
 	public io.vertigo.orchestra.domain.definition.OActivity getActivity() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.definition.OActivity> fkURI = getActivityURI();
-		if (fkURI == null) {
-			return null;
-		}
-		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (activity == null || !fkURI.equals(activity.getURI())) {
-			activity = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
-		}
-		return activity;
+		return activityAccessor.get();
 	}
 
 	/**
@@ -260,7 +248,7 @@ public final class OActivityExecution implements Entity {
 			foreignLabel = "ExecutionActivity",
 			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.definition.OActivity> getActivityURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_ACE_ACT", io.vertigo.orchestra.domain.definition.OActivity.class);
+		return activityAccessor.getURI();
 	}
 
 	/**
@@ -268,15 +256,7 @@ public final class OActivityExecution implements Entity {
 	 * @return io.vertigo.orchestra.domain.referential.OExecutionState
 	 */
 	public io.vertigo.orchestra.domain.referential.OExecutionState getExecutionState() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.OExecutionState> fkURI = getExecutionStateURI();
-		if (fkURI == null) {
-			return null;
-		}
-		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (executionState == null || !fkURI.equals(executionState.getURI())) {
-			executionState = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
-		}
-		return executionState;
+		return executionStateAccessor.get();
 	}
 
 	/**
@@ -297,7 +277,7 @@ public final class OActivityExecution implements Entity {
 			foreignLabel = "ExecutionActivity",
 			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.OExecutionState> getExecutionStateURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_ACE_EST", io.vertigo.orchestra.domain.referential.OExecutionState.class);
+		return executionStateAccessor.getURI();
 	}
 
 	/**
@@ -305,15 +285,7 @@ public final class OActivityExecution implements Entity {
 	 * @return io.vertigo.orchestra.domain.execution.ONode
 	 */
 	public io.vertigo.orchestra.domain.execution.ONode getNode() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.execution.ONode> fkURI = getNodeURI();
-		if (fkURI == null) {
-			return null;
-		}
-		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (node == null || !fkURI.equals(node.getURI())) {
-			node = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
-		}
-		return node;
+		return nodeAccessor.get();
 	}
 
 	/**
@@ -334,7 +306,7 @@ public final class OActivityExecution implements Entity {
 			foreignLabel = "ExecutionActivity",
 			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.execution.ONode> getNodeURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_ACE_NOD", io.vertigo.orchestra.domain.execution.ONode.class);
+		return nodeAccessor.getURI();
 	}
 
 	/**
@@ -342,15 +314,7 @@ public final class OActivityExecution implements Entity {
 	 * @return io.vertigo.orchestra.domain.execution.OProcessExecution
 	 */
 	public io.vertigo.orchestra.domain.execution.OProcessExecution getProcessusExecution() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.execution.OProcessExecution> fkURI = getProcessusExecutionURI();
-		if (fkURI == null) {
-			return null;
-		}
-		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (processusExecution == null || !fkURI.equals(processusExecution.getURI())) {
-			processusExecution = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
-		}
-		return processusExecution;
+		return processusExecutionAccessor.get();
 	}
 
 	/**
@@ -371,11 +335,9 @@ public final class OActivityExecution implements Entity {
 			foreignLabel = "ExecutionActivity",
 			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.execution.OProcessExecution> getProcessusExecutionURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_ACE_PRE", io.vertigo.orchestra.domain.execution.OProcessExecution.class);
+		return processusExecutionAccessor.getURI();
 	}
 
-	// Association : ActivityLog non navigable
-	// Association : ActivityWorkspace non navigable
 
 	/** {@inheritDoc} */
 	@Override

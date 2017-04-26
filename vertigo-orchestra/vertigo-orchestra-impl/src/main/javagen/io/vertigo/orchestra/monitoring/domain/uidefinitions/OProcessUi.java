@@ -3,14 +3,13 @@ package io.vertigo.orchestra.monitoring.domain.uidefinitions;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.lang.Generated;
 
 /**
- * Attention cette classe est générée automatiquement !
- * Objet de données OProcessUi
+ * This class is automatically generated.
  */
+ @Generated
 public final class OProcessUi implements DtObject {
-
-	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	private Long proId;
@@ -194,7 +193,6 @@ public final class OProcessUi implements DtObject {
 		this.metadatas = metadatas;
 	}
 
-	//Aucune Association déclarée
 
 	/** {@inheritDoc} */
 	@Override

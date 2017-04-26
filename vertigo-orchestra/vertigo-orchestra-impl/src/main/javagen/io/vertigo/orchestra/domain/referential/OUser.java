@@ -4,15 +4,14 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.lang.Generated;
 
 /**
- * Attention cette classe est générée automatiquement !
- * Objet de données OUser
+ * This class is automatically generated.
  */
+ @Generated
 @io.vertigo.dynamo.domain.stereotype.DataSpace("orchestra")
 public final class OUser implements Entity {
-
-	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	private Long usrId;
@@ -162,7 +161,6 @@ public final class OUser implements Entity {
 		this.active = active;
 	}
 
-	// Association : ExecutionProcessus non navigable
 
 	/** {@inheritDoc} */
 	@Override

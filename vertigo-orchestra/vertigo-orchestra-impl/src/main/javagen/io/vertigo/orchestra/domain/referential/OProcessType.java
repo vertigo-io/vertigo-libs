@@ -4,15 +4,14 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.lang.Generated;
 
 /**
- * Attention cette classe est générée automatiquement !
- * Objet de données OProcessType
+ * This class is automatically generated.
  */
+ @Generated
 @io.vertigo.dynamo.domain.stereotype.DataSpace("orchestra")
 public final class OProcessType implements Entity {
-
-	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	private String prtCd;
@@ -62,7 +61,6 @@ public final class OProcessType implements Entity {
 		this.label = label;
 	}
 
-	// Association : Process non navigable
 
 	/** {@inheritDoc} */
 	@Override

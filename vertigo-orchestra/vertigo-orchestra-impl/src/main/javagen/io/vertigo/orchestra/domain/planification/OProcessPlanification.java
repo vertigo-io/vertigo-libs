@@ -2,28 +2,25 @@ package io.vertigo.orchestra.domain.planification;
 
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.lang.Generated;
 
 /**
- * Attention cette classe est générée automatiquement !
- * Objet de données OProcessPlanification
+ * This class is automatically generated.
  */
+ @Generated
 @io.vertigo.dynamo.domain.stereotype.DataSpace("orchestra")
 public final class OProcessPlanification implements Entity {
-
-	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	private Long prpId;
 	private java.util.Date expectedTime;
 	private String initialParams;
-	private Long proId;
-	private Long nodId;
-	private String sstCd;
-	private io.vertigo.orchestra.domain.execution.ONode node;
-	private io.vertigo.orchestra.domain.definition.OProcess processus;
-	private io.vertigo.orchestra.domain.referential.OSchedulerState planificationState;
+	private final VAccessor<io.vertigo.orchestra.domain.definition.OProcess> processusAccessor = new VAccessor(io.vertigo.orchestra.domain.definition.OProcess.class);
+	private final VAccessor<io.vertigo.orchestra.domain.execution.ONode> nodeAccessor = new VAccessor(io.vertigo.orchestra.domain.execution.ONode.class);
+	private final VAccessor<io.vertigo.orchestra.domain.referential.OSchedulerState> planificationStateAccessor = new VAccessor(io.vertigo.orchestra.domain.referential.OSchedulerState.class);
 
 	/** {@inheritDoc} */
 	@Override
@@ -95,7 +92,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Processus")
 	public Long getProId() {
-		return proId;
+		return (Long)  processusAccessor.getId();
 	}
 
 	/**
@@ -104,7 +101,7 @@ public final class OProcessPlanification implements Entity {
 	 * @param proId Long
 	 */
 	public void setProId(final Long proId) {
-		this.proId = proId;
+		processusAccessor.setId(proId);
 	}
 
 	/**
@@ -114,7 +111,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Node")
 	public Long getNodId() {
-		return nodId;
+		return (Long)  nodeAccessor.getId();
 	}
 
 	/**
@@ -123,7 +120,7 @@ public final class OProcessPlanification implements Entity {
 	 * @param nodId Long
 	 */
 	public void setNodId(final Long nodId) {
-		this.nodId = nodId;
+		nodeAccessor.setId(nodId);
 	}
 
 	/**
@@ -133,7 +130,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "PlanificationState")
 	public String getSstCd() {
-		return sstCd;
+		return (String)  planificationStateAccessor.getId();
 	}
 
 	/**
@@ -142,7 +139,7 @@ public final class OProcessPlanification implements Entity {
 	 * @param sstCd String
 	 */
 	public void setSstCd(final String sstCd) {
-		this.sstCd = sstCd;
+		planificationStateAccessor.setId(sstCd);
 	}
 
 	/**
@@ -150,15 +147,7 @@ public final class OProcessPlanification implements Entity {
 	 * @return io.vertigo.orchestra.domain.execution.ONode
 	 */
 	public io.vertigo.orchestra.domain.execution.ONode getNode() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.execution.ONode> fkURI = getNodeURI();
-		if (fkURI == null) {
-			return null;
-		}
-		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (node == null || !fkURI.equals(node.getURI())) {
-			node = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
-		}
-		return node;
+		return nodeAccessor.get();
 	}
 
 	/**
@@ -179,7 +168,7 @@ public final class OProcessPlanification implements Entity {
 			foreignLabel = "PlanificationProcessus",
 			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.execution.ONode> getNodeURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_PRP_NOD", io.vertigo.orchestra.domain.execution.ONode.class);
+		return nodeAccessor.getURI();
 	}
 
 	/**
@@ -187,15 +176,7 @@ public final class OProcessPlanification implements Entity {
 	 * @return io.vertigo.orchestra.domain.definition.OProcess
 	 */
 	public io.vertigo.orchestra.domain.definition.OProcess getProcessus() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.definition.OProcess> fkURI = getProcessusURI();
-		if (fkURI == null) {
-			return null;
-		}
-		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (processus == null || !fkURI.equals(processus.getURI())) {
-			processus = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
-		}
-		return processus;
+		return processusAccessor.get();
 	}
 
 	/**
@@ -216,7 +197,7 @@ public final class OProcessPlanification implements Entity {
 			foreignLabel = "PlanificationProcessus",
 			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.definition.OProcess> getProcessusURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_PRP_PRO", io.vertigo.orchestra.domain.definition.OProcess.class);
+		return processusAccessor.getURI();
 	}
 
 	/**
@@ -224,15 +205,7 @@ public final class OProcessPlanification implements Entity {
 	 * @return io.vertigo.orchestra.domain.referential.OSchedulerState
 	 */
 	public io.vertigo.orchestra.domain.referential.OSchedulerState getPlanificationState() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.OSchedulerState> fkURI = getPlanificationStateURI();
-		if (fkURI == null) {
-			return null;
-		}
-		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (planificationState == null || !fkURI.equals(planificationState.getURI())) {
-			planificationState = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
-		}
-		return planificationState;
+		return planificationStateAccessor.get();
 	}
 
 	/**
@@ -253,7 +226,7 @@ public final class OProcessPlanification implements Entity {
 			foreignLabel = "ProcessPlanification",
 			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.OSchedulerState> getPlanificationStateURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_PRP_PST", io.vertigo.orchestra.domain.referential.OSchedulerState.class);
+		return planificationStateAccessor.getURI();
 	}
 
 

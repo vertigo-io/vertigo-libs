@@ -2,24 +2,23 @@ package io.vertigo.orchestra.domain.execution;
 
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.lang.Generated;
 
 /**
- * Attention cette classe est générée automatiquement !
- * Objet de données OActivityLog
+ * This class is automatically generated.
  */
+ @Generated
 @io.vertigo.dynamo.domain.stereotype.DataSpace("orchestra")
 public final class OActivityLog implements Entity {
-
-	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	private Long aclId;
 	private String log;
 	private String attachment;
-	private Long aceId;
-	private io.vertigo.orchestra.domain.execution.OActivityExecution activityExecution;
+	private final VAccessor<io.vertigo.orchestra.domain.execution.OActivityExecution> activityExecutionAccessor = new VAccessor(io.vertigo.orchestra.domain.execution.OActivityExecution.class);
 
 	/** {@inheritDoc} */
 	@Override
@@ -91,7 +90,7 @@ public final class OActivityLog implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "ActivityExecution")
 	public Long getAceId() {
-		return aceId;
+		return (Long)  activityExecutionAccessor.getId();
 	}
 
 	/**
@@ -100,7 +99,7 @@ public final class OActivityLog implements Entity {
 	 * @param aceId Long
 	 */
 	public void setAceId(final Long aceId) {
-		this.aceId = aceId;
+		activityExecutionAccessor.setId(aceId);
 	}
 
 	/**
@@ -108,15 +107,7 @@ public final class OActivityLog implements Entity {
 	 * @return io.vertigo.orchestra.domain.execution.OActivityExecution
 	 */
 	public io.vertigo.orchestra.domain.execution.OActivityExecution getActivityExecution() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.execution.OActivityExecution> fkURI = getActivityExecutionURI();
-		if (fkURI == null) {
-			return null;
-		}
-		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (activityExecution == null || !fkURI.equals(activityExecution.getURI())) {
-			activityExecution = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
-		}
-		return activityExecution;
+		return activityExecutionAccessor.get();
 	}
 
 	/**
@@ -137,7 +128,7 @@ public final class OActivityLog implements Entity {
 			foreignLabel = "ActivityLog",
 			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivityExecutionURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_ACL_ACE", io.vertigo.orchestra.domain.execution.OActivityExecution.class);
+		return activityExecutionAccessor.getURI();
 	}
 
 

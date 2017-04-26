@@ -4,15 +4,14 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.lang.Generated;
 
 /**
- * Attention cette classe est générée automatiquement !
- * Objet de données ONode
+ * This class is automatically generated.
  */
+ @Generated
 @io.vertigo.dynamo.domain.stereotype.DataSpace("orchestra")
 public final class ONode implements Entity {
-
-	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	private Long nodId;
@@ -82,8 +81,6 @@ public final class ONode implements Entity {
 		this.heartbeat = heartbeat;
 	}
 
-	// Association : ExecutionActivity non navigable
-	// Association : PlanificationProcessus non navigable
 
 	/** {@inheritDoc} */
 	@Override
