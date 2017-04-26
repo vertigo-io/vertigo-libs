@@ -31,8 +31,8 @@ import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
  * @author mlaroche.
  */
 public class MemoryDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
-	@Inject
 
+	@Inject
 	private OrchestraDefinitionManager orchestraDefinitionManager;
 
 	@Test
@@ -41,6 +41,7 @@ public class MemoryDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 		Assert.assertEquals(0, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
 
 		final ProcessDefinition processDefinition = ProcessDefinition.builder("PRO_TEST_BASIC", "TEST BASIC")
+				.withProcessType(ProcessType.UNSUPERVISED)
 				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 
@@ -51,5 +52,5 @@ public class MemoryDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 		final ProcessDefinition processDefinition2 = orchestraDefinitionManager.getProcessDefinition("PRO_TEST_BASIC");
 		Assert.assertEquals(processDefinition.getName(), processDefinition2.getName());
 	}
-	//
+
 }
