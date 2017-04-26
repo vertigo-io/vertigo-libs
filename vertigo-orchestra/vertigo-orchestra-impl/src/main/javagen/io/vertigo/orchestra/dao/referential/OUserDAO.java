@@ -6,11 +6,12 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.referential.OUser;
+import io.vertigo.lang.Generated;
 
 /**
- * DAO : Accès à un object (DTO, DTC). 
- * OUserDAO
+ * This class is automatically generated.
  */
+ @Generated
 public final class OUserDAO extends DAO<OUser, java.lang.Long> implements StoreServices {
 
 	/**

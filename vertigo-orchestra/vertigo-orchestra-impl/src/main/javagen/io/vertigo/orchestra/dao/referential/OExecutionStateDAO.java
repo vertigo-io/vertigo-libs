@@ -6,11 +6,12 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.referential.OExecutionState;
+import io.vertigo.lang.Generated;
 
 /**
- * DAO : Accès à un object (DTO, DTC). 
- * OExecutionStateDAO
+ * This class is automatically generated.
  */
+ @Generated
 public final class OExecutionStateDAO extends DAO<OExecutionState, java.lang.String> implements StoreServices {
 
 	/**

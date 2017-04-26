@@ -3,17 +3,18 @@ package io.vertigo.orchestra.monitoring.dao.uiexecutions;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
-import io.vertigo.lang.Assertion;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.store.StoreServices;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Generated;
 
 /**
- * PAO : Accès aux objects du package. 
- * UiexecutionsPAO
+ * This class is automatically generated.
  */
+ @Generated
 public final class UiexecutionsPAO implements StoreServices {
 	private final TaskManager taskManager;
 

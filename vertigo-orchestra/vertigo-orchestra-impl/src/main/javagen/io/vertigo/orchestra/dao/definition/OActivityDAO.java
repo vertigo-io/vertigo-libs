@@ -11,11 +11,12 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.definition.OActivity;
+import io.vertigo.lang.Generated;
 
 /**
- * DAO : Accès à un object (DTO, DTC). 
- * OActivityDAO
+ * This class is automatically generated.
  */
+ @Generated
 public final class OActivityDAO extends DAO<OActivity, java.lang.Long> implements StoreServices {
 
 	/**

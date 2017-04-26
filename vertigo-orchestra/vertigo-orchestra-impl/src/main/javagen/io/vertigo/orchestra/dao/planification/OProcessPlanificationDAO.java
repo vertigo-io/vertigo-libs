@@ -11,11 +11,12 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.planification.OProcessPlanification;
+import io.vertigo.lang.Generated;
 
 /**
- * DAO : Accès à un object (DTO, DTC). 
- * OProcessPlanificationDAO
+ * This class is automatically generated.
  */
+ @Generated
 public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, java.lang.Long> implements StoreServices {
 
 	/**

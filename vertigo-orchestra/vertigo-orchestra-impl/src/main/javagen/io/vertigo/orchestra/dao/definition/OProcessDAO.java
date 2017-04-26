@@ -11,11 +11,12 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.definition.OProcess;
+import io.vertigo.lang.Generated;
 
 /**
- * DAO : Accès à un object (DTO, DTC). 
- * OProcessDAO
+ * This class is automatically generated.
  */
+ @Generated
 public final class OProcessDAO extends DAO<OProcess, java.lang.Long> implements StoreServices {
 
 	/**

@@ -6,11 +6,12 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.referential.OSchedulerState;
+import io.vertigo.lang.Generated;
 
 /**
- * DAO : Accès à un object (DTO, DTC). 
- * OSchedulerStateDAO
+ * This class is automatically generated.
  */
+ @Generated
 public final class OSchedulerStateDAO extends DAO<OSchedulerState, java.lang.String> implements StoreServices {
 
 	/**
