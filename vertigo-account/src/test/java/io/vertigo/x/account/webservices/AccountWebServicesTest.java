@@ -84,22 +84,22 @@ public final class AccountWebServicesTest {
 
 	@Test
 	public void testGetAccountById() {
-		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/1");
+		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/api/1");
 	}
 
 	@Test
 	public void testGetPhotoByAccountId() {
-		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/1/photo");
+		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/api/1/photo");
 	}
 
 	@Test
 	public void testGetAllGroups() {
-		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/groups");
+		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/api/groups");
 	}
 
 	@Test
 	public void testGetGroupById() {
-		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/groups/100");
+		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/api/groups/100");
 	}
 
 	@Test

@@ -129,7 +129,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
-				.get("/x/notifications/messages");
+				.get("/x/notifications/api/messages");
 	}
 
 	@Test
@@ -150,14 +150,14 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
-				.get("/x/notifications/messages");
+				.get("/x/notifications/api/messages");
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()
 				.statusCode(HttpStatus.SC_NO_CONTENT)
 				.log().ifError()
 				.when()
-				.delete("/x/notifications/messages/" + notification.getUuid().toString());
+				.delete("/x/notifications/api/messages/" + notification.getUuid().toString());
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()
@@ -165,7 +165,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
-				.get("/x/notifications/messages");
+				.get("/x/notifications/api/messages");
 
 	}
 
@@ -195,7 +195,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
-				.get("/x/notifications/messages");
+				.get("/x/notifications/api/messages");
 
 		final List<String> notificationUuids = new ArrayList<>();
 		notificationUuids.add(notification1.getUuid().toString());
@@ -207,7 +207,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_NO_CONTENT)
 				.log().ifError()
 				.when()
-				.delete("/x/notifications/messages");
+				.delete("/x/notifications/api/messages");
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()
@@ -215,7 +215,7 @@ public final class NotificationWebServicesTest {
 				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
-				.get("/x/notifications/messages");
+				.get("/x/notifications/api/messages");
 
 	}
 
