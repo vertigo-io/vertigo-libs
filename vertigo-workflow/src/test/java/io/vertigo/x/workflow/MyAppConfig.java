@@ -64,13 +64,13 @@ public class MyAppConfig {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new PersonaFeatures().withUserSession(TestUserSession.class).build())
-				.addModule(new CommonsFeatures()//
+				.addModule(new CommonsFeatures()
 						.withCache(io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin.class)
 						.withScript()
 						.build())
-				.addModule(new DynamoFeatures()//
-						.withStore()//
-						.withSqlDataBase()//
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.withSqlDataBase()
 						.addDataStorePlugin(SqlDataStorePlugin.class)
 						.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
 								Param.of("dataBaseClass", PostgreSqlDataBase.class.getName()),
@@ -78,20 +78,18 @@ public class MyAppConfig {
 								Param.of("jdbcUrl",
 										"jdbc:postgresql://laura.dev.klee.lan.net:5432/dgac_blanche?user=blanche&password=blanche"))
 						.build())
-				.addModule(new AccountFeatures()//
+				.addModule(new AccountFeatures()
 						.withAccountStorePlugin(MemoryAccountStorePlugin.class).build())
-				.addModule(new RulesFeatures()//
-						//.withDAOSupportRuleStorePlugin()//
+				.addModule(new RulesFeatures()
 						.withRuleStorePlugin(MemoryRuleStorePlugin.class)
-						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)//
+						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)
 						.withRuleSelectorPlugin(SimpleRuleSelectorPlugin.class)
 						.withRuleValidatorPlugin(SimpleRuleValidatorPlugin.class).build())
-				.addModule(new WorkflowFeatures()//
-						//.withDAOSupportWorkflowStorePlugin()//
+				.addModule(new WorkflowFeatures()
 						.withWorkflowStorePlugin(MemoryWorkflowStorePlugin.class)
 						.withWorkflowPredicateAutoValidatePlugin(RuleWorkflowPredicateAutoValidatePlugin.class)
 						.withItemStorePlugin(MemoryItemStorePlugin.class).build())
-				.addModule(ModuleConfig.builder("dummy")//
+				.addModule(ModuleConfig.builder("dummy")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(MyDummyDtObjectProvider.class).build())
 						.build());
 

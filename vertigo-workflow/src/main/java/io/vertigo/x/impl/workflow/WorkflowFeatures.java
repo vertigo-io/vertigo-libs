@@ -119,7 +119,7 @@ public final class WorkflowFeatures extends Features {
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
-						.addDefinitionResource("kpr", "boot/definitions/application-workflow.kpr")
+						.addDefinitionResource("kpr", "io/vertigo/x/workflow/definitions/application-workflow.kpr")
 						.addDefinitionResource("classes", DtDefinitions.class.getName())
 						.build())
 				.addComponent(WorkflowManager.class, WorkflowManagerImpl.class);
