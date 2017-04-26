@@ -28,7 +28,6 @@ import java.util.Optional;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -203,7 +202,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		// ---
 		UiObject<O> uiObject;
 		final DtField dtField = dtDefinition.getField(StringUtil.camelToConstCase(keyFieldName));
-		Assertion.checkArgument(dtField.getType() == FieldType.ID, "La clé {0} de la liste doit être la PK", keyFieldName);
+		Assertion.checkArgument(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
 
 		final Object key = dtField.getDomain().getFormatter().stringToValue(keyValueAsString, dtField.getDomain().getDataType());
 		final O entity = (O) loadDto(key);

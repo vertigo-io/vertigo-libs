@@ -42,14 +42,18 @@ public final class AccountDefinitionProvider extends SimpleDefinitionProvider {
 		final Domain domainAccountEmail = Domain.builder("DO_X_ACCOUNT_EMAIL", DataType.String).build();
 
 		final DtDefinition accountDtDefinition = DtDefinition.builder("DT_ACCOUNT")
-				.addIdField("ID", "id", domainAccountId, false, false)
-				.addDataField("DISPLAY_NAME", "displayName", domainAccountName, false, true, true, true)
-				.addDataField("EMAIL", "email", domainAccountEmail, false, true, false, false)
+				.addIdField("ID", "id", domainAccountId)
+				.addDataField("DISPLAY_NAME", "displayName", domainAccountName, false, true)
+				.addDataField("EMAIL", "email", domainAccountEmail, false, true)
+				.withSortField("DISPLAY_NAME")
+				.withDisplayField("DISPLAY_NAME")
 				.build();
 
 		final DtDefinition accountGroupDtDefinition = DtDefinition.builder("DT_ACCOUNT_GROUP")
-				.addIdField("ID", "id", domainAccountId, false, false)
-				.addDataField("DISPLAY_NAME", "displayName", domainAccountName, false, true, true, true)
+				.addIdField("ID", "id", domainAccountId)
+				.addDataField("DISPLAY_NAME", "displayName", domainAccountName, false, true)
+				.withSortField("DISPLAY_NAME")
+				.withDisplayField("DISPLAY_NAME")
 				.build();
 
 		return new ListBuilder<Definition>()

@@ -45,14 +45,16 @@ public final class AuditTraceDefinitionProvider extends SimpleDefinitionProvider
 		final Domain domainAuditContext = Domain.builder("DO_X_AUDIT_CONTEXT", DataType.String).build();
 
 		final DtDefinition auditTraceDtDefinition = DtDefinition.builder("DT_AUDIT_TRACE")
-				.addIdField("ID", "id", domainAuditId, false, false)
-				.addDataField("CATEGORY", "category", domainAuditCategory, true, true, true, true)
-				.addDataField("USER", "user", domainAuditUser, true, true, false, false)
-				.addDataField("DATE_BUSINESS", "dateBusiness", domainAuditDate, false, true, false, false)
-				.addDataField("DATE_EXECUTION", "dateExecution", domainAuditDate, true, true, false, false)
-				.addDataField("ITEM", "item", domainAuditItem, true, true, false, false)
-				.addDataField("MESSAGE", "message", domainAuditMessage, true, true, false, false)
-				.addDataField("CONTEXT", "context", domainAuditContext, false, true, false, false)
+				.addIdField("ID", "id", domainAuditId)
+				.withSortField("CATEGORY")
+				.withDisplayField("CATEGORY")
+				.addDataField("CATEGORY", "category", domainAuditCategory, true, true)
+				.addDataField("USER", "user", domainAuditUser, true, true)
+				.addDataField("DATE_BUSINESS", "dateBusiness", domainAuditDate, false, true)
+				.addDataField("DATE_EXECUTION", "dateExecution", domainAuditDate, true, true)
+				.addDataField("ITEM", "item", domainAuditItem, true, true)
+				.addDataField("MESSAGE", "message", domainAuditMessage, true, true)
+				.addDataField("CONTEXT", "context", domainAuditContext, false, true)
 				.build();
 
 		return new ListBuilder<Definition>()

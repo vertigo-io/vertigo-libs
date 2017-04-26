@@ -41,10 +41,10 @@ public class MyDummyDtObjectProvider extends SimpleDefinitionProvider {
 		final Domain domainDummyLabel = Domain.builder("DO_X_DUMMY_LABEL", DataType.String).build();
 
 		final DtDefinition wfDummyObjectDtDefinition = DtDefinition.builder("DT_MY_DUMMY_DT_OBJECT")
-				.addIdField("ID", "id", domainDummyId, false, false)
-				.addDataField("ENTITY", "entity", domainDummyCode, true, true, false, false)
-				.addDataField("DIVISION", "division", domainDummyCode, true, true, false, false)
-				.addDataField("NOM", "nom", domainDummyLabel, true, true, false, false)
+				.addIdField("ID", "id", domainDummyId)
+				.addDataField("ENTITY", "entity", domainDummyCode, true, true)
+				.addDataField("DIVISION", "division", domainDummyCode, true, true)
+				.addDataField("NOM", "nom", domainDummyLabel, true, true)
 				.build();
 
 		return new ListBuilder<Definition>()

@@ -48,27 +48,27 @@ public final class RuleProvider extends SimpleDefinitionProvider {
 		final Domain domainWorkflowExpression = Domain.builder("DO_X_RULES_EXPRESSION", DataType.String).build();
 
 		final DtDefinition wfRuleDefinitionDtDefinition = DtDefinition.builder("DT_RULE_DEFINITION")
-				.addIdField("ID", "id", domainWorkflowId, false, false)
-				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
-				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true, false, false).build();
+				.addIdField("ID", "id", domainWorkflowId)
+				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true)
+				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true).build();
 
 		// @formatter:off
 		final DtDefinitionBuilder wfConditionDefinitionDtDefinitionBuilder = DtDefinition.builder("DT_RULE_CONDITION_DEFINITION")
-				.addIdField("ID", "id", domainWorkflowId, false, false)
-				.addDataField("FIELD", "field", domainWorkflowField, true, true, false, false)
-				.addDataField("OPERATOR", "operator", domainWorkflowOperator, true, true, false, false)
-				.addDataField("EXPRESSION", "expression", domainWorkflowExpression, true, true, false, false);
+				.addIdField("ID", "id", domainWorkflowId)
+				.addDataField("FIELD", "field", domainWorkflowField, true, true)
+				.addDataField("OPERATOR", "operator", domainWorkflowOperator, true, true)
+				.addDataField("EXPRESSION", "expression", domainWorkflowExpression, true, true);
 
 		final DtDefinition wfSelectorDefinitionDtDefinition = DtDefinition.builder("DT_SELECTOR_DEFINITION")
-				.addIdField("ID", "id", domainWorkflowId, false, false)
-				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true, false, false)
-				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true, false, false).build();
+				.addIdField("ID", "id", domainWorkflowId)
+				.addDataField("CREATION_DATE", "creationDate", domainWorkflowDate, true, true)
+				.addDataField("ITEM_ID", "itemId", domainWorkflowWeakId, true, true)
+				.build();
 		// @formatter:on
 
 		final DtDefinition wfConditionDefinitionDtDefinition = wfConditionDefinitionDtDefinitionBuilder.build();
 
-		wfConditionDefinitionDtDefinitionBuilder.addForeignKey("RUD_ID", "rudId", domainWorkflowId, true,
-				"DO_X_WORKFLOW_ID", false, false);
+		wfConditionDefinitionDtDefinitionBuilder.addForeignKey("RUD_ID", "rudId", domainWorkflowId, true, "DO_X_WORKFLOW_ID");
 
 		return new ListBuilder<Definition>()
 				.add(domainWorkflowId)
