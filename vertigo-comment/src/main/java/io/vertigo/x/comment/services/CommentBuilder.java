@@ -69,7 +69,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * @return this builder
 	 */
 	public CommentBuilder withUuid(final UUID uuid) {
-		Assertion.checkArgument(uuid == null, "UUID already set");
+		Assertion.checkArgument(myUuid == null, "UUID already set");
 		Assertion.checkNotNull(uuid);
 		//-----
 		myUuid = uuid;
