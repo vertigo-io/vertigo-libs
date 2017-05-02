@@ -18,6 +18,7 @@
  */
 package io.vertigo.x.workflow.data;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Locale;
 import java.util.Map;
@@ -42,7 +43,7 @@ public final class TestUserSession extends UserSession {
 	 * @return Liste des clés de sécurité et leur valeur.
 	 */
 	@Override
-	public Map<String, String> getSecurityKeys() {
-		return Collections.singletonMap("famId", "12");
+	public Map<String, Serializable[]> getSecurityKeys() {
+		return Collections.singletonMap("famId", new String[] { "12" });
 	}
 }
