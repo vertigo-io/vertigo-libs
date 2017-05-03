@@ -27,7 +27,6 @@ import io.vertigo.dynamo.transaction.Transactional;
 import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.dao.execution.ONodeDAO;
 import io.vertigo.orchestra.domain.execution.ONode;
-import io.vertigo.orchestra.impl.node.ONodeManager;
 
 /**
  * Implémentation du gestionnaire de noeuds.

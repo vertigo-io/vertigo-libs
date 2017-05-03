@@ -51,6 +51,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	 */
 	@Test
 	public void singleExecution() throws InterruptedException {
+		TestJob.reset();
 
 		final ProcessDefinition processDefinition = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_MANUAL", TestJob.class)
 				.build();
@@ -69,8 +70,10 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 	@Test
 	public void twoActivities() throws InterruptedException {
+		TestJob.reset();
+		TestJob2.reset();
 
-		final ProcessDefinition processDefinition = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_MANUAL", TestJob.class)
+		final ProcessDefinition processDefinition = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_MANUAL_2", TestJob.class)
 				.addActivity("SECOND", "second", TestJob2.class)
 				.build();
 
@@ -92,8 +95,8 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	 */
 	@Test
 	public void recurrentExecution() throws InterruptedException {
-
-		final ProcessDefinition processDefinition = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_MANUAL", TestJob.class)
+		TestJob.reset();
+		final ProcessDefinition processDefinition = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_RECURRENT", TestJob.class)
 				.withCronExpression("*/5 * * * * ?")
 				.build();
 

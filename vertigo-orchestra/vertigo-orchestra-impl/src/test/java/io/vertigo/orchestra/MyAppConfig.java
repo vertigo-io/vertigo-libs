@@ -70,7 +70,7 @@ public final class MyAppConfig {
 								Param.of("name", "orchestra"),
 								Param.of("dataBaseClass", H2DataBase.class.getName()),
 								Param.of("jdbcDriver", org.h2.Driver.class.getName()),
-								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
+								Param.of("jdbcUrl", "jdbc:h2:mem:database;MVCC=FALSE"))
 						.build())
 				// we build h2 mem
 				.addModule(ModuleConfig.builder("databaseInitializer").addComponent(DataBaseInitializer.class).build())
