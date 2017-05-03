@@ -27,7 +27,7 @@ import io.vertigo.dynamo.transaction.Transactional;
 import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.dao.execution.ONodeDAO;
 import io.vertigo.orchestra.domain.execution.ONode;
-import io.vertigo.orchestra.impl.node.NodeManager;
+import io.vertigo.orchestra.impl.node.ONodeManager;
 
 /**
  * Implémentation du gestionnaire de noeuds.
@@ -36,7 +36,7 @@ import io.vertigo.orchestra.impl.node.NodeManager;
  * @version $Id$
  */
 @Transactional
-public class NodeManagerImpl implements NodeManager {
+public class ONodeManagerImpl implements ONodeManager {
 
 	@Inject
 	private ONodeDAO nodeDAO;

@@ -48,7 +48,7 @@ import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.definitions.ProcessType;
 import io.vertigo.orchestra.domain.definition.OProcess;
 import io.vertigo.orchestra.domain.planification.OProcessPlanification;
-import io.vertigo.orchestra.impl.node.NodeManager;
+import io.vertigo.orchestra.impl.node.ONodeManager;
 import io.vertigo.orchestra.impl.services.schedule.CronExpression;
 import io.vertigo.orchestra.impl.services.schedule.ProcessSchedulerPlugin;
 import io.vertigo.orchestra.plugins.services.MapCodec;
@@ -97,7 +97,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	 */
 	@Inject
 	public DbProcessSchedulerPlugin(
-			final NodeManager nodeManager,
+			final ONodeManager nodeManager,
 			@Named("nodeName") final String nodeName,
 			@Named("planningPeriodSeconds") final int planningPeriodSeconds,
 			@Named("forecastDurationSeconds") final int forecastDurationSeconds) {

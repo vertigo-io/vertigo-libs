@@ -24,6 +24,7 @@ import java.util.Map;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.lang.Assertion;
+import io.vertigo.orchestra.services.execution.RunnableActivityEngine;
 
 /**
  * Définition d'un processus Orchestra.
@@ -89,6 +90,14 @@ public final class ProcessDefinition implements Definition {
 	 */
 	public static ProcessDefinitionBuilder builder(final String processName, final String processLabel) {
 		return new ProcessDefinitionBuilder(processName, processLabel);
+	}
+
+	public static ProcessDefinitionBuilder legacyBuilder(final String processName, final Class<? extends RunnableActivityEngine> engineClass) {
+		return new ProcessDefinitionBuilder(processName, processName)
+				.withProcessType(ProcessType.UNSUPERVISED)
+				.withMultiExecution()
+				.addActivity("MAIN", "Main", engineClass);
+
 	}
 
 	public long getId() {

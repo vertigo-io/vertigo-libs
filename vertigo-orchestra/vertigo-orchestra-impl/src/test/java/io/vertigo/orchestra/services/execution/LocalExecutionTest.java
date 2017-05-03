@@ -23,12 +23,15 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.OrchestraServices;
+import io.vertigo.orchestra.services.execution.engine.TestJob;
+import io.vertigo.orchestra.services.execution.engine.TestJob2;
 
 /**
  * TODO : Description de la classe.
@@ -49,8 +52,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void singleExecution() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("PRO_TEST_UNSUPERVISED_MANUAL", "PRO_TEST_UNSUPERVISED_MANUAL")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
+		final ProcessDefinition processDefinition = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_MANUAL", TestJob.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
@@ -60,7 +62,28 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
 
 		// The task takes 10 secondes to run we wait 12 secondes to check the final states
-		Thread.sleep(1000 * 12);
+		Thread.sleep(1000 * 1);
+		Assert.assertEquals(1, TestJob.getCount());
+
+	}
+
+	@Test
+	public void twoActivities() throws InterruptedException {
+
+		final ProcessDefinition processDefinition = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_MANUAL", TestJob.class)
+				.addActivity("SECOND", "second", TestJob2.class)
+				.build();
+
+		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
+
+		// We plan right now
+		orchestraServices.getScheduler()
+				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+
+		// The task takes 10 secondes to run we wait 12 secondes to check the final states
+		Thread.sleep(1000 * 1);
+		Assert.assertEquals(1, TestJob.getCount());
+		Assert.assertEquals(1, TestJob2.getCount());
 
 	}
 
@@ -70,9 +93,8 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void recurrentExecution() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("PRO_TEST_UNSUPERVISED_SCHEDULED", "PRO_TEST_UNSUPERVISED_SCHEDULED")
-				.withCronExpression("*/15 * * * * ?")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
+		final ProcessDefinition processDefinition = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_MANUAL", TestJob.class)
+				.withCronExpression("*/5 * * * * ?")
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
@@ -82,8 +104,8 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 				.scheduleWithCron(processDefinition);
 
 		// The task takes 10 secondes to run we wait 12 secondes to check the final states
-		Thread.sleep(1000 * 10);
-
+		Thread.sleep(1000 * 8);
+		Assert.assertEquals(2, TestJob.getCount());
 	}
 
 }

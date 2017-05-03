@@ -51,7 +51,7 @@ import io.vertigo.orchestra.domain.execution.OActivityExecution;
 import io.vertigo.orchestra.domain.execution.OActivityLog;
 import io.vertigo.orchestra.domain.execution.OActivityWorkspace;
 import io.vertigo.orchestra.domain.execution.OProcessExecution;
-import io.vertigo.orchestra.impl.node.NodeManager;
+import io.vertigo.orchestra.impl.node.ONodeManager;
 import io.vertigo.orchestra.impl.services.execution.AbstractActivityEngine;
 import io.vertigo.orchestra.impl.services.execution.ActivityLogger;
 import io.vertigo.orchestra.impl.services.execution.ProcessExecutorPlugin;
@@ -91,7 +91,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private final ExecutorService workers;
 	private final int executionPeriodSeconds;
 
-	private final NodeManager nodeManager;
+	private final ONodeManager nodeManager;
 	private final VTransactionManager transactionManager;
 
 	private final MapCodec mapCodec = new MapCodec();
@@ -106,7 +106,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	 */
 	@Inject
 	public DbProcessExecutorPlugin(
-			final NodeManager nodeManager,
+			final ONodeManager nodeManager,
 			final VTransactionManager transactionManager,
 			@Named("nodeName") final String nodeName,
 			@Named("workersCount") final int workersCount,

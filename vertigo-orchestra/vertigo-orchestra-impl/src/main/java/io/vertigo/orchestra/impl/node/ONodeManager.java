@@ -26,7 +26,7 @@ import io.vertigo.lang.Manager;
  * @author KleeGroup.
  * @version $Id$
  */
-public interface NodeManager extends Manager {
+public interface ONodeManager extends Manager {
 
 	/**
 	 * Enregistre un noeud d'execution.

@@ -72,7 +72,7 @@ public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition
 	}
 
 	/**
-	 * 
+	 *
 	 * @param type
 	 * @return this
 	 */
