@@ -18,6 +18,8 @@
  */
 package io.vertigo.orchestra.plugins.services.execution.memory;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -83,7 +85,9 @@ public class MemoryProcessExecutorPlugin implements ProcessExecutorPlugin, Activ
 	}
 
 	private void doSequentialExecute(final ProcessDefinition processDefinition, final Optional<String> initialParams) {
-		final ActivityExecutionWorkspace initialWorkspace = new ActivityExecutionWorkspace(processDefinition.getTriggeringStrategy().getInitialParams());
+		final Map<String, String> myInitialParams = new HashMap<>();
+		myInitialParams.putAll(processDefinition.getTriggeringStrategy().getInitialParams());
+		final ActivityExecutionWorkspace initialWorkspace = new ActivityExecutionWorkspace(myInitialParams);
 		if (initialParams.isPresent()) {
 			initialWorkspace.addExternalParams(mapCodec.decode(initialParams.get()));
 		}
