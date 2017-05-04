@@ -2,27 +2,26 @@
 <config>
 	<module name="stella">
 		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
+		
+		<component class="io.vertigo.core.connectors.redis.RedisConnector">
+			<param name="host" value="redis-pic.part.klee.lan.net" />
+			<param name="port" value="6379" />
+			<param name="database" value="0" />
+		</component>
 
 		<component api="WorkManager" class="io.vertigo.stella.impl.work.WorkManagerImpl">
 			<param name="workerCount" value="10" />
 			<!-- ThreadLocal n'est pas executé en distribué -->
 			<plugin class="io.vertigo.stella.plugins.work.redis.master.RedisMasterPlugin">
 				<param name="distributedWorkTypes" value="io.vertigo.stella.work.mock.DivideWorkEngine;io.vertigo.stella.work.mock.SlowWorkEngine" />
-				<param name="host" value="redis-pic.part.klee.lan.net" />
-				<param name="port" value="6379" />
-				<param name="timeoutSeconds" value="10" />
 			</plugin>
 		</component>
 
-		<component api="NodeManager" class="io.vertigo.stella.impl.node.NodeManagerImpl">
+		<component api="SNodeManager" class="io.vertigo.stella.impl.node.SNodeManagerImpl">
 			<plugin class="io.vertigo.stella.plugins.work.redis.worker.RedisWorkerPlugin">
 				<param name="nodeId" value="node#1-1" />
-				<param name="host" value="redis-pic.part.klee.lan.net" />
-				<param name="port" value="6379" />
-				<param name="timeoutSeconds" value="10" />
 				<param name="workTypes" value="io.vertigo.stella.work.mock.DivideWorkEngine^5;io.vertigo.stella.work.mock.SlowWorkEngine^5" />
 			</plugin>
-			<!-- plugin class="io.vertigo.stella.plugins.work.redis.worker.RedisNodePlugin"> <param name="nodeId" value="node#1-2" /> <param name="host" value="localhost" /> <param name="port" value="6379" /> <param name="workTypes" value="io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine;io.vertigo.dynamo.work.mock.SlowWorkEngine" /> </plugin -->
 		</component>
 	</module>
 </config>

@@ -18,10 +18,6 @@
  */
 package io.vertigo.stella.work.distributed.redis;
 
-import java.util.Optional;
-
-import io.vertigo.commons.impl.codec.CodecManagerImpl;
-import io.vertigo.stella.plugins.work.redis.RedisDB;
 import io.vertigo.stella.work.AbstractWorkManagerTest;
 
 /**
@@ -30,9 +26,7 @@ import io.vertigo.stella.work.AbstractWorkManagerTest;
 public class RedisWorkManagerTest extends AbstractWorkManagerTest {
 	@Override
 	protected void doSetUp() throws Exception {
-		final RedisDB redisDB = new RedisDB(new CodecManagerImpl(), "redis-pic.part.klee.lan.net", 6379, 10, Optional.<String> empty());
-		redisDB.start();
-		redisDB.reset();
-		redisDB.stop();
+		//		final RedisDB redisDB = new RedisDB(new CodecManagerImpl(), Home.getApp().getComponentSpace().resolve(RedisConnector.class), 10);
+		//		redisDB.reset();
 	}
 }

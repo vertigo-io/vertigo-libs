@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.work.worker.local.LocalCoordinator;
-import io.vertigo.stella.node.NodeManager;
+import io.vertigo.stella.node.SNodeManager;
 
 /**
  * Implémentation de NodeManager, pour l'execution de travaux par des Workers distant.
@@ -35,7 +35,7 @@ import io.vertigo.stella.node.NodeManager;
  *
  * @author npiedeloup, pchretien
  */
-public final class NodeManagerImpl implements NodeManager, Activeable {
+public final class SNodeManagerImpl implements SNodeManager, Activeable {
 	private final List<WorkerPlugin> nodePlugins;
 	private final List<Thread> dispatcherThreads = new ArrayList<>();
 	private final LocalCoordinator localWorker = new LocalCoordinator(/*workersCount*/5);
@@ -47,7 +47,7 @@ public final class NodeManagerImpl implements NodeManager, Activeable {
 	 * @param nodePlugins workerPlugins
 	 */
 	@Inject
-	public NodeManagerImpl(final List<WorkerPlugin> nodePlugins) {
+	public SNodeManagerImpl(final List<WorkerPlugin> nodePlugins) {
 		Assertion.checkNotNull(nodePlugins);
 		//-----
 		this.nodePlugins = nodePlugins;

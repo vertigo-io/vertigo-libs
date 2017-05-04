@@ -9,7 +9,7 @@
 			<param name="workerCount" value="10" />
 		</component>
 
-		<component api="NodeManager" class="io.vertigo.stella.impl.node.NodeManagerImpl">
+		<component api="SNodeManager" class="io.vertigo.stella.impl.node.SNodeManagerImpl">
 			<plugin class="io.vertigo.stella.plugins.work.rest.worker.RestWorkerPlugin">
 				<param name="nodeId" value="node-1-1" />
 				<param name="timeoutSeconds" value="10" />

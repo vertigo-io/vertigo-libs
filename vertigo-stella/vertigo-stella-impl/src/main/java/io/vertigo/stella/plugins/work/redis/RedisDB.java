@@ -22,10 +22,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.lang.Activeable;
+import io.vertigo.core.connectors.redis.RedisConnector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.stella.impl.work.WorkItem;
@@ -34,59 +33,29 @@ import io.vertigo.stella.work.WorkEngineProvider;
 import io.vertigo.util.DateUtil;
 import io.vertigo.util.MapBuilder;
 import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.JedisPoolConfig;
 import redis.clients.jedis.Transaction;
 
 /**
  * @author pchretien
  */
-public final class RedisDB implements Activeable {
-	private static final int CONNECT_TIMEOUT = 2000;
-	private final JedisPool jedisPool;
+public final class RedisDB {
+	private final RedisConnector redisConnector;
 	private final CodecManager codecManager;
-	private final int readTimeout;
 
 	/**
 	 * Constructor.
 	 * @param codecManager the codecManager
-	 * @param redisHost the REDIS host
-	 * @param redisPort the REDIS port
-	 * @param readTimeout  the timeout duration used to read data
-	 * @param password the optional REDIS password
 	 */
-	public RedisDB(final CodecManager codecManager, final String redisHost, final int redisPort, final int readTimeout, final Optional<String> password) {
+	public RedisDB(final CodecManager codecManager, final RedisConnector redisConnector) {
+		Assertion.checkNotNull(redisConnector);
 		Assertion.checkNotNull(codecManager);
-		Assertion.checkArgNotEmpty(redisHost);
-		Assertion.checkNotNull(password);
 		//-----
+		this.redisConnector = redisConnector;
 		this.codecManager = codecManager;
-		final JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-		jedisPoolConfig.setMaxTotal(10);
-		jedisPool = new JedisPool(jedisPoolConfig, redisHost, redisPort, CONNECT_TIMEOUT, password.orElse(null));
-		this.readTimeout = readTimeout;
-
-		//test
-		try (Jedis jedis = jedisPool.getResource()) {
-			jedis.ping();
-		}
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void start() {
-		//
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void stop() {
-		//see doc :https://github.com/xetorthio/jedis/wiki/Getting-started
-		jedisPool.destroy();
 	}
 
 	public void reset() {
-		try (final Jedis jedis = jedisPool.getResource()) {
+		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		}
 	}
@@ -102,7 +71,7 @@ public final class RedisDB implements Activeable {
 	public <R, W> void putWorkItem(final WorkItem<R, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-----
-		try (Jedis jedis = jedisPool.getResource()) {
+		try (Jedis jedis = redisConnector.getResource()) {
 			//out.println("creating work [" + workId + "] : " + work.getClass().getSimpleName());
 
 			final Map<String, String> datas = new MapBuilder<String, String>()
@@ -132,8 +101,25 @@ public final class RedisDB implements Activeable {
 	public <R, W> WorkItem<R, W> pollWorkItem(final String workType) {
 		Assertion.checkNotNull(workType);
 		//-----
-		try (Jedis jedis = jedisPool.getResource()) {
-			final String workId = jedis.brpoplpush("works:todo:" + workType, "works:in progress", readTimeout);
+		final long start = System.currentTimeMillis();
+		while ((System.currentTimeMillis() - start) < 1 * 1000) {
+			final WorkItem<R, W> result = doPollWorkItem(workType);
+			if (result != null) {
+				return result;
+			}
+			//retry until timeout
+			try {
+				Thread.sleep(100L);
+			} catch (final InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		}
+		return null;
+	}
+
+	private <W, R> WorkItem<R, W> doPollWorkItem(final String workType) {
+		try (Jedis jedis = redisConnector.getResource()) {
+			final String workId = jedis.rpoplpush("works:todo:" + workType, "works:in progress");
 			if (workId == null) {
 				return null;
 			}
@@ -156,7 +142,7 @@ public final class RedisDB implements Activeable {
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
 		//-----
 		final Map<String, String> datas = new HashMap<>();
-		try (Jedis jedis = jedisPool.getResource()) {
+		try (Jedis jedis = redisConnector.getResource()) {
 			if (error == null) {
 				datas.put("result", encode(result));
 				datas.put("status", "ok");
@@ -164,17 +150,37 @@ public final class RedisDB implements Activeable {
 				datas.put("error", encode(error));
 				datas.put("status", "ko");
 			}
-			final Transaction tx = jedis.multi();
-			tx.hmset("work:" + workId, datas);
-			tx.lrem("works:in progress", 0, workId);
-			tx.lpush("works:done", workId);
-			tx.exec();
+			try (final Transaction tx = jedis.multi()) {
+				tx.hmset("work:" + workId, datas);
+				tx.lrem("works:in progress", 0, workId);
+				tx.lpush("works:done", workId);
+				tx.exec();
+			} catch (final IOException ex) {
+				throw WrappedException.wrap(ex);
+			}
 		}
 	}
 
 	public <R> WorkResult<R> pollResult(final int waitTimeSeconds) {
-		try (final Jedis jedis = jedisPool.getResource()) {
-			final String workId = jedis.brpoplpush("works:done", "works:completed", waitTimeSeconds);
+		final long start = System.currentTimeMillis();
+		while ((System.currentTimeMillis() - start) < waitTimeSeconds * 1000) {
+			final WorkResult<R> result = doPollResult();
+			if (result != null) {
+				return result;
+			}
+			//retry until timeout
+			try {
+				Thread.sleep(100L);
+			} catch (final InterruptedException e) {
+				Thread.currentThread().interrupt();
+			}
+		}
+		return null;
+	}
+
+	private <R> WorkResult<R> doPollResult() {
+		try (final Jedis jedis = redisConnector.getResource()) {
+			final String workId = jedis.rpoplpush("works:done", "works:completed");
 			if (workId == null) {
 				return null;
 			}

@@ -20,13 +20,12 @@ package io.vertigo.stella.plugins.work.redis.master;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.lang.Activeable;
+import io.vertigo.core.connectors.redis.RedisConnector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.work.MasterPlugin;
 import io.vertigo.stella.impl.work.WorkItem;
@@ -39,36 +38,21 @@ import io.vertigo.stella.plugins.work.redis.RedisDB;
  *
  * @author pchretien
  */
-public final class RedisMasterPlugin implements MasterPlugin, Activeable {
+public final class RedisMasterPlugin implements MasterPlugin {
 	private final RedisDB redisDB;
 	private final List<String> distributedWorkTypes;
 
 	@Inject
 	public RedisMasterPlugin(
 			final CodecManager codecManager,
-			@Named("distributedWorkTypes") final String distributedWorkTypes,
-			@Named("host") final String redisHost,
-			@Named("port") final int redisPort,
-			@Named("timeoutSeconds") final int timeoutSeconds,
-			@Named("password") final Optional<String> password) {
+			final RedisConnector redisConnector,
+			@Named("distributedWorkTypes") final String distributedWorkTypes) {
 		Assertion.checkArgNotEmpty(distributedWorkTypes);
 		Assertion.checkNotNull(codecManager);
-		Assertion.checkArgNotEmpty(redisHost);
+		Assertion.checkNotNull(redisConnector);
 		//-----
 		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
-		redisDB = new RedisDB(codecManager, redisHost, redisPort, timeoutSeconds, password);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void start() {
-		redisDB.start();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void stop() {
-		redisDB.stop();
+		redisDB = new RedisDB(codecManager, redisConnector);
 	}
 
 	/** {@inheritDoc} */
@@ -77,7 +61,8 @@ public final class RedisMasterPlugin implements MasterPlugin, Activeable {
 		return distributedWorkTypes;
 	}
 
-	/** {@inheritDoc} */
+	/** {@inheritDoc}
+	 * @throws InterruptedException */
 	@Override
 	public WorkResult pollResult(final int waitTimeSeconds) {
 		return redisDB.pollResult(waitTimeSeconds);

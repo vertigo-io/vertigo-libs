@@ -29,6 +29,6 @@ import io.vertigo.lang.Manager;
  *
  * @author npiedeloup, pchretien
  */
-public interface NodeManager extends Manager {
+public interface SNodeManager extends Manager {
 	//nothing
 }

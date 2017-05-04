@@ -19,13 +19,12 @@
 package io.vertigo.stella.plugins.work.redis.worker;
 
 import java.util.Map;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.lang.Activeable;
+import io.vertigo.core.connectors.redis.RedisConnector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.node.WorkDispatcherConfUtil;
 import io.vertigo.stella.impl.node.WorkerPlugin;
@@ -39,47 +38,28 @@ import io.vertigo.stella.plugins.work.redis.RedisDB;
  *
  * @author pchretien
  */
-public final class RedisWorkerPlugin implements WorkerPlugin, Activeable {
+public final class RedisWorkerPlugin implements WorkerPlugin {
 	private final Map<String, Integer> workTypes;
 	private final RedisDB redisDB;
 
 	@Inject
 	public RedisWorkerPlugin(
 			final CodecManager codecManager,
+			final RedisConnector redisConnector,
 			@Named("nodeId") final String nodeId,
-			@Named("workTypes") final String workTypes,
-			@Named("host") final String redisHost,
-			@Named("port") final int redisPort,
-			@Named("timeoutSeconds") final int timeoutSeconds,
-			@Named("password") final Optional<String> password) {
+			@Named("workTypes") final String workTypes) {
 		Assertion.checkNotNull(codecManager);
+		Assertion.checkNotNull(redisConnector);
 		Assertion.checkArgNotEmpty(workTypes);
-		Assertion.checkArgNotEmpty(redisHost);
-		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//-----
 		this.workTypes = WorkDispatcherConfUtil.readWorkTypeConf(workTypes);
-		redisDB = new RedisDB(codecManager, redisHost, redisPort, timeoutSeconds, password);
+		redisDB = new RedisDB(codecManager, redisConnector);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Map<String, Integer> getWorkTypes() {
 		return workTypes;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void start() {
-		redisDB.start();
-		//On enregistre le node
-		//redisDB.registerNode(new Node(getNodeId(), true));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void stop() {
-		//redisDB.registerNode(new Node(getNodeId(), false));
-		redisDB.stop();
 	}
 
 	/*public List<Node> getNodes() {
