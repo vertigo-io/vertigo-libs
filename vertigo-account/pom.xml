@@ -14,12 +14,12 @@
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-connectors</artifactId>
-			<version>${project.version}</version>
+			<artifactId>vertigo-core</artifactId>
+			<version>${vertigo.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-core</artifactId>
+			<artifactId>vertigo-core-plugins</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
 		<dependency>

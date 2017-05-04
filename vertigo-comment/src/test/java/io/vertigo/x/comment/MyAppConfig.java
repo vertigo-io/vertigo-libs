@@ -22,6 +22,7 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.core.connectors.ConnectorsFeatures;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.persona.impl.security.PersonaFeatures;
@@ -30,7 +31,6 @@ import io.vertigo.x.account.AccountFeatures;
 import io.vertigo.x.comment.data.TestUserSession;
 import io.vertigo.x.comment.webservices.CommentWebServices;
 import io.vertigo.x.comment.webservices.TestLoginWebServices;
-import io.vertigo.x.connectors.ConnectorsFeatures;
 
 public final class MyAppConfig {
 	public static final int WS_PORT = 8088;

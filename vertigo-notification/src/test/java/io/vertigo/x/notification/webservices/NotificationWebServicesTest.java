@@ -38,12 +38,12 @@ import com.jayway.restassured.parsing.Parser;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.core.connectors.redis.RedisConnector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.services.Account;
 import io.vertigo.x.account.services.AccountGroup;
 import io.vertigo.x.account.services.AccountServices;
-import io.vertigo.x.connectors.redis.RedisConnector;
 import io.vertigo.x.notification.MyAppConfig;
 import io.vertigo.x.notification.data.Accounts;
 import io.vertigo.x.notification.services.Notification;

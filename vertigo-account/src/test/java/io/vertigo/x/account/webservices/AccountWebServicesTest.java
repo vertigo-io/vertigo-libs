@@ -30,10 +30,10 @@ import com.jayway.restassured.RestAssured;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.core.connectors.redis.RedisConnector;
 import io.vertigo.x.account.MyAppConfig;
 import io.vertigo.x.account.data.Accounts;
 import io.vertigo.x.account.services.AccountServices;
-import io.vertigo.x.connectors.redis.RedisConnector;
 import redis.clients.jedis.Jedis;
 
 /**

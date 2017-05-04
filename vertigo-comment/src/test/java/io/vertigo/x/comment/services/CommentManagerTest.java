@@ -28,6 +28,7 @@ import org.junit.Test;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.core.connectors.redis.RedisConnector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
@@ -37,7 +38,6 @@ import io.vertigo.x.account.services.AccountGroup;
 import io.vertigo.x.account.services.AccountServices;
 import io.vertigo.x.comment.MyAppConfig;
 import io.vertigo.x.comment.data.Accounts;
-import io.vertigo.x.connectors.redis.RedisConnector;
 import redis.clients.jedis.Jedis;
 
 public class CommentManagerTest {

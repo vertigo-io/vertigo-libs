@@ -35,7 +35,6 @@ limitations under the License. -->
 	</properties>
 	
 	<modules>
-		<module>vertigo-connectors</module>
 		<module>vertigo-mail</module>
 		<module>vertigo-account</module>
 		<module>vertigo-comment</module>

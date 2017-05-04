@@ -36,6 +36,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.core.connectors.redis.RedisConnector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
@@ -43,7 +44,6 @@ import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.x.account.MyAppConfig;
 import io.vertigo.x.account.data.Accounts;
-import io.vertigo.x.connectors.redis.RedisConnector;
 import redis.clients.jedis.Jedis;
 
 @RunWith(Parameterized.class)
