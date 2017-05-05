@@ -18,8 +18,6 @@
  */
 package io.vertigo.stella.work;
 
-import java.util.function.Function;
-
 import io.vertigo.lang.Manager;
 
 /**
@@ -36,17 +34,6 @@ import io.vertigo.lang.Manager;
  * @author pchretien
  */
 public interface WorkManager extends Manager {
-
-	/**
-	 * Create a new WorkProcessor.
-	 * It ca be use for composing WorkEngine.
-	 * @param <R> WorkEngine result's type
-	 * @param <W> Work's type : input of workEngine
-	 * @param workEngineProvider WorkEngine provider
-	 * @return a new WorkProcessor
-	 */
-	<W, R> Function<W, R> createProcessor(final Class<? extends WorkEngine<W, R>> workEngineClass);
-
 	/**
 	 * Exécution d'un travail de façon synchrone.
 	 * @param <W> Type de Work (Travail)

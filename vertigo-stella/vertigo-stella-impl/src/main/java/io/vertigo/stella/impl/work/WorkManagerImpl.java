@@ -25,13 +25,10 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.function.Function;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -138,13 +135,6 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 
 	private static String createWorkId() {
 		return UUID.randomUUID().toString();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <W, R> Function<W, R> createProcessor(final Class<? extends WorkEngine<W, R>> workEngineClass) {
-		return (work) -> DIInjector.newInstance(workEngineClass, Home.getApp().getComponentSpace())
-				.process(work);
 	}
 
 	/** {@inheritDoc} */
