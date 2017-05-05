@@ -61,8 +61,7 @@ public final class RedisMasterPlugin implements MasterPlugin {
 		return distributedWorkTypes;
 	}
 
-	/** {@inheritDoc}
-	 * @throws InterruptedException */
+	/** {@inheritDoc}*/
 	@Override
 	public WorkResult pollResult(final int waitTimeSeconds) {
 		return redisDB.pollResult(waitTimeSeconds);
