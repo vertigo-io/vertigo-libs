@@ -27,8 +27,8 @@ import org.junit.Test;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
+import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.core.connectors.redis.RedisConnector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;

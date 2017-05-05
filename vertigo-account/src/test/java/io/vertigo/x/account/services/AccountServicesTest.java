@@ -35,8 +35,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.core.connectors.redis.RedisConnector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;

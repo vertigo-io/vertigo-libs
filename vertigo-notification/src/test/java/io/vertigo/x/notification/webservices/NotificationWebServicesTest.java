@@ -37,8 +37,8 @@ import com.jayway.restassured.filter.session.SessionFilter;
 import com.jayway.restassured.parsing.Parser;
 
 import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.core.connectors.redis.RedisConnector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.services.Account;

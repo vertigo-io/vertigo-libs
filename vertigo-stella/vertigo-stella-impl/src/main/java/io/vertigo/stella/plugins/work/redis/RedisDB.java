@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.core.connectors.redis.RedisConnector;
+import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.stella.impl.work.WorkItem;

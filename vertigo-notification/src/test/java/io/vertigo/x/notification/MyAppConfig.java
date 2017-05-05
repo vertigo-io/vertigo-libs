@@ -18,11 +18,12 @@
  */
 package io.vertigo.x.notification;
 
+import java.util.Optional;
+
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
-import io.vertigo.core.connectors.ConnectorsFeatures;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.persona.impl.security.PersonaFeatures;
@@ -50,14 +51,19 @@ public final class MyAppConfig {
 			.endBoot()
 			.addModule(new PersonaFeatures()
 					.withUserSession(TestUserSession.class)
-					.build())
+					.build());
+
+			final CommonsFeatures commonsFeatures = new CommonsFeatures();
+			if (redis) {
+				commonsFeatures.withRedisConnector(redisHost, redisPort, redisDatabase, Optional.empty());
+			}
+
+			appConfigBuilder
+			.addModule(commonsFeatures.build())
 			.addModule(new CommonsFeatures().build())
 			.addModule(new DynamoFeatures().build());
 		if (redis){
 			return  appConfigBuilder
-			.addModule(new ConnectorsFeatures()
-				.withRedisConnector(redisHost, redisPort, redisDatabase)
-				.build())
 			.addModule(new AccountFeatures()
 					.withRedisAccountStorePlugin()
 					.build())

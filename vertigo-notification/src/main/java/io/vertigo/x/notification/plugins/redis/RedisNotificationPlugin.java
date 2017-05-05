@@ -31,7 +31,7 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
-import io.vertigo.core.connectors.redis.RedisConnector;
+import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;

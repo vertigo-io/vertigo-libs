@@ -19,11 +19,6 @@
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-core-plugins</artifactId>
-			<version>${vertigo.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-dynamo-api</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
