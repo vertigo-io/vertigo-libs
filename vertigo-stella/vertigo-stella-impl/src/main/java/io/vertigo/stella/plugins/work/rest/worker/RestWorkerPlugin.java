@@ -25,10 +25,9 @@ import javax.inject.Named;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.stella.impl.node.WorkDispatcherConfUtil;
-import io.vertigo.stella.impl.node.WorkerPlugin;
+import io.vertigo.stella.impl.work.WorkDispatcherConfUtil;
 import io.vertigo.stella.impl.work.WorkItem;
-import io.vertigo.stella.work.WorkManager;
+import io.vertigo.stella.impl.work.WorkerPlugin;
 
 /**
  * Implémentation de DistributedWorkManager, pour l'execution de travaux par des Workers distant.
@@ -49,7 +48,6 @@ public final class RestWorkerPlugin implements WorkerPlugin {
 	 * @param workTypes Types de travail gérés
 	 * @param serverUrl Url du serveur
 	 * @param timeoutSeconds Timeout en seconde des connections vers le serveur (doit être > au timeoutSeconds du serveur)
-	 * @param workManager Manager des works
 	 * @param codecManager Manager d'encodage/decodage
 	 */
 	@Inject
@@ -58,7 +56,6 @@ public final class RestWorkerPlugin implements WorkerPlugin {
 			@Named("workTypes") final String workTypes,
 			@Named("serverUrl") final String serverUrl,
 			@Named("timeoutSeconds") final int timeoutSeconds,
-			final WorkManager workManager,
 			final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(workTypes);
 		Assertion.checkArgNotEmpty(serverUrl);

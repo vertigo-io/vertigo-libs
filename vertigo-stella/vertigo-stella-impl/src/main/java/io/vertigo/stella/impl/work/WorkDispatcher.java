@@ -16,14 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.impl.node;
+package io.vertigo.stella.impl.work;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.impl.work.worker.local.LocalCoordinator;
 import io.vertigo.stella.work.WorkResultHandler;
 

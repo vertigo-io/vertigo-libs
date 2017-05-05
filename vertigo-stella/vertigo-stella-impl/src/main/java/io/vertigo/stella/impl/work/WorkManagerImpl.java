@@ -18,6 +18,9 @@
  */
 package io.vertigo.stella.impl.work;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -53,6 +56,10 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	private final LocalCoordinator localCoordinator;
 	private final Optional<DistributedCoordinator> distributedCoordinator;
 
+	private final List<WorkerPlugin> nodePlugins;
+	private final List<Thread> dispatcherThreads = new ArrayList<>();
+	private final LocalCoordinator localWorker = new LocalCoordinator(/*workersCount*/5);
+
 	/**
 	 * Constructeur.
 	 * @param workerCount Nb workers
@@ -61,12 +68,27 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	@Inject
 	public WorkManagerImpl(
 			final @Named("workerCount") int workerCount,
-			final Optional<MasterPlugin> masterPlugin) {
+			final Optional<MasterPlugin> masterPlugin,
+			final List<WorkerPlugin> nodePlugins) {
 		Assertion.checkNotNull(masterPlugin);
+		Assertion.checkNotNull(nodePlugins);
 		//-----
 		workListener = new WorkListenerImpl(/*analyticsManager*/);
 		localCoordinator = new LocalCoordinator(workerCount);
 		distributedCoordinator = masterPlugin.isPresent() ? Optional.of(new DistributedCoordinator(masterPlugin.get())) : Optional.<DistributedCoordinator> empty();
+		//-----
+		this.nodePlugins = nodePlugins;
+		//---
+		for (final WorkerPlugin nodePlugin : this.nodePlugins) {
+			for (final Map.Entry<String, Integer> entry : nodePlugin.getWorkTypes().entrySet()) {
+				final String workType = entry.getKey();
+				final WorkDispatcher worker = new WorkDispatcher(workType, localWorker, nodePlugin);
+				final String workTypeName = workType.substring(workType.lastIndexOf('.') + 1);
+				for (int i = 1; i <= entry.getValue(); i++) {
+					dispatcherThreads.add(new Thread(worker, "WorkDispatcher-" + workTypeName + "-" + i));
+				}
+			}
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -77,6 +99,10 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		if (distributedCoordinator.isPresent()) {
 			distributedCoordinator.get().start();
 		}
+		//---
+		for (final Thread dispatcherThread : dispatcherThreads) {
+			dispatcherThread.start();
+		}
 	}
 
 	/** {@inheritDoc} */
@@ -86,6 +112,28 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 			distributedCoordinator.get().stop();
 		}
 		localCoordinator.close();
+
+		//--
+		for (final Thread dispatcherThread : dispatcherThreads) {
+			dispatcherThread.interrupt();
+		}
+		boolean isOneAlive;
+		do {
+			isOneAlive = false;
+			for (final Thread dispatcherThread : dispatcherThreads) {
+				if (dispatcherThread.isAlive()) {
+					dispatcherThread.interrupt();
+					try {
+						dispatcherThread.join(1000);
+					} catch (final InterruptedException e) {
+						//On ne fait rien
+					}
+					isOneAlive = isOneAlive || dispatcherThread.isAlive();
+				}
+			}
+		} while (isOneAlive);
+
+		localWorker.close();
 	}
 
 	private static String createWorkId() {

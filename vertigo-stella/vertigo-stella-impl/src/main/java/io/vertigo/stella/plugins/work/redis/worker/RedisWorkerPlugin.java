@@ -26,9 +26,9 @@ import javax.inject.Named;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.connectors.redis.RedisConnector;
 import io.vertigo.lang.Assertion;
-import io.vertigo.stella.impl.node.WorkDispatcherConfUtil;
-import io.vertigo.stella.impl.node.WorkerPlugin;
+import io.vertigo.stella.impl.work.WorkDispatcherConfUtil;
 import io.vertigo.stella.impl.work.WorkItem;
+import io.vertigo.stella.impl.work.WorkerPlugin;
 import io.vertigo.stella.plugins.work.redis.RedisDB;
 
 /**

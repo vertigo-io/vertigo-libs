@@ -15,13 +15,11 @@
 			<plugin class="io.vertigo.stella.plugins.work.redis.master.RedisMasterPlugin">
 				<param name="distributedWorkTypes" value="io.vertigo.stella.work.mock.DivideWorkEngine;io.vertigo.stella.work.mock.SlowWorkEngine" />
 			</plugin>
-		</component>
-
-		<component api="SNodeManager" class="io.vertigo.stella.impl.node.SNodeManagerImpl">
 			<plugin class="io.vertigo.stella.plugins.work.redis.worker.RedisWorkerPlugin">
 				<param name="nodeId" value="node#1-1" />
 				<param name="workTypes" value="io.vertigo.stella.work.mock.DivideWorkEngine^5;io.vertigo.stella.work.mock.SlowWorkEngine^5" />
 			</plugin>
 		</component>
+
 	</module>
 </config>
