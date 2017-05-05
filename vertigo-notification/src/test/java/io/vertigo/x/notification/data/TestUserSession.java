@@ -18,10 +18,7 @@
  */
 package io.vertigo.x.notification.data;
 
-import java.io.Serializable;
-import java.util.Collections;
 import java.util.Locale;
-import java.util.Map;
 
 import io.vertigo.persona.security.UserSession;
 
@@ -31,14 +28,5 @@ public final class TestUserSession extends UserSession {
 	@Override
 	public Locale getLocale() {
 		return Locale.FRENCH;
-	}
-
-	/**
-	 * Gestion de la sécurité.
-	 * @return Liste des clés de sécurité et leur valeur.
-	 */
-	@Override
-	public Map<String, Serializable[]> getSecurityKeys() {
-		return Collections.singletonMap("famId", new String[] { "12" });
 	}
 }

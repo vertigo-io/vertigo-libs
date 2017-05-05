@@ -37,7 +37,6 @@ public final class WorkItem<W, R> {
 	 * This workItem is used to define a synchronous work.
 	 * @param id Id
 	 * @param work Travail dont on représente l'état.
-	 * @param workEngineProvider WorkEngine provider
 	 */
 	public WorkItem(final String id, final W work, final Class<? extends WorkEngine<W, R>> workEngineClass) {
 		Assertion.checkNotNull(id);
