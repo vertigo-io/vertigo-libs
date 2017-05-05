@@ -18,10 +18,7 @@
  */
 package io.vertigo.stella.impl.work;
 
-import java.util.Arrays;
-
 import io.vertigo.lang.Assertion;
-import io.vertigo.stella.work.WorkEngine;
 import io.vertigo.stella.work.WorkEngineProvider;
 import io.vertigo.stella.work.WorkManager;
 import io.vertigo.stella.work.WorkProcessor;
@@ -52,25 +49,7 @@ final class WorkProcessorImpl<R, W> implements WorkProcessor<R, W> {
 
 	/** {@inheritDoc} */
 	@Override
-	public <WR1> WorkProcessor<WR1, W> then(final WorkEngineProvider<WR1, R> workEngineProvider) {
-		Assertion.checkNotNull(workEngineProvider);
-		//-----
-		final WorkEngineProvider[] list = Arrays.copyOf(workEngineProviders, workEngineProviders.length + 1);
-		list[workEngineProviders.length] = workEngineProvider;
-		return new WorkProcessorImpl<>(workManager, list);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <WR1> WorkProcessor<WR1, W> then(final Class<? extends WorkEngine<WR1, R>> clazz) {
-		Assertion.checkNotNull(clazz);
-		//-----
-		return then(new WorkEngineProvider<>(clazz));
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public R exec(final W input) {
+	public R apply(final W input) {
 		Object result = input;
 		for (final WorkEngineProvider workEngineProvider : workEngineProviders) {
 			result = workManager.process(result, workEngineProvider);

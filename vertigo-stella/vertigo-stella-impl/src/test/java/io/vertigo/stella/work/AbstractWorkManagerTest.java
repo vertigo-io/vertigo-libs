@@ -18,6 +18,8 @@
  */
 package io.vertigo.stella.work;
 
+import java.util.function.Function;
+
 import javax.inject.Inject;
 
 import org.junit.Assert;
@@ -54,11 +56,12 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testProcessor() {
 		//	final DivideWork work = new DivideWork(10, 5);
+		final Function<Long, Long> function1 = workManager.createProcessor(new WorkEngineProvider(SquareWorkEngine.class));
 		final long result = workManager
 				.createProcessor(new WorkEngineProvider<>(LengthWorkEngine.class))
-				.then(SquareWorkEngine.class)
-				.then(SquareWorkEngine.class)
-				.exec("aa");
+				.andThen(function1)
+				.andThen(function1)
+				.apply("aa");
 		Assert.assertEquals(2 * 2 * 2 * 2L, result);
 	}
 
