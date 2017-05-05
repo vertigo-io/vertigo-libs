@@ -24,6 +24,8 @@ import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
 
+import io.vertigo.app.Home;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.stella.impl.work.WorkItem;
@@ -57,14 +59,14 @@ final class LocalWorker<R, W> implements Callable<R> {
 		threadLocalsField.setAccessible(true);
 	}
 
-	private final WorkItem<R, W> workItem;
+	private final WorkItem<W, R> workItem;
 	private final Optional<WorkResultHandler<R>> workResultHandler;
 
 	/**
 	 * Constructeur.
 	 * @param workItem WorkItem à traiter
 	 */
-	LocalWorker(final WorkItem<R, W> workItem, final Optional<WorkResultHandler<R>> workResultHandler) {
+	LocalWorker(final WorkItem<W, R> workItem, final Optional<WorkResultHandler<R>> workResultHandler) {
 		Assertion.checkNotNull(workItem);
 		Assertion.checkNotNull(workResultHandler);
 		//-----
@@ -72,10 +74,11 @@ final class LocalWorker<R, W> implements Callable<R> {
 		this.workResultHandler = workResultHandler;
 	}
 
-	private static <R, W> R executeNow(final WorkItem<R, W> workItem) {
+	private static <W, R> R executeNow(final WorkItem<W, R> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-----
-		return workItem.getWorkEngineProvider().provide().process(workItem.getWork());
+		return DIInjector.newInstance(workItem.getWorkEngineClass(), Home.getApp().getComponentSpace())
+				.process(workItem.getWork());
 	}
 
 	/** {@inheritDoc} */
@@ -111,7 +114,7 @@ final class LocalWorker<R, W> implements Callable<R> {
 	}
 
 	private void logError(final Throwable e) {
-		LOGGER.error("Erreur de la tache de type : " + workItem.getWorkEngineProvider().getName(), e);
+		LOGGER.error("Erreur de la tache de type : " + workItem.getWorkEngineClass().getName(), e);
 	}
 
 	/**

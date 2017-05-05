@@ -20,7 +20,7 @@ package io.vertigo.stella.work.mock;
 
 import io.vertigo.stella.work.WorkEngine;
 
-public final class SlowWorkEngine implements WorkEngine<Boolean, SlowWork> {
+public final class SlowWorkEngine implements WorkEngine<SlowWork, Boolean> {
 
 	/** {@inheritDoc} */
 	@Override

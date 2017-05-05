@@ -20,13 +20,15 @@ package io.vertigo.stella.impl.work;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import io.vertigo.app.Home;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -36,9 +38,7 @@ import io.vertigo.stella.impl.work.worker.Coordinator;
 import io.vertigo.stella.impl.work.worker.distributed.DistributedCoordinator;
 import io.vertigo.stella.impl.work.worker.local.LocalCoordinator;
 import io.vertigo.stella.work.WorkEngine;
-import io.vertigo.stella.work.WorkEngineProvider;
 import io.vertigo.stella.work.WorkManager;
-import io.vertigo.stella.work.WorkProcessor;
 import io.vertigo.stella.work.WorkResultHandler;
 
 /**
@@ -94,17 +94,18 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R, W> WorkProcessor<R, W> createProcessor(final WorkEngineProvider<R, W> workEngineProvider) {
-		return new WorkProcessorImpl<>(this, workEngineProvider);
+	public <W, R> Function<W, R> createProcessor(final Class<? extends WorkEngine<W, R>> workEngineClass) {
+		return (work) -> DIInjector.newInstance(workEngineClass, Home.getApp().getComponentSpace())
+				.process(work);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <R, W> R process(final W work, final WorkEngineProvider<R, W> workEngineProvider) {
+	public <W, R> R process(final W work, final Class<? extends WorkEngine<W, R>> workEngineClass) {
 		Assertion.checkNotNull(work);
-		Assertion.checkNotNull(workEngineProvider);
+		Assertion.checkNotNull(workEngineClass);
 		//-----
-		final WorkItem<R, W> workItem = new WorkItem<>(createWorkId(), work, workEngineProvider);
+		final WorkItem<W, R> workItem = new WorkItem<>(createWorkId(), work, workEngineClass);
 		final Future<R> result = submit(workItem, Optional.<WorkResultHandler<R>> empty());
 		try {
 			return result.get();
@@ -119,30 +120,19 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	}
 
 	@Override
-	public <R, W> void schedule(final W work, final WorkEngineProvider<R, W> workEngineProvider, final WorkResultHandler<R> workResultHandler) {
+	public <W, R> void schedule(final W work, final Class<? extends WorkEngine<W, R>> workEngineClass, final WorkResultHandler<R> workResultHandler) {
 		Assertion.checkNotNull(work);
-		Assertion.checkNotNull(workEngineProvider);
+		Assertion.checkNotNull(workEngineClass);
 		Assertion.checkNotNull(workResultHandler);
 		//-----
-		final WorkItem<R, W> workItem = new WorkItem<>(createWorkId(), work, workEngineProvider);
+		final WorkItem<W, R> workItem = new WorkItem<>(createWorkId(), work, workEngineClass);
 		submit(workItem, Optional.of(workResultHandler));
 	}
 
-	@Override
-	public <R> void schedule(final Callable<R> callable, final WorkResultHandler<R> workResultHandler) {
-		Assertion.checkNotNull(callable);
-		Assertion.checkNotNull(workResultHandler);
-		//-----
-		final WorkEngineProvider<R, Void> workEngineProvider = new WorkEngineProvider<>(new CallableWorkEngine<>(callable));
-
-		final WorkItem<R, Void> workItem = new WorkItem<>(createWorkId(), null, workEngineProvider);
-		submit(workItem, Optional.of(workResultHandler));
-	}
-
-	private <R, W> Future<R> submit(final WorkItem<R, W> workItem, final Optional<WorkResultHandler<R>> workResultHandler) {
+	private <W, R> Future<R> submit(final WorkItem<W, R> workItem, final Optional<WorkResultHandler<R>> workResultHandler) {
 		final Coordinator coordinator = resolveCoordinator(workItem);
 		//---
-		workListener.onStart(workItem.getWorkType());
+		workListener.onStart(workItem.getWorkEngineClass().getName());
 		boolean executed = false;
 		final long start = System.currentTimeMillis();
 		try {
@@ -150,7 +140,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 			executed = true;
 			return future;
 		} finally {
-			workListener.onFinish(workItem.getWorkType(), System.currentTimeMillis() - start, executed);
+			workListener.onFinish(workItem.getWorkEngineClass().getName(), System.currentTimeMillis() - start, executed);
 		}
 	}
 
@@ -166,24 +156,6 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 			return distributedCoordinator.get();
 		}
 		return localCoordinator;
-	}
-
-	private static final class CallableWorkEngine<R> implements WorkEngine<R, Void> {
-		private final Callable<R> callable;
-
-		CallableWorkEngine(final Callable<R> callable) {
-			this.callable = callable;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public R process(final Void dummy) {
-			try {
-				return callable.call();
-			} catch (final Exception e) {
-				throw WrappedException.wrap(e);
-			}
-		}
 	}
 
 }

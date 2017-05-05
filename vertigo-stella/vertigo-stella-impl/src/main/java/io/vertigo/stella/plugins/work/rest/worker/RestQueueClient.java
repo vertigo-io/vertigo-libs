@@ -42,7 +42,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.stella.impl.work.WorkItem;
-import io.vertigo.stella.work.WorkEngineProvider;
+import io.vertigo.util.ClassUtil;
 
 /**
  * api de distributedWorkQueueManager en REST avec jersey.
@@ -97,7 +97,7 @@ final class RestQueueClient {
 					final byte[] serializedResult = codecManager.getBase64Codec().decode(result[1]);
 					final Object work = codecManager.getCompressedSerializationCodec().decode(serializedResult);
 					LOG.info("pollWork(" + workType + ") : 1 Work");
-					return new WorkItem(uuid, work, new WorkEngineProvider(workType));
+					return new WorkItem(uuid, work, ClassUtil.classForName(workType));
 				}
 				LOG.info("pollWork(" + workType + ") : no Work");
 				//pas de travaux : inutil d'attendre le poll attend déjà 1s coté serveur

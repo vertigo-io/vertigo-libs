@@ -19,7 +19,7 @@
 package io.vertigo.stella.impl.work;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.stella.work.WorkEngineProvider;
+import io.vertigo.stella.work.WorkEngine;
 
 /**
  *
@@ -27,9 +27,9 @@ import io.vertigo.stella.work.WorkEngineProvider;
  * @param <R> result
  * @param <W> work
  */
-public final class WorkItem<R, W> {
+public final class WorkItem<W, R> {
 	private final W work;
-	private final WorkEngineProvider<R, W> workEngineProvider;
+	private final Class<? extends WorkEngine<W, R>> workEngineClass;
 	private final String id;
 
 	/**
@@ -39,14 +39,14 @@ public final class WorkItem<R, W> {
 	 * @param work Travail dont on représente l'état.
 	 * @param workEngineProvider WorkEngine provider
 	 */
-	public WorkItem(final String id, final W work, final WorkEngineProvider<R, W> workEngineProvider) {
+	public WorkItem(final String id, final W work, final Class<? extends WorkEngine<W, R>> workEngineClass) {
 		Assertion.checkNotNull(id);
 		//work can be null
-		Assertion.checkNotNull(workEngineProvider);
+		Assertion.checkNotNull(workEngineClass);
 		//-----
 		this.id = id;
 		this.work = work;
-		this.workEngineProvider = workEngineProvider;
+		this.workEngineClass = workEngineClass;
 	}
 
 	/**
@@ -65,16 +65,9 @@ public final class WorkItem<R, W> {
 	}
 
 	/**
-	 * @return Work type
-	 */
-	public String getWorkType() {
-		return getWorkEngineProvider().getName();
-	}
-
-	/**
 	 * @return WorkEngine provider
 	 */
-	public WorkEngineProvider<R, W> getWorkEngineProvider() {
-		return workEngineProvider;
+	public Class<? extends WorkEngine<W, R>> getWorkEngineClass() {
+		return workEngineClass;
 	}
 }

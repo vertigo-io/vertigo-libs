@@ -23,7 +23,7 @@ import java.util.Map;
 
 import io.vertigo.stella.work.WorkEngine;
 
-public final class ThreadLocalWorkEngine implements WorkEngine<Integer, ThreadLocalWork> {
+public final class ThreadLocalWorkEngine implements WorkEngine<ThreadLocalWork, Integer> {
 
 	private static final ThreadLocal<Map<Integer, String>> threadLocalCache = new ThreadLocal<>();
 

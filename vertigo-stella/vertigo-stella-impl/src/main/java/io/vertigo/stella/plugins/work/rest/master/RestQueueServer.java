@@ -247,11 +247,11 @@ final class RestQueueServer {
 	 */
 	<R, W> void putWorkItem(final WorkItem<R, W> workItem) {
 		Assertion.checkNotNull(workItem);
-		if (!isActiveWorkType(workItem.getWorkType())) {
-			LOG.warn("No active node for this workType : " + workItem.getWorkType());
+		if (!isActiveWorkType(workItem.getWorkEngineClass().getName())) {
+			LOG.warn("No active node for this workType : " + workItem.getWorkEngineClass().getName());
 		}
 		try {
-			obtainWorkQueue(workItem.getWorkType()).put(new WaitingWorkInfos(workItem));
+			obtainWorkQueue(workItem.getWorkEngineClass().getName()).put(new WaitingWorkInfos(workItem));
 		} catch (final InterruptedException e) {
 			//dans le cas d'une interruption on interdit d'empiler de nouveaux Works
 			throw WrappedException.wrap(e, "putWorkItem");

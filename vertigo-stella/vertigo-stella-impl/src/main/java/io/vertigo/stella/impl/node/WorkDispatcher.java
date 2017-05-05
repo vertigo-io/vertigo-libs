@@ -57,8 +57,8 @@ final class WorkDispatcher implements Runnable {
 		}
 	}
 
-	private <R, W> void doRun() throws InterruptedException {
-		final WorkItem<R, W> workItem = workerPlugin.<R, W> pollWorkItem(workType);
+	private <W, R> void doRun() throws InterruptedException {
+		final WorkItem<W, R> workItem = workerPlugin.<W, R> pollWorkItem(workType);
 		if (workItem != null) {
 			final Optional<WorkResultHandler<R>> workResultHandler = Optional.<WorkResultHandler<R>> of(new WorkResultHandler<R>() {
 				@Override

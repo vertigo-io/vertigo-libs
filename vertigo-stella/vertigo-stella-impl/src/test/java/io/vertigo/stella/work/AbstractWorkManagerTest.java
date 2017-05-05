@@ -49,23 +49,23 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testProcess() {
 		final DivideWork work = new DivideWork(10, 5);
-		final long div = workManager.process(work, new WorkEngineProvider<>(DivideWorkEngine.class));
+		final long div = workManager.process(work, DivideWorkEngine.class);
 		Assert.assertEquals(10L / 5L, div);
 	}
 
 	@Test
 	public void testProcessor() {
 		//	final DivideWork work = new DivideWork(10, 5);
-		final Function<Long, Long> function1 = workManager.createProcessor(new WorkEngineProvider(SquareWorkEngine.class));
+		final Function<Long, Long> function1 = workManager.createProcessor(SquareWorkEngine.class);
 		final long result = workManager
-				.createProcessor(new WorkEngineProvider<>(LengthWorkEngine.class))
+				.createProcessor(LengthWorkEngine.class)
 				.andThen(function1)
 				.andThen(function1)
 				.apply("aa");
 		Assert.assertEquals(2 * 2 * 2 * 2L, result);
 	}
 
-	public static final class LengthWorkEngine implements WorkEngine<Long, String> {
+	public static final class LengthWorkEngine implements WorkEngine<String, Long> {
 		/** {@inheritDoc} */
 		@Override
 		public Long process(final String work) {
@@ -84,14 +84,14 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	@Test(expected = NullPointerException.class)
 	public void testProcessWithNull() {
 		final DivideWork work = null;
-		final long div = workManager.process(work, new WorkEngineProvider<>(DivideWorkEngine.class));
+		final long div = workManager.process(work, DivideWorkEngine.class);
 		nop(div);
 	}
 
 	@Test(expected = ArithmeticException.class)
 	public void testProcessWithError() {
 		final DivideWork work = new DivideWork(10, 0);
-		final long div = workManager.process(work, new WorkEngineProvider<>(DivideWorkEngine.class));
+		final long div = workManager.process(work, DivideWorkEngine.class);
 		nop(div);
 	}
 
@@ -106,8 +106,8 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	public void testSchedule() {
 		final DivideWork work = new DivideWork(10, 5);
 		final MyWorkResultHanlder<Long> workResultHanlder = new MyWorkResultHanlder<>();
-		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
-		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
+		workManager.schedule(work, DivideWorkEngine.class, workResultHanlder);
+		workManager.schedule(work, DivideWorkEngine.class, workResultHanlder);
 		//---
 		final boolean finished = workResultHanlder.waitFinish(2, warmupTime);
 		Assert.assertTrue(finished);
@@ -119,7 +119,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	public void testScheduleWithNull() {
 		final DivideWork work = null;
 		final MyWorkResultHanlder<Long> workResultHanlder = new MyWorkResultHanlder<>();
-		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
+		workManager.schedule(work, DivideWorkEngine.class, workResultHanlder);
 	}
 
 	/**
@@ -129,7 +129,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	public void testScheduleError() {
 		final DivideWork work = new DivideWork(10, 0);
 		final MyWorkResultHanlder<Long> workResultHanlder = new MyWorkResultHanlder<>();
-		workManager.schedule(work, new WorkEngineProvider<>(DivideWorkEngine.class), workResultHanlder);
+		workManager.schedule(work, DivideWorkEngine.class, workResultHanlder);
 
 		final boolean finished = workResultHanlder.waitFinish(1, warmupTime);
 		//On vérifie plusieurs  choses
@@ -151,7 +151,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		final int workTime = 5 * 1000; //5s temps d'exécution d'un work
 		final MyWorkResultHanlder<Boolean> workResultHanlder = new MyWorkResultHanlder<>();
 		final SlowWork work = new SlowWork(workTime);
-		workManager.schedule(work, new WorkEngineProvider<>(SlowWorkEngine.class), workResultHanlder);
+		workManager.schedule(work, SlowWorkEngine.class, workResultHanlder);
 		final boolean finished = workResultHanlder.waitFinish(1, workTime - 1000);
 		//-----
 		//We are expecting a time out if we are waiting less than execution's time.
@@ -238,13 +238,13 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 
 	private void createWorkItems(final int workToCreate, final int workTime, final WorkResultHandler<Boolean> workResultHanlder) {
 		for (int i = 0; i < workToCreate; i++) {
-			workManager.schedule(new SlowWork(workTime), new WorkEngineProvider<>(SlowWorkEngine.class), workResultHanlder);
+			workManager.schedule(new SlowWork(workTime), SlowWorkEngine.class, workResultHanlder);
 		}
 	}
 
 	private void createThreadLocalWorkItems(final int workToCreate, final int workTime, final boolean clearThreadLocal, final WorkResultHandler<Integer> workResultHanlder) {
 		for (int i = 0; i < workToCreate; i++) {
-			workManager.schedule(new ThreadLocalWork(workTime, clearThreadLocal), new WorkEngineProvider<>(ThreadLocalWorkEngine.class), workResultHanlder);
+			workManager.schedule(new ThreadLocalWork(workTime, clearThreadLocal), ThreadLocalWorkEngine.class, workResultHanlder);
 		}
 	}
 }

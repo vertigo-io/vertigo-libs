@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 
 import io.vertigo.stella.work.WorkEngine;
 
-public final class DivideWorkEngine implements WorkEngine<Long, DivideWork> {
+public final class DivideWorkEngine implements WorkEngine<DivideWork, Long> {
 
 	private static long i = 0;
 

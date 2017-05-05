@@ -79,7 +79,7 @@ public final class LocalCoordinator implements Coordinator, Closeable {
 	 * @param<R> result
 	 */
 	@Override
-	public <R, W> Future<R> submit(final WorkItem<R, W> workItem, final Optional<WorkResultHandler<R>> workResultHandler) {
+	public <W, R> Future<R> submit(final WorkItem<W, R> workItem, final Optional<WorkResultHandler<R>> workResultHandler) {
 		Assertion.checkNotNull(workItem);
 		//-----
 		return workers.submit(new LocalWorker<>(workItem, workResultHandler));

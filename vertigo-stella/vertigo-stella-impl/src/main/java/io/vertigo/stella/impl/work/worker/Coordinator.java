@@ -41,5 +41,5 @@ public interface Coordinator {
 	 * @param workResultHandler Result handler (optional)
 	 * @return Future for this result
 	 */
-	<R, W> Future<R> submit(final WorkItem<R, W> workItem, final Optional<WorkResultHandler<R>> workResultHandler);
+	<W, R> Future<R> submit(final WorkItem<W, R> workItem, final Optional<WorkResultHandler<R>> workResultHandler);
 }

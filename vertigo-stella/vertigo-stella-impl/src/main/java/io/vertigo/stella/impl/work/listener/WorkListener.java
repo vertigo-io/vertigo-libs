@@ -26,7 +26,7 @@ package io.vertigo.stella.impl.work.listener;
 public interface WorkListener {
 	/**
 	 * Enregistre le début d'exécution d'une tache.
-	 * @param workName Nom de la tache 
+	 * @param workName Nom de la tache
 	 */
 	void onStart(String workName);
 

@@ -28,7 +28,7 @@ package io.vertigo.stella.work;
  * @param <R> result
  * @param <W> work
  */
-public interface WorkEngine<R, W> {
+public interface WorkEngine<W, R> {
 	/**
 	 * Exécute le travail.
 	 * Le travail s'exécute dans la transaction courante si elle existe.

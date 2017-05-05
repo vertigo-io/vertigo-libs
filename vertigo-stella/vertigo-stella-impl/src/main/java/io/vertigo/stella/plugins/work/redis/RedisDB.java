@@ -29,7 +29,8 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.impl.work.WorkResult;
-import io.vertigo.stella.work.WorkEngineProvider;
+import io.vertigo.stella.work.WorkEngine;
+import io.vertigo.util.ClassUtil;
 import io.vertigo.util.DateUtil;
 import io.vertigo.util.MapBuilder;
 import redis.clients.jedis.Jedis;
@@ -76,7 +77,7 @@ public final class RedisDB {
 
 			final Map<String, String> datas = new MapBuilder<String, String>()
 					.put("work64", encode(workItem.getWork()))
-					.put("provider64", encode(workItem.getWorkType()))
+					.put("provider64", encode(workItem.getWorkEngineClass().getName()))
 					.put("x-date", DateUtil.newDate().toString())
 					.build();
 
@@ -84,7 +85,7 @@ public final class RedisDB {
 				tx.hmset("work:" + workItem.getId(), datas);
 				//tx.expire("work:" + workId, 70);
 				//On publie la demande de travaux
-				tx.lpush("works:todo:" + workItem.getWorkType(), workItem.getId());
+				tx.lpush("works:todo:" + workItem.getWorkEngineClass().getName(), workItem.getId());
 
 				tx.exec();
 			} catch (final IOException e) {
@@ -117,7 +118,7 @@ public final class RedisDB {
 		return null;
 	}
 
-	private <W, R> WorkItem<R, W> doPollWorkItem(final String workType) {
+	private <W, R> WorkItem<W, R> doPollWorkItem(final String workType) {
 		try (Jedis jedis = redisConnector.getResource()) {
 			final String workId = jedis.rpoplpush("works:todo:" + workType, "works:in progress");
 			if (workId == null) {
@@ -126,8 +127,8 @@ public final class RedisDB {
 			final Map<String, String> hash = jedis.hgetAll("work:" + workId);
 			final W work = (W) decode(hash.get("work64"));
 			final String name = (String) decode(hash.get("provider64"));
-			final WorkEngineProvider<R, W> workEngineProvider = new WorkEngineProvider<>(name);
-			return new WorkItem<>(workId, work, workEngineProvider);
+			final Class<? extends WorkEngine> workEngineClass = ClassUtil.classForName(name, WorkEngine.class);
+			return new WorkItem(workId, work, workEngineClass);
 		}
 	}
 

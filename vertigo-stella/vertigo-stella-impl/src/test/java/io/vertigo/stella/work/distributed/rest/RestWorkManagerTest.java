@@ -30,7 +30,6 @@ import org.junit.Test;
 
 import io.vertigo.stella.work.AbstractWorkManagerTest;
 import io.vertigo.stella.work.MyWorkResultHanlder;
-import io.vertigo.stella.work.WorkEngineProvider;
 import io.vertigo.stella.work.WorkManager;
 import io.vertigo.stella.work.mock.SlowWork;
 import io.vertigo.stella.work.mock.SlowWorkEngine;
@@ -95,7 +94,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		final MyWorkResultHanlder<Boolean> workResultHanlder = new MyWorkResultHanlder<>(1);
 		final SlowWork slowWork = new SlowWork(1000);
 		for (int i = 0; i < 20; i++) {
-			workManager.schedule(slowWork, new WorkEngineProvider<>(SlowWorkEngine.class), workResultHanlder);
+			workManager.schedule(slowWork, SlowWorkEngine.class, workResultHanlder);
 		}
 		final boolean firstsFinished = workResultHanlder.waitFinish(5, 5 * 1000);
 		Assert.assertTrue("First 5 works should finished before 5s, to test deadnode failover", firstsFinished);

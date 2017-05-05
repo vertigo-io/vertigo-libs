@@ -49,7 +49,7 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <R, W> Future<R> submit(final WorkItem<R, W> workItem, final Optional<WorkResultHandler<R>> workResultHandler) {
+	public <W, R> Future<R> submit(final WorkItem<W, R> workItem, final Optional<WorkResultHandler<R>> workResultHandler) {
 		//2. On attend les notifs sur un thread séparé, la main est rendue de suite
 		final WFuture<R> future = createFuture(workItem.getId(), workResultHandler);
 		putWorkItem(workItem, future);
@@ -74,7 +74,7 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 	 * @return si ce type de work peut-être distribué.
 	 */
 	public <R, W> boolean accept(final WorkItem<R, W> workItem) {
-		return masterPlugin.acceptedWorkTypes().contains(workItem.getWorkType());
+		return masterPlugin.acceptedWorkTypes().contains(workItem.getWorkEngineClass().getName());
 	}
 
 	//-----
@@ -124,7 +124,7 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 		}
 	}
 
-	private <R, W> void putWorkItem(final WorkItem<R, W> workItem, final WorkResultHandler<R> workResultHandler) {
+	private <W, R> void putWorkItem(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
 		workResultHandlers.put(workItem.getId(), workResultHandler);
 		masterPlugin.putWorkItem(workItem);
 	}

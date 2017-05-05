@@ -18,7 +18,7 @@
  */
 package io.vertigo.stella.work;
 
-import java.util.concurrent.Callable;
+import java.util.function.Function;
 
 import io.vertigo.lang.Manager;
 
@@ -45,7 +45,7 @@ public interface WorkManager extends Manager {
 	 * @param workEngineProvider WorkEngine provider
 	 * @return a new WorkProcessor
 	 */
-	<R, W> WorkProcessor<R, W> createProcessor(final WorkEngineProvider<R, W> workEngineProvider);
+	<W, R> Function<W, R> createProcessor(final Class<? extends WorkEngine<W, R>> workEngineClass);
 
 	/**
 	 * Exécution d'un travail de façon synchrone.
@@ -55,7 +55,7 @@ public interface WorkManager extends Manager {
 	 * @param workEngineProvider WorkEngine provider
 	 * @return result
 	 */
-	<R, W> R process(final W work, final WorkEngineProvider<R, W> workEngineProvider);
+	<W, R> R process(final W work, final Class<? extends WorkEngine<W, R>> workEngineClass);
 
 	/**
 	 * Lancement asynchrone d'un travail 'dès que possible'.
@@ -65,13 +65,6 @@ public interface WorkManager extends Manager {
 	 * @param workEngineProvider WorkEngine provider
 	 * @param workResultHandler Handler permettant un callback après exécution
 	 */
-	<R, W> void schedule(final W work, WorkEngineProvider<R, W> workEngineProvider, WorkResultHandler<R> workResultHandler);
+	<W, R> void schedule(final W work, Class<? extends WorkEngine<W, R>> workEngineClass, WorkResultHandler<R> workResultHandler);
 
-	/**
-	 * Lancement asynchrone d'un travail 'dès que possible'.
-	 * @param <R> Produit d'un work à l'issu de son exécution
-	 * @param callable Travail à exécuter
-	 * @param  workResultHandler Handler permettant un callback après exécution
-	 */
-	<R> void schedule(final Callable<R> callable, final WorkResultHandler<R> workResultHandler);
 }
