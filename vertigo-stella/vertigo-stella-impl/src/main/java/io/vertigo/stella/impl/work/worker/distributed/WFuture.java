@@ -43,12 +43,8 @@ final class WFuture<R> implements Future<R>, WorkResultHandler<R> {
 
 	WFuture(final WorkResultHandler<R> redirect) {
 		Assertion.checkNotNull(redirect);
-		//-----
+		//---
 		this.redirect = redirect;
-	}
-
-	WFuture() {
-		redirect = null;
 	}
 
 	/** {@inheritDoc} */
@@ -62,17 +58,13 @@ final class WFuture<R> implements Future<R>, WorkResultHandler<R> {
 			myError = error;
 			countDownLatch.countDown();
 		}
-		if (redirect != null) {
-			redirect.onDone(result, error);
-		}
+		redirect.onDone(result, error);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void onStart() {
-		if (redirect != null) {
-			redirect.onStart();
-		}
+		redirect.onStart();
 	}
 
 	/** {@inheritDoc} */

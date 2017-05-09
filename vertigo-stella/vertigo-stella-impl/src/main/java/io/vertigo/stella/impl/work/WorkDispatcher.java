@@ -18,7 +18,6 @@
  */
 package io.vertigo.stella.impl.work;
 
-import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -59,7 +58,7 @@ final class WorkDispatcher implements Runnable {
 	private <W, R> void doRun() throws InterruptedException {
 		final WorkItem<W, R> workItem = workerPlugin.<W, R> pollWorkItem(workType);
 		if (workItem != null) {
-			final Optional<WorkResultHandler<R>> workResultHandler = Optional.<WorkResultHandler<R>> of(new WorkResultHandler<R>() {
+			final WorkResultHandler<R> workResultHandler = new WorkResultHandler<R>() {
 				@Override
 				public void onStart() {
 					workerPlugin.putStart(workItem.getId());
@@ -69,7 +68,7 @@ final class WorkDispatcher implements Runnable {
 				public void onDone(final R result, final Throwable error) {
 					//nothing here, should be done by waiting the future result
 				}
-			});
+			};
 			//---Et on fait executer par le workerLocal
 			final Future<R> futureResult = localWorker.submit(workItem, workResultHandler);
 			R result;

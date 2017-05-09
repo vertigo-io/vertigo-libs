@@ -19,7 +19,6 @@
 package io.vertigo.stella.impl.work.worker.local;
 
 import java.io.Closeable;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -79,7 +78,7 @@ public final class LocalCoordinator implements Coordinator, Closeable {
 	 * @param<R> result
 	 */
 	@Override
-	public <W, R> Future<R> submit(final WorkItem<W, R> workItem, final Optional<WorkResultHandler<R>> workResultHandler) {
+	public <W, R> Future<R> submit(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
 		Assertion.checkNotNull(workItem);
 		//-----
 		return workers.submit(new LocalWorker<>(workItem, workResultHandler));

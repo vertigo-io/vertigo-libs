@@ -21,7 +21,6 @@ package io.vertigo.stella.impl.work.worker.distributed;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.Future;
 
 import io.vertigo.lang.Activeable;
@@ -35,12 +34,12 @@ import io.vertigo.stella.work.WorkResultHandler;
 /**
  * @author pchretien
  */
-public final class DistributedCoordinator implements Coordinator, Activeable {
+public final class MasterCoordinator implements Coordinator, Activeable {
 	private final MasterPlugin masterPlugin;
 	private final Thread watcher;
 	private final Map<String, WorkResultHandler> workResultHandlers = Collections.synchronizedMap(new HashMap<String, WorkResultHandler>());
 
-	public DistributedCoordinator(final MasterPlugin masterPlugin) {
+	public MasterCoordinator(final MasterPlugin masterPlugin) {
 		Assertion.checkNotNull(masterPlugin);
 		//-----
 		this.masterPlugin = masterPlugin;
@@ -49,22 +48,27 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <W, R> Future<R> submit(final WorkItem<W, R> workItem, final Optional<WorkResultHandler<R>> workResultHandler) {
-		//2. On attend les notifs sur un thread séparé, la main est rendue de suite
-		final WFuture<R> future = createFuture(workItem.getId(), workResultHandler);
-		putWorkItem(workItem, future);
-		return future;
+	public void start() {
+		watcher.start();
 	}
 
-	private static <R, W> WFuture<R> createFuture(final String workId, final Optional<WorkResultHandler<R>> workResultHandler) {
-		Assertion.checkNotNull(workId);
-		//-----
-		final WFuture<R> future;
-		if (workResultHandler.isPresent()) {
-			future = new WFuture<>(workResultHandler.get());
-		} else {
-			future = new WFuture<>();
+	/** {@inheritDoc} */
+	@Override
+	public void stop() {
+		watcher.interrupt();
+		try {
+			watcher.join();
+		} catch (final InterruptedException e) {
+			//On ne fait rien
 		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <W, R> Future<R> submit(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
+		//2. On attend les notifs sur un thread séparé, la main est rendue de suite
+		final WFuture<R> future = new WFuture(workResultHandler);
+		putWorkItem(workItem, future);
 		return future;
 	}
 
@@ -105,23 +109,6 @@ public final class DistributedCoordinator implements Coordinator, Activeable {
 				}
 			}
 		};
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void start() {
-		watcher.start();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void stop() {
-		watcher.interrupt();
-		try {
-			watcher.join();
-		} catch (final InterruptedException e) {
-			//On ne fait rien
-		}
 	}
 
 	private <W, R> void putWorkItem(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {

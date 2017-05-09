@@ -33,7 +33,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.work.listener.WorkListener;
 import io.vertigo.stella.impl.work.listener.WorkListenerImpl;
 import io.vertigo.stella.impl.work.worker.Coordinator;
-import io.vertigo.stella.impl.work.worker.distributed.DistributedCoordinator;
+import io.vertigo.stella.impl.work.worker.distributed.MasterCoordinator;
 import io.vertigo.stella.impl.work.worker.local.LocalCoordinator;
 import io.vertigo.stella.work.WorkEngine;
 import io.vertigo.stella.work.WorkManager;
@@ -50,7 +50,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	private final WorkListener workListener;
 	//There is always ONE LocalWorker, but distributedWorker is optionnal
 	private final LocalCoordinator localCoordinator;
-	private final Optional<DistributedCoordinator> distributedCoordinator;
+	private final Optional<MasterCoordinator> distributedCoordinator;
 
 	private final List<WorkerPlugin> nodePlugins;
 	private final List<Thread> dispatcherThreads = new ArrayList<>();
@@ -71,7 +71,7 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		//-----
 		workListener = new WorkListenerImpl(/*analyticsManager*/);
 		localCoordinator = new LocalCoordinator(workerCount);
-		distributedCoordinator = masterPlugin.isPresent() ? Optional.of(new DistributedCoordinator(masterPlugin.get())) : Optional.<DistributedCoordinator> empty();
+		distributedCoordinator = masterPlugin.isPresent() ? Optional.of(new MasterCoordinator(masterPlugin.get())) : Optional.<MasterCoordinator> empty();
 		//-----
 		this.nodePlugins = nodePlugins;
 		//---
@@ -143,7 +143,19 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		Assertion.checkNotNull(workEngineClass);
 		//-----
 		final WorkItem<W, R> workItem = new WorkItem<>(createWorkId(), work, workEngineClass);
-		final Future<R> future = submit(workItem, Optional.<WorkResultHandler<R>> empty());
+		final WorkResultHandler<R> emptyWorkResultHandler = new WorkResultHandler<R>() {
+			@Override
+			public void onStart() {
+				//nothing
+			}
+
+			@Override
+			public void onDone(final R result, final Throwable error) {
+				//nothing
+			}
+		};
+
+		final Future<R> future = submit(workItem, emptyWorkResultHandler);
 		return new WorkPromiseImpl(future);
 	}
 
@@ -154,10 +166,10 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 		Assertion.checkNotNull(workResultHandler);
 		//-----
 		final WorkItem<W, R> workItem = new WorkItem<>(createWorkId(), work, workEngineClass);
-		submit(workItem, Optional.of(workResultHandler));
+		submit(workItem, workResultHandler);
 	}
 
-	private <W, R> Future<R> submit(final WorkItem<W, R> workItem, final Optional<WorkResultHandler<R>> workResultHandler) {
+	private <W, R> Future<R> submit(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
 		final Coordinator coordinator = resolveCoordinator(workItem);
 		//---
 		workListener.onStart(workItem.getWorkEngineClass().getName());

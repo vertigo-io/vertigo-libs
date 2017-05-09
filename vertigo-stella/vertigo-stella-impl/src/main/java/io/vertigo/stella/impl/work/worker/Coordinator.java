@@ -18,7 +18,6 @@
  */
 package io.vertigo.stella.impl.work.worker;
 
-import java.util.Optional;
 import java.util.concurrent.Future;
 
 import io.vertigo.stella.impl.work.WorkItem;
@@ -38,8 +37,8 @@ public interface Coordinator {
 	 * @param <W> Type de Work (Travail)
 	 * @param <R> result type
 	 * @param workItem Travail à exécuter
-	 * @param workResultHandler Result handler (optional)
+	 * @param workResultHandler Result handler
 	 * @return Future for this result
 	 */
-	<W, R> Future<R> submit(final WorkItem<W, R> workItem, final Optional<WorkResultHandler<R>> workResultHandler);
+	<W, R> Future<R> submit(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler);
 }

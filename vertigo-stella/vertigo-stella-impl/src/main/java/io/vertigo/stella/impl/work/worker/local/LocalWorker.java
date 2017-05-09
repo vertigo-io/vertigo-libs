@@ -19,7 +19,6 @@
 package io.vertigo.stella.impl.work.worker.local;
 
 import java.lang.reflect.Field;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 
 import org.apache.log4j.Logger;
@@ -60,13 +59,13 @@ final class LocalWorker<R, W> implements Callable<R> {
 	}
 
 	private final WorkItem<W, R> workItem;
-	private final Optional<WorkResultHandler<R>> workResultHandler;
+	private final WorkResultHandler<R> workResultHandler;
 
 	/**
 	 * Constructeur.
 	 * @param workItem WorkItem à traiter
 	 */
-	LocalWorker(final WorkItem<W, R> workItem, final Optional<WorkResultHandler<R>> workResultHandler) {
+	LocalWorker(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
 		Assertion.checkNotNull(workItem);
 		Assertion.checkNotNull(workResultHandler);
 		//-----
@@ -86,20 +85,14 @@ final class LocalWorker<R, W> implements Callable<R> {
 	public R call() {
 		final R result;
 		try {
-			if (workResultHandler.isPresent()) {
-				workResultHandler.get().onStart();
-			}
+			workResultHandler.onStart();
 			//---
 			result = executeNow(workItem);
 			//---
-			if (workResultHandler.isPresent()) {
-				workResultHandler.get().onDone(result, null);
-			}
+			workResultHandler.onDone(result, null);
 			return result;
 		} catch (final Exception e) {
-			if (workResultHandler.isPresent()) {
-				workResultHandler.get().onDone(null, e);
-			}
+			workResultHandler.onDone(null, e);
 			logError(e);
 			throw WrappedException.wrap(e, null);
 		} finally {
