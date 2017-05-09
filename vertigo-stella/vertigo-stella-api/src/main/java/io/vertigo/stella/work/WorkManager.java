@@ -42,7 +42,7 @@ public interface WorkManager extends Manager {
 	 * @param workEngineProvider WorkEngine provider
 	 * @return result
 	 */
-	<W, R> R process(final W work, final Class<? extends WorkEngine<W, R>> workEngineClass);
+	<W, R> WorkPromise<R> process(final W work, final Class<? extends WorkEngine<W, R>> workEngineClass);
 
 	/**
 	 * Lancement asynchrone d'un travail 'dès que possible'.

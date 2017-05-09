@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import javax.inject.Inject;
@@ -31,7 +30,6 @@ import javax.inject.Named;
 
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 import io.vertigo.stella.impl.work.listener.WorkListener;
 import io.vertigo.stella.impl.work.listener.WorkListenerImpl;
 import io.vertigo.stella.impl.work.worker.Coordinator;
@@ -39,6 +37,7 @@ import io.vertigo.stella.impl.work.worker.distributed.DistributedCoordinator;
 import io.vertigo.stella.impl.work.worker.local.LocalCoordinator;
 import io.vertigo.stella.work.WorkEngine;
 import io.vertigo.stella.work.WorkManager;
+import io.vertigo.stella.work.WorkPromise;
 import io.vertigo.stella.work.WorkResultHandler;
 
 /**
@@ -139,22 +138,13 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 
 	/** {@inheritDoc} */
 	@Override
-	public <W, R> R process(final W work, final Class<? extends WorkEngine<W, R>> workEngineClass) {
+	public <W, R> WorkPromise<R> process(final W work, final Class<? extends WorkEngine<W, R>> workEngineClass) {
 		Assertion.checkNotNull(work);
 		Assertion.checkNotNull(workEngineClass);
 		//-----
 		final WorkItem<W, R> workItem = new WorkItem<>(createWorkId(), work, workEngineClass);
-		final Future<R> result = submit(workItem, Optional.<WorkResultHandler<R>> empty());
-		try {
-			return result.get();
-		} catch (final ExecutionException e) {
-			if (e.getCause() instanceof RuntimeException) {
-				throw (RuntimeException) e.getCause();
-			}
-			throw WrappedException.wrap(e.getCause());
-		} catch (final InterruptedException e) {
-			throw WrappedException.wrap(e);
-		}
+		final Future<R> future = submit(workItem, Optional.<WorkResultHandler<R>> empty());
+		return new WorkPromiseImpl(future);
 	}
 
 	@Override

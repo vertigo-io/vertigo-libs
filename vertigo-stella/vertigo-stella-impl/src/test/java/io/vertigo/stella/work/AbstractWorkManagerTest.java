@@ -49,16 +49,16 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testProcess() {
 		final DivideWork work = new DivideWork(10, 5);
-		final long div = workManager.process(work, DivideWorkEngine.class);
+		final long div = workManager.process(work, DivideWorkEngine.class).join();
 		Assert.assertEquals(10L / 5L, div);
 	}
 
 	@Test
 	public void testProcessor() {
 		//	final DivideWork work = new DivideWork(10, 5);
-		final Function<Long, Long> square = work -> workManager.process(work, SquareWorkEngine.class);
+		final Function<Long, Long> square = work -> workManager.process(work, SquareWorkEngine.class).join();
 
-		final Function<String, Long> length = work -> workManager.process(work, LengthWorkEngine.class);
+		final Function<String, Long> length = work -> workManager.process(work, LengthWorkEngine.class).join();
 
 		final long result = length
 				.andThen(square)
@@ -86,14 +86,14 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	@Test(expected = NullPointerException.class)
 	public void testProcessWithNull() {
 		final DivideWork work = null;
-		final long div = workManager.process(work, DivideWorkEngine.class);
+		final long div = workManager.process(work, DivideWorkEngine.class).join();
 		nop(div);
 	}
 
 	@Test(expected = ArithmeticException.class)
 	public void testProcessWithError() {
 		final DivideWork work = new DivideWork(10, 0);
-		final long div = workManager.process(work, DivideWorkEngine.class);
+		final long div = workManager.process(work, DivideWorkEngine.class).join();
 		nop(div);
 	}
 
