@@ -19,6 +19,7 @@
 package io.vertigo.stella.work;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.stella.master.WorkResultHandler;
 
 /**
  * Handler unique permettant de collecter les infos relatives à l'exécution des tests.

@@ -16,11 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.impl.work;
+package io.vertigo.stella.impl.workers;
 
 import java.util.Map;
 
 import io.vertigo.lang.Plugin;
+import io.vertigo.stella.impl.work.WorkItem;
 
 /**
  * NodePlugin

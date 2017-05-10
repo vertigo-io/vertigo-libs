@@ -5,16 +5,24 @@
 		
 		<component class="io.vertigo.commons.impl.connectors.redis.RedisConnector">
 			<param name="host" value="redis-pic.part.klee.lan.net" />
+		<!-- 	<param name="host" value="192.168.1.28" /> -->
 			<param name="port" value="6379" />
 			<param name="database" value="0" />
 		</component>
 
-		<component api="WorkManager" class="io.vertigo.stella.impl.work.WorkManagerImpl">
-			<param name="workerCount" value="10" />
+		<component api="MasterManager" class="io.vertigo.stella.impl.master.MasterManagerImpl">
 			<!-- ThreadLocal n'est pas executé en distribué -->
 			<plugin class="io.vertigo.stella.plugins.work.redis.master.RedisMasterPlugin">
-				<param name="distributedWorkTypes" value="io.vertigo.stella.work.mock.DivideWorkEngine;io.vertigo.stella.work.mock.SlowWorkEngine" />
+				<param name="distributedWorkTypes" value="io.vertigo.stella.work.mock.DivideWorkEngine;io.vertigo.stella.work.mock.SlowWorkEngine;io.vertigo.stella.work.mock.ThreadLocalWorkEngine"/>
 			</plugin>
+<!-- 			<plugin class="io.vertigo.stella.plugins.work.redis.worker.RedisWorkerPlugin">
+				<param name="nodeId" value="node#1-1" />
+				<param name="workTypes" value="io.vertigo.stella.work.mock.DivideWorkEngine^5;io.vertigo.stella.work.mock.SlowWorkEngine^5" />
+			</plugin>
+ -->		</component>
+		<component api="WorkersManager" class="io.vertigo.stella.impl.workers.WorkersManagerImpl">
+			<param name="workerCount" value="10" />
+			<!-- ThreadLocal n'est pas executé en distribué -->
 			<plugin class="io.vertigo.stella.plugins.work.redis.worker.RedisWorkerPlugin">
 				<param name="nodeId" value="node#1-1" />
 				<param name="workTypes" value="io.vertigo.stella.work.mock.DivideWorkEngine^5;io.vertigo.stella.work.mock.SlowWorkEngine^5" />

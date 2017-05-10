@@ -16,29 +16,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.impl.work.worker;
+package io.vertigo.stella.impl.master;
 
-import java.util.concurrent.Future;
+import java.util.List;
 
+import io.vertigo.lang.Plugin;
 import io.vertigo.stella.impl.work.WorkItem;
-import io.vertigo.stella.work.WorkResultHandler;
 
 /**
- * Interface d'un Worker threadsafe.
- * Permet d'exécuter un travail de façon
- * - synchrone
- * - asynchrone
- *
- * @author pchretien, npiedeloup
+ * Master-Worker pattern.
+ * The master dispatch the works.
+ * The workers execute all the works. 
+ * 
+ * @author npiedeloup, pchretien
  */
-public interface Coordinator {
-	/**
-	 * Exécution d'un travail de façon asynchrone.
-	 * @param <W> Type de Work (Travail)
-	 * @param <R> result type
-	 * @param workItem Travail à exécuter
-	 * @param workResultHandler Result handler
-	 * @return Future for this result
-	 */
-	<W, R> Future<R> submit(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler);
+public interface MasterPlugin extends Plugin {
+	<R, W> void putWorkItem(final WorkItem<R, W> workItem);
+
+	WorkResult pollResult(final int waitTimeSeconds);
+
+	List<String> acceptedWorkTypes();
 }

@@ -25,9 +25,9 @@ import javax.inject.Named;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.stella.impl.work.WorkDispatcherConfUtil;
 import io.vertigo.stella.impl.work.WorkItem;
-import io.vertigo.stella.impl.work.WorkerPlugin;
+import io.vertigo.stella.impl.workers.WorkDispatcherConfUtil;
+import io.vertigo.stella.impl.workers.WorkerPlugin;
 
 /**
  * Implémentation de DistributedWorkManager, pour l'execution de travaux par des Workers distant.

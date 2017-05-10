@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.impl.work.worker.distributed;
+package io.vertigo.stella.impl.master.coordinator;
 
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
@@ -28,7 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.stella.work.WorkResultHandler;
+import io.vertigo.stella.master.WorkResultHandler;
 
 /**
  * @author pchretien

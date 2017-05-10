@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.impl.work.worker.distributed;
+package io.vertigo.stella.impl.master.coordinator;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,11 +25,11 @@ import java.util.concurrent.Future;
 
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.stella.impl.work.MasterPlugin;
+import io.vertigo.stella.impl.master.MasterPlugin;
+import io.vertigo.stella.impl.master.WorkResult;
+import io.vertigo.stella.impl.work.Coordinator;
 import io.vertigo.stella.impl.work.WorkItem;
-import io.vertigo.stella.impl.work.WorkResult;
-import io.vertigo.stella.impl.work.worker.Coordinator;
-import io.vertigo.stella.work.WorkResultHandler;
+import io.vertigo.stella.master.WorkResultHandler;
 
 /**
  * @author pchretien

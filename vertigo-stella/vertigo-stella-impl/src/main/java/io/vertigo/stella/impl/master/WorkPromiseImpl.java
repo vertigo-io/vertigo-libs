@@ -1,4 +1,4 @@
-package io.vertigo.stella.impl.work;
+package io.vertigo.stella.impl.master;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -7,7 +7,7 @@ import java.util.concurrent.TimeoutException;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
-import io.vertigo.stella.work.WorkPromise;
+import io.vertigo.stella.master.WorkPromise;
 
 /**
  *

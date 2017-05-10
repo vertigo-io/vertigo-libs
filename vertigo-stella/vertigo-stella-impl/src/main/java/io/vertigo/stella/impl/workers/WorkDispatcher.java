@@ -16,14 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.impl.work;
+package io.vertigo.stella.impl.workers;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.stella.impl.work.worker.local.LocalCoordinator;
-import io.vertigo.stella.work.WorkResultHandler;
+import io.vertigo.stella.impl.work.WorkItem;
+import io.vertigo.stella.impl.workers.coordinator.LocalCoordinator;
+import io.vertigo.stella.master.WorkResultHandler;
 
 final class WorkDispatcher implements Runnable {
 	private final LocalCoordinator localWorker;

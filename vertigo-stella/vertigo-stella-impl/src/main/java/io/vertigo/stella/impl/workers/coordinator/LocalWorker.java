@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.impl.work.worker.local;
+package io.vertigo.stella.impl.workers.coordinator;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.Callable;
@@ -28,8 +28,8 @@ import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.stella.impl.work.WorkItem;
-import io.vertigo.stella.work.WorkManager;
-import io.vertigo.stella.work.WorkResultHandler;
+import io.vertigo.stella.master.MasterManager;
+import io.vertigo.stella.master.WorkResultHandler;
 
 /**
  * Exécution d'un work.
@@ -40,7 +40,7 @@ import io.vertigo.stella.work.WorkResultHandler;
  */
 final class LocalWorker<R, W> implements Callable<R> {
 
-	private static final Logger LOGGER = Logger.getLogger(WorkManager.class); //même logger que le WorkListenerImpl
+	private static final Logger LOGGER = Logger.getLogger(MasterManager.class); //même logger que le WorkListenerImpl
 
 	/**
 	 * Pour vider les threadLocal entre deux utilisations du Thread dans le pool,

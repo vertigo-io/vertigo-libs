@@ -18,30 +18,26 @@
  */
 package io.vertigo.stella.impl.work;
 
-import io.vertigo.lang.Assertion;
+import java.util.concurrent.Future;
+
+import io.vertigo.stella.master.WorkResultHandler;
 
 /**
- * @author pchretien
- * @param<R> result
+ * Interface d'un Worker threadsafe.
+ * Permet d'exécuter un travail de façon
+ * - synchrone
+ * - asynchrone
+ *
+ * @author pchretien, npiedeloup
  */
-public final class WorkResult<R> {
-	public final String workId;
-	public final Throwable error;
-	public final R result;
-
+public interface Coordinator {
 	/**
-	 * Constructor.
-	 * Must set Result or Error, other must be null.
-	 * @param workId Work id
-	 * @param result Work result (null if error)
-	 * @param error Work error (null if result)
+	 * Exécution d'un travail de façon asynchrone.
+	 * @param <W> Type de Work (Travail)
+	 * @param <R> result type
+	 * @param workItem Travail à exécuter
+	 * @param workResultHandler Result handler
+	 * @return Future for this result
 	 */
-	public WorkResult(final String workId, final R result, final Throwable error) {
-		Assertion.checkArgNotEmpty(workId);
-		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
-		//-----
-		this.workId = workId;
-		this.error = error;
-		this.result = result;
-	}
+	<W, R> Future<R> submit(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler);
 }

@@ -16,23 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.impl.work;
-
-import java.util.List;
-
-import io.vertigo.lang.Plugin;
+package io.vertigo.stella.master;
 
 /**
- * Master-Worker pattern.
- * The master dispatch the works.
- * The workers execute all the works. 
+ * Hanlder permettant de définir le comportement après exécution asynchrone d'un work.
  * 
- * @author npiedeloup, pchretien
+ * @author   pchretien, npiedeloup
+ * @param<R> result
  */
-public interface MasterPlugin extends Plugin {
-	<R, W> void putWorkItem(final WorkItem<R, W> workItem);
+public interface WorkResultHandler<R> {
+	/**
+	 * Démarrage de l'exécution de la tache.
+	 * Notification pour information.
+	 */
+	void onStart();
 
-	WorkResult pollResult(final int waitTimeSeconds);
-
-	List<String> acceptedWorkTypes();
+	/**
+	 * Exécution terminée .
+	 * @param result Résultat de l'excution (null si echec)
+	 * @param error  Exception (null si succès)
+	 */
+	void onDone(final R result, final Throwable error);
 }

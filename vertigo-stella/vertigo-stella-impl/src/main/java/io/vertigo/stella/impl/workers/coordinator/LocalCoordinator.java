@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.impl.work.worker.local;
+package io.vertigo.stella.impl.workers.coordinator;
 
 import java.io.Closeable;
 import java.util.concurrent.ExecutorService;
@@ -25,9 +25,9 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.stella.impl.work.Coordinator;
 import io.vertigo.stella.impl.work.WorkItem;
-import io.vertigo.stella.impl.work.worker.Coordinator;
-import io.vertigo.stella.work.WorkResultHandler;
+import io.vertigo.stella.master.WorkResultHandler;
 
 /**
  * Implémentation d'un pool local de {@link Coordinator}.

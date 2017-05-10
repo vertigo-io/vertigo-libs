@@ -21,7 +21,7 @@ package io.vertigo.stella.plugins.work.rest.master;
 import javax.inject.Inject;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.stella.impl.work.MasterPlugin;
+import io.vertigo.stella.impl.master.MasterPlugin;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.GET;

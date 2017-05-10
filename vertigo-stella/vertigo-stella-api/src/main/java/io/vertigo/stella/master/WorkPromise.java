@@ -1,4 +1,4 @@
-package io.vertigo.stella.work;
+package io.vertigo.stella.master;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;

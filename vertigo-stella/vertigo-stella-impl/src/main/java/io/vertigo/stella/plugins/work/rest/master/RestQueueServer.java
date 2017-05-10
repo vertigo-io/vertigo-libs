@@ -39,8 +39,8 @@ import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.stella.impl.master.WorkResult;
 import io.vertigo.stella.impl.work.WorkItem;
-import io.vertigo.stella.impl.work.WorkResult;
 
 /**
  * WorkQueue distribuée - partie serveur en REST.

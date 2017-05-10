@@ -16,11 +16,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.impl.work.listener;
+package io.vertigo.stella.impl.master.listener;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.stella.work.WorkManager;
+import io.vertigo.stella.master.MasterManager;
 
 /**
  * Implémentation standard du Listener de réception des événements produits par l'exécution des taches.
@@ -29,7 +29,7 @@ import io.vertigo.stella.work.WorkManager;
 public final class WorkListenerImpl implements WorkListener {
 
 	/** Mécanisme de log utilisé pour les taches. */
-	private static final Logger LOGGER = Logger.getLogger(WorkManager.class);
+	private static final Logger LOGGER = Logger.getLogger(MasterManager.class);
 
 	/** Mécanisme de log utilisé pour les performances. */
 	private static final Logger LOGGER_PERFORMANCE = Logger.getLogger("Performance");

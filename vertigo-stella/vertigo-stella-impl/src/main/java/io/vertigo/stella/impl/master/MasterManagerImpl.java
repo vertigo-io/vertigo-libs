@@ -16,75 +16,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.impl.work;
+package io.vertigo.stella.impl.master;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.concurrent.Future;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.stella.impl.work.listener.WorkListener;
-import io.vertigo.stella.impl.work.listener.WorkListenerImpl;
-import io.vertigo.stella.impl.work.worker.Coordinator;
-import io.vertigo.stella.impl.work.worker.distributed.MasterCoordinator;
-import io.vertigo.stella.impl.work.worker.local.LocalCoordinator;
+import io.vertigo.stella.impl.master.coordinator.MasterCoordinator;
+import io.vertigo.stella.impl.master.listener.WorkListener;
+import io.vertigo.stella.impl.master.listener.WorkListenerImpl;
+import io.vertigo.stella.impl.work.Coordinator;
+import io.vertigo.stella.impl.work.WorkItem;
+import io.vertigo.stella.master.MasterManager;
+import io.vertigo.stella.master.WorkPromise;
+import io.vertigo.stella.master.WorkResultHandler;
 import io.vertigo.stella.work.WorkEngine;
-import io.vertigo.stella.work.WorkManager;
-import io.vertigo.stella.work.WorkPromise;
-import io.vertigo.stella.work.WorkResultHandler;
 
 /**
  * Implémentation de workManager.
  *
  * @author pchretien, npiedeloup
  */
-public final class WorkManagerImpl implements WorkManager, Activeable {
-
+public final class MasterManagerImpl implements MasterManager, Activeable {
 	private final WorkListener workListener;
-	//There is always ONE LocalWorker, but distributedWorker is optionnal
-	private final LocalCoordinator localCoordinator;
-	private final Optional<MasterCoordinator> distributedCoordinator;
-
-	private final List<WorkerPlugin> nodePlugins;
-	private final List<Thread> dispatcherThreads = new ArrayList<>();
-	private final LocalCoordinator localWorker = new LocalCoordinator(/*workersCount*/5);
+	private final MasterCoordinator masterCoordinator;
 
 	/**
 	 * Constructeur.
-	 * @param workerCount Nb workers
 	 * @param masterPlugin Optional plugin for work's distribution
 	 */
 	@Inject
-	public WorkManagerImpl(
-			final @Named("workerCount") int workerCount,
-			final Optional<MasterPlugin> masterPlugin,
-			final List<WorkerPlugin> nodePlugins) {
+	public MasterManagerImpl(final MasterPlugin masterPlugin) {
 		Assertion.checkNotNull(masterPlugin);
-		Assertion.checkNotNull(nodePlugins);
 		//-----
 		workListener = new WorkListenerImpl(/*analyticsManager*/);
-		localCoordinator = new LocalCoordinator(workerCount);
-		distributedCoordinator = masterPlugin.isPresent() ? Optional.of(new MasterCoordinator(masterPlugin.get())) : Optional.<MasterCoordinator> empty();
-		//-----
-		this.nodePlugins = nodePlugins;
-		//---
-		for (final WorkerPlugin nodePlugin : this.nodePlugins) {
-			for (final Map.Entry<String, Integer> entry : nodePlugin.getWorkTypes().entrySet()) {
-				final String workType = entry.getKey();
-				final WorkDispatcher worker = new WorkDispatcher(workType, localWorker, nodePlugin);
-				final String workTypeName = workType.substring(workType.lastIndexOf('.') + 1);
-				for (int i = 1; i <= entry.getValue(); i++) {
-					dispatcherThreads.add(new Thread(worker, "WorkDispatcher-" + workTypeName + "-" + i));
-				}
-			}
-		}
+		masterCoordinator = new MasterCoordinator(masterPlugin);
 	}
 
 	/** {@inheritDoc} */
@@ -92,44 +62,13 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	public void start() {
 		//coordinator n'étant pas un plugin
 		//il faut le démarrer et l'arréter explicitement.
-		if (distributedCoordinator.isPresent()) {
-			distributedCoordinator.get().start();
-		}
-		//---
-		for (final Thread dispatcherThread : dispatcherThreads) {
-			dispatcherThread.start();
-		}
+		masterCoordinator.start();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void stop() {
-		if (distributedCoordinator.isPresent()) {
-			distributedCoordinator.get().stop();
-		}
-		localCoordinator.close();
-
-		//--
-		for (final Thread dispatcherThread : dispatcherThreads) {
-			dispatcherThread.interrupt();
-		}
-		boolean isOneAlive;
-		do {
-			isOneAlive = false;
-			for (final Thread dispatcherThread : dispatcherThreads) {
-				if (dispatcherThread.isAlive()) {
-					dispatcherThread.interrupt();
-					try {
-						dispatcherThread.join(1000);
-					} catch (final InterruptedException e) {
-						//On ne fait rien
-					}
-					isOneAlive = isOneAlive || dispatcherThread.isAlive();
-				}
-			}
-		} while (isOneAlive);
-
-		localWorker.close();
+		masterCoordinator.stop();
 	}
 
 	private static String createWorkId() {
@@ -187,15 +126,10 @@ public final class WorkManagerImpl implements WorkManager, Activeable {
 	private <R, W> Coordinator resolveCoordinator(final WorkItem<R, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-----
-		/*
-		 * On recherche un Worker capable d'effectuer le travail demandé.
-		 * 1- On recherche parmi les works externes
-		 * 2- Si le travail n'est pas déclaré comme étant distribué on l'exécute localement
-		 */
-		if (distributedCoordinator.isPresent() && distributedCoordinator.get().accept(workItem)) {
-			return distributedCoordinator.get();
+		if (!masterCoordinator.accept(workItem)) {
+			throw new NoSuchElementException("this type of workItem is unknown : " + workItem.getWorkEngineClass().getSimpleName());
 		}
-		return localCoordinator;
+		return masterCoordinator;
 	}
 
 }

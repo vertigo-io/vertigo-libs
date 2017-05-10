@@ -16,25 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.work;
+package io.vertigo.stella.impl.master.listener;
 
 /**
- * Hanlder permettant de définir le comportement après exécution asynchrone d'un work.
- * 
- * @author   pchretien, npiedeloup
- * @param<R> result
+ * Interface de réception des événements produits par l'exécution des taches.
+ *
+ * @author pchretien
  */
-public interface WorkResultHandler<R> {
+public interface WorkListener {
 	/**
-	 * Démarrage de l'exécution de la tache.
-	 * Notification pour information.
+	 * Enregistre le début d'exécution d'une tache.
+	 * @param workName Nom de la tache
 	 */
-	void onStart();
+	void onStart(String workName);
 
 	/**
-	 * Exécution terminée .
-	 * @param result Résultat de l'excution (null si echec)
-	 * @param error  Exception (null si succès)
+	 * Enregistre la fin  d'exécution d'une tache avec le temps d'exécution en ms et son statut (OK/KO).
+	 * @param workName Nom de la tache exécutée
+	 * @param elapsedTime Temps d'exécution en ms
+	 * @param success Si la tache a été correctement executée
 	 */
-	void onDone(final R result, final Throwable error);
+	void onFinish(String workName, long elapsedTime, boolean success);
 }

@@ -16,25 +16,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.impl.work.listener;
+package io.vertigo.stella.impl.master;
+
+import io.vertigo.lang.Assertion;
 
 /**
- * Interface de réception des événements produits par l'exécution des taches.
- *
  * @author pchretien
+ * @param<R> result
  */
-public interface WorkListener {
-	/**
-	 * Enregistre le début d'exécution d'une tache.
-	 * @param workName Nom de la tache
-	 */
-	void onStart(String workName);
+public final class WorkResult<R> {
+	public final String workId;
+	public final Throwable error;
+	public final R result;
 
 	/**
-	 * Enregistre la fin  d'exécution d'une tache avec le temps d'exécution en ms et son statut (OK/KO).
-	 * @param workName Nom de la tache exécutée
-	 * @param elapsedTime Temps d'exécution en ms
-	 * @param success Si la tache a été correctement executée
+	 * Constructor.
+	 * Must set Result or Error, other must be null.
+	 * @param workId Work id
+	 * @param result Work result (null if error)
+	 * @param error Work error (null if result)
 	 */
-	void onFinish(String workName, long elapsedTime, boolean success);
+	public WorkResult(final String workId, final R result, final Throwable error) {
+		Assertion.checkArgNotEmpty(workId);
+		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
+		//-----
+		this.workId = workId;
+		this.error = error;
+		this.result = result;
+	}
 }

@@ -26,6 +26,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.stella.master.MasterManager;
+import io.vertigo.stella.master.WorkResultHandler;
 import io.vertigo.stella.work.mock.DivideWork;
 import io.vertigo.stella.work.mock.DivideWorkEngine;
 import io.vertigo.stella.work.mock.SlowWork;
@@ -41,7 +43,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	private static final int WORKER_COUNT = 5; //Doit correspondre au workerCount déclaré dans managers.xlm
 
 	@Inject
-	private WorkManager workManager;
+	private MasterManager workManager;
 
 	//=========================================================================
 	//===========================PROCESS=======================================
@@ -197,7 +199,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		final MyWorkResultHanlder<Boolean> workResultHanlder = new MyWorkResultHanlder<>();
 		createWorkItems(workToCreate, workTime, workResultHanlder);
 		final long timeout = 10 * workTime + warmupTime;
-		Assert.assertTrue("Shedule de " + workToCreate + " work trop long : " + (System.currentTimeMillis() - start) + "ms", System.currentTimeMillis() - start < 100);
+		Assert.assertTrue("Schedule de " + workToCreate + " work trop long : " + (System.currentTimeMillis() - start) + "ms", System.currentTimeMillis() - start < timeout);
 
 		final boolean finished = workResultHanlder.waitFinish(workToCreate, timeout);
 		//On estime que la durée max n'excéde pas le workTime + 1000ms
@@ -212,7 +214,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	@Test
 	public void testThreadLocalWorkReset() {
 		final int workToCreate = 20 * WORKER_COUNT;
-		final int workTime = 200; //200ms temps d'exécution d'un work
+		final int workTime = 500; //200ms temps d'exécution d'un work
 		final MyWorkResultHanlder<Integer> workResultHanlder = new MyWorkResultHanlder<>();
 		createThreadLocalWorkItems(workToCreate, workTime, true, workResultHanlder);
 

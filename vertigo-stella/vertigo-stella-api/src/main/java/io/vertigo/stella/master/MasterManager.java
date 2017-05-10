@@ -16,9 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.work;
+package io.vertigo.stella.master;
 
 import io.vertigo.lang.Manager;
+import io.vertigo.stella.work.WorkEngine;
 
 /**
  * Gestion synchrone, asynchrone des taches à effectuer.
@@ -33,7 +34,7 @@ import io.vertigo.lang.Manager;
  *
  * @author pchretien
  */
-public interface WorkManager extends Manager {
+public interface MasterManager extends Manager {
 	/**
 	 * Exécution d'un travail de façon synchrone.
 	 * @param <W> Type de Work (Travail)
