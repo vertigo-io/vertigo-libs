@@ -8,8 +8,6 @@ model/execution/process_execution.ksp
 model/execution/activity_execution.ksp
 model/execution/activity_workspace.ksp
 model/execution/activity_log.ksp
-model/execution/core.ksp
-
 
 model/planification/process_planification.ksp
 

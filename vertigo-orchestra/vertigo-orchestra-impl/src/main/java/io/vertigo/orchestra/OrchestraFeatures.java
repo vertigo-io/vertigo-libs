@@ -29,15 +29,12 @@ import io.vertigo.orchestra.dao.execution.ExecutionPAO;
 import io.vertigo.orchestra.dao.execution.OActivityExecutionDAO;
 import io.vertigo.orchestra.dao.execution.OActivityLogDAO;
 import io.vertigo.orchestra.dao.execution.OActivityWorkspaceDAO;
-import io.vertigo.orchestra.dao.execution.ONodeDAO;
 import io.vertigo.orchestra.dao.execution.OProcessExecutionDAO;
 import io.vertigo.orchestra.dao.planification.OProcessPlanificationDAO;
 import io.vertigo.orchestra.dao.planification.PlanificationPAO;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.domain.DtDefinitions;
 import io.vertigo.orchestra.impl.definitions.OrchestraDefinitionManagerImpl;
-import io.vertigo.orchestra.impl.node.ONodeManager;
-import io.vertigo.orchestra.impl.node.ONodeManagerImpl;
 import io.vertigo.orchestra.impl.services.OrchestraServicesImpl;
 import io.vertigo.orchestra.monitoring.dao.summary.SummaryPAO;
 import io.vertigo.orchestra.monitoring.dao.uidefinitions.UidefinitionsPAO;
@@ -98,7 +95,7 @@ public final class OrchestraFeatures extends Features {
 				.addComponent(OProcessExecutionDAO.class)
 				.addComponent(OActivityWorkspaceDAO.class)
 				.addComponent(OActivityLogDAO.class)
-				.addComponent(ONodeDAO.class)
+				//.addComponent(ONodeDAO.class)
 				//----PAO
 				.addComponent(DefinitionPAO.class)
 				.addComponent(ExecutionPAO.class)
@@ -147,7 +144,7 @@ public final class OrchestraFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addComponent(ONodeManager.class, ONodeManagerImpl.class)
+				//.addComponent(ONodeManager.class, ONodeManagerImpl.class)
 				.addComponent(OrchestraDefinitionManager.class, OrchestraDefinitionManagerImpl.class)
 				.addComponent(OrchestraServices.class, OrchestraServicesImpl.class);
 
