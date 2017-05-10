@@ -23,15 +23,15 @@ import java.util.concurrent.Future;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.work.WorkItem;
-import io.vertigo.stella.impl.workers.coordinator.LocalCoordinator;
+import io.vertigo.stella.impl.workers.coordinator.WorkersCoordinator;
 import io.vertigo.stella.master.WorkResultHandler;
 
 final class WorkDispatcher implements Runnable {
-	private final LocalCoordinator localWorker;
+	private final WorkersCoordinator localWorker;
 	private final String workType;
 	private final WorkerPlugin workerPlugin;
 
-	WorkDispatcher(/*final String nodeId,*/final String workType, final LocalCoordinator localWorker, final WorkerPlugin nodePlugin) {
+	WorkDispatcher(/*final String nodeId,*/final String workType, final WorkersCoordinator localWorker, final WorkerPlugin nodePlugin) {
 		//Assertion.checkArgNotEmpty(nodeId);
 		Assertion.checkArgNotEmpty(workType);
 		Assertion.checkArgument(workType.indexOf('^') == -1, "Number of dispatcher per WorkType must be managed by NodeManager {0}", workType);

@@ -27,7 +27,7 @@ import javax.inject.Named;
 
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
-import io.vertigo.stella.impl.workers.coordinator.LocalCoordinator;
+import io.vertigo.stella.impl.workers.coordinator.WorkersCoordinator;
 import io.vertigo.stella.workers.WorkersManager;
 
 /**
@@ -37,11 +37,11 @@ import io.vertigo.stella.workers.WorkersManager;
  */
 public final class WorkersManagerImpl implements WorkersManager, Activeable {
 	//There is always ONE LocalWorker, but distributedWorker is optionnal
-	private final LocalCoordinator localCoordinator;
+	private final WorkersCoordinator localCoordinator;
 
 	private final List<WorkerPlugin> nodePlugins;
 	private final List<Thread> dispatcherThreads = new ArrayList<>();
-	private final LocalCoordinator localWorker = new LocalCoordinator(/*workersCount*/5);
+	private final WorkersCoordinator localWorker = new WorkersCoordinator(/*workersCount*/5);
 
 	/**
 	 * Constructeur.
@@ -54,7 +54,7 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 		Assertion.checkNotNull(nodePlugins);
 		//-----
 		//		workListener = new WorkListenerImpl(/*analyticsManager*/);
-		localCoordinator = new LocalCoordinator(workerCount);
+		localCoordinator = new WorkersCoordinator(workerCount);
 		//-----
 		this.nodePlugins = nodePlugins;
 		//---

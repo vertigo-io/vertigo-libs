@@ -38,7 +38,7 @@ import io.vertigo.stella.master.WorkResultHandler;
  * @param<R> result
  * @param <W> Type du work
  */
-final class LocalWorker<R, W> implements Callable<R> {
+final class Worker<R, W> implements Callable<R> {
 
 	private static final Logger LOGGER = Logger.getLogger(MasterManager.class); //même logger que le WorkListenerImpl
 
@@ -65,7 +65,7 @@ final class LocalWorker<R, W> implements Callable<R> {
 	 * Constructeur.
 	 * @param workItem WorkItem à traiter
 	 */
-	LocalWorker(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
+	Worker(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
 		Assertion.checkNotNull(workItem);
 		Assertion.checkNotNull(workResultHandler);
 		//-----
@@ -83,11 +83,10 @@ final class LocalWorker<R, W> implements Callable<R> {
 	/** {@inheritDoc} */
 	@Override
 	public R call() {
-		final R result;
 		try {
 			workResultHandler.onStart();
 			//---
-			result = executeNow(workItem);
+			final R result = executeNow(workItem);
 			//---
 			workResultHandler.onDone(result, null);
 			return result;

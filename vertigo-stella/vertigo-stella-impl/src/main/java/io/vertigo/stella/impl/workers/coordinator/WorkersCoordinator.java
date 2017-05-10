@@ -34,7 +34,7 @@ import io.vertigo.stella.master.WorkResultHandler;
  *
  * @author pchretien
  */
-public final class LocalCoordinator implements Coordinator, Closeable {
+public final class WorkersCoordinator implements Coordinator, Closeable {
 	/** Pool de workers qui wrappent sur l'implémentation générique.*/
 	private final ExecutorService workers;
 
@@ -43,7 +43,7 @@ public final class LocalCoordinator implements Coordinator, Closeable {
 	 *
 	 * @param workerCount paramètres d'initialisation du pool
 	 */
-	public LocalCoordinator(final int workerCount) {
+	public WorkersCoordinator(final int workerCount) {
 		Assertion.checkArgument(workerCount >= 1, "At least one thread must be allowed to process asynchronous works.");
 		//-----
 		workers = Executors.newFixedThreadPool(workerCount);
@@ -81,6 +81,6 @@ public final class LocalCoordinator implements Coordinator, Closeable {
 	public <W, R> Future<R> submit(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
 		Assertion.checkNotNull(workItem);
 		//-----
-		return workers.submit(new LocalWorker<>(workItem, workResultHandler));
+		return workers.submit(new Worker<>(workItem, workResultHandler));
 	}
 }
