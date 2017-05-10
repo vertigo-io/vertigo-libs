@@ -28,9 +28,9 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
+import io.vertigo.stella.master.MasterManager;
 import io.vertigo.stella.work.AbstractWorkManagerTest;
 import io.vertigo.stella.work.MyWorkResultHanlder;
-import io.vertigo.stella.work.WorkManager;
 import io.vertigo.stella.work.mock.SlowWork;
 import io.vertigo.stella.work.mock.SlowWorkEngine;
 import spark.Spark;
@@ -41,7 +41,7 @@ import spark.Spark;
 public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 	private static final Logger LOG = Logger.getLogger(RestWorkManagerTest.class);
 	@Inject
-	private WorkManager workManager;
+	private MasterManager masterManager;
 	private ClientNode clientNode1;
 
 	private static URI getBaseURI() {
@@ -94,7 +94,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		final MyWorkResultHanlder<Boolean> workResultHanlder = new MyWorkResultHanlder<>(1);
 		final SlowWork slowWork = new SlowWork(1000);
 		for (int i = 0; i < 20; i++) {
-			workManager.schedule(slowWork, SlowWorkEngine.class, workResultHanlder);
+			masterManager.schedule(slowWork, SlowWorkEngine.class, workResultHanlder);
 		}
 		final boolean firstsFinished = workResultHanlder.waitFinish(5, 5 * 1000);
 		Assert.assertTrue("First 5 works should finished before 5s, to test deadnode failover", firstsFinished);

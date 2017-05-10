@@ -36,12 +36,8 @@ import io.vertigo.stella.workers.WorkersManager;
  * @author pchretien, npiedeloup
  */
 public final class WorkersManagerImpl implements WorkersManager, Activeable {
-	//There is always ONE LocalWorker, but distributedWorker is optionnal
-	private final WorkersCoordinator localCoordinator;
-
-	private final List<WorkerPlugin> nodePlugins;
 	private final List<Thread> dispatcherThreads = new ArrayList<>();
-	private final WorkersCoordinator localWorker = new WorkersCoordinator(/*workersCount*/5);
+	private final WorkersCoordinator workersCoordinator = new WorkersCoordinator(/*workersCount*/5);
 
 	/**
 	 * Constructeur.
@@ -50,22 +46,17 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 	@Inject
 	public WorkersManagerImpl(
 			final @Named("workerCount") int workerCount,
-			final List<WorkerPlugin> nodePlugins) {
-		Assertion.checkNotNull(nodePlugins);
+			final WorkerPlugin workerPlugin) {
+		Assertion.checkNotNull(workerPlugin);
 		//-----
 		//		workListener = new WorkListenerImpl(/*analyticsManager*/);
-		localCoordinator = new WorkersCoordinator(workerCount);
 		//-----
-		this.nodePlugins = nodePlugins;
-		//---
-		for (final WorkerPlugin nodePlugin : this.nodePlugins) {
-			for (final Map.Entry<String, Integer> entry : nodePlugin.getWorkTypes().entrySet()) {
-				final String workType = entry.getKey();
-				final WorkDispatcher worker = new WorkDispatcher(workType, localWorker, nodePlugin);
-				final String workTypeName = workType.substring(workType.lastIndexOf('.') + 1);
-				for (int i = 1; i <= entry.getValue(); i++) {
-					dispatcherThreads.add(new Thread(worker, "WorkDispatcher-" + workTypeName + "-" + i));
-				}
+		for (final Map.Entry<String, Integer> entry : workerPlugin.getWorkTypes().entrySet()) {
+			final String workType = entry.getKey();
+			final WorkDispatcher worker = new WorkDispatcher(workType, workersCoordinator, workerPlugin);
+			final String workTypeName = workType.substring(workType.lastIndexOf('.') + 1);
+			for (int i = 1; i <= entry.getValue(); i++) {
+				dispatcherThreads.add(new Thread(worker, "WorkDispatcher-" + workTypeName + "-" + i));
 			}
 		}
 	}
@@ -81,8 +72,6 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public void stop() {
-		localCoordinator.close();
-		//--
 		for (final Thread dispatcherThread : dispatcherThreads) {
 			dispatcherThread.interrupt();
 		}
@@ -102,6 +91,6 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 			}
 		} while (isOneAlive);
 
-		localWorker.close();
+		workersCoordinator.close();
 	}
 }
