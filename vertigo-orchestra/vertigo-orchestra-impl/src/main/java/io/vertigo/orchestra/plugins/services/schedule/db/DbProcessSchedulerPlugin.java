@@ -33,6 +33,7 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.transaction.VTransactionManager;
@@ -48,7 +49,6 @@ import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.definitions.ProcessType;
 import io.vertigo.orchestra.domain.definition.OProcess;
 import io.vertigo.orchestra.domain.planification.OProcessPlanification;
-import io.vertigo.orchestra.impl.node.ONodeManager;
 import io.vertigo.orchestra.impl.services.schedule.CronExpression;
 import io.vertigo.orchestra.impl.services.schedule.ProcessSchedulerPlugin;
 import io.vertigo.orchestra.plugins.services.MapCodec;
@@ -67,7 +67,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	//private final long timerDelay;
 
-	private final Long nodId;
+	private final String nodeId;
 	private final int planningPeriodSeconds;
 	private final int forecastDurationSeconds;
 
@@ -90,27 +90,23 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	/**
 	 * Constructeur.
-	 * @param nodeManager le gestionnaire de noeud
+	 * @param oldNodeManager le gestionnaire de noeud
 	 * @param nodeName le nom du noeud
 	 * @param planningPeriodSeconds le timer de planfication
 	 * @param forecastDurationSeconds la durée de prévision des planifications
 	 */
 	@Inject
 	public DbProcessSchedulerPlugin(
-			final ONodeManager nodeManager,
 			@Named("nodeName") final String nodeName,
 			@Named("planningPeriodSeconds") final int planningPeriodSeconds,
 			@Named("forecastDurationSeconds") final int forecastDurationSeconds) {
-		Assertion.checkNotNull(nodeManager);
 		Assertion.checkNotNull(nodeName);
 		Assertion.checkNotNull(planningPeriodSeconds);
 		Assertion.checkNotNull(forecastDurationSeconds);
 		//-----
 		//timerDelay = planningPeriodSeconds * 1000L;
 		// We register the node
-		nodId = nodeManager.registerNode(nodeName);
-		// ---
-		Assertion.checkNotNull(nodId);
+		nodeId = Home.getApp().getConfig().getNodeConfig().getNodeId();
 		// ---
 		this.planningPeriodSeconds = planningPeriodSeconds;
 		this.forecastDurationSeconds = forecastDurationSeconds;
@@ -242,8 +238,8 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 		final GregorianCalendar upperLimit = new GregorianCalendar(Locale.FRANCE);
 
-		planificationPAO.reserveProcessToExecute(lowerLimit.getTime(), upperLimit.getTime(), nodId);
-		return processPlanificationDAO.getProcessToExecute(nodId);
+		planificationPAO.reserveProcessToExecute(lowerLimit.getTime(), upperLimit.getTime(), nodeId);
+		return processPlanificationDAO.getProcessToExecute(nodeId);
 	}
 
 	private boolean canExecute(final ProcessDefinition processDefinition) {

@@ -42,23 +42,23 @@ public final class ExecutionPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TK_HANDLE_PROCESSES_OF_DEAD_NODES.
-	 * @param maxDate java.util.Date 
+	 * @param deadNodeIds String 
 	*/
-	public void handleProcessesOfDeadNodes(final java.util.Date maxDate) {
+	public void handleProcessesOfDeadNodes(final String deadNodeIds) {
 		final Task task = createTaskBuilder("TK_HANDLE_PROCESSES_OF_DEAD_NODES")
-				.addValue("MAX_DATE", maxDate)
+				.addValue("DEAD_NODE_IDS", deadNodeIds)
 				.build();
 		getTaskManager().execute(task);
 	}
 
 	/**
 	 * Execute la tache TK_RESERVE_ACTIVITIES_TO_LAUNCH.
-	 * @param nodId Long 
+	 * @param nodeId String 
 	 * @param maxNumber Integer 
 	*/
-	public void reserveActivitiesToLaunch(final Long nodId, final Integer maxNumber) {
+	public void reserveActivitiesToLaunch(final String nodeId, final Integer maxNumber) {
 		final Task task = createTaskBuilder("TK_RESERVE_ACTIVITIES_TO_LAUNCH")
-				.addValue("NOD_ID", nodId)
+				.addValue("NODE_ID", nodeId)
 				.addValue("MAX_NUMBER", maxNumber)
 				.build();
 		getTaskManager().execute(task);

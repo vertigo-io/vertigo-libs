@@ -18,12 +18,16 @@
  */
 package io.vertigo.orchestra.plugins.services.execution.db;
 
+import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,6 +36,7 @@ import org.apache.log4j.Logger;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.node.NodeManager;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.transaction.VTransactionManager;
@@ -51,7 +56,6 @@ import io.vertigo.orchestra.domain.execution.OActivityExecution;
 import io.vertigo.orchestra.domain.execution.OActivityLog;
 import io.vertigo.orchestra.domain.execution.OActivityWorkspace;
 import io.vertigo.orchestra.domain.execution.OProcessExecution;
-import io.vertigo.orchestra.impl.node.ONodeManager;
 import io.vertigo.orchestra.impl.services.execution.AbstractActivityEngine;
 import io.vertigo.orchestra.impl.services.execution.ActivityLogger;
 import io.vertigo.orchestra.impl.services.execution.ProcessExecutorPlugin;
@@ -87,18 +91,18 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private OActivityDAO activityDAO;
 
 	private final int workersCount;
-	private final Long nodId;
+	private final String nodeId;
 	private final ExecutorService workers;
 	private final int executionPeriodSeconds;
 
-	private final ONodeManager nodeManager;
+	private final NodeManager nodeManager;
 	private final VTransactionManager transactionManager;
 
 	private final MapCodec mapCodec = new MapCodec();
 
 	/**
 	 * Constructeur.
-	 * @param nodeManager le gestionnaire de noeud
+	 * @param oldNodeManager le gestionnaire de noeud
 	 * @param transactionManager le gestionnaire de transaction
 	 * @param nodeName le nom du noeud en cours
 	 * @param workersCount le nombre de worker du noeud
@@ -106,7 +110,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	 */
 	@Inject
 	public DbProcessExecutorPlugin(
-			final ONodeManager nodeManager,
+			final NodeManager nodeManager,
 			final VTransactionManager transactionManager,
 			@Named("nodeName") final String nodeName,
 			@Named("workersCount") final int workersCount,
@@ -120,9 +124,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		this.nodeManager = nodeManager;
 		this.transactionManager = transactionManager;
 		// We register the node
-		nodId = nodeManager.registerNode(nodeName);
-		// ---
-		Assertion.checkNotNull(nodId);
+		nodeId = Home.getApp().getConfig().getNodeConfig().getNodeId();
 		// ---
 		this.workersCount = workersCount;
 		this.executionPeriodSeconds = executionPeriodSeconds;
@@ -136,7 +138,6 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		daemonManager.registerDaemon("O_DB_PROCESS_EXECUTOR_DAEMON", () -> () -> {
 			try {
 				executeToDo();
-				nodeManager.updateHeartbeat(nodId);
 				handleDeadNodeProcesses();
 			} catch (final Exception e) {
 				// We log the error and we continue the timer
@@ -403,8 +404,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private DtList<OActivityExecution> getActivitiesToLaunch() {
 		final int maxNumber = getUnusedWorkersCount();
 		// ---
-		executionPAO.reserveActivitiesToLaunch(nodId, maxNumber);
-		return activityExecutionDAO.getActivitiesToLaunch(nodId);
+		executionPAO.reserveActivitiesToLaunch(nodeId, maxNumber);
+		return activityExecutionDAO.getActivitiesToLaunch(nodeId);
 	}
 
 	private void initFirstActivityExecution(final OProcessExecution processExecution, final Optional<String> initialParams) {
@@ -450,7 +451,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void reserveActivityExecution(final OActivityExecution activityExecution) {
 		activityExecution.setEstCd(ExecutionState.SUBMITTED.name());
-		activityExecution.setNodId(nodId);
+		activityExecution.setNodeId(nodeId);
 	}
 
 	private void endActivityExecutionAndInitNext(final OActivityExecution activityExecution) {
@@ -629,7 +630,14 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			final Long now = System.currentTimeMillis();
 			// We wait two heartbeat to be sure that the node is dead
 			final Date maxDate = new Date(now - 2 * executionPeriodSeconds * 1000);
-			executionPAO.handleProcessesOfDeadNodes(maxDate);
+			final String deadNodeIds = nodeManager.getTopology()
+					.stream()
+					.filter(node -> node.getLastTouch().plus(5, ChronoUnit.SECONDS).isBefore(Instant.now()))
+					.map(node -> node.getId())
+					.map(DbProcessExecutorPlugin::prepareSqlInArgument)
+					.collect(Collectors.joining(", "));
+
+			executionPAO.handleProcessesOfDeadNodes(deadNodeIds);
 			transaction.commit();
 		}
 	}
@@ -642,6 +650,22 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private static void changeProcessExecutionState(final OProcessExecution processExecution, final ExecutionState executionState) {
 		// we need to check if the transistion is valid
 		processExecution.setEstCd(executionState.name());
+	}
+
+	private static String prepareSqlInArgument(final Serializable value) {
+		Assertion.checkArgument(
+				value instanceof String
+						|| value instanceof Integer
+						|| value instanceof Long,
+				"Only String,Long and Integers are allowed in a where in clause.");
+		// we check to avoid sql injection without espacing and parametizing the statement
+		Assertion.when(value instanceof String)
+				.check(() -> ((String) value).matches("[A-Za-z0-9_\\-]*"), "Only simple characters are allowed");
+		// ---
+		if (value instanceof String) {
+			return "'" + value.toString() + "'";
+		}
+		return value.toString();
 	}
 
 }
