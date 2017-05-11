@@ -68,21 +68,18 @@ public final class OrchestraFeatures extends Features {
 
 	/**
 	 * Activate Orchestra with Database.
-	 * @param nodeName the node of the app
 	 * @param daemonPeriodSeconds the period for scheduling and execution
 	 * @param workersCount the number of workers
 	 * @param forecastDurationSeconds the time to forecast planifications
 	 * @return these features
 	 */
-	public OrchestraFeatures withDataBase(final String nodeName, final int daemonPeriodSeconds, final int workersCount, final int forecastDurationSeconds) {
+	public OrchestraFeatures withDataBase(final int daemonPeriodSeconds, final int workersCount, final int forecastDurationSeconds) {
 		getModuleConfigBuilder()
 				.addPlugin(DbProcessDefinitionStorePlugin.class)
 				.addPlugin(DbProcessSchedulerPlugin.class,
-						Param.of("nodeName", nodeName),
 						Param.of("planningPeriodSeconds", String.valueOf(daemonPeriodSeconds)),
 						Param.of("forecastDurationSeconds", String.valueOf(forecastDurationSeconds)))
 				.addPlugin(DbProcessExecutorPlugin.class,
-						Param.of("nodeName", nodeName),
 						Param.of("workersCount", String.valueOf(workersCount)),
 						Param.of("executionPeriodSeconds", String.valueOf(daemonPeriodSeconds)))
 				.addPlugin(DbProcessReportPlugin.class)
@@ -95,7 +92,6 @@ public final class OrchestraFeatures extends Features {
 				.addComponent(OProcessExecutionDAO.class)
 				.addComponent(OActivityWorkspaceDAO.class)
 				.addComponent(OActivityLogDAO.class)
-				//.addComponent(ONodeDAO.class)
 				//----PAO
 				.addComponent(DefinitionPAO.class)
 				.addComponent(ExecutionPAO.class)
@@ -144,7 +140,6 @@ public final class OrchestraFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				//.addComponent(ONodeManager.class, ONodeManagerImpl.class)
 				.addComponent(OrchestraDefinitionManager.class, OrchestraDefinitionManagerImpl.class)
 				.addComponent(OrchestraServices.class, OrchestraServicesImpl.class);
 

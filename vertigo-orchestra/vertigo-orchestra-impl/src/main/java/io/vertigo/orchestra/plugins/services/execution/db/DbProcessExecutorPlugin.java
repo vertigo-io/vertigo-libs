@@ -18,10 +18,7 @@
  */
 package io.vertigo.orchestra.plugins.services.execution.db;
 
-import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -102,9 +99,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	/**
 	 * Constructeur.
-	 * @param oldNodeManager le gestionnaire de noeud
+	 * @param nodeManager le gestionnaire de noeud
 	 * @param transactionManager le gestionnaire de transaction
-	 * @param nodeName le nom du noeud en cours
 	 * @param workersCount le nombre de worker du noeud
 	 * @param executionPeriodSeconds le timer du long-polling
 	 */
@@ -112,19 +108,17 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	public DbProcessExecutorPlugin(
 			final NodeManager nodeManager,
 			final VTransactionManager transactionManager,
-			@Named("nodeName") final String nodeName,
 			@Named("workersCount") final int workersCount,
 			@Named("executionPeriodSeconds") final int executionPeriodSeconds) {
 		Assertion.checkNotNull(nodeManager);
 		Assertion.checkNotNull(transactionManager);
-		Assertion.checkNotNull(nodeName);
 		// ---
 		Assertion.checkState(workersCount >= 1, "We need at least 1 worker");
 		// ---
 		this.nodeManager = nodeManager;
 		this.transactionManager = transactionManager;
 		// We register the node
-		nodeId = Home.getApp().getConfig().getNodeConfig().getNodeId();
+		nodeId = nodeManager.getCurrentNode().getId();
 		// ---
 		this.workersCount = workersCount;
 		this.executionPeriodSeconds = executionPeriodSeconds;
@@ -629,12 +623,9 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Long now = System.currentTimeMillis();
 			// We wait two heartbeat to be sure that the node is dead
-			final Date maxDate = new Date(now - 2 * executionPeriodSeconds * 1000);
-			final String deadNodeIds = nodeManager.getTopology()
+			final String deadNodeIds = nodeManager.getDeadNodes()
 					.stream()
-					.filter(node -> node.getLastTouch().plus(5, ChronoUnit.SECONDS).isBefore(Instant.now()))
-					.map(node -> node.getId())
-					.map(DbProcessExecutorPlugin::prepareSqlInArgument)
+					.map(node -> prepareSqlInArgument(node.getId()))
 					.collect(Collectors.joining(", "));
 
 			executionPAO.handleProcessesOfDeadNodes(deadNodeIds);
@@ -652,20 +643,11 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		processExecution.setEstCd(executionState.name());
 	}
 
-	private static String prepareSqlInArgument(final Serializable value) {
-		Assertion.checkArgument(
-				value instanceof String
-						|| value instanceof Integer
-						|| value instanceof Long,
-				"Only String,Long and Integers are allowed in a where in clause.");
+	private static String prepareSqlInArgument(final String value) {
 		// we check to avoid sql injection without espacing and parametizing the statement
-		Assertion.when(value instanceof String)
-				.check(() -> ((String) value).matches("[A-Za-z0-9_\\-]*"), "Only simple characters are allowed");
+		Assertion.checkState(value.matches("[A-Za-z0-9_\\-]*"), "Only simple characters are allowed");
 		// ---
-		if (value instanceof String) {
-			return "'" + value.toString() + "'";
-		}
-		return value.toString();
+		return "'" + value.toString() + "'";
 	}
 
 }

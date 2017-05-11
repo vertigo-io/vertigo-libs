@@ -23,6 +23,7 @@ import java.util.Optional;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.commons.plugins.node.registry.redis.RedisNodeRegistryPlugin;
@@ -58,6 +59,9 @@ public final class MyAppConfig {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin(URLResourceResolverPlugin.class)
 				.endBoot()
+				.withNodeConfig(NodeConfig.builder()
+						.withNodeId("NODE_TEST_1")
+						.build())
 				.addModule(new CommonsFeatures()
 						.withCache(MemoryCachePlugin.class)
 						.withScript()
@@ -85,7 +89,7 @@ public final class MyAppConfig {
 				.addModule(ModuleConfig.builder("databaseInitializer").addComponent(DataBaseInitializer.class).build())
 				//
 				.addModule(new OrchestraFeatures()
-						.withDataBase("NODE_TEST_1", 1, 3, 60)
+						.withDataBase(1, 3, 60)
 						.withMemory(1)
 						.build())
 				.addModule(ModuleConfig.builder("orchestra-test")

@@ -90,17 +90,13 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	/**
 	 * Constructeur.
-	 * @param oldNodeManager le gestionnaire de noeud
-	 * @param nodeName le nom du noeud
 	 * @param planningPeriodSeconds le timer de planfication
 	 * @param forecastDurationSeconds la durée de prévision des planifications
 	 */
 	@Inject
 	public DbProcessSchedulerPlugin(
-			@Named("nodeName") final String nodeName,
 			@Named("planningPeriodSeconds") final int planningPeriodSeconds,
 			@Named("forecastDurationSeconds") final int forecastDurationSeconds) {
-		Assertion.checkNotNull(nodeName);
 		Assertion.checkNotNull(planningPeriodSeconds);
 		Assertion.checkNotNull(forecastDurationSeconds);
 		//-----

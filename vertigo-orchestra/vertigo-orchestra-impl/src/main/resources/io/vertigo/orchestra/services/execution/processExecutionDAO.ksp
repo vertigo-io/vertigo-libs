@@ -53,7 +53,7 @@ create Task TK_HANDLE_PROCESSES_OF_DEAD_NODES {
         request : "
         	update o_activity_execution 
         	set EST_CD = 'ABORTED'
-        	where NODE_ID in ( #DEAD_NODE_IDS# );
+        	where NODE_ID in ( <%=deadNodeIds%> );
 			
  			update o_process_execution
         	set EST_CD = 'ABORTED'
