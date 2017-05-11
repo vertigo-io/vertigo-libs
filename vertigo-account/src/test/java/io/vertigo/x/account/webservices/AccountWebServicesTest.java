@@ -32,8 +32,8 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.x.account.MyAppConfig;
-import io.vertigo.x.account.data.Accounts;
-import io.vertigo.x.account.services.AccountServices;
+import io.vertigo.x.account.data.Identities;
+import io.vertigo.x.account.identity.IdentityManager;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -43,7 +43,7 @@ import redis.clients.jedis.Jedis;
 public final class AccountWebServicesTest {
 	private static AutoCloseableApp app;
 	@Inject
-	private AccountServices accountServices;
+	private IdentityManager identityManager;
 	@Inject
 	private RedisConnector redisConnector;
 
@@ -63,7 +63,7 @@ public final class AccountWebServicesTest {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		} //populate accounts
-		Accounts.initData(accountServices);
+		Identities.initData(identityManager);
 	}
 
 	@AfterClass

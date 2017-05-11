@@ -16,25 +16,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.account;
+package io.vertigo.x.account.impl.identity;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-import io.vertigo.x.account.identity.IdentityManagerTest;
-import io.vertigo.x.account.webservices.AccountWebServicesTest;
+import io.vertigo.lang.Plugin;
+import io.vertigo.x.account.identity.AccountStore;
 
 /**
- * Test de l'implementation standard.
- *
  * @author pchretien
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-		IdentityManagerTest.class,
-		AccountWebServicesTest.class
-})
-public final class AccountTestSuite {
+public interface AccountStorePlugin extends AccountStore, Plugin {
 	//
 }

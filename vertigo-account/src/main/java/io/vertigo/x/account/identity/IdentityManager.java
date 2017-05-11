@@ -16,25 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.account;
+package io.vertigo.x.account.identity;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-import io.vertigo.x.account.identity.IdentityManagerTest;
-import io.vertigo.x.account.webservices.AccountWebServicesTest;
+import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.Manager;
 
 /**
- * Test de l'implementation standard.
+ * Gestion centralisee des droits d'acces.
  *
- * @author pchretien
+ * @author npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-		IdentityManagerTest.class,
-		AccountWebServicesTest.class
-})
-public final class AccountTestSuite {
-	//
+public interface IdentityManager extends Manager {
+
+	/**
+	 * Gets the default photo of an account.
+	 *
+	 * @return the photo as a file
+	 */
+	VFile getDefaultPhoto();
+
+	/**
+	 * @return the store of accounts
+	 */
+	AccountStore getStore();
+
 }

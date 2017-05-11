@@ -16,25 +16,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.account;
+package io.vertigo.x.account.authz.dsl.model;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-import io.vertigo.x.account.identity.IdentityManagerTest;
-import io.vertigo.x.account.webservices.AccountWebServicesTest;
+import io.vertigo.lang.Assertion;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * User property value definition.
+ * \$\{userProperty\}
+ * @author npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-		IdentityManagerTest.class,
-		AccountWebServicesTest.class
-})
-public final class AccountTestSuite {
-	//
+public final class DslUserPropertyValue implements DslValue {
+	private final String userProperty;
+
+	/**
+	 * @param userProperty User property name
+	 */
+	public DslUserPropertyValue(final String userProperty) {
+		Assertion.checkArgNotEmpty(userProperty);
+		//-----
+		this.userProperty = userProperty;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return userProperty;
+	}
+
+	/**
+	 * @return userProperty
+	 */
+	public String getUserProperty() {
+		return userProperty;
+	}
 }

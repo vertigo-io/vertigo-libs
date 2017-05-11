@@ -16,25 +16,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.account;
+package io.vertigo.x.account.authc;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.Optional;
 
-import io.vertigo.x.account.identity.IdentityManagerTest;
-import io.vertigo.x.account.webservices.AccountWebServicesTest;
+import io.vertigo.lang.Manager;
+import io.vertigo.x.account.identity.Account;
 
 /**
- * Test de l'implementation standard.
+ * Gestion centralisée de l'authentifications.
  *
- * @author pchretien
+ * @author npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-		IdentityManagerTest.class,
-		AccountWebServicesTest.class
-})
-public final class AccountTestSuite {
-	//
+public interface AuthentificationManager extends Manager {
+
+	/**
+	 * Try and check to login.
+	 * @param token Authentification token
+	 * @return Account User account (Principal)
+	 */
+	Optional<Account> authenticate(final AuthenticationToken token);
+
+	/**
+	 * Reinitialise la session courante.
+	 */
+	void logout();
+
+	/**
+	 * @return Current logged account
+	 */
+	Optional<Account> getLoggedAccount();
+
 }

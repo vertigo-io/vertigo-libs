@@ -16,25 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.account;
+package io.vertigo.x.account.acl;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.Locale;
 
-import io.vertigo.x.account.identity.IdentityManagerTest;
-import io.vertigo.x.account.webservices.AccountWebServicesTest;
+import io.vertigo.persona.security.UserSession;
 
-/**
- * Test de l'implementation standard.
- *
- * @author pchretien
- */
-@RunWith(Suite.class)
-@SuiteClasses({
-		IdentityManagerTest.class,
-		AccountWebServicesTest.class
-})
-public final class AccountTestSuite {
-	//
+public final class TestUserSession extends UserSession {
+	private static final long serialVersionUID = 1L;
+
+	/** {@inheritDoc} */
+	@Override
+	public Locale getLocale() {
+		return Locale.FRANCE;
+	}
 }

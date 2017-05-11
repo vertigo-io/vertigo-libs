@@ -16,25 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.account;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-import io.vertigo.x.account.identity.IdentityManagerTest;
-import io.vertigo.x.account.webservices.AccountWebServicesTest;
+package io.vertigo.x.account.authz.dsl.model;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * Query definition.
+ * @author npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-		IdentityManagerTest.class,
-		AccountWebServicesTest.class
-})
-public final class AccountTestSuite {
-	//
+public interface DslValue {
+
+	//nothing
 }

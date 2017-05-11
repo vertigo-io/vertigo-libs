@@ -32,9 +32,9 @@ import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.PathParam;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
-import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountGroup;
-import io.vertigo.x.account.services.AccountServices;
+import io.vertigo.x.account.identity.Account;
+import io.vertigo.x.account.identity.AccountGroup;
+import io.vertigo.x.account.identity.IdentityManager;
 
 /**
  * Webservices for account extension.
@@ -48,7 +48,7 @@ public final class AccountWebServices implements WebServices {
 	private static final String IMPL_VERSION = "0.9.2";
 
 	@Inject
-	private AccountServices accountServices;
+	private IdentityManager identityManager;
 
 	/**
 	 * Gets an account by its id.
@@ -59,7 +59,7 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/{id}")
 	@AnonymousAccessAllowed
 	public Account getAccount(@PathParam("id") final String id) {
-		return accountServices.getStore().getAccount(DtObjectUtil.createURI(Account.class, id));
+		return identityManager.getStore().getAccount(DtObjectUtil.createURI(Account.class, id));
 	}
 
 	/**
@@ -71,8 +71,8 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/{id}/photo")
 	@AnonymousAccessAllowed
 	public VFile getAccountPhoto(@PathParam("id") final String id) {
-		return accountServices.getStore().getPhoto(DtObjectUtil.createURI(Account.class, id))
-				.orElse(accountServices.getDefaultPhoto());
+		return identityManager.getStore().getPhoto(DtObjectUtil.createURI(Account.class, id))
+				.orElse(identityManager.getDefaultPhoto());
 	}
 
 	/**
@@ -83,7 +83,7 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/groups")
 	@AnonymousAccessAllowed
 	public Collection<AccountGroup> getAllGroups() {
-		return accountServices.getStore().getAllGroups();
+		return identityManager.getStore().getAllGroups();
 	}
 
 	/**
@@ -95,7 +95,7 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/groups/{id}")
 	@AnonymousAccessAllowed
 	public AccountGroup getAccountGroup(@PathParam("id") final String id) {
-		return accountServices.getStore().getGroup(DtObjectUtil.createURI(AccountGroup.class, id));
+		return identityManager.getStore().getGroup(DtObjectUtil.createURI(AccountGroup.class, id));
 	}
 
 	//-----
@@ -119,8 +119,8 @@ public final class AccountWebServices implements WebServices {
 	public Map<String, Object> getStats() {
 		final Map<String, Object> stats = new HashMap<>();
 		final Map<String, Object> sizeStats = new MapBuilder<String, Object>()
-				.put("accounts", accountServices.getStore().getAccountsCount())
-				.put("groups", accountServices.getStore().getGroupsCount())
+				.put("accounts", identityManager.getStore().getAccountsCount())
+				.put("groups", identityManager.getStore().getGroupsCount())
 				.build();
 		stats.put("size", sizeStats);
 		return stats;

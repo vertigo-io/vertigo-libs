@@ -16,25 +16,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.account;
+package io.vertigo.x.account.impl.authz.dsl.rules;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-import io.vertigo.x.account.identity.IdentityManagerTest;
-import io.vertigo.x.account.webservices.AccountWebServicesTest;
+import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.x.account.authz.dsl.model.DslMultiExpression;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * Util for parsing security rules.
+ * @author npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-		IdentityManagerTest.class,
-		AccountWebServicesTest.class
-})
-public final class AccountTestSuite {
-	//
+public final class DslParserUtil {
+
+	private DslParserUtil() {
+		//nothing
+	}
+
+	/**
+	 * @param buildQuery Builder pattern
+	 * @return Parsed pattern
+	 * @throws PegNoMatchFoundException If pattern doesn't match grammar
+	 */
+	public static DslMultiExpression parseMultiExpression(final String buildQuery) throws PegNoMatchFoundException {
+		if (buildQuery.trim().equals("true")) {
+			return new DslMultiExpression(true);
+		}
+		return new DslMultiExpressionRule()
+				.parse(buildQuery, 0)
+				.getValue();
+	}
 }

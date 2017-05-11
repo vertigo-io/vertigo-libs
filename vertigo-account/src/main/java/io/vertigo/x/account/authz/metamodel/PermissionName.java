@@ -16,25 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.account;
+package io.vertigo.x.account.authz.metamodel;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-import io.vertigo.x.account.identity.IdentityManagerTest;
-import io.vertigo.x.account.webservices.AccountWebServicesTest;
+import java.io.Serializable;
 
 /**
- * Test de l'implementation standard.
- *
- * @author pchretien
+ * Nom de permission (marqueur).
+ * @author jgarnier, npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({
-		IdentityManagerTest.class,
-		AccountWebServicesTest.class
-})
-public final class AccountTestSuite {
-	//
+public interface PermissionName extends Serializable {
+
+	/** @return nom de la permission (const case) */
+	String name();
+
 }

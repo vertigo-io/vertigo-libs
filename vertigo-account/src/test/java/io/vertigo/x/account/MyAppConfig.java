@@ -29,7 +29,7 @@ import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.vega.VegaFeatures;
 import io.vertigo.x.account.data.TestUserSession;
-import io.vertigo.x.account.plugins.memory.MemoryAccountStorePlugin;
+import io.vertigo.x.account.plugins.identity.memory.MemoryAccountStorePlugin;
 import io.vertigo.x.account.webservices.AccountWebServices;
 
 public final class MyAppConfig {

@@ -21,11 +21,17 @@ package io.vertigo.x.account;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.x.account.impl.services.AccountDefinitionProvider;
-import io.vertigo.x.account.impl.services.AccountServicesImpl;
-import io.vertigo.x.account.impl.services.AccountStorePlugin;
-import io.vertigo.x.account.plugins.redis.RedisAccountStorePlugin;
-import io.vertigo.x.account.services.AccountServices;
+import io.vertigo.x.account.authc.AuthentificationManager;
+import io.vertigo.x.account.identity.IdentityManager;
+import io.vertigo.x.account.impl.authc.AuthentificationManagerImpl;
+import io.vertigo.x.account.impl.identity.AccountDefinitionProvider;
+import io.vertigo.x.account.impl.identity.AccountStorePlugin;
+import io.vertigo.x.account.impl.identity.IdentityManagerImpl;
+import io.vertigo.x.account.impl.security.VSecurityManager2Impl;
+import io.vertigo.x.account.plugins.authc.mock.MockAuthenticatingRealmPlugin;
+import io.vertigo.x.account.plugins.identity.redis.RedisAccountStorePlugin;
+import io.vertigo.x.account.security.UserSession2;
+import io.vertigo.x.account.security.VSecurityManager2;
 
 /**
  * Defines the 'account' extension
@@ -41,6 +47,18 @@ public final class AccountFeatures extends Features {
 	}
 
 	/**
+	 * Activates user session.
+	 * @param userSessionClass the user session class
+	 * @return these features
+	 */
+	public AccountFeatures withUserSession2(final Class<? extends UserSession2> userSessionClass) {
+		getModuleConfigBuilder()
+				.addComponent(VSecurityManager2.class, VSecurityManager2Impl.class,
+						Param.of("userSessionClassName", userSessionClass.getName()));
+		return this;
+	}
+
+	/**
 	 * Defines REDIS as the database to store the accounts
 	 * @return the features
 	 */
@@ -49,8 +67,8 @@ public final class AccountFeatures extends Features {
 	}
 
 	/**
-	 * @param accountStorePluginClass 
-	 * @param params 
+	 * @param accountStorePluginClass
+	 * @param params
 	 * @return the features
 	 */
 	public AccountFeatures withAccountStorePlugin(final Class<? extends AccountStorePlugin> accountStorePluginClass, final Param... params) {
@@ -64,7 +82,9 @@ public final class AccountFeatures extends Features {
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.addDefinitionProvider(DefinitionProviderConfig.builder(AccountDefinitionProvider.class).build())
-				.addComponent(AccountServices.class, AccountServicesImpl.class);
+				.addComponent(AuthentificationManager.class, AuthentificationManagerImpl.class)
+				.addPlugin(MockAuthenticatingRealmPlugin.class)
+				.addComponent(IdentityManager.class, IdentityManagerImpl.class);
 	}
 
 }
