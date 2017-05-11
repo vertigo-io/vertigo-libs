@@ -43,16 +43,5 @@ public interface WorkersManager extends Manager {
 	//	 * @param workEngineProvider WorkEngine provider
 	//	 * @return result
 	//	 */
-	//	<W, R> WorkPromise<R> process(final W work, final Class<? extends WorkEngine<W, R>> workEngineClass);
-	//
-	//	/**
-	//	 * Lancement asynchrone d'un travail 'dès que possible'.
-	//	 * @param <W> Type de Work (Travail)
-	//	 * @param <R> Produit d'un work à l'issu de son exécution
-	//	 * @param work Travail à exécuter
-	//	 * @param workEngineProvider WorkEngine provider
-	//	 * @param workResultHandler Handler permettant un callback après exécution
-	//	 */
-	//	<W, R> void schedule(final W work, Class<? extends WorkEngine<W, R>> workEngineClass, WorkResultHandler<R> workResultHandler);
-
+	//<W, R> R process(final W work, final Class<? extends WorkEngine<W, R>> workEngineClass);
 }

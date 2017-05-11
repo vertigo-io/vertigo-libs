@@ -29,16 +29,17 @@ import io.vertigo.stella.master.WorkResultHandler;
 final class WorkDispatcher implements Runnable {
 	private final WorkersCoordinator localWorker;
 	private final String workType;
-	private final WorkerPlugin workerPlugin;
+	private final WorkersPlugin workerPlugin;
+	private final String nodeId;
 
-	WorkDispatcher(/*final String nodeId,*/final String workType, final WorkersCoordinator localWorker, final WorkerPlugin nodePlugin) {
-		//Assertion.checkArgNotEmpty(nodeId);
+	WorkDispatcher(final String nodeId, final String workType, final WorkersCoordinator localWorker, final WorkersPlugin nodePlugin) {
+		Assertion.checkArgNotEmpty(nodeId);
 		Assertion.checkArgNotEmpty(workType);
 		Assertion.checkArgument(workType.indexOf('^') == -1, "Number of dispatcher per WorkType must be managed by NodeManager {0}", workType);
 		Assertion.checkNotNull(localWorker);
 		Assertion.checkNotNull(nodePlugin);
 		//-----
-		//	this.nodeId = nodeId;
+		this.nodeId = nodeId;
 		this.workType = workType;
 		this.localWorker = localWorker;
 		workerPlugin = nodePlugin;
@@ -57,7 +58,7 @@ final class WorkDispatcher implements Runnable {
 	}
 
 	private <W, R> void doRun() throws InterruptedException {
-		final WorkItem<W, R> workItem = workerPlugin.<W, R> pollWorkItem(workType);
+		final WorkItem<W, R> workItem = workerPlugin.<W, R> pollWorkItem(nodeId, workType);
 		if (workItem != null) {
 			final WorkResultHandler<R> workResultHandler = new WorkResultHandler<R>() {
 				@Override

@@ -46,6 +46,7 @@ public final class RedisDB {
 	/**
 	 * Constructor.
 	 * @param codecManager the codecManager
+	 * @param redisConnector the redis connector
 	 */
 	public RedisDB(final CodecManager codecManager, final RedisConnector redisConnector) {
 		Assertion.checkNotNull(redisConnector);

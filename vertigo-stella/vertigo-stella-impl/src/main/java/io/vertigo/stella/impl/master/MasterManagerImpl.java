@@ -18,7 +18,6 @@
  */
 package io.vertigo.stella.impl.master;
 
-import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.concurrent.Future;
 
@@ -29,7 +28,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.master.coordinator.MasterCoordinator;
 import io.vertigo.stella.impl.master.listener.WorkListener;
 import io.vertigo.stella.impl.master.listener.WorkListenerImpl;
-import io.vertigo.stella.impl.work.Coordinator;
 import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.master.MasterManager;
 import io.vertigo.stella.master.WorkPromise;
@@ -109,27 +107,15 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 	}
 
 	private <W, R> Future<R> submit(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
-		final Coordinator coordinator = resolveCoordinator(workItem);
-		//---
 		workListener.onStart(workItem.getWorkEngineClass().getName());
 		boolean executed = false;
 		final long start = System.currentTimeMillis();
 		try {
-			final Future<R> future = coordinator.submit(workItem, workResultHandler);
+			final Future<R> future = masterCoordinator.submit(workItem, workResultHandler);
 			executed = true;
 			return future;
 		} finally {
 			workListener.onFinish(workItem.getWorkEngineClass().getName(), System.currentTimeMillis() - start, executed);
 		}
 	}
-
-	private <R, W> Coordinator resolveCoordinator(final WorkItem<R, W> workItem) {
-		Assertion.checkNotNull(workItem);
-		//-----
-		if (!masterCoordinator.accept(workItem)) {
-			throw new NoSuchElementException("this type of workItem is unknown : " + workItem.getWorkEngineClass().getSimpleName());
-		}
-		return masterCoordinator;
-	}
-
 }

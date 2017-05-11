@@ -18,22 +18,18 @@
  */
 package io.vertigo.stella.impl.master;
 
-import java.util.List;
-
 import io.vertigo.lang.Plugin;
 import io.vertigo.stella.impl.work.WorkItem;
 
 /**
  * Master-Worker pattern.
  * The master dispatch the works.
- * The workers execute all the works. 
- * 
+ * The workers execute all the works.
+ *
  * @author npiedeloup, pchretien
  */
 public interface MasterPlugin extends Plugin {
 	<R, W> void putWorkItem(final WorkItem<R, W> workItem);
 
 	WorkResult pollResult(final int waitTimeSeconds);
-
-	List<String> acceptedWorkTypes();
 }

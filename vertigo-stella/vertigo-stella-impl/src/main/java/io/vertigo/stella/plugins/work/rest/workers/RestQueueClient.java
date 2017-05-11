@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.plugins.work.rest.worker;
+package io.vertigo.stella.plugins.work.rest.workers;
 
 import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -54,7 +54,6 @@ final class RestQueueClient {
 	private static final int CONNECT_TIMEOUT = 10 * 1000; // 10s
 	private static final Logger LOG = Logger.getLogger(RestQueueClient.class);
 	private final CodecManager codecManager;
-	private final String nodeUID;
 	private final String serverUrl;
 	private final Client locatorClient;
 	private final ConcurrentMap<String, Object> lockByWorkType = new ConcurrentHashMap<>();
@@ -62,12 +61,10 @@ final class RestQueueClient {
 	/**
 	 * Constructeur.
 	 */
-	RestQueueClient(final String nodeUID, final String serverUrl, final int timeoutSeconds, final CodecManager codecManager) {
-		Assertion.checkArgNotEmpty(nodeUID);
+	RestQueueClient(final String serverUrl, final int timeoutSeconds, final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(serverUrl);
 		Assertion.checkNotNull(codecManager);
 		//-----
-		this.nodeUID = nodeUID;
 		this.serverUrl = serverUrl;
 		this.codecManager = codecManager;
 		locatorClient = ClientBuilder.newClient();
@@ -75,7 +72,7 @@ final class RestQueueClient {
 		locatorClient.property(ClientProperties.READ_TIMEOUT, timeoutSeconds * 1000);
 	}
 
-	<R, W> WorkItem<R, W> pollWorkItem(final String workType) {
+	<R, W> WorkItem<R, W> pollWorkItem(final String nodeId, final String workType) {
 		//call methode distante, passe le workItem à started
 		try {
 			try {
@@ -85,7 +82,7 @@ final class RestQueueClient {
 				synchronized (lockByWorkType.get(workType)) {
 					checkInterrupted(); //must be check because Thread.interrupt() doesn't freed the synchronized lock
 
-					final WebTarget remoteWebResource = prepareTarget(serverUrl + "/pollWork/" + workType + "?nodeUID=" + nodeUID);
+					final WebTarget remoteWebResource = prepareTarget(serverUrl + "/pollWork/" + workType + "?nodeUID=" + nodeId);
 					final Response response = remoteWebResource.request(MediaType.TEXT_PLAIN).get();
 					checkResponseStatus(response);
 					jsonResult = response.readEntity(String.class);

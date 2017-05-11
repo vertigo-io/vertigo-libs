@@ -18,9 +18,6 @@
  */
 package io.vertigo.stella.plugins.work.rest.master;
 
-import java.util.Arrays;
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -41,33 +38,22 @@ import io.vertigo.vega.webservice.stereotype.PathPrefix;
 @PathPrefix("/backend/workQueue")
 public final class RestMasterPlugin implements MasterPlugin, WebServices {
 	private final RestQueueServer restQueueServer;
-	private final List<String> distributedWorkTypes;
 
 	/**
 	 * Constructeur.
 	 * @param daemonManager Manager des daemons
 	 * @param timeoutSeconds Timeout des travaux en attente de traitement
-	 * @param distributedWorkTypes Liste des types de work distribués (séparateur ;)
 	 * @param codecManager Manager d'encodage/decodage
 	 */
 	@Inject
 	public RestMasterPlugin(
 			final DaemonManager daemonManager,
-			@Named("distributedWorkTypes") final String distributedWorkTypes,
 			@Named("timeoutSeconds") final int timeoutSeconds,
 			final CodecManager codecManager) {
-		Assertion.checkArgNotEmpty(distributedWorkTypes);
 		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//-----
-		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
 		//	this.timeoutSeconds = timeoutSeconds;
 		restQueueServer = new RestQueueServer(20, codecManager, 5, daemonManager);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<String> acceptedWorkTypes() {
-		return distributedWorkTypes;
 	}
 
 	/** {@inheritDoc} */

@@ -18,8 +18,6 @@
  */
 package io.vertigo.stella.impl.workers;
 
-import java.util.Map;
-
 import io.vertigo.lang.Plugin;
 import io.vertigo.stella.impl.work.WorkItem;
 
@@ -27,11 +25,7 @@ import io.vertigo.stella.impl.work.WorkItem;
  * NodePlugin
  * @author pchretien
  */
-public interface WorkerPlugin extends Plugin {
-	/**
-	 * @return Map Types of work, that can be done by this worker, and number of reserved dispatcher per type
-	 */
-	Map<String, Integer> getWorkTypes();
+public interface WorkersPlugin extends Plugin {
 
 	/**
 	 * Polling workitem.
@@ -40,7 +34,7 @@ public interface WorkerPlugin extends Plugin {
 	 * @param <R> result
 	 * @param <W> work
 	 */
-	<R, W> WorkItem<R, W> pollWorkItem(final String workType);
+	<R, W> WorkItem<R, W> pollWorkItem(final String nodeId, final String workType);
 
 	/**
 	 * Send result or error if execution failed

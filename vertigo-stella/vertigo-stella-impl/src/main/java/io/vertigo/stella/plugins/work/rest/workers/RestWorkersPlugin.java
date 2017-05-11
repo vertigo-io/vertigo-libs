@@ -16,9 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.plugins.work.rest.worker;
-
-import java.util.Map;
+package io.vertigo.stella.plugins.work.rest.workers;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,8 +24,7 @@ import javax.inject.Named;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.work.WorkItem;
-import io.vertigo.stella.impl.workers.WorkDispatcherConfUtil;
-import io.vertigo.stella.impl.workers.WorkerPlugin;
+import io.vertigo.stella.impl.workers.WorkersPlugin;
 
 /**
  * Implémentation de DistributedWorkManager, pour l'execution de travaux par des Workers distant.
@@ -38,43 +35,30 @@ import io.vertigo.stella.impl.workers.WorkerPlugin;
  *
  * @author npiedeloup, pchretien
  */
-public final class RestWorkerPlugin implements WorkerPlugin {
-	private final Map<String, Integer> workTypes;
+public final class RestWorkersPlugin implements WorkersPlugin {
 	private final RestQueueClient restQueueClient; //devrait etre un plugin
 
 	/**
 	 * Constructeur.
-	 * @param nodeId Identifiant du noeud
-	 * @param workTypes Types de travail gérés
 	 * @param serverUrl Url du serveur
 	 * @param timeoutSeconds Timeout en seconde des connections vers le serveur (doit être > au timeoutSeconds du serveur)
 	 * @param codecManager Manager d'encodage/decodage
 	 */
 	@Inject
-	public RestWorkerPlugin(
-			@Named("nodeId") final String nodeId,
-			@Named("workTypes") final String workTypes,
+	public RestWorkersPlugin(
 			@Named("serverUrl") final String serverUrl,
 			@Named("timeoutSeconds") final int timeoutSeconds,
 			final CodecManager codecManager) {
-		Assertion.checkArgNotEmpty(workTypes);
 		Assertion.checkArgNotEmpty(serverUrl);
 		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//-----
-		this.workTypes = WorkDispatcherConfUtil.readWorkTypeConf(workTypes);
-		restQueueClient = new RestQueueClient(nodeId, serverUrl + "/backend/workQueue", timeoutSeconds, codecManager);
+		restQueueClient = new RestQueueClient(serverUrl + "/backend/workQueue", timeoutSeconds, codecManager);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Map<String, Integer> getWorkTypes() {
-		return workTypes;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <WR, W> WorkItem<WR, W> pollWorkItem(final String workType) {
-		return restQueueClient.pollWorkItem(workType);
+	public <WR, W> WorkItem<WR, W> pollWorkItem(final String nodeId, final String workType) {
+		return restQueueClient.pollWorkItem(nodeId, workType);
 	}
 
 	/** {@inheritDoc} */

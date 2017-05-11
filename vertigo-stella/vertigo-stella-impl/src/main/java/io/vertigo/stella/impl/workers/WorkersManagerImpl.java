@@ -38,6 +38,10 @@ import io.vertigo.stella.workers.WorkersManager;
 public final class WorkersManagerImpl implements WorkersManager, Activeable {
 	private final List<Thread> dispatcherThreads = new ArrayList<>();
 	private final WorkersCoordinator workersCoordinator = new WorkersCoordinator(/*workersCount*/5);
+	/**
+	 * Types of work, that can be done by this worker
+	 */
+	private final Map<String, Integer> workTypes;
 
 	/**
 	 * Constructeur.
@@ -45,15 +49,20 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 	 */
 	@Inject
 	public WorkersManagerImpl(
+			@Named("nodeId") final String nodeId,
 			final @Named("workerCount") int workerCount,
-			final WorkerPlugin workerPlugin) {
+			@Named("workTypes") final String workTypes,
+			final WorkersPlugin workerPlugin) {
+		Assertion.checkArgNotEmpty(nodeId);
 		Assertion.checkNotNull(workerPlugin);
+		Assertion.checkArgNotEmpty(workTypes);
 		//-----
+		this.workTypes = WorkDispatcherConfUtil.readWorkTypeConf(workTypes);
 		//		workListener = new WorkListenerImpl(/*analyticsManager*/);
 		//-----
-		for (final Map.Entry<String, Integer> entry : workerPlugin.getWorkTypes().entrySet()) {
+		for (final Map.Entry<String, Integer> entry : this.workTypes.entrySet()) {
 			final String workType = entry.getKey();
-			final WorkDispatcher worker = new WorkDispatcher(workType, workersCoordinator, workerPlugin);
+			final WorkDispatcher worker = new WorkDispatcher(nodeId, workType, workersCoordinator, workerPlugin);
 			final String workTypeName = workType.substring(workType.lastIndexOf('.') + 1);
 			for (int i = 1; i <= entry.getValue(); i++) {
 				dispatcherThreads.add(new Thread(worker, "WorkDispatcher-" + workTypeName + "-" + i));

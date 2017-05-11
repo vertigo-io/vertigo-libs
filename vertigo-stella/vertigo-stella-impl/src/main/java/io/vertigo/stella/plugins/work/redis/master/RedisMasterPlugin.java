@@ -18,11 +18,7 @@
  */
 package io.vertigo.stella.plugins.work.redis.master;
 
-import java.util.Arrays;
-import java.util.List;
-
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
@@ -40,25 +36,15 @@ import io.vertigo.stella.plugins.work.redis.RedisDB;
  */
 public final class RedisMasterPlugin implements MasterPlugin {
 	private final RedisDB redisDB;
-	private final List<String> distributedWorkTypes;
 
 	@Inject
 	public RedisMasterPlugin(
 			final CodecManager codecManager,
-			final RedisConnector redisConnector,
-			@Named("distributedWorkTypes") final String distributedWorkTypes) {
-		Assertion.checkArgNotEmpty(distributedWorkTypes);
+			final RedisConnector redisConnector) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkNotNull(redisConnector);
 		//-----
-		this.distributedWorkTypes = Arrays.asList(distributedWorkTypes.split(";"));
 		redisDB = new RedisDB(codecManager, redisConnector);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public List<String> acceptedWorkTypes() {
-		return distributedWorkTypes;
 	}
 
 	/** {@inheritDoc}*/

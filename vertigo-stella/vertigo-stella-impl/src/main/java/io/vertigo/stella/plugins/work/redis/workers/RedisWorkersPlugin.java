@@ -16,19 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.stella.plugins.work.redis.worker;
-
-import java.util.Map;
+package io.vertigo.stella.plugins.work.redis.workers;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.work.WorkItem;
-import io.vertigo.stella.impl.workers.WorkDispatcherConfUtil;
-import io.vertigo.stella.impl.workers.WorkerPlugin;
+import io.vertigo.stella.impl.workers.WorkersPlugin;
 import io.vertigo.stella.plugins.work.redis.RedisDB;
 
 /**
@@ -38,37 +34,27 @@ import io.vertigo.stella.plugins.work.redis.RedisDB;
  *
  * @author pchretien
  */
-public final class RedisWorkerPlugin implements WorkerPlugin {
-	private final Map<String, Integer> workTypes;
+public final class RedisWorkersPlugin implements WorkersPlugin {
 	private final RedisDB redisDB;
 
+	/**
+	 *
+	 * @param codecManager
+	 * @param redisConnector
+	 */
 	@Inject
-	public RedisWorkerPlugin(
+	public RedisWorkersPlugin(
 			final CodecManager codecManager,
-			final RedisConnector redisConnector,
-			@Named("nodeId") final String nodeId,
-			@Named("workTypes") final String workTypes) {
+			final RedisConnector redisConnector) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkNotNull(redisConnector);
-		Assertion.checkArgNotEmpty(workTypes);
 		//-----
-		this.workTypes = WorkDispatcherConfUtil.readWorkTypeConf(workTypes);
 		redisDB = new RedisDB(codecManager, redisConnector);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Map<String, Integer> getWorkTypes() {
-		return workTypes;
-	}
-
-	/*public List<Node> getNodes() {
-		return redisDB.getNodes();
-	}*/
-
-	/** {@inheritDoc} */
-	@Override
-	public <R, W> WorkItem<R, W> pollWorkItem(final String workType) {
+	public <R, W> WorkItem<R, W> pollWorkItem(final String nodeId, final String workType) {
 		return redisDB.pollWorkItem(workType);
 	}
 

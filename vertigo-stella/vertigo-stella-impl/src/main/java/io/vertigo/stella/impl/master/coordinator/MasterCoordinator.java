@@ -72,17 +72,6 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 		return future;
 	}
 
-	/**
-	 * Indique si ce type de work peut-être distribué.
-	 * @param workItem Travail à effectuer
-	 * @return si ce type de work peut-être distribué.
-	 */
-	public <R, W> boolean accept(final WorkItem<R, W> workItem) {
-		return masterPlugin.acceptedWorkTypes().contains(workItem.getWorkEngineClass().getName());
-	}
-
-	//-----
-
 	private <R> void setResult(final String workId, final R result, final Throwable error) {
 		Assertion.checkArgNotEmpty(workId);
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
