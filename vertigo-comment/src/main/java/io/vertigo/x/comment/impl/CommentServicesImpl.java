@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.DateUtil;
-import io.vertigo.x.account.services.Account;
+import io.vertigo.x.account.identity.Account;
 import io.vertigo.x.comment.services.Comment;
 import io.vertigo.x.comment.services.CommentServices;
 

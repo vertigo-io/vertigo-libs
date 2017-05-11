@@ -45,9 +45,9 @@ import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.util.MapBuilder;
-import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountGroup;
-import io.vertigo.x.account.services.AccountServices;
+import io.vertigo.x.account.identity.Account;
+import io.vertigo.x.account.identity.AccountGroup;
+import io.vertigo.x.account.identity.IdentityManager;
 import io.vertigo.x.comment.MyAppConfig;
 import io.vertigo.x.comment.data.Accounts;
 import io.vertigo.x.comment.services.Comment;
@@ -70,7 +70,7 @@ public final class CommentWebServicesTest {
 	@Inject
 	private CommentServices commentServices;
 	@Inject
-	private AccountServices accountServices;
+	private IdentityManager identityManager;
 
 	@BeforeClass
 	public static void setUp() {
@@ -84,7 +84,7 @@ public final class CommentWebServicesTest {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		}
-		Accounts.initData(accountServices);
+		Accounts.initData(identityManager);
 		account1Uri = Accounts.createAccountURI("1");
 
 		//on triche un peu, car AcountGroup n'est pas un KeyConcept

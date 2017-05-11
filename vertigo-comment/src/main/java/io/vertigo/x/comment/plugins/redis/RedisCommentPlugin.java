@@ -37,7 +37,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.util.MapBuilder;
-import io.vertigo.x.account.services.Account;
+import io.vertigo.x.account.identity.Account;
 import io.vertigo.x.comment.impl.CommentPlugin;
 import io.vertigo.x.comment.services.Comment;
 import redis.clients.jedis.Jedis;

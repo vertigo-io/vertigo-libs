@@ -23,7 +23,7 @@ import java.util.List;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Component;
-import io.vertigo.x.account.services.Account;
+import io.vertigo.x.account.identity.Account;
 
 /**
  * @author pchretien

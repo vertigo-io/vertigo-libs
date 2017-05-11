@@ -47,7 +47,7 @@ public final class MyAppConfig {
 				.withLocales("fr")
 				.addPlugin( ClassPathResourceResolverPlugin.class)
 			.endBoot()
-			.addModule( new PersonaFeatures().withUserSession(TestUserSession.class).build())
+			.addModule(new PersonaFeatures().withUserSession(TestUserSession.class).build())
 			.addModule(new CommonsFeatures()
 					.withRedisConnector(redisHost, redisPort, redisDatabase,Optional.empty())
 					.build())

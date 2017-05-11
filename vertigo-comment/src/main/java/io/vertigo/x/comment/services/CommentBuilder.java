@@ -26,8 +26,8 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.util.DateUtil;
-import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountServices;
+import io.vertigo.x.account.identity.Account;
+import io.vertigo.x.account.identity.IdentityManager;
 
 /**
  * @author pchretien
@@ -47,8 +47,8 @@ public final class CommentBuilder implements Builder<Comment> {
 		//RAF
 	}
 
-	private static AccountServices getAccountManager() {
-		return Home.getApp().getComponentSpace().resolve(AccountServices.class);
+	private static IdentityManager getAccountManager() {
+		return Home.getApp().getComponentSpace().resolve(IdentityManager.class);
 	}
 
 	/**

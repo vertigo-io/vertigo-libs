@@ -32,9 +32,11 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.MessageText;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServices;
+import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.ExcludedFields;
 import io.vertigo.vega.webservice.stereotype.GET;
@@ -43,8 +45,9 @@ import io.vertigo.vega.webservice.stereotype.PUT;
 import io.vertigo.vega.webservice.stereotype.PathParam;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
-import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountServices;
+import io.vertigo.x.account.authc.AuthentificationManager;
+import io.vertigo.x.account.identity.Account;
+import io.vertigo.x.account.identity.IdentityManager;
 import io.vertigo.x.comment.services.Comment;
 import io.vertigo.x.comment.services.CommentServices;
 
@@ -63,7 +66,10 @@ public final class CommentWebServices implements WebServices {
 	private CommentServices commentServices;
 
 	@Inject
-	private AccountServices accountServices;
+	private IdentityManager identityManager;
+
+	@Inject
+	private AuthentificationManager authentificationManager;
 
 	/**
 	 * Gets comments for keyConcept.
@@ -86,8 +92,7 @@ public final class CommentWebServices implements WebServices {
 	@POST("/api/comments")
 	public void publishComment(@ExcludedFields("uuid") final Comment comment, @QueryParam("concept") final String keyConcept, @QueryParam("id") final String id) {
 		final URI<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
-		final URI<Account> loggedAccountURI = accountServices.getLoggedAccount();
-		commentServices.publish(loggedAccountURI, comment, keyConceptURI);
+		commentServices.publish(getLoggedAccountURI(), comment, keyConceptURI);
 	}
 
 	/**
@@ -101,8 +106,7 @@ public final class CommentWebServices implements WebServices {
 		Assertion.checkNotNull(comment);
 		Assertion.checkArgument(uuid.equals(comment.getUuid().toString()), "Comment uuid ({0}) must match WebService route ({1})", comment.getUuid(), uuid);
 		//-----
-		final URI<Account> loggedAccountURI = accountServices.getLoggedAccount();
-		commentServices.update(loggedAccountURI, comment);
+		commentServices.update(getLoggedAccountURI(), comment);
 	}
 
 	//-----
@@ -173,6 +177,12 @@ public final class CommentWebServices implements WebServices {
 			return Long.valueOf(id);
 		}
 		throw new IllegalArgumentException("the id of the keyConcept " + dtDefinition.getLocalName() + " must be String, Long or Integer");
+	}
+
+	private URI<Account> getLoggedAccountURI() {
+		return authentificationManager.getLoggedAccount()
+				.orElseThrow(() -> new VSecurityException(MessageText.of("No account logged in")))
+				.getURI();
 	}
 
 }

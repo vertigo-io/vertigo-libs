@@ -33,9 +33,9 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountGroup;
-import io.vertigo.x.account.services.AccountServices;
+import io.vertigo.x.account.identity.Account;
+import io.vertigo.x.account.identity.AccountGroup;
+import io.vertigo.x.account.identity.IdentityManager;
 import io.vertigo.x.comment.MyAppConfig;
 import io.vertigo.x.comment.data.Accounts;
 import redis.clients.jedis.Jedis;
@@ -43,7 +43,7 @@ import redis.clients.jedis.Jedis;
 public class CommentManagerTest {
 
 	@Inject
-	private AccountServices accountServices;
+	private IdentityManager identityManager;
 	@Inject
 	private CommentServices commentServices;
 	@Inject
@@ -62,7 +62,7 @@ public class CommentManagerTest {
 			jedis.flushAll();
 		}
 		accountURI1 = Accounts.createAccountURI("1");
-		Accounts.initData(accountServices);
+		Accounts.initData(identityManager);
 
 		//on triche un peu, car AcountGroup n'est pas un KeyConcept
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);

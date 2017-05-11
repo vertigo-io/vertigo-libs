@@ -20,7 +20,6 @@ package io.vertigo.x.comment.webservices;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
@@ -28,8 +27,8 @@ import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
 import io.vertigo.vega.webservice.stereotype.SessionInvalidate;
-import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountServices;
+import io.vertigo.x.account.authc.AuthentificationManager;
+import io.vertigo.x.account.authc.UsernameToken;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
@@ -39,14 +38,14 @@ public final class TestLoginWebServices implements WebServices {
 	@Inject
 	private VSecurityManager securityManager;
 	@Inject
-	private AccountServices accountServices;
+	private AuthentificationManager authentificationManager;
 
 	@AnonymousAccessAllowed
 	@GET("/login")
 	public void login(@QueryParam("id") final String id) {
 		//code 200
 		securityManager.getCurrentUserSession().get().authenticate();
-		accountServices.login(DtObjectUtil.createURI(Account.class, id));
+		authentificationManager.authenticate(new UsernameToken(id));
 	}
 
 	@SessionInvalidate
