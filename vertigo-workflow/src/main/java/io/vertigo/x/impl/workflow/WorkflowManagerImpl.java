@@ -31,8 +31,8 @@ import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
-import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountGroup;
+import io.vertigo.x.account.identity.Account;
+import io.vertigo.x.account.identity.AccountGroup;
 import io.vertigo.x.rules.RuleCriteria;
 import io.vertigo.x.rules.domain.RuleConditionDefinition;
 import io.vertigo.x.rules.domain.RuleDefinition;
