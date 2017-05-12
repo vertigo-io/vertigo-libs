@@ -60,7 +60,6 @@ public final class MyAppConfig {
 
 			appConfigBuilder
 			.addModule(commonsFeatures.build())
-			.addModule(new CommonsFeatures().build())
 			.addModule(new DynamoFeatures().build());
 		if (redis){
 			return  appConfigBuilder
