@@ -39,10 +39,10 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountGroup;
-import io.vertigo.x.account.services.AccountServices;
-import io.vertigo.x.account.services.AccountStore;
+import io.vertigo.x.account.identity.Account;
+import io.vertigo.x.account.identity.AccountGroup;
+import io.vertigo.x.account.identity.AccountStore;
+import io.vertigo.x.account.identity.IdentityManager;
 import io.vertigo.x.rules.MyAppConfig;
 import io.vertigo.x.rules.data.MyDummyDtObject;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
@@ -62,7 +62,7 @@ public class RuleServicesSelectorTest extends DbTest {
 	private RuleServices ruleServices;
 
 	@Inject
-	private AccountServices accountServices;
+	private IdentityManager identityManager;
 
 	/**
 	 * Setup
@@ -142,7 +142,7 @@ public class RuleServicesSelectorTest extends DbTest {
 		final Account account = Account.builder("0").withDisplayName("User 1").withEmail("user1@account.vertigo.io")
 				.build();
 
-		final AccountStore accountStore = accountServices.getStore();
+		final AccountStore accountStore = identityManager.getStore();
 		accountStore.saveAccounts(Arrays.asList(account));
 
 		accountStore.saveGroup(accountGroup);
@@ -181,7 +181,7 @@ public class RuleServicesSelectorTest extends DbTest {
 		final Account account = Account.builder("0").withDisplayName("User 1").withEmail("user1@account.vertigo.io")
 				.build();
 
-		final AccountStore accountStore = accountServices.getStore();
+		final AccountStore accountStore = identityManager.getStore();
 		accountStore.saveAccounts(Arrays.asList(account));
 
 		accountStore.saveGroup(accountGroup);
@@ -248,7 +248,7 @@ public class RuleServicesSelectorTest extends DbTest {
 		final Account account_1_2 = Account.builder("1").withDisplayName("User 2 Group 1")
 				.withEmail("user1@account.vertigo.io").build();
 
-		AccountStore accountStore = accountServices.getStore();
+		AccountStore accountStore = identityManager.getStore();
 		accountStore.saveAccounts(Arrays.asList(account_1_1, account_1_2));
 		accountStore.saveGroup(accountGroup_1);
 		accountStore.attach(createAccountURI(account_1_1.getId()), createGroupURI(accountGroup_1.getId()));
@@ -262,7 +262,7 @@ public class RuleServicesSelectorTest extends DbTest {
 		final Account account_2_2 = Account.builder("3").withDisplayName("User 2 Group 2")
 				.withEmail("user1@account.vertigo.io").build();
 
-		accountStore = accountServices.getStore();
+		accountStore = identityManager.getStore();
 		accountStore.saveAccounts(Arrays.asList(account_2_1, account_2_2));
 		accountStore.saveGroup(accountGroup_2);
 		accountStore.attach(createAccountURI(account_2_1.getId()), createGroupURI(accountGroup_2.getId()));

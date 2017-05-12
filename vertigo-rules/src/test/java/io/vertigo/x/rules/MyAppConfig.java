@@ -30,7 +30,7 @@ import io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProvider
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.x.account.AccountFeatures;
-import io.vertigo.x.account.plugins.memory.MemoryAccountStorePlugin;
+import io.vertigo.x.account.plugins.identity.memory.MemoryAccountStorePlugin;
 import io.vertigo.x.rules.data.MyDummyDtObjectProvider;
 import io.vertigo.x.rules.data.TestUserSession;
 import io.vertigo.x.rules.impl.RulesFeatures;
