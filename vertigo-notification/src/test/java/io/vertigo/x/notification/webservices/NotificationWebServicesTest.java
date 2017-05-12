@@ -41,9 +41,9 @@ import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountGroup;
-import io.vertigo.x.account.services.AccountServices;
+import io.vertigo.x.account.identity.Account;
+import io.vertigo.x.account.identity.AccountGroup;
+import io.vertigo.x.account.identity.IdentityManager;
 import io.vertigo.x.notification.MyAppConfig;
 import io.vertigo.x.notification.data.Accounts;
 import io.vertigo.x.notification.services.Notification;
@@ -57,7 +57,7 @@ public final class NotificationWebServicesTest {
 	private static AutoCloseableApp app;
 
 	@Inject
-	private AccountServices accountServices;
+	private IdentityManager identityManager;
 	@Inject
 	private RedisConnector redisConnector;
 	@Inject
@@ -76,7 +76,7 @@ public final class NotificationWebServicesTest {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		}
-		Accounts.initData(accountServices);
+		Accounts.initData(identityManager);
 	}
 
 	@After
@@ -120,7 +120,7 @@ public final class NotificationWebServicesTest {
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		final Set<URI<Account>> accountURIs = accountServices.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
+		final Set<URI<Account>> accountURIs = identityManager.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
 		notificationServices.send(notification, accountURIs);
 
 		RestAssured.given().filter(sessionFilter)
@@ -141,7 +141,7 @@ public final class NotificationWebServicesTest {
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		final Set<URI<Account>> accountURIs = accountServices.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
+		final Set<URI<Account>> accountURIs = identityManager.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
 		notificationServices.send(notification, accountURIs);
 
 		RestAssured.given().filter(sessionFilter)
@@ -185,7 +185,7 @@ public final class NotificationWebServicesTest {
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		final Set<URI<Account>> accountURIs = accountServices.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
+		final Set<URI<Account>> accountURIs = identityManager.getStore().getAccountURIs(DtObjectUtil.createURI(AccountGroup.class, "100"));
 		notificationServices.send(notification1, accountURIs);
 		notificationServices.send(notification2, accountURIs);
 

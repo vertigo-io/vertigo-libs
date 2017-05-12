@@ -24,9 +24,9 @@ import java.util.List;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.util.ListBuilder;
-import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountGroup;
-import io.vertigo.x.account.services.AccountServices;
+import io.vertigo.x.account.identity.Account;
+import io.vertigo.x.account.identity.AccountGroup;
+import io.vertigo.x.account.identity.IdentityManager;
 
 public final class Accounts {
 
@@ -42,34 +42,34 @@ public final class Accounts {
 		return DtObjectUtil.createURI(AccountGroup.class, id);
 	}
 
-	public static void initData(final AccountServices accountServices) {
+	public static void initData(final IdentityManager identityManager) {
 		final Account testAccount0 = Account.builder("0").withDisplayName("John doe").withEmail("john.doe@yopmail.com").build();
 		final Account testAccount1 = Account.builder("1").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
 		final Account testAccount2 = Account.builder("2").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
-		accountServices.getStore().saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2));
+		identityManager.getStore().saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2));
 
 		final URI<Account> accountURI1 = createAccountURI(testAccount1.getId());
 		final URI<Account> accountURI2 = createAccountURI(testAccount2.getId());
 
 		final AccountGroup testAccountGroup1 = new AccountGroup("100", "TIME's cover");
 		final URI<AccountGroup> group1Uri = DtObjectUtil.createURI(AccountGroup.class, testAccountGroup1.getId());
-		accountServices.getStore().saveGroup(testAccountGroup1);
+		identityManager.getStore().saveGroup(testAccountGroup1);
 
-		accountServices.getStore().attach(accountURI1, group1Uri);
-		accountServices.getStore().attach(accountURI2, group1Uri);
+		identityManager.getStore().attach(accountURI1, group1Uri);
+		identityManager.getStore().attach(accountURI2, group1Uri);
 
 		final AccountGroup groupAll = new AccountGroup("ALL", "Everyone");
 		final URI<AccountGroup> groupAllUri = DtObjectUtil.createURI(AccountGroup.class, groupAll.getId());
-		accountServices.getStore().saveGroup(groupAll);
-		accountServices.getStore().attach(accountURI1, groupAllUri);
-		accountServices.getStore().attach(accountURI2, groupAllUri);
+		identityManager.getStore().saveGroup(groupAll);
+		identityManager.getStore().attach(accountURI1, groupAllUri);
+		identityManager.getStore().attach(accountURI2, groupAllUri);
 
 		//---create 5 000 noisy data
 		final List<Account> accounts = createAccounts();
 		for (final Account account : accounts) {
-			accountServices.getStore().saveAccounts(accounts);
+			identityManager.getStore().saveAccounts(accounts);
 			final URI<Account> accountUri = createAccountURI(account.getId());
-			accountServices.getStore().attach(accountUri, groupAllUri);
+			identityManager.getStore().attach(accountUri, groupAllUri);
 		}
 
 	}

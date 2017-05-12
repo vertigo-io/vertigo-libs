@@ -38,9 +38,9 @@ import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountGroup;
-import io.vertigo.x.account.services.AccountServices;
+import io.vertigo.x.account.identity.Account;
+import io.vertigo.x.account.identity.AccountGroup;
+import io.vertigo.x.account.identity.IdentityManager;
 import io.vertigo.x.notification.MyAppConfig;
 import io.vertigo.x.notification.data.Accounts;
 import redis.clients.jedis.Jedis;
@@ -50,7 +50,7 @@ public class NotificationServicesTest {
 	private AutoCloseableApp app;
 
 	@Inject
-	private AccountServices accountServices;
+	private IdentityManager identityManager;
 	@Inject
 	private NotificationServices notificationServices;
 
@@ -90,7 +90,7 @@ public class NotificationServicesTest {
 		accountURI2 = createAccountURI("2");
 		groupURI = new URI<>(DtObjectUtil.findDtDefinition(AccountGroup.class), "100");
 
-		Accounts.initData(accountServices);
+		Accounts.initData(identityManager);
 	}
 
 	@After
@@ -116,7 +116,7 @@ public class NotificationServicesTest {
 					.withContent("discover this amazing app !!")
 					.withTargetUrl("#keyConcept@2")
 					.build();
-			notificationServices.send(notification, accountServices.getStore().getAccountURIs(groupURI));
+			notificationServices.send(notification, identityManager.getStore().getAccountURIs(groupURI));
 		}
 
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
@@ -138,7 +138,7 @@ public class NotificationServicesTest {
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
 
-		notificationServices.send(notification, accountServices.getStore().getAccountURIs(groupURI));
+		notificationServices.send(notification, identityManager.getStore().getAccountURIs(groupURI));
 
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
 		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
@@ -166,7 +166,7 @@ public class NotificationServicesTest {
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
 
-		notificationServices.send(notification, accountServices.getStore().getAccountURIs(groupURI));
+		notificationServices.send(notification, identityManager.getStore().getAccountURIs(groupURI));
 
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
 		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
@@ -195,7 +195,7 @@ public class NotificationServicesTest {
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
 
-		notificationServices.send(notification, accountServices.getStore().getAccountURIs(groupURI));
+		notificationServices.send(notification, identityManager.getStore().getAccountURIs(groupURI));
 
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
 		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());

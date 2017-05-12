@@ -26,15 +26,17 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.lang.MessageText;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.webservice.WebServices;
+import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.DELETE;
 import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.PathParam;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
-import io.vertigo.x.account.services.Account;
-import io.vertigo.x.account.services.AccountServices;
+import io.vertigo.x.account.authc.AuthentificationManager;
+import io.vertigo.x.account.identity.Account;
 import io.vertigo.x.notification.services.Notification;
 import io.vertigo.x.notification.services.NotificationServices;
 
@@ -52,7 +54,7 @@ public final class NotificationWebServices implements WebServices {
 	@Inject
 	private NotificationServices notificationServices;
 	@Inject
-	private AccountServices accountServices;
+	private AuthentificationManager authentificationManager;
 
 	/**
 	 * Get messages for logged user.
@@ -60,7 +62,7 @@ public final class NotificationWebServices implements WebServices {
 	 */
 	@GET("/api/messages")
 	public List<Notification> getMessages() {
-		final URI<Account> loggedAccountURI = accountServices.getLoggedAccount();
+		final URI<Account> loggedAccountURI = getLoggedAccountURI();
 		return notificationServices.getCurrentNotifications(loggedAccountURI);
 	}
 
@@ -70,7 +72,7 @@ public final class NotificationWebServices implements WebServices {
 	 */
 	@DELETE("/api/messages/{uuid}")
 	public void removeMessage(@PathParam("uuid") final String messageUuid) {
-		final URI<Account> loggedAccountURI = accountServices.getLoggedAccount();
+		final URI<Account> loggedAccountURI = getLoggedAccountURI();
 		notificationServices.remove(loggedAccountURI, UUID.fromString(messageUuid));
 	}
 
@@ -80,7 +82,7 @@ public final class NotificationWebServices implements WebServices {
 	 */
 	@DELETE("/api/messages")
 	public void removeMessage(final List<String> messageUuids) {
-		final URI<Account> loggedAccountURI = accountServices.getLoggedAccount();
+		final URI<Account> loggedAccountURI = getLoggedAccountURI();
 		for (final String messageUuid : messageUuids) {
 			notificationServices.remove(loggedAccountURI, UUID.fromString(messageUuid));
 		}
@@ -133,6 +135,12 @@ public final class NotificationWebServices implements WebServices {
 	public String getHelp() {
 		return "##Notification extension"
 				+ "\n This extension manage the notification center.";
+	}
+
+	private URI<Account> getLoggedAccountURI() {
+		return authentificationManager.getLoggedAccount()
+				.orElseThrow(() -> new VSecurityException(MessageText.of("No account logged in")))
+				.getURI();
 	}
 
 }
