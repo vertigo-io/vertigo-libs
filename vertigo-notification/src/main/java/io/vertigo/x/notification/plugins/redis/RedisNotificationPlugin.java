@@ -85,7 +85,9 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				//TODO add expire on data
 				//retirer notifs:all qui ne sert plus à rien
 				//loop on type:$type;target:$target;uuid et on déduit les autres queues de là
-				tx.expire("notif:" + uuid, notification.getTTLInSeconds());
+				if (notification.getTTLInSeconds() > 0) {
+					tx.expire("notif:" + uuid, notification.getTTLInSeconds());
+				}
 				tx.lrem("notifs:all", 0, uuid);
 				tx.lpush("notifs:all", uuid);
 
