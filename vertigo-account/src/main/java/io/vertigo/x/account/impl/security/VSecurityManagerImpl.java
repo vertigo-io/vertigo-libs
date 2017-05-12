@@ -19,6 +19,7 @@
 package io.vertigo.x.account.impl.security;
 
 import java.util.Optional;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,22 +28,24 @@ import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
+import io.vertigo.persona.security.ResourceNameFactory;
+import io.vertigo.persona.security.UserSession;
+import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.persona.security.metamodel.Role;
 import io.vertigo.util.ClassUtil;
-import io.vertigo.x.account.security.UserSession2;
-import io.vertigo.x.account.security.VSecurityManager2;
 
 /**
  * Implementation standard de la gestion centralisee de la UserSession.
  *
  * @author npiedeloup
  */
-public final class VSecurityManager2Impl implements VSecurityManager2, Activeable {
+public final class VSecurityManagerImpl implements VSecurityManager, Activeable {
 
 	/**
 	 * Thread local portant la session utilisteur.
 	 * Utilisateur courant > peut etre null.
 	 */
-	private static final ThreadLocal<UserSession2> USER_SESSION_THREAD_LOCAL = new ThreadLocal<>();
+	private static final ThreadLocal<UserSession> USER_SESSION_THREAD_LOCAL = new ThreadLocal<>();
 
 	private final LocaleManager localeManager;
 	private final String userSessionClassName;
@@ -54,7 +57,7 @@ public final class VSecurityManager2Impl implements VSecurityManager2, Activeabl
 	 * @param userSessionClassName ClassName de l'objet de session utilisateur
 	 */
 	@Inject
-	public VSecurityManager2Impl(final LocaleManager localeManager, @Named("userSessionClassName") final String userSessionClassName) {
+	public VSecurityManagerImpl(final LocaleManager localeManager, @Named("userSessionClassName") final String userSessionClassName) {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkArgNotEmpty(userSessionClassName);
 		//-----
@@ -76,20 +79,20 @@ public final class VSecurityManager2Impl implements VSecurityManager2, Activeabl
 
 	/** {@inheritDoc} */
 	@Override
-	public <U extends UserSession2> U createUserSession() {
+	public <U extends UserSession> U createUserSession() {
 		return (U) ClassUtil.newInstance(userSessionClassName);
 	}
 
 	private LocaleProvider createLocaleProvider() {
 		return () -> {
-			final Optional<UserSession2> userSession = getCurrentUserSession();
+			final Optional<UserSession> userSession = getCurrentUserSession();
 			return userSession.isPresent() ? userSession.get().getLocale() : null;
 		};
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void startCurrentUserSession(final UserSession2 user) {
+	public void startCurrentUserSession(final UserSession user) {
 		Assertion.checkNotNull(user);
 		//On verifie que la UserSession précédante a bien été retiree (securite et memoire).
 		if (USER_SESSION_THREAD_LOCAL.get() != null) {
@@ -107,9 +110,33 @@ public final class VSecurityManager2Impl implements VSecurityManager2, Activeabl
 
 	/** {@inheritDoc} */
 	@Override
-	public <U extends UserSession2> Optional<U> getCurrentUserSession() {
+	public <U extends UserSession> Optional<U> getCurrentUserSession() {
 		final U userSession = (U) USER_SESSION_THREAD_LOCAL.get();
 		return Optional.ofNullable(userSession);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean hasRole(final Set<Role> authorizedRoleSet) {
+		throw new UnsupportedOperationException("Deprecated");
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean isAuthorized(final String resource, final String operation) {
+		throw new UnsupportedOperationException("Deprecated");
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public boolean isAuthorized(final String resourceType, final Object resource, final String operation) {
+		throw new UnsupportedOperationException("Deprecated");
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void registerResourceNameFactory(final String resourceType, final ResourceNameFactory resourceNameFactory) {
+		throw new UnsupportedOperationException("Deprecated");
 	}
 
 }

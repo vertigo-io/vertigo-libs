@@ -21,17 +21,17 @@ package io.vertigo.x.account;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
+import io.vertigo.persona.impl.security.VSecurityManagerImpl;
+import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.x.account.authc.AuthentificationManager;
 import io.vertigo.x.account.identity.IdentityManager;
 import io.vertigo.x.account.impl.authc.AuthentificationManagerImpl;
 import io.vertigo.x.account.impl.identity.AccountDefinitionProvider;
 import io.vertigo.x.account.impl.identity.AccountStorePlugin;
 import io.vertigo.x.account.impl.identity.IdentityManagerImpl;
-import io.vertigo.x.account.impl.security.VSecurityManager2Impl;
 import io.vertigo.x.account.plugins.authc.mock.MockAuthenticatingRealmPlugin;
 import io.vertigo.x.account.plugins.identity.redis.RedisAccountStorePlugin;
 import io.vertigo.x.account.security.UserSession2;
-import io.vertigo.x.account.security.VSecurityManager2;
 
 /**
  * Defines the 'account' extension
@@ -53,7 +53,7 @@ public final class AccountFeatures extends Features {
 	 */
 	public AccountFeatures withUserSession2(final Class<? extends UserSession2> userSessionClass) {
 		getModuleConfigBuilder()
-				.addComponent(VSecurityManager2.class, VSecurityManager2Impl.class,
+				.addComponent(VSecurityManager.class, VSecurityManagerImpl.class,
 						Param.of("userSessionClassName", userSessionClass.getName()));
 		return this;
 	}
