@@ -47,7 +47,6 @@ import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
 import io.vertigo.x.account.authc.AuthentificationManager;
 import io.vertigo.x.account.identity.Account;
-import io.vertigo.x.account.identity.IdentityManager;
 import io.vertigo.x.comment.services.Comment;
 import io.vertigo.x.comment.services.CommentServices;
 
@@ -64,9 +63,6 @@ public final class CommentWebServices implements WebServices {
 
 	@Inject
 	private CommentServices commentServices;
-
-	@Inject
-	private IdentityManager identityManager;
 
 	@Inject
 	private AuthentificationManager authentificationManager;
