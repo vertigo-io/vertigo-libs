@@ -39,6 +39,7 @@ import io.vertigo.x.account.authc.AuthenticationToken;
 import io.vertigo.x.account.authc.UsernamePasswordToken;
 import io.vertigo.x.account.identity.Account;
 import io.vertigo.x.account.impl.authc.AuthenticatingRealmPlugin;
+import junit.framework.Assert;
 
 public final class LdapAuthenticatingRealmPlugin implements AuthenticatingRealmPlugin {
 	private static final Logger LOGGER = Logger.getLogger(LdapAuthenticatingRealmPlugin.class);
@@ -78,7 +79,7 @@ public final class LdapAuthenticatingRealmPlugin implements AuthenticatingRealmP
 		LdapContext ldapContext = null;
 		try {
 			ldapContext = createLdapContext(usernamePasswordToken.getUsername(), usernamePasswordToken.getPassword());
-			ldapContext.lookup(userDnPrefix + usernamePasswordToken.getUsername() + userDnSuffix);
+			//ldapContext.lookup(userDn);
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Ouverture de connexion LDAP  \"" + ldapContext.toString() + "\"");
 			}
@@ -117,7 +118,8 @@ public final class LdapAuthenticatingRealmPlugin implements AuthenticatingRealmP
 		final String url = "ldap://" + ldapServer;
 		env.put(Context.PROVIDER_URL, url);
 		if (credentials != null) {
-			env.put(Context.SECURITY_PRINCIPAL, protectLdap(principal));
+			final String userDn = userDnPrefix + protectLdap(principal) + userDnSuffix;
+			env.put(Context.SECURITY_PRINCIPAL, protectLdap(userDn));
 			env.put(Context.SECURITY_CREDENTIALS, protectLdap(credentials));
 		} else {
 			env.put(Context.SECURITY_AUTHENTICATION, "none");
@@ -126,7 +128,8 @@ public final class LdapAuthenticatingRealmPlugin implements AuthenticatingRealmP
 	}
 
 	private static String protectLdap(final String principal) {
-		return EsapiLdapEncoder.encodeForDN(principal);
+		Assert.assertEquals(principal, EsapiLdapEncoder.encodeForLDAP(principal));
+		return EsapiLdapEncoder.encodeForLDAP(principal);
 	}
 
 	private static void closeLdapContext(final LdapContext ldapContext) {

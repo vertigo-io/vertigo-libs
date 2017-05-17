@@ -38,6 +38,7 @@ import io.vertigo.x.account.authz.AccessControlManager;
 import io.vertigo.x.account.authz.metamodel.Permission;
 import io.vertigo.x.account.authz.metamodel.PermissionName;
 import io.vertigo.x.account.authz.metamodel.Role;
+import io.vertigo.x.account.data.TestUserSession;
 
 /**
  * @author pchretien

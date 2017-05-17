@@ -25,11 +25,11 @@ import io.vertigo.persona.impl.security.VSecurityManagerImpl;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.x.account.authc.AuthentificationManager;
 import io.vertigo.x.account.identity.IdentityManager;
+import io.vertigo.x.account.impl.authc.AuthenticatingRealmPlugin;
 import io.vertigo.x.account.impl.authc.AuthentificationManagerImpl;
 import io.vertigo.x.account.impl.identity.AccountDefinitionProvider;
 import io.vertigo.x.account.impl.identity.AccountStorePlugin;
 import io.vertigo.x.account.impl.identity.IdentityManagerImpl;
-import io.vertigo.x.account.plugins.authc.mock.MockAuthenticatingRealmPlugin;
 import io.vertigo.x.account.plugins.identity.redis.RedisAccountStorePlugin;
 import io.vertigo.x.account.security.UserSession2;
 
@@ -67,6 +67,18 @@ public final class AccountFeatures extends Features {
 	}
 
 	/**
+	 * Defines a Authenticating realm.
+	 * @param authenticatingRealmPluginClass
+	 * @param params
+	 * @return the features
+	 */
+	public AccountFeatures withAuthentificationRealm(final Class<? extends AuthenticatingRealmPlugin> authenticatingRealmPluginClass, final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(authenticatingRealmPluginClass, params);
+		return this;
+	}
+
+	/**
 	 * @param accountStorePluginClass
 	 * @param params
 	 * @return the features
@@ -83,7 +95,6 @@ public final class AccountFeatures extends Features {
 		getModuleConfigBuilder()
 				.addDefinitionProvider(DefinitionProviderConfig.builder(AccountDefinitionProvider.class).build())
 				.addComponent(AuthentificationManager.class, AuthentificationManagerImpl.class)
-				.addPlugin(MockAuthenticatingRealmPlugin.class)
 				.addComponent(IdentityManager.class, IdentityManagerImpl.class);
 	}
 

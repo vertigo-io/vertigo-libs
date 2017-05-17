@@ -27,6 +27,6 @@ public final class TestUserSession extends UserSession {
 
 	@Override
 	public Locale getLocale() {
-		return Locale.FRENCH;
+		return Locale.FRANCE;
 	}
 }
