@@ -621,7 +621,6 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void handleDeadNodeProcesses() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Long now = System.currentTimeMillis();
 			// We wait two heartbeat to be sure that the node is dead
 			final String deadNodeIds = nodeManager.getDeadNodes()
 					.stream()
