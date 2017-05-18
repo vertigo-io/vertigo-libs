@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.struts2.core.AbstractActionSupport.AcceptCtxQueryParam;
 import io.vertigo.struts2.core.ContextForm;
@@ -109,7 +108,7 @@ public class AccueilAction extends AbstractTestActionSupport {
 
 	public String uploadFile() {
 		if (!fileTestFileRef.exists()) {
-			throw new VUserException(MessageText.of("Aucun fichier uploadé."));
+			throw new VUserException("Aucun fichier uploadé.");
 		}
 		final VFile vFile = fileTestFileRef.get();
 		getUiMessageStack().addGlobalMessage(Level.INFO, "Fichier recu : " + vFile.getFileName() + " (" + vFile.getMimeType() + ")");

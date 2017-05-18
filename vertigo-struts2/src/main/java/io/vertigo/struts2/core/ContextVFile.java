@@ -25,7 +25,6 @@ import org.apache.struts2.dispatcher.multipart.UploadedFile;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 
 /**
@@ -68,7 +67,7 @@ public final class ContextVFile {
 		Assertion.checkState(!action.getModel().containsKey(contextKeyVFile), "File {0} already extracted. Extract it once and keep it, think about store it", contextKeyFile);
 		final UploadedFile[] filesRef = UploadedFile[].class.cast(action.getModel().get(contextKeyFile));
 		if (filesRef == null || filesRef.length == 0) {
-			throw new VUserException(MessageText.of("Le fichier attendu ({0}) n'a pas été envoyé", contextKeyFile));
+			throw new VUserException("Le fichier attendu ({0}) n'a pas été envoyé", contextKeyFile);
 		}
 		final String[] filesName = String[].class.cast(action.getModel().get(contextKeyFileName));
 		final String[] filesContentType = String[].class.cast(action.getModel().get(contextKeyContentType));

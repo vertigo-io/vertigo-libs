@@ -31,7 +31,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.struts2.core.AbstractActionSupport;
 import io.vertigo.struts2.core.ContextRef;
@@ -70,7 +69,7 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 		final String searchString = termRef.get();
 		final Object contextList = getModel().get(listRef.get());
 		if (!(contextList instanceof UiList)) {
-			throw new VUserException(MessageText.of("La liste n'est pas du bon type {0}", listRef.get()));
+			throw new VUserException("La liste n'est pas du bon type {0}", listRef.get());
 		}
 		final DtList<D> list = ((UiList<D>) contextList).mergeAndCheckInput(Collections.EMPTY_LIST, getUiMessageStack());
 		final DtDefinition dtDefinition = list.getDefinition();

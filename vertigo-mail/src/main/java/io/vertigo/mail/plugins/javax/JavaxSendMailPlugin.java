@@ -48,7 +48,6 @@ import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageKey;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.mail.Mail;
@@ -289,7 +288,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	}
 
 	private static VUserException createMailException(final MessageKey messageKey, final MessagingException messagingException, final Serializable... params) {
-		final VUserException mailException = new VUserException(MessageText.of(messageKey, params));
+		final VUserException mailException = new VUserException(messageKey, params);
 		mailException.initCause(messagingException);
 		return mailException;
 	}
