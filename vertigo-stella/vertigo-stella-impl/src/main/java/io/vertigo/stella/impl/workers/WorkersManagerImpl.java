@@ -37,7 +37,7 @@ import io.vertigo.stella.workers.WorkersManager;
  */
 public final class WorkersManagerImpl implements WorkersManager, Activeable {
 	private final List<Thread> dispatcherThreads = new ArrayList<>();
-	private final WorkersCoordinator workersCoordinator = new WorkersCoordinator(/*workersCount*/5);
+	private final WorkersCoordinator workersCoordinator;
 	/**
 	 * Types of work, that can be done by this worker
 	 */
@@ -45,18 +45,19 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 
 	/**
 	 * Constructeur.
-	 * @param workerCount Nb workers
+	 * @param workersCount Nb workers
 	 */
 	@Inject
 	public WorkersManagerImpl(
 			@Named("nodeId") final String nodeId,
-			final @Named("workerCount") int workerCount,
+			final @Named("workersCount") int workersCount,
 			@Named("workTypes") final String workTypes,
 			final WorkersPlugin workerPlugin) {
 		Assertion.checkArgNotEmpty(nodeId);
 		Assertion.checkNotNull(workerPlugin);
 		Assertion.checkArgNotEmpty(workTypes);
 		//-----
+		workersCoordinator = new WorkersCoordinator(workersCount);
 		this.workTypes = WorkDispatcherConfUtil.readWorkTypeConf(workTypes);
 		//		workListener = new WorkListenerImpl(/*analyticsManager*/);
 		//-----
