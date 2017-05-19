@@ -33,7 +33,7 @@ import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.database.SqlDataBaseManager;
 import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlCallableStatement;
+import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.WrappedException;
@@ -88,9 +88,9 @@ public class DataBaseInitializer implements ComponentInitializer {
 	}
 
 	private static void execCallableStatement(final SqlConnection connection, final SqlDataBaseManager sqlDataBaseManager, final String sql) {
-		try (final SqlCallableStatement callableStatement = sqlDataBaseManager.createCallableStatement(connection, sql)) {
-			callableStatement.init();
-			callableStatement.executeUpdate();
+		try (final SqlPreparedStatement preparedStatement = sqlDataBaseManager.createPreparedStatement(connection, sql, false)) {
+			preparedStatement.init();
+			preparedStatement.executeUpdate();
 		} catch (final SQLException e) {
 			throw WrappedException.wrap(e, "Can't exec command {0}", sql);
 		}

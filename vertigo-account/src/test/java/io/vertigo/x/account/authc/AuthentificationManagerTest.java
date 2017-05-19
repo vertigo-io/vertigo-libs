@@ -29,11 +29,9 @@ import org.junit.Test;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.x.account.identity.Account;
-import io.vertigo.x.account.identity.IdentityManager;
 
 /**
  * Implementation standard de la gestion centralisee des droits d'acces.
@@ -43,12 +41,6 @@ import io.vertigo.x.account.identity.IdentityManager;
 public final class AuthentificationManagerTest {
 
 	private AutoCloseableApp app;
-
-	@Inject
-	private IdentityManager identityManager;
-
-	@Inject
-	private FileManager fileManager;
 
 	@Inject
 	private VSecurityManager securityManager;
