@@ -21,7 +21,6 @@ package io.vertigo.struts2.services.users;
 import javax.inject.Inject;
 
 import io.vertigo.dynamo.transaction.Transactional;
-import io.vertigo.lang.MessageText;
 import io.vertigo.lang.VUserException;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.struts2.domain.users.ApplicationUser;
@@ -40,7 +39,7 @@ public class UserServicesImpl implements UserServices {
 		if (login == null || password == null
 				|| login.isEmpty() || password.isEmpty()
 				|| login.startsWith(password) || password.startsWith(login)) {
-			throw new VUserException(UserResources.INVALID_CREDENTIALS
+			throw new VUserException(UserResources.INVALID_CREDENTIALS);
 		}
 
 		final ApplicationUser applicationUser = new ApplicationUser();
