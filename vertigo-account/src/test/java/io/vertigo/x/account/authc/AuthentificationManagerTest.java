@@ -101,7 +101,7 @@ public final class AuthentificationManagerTest {
 
 	@Test
 	public void testLogout() {
-		final Optional<Account> account = authenticateSuccess();
+		//		final Optional<Account> account = authenticateSuccess();
 		final Optional<UserSession> userSession = securityManager.getCurrentUserSession();
 		Assert.assertTrue("No UserSession", userSession.isPresent());
 		Assert.assertTrue("Not authenticated", userSession.get().isAuthenticated());
