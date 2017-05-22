@@ -77,7 +77,7 @@ final class RestQueueServer {
 		deadWorkTypeTimeoutSec = 60; //by convention : dead workType timeout after 60s
 		this.codecManager = codecManager;
 
-		daemonManager.registerDaemon("workQueueTimeoutCheck", () -> new DeadNodeDetectorDaemon(this), 10);
+		daemonManager.registerDaemon("DMN_WORK_QUEUE_TIMEOUT_CHECK", () -> new DeadNodeDetectorDaemon(this), 10);
 	}
 
 	/**
