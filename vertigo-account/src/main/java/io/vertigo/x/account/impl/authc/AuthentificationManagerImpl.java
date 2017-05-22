@@ -23,7 +23,6 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.persona.security.UserSession;
 import io.vertigo.persona.security.VSecurityManager;
@@ -99,9 +98,9 @@ public final class AuthentificationManagerImpl implements AuthentificationManage
 		for (final AuthenticatingRealmPlugin authenticatingRealmPlugin : authenticatingRealmPlugins) {
 			if (authenticatingRealmPlugin.supports(token)) {
 				tokenSupported = true;
-				final Optional<URI<Account>> accountURI = authenticatingRealmPlugin.authenticateAccount(token);
-				if (accountURI.isPresent()) {
-					return Optional.of(identityManager.getStore().getAccount(accountURI.get()));
+				final Optional<String> accountAuthToken = authenticatingRealmPlugin.authenticateAccount(token);
+				if (accountAuthToken.isPresent()) {
+					return identityManager.getAccountByAuthToken(accountAuthToken.get());
 				}
 			}
 		}

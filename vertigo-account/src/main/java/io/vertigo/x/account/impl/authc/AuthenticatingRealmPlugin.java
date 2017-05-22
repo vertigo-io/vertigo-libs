@@ -20,10 +20,8 @@ package io.vertigo.x.account.impl.authc;
 
 import java.util.Optional;
 
-import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Plugin;
 import io.vertigo.x.account.authc.AuthenticationToken;
-import io.vertigo.x.account.identity.Account;
 
 /**
  * Plugin use for authentification.
@@ -43,8 +41,8 @@ public interface AuthenticatingRealmPlugin extends Plugin {
 
 	/**
 	 * @param token the token being submitted for authentication.
-	 * @return the Account corresponding to the given token, or Option.empty if no Account could be found or credentials don't match.
+	 * @return Validated Principal corresponding to the given token, or Option.empty if authentication fail.
 	 */
-	Optional<URI<Account>> authenticateAccount(AuthenticationToken token);
+	Optional<String> authenticateAccount(AuthenticationToken token);
 
 }

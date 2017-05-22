@@ -65,7 +65,7 @@ public final class AuthentificationManagerTest {
 
 	@Test
 	public void testAuthenticateFail() {
-		final AuthenticationToken token = new UsernamePasswordToken("badUserName", "badPassword");
+		final AuthenticationToken token = new UsernamePasswordAuthenticationToken("badUserName", "badPassword");
 		final Optional<Account> account = authentificationManager.authenticate(token);
 		Assert.assertFalse("Shouldn't found any account with a bad login", account.isPresent());
 
@@ -80,7 +80,7 @@ public final class AuthentificationManagerTest {
 	}
 
 	private Optional<Account> authenticateSuccess() {
-		final AuthenticationToken token = new UsernamePasswordToken("ISIS", "Azerty1!");
+		final AuthenticationToken token = new UsernamePasswordAuthenticationToken("msa-KNOCK-Search", "vRQmEPjPi9byJjx1A3TdGFj4");
 		final Optional<Account> account = authentificationManager.authenticate(token);
 		Assert.assertTrue("Authent fail", account.isPresent());
 

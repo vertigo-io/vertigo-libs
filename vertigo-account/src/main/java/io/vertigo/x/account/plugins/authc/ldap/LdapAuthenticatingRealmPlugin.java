@@ -23,6 +23,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.naming.CommunicationException;
 import javax.naming.Context;
 import javax.naming.NamingException;
 import javax.naming.ldap.InitialLdapContext;
@@ -30,16 +31,13 @@ import javax.naming.ldap.LdapContext;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.MessageText;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.x.account.authc.AuthenticationToken;
-import io.vertigo.x.account.authc.UsernamePasswordToken;
-import io.vertigo.x.account.identity.Account;
+import io.vertigo.x.account.authc.UsernamePasswordAuthenticationToken;
 import io.vertigo.x.account.impl.authc.AuthenticatingRealmPlugin;
-import junit.framework.Assert;
 
 public final class LdapAuthenticatingRealmPlugin implements AuthenticatingRealmPlugin {
 	private static final Logger LOGGER = Logger.getLogger(LdapAuthenticatingRealmPlugin.class);
@@ -49,55 +47,54 @@ public final class LdapAuthenticatingRealmPlugin implements AuthenticatingRealmP
 	private static final String DEFAULT_REFERRAL = "follow";
 
 	private static final String USERDN_SUBSTITUTION_TOKEN = "{0}";
-	private String userDnPrefix;
-	private String userDnSuffix;
+	private String userLoginPrefix;
+	private String userLoginSuffix;
 	private final String ldapServer;
 
 	/**
 	 * Constructor.
-	 * @param userDnTemplate userDnTemplate
+	 * @param userLoginTemplate userLoginTemplate
 	 * @param ldapServerHost Ldap Server host
 	 * @param ldapServerPort Ldap server port (default : 389)
 	 */
 	@Inject
-	public LdapAuthenticatingRealmPlugin(@Named("userDnTemplate") final String userDnTemplate,
+	public LdapAuthenticatingRealmPlugin(@Named("userLoginTemplate") final String userLoginTemplate,
 			@Named("ldapServerHost") final String ldapServerHost, @Named("ldapServerPort") final String ldapServerPort) {
-		parseUserDnTemplate(userDnTemplate);
+		parseUserLoginTemplate(userLoginTemplate);
 		ldapServer = ldapServerHost + ":" + ldapServerPort;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean supports(final AuthenticationToken token) {
-		return token instanceof UsernamePasswordToken;
+		return token instanceof UsernamePasswordAuthenticationToken;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<URI<Account>> authenticateAccount(final AuthenticationToken token) {
-		final UsernamePasswordToken usernamePasswordToken = (UsernamePasswordToken) token;
+	public Optional<String> authenticateAccount(final AuthenticationToken token) {
+		final UsernamePasswordAuthenticationToken usernamePasswordToken = (UsernamePasswordAuthenticationToken) token;
 		LdapContext ldapContext = null;
 		try {
-			ldapContext = createLdapContext(usernamePasswordToken.getUsername(), usernamePasswordToken.getPassword());
-			//ldapContext.lookup(userDn);
+			final String userProtectedDn = userLoginPrefix + protectLdap(usernamePasswordToken.getPrincipal()) + userLoginSuffix;
+			ldapContext = createLdapContext(userProtectedDn, usernamePasswordToken.getPrincipal(), usernamePasswordToken.getPassword());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Ouverture de connexion LDAP  \"" + ldapContext.toString() + "\"");
 			}
-			return Optional.of(new URI<Account>(DtObjectUtil.findDtDefinition(Account.class), token.getUsername()));
+			return Optional.of(token.getPrincipal());
 		} catch (final NamingException e) {
-			LOGGER.info("Authentification de l'utilisateur " + usernamePasswordToken.getUsername() + " auprès de l'annuaire LDAP : KO", e);
-			return Optional.empty();
+			return Optional.empty(); //can't connect user
 		} finally {
 			closeLdapContext(ldapContext);
 		}
 	}
 
-	private void parseUserDnTemplate(final String template) {
+	private void parseUserLoginTemplate(final String template) {
 		Assertion.checkArgNotEmpty(template, "User DN template cannot be null or empty.");
 		//----
 		final int index = template.indexOf(USERDN_SUBSTITUTION_TOKEN);
 		if (index < 0) {
-			final String msg = "User DN template must contain the '" +
+			final String msg = "User Login template must contain the '" +
 					USERDN_SUBSTITUTION_TOKEN + "' replacement token to understand where to " +
 					"insert the runtime authentication principal.";
 			throw new IllegalArgumentException(msg);
@@ -105,11 +102,11 @@ public final class LdapAuthenticatingRealmPlugin implements AuthenticatingRealmP
 		final String prefix = template.substring(0, index);
 		final String suffix = template.substring(prefix.length() + USERDN_SUBSTITUTION_TOKEN.length());
 
-		userDnPrefix = prefix;
-		userDnSuffix = suffix;
+		userLoginPrefix = prefix;
+		userLoginSuffix = suffix;
 	}
 
-	private LdapContext createLdapContext(final String principal, final String credentials) throws NamingException {
+	private LdapContext createLdapContext(final String userProtectedPrincipal, final String principal, final String credentials) throws NamingException {
 		final Hashtable<String, String> env = new Hashtable<>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY, DEFAULT_CONTEXT_FACTORY_CLASS_NAME);
 		env.put(Context.REFERRAL, DEFAULT_REFERRAL);
@@ -118,18 +115,20 @@ public final class LdapAuthenticatingRealmPlugin implements AuthenticatingRealmP
 		final String url = "ldap://" + ldapServer;
 		env.put(Context.PROVIDER_URL, url);
 		if (credentials != null) {
-			final String userDn = userDnPrefix + protectLdap(principal) + userDnSuffix;
-			env.put(Context.SECURITY_PRINCIPAL, protectLdap(userDn));
-			env.put(Context.SECURITY_CREDENTIALS, protectLdap(credentials));
+			env.put(Context.SECURITY_PRINCIPAL, userProtectedPrincipal);
+			env.put(Context.SECURITY_CREDENTIALS, credentials);
 		} else {
 			env.put(Context.SECURITY_AUTHENTICATION, "none");
 		}
-		return new InitialLdapContext(env, null);
+		try {
+			return new InitialLdapContext(env, null);
+		} catch (final CommunicationException e) {
+			throw WrappedException.wrap(e, "Can't connect to LDAP : {0} ", ldapServer);
+		}
 	}
 
 	private static String protectLdap(final String principal) {
-		Assert.assertEquals(principal, EsapiLdapEncoder.encodeForLDAP(principal));
-		return EsapiLdapEncoder.encodeForLDAP(principal);
+		return EsapiLdapEncoder.encodeForDN(principal);
 	}
 
 	private static void closeLdapContext(final LdapContext ldapContext) {

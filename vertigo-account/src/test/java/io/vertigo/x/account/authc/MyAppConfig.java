@@ -71,7 +71,10 @@ public final class MyAppConfig {
 		return  appConfigBuilder
 			.addModule(new AccountFeatures()
 					.withAccountStorePlugin(MemoryAccountStorePlugin.class)
-					.withAuthentificationRealm(LdapAuthenticatingRealmPlugin.class, Param.of("userDnTemplate", "ou={0},ou=AppProxies,ou=infrastructure,dc=justice,dc=fr"), Param.of("ldapServerHost", "172.20.84.99"), Param.of("ldapServerPort", "389"))
+					.withAuthentificationRealm(LdapAuthenticatingRealmPlugin.class,
+							Param.of("userLoginTemplate", "{0}@KLEE.LAN.NET"),
+							Param.of("ldapServerHost", "172.20.100.10"),
+							Param.of("ldapServerPort", "3268"))
 					.build());
 		// @formatter:on
 	}

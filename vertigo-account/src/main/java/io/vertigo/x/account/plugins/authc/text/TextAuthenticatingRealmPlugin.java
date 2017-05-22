@@ -36,15 +36,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.x.account.authc.AuthenticationToken;
-import io.vertigo.x.account.authc.UsernamePasswordToken;
-import io.vertigo.x.account.authc.UsernameToken;
-import io.vertigo.x.account.identity.Account;
+import io.vertigo.x.account.authc.UsernameAuthenticationToken;
+import io.vertigo.x.account.authc.UsernamePasswordAuthenticationToken;
 import io.vertigo.x.account.impl.authc.AuthenticatingRealmPlugin;
 
 /**
@@ -59,8 +56,8 @@ import io.vertigo.x.account.impl.authc.AuthenticatingRealmPlugin;
  * @since 0.1
  */
 public class TextAuthenticatingRealmPlugin implements AuthenticatingRealmPlugin, Activeable {
-	private static final String FILE_CREDENTIAL_PATTERN_STR = "^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s*$";
-	private static final Pattern FILE_CREDENTIAL_PATTERN = Pattern.compile(FILE_CREDENTIAL_PATTERN_STR);
+	private static final String FILE_PATTERN_STR = "^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s*$";
+	private static final Pattern FILE_PATTERN = Pattern.compile(FILE_PATTERN_STR);
 
 	private final Map<String, AuthenticationAccountInfo> users; //username-to-SimpleAccount
 	private final ReadWriteLock userLocks;
@@ -87,36 +84,24 @@ public class TextAuthenticatingRealmPlugin implements AuthenticatingRealmPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public boolean supports(final AuthenticationToken token) {
-		return token instanceof UsernameToken
-				|| token instanceof UsernamePasswordToken;
+		return token instanceof UsernameAuthenticationToken
+				|| token instanceof UsernamePasswordAuthenticationToken;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<URI<Account>> authenticateAccount(final AuthenticationToken token) {
-		final String accountKey = getAccountKey(token);
+	public Optional<String> authenticateAccount(final AuthenticationToken token) {
 		userLocks.readLock().lock();
 		try {
-			final AuthenticationAccountInfo authenticationAccountInfo = users.get(accountKey);
+			final AuthenticationAccountInfo authenticationAccountInfo = users.get(token.getPrincipal());
 			if (authenticationAccountInfo != null //Username exists
 					&& token.match(authenticationAccountInfo.getAuthenticationToken())) { //and tokens match
-				return Optional.of(authenticationAccountInfo.getAccountURI());
+				return Optional.of(authenticationAccountInfo.getAccountKey());
 			}
 			return Optional.empty();
 		} finally {
 			userLocks.readLock().unlock();
 		}
-	}
-
-	private static String getAccountKey(final AuthenticationToken token) {
-		Assertion.checkNotNull(token);
-		//----
-		if (token instanceof UsernameToken) {
-			return "U:" + ((UsernameToken) token).getUsername();
-		} else if (token instanceof UsernamePasswordToken) {
-			return "U:" + ((UsernamePasswordToken) token).getUsername();
-		}
-		throw new IllegalArgumentException("this realm don't support this Token " + token.getClass().getSimpleName());
 	}
 
 	/** {@inheritDoc} */
@@ -128,7 +113,7 @@ public class TextAuthenticatingRealmPlugin implements AuthenticatingRealmPlugin,
 			try (final Scanner scanner = new Scanner(confTest)) {
 				while (scanner.hasNextLine()) {
 					final String line = scanner.nextLine();
-					parseCredential(line);
+					parseUserInfo(line);
 				}
 			}
 		} catch (final Exception e) {
@@ -136,19 +121,18 @@ public class TextAuthenticatingRealmPlugin implements AuthenticatingRealmPlugin,
 		}
 	}
 
-	private void parseCredential(final String line) {
-		final Matcher matcher = FILE_CREDENTIAL_PATTERN.matcher(line);
+	private void parseUserInfo(final String line) {
+		final Matcher matcher = FILE_PATTERN.matcher(line);
 		final String accountKey = matcher.group(1);
 		final String username = matcher.group(2);
 		final String password = matcher.group(3);
-		final URI<Account> accountURI = new URI<>(DtObjectUtil.findDtDefinition(Account.class), accountKey);
 		final AuthenticationToken authenticationToken;
 		if (password.isEmpty()) {
-			authenticationToken = new UsernameToken(username);
+			authenticationToken = new UsernameAuthenticationToken(username);
 		} else {
-			authenticationToken = new UsernamePasswordToken(username, password);
+			authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
 		}
-		users.put(accountKey, new AuthenticationAccountInfo(accountURI, authenticationToken));
+		users.put(username, new AuthenticationAccountInfo(accountKey, authenticationToken));
 	}
 
 	private static String parseFile(final URL url) throws IOException {

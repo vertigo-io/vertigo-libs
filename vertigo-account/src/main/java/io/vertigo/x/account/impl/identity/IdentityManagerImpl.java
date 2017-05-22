@@ -18,11 +18,14 @@
  */
 package io.vertigo.x.account.impl.identity;
 
+import java.util.Optional;
+
 import javax.inject.Inject;
 
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
+import io.vertigo.x.account.identity.Account;
 import io.vertigo.x.account.identity.AccountStore;
 import io.vertigo.x.account.identity.IdentityManager;
 
@@ -31,6 +34,7 @@ import io.vertigo.x.account.identity.IdentityManager;
  */
 public final class IdentityManagerImpl implements IdentityManager {
 	private final AccountStore accountStorePlugin;
+	private final IdentityRealmPlugin identityRealmPlugin;
 	private final VFile defaultPhoto;
 
 	/**
@@ -39,11 +43,13 @@ public final class IdentityManagerImpl implements IdentityManager {
 	 * @param fileManager File Manager
 	 */
 	@Inject
-	public IdentityManagerImpl(final AccountStorePlugin accountStorePlugin, final FileManager fileManager) {
+	public IdentityManagerImpl(final AccountStorePlugin accountStorePlugin, final IdentityRealmPlugin identityRealmPlugin, final FileManager fileManager) {
 		Assertion.checkNotNull(accountStorePlugin);
+		Assertion.checkNotNull(identityRealmPlugin);
 		Assertion.checkNotNull(fileManager);
 		//-----
 		this.accountStorePlugin = accountStorePlugin;
+		this.identityRealmPlugin = identityRealmPlugin;
 		defaultPhoto = fileManager.createFile("defaultPhoto.png", "image/png", IdentityManagerImpl.class.getResource("defaultPhoto.png"));
 	}
 
@@ -57,5 +63,11 @@ public final class IdentityManagerImpl implements IdentityManager {
 	@Override
 	public AccountStore getStore() {
 		return accountStorePlugin;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public Optional<Account> getAccountByAuthToken(final String userAuthToken) {
+		return identityRealmPlugin.getAccountByAuthToken(userAuthToken);
 	}
 }

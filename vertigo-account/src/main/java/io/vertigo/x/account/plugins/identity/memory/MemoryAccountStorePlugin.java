@@ -176,6 +176,7 @@ public final class MemoryAccountStorePlugin implements AccountStorePlugin {
 		return Optional.ofNullable(photoByAccountURI.get(accountURI));
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public void reset() {
 		photoByAccountURI.clear();

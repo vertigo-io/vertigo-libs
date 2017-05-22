@@ -16,32 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.x.account.identity;
+package io.vertigo.x.account.impl.identity;
 
 import java.util.Optional;
 
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Manager;
+import io.vertigo.lang.Plugin;
+import io.vertigo.x.account.identity.Account;
 
 /**
- * Gestion centralisee des droits d'acces.
- *
- * @author npiedeloup
+ * @author pchretien, npiedeloup
  */
-public interface IdentityManager extends Manager {
-
-	/**
-	 * Gets the default photo of an account.
-	 *
-	 * @return the photo as a file
-	 */
-	VFile getDefaultPhoto();
-
-	/**
-	 * @return the store of accounts
-	 */
-	AccountStore getStore();
-
+public interface IdentityRealmPlugin extends Plugin {
 	/**
 	 * Get an newly authentify user by his authToken.
 	 * @param userAuthToken user authToken

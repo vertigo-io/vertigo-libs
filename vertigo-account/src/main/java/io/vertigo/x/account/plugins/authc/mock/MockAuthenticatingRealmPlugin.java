@@ -20,11 +20,8 @@ package io.vertigo.x.account.plugins.authc.mock;
 
 import java.util.Optional;
 
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.x.account.authc.AuthenticationToken;
-import io.vertigo.x.account.authc.UsernameToken;
-import io.vertigo.x.account.identity.Account;
+import io.vertigo.x.account.authc.UsernameAuthenticationToken;
 import io.vertigo.x.account.impl.authc.AuthenticatingRealmPlugin;
 
 /**
@@ -36,13 +33,13 @@ public class MockAuthenticatingRealmPlugin implements AuthenticatingRealmPlugin 
 	/** {@inheritDoc} */
 	@Override
 	public boolean supports(final AuthenticationToken token) {
-		return token instanceof UsernameToken;
+		return token instanceof UsernameAuthenticationToken;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<URI<Account>> authenticateAccount(final AuthenticationToken token) {
-		return Optional.of(new URI<Account>(DtObjectUtil.findDtDefinition(Account.class), token.getUsername()));
+	public Optional<String> authenticateAccount(final AuthenticationToken token) {
+		return Optional.of(token.getPrincipal());
 	}
 
 }

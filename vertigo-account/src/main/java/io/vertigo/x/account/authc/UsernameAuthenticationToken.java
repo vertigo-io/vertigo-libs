@@ -6,7 +6,7 @@ import io.vertigo.lang.Assertion;
 /**
  * @author npiedeloup
  */
-public class UsernameToken implements AuthenticationToken {
+public class UsernameAuthenticationToken implements AuthenticationToken {
 
 	/**
 	 * The username
@@ -16,7 +16,7 @@ public class UsernameToken implements AuthenticationToken {
 	/**
 	 * @param username the username submitted for authentication
 	 */
-	public UsernameToken(final String username) {
+	public UsernameAuthenticationToken(final String username) {
 		Assertion.checkArgNotEmpty(username);
 		//----
 		this.username = username;
@@ -24,15 +24,15 @@ public class UsernameToken implements AuthenticationToken {
 
 	/** {@inheritDoc} */
 	@Override
-	public String getUsername() {
+	public String getPrincipal() {
 		return username;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public boolean match(final AuthenticationToken trustedAuthenticationToken) {
-		if (trustedAuthenticationToken instanceof UsernameToken) {
-			return ((UsernameToken) trustedAuthenticationToken).getUsername().equals(username);
+		if (trustedAuthenticationToken instanceof UsernameAuthenticationToken) {
+			return ((UsernameAuthenticationToken) trustedAuthenticationToken).getPrincipal().equals(username);
 		}
 		return false;
 	}

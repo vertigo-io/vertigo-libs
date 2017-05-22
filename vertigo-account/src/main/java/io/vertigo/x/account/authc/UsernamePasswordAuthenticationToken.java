@@ -6,7 +6,7 @@ import io.vertigo.lang.Assertion;
 /**
  * @author npiedeloup
  */
-public class UsernamePasswordToken implements AuthenticationToken {
+public class UsernamePasswordAuthenticationToken implements AuthenticationToken {
 
 	private final PasswordHelper passwordHelper;
 
@@ -21,10 +21,10 @@ public class UsernamePasswordToken implements AuthenticationToken {
 	private final String password;
 
 	/**
-	 * @param username the username submitted for authentication
+	 * @param username the principal submitted for authentication
 	 * @param password the password string submitted for authentication
 	 */
-	public UsernamePasswordToken(final String username, final String password) {
+	public UsernamePasswordAuthenticationToken(final String username, final String password) {
 		Assertion.checkArgNotEmpty(username);
 		Assertion.checkArgNotEmpty(password);
 		//----
@@ -35,7 +35,7 @@ public class UsernamePasswordToken implements AuthenticationToken {
 
 	/** {@inheritDoc} */
 	@Override
-	public String getUsername() {
+	public String getPrincipal() {
 		return username;
 	}
 
@@ -51,9 +51,9 @@ public class UsernamePasswordToken implements AuthenticationToken {
 	/** {@inheritDoc} */
 	@Override
 	public boolean match(final AuthenticationToken trustedAuthenticationToken) {
-		if (trustedAuthenticationToken instanceof UsernamePasswordToken) {
-			return ((UsernamePasswordToken) trustedAuthenticationToken).getUsername().equals(username)
-					&& passwordHelper.checkPassword(((UsernamePasswordToken) trustedAuthenticationToken).getPassword(), password);
+		if (trustedAuthenticationToken instanceof UsernamePasswordAuthenticationToken) {
+			return ((UsernamePasswordAuthenticationToken) trustedAuthenticationToken).getPrincipal().equals(username)
+					&& passwordHelper.checkPassword(((UsernamePasswordAuthenticationToken) trustedAuthenticationToken).getPassword(), password);
 		}
 		return false;
 	}

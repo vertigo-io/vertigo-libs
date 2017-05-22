@@ -28,7 +28,7 @@ import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
 import io.vertigo.vega.webservice.stereotype.SessionInvalidate;
 import io.vertigo.x.account.authc.AuthentificationManager;
-import io.vertigo.x.account.authc.UsernameToken;
+import io.vertigo.x.account.authc.UsernameAuthenticationToken;
 
 //basé sur http://www.restapitutorial.com/lessons/httpmethods.html
 
@@ -45,7 +45,7 @@ public final class TestLoginWebServices implements WebServices {
 	public void login(@QueryParam("id") final String id) {
 		//code 200
 		securityManager.getCurrentUserSession().get().authenticate();
-		authentificationManager.authenticate(new UsernameToken(id));
+		authentificationManager.authenticate(new UsernameAuthenticationToken(id));
 	}
 
 	@SessionInvalidate

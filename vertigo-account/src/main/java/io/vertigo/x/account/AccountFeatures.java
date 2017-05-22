@@ -30,6 +30,7 @@ import io.vertigo.x.account.impl.authc.AuthentificationManagerImpl;
 import io.vertigo.x.account.impl.identity.AccountDefinitionProvider;
 import io.vertigo.x.account.impl.identity.AccountStorePlugin;
 import io.vertigo.x.account.impl.identity.IdentityManagerImpl;
+import io.vertigo.x.account.plugins.identity.memory.MemoryIdentityRealmPlugin;
 import io.vertigo.x.account.plugins.identity.redis.RedisAccountStorePlugin;
 import io.vertigo.x.account.security.UserSession2;
 
@@ -95,7 +96,9 @@ public final class AccountFeatures extends Features {
 		getModuleConfigBuilder()
 				.addDefinitionProvider(DefinitionProviderConfig.builder(AccountDefinitionProvider.class).build())
 				.addComponent(AuthentificationManager.class, AuthentificationManagerImpl.class)
-				.addComponent(IdentityManager.class, IdentityManagerImpl.class);
+				.addComponent(IdentityManager.class, IdentityManagerImpl.class)
+				.addPlugin(MemoryIdentityRealmPlugin.class);
+
 	}
 
 }

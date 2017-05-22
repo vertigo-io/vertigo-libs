@@ -10,7 +10,7 @@ public interface AuthenticationToken {
 	 * Returns the username submitted during an authentication attempt.
 	 * @return the username submitted during an authentication attempt.
 	 */
-	String getUsername();
+	String getPrincipal();
 
 	/**
 	 * Check if this User-submitted AuthenticationToken match the realm trustedAuthenticationToken.
