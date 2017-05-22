@@ -19,13 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-api</artifactId>
-			<version>${vertigo.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-impl</artifactId>
+			<artifactId>vertigo-commons-impl</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
 		<dependency>
@@ -33,24 +27,18 @@
 			<artifactId>vertigo-account-impl</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons-impl</artifactId>
+			<artifactId>vertigo-dynamo-impl</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
-		
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-account</artifactId>
-			<version>${vertigo.version}</version>
-		</dependency>
-		
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-studio</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
+		
+		
 		<!-- Tests -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
