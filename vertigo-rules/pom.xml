@@ -30,7 +30,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-persona-impl</artifactId>
+			<artifactId>vertigo-account-impl</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
 

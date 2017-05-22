@@ -18,6 +18,8 @@
  */
 package io.vertigo.x.workflow;
 
+import io.vertigo.account.AccountFeatures;
+import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.DefinitionProviderConfig;
@@ -30,8 +32,6 @@ import io.vertigo.dynamo.impl.database.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
-import io.vertigo.x.account.AccountFeatures;
-import io.vertigo.x.account.plugins.identity.memory.MemoryAccountStorePlugin;
 import io.vertigo.x.impl.workflow.WorkflowFeatures;
 import io.vertigo.x.plugins.workflow.memory.MemoryWorkflowStorePlugin;
 import io.vertigo.x.plugins.workflow.validate.RuleWorkflowPredicateAutoValidatePlugin;

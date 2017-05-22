@@ -36,9 +36,7 @@ limitations under the License. -->
 	
 	<modules>
 		<module>vertigo-mail</module>
-		<module>vertigo-account</module>
-		<module>vertigo-comment</module>
-		<module>vertigo-notification</module>		
+		<module>vertigo-social</module>		
 		<module>vertigo-audit</module>
 		<module>vertigo-rules</module>
 		<module>vertigo-workflow</module>

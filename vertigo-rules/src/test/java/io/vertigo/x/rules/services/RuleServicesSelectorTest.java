@@ -35,14 +35,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import io.vertigo.account.identity.Account;
+import io.vertigo.account.identity.AccountGroup;
+import io.vertigo.account.identity.AccountStore;
+import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.x.account.identity.Account;
-import io.vertigo.x.account.identity.AccountGroup;
-import io.vertigo.x.account.identity.AccountStore;
-import io.vertigo.x.account.identity.IdentityManager;
 import io.vertigo.x.rules.MyAppConfig;
 import io.vertigo.x.rules.data.MyDummyDtObject;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;

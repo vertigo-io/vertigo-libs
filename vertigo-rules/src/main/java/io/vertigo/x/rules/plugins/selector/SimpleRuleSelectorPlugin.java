@@ -26,12 +26,12 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import io.vertigo.account.identity.Account;
+import io.vertigo.account.identity.AccountGroup;
+import io.vertigo.account.identity.AccountStore;
+import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.x.account.identity.Account;
-import io.vertigo.x.account.identity.AccountGroup;
-import io.vertigo.x.account.identity.AccountStore;
-import io.vertigo.x.account.identity.IdentityManager;
 import io.vertigo.x.rules.domain.RuleFilterDefinition;
 import io.vertigo.x.rules.domain.SelectorDefinition;
 import io.vertigo.x.rules.impl.RuleSelectorPlugin;
