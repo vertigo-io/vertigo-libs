@@ -18,15 +18,12 @@
  */
 package io.vertigo.orchestra;
 
-import java.util.Optional;
-
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
-import io.vertigo.commons.plugins.node.registry.redis.RedisNodeRegistryPlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
@@ -49,10 +46,6 @@ import io.vertigo.vega.VegaFeatures;
 public final class MyAppConfig {
 	public static final int WS_PORT = 8088;
 
-	final static String redisHost = "redis-pic.part.klee.lan.net";
-	final static int redisPort = 6379;
-	final static int redisDatabase = 11;
-
 	public static AppConfigBuilder createAppConfigBuilder() {
 		return AppConfig.builder().beginBoot()
 				.withLocales("fr_FR")
@@ -65,8 +58,6 @@ public final class MyAppConfig {
 				.addModule(new CommonsFeatures()
 						.withCache(MemoryCachePlugin.class)
 						.withScript()
-						.withRedisConnector(redisHost, redisPort, redisDatabase, Optional.empty())
-						.withNodeRegistryPlugin(RedisNodeRegistryPlugin.class)
 						.build())
 				.addModule(new DynamoFeatures()
 						.withKVStore()
@@ -89,7 +80,7 @@ public final class MyAppConfig {
 				.addModule(ModuleConfig.builder("databaseInitializer").addComponent(DataBaseInitializer.class).build())
 				//
 				.addModule(new OrchestraFeatures()
-						.withDataBase(1, 3, 60)
+						.withDataBase("NODE_TEST_1", 1, 3, 60)
 						.withMemory(1)
 						.build())
 				.addModule(ModuleConfig.builder("orchestra-test")

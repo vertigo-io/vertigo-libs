@@ -86,12 +86,12 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 
 	/**
 	 * Execute la tache TK_GET_PROCESS_TO_EXECUTE.
-	 * @param nodeId String 
+	 * @param nodId Long 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> dtcOProcessPlanification
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getProcessToExecute(final String nodeId) {
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getProcessToExecute(final Long nodId) {
 		final Task task = createTaskBuilder("TK_GET_PROCESS_TO_EXECUTE")
-				.addValue("NODE_ID", nodeId)
+				.addValue("NOD_ID", nodId)
 				.build();
 		return getTaskManager()
 				.execute(task)

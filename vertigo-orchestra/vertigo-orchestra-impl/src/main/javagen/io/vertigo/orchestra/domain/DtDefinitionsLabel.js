@@ -20,9 +20,9 @@ module.exports = {
         endTime: "Date de fin",
         engine: "Implémentation effective de l'execution",
         token: "Token d'identification",
-        nodeId: "Node Id",
         actId: "Activity",
         preId: "Processus",
+        nodId: "Node",
         estCd: "ExecutionState"
     },
     oActivityExecutionUi: {
@@ -66,6 +66,11 @@ module.exports = {
         averageExecutionTime: "Durée moyenne d'exécution",
         health: "Santé du processus"
     },
+    oNode: {
+        nodId: "Id du noeud",
+        name: "Nom du noeud",
+        heartbeat: "Date de dernière activité"
+    },
     oProcess: {
         proId: "Id de la definition du processus",
         name: "Nom du processus",
@@ -108,8 +113,8 @@ module.exports = {
         prpId: "Id Planification",
         expectedTime: "Date d'execution prévue",
         initialParams: "Paramètres initiaux sous forme de JSON",
-        nodeId: "Node id",
         proId: "Processus",
+        nodId: "Node",
         sstCd: "PlanificationState"
     },
     oProcessType: {

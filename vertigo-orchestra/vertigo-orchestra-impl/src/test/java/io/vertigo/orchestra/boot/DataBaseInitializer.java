@@ -66,8 +66,7 @@ public class DataBaseInitializer implements Component, Activeable {
 	private void createDataBase() {
 		final SqlConnection connection = sqlDataBaseManager.getConnectionProvider(ORCHESTRA_CONNECTION_NAME).obtainConnection();
 		execCallableStatement(connection, sqlDataBaseManager, "DROP ALL OBJECTS; ");
-		execSqlScript(connection, "file:./src/main/javagen/sqlgen/crebas_orchestra.sql");
-		execSqlScript(connection, "file:./src/main/database/scripts/init/init_v0.sql");
+		execSqlScript(connection, "file:./src/main/database/scripts/install/orchestra_create_init_v0.9.5.sql");
 		try {
 			connection.commit();
 			connection.release();

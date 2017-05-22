@@ -23,6 +23,9 @@ create sequence SEQ_O_ACTIVITY_WORKSPACE
 create sequence SEQ_O_EXECUTION_STATE
 	start with 1000 cache 20; 
 
+create sequence SEQ_O_NODE
+	start with 1000 cache 20; 
+
 create sequence SEQ_O_PROCESS
 	start with 1000 cache 20; 
 
@@ -92,9 +95,9 @@ create table O_ACTIVITY_EXECUTION
     END_TIME    	 TIMESTAMP   	,
     ENGINE      	 VARCHAR(200)	,
     TOKEN       	 VARCHAR(100)	,
-    NODE_ID     	 TEXT        	,
     ACT_ID      	 NUMERIC     	,
     PRE_ID      	 NUMERIC     	,
+    NOD_ID      	 NUMERIC     	,
     EST_CD      	 VARCHAR(20) 	,
     constraint PK_O_ACTIVITY_EXECUTION primary key (ACE_ID)
 );
@@ -117,14 +120,14 @@ comment on column O_ACTIVITY_EXECUTION.ENGINE is
 comment on column O_ACTIVITY_EXECUTION.TOKEN is
 'Token d''identification';
 
-comment on column O_ACTIVITY_EXECUTION.NODE_ID is
-'Node Id';
-
 comment on column O_ACTIVITY_EXECUTION.ACT_ID is
 'Activity';
 
 comment on column O_ACTIVITY_EXECUTION.PRE_ID is
 'Processus';
+
+comment on column O_ACTIVITY_EXECUTION.NOD_ID is
+'Node';
 
 comment on column O_ACTIVITY_EXECUTION.EST_CD is
 'ExecutionState';
@@ -192,6 +195,26 @@ comment on column O_EXECUTION_STATE.EST_CD is
 
 comment on column O_EXECUTION_STATE.LABEL is
 'Libellé';
+
+-- ============================================================
+--   Table : O_NODE                                        
+-- ============================================================
+create table O_NODE
+(
+    NOD_ID      	 NUMERIC     	not null,
+    NAME        	 VARCHAR(100)	not null,
+    HEARTBEAT   	 TIMESTAMP   	,
+    constraint PK_O_NODE primary key (NOD_ID)
+);
+
+comment on column O_NODE.NOD_ID is
+'Id du noeud';
+
+comment on column O_NODE.NAME is
+'Nom du noeud';
+
+comment on column O_NODE.HEARTBEAT is
+'Date de dernière activité';
 
 -- ============================================================
 --   Table : O_PROCESS                                        
@@ -309,8 +332,8 @@ create table O_PROCESS_PLANIFICATION
     PRP_ID      	 NUMERIC     	not null,
     EXPECTED_TIME	 TIMESTAMP   	,
     INITIAL_PARAMS	 TEXT        	,
-    NODE_ID     	 TEXT        	,
     PRO_ID      	 NUMERIC     	,
+    NOD_ID      	 NUMERIC     	,
     SST_CD      	 VARCHAR(20) 	,
     constraint PK_O_PROCESS_PLANIFICATION primary key (PRP_ID)
 );
@@ -324,11 +347,11 @@ comment on column O_PROCESS_PLANIFICATION.EXPECTED_TIME is
 comment on column O_PROCESS_PLANIFICATION.INITIAL_PARAMS is
 'Paramètres initiaux sous forme de JSON';
 
-comment on column O_PROCESS_PLANIFICATION.NODE_ID is
-'Node id';
-
 comment on column O_PROCESS_PLANIFICATION.PRO_ID is
 'Processus';
+
+comment on column O_PROCESS_PLANIFICATION.NOD_ID is
+'Node';
 
 comment on column O_PROCESS_PLANIFICATION.SST_CD is
 'PlanificationState';
@@ -432,6 +455,12 @@ alter table O_ACTIVITY_EXECUTION
 create index ACE_EST_O_EXECUTION_STATE_FK on O_ACTIVITY_EXECUTION (EST_CD asc);
 
 alter table O_ACTIVITY_EXECUTION
+	add constraint FK_ACE_NOD_O_NODE foreign key (NOD_ID)
+	references O_NODE (NOD_ID);
+
+create index ACE_NOD_O_NODE_FK on O_ACTIVITY_EXECUTION (NOD_ID asc);
+
+alter table O_ACTIVITY_EXECUTION
 	add constraint FK_ACE_PRE_O_PROCESS_EXECUTION foreign key (PRE_ID)
 	references O_PROCESS_EXECUTION (PRE_ID);
 
@@ -480,6 +509,12 @@ alter table O_PROCESS
 create index PRO_TRT_TRIGGER_TYPE_FK on O_PROCESS (TRT_CD asc);
 
 alter table O_PROCESS_PLANIFICATION
+	add constraint FK_PRP_NOD_O_NODE foreign key (NOD_ID)
+	references O_NODE (NOD_ID);
+
+create index PRP_NOD_O_NODE_FK on O_PROCESS_PLANIFICATION (NOD_ID asc);
+
+alter table O_PROCESS_PLANIFICATION
 	add constraint FK_PRP_PRO_O_PROCESS foreign key (PRO_ID)
 	references O_PROCESS (PRO_ID);
 
@@ -496,5 +531,30 @@ alter table O_ACTIVITY_WORKSPACE
 	references O_ACTIVITY_EXECUTION (ACE_ID);
 
 create index TKW_TKE_O_ACTIVITY_EXECUTION_FK on O_ACTIVITY_WORKSPACE (ACE_ID asc);
+
+
+
+
+insert into o_execution_state(est_cd, label) values ('WAITING', 'Waiting');
+insert into o_execution_state(est_cd, label) values ('RESERVED', 'Reserved');
+insert into o_execution_state(est_cd, label) values ('SUBMITTED', 'Submitted');
+insert into o_execution_state(est_cd, label) values ('DONE', 'Done');
+insert into o_execution_state(est_cd, label) values ('RUNNING', 'Running');
+insert into o_execution_state(est_cd, label) values ('ERROR', 'Error');
+insert into o_execution_state(est_cd, label) values ('CANCELED', 'Canceled');
+insert into o_execution_state(est_cd, label) values ('ABORTED', 'Aborted');
+insert into o_execution_state(est_cd, label) values ('PENDING', 'Pending');
+
+insert into o_scheduler_state(sst_cd, label) values ('WAITING', 'Waiting');
+insert into o_scheduler_state(sst_cd, label) values ('RESERVED', 'Reserved');
+insert into o_scheduler_state(sst_cd, label) values ('TRIGGERED', 'Triggered');
+insert into o_scheduler_state(sst_cd, label) values ('MISFIRED', 'Misfired');
+insert into o_scheduler_state(sst_cd, label) values ('CANCELED', 'Canceled');
+insert into o_scheduler_state(sst_cd, label) values ('RESCUED', 'Rescued');
+
+insert into o_process_type(prt_cd, label) values ('DUMB', 'Dumb');
+
+insert into trigger_type(trt_cd, label) values ('SCHEDULED', 'scheduled');
+insert into trigger_type(trt_cd, label) values ('MANUAL', 'manual');
 
 

@@ -58,15 +58,15 @@ module.exports = {
             domain: "DO_O_TOKEN",
             required: false
         },
-        nodeId: {
-            domain: "DO_O_TEXT",
-            required: false
-        },
         actId: {
             domain: "DO_O_IDENTIFIANT",
             required: false
         },
         preId: {
+            domain: "DO_O_IDENTIFIANT",
+            required: false
+        },
+        nodId: {
             domain: "DO_O_IDENTIFIANT",
             required: false
         },
@@ -207,6 +207,20 @@ module.exports = {
         health: {
             domain: "DO_O_CODE_IDENTIFIANT",
             required: true
+        }
+    },
+    oNode: {
+        nodId: {
+            domain: "DO_O_IDENTIFIANT",
+            required: true
+        },
+        name: {
+            domain: "DO_O_LIBELLE",
+            required: true
+        },
+        heartbeat: {
+            domain: "DO_O_TIMESTAMP",
+            required: false
         }
     },
     oProcess: {
@@ -356,11 +370,11 @@ module.exports = {
             domain: "DO_O_JSON_TEXT",
             required: false
         },
-        nodeId: {
-            domain: "DO_O_TEXT",
+        proId: {
+            domain: "DO_O_IDENTIFIANT",
             required: false
         },
-        proId: {
+        nodId: {
             domain: "DO_O_IDENTIFIANT",
             required: false
         },

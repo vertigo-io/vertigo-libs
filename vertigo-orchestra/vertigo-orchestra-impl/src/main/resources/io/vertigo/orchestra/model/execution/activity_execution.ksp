@@ -8,7 +8,7 @@ create DtDefinition DT_O_ACTIVITY_EXECUTION {
 	field END_TIME   	{domain : DO_O_TIMESTAMP, label :"Date de fin", notNull:"false",},
 	field ENGINE   	{domain : DO_O_CLASSE, label :"Implémentation effective de l'execution", notNull:"false",},
 	field TOKEN   	{domain : DO_O_TOKEN, label :"Token d'identification", notNull:"false",},
-  	field NODE_ID 	{domain : DO_O_TEXT, label :"Node Id", notNull:"false",},
+  
 },
 
 
@@ -32,6 +32,26 @@ create Association A_ACE_ACT {
 			
 }
 
+
+
+create Association A_ACE_NOD {
+  fkFieldName : "NOD_ID"
+    
+ 	dtDefinitionA : DT_O_ACTIVITY_EXECUTION
+	dtDefinitionB : DT_O_NODE
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"0..1"
+	
+	labelA : "ExecutionActivity"
+	labelB : "Node"
+	roleA : "ExecutionActivity"
+	roleB : "Node"
+			
+}
 
 create Association A_ACE_EST {
   fkFieldName : "EST_CD"

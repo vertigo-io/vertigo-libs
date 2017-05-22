@@ -47,25 +47,3 @@ create Task TK_UPDATE_PROCESS_EXECUTION_TREATMENT {
 },
 
 
-create Task TK_HANDLE_PROCESSES_OF_DEAD_NODES {
-	storeName : "orchestra"
-    className : "io.vertigo.dynamox.task.TaskEngineProc"
-        request : "
-        	update o_activity_execution 
-        	set EST_CD = 'ABORTED'
-        	where NODE_ID in ( <%=deadNodeIds%> );
-			
- 			update o_process_execution
-        	set EST_CD = 'ABORTED'
-        	where PRE_ID in (
-				select pre.PRE_ID
-				from o_process_execution pre
-				join o_activity_execution ace on ace.PRE_ID = pre.PRE_ID
-				where ace.EST_CD = 'ABORTED');
-        	
-			"
-	attribute DEAD_NODE_IDS	 	{domain : DO_O_TEXT 		notNull:"true" 	inOut :"in"}
-},
-
-
-

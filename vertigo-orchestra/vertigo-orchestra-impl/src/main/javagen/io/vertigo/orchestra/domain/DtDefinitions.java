@@ -31,6 +31,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		OExecutionState(io.vertigo.orchestra.domain.referential.OExecutionState.class),
 		/** Objet de données OExecutionSummary. */
 		OExecutionSummary(io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary.class),
+		/** Objet de données ONode. */
+		ONode(io.vertigo.orchestra.domain.execution.ONode.class),
 		/** Objet de données OProcess. */
 		OProcess(io.vertigo.orchestra.domain.definition.OProcess.class),
 		/** Objet de données OProcessExecution. */
@@ -100,12 +102,12 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		ENGINE,
 		/** Propriété 'Token d'identification'. */
 		TOKEN,
-		/** Propriété 'Node Id'. */
-		NODE_ID,
 		/** Propriété 'Activity'. */
 		ACT_ID,
 		/** Propriété 'Processus'. */
 		PRE_ID,
+		/** Propriété 'Node'. */
+		NOD_ID,
 		/** Propriété 'ExecutionState'. */
 		EST_CD	}
 
@@ -197,6 +199,17 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		HEALTH	}
 
 	/**
+	 * Enumération des champs de ONode.
+	 */
+	public enum ONodeFields implements DtFieldName<io.vertigo.orchestra.domain.execution.ONode> {
+		/** Propriété 'Id du noeud'. */
+		NOD_ID,
+		/** Propriété 'Nom du noeud'. */
+		NAME,
+		/** Propriété 'Date de dernière activité'. */
+		HEARTBEAT	}
+
+	/**
 	 * Enumération des champs de OProcess.
 	 */
 	public enum OProcessFields implements DtFieldName<io.vertigo.orchestra.domain.definition.OProcess> {
@@ -285,10 +298,10 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		EXPECTED_TIME,
 		/** Propriété 'Paramètres initiaux sous forme de JSON'. */
 		INITIAL_PARAMS,
-		/** Propriété 'Node id'. */
-		NODE_ID,
 		/** Propriété 'Processus'. */
 		PRO_ID,
+		/** Propriété 'Node'. */
+		NOD_ID,
 		/** Propriété 'PlanificationState'. */
 		SST_CD	}
 

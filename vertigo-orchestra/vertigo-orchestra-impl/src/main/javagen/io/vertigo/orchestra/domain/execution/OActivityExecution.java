@@ -22,9 +22,9 @@ public final class OActivityExecution implements Entity {
 	private java.util.Date endTime;
 	private String engine;
 	private String token;
-	private String nodeId;
 	private final VAccessor<io.vertigo.orchestra.domain.definition.OActivity> actIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.definition.OActivity.class, "activity");
 	private final VAccessor<io.vertigo.orchestra.domain.execution.OProcessExecution> preIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.execution.OProcessExecution.class, "processusExecution");
+	private final VAccessor<io.vertigo.orchestra.domain.execution.ONode> nodIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.execution.ONode.class, "node");
 	private final VAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> estCdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.referential.OExecutionState.class, "executionState");
 
 	/** {@inheritDoc} */
@@ -148,25 +148,6 @@ public final class OActivityExecution implements Entity {
 	}
 
 	/**
-	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Node Id'.
-	 * @return String nodeId
-	 */
-	@Field(domain = "DO_O_TEXT", label = "Node Id")
-	public String getNodeId() {
-		return nodeId;
-	}
-
-	/**
-	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Node Id'.
-	 * @param nodeId String
-	 */
-	public void setNodeId(final String nodeId) {
-		this.nodeId = nodeId;
-	}
-
-	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Activity'.
 	 * @return Long actId
@@ -202,6 +183,25 @@ public final class OActivityExecution implements Entity {
 	 */
 	public void setPreId(final Long preId) {
 		preIdAccessor.setId(preId);
+	}
+
+	/**
+	 * Champ : FOREIGN_KEY.
+	 * Récupère la valeur de la propriété 'Node'.
+	 * @return Long nodId
+	 */
+	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Node")
+	public Long getNodId() {
+		return (Long)  nodIdAccessor.getId();
+	}
+
+	/**
+	 * Champ : FOREIGN_KEY.
+	 * Définit la valeur de la propriété 'Node'.
+	 * @param nodId Long
+	 */
+	public void setNodId(final Long nodId) {
+		nodIdAccessor.setId(nodId);
 	}
 
 	/**
@@ -279,6 +279,35 @@ public final class OActivityExecution implements Entity {
 			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.OExecutionState> getExecutionStateURI() {
 		return estCdAccessor.getURI();
+	}
+
+	/**
+	 * Association : Node.
+	 * @return io.vertigo.orchestra.domain.execution.ONode
+	 */
+	public io.vertigo.orchestra.domain.execution.ONode getNode() {
+		return nodIdAccessor.get();
+	}
+
+	/**
+	 * Retourne l'URI: Node.
+	 * @return URI de l'association
+	 */
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_ACE_NOD",
+			fkFieldName = "NOD_ID",
+			primaryDtDefinitionName = "DT_O_NODE",
+			primaryIsNavigable = true,
+			primaryRole = "Node",
+			primaryLabel = "Node",
+			primaryMultiplicity = "0..1",
+			foreignDtDefinitionName = "DT_O_ACTIVITY_EXECUTION",
+			foreignIsNavigable = false,
+			foreignRole = "ExecutionActivity",
+			foreignLabel = "ExecutionActivity",
+			foreignMultiplicity = "0..*")
+	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.execution.ONode> getNodeURI() {
+		return nodIdAccessor.getURI();
 	}
 
 	/**

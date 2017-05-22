@@ -19,8 +19,8 @@ public final class OProcessPlanification implements Entity {
 	private Long prpId;
 	private java.util.Date expectedTime;
 	private String initialParams;
-	private String nodeId;
 	private final VAccessor<io.vertigo.orchestra.domain.definition.OProcess> proIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.definition.OProcess.class, "processus");
+	private final VAccessor<io.vertigo.orchestra.domain.execution.ONode> nodIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.execution.ONode.class, "node");
 	private final VAccessor<io.vertigo.orchestra.domain.referential.OSchedulerState> sstCdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.referential.OSchedulerState.class, "planificationState");
 
 	/** {@inheritDoc} */
@@ -87,25 +87,6 @@ public final class OProcessPlanification implements Entity {
 	}
 
 	/**
-	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Node id'.
-	 * @return String nodeId
-	 */
-	@Field(domain = "DO_O_TEXT", label = "Node id")
-	public String getNodeId() {
-		return nodeId;
-	}
-
-	/**
-	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Node id'.
-	 * @param nodeId String
-	 */
-	public void setNodeId(final String nodeId) {
-		this.nodeId = nodeId;
-	}
-
-	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Processus'.
 	 * @return Long proId
@@ -126,6 +107,25 @@ public final class OProcessPlanification implements Entity {
 
 	/**
 	 * Champ : FOREIGN_KEY.
+	 * Récupère la valeur de la propriété 'Node'.
+	 * @return Long nodId
+	 */
+	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Node")
+	public Long getNodId() {
+		return (Long)  nodIdAccessor.getId();
+	}
+
+	/**
+	 * Champ : FOREIGN_KEY.
+	 * Définit la valeur de la propriété 'Node'.
+	 * @param nodId Long
+	 */
+	public void setNodId(final Long nodId) {
+		nodIdAccessor.setId(nodId);
+	}
+
+	/**
+	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'PlanificationState'.
 	 * @return String sstCd
 	 */
@@ -141,6 +141,35 @@ public final class OProcessPlanification implements Entity {
 	 */
 	public void setSstCd(final String sstCd) {
 		sstCdAccessor.setId(sstCd);
+	}
+
+	/**
+	 * Association : Node.
+	 * @return io.vertigo.orchestra.domain.execution.ONode
+	 */
+	public io.vertigo.orchestra.domain.execution.ONode getNode() {
+		return nodIdAccessor.get();
+	}
+
+	/**
+	 * Retourne l'URI: Node.
+	 * @return URI de l'association
+	 */
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_PRP_NOD",
+			fkFieldName = "NOD_ID",
+			primaryDtDefinitionName = "DT_O_NODE",
+			primaryIsNavigable = true,
+			primaryRole = "Node",
+			primaryLabel = "Node",
+			primaryMultiplicity = "0..1",
+			foreignDtDefinitionName = "DT_O_PROCESS_PLANIFICATION",
+			foreignIsNavigable = false,
+			foreignRole = "ProcessPlanification",
+			foreignLabel = "PlanificationProcessus",
+			foreignMultiplicity = "0..*")
+	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.execution.ONode> getNodeURI() {
+		return nodIdAccessor.getURI();
 	}
 
 	/**
