@@ -43,7 +43,8 @@ limitations under the License. -->
 		<module>vertigo-orchestra-api</module>
 		<module>vertigo-orchestra-impl</module>
 		<module>vertigo-struts2</module>
-		<module>vertigo-quarto</module>
+		<module>vertigo-quarto-api</module>
+		<module>vertigo-quarto-impl</module>
 		<module>vertigo-stella</module>
 		<module>vertigo-geo</module>
 		<module>vertigo-adapters</module>
