@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
-		<artifactId>vertigo-vertigo-extensions</artifactId>
+		<artifactId>vertigo-extensions</artifactId>
 		<version>0.9.5-SNAPSHOT</version>
 	</parent>
 
