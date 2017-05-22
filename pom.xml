@@ -47,7 +47,8 @@ limitations under the License. -->
 		<module>vertigo-quarto-impl</module>
 		<module>vertigo-stella-api</module>
 		<module>vertigo-stella-impl</module>
-		<module>vertigo-geo</module>
+		<module>vertigo-geo-api</module>
+		<module>vertigo-geo-impl</module>
 		<module>vertigo-adapters</module>
 	</modules>
 
