@@ -28,8 +28,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.inject.Inject;
 
 import io.vertigo.account.identity.Account;
+import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.impl.daemon.DaemonDefinition;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.social.impl.notification.NotificationEvent;
@@ -49,7 +52,8 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	public MemoryNotificationPlugin(final DaemonManager daemonManager) {
 		Assertion.checkNotNull(daemonManager);
 		//-----
-		daemonManager.registerDaemon("DMN_CLEAN_TOO_OLD_MEMORY_NOTIFICATIONS", () -> new RemoveTooOldNotificationsDaemon(this), 1000);
+		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
+				new DaemonDefinition("DMN_CLEAN_TOO_OLD_MEMORY_NOTIFICATIONS", () -> new RemoveTooOldNotificationsDaemon(this), 1000));
 	}
 
 	/** {@inheritDoc} */

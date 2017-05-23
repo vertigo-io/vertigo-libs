@@ -30,9 +30,12 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import io.vertigo.account.identity.Account;
+import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.commons.impl.daemon.DaemonDefinition;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -62,7 +65,8 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		Assertion.checkNotNull(daemonManager);
 		//-----
 		this.redisConnector = redisConnector;
-		daemonManager.registerDaemon("DMN_CLEAN_TOO_OLD_REDIS_NOTIFICATIONS", () -> new RemoveTooOldElementsDaemon(this), 60 * 1000); //every minute
+		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
+				new DaemonDefinition("DMN_CLEAN_TOO_OLD_REDIS_NOTIFICATIONS", () -> new RemoveTooOldElementsDaemon(this), 60 * 1000)); //every minute
 	}
 
 	/** {@inheritDoc} */
