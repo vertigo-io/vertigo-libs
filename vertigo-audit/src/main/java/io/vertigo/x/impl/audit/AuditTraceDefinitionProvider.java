@@ -32,7 +32,7 @@ import io.vertigo.util.ListBuilder;
  * Provides all the definitions used in the 'Audit' module.
  * @author xdurand
  */
-public final class AuditTraceDefinitionProvider extends SimpleDefinitionProvider {
+public final class AuditTraceDefinitionProvider implements SimpleDefinitionProvider {
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {

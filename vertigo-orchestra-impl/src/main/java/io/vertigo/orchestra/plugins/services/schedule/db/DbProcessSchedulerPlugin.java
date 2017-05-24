@@ -20,6 +20,7 @@ package io.vertigo.orchestra.plugins.services.schedule.db;
 
 import java.text.ParseException;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -33,7 +34,10 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.impl.daemon.DaemonDefinition;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
@@ -61,23 +65,9 @@ import io.vertigo.orchestra.services.schedule.SchedulerState;
  * @author mlaroche.
  * @version $Id$
  */
-public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activeable {
+public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activeable, SimpleDefinitionProvider {
 
 	private static final Logger LOGGER = Logger.getLogger(DbProcessSchedulerPlugin.class);
-
-	//private final long timerDelay;
-
-	private final Long nodId;
-	private final int planningPeriodSeconds;
-	private final int forecastDurationSeconds;
-
-	@Inject
-	private VTransactionManager transactionManager;
-	@Inject
-	private DaemonManager daemonManager;
-
-	@Inject
-	private OrchestraDefinitionManager definitionManager;
 
 	@Inject
 	private OProcessPlanificationDAO processPlanificationDAO;
@@ -86,63 +76,79 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	@Inject
 	private OProcessExecutionDAO processExecutionDAO;
 
+	private final String nodeName;
+	private Long nodId;
+	private final int planningPeriodSeconds;
+	private final int forecastDurationSeconds;
+	private final ONodeManager nodeManager;
+	private ProcessExecutor myProcessExecutor;
+
+	private final VTransactionManager transactionManager;
+	private final OrchestraDefinitionManager definitionManager;
+
 	private final MapCodec mapCodec = new MapCodec();
 
 	/**
 	 * Constructeur.
-	<<<<<<< HEAD
-	=======
 	 * @param nodeManager le gestionnaire de noeud
+	 * @param transactionManager vertigo transaction manager
+	 * @param definitionManager orchestra definitions manager
 	 * @param nodeName le nom du noeud
-	>>>>>>> parent of b486919... [orchestra] use vertigo node manager
 	 * @param planningPeriodSeconds le timer de planfication
 	 * @param forecastDurationSeconds la durée de prévision des planifications
 	 */
 	@Inject
 	public DbProcessSchedulerPlugin(
 			final ONodeManager nodeManager,
+			final VTransactionManager transactionManager,
+			final OrchestraDefinitionManager definitionManager,
 			@Named("nodeName") final String nodeName,
 			@Named("planningPeriodSeconds") final int planningPeriodSeconds,
 			@Named("forecastDurationSeconds") final int forecastDurationSeconds) {
 		Assertion.checkNotNull(nodeManager);
-		Assertion.checkNotNull(nodeName);
+		Assertion.checkNotNull(transactionManager);
+		Assertion.checkNotNull(definitionManager);
+		Assertion.checkArgNotEmpty(nodeName);
 		Assertion.checkNotNull(planningPeriodSeconds);
 		Assertion.checkNotNull(forecastDurationSeconds);
 		//-----
-		//timerDelay = planningPeriodSeconds * 1000L;
-		// We register the node
-		nodId = nodeManager.registerNode(nodeName);
-		// ---
-		Assertion.checkNotNull(nodId);
-		// ---
+		this.nodeManager = nodeManager;
+		this.transactionManager = transactionManager;
+		this.definitionManager = definitionManager;
 		this.planningPeriodSeconds = planningPeriodSeconds;
 		this.forecastDurationSeconds = forecastDurationSeconds;
-		//localScheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+		this.nodeName = nodeName;
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Collections.singletonList(new DaemonDefinition("DMN_O_DB_PROCESS_SCHEDULER_DAEMON", () -> this::scheduleAndInit, planningPeriodSeconds));
+	}
+
+	private void scheduleAndInit() {
+		try {
+			plannRecurrentProcesses();
+			initToDo(myProcessExecutor);
+		} catch (final Exception e) {
+			// We log the error and we continue the timer
+			LOGGER.error("Exception planning recurrent processes", e);
+		}
+
 	}
 
 	@Override
 	public void start() {
-		//
+		// We register the node
+		nodId = nodeManager.registerNode(nodeName);
+		// We clean the planification
+		cleanPastPlanification();
 	}
 
 	@Override
-	public void start(final ProcessExecutor processExecutor) {
+	public void setProcessExecutor(final ProcessExecutor processExecutor) {
 		Assertion.checkNotNull(processExecutor);
 		//---
-		daemonManager.registerDaemon("O_DB_PROCESS_SCHEDULER_DAEMON", () -> () -> {
-			try {
-				plannRecurrentProcesses();
-				initToDo(processExecutor);
-			} catch (final Exception e) {
-				// We log the error and we continue the timer
-				LOGGER.error("Exception planning recurrent processes", e);
-			}
-
-		}, planningPeriodSeconds);
-
-		// We clean the planification
-		cleanPastPlanification();
-
+		myProcessExecutor = processExecutor;
 	}
 
 	@Override

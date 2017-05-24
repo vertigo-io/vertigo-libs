@@ -25,14 +25,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.inject.Inject;
-
 import io.vertigo.account.identity.Account;
-import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.impl.daemon.DaemonDefinition;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.social.impl.notification.NotificationEvent;
@@ -42,18 +40,12 @@ import io.vertigo.social.services.notification.Notification;
 /**
  * @author pchretien
  */
-public final class MemoryNotificationPlugin implements NotificationPlugin {
+public final class MemoryNotificationPlugin implements NotificationPlugin, SimpleDefinitionProvider {
 	private final Map<URI<Account>, List<Notification>> notificationsByAccountURI = new ConcurrentHashMap<>();
 
-	/**
-	 * @param daemonManager Daemon Manager
-	 */
-	@Inject
-	public MemoryNotificationPlugin(final DaemonManager daemonManager) {
-		Assertion.checkNotNull(daemonManager);
-		//-----
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
-				new DaemonDefinition("DMN_CLEAN_TOO_OLD_MEMORY_NOTIFICATIONS", () -> new RemoveTooOldNotificationsDaemon(this), 1000));
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Collections.singletonList(new DaemonDefinition("DMN_CLEAN_TOO_OLD_MEMORY_NOTIFICATIONS", () -> new RemoveTooOldNotificationsDaemon(this), 1000));
 	}
 
 	/** {@inheritDoc} */

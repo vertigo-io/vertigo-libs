@@ -133,7 +133,7 @@ public class MasterDataInitializer implements ComponentInitializer {
 
 	private static void clearDtoCache(final CacheManager manager, final Set<String> set) {
 		if (set != null) {
-			final String debutContext = "DataCache:";
+			final String debutContext = "CACHE_DATA_";
 			for (final String mdl : set) {
 				manager.clear(debutContext + mdl);
 			}

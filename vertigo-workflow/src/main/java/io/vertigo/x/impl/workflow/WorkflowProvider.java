@@ -33,7 +33,7 @@ import io.vertigo.util.ListBuilder;
  * Provides all the definitions used in the 'Workflow' module.
  * @author xdurand
  */
-public final class WorkflowProvider extends SimpleDefinitionProvider {
+public final class WorkflowProvider implements SimpleDefinitionProvider {
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {

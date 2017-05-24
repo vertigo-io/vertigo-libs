@@ -34,7 +34,7 @@ import io.vertigo.util.ListBuilder;
  *
  * @author xdurand
  */
-public final class RuleProvider extends SimpleDefinitionProvider {
+public final class RuleProvider implements SimpleDefinitionProvider {
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {

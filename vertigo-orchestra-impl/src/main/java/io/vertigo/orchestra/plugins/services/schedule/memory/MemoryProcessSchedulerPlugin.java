@@ -55,7 +55,7 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 	}
 
 	@Override
-	public void start(final ProcessExecutor processExecutor) {
+	public void setProcessExecutor(final ProcessExecutor processExecutor) {
 		Assertion.checkNotNull(processExecutor);
 		//---
 		myProcessExecutor = processExecutor;

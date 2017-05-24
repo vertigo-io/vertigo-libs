@@ -30,11 +30,12 @@ import io.vertigo.orchestra.services.schedule.ProcessScheduler;
  * @version $Id$
  */
 public interface ProcessSchedulerPlugin extends ProcessScheduler, Plugin {
-	void start(ProcessExecutor processExecutor);
 
 	/**
 	 * Retourne le type de processus géré par le plugin
 	 * @return le type de processus géré
 	 */
 	ProcessType getHandledProcessType();
+
+	void setProcessExecutor(ProcessExecutor processExecutor);
 }

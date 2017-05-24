@@ -19,7 +19,9 @@
 package io.vertigo.orchestra.plugins.services.execution.db;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,8 +33,11 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.impl.daemon.DaemonDefinition;
 import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.transaction.VTransactionManager;
 import io.vertigo.dynamo.transaction.VTransactionWritable;
@@ -67,12 +72,10 @@ import io.vertigo.util.ClassUtil;
  * @author mlaroche.
  * @version $Id$
  */
-public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Activeable {
+public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Activeable, SimpleDefinitionProvider {
 
 	private static final Logger LOGGER = Logger.getLogger(DbProcessExecutorPlugin.class);
 
-	@Inject
-	private DaemonManager daemonManager;
 	@Inject
 	private OProcessExecutionDAO processExecutionDAO;
 	@Inject
@@ -87,7 +90,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private OActivityDAO activityDAO;
 
 	private final int workersCount;
-	private final Long nodId;
+	private final String nodeName;
+	private Long nodId = null;
 	private final ExecutorService workers;
 	private final int executionPeriodSeconds;
 
@@ -117,32 +121,35 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		// ---
 		this.nodeManager = nodeManager;
 		this.transactionManager = transactionManager;
-		// We register the node
-		nodId = nodeManager.registerNode(nodeName);
-		// ---
-		Assertion.checkNotNull(nodId);
-		// ---
+		this.nodeName = nodeName;
 		this.workersCount = workersCount;
 		this.executionPeriodSeconds = executionPeriodSeconds;
+		// ---
 		workers = Executors.newFixedThreadPool(workersCount);
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Collections.singletonList(new DaemonDefinition("DMN_O_DB_PROCESS_EXECUTOR_DAEMON", () -> this::executeProcesses, executionPeriodSeconds));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
 		handleDeadNodeProcesses();
-		daemonManager.registerDaemon("O_DB_PROCESS_EXECUTOR_DAEMON", () -> () -> {
-			try {
-				executeToDo();
-				nodeManager.updateHeartbeat(nodId);
-				handleDeadNodeProcesses();
-			} catch (final Exception e) {
-				// We log the error and we continue the timer
-				LOGGER.error("Exception launching activities to executes", e);
-			}
+		nodId = nodeManager.registerNode(nodeName);
+	}
 
-		}, executionPeriodSeconds);
-
+	private void executeProcesses() {
+		try {
+			Assertion.checkNotNull(nodId, "Node not already registered");
+			executeToDo();
+			nodeManager.updateHeartbeat(nodId);
+			handleDeadNodeProcesses();
+		} catch (final Exception e) {
+			// We log the error and we continue the timer
+			LOGGER.error("Exception launching activities to executes", e);
+		}
 	}
 
 	/** {@inheritDoc} */

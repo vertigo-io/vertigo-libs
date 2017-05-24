@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +31,13 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import io.vertigo.account.identity.Account;
-import io.vertigo.app.Home;
 import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.commons.impl.daemon.DaemonDefinition;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
+import io.vertigo.core.definition.Definition;
+import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -50,7 +52,7 @@ import redis.clients.jedis.Transaction;
 /**
  * @author pchretien
  */
-public final class RedisNotificationPlugin implements NotificationPlugin {
+public final class RedisNotificationPlugin implements NotificationPlugin, SimpleDefinitionProvider {
 	private static final String CODEC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	private final RedisConnector redisConnector;
 
@@ -65,8 +67,11 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		Assertion.checkNotNull(daemonManager);
 		//-----
 		this.redisConnector = redisConnector;
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace()).registerDefinition(
-				new DaemonDefinition("DMN_CLEAN_TOO_OLD_REDIS_NOTIFICATIONS", () -> new RemoveTooOldElementsDaemon(this), 60 * 1000)); //every minute
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return Collections.singletonList(new DaemonDefinition("DMN_CLEAN_TOO_OLD_REDIS_NOTIFICATIONS", () -> new RemoveTooOldElementsDaemon(this), 60 * 1000));
 	}
 
 	/** {@inheritDoc} */

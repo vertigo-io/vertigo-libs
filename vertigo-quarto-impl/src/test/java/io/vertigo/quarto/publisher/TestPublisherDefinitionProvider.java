@@ -28,7 +28,7 @@ import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinition;
 import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinitionBuilder;
 import io.vertigo.util.ListBuilder;
 
-public final class TestPublisherDefinitionProvider extends SimpleDefinitionProvider {
+public final class TestPublisherDefinitionProvider implements SimpleDefinitionProvider {
 
 	private static PublisherDataDefinition createTestEnquete() {
 		final PublisherNodeDefinition ville = new PublisherNodeDefinitionBuilder()

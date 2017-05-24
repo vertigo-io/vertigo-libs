@@ -32,7 +32,7 @@ import io.vertigo.util.ListBuilder;
  * Provides the definitions for the DummyDtObject used in unit tests .
  * @author xdurand
  */
-public class MyDummyDtObjectProvider extends SimpleDefinitionProvider {
+public class MyDummyDtObjectProvider implements SimpleDefinitionProvider {
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {

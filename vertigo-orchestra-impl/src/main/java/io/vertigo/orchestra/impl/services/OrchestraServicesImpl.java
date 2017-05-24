@@ -69,6 +69,7 @@ public final class OrchestraServicesImpl implements OrchestraServices {
 		processScheduler = new ProcessSchedulerImpl(processSchedulerPlugins, processExecutor);
 		optionalProcessLog = Optional.ofNullable(logProviderPlugin.orElse(null));
 		optionalProcessReport = Optional.ofNullable(processReportPlugin.orElse(null));
+
 	}
 
 	/** {@inheritDoc} */
