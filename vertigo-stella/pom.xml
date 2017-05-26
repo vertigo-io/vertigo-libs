@@ -7,25 +7,17 @@
 		<version>0.9.5-SNAPSHOT</version>
 	</parent>
 	
-	<artifactId>vertigo-stella-impl</artifactId>
+	<artifactId>vertigo-stella</artifactId>
 	<packaging>jar</packaging>
-	<name>vertigo-stella-impl</name>
+	<name>vertigo-stella</name>
 	
 	<dependencies>
 	
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-stella-api</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
 			<version>${vertigo.version}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>						
+		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-commons-impl</artifactId>
@@ -65,6 +57,15 @@
 			<version>2.22.2</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
+		
+		<!-- tests -->
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-core</artifactId>
+			<version>${vertigo.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>	
 		
 	</dependencies>
 	
