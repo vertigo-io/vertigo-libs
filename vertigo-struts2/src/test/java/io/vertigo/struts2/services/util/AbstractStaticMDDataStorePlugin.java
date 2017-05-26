@@ -119,7 +119,7 @@ public class AbstractStaticMDDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void create(final DtDefinition dtDefinition, final Entity dto) {
+	public <E extends Entity> E create(final DtDefinition dtDefinition, final E dto) {
 		throw new UnsupportedOperationException();
 	}
 
