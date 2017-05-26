@@ -40,8 +40,7 @@ limitations under the License. -->
 		<module>vertigo-audit</module>
 		<module>vertigo-rules</module>
 		<module>vertigo-workflow</module>
-		<module>vertigo-orchestra-api</module>
-		<module>vertigo-orchestra-impl</module>
+		<module>vertigo-orchestra</module>
 		<module>vertigo-struts2</module>
 		<module>vertigo-quarto-api</module>
 		<module>vertigo-quarto-impl</module>
