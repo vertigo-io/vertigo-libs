@@ -32,6 +32,7 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractStaticDataStorePlugin;
+import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -39,13 +40,17 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  * @version $Id: TutoMasterDataStoreStatic.java,v 1.3 2014/06/27 12:21:39 pchretien Exp $
  */
-public final class StaticStorePlugin extends AbstractStaticDataStorePlugin {
+public final class StaticStorePlugin extends AbstractStaticDataStorePlugin implements Activeable {
 	private static final String DEFAULT_CONNECTION_NAME = "main";
-	private final String dataSpace;
-	private final DtDefinition staticDtDefinition;
-	private final DtField idField;
-	private final DtField displayField;
-	private final DtList<Entity> dtc;
+
+	private final String values;
+	private final String dtDefinitionName;
+
+	private String dataSpace;
+	private DtDefinition staticDtDefinition;
+	private DtField idField;
+	private DtField displayField;
+	private DtList<Entity> dtc;
 
 	/**
 	 * A simpler storePlugin for static list.
@@ -59,6 +64,12 @@ public final class StaticStorePlugin extends AbstractStaticDataStorePlugin {
 		Assertion.checkArgNotEmpty(values);
 		Assertion.checkArgument(values.contains("="), "StaticStorePlugin takes a list of key value like : key1=Label1;key2=Label2;...");
 		//----
+		this.dtDefinitionName = dtDefinitionName;
+		this.values = values;
+	}
+
+	@Override
+	public void start() {
 		staticDtDefinition = Home.getApp().getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
 		Assertion.checkArgument(staticDtDefinition.getIdField().isPresent(), "The Static MasterDataList {0} must have a IdField", staticDtDefinition.getClassSimpleName());
 		Assertion.checkArgument(staticDtDefinition.getDisplayField().isPresent(), "The Static MasterDataList {0} must have a DisplayField", staticDtDefinition.getClassSimpleName());
@@ -74,6 +85,13 @@ public final class StaticStorePlugin extends AbstractStaticDataStorePlugin {
 			final Entity dto = createDtObject(castToType(keyLabel[0], keyDataType), keyLabel[1]);
 			dtc.add(dto);
 		}
+
+	}
+
+	@Override
+	public void stop() {
+		//nothing
+
 	}
 
 	private static Object castToType(final String key, final DataType keyDataType) {
