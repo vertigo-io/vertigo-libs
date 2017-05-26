@@ -40,11 +40,11 @@ import com.sun.star.util.XRefreshable;
 
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.impl.services.converter.ConverterPlugin;
+import io.vertigo.util.TempFile;
 
 /**
  * Conversion des fichiers à partir de OpenOffice.

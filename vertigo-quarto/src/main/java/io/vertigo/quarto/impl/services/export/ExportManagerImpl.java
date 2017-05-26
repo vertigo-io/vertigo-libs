@@ -28,13 +28,13 @@ import javax.inject.Inject;
 
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.services.export.ExportManager;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportFormat;
+import io.vertigo.util.TempFile;
 
 /**
  * Implémentation standard du manager des exports.

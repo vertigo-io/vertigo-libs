@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.transaction.Transactional;
+import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.definitions.ProcessType;

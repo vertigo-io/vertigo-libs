@@ -30,8 +30,8 @@ import javax.inject.Inject;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.GsonBuilder;
 
+import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.transaction.Transactional;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.orchestra.dao.definition.DefinitionPAO;

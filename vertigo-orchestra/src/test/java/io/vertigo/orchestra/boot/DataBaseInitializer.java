@@ -30,10 +30,10 @@ import java.util.Collections;
 import javax.inject.Inject;
 
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
-import io.vertigo.dynamo.database.vendor.SqlDialect.GenerationMode;
+import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.database.sql.statement.SqlPreparedStatement;
+import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Component;
 import io.vertigo.lang.WrappedException;

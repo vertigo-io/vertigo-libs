@@ -12,6 +12,7 @@
 			<plugin class="io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin" />
 		</component>
 		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />		
+		<component api="VTransactionManager" class="io.vertigo.commons.impl.transaction.VTransactionManagerImpl"/>
 	</module>
 
 	<module name="vertigo-dynamo">
@@ -20,7 +21,6 @@
 			<plugin class="io.vertigo.dynamo.plugins.collections.lucene.LuceneIndexPlugin" />
 		</component>
 		<component api="TaskManager" class="io.vertigo.dynamo.impl.task.TaskManagerImpl" />
-		<component api="VTransactionManager" class="io.vertigo.dynamo.impl.transaction.VTransactionManagerImpl"/>
 		<component api="StoreManager" class="io.vertigo.dynamo.impl.store.StoreManagerImpl">
 		</component>
 		<component api="ExportManager" class="io.vertigo.quarto.impl.services.export.ExportManagerImpl">

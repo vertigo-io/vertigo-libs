@@ -38,11 +38,11 @@ import fr.opensagres.xdocreport.converter.Options;
 import fr.opensagres.xdocreport.converter.XDocConverterException;
 import fr.opensagres.xdocreport.core.document.DocumentKind;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.impl.services.converter.ConverterPlugin;
+import io.vertigo.util.TempFile;
 
 /**
  * Plugin de conversion du format ODT au format PDF.

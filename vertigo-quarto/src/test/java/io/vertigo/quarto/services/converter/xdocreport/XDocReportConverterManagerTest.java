@@ -31,9 +31,9 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.services.converter.ConverterManager;
+import io.vertigo.util.TempFile;
 
 /**
  * Test de l'implémentation avec la librairie XDocReport.

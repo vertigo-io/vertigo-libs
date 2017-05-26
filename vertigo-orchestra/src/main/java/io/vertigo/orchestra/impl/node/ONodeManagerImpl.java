@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.transaction.Transactional;
+import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.dao.execution.ONodeDAO;
 import io.vertigo.orchestra.domain.execution.ONode;

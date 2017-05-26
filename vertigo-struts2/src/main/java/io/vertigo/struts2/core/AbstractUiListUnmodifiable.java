@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -35,8 +37,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;

@@ -3,7 +3,7 @@
 <config>
 	<!-- Aspects declaration -->
 	<module name="aspects" >
-		<aspect class="io.vertigo.dynamo.impl.transaction.VTransactionAspect"/>
+		<aspect class="io.vertigo.commons.impl.transaction.VTransactionAspect"/>
 	</module>
 	
 	<module name="dao">

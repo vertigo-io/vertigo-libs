@@ -22,8 +22,8 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 
 /**
  * Base Class for Database unit test

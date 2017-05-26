@@ -40,7 +40,7 @@ import org.openqa.selenium.Cookie;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
-import io.vertigo.dynamo.file.util.TempFile;
+import io.vertigo.util.TempFile;
 
 public class FileDownloader4Tests {
 

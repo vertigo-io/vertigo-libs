@@ -54,9 +54,9 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.impl.services.publisher.merger.processor.ZipUtil;
+import io.vertigo.util.TempFile;
 
 /**
  * Classe d'utilitaires pour les fichiers de type DOCX.

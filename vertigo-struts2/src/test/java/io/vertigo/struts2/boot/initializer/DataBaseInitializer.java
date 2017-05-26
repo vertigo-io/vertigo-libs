@@ -30,14 +30,14 @@ import java.util.Collections;
 
 import javax.inject.Inject;
 
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.database.SqlDataBaseManager;
-import io.vertigo.dynamo.database.connection.SqlConnection;
-import io.vertigo.dynamo.database.statement.SqlPreparedStatement;
-import io.vertigo.dynamo.database.vendor.SqlDialect.GenerationMode;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
+import io.vertigo.database.sql.SqlDataBaseManager;
+import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.database.sql.statement.SqlPreparedStatement;
+import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.struts2.dao.movies.MovieDAO;
 import io.vertigo.struts2.domain.movies.Movie;

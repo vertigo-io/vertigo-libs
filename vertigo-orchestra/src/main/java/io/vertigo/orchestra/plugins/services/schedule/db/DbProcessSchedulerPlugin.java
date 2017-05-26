@@ -35,12 +35,12 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 
 import io.vertigo.commons.daemon.DaemonDefinition;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;

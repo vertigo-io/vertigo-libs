@@ -40,11 +40,11 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
-import io.vertigo.dynamo.transaction.VTransactionManager;
-import io.vertigo.dynamo.transaction.VTransactionWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;

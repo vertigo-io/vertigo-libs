@@ -27,9 +27,9 @@ import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
-import io.vertigo.dynamo.impl.database.vendor.h2.H2DataBase;
-import io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.orchestra.boot.DataBaseInitializer;
@@ -58,6 +58,7 @@ public final class MyAppConfig {
 				.addModule(new CommonsFeatures()
 						.withCache(MemoryCachePlugin.class)
 						.withScript()
+						.withTransaction()
 						.build())
 				.addModule(new DynamoFeatures()
 						.withKVStore()

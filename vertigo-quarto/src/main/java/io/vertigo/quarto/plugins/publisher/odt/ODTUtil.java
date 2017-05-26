@@ -30,8 +30,8 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.file.util.TempFile;
 import io.vertigo.quarto.impl.services.publisher.merger.processor.ZipUtil;
+import io.vertigo.util.TempFile;
 
 /**
  * Classe d'utilitaires pour les fichiers de type ODT.

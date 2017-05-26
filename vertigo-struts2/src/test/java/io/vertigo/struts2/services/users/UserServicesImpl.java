@@ -20,7 +20,7 @@ package io.vertigo.struts2.services.users;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.transaction.Transactional;
+import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.lang.VUserException;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.struts2.domain.users.ApplicationUser;

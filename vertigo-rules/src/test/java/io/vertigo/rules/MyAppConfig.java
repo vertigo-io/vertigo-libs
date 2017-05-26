@@ -26,9 +26,9 @@ import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
+import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
-import io.vertigo.dynamo.impl.database.vendor.postgresql.PostgreSqlDataBase;
-import io.vertigo.dynamo.plugins.database.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.rules.data.MyDummyDtObjectProvider;
@@ -62,6 +62,7 @@ public class MyAppConfig {
 				.addModule(new CommonsFeatures()//
 						.withCache(io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin.class)
 						.withScript()
+						.withTransaction()
 						.build())
 				.addModule(new DynamoFeatures()//
 						.withStore()//
