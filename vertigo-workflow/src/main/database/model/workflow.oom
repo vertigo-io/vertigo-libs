@@ -1474,7 +1474,7 @@ Shadow=0</a:DisplayPreferences>
 <c:Packages>
 <o:Package Id="o6">
 <a:ObjectID>A5E8A220-9029-4915-8B49-6CB547C83296</a:ObjectID>
-<a:Name>io.vertigo.x.workflow.domain.files</a:Name>
+<a:Name>io.vertigo.workflow.domain.files</a:Name>
 <a:Code>__PACKAGE__DOMAIN_FILES</a:Code>
 <a:CreationDate>1423826811</a:CreationDate>
 <a:Creator>JDALMEIDA</a:Creator>
@@ -1997,7 +1997,7 @@ Shadow=0</a:DisplayPreferences>
 </o:Package>
 <o:Package Id="o9">
 <a:ObjectID>51170339-8A3F-4CF0-ADBF-F8E13697A97E</a:ObjectID>
-<a:Name>io.vertigo.x.workflow.domain.masterdatas</a:Name>
+<a:Name>io.vertigo.workflow.domain.masterdatas</a:Name>
 <a:Code>__PACKAGE__DOMAIN_MASTERDATAS</a:Code>
 <a:CreationDate>1423845975</a:CreationDate>
 <a:Creator>JDALMEIDA</a:Creator>
@@ -2520,7 +2520,7 @@ Shadow=0</a:DisplayPreferences>
 </o:Package>
 <o:Package Id="o12">
 <a:ObjectID>42EC1852-E2B5-4275-BF50-F25C82C37522</a:ObjectID>
-<a:Name>io.vertigo.x.workflow.domain.users</a:Name>
+<a:Name>io.vertigo.workflow.domain.users</a:Name>
 <a:Code>__PACKAGE__DOMAIN_USERS</a:Code>
 <a:CreationDate>1423849889</a:CreationDate>
 <a:Creator>JDALMEIDA</a:Creator>
@@ -3042,7 +3042,7 @@ Shadow=0</a:DisplayPreferences>
 </o:Package>
 <o:Package Id="o15">
 <a:ObjectID>0E4281C0-0578-49D8-99D9-C1539B5323BC</a:ObjectID>
-<a:Name>io.vertigo.x.workflow.domain.model</a:Name>
+<a:Name>io.vertigo.workflow.domain.model</a:Name>
 <a:Code>__PACKAGE__DOMAIN_MASTERDATAS2</a:Code>
 <a:CreationDate>1423845975</a:CreationDate>
 <a:Creator>JDALMEIDA</a:Creator>
@@ -4200,7 +4200,7 @@ LABL 0 Arial,8,N</a:FontList>
 </o:Package>
 <o:Package Id="o57">
 <a:ObjectID>85CAEF60-DD68-486D-89DE-55EDDD6A4923</a:ObjectID>
-<a:Name>io.vertigo.x.workflow.domain.instance</a:Name>
+<a:Name>io.vertigo.workflow.domain.instance</a:Name>
 <a:Code>__PACKAGE__DOMAIN_MASTERDATAS3</a:Code>
 <a:CreationDate>1423845975</a:CreationDate>
 <a:Creator>JDALMEIDA</a:Creator>
@@ -5162,7 +5162,7 @@ LABL 0 Arial,8,N</a:FontList>
 <a:TargetStereotype/>
 <a:TargetID>CE40241B-9527-4083-9650-524A084FA965</a:TargetID>
 <a:TargetClassID>18112063-1A4B-11D1-83D9-444553540000</a:TargetClassID>
-<a:TargetPackagePath>&lt;Model&gt;::io.vertigo.x.workflow.domain.model</a:TargetPackagePath>
+<a:TargetPackagePath>&lt;Model&gt;::io.vertigo.workflow.domain.model</a:TargetPackagePath>
 </o:Shortcut>
 <o:Shortcut Id="o81">
 <a:ObjectID>43F01C2D-8F13-44D2-84D3-D9A098887454</a:ObjectID>
@@ -5175,7 +5175,7 @@ LABL 0 Arial,8,N</a:FontList>
 <a:TargetStereotype/>
 <a:TargetID>E6369C8C-E488-41DB-A073-FBB8E3E31396</a:TargetID>
 <a:TargetClassID>18112063-1A4B-11D1-83D9-444553540000</a:TargetClassID>
-<a:TargetPackagePath>&lt;Model&gt;::io.vertigo.x.workflow.domain.model</a:TargetPackagePath>
+<a:TargetPackagePath>&lt;Model&gt;::io.vertigo.workflow.domain.model</a:TargetPackagePath>
 </o:Shortcut>
 <o:Class Id="o82">
 <a:ObjectID>837318C1-7E56-41F7-9F9B-0331FF20F0EA</a:ObjectID>
@@ -5519,7 +5519,7 @@ LABL 0 Arial,8,N</a:FontList>
 <o:Domain Id="o105">
 <a:ObjectID>D76C6CA5-E2B3-4AE6-9066-747DD4389EA5</a:ObjectID>
 <a:Name>Comment</a:Name>
-<a:Code>DO_X_WORKFLOW_COMMENTS</a:Code>
+<a:Code>DO_WF_COMMENTS</a:Code>
 <a:CreationDate>1327330459</a:CreationDate>
 <a:Creator>mnnebor</a:Creator>
 <a:ModificationDate>1470843058</a:ModificationDate>
@@ -5531,7 +5531,7 @@ LABL 0 Arial,8,N</a:FontList>
 <o:Domain Id="o43">
 <a:ObjectID>CE678B54-B0A0-4D76-B0E1-DA74D7E86EA5</a:ObjectID>
 <a:Name>Date</a:Name>
-<a:Code>DO_X_WORKFLOW_DATE</a:Code>
+<a:Code>DO_WF_DATE</a:Code>
 <a:CreationDate>1324996354</a:CreationDate>
 <a:Creator>adufranne</a:Creator>
 <a:ModificationDate>1490019302</a:ModificationDate>
@@ -5586,7 +5586,7 @@ LABL 0 Arial,8,N</a:FontList>
 <o:Domain Id="o39">
 <a:ObjectID>51F2F63B-ED16-464D-834D-1C26B7E2F9EB</a:ObjectID>
 <a:Name>Id</a:Name>
-<a:Code>DO_X_WORKFLOW_ID</a:Code>
+<a:Code>DO_WF_ID</a:Code>
 <a:CreationDate>1324990761</a:CreationDate>
 <a:Creator>adufranne</a:Creator>
 <a:ModificationDate>1470842952</a:ModificationDate>
@@ -5598,7 +5598,7 @@ LABL 0 Arial,8,N</a:FontList>
 <o:Domain Id="o54">
 <a:ObjectID>E442EB86-2E1F-4EC5-97D6-B2C6AACACB7E</a:ObjectID>
 <a:Name>IdCode</a:Name>
-<a:Code>DO_X_WORKFLOW_CODE</a:Code>
+<a:Code>DO_WF_CODE</a:Code>
 <a:CreationDate>1326814194</a:CreationDate>
 <a:Creator>adufranne</a:Creator>
 <a:ModificationDate>1469550232</a:ModificationDate>
@@ -5624,7 +5624,7 @@ LABL 0 Arial,8,N</a:FontList>
 <o:Domain Id="o41">
 <a:ObjectID>C5BDDCAA-0059-4B05-AA27-2C6875485DEB</a:ObjectID>
 <a:Name>Label</a:Name>
-<a:Code>DO_X_WORKFLOW_LABEL</a:Code>
+<a:Code>DO_WF_LABEL</a:Code>
 <a:CreationDate>1324990761</a:CreationDate>
 <a:Creator>adufranne</a:Creator>
 <a:ModificationDate>1469549457</a:ModificationDate>
@@ -5660,7 +5660,7 @@ LABL 0 Arial,8,N</a:FontList>
 <o:Domain Id="o91">
 <a:ObjectID>F9E01AA1-7191-41EA-8D57-54C5FA53847B</a:ObjectID>
 <a:Name>YesNo</a:Name>
-<a:Code>DO_X_WORKFLOW_FLAG</a:Code>
+<a:Code>DO_WF_FLAG</a:Code>
 <a:CreationDate>1327327057</a:CreationDate>
 <a:Creator>mnnebor</a:Creator>
 <a:ModificationDate>1469549768</a:ModificationDate>
@@ -5718,7 +5718,7 @@ LABL 0 Arial,8,N</a:FontList>
 <o:Domain Id="o48">
 <a:ObjectID>B349B0AA-D55A-4DCB-B752-EC9847CCCE3B</a:ObjectID>
 <a:Name>Level</a:Name>
-<a:Code>DO_X_WORKFLOW_LEVEL</a:Code>
+<a:Code>DO_WF_LEVEL</a:Code>
 <a:CreationDate>1467822794</a:CreationDate>
 <a:Creator>xdurand</a:Creator>
 <a:ModificationDate>1469550012</a:ModificationDate>
@@ -5730,7 +5730,7 @@ LABL 0 Arial,8,N</a:FontList>
 <o:Domain Id="o87">
 <a:ObjectID>9DB3D80D-EF62-4EE7-A42C-9EC5A208D699</a:ObjectID>
 <a:Name>WeakId</a:Name>
-<a:Code>DO_X_WORKFLOW_WEAK_ID</a:Code>
+<a:Code>DO_WF_WEAK_ID</a:Code>
 <a:CreationDate>1469549654</a:CreationDate>
 <a:Creator>xdurand</a:Creator>
 <a:ModificationDate>1469549686</a:ModificationDate>
@@ -5740,7 +5740,7 @@ LABL 0 Arial,8,N</a:FontList>
 <o:Domain Id="o89">
 <a:ObjectID>CA24EC63-DE78-4A39-8EE3-A3D259B5F8DB</a:ObjectID>
 <a:Name>User</a:Name>
-<a:Code>DO_X_WORKFLOW_USER</a:Code>
+<a:Code>DO_WF_USER</a:Code>
 <a:CreationDate>1324990761</a:CreationDate>
 <a:Creator>adufranne</a:Creator>
 <a:ModificationDate>1470843058</a:ModificationDate>
@@ -5752,7 +5752,7 @@ LABL 0 Arial,8,N</a:FontList>
 <o:Domain Id="o102">
 <a:ObjectID>BCE925AA-CA30-4B1B-8229-51E6129B4DAC</a:ObjectID>
 <a:Name>Choice</a:Name>
-<a:Code>DO_X_WORKFLOW_CHOICE</a:Code>
+<a:Code>DO_WF_CHOICE</a:Code>
 <a:CreationDate>1469549986</a:CreationDate>
 <a:Creator>xdurand</a:Creator>
 <a:ModificationDate>1470843058</a:ModificationDate>

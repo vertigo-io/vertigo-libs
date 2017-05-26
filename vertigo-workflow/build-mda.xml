@@ -3,7 +3,7 @@
 <!-- ====================================================================== -->
 <!-- Ant build file (http://ant.apache.org/) for Ant 1.6.2 or above.        -->
 <!-- ====================================================================== -->
-<project name="vertigo-x-workflow-mda" default="clean-generate">
+<project name="vertigo-workflow-mda" default="clean-generate">
 	<!-- =================================================================== -->
 	<!-- Proprietes                                                          -->
 	<!-- =================================================================== -->
@@ -57,7 +57,7 @@
 		<echo message="Génération des classes Java" />
 		<!-- il faut fork="true" si exécution avec "same JRE" dans eclipse -->
 		<java dir="." fork="true" maxmemory="128m" classname="io.vertigo.studio.tools.NameSpace2Java" failonerror="true" classpath=".;${build.dir};${class.path};${compile_classpath}">
-			<arg value="/io/vertigo/x/workflow/mda/applicationConfiguration.properties" />
+			<arg value="/io/vertigo/workflow/mda/applicationConfiguration.properties" />
 		</java>
 		<copy file="${targetGenDir}\${sqlGen}\crebas.sql" tofile="${sqlCrebasGenDir}\01_CREBAS.sql" />
 	</target>
