@@ -33,7 +33,7 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.impl.daemon.DaemonDefinition;
+import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
