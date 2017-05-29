@@ -31,6 +31,7 @@ import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 
+import io.vertigo.app.Home;
 import io.vertigo.lang.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -51,7 +52,11 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		//
+		Home.getApp().getDefinitionSpace().getAll(ProcessDefinition.class)
+				.stream()
+				.filter(processDefinition -> processDefinition.getProcessType() == ProcessType.UNSUPERVISED)
+				.filter(processDefinition -> processDefinition.getTriggeringStrategy().getCronExpression().isPresent())
+				.forEach(this::scheduleWithCron);
 	}
 
 	@Override
@@ -67,9 +72,7 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 		timerPool.close();
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public void scheduleWithCron(final ProcessDefinition processDefinition) {
+	private void scheduleWithCron(final ProcessDefinition processDefinition) {
 		scheduleAtRecurrent(processDefinition, DateUtil.newDateTime(), Collections.emptyMap());
 
 	}

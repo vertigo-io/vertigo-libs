@@ -59,15 +59,6 @@ public final class ProcessSchedulerImpl implements ProcessScheduler {
 	//--- Public
 	//--------------------------------------------------------------------------------------------------
 
-	@Override
-	public void scheduleWithCron(final ProcessDefinition processDefinition) {
-		Assertion.checkNotNull(processDefinition);
-		// ---
-		getPluginByType(processDefinition.getProcessType())
-				.scheduleWithCron(processDefinition);
-
-	}
-
 	/** {@inheritDoc} */
 	@Override
 	public void scheduleAt(final ProcessDefinition processDefinition, final Date planifiedTime, final Map<String, String> initialParams) {

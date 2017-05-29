@@ -16,26 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.orchestra.services.schedule;
+package io.vertigo.orchestra.services.execution.engine;
 
-import java.util.Date;
-import java.util.Map;
+import io.vertigo.orchestra.services.execution.RunnableActivityEngine;
 
-import io.vertigo.orchestra.definitions.ProcessDefinition;
+public final class TestJobScheduled extends RunnableActivityEngine {
+	private static int count = 0;
 
-/**
- * API des services liés à la planification des processus.
- *
- * @author mlaroche
- */
-public interface ProcessScheduler {
+	@Override
+	public void run() {
+		try {
+			//On simule une attente qui correspond à un traitement métier de 100 ms
+			Thread.sleep(100);
+		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt(); //si interrupt on relance
+		}
+		incCount();
+	}
 
-	/**
-	 * Planifie un processus à une date donnée.
-	 * @param processDefinition le processus à planifier
-	 * @param planifiedTime la date de planification
-	 * @param initialParams les paramètres initiaux à utiliser
-	 */
-	void scheduleAt(final ProcessDefinition processDefinition, final Date planifiedTime, final Map<String, String> initialParams);
+	private static synchronized void incCount() {
+		count++;
+	}
 
+	public static synchronized int getCount() {
+		return count;
+	}
+
+	public static synchronized void reset() {
+		count = 0;
+	}
 }

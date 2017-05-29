@@ -32,6 +32,7 @@ import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.OrchestraServices;
 import io.vertigo.orchestra.services.execution.engine.TestJob;
 import io.vertigo.orchestra.services.execution.engine.TestJob2;
+import io.vertigo.orchestra.services.execution.engine.TestJobScheduled;
 
 /**
  * TODO : Description de la classe.
@@ -53,10 +54,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	public void singleExecution() throws InterruptedException {
 		TestJob.reset();
 
-		final ProcessDefinition processDefinition = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_MANUAL", TestJob.class)
-				.build();
-
-		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
+		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition("PRO_TEST_UNSUPERVISED_MANUAL");
 
 		// We plan right now
 		orchestraServices.getScheduler()
@@ -73,11 +71,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		TestJob.reset();
 		TestJob2.reset();
 
-		final ProcessDefinition processDefinition = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_MANUAL_2", TestJob.class)
-				.addActivity("SECOND", "second", TestJob2.class)
-				.build();
-
-		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
+		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition("PRO_TEST_UNSUPERVISED_MANUAL_2");
 
 		// We plan right now
 		orchestraServices.getScheduler()
@@ -95,20 +89,13 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	 */
 	@Test
 	public void recurrentExecution() throws InterruptedException {
-		TestJob.reset();
-		final ProcessDefinition processDefinition = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_RECURRENT", TestJob.class)
-				.withCronExpression("*/5 * * * * ?")
-				.build();
+		TestJobScheduled.reset();
 
-		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
-
-		// We plan right now
-		orchestraServices.getScheduler()
-				.scheduleWithCron(processDefinition);
+		// process "PRO_TEST_UNSUPERVISED_RECURRENT" is scheduled with cron expression
 
 		// The task takes 10 secondes to run we wait 12 secondes to check the final states
 		Thread.sleep(1000 * 8);
-		Assert.assertEquals(2, TestJob.getCount());
+		Assert.assertEquals(2, TestJobScheduled.getCount());
 	}
 
 }

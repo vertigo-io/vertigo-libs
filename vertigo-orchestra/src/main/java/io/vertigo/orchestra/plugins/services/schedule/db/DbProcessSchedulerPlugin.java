@@ -164,19 +164,6 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	//--- Package
 	//--------------------------------------------------------------------------------------------------
 
-	@Override
-	public void scheduleWithCron(final ProcessDefinition processDefinition) {
-		if (transactionManager.hasCurrentTransaction()) {
-			doScheduleWithCron(processDefinition);
-		} else {
-			try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-				doScheduleWithCron(processDefinition);
-				transaction.commit();
-			}
-		}
-
-	}
-
 	private void doScheduleWithCron(final ProcessDefinition processDefinition) {
 		final Optional<Date> nextPlanification = findNextPlanificationTime(processDefinition);
 		if (nextPlanification.isPresent()) {
@@ -238,7 +225,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	private void plannRecurrentProcesses() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			for (final ProcessDefinition processDefinition : getAllScheduledProcesses()) {
-				scheduleWithCron(processDefinition);
+				doScheduleWithCron(processDefinition);
 			}
 			transaction.commit();
 		}
