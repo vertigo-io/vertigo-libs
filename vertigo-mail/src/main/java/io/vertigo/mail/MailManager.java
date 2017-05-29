@@ -18,7 +18,7 @@
  */
 package io.vertigo.mail;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * Gestionnaire centralisé des mails.

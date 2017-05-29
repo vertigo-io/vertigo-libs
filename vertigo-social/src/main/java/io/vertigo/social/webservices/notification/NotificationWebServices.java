@@ -27,8 +27,8 @@ import javax.inject.Inject;
 
 import io.vertigo.account.authc.AuthentificationManager;
 import io.vertigo.account.identity.Account;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.lang.MessageText;
 import io.vertigo.social.services.notification.Notification;
 import io.vertigo.social.services.notification.NotificationServices;
 import io.vertigo.util.MapBuilder;

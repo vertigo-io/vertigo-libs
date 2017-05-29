@@ -21,8 +21,8 @@
  */
 package io.vertigo.impl.workflow;
 
+import io.vertigo.core.component.Plugin;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Plugin;
 import io.vertigo.workflow.domain.model.WfActivityDefinition;
 
 /**

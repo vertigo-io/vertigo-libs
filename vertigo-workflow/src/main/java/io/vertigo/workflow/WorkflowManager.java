@@ -21,7 +21,7 @@ package io.vertigo.workflow;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 import io.vertigo.rules.domain.RuleConditionDefinition;
 import io.vertigo.rules.domain.RuleDefinition;
 import io.vertigo.rules.domain.RuleFilterDefinition;

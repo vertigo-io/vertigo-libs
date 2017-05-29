@@ -18,7 +18,7 @@
  */
 package io.vertigo.struts2.services.users;
 
-import io.vertigo.lang.MessageKey;
+import io.vertigo.core.locale.MessageKey;
 
 /**
  * Dictionnaire des ressources.

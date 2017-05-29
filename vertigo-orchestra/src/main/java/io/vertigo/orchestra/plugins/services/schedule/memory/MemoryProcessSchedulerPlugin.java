@@ -32,7 +32,7 @@ import java.util.TimerTask;
 import org.apache.log4j.Logger;
 
 import io.vertigo.app.Home;
-import io.vertigo.lang.Activeable;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.orchestra.definitions.ProcessDefinition;

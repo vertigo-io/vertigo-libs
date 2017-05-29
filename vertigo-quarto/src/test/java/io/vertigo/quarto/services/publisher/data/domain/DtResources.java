@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.services.publisher.data.domain;
 
-import io.vertigo.lang.MessageKey;
+import io.vertigo.core.locale.MessageKey;
 
 /**
  * Attention cette classe est générée automatiquement !

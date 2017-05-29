@@ -18,7 +18,7 @@
  */
 package io.vertigo.orchestra.impl.services;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.orchestra.services.report.ProcessReport;
 
 /**

@@ -18,8 +18,8 @@
  */
 package io.vertigo.geo.impl.services.geocoder;
 
+import io.vertigo.core.component.Plugin;
 import io.vertigo.geo.services.geocoder.GeoLocation;
-import io.vertigo.lang.Plugin;
 
 /**
  * @author spoitrenaud

@@ -18,7 +18,7 @@
  */
 package io.vertigo.orchestra.impl.node;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 
 /**
  * Interface de gestion des noeud d'execution orchestra.

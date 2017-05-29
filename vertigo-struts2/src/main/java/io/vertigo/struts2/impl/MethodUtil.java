@@ -24,8 +24,8 @@ import java.util.Optional;
 
 import javax.inject.Named;
 
+import io.vertigo.core.component.Container;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Container;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.util.ClassUtil;
 

@@ -21,8 +21,8 @@ package io.vertigo.impl.workflow;
 import java.util.List;
 import java.util.Map;
 
+import io.vertigo.core.component.Plugin;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Plugin;
 
 /**
  * This class defines the storage of item.

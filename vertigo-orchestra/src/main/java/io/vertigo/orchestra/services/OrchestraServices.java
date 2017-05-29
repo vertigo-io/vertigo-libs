@@ -18,7 +18,7 @@
  */
 package io.vertigo.orchestra.services;
 
-import io.vertigo.lang.Component;
+import io.vertigo.core.component.Component;
 import io.vertigo.orchestra.services.execution.ProcessExecutor;
 import io.vertigo.orchestra.services.log.ProcessLogger;
 import io.vertigo.orchestra.services.report.ProcessReport;

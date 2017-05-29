@@ -18,7 +18,7 @@
  */
 package io.vertigo.stella.master;
 
-import io.vertigo.lang.Manager;
+import io.vertigo.core.component.Manager;
 import io.vertigo.stella.work.WorkEngine;
 
 /**

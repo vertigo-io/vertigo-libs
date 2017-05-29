@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.services.export;
 
+import io.vertigo.core.component.Manager;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Manager;
 import io.vertigo.quarto.services.export.model.Export;
 
 /**

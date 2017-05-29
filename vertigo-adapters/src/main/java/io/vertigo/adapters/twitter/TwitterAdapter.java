@@ -2,7 +2,7 @@ package io.vertigo.adapters.twitter;
 
 import org.apache.log4j.Logger;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.lang.WrappedException;
 import twitter4j.Status;
 import twitter4j.Twitter;

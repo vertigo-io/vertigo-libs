@@ -20,7 +20,7 @@ package io.vertigo.x.impl.audit;
 
 import java.util.List;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.x.audit.AuditTrace;
 import io.vertigo.x.audit.AuditTraceCriteria;
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.orchestra.impl.services.schedule;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.orchestra.definitions.ProcessType;
 import io.vertigo.orchestra.services.execution.ProcessExecutor;
 import io.vertigo.orchestra.services.schedule.ProcessScheduler;

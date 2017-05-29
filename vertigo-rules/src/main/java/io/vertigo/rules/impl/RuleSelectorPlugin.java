@@ -18,7 +18,7 @@
  */
 package io.vertigo.rules.impl;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.rules.services.RuleSelector;
 
 /**

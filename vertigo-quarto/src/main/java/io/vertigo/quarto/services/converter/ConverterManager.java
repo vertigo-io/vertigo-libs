@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.services.converter;
 
+import io.vertigo.core.component.Manager;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Manager;
 
 /**
  * Gestionnaire centralisé des conversions de documents.

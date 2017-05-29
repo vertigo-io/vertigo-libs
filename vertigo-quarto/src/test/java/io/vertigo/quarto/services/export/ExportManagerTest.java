@@ -23,9 +23,9 @@ import javax.inject.Inject;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.MessageText;
 import io.vertigo.quarto.services.export.ExportManager;
 import io.vertigo.quarto.services.export.data.DtDefinitions.ContinentFields;
 import io.vertigo.quarto.services.export.data.DtDefinitions.CountryFields;

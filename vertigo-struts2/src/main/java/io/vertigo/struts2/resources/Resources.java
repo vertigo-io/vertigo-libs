@@ -21,7 +21,7 @@
  */
 package io.vertigo.struts2.resources;
 
-import io.vertigo.lang.MessageKey;
+import io.vertigo.core.locale.MessageKey;
 
 /**
  * Ressources générales.

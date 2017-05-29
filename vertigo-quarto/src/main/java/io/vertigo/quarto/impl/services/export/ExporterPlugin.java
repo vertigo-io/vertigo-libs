@@ -20,7 +20,7 @@ package io.vertigo.quarto.impl.services.export;
 
 import java.io.OutputStream;
 
-import io.vertigo.lang.Plugin;
+import io.vertigo.core.component.Plugin;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportFormat;
 

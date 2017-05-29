@@ -29,13 +29,13 @@ import java.util.Collections;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.component.Activeable;
+import io.vertigo.core.component.Component;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlPreparedStatement;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
-import io.vertigo.lang.Activeable;
-import io.vertigo.lang.Component;
 import io.vertigo.lang.WrappedException;
 
 /**

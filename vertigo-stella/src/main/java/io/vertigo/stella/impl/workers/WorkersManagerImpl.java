@@ -25,7 +25,7 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import io.vertigo.lang.Activeable;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.workers.coordinator.WorkersCoordinator;
 import io.vertigo.stella.workers.WorkersManager;
