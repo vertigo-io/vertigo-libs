@@ -20,8 +20,8 @@ package io.vertigo.social.comment.webservices;
 
 import javax.inject.Inject;
 
-import io.vertigo.account.authc.AuthentificationManager;
-import io.vertigo.account.impl.authc.UsernameAuthenticationToken;
+import io.vertigo.account.authentification.AuthentificationManager;
+import io.vertigo.account.impl.authentification.UsernameAuthenticationToken;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
