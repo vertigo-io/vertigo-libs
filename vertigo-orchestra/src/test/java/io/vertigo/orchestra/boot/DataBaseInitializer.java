@@ -34,8 +34,6 @@ import io.vertigo.core.component.Component;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
-import io.vertigo.database.sql.statement.SqlPreparedStatement;
-import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -95,8 +93,9 @@ public class DataBaseInitializer implements Component, Activeable {
 	}
 
 	private static void execCallableStatement(final SqlConnection connection, final SqlDataBaseManager sqlDataBaseManager, final String sql) {
-		try (final SqlPreparedStatement preparedStatement = sqlDataBaseManager.createPreparedStatement(connection, sql, GenerationMode.NONE)) {
-			preparedStatement.executeUpdate(Collections.emptyList());
+		try {
+			sqlDataBaseManager.createPreparedStatement(connection)
+					.executeUpdate(sql, Collections.emptyList());
 		} catch (final SQLException e) {
 			throw WrappedException.wrap(e, "Can't exec command {0}", sql);
 		}
