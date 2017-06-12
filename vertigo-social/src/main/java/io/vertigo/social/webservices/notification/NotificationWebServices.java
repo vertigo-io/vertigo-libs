@@ -25,7 +25,7 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import io.vertigo.account.authentification.AuthentificationManager;
+import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.identity.Account;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.model.URI;
@@ -54,7 +54,7 @@ public final class NotificationWebServices implements WebServices {
 	@Inject
 	private NotificationServices notificationServices;
 	@Inject
-	private AuthentificationManager authentificationManager;
+	private AuthenticationManager authenticationManager;
 
 	/**
 	 * Get messages for logged user.
@@ -138,7 +138,7 @@ public final class NotificationWebServices implements WebServices {
 	}
 
 	private URI<Account> getLoggedAccountURI() {
-		return authentificationManager.getLoggedAccount()
+		return authenticationManager.getLoggedAccount()
 				.orElseThrow(() -> new VSecurityException(MessageText.of("No account logged in")))
 				.getURI();
 	}

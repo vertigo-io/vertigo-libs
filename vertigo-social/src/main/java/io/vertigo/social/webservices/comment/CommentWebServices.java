@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.account.authentification.AuthentificationManager;
+import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.identity.Account;
 import io.vertigo.app.Home;
 import io.vertigo.core.locale.MessageText;
@@ -65,7 +65,7 @@ public final class CommentWebServices implements WebServices {
 	private CommentServices commentServices;
 
 	@Inject
-	private AuthentificationManager authentificationManager;
+	private AuthenticationManager authenticationManager;
 
 	/**
 	 * Gets comments for keyConcept.
@@ -176,7 +176,7 @@ public final class CommentWebServices implements WebServices {
 	}
 
 	private URI<Account> getLoggedAccountURI() {
-		return authentificationManager.getLoggedAccount()
+		return authenticationManager.getLoggedAccount()
 				.orElseThrow(() -> new VSecurityException(MessageText.of("No account logged in")))
 				.getURI();
 	}

@@ -20,8 +20,8 @@ package io.vertigo.social.notification.webservices;
 
 import javax.inject.Inject;
 
-import io.vertigo.account.authentification.AuthentificationManager;
-import io.vertigo.account.impl.authentification.UsernameAuthenticationToken;
+import io.vertigo.account.authentication.AuthenticationManager;
+import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
@@ -38,14 +38,14 @@ public final class TestLoginWebServices implements WebServices {
 	@Inject
 	private VSecurityManager securityManager;
 	@Inject
-	private AuthentificationManager authentificationManager;
+	private AuthenticationManager authenticationManager;
 
 	@AnonymousAccessAllowed
 	@GET("/login")
 	public void login(@QueryParam("id") final String id) {
 		//code 200
 		securityManager.getCurrentUserSession().get().authenticate();
-		authentificationManager.authenticate(new UsernameAuthenticationToken(id));
+		authenticationManager.login(new UsernameAuthenticationToken(id));
 	}
 
 	@SessionInvalidate
