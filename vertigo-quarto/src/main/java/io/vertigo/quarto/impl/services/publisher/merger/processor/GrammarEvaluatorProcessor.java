@@ -52,7 +52,7 @@ public final class GrammarEvaluatorProcessor implements MergerProcessor {
 	@Override
 	public String execute(final String input, final PublisherData publisherData) {
 		final ScriptHandlerImpl scriptHandler = new ScriptHandlerImpl(MergerScriptEvaluatorProcessor.DATA, scriptGrammar);
-		scriptManager.parse(input, scriptHandler, SeparatorType.XML_CODE.getSeparators());
+		scriptManager.parse(input, scriptHandler, SeparatorType.XML_CODE.getSeparator());
 		return scriptHandler.result();
 	}
 }
