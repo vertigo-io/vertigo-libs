@@ -10,7 +10,7 @@
 			<param name="nodeId" value="node-1-1" />
 			<param name="workersCount" value="10" />
 			<!-- On déclare la spécialisation des 10 workers du WorkManager : 5 de chaque pour les TU -->
-			<param name="workTypes" value="io.vertigo.stella.work.mock.DivideWorkEngine^5;io.vertigo.stella.work.mock.SlowWorkEngine^5" />
+			<param name="workTypes" value="io.vertigo.stella.work.mock.DivideWorkEngine^5;io.vertigo.stella.work.mock.SlowWorkEngine^5;io.vertigo.stella.work.AbstractWorkManagerTest$LengthWorkEngine^1;io.vertigo.stella.work.AbstractWorkManagerTest$SquareWorkEngine^1;io.vertigo.stella.work.mock.ThreadLocalWorkEngine^5" />
 
 			<plugin class="io.vertigo.stella.plugins.work.rest.workers.RestWorkersPlugin">
 				<param name="timeoutSeconds" value="10" />
