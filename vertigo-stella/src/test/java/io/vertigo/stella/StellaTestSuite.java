@@ -43,7 +43,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.stella.work.distributed.redis.RedisWorkManagerTest;
 import io.vertigo.stella.work.distributed.rest.RestWorkManagerTest;
-import io.vertigo.stella.work.local.WorkManagerTest;
 
 /**
  * Test de l'implementation standard.
@@ -52,7 +51,6 @@ import io.vertigo.stella.work.local.WorkManagerTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-		WorkManagerTest.class,
 		RedisWorkManagerTest.class,
 		RestWorkManagerTest.class,
 })

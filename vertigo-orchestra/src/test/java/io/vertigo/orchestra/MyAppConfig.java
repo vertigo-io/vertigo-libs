@@ -59,7 +59,6 @@ public final class MyAppConfig {
 				.addModule(new CommonsFeatures()
 						.withCache(MemoryCachePlugin.class)
 						.withScript()
-						.withTransaction()
 						.build())
 				.addModule(new DynamoFeatures()
 						.withKVStore()
