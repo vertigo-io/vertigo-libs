@@ -43,14 +43,12 @@ create Task TK_RESERVE_ACTIVITIES_TO_LAUNCH {
         	where ace_id in (
         			select ace_id 
         			from o_activity_execution
-        			where EST_CD = 'WAITING' or EST_CD = 'RESERVED'
+        			where EST_CD = 'WAITING'
         			order by creation_time asc
         			limit #MAX_NUMBER#
         			for update
-        	)
-        	
-			"
-			
+        	)        	
+			"			
 		attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
 		attribute MAX_NUMBER	 	{domain : DO_O_NOMBRE 		notNull:"true" 	inOut :"in"}
 }
