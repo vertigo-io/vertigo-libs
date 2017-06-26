@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.orchestra;
+package io.vertigo.orchestra.services.execution;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
@@ -32,20 +32,11 @@ import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlu
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
-import io.vertigo.orchestra.boot.DataBaseInitializer;
-import io.vertigo.orchestra.services.execution.LocalExecutionProcessInitializer;
+import io.vertigo.orchestra.OrchestraFeatures;
 import io.vertigo.orchestra.util.monitoring.MonitoringServices;
 import io.vertigo.orchestra.util.monitoring.MonitoringServicesImpl;
-import io.vertigo.orchestra.webservices.WsDefinition;
-import io.vertigo.orchestra.webservices.WsExecution;
-import io.vertigo.orchestra.webservices.WsExecutionControl;
-import io.vertigo.orchestra.webservices.data.user.TestUserSession;
-import io.vertigo.orchestra.webservices.data.user.WsTestLogin;
-import io.vertigo.persona.impl.security.PersonaFeatures;
-import io.vertigo.vega.VegaFeatures;
 
-public final class MyAppConfig {
-	public static final int WS_PORT = 8088;
+public final class OrchestraNode1AppConfig {
 
 	public static AppConfigBuilder createAppConfigBuilder() {
 		return AppConfig.builder().beginBoot()
@@ -54,7 +45,7 @@ public final class MyAppConfig {
 				.addPlugin(URLResourceResolverPlugin.class)
 				.endBoot()
 				.withNodeConfig(NodeConfig.builder()
-						.withNodeId("NODE_TEST_1")
+						.withNodeId("NODE_TEST_2")
 						.build())
 				.addModule(new CommonsFeatures()
 						.withCache(MemoryCachePlugin.class)
@@ -76,58 +67,21 @@ public final class MyAppConfig {
 								Param.of("dataBaseClass", H2DataBase.class.getName()),
 								Param.of("jdbcDriver", org.h2.Driver.class.getName()),
 								Param.of("jdbcUrl", "jdbc:h2:~/vertigo/orchestra;MVCC=FALSE;AUTO_SERVER=TRUE"))
-						//Param.of("jdbcUrl", "jdbc:h2:mem:orchestra;MVCC=FALSE"))
 						.build())
-				// we build h2 mem
-				.addModule(ModuleConfig.builder("databaseInitializer").addComponent(DataBaseInitializer.class).build())
-				//
 				.addModule(new OrchestraFeatures()
-						.withDataBase("NODE_TEST_1", 1, 3, 60)
+						.withDataBase("NODE_TEST_2", 1, 3, 60)
 						.withMemory(1)
 						.build())
-				.addModule(ModuleConfig.builder("orchestra-test")
+				.addModule(ModuleConfig.builder("orchestra-test-node2")
 						//---Services
 						.addComponent(MonitoringServices.class, MonitoringServicesImpl.class)
 						.build())
 				.addInitializer(LocalExecutionProcessInitializer.class);
 	}
 
-	public static void addVegaEmbeded(final AppConfigBuilder appConfigBuilder) {
-		appConfigBuilder
-				.addModule(new PersonaFeatures()
-						.withUserSession(TestUserSession.class)
-						.build())
-				.addModule(new VegaFeatures()
-						.withTokens("tokens")
-						.withSecurity()
-						.withMisc()
-						.withEmbeddedServer(WS_PORT)
-						.build());
-	}
-
-	public static void addWebServices(final AppConfigBuilder appConfigBuilder) {
-		appConfigBuilder
-				.addModule(ModuleConfig.builder("orchestra-ws")
-						.addComponent(WsDefinition.class)
-						.addComponent(WsExecution.class)
-						.addComponent(WsExecutionControl.class)
-						.addComponent(WsTestLogin.class)
-						.build());
-	}
-
 	public static AppConfig config() {
 		// @formatter:off
 		return createAppConfigBuilder().build();
 	}
-
-	public static AppConfig configWithVega() {
-		// @formatter:off
-		final AppConfigBuilder builder = createAppConfigBuilder();
-		addVegaEmbeded(builder);
-		addWebServices(builder);
-		return builder.build();
-	}
-
-
 
 }

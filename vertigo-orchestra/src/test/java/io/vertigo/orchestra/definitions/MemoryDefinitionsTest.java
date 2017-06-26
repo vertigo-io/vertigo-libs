@@ -37,8 +37,8 @@ public class MemoryDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 
 	@Test
 	public void testRegister() {
-		//Before : 0
-		Assert.assertEquals(0, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
+		//Before : 3 //from LocalExecutionProcessInitializer
+		Assert.assertEquals(3, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
 
 		final ProcessDefinition processDefinition = ProcessDefinition.builder("PRO_TEST_BASIC", "TEST BASIC")
 				.withProcessType(ProcessType.UNSUPERVISED)
@@ -46,8 +46,8 @@ public class MemoryDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
-		//After :1
-		Assert.assertEquals(1, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
+		//After : 3 + 1
+		Assert.assertEquals(4, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
 
 		final ProcessDefinition processDefinition2 = orchestraDefinitionManager.getProcessDefinition("PRO_TEST_BASIC");
 		Assert.assertEquals(processDefinition.getName(), processDefinition2.getName());

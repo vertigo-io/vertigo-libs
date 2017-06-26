@@ -51,9 +51,9 @@ import io.vertigo.orchestra.util.monitoring.MonitoringServices;
 public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 	@Inject
-	private OrchestraDefinitionManager orchestraDefinitionManager;
+	protected OrchestraDefinitionManager orchestraDefinitionManager;
 	@Inject
-	private OrchestraServices orchestraServices;
+	protected OrchestraServices orchestraServices;
 
 	@Inject
 	private MonitoringServices monitoringServices;
@@ -297,15 +297,15 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 		final Long proId = processDefinition.getId();
 
-		//we schedule in 2 seconds
+		//we schedule in 0 seconds
 		orchestraServices.getScheduler()
 				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
 
 		// After 4 second the process is running
-		Thread.sleep(1000 * 4);
+		Thread.sleep(1000 * 2);
 		checkExecutions(proId, 0, 1, 0, 0);
 		// After 5 seconds the process is in error because there is an exception after 3 seconds
-		Thread.sleep(1000 * 5);
+		Thread.sleep(1000 * 4);
 		checkExecutions(proId, 0, 0, 0, 1);
 	}
 
@@ -421,7 +421,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 	}
 
-	private void checkPlanifications(final Long proId, final int waitingCount, final int triggeredCount, final int misfiredCount) {
+	protected void checkPlanifications(final Long proId, final int waitingCount, final int triggeredCount, final int misfiredCount) {
 		int waitingPlanificationCount = 0;
 		int triggeredPlanificationCount = 0;
 		int misfiredPlanificationCount = 0;
@@ -449,7 +449,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		Assert.assertEquals(misfiredCount, misfiredPlanificationCount);
 	}
 
-	private void checkExecutions(final Long proId, final int waitingCount, final int runningCount, final int doneCount, final int errorCount) {
+	protected void checkExecutions(final Long proId, final int waitingCount, final int runningCount, final int doneCount, final int errorCount) {
 		int waitingExecutionCount = 0;
 		int runningExecutionCount = 0;
 		int doneExecutionCount = 0;
@@ -474,6 +474,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 						break;
 					case SUBMITTED:
 					case PENDING:
+					case ABORTED:
 					default:
 						throw new UnsupportedOperationException("Unsupported state :" + activityExecution.getEstCd());
 				}
@@ -512,7 +513,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		Assert.assertEquals("error", errorCount, errorExecutionCount);
 	}
 
-	private void checkActivityExecutions(final Long proId, final int waitingCount, final int runningCount, final int doneCount, final int errorCount) {
+	protected void checkActivityExecutions(final Long proId, final int waitingCount, final int runningCount, final int doneCount, final int errorCount) {
 
 		for (final OProcessExecution processExecution : monitoringServices.getExecutionsByProId(proId)) {
 			// --- We check the execution state of the process
@@ -537,6 +538,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 						break;
 					case SUBMITTED:
 					case PENDING:
+					case ABORTED:
 					default:
 						throw new UnsupportedOperationException("Unsupported state :" + activityExecution.getEstCd());
 				}

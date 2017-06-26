@@ -31,7 +31,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses(value = {
 		ExecutionTest.class,
-		LocalExecutionTest.class
+		LocalExecutionTest.class,
+		MultiNodesExecutionTest.class
 })
 public class AllTestExecution {
 	// Les annotations sont suffisantes.
