@@ -42,6 +42,9 @@ import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.orchestra.dao.execution.OProcessExecutionDAO;
@@ -75,6 +78,8 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	private PlanificationPAO planificationPAO;
 	@Inject
 	private OProcessExecutionDAO processExecutionDAO;
+	@Inject
+	private StoreManager storeManager;
 
 	private final String nodeName;
 	private Long nodId;
@@ -213,6 +218,8 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	private void initNewProcessesToLaunch(final ProcessExecutor processExecutor) {
 		for (final OProcessPlanification processPlanification : getPlanificationsToTrigger()) {
 			final ProcessDefinition processDefinition = definitionManager.getProcessDefinition(processPlanification.getProcessus().getName());
+			lockProcess(processDefinition);
+
 			if (canExecute(processDefinition)) {
 				triggerPlanification(processPlanification);
 				processExecutor.execute(processDefinition, Optional.ofNullable(processPlanification.getInitialParams()));
@@ -220,6 +227,11 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 				misfirePlanification(processPlanification);
 			}
 		}
+	}
+
+	private void lockProcess(final ProcessDefinition processDefinition) {
+		final URI<OProcess> processURI = DtObjectUtil.createURI(OProcess.class, processDefinition.getId());
+		storeManager.getDataStore().readOneForUpdate(processURI);
 	}
 
 	private void plannRecurrentProcesses() {
@@ -248,7 +260,6 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 			return processExecutionDAO.getActiveProcessExecutionByProId(processDefinition.getId()).isEmpty();
 		}
 		return true;
-
 	}
 
 	private Optional<OProcessPlanification> getLastPlanificationsByProcess(final Long proId) {

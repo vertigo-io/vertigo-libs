@@ -35,6 +35,8 @@ public enum ExecutionState {
 
 	ERROR,
 
+	ABORTED,
+
 	PENDING;
 
 }

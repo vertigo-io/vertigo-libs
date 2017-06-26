@@ -42,6 +42,9 @@ import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.dao.definition.OActivityDAO;
 import io.vertigo.orchestra.dao.execution.ExecutionPAO;
@@ -88,6 +91,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private OActivityLogDAO activityLogDAO;
 	@Inject
 	private OActivityDAO activityDAO;
+	@Inject
+	private StoreManager storeManager;
 
 	private final int workersCount;
 	private final String nodeName;
@@ -225,6 +230,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 				case RUNNING:
 				case SUBMITTED:
 				case WAITING:
+				case ABORTED:
 				default:
 					throw new UnsupportedOperationException();
 			}
@@ -515,6 +521,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			case RUNNING:
 			case SUBMITTED:
 			case WAITING:
+			case ABORTED:
 			default:
 				throw new IllegalArgumentException("Unknwon case for ending activity execution :  " + executionState.name());
 		}
@@ -534,6 +541,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		Assertion.checkNotNull(in);
 		Assertion.checkNotNull(workspace);
 		// ---
+		lockActivityExecution(aceId);
 		// we need at most one workspace in and one workspace out
 		final OActivityWorkspace activityWorkspace = activityWorkspaceDAO.getActivityWorkspace(aceId, in).orElse(new OActivityWorkspace());
 		activityWorkspace.setAceId(aceId);
@@ -542,6 +550,11 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 		activityWorkspaceDAO.save(activityWorkspace);
 
+	}
+
+	private void lockActivityExecution(final Long aceId) {
+		final URI<OActivityExecution> activityExecutionURI = DtObjectUtil.createURI(OActivityExecution.class, aceId);
+		storeManager.getDataStore().readOneForUpdate(activityExecutionURI);
 	}
 
 	private void doChangeExecutionState(final OActivityExecution activityExecution, final ExecutionState executionState) {
