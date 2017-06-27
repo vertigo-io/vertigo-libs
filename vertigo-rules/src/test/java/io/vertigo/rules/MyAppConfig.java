@@ -62,7 +62,6 @@ public class MyAppConfig {
 				.addModule(new CommonsFeatures()//
 						.withCache(io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin.class)
 						.withScript()
-						.withTransaction()
 						.build())
 				.addModule(new DynamoFeatures()//
 						.withStore()//
