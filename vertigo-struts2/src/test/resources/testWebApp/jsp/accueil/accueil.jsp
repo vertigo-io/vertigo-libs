@@ -12,12 +12,6 @@
 <s:actionmessage/>
 
 <s:form id="layoutTable">
-<h1>Test label field</h1>
-	| <s:label name="movie.movId" label="default"/> | <s:textfield name="movie.movId" /> |
-	<s:submit action="saveAccueil" />
-</s:form>
-
-<s:form id="layoutTable">
 <h1>Test div layout=table</h1>
 	<v:div layout="table">
 		<s:textfield name="movie.title" label="default" />
@@ -125,5 +119,12 @@ Change mode :
 			<sj:submit id="ajaxButton" action="saveAccueil" targets="saveAjax" replaceTarget="true" />
 		</v:div>
 	</s:form>
+	
+	
+<s:form id="labelTable">
+<h1>Test manual label field</h1>
+	| <s:label name="movie.movId" label="default"/> | <s:textfield name="movie.movId" /> |
+	<s:submit action="saveAccueil" />
+</s:form>
 	
 <s:include value="/jsp/include/pageFooter.jsp" />
