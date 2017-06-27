@@ -21,6 +21,7 @@ package io.vertigo.social;
 import java.util.Optional;
 
 import io.vertigo.account.AccountFeatures;
+import io.vertigo.account.plugins.authentication.mock.MockAuthenticatingRealmPlugin;
 import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
@@ -65,6 +66,7 @@ public final class MyAppConfig {
 		if (redis){
 			return  appConfigBuilder
 			.addModule(new AccountFeatures()
+					.withAuthentificationRealm(MockAuthenticatingRealmPlugin.class)
 					.withRedisAccountStorePlugin()
 					.build())
 			.addModule(new SocialFeatures()
@@ -75,6 +77,7 @@ public final class MyAppConfig {
 		//else we use memory
 		return  appConfigBuilder
 				.addModule(new AccountFeatures()
+						.withAuthentificationRealm(MockAuthenticatingRealmPlugin.class)
 						.withAccountStorePlugin(MemoryAccountStorePlugin.class)
 						.build())
 				.addModule(new SocialFeatures()

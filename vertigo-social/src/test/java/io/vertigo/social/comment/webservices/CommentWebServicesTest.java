@@ -91,6 +91,8 @@ public final class CommentWebServicesTest {
 		keyConcept1Uri = new URI<>(dtDefinition, "10");
 		keyConcept2Uri = new URI<>(dtDefinition, "20");
 		CONCEPT_KEY_NAME = dtDefinition.getClassSimpleName();
+
+		preTestLogin();
 	}
 
 	@AfterClass
@@ -106,8 +108,7 @@ public final class CommentWebServicesTest {
 		RestAssured.port = WS_PORT;
 	}
 
-	@Before
-	public void preTestLogin() {
+	private void preTestLogin() {
 		RestAssured.registerParser("plain/text", Parser.TEXT);
 		RestAssured.given()
 				.filter(sessionFilter)

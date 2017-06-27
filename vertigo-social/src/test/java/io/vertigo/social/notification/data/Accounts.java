@@ -43,9 +43,9 @@ public final class Accounts {
 	}
 
 	public static void initData(final IdentityManager identityManager) {
-		final Account testAccount0 = Account.builder("0").withDisplayName("John doe").withEmail("john.doe@yopmail.com").build();
-		final Account testAccount1 = Account.builder("1").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").build();
-		final Account testAccount2 = Account.builder("2").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").build();
+		final Account testAccount0 = Account.builder("0").withDisplayName("John doe").withEmail("john.doe@yopmail.com").withAuthToken("0").build();
+		final Account testAccount1 = Account.builder("1").withDisplayName("Palmer Luckey").withEmail("palmer.luckey@yopmail.com").withAuthToken("1").build();
+		final Account testAccount2 = Account.builder("2").withDisplayName("Bill Clinton").withEmail("bill.clinton@yopmail.com").withAuthToken("2").build();
 		identityManager.getStore().saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2));
 
 		final URI<Account> accountURI1 = createAccountURI(testAccount1.getId());
@@ -66,12 +66,11 @@ public final class Accounts {
 
 		//---create 5 000 noisy data
 		final List<Account> accounts = createAccounts();
+		identityManager.getStore().saveAccounts(accounts);
 		for (final Account account : accounts) {
-			identityManager.getStore().saveAccounts(accounts);
 			final URI<Account> accountUri = createAccountURI(account.getId());
 			identityManager.getStore().attach(accountUri, groupAllUri);
 		}
-
 	}
 
 	private static int SEQ_ID = 10;
@@ -92,7 +91,9 @@ public final class Accounts {
 	}
 
 	private static Account createAccount(final String displayName, final String email) {
-		return Account.builder(Integer.toString(SEQ_ID++))
+		final String accountKey = Integer.toString(SEQ_ID++);
+		return Account.builder(accountKey)
+				.withAuthToken(accountKey)
 				.withDisplayName(displayName)
 				.withEmail(email)
 				.build();

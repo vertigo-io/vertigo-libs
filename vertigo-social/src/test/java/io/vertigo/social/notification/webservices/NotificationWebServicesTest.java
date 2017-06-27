@@ -76,6 +76,15 @@ public final class NotificationWebServicesTest {
 			jedis.flushAll();
 		}
 		Accounts.initData(identityManager);
+
+		preTestLogin();
+	}
+
+	private void preTestLogin() {
+		RestAssured.registerParser("plain/text", Parser.TEXT);
+		RestAssured.given()
+				.filter(sessionFilter)
+				.get("/test/login?id=1");
 	}
 
 	@After
@@ -92,14 +101,6 @@ public final class NotificationWebServicesTest {
 		if (app != null) {
 			app.close();
 		}
-	}
-
-	@Before
-	public void preTestLogin() {
-		RestAssured.registerParser("plain/text", Parser.TEXT);
-		RestAssured.given()
-				.filter(sessionFilter)
-				.get("/test/login?id=1");
 	}
 
 	private static void beforeSetUp() {
