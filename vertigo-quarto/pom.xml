@@ -89,14 +89,14 @@
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
-			<version>3.15</version>
+			<version>3.16</version>
 			<optional>true</optional>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
-			<version>3.15</version> <!-- pour le plugin XDocReportConverterPlugin -->
+			<version>3.16</version> <!-- pour le plugin XDocReportConverterPlugin -->
 			<optional>true</optional>
 			<exclusions>
 			    <!--  STAX comes with Java 1.6 -->
@@ -137,14 +137,14 @@
 		<dependency>
 			<groupId>fr.opensagres.xdocreport</groupId> <!-- pour le plugin XDocReportConverterPlugin -->
 			<artifactId>fr.opensagres.xdocreport.converter.odt.odfdom</artifactId>
-			<version>1.0.6</version>
+			<version>2.0.1</version>
 			<optional>true</optional>
 		</dependency>
 		
 		<dependency>
 			<groupId>fr.opensagres.xdocreport</groupId> <!-- pour le plugin XDocReportConverterPlugin -->
 			<artifactId>fr.opensagres.xdocreport.converter.docx.xwpf</artifactId>
-			<version>1.0.6</version>
+			<version>2.0.1</version>
 			<optional>true</optional>
 		</dependency>
 	</dependencies>

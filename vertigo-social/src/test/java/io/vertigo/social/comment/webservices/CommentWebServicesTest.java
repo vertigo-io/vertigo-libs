@@ -32,11 +32,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.jayway.restassured.RestAssured;
-import com.jayway.restassured.filter.session.SessionFilter;
-import com.jayway.restassured.parsing.Parser;
-import com.jayway.restassured.response.Response;
-
+import io.restassured.RestAssured;
+import io.restassured.filter.session.SessionFilter;
+import io.restassured.parsing.Parser;
+import io.restassured.response.Response;
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.AccountGroup;
 import io.vertigo.account.identity.IdentityManager;
