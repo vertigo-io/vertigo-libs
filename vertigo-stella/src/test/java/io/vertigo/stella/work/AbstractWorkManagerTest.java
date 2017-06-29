@@ -198,7 +198,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		final long start = System.currentTimeMillis();
 		final MyWorkResultHanlder<Boolean> workResultHanlder = new MyWorkResultHanlder<>();
 		createWorkItems(workToCreate, workTime, workResultHanlder);
-		final long timeout = 10 * workTime + warmupTime;
+		final long timeout = Math.round(10 * 1.2 * workTime + warmupTime); //*1.2 because some lag on our PIC
 		Assert.assertTrue("Schedule de " + workToCreate + " work trop long : " + (System.currentTimeMillis() - start) + "ms", System.currentTimeMillis() - start < timeout);
 
 		final boolean finished = workResultHanlder.waitFinish(workToCreate, timeout);
