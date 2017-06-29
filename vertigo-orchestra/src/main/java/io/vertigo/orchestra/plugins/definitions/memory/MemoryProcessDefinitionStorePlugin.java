@@ -22,10 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.definitions.ProcessType;
@@ -37,33 +35,33 @@ import io.vertigo.orchestra.impl.definitions.ProcessDefinitionStorePlugin;
  *
  */
 public class MemoryProcessDefinitionStorePlugin implements ProcessDefinitionStorePlugin {
-	private DefinitionSpace getDefinitionSpace() {
-		return Home.getApp().getDefinitionSpace();
-	}
+
+	private final Map<String, ProcessDefinition> processDefinitions = new ConcurrentHashMap<>();
 
 	@Override
 	public void createOrUpdateDefinition(final ProcessDefinition processDefinition) {
-		((DefinitionSpaceWritable) getDefinitionSpace()).registerDefinition(processDefinition);
-
+		processDefinitions.put(processDefinition.getName(), processDefinition);
 	}
 
 	@Override
 	public boolean processDefinitionExists(final String processName) {
 		Assertion.checkArgNotEmpty(processName);
 		// ---
-		return getDefinitionSpace().contains(processName);
+		return processDefinitions.containsKey(processName);
 	}
 
 	@Override
 	public ProcessDefinition getProcessDefinition(final String processName) {
 		Assertion.checkArgNotEmpty(processName);
 		// ---
-		return getDefinitionSpace().resolve(processName, ProcessDefinition.class);
+		final ProcessDefinition processDefinition = processDefinitions.get(processName);
+		Assertion.checkNotNull(processDefinition, "ProcessDefinition '{0}' not found in ({1})", processName, processDefinitions.keySet());
+		return processDefinition;
 	}
 
 	@Override
 	public List<ProcessDefinition> getAllProcessDefinitions() {
-		return new ArrayList<>(getDefinitionSpace().getAll(ProcessDefinition.class));
+		return new ArrayList<>(processDefinitions.values());
 	}
 
 	@Override

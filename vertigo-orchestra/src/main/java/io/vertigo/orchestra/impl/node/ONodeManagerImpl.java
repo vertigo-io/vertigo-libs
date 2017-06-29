@@ -23,6 +23,8 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
+
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.dao.execution.ONodeDAO;
@@ -36,9 +38,12 @@ import io.vertigo.orchestra.domain.execution.ONode;
  */
 @Transactional
 public class ONodeManagerImpl implements ONodeManager {
+	private static final Logger LOGGER = Logger.getLogger(ONodeManager.class);
 
 	@Inject
 	private ONodeDAO nodeDAO;
+
+	private Date lastHeartBeatTime;
 
 	@Override
 	public Long registerNode(final String nodeName) {
@@ -46,6 +51,8 @@ public class ONodeManagerImpl implements ONodeManager {
 		// ---
 		final Optional<ONode> existingNode = nodeDAO.getNodeByName(nodeName);
 		final ONode node = existingNode.orElse(new ONode());
+		lastHeartBeatTime = new Date();
+		node.setHeartbeat(lastHeartBeatTime);
 		if (existingNode.isPresent()) {
 			nodeDAO.update(node);
 		} else {
@@ -59,7 +66,12 @@ public class ONodeManagerImpl implements ONodeManager {
 	@Override
 	public void updateHeartbeat(final Long nodId) {
 		final ONode node = nodeDAO.get(nodId);
-		node.setHeartbeat(new Date());
+		if (!lastHeartBeatTime.equals(node.getHeartbeat())) {
+			//On ne veut pas d'exception, on ne fait que logger en ERROR
+			LOGGER.error("Two nodes running with same NodeName " + node.getName());
+		}
+		lastHeartBeatTime = new Date();
+		node.setHeartbeat(lastHeartBeatTime);
 		nodeDAO.update(node);
 
 	}

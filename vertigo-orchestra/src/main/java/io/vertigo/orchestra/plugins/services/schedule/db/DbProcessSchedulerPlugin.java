@@ -257,6 +257,8 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	private boolean canExecute(final ProcessDefinition processDefinition) {
 		// We check if process allow multiExecutions
 		if (!processDefinition.getTriggeringStrategy().isMultiExecution()) {
+			// TODO we are in the case of a process that allows a single execution at the time
+			//      -> the previous was too long so we kill it (mark has aborted) and keep the new one
 			return processExecutionDAO.getActiveProcessExecutionByProId(processDefinition.getId()).isEmpty();
 		}
 		return true;

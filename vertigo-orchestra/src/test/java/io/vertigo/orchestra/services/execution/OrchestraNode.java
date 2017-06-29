@@ -56,7 +56,7 @@ final class OrchestraNode {
 	public void start() throws IOException {
 		final String command = new StringBuilder()
 				.append("java -cp ")
-				.append(System.getProperty("java.class.path"))
+				.append(properSystemPath(System.getProperty("java.class.path")))
 				.append(" io.vertigo.orchestra.services.execution.OrchestraNodeStarter io.vertigo.orchestra.services.execution.OrchestraNode" + nodeId + "AppConfig " + maxLifeTime)
 				.toString();
 		nodeProcess = Runtime.getRuntime().exec(command);
@@ -75,6 +75,12 @@ final class OrchestraNode {
 		for (final Thread subThread : subThreads) {
 			subThread.interrupt();
 		}
+	}
+
+	private static String properSystemPath(final String path) {
+		Assertion.checkNotNull(path);
+		//---
+		return path.replaceAll("([^;]+);([^;]+)", "\"$1\";\"$2\"");
 	}
 
 	private static Thread createOutputFlusher(final InputStream inputStream, final String prefix, final PrintStream out) {

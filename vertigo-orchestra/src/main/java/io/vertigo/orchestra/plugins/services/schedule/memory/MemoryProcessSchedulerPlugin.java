@@ -29,12 +29,14 @@ import java.util.Optional;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 
-import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.definitions.ProcessType;
 import io.vertigo.orchestra.impl.services.schedule.CronExpression;
@@ -48,13 +50,21 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 	 * Pool de timers permettant l'exécution des Jobs.
 	 */
 	private final TimerPool timerPool = new TimerPool();
+	private final OrchestraDefinitionManager orchestraDefinitionManager;
+
+	@Inject
+	public MemoryProcessSchedulerPlugin(
+			final OrchestraDefinitionManager orchestraDefinitionManager) {
+		Assertion.checkNotNull(orchestraDefinitionManager);
+		//---
+		this.orchestraDefinitionManager = orchestraDefinitionManager;
+	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		Home.getApp().getDefinitionSpace().getAll(ProcessDefinition.class)
+		orchestraDefinitionManager.getAllProcessDefinitionsByType(getHandledProcessType())
 				.stream()
-				.filter(processDefinition -> processDefinition.getProcessType() == ProcessType.UNSUPERVISED)
 				.filter(processDefinition -> processDefinition.getTriggeringStrategy().getCronExpression().isPresent())
 				.forEach(this::scheduleWithCron);
 	}
