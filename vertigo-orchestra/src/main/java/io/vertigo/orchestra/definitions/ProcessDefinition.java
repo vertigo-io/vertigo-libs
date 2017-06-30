@@ -92,7 +92,6 @@ public final class ProcessDefinition implements Definition {
 		return new ProcessDefinitionBuilder(processName, processLabel);
 	}
 
-	@Deprecated
 	public static ProcessDefinitionBuilder legacyBuilder(final String processName, final Class<? extends RunnableActivityEngine> engineClass) {
 		return new ProcessDefinitionBuilder(processName, processName)
 				.withProcessType(ProcessType.UNSUPERVISED)
