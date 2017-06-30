@@ -48,7 +48,7 @@ class MyAppConfig {
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/quarto/services/publisher/data/execution.kpr")
 								.build())
-						.addDefinitionProvider(DefinitionProviderConfig.builder(TestPublisherDefinitionProvider.class).build())
+						.addDefinitionProvider(TestPublisherDefinitionProvider.class)
 						.build())
 				.build();
 

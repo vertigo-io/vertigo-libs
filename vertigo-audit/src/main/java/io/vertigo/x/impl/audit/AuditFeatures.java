@@ -18,7 +18,6 @@
  */
 package io.vertigo.x.impl.audit;
 
-import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.x.audit.AuditManager;
@@ -52,7 +51,7 @@ public final class AuditFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addDefinitionProvider(DefinitionProviderConfig.builder(AuditTraceDefinitionProvider.class).build())
+				.addDefinitionProvider(AuditTraceDefinitionProvider.class)
 				.addComponent(AuditManager.class, AuditManagerImpl.class);
 	}
 

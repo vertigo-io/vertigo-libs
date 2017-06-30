@@ -22,7 +22,6 @@ import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.param.Param;
@@ -90,7 +89,7 @@ public class MyAppConfig {
 						.withWorkflowPredicateAutoValidatePlugin(RuleWorkflowPredicateAutoValidatePlugin.class)
 						.withItemStorePlugin(MemoryItemStorePlugin.class).build())
 				.addModule(ModuleConfig.builder("dummy")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(MyDummyDtObjectProvider.class).build())
+						.addDefinitionProvider(MyDummyDtObjectProvider.class)
 						.build());
 
 		return appConfigBuilder.build();

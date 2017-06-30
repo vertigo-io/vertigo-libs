@@ -21,7 +21,6 @@ package io.vertigo.rules;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.param.Param;
@@ -77,7 +76,7 @@ public class MyAppConfig {
 						.withAccountStorePlugin(MemoryAccountStorePlugin.class)
 						.build())
 				.addModule(ModuleConfig.builder("dummy")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(MyDummyDtObjectProvider.class).build())
+						.addDefinitionProvider(MyDummyDtObjectProvider.class)
 						.build())
 				.addModule(new RulesFeatures()
 						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)
