@@ -26,11 +26,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import io.vertigo.account.identity.Account;
-import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.social.impl.notification.NotificationEvent;
@@ -40,13 +36,8 @@ import io.vertigo.social.services.notification.Notification;
 /**
  * @author pchretien
  */
-public final class MemoryNotificationPlugin implements NotificationPlugin, SimpleDefinitionProvider {
+public final class MemoryNotificationPlugin implements NotificationPlugin {
 	private final Map<URI<Account>, List<Notification>> notificationsByAccountURI = new ConcurrentHashMap<>();
-
-	@Override
-	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition("DMN_CLEAN_TOO_OLD_MEMORY_NOTIFICATIONS", () -> new RemoveTooOldNotificationsDaemon(this), 1000));
-	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -105,29 +96,8 @@ public final class MemoryNotificationPlugin implements NotificationPlugin, Simpl
 		}
 	}
 
-	/**
-	 * @author npiedeloup
-	 */
-	public static final class RemoveTooOldNotificationsDaemon implements Daemon {
-		private final MemoryNotificationPlugin memoryNotificationPlugin;
-
-		/**
-		 * @param memoryNotificationPlugin This plugin
-		 */
-		public RemoveTooOldNotificationsDaemon(final MemoryNotificationPlugin memoryNotificationPlugin) {
-			Assertion.checkNotNull(memoryNotificationPlugin);
-			//------
-			this.memoryNotificationPlugin = memoryNotificationPlugin;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() {
-			memoryNotificationPlugin.cleanTooOldNotifications();
-		}
-	}
-
-	void cleanTooOldNotifications() {
+	@DaemonScheduled(name = "DMN_CLEAN_TOO_OLD_MEMORY_NOTIFICATIONS", periodInSeconds = 1000)
+	public void cleanTooOldNotifications() {
 		for (final List<Notification> notifications : notificationsByAccountURI.values()) {
 			cleanTooOldNotifications(notifications);
 		}

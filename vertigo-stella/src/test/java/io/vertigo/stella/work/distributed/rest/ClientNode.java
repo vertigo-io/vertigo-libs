@@ -56,7 +56,7 @@ final class ClientNode {
 	public void start() throws IOException {
 		final String command = new StringBuilder()
 				.append("java -cp ")
-				.append(System.getProperty("java.class.path"))
+				.append(properSystemPath(System.getProperty("java.class.path")))
 				.append(" io.vertigo.stella.work.distributed.rest.WorkerNodeStarter " + managersXmlFileName + " " + maxLifeTime)
 				.toString();
 		nodeProcess = Runtime.getRuntime().exec(command);
@@ -66,6 +66,12 @@ final class ClientNode {
 			subThread.setDaemon(true);
 			subThread.start();
 		}
+	}
+
+	private static String properSystemPath(final String path) {
+		Assertion.checkNotNull(path);
+		//---
+		return path.replaceAll("([^;]+);([^;]+)", "\"$1\";\"$2\"");
 	}
 
 	public void stop() throws InterruptedException {

@@ -36,7 +36,6 @@ import org.apache.log4j.Logger;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.daemon.Daemon;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.core.definition.DefinitionSpaceWritable;
@@ -83,8 +82,13 @@ final class RestQueueServer {
 		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())
 				.registerDefinition(new DaemonDefinition(
 						"DMN_WORK_QUEUE_TIMEOUT_CHECK",
-						() -> new DeadNodeDetectorDaemon(this),
+						() -> () -> checkDeadNodesAndWorkItems(),
 						10));
+	}
+
+	private void checkDeadNodesAndWorkItems() {
+		checkDeadNodes();
+		checkDeadWorkItems();
 	}
 
 	/**
@@ -314,32 +318,6 @@ final class RestQueueServer {
 	private static void checkInterrupted() throws InterruptedException {
 		if (Thread.currentThread().isInterrupted()) {
 			throw new InterruptedException("Thread interruption required");
-		}
-	}
-
-	/**
-	 * Deamon used to detect dead node.
-	 * Detection use the plugin param 'deadWorkTypeTimeoutSec'
-	 * Work items bind to dead nodes are send to another node.
-	 * @author npiedeloup
-	 */
-	public static class DeadNodeDetectorDaemon implements Daemon {
-		private final RestQueueServer restQueueServer;
-
-		/**
-		 * @param restQueueServer This queueServer
-		 */
-		public DeadNodeDetectorDaemon(final RestQueueServer restQueueServer) {
-			Assertion.checkNotNull(restQueueServer);
-			//------
-			this.restQueueServer = restQueueServer;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() {
-			restQueueServer.checkDeadNodes();
-			restQueueServer.checkDeadWorkItems();
 		}
 	}
 

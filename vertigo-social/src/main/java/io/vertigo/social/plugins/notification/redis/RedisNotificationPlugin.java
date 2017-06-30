@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -31,13 +30,9 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import io.vertigo.account.identity.Account;
-import io.vertigo.commons.daemon.Daemon;
-import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -52,7 +47,7 @@ import redis.clients.jedis.Transaction;
 /**
  * @author pchretien
  */
-public final class RedisNotificationPlugin implements NotificationPlugin, SimpleDefinitionProvider {
+public final class RedisNotificationPlugin implements NotificationPlugin {
 	private static final String CODEC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	private final RedisConnector redisConnector;
 
@@ -67,11 +62,6 @@ public final class RedisNotificationPlugin implements NotificationPlugin, Simple
 		Assertion.checkNotNull(daemonManager);
 		//-----
 		this.redisConnector = redisConnector;
-	}
-
-	@Override
-	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition("DMN_CLEAN_TOO_OLD_REDIS_NOTIFICATIONS", () -> new RemoveTooOldElementsDaemon(this), 60 * 1000));
 	}
 
 	/** {@inheritDoc} */
@@ -227,29 +217,8 @@ public final class RedisNotificationPlugin implements NotificationPlugin, Simple
 		}
 	}
 
-	/**
-	 * @author npiedeloup
-	 */
-	public static final class RemoveTooOldElementsDaemon implements Daemon {
-		private final RedisNotificationPlugin redisNotificationPlugin;
-
-		/**
-		 * @param redisNotificationPlugin This plugin
-		 */
-		public RemoveTooOldElementsDaemon(final RedisNotificationPlugin redisNotificationPlugin) {
-			Assertion.checkNotNull(redisNotificationPlugin);
-			//------
-			this.redisNotificationPlugin = redisNotificationPlugin;
-		}
-
-		/** {@inheritDoc} */
-		@Override
-		public void run() {
-			redisNotificationPlugin.cleanTooOldElements();
-		}
-	}
-
-	void cleanTooOldElements() {
+	@DaemonScheduled(name = "DMN_CLEAN_TOO_OLD_REDIS_NOTIFICATIONS", periodInSeconds = 60 * 1000)
+	public void cleanTooOldElements() {
 
 		boolean foundOneTooYoung = false;
 		do {
