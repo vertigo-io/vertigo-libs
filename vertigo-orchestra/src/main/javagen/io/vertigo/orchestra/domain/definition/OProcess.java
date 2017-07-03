@@ -248,9 +248,9 @@ public final class OProcess implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'TriggerType'.
-	 * @return String trtCd
+	 * @return String trtCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "TriggerType")
+	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "TriggerType")
 	public String getTrtCd() {
 		return (String)  trtCdAccessor.getId();
 	}
@@ -258,7 +258,7 @@ public final class OProcess implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Définit la valeur de la propriété 'TriggerType'.
-	 * @param trtCd String
+	 * @param trtCd String <b>Obligatoire</b>
 	 */
 	public void setTrtCd(final String trtCd) {
 		trtCdAccessor.setId(trtCd);
@@ -331,7 +331,7 @@ public final class OProcess implements Entity {
 			primaryIsNavigable = true,
 			primaryRole = "TriggerType",
 			primaryLabel = "TriggerType",
-			primaryMultiplicity = "0..1",
+			primaryMultiplicity = "1..1",
 			foreignDtDefinitionName = "DT_O_PROCESS",
 			foreignIsNavigable = false,
 			foreignRole = "Process",

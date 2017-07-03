@@ -20,7 +20,7 @@ create Association A_ACL_ACE {
 	navigabilityB : "true"
 	
 	multiplicityA:"0..*"
-	multiplicityB:"0..1"
+	multiplicityB:"1..1"
 	
 	labelA : "ActivityLog"
 	labelB : "ActivityExecution"

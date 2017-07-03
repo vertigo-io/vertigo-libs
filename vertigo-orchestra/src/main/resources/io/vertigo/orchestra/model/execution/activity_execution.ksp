@@ -23,7 +23,7 @@ create Association A_ACE_ACT {
 	navigabilityB : "true"
 	
 	multiplicityA:"0..*"
-	multiplicityB:"0..1"
+	multiplicityB:"1..1"
 	
 	labelA : "ExecutionActivity"
 	labelB : "Activity"
@@ -44,7 +44,7 @@ create Association A_ACE_NOD {
 	navigabilityB : "true"
 	
 	multiplicityA:"0..*"
-	multiplicityB:"0..1"
+	multiplicityB:"1..1"
 	
 	labelA : "ExecutionActivity"
 	labelB : "Node"
@@ -63,7 +63,7 @@ create Association A_ACE_EST {
 	navigabilityB : "true"
 	
 	multiplicityA:"0..*"
-	multiplicityB:"0..1"
+	multiplicityB:"1..1"
 	
 	labelA : "ExecutionActivity"
 	labelB : "ExecutionState"
@@ -83,7 +83,7 @@ create Association A_ACE_PRE {
 	navigabilityB : "true"
 	
 	multiplicityA:"0..*"
-	multiplicityB:"0..1"
+	multiplicityB:"1..1"
 	
 	labelA : "ExecutionActivity"
 	labelB : "Processus"

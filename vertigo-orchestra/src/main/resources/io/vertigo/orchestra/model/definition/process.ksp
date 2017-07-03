@@ -27,7 +27,7 @@ create Association A_PRO_TRT {
 	navigabilityB : "true"
 	
 	multiplicityA:"0..*"
-	multiplicityB:"0..1"
+	multiplicityB:"1..1"
 	
 	labelA : "Process"
 	labelB : "TriggerType"

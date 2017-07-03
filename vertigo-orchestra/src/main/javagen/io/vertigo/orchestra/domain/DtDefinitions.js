@@ -30,7 +30,7 @@ module.exports = {
         },
         proId: {
             domain: "DO_O_IDENTIFIANT",
-            required: false
+            required: true
         }
     },
     oActivityExecution: {
@@ -60,19 +60,19 @@ module.exports = {
         },
         actId: {
             domain: "DO_O_IDENTIFIANT",
-            required: false
+            required: true
         },
         preId: {
             domain: "DO_O_IDENTIFIANT",
-            required: false
+            required: true
         },
         nodId: {
             domain: "DO_O_IDENTIFIANT",
-            required: false
+            required: true
         },
         estCd: {
             domain: "DO_O_CODE_IDENTIFIANT",
-            required: false
+            required: true
         }
     },
     oActivityExecutionUi: {
@@ -132,7 +132,7 @@ module.exports = {
         },
         aceId: {
             domain: "DO_O_IDENTIFIANT",
-            required: false
+            required: true
         }
     },
     oActivityWorkspace: {
@@ -150,7 +150,7 @@ module.exports = {
         },
         aceId: {
             domain: "DO_O_IDENTIFIANT",
-            required: false
+            required: true
         }
     },
     oExecutionState: {
@@ -270,7 +270,7 @@ module.exports = {
         },
         trtCd: {
             domain: "DO_O_CODE_IDENTIFIANT",
-            required: false
+            required: true
         },
         prtCd: {
             domain: "DO_O_CODE_IDENTIFIANT",
@@ -308,7 +308,7 @@ module.exports = {
         },
         proId: {
             domain: "DO_O_IDENTIFIANT",
-            required: false
+            required: true
         },
         estCd: {
             domain: "DO_O_CODE_IDENTIFIANT",
@@ -372,7 +372,7 @@ module.exports = {
         },
         proId: {
             domain: "DO_O_IDENTIFIANT",
-            required: false
+            required: true
         },
         nodId: {
             domain: "DO_O_IDENTIFIANT",

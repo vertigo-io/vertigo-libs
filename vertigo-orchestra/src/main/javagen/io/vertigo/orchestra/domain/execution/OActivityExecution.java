@@ -150,9 +150,9 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Activity'.
-	 * @return Long actId
+	 * @return Long actId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Activity")
+	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Activity")
 	public Long getActId() {
 		return (Long)  actIdAccessor.getId();
 	}
@@ -160,7 +160,7 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Définit la valeur de la propriété 'Activity'.
-	 * @param actId Long
+	 * @param actId Long <b>Obligatoire</b>
 	 */
 	public void setActId(final Long actId) {
 		actIdAccessor.setId(actId);
@@ -169,9 +169,9 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Processus'.
-	 * @return Long preId
+	 * @return Long preId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Processus")
+	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getPreId() {
 		return (Long)  preIdAccessor.getId();
 	}
@@ -179,7 +179,7 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Définit la valeur de la propriété 'Processus'.
-	 * @param preId Long
+	 * @param preId Long <b>Obligatoire</b>
 	 */
 	public void setPreId(final Long preId) {
 		preIdAccessor.setId(preId);
@@ -188,9 +188,9 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Node'.
-	 * @return Long nodId
+	 * @return Long nodId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Node")
+	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Node")
 	public Long getNodId() {
 		return (Long)  nodIdAccessor.getId();
 	}
@@ -198,7 +198,7 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Définit la valeur de la propriété 'Node'.
-	 * @param nodId Long
+	 * @param nodId Long <b>Obligatoire</b>
 	 */
 	public void setNodId(final Long nodId) {
 		nodIdAccessor.setId(nodId);
@@ -207,9 +207,9 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'ExecutionState'.
-	 * @return String estCd
+	 * @return String estCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "ExecutionState")
+	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "ExecutionState")
 	public String getEstCd() {
 		return (String)  estCdAccessor.getId();
 	}
@@ -217,7 +217,7 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Définit la valeur de la propriété 'ExecutionState'.
-	 * @param estCd String
+	 * @param estCd String <b>Obligatoire</b>
 	 */
 	public void setEstCd(final String estCd) {
 		estCdAccessor.setId(estCd);
@@ -242,7 +242,7 @@ public final class OActivityExecution implements Entity {
 			primaryIsNavigable = true,
 			primaryRole = "Activity",
 			primaryLabel = "Activity",
-			primaryMultiplicity = "0..1",
+			primaryMultiplicity = "1..1",
 			foreignDtDefinitionName = "DT_O_ACTIVITY_EXECUTION",
 			foreignIsNavigable = false,
 			foreignRole = "ExecutionActivity",
@@ -271,7 +271,7 @@ public final class OActivityExecution implements Entity {
 			primaryIsNavigable = true,
 			primaryRole = "ExecutionState",
 			primaryLabel = "ExecutionState",
-			primaryMultiplicity = "0..1",
+			primaryMultiplicity = "1..1",
 			foreignDtDefinitionName = "DT_O_ACTIVITY_EXECUTION",
 			foreignIsNavigable = false,
 			foreignRole = "ExecutionActivity",
@@ -300,7 +300,7 @@ public final class OActivityExecution implements Entity {
 			primaryIsNavigable = true,
 			primaryRole = "Node",
 			primaryLabel = "Node",
-			primaryMultiplicity = "0..1",
+			primaryMultiplicity = "1..1",
 			foreignDtDefinitionName = "DT_O_ACTIVITY_EXECUTION",
 			foreignIsNavigable = false,
 			foreignRole = "ExecutionActivity",
@@ -329,7 +329,7 @@ public final class OActivityExecution implements Entity {
 			primaryIsNavigable = true,
 			primaryRole = "ProcessusExecution",
 			primaryLabel = "Processus",
-			primaryMultiplicity = "0..1",
+			primaryMultiplicity = "1..1",
 			foreignDtDefinitionName = "DT_O_ACTIVITY_EXECUTION",
 			foreignIsNavigable = false,
 			foreignRole = "ExecutionActivity",

@@ -89,9 +89,9 @@ public final class OProcessPlanification implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Processus'.
-	 * @return Long proId
+	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Processus")
+	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getProId() {
 		return (Long)  proIdAccessor.getId();
 	}
@@ -99,7 +99,7 @@ public final class OProcessPlanification implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Définit la valeur de la propriété 'Processus'.
-	 * @param proId Long
+	 * @param proId Long <b>Obligatoire</b>
 	 */
 	public void setProId(final Long proId) {
 		proIdAccessor.setId(proId);
@@ -191,7 +191,7 @@ public final class OProcessPlanification implements Entity {
 			primaryIsNavigable = true,
 			primaryRole = "Processus",
 			primaryLabel = "Processus",
-			primaryMultiplicity = "0..1",
+			primaryMultiplicity = "1..1",
 			foreignDtDefinitionName = "DT_O_PROCESS_PLANIFICATION",
 			foreignIsNavigable = false,
 			foreignRole = "ProcessPlanification",

@@ -20,7 +20,7 @@ create Association A_TKW_TKE {
 	navigabilityB : "true"
 	
 	multiplicityA:"0..*"
-	multiplicityB:"0..1"
+	multiplicityB:"1..1"
 	
 	labelA : "ActivityWorkspace"
 	labelB : "ActivityExecution"

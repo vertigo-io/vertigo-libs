@@ -87,9 +87,9 @@ public final class OActivityWorkspace implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'ActivityExecution'.
-	 * @return Long aceId
+	 * @return Long aceId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "ActivityExecution")
+	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "ActivityExecution")
 	public Long getAceId() {
 		return (Long)  aceIdAccessor.getId();
 	}
@@ -97,7 +97,7 @@ public final class OActivityWorkspace implements Entity {
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Définit la valeur de la propriété 'ActivityExecution'.
-	 * @param aceId Long
+	 * @param aceId Long <b>Obligatoire</b>
 	 */
 	public void setAceId(final Long aceId) {
 		aceIdAccessor.setId(aceId);
@@ -122,7 +122,7 @@ public final class OActivityWorkspace implements Entity {
 			primaryIsNavigable = true,
 			primaryRole = "ActivityExecution",
 			primaryLabel = "ActivityExecution",
-			primaryMultiplicity = "0..1",
+			primaryMultiplicity = "1..1",
 			foreignDtDefinitionName = "DT_O_ACTIVITY_WORKSPACE",
 			foreignIsNavigable = false,
 			foreignRole = "ActivityWorkspace",
