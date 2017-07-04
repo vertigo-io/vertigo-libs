@@ -343,6 +343,10 @@ public class TestUi {
 	public void testUpload() throws InterruptedException {
 		testLogin();
 
+		dotUpload();
+	}
+
+	private void dotUpload() throws InterruptedException {
 		final String fullPath = getClass().getResource("/data/insee.csv").getFile();
 		findElement(By.id("uploadFile_fileTest")).clear();
 		findElement(By.id("uploadFile_fileTest")).sendKeys(fullPath);
@@ -350,6 +354,13 @@ public class TestUi {
 
 		assertEquals("Fichier recu : insee.csv (application/octet-stream)", findElement(By.cssSelector("span")).getText());
 		assertEquals("Previous file : insee.csv (application/octet-stream)", findElement(By.id("uploadFile")).getText());
+	}
+
+	@Test
+	public void testTwoUpload() throws InterruptedException {
+		testLogin();
+		dotUpload();
+		dotUpload();
 	}
 
 	@Test
