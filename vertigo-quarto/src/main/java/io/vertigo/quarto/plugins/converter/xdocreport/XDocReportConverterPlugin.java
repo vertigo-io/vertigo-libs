@@ -69,8 +69,9 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 		final SnapshotBuiltinFont snapshotBuiltinFont = new SnapshotBuiltinFont();
 		try (InputStream in = file.createInputStream()) {
 			String fileName = file.getFileName();
-			if (fileName.indexOf('.') > 0) {
-				fileName = fileName.substring(0, fileName.indexOf('.'));
+			final int lastPeriod = fileName.lastIndexOf('.');
+			if (lastPeriod > -1) {
+				fileName = fileName.substring(0, lastPeriod);
 			}
 			final TempFile resultFile = new TempFile(fileName, '.' + targetFormat.toLowerCase(Locale.ENGLISH));
 			try (final OutputStream out = new FileOutputStream(resultFile)) {

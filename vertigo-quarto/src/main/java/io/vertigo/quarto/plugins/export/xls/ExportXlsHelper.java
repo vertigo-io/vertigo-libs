@@ -83,8 +83,10 @@ public final class ExportXlsHelper<R extends DtObject> {
 	 * @param specificLabelMap map of the column names to be used instead of the default label associated with the field
 	 */
 	public final void addDtList(final DtList<R> dtcToExport, final List<String> collectionColumnNameList, final Map<String, String> specificLabelMap) {
-		Assertion.checkArgument(dtcToExport != null && !dtcToExport.isEmpty(), "The list of the objects to be exported must exist and not be empty");
-		Assertion.checkArgument(collectionColumnNameList != null && !collectionColumnNameList.isEmpty(), "The list of the columns to be exported must exist and not be empty");
+		Assertion.checkNotNull(dtcToExport, "The list of the objects to be exported must exist and not be empty");
+		Assertion.checkNotNull(collectionColumnNameList, "The list of the columns to be exported must exist and not be empty");
+		Assertion.checkArgument(!dtcToExport.isEmpty(), "The list of the objects to be exported must exist and not be empty");
+		Assertion.checkArgument(!collectionColumnNameList.isEmpty(), "The list of the columns to be exported must exist and not be empty");
 
 		//-----
 

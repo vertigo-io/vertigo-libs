@@ -119,7 +119,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		final OProcessPlanification processPlanification = processPlanifications.get(0);
 
 		// We wait the planif
-		Thread.sleep(processPlanification.getExpectedTime().getTime() - System.currentTimeMillis());
+		Thread.sleep(Math.max(0, processPlanification.getExpectedTime().getTime() - System.currentTimeMillis()));
 
 		// After 20 secondes there is 1 execution done and 1 execution running (for 5 secondes, half execution time)
 		Thread.sleep(1000 * 20);
