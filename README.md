@@ -31,10 +31,10 @@ For more details see [here](/vertigo-orchestra/)
 * __export__ : exports collections and object to usefull files formats (built-in: CSV, PDF, RTF, XLS)
 
 ## vertigo-rules
-* Simple rule engine. Can be used in standalon or integrated with the workflow module.
+* Simple rule engine. Can be used in a standalone use case or integrated with the workflow module.
 
 ## vertigo-workflow
-* Simple workflow module to handle linear workflow. A rule system can be used to skip activities.
+* Simple workflow module to handle linear workflows. A rule system can be used to dynamically skip activities.
 
 ## vertigo-struts2
 ### Bridge to use vertigo for Struts2 applications.
