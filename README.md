@@ -6,7 +6,7 @@ Use them to enhance your applications!
 
 Each extension can be used :
  - as a dependency to your existing vertigo app
- - as a standalone app for microservice architures
+ - as a standalone app for microservices architures
 
 
 ## vertigo-social
