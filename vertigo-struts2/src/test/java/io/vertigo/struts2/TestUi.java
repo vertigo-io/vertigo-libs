@@ -346,7 +346,7 @@ public class TestUi {
 		dotUpload();
 	}
 
-	private void dotUpload() throws InterruptedException {
+	private void dotUpload() {
 		final String fullPath = getClass().getResource("/data/insee.csv").getFile();
 		findElement(By.id("uploadFile_fileTest")).clear();
 		findElement(By.id("uploadFile_fileTest")).sendKeys(fullPath);
