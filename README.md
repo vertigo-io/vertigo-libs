@@ -1,34 +1,34 @@
 # vertigo-extensions
 =================
 
-Vertigo extensions are **ready to use** mini-appplications that provides **high value services** on a given topic.
+Vertigo extensions are **ready to use** mini-appplications that provide **high value services** on a given topic.
 Use them to enhance your applications!
 
 Each extension can be used :
  - as a dependency to your existing vertigo app
- - as a standalone app for microservices architures
+ - as a standalone app for microservices architectures
 
 
 ## vertigo-social
 ### Add collaboration features to help your users
 
 * __comment__ : a simple way to add comments and metadata to business objects
-* __notification__ : standalone way to push notification to users
+* __notification__ : a standalone way to push notification to users
 
 ## vertigo-orchestra
-### Manage, execute and supervize background operations and communications.
+### Manage, execute and monitor background operations and communications.
 For more details see [here](/vertigo-orchestra/)
 
 ## vertigo-stella : 
 * __node__ : node of worker for distributed operations
-* __work__ : process, shedule or distribute your task
+* __work__ : process, shedule or distribute your tasks
 
 ## vertigo-quarto
 ### Publishing managment.
 
-* __converter__ : as it says, convert your documents from one format to another
-* __publisher__ : lightweight publisher tool. Produce documents from a user's defined template and application's data. Templates are really easy to modify because they are just ODT or DOCX with tags.
-* __export__ : export collections and object to usefull files formats (builtin : CSV, PDF, RTF, XLS)
+* __converter__ : obviously, converts your documents from one format to another
+* __publisher__ : lightweight publishing tool. Produces documents from user defined templates and application data. Templates are really easy to modify because they are just ODT or DOCX with tags.
+* __export__ : exports collections and object to usefull files formats (built-in: CSV, PDF, RTF, XLS)
 
 ## vertigo-rules
 
