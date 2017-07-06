@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
@@ -10,7 +11,7 @@
 	<artifactId>vertigo-mail</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-mail</name>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
@@ -24,9 +25,9 @@
 		</dependency>
 		<!-- Mail -->
 		<dependency>
-		    <groupId>com.sun.mail</groupId>
-	    	<artifactId>javax.mail</artifactId>
-		    <version>1.5.6</version>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.5.6</version>
 			<exclusions>
 				<exclusion>
 					<groupId>javax.activation</groupId>
@@ -35,7 +36,7 @@
 			</exclusions>
 		</dependency>
 		<!-- /Mail -->
-		
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-commons-impl</artifactId>

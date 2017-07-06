@@ -14,7 +14,7 @@
 	<name>vertigo-geo</name>
 
 	<dependencies>
- 		<dependency>
+		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
 			<version>${project.version}</version>
@@ -24,7 +24,7 @@
 			<artifactId>vertigo-dynamo-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 		<!-- tests -->
 		<dependency>
 			<groupId>io.vertigo</groupId>

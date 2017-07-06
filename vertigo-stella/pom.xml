@@ -1,18 +1,19 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-extensions</artifactId>
 		<version>0.9.5-SNAPSHOT</version>
 	</parent>
-	
+
 	<artifactId>vertigo-stella</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-stella</name>
-	
+
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
@@ -23,14 +24,14 @@
 			<artifactId>vertigo-commons-impl</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
-		
+
 		<!-- Distributed -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.8.1</version>
 		</dependency>
-		<!-- REST distributed impl dependency-->
+		<!-- REST distributed impl dependency -->
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-vega-api</artifactId>
@@ -43,21 +44,21 @@
 			<version>${vertigo.version}</version>
 			<scope>test</scope> <!-- REST DistributedWork test -->
 		</dependency>
-		
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
 			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>2.25.1</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
-		
+
 		<!-- tests -->
 		<dependency>
 			<groupId>io.vertigo</groupId>
@@ -65,8 +66,8 @@
 			<version>${vertigo.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
-		</dependency>	
-		
+		</dependency>
+
 	</dependencies>
-	
+
 </project>

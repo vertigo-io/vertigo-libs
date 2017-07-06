@@ -71,6 +71,7 @@ public final class OrchestraFeatures extends Features {
 
 	/**
 	 * Activate Orchestra with Database.
+	 * @param nodeName the name of the node
 	 * @param daemonPeriodSeconds the period for scheduling and execution
 	 * @param workersCount the number of workers
 	 * @param forecastDurationSeconds the time to forecast planifications

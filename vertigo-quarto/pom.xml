@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>io.vertigo</groupId>
-    <artifactId>vertigo-extensions</artifactId>
-    <version>0.9.5-SNAPSHOT</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>io.vertigo</groupId>
+		<artifactId>vertigo-extensions</artifactId>
+		<version>0.9.5-SNAPSHOT</version>
+	</parent>
 
 	<artifactId>vertigo-quarto</artifactId>
 	<packaging>jar</packaging>
@@ -27,7 +28,7 @@
 			<artifactId>vertigo-dynamo-impl</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
-		<!--  -->
+		<!-- -->
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
@@ -41,7 +42,7 @@
 			<version>${vertigo.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<!--Export dependencies -->
 		<dependency>
 			<groupId>com.lowagie</groupId>
@@ -49,7 +50,8 @@
 			<version>2.1.7</version> <!-- dernière version en license LGPL/MPL -->
 			<optional>true</optional>
 			<exclusions>
-				<!-- BouncyCastle est utilisé pour ouvrir les pdf sécurisés Donc non utilisé pour les générations. -->
+				<!-- BouncyCastle est utilisé pour ouvrir les pdf sécurisés Donc non 
+					utilisé pour les générations. -->
 				<exclusion>
 					<groupId>bouncycastle</groupId>
 					<artifactId>bcmail-jdk14</artifactId>
@@ -85,28 +87,28 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi</artifactId>
 			<version>3.16</version>
 			<optional>true</optional>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.poi</groupId>
 			<artifactId>poi-ooxml</artifactId>
 			<version>3.16</version> <!-- pour le plugin XDocReportConverterPlugin -->
 			<optional>true</optional>
 			<exclusions>
-			    <!--  STAX comes with Java 1.6 -->
+				<!-- STAX comes with Java 1.6 -->
 				<exclusion>
 					<groupId>stax</groupId>
-			   		<artifactId>stax-api</artifactId>
-   				</exclusion>
-			</exclusions>	
+					<artifactId>stax-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		
+
 		<!--Open Office dependencies -->
 		<dependency>
 			<groupId>org.openoffice</groupId>
@@ -140,7 +142,7 @@
 			<version>2.0.1</version>
 			<optional>true</optional>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>fr.opensagres.xdocreport</groupId> <!-- pour le plugin XDocReportConverterPlugin -->
 			<artifactId>fr.opensagres.xdocreport.converter.docx.xwpf</artifactId>

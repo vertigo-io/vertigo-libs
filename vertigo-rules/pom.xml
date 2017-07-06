@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
@@ -10,7 +11,7 @@
 	<artifactId>vertigo-rules</artifactId>
 	<packaging>jar</packaging>
 	<name>vertigo-rules</name>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
@@ -37,8 +38,8 @@
 			<artifactId>vertigo-studio</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
-		
-		
+
+
 		<!-- Tests -->
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -53,7 +54,7 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -74,7 +75,7 @@
 					</execution>
 				</executions>
 			</plugin>
-		
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
