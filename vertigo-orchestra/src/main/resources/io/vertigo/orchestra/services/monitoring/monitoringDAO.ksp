@@ -1,0 +1,71 @@
+package io.vertigo.orchestra.dao.monitoring
+
+
+/*****************************************************************************************************/
+/***Tasks for monitoring**************************************************************************** */
+/*****************************************************************************************************/
+
+
+create Task TK_GET_PLANIFICATIONS_BY_PRO_ID {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	select prp.*
+        	from o_process_planification prp
+        	where prp.PRO_ID = #PRO_ID#
+        	
+			"
+	attribute PRO_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+	attribute DTC_O_PROCESS_PLANIFICATION	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC		notNull:"true" 	inOut :"out"}
+}
+
+
+create Task TK_GET_EXECUTIONS_BY_PRO_ID {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	select pre.*
+        	from o_process_execution pre
+        	where pre.PRO_ID = #PRO_ID#
+        	order by pre.begin_time desc
+        	
+			"
+	attribute PRO_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+	attribute DTC_O_PROCESS_EXECUTION	 	{domain : DO_DT_O_PROCESS_EXECUTION_DTC		notNull:"true" 	inOut :"out"}
+}
+
+
+
+create Task TK_GET_ACTIVITY_EXECUTIONS_BY_PRE_ID {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	select ace.*
+        	from o_activity_execution ace
+        	where ace.PRE_ID = #PRE_ID#
+        	
+			"
+	attribute PRE_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+	attribute DTC_O_ACTIVITY_EXECUTION	 	{domain : DO_DT_O_ACTIVITY_EXECUTION_DTC		notNull:"true" 	inOut :"out"}
+}
+
+
+create Task TK_GET_ACTIVITY_LOG_BY_ACE_ID {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	select acl.*
+        	from o_activity_log acl
+        	where acl.ACE_ID = #ACE_ID#
+        	
+			"
+	attribute ACE_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+	attribute DTC_O_ACTIVITY_LOG	 	{domain : DO_DT_O_ACTIVITY_LOG_DTO		notNull:"false" 	inOut :"out"}
+}
+
+
+
+
+
+
+

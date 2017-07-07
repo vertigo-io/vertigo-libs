@@ -1,0 +1,93 @@
+package io.vertigo.orchestra.domain.execution
+
+create DtDefinition DT_O_ACTIVITY_EXECUTION {
+	storeName : "orchestra"
+	key ACE_ID			{domain : DO_O_IDENTIFIANT, label :"Id de l'execution d'un processus", notNull:"true",},
+	field CREATION_TIME   	{domain : DO_O_TIMESTAMP, label :"Date de création", notNull:"true",},
+	field BEGIN_TIME   	{domain : DO_O_TIMESTAMP, label :"Date de début", notNull:"false",},
+	field END_TIME   	{domain : DO_O_TIMESTAMP, label :"Date de fin", notNull:"false",},
+	field ENGINE   	{domain : DO_O_CLASSE, label :"Implémentation effective de l'execution", notNull:"false",},
+	field TOKEN   	{domain : DO_O_TOKEN, label :"Token d'identification", notNull:"false",},
+  
+},
+
+
+
+create Association A_ACE_ACT {
+  fkFieldName : "ACT_ID"
+    
+ 	dtDefinitionA : DT_O_ACTIVITY_EXECUTION
+	dtDefinitionB : DT_O_ACTIVITY
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"1..1"
+	
+	labelA : "ExecutionActivity"
+	labelB : "Activity"
+	roleA : "ExecutionActivity"
+	roleB : "Activity"
+			
+}
+
+
+
+create Association A_ACE_NOD {
+  fkFieldName : "NOD_ID"
+    
+ 	dtDefinitionA : DT_O_ACTIVITY_EXECUTION
+	dtDefinitionB : DT_O_NODE
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"1..1"
+	
+	labelA : "ExecutionActivity"
+	labelB : "Node"
+	roleA : "ExecutionActivity"
+	roleB : "Node"
+			
+}
+
+create Association A_ACE_EST {
+  fkFieldName : "EST_CD"
+    
+ 	dtDefinitionA : DT_O_ACTIVITY_EXECUTION
+	dtDefinitionB : DT_O_EXECUTION_STATE
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"1..1"
+	
+	labelA : "ExecutionActivity"
+	labelB : "ExecutionState"
+	roleA : "ExecutionActivity"
+	roleB : "ExecutionState"
+			
+}
+
+
+create Association A_ACE_PRE {
+  fkFieldName : "PRE_ID"
+    
+ 	dtDefinitionA : DT_O_ACTIVITY_EXECUTION
+	dtDefinitionB : DT_O_PROCESS_EXECUTION
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"1..1"
+	
+	labelA : "ExecutionActivity"
+	labelB : "Processus"
+	roleA : "ExecutionActivity"
+	roleB : "ProcessusExecution"
+			
+}

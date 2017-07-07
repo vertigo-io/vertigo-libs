@@ -1,0 +1,11 @@
+package io.vertigo.orchestra.domain
+
+
+/**************************************************************************************************/
+/* 							Gestion des domaines pour le FileInfo								  */
+/**************************************************************************************************/
+	
+
+create FileInfo FI_ALPHA_FILE_INFO {
+	root : "DT_DB_FILE_INFO"
+}

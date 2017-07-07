@@ -1,0 +1,40 @@
+<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
+<config>
+	
+	
+	<module name="vertigo-commons">
+		<component api="AnalyticsManager" class="io.vertigo.commons.impl.analytics.AnalyticsManagerImpl" />
+		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
+		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />
+
+	</module>
+	
+	<module name="vertigo-stella">
+		<component api="MasterManager" class="io.vertigo.stella.impl.master.MasterManagerImpl">
+			<plugin class="io.vertigo.stella.plugins.work.rest.master.RestMasterPlugin">
+				<param name="timeoutSeconds" value="20" />
+			</plugin>
+		</component>
+	</module>
+	
+	<module name="vertigo-vega">
+		<component api="WebServiceManager" class="io.vertigo.vega.impl.webservice.WebServiceManagerImpl">
+    	    <plugin class="io.vertigo.vega.plugins.webservice.webserver.sparkjava.SparkJavaEmbeddedWebServerPlugin">
+    	    	<param name="port" value="10998" />
+    		</plugin>
+		    <plugin class="io.vertigo.vega.plugins.webservice.scanner.annotations.AnnotationsWebServiceScannerPlugin" /> 
+    	    <!-- Handlers -->
+    	    <plugin class="io.vertigo.vega.plugins.webservice.handler.ExceptionWebServiceHandlerPlugin" />
+    	    <plugin class="io.vertigo.vega.plugins.webservice.handler.AnalyticsWebServiceHandlerPlugin" />
+    	    <plugin class="io.vertigo.vega.plugins.webservice.handler.JsonConverterWebServiceHandlerPlugin" />
+    	    <plugin class="io.vertigo.vega.plugins.webservice.handler.RestfulServiceWebServiceHandlerPlugin" />
+    	</component>
+    	<component api="JsonEngine" class="io.vertigo.vega.engines.webservice.json.GoogleJsonEngine"/>
+    	
+	</module>
+	
+	<module name="webServices">
+		<component class="io.vertigo.stella.plugins.work.rest.master.RestMasterWebService"/>    	
+	</module>
+	
+</config>

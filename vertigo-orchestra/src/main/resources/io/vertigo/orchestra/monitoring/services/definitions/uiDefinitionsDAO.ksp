@@ -1,0 +1,43 @@
+package io.vertigo.orchestra.monitoring.dao.uidefinitions
+
+
+create Task TK_GET_PROCESS_BY_PRO_ID {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	select  pro.PRO_ID as PRO_ID,
+        			pro.NAME as NAME,
+        			pro.LABEL as LABEL,
+        			pro.CRON_EXPRESSION as CRON_EXPRESSION,
+        			pro.INITIAL_PARAMS as INITIAL_PARAMS,
+        			pro.MULTIEXECUTION as MULTIEXECUTION,
+        			pro.ACTIVE as ACTIVE,
+        			pro.RESCUE_PERIOD as RESCUE_PERIOD,
+        			pro.METADATAS as METADATAS
+        	from o_process pro   
+        	where pro.PRO_ID = #PRO_ID#     	
+			"
+	attribute PRO_ID	 	{domain : DO_O_IDENTIFIANT		notNull:"true" 	inOut :"in"}
+	attribute DT_O_PROCESS_UI	 	{domain : DO_DT_O_PROCESS_UI_DTO		notNull:"true" 	inOut :"out"}
+},
+
+create Task TK_SEARCH_PROCESS_BY_LABEL {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	select  pro.PRO_ID as PRO_ID,
+        			pro.NAME as NAME,
+        			pro.LABEL as LABEL,
+        			pro.CRON_EXPRESSION as CRON_EXPRESSION,
+        			pro.INITIAL_PARAMS as INITIAL_PARAMS,
+        			pro.MULTIEXECUTION as MULTIEXECUTION,
+        			pro.ACTIVE as ACTIVE,
+        			pro.RESCUE_PERIOD as RESCUE_PERIOD,
+        			pro.METADATAS as METADATAS
+        	from o_process pro   
+        	where lower(pro.LABEL) like lower(#SEARCH#)  and pro.ACTIVE_VERSION is true
+			"
+	attribute SEARCH	 	{domain : DO_O_LIBELLE		notNull:"true" 	inOut :"in"}
+	attribute DTC_O_PROCESS_UI	 	{domain : DO_DT_O_PROCESS_UI_DTC		notNull:"true" 	inOut :"out"}
+}
+

@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.vertigo</groupId>
+		<artifactId>vertigo-parent</artifactId>
+		<version>0.9.5-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>vertigo-adapters</artifactId>
+	<packaging>jar</packaging>
+	<name>vertigo-adapters</name>
+
+	<properties>
+		<vertigo.version>0.9.5-SNAPSHOT</vertigo.version>
+		<jersey2.version>2.25.1</jersey2.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-core</artifactId>
+			<version>${vertigo.version}</version>
+		</dependency>
+
+
+		<!-- Twitter4J -->
+		<dependency>
+			<groupId>org.twitter4j</groupId>
+			<artifactId>twitter4j-core</artifactId>
+			<version>4.0.6</version>
+		</dependency>
+
+		<!-- Jersey 2 -->
+		<dependency>
+			<groupId>org.glassfish.jersey.core</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${jersey2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.glassfish.jersey.media</groupId>
+			<artifactId>jersey-media-json-jackson</artifactId>
+			<version>${jersey2.version}</version>
+		</dependency>
+	</dependencies>
+
+</project>
