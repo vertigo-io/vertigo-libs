@@ -28,7 +28,7 @@ Orchestra comes as 2 jars :
 So you can use orchestra as a dependency of your project or build a stand alone app with only orchestra (see vertigo-orchestra-demo)
 For configuring your app you can use the OrchestraFeatures in Java or write your config with XML (If you need help check the config of the *vertigo-orchestra-demo* project.
 
-To use Orchestra with supervised processes you need a postgresql database. To create the necessary tables use [this](vertigo-orchestra-impl/src/main/database/scripts/install/orchestra_create_init.sql) SQL file.
+To use Orchestra with supervised processes you need a postgresql database. To create the necessary tables use [this](src/main/database/scripts/install/orchestra_create_init_v1.0.0.sql) SQL file.
 
 # What does it looks like in the code?
 
