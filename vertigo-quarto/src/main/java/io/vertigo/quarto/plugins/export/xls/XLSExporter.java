@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,8 +67,8 @@ final class XLSExporter {
 	private final Map<DtField, Map<Object, String>> referenceCache = new HashMap<>();
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
 
-	private final Map<DataType, HSSFCellStyle> evenHssfStyleCache = new HashMap<>();
-	private final Map<DataType, HSSFCellStyle> oddHssfStyleCache = new HashMap<>();
+	private final Map<DataType, HSSFCellStyle> evenHssfStyleCache = new EnumMap<>(DataType.class);
+	private final Map<DataType, HSSFCellStyle> oddHssfStyleCache = new EnumMap<>(DataType.class);
 
 	private final StoreManager storeManager;
 

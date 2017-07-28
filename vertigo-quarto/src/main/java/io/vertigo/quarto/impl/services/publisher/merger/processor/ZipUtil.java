@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -34,11 +35,6 @@ import io.vertigo.lang.Assertion;
  * @author pforhan
  */
 public final class ZipUtil {
-
-	/**
-	 * Encoder UTF8.
-	 */
-	private static final String ENCODER = "UTF-8";
 
 	/**
 	 * Taille du Buffer.
@@ -68,7 +64,7 @@ public final class ZipUtil {
 		//-----
 		final StringBuilder resultat = new StringBuilder();
 
-		try (final InputStreamReader reader = new InputStreamReader(odtFile.getInputStream(zipEntry), ENCODER)) {
+		try (final InputStreamReader reader = new InputStreamReader(odtFile.getInputStream(zipEntry), StandardCharsets.UTF_8)) {
 			final char[] buffer = new char[BUFFER_SIZE];
 			int len;
 			while ((len = reader.read(buffer, 0, BUFFER_SIZE)) > 0) {
@@ -89,7 +85,7 @@ public final class ZipUtil {
 	public static void writeEntry(final ZipOutputStream outputZipFile, final String entryContent, final String entryName) throws IOException {
 		final ZipEntry content = new ZipEntry(entryName);
 		outputZipFile.putNextEntry(content);
-		final OutputStreamWriter writer = new OutputStreamWriter(outputZipFile, ENCODER);
+		final OutputStreamWriter writer = new OutputStreamWriter(outputZipFile, StandardCharsets.UTF_8);
 		writer.write(entryContent, 0, entryContent.length());
 		writer.flush();
 	}

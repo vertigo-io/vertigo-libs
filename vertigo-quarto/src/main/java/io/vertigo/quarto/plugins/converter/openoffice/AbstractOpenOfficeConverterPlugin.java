@@ -78,7 +78,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 		//-----
 		this.fileManager = fileManager;
 		this.unoHost = unoHost;
-		this.unoPort = Integer.valueOf(unoPort);
+		this.unoPort = Integer.parseInt(unoPort);
 		this.convertTimeoutSeconds = convertTimeoutSeconds;
 	}
 

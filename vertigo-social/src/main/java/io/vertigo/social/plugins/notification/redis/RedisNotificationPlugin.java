@@ -132,7 +132,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 					.withTitle(data.get("title"))
 					.withContent(data.get("content"))
 					.withCreationDate(creationDate)
-					.withTTLInSeconds(Integer.valueOf(data.get("ttlInSeconds")))
+					.withTTLInSeconds(Integer.parseInt(data.get("ttlInSeconds")))
 					.withTargetUrl(data.get("targetUrl"))
 					.build();
 		} catch (final ParseException e) {
