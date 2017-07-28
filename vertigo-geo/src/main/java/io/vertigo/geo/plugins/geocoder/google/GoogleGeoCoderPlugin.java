@@ -31,6 +31,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -142,7 +143,9 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 			final InputSource geocoderResultInputSource = new InputSource(connection.getInputStream());
 
 			// Lecture des résultats sous forme XML
-			return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(geocoderResultInputSource);
+			final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+			documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			return documentBuilderFactory.newDocumentBuilder().parse(geocoderResultInputSource);
 		} catch (final IOException e) {
 			throw new RuntimeException("Erreur de connexion au service", e);
 		} catch (final SAXException e) {
