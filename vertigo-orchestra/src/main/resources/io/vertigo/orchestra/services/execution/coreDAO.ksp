@@ -24,7 +24,7 @@ create Task TK_HANDLE_PROCESSES_OF_DEAD_NODES {
 				select ace.ACE_ID
 				from o_activity_execution ace
 				join o_node nod on nod.NOD_ID = ace.NOD_ID
-				where ace.EST_CD = 'RUNNING' and nod.HEARTBEAT < #MAX_DATE#);
+				where ace.EST_CD in ('RUNNING','WAITING','SUBMITTED') and nod.HEARTBEAT < #MAX_DATE#);
 			
  			update o_process_execution
         	set EST_CD = 'ABORTED'

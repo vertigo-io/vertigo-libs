@@ -38,7 +38,7 @@ import io.vertigo.orchestra.domain.execution.ONode;
  */
 @Transactional
 public class ONodeManagerImpl implements ONodeManager {
-	private static final Logger LOGGER = Logger.getLogger(ONodeManager.class);
+	private static final Logger LOGGER = Logger.getLogger(ONodeManagerImpl.class);
 
 	@Inject
 	private ONodeDAO nodeDAO;

@@ -68,7 +68,7 @@ final class ODTInputTagReverserUtil {
 	static String doInversion(final String tagToInverse, final String bodyContent) {
 		final int indexAttribut = tagToInverse.indexOf(DESCRIPTION_ATTRIBUTE);
 		if (indexAttribut > 0) {
-			final int indexFinAttribut = tagToInverse.indexOf("\"", indexAttribut + DESCRIPTION_ATTRIBUTE.length() + 2);
+			final int indexFinAttribut = tagToInverse.indexOf('\"', indexAttribut + DESCRIPTION_ATTRIBUTE.length() + 2);
 			final String valueAttribut = tagToInverse.substring(indexAttribut + DESCRIPTION_ATTRIBUTE.length() + 2, indexFinAttribut);
 			final int indexDebutBody = tagToInverse.indexOf(bodyContent, indexFinAttribut);
 

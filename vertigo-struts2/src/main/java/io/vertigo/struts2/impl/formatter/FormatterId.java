@@ -48,7 +48,7 @@ public final class FormatterId implements Formatter {
 			return null;
 		}
 		try {
-			return Long.parseLong(strValue.trim());
+			return Long.valueOf(strValue.trim());
 		} catch (final NumberFormatException e) {
 			// cas des erreurs sur les formats de nombre
 			throw new FormatterException(Resources.DYNAMOX_NUMBER_NOT_FORMATTED, e);

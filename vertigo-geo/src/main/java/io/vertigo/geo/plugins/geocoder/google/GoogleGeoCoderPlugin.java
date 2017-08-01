@@ -27,10 +27,12 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
@@ -123,7 +125,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		//-----
 		final String urlString;
 		try {
-			urlString = GEOCODE_REQUEST_PREFIX + "?address=" + URLEncoder.encode(address, "UTF-8") + "&sensor=false";
+			urlString = GEOCODE_REQUEST_PREFIX + "?address=" + URLEncoder.encode(address, StandardCharsets.UTF_8.name()) + "&sensor=false";
 		} catch (final UnsupportedEncodingException e) {
 			throw new RuntimeException("Erreur lors de l'encodage de l'adresse", e);
 		}
@@ -142,7 +144,9 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 			final InputSource geocoderResultInputSource = new InputSource(connection.getInputStream());
 
 			// Lecture des résultats sous forme XML
-			return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(geocoderResultInputSource);
+			final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+			documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+			return documentBuilderFactory.newDocumentBuilder().parse(geocoderResultInputSource);
 		} catch (final IOException e) {
 			throw new RuntimeException("Erreur de connexion au service", e);
 		} catch (final SAXException e) {

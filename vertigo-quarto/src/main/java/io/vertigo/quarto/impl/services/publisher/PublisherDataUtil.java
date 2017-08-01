@@ -176,7 +176,7 @@ public final class PublisherDataUtil {
 		final StringBuilder sb = new StringBuilder();
 		for (final String dtDefinitionUrn : dtDefinitions) {
 			appendPublisherNodeDefinition(sb, Home.getApp().getDefinitionSpace().resolve(dtDefinitionUrn, DtDefinition.class));
-			sb.append("\n");
+			sb.append('\n');
 		}
 		return sb.toString();
 	}
