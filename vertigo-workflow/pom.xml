@@ -27,7 +27,7 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-rules</artifactId>
-			<version>${vertigo.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- Tests -->
