@@ -14,7 +14,6 @@
 	<name>vertigo-adapters</name>
 
 	<properties>
-		<vertigo.version>0.9.5-SNAPSHOT</vertigo.version>
 		<jersey2.version>2.25.1</jersey2.version>
 	</properties>
 
