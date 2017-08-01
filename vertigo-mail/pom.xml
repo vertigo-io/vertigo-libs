@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
-			<version>${project.version}</version>
+			<version>${vertigo.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
