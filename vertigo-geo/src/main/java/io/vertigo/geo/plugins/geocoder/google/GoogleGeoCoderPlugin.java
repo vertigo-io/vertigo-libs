@@ -27,6 +27,7 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -124,7 +125,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		//-----
 		final String urlString;
 		try {
-			urlString = GEOCODE_REQUEST_PREFIX + "?address=" + URLEncoder.encode(address, "UTF-8") + "&sensor=false";
+			urlString = GEOCODE_REQUEST_PREFIX + "?address=" + URLEncoder.encode(address, StandardCharsets.UTF_8.name()) + "&sensor=false";
 		} catch (final UnsupportedEncodingException e) {
 			throw new RuntimeException("Erreur lors de l'encodage de l'adresse", e);
 		}

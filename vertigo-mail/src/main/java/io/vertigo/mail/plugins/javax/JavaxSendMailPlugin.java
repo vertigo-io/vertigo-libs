@@ -165,17 +165,17 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 
 	private Session createSession() {
 		final Properties properties = new Properties();
-		properties.put("mail.store.protocol", mailStoreProtocol);
-		properties.put("mail.host", mailHost);
+		properties.setProperty("mail.store.protocol", mailStoreProtocol);
+		properties.setProperty("mail.host", mailHost);
 		if (mailPort.isPresent()) {
 			properties.put("mail.port", mailPort.get());
 		}
-		properties.put("mail.debug", "false");
+		properties.setProperty("mail.debug", "false");
 		final Session session;
 		if (mailLogin.isPresent()) {
-			properties.put("mail.smtp.ssl.trust", mailHost);
-			properties.put("mail.smtp.starttls.enable", true);
-			properties.put("mail.smtp.auth", "true");
+			properties.setProperty("mail.smtp.ssl.trust", mailHost);
+			properties.setProperty("mail.smtp.starttls.enable", "true");
+			properties.setProperty("mail.smtp.auth", "true");
 
 			final String username = mailLogin.get();
 			final String password = mailPassword.get();
