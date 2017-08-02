@@ -196,7 +196,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		Thread.sleep(1000 * 15);
 		checkExecutions(proId, 0, 1, 0, 0);
 		// After 25 second the process is done
-		Thread.sleep(1000 * 20);
+		Thread.sleep(30_000);
 		checkExecutions(proId, 0, 0, 1, 0);
 	}
 
