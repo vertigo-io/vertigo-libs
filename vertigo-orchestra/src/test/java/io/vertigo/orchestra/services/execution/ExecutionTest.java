@@ -122,7 +122,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		Thread.sleep(Math.max(0, processPlanification.getExpectedTime().getTime() - System.currentTimeMillis()));
 
 		// After 20 secondes there is 1 execution done and 1 execution running (for 5 secondes, half execution time)
-		Thread.sleep(1000 * 20);
+		Thread.sleep(22_000);
 		// --- We check the counts
 		checkExecutions(proId, 0, 1, 1, 0);
 
@@ -196,7 +196,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		Thread.sleep(1000 * 15);
 		checkExecutions(proId, 0, 1, 0, 0);
 		// After 25 second the process is done
-		Thread.sleep(1000 * 10);
+		Thread.sleep(1000 * 20);
 		checkExecutions(proId, 0, 0, 1, 0);
 	}
 
@@ -302,10 +302,10 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
 
 		// After 4 second the process is running
-		Thread.sleep(1000 * 2);
+		Thread.sleep(2500);
 		checkExecutions(proId, 0, 1, 0, 0);
 		// After 5 seconds the process is in error because there is an exception after 3 seconds
-		Thread.sleep(1000 * 4);
+		Thread.sleep(1000 * 5);
 		checkExecutions(proId, 0, 0, 0, 1);
 	}
 
