@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -161,6 +162,18 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	@Override
 	public void stop() {
 		workers.shutdownNow();
+		try {
+			// We wait for the workers to end properly.
+			// Without this wait for max 10 seconds, the App will be closed along with the Transaction,
+			// the Process/Activity cannot save that the current execution is in error. 
+			// With this wait, they may end up gracelly by using the current transaction to store the state of the current execution. 
+			final boolean allTasksTerminated = workers.awaitTermination(10, TimeUnit.SECONDS);
+			if (!allTasksTerminated) {
+				LOGGER.error("Timeout while waiting tasks to terminate. This may lead to further exception that use App.");
+			}
+		} catch (final InterruptedException e) {
+			LOGGER.error("Exception waiting activities to terminate", e);
+		}
 	}
 
 	/** {@inheritDoc} */

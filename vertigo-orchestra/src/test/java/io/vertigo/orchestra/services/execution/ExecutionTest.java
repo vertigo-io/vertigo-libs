@@ -122,7 +122,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		Thread.sleep(Math.max(0, processPlanification.getExpectedTime().getTime() - System.currentTimeMillis()));
 
 		// After 20 secondes there is 1 execution done and 1 execution running (for 5 secondes, half execution time)
-		Thread.sleep(22_000);
+		Thread.sleep(20_000);
 		// --- We check the counts
 		checkExecutions(proId, 0, 1, 1, 0);
 
