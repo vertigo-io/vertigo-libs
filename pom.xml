@@ -13,11 +13,11 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
-		<version>1.0.1</version>
+		<version>1.0.0</version>
 	</parent>
 
 	<artifactId>vertigo-extensions</artifactId>
-	<version>1.0.1</version>
+	<version>1.1.0-SNAPSHOT</version>
 	<name>vertigo-extensions</name>
 	<packaging>pom</packaging>
 
