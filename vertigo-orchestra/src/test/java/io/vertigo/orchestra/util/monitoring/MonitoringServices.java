@@ -26,7 +26,7 @@ import io.vertigo.orchestra.domain.execution.OActivityExecution;
 import io.vertigo.orchestra.domain.execution.OActivityLog;
 import io.vertigo.orchestra.domain.execution.OActivityWorkspace;
 import io.vertigo.orchestra.domain.execution.OProcessExecution;
-import io.vertigo.orchestra.domain.planification.OProcessPlanification;
+import io.vertigo.orchestra.domain.planification.OProcessNextRun;
 
 /**
  * Services permettant de suivre le fonctionnement de la tour de controle.
@@ -39,7 +39,7 @@ public interface MonitoringServices extends Component {
 	 * @param proId l'id du processus
 	 * @return la liste des planification concernant ce processus.
 	 */
-	DtList<OProcessPlanification> getPlanificationsByProId(Long proId);
+	DtList<OProcessNextRun> getPlanificationsByProId(Long proId);
 
 	/**
 	 * Récupère la liste des executions d'un processus.

@@ -23,6 +23,9 @@ create sequence SEQ_O_ACTIVITY_WORKSPACE
 create sequence SEQ_O_EXECUTION_STATE
 	start with 1000 cache 20; 
 
+create sequence SEQ_O_JOB_RUNNING
+	start with 1000 cache 20; 
+
 create sequence SEQ_O_NODE
 	start with 1000 cache 20; 
 
@@ -30,9 +33,6 @@ create sequence SEQ_O_PROCESS
 	start with 1000 cache 20; 
 
 create sequence SEQ_O_PROCESS_EXECUTION
-	start with 1000 cache 20; 
-
-create sequence SEQ_O_PROCESS_PLANIFICATION
 	start with 1000 cache 20; 
 
 create sequence SEQ_O_PROCESS_TYPE
@@ -197,6 +197,34 @@ comment on column O_EXECUTION_STATE.LABEL is
 'Libellé';
 
 -- ============================================================
+--   Table : O_JOB_RUNNING                                        
+-- ============================================================
+create table O_JOB_RUNNING
+(
+    JRU_ID      	 NUMERIC     	not null,
+    JOBNAME     	 VARCHAR(100)	,
+    NOD_ID      	 NUMERIC     	not null,
+    DATE_EXEC   	 TIMESTAMP   	,
+    USR_ID      	 NUMERIC     	,
+    constraint PK_O_JOB_RUNNING primary key (JRU_ID)
+);
+
+comment on column O_JOB_RUNNING.JRU_ID is
+'Id de la definition du job';
+
+comment on column O_JOB_RUNNING.JOBNAME is
+'Nom du job';
+
+comment on column O_JOB_RUNNING.NOD_ID is
+'Id du noeud';
+
+comment on column O_JOB_RUNNING.DATE_EXEC is
+'Date de début';
+
+comment on column O_JOB_RUNNING.USR_ID is
+'User';
+
+-- ============================================================
 --   Table : O_NODE                                        
 -- ============================================================
 create table O_NODE
@@ -325,38 +353,6 @@ comment on column O_PROCESS_EXECUTION.USR_ID is
 'User';
 
 -- ============================================================
---   Table : O_PROCESS_PLANIFICATION                                        
--- ============================================================
-create table O_PROCESS_PLANIFICATION
-(
-    PRP_ID      	 NUMERIC     	not null,
-    EXPECTED_TIME	 TIMESTAMP   	,
-    INITIAL_PARAMS	 TEXT        	,
-    PRO_ID      	 NUMERIC     	not null,
-    NOD_ID      	 NUMERIC     	,
-    SST_CD      	 VARCHAR(20) 	,
-    constraint PK_O_PROCESS_PLANIFICATION primary key (PRP_ID)
-);
-
-comment on column O_PROCESS_PLANIFICATION.PRP_ID is
-'Id Planification';
-
-comment on column O_PROCESS_PLANIFICATION.EXPECTED_TIME is
-'Date d''execution prévue';
-
-comment on column O_PROCESS_PLANIFICATION.INITIAL_PARAMS is
-'Paramètres initiaux sous forme de JSON';
-
-comment on column O_PROCESS_PLANIFICATION.PRO_ID is
-'Processus';
-
-comment on column O_PROCESS_PLANIFICATION.NOD_ID is
-'Node';
-
-comment on column O_PROCESS_PLANIFICATION.SST_CD is
-'PlanificationState';
-
--- ============================================================
 --   Table : O_PROCESS_TYPE                                        
 -- ============================================================
 create table O_PROCESS_TYPE
@@ -478,6 +474,12 @@ alter table O_ACTIVITY
 
 create index ACT_PRO_O_PROCESS_FK on O_ACTIVITY (PRO_ID asc);
 
+alter table O_JOB_RUNNING
+	add constraint FK_JOB_USR_O_USER foreign key (USR_ID)
+	references O_USER (USR_ID);
+
+create index JOB_USR_O_USER_FK on O_JOB_RUNNING (USR_ID asc);
+
 alter table O_PROCESS_EXECUTION
 	add constraint FK_PRE_EST_O_EXECUTION_STATE foreign key (EST_CD)
 	references O_EXECUTION_STATE (EST_CD);
@@ -507,24 +509,6 @@ alter table O_PROCESS
 	references TRIGGER_TYPE (TRT_CD);
 
 create index PRO_TRT_TRIGGER_TYPE_FK on O_PROCESS (TRT_CD asc);
-
-alter table O_PROCESS_PLANIFICATION
-	add constraint FK_PRP_NOD_O_NODE foreign key (NOD_ID)
-	references O_NODE (NOD_ID);
-
-create index PRP_NOD_O_NODE_FK on O_PROCESS_PLANIFICATION (NOD_ID asc);
-
-alter table O_PROCESS_PLANIFICATION
-	add constraint FK_PRP_PRO_O_PROCESS foreign key (PRO_ID)
-	references O_PROCESS (PRO_ID);
-
-create index PRP_PRO_O_PROCESS_FK on O_PROCESS_PLANIFICATION (PRO_ID asc);
-
-alter table O_PROCESS_PLANIFICATION
-	add constraint FK_PRP_PST_O_SCHEDULER_STATE foreign key (SST_CD)
-	references O_SCHEDULER_STATE (SST_CD);
-
-create index PRP_PST_O_SCHEDULER_STATE_FK on O_PROCESS_PLANIFICATION (SST_CD asc);
 
 alter table O_ACTIVITY_WORKSPACE
 	add constraint FK_TKW_TKE_O_ACTIVITY_EXECUTION foreign key (ACE_ID)

@@ -66,6 +66,13 @@ module.exports = {
         averageExecutionTime: "Durée moyenne d'exécution",
         health: "Santé du processus"
     },
+    oJobRunning: {
+        jruId: "Id de la definition du job",
+        jobname: "Nom du job",
+        nodId: "Id du noeud",
+        dateExec: "Date de début",
+        usrId: "User"
+    },
     oNode: {
         nodId: "Id du noeud",
         name: "Nom du noeud",
@@ -109,12 +116,11 @@ module.exports = {
         checkingComment: "Commentaire",
         hasAttachment: "Fichier de log"
     },
-    oProcessPlanification: {
-        prpId: "Id Planification",
+    oProcessNextRun: {
+        jobname: "Nom du job",
         expectedTime: "Date d'execution prévue",
         initialParams: "Paramètres initiaux sous forme de JSON",
         proId: "Processus",
-        nodId: "Node",
         sstCd: "PlanificationState"
     },
     oProcessType: {

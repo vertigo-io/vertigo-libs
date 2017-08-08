@@ -18,6 +18,8 @@
  */
 package io.vertigo.orchestra.services.execution.engine;
 
+import org.apache.log4j.Logger;
+
 import io.vertigo.orchestra.impl.services.execution.AbstractActivityEngine;
 import io.vertigo.orchestra.services.execution.ActivityExecutionWorkspace;
 
@@ -29,14 +31,18 @@ import io.vertigo.orchestra.services.execution.ActivityExecutionWorkspace;
  */
 public class DumbActivityEngine extends AbstractActivityEngine {
 
+	private static final Logger LOGGER = Logger.getLogger(DumbActivityEngine.class);
+
 	/** {@inheritDoc} */
 	@Override
 	public ActivityExecutionWorkspace execute(final ActivityExecutionWorkspace workspace) {
 		workspace.setSuccess();
 		try {
+			LOGGER.info("Before sleep " + System.currentTimeMillis());
 			Thread.sleep(1000 * 10);
+			LOGGER.info("After sleep " + System.currentTimeMillis());
 		} catch (final InterruptedException e) {
-			e.printStackTrace();
+			LOGGER.error("Error " + System.currentTimeMillis(), e);
 		}
 		return workspace;
 	}

@@ -209,6 +209,28 @@ module.exports = {
             required: true
         }
     },
+    oJobRunning: {
+        jruId: {
+            domain: "DO_O_IDENTIFIANT",
+            required: true
+        },
+        jobname: {
+            domain: "DO_O_LIBELLE",
+            required: false
+        },
+        nodId: {
+            domain: "DO_O_IDENTIFIANT",
+            required: true
+        },
+        dateExec: {
+            domain: "DO_O_TIMESTAMP",
+            required: false
+        },
+        usrId: {
+            domain: "DO_O_IDENTIFIANT",
+            required: false
+        }
+    },
     oNode: {
         nodId: {
             domain: "DO_O_IDENTIFIANT",
@@ -357,10 +379,10 @@ module.exports = {
             required: false
         }
     },
-    oProcessPlanification: {
-        prpId: {
-            domain: "DO_O_IDENTIFIANT",
-            required: true
+    oProcessNextRun: {
+        jobname: {
+            domain: "DO_O_LIBELLE",
+            required: false
         },
         expectedTime: {
             domain: "DO_O_TIMESTAMP",
@@ -373,10 +395,6 @@ module.exports = {
         proId: {
             domain: "DO_O_IDENTIFIANT",
             required: true
-        },
-        nodId: {
-            domain: "DO_O_IDENTIFIANT",
-            required: false
         },
         sstCd: {
             domain: "DO_O_CODE_IDENTIFIANT",

@@ -1,0 +1,31 @@
+package io.vertigo.orchestra.dao.execution
+
+create Task TK_RESERVE_PROCESS_TO_LAUNCH {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineProc"
+        request : "
+        	INSERT INTO O_JOB_RUNNING (JRU_ID, JOBNAME, NOD_ID, DATE_EXEC)
+        		 SELECT (nextval('SEQ_O_JOB_RUNNING'), JOB.JOBNAME, #NOD_ID#, NULL)
+				   FROM O_JOB_DEFINITION JOB
+        		  WHERE NOT EXIST (SELECT 1 
+									 FROM O_JOB_RUNNING RUN
+									WHERE RUN.JOBNAME = JOB.JOBNAME)
+					AND JOBNAME IN (#JOBS.JOBNAME#)
+			"
+		attribute NOD_ID			{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+		attribute PROCESSES			{domain : DO_DT_O_PROCESS_NEXT_RUN_DTC 	notNull:"true" 	inOut :"in"}
+		attribute INT_SQL_ROWCOUNT	{domain : DO_O_NOMBRE 	notNull:"true" 	inOut :"out"}
+}
+
+
+create Task TK_GET_JOBS_TO_RUN {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	SELECT JRU.*
+        	  FROM O_JOB_RUNNING JRU
+        	 WHERE JRU.DATE_DEBUT IS NULL AND NOD_ID = #NODE_ID#
+			"
+	attribute DTO_O_JOB_RUNNING	 	{domain : DO_DT_O_JOB_RUNNING_DTC 	notNull:"true" inOut :"out"}
+	attribute NOD_ID	 			{domain : DO_O_IDENTIFIANT 			notNull:"true" 	inOut :"in"}
+},

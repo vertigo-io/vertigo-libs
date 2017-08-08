@@ -65,6 +65,22 @@ public final class ExecutionPAO implements StoreServices {
 	}
 
 	/**
+	 * Execute la tache TK_RESERVE_PROCESS_TO_LAUNCH.
+	 * @param nodId Long 
+	 * @param processes io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessNextRun> 
+	 * @return Integer intSqlRowcount
+	*/
+	public Integer reserveProcessToLaunch(final Long nodId, final io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessNextRun> processes) {
+		final Task task = createTaskBuilder("TK_RESERVE_PROCESS_TO_LAUNCH")
+				.addValue("NOD_ID", nodId)
+				.addValue("PROCESSES", processes)
+				.build();
+		return getTaskManager()
+				.execute(task)
+				.getResult();
+	}
+
+	/**
 	 * Execute la tache TK_UPDATE_PROCESS_EXECUTION_TREATMENT.
 	 * @param preId Long 
 	 * @param checked Boolean 

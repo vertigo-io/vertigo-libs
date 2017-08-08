@@ -37,7 +37,6 @@ import io.vertigo.lang.VSystemException;
 import io.vertigo.orchestra.dao.definition.DefinitionPAO;
 import io.vertigo.orchestra.dao.definition.OActivityDAO;
 import io.vertigo.orchestra.dao.definition.OProcessDAO;
-import io.vertigo.orchestra.dao.planification.PlanificationPAO;
 import io.vertigo.orchestra.definitions.ActivityDefinition;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.definitions.ProcessDefinitionBuilder;
@@ -58,8 +57,8 @@ import io.vertigo.util.StringUtil;
 @Transactional
 public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlugin {
 
-	@Inject
-	private PlanificationPAO planificationPAO;
+	/*@Inject
+	private PlanificationPAO planificationPAO;*/
 	@Inject
 	private OProcessDAO processDao;
 	@Inject
@@ -219,7 +218,7 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 		final String processName = processDefinition.getName();
 		definitionPAO.disableOldProcessDefinitions(processName);
 		// on supprime toute la planification existante
-		planificationPAO.cleanFuturePlanifications(processName);
+		//planificationPAO.cleanFuturePlanifications(processName);
 		createDefinition(processDefinition);
 
 	}
@@ -244,7 +243,7 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 		process.setActive(active);
 		processDao.save(process);
 		// on supprime toute la planification existante
-		planificationPAO.cleanFuturePlanifications(processDefinition.getName());
+		//planificationPAO.cleanFuturePlanifications(processDefinition.getName());
 	}
 
 	/** {@inheritDoc} */

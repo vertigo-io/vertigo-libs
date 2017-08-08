@@ -82,7 +82,7 @@ public final class MyAppConfig {
 				.addModule(ModuleConfig.builder("databaseInitializer").addComponent(DataBaseInitializer.class).build())
 				//
 				.addModule(new OrchestraFeatures()
-						.withDataBase("NODE_TEST_1", 1, 3, 60)
+						.withDataBase("NODE_TEST_1", 2, 3, 60)
 						.withMemory(1)
 						.build())
 				.addModule(ModuleConfig.builder("orchestra-test")

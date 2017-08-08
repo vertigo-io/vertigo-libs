@@ -1,0 +1,33 @@
+package io.vertigo.orchestra.domain.execution
+
+
+create DtDefinition DT_O_JOB_EXECUTION {
+	storeName : "orchestra"
+	key JEX_ID					{domain : DO_O_IDENTIFIANT, label :"Id d'une trace d'execution d'un job", notNull:"true",}
+	field STATUS				{domain : DO_O_CODE_IDENTIFIANT, label :"Status général d'execution", notNull:"true",}
+	field REASON				{domain : DO_O_CODE_IDENTIFIANT, label :"Code d'erreur fonctionel de l'execution", notNull:"true",}
+	field DATE_DEBUT			{domain : DO_O_TIMESTAMP, label :"Date de début d'execution", notNull:"true",}
+	field DATE_FIN				{domain : DO_O_TIMESTAMP, label :"Date de fin d'execution", notNull:"true",}
+	field ENGINE   				{domain : DO_O_CLASSE, label :"Implémentation effective de l'execution", notNull:"false",}
+	field WORKSPACE_IN			{domain : DO_O_JSON_TEXT, label :"Workspace d'entrée de l'execution", notNull:"false",}
+	field WORKSPACE_OUT 		{domain : DO_O_JSON_TEXT, label :"Workspace de sortie de l'execution", notNull:"false",}
+},
+
+
+create Association A_JEX_JOB {
+  fkFieldName : "PRO_ID"
+    
+ 	dtDefinitionA : DT_O_JOB_EXECUTION
+	dtDefinitionB : DT_O_JOB_DEFINITION
+	
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"1..1"
+	
+	labelA : "JobExecution"
+	labelB : "JobDefinition"
+	roleA : "JobExecution"
+	roleB : "JobDefinition"
+}

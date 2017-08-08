@@ -29,12 +29,11 @@ import io.vertigo.orchestra.dao.execution.OActivityExecutionDAO;
 import io.vertigo.orchestra.dao.execution.OActivityLogDAO;
 import io.vertigo.orchestra.dao.execution.OActivityWorkspaceDAO;
 import io.vertigo.orchestra.dao.execution.OProcessExecutionDAO;
-import io.vertigo.orchestra.dao.planification.OProcessPlanificationDAO;
 import io.vertigo.orchestra.domain.execution.OActivityExecution;
 import io.vertigo.orchestra.domain.execution.OActivityLog;
 import io.vertigo.orchestra.domain.execution.OActivityWorkspace;
 import io.vertigo.orchestra.domain.execution.OProcessExecution;
-import io.vertigo.orchestra.domain.planification.OProcessPlanification;
+import io.vertigo.orchestra.domain.planification.OProcessNextRun;
 
 /**
  * Implémentation des services de monitoring de la tour de contrôle.
@@ -54,15 +53,17 @@ public class MonitoringServicesImpl implements MonitoringServices {
 	private OActivityWorkspaceDAO activityWorkspaceDAO;
 	@Inject
 	private OActivityLogDAO activityLogDAO;
-	@Inject
-	private OProcessPlanificationDAO processPlanificationDAO;
+
+	/*@Inject
+	private OProcessPlanificationDAO processPlanificationDAO;*/
 
 	/** {@inheritDoc} */
 	@Override
-	public DtList<OProcessPlanification> getPlanificationsByProId(final Long proId) {
+	public DtList<OProcessNextRun> getPlanificationsByProId(final Long proId) {
 		Assertion.checkNotNull(proId);
 		// ---
-		return processPlanificationDAO.getPlanificationsByProId(proId);
+		return null;
+		//return processPlanificationDAO.getPlanificationsByProId(proId);
 	}
 
 	/** {@inheritDoc} */

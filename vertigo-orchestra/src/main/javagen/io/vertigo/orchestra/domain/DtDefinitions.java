@@ -31,6 +31,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		OExecutionState(io.vertigo.orchestra.domain.referential.OExecutionState.class),
 		/** Objet de données OExecutionSummary. */
 		OExecutionSummary(io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary.class),
+		/** Objet de données OJobRunning. */
+		OJobRunning(io.vertigo.orchestra.domain.execution.OJobRunning.class),
 		/** Objet de données ONode. */
 		ONode(io.vertigo.orchestra.domain.execution.ONode.class),
 		/** Objet de données OProcess. */
@@ -39,8 +41,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		OProcessExecution(io.vertigo.orchestra.domain.execution.OProcessExecution.class),
 		/** Objet de données OProcessExecutionUi. */
 		OProcessExecutionUi(io.vertigo.orchestra.monitoring.domain.uiexecutions.OProcessExecutionUi.class),
-		/** Objet de données OProcessPlanification. */
-		OProcessPlanification(io.vertigo.orchestra.domain.planification.OProcessPlanification.class),
+		/** Objet de données OProcessNextRun. */
+		OProcessNextRun(io.vertigo.orchestra.domain.planification.OProcessNextRun.class),
 		/** Objet de données OProcessType. */
 		OProcessType(io.vertigo.orchestra.domain.referential.OProcessType.class),
 		/** Objet de données OProcessUi. */
@@ -199,6 +201,21 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		HEALTH	}
 
 	/**
+	 * Enumération des champs de OJobRunning.
+	 */
+	public enum OJobRunningFields implements DtFieldName<io.vertigo.orchestra.domain.execution.OJobRunning> {
+		/** Propriété 'Id de la definition du job'. */
+		JRU_ID,
+		/** Propriété 'Nom du job'. */
+		JOBNAME,
+		/** Propriété 'Id du noeud'. */
+		NOD_ID,
+		/** Propriété 'Date de début'. */
+		DATE_EXEC,
+		/** Propriété 'User'. */
+		USR_ID	}
+
+	/**
 	 * Enumération des champs de ONode.
 	 */
 	public enum ONodeFields implements DtFieldName<io.vertigo.orchestra.domain.execution.ONode> {
@@ -289,19 +306,17 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		HAS_ATTACHMENT	}
 
 	/**
-	 * Enumération des champs de OProcessPlanification.
+	 * Enumération des champs de OProcessNextRun.
 	 */
-	public enum OProcessPlanificationFields implements DtFieldName<io.vertigo.orchestra.domain.planification.OProcessPlanification> {
-		/** Propriété 'Id Planification'. */
-		PRP_ID,
+	public enum OProcessNextRunFields implements DtFieldName<io.vertigo.orchestra.domain.planification.OProcessNextRun> {
+		/** Propriété 'Nom du job'. */
+		JOBNAME,
 		/** Propriété 'Date d'execution prévue'. */
 		EXPECTED_TIME,
 		/** Propriété 'Paramètres initiaux sous forme de JSON'. */
 		INITIAL_PARAMS,
 		/** Propriété 'Processus'. */
 		PRO_ID,
-		/** Propriété 'Node'. */
-		NOD_ID,
 		/** Propriété 'PlanificationState'. */
 		SST_CD	}
 

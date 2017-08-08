@@ -68,12 +68,13 @@ import io.vertigo.orchestra.plugins.services.MapCodec;
 import io.vertigo.orchestra.services.execution.ActivityEngine;
 import io.vertigo.orchestra.services.execution.ActivityExecutionWorkspace;
 import io.vertigo.orchestra.services.execution.ExecutionState;
+import io.vertigo.orchestra.services.execution.ExecutionStateOld;
 import io.vertigo.util.ClassUtil;
 
 /**
  * Executeur des processus orchestra sous la forme d'une séquence linéaire d'activités.
  *
- * @author mlaroche.
+ * @author xdurand.
  * @version $Id$
  */
 public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Activeable, SimpleDefinitionProvider {
@@ -149,7 +150,10 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private void executeProcesses() {
 		try {
 			Assertion.checkNotNull(nodId, "Node not already registered");
+
+			//XDD: Execute HERE
 			executeToDo();
+
 			nodeManager.updateHeartbeat(nodId);
 			handleDeadNodeProcesses();
 		} catch (final Exception e) {
@@ -164,8 +168,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		workers.shutdownNow();
 		try {
 			// We wait for the workers to end properly.
-			// Without this wait for max 10 seconds, the App will be closed along with the Transaction,
-			// the Process/Activity cannot save that the current execution is in error. 
+			// Without this wait for max 10 seconds, the App will be closed along with the TransactionManager.
+			// Hence, the Process/Activity cannot save that the current execution is in error. 
 			// With this wait, they may end up gracelly by using the current transaction to store the state of the current execution. 
 			final boolean allTasksTerminated = workers.awaitTermination(10, TimeUnit.SECONDS);
 			if (!allTasksTerminated) {
@@ -223,7 +227,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			transaction.commit();
 		}
 		// ---
-		Assertion.checkState(ExecutionState.PENDING.name().equals(activityExecution.getEstCd()), "Only pending executions can be ended remotly");
+		Assertion.checkState(ExecutionStateOld.PENDING.name().equals(activityExecution.getEstCd()), "Only pending executions can be ended remotly");
 		Assertion.checkState(workspace != null, "Workspace for activityExecution not found");
 
 		// We execute the postTreatment of the pending activity when it's released
@@ -232,20 +236,10 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 				ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class), Home.getApp().getComponentSpace());
 
 		try {
-			switch (executionState) {
-				case DONE:
-					workspace = activityEngine.successfulPostTreatment(workspace);
-					break;
-				case ERROR:
-					workspace = activityEngine.errorPostTreatment(workspace, new RuntimeException(errorMessageOpt.orElse("ThirdPartyException")));
-					break;
-				case PENDING:
-				case RUNNING:
-				case SUBMITTED:
-				case WAITING:
-				case ABORTED:
-				default:
-					throw new UnsupportedOperationException();
+			if (executionState == ExecutionState.DONE) {
+				workspace = activityEngine.successfulPostTreatment(workspace);
+			} else if (executionState == ExecutionState.ERROR) {
+				workspace = activityEngine.errorPostTreatment(workspace, new RuntimeException(errorMessageOpt.orElse("ThirdPartyException")));
 			}
 
 		} catch (final Exception e) {
@@ -282,9 +276,6 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private void doSetActivityExecutionPending(final Long activityExecutionId, final ActivityExecutionWorkspace workspace) {
 		Assertion.checkNotNull(activityExecutionId);
 		// ---
-		final OActivityExecution activityExecution = activityExecutionDAO.get(activityExecutionId);
-		endActivityExecution(activityExecution, ExecutionState.PENDING);
-		saveActivityExecutionWorkspace(activityExecutionId, workspace, false);
 	}
 	//--------------------------------------------------------------------------------------------------
 	//--- Private
@@ -300,14 +291,13 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			ActivityExecutionWorkspace workspace;
 			try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				workspace = getWorkspaceForActivityExecution(activityExecution.getAceId(), true);
-				doChangeExecutionState(activityExecution, ExecutionState.SUBMITTED);
+				//doChangeExecutionState(activityExecution, ExecutionState2.SUBMITTED);
 				// We set the beginning time of the activity
 				activityExecution.setBeginTime(new Date());
 				transaction.commit();
 			}
 			workers.submit(() -> doRunActivity(activityExecution, workspace));
 		}
-
 	}
 
 	private void doRunActivity(final OActivityExecution activityExecution, final ActivityExecutionWorkspace workspace) {
@@ -336,7 +326,6 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		ActivityExecutionWorkspace resultWorkspace = workspace;
 
 		try {
-			changeExecutionState(activityExecution, ExecutionState.RUNNING);
 			// ---
 			final ActivityEngine activityEngine = DIInjector.newInstance(
 					ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class), Home.getApp().getComponentSpace());
@@ -418,7 +407,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		final OProcessExecution newProcessExecution = new OProcessExecution();
 		newProcessExecution.setProId(processDefinition.getId());
 		newProcessExecution.setBeginTime(new Date());
-		changeProcessExecutionState(newProcessExecution, ExecutionState.RUNNING);
+		//changeProcessExecutionState(newProcessExecution, ExecutionState2.RUNNING);
 		processExecutionDAO.save(newProcessExecution);
 
 		return newProcessExecution;
@@ -437,7 +426,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		// ---
 		final OActivity firstActivity = activityDAO.getFirstActivityByProcess(processExecution.getProId());
 		final OActivityExecution firstActivityExecution = initActivityExecutionWithActivity(firstActivity, processExecution.getPreId());
-		activityExecutionDAO.save(firstActivityExecution);
+		activityExecutionDAO.save(firstActivityExecution); //LOCK
 
 		final ActivityExecutionWorkspace initialWorkspace = new ActivityExecutionWorkspace(mapCodec.decode(processExecution
 				.getProcess()
@@ -465,7 +454,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		activityExecution.setActId(activity.getActId());
 		activityExecution.setCreationTime(new Date());
 		activityExecution.setEngine(activity.getEngine());
-		changeActivityExecutionState(activityExecution, ExecutionState.WAITING);
+		//changeActivityExecutionState(activityExecution, ExecutionState2.WAITING);
 		activityExecution.setToken(ActivityTokenGenerator.getToken());
 
 		return activityExecution;
@@ -473,7 +462,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private void reserveActivityExecution(final OActivityExecution activityExecution) {
-		activityExecution.setEstCd(ExecutionState.SUBMITTED.name());
+		activityExecution.setEstCd(ExecutionStateOld.SUBMITTED.name());
 		activityExecution.setNodId(nodId);
 	}
 
@@ -528,13 +517,6 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			case ERROR:
 				changeExecutionState(activityExecution, ExecutionState.ERROR);
 				break;
-			case PENDING:
-				changeExecutionState(activityExecution, ExecutionState.PENDING);
-				break;
-			case RUNNING:
-			case SUBMITTED:
-			case WAITING:
-			case ABORTED:
 			default:
 				throw new IllegalArgumentException("Unknwon case for ending activity execution :  " + executionState.name());
 		}
@@ -577,7 +559,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		activityExecutionDAO.save(activityExecution);
 
 		// If it's an error the entire process is in Error
-		if (ExecutionState.ERROR.equals(executionState)) {
+		if (ExecutionStateOld.ERROR.equals(executionState)) {
 			endProcessExecution(activityExecution.getPreId(), ExecutionState.ERROR);
 		}
 

@@ -1,0 +1,50 @@
+package io.vertigo.orchestra.domain.planification
+
+
+create DtDefinition DT_O_PROCESS_NEXT_RUN {
+	field JOBNAME   			{domain : DO_O_LIBELLE, label :"Nom du job", notNull:"false",}
+	field EXPECTED_TIME   	{domain : DO_O_TIMESTAMP, label :"Date d'execution prévue", persistent:"false", notNull:"false"}
+	field INITIAL_PARAMS	{domain : DO_O_JSON_TEXT, label :"Paramètres initiaux sous forme de JSON ", persistent:"false", notNull:"false"}
+}
+
+
+
+create Association A_PNR_PRO {
+  	fkFieldName : "PRO_ID"
+    
+ 	dtDefinitionA : DT_O_PROCESS_NEXT_RUN
+	dtDefinitionB : DT_O_PROCESS
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"1..1"
+	
+	labelA : "ProcessNextRun"
+	labelB : "Processus"
+	roleA : "ProcessNextRun"
+	roleB : "Processus"
+			
+}
+
+
+
+create Association A_PRP_PST {
+  fkFieldName : "SST_CD"
+    
+ 	dtDefinitionA : DT_O_PROCESS_NEXT_RUN
+	dtDefinitionB : DT_O_SCHEDULER_STATE
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"0..1"
+	
+	labelA : "ProcessNextRun"
+	labelB : "PlanificationState"
+	roleA : "ProcessNextRun"
+	roleB : "PlanificationState"
+			
+}

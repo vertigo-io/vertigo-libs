@@ -22,6 +22,12 @@ import java.util.Optional;
 
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 
+/**
+ * 
+ * @author mlraroche
+ * @author xdurand
+ *
+ */
 public interface ProcessExecutor {
 	/**
 	 * Execute un processus.

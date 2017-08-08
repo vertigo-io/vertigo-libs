@@ -4,14 +4,16 @@ model/definition/process.ksp
 model/definition/activity.ksp
 
 
+
 model/execution/process_execution.ksp
 model/execution/activity_execution.ksp
 model/execution/activity_workspace.ksp
 model/execution/activity_log.ksp
 model/execution/core.ksp
 
+model/execution/job_running.ksp
 
-model/planification/process_planification.ksp
+model/planification/process_next_run.ksp
 
 
 model/referential/states.ksp
