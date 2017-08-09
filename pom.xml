@@ -39,6 +39,7 @@
 		<module>vertigo-stella</module>
 		<module>vertigo-geo</module>
 		<module>vertigo-adapters</module>
+		<module>vertigo-dashboard</module>
 	</modules>
 
 	<scm>
