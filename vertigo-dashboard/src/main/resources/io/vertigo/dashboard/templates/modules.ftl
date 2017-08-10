@@ -7,7 +7,7 @@
 			  <div class="card-block">
 			    <h4 class="card-title">${module}</h4>
 			    <p class="card-text">an abstract of the module</p>
-			    <a href="modules/${module}" class="btn btn-primary">Go to detail</a>
+			    <a href="/dashboard/modules/${module}" class="btn btn-primary">Go to detail</a>
 			  </div>
 			</div>
 		</#list>

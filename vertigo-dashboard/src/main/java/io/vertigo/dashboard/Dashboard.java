@@ -83,7 +83,7 @@ public final class Dashboard {
 			return renderModules(response);
 		});
 
-		Spark.get("/modules/:moduleName", (request, response) -> {
+		Spark.get("/dashboard/modules/:moduleName", (request, response) -> {
 			return renderModule(response, request.params(":moduleName"));
 		});
 
@@ -107,6 +107,7 @@ public final class Dashboard {
 				.collect(Collectors.groupingBy(HealthCheck::getTopic, Collectors.toList()));
 
 		model.put("healthchecksByTopic", healthChecks);
+		model.put("moduleName", moduleName);
 
 		return render(response, "templates/module.ftl", model);
 	}
