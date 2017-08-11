@@ -25,6 +25,7 @@ import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
@@ -62,15 +63,17 @@ public class MyAppConfig {
 						.withCache(io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin.class)
 						.withScript()
 						.build())
-				.addModule(new DynamoFeatures()//
-						.withStore()//
+				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()//
-						.addDataStorePlugin(SqlDataStorePlugin.class)
 						.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
 								Param.of("dataBaseClass", PostgreSqlDataBase.class.getName()),
 								Param.of("jdbcDriver", org.postgresql.Driver.class.getName()),
 								Param.of("jdbcUrl",
 										"jdbc:postgresql://laura.dev.klee.lan.net:5432/dgac_blanche?user=blanche&password=blanche"))
+						.build())
+				.addModule(new DynamoFeatures()//
+						.withStore()//
+						.addDataStorePlugin(SqlDataStorePlugin.class)
 						.build())
 				.addModule(new AccountFeatures()
 						.withAccountStorePlugin(MemoryAccountStorePlugin.class)
