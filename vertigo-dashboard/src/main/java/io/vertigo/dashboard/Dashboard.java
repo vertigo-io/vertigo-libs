@@ -33,7 +33,7 @@ import freemarker.cache.ClassTemplateLoader;
 import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.health.HealthCheck;
@@ -45,7 +45,7 @@ public final class Dashboard {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Dashboard.class);
 	private final Configuration configuration;
 
-	private final AutoCloseableApp app;
+	private final App app;
 
 	private List<HealthCheck> appHealthChecks;
 	private final Object healthChecksLock = new Object();
@@ -58,7 +58,7 @@ public final class Dashboard {
 	 * @param app the app we are working on
 	 * @param port the port to access the studio interface
 	 */
-	public Dashboard(final AutoCloseableApp app, final int port) {
+	public Dashboard(final App app, final int port) {
 		configuration = new Configuration(Configuration.VERSION_2_3_23);
 		configuration.setTemplateLoader(new ClassTemplateLoader(Dashboard.class, "/"));
 		configuration.setClassForTemplateLoading(Dashboard.class, "");
