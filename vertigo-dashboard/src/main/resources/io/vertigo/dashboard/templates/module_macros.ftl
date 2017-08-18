@@ -1,11 +1,6 @@
-<#import "page.ftl" as page>
-
-<@page.header/>
-	<div class="row">
-		<h1>${moduleName}</h1>
-	</div>
+<#macro health>
 	<div class="row" >
-		<#list healthchecksByTopic?keys as topic>
+		<#list topics as topic>
 			<div class="card" style="width: 20rem;">
 			  <div class="card-block">
 			    <h4 class="card-title">${topic}</h4>
@@ -40,5 +35,5 @@
 			})
 		})
 	</script>
-<@page.footer/>	
+</#macro>
 

@@ -22,6 +22,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -36,8 +37,9 @@ import freemarker.template.Template;
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.commons.health.HealthCheck;
-import io.vertigo.commons.health.HealthManager;
+import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.lang.Assertion;
 import spark.Response;
 import spark.Spark;
 
@@ -51,7 +53,7 @@ public final class Dashboard {
 	private final Object healthChecksLock = new Object();
 
 	@Inject
-	private HealthManager healthManager;
+	private AnalyticsManager analyticsManager;
 
 	/**
 	 * Creates a new studio for an existing app
@@ -62,9 +64,9 @@ public final class Dashboard {
 		configuration = new Configuration(Configuration.VERSION_2_3_23);
 		configuration.setTemplateLoader(new ClassTemplateLoader(Dashboard.class, "/"));
 		configuration.setClassForTemplateLoading(Dashboard.class, "");
-		final BeansWrapperBuilder BeansWrapperBuilder = new BeansWrapperBuilder(Configuration.VERSION_2_3_23);
-		BeansWrapperBuilder.setSimpleMapWrapper(true);
-		configuration.setObjectWrapper(BeansWrapperBuilder.build());
+		final BeansWrapperBuilder beansWrapperBuilder = new BeansWrapperBuilder(Configuration.VERSION_2_3_23);
+		beansWrapperBuilder.setSimpleMapWrapper(true);
+		configuration.setObjectWrapper(beansWrapperBuilder.build());
 		Spark.port(port);
 		this.app = app;
 	}
@@ -100,16 +102,28 @@ public final class Dashboard {
 	}
 
 	private String renderModule(final Response response, final String moduleName) throws Exception {
+		final Set<String> modules = app.getConfig().getModuleConfigs().stream().map(ModuleConfig::getName).collect(Collectors.toSet());
+		Assertion.checkState(modules.contains(moduleName), "no module with name '{0}' found in the app", moduleName);
+		//---
 		final Map<String, Object> model = new HashMap<>();
-		final Map<String, List<HealthCheck>> healthChecks = getHealthChecks()
+		final List<HealthCheck> healthChecks = getHealthChecks();
+		final Map<String, List<HealthCheck>> healthChecksByTopic = healthChecks
 				.stream()
 				.filter(healthCheck -> moduleName.equals(healthCheck.getFeature()))
 				.collect(Collectors.groupingBy(HealthCheck::getTopic, Collectors.toList()));
 
-		model.put("healthchecksByTopic", healthChecks);
+		final Set<String> topics = healthChecks
+				.stream()
+				.filter(healthCheck -> moduleName.equals(healthCheck.getFeature()))
+				.map(HealthCheck::getTopic)
+				.collect(Collectors.toSet());
+
+		//---
+		model.put("topics", topics);
+		model.put("healthchecksByTopic", healthChecksByTopic);
 		model.put("moduleName", moduleName);
 
-		return render(response, "templates/module.ftl", model);
+		return render(response, "templates/" + moduleName + ".ftl", model);
 	}
 
 	private String render(final Response response, final String templateName, final Map<String, Object> model) throws Exception {
@@ -132,7 +146,7 @@ public final class Dashboard {
 
 	private void loadHealthChecks() {
 		synchronized (healthChecksLock) {
-			appHealthChecks = healthManager.getHealthChecks();
+			appHealthChecks = analyticsManager.getHealthChecks();
 		}
 
 	}
