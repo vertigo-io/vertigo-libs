@@ -39,6 +39,10 @@ import io.vertigo.app.Home;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.commons.daemon.DaemonDefinition;
+import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.daemon.DaemonStat;
+import io.vertigo.dashboard.commons.CommonsDashboard;
 import io.vertigo.lang.Assertion;
 import spark.Response;
 import spark.Spark;
@@ -75,6 +79,8 @@ public final class Dashboard {
 	 * Start method of the server
 	 */
 	public void start() {
+
+		Spark.staticFileLocation("/static/");
 		Spark.exception(Exception.class, (e, request, response) -> {
 			response.status(500);
 			LOGGER.error("dashboard : error on render ", e);
@@ -86,26 +92,39 @@ public final class Dashboard {
 		});
 
 		Spark.get("/dashboard/modules/:moduleName", (request, response) -> {
-			return renderModule(response, request.params(":moduleName"));
+			final String moduleName = request.params(":moduleName");
+			final Map<String, Object> model = new HashMap<>();
+			initModuleModel(model, moduleName);
+			switch (moduleName) {
+				case "commons":
+					CommonsDashboard.buildModel(app, model);
+					break;
+				default:
+					break;
+			}
+			return render(response, "templates/" + moduleName + ".ftl", model);
 		});
 
 	}
 
 	private String renderModules(final Response response) throws Exception {
 		final Map<String, Object> model = new HashMap<>();
-		model.put("modules", Home.getApp().getConfig().getModuleConfigs()
-				.stream()
-				.map(ModuleConfig::getName)
-				.collect(Collectors.toList()));
-
+		initModel(model);
 		return render(response, "templates/modules.ftl", model);
 	}
 
-	private String renderModule(final Response response, final String moduleName) throws Exception {
+	private void prepareCommonsModel(final Map<String, Object> model) {
+		final DaemonManager daemonManager = app.getComponentSpace().resolve(DaemonManager.class);
+		model.put("daemons", Home.getApp().getDefinitionSpace().getAll(DaemonDefinition.class));
+		model.put("daemonsStats", daemonManager.getStats().stream().collect(Collectors.groupingBy(DaemonStat::getDaemonName)));
+	}
+
+	private void initModuleModel(final Map<String, Object> model, final String moduleName) {
 		final Set<String> modules = app.getConfig().getModuleConfigs().stream().map(ModuleConfig::getName).collect(Collectors.toSet());
 		Assertion.checkState(modules.contains(moduleName), "no module with name '{0}' found in the app", moduleName);
 		//---
-		final Map<String, Object> model = new HashMap<>();
+		initModel(model);
+		//---
 		final List<HealthCheck> healthChecks = getHealthChecks();
 		final Map<String, List<HealthCheck>> healthChecksByTopic = healthChecks
 				.stream()
@@ -122,8 +141,6 @@ public final class Dashboard {
 		model.put("topics", topics);
 		model.put("healthchecksByTopic", healthChecksByTopic);
 		model.put("moduleName", moduleName);
-
-		return render(response, "templates/" + moduleName + ".ftl", model);
 	}
 
 	private String render(final Response response, final String templateName, final Map<String, Object> model) throws Exception {
@@ -150,4 +167,12 @@ public final class Dashboard {
 		}
 
 	}
+
+	private void initModel(final Map<String, Object> model) {
+		model.put("modules", Home.getApp().getConfig().getModuleConfigs()
+				.stream()
+				.map(ModuleConfig::getName)
+				.collect(Collectors.toList()));
+	}
+
 }
