@@ -29,8 +29,13 @@
         <nav class="bg-faded sidebar">
           <ul class="nav nav-pills flex-column">
 			<li class="nav-item">
-				<a class="nav-link ${(moduleName?? && (moduleName == 'commons'))?then('active', '')}" href="/dashboard/modules/commons">
+				<a class="nav-link ${(moduleName?? && (moduleName == 'commons'))?then('active', '')}" href="/dashboard/modules/commons" data-toggle="popover" data-placement="right" data-content="Commons">
 					<i class="material-icons">build</i>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link ${(moduleName?? && (moduleName == 'dynamo'))?then('active', '')}" href="/dashboard/modules/dynamo" data-toggle="popover" data-placement="right" data-content="Dynamo">
+					<i class="material-icons" >view_quilt</i>
 				</a>
 			</li>
           </ul>
@@ -43,6 +48,14 @@
 				</main>
 			</div>
 		</div>
+		<script>
+		$(function () {
+		  $('[data-toggle="popover"]').popover(
+		 	 {
+			  trigger: 'hover'
+			})
+		})
+		</script>
 	</body>
 </html>
 </#macro>

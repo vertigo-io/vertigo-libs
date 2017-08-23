@@ -43,6 +43,7 @@ import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.dashboard.commons.CommonsDashboard;
+import io.vertigo.dashboard.dynamo.DynamoDashboard;
 import io.vertigo.lang.Assertion;
 import spark.Response;
 import spark.Spark;
@@ -98,6 +99,9 @@ public final class Dashboard {
 			switch (moduleName) {
 				case "commons":
 					CommonsDashboard.buildModel(app, model);
+					break;
+				case "dynamo":
+					DynamoDashboard.buildModel(app, model);
 					break;
 				default:
 					break;

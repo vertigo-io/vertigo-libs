@@ -40,14 +40,6 @@
 			</div>
 		</#list>
 	</div>
-	<script>
-		$(function () {
-		  $('[data-toggle="popover"]').popover(
-		 	 {
-			  trigger: 'hover'
-			})
-		})
-	</script>
 </#macro>
 
 
