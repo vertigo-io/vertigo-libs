@@ -11,9 +11,9 @@ import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
-import io.vertigo.dashboard.model.CacheModel;
-import io.vertigo.dashboard.model.DaemonModel;
-import io.vertigo.dashboard.model.EventBusModel;
+import io.vertigo.dashboard.commons.model.CacheModel;
+import io.vertigo.dashboard.commons.model.DaemonModel;
+import io.vertigo.dashboard.commons.model.EventBusModel;
 
 public class CommonsDashboard {
 
