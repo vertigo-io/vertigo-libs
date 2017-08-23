@@ -1,3 +1,16 @@
+<#macro indicator title icon status metric legend >
+<div class="card topic-abstract">
+	<div class="card-header font-weight-bold text-light bg-<@classByStatus status/>">
+	    <span>${title}</span>
+	    <i class="material-icons float-right">${icon}</i>
+	 </div>
+	 <div class="card-body text-center">
+	 	<span class="indicator">${metric}</span><span> ${legend}</span>
+	 </div>
+</div> 
+</#macro>
+
+
 <#macro health>
 	<div class="row" >
 		<#list topics as topic>
@@ -82,6 +95,15 @@
 					</#switch>" >${healthCheck.name}</span>
 		</#list>
 	</#if>
+</#macro>
+
+<#macro classByStatus status >
+<#switch status >
+	<#case 'GREEN'>success<#break>
+	<#case 'YELLOW'>warning<#break>
+	<#case 'RED'>danger<#break>
+	<#default>
+</#switch>
 </#macro>
 
 <#macro line type name active=''>

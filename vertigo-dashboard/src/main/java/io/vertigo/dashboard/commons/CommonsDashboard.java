@@ -1,11 +1,16 @@
 package io.vertigo.dashboard.commons;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
+import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.commons.analytics.health.HealthStatus;
 import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
@@ -38,10 +43,14 @@ public class CommonsDashboard {
 								.get()))
 				.collect(Collectors.toList());
 		model.put("daemons", daemonModels);
+		//---
+		model.put("daemonsStatus", getHealthStatus(app, model, "daemons"));
+
 	}
 
 	private static void buildEventBusModel(final App app, final Map<String, Object> model) {
-		final List<EventBusModel> events = Home.getApp().getDefinitionSpace().getAll(EventBusSubscriptionDefinition.class)
+		final Collection<EventBusSubscriptionDefinition> eventBusSubscriptions = Home.getApp().getDefinitionSpace().getAll(EventBusSubscriptionDefinition.class);
+		final List<EventBusModel> events = eventBusSubscriptions
 				.stream()
 				.collect(Collectors.groupingBy(EventBusSubscriptionDefinition::getEventType))
 				.entrySet()
@@ -49,6 +58,9 @@ public class CommonsDashboard {
 				.map(entry -> new EventBusModel(entry.getKey(), entry.getValue()))
 				.collect(Collectors.toList());
 		model.put("events", events);
+		//---
+		model.put("eventSubcriptionsCount", eventBusSubscriptions.size());
+		model.put("eventsStatus", getHealthStatus(app, model, "events"));
 	}
 
 	private static void buildCacheModel(final App app, final Map<String, Object> model) {
@@ -57,6 +69,21 @@ public class CommonsDashboard {
 				.map(cacheDefinition -> new CacheModel(cacheDefinition))
 				.collect(Collectors.toList());
 		model.put("caches", caches);
+		model.put("cacheStatus", getHealthStatus(app, model, "cache"));
+	}
+
+	private static HealthStatus getHealthStatus(final App app, final Map<String, Object> model, final String... topics) {
+		final AnalyticsManager analyticsManager = app.getComponentSpace().resolve(AnalyticsManager.class);
+		final Map<String, List<HealthCheck>> healthCheckByTopic = (Map<String, List<HealthCheck>>) model.get("healthchecksByTopic");
+		final List<String> myTopics = Arrays.asList(topics);
+		final List<HealthCheck> healtChecksToAggregate = healthCheckByTopic
+				.entrySet()
+				.stream()
+				.filter(entry -> myTopics.contains(entry.getKey()))
+				.flatMap(entry -> entry.getValue().stream())
+				.collect(Collectors.toList());
+
+		return analyticsManager.aggregate(healtChecksToAggregate);
 	}
 
 }
