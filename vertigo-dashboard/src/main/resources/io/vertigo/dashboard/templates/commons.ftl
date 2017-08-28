@@ -20,7 +20,7 @@
 			<#list daemons as daemon>
 				<@module.lineDetail  type='daemons' name=daemon.name >
 					<@module.formGroup>
-					 	<@module.property 'Period' daemon.periodInSeconds?string.computer+' seconds' />
+					 	<@module.property 'Period' daemon.periodInSeconds+' seconds' />
 					  </@module.formGroup>
 				</@module.lineDetail >
 			</#list>
@@ -57,9 +57,9 @@
 			<#list caches as cache>
 				<@module.lineDetail  type='cache' name=cache.name >
 					 <@module.formGroup>
-					 	<@module.property 'Time To Live Idle' cache.ttlIdle?string.computer+' seconds' />
-					 	<@module.property 'Time To Live' cache.ttl?string.computer+' seconds' />
-					 	<@module.property 'Max elements' cache.maxElements?string.computer />
+					 	<@module.property 'Time To Live Idle' cache.ttlIdle+' seconds' />
+					 	<@module.property 'Time To Live' cache.ttl+' seconds' />
+					 	<@module.property 'Max elements' cache.maxElements />
 					  </@module.formGroup>
 				</@module.lineDetail >
 			</#list>

@@ -58,12 +58,13 @@
 </#macro>
 
 <#macro standardList>
-<div class="col-4">
+<div class="col-4 topic-panel">
 	<div class="list-group" id="list-tab" role="tablist">
 		<#nested>
 	</div>
 </div>
 </#macro>
+
 
 <#macro standardDetail>
 <div class="col-8">
@@ -122,7 +123,7 @@
 <#macro property label value=''>
 <label class="col-sm-2 col-form-label">${label}</label>
 <div class="col-sm-10">
-  <p class="form-control-plaintext  font-weight-bold">${value}</p>
+  <p class="form-control-plaintext  font-weight-bold"><#if value?has_content >${value}<#else>N/A</#if></p>
 </div>
 </#macro>
 

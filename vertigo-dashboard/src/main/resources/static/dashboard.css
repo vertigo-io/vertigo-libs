@@ -74,3 +74,14 @@ h1 {
 .indicator {
 	font-size: xx-large;
 }
+
+.topic-panel {
+	min-height: 250px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+
+.topic-panel tr {
+	cursor: pointer;
+}

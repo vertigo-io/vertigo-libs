@@ -18,6 +18,8 @@
  */
 package io.vertigo.dashboard;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
@@ -31,22 +33,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import freemarker.cache.ClassTemplateLoader;
+import freemarker.core.Configurable;
 import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonStat;
+import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dashboard.commons.CommonsDashboard;
 import io.vertigo.dashboard.dynamo.DynamoDashboard;
 import io.vertigo.lang.Assertion;
 import spark.Response;
 import spark.Spark;
+import spark.utils.GzipUtils;
+import spark.utils.IOUtils;
 
 public final class Dashboard {
 	private static final Logger LOGGER = LoggerFactory.getLogger(Dashboard.class);
@@ -56,9 +64,33 @@ public final class Dashboard {
 
 	private List<HealthCheck> appHealthChecks;
 	private final Object healthChecksLock = new Object();
+	private List<Metric> appMetrics;
+	private final Object metricsLock = new Object();
 
 	@Inject
 	private AnalyticsManager analyticsManager;
+	@Inject
+	private ResourceManager resourceManager;
+
+	/**
+	 * Creates a new studio for an existing app
+	 * @param app the app we are working on
+	 * @param port the port to access the studio interface
+	 */
+	public Dashboard(final App app) {
+		configuration = new Configuration(Configuration.VERSION_2_3_23);
+		configuration.setTemplateLoader(new ClassTemplateLoader(Dashboard.class, "/"));
+		configuration.setClassForTemplateLoading(Dashboard.class, "");
+		final BeansWrapperBuilder beansWrapperBuilder = new BeansWrapperBuilder(Configuration.VERSION_2_3_23);
+		beansWrapperBuilder.setSimpleMapWrapper(true);
+		configuration.setObjectWrapper(beansWrapperBuilder.build());
+		try {
+			configuration.setSetting(Configurable.NUMBER_FORMAT_KEY, "computer");
+		} catch (final TemplateException e) {
+			LOGGER.error("Error putting settings", e);
+		}
+		this.app = app;
+	}
 
 	/**
 	 * Creates a new studio for an existing app
@@ -66,14 +98,8 @@ public final class Dashboard {
 	 * @param port the port to access the studio interface
 	 */
 	public Dashboard(final App app, final int port) {
-		configuration = new Configuration(Configuration.VERSION_2_3_23);
-		configuration.setTemplateLoader(new ClassTemplateLoader(Dashboard.class, "/"));
-		configuration.setClassForTemplateLoading(Dashboard.class, "");
-		final BeansWrapperBuilder beansWrapperBuilder = new BeansWrapperBuilder(Configuration.VERSION_2_3_23);
-		beansWrapperBuilder.setSimpleMapWrapper(true);
-		configuration.setObjectWrapper(beansWrapperBuilder.build());
+		this(app);
 		Spark.port(port);
-		this.app = app;
 	}
 
 	/**
@@ -81,7 +107,15 @@ public final class Dashboard {
 	 */
 	public void start() {
 
-		Spark.staticFileLocation("/static/");
+		//Spark.staticFileLocation("/static/");
+		Spark.get("/dashboard.css", (request, response) -> {
+			try (InputStream inputStream = Dashboard.class.getResource("/static/dashboard.css").openStream();
+					OutputStream wrappedOutputStream = GzipUtils.checkAndWrap(request.raw(), response.raw(), false)) {
+				IOUtils.copy(inputStream, wrappedOutputStream);
+			}
+			return "";
+		});
+
 		Spark.exception(Exception.class, (e, request, response) -> {
 			response.status(500);
 			LOGGER.error("dashboard : error on render ", e);
@@ -144,6 +178,7 @@ public final class Dashboard {
 		//---
 		model.put("topics", topics);
 		model.put("healthchecksByTopic", healthChecksByTopic);
+		model.put("metrics", getMetrics());
 		model.put("moduleName", moduleName);
 	}
 
@@ -163,6 +198,20 @@ public final class Dashboard {
 			loadHealthChecks();
 		}
 		return appHealthChecks;
+	}
+
+	private void loadMetrics() {
+		synchronized (metricsLock) {
+			appMetrics = analyticsManager.getMetrics();
+		}
+
+	}
+
+	private List<Metric> getMetrics() {
+		if (appMetrics == null) {
+			loadMetrics();
+		}
+		return appMetrics;
 	}
 
 	private void loadHealthChecks() {
