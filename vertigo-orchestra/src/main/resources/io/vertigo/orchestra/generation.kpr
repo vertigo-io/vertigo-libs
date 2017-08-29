@@ -11,6 +11,7 @@ model/execution/activity_workspace.ksp
 model/execution/activity_log.ksp
 model/execution/core.ksp
 
+model/planification/process_planification.ksp
 model/execution/job_running.ksp
 
 model/planification/process_next_run.ksp

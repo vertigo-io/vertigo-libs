@@ -115,7 +115,8 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 
 	@Override
 	public ProcessType getHandledProcessType() {
-		return ProcessType.UNSUPERVISED;
+		//return ProcessType.UNSUPERVISED;
+		return null;
 	}
 
 	private static Date getNextExecutionDateFrom(final ProcessDefinition processDefinition, final Date fromDate) {

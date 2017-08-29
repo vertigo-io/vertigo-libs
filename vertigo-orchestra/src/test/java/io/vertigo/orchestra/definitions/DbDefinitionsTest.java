@@ -65,7 +65,7 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 	//
 
 	@Test
-	public void testUpateInitialParams() {
+	public void testUpdateInitialParams() {
 		//Before : 0
 
 		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_BASIC", "TEST BASIC")
@@ -82,7 +82,7 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 	}
 
 	@Test
-	public void testUpateProperties() {
+	public void testUpdateProperties() {
 
 		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_UPDATE_CRON", "TEST_UPDATE_CRON")
 				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)

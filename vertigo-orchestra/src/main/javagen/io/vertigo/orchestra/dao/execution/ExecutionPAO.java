@@ -41,6 +41,20 @@ public final class ExecutionPAO implements StoreServices {
 	}
 
 	/**
+	 * Execute la tache TK_DELETE_JOB_RUNNING.
+	 * @param proId Long 
+	 * @return Integer intSqlRowcount
+	*/
+	public Integer deleteJobRunning(final Long proId) {
+		final Task task = createTaskBuilder("TK_DELETE_JOB_RUNNING")
+				.addValue("PRO_ID", proId)
+				.build();
+		return getTaskManager()
+				.execute(task)
+				.getResult();
+	}
+
+	/**
 	 * Execute la tache TK_HANDLE_PROCESSES_OF_DEAD_NODES.
 	 * @param maxDate java.util.Date 
 	*/
@@ -67,13 +81,13 @@ public final class ExecutionPAO implements StoreServices {
 	/**
 	 * Execute la tache TK_RESERVE_PROCESS_TO_LAUNCH.
 	 * @param nodId Long 
-	 * @param processes io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessNextRun> 
+	 * @param processesNextRun io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessNextRun> 
 	 * @return Integer intSqlRowcount
 	*/
-	public Integer reserveProcessToLaunch(final Long nodId, final io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessNextRun> processes) {
+	public Integer reserveProcessToLaunch(final Long nodId, final io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessNextRun> processesNextRun) {
 		final Task task = createTaskBuilder("TK_RESERVE_PROCESS_TO_LAUNCH")
 				.addValue("NOD_ID", nodId)
-				.addValue("PROCESSES", processes)
+				.addValue("PROCESSES_NEXT_RUN", processesNextRun)
 				.build();
 		return getTaskManager()
 				.execute(task)

@@ -55,4 +55,18 @@ public final class OJobRunningDAO extends DAO<OJobRunning, java.lang.Long> imple
 				.getResult();
 	}
 
+	/**
+	 * Execute la tache TK_GET_JOB_RUNNING_BY_PRO_ID.
+	 * @param proId Long 
+	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OJobRunning> dtcOJobRunning
+	*/
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OJobRunning> getJobRunningByProId(final Long proId) {
+		final Task task = createTaskBuilder("TK_GET_JOB_RUNNING_BY_PRO_ID")
+				.addValue("PRO_ID", proId)
+				.build();
+		return getTaskManager()
+				.execute(task)
+				.getResult();
+	}
+
 }

@@ -401,6 +401,32 @@ module.exports = {
             required: false
         }
     },
+    oProcessPlanification: {
+        prpId: {
+            domain: "DO_O_IDENTIFIANT",
+            required: true
+        },
+        expectedTime: {
+            domain: "DO_O_TIMESTAMP",
+            required: false
+        },
+        initialParams: {
+            domain: "DO_O_JSON_TEXT",
+            required: false
+        },
+        proId: {
+            domain: "DO_O_IDENTIFIANT",
+            required: true
+        },
+        nodId: {
+            domain: "DO_O_IDENTIFIANT",
+            required: false
+        },
+        sstCd: {
+            domain: "DO_O_CODE_IDENTIFIANT",
+            required: false
+        }
+    },
     oProcessType: {
         prtCd: {
             domain: "DO_O_CODE_IDENTIFIANT",

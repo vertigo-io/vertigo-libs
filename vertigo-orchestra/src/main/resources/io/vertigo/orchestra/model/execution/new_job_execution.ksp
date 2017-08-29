@@ -11,6 +11,7 @@ create DtDefinition DT_O_JOB_EXECUTION {
 	field ENGINE   				{domain : DO_O_CLASSE, label :"Implémentation effective de l'execution", notNull:"false",}
 	field WORKSPACE_IN			{domain : DO_O_JSON_TEXT, label :"Workspace d'entrée de l'execution", notNull:"false",}
 	field WORKSPACE_OUT 		{domain : DO_O_JSON_TEXT, label :"Workspace de sortie de l'execution", notNull:"false",}
+	field NOD_ID				{domain : DO_O_IDENTIFIANT, label :"Id du noeud", notNull:"true",}
 },
 
 

@@ -141,7 +141,8 @@ public class MemoryProcessExecutorPlugin implements ProcessExecutorPlugin, Activ
 
 	@Override
 	public ProcessType getHandledProcessType() {
-		return ProcessType.UNSUPERVISED;
+		//return ProcessType.UNSUPERVISED;
+		return null;
 	}
 
 	@Override

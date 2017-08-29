@@ -32,6 +32,8 @@ import io.vertigo.orchestra.dao.execution.OActivityWorkspaceDAO;
 import io.vertigo.orchestra.dao.execution.OJobRunningDAO;
 import io.vertigo.orchestra.dao.execution.ONodeDAO;
 import io.vertigo.orchestra.dao.execution.OProcessExecutionDAO;
+import io.vertigo.orchestra.dao.planification.OProcessPlanificationDAO;
+import io.vertigo.orchestra.dao.planification.PlanificationPAO;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.domain.DtDefinitions;
 import io.vertigo.orchestra.impl.definitions.OrchestraDefinitionManagerImpl;
@@ -92,7 +94,7 @@ public final class OrchestraFeatures extends Features {
 				//----DAO
 				.addComponent(OProcessDAO.class)
 				.addComponent(OActivityDAO.class)
-				//.addComponent(OProcessPlanificationDAO.class)
+				.addComponent(OProcessPlanificationDAO.class)
 				.addComponent(OActivityExecutionDAO.class)
 				.addComponent(OProcessExecutionDAO.class)
 				.addComponent(OActivityWorkspaceDAO.class)
@@ -102,6 +104,7 @@ public final class OrchestraFeatures extends Features {
 				//----PAO
 				.addComponent(DefinitionPAO.class)
 				.addComponent(ExecutionPAO.class)
+				.addComponent(PlanificationPAO.class)
 				//.addComponent(PlanificationPAO.class)
 				.addComponent(UidefinitionsPAO.class)
 				.addComponent(UiexecutionsPAO.class)

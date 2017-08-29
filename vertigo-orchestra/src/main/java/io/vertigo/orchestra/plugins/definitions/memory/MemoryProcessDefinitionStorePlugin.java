@@ -78,7 +78,8 @@ public class MemoryProcessDefinitionStorePlugin implements ProcessDefinitionStor
 
 	@Override
 	public ProcessType getHandledProcessType() {
-		return ProcessType.UNSUPERVISED;
+		return null;
+		//return ProcessType.UNSUPERVISED;
 	}
 
 }

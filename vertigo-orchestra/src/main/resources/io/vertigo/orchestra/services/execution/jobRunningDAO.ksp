@@ -4,17 +4,17 @@ create Task TK_RESERVE_PROCESS_TO_LAUNCH {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
-        	INSERT INTO O_JOB_RUNNING (JRU_ID, JOBNAME, NOD_ID, DATE_EXEC)
-        		 SELECT (nextval('SEQ_O_JOB_RUNNING'), JOB.JOBNAME, #NOD_ID#, NULL)
-				   FROM O_JOB_DEFINITION JOB
-        		  WHERE NOT EXIST (SELECT 1 
+        	INSERT INTO O_JOB_RUNNING (JRU_ID, JOBNAME, NOD_ID, DATE_EXEC, USR_ID)
+        		 (SELECT nextval('SEQ_O_JOB_RUNNING'), PRO.NAME, #NOD_ID#, NULL, NULL
+				   FROM O_PROCESS PRO
+        		  WHERE NOT EXISTS (SELECT 1 
 									 FROM O_JOB_RUNNING RUN
-									WHERE RUN.JOBNAME = JOB.JOBNAME)
-					AND JOBNAME IN (#JOBS.JOBNAME#)
+									WHERE RUN.JOBNAME = PRO.NAME)
+					AND PRO.NAME IN (#PROCESSES_NEXT_RUN.ROWNUM.JOBNAME#))
 			"
-		attribute NOD_ID			{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
-		attribute PROCESSES			{domain : DO_DT_O_PROCESS_NEXT_RUN_DTC 	notNull:"true" 	inOut :"in"}
-		attribute INT_SQL_ROWCOUNT	{domain : DO_O_NOMBRE 	notNull:"true" 	inOut :"out"}
+		attribute NOD_ID				{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+		attribute PROCESSES_NEXT_RUN	{domain : DO_DT_O_PROCESS_NEXT_RUN_DTC 	notNull:"true" 	inOut :"in"}
+		attribute INT_SQL_ROWCOUNT		{domain : DO_O_NOMBRE 	notNull:"true" 	inOut :"out"}
 }
 
 
@@ -24,8 +24,24 @@ create Task TK_GET_JOBS_TO_RUN {
         request : "
         	SELECT JRU.*
         	  FROM O_JOB_RUNNING JRU
-        	 WHERE JRU.DATE_DEBUT IS NULL AND NOD_ID = #NODE_ID#
+        	 WHERE JRU.DATE_EXEC IS NULL AND NOD_ID = #NOD_ID#
 			"
 	attribute DTO_O_JOB_RUNNING	 	{domain : DO_DT_O_JOB_RUNNING_DTC 	notNull:"true" inOut :"out"}
 	attribute NOD_ID	 			{domain : DO_O_IDENTIFIANT 			notNull:"true" 	inOut :"in"}
 },
+
+
+create Task TK_DELETE_JOB_RUNNING {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineProc"
+        request : "
+        	DELETE FROM O_JOB_RUNNING
+        		  WHERE JRU_ID IN (SELECT RUN.JRU_ID
+									 FROM O_JOB_RUNNING RUN
+									 JOIN O_PROCESS PRO ON (PRO.NAME = RUN.JOBNAME)
+									WHERE PRO.PRO_ID = #PRO_ID#)
+			"
+		attribute PRO_ID				{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+		attribute INT_SQL_ROWCOUNT		{domain : DO_O_NOMBRE 	notNull:"true" 	inOut :"out"}
+}
+

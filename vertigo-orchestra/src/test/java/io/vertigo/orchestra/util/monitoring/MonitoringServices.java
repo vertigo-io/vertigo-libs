@@ -25,6 +25,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.orchestra.domain.execution.OActivityExecution;
 import io.vertigo.orchestra.domain.execution.OActivityLog;
 import io.vertigo.orchestra.domain.execution.OActivityWorkspace;
+import io.vertigo.orchestra.domain.execution.OJobRunning;
 import io.vertigo.orchestra.domain.execution.OProcessExecution;
 import io.vertigo.orchestra.domain.planification.OProcessNextRun;
 
@@ -40,6 +41,13 @@ public interface MonitoringServices extends Component {
 	 * @return la liste des planification concernant ce processus.
 	 */
 	DtList<OProcessNextRun> getPlanificationsByProId(Long proId);
+
+	/**
+	 * Récupère la liste des executions d'un processus.
+	 * @param proId
+	 * @return la liste des executions concernant ce processus.
+	 */
+	DtList<OJobRunning> getRunningExecutionsByProId(Long proId);
 
 	/**
 	 * Récupère la liste des executions d'un processus.

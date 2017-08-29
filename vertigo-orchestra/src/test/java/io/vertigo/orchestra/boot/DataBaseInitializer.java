@@ -42,7 +42,7 @@ import io.vertigo.lang.WrappedException;
  */
 public class DataBaseInitializer implements Component, Activeable {
 
-	private static String ORCHESTRA_CONNECTION_NAME = "orchestra";
+	private final static String ORCHESTRA_CONNECTION_NAME = "orchestra";
 
 	@Inject
 	private ResourceManager resourceManager;
@@ -64,7 +64,7 @@ public class DataBaseInitializer implements Component, Activeable {
 	private void createDataBase() {
 		final SqlConnection connection = sqlDataBaseManager.getConnectionProvider(ORCHESTRA_CONNECTION_NAME).obtainConnection();
 		execCallableStatement(connection, sqlDataBaseManager, "DROP ALL OBJECTS; ");
-		execSqlScript(connection, "file:./src/main/database/scripts/install/orchestra_create_init_v1.0.0.sql");
+		execSqlScript(connection, "file:./src/main/database/scripts/install/orchestra_create_init_v1.0.1.sql");
 		try {
 			connection.commit();
 			connection.release();

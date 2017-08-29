@@ -6,13 +6,14 @@ create Task TK_GET_PROCESS_TO_EXECUTE {
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
         	select prp.*
-        	from o_process_planification prp
-        	where prp.SST_CD = 'RESERVED'
-        	and prp.NOD_ID = #NOD_ID#
-        	
+        	  from o_process_planification prp
+        	 where prp.PRO_ID = #PRO_ID#
+        	   and expected_time >= #LOWER_LIMIT# and expected_time <= #UPPER_LIMIT#
 			"
-	attribute DTC_O_PROCESS_PLANIFICATION	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC		notNull:"true" 	inOut :"out"}
-	attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+	attribute DT_O_PROCESS_PLANIFICATION	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTO	notNull:"false" inOut :"out"}
+	attribute PRO_ID	 					{domain : DO_O_IDENTIFIANT 					notNull:"true" 	inOut :"in"}
+	attribute LOWER_LIMIT	 				{domain : DO_O_TIMESTAMP 					notNull:"true" 	inOut :"in"}
+	attribute UPPER_LIMIT	 				{domain : DO_O_TIMESTAMP 					notNull:"true" 	inOut :"in"}
 }
 
 
@@ -86,10 +87,20 @@ create Task TK_CLEAN_FUTURE_PLANIFICATIONS {
 }
 
 
-
-
-
-
-
+create Task TK_DELETE_PROCESS_PLANIFICATION {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineProc"
+        request : "
+        	DELETE FROM O_PROCESS_PLANIFICATION
+        		  WHERE PRP_ID IN (SELECT RUN.JRU_ID
+									 FROM O_PROCESS PRO
+									WHERE PRO.PRO_ID = #PRO_ID#)
+					AND NOD_ID = #NOD_ID#
+				  LIMIT 1
+			"
+		attribute PRO_ID				{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+		attribute NOD_ID				{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+		attribute INT_SQL_ROWCOUNT		{domain : DO_O_NOMBRE 	notNull:"true" 	inOut :"out"}
+}
 
 

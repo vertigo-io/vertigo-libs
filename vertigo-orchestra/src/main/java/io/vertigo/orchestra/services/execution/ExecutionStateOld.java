@@ -37,6 +37,8 @@ public enum ExecutionStateOld {
 
 	ABORTED,
 
-	PENDING;
+	PENDING,
+
+	RESERVED;
 
 }

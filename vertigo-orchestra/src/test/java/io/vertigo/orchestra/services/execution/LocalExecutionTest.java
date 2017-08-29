@@ -56,6 +56,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition("PRO_TEST_UNSUPERVISED_MANUAL");
 
+		Assert.assertEquals(0, TestJob.getCount());
 		// We plan right now
 		orchestraServices.getScheduler()
 				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
@@ -94,7 +95,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		// process "PRO_TEST_UNSUPERVISED_RECURRENT" is scheduled with cron expression
 
 		// The task takes 10 secondes to run we wait 12 secondes to check the final states
-		Thread.sleep(1000 * 8);
+		Thread.sleep(1000 * 12);
 		Assert.assertEquals(2, TestJobScheduled.getCount());
 	}
 

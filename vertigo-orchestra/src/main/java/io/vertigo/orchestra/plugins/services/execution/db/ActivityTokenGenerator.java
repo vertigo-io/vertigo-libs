@@ -27,7 +27,7 @@ import java.security.SecureRandom;
  * @author mlaroche.
  * @version $Id$
  */
-final class ActivityTokenGenerator {
+final public class ActivityTokenGenerator {
 
 	private static final Integer NUM_BITS = 130;
 	private static final Integer RADIX = 32;
@@ -40,7 +40,7 @@ final class ActivityTokenGenerator {
 		// SINGLETON
 	}
 
-	static String getToken() {
+	public static String getToken() {
 		return new BigInteger(NUM_BITS, new SecureRandom()).toString(RADIX);
 	}
 }

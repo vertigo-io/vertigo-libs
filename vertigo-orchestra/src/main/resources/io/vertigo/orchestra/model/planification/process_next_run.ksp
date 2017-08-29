@@ -29,8 +29,7 @@ create Association A_PNR_PRO {
 }
 
 
-
-create Association A_PRP_PST {
+create Association A_PNR_SST {
   fkFieldName : "SST_CD"
     
  	dtDefinitionA : DT_O_PROCESS_NEXT_RUN

@@ -363,7 +363,7 @@ create table O_PROCESS_PLANIFICATION
     PRP_ID      	 NUMERIC     	not null,
     EXPECTED_TIME	 TIMESTAMP   	,
     INITIAL_PARAMS	 TEXT        	,
-    PRO_ID      	 NUMERIC     	not null,
+    PRO_ID      	 NUMERIC     	,
     NOD_ID      	 NUMERIC     	,
     SST_CD      	 VARCHAR(20) 	,
     constraint PK_O_PROCESS_PLANIFICATION primary key (PRP_ID)
@@ -569,4 +569,25 @@ alter table O_ACTIVITY_WORKSPACE
 
 create index TKW_TKE_O_ACTIVITY_EXECUTION_FK on O_ACTIVITY_WORKSPACE (ACE_ID asc);
 
+insert into o_execution_state(est_cd, label) values ('DONE', 'Done');
+insert into o_execution_state(est_cd, label) values ('ERROR', 'Error');
 
+--Temp, only for activity
+insert into o_execution_state(est_cd, label) values ('WAITING', 'Waiting');
+insert into o_execution_state(est_cd, label) values ('RESERVED', 'Reserved');
+insert into o_execution_state(est_cd, label) values ('RUNNING', 'Running');
+insert into o_execution_state(est_cd, label) values ('ABORTED', 'Aborted');
+insert into o_execution_state(est_cd, label) values ('PENDING', 'Pending');
+
+--Don't remove, new state for worm process_execution
+insert into o_execution_state(est_cd, label) values ('STARTED', 'Started');
+
+insert into o_process_type(prt_cd, label) values ('DUMB', 'Dumb');
+
+insert into trigger_type(trt_cd, label) values ('SCHEDULED', 'scheduled');
+insert into trigger_type(trt_cd, label) values ('MANUAL', 'manual');
+
+
+--create UNIQUE INDEX IDX_O_JOB_RUNNING_UNI on O_JOB_RUNNING (JOBNAME asc);
+-- TODO REMOVE THIS TIMEOUT
+--SET LOCK_TIMEOUT 10000000

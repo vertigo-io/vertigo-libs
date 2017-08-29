@@ -43,6 +43,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		OProcessExecutionUi(io.vertigo.orchestra.monitoring.domain.uiexecutions.OProcessExecutionUi.class),
 		/** Objet de données OProcessNextRun. */
 		OProcessNextRun(io.vertigo.orchestra.domain.planification.OProcessNextRun.class),
+		/** Objet de données OProcessPlanification. */
+		OProcessPlanification(io.vertigo.orchestra.domain.planification.OProcessPlanification.class),
 		/** Objet de données OProcessType. */
 		OProcessType(io.vertigo.orchestra.domain.referential.OProcessType.class),
 		/** Objet de données OProcessUi. */
@@ -317,6 +319,23 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		INITIAL_PARAMS,
 		/** Propriété 'Processus'. */
 		PRO_ID,
+		/** Propriété 'PlanificationState'. */
+		SST_CD	}
+
+	/**
+	 * Enumération des champs de OProcessPlanification.
+	 */
+	public enum OProcessPlanificationFields implements DtFieldName<io.vertigo.orchestra.domain.planification.OProcessPlanification> {
+		/** Propriété 'Id Planification'. */
+		PRP_ID,
+		/** Propriété 'Date d'execution prévue'. */
+		EXPECTED_TIME,
+		/** Propriété 'Paramètres initiaux sous forme de JSON'. */
+		INITIAL_PARAMS,
+		/** Propriété 'Processus'. */
+		PRO_ID,
+		/** Propriété 'Node'. */
+		NOD_ID,
 		/** Propriété 'PlanificationState'. */
 		SST_CD	}
 

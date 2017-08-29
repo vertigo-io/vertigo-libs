@@ -77,7 +77,7 @@ public abstract class AbstractOrchestraTestCaseJU4 {
 			final List<String> requests = new ListBuilder<String>()
 					.add(" delete from o_activity_log;")
 					.add(" delete from o_activity_workspace;")
-					//.add(" delete from o_process_planification;")
+					.add(" delete from o_process_planification;")
 					.add(" delete from o_activity_execution;")
 					.add(" delete from o_process_execution;")
 					.add(" delete from o_activity;")

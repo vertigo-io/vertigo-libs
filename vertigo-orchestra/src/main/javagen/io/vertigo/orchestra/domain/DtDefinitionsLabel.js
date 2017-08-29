@@ -123,6 +123,14 @@ module.exports = {
         proId: "Processus",
         sstCd: "PlanificationState"
     },
+    oProcessPlanification: {
+        prpId: "Id Planification",
+        expectedTime: "Date d'execution prévue",
+        initialParams: "Paramètres initiaux sous forme de JSON",
+        proId: "Processus",
+        nodId: "Node",
+        sstCd: "PlanificationState"
+    },
     oProcessType: {
         prtCd: "Code",
         label: "Libellé"

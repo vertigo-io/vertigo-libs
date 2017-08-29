@@ -28,10 +28,12 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.dao.execution.OActivityExecutionDAO;
 import io.vertigo.orchestra.dao.execution.OActivityLogDAO;
 import io.vertigo.orchestra.dao.execution.OActivityWorkspaceDAO;
+import io.vertigo.orchestra.dao.execution.OJobRunningDAO;
 import io.vertigo.orchestra.dao.execution.OProcessExecutionDAO;
 import io.vertigo.orchestra.domain.execution.OActivityExecution;
 import io.vertigo.orchestra.domain.execution.OActivityLog;
 import io.vertigo.orchestra.domain.execution.OActivityWorkspace;
+import io.vertigo.orchestra.domain.execution.OJobRunning;
 import io.vertigo.orchestra.domain.execution.OProcessExecution;
 import io.vertigo.orchestra.domain.planification.OProcessNextRun;
 
@@ -48,6 +50,8 @@ public class MonitoringServicesImpl implements MonitoringServices {
 	private OProcessExecutionDAO processExecutionDAO;
 	@Inject
 	private OActivityExecutionDAO activityExecutionDAO;
+	@Inject
+	private OJobRunningDAO jobRunningDAO;
 
 	@Inject
 	private OActivityWorkspaceDAO activityWorkspaceDAO;
@@ -72,6 +76,14 @@ public class MonitoringServicesImpl implements MonitoringServices {
 		Assertion.checkNotNull(proId);
 		// ---
 		return processExecutionDAO.getExecutionsByProId(proId);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public DtList<OJobRunning> getRunningExecutionsByProId(final Long proId) {
+		Assertion.checkNotNull(proId);
+		// ---
+		return jobRunningDAO.getJobRunningByProId(proId);
 	}
 
 	/** {@inheritDoc} */

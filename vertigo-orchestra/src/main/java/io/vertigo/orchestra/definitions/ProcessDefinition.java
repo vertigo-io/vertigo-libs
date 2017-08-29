@@ -94,7 +94,8 @@ public final class ProcessDefinition implements Definition {
 
 	public static ProcessDefinitionBuilder legacyBuilder(final String processName, final Class<? extends RunnableActivityEngine> engineClass) {
 		return new ProcessDefinitionBuilder(processName, processName)
-				.withProcessType(ProcessType.UNSUPERVISED)
+				//.withProcessType(ProcessType.UNSUPERVISED)
+				.withProcessType(ProcessType.SUPERVISED)
 				.withMultiExecution()
 				.addActivity("MAIN", "Main", engineClass);
 

@@ -35,6 +35,7 @@ import org.junit.rules.TestName;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
+import io.vertigo.orchestra.dao.execution.OJobRunningDAO;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.domain.execution.OActivityExecution;
@@ -62,6 +63,8 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	protected OrchestraDefinitionManager orchestraDefinitionManager;
 	@Inject
 	protected OrchestraServices orchestraServices;
+	@Inject
+	protected OJobRunningDAO oJobRunningDAO;
 
 	@Inject
 	private MonitoringServices monitoringServices;
@@ -179,7 +182,8 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		Thread.sleep(1000 * 5);
 		// --- We check the counts
 		// After 5 secondes there is 1 process in error
-		checkExecutions(proId, 0, 0, 0, 1);
+		//Thread.sleep(2500000);
+		checkExecutions(proId, 1, 0, 0, 1);
 	}
 
 	/**
@@ -202,10 +206,10 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 		// After 15 seconds the process is still running
 		Thread.sleep(15_000);
-		checkExecutions(proId, 0, 1, 0, 0);
+		checkExecutions(proId, 1, 1, 0, 0);
 		// After 25 second the process is done
 		Thread.sleep(30_000);
-		checkExecutions(proId, 0, 0, 1, 0);
+		checkExecutions(proId, 1, 0, 1, 0);
 	}
 
 	/**
@@ -228,10 +232,10 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 		// After 5 seconds the process is still running
 		Thread.sleep(1000 * 5);
-		checkExecutions(proId, 0, 1, 0, 0);
+		checkExecutions(proId, 1, 1, 0, 0);
 		// After 15 second the process is in Error
 		Thread.sleep(1000 * 10);
-		checkExecutions(proId, 0, 0, 0, 1);
+		checkExecutions(proId, 1, 0, 0, 1);
 	}
 
 	/**
@@ -253,7 +257,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 		// We wait 5 secondes to be sure that execution is running
 		Thread.sleep(1000 * 5);
-		checkExecutions(proId, 0, 1, 0, 0); // We are sure that the process is running so we can continue the test safely
+		checkExecutions(proId, 1, 1, 0, 0); // We are sure that the process is running so we can continue the test safely
 
 		final OActivityWorkspace activityWorkspace = monitoringServices
 				.getActivityWorkspaceByAceId(monitoringServices.getActivityExecutionsByPreId(monitoringServices.getExecutionsByProId(proId).get(0).getPreId()).get(0).getAceId(), true);
@@ -285,7 +289,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		// We check 3 secondes to be sure that execution is running
 		Thread.sleep(1000 * 3);
 		// Deadlock can rollback the transaction => 0, 0, 0, 0 :
-		checkExecutions(proId, 0, 1, 0, 0); // We are sure that the process is running so we can continue the test safely
+		checkExecutions(proId, 1, 1, 0, 0); // We are sure that the process is running so we can continue the test safely
 
 		final OActivityWorkspace activityWorkspace = monitoringServices
 				.getActivityWorkspaceByAceId(monitoringServices.getActivityExecutionsByPreId(monitoringServices.getExecutionsByProId(proId).get(0).getPreId()).get(0).getAceId(), true);
@@ -310,12 +314,13 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		orchestraServices.getScheduler()
 				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
 
-		// After 4 second the process is running
+		// After 2 second the process is running
 		Thread.sleep(2500);
-		checkExecutions(proId, 0, 1, 0, 0);
+		checkExecutions(proId, 1, 1, 0, 0);
 		// After 5 seconds the process is in error because there is an exception after 3 seconds
 		Thread.sleep(1000 * 5);
-		checkExecutions(proId, 0, 0, 0, 1);
+		//Thread.sleep(9999999L);
+		checkExecutions(proId, 1, 0, 0, 1);
 	}
 
 	/**
@@ -342,7 +347,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		// We should have 1 planification triggered and 1 misfired
 		checkPlanifications(proId, 0, 1, 1);
 		// We should have one execution running
-		checkExecutions(proId, 0, 1, 0, 0);
+		checkExecutions(proId, 1, 1, 0, 0);
 	}
 
 	/**
@@ -365,7 +370,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		// We wait 10 seconds until it's finished
 		Thread.sleep(1000 * 10);
 
-		checkExecutions(proId, 0, 0, 1, 0); // We are sure that the process is done so we can continue the test safely
+		checkExecutions(proId, 1, 0, 1, 0); // We are sure that the process is done so we can continue the test safely
 
 		final Optional<OActivityLog> activityLog = monitoringServices
 				.getActivityLogByAceId(monitoringServices.getActivityExecutionsByPreId(monitoringServices.getExecutionsByProId(proId).get(0).getPreId()).get(0).getAceId());
@@ -399,7 +404,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		// We should have 2 planifications triggered
 		checkPlanifications(proId, 0, 2, 0);
 		// We should have two executions running
-		checkExecutions(proId, 0, 2, 0, 0);
+		checkExecutions(proId, 1, 2, 0, 0);
 	}
 
 	/**
@@ -424,7 +429,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		// We wait 10 seconds
 		Thread.sleep(1000 * 10);
 		// we have one process_execution done
-		checkExecutions(proId, 0, 0, 1, 0);
+		checkExecutions(proId, 1, 0, 1, 0);
 		// we have one and only one activity_execution done
 		checkActivityExecutions(proId, 0, 0, 1, 0);
 
@@ -460,9 +465,9 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 	}
 
-	protected void checkExecutions(final Long proId, final int waitingCount, final int runningCount, final int doneCount, final int errorCount) {
-		final int waitingExecutionCount = 0;
-		final int runningExecutionCount = 0;
+	protected void checkExecutions(final Long proId, final int startedCount, final int runningCount, final int doneCount, final int errorCount) {
+		int startedExecutionCount = 0;
+		int runningExecutionCount = 0;
 		int doneExecutionCount = 0;
 		int errorExecutionCount = 0;
 
@@ -472,52 +477,66 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 				final DtList<OActivityExecution> activityExecutions = monitoringServices.getActivityExecutionsByPreId(processExecution.getPreId());
 				int countActivitiesError = 0;
 				for (final OActivityExecution activityExecution : activityExecutions) {
-					switch (ExecutionState.valueOf(activityExecution.getEstCd())) {
+					switch (ExecutionStateOld.valueOf(activityExecution.getEstCd())) {
 						case DONE:
 							break;
 						case ERROR:
 							countActivitiesError++;
 							break;
+						case WAITING:
+						case ABORTED:
+						case RUNNING:
+						case SUBMITTED:
+						case RESERVED:
+							break;
 						default:
 							throw new UnsupportedOperationException("Unsupported state :" + activityExecution.getEstCd());
 					}
 				}
-				switch (ExecutionState.valueOf(processExecution.getEstCd())) {
-					/*case WAITING:
+				if (processExecution.getEstCd() != null) {
+					switch (ExecutionState.valueOf(processExecution.getEstCd())) {
+						/*case WAITING:
 						waitingExecutionCount++;
 						break;
-					case RUNNING:
+						case RUNNING:
 						runningExecutionCount++;
 						// --- We check that there is one and only one activity RUNNING if the process is Running
 						Assert.assertEquals(1, countActivitiesRunning);
 						break;*/
-					case DONE:
-						doneExecutionCount++;
-						// --- We check that all activities are done if a process is done
-						for (final OActivityExecution activityExecution : activityExecutions) {
-							Assert.assertEquals(ExecutionStateOld.DONE.name(), activityExecution.getEstCd());
-						}
-						break;
-					case ERROR:
-						errorExecutionCount++;
-						//TODO
-						// --- We check that there is one and only one activity is ERROR
-						Assert.assertEquals(1, countActivitiesError);
-						break;
-					default:
-						throw new UnsupportedOperationException("Unsupported state :" + processExecution.getEstCd());
+						case DONE:
+							doneExecutionCount++;
+							// --- We check that all activities are done if a process is done
+							for (final OActivityExecution activityExecution : activityExecutions) {
+								Assert.assertEquals(ExecutionStateOld.DONE.name(), activityExecution.getEstCd());
+							}
+							break;
+						case ERROR:
+							errorExecutionCount++;
+							//TODO
+							// --- We check that there is one and only one activity is ERROR
+							Assert.assertEquals(1, countActivitiesError);
+							break;
+						case STARTED:
+							startedExecutionCount++;
+							break;
+						default:
+							throw new UnsupportedOperationException("Unsupported state :" + processExecution.getEstCd());
+					}
 				}
 
 			}
+
+			runningExecutionCount = monitoringServices.getRunningExecutionsByProId(proId).size();
+
 		}
 
-		LOGGER.error(name.getMethodName() + " waiting " + waitingExecutionCount);
+		LOGGER.error(name.getMethodName() + " started " + startedExecutionCount);
 		LOGGER.error(name.getMethodName() + " running " + runningExecutionCount);
 		LOGGER.error(name.getMethodName() + " done " + doneExecutionCount);
 		LOGGER.error(name.getMethodName() + " error " + errorExecutionCount);
 
 		// --- We check the counts
-		Assert.assertEquals("waiting ", waitingCount, waitingExecutionCount);
+		Assert.assertEquals("started", startedCount, startedExecutionCount);
 		Assert.assertEquals("running", runningCount, runningExecutionCount);
 		Assert.assertEquals("done", doneCount, doneExecutionCount);
 		Assert.assertEquals("error", errorCount, errorExecutionCount);
