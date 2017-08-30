@@ -40,6 +40,11 @@
 					 	<@module.property 'TaskCount' entity.taskCount />
 					 	<@module.property 'Fields' entity.fieldCount />
 					  </@module.formGroup>
+					   <div class="graph-panel" 
+					  		data-url="/dashboard/data/series" 
+					  		data-query-data-filter='{"measurement":"metric","name":"entityCount", "topic":"${entity.name}" ,"location":"*","measures":["value:median"]}'
+					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}' >
+					  	</div>
 				</@module.lineDetail >
 			</#list>
 		</@module.standardDetail>
@@ -74,14 +79,14 @@
 					 	<@module.property 'Used by ' domain.taskCount+' tasks' />
 					 	<@module.property 'Used by' domain.dtDefinitionCount+' DtDefinitions' />
 					  </@module.formGroup>
+					   <div class="graph-panel" 
+					  		data-url="/dashboard/data/series" 
+					  		data-query-data-filter='{"measurement":"tasks","name":"*","location":"*","measures":["duration:median","duration:max"]}'
+					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}' >
+					  	</div>
 				</@module.lineDetail >
 			</#list>
 		</@module.standardDetail>
-		<script>
-			$('tr[data-toggle="list"][id^="domainDetail-"]').on('shown.bs.tab', function (e) {
-			  $(e.target)
-			})
-		</script>
 	</@module.standardPanel>
 	
 	<section class="row">

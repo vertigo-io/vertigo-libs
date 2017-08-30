@@ -1,4 +1,4 @@
-package io.vertigo.dashboard.dynamo;
+package io.vertigo.dashboard.ui.dynamo;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -6,11 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.influxdb.InfluxDB;
+import org.influxdb.InfluxDBFactory;
+import org.influxdb.dto.Query;
+import org.influxdb.dto.QueryResult;
+
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.dashboard.dynamo.model.DomainModel;
-import io.vertigo.dashboard.dynamo.model.EntityModel;
+import io.vertigo.dashboard.ui.dynamo.model.DomainModel;
+import io.vertigo.dashboard.ui.dynamo.model.EntityModel;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
@@ -20,6 +25,17 @@ public class DynamoDashboard {
 	public static void buildModel(final App app, final Map<String, Object> model) {
 		buildEntityModel(app, model);
 		buildDomainModel(app, model);
+
+		testInfluxDb();
+	}
+
+	private static void testInfluxDb() {
+		final InfluxDB influxDB = InfluxDBFactory.connect("http://analytica.part.klee.lan.net:8086", "analytica", "kleeklee");
+		//final Query query = new Query("select mean(\"duration\") from \"tasks\" where \"name\"='/execute/TK_GET_INSTANCE_INDEX_BY_ID_LIST' and time > now() - 1d group by time(6m) fill(linear)", "vision");
+		final Query query = new Query("show measurements", "pandora");
+		final QueryResult queryResult = influxDB.query(query);
+		System.out.println(queryResult);
+
 	}
 
 	private static void buildEntityModel(final App app, final Map<String, Object> model) {

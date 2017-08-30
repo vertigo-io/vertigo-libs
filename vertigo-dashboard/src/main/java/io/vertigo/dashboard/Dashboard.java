@@ -44,12 +44,9 @@ import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.commons.daemon.DaemonManager;
-import io.vertigo.commons.daemon.DaemonStat;
-import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dashboard.commons.CommonsDashboard;
-import io.vertigo.dashboard.dynamo.DynamoDashboard;
+import io.vertigo.dashboard.services.InfluxDbDataProvider;
+import io.vertigo.dashboard.ui.commons.CommonsDashboard;
+import io.vertigo.dashboard.ui.dynamo.DynamoDashboard;
 import io.vertigo.lang.Assertion;
 import spark.Response;
 import spark.Spark;
@@ -70,7 +67,7 @@ public final class Dashboard {
 	@Inject
 	private AnalyticsManager analyticsManager;
 	@Inject
-	private ResourceManager resourceManager;
+	private InfluxDbDataProvider influxDbDataProvider;
 
 	/**
 	 * Creates a new studio for an existing app
@@ -107,19 +104,12 @@ public final class Dashboard {
 	 */
 	public void start() {
 
-		//Spark.staticFileLocation("/static/");
 		Spark.get("/dashboard.css", (request, response) -> {
 			try (InputStream inputStream = Dashboard.class.getResource("/static/dashboard.css").openStream();
 					OutputStream wrappedOutputStream = GzipUtils.checkAndWrap(request.raw(), response.raw(), false)) {
 				IOUtils.copy(inputStream, wrappedOutputStream);
 			}
 			return "";
-		});
-
-		Spark.exception(Exception.class, (e, request, response) -> {
-			response.status(500);
-			LOGGER.error("dashboard : error on render ", e);
-			response.body(e.getMessage());
 		});
 
 		Spark.get("/dashboard", (request, response) -> {
@@ -149,12 +139,6 @@ public final class Dashboard {
 		final Map<String, Object> model = new HashMap<>();
 		initModel(model);
 		return render(response, "templates/modules.ftl", model);
-	}
-
-	private void prepareCommonsModel(final Map<String, Object> model) {
-		final DaemonManager daemonManager = app.getComponentSpace().resolve(DaemonManager.class);
-		model.put("daemons", Home.getApp().getDefinitionSpace().getAll(DaemonDefinition.class));
-		model.put("daemonsStats", daemonManager.getStats().stream().collect(Collectors.groupingBy(DaemonStat::getDaemonName)));
 	}
 
 	private void initModuleModel(final Map<String, Object> model, final String moduleName) {
@@ -221,7 +205,7 @@ public final class Dashboard {
 
 	}
 
-	private void initModel(final Map<String, Object> model) {
+	private static void initModel(final Map<String, Object> model) {
 		model.put("modules", Home.getApp().getConfig().getModuleConfigs()
 				.stream()
 				.map(ModuleConfig::getName)

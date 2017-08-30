@@ -1,4 +1,4 @@
-package io.vertigo.dashboard.commons;
+package io.vertigo.dashboard.ui.commons;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,9 +16,9 @@ import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
-import io.vertigo.dashboard.commons.model.CacheModel;
-import io.vertigo.dashboard.commons.model.DaemonModel;
-import io.vertigo.dashboard.commons.model.EventBusModel;
+import io.vertigo.dashboard.ui.commons.model.CacheModel;
+import io.vertigo.dashboard.ui.commons.model.DaemonModel;
+import io.vertigo.dashboard.ui.commons.model.EventBusModel;
 
 public class CommonsDashboard {
 

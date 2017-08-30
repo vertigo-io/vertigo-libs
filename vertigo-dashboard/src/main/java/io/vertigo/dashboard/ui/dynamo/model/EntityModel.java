@@ -1,4 +1,4 @@
-package io.vertigo.dashboard.dynamo.model;
+package io.vertigo.dashboard.ui.dynamo.model;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;

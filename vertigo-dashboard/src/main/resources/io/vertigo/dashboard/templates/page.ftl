@@ -2,11 +2,14 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-		<link rel="stylesheet" href="/dashboard.css">
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<link rel="stylesheet" href="/dashboard.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.6.1/rickshaw.js" ></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.6.1/rickshaw.css">
 	</head>
 	<body>
 		<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
@@ -54,6 +57,56 @@
 		 	 {
 			  trigger: 'hover'
 			})
+		})
+		
+		function showChart(graphElement) {
+		
+				graphElement.html("");
+				
+				var queryUrl = graphElement.data("url");
+				var queryDataFilter = graphElement.data("query-data-filter");
+				var queryTimeFilter = graphElement.data("query-time-filter");
+				var query = { dataFilter : queryDataFilter, timeFilter : queryTimeFilter };
+					
+				$.post(queryUrl, JSON.stringify(query) , function( jsonData, textStatus) {
+					var palette = new Rickshaw.Color.Palette();
+					var mySeries = $.map(jsonData.seriesNames , function(serieName, index){
+						return {
+							color: palette.color(),
+						 	data : $.map(jsonData.timedDataSeries,  function( value, index ) { 
+					        				var y_value = (value.values)[serieName] != undefined ? (value.values)[serieName] : null;
+								        	return {
+								        		x: value.time,
+								        	 	y: y_value
+								        	}
+					        		})
+					        	}
+					}, "json");
+				
+					
+					var graph = new Rickshaw.Graph( {
+					    element: graphElement.get()[0], 
+					    width: 300, 
+					    height: 200, 
+					    series: mySeries
+					});
+					 
+					var xAxis = new Rickshaw.Graph.Axis.Time({
+					    graph: graph
+					});
+					
+					xAxis.render();
+					graph.render();
+				})
+		}
+		
+		
+		
+		$('tr[data-toggle="list"]').on('shown.bs.tab', function (e) {
+			var graphElement = $($(e.target).attr("href")).find(".graph-panel");
+			if (graphElement.length == 1) {
+				showChart($(graphElement[0]))
+			}
 		})
 		</script>
 	</body>

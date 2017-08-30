@@ -1,4 +1,4 @@
-package io.vertigo.dashboard.commons.model;
+package io.vertigo.dashboard.ui.commons.model;
 
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonStat;

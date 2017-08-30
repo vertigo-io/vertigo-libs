@@ -1,4 +1,4 @@
-package io.vertigo.dashboard.commons.model;
+package io.vertigo.dashboard.ui.commons.model;
 
 import java.util.List;
 import java.util.stream.Collectors;
