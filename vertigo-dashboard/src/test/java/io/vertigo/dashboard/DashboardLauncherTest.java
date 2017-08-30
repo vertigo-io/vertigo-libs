@@ -74,10 +74,6 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 		final App app = getApp();
 		Dashboard.port(8080);
 		Dashboard.start(app);
-		while (!Thread.currentThread().isInterrupted()) {
-			//
-		}
-
 	}
 
 }
