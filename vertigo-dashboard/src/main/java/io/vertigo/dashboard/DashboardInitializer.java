@@ -20,15 +20,12 @@ package io.vertigo.dashboard;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.component.ComponentInitializer;
-import io.vertigo.core.component.di.injector.DIInjector;
 
 public final class DashboardInitializer implements ComponentInitializer {
 
 	@Override
 	public void init() {
-		final Dashboard dashboard = new Dashboard(Home.getApp());
-		DIInjector.injectMembers(dashboard, Home.getApp().getComponentSpace());
-		dashboard.start();
+		Dashboard.start(Home.getApp());
 
 	}
 

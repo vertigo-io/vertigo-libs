@@ -16,13 +16,15 @@ import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonStat;
 import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
+import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
 import io.vertigo.dashboard.ui.commons.model.CacheModel;
 import io.vertigo.dashboard.ui.commons.model.DaemonModel;
 import io.vertigo.dashboard.ui.commons.model.EventBusModel;
 
-public class CommonsDashboard {
+public class CommonsDashboardControler extends AbstractDashboardModuleControler {
 
-	public static void buildModel(final App app, final Map<String, Object> model) {
+	@Override
+	public void doBuildModel(final App app, final Map<String, Object> model) {
 		buildDaemonsModel(app, model);
 		buildEventBusModel(app, model);
 		buildCacheModel(app, model);

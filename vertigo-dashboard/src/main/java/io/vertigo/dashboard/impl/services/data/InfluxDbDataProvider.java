@@ -1,4 +1,4 @@
-package io.vertigo.dashboard.services;
+package io.vertigo.dashboard.impl.services.data;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -8,19 +8,51 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 import org.influxdb.dto.QueryResult.Series;
 
-import io.vertigo.core.component.Component;
+import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.dashboard.services.data.DataFilter;
+import io.vertigo.dashboard.services.data.DataProvider;
+import io.vertigo.dashboard.services.data.TimeFilter;
+import io.vertigo.dashboard.services.data.TimedDataSerie;
+import io.vertigo.dashboard.services.data.TimedDatas;
+import io.vertigo.lang.Assertion;
 
-public class InfluxDbDataProvider implements Component {
+public class InfluxDbDataProvider implements DataProvider {
 
+	private final InfluxDB influxDB;
+
+	private List<HealthCheck> appHealthChecks;
+	private final Object healthChecksLock = new Object();
+	private List<Metric> appMetrics;
+	private final Object metricsLock = new Object();
+
+	@Inject
+	private AnalyticsManager analyticsManager;
+
+	@Inject
+	public InfluxDbDataProvider(
+			@Named("host") final String host,
+			@Named("user") final String user,
+			@Named("password") final String password) {
+		Assertion.checkArgNotEmpty(host);
+		Assertion.checkArgNotEmpty(user);
+		Assertion.checkArgNotEmpty(password);
+		//---
+		influxDB = InfluxDBFactory.connect(host, user, password);
+	}
+
+	@Override
 	public TimedDatas getTimeSeries(final DataFilter dataFilter, final TimeFilter timeFilter) {
-		final InfluxDB influxDB = InfluxDBFactory.connect("http://analytica.part.klee.lan.net:8086", "analytica", "kleeklee");
-
 		final StringBuilder queryBuilder = new StringBuilder("select ");
 
 		String separator = "";
@@ -57,13 +89,43 @@ public class InfluxDbDataProvider implements Component {
 
 	}
 
-	final Map<String, Object> buildMapValue(final List<String> columns, final List<Object> values) {
+	final static Map<String, Object> buildMapValue(final List<String> columns, final List<Object> values) {
 		final Map<String, Object> valueMap = new HashMap<>();
 		// we start at 1 because time is always the first row
 		for (int i = 1; i < columns.size(); i++) {
 			valueMap.put(columns.get(i), values.get(i));
 		}
 		return valueMap;
+	}
+
+	@Override
+	public List<HealthCheck> getHealthChecks() {
+		if (appHealthChecks == null) {
+			loadHealthChecks();
+		}
+		return appHealthChecks;
+	}
+
+	private void loadMetrics() {
+		synchronized (metricsLock) {
+			appMetrics = analyticsManager.getMetrics();
+		}
+
+	}
+
+	@Override
+	public List<Metric> getMetrics() {
+		if (appMetrics == null) {
+			loadMetrics();
+		}
+		return appMetrics;
+	}
+
+	private void loadHealthChecks() {
+		synchronized (healthChecksLock) {
+			appHealthChecks = analyticsManager.getHealthChecks();
+		}
+
 	}
 
 }

@@ -1,4 +1,4 @@
-package io.vertigo.dashboard.services;
+package io.vertigo.dashboard.services.data;
 
 import java.util.Map;
 

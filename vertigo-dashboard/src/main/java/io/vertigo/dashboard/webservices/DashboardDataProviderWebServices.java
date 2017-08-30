@@ -2,10 +2,10 @@ package io.vertigo.dashboard.webservices;
 
 import javax.inject.Inject;
 
-import io.vertigo.dashboard.services.DataFilter;
-import io.vertigo.dashboard.services.InfluxDbDataProvider;
-import io.vertigo.dashboard.services.TimeFilter;
-import io.vertigo.dashboard.services.TimedDatas;
+import io.vertigo.dashboard.services.data.DataFilter;
+import io.vertigo.dashboard.services.data.DataProvider;
+import io.vertigo.dashboard.services.data.TimeFilter;
+import io.vertigo.dashboard.services.data.TimedDatas;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.InnerBodyParam;
@@ -13,20 +13,20 @@ import io.vertigo.vega.webservice.stereotype.POST;
 import io.vertigo.vega.webservice.stereotype.PathPrefix;
 import io.vertigo.vega.webservice.stereotype.SessionLess;
 
-@PathPrefix("/dashboard")
-public class DataProviderWebServices implements WebServices {
+@PathPrefix("/dashboard/data")
+public class DashboardDataProviderWebServices implements WebServices {
 
 	@Inject
-	private InfluxDbDataProvider influxDbDataProvider;
+	private DataProvider dataProvider;
 
 	@SessionLess
 	@AnonymousAccessAllowed
-	@POST("/data/series")
+	@POST("/series")
 	public TimedDatas getTimedDatas(
 			@InnerBodyParam("dataFilter") final DataFilter dataFilter,
 			@InnerBodyParam("timeFilter") final TimeFilter timeFilter) {
 
-		return influxDbDataProvider.getTimeSeries(dataFilter, timeFilter);
+		return dataProvider.getTimeSeries(dataFilter, timeFilter);
 	}
 
 }

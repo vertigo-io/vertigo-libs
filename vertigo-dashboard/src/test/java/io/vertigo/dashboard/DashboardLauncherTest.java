@@ -10,17 +10,21 @@ import org.junit.runner.RunWith;
 import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.App;
 import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
-import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dashboard.impl.services.data.InfluxDbDataProvider;
+import io.vertigo.dashboard.services.data.DataProvider;
+import io.vertigo.dashboard.webservices.DashboardDataProviderWebServices;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.search.elasticsearch.embedded.ESEmbeddedSearchServicesPlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
+import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
 
 @RunWith(JUnitPlatform.class)
 public class DashboardLauncherTest extends AbstractTestCaseJU4 {
@@ -53,15 +57,23 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 								Param.of("envIndex", "TU_TEST"),
 								Param.of("rowsPerQuery", "50"))
 						.build())
+				.addModule(
+						ModuleConfig.builder("dashboard")
+								.addComponent(DomainMetricsProvider.class)
+								.addComponent(DataProvider.class, InfluxDbDataProvider.class,
+										Param.of("host", "http://analytica.part.klee.lan.net:8086"),
+										Param.of("user", "analytica"),
+										Param.of("password", "kleeklee"))
+								.addComponent(DashboardDataProviderWebServices.class)
+								.build())
 				.build();
 	}
 
 	@Test
 	public void server() {
 		final App app = getApp();
-		final Dashboard dashboard = new Dashboard(app, 8080);
-		DIInjector.injectMembers(dashboard, app.getComponentSpace());
-		dashboard.start();
+		Dashboard.port(8080);
+		Dashboard.start(app);
 		while (!Thread.currentThread().isInterrupted()) {
 			//
 		}
