@@ -75,17 +75,17 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	 * @param proId Long 
 	 * @param lowerLimit java.util.Date 
 	 * @param upperLimit java.util.Date 
-	 * @return Option de io.vertigo.orchestra.domain.planification.OProcessPlanification dtOProcessPlanification
+	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> dtOProcessPlanification
 	*/
-	public Optional<io.vertigo.orchestra.domain.planification.OProcessPlanification> getProcessToExecute(final Long proId, final java.util.Date lowerLimit, final java.util.Date upperLimit) {
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getProcessToExecute(final Long proId, final java.util.Date lowerLimit, final java.util.Date upperLimit) {
 		final Task task = createTaskBuilder("TK_GET_PROCESS_TO_EXECUTE")
 				.addValue("PRO_ID", proId)
 				.addValue("LOWER_LIMIT", lowerLimit)
 				.addValue("UPPER_LIMIT", upperLimit)
 				.build();
-		return Optional.ofNullable((io.vertigo.orchestra.domain.planification.OProcessPlanification) getTaskManager()
+		return getTaskManager()
 				.execute(task)
-				.getResult());
+				.getResult();
 	}
 
 }

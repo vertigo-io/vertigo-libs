@@ -73,7 +73,6 @@ public final class OrchestraNode1AppConfig {
 						.build())
 				.addModule(new OrchestraFeatures()
 						.withDataBase("NODE_TEST_2", 1, 3, 60)
-						.withMemory(1)
 						.build())
 				.addModule(ModuleConfig.builder("orchestra-test-node2")
 						//---Services

@@ -37,7 +37,6 @@ import io.vertigo.util.MapBuilder;
  */
 public class DbDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 	@Inject
-
 	private OrchestraDefinitionManager orchestraDefinitionManager;
 
 	@Test

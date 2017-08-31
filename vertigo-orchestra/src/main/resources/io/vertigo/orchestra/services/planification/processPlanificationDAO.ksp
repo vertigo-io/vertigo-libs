@@ -10,7 +10,7 @@ create Task TK_GET_PROCESS_TO_EXECUTE {
         	 where prp.PRO_ID = #PRO_ID#
         	   and expected_time >= #LOWER_LIMIT# and expected_time <= #UPPER_LIMIT#
 			"
-	attribute DT_O_PROCESS_PLANIFICATION	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTO	notNull:"false" inOut :"out"}
+	attribute DT_O_PROCESS_PLANIFICATION	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC	notNull:"true" inOut :"out"}
 	attribute PRO_ID	 					{domain : DO_O_IDENTIFIANT 					notNull:"true" 	inOut :"in"}
 	attribute LOWER_LIMIT	 				{domain : DO_O_TIMESTAMP 					notNull:"true" 	inOut :"in"}
 	attribute UPPER_LIMIT	 				{domain : DO_O_TIMESTAMP 					notNull:"true" 	inOut :"in"}
@@ -92,14 +92,12 @@ create Task TK_DELETE_PROCESS_PLANIFICATION {
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
         	DELETE FROM O_PROCESS_PLANIFICATION
-        		  WHERE PRP_ID IN (SELECT RUN.JRU_ID
-									 FROM O_PROCESS PRO
-									WHERE PRO.PRO_ID = #PRO_ID#)
-					AND NOD_ID = #NOD_ID#
+        		  WHERE PRO_ID = #PRO_ID#
+					AND EXPECTED_TIME < #DATE_EXEC#
 				  LIMIT 1
 			"
 		attribute PRO_ID				{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
-		attribute NOD_ID				{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+		attribute DATE_EXEC				{domain : DO_O_TIMESTAMP 		notNull:"true" 	inOut :"in"}
 		attribute INT_SQL_ROWCOUNT		{domain : DO_O_NOMBRE 	notNull:"true" 	inOut :"out"}
 }
 

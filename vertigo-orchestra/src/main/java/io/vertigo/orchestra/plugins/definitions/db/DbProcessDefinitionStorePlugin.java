@@ -57,8 +57,6 @@ import io.vertigo.util.StringUtil;
 @Transactional
 public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlugin {
 
-	/*@Inject
-	private PlanificationPAO planificationPAO;*/
 	@Inject
 	private OProcessDAO processDao;
 	@Inject
@@ -217,8 +215,6 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 		// ---
 		final String processName = processDefinition.getName();
 		definitionPAO.disableOldProcessDefinitions(processName);
-		// on supprime toute la planification existante
-		//planificationPAO.cleanFuturePlanifications(processName);
 		createDefinition(processDefinition);
 
 	}
@@ -242,8 +238,6 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 		process.setRescuePeriod(rescuePeriod);
 		process.setActive(active);
 		processDao.save(process);
-		// on supprime toute la planification existante
-		//planificationPAO.cleanFuturePlanifications(processDefinition.getName());
 	}
 
 	/** {@inheritDoc} */

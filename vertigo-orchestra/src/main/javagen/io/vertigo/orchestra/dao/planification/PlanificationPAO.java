@@ -65,13 +65,13 @@ public final class PlanificationPAO implements StoreServices {
 	/**
 	 * Execute la tache TK_DELETE_PROCESS_PLANIFICATION.
 	 * @param proId Long 
-	 * @param nodId Long 
+	 * @param dateExec java.util.Date 
 	 * @return Integer intSqlRowcount
 	*/
-	public Integer deleteProcessPlanification(final Long proId, final Long nodId) {
+	public Integer deleteProcessPlanification(final Long proId, final java.util.Date dateExec) {
 		final Task task = createTaskBuilder("TK_DELETE_PROCESS_PLANIFICATION")
 				.addValue("PRO_ID", proId)
-				.addValue("NOD_ID", nodId)
+				.addValue("DATE_EXEC", dateExec)
 				.build();
 		return getTaskManager()
 				.execute(task)

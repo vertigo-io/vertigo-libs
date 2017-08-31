@@ -58,16 +58,10 @@ public class MonitoringServicesImpl implements MonitoringServices {
 	@Inject
 	private OActivityLogDAO activityLogDAO;
 
-	/*@Inject
-	private OProcessPlanificationDAO processPlanificationDAO;*/
-
 	/** {@inheritDoc} */
 	@Override
 	public DtList<OProcessNextRun> getPlanificationsByProId(final Long proId) {
-		Assertion.checkNotNull(proId);
-		// ---
-		return null;
-		//return processPlanificationDAO.getPlanificationsByProId(proId);
+		return new DtList<>(OProcessNextRun.class);
 	}
 
 	/** {@inheritDoc} */

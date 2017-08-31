@@ -44,11 +44,13 @@ public final class OActivityExecutionDAO extends DAO<OActivityExecution, java.la
 	/**
 	 * Execute la tache TK_GET_ACTIVITIES_TO_LAUNCH.
 	 * @param nodId Long 
+	 * @param maxNumber Integer 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> dtcActivityExecution
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivitiesToLaunch(final Long nodId) {
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivitiesToLaunch(final Long nodId, final Integer maxNumber) {
 		final Task task = createTaskBuilder("TK_GET_ACTIVITIES_TO_LAUNCH")
 				.addValue("NOD_ID", nodId)
+				.addValue("MAX_NUMBER", maxNumber)
 				.build();
 		return getTaskManager()
 				.execute(task)

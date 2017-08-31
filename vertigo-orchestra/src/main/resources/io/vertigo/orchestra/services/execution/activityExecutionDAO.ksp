@@ -7,12 +7,14 @@ create Task TK_GET_ACTIVITIES_TO_LAUNCH {
         	select 
         		ace.*
         	from o_activity_execution ace
-        	where ace.EST_CD = 'RESERVED'
+        	where ace.EST_CD = 'STARTED'
         	and ace.NOD_ID = #NOD_ID#
-        	
+        	order by creation_time asc
+        	limit #MAX_NUMBER#
 			"
 	attribute DTC_ACTIVITY_EXECUTION	 	{domain : DO_DT_O_ACTIVITY_EXECUTION_DTC 		notNull:"true" 	inOut :"out"}
 	attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+	attribute MAX_NUMBER	 	{domain : DO_O_NOMBRE 		notNull:"true" 	inOut :"in"}
 },
 
 
@@ -31,26 +33,6 @@ create Task TK_GET_ACTIVITY_EXECUTION_BY_TOKEN {
 	attribute ACE_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
 	attribute TOKEN	 	{domain : DO_O_TOKEN 		notNull:"true" 	inOut :"in"}
 },
-
-create Task TK_RESERVE_ACTIVITIES_TO_LAUNCH {
-	storeName : "orchestra"
-    className : "io.vertigo.dynamox.task.TaskEngineProc"
-        request : "
-        	update  o_activity_execution 
-        	set EST_CD = 'RESERVED',
-        		NOD_ID = #NOD_ID#
-        		
-        	where ace_id in (
-        			select ace_id 
-        			from o_activity_execution
-        			where EST_CD = 'WAITING' 
-        			order by creation_time asc
-        			limit #MAX_NUMBER#
-        	)
-			"
-		attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
-		attribute MAX_NUMBER	 	{domain : DO_O_NOMBRE 		notNull:"true" 	inOut :"in"}
-}
 
 
 create Task TK_GET_ACTIVITY_WORKSPACE {

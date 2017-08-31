@@ -8,7 +8,7 @@ create Task TK_GET_ACTIVE_PROCESS_EXECUTION_BY_PRO_ID {
         		pre.*
         	from o_process_execution pre
         	where pre.PRO_ID = #PRO_ID#
-        	and (pre.EST_CD = 'WAITING' or pre.EST_CD = 'RESERVED' or pre.EST_CD = 'SUBMITTED' or pre.EST_CD = 'RUNNING' or pre.EST_CD = 'PENDING')     	
+        	and (pre.EST_CD = 'STARTED' or pre.EST_CD = 'RESERVED' or pre.EST_CD = 'SUBMITTED' or pre.EST_CD = 'RUNNING' or pre.EST_CD = 'PENDING')     	
 			"
 		attribute PRO_ID					{domain : DO_O_IDENTIFIANT 						notNull:"true" 	inOut :"in"}
 		attribute DTC_PROCESS_EXECUTION	 	{domain : DO_DT_O_PROCESS_EXECUTION_DTC 		notNull:"true" 	inOut :"out"}

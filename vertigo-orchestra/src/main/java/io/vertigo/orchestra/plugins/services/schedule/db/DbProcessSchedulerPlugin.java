@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -58,6 +59,7 @@ import io.vertigo.orchestra.dao.execution.OActivityWorkspaceDAO;
 import io.vertigo.orchestra.dao.execution.OJobRunningDAO;
 import io.vertigo.orchestra.dao.execution.OProcessExecutionDAO;
 import io.vertigo.orchestra.dao.planification.OProcessPlanificationDAO;
+import io.vertigo.orchestra.dao.planification.PlanificationPAO;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.definitions.ProcessType;
@@ -80,7 +82,6 @@ import io.vertigo.orchestra.plugins.services.execution.db.ActivityTokenGenerator
 import io.vertigo.orchestra.services.execution.ActivityEngine;
 import io.vertigo.orchestra.services.execution.ActivityExecutionWorkspace;
 import io.vertigo.orchestra.services.execution.ExecutionState;
-import io.vertigo.orchestra.services.execution.ExecutionStateOld;
 import io.vertigo.orchestra.services.execution.ProcessExecutor;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.DateBuilder;
@@ -98,11 +99,6 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	@Inject
 	private OProcessPlanificationDAO processPlanificationDAO;
-	/*@Inject
-	private PlanificationPAO planificationPAO;*/
-
-	/*@Inject
-	private OProcessExecutionDAO processExecutionDAO;*/
 	@Inject
 	private OJobRunningDAO jobRunningDAO;
 	@Inject
@@ -110,12 +106,10 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	@Inject
 	private OProcessDAO processDAO;
 
-	/*@Inject
-	private StoreManager storeManager;*/
-
 	private final String nodeName;
 	private Long myNodId;
 	private final int planningPeriodSeconds;
+	private final int workersCount;
 	//private final int forecastDurationSeconds;
 	private final ONodeManager nodeManager;
 	private ProcessExecutor myProcessExecutor;
@@ -139,6 +133,8 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	private final ExecutorService workers;
 	@Inject
 	private OActivityLogDAO activityLogDAO;
+	@Inject
+	private PlanificationPAO planificationPAO;
 
 	/**
 	 * Constructeur.
@@ -156,21 +152,24 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 			final OrchestraDefinitionManager definitionManager,
 			@Named("nodeName") final String nodeName,
 			@Named("planningPeriodSeconds") final int planningPeriodSeconds,
-			@Named("forecastDurationSeconds") final int forecastDurationSeconds) {
+			@Named("forecastDurationSeconds") final int forecastDurationSeconds,
+			@Named("workersCount") final int workersCount) {
 		Assertion.checkNotNull(nodeManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(definitionManager);
 		Assertion.checkArgNotEmpty(nodeName);
 		Assertion.checkNotNull(planningPeriodSeconds);
 		Assertion.checkNotNull(forecastDurationSeconds);
+		Assertion.checkNotNull(workersCount);
 		//-----
 		this.nodeManager = nodeManager;
 		this.transactionManager = transactionManager;
 		this.definitionManager = definitionManager;
 		this.planningPeriodSeconds = planningPeriodSeconds;
 		//this.forecastDurationSeconds = forecastDurationSeconds;
+		this.workersCount = workersCount;
 		this.nodeName = nodeName;
-		workers = Executors.newFixedThreadPool(10);
+		workers = Executors.newFixedThreadPool(workersCount);
 	}
 
 	@Override
@@ -180,7 +179,6 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	private void scheduleAndInit() {
 		try {
-			//plannRecurrentProcesses();
 			initToDo(myProcessExecutor);
 		} catch (final Exception e) {
 			// We log the error and we continue the timer
@@ -193,8 +191,6 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	public void start() {
 		// We register the node
 		myNodId = nodeManager.registerNode(nodeName);
-		// We clean the planification
-		//cleanPastPlanification();
 	}
 
 	@Override
@@ -216,14 +212,6 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	//--------------------------------------------------------------------------------------------------
 	//--- Package
 	//--------------------------------------------------------------------------------------------------
-
-	/*
-	private void doScheduleWithCron(final ProcessDefinition processDefinition) {
-		final Optional<Date> nextPlanification = findNextPlanificationTime(processDefinition);
-		if (nextPlanification.isPresent()) {
-			scheduleAt(processDefinition, nextPlanification.get(), processDefinition.getTriggeringStrategy().getInitialParams());
-		}
-	}*/
 
 	@Override
 	public void scheduleAt(final ProcessDefinition processDefinition, final Date planifiedTime, final Map<String, String> initialParams) {
@@ -284,14 +272,12 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 		activityExecution.setActId(activity.getActId());
 		activityExecution.setCreationTime(new Date());
 		activityExecution.setEngine(activity.getEngine());
-		//changeActivityExecutionState(activityExecution, ExecutionState2.WAITING);
 		activityExecution.setToken(ActivityTokenGenerator.getToken());
 		activityExecution.setNodId(nodId);
 		//TODO Avoir un EstCd propre à Activity et ajouter l'état started.
-		activityExecution.setEstCd(ExecutionStateOld.WAITING.name());
+		activityExecution.setEstCd(ExecutionState.STARTED.name());
 
 		return activityExecution;
-
 	}
 
 	private void initFirstActivityExecution(final OProcessExecution processExecution, final Optional<String> initialParams) {
@@ -340,12 +326,21 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 		storeManager.getDataStore().readOneForUpdate(activityExecutionURI);
 	}
 
-	private DtList<OActivityExecution> getActivitiesToLaunch() {
-		//final int maxNumber = getUnusedWorkersCount();
-		final int maxNumber = 10;
+	private int getUnusedWorkersCount() {
+		Assertion.checkNotNull(workers);
 		// ---
-		executionPAO.reserveActivitiesToLaunch(myNodId, maxNumber);
-		return activityExecutionDAO.getActivitiesToLaunch(myNodId);
+		if (workers instanceof ThreadPoolExecutor) {
+			final ThreadPoolExecutor workersPool = (ThreadPoolExecutor) workers;
+			return workersCount - workersPool.getActiveCount();
+		}
+		return workersCount;
+	}
+
+	private DtList<OActivityExecution> getActivitiesToLaunch() {
+		final int maxNumber = getUnusedWorkersCount();
+
+		// ---
+		return activityExecutionDAO.getActivitiesToLaunch(myNodId, maxNumber);
 	}
 
 	private ActivityExecutionWorkspace getWorkspaceForActivityExecution(final Long aceId, final Boolean in) {
@@ -360,34 +355,30 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 		final DtList<OProcessNextRun> processesNextRun = getPlanificationsToTrigger();
 
-		final int nbExec = executionPAO.reserveProcessToLaunch(myNodId, processesNextRun);
+		final Date now = new Date();
+		final int nbExec = executionPAO.reserveProcessToLaunch(myNodId, now, processesNextRun);
 
 		if (nbExec > 0) {
-			final DtList<OJobRunning> jobs = jobRunningDAO.getJobsToRun(myNodId);
+			final DtList<OJobRunning> jobs = jobRunningDAO.getJobsToRun(myNodId, now);
+
 			for (final OJobRunning oJobRunning : jobs) {
 				final ProcessDefinition processDefinition = definitionManager.getProcessDefinition(oJobRunning.getJobname());
 				final OProcess process = processDAO.get(processDefinition.getId());
 
-				//processExecutor.execute(processDefinition, Optional.ofNullable(process.getInitialParams()));
-
-				///////
+				// TODO : Deporter le code suivant dans un ProcessExecutor, pour séparer le concept de sélection des jobs à executer 
+				// du concept des executions à proprement parler
 				final OProcessExecution processExecution = initProcessExecution(processDefinition);
 				initFirstActivityExecution(processExecution, Optional.ofNullable(process.getInitialParams()));
 
 				final DtList<OActivityExecution> activitiesToLaunch;
-				//try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				activitiesToLaunch = getActivitiesToLaunch();
-				//	transaction.commit();
-				//}
 				for (final OActivityExecution activityExecution : activitiesToLaunch) { //We submit only the process we can handle, no queue
 					ActivityExecutionWorkspace workspace;
-					//try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+
 					workspace = getWorkspaceForActivityExecution(activityExecution.getAceId(), true);
 					//doChangeExecutionState(activityExecution, ExecutionState2.SUBMITTED);
 					// We set the beginning time of the activity
 					activityExecution.setBeginTime(new Date());
-					//	transaction.commit();
-					//}
 					workers.submit(() -> doRunActivity(activityExecution, workspace));
 				}
 
@@ -534,7 +525,8 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	}
 
 	private void reserveActivityExecution(final OActivityExecution activityExecution) {
-		activityExecution.setEstCd(ExecutionStateOld.SUBMITTED.name());
+		//TODO: Remove this method
+		activityExecution.setEstCd("SUBMITTED");
 		activityExecution.setNodId(myNodId);
 	}
 
@@ -574,8 +566,6 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 		} else {
 			endProcessExecution(activityExecution.getPreId(), ExecutionState.DONE);
 		}
-		//transaction.commit();
-		//}
 	}
 
 	private void endActivityExecution(final OActivityExecution activityExecution, final ExecutionState executionState, final Long nodId) {
@@ -629,38 +619,19 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	private void endProcessExecution(final Long preId, final ExecutionState executionState) {
 		final OProcessExecution processExecution = processExecutionDAO.get(preId);
+		final OProcessExecution endProcessExecution = new OProcessExecution();
 
-		processExecution.setEndTime(new Date());
-		changeProcessExecutionState(processExecution, executionState);
-		processExecutionDAO.save(processExecution);
+		endProcessExecution.setBeginTime(new Date());
+		endProcessExecution.setEndTime(new Date());
+		endProcessExecution.setProId(processExecution.getProId());
+		changeProcessExecutionState(endProcessExecution, executionState);
+		processExecutionDAO.save(endProcessExecution);
 
-		executionPAO.deleteJobRunning(processExecution.getProId());
+		executionPAO.deleteJobRunning(endProcessExecution.getProId());
+		planificationPAO.deleteProcessPlanification(endProcessExecution.getProId(), new Date());
 	}
 
-	/*private void lockProcess(final ProcessDefinition processDefinition) {
-		final URI<OProcess> processURI = DtObjectUtil.createURI(OProcess.class, processDefinition.getId());
-		storeManager.getDataStore().readOneForUpdate(processURI);
-	}*/
-
-	/*
-	private void plannRecurrentProcesses() {
-		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			for (final ProcessDefinition processDefinition : getAllScheduledProcesses()) {
-				doScheduleWithCron(processDefinition);
-			}
-			transaction.commit();
-		}
-
-	}*/
-
 	private DtList<OProcessNextRun> getPlanificationsToTrigger() {
-		/*final GregorianCalendar lowerLimit = new GregorianCalendar(Locale.FRANCE);
-		lowerLimit.add(Calendar.MILLISECOND, -planningPeriodSeconds * 1000 * 5 / 4); //Just to be sure that nothing will be lost
-
-		final GregorianCalendar upperLimit = new GregorianCalendar(Locale.FRANCE);
-
-		planificationPAO.reserveProcessToExecute(lowerLimit.getTime(), upperLimit.getTime(), nodId);
-		return processPlanificationDAO.getProcessToExecute(nodId);*/
 		final DtList<OProcess> processes = processDAO.getAllActiveProcesses();
 
 		final DtList<OProcessNextRun> nextRuns = new DtList<>(OProcessNextRun.class);
@@ -677,7 +648,6 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 				}
 
 				final Date now = new Date();
-				//final Date compatibleNow = new Date(now.getTime() + (planningPeriodSeconds * 1000L / 2));// Normalement ca doit être bon quelque soit la synchronisation entre les deux timers (même fréquence)
 				final OProcessNextRun oProcessNextRun = new OProcessNextRun();
 				oProcessNextRun.setExpectedTime(cronExpression.getNextValidTimeAfter(now));
 				oProcessNextRun.setInitialParams(oProcess.getInitialParams());
@@ -689,14 +659,13 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 				final Date upperLimit = new Date();
 				final Date lowerLimit = new DateBuilder(upperLimit).addSeconds(-planningPeriodSeconds).build();
 
-				final Optional<OProcessPlanification> optionPlanif = processPlanificationDAO.getProcessToExecute(oProcess.getProId(), lowerLimit, upperLimit);
+				final DtList<OProcessPlanification> planifs = processPlanificationDAO.getProcessToExecute(oProcess.getProId(), lowerLimit, upperLimit);
 
-				if (optionPlanif.isPresent()) {
-					final OProcessPlanification oPlanif = optionPlanif.get();
+				for (final OProcessPlanification oProcessPlanification : planifs) {
 					final OProcessNextRun oProcessNextRun = new OProcessNextRun();
-					oProcessNextRun.setExpectedTime(oPlanif.getExpectedTime());
-					oProcessNextRun.setInitialParams(oPlanif.getInitialParams());
-					oProcessNextRun.setProId(oProcess.getProId());
+					oProcessNextRun.setExpectedTime(oProcessPlanification.getExpectedTime());
+					oProcessNextRun.setInitialParams(oProcessPlanification.getInitialParams());
+					oProcessNextRun.setProId(oProcessPlanification.getProId());
 					oProcessNextRun.setJobname(oProcess.getName());
 					nextRuns.add(oProcessNextRun);
 				}
@@ -704,108 +673,6 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 		}
 		return nextRuns;
 	}
-
-	/*
-	private boolean canExecute(final ProcessDefinition processDefinition) {
-		// We check if process allow multiExecutions
-		if (!processDefinition.getTriggeringStrategy().isMultiExecution()) {
-			// TODO we are in the case of a process that allows a single execution at the time
-			//      -> the previous was too long so we kill it (mark has aborted) and keep the new one
-			return processExecutionDAO.getActiveProcessExecutionByProId(processDefinition.getId()).isEmpty();
-		}
-		return true;
-	}*/
-
-	/*private Optional<OProcessPlanification> getLastPlanificationsByProcess(final Long proId) {
-		Assertion.checkNotNull(proId);
-		// ---
-		return processPlanificationDAO.getLastPlanificationByProId(proId);
-	}*/
-
-	/*
-	private Optional<Date> findNextPlanificationTime(final ProcessDefinition processDefinition) {
-		final Optional<OProcessPlanification> lastPlanificationOption = getLastPlanificationsByProcess(processDefinition.getId());
-
-		try {
-			final CronExpression cronExpression = new CronExpression(processDefinition.getTriggeringStrategy().getCronExpression().get());
-
-			if (!lastPlanificationOption.isPresent()) {
-				final Date now = new Date();
-				final Date compatibleNow = new Date(now.getTime() + (planningPeriodSeconds / 2 * 1000L));// Normalement ca doit être bon quelque soit la synchronisation entre les deux timers (même fréquence)
-				return Optional.of(cronExpression.getNextValidTimeAfter(compatibleNow));
-			}
-			final OProcessPlanification lastPlanification = lastPlanificationOption.get();
-			final Date nextPotentialPlainification = cronExpression.getNextValidTimeAfter(lastPlanification.getExpectedTime());
-			if (nextPotentialPlainification.before(new Date(System.currentTimeMillis() + forecastDurationSeconds * 1000L))) {
-				return Optional.of(nextPotentialPlainification);
-			}
-		} catch (final ParseException e) {
-			throw WrappedException.wrap(e, "Process' cron expression is not valid, process cannot be planned");
-		}
-
-		LOGGER.error(forecastDurationSeconds);
-		LOGGER.error(nodId);
-
-		return Optional.<Date> empty();
-	}*/
-
-	/*
-	private List<ProcessDefinition> getAllScheduledProcesses() {
-		final ProcessType processTypeHandled = getHandledProcessType();
-		final List<ProcessDefinition> processDefinitionHandled = definitionManager.getAllProcessDefinitionsByType(processTypeHandled);
-		return processDefinitionHandled.stream()
-				.filter(processDefinition -> processDefinition.isActive())// We only want actives
-				.filter(processDefinition -> processDefinition.getTriggeringStrategy().getCronExpression().isPresent())// We only want the processes to schedule
-				.collect(Collectors.toList());
-	}*/
-
-	/*
-	private void changeState(final OProcessPlanification processPlanification, final SchedulerState planificationState) {
-		Assertion.checkNotNull(processPlanification);
-		Assertion.checkNotNull(planificationState);
-		// ---
-		processPlanification.setSstCd(planificationState.name());
-	}*/
-
-	/*
-	private void triggerPlanification(final OProcessPlanification processPlanification) {
-		changeState(processPlanification, SchedulerState.TRIGGERED);
-		processPlanificationDAO.save(processPlanification);
-	}*/
-
-	/*
-	private void misfirePlanification(final OProcessPlanification processPlanification) {
-		changeState(processPlanification, SchedulerState.MISFIRED);
-		processPlanificationDAO.save(processPlanification);
-	}*/
-
-	// clean Planification on startup
-
-	/*private void cleanPastPlanification() {
-		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			doCleanPastPlanification();
-			transaction.commit();
-		}
-	}*/
-
-	/*
-	private void doCleanPastPlanification() {
-		final Date now = new Date();
-		planificationPAO.cleanPlanificationsOnBoot(now);
-		// ---
-		for (final OProcessPlanification planification : processPlanificationDAO.getAllLastPastPlanifications(now)) {
-			// We check the process policy of validity
-			final OProcess process = planification.getProcessus();
-			final long ageOfPlanification = (now.getTime() - planification.getExpectedTime().getTime()) / (60 * 1000L);// in seconds
-			if (ageOfPlanification < process.getRescuePeriod()) {
-				changeState(planification, SchedulerState.RESCUED);
-			} else {
-				changeState(planification, SchedulerState.MISFIRED);
-			}
-			processPlanificationDAO.save(planification);
-		}
-	}
-	*/
 
 	private static void changeActivityExecutionState(final OActivityExecution activityExecution, final ExecutionState executionState) {
 		// we need to check if the transistion is valid

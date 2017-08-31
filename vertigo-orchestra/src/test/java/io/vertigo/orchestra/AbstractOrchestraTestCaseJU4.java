@@ -82,6 +82,7 @@ public abstract class AbstractOrchestraTestCaseJU4 {
 					.add(" delete from o_process_execution;")
 					.add(" delete from o_activity;")
 					.add(" delete from o_process;")
+					.add(" delete from o_job_running;")
 					.build();
 
 			for (final String request : requests) {

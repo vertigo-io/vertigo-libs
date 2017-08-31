@@ -66,27 +66,16 @@ public final class ExecutionPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_RESERVE_ACTIVITIES_TO_LAUNCH.
-	 * @param nodId Long 
-	 * @param maxNumber Integer 
-	*/
-	public void reserveActivitiesToLaunch(final Long nodId, final Integer maxNumber) {
-		final Task task = createTaskBuilder("TK_RESERVE_ACTIVITIES_TO_LAUNCH")
-				.addValue("NOD_ID", nodId)
-				.addValue("MAX_NUMBER", maxNumber)
-				.build();
-		getTaskManager().execute(task);
-	}
-
-	/**
 	 * Execute la tache TK_RESERVE_PROCESS_TO_LAUNCH.
 	 * @param nodId Long 
+	 * @param dateExec java.util.Date 
 	 * @param processesNextRun io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessNextRun> 
 	 * @return Integer intSqlRowcount
 	*/
-	public Integer reserveProcessToLaunch(final Long nodId, final io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessNextRun> processesNextRun) {
+	public Integer reserveProcessToLaunch(final Long nodId, final java.util.Date dateExec, final io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessNextRun> processesNextRun) {
 		final Task task = createTaskBuilder("TK_RESERVE_PROCESS_TO_LAUNCH")
 				.addValue("NOD_ID", nodId)
+				.addValue("DATE_EXEC", dateExec)
 				.addValue("PROCESSES_NEXT_RUN", processesNextRun)
 				.build();
 		return getTaskManager()

@@ -44,11 +44,13 @@ public final class OJobRunningDAO extends DAO<OJobRunning, java.lang.Long> imple
 	/**
 	 * Execute la tache TK_GET_JOBS_TO_RUN.
 	 * @param nodId Long 
+	 * @param dateExec java.util.Date 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OJobRunning> dtoOJobRunning
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OJobRunning> getJobsToRun(final Long nodId) {
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OJobRunning> getJobsToRun(final Long nodId, final java.util.Date dateExec) {
 		final Task task = createTaskBuilder("TK_GET_JOBS_TO_RUN")
 				.addValue("NOD_ID", nodId)
+				.addValue("DATE_EXEC", dateExec)
 				.build();
 		return getTaskManager()
 				.execute(task)

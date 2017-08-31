@@ -44,13 +44,9 @@ import io.vertigo.orchestra.monitoring.dao.summary.SummaryPAO;
 import io.vertigo.orchestra.monitoring.dao.uidefinitions.UidefinitionsPAO;
 import io.vertigo.orchestra.monitoring.dao.uiexecutions.UiexecutionsPAO;
 import io.vertigo.orchestra.plugins.definitions.db.DbProcessDefinitionStorePlugin;
-import io.vertigo.orchestra.plugins.definitions.memory.MemoryProcessDefinitionStorePlugin;
-import io.vertigo.orchestra.plugins.services.execution.db.DbProcessExecutorPlugin;
-import io.vertigo.orchestra.plugins.services.execution.memory.MemoryProcessExecutorPlugin;
 import io.vertigo.orchestra.plugins.services.log.db.DbProcessLoggerPlugin;
 import io.vertigo.orchestra.plugins.services.report.db.DbProcessReportPlugin;
 import io.vertigo.orchestra.plugins.services.schedule.db.DbProcessSchedulerPlugin;
-import io.vertigo.orchestra.plugins.services.schedule.memory.MemoryProcessSchedulerPlugin;
 import io.vertigo.orchestra.services.OrchestraServices;
 import io.vertigo.orchestra.webservices.WsDefinition;
 import io.vertigo.orchestra.webservices.WsExecution;
@@ -84,11 +80,8 @@ public final class OrchestraFeatures extends Features {
 				.addPlugin(DbProcessSchedulerPlugin.class,
 						Param.of("nodeName", nodeName),
 						Param.of("planningPeriodSeconds", String.valueOf(daemonPeriodSeconds)),
-						Param.of("forecastDurationSeconds", String.valueOf(forecastDurationSeconds)))
-				.addPlugin(DbProcessExecutorPlugin.class,
-						Param.of("nodeName", nodeName),
-						Param.of("workersCount", String.valueOf(workersCount)),
-						Param.of("executionPeriodSeconds", String.valueOf(daemonPeriodSeconds)))
+						Param.of("forecastDurationSeconds", String.valueOf(forecastDurationSeconds)),
+						Param.of("workersCount", String.valueOf(workersCount)))
 				.addPlugin(DbProcessReportPlugin.class)
 				.addPlugin(DbProcessLoggerPlugin.class)
 				//----DAO
@@ -114,21 +107,6 @@ public final class OrchestraFeatures extends Features {
 						.addDefinitionResource("kpr", "io/vertigo/orchestra/execution.kpr")
 						.addDefinitionResource("classes", DtDefinitions.class.getName())
 						.build());
-		return this;
-	}
-
-	/**
-	 * Activate Orchestra with Memory.
-	 * @param workersCount the number of workers
-	 * @return these features
-	 */
-	public OrchestraFeatures withMemory(final int workersCount) {
-		getModuleConfigBuilder()
-				.addPlugin(MemoryProcessDefinitionStorePlugin.class)
-				.addPlugin(MemoryProcessSchedulerPlugin.class)
-				.addPlugin(MemoryProcessExecutorPlugin.class,
-						Param.of("workersCount", String.valueOf(workersCount)));
-
 		return this;
 	}
 
