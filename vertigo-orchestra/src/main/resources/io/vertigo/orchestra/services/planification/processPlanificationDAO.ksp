@@ -98,7 +98,7 @@ create Task TK_DELETE_PROCESS_PLANIFICATION {
 			"
 		attribute PRO_ID				{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
 		attribute DATE_EXEC				{domain : DO_O_TIMESTAMP 		notNull:"true" 	inOut :"in"}
-		attribute INT_SQL_ROWCOUNT		{domain : DO_O_NOMBRE 	notNull:"true" 	inOut :"out"}
+		attribute INT_SQL_ROWCOUNT		{domain : DO_O_NOMBRE 			notNull:"true" 	inOut :"out"}
 }
 
 
