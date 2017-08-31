@@ -101,7 +101,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private final int workersCount;
 	private final String nodeName;
-	private Long nodId = null;
+	private Long myNodId;
 	private final ExecutorService workers;
 	private final int executionPeriodSeconds;
 
@@ -148,18 +148,18 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	@Override
 	public void start() {
 		handleDeadNodeProcesses();
-		nodId = nodeManager.registerNode(nodeName);
+		myNodId = nodeManager.registerNode(nodeName);
 	}
 
 	@AutoSortAndPagination
 	private void executeProcesses() {
 		try {
-			Assertion.checkNotNull(nodId, "Node not already registered");
+			Assertion.checkNotNull(myNodId, "Node not already registered");
 
 			//XDD: Execute HERE
 			executeToDo();
 
-			nodeManager.updateHeartbeat(nodId);
+			nodeManager.updateHeartbeat(myNodId);
 			handleDeadNodeProcesses();
 		} catch (final Exception e) {
 			// We log the error and we continue the timer
@@ -174,8 +174,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		try {
 			// We wait for the workers to end properly.
 			// Without this wait for max 10 seconds, the App will be closed along with the TransactionManager.
-			// Hence, the Process/Activity cannot save that the current execution is in error. 
-			// With this wait, they may end up gracelly by using the current transaction to store the state of the current execution. 
+			// Hence, the Process/Activity cannot save that the current execution is in error.
+			// With this wait, they may end up gracelly by using the current transaction to store the state of the current execution.
 			final boolean allTasksTerminated = workers.awaitTermination(10, TimeUnit.SECONDS);
 			if (!allTasksTerminated) {
 				LOGGER.error("Timeout while waiting tasks to terminate. This may lead to further exception that use App.");
@@ -249,14 +249,14 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 		} catch (final Exception e) {
 			LOGGER.info("Unknow error ending a pending activity", e);
-			endActivityExecution(activityExecution, ExecutionState.ERROR, nodId);
+			endActivityExecution(activityExecution, ExecutionState.ERROR, myNodId);
 
 		} finally {
 			handleOtherServices(activityEngine, activityExecution, workspace);
 		}
 
 		// we continue with the standard workflow for ending executions
-		endActivityExecution(activityExecution, executionState, nodId);
+		endActivityExecution(activityExecution, executionState, myNodId);
 
 	}
 
@@ -421,8 +421,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private DtList<OActivityExecution> getActivitiesToLaunch() {
 		final int maxNumber = getUnusedWorkersCount();
 		// ---
-		executionPAO.reserveActivitiesToLaunch(nodId, maxNumber);
-		return activityExecutionDAO.getActivitiesToLaunch(nodId);
+		executionPAO.reserveActivitiesToLaunch(myNodId, maxNumber);
+		return activityExecutionDAO.getActivitiesToLaunch(myNodId);
 	}
 
 	private void initFirstActivityExecution(final OProcessExecution processExecution, final Optional<String> initialParams) {
@@ -430,7 +430,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		Assertion.checkNotNull(processExecution.getPreId());
 		// ---
 		final OActivity firstActivity = activityDAO.getFirstActivityByProcess(processExecution.getProId());
-		final OActivityExecution firstActivityExecution = initActivityExecutionWithActivity(firstActivity, processExecution.getPreId(), nodId);
+		final OActivityExecution firstActivityExecution = initActivityExecutionWithActivity(firstActivity, processExecution.getPreId(), myNodId);
 
 		activityExecutionDAO.save(firstActivityExecution); //LOCK
 
@@ -472,7 +472,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void reserveActivityExecution(final OActivityExecution activityExecution) {
 		activityExecution.setEstCd(ExecutionStateOld.SUBMITTED.name());
-		activityExecution.setNodId(nodId);
+		activityExecution.setNodId(myNodId);
 	}
 
 	private void endActivityExecutionAndInitNext(final OActivityExecution activityExecution, final Long nodId) {
@@ -620,7 +620,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		processExecutionDAO.save(processExecution);
 
 		executionPAO.deleteJobRunning(processExecution.getProId());
-		planificationPAO.deleteProcessPlanification(processExecution.getProId(), nodId);
+		planificationPAO.deleteProcessPlanification(processExecution.getProId(), myNodId);
 
 	}
 
