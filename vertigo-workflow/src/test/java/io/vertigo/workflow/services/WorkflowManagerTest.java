@@ -42,7 +42,6 @@ import org.junit.Test;
 
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
@@ -59,6 +58,7 @@ import io.vertigo.workflow.WfCodeTransition;
 import io.vertigo.workflow.WfWorkflowDecision;
 import io.vertigo.workflow.WfWorkflowDefinitionBuilder;
 import io.vertigo.workflow.WorkflowManager;
+import io.vertigo.workflow.data.MockIdentities;
 import io.vertigo.workflow.data.MyDummyDtObject;
 import io.vertigo.workflow.domain.instance.WfActivity;
 import io.vertigo.workflow.domain.instance.WfDecision;
@@ -80,7 +80,7 @@ public class WorkflowManagerTest extends DbTest {
 	private WorkflowManager workflowManager;
 
 	@Inject
-	private IdentityManager identityManager;
+	private MockIdentities mockIdentities;
 
 	@Inject
 	private ItemStorePlugin itemStorePlugin;
@@ -130,11 +130,11 @@ public class WorkflowManagerTest extends DbTest {
 
 		final AccountGroup accountGroup = new AccountGroup("1", "dummy group");
 		final Account account = Account.builder("Acc1").build();
-		identityManager.getStore().saveGroup(accountGroup);
-		identityManager.getStore().saveAccounts(Arrays.asList(account));
+		mockIdentities.saveGroup(accountGroup);
+		mockIdentities.saveAccounts(Arrays.asList(account));
 		final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
 		final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
-		identityManager.getStore().attach(accountUri, accountGroupUri);
+		mockIdentities.attach(accountUri, accountGroupUri);
 
 		// Step 1 : 1 rule, 1 condition
 		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
@@ -277,11 +277,11 @@ public class WorkflowManagerTest extends DbTest {
 
 		final AccountGroup accountGroup = new AccountGroup("1", "dummy group");
 		final Account account = Account.builder("Acc1").build();
-		identityManager.getStore().saveGroup(accountGroup);
-		identityManager.getStore().saveAccounts(Arrays.asList(account));
+		mockIdentities.saveGroup(accountGroup);
+		mockIdentities.saveAccounts(Arrays.asList(account));
 		final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
 		final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
-		identityManager.getStore().attach(accountUri, accountGroupUri);
+		mockIdentities.attach(accountUri, accountGroupUri);
 
 		// Step 1 : 1 rule, 1 condition
 		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);

@@ -19,7 +19,7 @@
 package io.vertigo.workflow;
 
 import io.vertigo.account.AccountFeatures;
-import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
+import io.vertigo.account.plugins.identity.store.loader.LoaderAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
@@ -40,6 +40,7 @@ import io.vertigo.rules.plugins.memory.MemoryRuleConstantsStorePlugin;
 import io.vertigo.rules.plugins.memory.MemoryRuleStorePlugin;
 import io.vertigo.rules.plugins.selector.SimpleRuleSelectorPlugin;
 import io.vertigo.rules.plugins.validator.SimpleRuleValidatorPlugin;
+import io.vertigo.workflow.data.MockIdentities;
 import io.vertigo.workflow.data.MyDummyDtObjectProvider;
 import io.vertigo.workflow.data.TestUserSession;
 import io.vertigo.workflow.plugin.MemoryItemStorePlugin;
@@ -81,7 +82,10 @@ public class MyAppConfig {
 						.addDataStorePlugin(SqlDataStorePlugin.class)
 						.build())
 				.addModule(new AccountFeatures()
-						.withAccountStorePlugin(MemoryAccountStorePlugin.class).build())
+						.withAccountStorePlugin(LoaderAccountStorePlugin.class,
+								Param.of("accountLoaderName", "MockIdentities"),
+								Param.of("groupLoaderName", "MockIdentities"))
+						.build())
 				.addModule(new RulesFeatures()
 						.withRuleStorePlugin(MemoryRuleStorePlugin.class)
 						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)
@@ -93,6 +97,7 @@ public class MyAppConfig {
 						.withItemStorePlugin(MemoryItemStorePlugin.class).build())
 				.addModule(ModuleConfig.builder("dummy")
 						.addDefinitionProvider(MyDummyDtObjectProvider.class)
+						.addComponent(MockIdentities.class)
 						.build());
 
 		return appConfigBuilder.build();
