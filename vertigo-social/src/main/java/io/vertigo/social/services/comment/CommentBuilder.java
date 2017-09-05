@@ -47,7 +47,7 @@ public final class CommentBuilder implements Builder<Comment> {
 		//RAF
 	}
 
-	private static IdentityManager getAccountManager() {
+	private static IdentityManager getIdentityManager() {
 		return Home.getApp().getComponentSpace().resolve(IdentityManager.class);
 	}
 
@@ -60,7 +60,7 @@ public final class CommentBuilder implements Builder<Comment> {
 		Assertion.checkNotNull(author);
 		//-----
 		myAuthor = author;
-		myAuthorDisplayName = getAccountManager().getStore().getAccount(author).getDisplayName();
+		myAuthorDisplayName = getIdentityManager().getAccount(author).getDisplayName();
 		return this;
 	}
 

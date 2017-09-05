@@ -38,7 +38,6 @@ import io.restassured.parsing.Parser;
 import io.restassured.response.Response;
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
@@ -47,7 +46,7 @@ import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.social.MyAppConfig;
-import io.vertigo.social.comment.data.Accounts;
+import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.services.comment.Comment;
 import io.vertigo.social.services.comment.CommentServices;
 import io.vertigo.util.MapBuilder;
@@ -68,7 +67,7 @@ public final class CommentWebServicesTest {
 	@Inject
 	private CommentServices commentServices;
 	@Inject
-	private IdentityManager identityManager;
+	private MockIdentities mockIdentities;
 
 	@BeforeClass
 	public static void setUp() {
@@ -82,8 +81,8 @@ public final class CommentWebServicesTest {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		}
-		Accounts.initData(identityManager);
-		account1Uri = Accounts.createAccountURI("1");
+		mockIdentities.initData();
+		account1Uri = mockIdentities.createAccountURI("1");
 
 		//on triche un peu, car AcountGroup n'est pas un KeyConcept
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);

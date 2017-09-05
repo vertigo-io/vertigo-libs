@@ -18,7 +18,6 @@
  */
 package io.vertigo.social.webservices.account;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,7 +58,7 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/{id}")
 	@AnonymousAccessAllowed
 	public Account getAccount(@PathParam("id") final String id) {
-		return identityManager.getStore().getAccount(DtObjectUtil.createURI(Account.class, id));
+		return identityManager.getAccount(DtObjectUtil.createURI(Account.class, id));
 	}
 
 	/**
@@ -71,19 +70,8 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/{id}/photo")
 	@AnonymousAccessAllowed
 	public VFile getAccountPhoto(@PathParam("id") final String id) {
-		return identityManager.getStore().getPhoto(DtObjectUtil.createURI(Account.class, id))
+		return identityManager.getPhoto(DtObjectUtil.createURI(Account.class, id))
 				.orElse(identityManager.getDefaultPhoto());
-	}
-
-	/**
-	 * Gets all groups.
-	 *
-	 * @return all groups
-	 */
-	@GET("/api/groups")
-	@AnonymousAccessAllowed
-	public Collection<AccountGroup> getAllGroups() {
-		return identityManager.getStore().getAllGroups();
 	}
 
 	/**
@@ -95,7 +83,7 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/groups/{id}")
 	@AnonymousAccessAllowed
 	public AccountGroup getAccountGroup(@PathParam("id") final String id) {
-		return identityManager.getStore().getGroup(DtObjectUtil.createURI(AccountGroup.class, id));
+		return identityManager.getGroup(DtObjectUtil.createURI(AccountGroup.class, id));
 	}
 
 	//-----
@@ -119,8 +107,8 @@ public final class AccountWebServices implements WebServices {
 	public Map<String, Object> getStats() {
 		final Map<String, Object> stats = new HashMap<>();
 		final Map<String, Object> sizeStats = new MapBuilder<String, Object>()
-				.put("accounts", identityManager.getStore().getAccountsCount())
-				.put("groups", identityManager.getStore().getGroupsCount())
+				.put("accounts", "undefined") //TODO à voir quels stats on veut
+				.put("groups", "undefined")
 				.build();
 		stats.put("size", sizeStats);
 		return stats;

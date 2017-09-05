@@ -27,12 +27,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.restassured.RestAssured;
-import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.social.MyAppConfig;
-import io.vertigo.social.account.data.Accounts;
+import io.vertigo.social.data.MockIdentities;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -41,8 +40,9 @@ import redis.clients.jedis.Jedis;
  */
 public final class AccountWebServicesTest {
 	private static AutoCloseableApp app;
+
 	@Inject
-	private IdentityManager identityManager;
+	private MockIdentities mockIdentities;
 	@Inject
 	private RedisConnector redisConnector;
 
@@ -62,7 +62,7 @@ public final class AccountWebServicesTest {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		} //populate accounts
-		Accounts.initData(identityManager);
+		mockIdentities.initData();
 	}
 
 	@AfterClass
@@ -89,11 +89,6 @@ public final class AccountWebServicesTest {
 	@Test
 	public void testGetPhotoByAccountId() {
 		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/api/1/photo");
-	}
-
-	@Test
-	public void testGetAllGroups() {
-		assertStatusCode(HttpStatus.SC_OK, "/x/accounts/api/groups");
 	}
 
 	@Test
