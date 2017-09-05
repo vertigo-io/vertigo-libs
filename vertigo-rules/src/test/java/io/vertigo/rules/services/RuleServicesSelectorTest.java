@@ -37,7 +37,6 @@ import org.junit.Test;
 
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.identity.AccountStore;
 import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
@@ -45,6 +44,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.rules.MyAppConfig;
 import io.vertigo.rules.data.MyDummyDtObject;
+import io.vertigo.rules.data.MockIdentities;
 import io.vertigo.rules.domain.RuleFilterDefinition;
 import io.vertigo.rules.domain.SelectorDefinition;
 
@@ -63,6 +63,9 @@ public class RuleServicesSelectorTest extends DbTest {
 
 	@Inject
 	private IdentityManager identityManager;
+
+	@Inject
+	private MockIdentities identities;
 
 	/**
 	 * Setup
@@ -142,11 +145,10 @@ public class RuleServicesSelectorTest extends DbTest {
 		final Account account = Account.builder("0").withDisplayName("User 1").withEmail("user1@account.vertigo.io")
 				.build();
 
-		final AccountStore accountStore = identityManager.getStore();
-		accountStore.saveAccounts(Arrays.asList(account));
+		identities.saveAccounts(Arrays.asList(account));
 
-		accountStore.saveGroup(accountGroup);
-		accountStore.attach(createAccountURI(account.getId()), createGroupURI(accountGroup.getId()));
+		identities.saveGroup(accountGroup);
+		identities.attach(createAccountURI(account.getId()), createGroupURI(accountGroup.getId()));
 
 		// Selector created to Item 1
 		final SelectorDefinition selector = new SelectorDefinition();
@@ -181,11 +183,10 @@ public class RuleServicesSelectorTest extends DbTest {
 		final Account account = Account.builder("0").withDisplayName("User 1").withEmail("user1@account.vertigo.io")
 				.build();
 
-		final AccountStore accountStore = identityManager.getStore();
-		accountStore.saveAccounts(Arrays.asList(account));
+		identities.saveAccounts(Arrays.asList(account));
 
-		accountStore.saveGroup(accountGroup);
-		accountStore.attach(createAccountURI(account.getId()), createGroupURI(accountGroup.getId()));
+		identities.saveGroup(accountGroup);
+		identities.attach(createAccountURI(account.getId()), createGroupURI(accountGroup.getId()));
 
 		// Selector created to Item 1
 		final SelectorDefinition selector_1 = new SelectorDefinition();
@@ -248,11 +249,10 @@ public class RuleServicesSelectorTest extends DbTest {
 		final Account account_1_2 = Account.builder("1").withDisplayName("User 2 Group 1")
 				.withEmail("user1@account.vertigo.io").build();
 
-		AccountStore accountStore = identityManager.getStore();
-		accountStore.saveAccounts(Arrays.asList(account_1_1, account_1_2));
-		accountStore.saveGroup(accountGroup_1);
-		accountStore.attach(createAccountURI(account_1_1.getId()), createGroupURI(accountGroup_1.getId()));
-		accountStore.attach(createAccountURI(account_1_2.getId()), createGroupURI(accountGroup_1.getId()));
+		identities.saveAccounts(Arrays.asList(account_1_1, account_1_2));
+		identities.saveGroup(accountGroup_1);
+		identities.attach(createAccountURI(account_1_1.getId()), createGroupURI(accountGroup_1.getId()));
+		identities.attach(createAccountURI(account_1_2.getId()), createGroupURI(accountGroup_1.getId()));
 
 		final AccountGroup accountGroup_2 = new AccountGroup("2", "Group activity 2");
 
@@ -262,11 +262,10 @@ public class RuleServicesSelectorTest extends DbTest {
 		final Account account_2_2 = Account.builder("3").withDisplayName("User 2 Group 2")
 				.withEmail("user1@account.vertigo.io").build();
 
-		accountStore = identityManager.getStore();
-		accountStore.saveAccounts(Arrays.asList(account_2_1, account_2_2));
-		accountStore.saveGroup(accountGroup_2);
-		accountStore.attach(createAccountURI(account_2_1.getId()), createGroupURI(accountGroup_2.getId()));
-		accountStore.attach(createAccountURI(account_2_2.getId()), createGroupURI(accountGroup_2.getId()));
+		identities.saveAccounts(Arrays.asList(account_2_1, account_2_2));
+		identities.saveGroup(accountGroup_2);
+		identities.attach(createAccountURI(account_2_1.getId()), createGroupURI(accountGroup_2.getId()));
+		identities.attach(createAccountURI(account_2_2.getId()), createGroupURI(accountGroup_2.getId()));
 
 		// Selector 1 created to Item 1
 		final SelectorDefinition selector_1 = new SelectorDefinition();

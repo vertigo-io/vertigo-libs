@@ -19,7 +19,7 @@
 package io.vertigo.rules;
 
 import io.vertigo.account.AccountFeatures;
-import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
+import io.vertigo.account.plugins.identity.store.loader.LoaderAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
@@ -31,6 +31,7 @@ import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlu
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
+import io.vertigo.rules.data.MockIdentities;
 import io.vertigo.rules.data.MyDummyDtObjectProvider;
 import io.vertigo.rules.data.TestUserSession;
 import io.vertigo.rules.impl.RulesFeatures;
@@ -76,10 +77,13 @@ public class MyAppConfig {
 						.addDataStorePlugin(SqlDataStorePlugin.class)
 						.build())
 				.addModule(new AccountFeatures()
-						.withAccountStorePlugin(MemoryAccountStorePlugin.class)
+						.withAccountStorePlugin(LoaderAccountStorePlugin.class,
+								Param.of("accountLoaderName", "MockIdentities"),
+								Param.of("groupLoaderName", "MockIdentities"))
 						.build())
 				.addModule(ModuleConfig.builder("dummy")
 						.addDefinitionProvider(MyDummyDtObjectProvider.class)
+						.addComponent(MockIdentities.class)
 						.build())
 				.addModule(new RulesFeatures()
 						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)
