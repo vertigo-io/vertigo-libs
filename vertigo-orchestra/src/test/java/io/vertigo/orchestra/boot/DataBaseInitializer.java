@@ -25,7 +25,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
-import java.util.Collections;
 
 import javax.inject.Inject;
 
@@ -34,6 +33,7 @@ import io.vertigo.core.component.Component;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -94,8 +94,7 @@ public class DataBaseInitializer implements Component, Activeable {
 
 	private static void execCallableStatement(final SqlConnection connection, final SqlDataBaseManager sqlDataBaseManager, final String sql) {
 		try {
-			sqlDataBaseManager.createPreparedStatement(connection)
-					.executeUpdate(sql, Collections.emptyList());
+			sqlDataBaseManager.executeUpdate(SqlStatement.builder(sql).build(), connection);
 		} catch (final SQLException e) {
 			throw WrappedException.wrap(e, "Can't exec command {0}", sql);
 		}
