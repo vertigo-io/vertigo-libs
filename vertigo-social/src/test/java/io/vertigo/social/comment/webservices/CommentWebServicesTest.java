@@ -82,7 +82,7 @@ public final class CommentWebServicesTest {
 			jedis.flushAll();
 		}
 		mockIdentities.initData();
-		account1Uri = mockIdentities.createAccountURI("1");
+		account1Uri = MockIdentities.createAccountURI("1");
 
 		//on triche un peu, car AcountGroup n'est pas un KeyConcept
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);

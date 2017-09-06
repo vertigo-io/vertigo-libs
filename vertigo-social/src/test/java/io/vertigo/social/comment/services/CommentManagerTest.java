@@ -62,7 +62,7 @@ public class CommentManagerTest {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		}
-		accountURI1 = mockIdentities.createAccountURI("1");
+		accountURI1 = MockIdentities.createAccountURI("1");
 		mockIdentities.initData();
 
 		//on triche un peu, car AcountGroup n'est pas un KeyConcept
