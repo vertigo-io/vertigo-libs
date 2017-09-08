@@ -109,6 +109,11 @@ Change mode :
 		<s:file name="fileTest" theme="simple" label="Test upload/download"/>
 		<s:submit action="uploadFileAccueil" value="Upload"/>
 	</s:form>
+	
+	<s:form id="uploadFiles" method="post" enctype="multipart/form-data" >
+		<s:file name="filesTest" theme="simple" label="Test upload/download" multiple="multiple"/>
+		<s:submit action="uploadFilesAccueil" value="Upload"/>
+	</s:form>
 		
 	<s:form id="saveAjax">
 		<h1>Test Ajax Submit</h1>		

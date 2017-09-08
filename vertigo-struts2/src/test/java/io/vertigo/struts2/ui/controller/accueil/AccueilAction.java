@@ -34,6 +34,7 @@ import io.vertigo.struts2.core.ContextListModifiable;
 import io.vertigo.struts2.core.ContextMdl;
 import io.vertigo.struts2.core.ContextRef;
 import io.vertigo.struts2.core.ContextVFile;
+import io.vertigo.struts2.core.ContextVFiles;
 import io.vertigo.struts2.core.GET;
 import io.vertigo.struts2.domain.DtDefinitions.MovieDisplayFields;
 import io.vertigo.struts2.domain.movies.Movie;
@@ -62,6 +63,7 @@ public class AccueilAction extends AbstractTestActionSupport {
 	private final ContextRef<String> currentDate = new ContextRef<>("currentDate", String.class, this);
 
 	private final ContextVFile fileTestFileRef = new ContextVFile("fileTest", this);
+	private final ContextVFiles filesTestFileRef = new ContextVFiles("filesTest", this);
 
 	@Inject
 	private MovieServices movieServices;
@@ -112,6 +114,18 @@ public class AccueilAction extends AbstractTestActionSupport {
 		}
 		final VFile vFile = fileTestFileRef.get();
 		getUiMessageStack().addGlobalMessage(Level.INFO, "Fichier recu : " + vFile.getFileName() + " (" + vFile.getMimeType() + ")");
+		return NONE;
+	}
+
+	public String uploadFiles() {
+		if (!filesTestFileRef.exists()) {
+			throw new VUserException("Aucun fichiers uploadé.");
+		}
+		final VFile[] vFiles = filesTestFileRef.get();
+		getUiMessageStack().addGlobalMessage(Level.INFO, vFiles.length + " fichiers recus");
+		for (final VFile vFile : vFiles) {
+			getUiMessageStack().addGlobalMessage(Level.INFO, "Fichier recu : " + vFile.getFileName() + " (" + vFile.getMimeType() + ")");
+		}
 		return NONE;
 	}
 
