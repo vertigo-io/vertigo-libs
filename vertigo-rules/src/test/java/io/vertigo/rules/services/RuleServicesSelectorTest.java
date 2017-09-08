@@ -37,14 +37,13 @@ import org.junit.Test;
 
 import io.vertigo.account.identity.Account;
 import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.identity.IdentityManager;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.rules.MyAppConfig;
-import io.vertigo.rules.data.MyDummyDtObject;
 import io.vertigo.rules.data.MockIdentities;
+import io.vertigo.rules.data.MyDummyDtObject;
 import io.vertigo.rules.domain.RuleFilterDefinition;
 import io.vertigo.rules.domain.SelectorDefinition;
 
@@ -60,9 +59,6 @@ public class RuleServicesSelectorTest extends DbTest {
 
 	@Inject
 	private RuleServices ruleServices;
-
-	@Inject
-	private IdentityManager identityManager;
 
 	@Inject
 	private MockIdentities identities;
