@@ -38,7 +38,7 @@
 					   <div class="graph-panel" 
 					  		data-url="/dashboard/data/series" 
 					  		data-query-data-filter='{"measurement":"metric","name":"entityCount", "topic":"${entity.name}" ,"location":"*","measures":["value:median"]}'
-					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}' >
+					  		data-query-time-filter='{"from" : "now() - 1w", "to" : "now()", "dim" : "6m"}' >
 					  	</div>
 				</@module.lineDetail >
 			</#list>

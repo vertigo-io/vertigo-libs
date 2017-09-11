@@ -1,13 +1,16 @@
 package io.vertigo.dashboard.impl.services.data;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -57,7 +60,7 @@ public class InfluxDbDataProvider implements DataProvider {
 	public TimedDatas getTimeSeries(final DataFilter dataFilter, final TimeFilter timeFilter) {
 		final StringBuilder queryBuilder = buildQuery(dataFilter, timeFilter);
 
-		queryBuilder.append(" group by time(").append(timeFilter.getDim()).append(")");
+		queryBuilder.append(" group by time(").append(timeFilter.getDim()).append(") fill(\"linear\")");
 
 		final Query query = new Query(queryBuilder.toString(), "pandora");
 		final QueryResult queryResult = influxDB.query(query);
@@ -126,10 +129,22 @@ public class InfluxDbDataProvider implements DataProvider {
 
 	@Override
 	public List<Metric> getMetrics() {
-		if (appMetrics == null) {
-			loadMetrics();
-		}
-		return appMetrics;
+		final DataFilter dataFilter = new DataFilter("metric", "*", "*", null, Arrays.asList("value:last", "name:last", "topic:last"));
+		final TimeFilter timeFilter = new TimeFilter("now() - 1w", "now()", null);
+
+		return getTabularData(dataFilter, timeFilter, "name", "topic")
+				.getDataSeries()
+				.values()
+				.stream()
+				.map(timedDataSerie -> Metric.builder()
+						.withName((String) timedDataSerie.getValues().get("name:last"))
+						.withTopic((String) timedDataSerie.getValues().get("topic:last"))
+						.withMeasureInstant(Instant.ofEpochMilli(timedDataSerie.getTime()))
+						.withValue((Double) timedDataSerie.getValues().get("value:last"))
+						.withSuccess()
+						.build())
+				.collect(Collectors.toList());
+
 	}
 
 	private void loadHealthChecks() {
@@ -140,10 +155,13 @@ public class InfluxDbDataProvider implements DataProvider {
 	}
 
 	@Override
-	public TabularDatas getTabularData(final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy) {
+	public TabularDatas getTabularData(final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
 		final StringBuilder queryBuilder = buildQuery(dataFilter, timeFilter);
 
-		queryBuilder.append(" group by \"").append(groupBy).append("\"");
+		final String groupByClause = Stream.of(groupBy)
+				.collect(Collectors.joining("\", \"", "\"", "\""));
+
+		queryBuilder.append(" group by ").append(groupByClause);
 
 		final Query query = new Query(queryBuilder.toString(), "pandora");
 		final QueryResult queryResult = influxDB.query(query);
@@ -151,10 +169,10 @@ public class InfluxDbDataProvider implements DataProvider {
 		final List<Series> series = queryResult.getResults().get(0).getSeries();
 
 		if (series != null && series.size() > 0) {
-			final Map<String, TimedDataSerie> result = series
+			final Map<Map<String, String>, TimedDataSerie> result = series
 					.stream()
 					.collect(Collectors.toMap(
-							serie -> serie.getTags().get(groupBy),
+							serie -> serie.getTags(),
 							serie -> new TimedDataSerie(
 									LocalDateTime.parse(serie.getValues().get(0).get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond(ZoneOffset.UTC),
 									buildMapValue(serie.getColumns(), serie.getValues().get(0)))));

@@ -49,7 +49,7 @@ public class DynamoDashboardControler extends AbstractDashboardModuleControler {
 
 	}
 
-	private Double getValue(final TabularDatas tabularDatas, final String serieName, final String measureName) {
+	private static Double getValue(final TabularDatas tabularDatas, final String serieName, final String measureName) {
 		if (tabularDatas.getDataSeries().containsKey(serieName)) {
 			final TimedDataSerie timedDataSerie = tabularDatas.getDataSeries().get(serieName);
 			if (timedDataSerie.getValues().containsKey(serieName)) {

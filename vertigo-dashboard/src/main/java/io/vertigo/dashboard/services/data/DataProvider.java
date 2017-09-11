@@ -14,6 +14,6 @@ public interface DataProvider extends Component {
 
 	public List<Metric> getMetrics();
 
-	public TabularDatas getTabularData(final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy);
+	public TabularDatas getTabularData(final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy);
 
 }
