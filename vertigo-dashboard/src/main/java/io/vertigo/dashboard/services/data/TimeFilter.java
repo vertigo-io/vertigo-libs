@@ -10,6 +10,15 @@ public class TimeFilter implements Serializable {
 	private String to;
 	private String dim;
 
+	public TimeFilter(
+			final String from,
+			final String to,
+			final String dim) {
+		this.from = from;
+		this.to = to;
+		this.dim = dim;
+	}
+
 	public String getFrom() {
 		return from;
 	}

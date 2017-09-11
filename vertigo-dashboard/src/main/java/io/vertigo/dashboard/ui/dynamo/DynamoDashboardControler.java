@@ -1,5 +1,6 @@
 package io.vertigo.dashboard.ui.dynamo;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -9,12 +10,18 @@ import java.util.stream.Collectors;
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.dashboard.services.data.DataFilter;
+import io.vertigo.dashboard.services.data.TabularDatas;
+import io.vertigo.dashboard.services.data.TimeFilter;
+import io.vertigo.dashboard.services.data.TimedDataSerie;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
 import io.vertigo.dashboard.ui.dynamo.model.DomainModel;
 import io.vertigo.dashboard.ui.dynamo.model.EntityModel;
+import io.vertigo.dashboard.ui.dynamo.model.TaskModel;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
+import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 
 public class DynamoDashboardControler extends AbstractDashboardModuleControler {
 
@@ -22,6 +29,34 @@ public class DynamoDashboardControler extends AbstractDashboardModuleControler {
 	public void doBuildModel(final App app, final Map<String, Object> model) {
 		buildEntityModel(app, model);
 		buildDomainModel(app, model);
+		buildTaskModel(app, model);
+	}
+
+	private void buildTaskModel(final App app, final Map<String, Object> model) {
+		final DataFilter dataFilter = new DataFilter("tasks", "*", "*", null, Arrays.asList("duration:median", "duration:count"));
+		final TimeFilter timeFilter = new TimeFilter("now() - 1w", "now()", null);
+		final TabularDatas tabularDatas = dataProvider.getTabularData(dataFilter, timeFilter, "name");
+
+		final List<TaskModel> tasks = Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
+				.stream()
+				.map(taskDefinition -> new TaskModel(
+						taskDefinition,
+						getValue(tabularDatas, "/execute/" + taskDefinition.getName(), "duration:count"),
+						getValue(tabularDatas, "/execute/" + taskDefinition.getName(), "duration:median")))
+				.collect(Collectors.toList());
+
+		model.put("tasks", tasks);
+
+	}
+
+	private Double getValue(final TabularDatas tabularDatas, final String serieName, final String measureName) {
+		if (tabularDatas.getDataSeries().containsKey(serieName)) {
+			final TimedDataSerie timedDataSerie = tabularDatas.getDataSeries().get(serieName);
+			if (timedDataSerie.getValues().containsKey(serieName)) {
+				return (Double) timedDataSerie.getValues().get(serieName);
+			}
+		}
+		return null;
 	}
 
 	private void buildEntityModel(final App app, final Map<String, Object> model) {

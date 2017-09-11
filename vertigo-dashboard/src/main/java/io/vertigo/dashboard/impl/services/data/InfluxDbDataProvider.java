@@ -3,6 +3,7 @@ package io.vertigo.dashboard.impl.services.data;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.dashboard.services.data.DataFilter;
 import io.vertigo.dashboard.services.data.DataProvider;
+import io.vertigo.dashboard.services.data.TabularDatas;
 import io.vertigo.dashboard.services.data.TimeFilter;
 import io.vertigo.dashboard.services.data.TimedDataSerie;
 import io.vertigo.dashboard.services.data.TimedDatas;
@@ -53,6 +55,29 @@ public class InfluxDbDataProvider implements DataProvider {
 
 	@Override
 	public TimedDatas getTimeSeries(final DataFilter dataFilter, final TimeFilter timeFilter) {
+		final StringBuilder queryBuilder = buildQuery(dataFilter, timeFilter);
+
+		queryBuilder.append(" group by time(").append(timeFilter.getDim()).append(")");
+
+		final Query query = new Query(queryBuilder.toString(), "pandora");
+		final QueryResult queryResult = influxDB.query(query);
+
+		final List<Series> seriesList = queryResult.getResults().get(0).getSeries();
+		if (seriesList != null && seriesList.size() > 0) {
+
+			final Series series = seriesList.get(0);
+			final List<TimedDataSerie> dataSeries = series
+					.getValues()
+					.stream()
+					.map(values -> new TimedDataSerie(LocalDateTime.parse(values.get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond(ZoneOffset.UTC), buildMapValue(series.getColumns(), values)))
+					.collect(Collectors.toList());
+			return new TimedDatas(dataSeries, series.getColumns().subList(1, series.getColumns().size()));//we remove the first one
+		}
+		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
+
+	}
+
+	private StringBuilder buildQuery(final DataFilter dataFilter, final TimeFilter timeFilter) {
 		final StringBuilder queryBuilder = new StringBuilder("select ");
 
 		String separator = "";
@@ -72,21 +97,7 @@ public class InfluxDbDataProvider implements DataProvider {
 		if (dataFilter.getTopic() != null && "*".equals(dataFilter.getTopic())) {
 			queryBuilder.append(" and \"topic\"='").append(dataFilter.getTopic()).append("'");
 		}
-
-		queryBuilder.append(" group by time(").append(timeFilter.getDim()).append(")");
-
-		final Query query = new Query(queryBuilder.toString(), "pandora");
-		final QueryResult queryResult = influxDB.query(query);
-
-		final Series series = queryResult.getResults().get(0).getSeries().get(0);
-
-		final List<TimedDataSerie> dataSeries = series
-				.getValues()
-				.stream()
-				.map(values -> new TimedDataSerie(LocalDateTime.parse(values.get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond(ZoneOffset.UTC), buildMapValue(series.getColumns(), values)))
-				.collect(Collectors.toList());
-		return new TimedDatas(dataSeries, series.getColumns().subList(1, series.getColumns().size()));//we remove the first one
-
+		return queryBuilder;
 	}
 
 	final static Map<String, Object> buildMapValue(final List<String> columns, final List<Object> values) {
@@ -126,6 +137,31 @@ public class InfluxDbDataProvider implements DataProvider {
 			appHealthChecks = analyticsManager.getHealthChecks();
 		}
 
+	}
+
+	@Override
+	public TabularDatas getTabularData(final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy) {
+		final StringBuilder queryBuilder = buildQuery(dataFilter, timeFilter);
+
+		queryBuilder.append(" group by \"").append(groupBy).append("\"");
+
+		final Query query = new Query(queryBuilder.toString(), "pandora");
+		final QueryResult queryResult = influxDB.query(query);
+
+		final List<Series> series = queryResult.getResults().get(0).getSeries();
+
+		if (series != null && series.size() > 0) {
+			final Map<String, TimedDataSerie> result = series
+					.stream()
+					.collect(Collectors.toMap(
+							serie -> serie.getTags().get(groupBy),
+							serie -> new TimedDataSerie(
+									LocalDateTime.parse(serie.getValues().get(0).get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond(ZoneOffset.UTC),
+									buildMapValue(serie.getColumns(), serie.getValues().get(0)))));
+
+			return new TabularDatas(result, series.get(0).getColumns().subList(1, series.get(0).getColumns().size()));
+		}
+		return new TabularDatas(Collections.emptyMap(), Collections.emptyList());
 	}
 
 }

@@ -35,14 +35,49 @@
 		<@module.standardDetail>
 			<#list entities as entity>
 				<@module.lineDetail  type='entity' name=entity.name >
-					<@module.formGroup>
-					 	<@module.property 'Count' entity.count />
-					 	<@module.property 'TaskCount' entity.taskCount />
-					 	<@module.property 'Fields' entity.fieldCount />
-					  </@module.formGroup>
 					   <div class="graph-panel" 
 					  		data-url="/dashboard/data/series" 
 					  		data-query-data-filter='{"measurement":"metric","name":"entityCount", "topic":"${entity.name}" ,"location":"*","measures":["value:median"]}'
+					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}' >
+					  	</div>
+				</@module.lineDetail >
+			</#list>
+		</@module.standardDetail>
+		 <div id="myStandAloneBarChart"
+					  		data-url="/dashboard/data/tabular" 
+					  		data-query-data-filter='{"measurement":"tasks","name":"*", "location":"*","measures":["duration:median"]}'
+					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()"}' 
+					  		data-query-group-by='name' >
+					  	</div>
+	</@module.standardPanel>
+	
+	<@module.standardPanel 'Tasks' 'tasks' >
+		<@module.standardList>
+			<table class="table table-sm sortable">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th data-sortable="true">Hits</th>
+						<th data-sortable="true">Mean duration</th>
+					</tr>
+				</thead>
+				<tbody>
+			<#list tasks as task>
+				<tr id="taskDetail-${task.name}-list" data-toggle="list" href="#taskDetail-${task.name?replace("/", "_")}" role="tab" >
+					<th scope="row">${task.name}</th>
+					<td>${task.executionCount!'N/A'}</td>
+					<td>${task.medianDuration!'N/A'}</td>
+				</tr>
+			</#list>
+				</tbody>
+			</table>
+		</@module.standardList>
+		<@module.standardDetail>
+			<#list tasks as task>
+				<@module.lineDetail  type='task' name=task.name?replace("/", "_") >
+					   <div class="graph-panel" 
+					  		data-url="/dashboard/data/series" 
+					  		data-query-data-filter='{"measurement":"tasks","name":"${task.name}","location":"*","measures":["duration:median","duration:max"]}'
 					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}' >
 					  	</div>
 				</@module.lineDetail >
@@ -79,15 +114,14 @@
 					 	<@module.property 'Used by ' domain.taskCount+' tasks' />
 					 	<@module.property 'Used by' domain.dtDefinitionCount+' DtDefinitions' />
 					  </@module.formGroup>
-					   <div class="graph-panel" 
-					  		data-url="/dashboard/data/series" 
-					  		data-query-data-filter='{"measurement":"tasks","name":"*","location":"*","measures":["duration:median","duration:max"]}'
-					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}' >
-					  	</div>
 				</@module.lineDetail >
 			</#list>
 		</@module.standardDetail>
 	</@module.standardPanel>
+	
+	
+	
+	
 	
 	<section class="row">
 	  	<div class="col-md-12">

@@ -13,6 +13,19 @@ public class DataFilter implements Serializable {
 	private String topic;
 	private List<String> measures;
 
+	public DataFilter(
+			final String measurement,
+			final String location,
+			final String name,
+			final String topic,
+			final List<String> measures) {
+		this.measurement = measurement;
+		this.location = location;
+		this.name = name;
+		this.topic = topic;
+		this.measures = measures;
+	}
+
 	public String getMeasurement() {
 		return measurement;
 	}
@@ -41,7 +54,7 @@ public class DataFilter implements Serializable {
 		return topic;
 	}
 
-	public void setTopic(String topic) {
+	public void setTopic(final String topic) {
 		this.topic = topic;
 	}
 
