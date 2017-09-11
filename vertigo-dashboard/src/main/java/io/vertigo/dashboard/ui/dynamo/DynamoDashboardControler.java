@@ -27,8 +27,9 @@ public class DynamoDashboardControler extends AbstractDashboardModuleControler {
 
 	@Override
 	public void doBuildModel(final App app, final Map<String, Object> model) {
-		buildEntityModel(app, model);
-		buildDomainModel(app, model);
+		final List<Metric> metrics = dataProvider.getMetrics();
+		buildEntityModel(app, model, metrics);
+		buildDomainModel(app, model, metrics);
 		buildTaskModel(app, model);
 	}
 
@@ -59,9 +60,8 @@ public class DynamoDashboardControler extends AbstractDashboardModuleControler {
 		return null;
 	}
 
-	private void buildEntityModel(final App app, final Map<String, Object> model) {
+	private static void buildEntityModel(final App app, final Map<String, Object> model, final List<Metric> metrics) {
 		final Map<String, Double> entityCounts = new HashMap<>();
-		final List<Metric> metrics = dataProvider.getMetrics();
 
 		metrics
 				.stream()
@@ -97,9 +97,9 @@ public class DynamoDashboardControler extends AbstractDashboardModuleControler {
 		model.put("keyConceptCount", keyConceptCount);
 	}
 
-	private void buildDomainModel(final App app, final Map<String, Object> model) {
+	private static void buildDomainModel(final App app, final Map<String, Object> model, final List<Metric> metrics) {
 		final Map<String, Double> taskCount = new HashMap<>();
-		final List<Metric> metrics = dataProvider.getMetrics();
+
 		metrics
 				.stream()
 				.filter(metric -> "domainUsageInTasks".equals(metric.getName()))

@@ -21,8 +21,10 @@ import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 import org.influxdb.dto.QueryResult.Series;
 
-import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.commons.analytics.health.HealthMeasure;
+import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
 import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.dashboard.services.data.DataFilter;
 import io.vertigo.dashboard.services.data.DataProvider;
@@ -35,14 +37,7 @@ import io.vertigo.lang.Assertion;
 public class InfluxDbDataProvider implements DataProvider {
 
 	private final InfluxDB influxDB;
-
-	private List<HealthCheck> appHealthChecks;
-	private final Object healthChecksLock = new Object();
-	private List<Metric> appMetrics;
-	private final Object metricsLock = new Object();
-
-	@Inject
-	private AnalyticsManager analyticsManager;
+	private final String appName;
 
 	@Inject
 	public InfluxDbDataProvider(
@@ -54,6 +49,7 @@ public class InfluxDbDataProvider implements DataProvider {
 		Assertion.checkArgNotEmpty(password);
 		//---
 		influxDB = InfluxDBFactory.connect(host, user, password);
+		appName = Home.getApp().getConfig().getNodeConfig().getAppName();
 	}
 
 	@Override
@@ -62,7 +58,7 @@ public class InfluxDbDataProvider implements DataProvider {
 
 		queryBuilder.append(" group by time(").append(timeFilter.getDim()).append(") fill(\"linear\")");
 
-		final Query query = new Query(queryBuilder.toString(), "pandora");
+		final Query query = new Query(queryBuilder.toString(), appName);
 		final QueryResult queryResult = influxDB.query(query);
 
 		final List<Series> seriesList = queryResult.getResults().get(0).getSeries();
@@ -114,23 +110,52 @@ public class InfluxDbDataProvider implements DataProvider {
 
 	@Override
 	public List<HealthCheck> getHealthChecks() {
-		if (appHealthChecks == null) {
-			loadHealthChecks();
-		}
-		return appHealthChecks;
+
+		final DataFilter dataFilter = new DataFilter("healthcheck", "*", "*", null, Arrays.asList("status:last", "message:last", "name:last", "topic:last", "feature:last", "checker:last"));
+		final TimeFilter timeFilter = new TimeFilter("now() - 5w", "now()", null);
+
+		return getTabularData(dataFilter, timeFilter, "name", "topic")
+				.getDataSeries()
+				.values()
+				.stream()
+				.map(timedDataSerie -> new HealthCheck(
+						(String) timedDataSerie.getValues().get("name:last"),
+						(String) timedDataSerie.getValues().get("checker:last"),
+						(String) timedDataSerie.getValues().get("feature:last"),
+						(String) timedDataSerie.getValues().get("topic:last"),
+						Instant.ofEpochMilli(timedDataSerie.getTime()),
+						buildHealthMeasure(
+								(Double) timedDataSerie.getValues().get("status:last"),
+								(String) timedDataSerie.getValues().get("message:last"))))
+				.collect(Collectors.toList());
+
 	}
 
-	private void loadMetrics() {
-		synchronized (metricsLock) {
-			appMetrics = analyticsManager.getMetrics();
+	private static HealthMeasure buildHealthMeasure(final Double status, final String message) {
+		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
+		switch (status.intValue()) {
+			case 0:
+				healthMeasureBuilder
+						.withRedStatus(message, null);
+				break;
+			case 1:
+				healthMeasureBuilder
+						.withYellowStatus(message, null);
+				break;
+			case 2:
+				healthMeasureBuilder
+						.withGreenStatus(message);
+				break;
+			default:
+				throw new IllegalArgumentException("HealthStatus with number '" + status + "' is unknown");
 		}
-
+		return healthMeasureBuilder.build();
 	}
 
 	@Override
 	public List<Metric> getMetrics() {
 		final DataFilter dataFilter = new DataFilter("metric", "*", "*", null, Arrays.asList("value:last", "name:last", "topic:last"));
-		final TimeFilter timeFilter = new TimeFilter("now() - 1w", "now()", null);
+		final TimeFilter timeFilter = new TimeFilter("now() - 5w", "now()", null);
 
 		return getTabularData(dataFilter, timeFilter, "name", "topic")
 				.getDataSeries()
@@ -147,13 +172,6 @@ public class InfluxDbDataProvider implements DataProvider {
 
 	}
 
-	private void loadHealthChecks() {
-		synchronized (healthChecksLock) {
-			appHealthChecks = analyticsManager.getHealthChecks();
-		}
-
-	}
-
 	@Override
 	public TabularDatas getTabularData(final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
 		final StringBuilder queryBuilder = buildQuery(dataFilter, timeFilter);
@@ -163,7 +181,7 @@ public class InfluxDbDataProvider implements DataProvider {
 
 		queryBuilder.append(" group by ").append(groupByClause);
 
-		final Query query = new Query(queryBuilder.toString(), "pandora");
+		final Query query = new Query(queryBuilder.toString(), appName);
 		final QueryResult queryResult = influxDB.query(query);
 
 		final List<Series> series = queryResult.getResults().get(0).getSeries();

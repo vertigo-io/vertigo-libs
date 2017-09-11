@@ -11,7 +11,9 @@ import io.vertigo.AbstractTestCaseJU4;
 import io.vertigo.app.App;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -25,6 +27,7 @@ import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.search.elasticsearch.embedded.ESEmbeddedSearchServicesPlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
+import io.vertigo.vega.VegaFeatures;
 
 @RunWith(JUnitPlatform.class)
 public class DashboardLauncherTest extends AbstractTestCaseJU4 {
@@ -38,6 +41,7 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 				.endBoot()
 				.addModule(new CommonsFeatures()
 						.withRedisConnector("redis-pic.part.klee.lan.net", 6379, 0, Optional.empty())
+						.addAnalyticsConnectorPlugin(SocketLoggerAnalyticsConnectorPlugin.class)
 						.withCache(MemoryCachePlugin.class)
 						.build())
 				.addModule(new DatabaseFeatures()
@@ -57,6 +61,9 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 								Param.of("envIndex", "TU_TEST"),
 								Param.of("rowsPerQuery", "50"))
 						.build())
+				.addModule(new VegaFeatures()
+						.withEmbeddedServer(8080)
+						.build())
 				.addModule(
 						ModuleConfig.builder("dashboard")
 								.addComponent(DomainMetricsProvider.class)
@@ -66,14 +73,23 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 										Param.of("password", "kleeklee"))
 								.addComponent(DashboardDataProviderWebServices.class)
 								.build())
+				.withNodeConfig(NodeConfig.builder()
+						.withAppName("dashboard-test")
+						.build())
 				.build();
 	}
 
 	@Test
 	public void server() {
 		final App app = getApp();
-		Dashboard.port(8080);
 		Dashboard.start(app);
+		//		while (!Thread.interrupted()) {
+		//			try {
+		//				Thread.sleep(10 * 1000);
+		//			} catch (final InterruptedException e) {
+		//				e.printStackTrace();
+		//			}
+		//		}
 	}
 
 }
