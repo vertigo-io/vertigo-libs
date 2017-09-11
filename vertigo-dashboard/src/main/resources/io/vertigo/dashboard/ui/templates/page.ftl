@@ -10,6 +10,9 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.6.1/rickshaw.js" ></script>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.6.1/rickshaw.css">
+		
+		<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js" ></script>
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
 	</head>
 	<body>
 		<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
@@ -59,6 +62,7 @@
 			})
 		})
 		
+		
 		function showChart(graphElement) {
 		
 				graphElement.html("");
@@ -102,12 +106,83 @@
 		
 		
 		
-		$('tr[data-toggle="list"]').on('shown.bs.tab', function (e) {
+		function showBarChart(graphElement) {
+		
+				graphElement.html("");
+				
+				var queryUrl = graphElement.data("url");
+				var queryDataFilter = graphElement.data("query-data-filter");
+				var queryTimeFilter = graphElement.data("query-time-filter");
+				var queryGroupBy = graphElement.data("query-group-by");
+				var query = { dataFilter : queryDataFilter, timeFilter : queryTimeFilter, groupBy : queryGroupBy };
+					
+				$.post(queryUrl, JSON.stringify(query) , function( jsonData, textStatus) {
+					var palette = new Rickshaw.Color.Palette();
+					var mySeries = $.map(jsonData.seriesNames , function(serieName, index){
+						var i = 0
+						return {
+							color: palette.color(),
+						 	data : $.map(jsonData.dataSeries,  function( value, key) { 
+						 					var x_value = i;
+						 					i++;
+					        				var y_value = (value.values)[serieName] != undefined ? (value.values)[serieName] : null;
+								        	return {
+								        		x: x_value,
+								        	 	y: y_value
+								        	}
+					        		})
+					        	}
+					}, "json");
+				
+					var format = function(n) {
+						var i = 0
+						var map = {};
+						$.each(jsonData.dataSeries,  function( value, key) { 
+							map[i] = value;
+						});
+					
+						return map[n];
+					}
+					
+					
+					
+					var graph = new Rickshaw.Graph( {
+					    element: graphElement.get()[0], 
+					    renderer: 'bar',
+					    width: 300, 
+					    height: 200, 
+					    series: mySeries
+					});
+					
+					var x_ticks = new Rickshaw.Graph.Axis.X( {
+						graph: graph,
+						tickFormat: format
+					} );
+					
+					x_ticks.render();
+					graph.render();
+				})
+		}
+		
+		
+		
+		$('[data-toggle="list"] ').on('shown.bs.tab', function (e) {
 			var graphElement = $($(e.target).attr("href")).find(".graph-panel");
 			if (graphElement.length == 1) {
 				showChart($(graphElement[0]))
 			}
 		})
+		
+		$(document).ready(function() {
+		
+		  $('table.table.sortable').DataTable(
+				  	{
+		        "paging":   false,
+		        "info": false,
+		        "searching": false
+		    }
+		  	);
+		});
 		</script>
 	</body>
 </html>
