@@ -33,6 +33,8 @@ import io.vertigo.dashboard.services.data.TimeFilter;
 import io.vertigo.dashboard.services.data.TimedDataSerie;
 import io.vertigo.dashboard.services.data.TimedDatas;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Tuples;
+import io.vertigo.lang.Tuples.Tuple2;
 
 public class InfluxDbDataProvider implements DataProvider {
 
@@ -76,13 +78,51 @@ public class InfluxDbDataProvider implements DataProvider {
 
 	}
 
-	private StringBuilder buildQuery(final DataFilter dataFilter, final TimeFilter timeFilter) {
+	@Override
+	public TabularDatas getTabularData(final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+		final StringBuilder queryBuilder = buildQuery(dataFilter, timeFilter);
+
+		final String groupByClause = Stream.of(groupBy)
+				.collect(Collectors.joining("\", \"", "\"", "\""));
+
+		queryBuilder.append(" group by ").append(groupByClause);
+
+		final Query query = new Query(queryBuilder.toString(), appName);
+		final QueryResult queryResult = influxDB.query(query);
+
+		final List<Series> series = queryResult.getResults().get(0).getSeries();
+
+		if (series != null && series.size() > 0) {
+			final Map<Map<String, String>, TimedDataSerie> result = series
+					.stream()
+					.collect(Collectors.toMap(
+							serie -> serie.getTags(),
+							serie -> new TimedDataSerie(
+									LocalDateTime.parse(serie.getValues().get(0).get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond(ZoneOffset.UTC),
+									buildMapValue(serie.getColumns(), serie.getValues().get(0)))));
+
+			return new TabularDatas(result, series.get(0).getColumns().subList(1, series.get(0).getColumns().size()));
+		}
+		return new TabularDatas(Collections.emptyMap(), Collections.emptyList());
+	}
+
+	private static StringBuilder buildQuery(final DataFilter dataFilter, final TimeFilter timeFilter) {
 		final StringBuilder queryBuilder = new StringBuilder("select ");
 
 		String separator = "";
 		for (final String measure : dataFilter.getMeasures()) {
 			final String[] measureDetails = measure.split(":");
-			queryBuilder.append(separator).append(measureDetails[1]).append("(\"").append(measureDetails[0]).append("\") as \"").append(measure).append("\"");
+			final Tuple2<String, List<String>> aggregateFunction = parseAggregateFunction(measureDetails[1]);
+			// append function name
+			queryBuilder.append(separator).append(aggregateFunction.getVal1()).append("(\"").append(measureDetails[0]).append("\"");
+			// append parameters
+			if (!aggregateFunction.getVal2().isEmpty()) {
+				queryBuilder.append(aggregateFunction.getVal2()
+						.stream()
+						.collect(Collectors.joining(",", ", ", "")));
+			}
+			// end measure and add alias
+			queryBuilder.append(") as \"").append(measure).append("\"");
 			separator = " ,";
 		}
 		queryBuilder.append(" from ").append(dataFilter.getMeasurement())
@@ -99,7 +139,18 @@ public class InfluxDbDataProvider implements DataProvider {
 		return queryBuilder;
 	}
 
-	final static Map<String, Object> buildMapValue(final List<String> columns, final List<Object> values) {
+	private static Tuple2<String, List<String>> parseAggregateFunction(final String aggregateFunction) {
+		final int firstSeparatorIndex = aggregateFunction.indexOf('_');
+		if (firstSeparatorIndex > -1) {
+			return Tuples.of(
+					aggregateFunction.substring(0, firstSeparatorIndex),
+					Arrays.asList(aggregateFunction.substring(firstSeparatorIndex + 1).split("_")));
+		}
+		return Tuples.of(aggregateFunction, Collections.emptyList());
+
+	}
+
+	private static Map<String, Object> buildMapValue(final List<String> columns, final List<Object> values) {
 		final Map<String, Object> valueMap = new HashMap<>();
 		// we start at 1 because time is always the first row
 		for (int i = 1; i < columns.size(); i++) {
@@ -112,7 +163,7 @@ public class InfluxDbDataProvider implements DataProvider {
 	public List<HealthCheck> getHealthChecks() {
 
 		final DataFilter dataFilter = new DataFilter("healthcheck", "*", "*", null, Arrays.asList("status:last", "message:last", "name:last", "topic:last", "feature:last", "checker:last"));
-		final TimeFilter timeFilter = new TimeFilter("now() - 5w", "now()", null);
+		final TimeFilter timeFilter = new TimeFilter("now() - 5w", "now()", null);// before 5 weeks we consider that we don't have data
 
 		return getTabularData(dataFilter, timeFilter, "name", "topic")
 				.getDataSeries()
@@ -155,7 +206,7 @@ public class InfluxDbDataProvider implements DataProvider {
 	@Override
 	public List<Metric> getMetrics() {
 		final DataFilter dataFilter = new DataFilter("metric", "*", "*", null, Arrays.asList("value:last", "name:last", "topic:last"));
-		final TimeFilter timeFilter = new TimeFilter("now() - 5w", "now()", null);
+		final TimeFilter timeFilter = new TimeFilter("now() - 5w", "now()", null);// before 5 weeks we consider that we don't have data
 
 		return getTabularData(dataFilter, timeFilter, "name", "topic")
 				.getDataSeries()
@@ -170,34 +221,6 @@ public class InfluxDbDataProvider implements DataProvider {
 						.build())
 				.collect(Collectors.toList());
 
-	}
-
-	@Override
-	public TabularDatas getTabularData(final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		final StringBuilder queryBuilder = buildQuery(dataFilter, timeFilter);
-
-		final String groupByClause = Stream.of(groupBy)
-				.collect(Collectors.joining("\", \"", "\"", "\""));
-
-		queryBuilder.append(" group by ").append(groupByClause);
-
-		final Query query = new Query(queryBuilder.toString(), appName);
-		final QueryResult queryResult = influxDB.query(query);
-
-		final List<Series> series = queryResult.getResults().get(0).getSeries();
-
-		if (series != null && series.size() > 0) {
-			final Map<Map<String, String>, TimedDataSerie> result = series
-					.stream()
-					.collect(Collectors.toMap(
-							serie -> serie.getTags(),
-							serie -> new TimedDataSerie(
-									LocalDateTime.parse(serie.getValues().get(0).get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond(ZoneOffset.UTC),
-									buildMapValue(serie.getColumns(), serie.getValues().get(0)))));
-
-			return new TabularDatas(result, series.get(0).getColumns().subList(1, series.get(0).getColumns().size()));
-		}
-		return new TabularDatas(Collections.emptyMap(), Collections.emptyList());
 	}
 
 }

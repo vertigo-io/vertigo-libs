@@ -24,7 +24,7 @@
 					  </@module.formGroup>
 					   <div class="graph-panel" 
 					  		data-url="/dashboard/data/series" 
-					  		data-query-data-filter='{"measurement":"daemon","name":"${daemon.name}","location":"*","measures":["duration:median","duration:max"]}'
+					  		data-query-data-filter='{"measurement":"daemon","name":"${daemon.name}","location":"*","measures":["duration:median","duration:percentile_90","duration:max"]}'
 					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}' >
 					  	</div>
 				</@module.lineDetail >
