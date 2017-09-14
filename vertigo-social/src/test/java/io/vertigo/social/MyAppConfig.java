@@ -21,7 +21,7 @@ package io.vertigo.social;
 import java.util.Optional;
 
 import io.vertigo.account.AccountFeatures;
-import io.vertigo.account.plugins.authentication.mock.MockAuthenticatingRealmPlugin;
+import io.vertigo.account.plugins.authentication.mock.MockAuthenticatingPlugin;
 import io.vertigo.account.plugins.identity.cache.memory.MemoryAccountCachePlugin;
 import io.vertigo.account.plugins.identity.store.loader.LoaderAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
@@ -71,7 +71,7 @@ public final class MyAppConfig {
 					.build());
 
 			final AccountFeatures accountFeatures = new AccountFeatures()
-					.withAuthentificationRealm(MockAuthenticatingRealmPlugin.class)
+					.withAuthentication(MockAuthenticatingPlugin.class)
 					.withAccountStorePlugin(LoaderAccountStorePlugin.class,
 							Param.of("accountLoaderName", "MockIdentities"),
 							Param.of("groupLoaderName", "MockIdentities"));
