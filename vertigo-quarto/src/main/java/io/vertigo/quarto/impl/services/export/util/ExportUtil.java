@@ -96,7 +96,7 @@ public final class ExportUtil {
 			} else {
 				value = exportColumn.getDtField().getDataAccessor().getValue(dto);
 				if (forceStringValue) {
-					value = exportColumn.getDtField().getDomain().getFormatter().valueToString(value, exportColumn.getDtField().getDomain().getDataType());
+					value = exportColumn.getDtField().getDomain().valueToString(value);
 				}
 			}
 		} catch (final Exception e) {
@@ -120,7 +120,7 @@ public final class ExportUtil {
 	private static Map<Object, String> createDenormIndex(final DtList<?> valueList, final DtField keyField, final DtField displayField) {
 		final Map<Object, String> denormIndex = new HashMap<>(valueList.size());
 		for (final DtObject dto : valueList) {
-			final String svalue = displayField.getDomain().getFormatter().valueToString(displayField.getDataAccessor().getValue(dto), displayField.getDomain().getDataType());
+			final String svalue = displayField.getDomain().valueToString(displayField.getDataAccessor().getValue(dto));
 			denormIndex.put(keyField.getDataAccessor().getValue(dto), svalue);
 		}
 		return denormIndex;

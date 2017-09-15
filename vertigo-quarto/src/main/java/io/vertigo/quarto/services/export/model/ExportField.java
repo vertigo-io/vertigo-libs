@@ -20,7 +20,6 @@ package io.vertigo.quarto.services.export.model;
 
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -59,10 +58,4 @@ public class ExportField {
 		return label != null ? label : dtField.getLabel();
 	}
 
-	/**
-	 * @return Formater du dtField
-	 */
-	public final FormatterDefinition getFormater() {
-		return dtField.getDomain().getFormatter();
-	}
 }

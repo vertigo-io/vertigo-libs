@@ -114,7 +114,7 @@ public class DynamoDashboardControler extends AbstractDashboardModuleControler {
 		final Collection<Domain> domains = Home.getApp().getDefinitionSpace().getAll(Domain.class);
 		final List<DomainModel> domainModels = domains
 				.stream()
-				.filter(domain -> domain.getDataType().isPrimitive()) // we display only primitives
+				.filter(domain -> domain.isPrimitive()) // we display only primitives
 				.map(domain -> new DomainModel(
 						domain,
 						taskCount.get(domain.getName()),

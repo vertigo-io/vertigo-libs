@@ -151,7 +151,7 @@ public final class PublisherDataUtil {
 		final String unit = dtField.getDomain().getProperties().getValue(DtProperty.UNIT);
 
 		final Object value = dtField.getDataAccessor().getValue(dto);
-		final String formattedValue = dtField.getDomain().getFormatter().valueToString(value, dtField.getDomain().getDataType());
+		final String formattedValue = dtField.getDomain().valueToString(value);
 		return formattedValue + (!StringUtil.isEmpty(unit) ? " " + unit : "");
 	}
 
@@ -187,9 +187,9 @@ public final class PublisherDataUtil {
 			final String fieldName = dtField.getName();
 			if (DataType.Boolean == dtField.getDomain().getDataType()) {
 				sb.append("\t\tbooleanField[").append(fieldName).append(")] = new DataField ();\n");
-			} else if (DataType.DtObject == dtField.getDomain().getDataType()) {
+			} else if (dtField.getDomain().isDtObject()) {
 				sb.append("\t\tdataField[").append(fieldName).append(")] = new NodeField (type = PN_").append(dtField.getDomain().getDtDefinition().getLocalName()).append(";);\n");
-			} else if (DataType.DtList == dtField.getDomain().getDataType()) {
+			} else if (dtField.getDomain().isDtList()) {
 				sb.append("\t\tlistField[").append(fieldName).append(")] = new NodeField (type = PN_").append(dtField.getDomain().getDtDefinition().getLocalName()).append(";);\n");
 			} else { //aussi si FieldType.FOREIGN_KEY == dtField.getType()
 				sb.append("\t\tstringField[").append(fieldName).append(")] = new DataField ();\n");
