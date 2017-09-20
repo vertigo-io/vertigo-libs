@@ -82,7 +82,6 @@ public final class UiUtil implements Serializable {
 	 * @return rendu du champs boolean
 	 */
 	public static String formatBoolean(final String fieldPath, final Boolean value) {
-		final Formatter formatter;
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
 			return DEFAULT_FORMATTER.valueToString(value, DataType.Boolean);
 		}
