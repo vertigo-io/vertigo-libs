@@ -18,19 +18,14 @@
  */
 package io.vertigo.dashboard;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import io.vertigo.app.App;
 import io.vertigo.dashboard.ui.DashboardRouter;
 import spark.Spark;
 
 public final class Dashboard {
-	private static final Logger LOGGER = LoggerFactory.getLogger(Dashboard.class);
 
 	/**
 	 * Creates a new studio for an existing app
-	 * @param app the app we are working on
 	 * @param port the port to access the studio interface
 	 */
 	public static void port(final int port) {

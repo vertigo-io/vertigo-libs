@@ -56,11 +56,11 @@ public class InfluxDbDataProvider implements DataProvider {
 
 	@Override
 	public TimedDatas getTimeSeries(final DataFilter dataFilter, final TimeFilter timeFilter) {
-		final StringBuilder queryBuilder = buildQuery(dataFilter, timeFilter);
+		final String q = buildQuery(dataFilter, timeFilter)
+				.append(" group by time(").append(timeFilter.getDim()).append(") fill(\"linear\")")
+				.toString();
 
-		queryBuilder.append(" group by time(").append(timeFilter.getDim()).append(") fill(\"linear\")");
-
-		final Query query = new Query(queryBuilder.toString(), appName);
+		final Query query = new Query(q, appName);
 		final QueryResult queryResult = influxDB.query(query);
 
 		final List<Series> seriesList = queryResult.getResults().get(0).getSeries();

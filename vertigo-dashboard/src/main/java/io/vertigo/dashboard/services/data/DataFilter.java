@@ -3,7 +3,7 @@ package io.vertigo.dashboard.services.data;
 import java.io.Serializable;
 import java.util.List;
 
-public class DataFilter implements Serializable {
+public final class DataFilter implements Serializable {
 
 	private static final long serialVersionUID = 8368099477041555767L;
 

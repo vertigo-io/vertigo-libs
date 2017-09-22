@@ -61,7 +61,6 @@ public final class DashboardRouter {
 	/**
 	 * Creates a new studio for an existing app
 	 * @param app the app we are working on
-	 * @param port the port to access the studio interface
 	 */
 	public DashboardRouter(final App app) {
 		configuration = new Configuration(Configuration.VERSION_2_3_23);
