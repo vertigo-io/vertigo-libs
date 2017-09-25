@@ -17,7 +17,11 @@ import io.vertigo.lang.Assertion;
 public abstract class AbstractDashboardModuleControler implements DashboardModuleControler {
 
 	@Inject
-	protected DataProvider dataProvider;
+	private DataProvider dataProvider;
+
+	protected final DataProvider getDataProvider() {
+		return dataProvider;
+	}
 
 	@Override
 	public Map<String, Object> buildModel(final App app, final String moduleName) {

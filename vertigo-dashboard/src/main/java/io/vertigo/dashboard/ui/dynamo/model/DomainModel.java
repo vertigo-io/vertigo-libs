@@ -1,13 +1,16 @@
 package io.vertigo.dashboard.ui.dynamo.model;
 
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.lang.Assertion;
 
 public class DomainModel {
 	private final Domain domainDefinition;
-	private final Double taskCount;
-	private final Double dtDefinitionCount;
+	private final double taskCount;
+	private final double dtDefinitionCount;
 
-	public DomainModel(final Domain domainDefinition, final Double taskCount, final Double dtDefinitionCount) {
+	public DomainModel(final Domain domainDefinition, final double taskCount, final double dtDefinitionCount) {
+		Assertion.checkNotNull(domainDefinition);
+		//---
 		this.domainDefinition = domainDefinition;
 		this.taskCount = taskCount;
 		this.dtDefinitionCount = dtDefinitionCount;
@@ -21,15 +24,15 @@ public class DomainModel {
 		return taskCount + dtDefinitionCount == 0;
 	}
 
-	public Double getTaskCount() {
+	public double getTaskCount() {
 		return taskCount;
 	}
 
-	public Double getDtDefinitionCount() {
+	public double getDtDefinitionCount() {
 		return dtDefinitionCount;
 	}
 
-	public Double getUsageCount() {
+	public double getUsageCount() {
 		return taskCount + dtDefinitionCount;
 	}
 

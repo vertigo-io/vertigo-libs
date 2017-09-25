@@ -1,11 +1,14 @@
 package io.vertigo.dashboard.ui.commons.model;
 
 import io.vertigo.commons.cache.CacheDefinition;
+import io.vertigo.lang.Assertion;
 
 public class CacheModel {
 	private final CacheDefinition cacheDefinition;
 
 	public CacheModel(final CacheDefinition cacheDefinition) {
+		Assertion.checkNotNull(cacheDefinition);
+		//---
 		this.cacheDefinition = cacheDefinition;
 	}
 

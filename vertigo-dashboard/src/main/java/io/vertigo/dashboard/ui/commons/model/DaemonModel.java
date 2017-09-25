@@ -2,12 +2,18 @@ package io.vertigo.dashboard.ui.commons.model;
 
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.daemon.DaemonStat;
+import io.vertigo.lang.Assertion;
 
-public class DaemonModel {
+public final class DaemonModel {
 	private final DaemonDefinition daemonDefinition;
 	private final DaemonStat daemonStat;
 
-	public DaemonModel(final DaemonDefinition daemonDefinition, final DaemonStat daemonStat) {
+	public DaemonModel(
+			final DaemonDefinition daemonDefinition,
+			final DaemonStat daemonStat) {
+		Assertion.checkNotNull(daemonDefinition);
+		Assertion.checkNotNull(daemonStat);
+		//---
 		this.daemonDefinition = daemonDefinition;
 		this.daemonStat = daemonStat;
 	}

@@ -23,11 +23,11 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 
-public class DynamoDashboardControler extends AbstractDashboardModuleControler {
+public final class DynamoDashboardControler extends AbstractDashboardModuleControler {
 
 	@Override
 	public void doBuildModel(final App app, final Map<String, Object> model) {
-		final List<Metric> metrics = dataProvider.getMetrics();
+		final List<Metric> metrics = getDataProvider().getMetrics();
 		buildEntityModel(app, model, metrics);
 		buildDomainModel(app, model, metrics);
 		buildTaskModel(app, model);
@@ -36,7 +36,7 @@ public class DynamoDashboardControler extends AbstractDashboardModuleControler {
 	private void buildTaskModel(final App app, final Map<String, Object> model) {
 		final DataFilter dataFilter = new DataFilter("tasks", "*", "*", null, Arrays.asList("duration:median", "duration:count"));
 		final TimeFilter timeFilter = new TimeFilter("now() - 1w", "now()", null);
-		final TabularDatas tabularDatas = dataProvider.getTabularData(dataFilter, timeFilter, "name");
+		final TabularDatas tabularDatas = getDataProvider().getTabularData(dataFilter, timeFilter, "name");
 
 		final List<TaskModel> tasks = Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
 				.stream()

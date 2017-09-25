@@ -2,14 +2,21 @@ package io.vertigo.dashboard.ui.dynamo.model;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
+import io.vertigo.lang.Assertion;
 
-public class EntityModel {
+public final class EntityModel {
 	private final DtDefinition dtDefinition;
-	private final Double count;
-	private final Double taskCount;
-	private final Double fieldCount;
+	private final double count;
+	private final double taskCount;
+	private final double fieldCount;
 
-	public EntityModel(final DtDefinition dtDefinition, final Double count, final Double taskCount, final Double fieldCount) {
+	public EntityModel(
+			final DtDefinition dtDefinition,
+			final double count,
+			final double taskCount,
+			final double fieldCount) {
+		Assertion.checkNotNull(dtDefinition);
+		//---
 		this.dtDefinition = dtDefinition;
 		this.count = count;
 		this.taskCount = taskCount;
@@ -24,15 +31,15 @@ public class EntityModel {
 		return dtDefinition.getStereotype() == DtStereotype.KeyConcept;
 	}
 
-	public Double getCount() {
+	public double getCount() {
 		return count;
 	}
 
-	public Double getTaskCount() {
+	public double getTaskCount() {
 		return taskCount;
 	}
 
-	public Double getFieldCount() {
+	public double getFieldCount() {
 		return fieldCount;
 	}
 

@@ -4,12 +4,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
+import io.vertigo.lang.Assertion;
 
-public class EventBusModel {
+public final class EventBusModel {
 	private final Class eventType;
 	private final List<EventBusSubscriptionDefinition> subscriptions;
 
-	public EventBusModel(final Class eventType, final List<EventBusSubscriptionDefinition> subscriptions) {
+	public EventBusModel(
+			final Class eventType,
+			final List<EventBusSubscriptionDefinition> subscriptions) {
+		Assertion.checkNotNull(eventType);
+		Assertion.checkNotNull(subscriptions);
+		//---
 		this.eventType = eventType;
 		this.subscriptions = subscriptions;
 	}

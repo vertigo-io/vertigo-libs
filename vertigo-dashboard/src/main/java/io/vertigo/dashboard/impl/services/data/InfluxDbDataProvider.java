@@ -36,7 +36,7 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Tuples;
 import io.vertigo.lang.Tuples.Tuple2;
 
-public class InfluxDbDataProvider implements DataProvider {
+public final class InfluxDbDataProvider implements DataProvider {
 
 	private final InfluxDB influxDB;
 	private final String appName;
@@ -133,7 +133,7 @@ public class InfluxDbDataProvider implements DataProvider {
 		if (!"*".equals(dataFilter.getLocation())) {
 			queryBuilder.append(" and \"location\"='").append(dataFilter.getLocation()).append("'");
 		}
-		if (dataFilter.getTopic() != null && "*".equals(dataFilter.getTopic())) {
+		if ("*".equals(dataFilter.getTopic())) {
 			queryBuilder.append(" and \"topic\"='").append(dataFilter.getTopic()).append("'");
 		}
 		return queryBuilder;
