@@ -2,10 +2,8 @@ package io.vertigo.orchestra.domain.definition
 
 create DtDefinition DT_O_JOB_DEFINITION {
 	storeName : "orchestra"
-	key JOB_ID					{domain : DO_O_IDENTIFIANT, label :"Id de la definition du job", notNull:"true",}
-	field JOBNAME   			{domain : DO_O_LIBELLE, label :"Nom du job", notNull:"false",}
+	key JOBNAME   			{domain : DO_O_LIBELLE, label :"Nom du job", notNull:"false",}
 	field LABEL   				{domain : DO_O_LIBELLE, label :"Libellé du job", notNull:"false",},
-	field CRON_EXPRESSION		{domain : DO_O_LIBELLE, label :"Expression récurrence du processus", notNull:"false",}
 	field INITIAL_PARAMS		{domain : DO_O_JSON_TEXT, label :"Paramètres initiaux sous forme de JSON ", notNull:"false",}
 	field ENGINE   				{domain : DO_O_CLASSE, 		label :"Implémentation de l'activité", 	notNull:"false" }
 },

@@ -2,7 +2,7 @@ package io.vertigo.orchestra.domain.planification
 
 create DtDefinition DT_O_PROCESS_PLANIFICATION {
 	storeName : "orchestra"
-	key PRP_ID	{domain : DO_O_IDENTIFIANT, label :"Id Planification", notNull:"true",},
+	key JOB_ID	{domain : DO_O_IDENTIFIANT, label :"Id Job", notNull:"true",},
 	field EXPECTED_TIME   	{domain : DO_O_TIMESTAMP, label :"Date d'execution prévue", notNull:"false",},
 	field INITIAL_PARAMS	{domain : DO_O_JSON_TEXT, label :"Paramètres initiaux sous forme de JSON ", notNull:"false",},
 },

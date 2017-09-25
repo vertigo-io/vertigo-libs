@@ -1,0 +1,8 @@
+
+
+create DtDefinition DT_O_JOB_CRON {
+	key JOB_ID				{domain : DO_O_IDENTIFIANT, label :"Id de la definition du job", notNull:"true",}
+	field CRON_EXPRESSION		{domain : DO_O_LIBELLE, label :"Expression récurrence du processus", notNull:"false",}
+	field INITIAL_PARAMS	{domain : DO_O_JSON_TEXT, label :"Paramètres initiaux sous forme de JSON ", notNull:"false",},	
+}
+
