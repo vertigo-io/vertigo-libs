@@ -8,9 +8,9 @@ public final class TimeFilter implements Serializable {
 
 	private static final long serialVersionUID = -5930123598073570659L;
 
-	private String from;
-	private String to;
-	private String dim;
+	private final String from;
+	private final String to;
+	private final String dim;
 
 	public TimeFilter(
 			final String from,
@@ -29,23 +29,11 @@ public final class TimeFilter implements Serializable {
 		return from;
 	}
 
-	public void setFrom(final String from) {
-		this.from = from;
-	}
-
 	public String getTo() {
 		return to;
 	}
 
-	public void setTo(final String to) {
-		this.to = to;
-	}
-
 	public String getDim() {
 		return dim;
-	}
-
-	public void setDim(final String dim) {
-		this.dim = dim;
 	}
 }
