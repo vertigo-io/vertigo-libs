@@ -19,7 +19,7 @@
 package io.vertigo.workflow;
 
 import io.vertigo.account.AccountFeatures;
-import io.vertigo.account.plugins.identity.store.loader.LoaderAccountStorePlugin;
+import io.vertigo.account.plugins.account.store.loader.LoaderAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;

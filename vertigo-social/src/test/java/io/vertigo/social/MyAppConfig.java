@@ -21,9 +21,9 @@ package io.vertigo.social;
 import java.util.Optional;
 
 import io.vertigo.account.AccountFeatures;
+import io.vertigo.account.plugins.account.cache.memory.MemoryAccountCachePlugin;
+import io.vertigo.account.plugins.account.store.loader.LoaderAccountStorePlugin;
 import io.vertigo.account.plugins.authentication.mock.MockAuthenticatingPlugin;
-import io.vertigo.account.plugins.identity.cache.memory.MemoryAccountCachePlugin;
-import io.vertigo.account.plugins.identity.store.loader.LoaderAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
