@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountGroup;
 import io.vertigo.rules.RuleCriteria;
 import io.vertigo.rules.domain.RuleConditionDefinition;
 import io.vertigo.rules.domain.RuleDefinition;

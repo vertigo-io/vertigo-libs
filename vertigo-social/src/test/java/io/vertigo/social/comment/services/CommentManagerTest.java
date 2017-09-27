@@ -25,8 +25,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountGroup;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;

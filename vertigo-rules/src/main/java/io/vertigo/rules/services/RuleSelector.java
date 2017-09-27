@@ -21,8 +21,8 @@ package io.vertigo.rules.services;
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountGroup;
 import io.vertigo.rules.domain.RuleFilterDefinition;
 import io.vertigo.rules.domain.SelectorDefinition;
 

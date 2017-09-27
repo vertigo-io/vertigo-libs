@@ -20,7 +20,7 @@ package io.vertigo.social.services.comment;
 
 import java.util.List;
 
-import io.vertigo.account.identity.Account;
+import io.vertigo.account.account.Account;
 import io.vertigo.core.component.Component;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;

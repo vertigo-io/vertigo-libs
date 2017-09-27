@@ -21,7 +21,7 @@ package io.vertigo.social.services.comment;
 import java.util.Date;
 import java.util.UUID;
 
-import io.vertigo.account.identity.Account;
+import io.vertigo.account.account.Account;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
 

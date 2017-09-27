@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import io.vertigo.account.identity.Account;
+import io.vertigo.account.account.Account;
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;

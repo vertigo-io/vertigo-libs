@@ -23,9 +23,9 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.identity.IdentityManager;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountGroup;
+import io.vertigo.account.account.AccountManager;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.MapBuilder;
@@ -47,7 +47,7 @@ public final class AccountWebServices implements WebServices {
 	private static final String IMPL_VERSION = "0.9.2";
 
 	@Inject
-	private IdentityManager identityManager;
+	private AccountManager identityManager;
 
 	/**
 	 * Gets an account by its id.

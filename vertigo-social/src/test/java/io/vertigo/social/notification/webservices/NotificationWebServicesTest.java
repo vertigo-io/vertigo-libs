@@ -35,9 +35,9 @@ import org.junit.Test;
 import io.restassured.RestAssured;
 import io.restassured.filter.session.SessionFilter;
 import io.restassured.parsing.Parser;
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.identity.IdentityManager;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountGroup;
+import io.vertigo.account.account.AccountManager;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
@@ -57,7 +57,7 @@ public final class NotificationWebServicesTest {
 	@Inject
 	private MockIdentities mockIdentities;
 	@Inject
-	private IdentityManager identityManager;
+	private AccountManager identityManager;
 	@Inject
 	private RedisConnector redisConnector;
 	@Inject

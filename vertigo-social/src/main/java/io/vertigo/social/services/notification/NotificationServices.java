@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import io.vertigo.account.identity.Account;
+import io.vertigo.account.account.Account;
 import io.vertigo.core.component.Component;
 import io.vertigo.dynamo.domain.model.URI;
 

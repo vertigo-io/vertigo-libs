@@ -29,7 +29,7 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
-import io.vertigo.account.identity.Account;
+import io.vertigo.account.account.Account;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;

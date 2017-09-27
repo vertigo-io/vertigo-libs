@@ -21,8 +21,8 @@ package io.vertigo.social.services.comment;
 import java.util.Date;
 import java.util.UUID;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.IdentityManager;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountManager;
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
@@ -47,8 +47,8 @@ public final class CommentBuilder implements Builder<Comment> {
 		//RAF
 	}
 
-	private static IdentityManager getIdentityManager() {
-		return Home.getApp().getComponentSpace().resolve(IdentityManager.class);
+	private static AccountManager getIdentityManager() {
+		return Home.getApp().getComponentSpace().resolve(AccountManager.class);
 	}
 
 	/**

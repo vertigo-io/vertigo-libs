@@ -31,9 +31,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.identity.IdentityManager;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountGroup;
+import io.vertigo.account.account.AccountManager;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
@@ -54,7 +54,7 @@ public class NotificationServicesTest {
 	@Inject
 	private MockIdentities mockIdentities;
 	@Inject
-	private IdentityManager identityManager;
+	private AccountManager identityManager;
 	@Inject
 	private NotificationServices notificationServices;
 

@@ -26,9 +26,9 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.identity.IdentityManager;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountGroup;
+import io.vertigo.account.account.AccountManager;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.rules.domain.RuleFilterDefinition;
@@ -45,7 +45,7 @@ import io.vertigo.rules.services.RuleContext;
 public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 
 	private final RuleStorePlugin ruleStorePlugin;
-	private final IdentityManager identityManager;
+	private final AccountManager identityManager;
 
 	/**
 	 *
@@ -53,7 +53,7 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 	 * @param identityManager
 	 */
 	@Inject
-	public SimpleRuleSelectorPlugin(final RuleStorePlugin ruleStorePlugin, final IdentityManager identityManager) {
+	public SimpleRuleSelectorPlugin(final RuleStorePlugin ruleStorePlugin, final AccountManager identityManager) {
 		this.ruleStorePlugin = ruleStorePlugin;
 		this.identityManager = identityManager;
 	}

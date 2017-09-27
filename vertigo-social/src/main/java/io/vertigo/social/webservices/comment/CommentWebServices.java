@@ -25,8 +25,8 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.account.account.Account;
 import io.vertigo.account.authentication.AuthenticationManager;
-import io.vertigo.account.identity.Account;
 import io.vertigo.app.Home;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DataType;

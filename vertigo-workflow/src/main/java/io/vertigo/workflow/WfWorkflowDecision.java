@@ -20,7 +20,7 @@ package io.vertigo.workflow;
 
 import java.util.List;
 
-import io.vertigo.account.identity.AccountGroup;
+import io.vertigo.account.account.AccountGroup;
 import io.vertigo.workflow.domain.instance.WfActivity;
 import io.vertigo.workflow.domain.instance.WfDecision;
 import io.vertigo.workflow.domain.model.WfActivityDefinition;
