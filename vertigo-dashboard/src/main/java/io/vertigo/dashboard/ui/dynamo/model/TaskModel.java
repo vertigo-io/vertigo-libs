@@ -5,13 +5,13 @@ import io.vertigo.lang.Assertion;
 
 public final class TaskModel {
 	private final TaskDefinition taskDefinition;
-	private final double executionCount;
-	private final double medianDuration;
+	private final Double executionCount; // may be null for UI (displayed as N/A
+	private final Double medianDuration; // may be null for UI (displayed as N/A
 
 	public TaskModel(
 			final TaskDefinition taskDefinition,
-			final double executionCount,
-			final double medianDuration) {
+			final Double executionCount,
+			final Double medianDuration) {
 		Assertion.checkNotNull(taskDefinition);
 		//---
 		this.taskDefinition = taskDefinition;
@@ -23,11 +23,11 @@ public final class TaskModel {
 		return taskDefinition.getName();
 	}
 
-	public double getExecutionCount() {
+	public Double getExecutionCount() {
 		return executionCount;
 	}
 
-	public double getMedianDuration() {
+	public Double getMedianDuration() {
 		return medianDuration;
 	}
 

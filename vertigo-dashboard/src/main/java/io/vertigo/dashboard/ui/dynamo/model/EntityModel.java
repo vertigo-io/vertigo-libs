@@ -6,15 +6,15 @@ import io.vertigo.lang.Assertion;
 
 public final class EntityModel {
 	private final DtDefinition dtDefinition;
-	private final double count;
-	private final double taskCount;
-	private final double fieldCount;
+	private final Double count; // may be null for UI (displayed as N/A)
+	private final Double taskCount; // may be null for UI (displayed as N/A)
+	private final Double fieldCount; // may be null for UI (displayed as N/A)
 
 	public EntityModel(
 			final DtDefinition dtDefinition,
-			final double count,
-			final double taskCount,
-			final double fieldCount) {
+			final Double count,
+			final Double taskCount,
+			final Double fieldCount) {
 		Assertion.checkNotNull(dtDefinition);
 		//---
 		this.dtDefinition = dtDefinition;
@@ -31,15 +31,15 @@ public final class EntityModel {
 		return dtDefinition.getStereotype() == DtStereotype.KeyConcept;
 	}
 
-	public double getCount() {
+	public Double getCount() {
 		return count;
 	}
 
-	public double getTaskCount() {
+	public Double getTaskCount() {
 		return taskCount;
 	}
 
-	public double getFieldCount() {
+	public Double getFieldCount() {
 		return fieldCount;
 	}
 

@@ -6,9 +6,11 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,6 +28,7 @@ import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.health.HealthMeasure;
 import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
 import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.dashboard.services.data.ClusteredMeasure;
 import io.vertigo.dashboard.services.data.DataFilter;
 import io.vertigo.dashboard.services.data.DataProvider;
 import io.vertigo.dashboard.services.data.TabularDatas;
@@ -43,6 +46,7 @@ public final class InfluxDbDataProvider implements DataProvider {
 
 	@Inject
 	public InfluxDbDataProvider(
+			@Named("appName") final Optional<String> appNameOpt,
 			@Named("host") final String host,
 			@Named("user") final String user,
 			@Named("password") final String password) {
@@ -51,15 +55,115 @@ public final class InfluxDbDataProvider implements DataProvider {
 		Assertion.checkArgNotEmpty(password);
 		//---
 		influxDB = InfluxDBFactory.connect(host, user, password);
-		appName = Home.getApp().getConfig().getNodeConfig().getAppName();
+		appName = appNameOpt.orElse(Home.getApp().getConfig().getNodeConfig().getAppName());
 	}
 
 	@Override
-	public TimedDatas getTimeSeries(final DataFilter dataFilter, final TimeFilter timeFilter) {
-		final String q = buildQuery(dataFilter, timeFilter)
+	public TimedDatas getTimeSeries(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
+		final String q = buildQuery(measures, dataFilter, timeFilter)
 				.append(" group by time(").append(timeFilter.getDim()).append(") fill(\"linear\")")
 				.toString();
 
+		return executeTimedQuery(q);
+
+	}
+
+	@Override
+	public TimedDatas getClusteredTimeSeries(final ClusteredMeasure clusteredMeasure, final DataFilter dataFilter, final TimeFilter timeFilter) {
+		Assertion.checkNotNull(dataFilter);
+		Assertion.checkNotNull(timeFilter);
+		Assertion.checkNotNull(clusteredMeasure);
+		//---
+		Assertion.checkArgNotEmpty(clusteredMeasure.getMeasure());
+		Assertion.checkNotNull(clusteredMeasure.getThresholds());
+		Assertion.checkState(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
+		//we use the natural order
+		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
+		//---
+		final String fieldName = clusteredMeasure.getMeasure().split(":")[0];
+		final String standardwhereClause = buildWhereClause(dataFilter, timeFilter);// the where clause is almost the same for each cluster
+		final StringBuilder selectClause = new StringBuilder();
+		final StringBuilder fromClause = new StringBuilder();
+		Integer minThreshold = null;
+
+		// for each cluster defined by the thresholds we add a subquery (after benchmark it's the fastest solution)
+		for (int i = 0; i <= clusteredMeasure.getThresholds().size(); i++) {
+			Integer maxThreshold = null;
+			if (i < clusteredMeasure.getThresholds().size()) {
+				maxThreshold = clusteredMeasure.getThresholds().get(i);
+			}
+			// we add the where clause of the cluster value > threshold_1 and value <= threshold_2
+			appendMeasureThreshold(
+					minThreshold,
+					maxThreshold,
+					fieldName,
+					clusteredMeasure.getMeasure(),
+					dataFilter.getMeasurement(),
+					standardwhereClause,
+					timeFilter.getDim(),
+					fromClause,
+					i);
+
+			// we construct the top select clause. we use the max as the aggregate function. No conflict possible
+			selectClause.append(" max(\"").append(fieldName).append("_").append(i)
+					.append("\") as \"").append(clusterName(minThreshold, maxThreshold, clusteredMeasure.getMeasure())).append("\"");
+			if (i < clusteredMeasure.getThresholds().size()) {
+				selectClause.append(",");
+				fromClause.append(", ");
+			}
+
+			minThreshold = maxThreshold;
+		}
+
+		// the global query
+		final StringBuilder request = new StringBuilder()
+				.append("select ").append(selectClause)
+				.append(" from ").append(fromClause)
+				.append(standardwhereClause)
+				.append(" group by time(").append(timeFilter.getDim()).append(")");
+
+		return executeTimedQuery(request.toString());
+	}
+
+	private static String clusterName(
+			final Integer minThreshold,
+			final Integer maxThreshold,
+			final String measure) {
+		final String op = "";
+		if (minThreshold == null) {
+			return measure + "<" + maxThreshold;
+		} else if (maxThreshold == null) {
+			return measure + ">" + minThreshold;
+		} else {
+			return measure + "_" + maxThreshold;
+		}
+	}
+
+	private static void appendMeasureThreshold(
+			final Integer previousThreshold,
+			final Integer currentThreshold,
+			final String clusteredField,
+			final String clusteredMeasure,
+			final String measurement,
+			final String standardwhereClause,
+			final String timeDimension,
+			final StringBuilder fromClauseBuilder,
+			final int i) {
+		fromClauseBuilder.append("(select ")
+				.append(buildMeasureQuery(clusteredMeasure, clusteredField + "_" + i))
+				.append(" from ").append(measurement).append(" ")
+				.append(standardwhereClause);
+		if (previousThreshold != null) {
+			fromClauseBuilder.append(" and \"").append(clusteredField).append("\"").append(" > ").append(previousThreshold.toString());
+		}
+		if (currentThreshold != null) {
+			fromClauseBuilder.append(" and \"").append(clusteredField).append("\"").append(" <= ").append(currentThreshold.toString());
+		}
+		fromClauseBuilder.append(" group by time(").append(timeDimension).append(")");
+		fromClauseBuilder.append(")");
+	}
+
+	private TimedDatas executeTimedQuery(final String q) {
 		final Query query = new Query(q, appName);
 		final QueryResult queryResult = influxDB.query(query);
 
@@ -75,12 +179,11 @@ public final class InfluxDbDataProvider implements DataProvider {
 			return new TimedDatas(dataSeries, series.getColumns().subList(1, series.getColumns().size()));//we remove the first one
 		}
 		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
-
 	}
 
 	@Override
-	public TabularDatas getTabularData(final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		final StringBuilder queryBuilder = buildQuery(dataFilter, timeFilter);
+	public TabularDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter);
 
 		final String groupByClause = Stream.of(groupBy)
 				.collect(Collectors.joining("\", \"", "\"", "\""));
@@ -106,26 +209,24 @@ public final class InfluxDbDataProvider implements DataProvider {
 		return new TabularDatas(Collections.emptyMap(), Collections.emptyList());
 	}
 
-	private static StringBuilder buildQuery(final DataFilter dataFilter, final TimeFilter timeFilter) {
+	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
+		Assertion.checkNotNull(measures);
+		//---
 		final StringBuilder queryBuilder = new StringBuilder("select ");
-
 		String separator = "";
-		for (final String measure : dataFilter.getMeasures()) {
-			final String[] measureDetails = measure.split(":");
-			final Tuple2<String, List<String>> aggregateFunction = parseAggregateFunction(measureDetails[1]);
-			// append function name
-			queryBuilder.append(separator).append(aggregateFunction.getVal1()).append("(\"").append(measureDetails[0]).append("\"");
-			// append parameters
-			if (!aggregateFunction.getVal2().isEmpty()) {
-				queryBuilder.append(aggregateFunction.getVal2()
-						.stream()
-						.collect(Collectors.joining(",", ", ", "")));
-			}
-			// end measure and add alias
-			queryBuilder.append(") as \"").append(measure).append("\"");
+		for (final String measure : measures) {
+			queryBuilder
+					.append(separator)
+					.append(buildMeasureQuery(measure, measure));
 			separator = " ,";
 		}
-		queryBuilder.append(" from ").append(dataFilter.getMeasurement())
+		queryBuilder.append(" from ").append(dataFilter.getMeasurement());
+		queryBuilder.append(buildWhereClause(dataFilter, timeFilter));
+		return queryBuilder;
+	}
+
+	private static String buildWhereClause(final DataFilter dataFilter, final TimeFilter timeFilter) {
+		final StringBuilder queryBuilder = new StringBuilder()
 				.append(" where time > ").append(timeFilter.getFrom()).append(" and time <").append(timeFilter.getTo());
 		if (!"*".equals(dataFilter.getName())) {
 			queryBuilder.append(" and \"name\"='").append(dataFilter.getName()).append("'");
@@ -133,10 +234,29 @@ public final class InfluxDbDataProvider implements DataProvider {
 		if (!"*".equals(dataFilter.getLocation())) {
 			queryBuilder.append(" and \"location\"='").append(dataFilter.getLocation()).append("'");
 		}
-		if ("*".equals(dataFilter.getTopic())) {
+		if (!"*".equals(dataFilter.getTopic())) {
 			queryBuilder.append(" and \"topic\"='").append(dataFilter.getTopic()).append("'");
 		}
-		return queryBuilder;
+		return queryBuilder.toString();
+	}
+
+	private static String buildMeasureQuery(final String measure, final String alias) {
+		Assertion.checkArgNotEmpty(measure);
+		Assertion.checkArgNotEmpty(alias);
+		//----
+		final String[] measureDetails = measure.split(":");
+		final Tuple2<String, List<String>> aggregateFunction = parseAggregateFunction(measureDetails[1]);
+		// append function name
+		final StringBuilder measureQueryBuilder = new java.lang.StringBuilder(aggregateFunction.getVal1()).append("(\"").append(measureDetails[0]).append("\"");
+		// append parameters
+		if (!aggregateFunction.getVal2().isEmpty()) {
+			measureQueryBuilder.append(aggregateFunction.getVal2()
+					.stream()
+					.collect(Collectors.joining(",", ", ", "")));
+		}
+		// end measure and add alias
+		measureQueryBuilder.append(") as \"").append(alias).append("\"");
+		return measureQueryBuilder.toString();
 	}
 
 	private static Tuple2<String, List<String>> parseAggregateFunction(final String aggregateFunction) {
@@ -162,10 +282,11 @@ public final class InfluxDbDataProvider implements DataProvider {
 	@Override
 	public List<HealthCheck> getHealthChecks() {
 
-		final DataFilter dataFilter = new DataFilter("healthcheck", "*", "*", null, Arrays.asList("status:last", "message:last", "name:last", "topic:last", "feature:last", "checker:last"));
-		final TimeFilter timeFilter = new TimeFilter("now() - 5w", "now()", null);// before 5 weeks we consider that we don't have data
+		final List<String> measures = Arrays.asList("status:last", "message:last", "name:last", "topic:last", "feature:last", "checker:last");
+		final DataFilter dataFilter = new DataFilter("healthcheck", "*", "*", "*");
+		final TimeFilter timeFilter = new TimeFilter("now() - 5w", "now()", "*");// before 5 weeks we consider that we don't have data
 
-		return getTabularData(dataFilter, timeFilter, "name", "topic")
+		return getTabularData(measures, dataFilter, timeFilter, "name", "topic")
 				.getDataSeries()
 				.values()
 				.stream()
@@ -205,10 +326,11 @@ public final class InfluxDbDataProvider implements DataProvider {
 
 	@Override
 	public List<Metric> getMetrics() {
-		final DataFilter dataFilter = new DataFilter("metric", "*", "*", null, Arrays.asList("value:last", "name:last", "topic:last"));
-		final TimeFilter timeFilter = new TimeFilter("now() - 5w", "now()", null);// before 5 weeks we consider that we don't have data
+		final List<String> measures = Arrays.asList("value:last", "name:last", "topic:last");
+		final DataFilter dataFilter = new DataFilter("metric", "*", "*", "*");
+		final TimeFilter timeFilter = new TimeFilter("now() - 5w", "now()", "*");// before 5 weeks we consider that we don't have data
 
-		return getTabularData(dataFilter, timeFilter, "name", "topic")
+		return getTabularData(measures, dataFilter, timeFilter, "name", "topic")
 				.getDataSeries()
 				.values()
 				.stream()

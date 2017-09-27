@@ -5,10 +5,10 @@ import io.vertigo.lang.Assertion;
 
 public class DomainModel {
 	private final Domain domainDefinition;
-	private final double taskCount;
-	private final double dtDefinitionCount;
+	private final Double taskCount; // may be null for UI (displayed as N/A
+	private final Double dtDefinitionCount; // may be null for UI (displayed as N/A
 
-	public DomainModel(final Domain domainDefinition, final double taskCount, final double dtDefinitionCount) {
+	public DomainModel(final Domain domainDefinition, final Double taskCount, final Double dtDefinitionCount) {
 		Assertion.checkNotNull(domainDefinition);
 		//---
 		this.domainDefinition = domainDefinition;
@@ -24,15 +24,15 @@ public class DomainModel {
 		return taskCount + dtDefinitionCount == 0;
 	}
 
-	public double getTaskCount() {
+	public Double getTaskCount() {
 		return taskCount;
 	}
 
-	public double getDtDefinitionCount() {
+	public Double getDtDefinitionCount() {
 		return dtDefinitionCount;
 	}
 
-	public double getUsageCount() {
+	public Double getUsageCount() {
 		return taskCount + dtDefinitionCount;
 	}
 

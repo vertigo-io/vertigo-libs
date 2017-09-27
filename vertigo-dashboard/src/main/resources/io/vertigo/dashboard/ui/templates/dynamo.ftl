@@ -37,7 +37,8 @@
 				<@module.lineDetail  type='entity' name=entity.name >
 					   <div class="graph-panel" 
 					  		data-url="/dashboard/data/series" 
-					  		data-query-data-filter='{"measurement":"metric","name":"entityCount", "topic":"${entity.name}" ,"location":"*","measures":["value:median"]}'
+					  		data-query-measures='["value:median"]'
+					  		data-query-data-filter='{"measurement":"metric","name":"entityCount", "topic":"${entity.name}" ,"location":"*","topic":"*"}'
 					  		data-query-time-filter='{"from" : "now() - 1w", "to" : "now()", "dim" : "6m"}' >
 					  	</div>
 				</@module.lineDetail >
@@ -45,7 +46,8 @@
 		</@module.standardDetail>
 		 <div id="myStandAloneBarChart"
 					  		data-url="/dashboard/data/tabular" 
-					  		data-query-data-filter='{"measurement":"tasks","name":"*", "location":"*","measures":["duration:median"]}'
+					  		data-query-measures='["value:median"]'
+					  		data-query-data-filter='{"measurement":"tasks","name":"*", "location":"*","topic":"*"}'
 					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()"}' 
 					  		data-query-group-by='name' >
 					  	</div>
@@ -77,7 +79,8 @@
 				<@module.lineDetail  type='task' name=task.name?replace("/", "_") >
 					   <div class="graph-panel" 
 					  		data-url="/dashboard/data/series" 
-					  		data-query-data-filter='{"measurement":"tasks","name":"${task.name}","location":"*","measures":["duration:median","duration:max"]}'
+					  		data-query-measures='["duration:median","duration:max"]'
+					  		data-query-data-filter='{"measurement":"tasks","name":"${task.name}","location":"*","topic":"*"}'
 					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}' >
 					  	</div>
 				</@module.lineDetail >

@@ -68,9 +68,10 @@
 				graphElement.html("");
 				
 				var queryUrl = graphElement.data("url");
+				var queryMeasures = graphElement.data("query-measures");
 				var queryDataFilter = graphElement.data("query-data-filter");
 				var queryTimeFilter = graphElement.data("query-time-filter");
-				var query = { dataFilter : queryDataFilter, timeFilter : queryTimeFilter };
+				var query = {measures : queryMeasures, dataFilter : queryDataFilter, timeFilter : queryTimeFilter };
 					
 				$.post(queryUrl, JSON.stringify(query) , function( jsonData, textStatus) {
 					var palette = new Rickshaw.Color.Palette();
@@ -111,10 +112,11 @@
 				graphElement.html("");
 				
 				var queryUrl = graphElement.data("url");
+				var queryMeasures = graphElement.data("query-measures");
 				var queryDataFilter = graphElement.data("query-data-filter");
 				var queryTimeFilter = graphElement.data("query-time-filter");
 				var queryGroupBy = graphElement.data("query-group-by");
-				var query = { dataFilter : queryDataFilter, timeFilter : queryTimeFilter, groupBy : queryGroupBy };
+				var query = { measures : queryMeasures, dataFilter : queryDataFilter, timeFilter : queryTimeFilter, groupBy : queryGroupBy };
 					
 				$.post(queryUrl, JSON.stringify(query) , function( jsonData, textStatus) {
 					var palette = new Rickshaw.Color.Palette();

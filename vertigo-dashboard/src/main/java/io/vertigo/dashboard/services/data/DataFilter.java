@@ -1,7 +1,6 @@
 package io.vertigo.dashboard.services.data;
 
 import java.io.Serializable;
-import java.util.List;
 
 import io.vertigo.lang.Assertion;
 
@@ -13,24 +12,20 @@ public final class DataFilter implements Serializable {
 	private final String location;
 	private final String name;
 	private final String topic;
-	private final List<String> measures;
 
 	public DataFilter(
 			final String measurement,
 			final String location,
 			final String name,
-			final String topic,
-			final List<String> measures) {
+			final String topic) {
 		Assertion.checkNotNull(location);
 		Assertion.checkNotNull(name);
 		Assertion.checkNotNull(topic);
-		Assertion.checkNotNull(measures);
 		//---
 		this.measurement = measurement;
 		this.location = location;
 		this.name = name;
 		this.topic = topic;
-		this.measures = measures;
 	}
 
 	public String getMeasurement() {
@@ -49,7 +44,4 @@ public final class DataFilter implements Serializable {
 		return topic;
 	}
 
-	public List<String> getMeasures() {
-		return measures;
-	}
 }

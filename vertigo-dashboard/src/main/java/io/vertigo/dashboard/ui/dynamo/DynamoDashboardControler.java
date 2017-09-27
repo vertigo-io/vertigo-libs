@@ -34,9 +34,9 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 	}
 
 	private void buildTaskModel(final App app, final Map<String, Object> model) {
-		final DataFilter dataFilter = new DataFilter("tasks", "*", "*", null, Arrays.asList("duration:median", "duration:count"));
-		final TimeFilter timeFilter = new TimeFilter("now() - 1w", "now()", null);
-		final TabularDatas tabularDatas = getDataProvider().getTabularData(dataFilter, timeFilter, "name");
+		final DataFilter dataFilter = new DataFilter("tasks", "*", "*", "*");
+		final TimeFilter timeFilter = new TimeFilter("now() - 1w", "now()", "*");
+		final TabularDatas tabularDatas = getDataProvider().getTabularData(Arrays.asList("duration:median", "duration:count"), dataFilter, timeFilter, "name");
 
 		final List<TaskModel> tasks = Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
 				.stream()
