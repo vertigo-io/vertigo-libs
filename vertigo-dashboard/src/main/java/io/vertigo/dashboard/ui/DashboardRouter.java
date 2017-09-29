@@ -40,6 +40,7 @@ import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dashboard.ui.commons.CommonsDashboardControler;
 import io.vertigo.dashboard.ui.dynamo.DynamoDashboardControler;
+import io.vertigo.dashboard.ui.vega.VegaDashboardControler;
 import spark.Response;
 import spark.Spark;
 import spark.utils.GzipUtils;
@@ -54,6 +55,7 @@ public final class DashboardRouter {
 	static {
 		controlerMap.put("commons", CommonsDashboardControler.class);
 		controlerMap.put("dynamo", DynamoDashboardControler.class);
+		controlerMap.put("vega", VegaDashboardControler.class);
 	}
 
 	private final App app;
@@ -82,8 +84,8 @@ public final class DashboardRouter {
 	 */
 	public void route() {
 
-		Spark.get("/dashboard.css", (request, response) -> {
-			try (InputStream inputStream = DashboardRouter.class.getResource("/static/dashboard.css").openStream();
+		Spark.get("/dashboard/static/:fileName", (request, response) -> {
+			try (InputStream inputStream = DashboardRouter.class.getResource("/static/" + request.params(":fileName")).openStream();
 					OutputStream wrappedOutputStream = GzipUtils.checkAndWrap(request.raw(), response.raw(), false)) {
 				IOUtils.copy(inputStream, wrappedOutputStream);
 			}
