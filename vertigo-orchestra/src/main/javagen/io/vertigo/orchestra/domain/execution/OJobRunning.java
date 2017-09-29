@@ -16,11 +16,31 @@ import io.vertigo.lang.Generated;
 public final class OJobRunning implements Entity {
 	private static final long serialVersionUID = 1L;
 
-	private Long jruId;
+	private String jid;
+
 	private String jobname;
-	private Long nodId;
-	private java.util.Date dateExec;
+
+	private Long nodeId;
+
+	private java.time.ZonedDateTime execDate;
+
+	private java.time.ZonedDateTime maxExecDate;
+
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_JOB_USR",
+			fkFieldName = "USR_ID",
+			primaryDtDefinitionName = "DT_O_USER",
+			primaryIsNavigable = true,
+			primaryRole = "User",
+			primaryLabel = "User",
+			primaryMultiplicity = "0..1",
+			foreignDtDefinitionName = "DT_O_JOB_RUNNING",
+			foreignIsNavigable = false,
+			foreignRole = "JobRunning",
+			foreignLabel = "JobRunning",
+			foreignMultiplicity = "0..*")
 	private final VAccessor<io.vertigo.orchestra.domain.referential.OUser> usrIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.referential.OUser.class, "user");
+
 
 	/** {@inheritDoc} */
 	@Override
@@ -28,25 +48,27 @@ public final class OJobRunning implements Entity {
 		return DtObjectUtil.createURI(this);
 	}
 
+	
 	/**
 	 * Champ : ID.
-	 * Récupère la valeur de la propriété 'Id de la definition du job'.
-	 * @return Long jruId <b>Obligatoire</b>
+	 * Récupère la valeur de la propriété 'Id de l'execution du job'.
+	 * @return String jid <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id de la definition du job")
-	public Long getJruId() {
-		return jruId;
+	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "ID", required = true, label = "Id de l'execution du job")
+	public String getJid() {
+		return jid;
 	}
 
 	/**
 	 * Champ : ID.
-	 * Définit la valeur de la propriété 'Id de la definition du job'.
-	 * @param jruId Long <b>Obligatoire</b>
+	 * Définit la valeur de la propriété 'Id de l'execution du job'.
+	 * @param jid String <b>Obligatoire</b>
 	 */
-	public void setJruId(final Long jruId) {
-		this.jruId = jruId;
+	public void setJid(final String jid) {
+		this.jid = jid;
 	}
-
+	
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Nom du job'.
@@ -65,45 +87,68 @@ public final class OJobRunning implements Entity {
 	public void setJobname(final String jobname) {
 		this.jobname = jobname;
 	}
-
+	
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Id du noeud'.
-	 * @return Long nodId <b>Obligatoire</b>
+	 * @return Long nodeId <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", required = true, label = "Id du noeud")
-	public Long getNodId() {
-		return nodId;
+	public Long getNodeId() {
+		return nodeId;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Id du noeud'.
-	 * @param nodId Long <b>Obligatoire</b>
+	 * @param nodeId Long <b>Obligatoire</b>
 	 */
-	public void setNodId(final Long nodId) {
-		this.nodId = nodId;
+	public void setNodeId(final Long nodeId) {
+		this.nodeId = nodeId;
+	}
+	
+	
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'Date d'execution'.
+	 * @return java.time.ZonedDateTime execDate
+	 */
+	@Field(domain = "DO_O_TIMESTAMP", label = "Date d'execution")
+	public java.time.ZonedDateTime getExecDate() {
+		return execDate;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Date de début'.
-	 * @return java.util.Date dateExec
+	 * Définit la valeur de la propriété 'Date d'execution'.
+	 * @param execDate java.time.ZonedDateTime
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Date de début")
-	public java.util.Date getDateExec() {
-		return dateExec;
+	public void setExecDate(final java.time.ZonedDateTime execDate) {
+		this.execDate = execDate;
+	}
+	
+	
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'Date Max d'execution (Date d'exec + TO)'.
+	 * @return java.time.ZonedDateTime maxExecDate
+	 */
+	@Field(domain = "DO_O_TIMESTAMP", label = "Date Max d'execution (Date d'exec + TO)")
+	public java.time.ZonedDateTime getMaxExecDate() {
+		return maxExecDate;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Date de début'.
-	 * @param dateExec java.util.Date
+	 * Définit la valeur de la propriété 'Date Max d'execution (Date d'exec + TO)'.
+	 * @param maxExecDate java.time.ZonedDateTime
 	 */
-	public void setDateExec(final java.util.Date dateExec) {
-		this.dateExec = dateExec;
+	public void setMaxExecDate(final java.time.ZonedDateTime maxExecDate) {
+		this.maxExecDate = maxExecDate;
 	}
-
+	
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'User'.
@@ -122,11 +167,12 @@ public final class OJobRunning implements Entity {
 	public void setUsrId(final Long usrId) {
 		usrIdAccessor.setId(usrId);
 	}
-
+	
 	/**
 	 * Association : User.
 	 * @return io.vertigo.orchestra.domain.referential.OUser
 	 */
+				
 	public io.vertigo.orchestra.domain.referential.OUser getUser() {
 		return usrIdAccessor.get();
 	}
@@ -135,23 +181,9 @@ public final class OJobRunning implements Entity {
 	 * Retourne l'URI: User.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_JOB_USR",
-			fkFieldName = "USR_ID",
-			primaryDtDefinitionName = "DT_O_USER",
-			primaryIsNavigable = true,
-			primaryRole = "User",
-			primaryLabel = "User",
-			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_O_JOB_RUNNING",
-			foreignIsNavigable = false,
-			foreignRole = "JobRunning",
-			foreignLabel = "JobRunning",
-			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.OUser> getUserURI() {
 		return usrIdAccessor.getURI();
 	}
-
 
 	/** {@inheritDoc} */
 	@Override

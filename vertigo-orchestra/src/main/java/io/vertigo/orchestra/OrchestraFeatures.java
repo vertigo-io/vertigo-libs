@@ -22,31 +22,19 @@ import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
-import io.vertigo.orchestra.dao.definition.DefinitionPAO;
-import io.vertigo.orchestra.dao.definition.OActivityDAO;
-import io.vertigo.orchestra.dao.definition.OProcessDAO;
+import io.vertigo.orchestra.dao.definition.OJobModelDAO;
 import io.vertigo.orchestra.dao.execution.ExecutionPAO;
-import io.vertigo.orchestra.dao.execution.OActivityExecutionDAO;
-import io.vertigo.orchestra.dao.execution.OActivityLogDAO;
-import io.vertigo.orchestra.dao.execution.OActivityWorkspaceDAO;
+import io.vertigo.orchestra.dao.execution.OJobBoardDAO;
 import io.vertigo.orchestra.dao.execution.OJobRunningDAO;
-import io.vertigo.orchestra.dao.execution.ONodeDAO;
-import io.vertigo.orchestra.dao.execution.OProcessExecutionDAO;
-import io.vertigo.orchestra.dao.planification.OProcessPlanificationDAO;
-import io.vertigo.orchestra.dao.planification.PlanificationPAO;
-import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
+import io.vertigo.orchestra.dao.history.OJobExecutionDAO;
+import io.vertigo.orchestra.dao.history.OJobLogDAO;
+import io.vertigo.orchestra.dao.scheduling.OJobCronDAO;
+import io.vertigo.orchestra.dao.scheduling.OJobScheduleDAO;
 import io.vertigo.orchestra.domain.DtDefinitions;
-import io.vertigo.orchestra.impl.definitions.OrchestraDefinitionManagerImpl;
-import io.vertigo.orchestra.impl.node.ONodeManager;
-import io.vertigo.orchestra.impl.node.ONodeManagerImpl;
 import io.vertigo.orchestra.impl.services.OrchestraServicesImpl;
-import io.vertigo.orchestra.monitoring.dao.summary.SummaryPAO;
-import io.vertigo.orchestra.monitoring.dao.uidefinitions.UidefinitionsPAO;
-import io.vertigo.orchestra.monitoring.dao.uiexecutions.UiexecutionsPAO;
-import io.vertigo.orchestra.plugins.definitions.db.DbProcessDefinitionStorePlugin;
-import io.vertigo.orchestra.plugins.services.log.db.DbProcessLoggerPlugin;
-import io.vertigo.orchestra.plugins.services.report.db.DbProcessReportPlugin;
-import io.vertigo.orchestra.plugins.services.schedule.db.DbProcessSchedulerPlugin;
+import io.vertigo.orchestra.plugins.services.schedule.db.OrchestraSchedulerProvider;
+import io.vertigo.orchestra.plugins.store.OrchestraStore;
+import io.vertigo.orchestra.plugins.store.OrchestraStoreImpl;
 import io.vertigo.orchestra.services.OrchestraServices;
 import io.vertigo.orchestra.webservices.WsDefinition;
 import io.vertigo.orchestra.webservices.WsExecution;
@@ -76,32 +64,18 @@ public final class OrchestraFeatures extends Features {
 	 */
 	public OrchestraFeatures withDataBase(final String nodeName, final int daemonPeriodSeconds, final int workersCount, final int forecastDurationSeconds) {
 		getModuleConfigBuilder()
-				.addPlugin(DbProcessDefinitionStorePlugin.class)
-				.addPlugin(DbProcessSchedulerPlugin.class,
-						Param.of("nodeName", nodeName),
-						Param.of("planningPeriodSeconds", String.valueOf(daemonPeriodSeconds)),
-						Param.of("forecastDurationSeconds", String.valueOf(forecastDurationSeconds)),
-						Param.of("workersCount", String.valueOf(workersCount)))
-				.addPlugin(DbProcessReportPlugin.class)
-				.addPlugin(DbProcessLoggerPlugin.class)
+				.addComponent(OrchestraStore.class, OrchestraStoreImpl.class)
+				.addDefinitionProvider(OrchestraSchedulerProvider.class, Param.of("planningPeriod", String.valueOf(daemonPeriodSeconds)))
 				//----DAO
-				.addComponent(OProcessDAO.class)
-				.addComponent(OActivityDAO.class)
-				.addComponent(OProcessPlanificationDAO.class)
-				.addComponent(OActivityExecutionDAO.class)
-				.addComponent(OProcessExecutionDAO.class)
-				.addComponent(OActivityWorkspaceDAO.class)
-				.addComponent(OActivityLogDAO.class)
-				.addComponent(ONodeDAO.class)
 				.addComponent(OJobRunningDAO.class)
+				.addComponent(OJobScheduleDAO.class)
+				.addComponent(OJobExecutionDAO.class)
+				.addComponent(OJobBoardDAO.class)
+				.addComponent(OJobModelDAO.class)
+				.addComponent(OJobCronDAO.class)
+				.addComponent(OJobLogDAO.class)
 				//----PAO
-				.addComponent(DefinitionPAO.class)
 				.addComponent(ExecutionPAO.class)
-				.addComponent(PlanificationPAO.class)
-				//.addComponent(PlanificationPAO.class)
-				.addComponent(UidefinitionsPAO.class)
-				.addComponent(UiexecutionsPAO.class)
-				.addComponent(SummaryPAO.class)
 				//----Definitions
 				.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 						.addDefinitionResource("kpr", "io/vertigo/orchestra/execution.kpr")
@@ -128,8 +102,6 @@ public final class OrchestraFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addComponent(ONodeManager.class, ONodeManagerImpl.class)
-				.addComponent(OrchestraDefinitionManager.class, OrchestraDefinitionManagerImpl.class)
 				.addComponent(OrchestraServices.class, OrchestraServicesImpl.class);
 
 	}

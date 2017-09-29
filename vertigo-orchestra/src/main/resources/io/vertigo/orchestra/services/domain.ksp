@@ -16,6 +16,13 @@ create Domain DO_O_CODE_IDENTIFIANT {
 	storeType : "VARCHAR(20)"
 },
 
+create Domain DO_O_STATUS_CODE {
+	dataType : String
+	formatter : FMT_O_DEFAULT
+	constraint : [CK_O_CODE,CK_O_MAX_LENGTH_1]
+	storeType : "VARCHAR(1)"
+},
+
 create Domain DO_O_LIBELLE {
 	dataType : String
 	formatter : FMT_O_DEFAULT
@@ -46,7 +53,7 @@ create Domain DO_O_BOOLEEN {
 
 
 create Domain DO_O_TIMESTAMP {
-	dataType : Date
+	dataType : ZonedDateTime
 	formatter : FMT_O_DATE_HEURE
 	storeType : "TIMESTAMP"
 },
@@ -103,6 +110,11 @@ create Formatter FMT_O_DATE_HEURE {
 create Constraint CK_O_MAX_LENGTH_20 {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength",
 	args :"20",
+},
+
+create Constraint CK_O_MAX_LENGTH_1 {
+	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength",
+	args :"1",
 },
 
 create Constraint CK_O_MAX_LENGTH_100 {

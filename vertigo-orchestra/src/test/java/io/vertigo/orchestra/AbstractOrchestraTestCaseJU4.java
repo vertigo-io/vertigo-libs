@@ -75,14 +75,13 @@ public abstract class AbstractOrchestraTestCaseJU4 {
 		//A chaque test on supprime tout
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final List<String> requests = new ListBuilder<String>()
-					.add(" delete from o_activity_log;")
-					.add(" delete from o_activity_workspace;")
-					.add(" delete from o_process_planification;")
-					.add(" delete from o_activity_execution;")
-					.add(" delete from o_process_execution;")
-					.add(" delete from o_activity;")
-					.add(" delete from o_process;")
+					.add(" delete from o_job_log;")
+					.add(" delete from o_job_execution;")
+					.add(" delete from o_job_board;")
 					.add(" delete from o_job_running;")
+					.add(" delete from o_job_cron;")
+					.add(" delete from o_job_schedule;")
+					.add(" delete from o_job_model;")
 					.build();
 
 			for (final String request : requests) {

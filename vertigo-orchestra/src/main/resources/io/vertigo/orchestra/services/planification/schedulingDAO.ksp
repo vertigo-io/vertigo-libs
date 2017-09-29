@@ -1,0 +1,19 @@
+package io.vertigo.orchestra.dao.planification
+
+
+create Task TK_GET_JOBS_SCHEDULE_TO_RUN {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	SELECT JSC.*
+        	  FROM O_JOB_SCHEDULE JSC
+        	  JOIN O_JOB_MODEL JMO ON (JSC.JMO_ID = JMO.JMO_ID)
+        	 WHERE JSC.SCHEDULE_DATE < #SCHEDULE_DATE# 
+        	   AND (JSC.SCHEDULE_DATE + JMO.MAX_DELAY => #SCHEDULE_DATE#)
+        	   AND NOT EXISTS (SELECT 1 
+        	   					 FROM O_JOB_BOARD JBO
+        	   					WHERE JBO.JID = to_char(JSC.SCHEDULE_DATE , 'YYYY_MM_DD_HH24:MI:SS') || 'S' || JSC.JSC_ID)"
+	attribute DTO_O_JOB_SCHEDULE	{domain : DO_DT_O_JOB_SCHEDULE_DTC 	notNull:"true" 	inOut :"out"}
+	attribute SCHEDULE_DATE		{domain : DO_O_TIMESTAMP			notNull:"true" 	inOut :"in"}
+},
+

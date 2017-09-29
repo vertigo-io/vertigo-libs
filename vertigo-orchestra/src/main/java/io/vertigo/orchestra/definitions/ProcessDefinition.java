@@ -24,7 +24,7 @@ import java.util.Map;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.lang.Assertion;
-import io.vertigo.orchestra.services.execution.RunnableActivityEngine;
+import io.vertigo.orchestra.services.execution.JobEngine;
 
 /**
  * Définition d'un processus Orchestra.
@@ -37,7 +37,6 @@ public final class ProcessDefinition implements Definition {
 	//---immutables
 	private long id;
 	private final String name;
-	private final List<ActivityDefinition> activities;
 	private final ProcessType processType;
 
 	//---params dev / admin
@@ -46,7 +45,6 @@ public final class ProcessDefinition implements Definition {
 
 	private final ProcessTriggeringStrategy triggeringStrategy;
 	private final Map<String, String> metadatas;
-	private final boolean needUpdate;
 
 	/**
 	 * Constructor only used by its builder.
@@ -62,23 +60,18 @@ public final class ProcessDefinition implements Definition {
 			final boolean active,
 			final ProcessType processType,
 			final Map<String, String> metadatas,
-			final boolean needUpdate,
-			final ProcessTriggeringStrategy triggeringStrategy,
-			final List<ActivityDefinition> activities) {
+			final ProcessTriggeringStrategy triggeringStrategy) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkArgNotEmpty(label);
 		Assertion.checkNotNull(processType);
 		Assertion.checkNotNull(metadatas);
 		Assertion.checkNotNull(triggeringStrategy);
-		Assertion.checkNotNull(activities);
 		//---
 		this.name = name;
 		this.label = label;
 		this.active = active;
 		this.processType = processType;
-		this.activities = activities;
 		this.metadatas = metadatas;
-		this.needUpdate = needUpdate;
 		this.triggeringStrategy = triggeringStrategy;
 	}
 
@@ -92,12 +85,10 @@ public final class ProcessDefinition implements Definition {
 		return new ProcessDefinitionBuilder(processName, processLabel);
 	}
 
-	public static ProcessDefinitionBuilder legacyBuilder(final String processName, final Class<? extends RunnableActivityEngine> engineClass) {
+	public static ProcessDefinitionBuilder legacyBuilder(final String processName, final Class<? extends JobEngine> jobEngineClass) {
 		return new ProcessDefinitionBuilder(processName, processName)
-				//.withProcessType(ProcessType.UNSUPERVISED)
 				.withProcessType(ProcessType.SUPERVISED)
-				.withMultiExecution()
-				.addActivity("MAIN", "Main", engineClass);
+				.withMultiExecution();
 
 	}
 
@@ -128,14 +119,6 @@ public final class ProcessDefinition implements Definition {
 
 	public Map<String, String> getMetadatas() {
 		return metadatas;
-	}
-
-	public List<ActivityDefinition> getActivities() {
-		return activities;
-	}
-
-	public boolean getNeedUpdate() {
-		return needUpdate;
 	}
 
 	public ProcessTriggeringStrategy getTriggeringStrategy() {

@@ -49,9 +49,4 @@ public interface OrchestraServices extends Component {
 	 */
 	ProcessLogger getLogger();
 
-	/**
-	 * @return the scheduler
-	 */
-	ProcessScheduler getScheduler();
-
 }

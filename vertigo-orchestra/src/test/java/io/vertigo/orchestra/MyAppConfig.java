@@ -34,9 +34,6 @@ import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.orchestra.boot.DataBaseInitializer;
-import io.vertigo.orchestra.services.execution.LocalExecutionProcessInitializer;
-import io.vertigo.orchestra.util.monitoring.MonitoringServices;
-import io.vertigo.orchestra.util.monitoring.MonitoringServicesImpl;
 import io.vertigo.orchestra.webservices.WsDefinition;
 import io.vertigo.orchestra.webservices.WsExecution;
 import io.vertigo.orchestra.webservices.WsExecutionControl;
@@ -88,12 +85,7 @@ public final class MyAppConfig {
 				.addModule(new OrchestraFeatures()
 						.withDataBase("NODE_TEST_1", 2, 3, 60)
 						//.withMemory(1)
-						.build())
-				.addModule(ModuleConfig.builder("orchestra-test")
-						//---Services
-						.addComponent(MonitoringServices.class, MonitoringServicesImpl.class)
-						.build())
-				.addInitializer(LocalExecutionProcessInitializer.class);
+						.build());
 	}
 
 	public static void addVegaEmbeded(final AppConfigBuilder appConfigBuilder) {

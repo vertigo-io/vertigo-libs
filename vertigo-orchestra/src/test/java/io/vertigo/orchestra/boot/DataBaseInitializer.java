@@ -33,6 +33,7 @@ import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.lang.WrappedException;
 
 /**
@@ -57,7 +58,7 @@ public class DataBaseInitializer implements ComponentInitializer {
 	private void createDataBase() {
 		final SqlConnection connection = sqlDataBaseManager.getConnectionProvider(ORCHESTRA_CONNECTION_NAME).obtainConnection();
 		execCallableStatement(connection, sqlDataBaseManager, "DROP ALL OBJECTS; ");
-		execSqlScript(connection, "file:./src/main/database/scripts/install/orchestra_create_init_v1.0.1.sql");
+		execSqlScript(connection, "file:./src/main/database/scripts/install/orchestra_create_init_v2.0.0.sql");
 		try {
 			connection.commit();
 			connection.release();
@@ -87,8 +88,7 @@ public class DataBaseInitializer implements ComponentInitializer {
 
 	private static void execCallableStatement(final SqlConnection connection, final SqlDataBaseManager sqlDataBaseManager, final String sql) {
 		try {
-			sqlDataBaseManager.createPreparedStatement(connection)
-					.executeUpdate(sql, Collections.emptyList());
+			sqlDataBaseManager.executeUpdate(SqlStatement.builder(sql).build(), connection);
 		} catch (final SQLException e) {
 			throw WrappedException.wrap(e, "Can't exec command {0}", sql);
 		}

@@ -18,9 +18,10 @@
  */
 package io.vertigo.orchestra.services.execution.engine;
 
-import io.vertigo.orchestra.services.execution.RunnableActivityEngine;
 
-public final class TestJob2 extends RunnableActivityEngine {
+import io.vertigo.orchestra.services.execution.RunnableJobEngine;
+
+public final class TestJob2 extends RunnableJobEngine {
 	private static int count = 0;
 
 	@Override

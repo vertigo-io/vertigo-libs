@@ -3,10 +3,11 @@ package io.vertigo.orchestra.domain.execution
 
 create DtDefinition DT_O_JOB_RUNNING {
 	storeName : "orchestra"
-	key JRU_ID					{domain : DO_O_IDENTIFIANT, label :"Id de la definition du job", notNull:"true",}
+	key JID						{domain : DO_O_CODE_IDENTIFIANT, label :"Id de l'execution du job", notNull:"true",}
 	field JOBNAME   			{domain : DO_O_LIBELLE, label :"Nom du job", notNull:"false",}
-	field NOD_ID				{domain : DO_O_IDENTIFIANT, label :"Id du noeud", notNull:"true",}
-	field DATE_EXEC 			{domain : DO_O_TIMESTAMP, label :"Date de début", notNull:"false",},
+	field NODE_ID				{domain : DO_O_IDENTIFIANT, label :"Id du noeud", notNull:"true",}
+	field EXEC_DATE 			{domain : DO_O_TIMESTAMP, label :"Date d'execution", notNull:"false",},
+	field MAX_EXEC_DATE 		{domain : DO_O_TIMESTAMP, label :"Date Max d'execution (Date d'exec + TO)", notNull:"false",},
 },
 
 create Association A_JOB_USR {

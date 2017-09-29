@@ -1,18 +1,6 @@
 execution.kpr
 
-model/definition/process.ksp
-model/definition/activity.ksp
 
-
-
-model/execution/process_execution.ksp
-model/execution/activity_execution.ksp
-model/execution/activity_workspace.ksp
-model/execution/activity_log.ksp
-model/execution/core.ksp
-
-model/planification/process_planification.ksp
-model/execution/job_running.ksp
 
 model/planification/process_next_run.ksp
 
@@ -22,6 +10,13 @@ model/referential/types.ksp
 model/referential/users.ksp
 
 
-/monitoring/model/summary/executionSummary.ksp
-/monitoring/model/executions/uiExecutions.ksp
-/monitoring/model/definitions/uiDefinitions.ksp
+model/definition/job_model.ksp
+
+model/execution/job_board.ksp
+model/execution/job_running.ksp
+
+model/history/job_history.ksp
+model/history/job_log.ksp
+
+model/planification/job_cron.ksp
+model/planification/job_scheduling.ksp

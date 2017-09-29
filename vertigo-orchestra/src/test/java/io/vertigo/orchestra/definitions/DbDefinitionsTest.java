@@ -50,7 +50,6 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 
 		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_BASIC", "TEST BASIC")
 				.withMetadatas(metadatas)
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
@@ -68,7 +67,6 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 		//Before : 0
 
 		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_BASIC", "TEST BASIC")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
@@ -84,7 +82,6 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 	public void testUpdateProperties() {
 
 		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_UPDATE_CRON", "TEST_UPDATE_CRON")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);

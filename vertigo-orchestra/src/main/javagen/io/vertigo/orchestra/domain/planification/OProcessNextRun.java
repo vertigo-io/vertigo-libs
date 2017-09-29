@@ -1,7 +1,6 @@
 package io.vertigo.orchestra.domain.planification;
 
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -15,17 +14,21 @@ public final class OProcessNextRun implements DtObject {
 	private static final long serialVersionUID = 1L;
 
 	private String jobname;
-	private java.util.Date expectedTime;
-	private String initialParams;
-	private final VAccessor<io.vertigo.orchestra.domain.definition.OProcess> proIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.definition.OProcess.class, "processus");
-	private final VAccessor<io.vertigo.orchestra.domain.referential.OSchedulerState> sstCdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.referential.OSchedulerState.class, "planificationState");
 
+	private String jobId;
+
+	private java.time.ZonedDateTime expectedTime;
+
+	private String initialParams;
+
+
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Nom du job'.
 	 * @return String jobname
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Nom du job")
+	@Field(domain = "DO_O_CODE_IDENTIFIANT", label = "Nom du job")
 	public String getJobname() {
 		return jobname;
 	}
@@ -38,26 +41,48 @@ public final class OProcessNextRun implements DtObject {
 	public void setJobname(final String jobname) {
 		this.jobname = jobname;
 	}
+	
+	
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'Job Id'.
+	 * @return String jobId <b>Obligatoire</b>
+	 */
+	@Field(domain = "DO_O_CODE_IDENTIFIANT", required = true, label = "Job Id")
+	public String getJobId() {
+		return jobId;
+	}
 
 	/**
 	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'Job Id'.
+	 * @param jobId String <b>Obligatoire</b>
+	 */
+	public void setJobId(final String jobId) {
+		this.jobId = jobId;
+	}
+	
+	
+	/**
+	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date d'execution prévue'.
-	 * @return java.util.Date expectedTime
+	 * @return java.time.ZonedDateTime expectedTime
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", persistent = false, label = "Date d'execution prévue")
-	public java.util.Date getExpectedTime() {
+	public java.time.ZonedDateTime getExpectedTime() {
 		return expectedTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date d'execution prévue'.
-	 * @param expectedTime java.util.Date
+	 * @param expectedTime java.time.ZonedDateTime
 	 */
-	public void setExpectedTime(final java.util.Date expectedTime) {
+	public void setExpectedTime(final java.time.ZonedDateTime expectedTime) {
 		this.expectedTime = expectedTime;
 	}
-
+	
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
@@ -76,104 +101,7 @@ public final class OProcessNextRun implements DtObject {
 	public void setInitialParams(final String initialParams) {
 		this.initialParams = initialParams;
 	}
-
-	/**
-	 * Champ : FOREIGN_KEY.
-	 * Récupère la valeur de la propriété 'Processus'.
-	 * @return Long proId <b>Obligatoire</b>
-	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
-	public Long getProId() {
-		return (Long)  proIdAccessor.getId();
-	}
-
-	/**
-	 * Champ : FOREIGN_KEY.
-	 * Définit la valeur de la propriété 'Processus'.
-	 * @param proId Long <b>Obligatoire</b>
-	 */
-	public void setProId(final Long proId) {
-		proIdAccessor.setId(proId);
-	}
-
-	/**
-	 * Champ : FOREIGN_KEY.
-	 * Récupère la valeur de la propriété 'PlanificationState'.
-	 * @return String sstCd
-	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "PlanificationState")
-	public String getSstCd() {
-		return (String)  sstCdAccessor.getId();
-	}
-
-	/**
-	 * Champ : FOREIGN_KEY.
-	 * Définit la valeur de la propriété 'PlanificationState'.
-	 * @param sstCd String
-	 */
-	public void setSstCd(final String sstCd) {
-		sstCdAccessor.setId(sstCd);
-	}
-
-	/**
-	 * Association : Processus.
-	 * @return io.vertigo.orchestra.domain.definition.OProcess
-	 */
-	public io.vertigo.orchestra.domain.definition.OProcess getProcessus() {
-		return proIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'URI: Processus.
-	 * @return URI de l'association
-	 */
-	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PNR_PRO",
-			fkFieldName = "PRO_ID",
-			primaryDtDefinitionName = "DT_O_PROCESS",
-			primaryIsNavigable = true,
-			primaryRole = "Processus",
-			primaryLabel = "Processus",
-			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_O_PROCESS_NEXT_RUN",
-			foreignIsNavigable = false,
-			foreignRole = "ProcessNextRun",
-			foreignLabel = "ProcessNextRun",
-			foreignMultiplicity = "0..*")
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.definition.OProcess> getProcessusURI() {
-		return proIdAccessor.getURI();
-	}
-
-	/**
-	 * Association : PlanificationState.
-	 * @return io.vertigo.orchestra.domain.referential.OSchedulerState
-	 */
-	public io.vertigo.orchestra.domain.referential.OSchedulerState getPlanificationState() {
-		return sstCdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'URI: PlanificationState.
-	 * @return URI de l'association
-	 */
-	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PNR_SST",
-			fkFieldName = "SST_CD",
-			primaryDtDefinitionName = "DT_O_SCHEDULER_STATE",
-			primaryIsNavigable = true,
-			primaryRole = "PlanificationState",
-			primaryLabel = "PlanificationState",
-			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_O_PROCESS_NEXT_RUN",
-			foreignIsNavigable = false,
-			foreignRole = "ProcessNextRun",
-			foreignLabel = "ProcessNextRun",
-			foreignMultiplicity = "0..*")
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.OSchedulerState> getPlanificationStateURI() {
-		return sstCdAccessor.getURI();
-	}
-
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

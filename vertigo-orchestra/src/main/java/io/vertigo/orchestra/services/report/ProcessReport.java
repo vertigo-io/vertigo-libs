@@ -61,17 +61,4 @@ public interface ProcessReport {
 	 */
 	ProcessExecution getProcessExecution(Long preId);
 
-	/**
-	 * Récupère la liste des activités d'une execution de processus.
-	 * @param preId l'id de l'exécution
-	 * @return la liste des activités associées
-	 */
-	List<ActivityExecution> getActivityExecutionsByProcessExecution(Long preId);
-
-	/**
-	 * Retourne une execution d'activité par son id.
-	 * @param aceId l'id de l'execution d'activité
-	 * @return l'activité
-	 */
-	ActivityExecution getActivityExecution(Long aceId);
 }

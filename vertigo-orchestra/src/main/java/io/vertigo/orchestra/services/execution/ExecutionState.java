@@ -25,9 +25,9 @@ package io.vertigo.orchestra.services.execution;
  */
 public enum ExecutionState {
 
-	STARTED,
+	RUNNING,
 
-	DONE,
+	SUCCESS,
 
 	ERROR;
 
