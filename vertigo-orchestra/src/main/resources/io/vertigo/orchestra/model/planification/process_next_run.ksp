@@ -1,9 +1,0 @@
-package io.vertigo.orchestra.domain.planification
-
-
-create DtDefinition DT_O_PROCESS_NEXT_RUN {
-	field JOBNAME   		{domain : DO_O_CODE_IDENTIFIANT, label :"Nom du job", notNull:"false",}
-	field JOB_ID 			{domain : DO_O_CODE_IDENTIFIANT, label :"Job Id", notNull:"true",},
-	field EXPECTED_TIME   	{domain : DO_O_TIMESTAMP, label :"Date d'execution prévue", persistent:"false", notNull:"false"}
-	field INITIAL_PARAMS	{domain : DO_O_JSON_TEXT, label :"Paramètres initiaux sous forme de JSON ", persistent:"false", notNull:"false"}
-}

@@ -16,37 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.orchestra.services;
+package io.vertigo.orchestra.services.execution;
 
 import io.vertigo.core.component.Component;
-import io.vertigo.orchestra.services.execution.JobExecutor;
-import io.vertigo.orchestra.services.log.ProcessLogger;
-import io.vertigo.orchestra.services.report.ProcessReport;
-import io.vertigo.orchestra.services.schedule.ProcessScheduler;
+import io.vertigo.orchestra.domain.model.OJobModel;
+import io.vertigo.orchestra.plugins.store.OParams;
 
 /**
- * Interface (interne) de gestion des executions des processus Orchestra.
+ * 
+ * @author xdurand
  *
- * @author KleeGroup.
- * @version $Id$
  */
-public interface OrchestraServices extends Component {
+public interface JobExecutor extends Component {
 	/**
-	 * Executes the processes (scheduled or manual)
-	 * @return the executor
+	 * Execute un job.
+	 * @param job le job à lancer
+	 * @param initialParams paramètres initiaux
 	 */
-	JobExecutor getExecutor();
+	void execute(OJobModel job, OParams initialParams);
 
+	
 	/**
-	 * Only accessible if a plugin has been registered
-	 * @return the report
+	 * 
 	 */
-	ProcessReport getReport();
-
-	/**
-	 * Only accessible if a plugin has been registered
-	 * @return the processLogger
-	 */
-	ProcessLogger getLogger();
+	void awaitTermination();
 
 }

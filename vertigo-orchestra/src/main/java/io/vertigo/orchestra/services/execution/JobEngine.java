@@ -1,8 +1,9 @@
 package io.vertigo.orchestra.services.execution;
 
+import io.vertigo.orchestra.plugins.store.OWorkspace;
 
 public interface JobEngine {
 
-	JobExecutionWorkspace execute(final JobExecutionWorkspace workspace);
+	OWorkspace execute(final OWorkspace workspace);
 	
 }

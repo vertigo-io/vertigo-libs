@@ -4,8 +4,8 @@ import java.time.ZonedDateTime;
 
 import io.vertigo.core.component.Component;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.orchestra.domain.definition.OJobModel;
-import io.vertigo.orchestra.domain.scheduling.OJobSchedule;
+import io.vertigo.orchestra.domain.model.OJobModel;
+import io.vertigo.orchestra.domain.schedule.OJobSchedule;
 
 public interface OrchestraStore extends Component {
 	
@@ -66,6 +66,9 @@ public interface OrchestraStore extends Component {
 	 * @param jobId le jobId
 	 */
 	void fireSuccessJob(String jobId, OWorkspace ws);
+	
+	/* ----------- JobExec --------- */
+	
 	
 	/* ----------- History --------- */
 	//void log(String level, String type, String typeLog, String message, OParams params, String error);

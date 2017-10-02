@@ -60,10 +60,10 @@ public final class ExecutionPAO implements StoreServices {
 	 * Execute la tache TK_INSERT_JOB_RUNNING_TO_LAUNCH.
 	 * @param nodId Long 
 	 * @param dateExec java.time.ZonedDateTime 
-	 * @param processesNextRun io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessNextRun> 
+	 * @param processesNextRun io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.schedule.OProcessNextRun> 
 	 * @return Integer intSqlRowcount
 	*/
-	public Integer insertJobRunningToLaunch(final Long nodId, final java.time.ZonedDateTime dateExec, final io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessNextRun> processesNextRun) {
+	public Integer insertJobRunningToLaunch(final Long nodId, final java.time.ZonedDateTime dateExec, final io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.schedule.OProcessNextRun> processesNextRun) {
 		final Task task = createTaskBuilder("TK_INSERT_JOB_RUNNING_TO_LAUNCH")
 				.addValue("NOD_ID", nodId)
 				.addValue("DATE_EXEC", dateExec)

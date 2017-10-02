@@ -10,16 +10,14 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 
 import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.commons.transaction.Transactional;
-import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.orchestra.dao.scheduling.OJobScheduleDAO;
-import io.vertigo.orchestra.domain.scheduling.OJobSchedule;
+import io.vertigo.orchestra.dao.schedule.OJobScheduleDAO;
+import io.vertigo.orchestra.domain.schedule.OJobSchedule;
 import io.vertigo.orchestra.plugins.store.OrchestraStore;
 
 

@@ -24,10 +24,9 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.orchestra.impl.services.execution.ProcessExecutorImpl;
-import io.vertigo.orchestra.impl.services.execution.ProcessExecutorPlugin;
+import io.vertigo.orchestra.impl.services.execution.JobExecutorImpl;
 import io.vertigo.orchestra.services.OrchestraServices;
-import io.vertigo.orchestra.services.execution.ProcessExecutor;
+import io.vertigo.orchestra.services.execution.JobExecutor;
 import io.vertigo.orchestra.services.log.ProcessLogger;
 import io.vertigo.orchestra.services.report.ProcessReport;
 
@@ -39,7 +38,8 @@ import io.vertigo.orchestra.services.report.ProcessReport;
  */
 public final class OrchestraServicesImpl implements OrchestraServices {
 
-	private final ProcessExecutor processExecutor;
+	@Inject
+	private JobExecutor processExecutor;
 	private final Optional<ProcessLogger> optionalProcessLog;
 	private final Optional<ProcessReport> optionalProcessReport;
 
@@ -52,14 +52,11 @@ public final class OrchestraServicesImpl implements OrchestraServices {
 	 */
 	@Inject
 	public OrchestraServicesImpl(
-			final List<ProcessExecutorPlugin> processExecutorPlugins,
 			final Optional<ProcessLoggerPlugin> logProviderPlugin,
 			final Optional<ProcessReportPlugin> processReportPlugin) {
-		Assertion.checkNotNull(processExecutorPlugins);
 		Assertion.checkNotNull(logProviderPlugin);
 		Assertion.checkNotNull(processReportPlugin);
 		// ---
-		processExecutor = new ProcessExecutorImpl(processExecutorPlugins);
 		optionalProcessLog = Optional.ofNullable(logProviderPlugin.orElse(null));
 		optionalProcessReport = Optional.ofNullable(processReportPlugin.orElse(null));
 
@@ -67,7 +64,7 @@ public final class OrchestraServicesImpl implements OrchestraServices {
 
 	/** {@inheritDoc} */
 	@Override
-	public ProcessExecutor getExecutor() {
+	public JobExecutor getExecutor() {
 		return processExecutor;
 	}
 

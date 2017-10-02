@@ -1,0 +1,27 @@
+package io.vertigo.orchestra.domain.schedule
+
+create DtDefinition DT_O_JOB_CRON {
+	storeName : "orchestra"
+	key JCR_ID				{domain : DO_O_IDENTIFIANT, label :"Id de la definition du schedule CRON", notNull:"true",}
+	field CRON_EXPRESSION	{domain : DO_O_LIBELLE, label :"Expression récurrence du processus", notNull:"false",}
+	field PARAMS			{domain : DO_O_JSON_TEXT, label :"Paramètres initiaux sous forme de JSON ", notNull:"false",},	
+}
+
+
+create Association A_JCR_JMO {
+    fkFieldName : "JMO_ID"
+    
+ 	dtDefinitionA : DT_O_JOB_CRON
+	dtDefinitionB : DT_O_JOB_MODEL
+	
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"1..1"
+	
+	labelA : "JobCron"
+	labelB : "JobModel"
+	roleA : "JobCron"
+	roleB : "JobModel"
+}

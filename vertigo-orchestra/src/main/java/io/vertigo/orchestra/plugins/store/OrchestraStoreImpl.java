@@ -2,27 +2,24 @@ package io.vertigo.orchestra.plugins.store;
 
 
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 
 import javax.inject.Inject;
 
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.orchestra.dao.definition.OJobModelDAO;
 import io.vertigo.orchestra.dao.execution.ExecutionPAO;
-import io.vertigo.orchestra.dao.execution.OJobBoardDAO;
-import io.vertigo.orchestra.dao.execution.OJobRunningDAO;
 import io.vertigo.orchestra.dao.history.OJobExecutionDAO;
-import io.vertigo.orchestra.dao.scheduling.OJobScheduleDAO;
-import io.vertigo.orchestra.domain.definition.OJobModel;
-import io.vertigo.orchestra.domain.execution.OJobBoard;
+import io.vertigo.orchestra.dao.model.OJobModelDAO;
+import io.vertigo.orchestra.dao.run.OJobBoardDAO;
+import io.vertigo.orchestra.dao.schedule.OJobScheduleDAO;
 import io.vertigo.orchestra.domain.history.OJobExecution;
-import io.vertigo.orchestra.domain.planification.OProcessNextRun;
-import io.vertigo.orchestra.domain.scheduling.OJobSchedule;
+import io.vertigo.orchestra.domain.model.OJobModel;
+import io.vertigo.orchestra.domain.run.OJobBoard;
+import io.vertigo.orchestra.domain.schedule.OJobSchedule;
+import io.vertigo.orchestra.domain.schedule.OProcessNextRun;
 import io.vertigo.orchestra.plugins.services.JobRunnerUtil;
-import io.vertigo.orchestra.services.execution.JobExecutionWorkspace;
+import io.vertigo.orchestra.services.execution.JobExecutor;
 
 @Transactional
 public class OrchestraStoreImpl implements OrchestraStore {
@@ -37,6 +34,8 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	private OJobBoardDAO jobBoardDAO;
 	@Inject
 	private OJobExecutionDAO jobExecutionDAO;
+	@Inject
+	private JobExecutor jobExecutor;
 	
 	private Long nodId = 2L;
 	
@@ -62,13 +61,11 @@ public class OrchestraStoreImpl implements OrchestraStore {
 
 	@Override
 	public void removeJobSchedule(long jscId) {
-		// TODO Auto-generated method stub
 		jobScheduleDAO.delete(jscId);
 	}
 
 	@Override
 	public String startJobSchedule(long jscId) {
-		// TODO: jobSchedule
 		OJobSchedule jobSchedule = jobScheduleDAO.get(jscId);
 		OJobModel jobModel = jobSchedule.getJobModel();
 
@@ -95,6 +92,11 @@ public class OrchestraStoreImpl implements OrchestraStore {
 			jobExecution.setStatus("R");
 			jobExecution.setWorkspaceIn("");
 			jobExecutionDAO.create(jobExecution);
+			
+			OParams params = new OParams(jobSchedule.getParams());
+			jobExecutor.execute(jobModel, params);
+			
+			
 		}
 		
 		return null;

@@ -65,7 +65,7 @@ public final class MyAppConfig {
 								Param.of("name", "orchestra"),
 								Param.of("dataBaseClass", H2DataBase.class.getName()),
 								Param.of("jdbcDriver", org.h2.Driver.class.getName()),
-								Param.of("jdbcUrl", "jdbc:h2:~/vertigo/orchestra;MVCC=FALSE;AUTO_SERVER=TRUE"))
+								Param.of("jdbcUrl", "jdbc:h2:~/vertigo/orchestra;MVCC=FALSE;AUTO_SERVER=TRUE;MODE=PostgreSQL"))
 						//Param.of("jdbcUrl", "jdbc:h2:mem:orchestra;MVCC=FALSE"))
 						.build())
 				.addModule(new DynamoFeatures()
