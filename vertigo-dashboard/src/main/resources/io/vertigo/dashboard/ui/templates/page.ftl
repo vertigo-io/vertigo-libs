@@ -85,6 +85,14 @@
 			startClock(); 
 			showCharts(); 
 			showTables(); 
+			
+			 $('table.table.sortable').DataTable(
+				  	{
+		        "paging":   false,
+		        "info": false,
+		        "searching": false
+		    }
+		  	);
 		});
 		
 		

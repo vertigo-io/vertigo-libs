@@ -11,7 +11,7 @@
 
 	<@module.standardPanel 'Entities' 'entity' >
 		<@module.standardList>
-			<table class="table table-sm">
+			<table class="table table-sm table-striped">
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -55,7 +55,7 @@
 	
 	<@module.standardPanel 'Tasks' 'tasks' >
 		<@module.standardList>
-			<table class="table table-sm sortable">
+			<table class="table table-sm sortable table-striped">
 				<thead>
 					<tr>
 						<th>Name</th>
@@ -91,7 +91,7 @@
 	
 	<@module.standardPanel 'Domains' 'domain' >
 		<@module.standardList>
-			<table class="table table-sm">
+			<table class="table table-sm table-striped">
 				<thead>
 					<tr>
 						<th>Name</th>
