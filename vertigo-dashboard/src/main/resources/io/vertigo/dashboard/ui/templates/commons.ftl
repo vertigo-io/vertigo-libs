@@ -22,8 +22,8 @@
 					<@module.formGroup>
 					 	<@module.property 'Period' daemon.periodInSeconds+' seconds' />
 					  </@module.formGroup>
-					   <div class="graph-panel" 
-					  		data-url="/dashboard/data/series" 
+					   <div class="graph-panel rickshaw" 
+					  		data-url="data/series" 
 					  		data-query-measures='["duration:median","duration:percentile_90","duration:max"]'
 					  		data-query-data-filter='{"measurement":"daemon","name":"${daemon.name}","location":"*","topic":"*"}'
 					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}' >

@@ -50,7 +50,7 @@ function showChart(elem) {
 				  } else if (elem.hasClass ("flotchart")) {
 					  showFlotChart(elem, datas.timedDataSeries, dataMetrics, dataQuery, dataLabels, dataColors);
 				  } else if (elem.hasClass ("rickshaw")) {
-					  showRickshawChart(elem);
+					  showRickshawChart(elem, datas.timedDataSeries, dataMetrics);
 				  }
 			  }
 		  });
@@ -58,9 +58,11 @@ function showChart(elem) {
 }
 
 function notEmpty(datas) {
-	for(var i = 0; i < datas.length; i++) {
-		for(var value in datas[i].values) {
-			return true;
+	if (!$.isEmptyObject(datas)) {
+		for(var i = 0; i < datas.length; i++) {
+			for(var value in datas[i].values) {
+				return true;
+			}
 		}
 	}
 	return false;
@@ -71,17 +73,27 @@ function notEmpty(datas) {
 function showTables() {
 	$('div.datatable').each(function () {
 		var elem = $(this);
-		var dataUrl = getDataUrl(elem); 
-		var dataQuery = jQuery.parseJSON( elem.attr('data-query') );
+		//--- query
+		var dataUrl = "/dashboard/"+getDataUrl(elem); 
+		var queryMeasures = elem.data("query-measures");
+		var queryDataFilter = elem.data("query-data-filter");
+		var queryTimeFilter = elem.data("query-time-filter");
+		var queryGroupBy = elem.data("query-group-by");
+		var queryMaxRows = elem.data("query-max-rows");
+		var dataQuery = { measures: queryMeasures, dataFilter : queryDataFilter, timeFilter : queryTimeFilter, groupBy : queryGroupBy };
+		if (queryMaxRows) {
+			dataQuery['maxRows'] = queryMaxRows;
+		}
+		
 		var dataColumns =  elem.attr('data-columns');
 		if(dataColumns) {
 			dataColumns = jQuery.parseJSON( dataColumns );
 		}
 		completeDataTableQuery(dataColumns, dataQuery);
-		$.getJSON(dataUrl, dataQuery)      
+		$.post(dataUrl, JSON.stringify(dataQuery) , "json")
 		.done(
 		  function( datas ) {
-			  showDataTable(elem, datas, dataColumns, dataQuery);			  
+			  showDataTable(elem, datas, dataColumns);			  
 		  });
 	});
 	

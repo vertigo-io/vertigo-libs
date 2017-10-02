@@ -12,10 +12,9 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/rickshaw/1.6.1/rickshaw.css">
 		
 		<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js" ></script>
-		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css">
+		<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js" ></script>
+		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
 		
-		<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-		<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.pie.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.3/jquery.flot.categories.min.js"></script>
@@ -25,6 +24,8 @@
 		
 		<script src="/dashboard/static/dashboard.js"></script>
 		<script src="/dashboard/static/dashboard.flot.js"></script>
+		<script src="/dashboard/static/dashboard.rickshaw.js"></script>
+		<script src="/dashboard/static/dashboard.datatable.js"></script>
 	</head>
 	<body>
 		<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
@@ -94,16 +95,6 @@
 			}
 		})
 		
-		$(document).ready(function() {
-		
-		  $('table.table.sortable').DataTable(
-				  	{
-		        "paging":   false,
-		        "info": false,
-		        "searching": false
-		    }
-		  	);
-		});
 		</script>
 	</body>
 </html>

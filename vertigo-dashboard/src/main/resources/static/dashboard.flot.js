@@ -9,6 +9,8 @@ function showFlotChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataColo
 	var chartOptions;
 	if (elem.hasClass ("barchart")) {
 		chartOptions = getBarOptions(dataQuery, datas, timedSeries, dataColors);
+	} else if (elem.hasClass ("stakedbarchart")) {
+		chartOptions = getStakedBarOptions(dataQuery, timedSeries, dataColors);
 	} else if (elem.hasClass ("linechart")) {
 		chartOptions = getLineOptions(dataQuery, datas, timedSeries, dataColors);
 	} else if (elem.hasClass ("stakedareachart")) {
@@ -98,12 +100,42 @@ function getDonutOptions(dataQuery, datas, timedSeries, dataColors) {
 }
 
 
+function getStakedBarOptions(dataQuery, datas, timedSeries, dataColors) {
+	var options = {
+			series: {
+				bars: {
+					//horizontal:true,
+					show: true,
+					fill:1,
+					barWidth: timedSeries?dashboardTools.getTimeDimStep(dataQuery.timeFilter.dim)*0.8:0.8,
+					align: "center",
+				},
+				stack: true
+			},
+			tooltipsFunction : function(plot) {
+				var previousPoint = null;
+				return showTooltipsFunction(previousPoint, plot, true, true);
+			}
+	};
+	if(timedSeries) {
+		options.xaxis = {
+				mode: "time",
+				timezone : "browser",
+				timeformat: dashboardTools.getTimeFormat(dataQuery.timeFilter.dim)
+			};		
+	}
+	
+	return options;
+}
+
+
 function getBarOptions(dataQuery, datas, timedSeries, dataColors) {
 	var options = {
 			series: {
 				bars: {
 					//horizontal:true,
 					show: true,
+					fill:1,
 					barWidth: timedSeries?dashboardTools.getTimeDimStep(dataQuery.timeFilter.dim):0.8,
 					align: "center",
 				}
@@ -203,7 +235,6 @@ function getStakedAreaOptions(dataQuery, timedSeries, dataColors) {
 	var options = {
 			hooks: {
 				processRawData   : function(plot, series, data, datapoints) {
-					console.log(datapoints);
 					datapoints.format = [
 						 { x: true, number: true, required: true },
 						 { y: true, number: true, defaultValue : 0, required: false },
@@ -423,6 +454,9 @@ function toFlotData(datas, metrics, allMetrics, dataLabels, timedSeries) {
 		for(var j = 0 ; j<datas.length; j++) {
 			var x = timedSeries ? datas[j].time*1000.0 : datas[j].category; // timed series by default, else categories 
 			var y = datas[j].values[metric];
+			if (!$.isEmptyObject(datas[j].values) && !y) {
+				y = 0;
+			}
 			serie.data[j]=([x, y]);
 		}
 		var index = allMetrics.indexOf(metric);

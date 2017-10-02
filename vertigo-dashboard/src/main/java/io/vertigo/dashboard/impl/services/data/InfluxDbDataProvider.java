@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -31,7 +32,6 @@ import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.dashboard.services.data.ClusteredMeasure;
 import io.vertigo.dashboard.services.data.DataFilter;
 import io.vertigo.dashboard.services.data.DataProvider;
-import io.vertigo.dashboard.services.data.TabularDatas;
 import io.vertigo.dashboard.services.data.TimeFilter;
 import io.vertigo.dashboard.services.data.TimedDataSerie;
 import io.vertigo.dashboard.services.data.TimedDatas;
@@ -61,7 +61,7 @@ public final class InfluxDbDataProvider implements DataProvider {
 	@Override
 	public TimedDatas getTimeSeries(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		final String q = buildQuery(measures, dataFilter, timeFilter)
-				.append(" group by time(").append(timeFilter.getDim()).append(") fill(\"linear\")")
+				.append(" group by time(").append(timeFilter.getDim()).append(")")
 				.toString();
 
 		return executeTimedQuery(q);
@@ -182,31 +182,58 @@ public final class InfluxDbDataProvider implements DataProvider {
 	}
 
 	@Override
-	public TabularDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+	public TimedDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
 		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter);
 
 		final String groupByClause = Stream.of(groupBy)
 				.collect(Collectors.joining("\", \"", "\"", "\""));
 
 		queryBuilder.append(" group by ").append(groupByClause);
+		final String queryString = queryBuilder.toString();
 
-		final Query query = new Query(queryBuilder.toString(), appName);
+		return executeTabularQuery(queryString);
+	}
+
+	private TimedDatas executeTabularQuery(final String queryString) {
+		final Query query = new Query(queryString.toString(), appName);
 		final QueryResult queryResult = influxDB.query(query);
 
 		final List<Series> series = queryResult.getResults().get(0).getSeries();
 
 		if (series != null && series.size() > 0) {
-			final Map<Map<String, String>, TimedDataSerie> result = series
-					.stream()
-					.collect(Collectors.toMap(
-							serie -> serie.getTags(),
-							serie -> new TimedDataSerie(
-									LocalDateTime.parse(serie.getValues().get(0).get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond(ZoneOffset.UTC),
-									buildMapValue(serie.getColumns(), serie.getValues().get(0)))));
+			//all columns are the measures
+			final List<String> seriesName = new ArrayList<>();
+			seriesName.addAll(series.get(0).getColumns().subList(1, series.get(0).getColumns().size()));//we remove the first one
+			seriesName.addAll(series.get(0).getTags().keySet());// + all the tags names (the group by)
 
-			return new TabularDatas(result, series.get(0).getColumns().subList(1, series.get(0).getColumns().size()));
+			final List<TimedDataSerie> dataSeries = series
+					.stream()
+					.map(mySeries -> {
+						final Map<String, Object> mapValues = buildMapValue(mySeries.getColumns(), mySeries.getValues().get(0));
+						mapValues.putAll(mySeries.getTags());
+						return new TimedDataSerie(LocalDateTime.parse(mySeries.getValues().get(0).get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond(ZoneOffset.UTC), mapValues);
+					})
+					.collect(Collectors.toList());
+
+			return new TimedDatas(dataSeries, seriesName);
 		}
-		return new TabularDatas(Collections.emptyMap(), Collections.emptyList());
+		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
+	}
+
+	@Override
+	public TimedDatas getTops(final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
+		final StringBuilder queryBuilder = new StringBuilder();
+
+		final String queryString = queryBuilder
+				.append("select top(").append("\"top_").append(measure).append("\", \"").append(groupBy).append("\", ").append(maxRows).append(") as \"").append(measure).append("\"")
+				.append(" from ( select ").append(buildMeasureQuery(measure, "top_" + measure))
+				.append(" from ").append(dataFilter.getMeasurement())
+				.append(buildWhereClause(dataFilter, timeFilter))
+				.append(" group by \"").append(groupBy).append("\"")
+				.append(")")
+				.toString();
+
+		return executeTimedQuery(queryString);
 	}
 
 	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
@@ -287,8 +314,7 @@ public final class InfluxDbDataProvider implements DataProvider {
 		final TimeFilter timeFilter = new TimeFilter("now() - 5w", "now()", "*");// before 5 weeks we consider that we don't have data
 
 		return getTabularData(measures, dataFilter, timeFilter, "name", "topic")
-				.getDataSeries()
-				.values()
+				.getTimedDataSeries()
 				.stream()
 				.map(timedDataSerie -> new HealthCheck(
 						(String) timedDataSerie.getValues().get("name:last"),
@@ -331,8 +357,7 @@ public final class InfluxDbDataProvider implements DataProvider {
 		final TimeFilter timeFilter = new TimeFilter("now() - 5w", "now()", "*");// before 5 weeks we consider that we don't have data
 
 		return getTabularData(measures, dataFilter, timeFilter, "name", "topic")
-				.getDataSeries()
-				.values()
+				.getTimedDataSeries()
 				.stream()
 				.map(timedDataSerie -> Metric.builder()
 						.withName((String) timedDataSerie.getValues().get("name:last"))

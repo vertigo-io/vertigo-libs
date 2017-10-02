@@ -5,8 +5,8 @@ import io.vertigo.lang.Assertion;
 
 public class DomainModel {
 	private final Domain domainDefinition;
-	private final Double taskCount; // may be null for UI (displayed as N/A
-	private final Double dtDefinitionCount; // may be null for UI (displayed as N/A
+	private final Double taskCount; // may be null for UI (displayed as N/A)
+	private final Double dtDefinitionCount; // may be null for UI (displayed as N/A)
 
 	public DomainModel(final Domain domainDefinition, final Double taskCount, final Double dtDefinitionCount) {
 		Assertion.checkNotNull(domainDefinition);
@@ -21,7 +21,13 @@ public class DomainModel {
 	}
 
 	public boolean isOrphan() {
-		return taskCount + dtDefinitionCount == 0;
+		if (taskCount != null && dtDefinitionCount != null) {
+			return taskCount + dtDefinitionCount == 0;
+		} else if (taskCount != null) {// dtDefinitionCount null
+			return taskCount == 0;
+		}
+		// both nulls
+		return false;
 	}
 
 	public Double getTaskCount() {

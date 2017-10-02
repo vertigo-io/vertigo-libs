@@ -25,8 +25,8 @@
 					<tr id="entityDetail-${entity.name}-list" data-toggle="list" href="#entityDetail-${entity.name}" role="tab"  >
 						<th scope="row">${entity.name}</th>
 						<td>${entity.count!'N/A'}</td>
-						<td>${entity.taskCount}</td>
-						<td>${entity.fieldCount}</td>
+						<td>${entity.taskCount!'N/A'}</td>
+						<td>${entity.fieldCount!'N/A'}</td>
 					</tr>
 				</#list>
 				</tbody>
@@ -36,7 +36,7 @@
 			<#list entities as entity>
 				<@module.lineDetail  type='entity' name=entity.name >
 					   <div class="graph-panel" 
-					  		data-url="/dashboard/data/series" 
+					  		data-url="data/series" 
 					  		data-query-measures='["value:median"]'
 					  		data-query-data-filter='{"measurement":"metric","name":"entityCount", "topic":"${entity.name}" ,"location":"*","topic":"*"}'
 					  		data-query-time-filter='{"from" : "now() - 1w", "to" : "now()", "dim" : "6m"}' >
@@ -45,12 +45,12 @@
 			</#list>
 		</@module.standardDetail>
 		 <div id="myStandAloneBarChart"
-					  		data-url="/dashboard/data/tabular" 
-					  		data-query-measures='["value:median"]'
-					  		data-query-data-filter='{"measurement":"tasks","name":"*", "location":"*","topic":"*"}'
-					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()"}' 
-					  		data-query-group-by='name' >
-					  	</div>
+	  		data-url="data/tabular" 
+	  		data-query-measures='["value:median"]'
+	  		data-query-data-filter='{"measurement":"tasks","name":"*", "location":"*","topic":"*"}'
+	  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()"}' 
+	  		data-query-group-by='name' >
+	  	</div>
 	</@module.standardPanel>
 	
 	<@module.standardPanel 'Tasks' 'tasks' >
@@ -78,7 +78,7 @@
 			<#list tasks as task>
 				<@module.lineDetail  type='task' name=task.name?replace("/", "_") >
 					   <div class="graph-panel" 
-					  		data-url="/dashboard/data/series" 
+					  		data-url="/data/series" 
 					  		data-query-measures='["duration:median","duration:max"]'
 					  		data-query-data-filter='{"measurement":"tasks","name":"${task.name}","location":"*","topic":"*"}'
 					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}' >
@@ -103,8 +103,8 @@
 			<#list domains as domain>
 				<tr id="domainDetail-${domain.name}-list" data-toggle="list" href="#domainDetail-${domain.name}" role="tab" class="${(domain.orphan)?then('table-danger', '')}">
 					<th scope="row">${domain.name}</th>
-					<td>${domain.taskCount}</td>
-					<td>${domain.dtDefinitionCount}</td>
+					<td>${domain.taskCount!'N/A'}</td>
+					<td>${domain.dtDefinitionCount!'N/A'}</td>
 				</tr>
 			</#list>
 				</tbody>
@@ -114,8 +114,8 @@
 			<#list domains as domain>
 				<@module.lineDetail  type='domain' name=domain.name >
 					<@module.formGroup>
-					 	<@module.property 'Used by ' domain.taskCount+' tasks' />
-					 	<@module.property 'Used by' domain.dtDefinitionCount+' DtDefinitions' />
+					 	<@module.property 'Used by ' domain.taskCount!'N/A'+' tasks' />
+					 	<@module.property 'Used by' domain.dtDefinitionCount!'N/A'+' DtDefinitions' />
 					  </@module.formGroup>
 				</@module.lineDetail >
 			</#list>

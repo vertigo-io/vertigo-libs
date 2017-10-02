@@ -7,9 +7,9 @@ import javax.inject.Inject;
 import io.vertigo.dashboard.services.data.ClusteredMeasure;
 import io.vertigo.dashboard.services.data.DataFilter;
 import io.vertigo.dashboard.services.data.DataProvider;
-import io.vertigo.dashboard.services.data.TabularDatas;
 import io.vertigo.dashboard.services.data.TimeFilter;
 import io.vertigo.dashboard.services.data.TimedDatas;
+import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.InnerBodyParam;
@@ -48,13 +48,27 @@ public class DashboardDataProviderWebServices implements WebServices {
 	@SessionLess
 	@AnonymousAccessAllowed
 	@POST("/tabular")
-	public TabularDatas getTimedDatas(
+	public TimedDatas getTimedDatas(
 			@InnerBodyParam("measures") final List<String> measures,
 			@InnerBodyParam("dataFilter") final DataFilter dataFilter,
 			@InnerBodyParam("timeFilter") final TimeFilter timeFilter,
 			@InnerBodyParam("groupBy") final String groupBy) {
 
 		return dataProvider.getTabularData(measures, dataFilter, timeFilter, groupBy);
+	}
+
+	@SessionLess
+	@AnonymousAccessAllowed
+	@POST("/tabular/tops")
+	public TimedDatas getTops(
+			@InnerBodyParam("measures") final List<String> measures,
+			@InnerBodyParam("dataFilter") final DataFilter dataFilter,
+			@InnerBodyParam("timeFilter") final TimeFilter timeFilter,
+			@InnerBodyParam("groupBy") final String groupBy,
+			@InnerBodyParam("maxRows") final int maxRows) {
+		Assertion.checkState(measures.size() == 1, "One and only one measure must be queried for a top request");
+		//---
+		return dataProvider.getTops(measures.get(0), dataFilter, timeFilter, groupBy, maxRows);
 	}
 
 }

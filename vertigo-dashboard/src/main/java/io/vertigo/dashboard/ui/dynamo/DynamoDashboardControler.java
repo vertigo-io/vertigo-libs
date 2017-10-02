@@ -5,15 +5,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.dashboard.services.data.DataFilter;
-import io.vertigo.dashboard.services.data.TabularDatas;
 import io.vertigo.dashboard.services.data.TimeFilter;
 import io.vertigo.dashboard.services.data.TimedDataSerie;
+import io.vertigo.dashboard.services.data.TimedDatas;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
 import io.vertigo.dashboard.ui.dynamo.model.DomainModel;
 import io.vertigo.dashboard.ui.dynamo.model.EntityModel;
@@ -35,8 +36,8 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 
 	private void buildTaskModel(final App app, final Map<String, Object> model) {
 		final DataFilter dataFilter = new DataFilter("tasks", "*", "*", "*");
-		final TimeFilter timeFilter = new TimeFilter("now() - 1w", "now()", "*");
-		final TabularDatas tabularDatas = getDataProvider().getTabularData(Arrays.asList("duration:median", "duration:count"), dataFilter, timeFilter, "name");
+		final TimeFilter timeFilter = new TimeFilter("now() - 1d", "now()", "*");
+		final TimedDatas tabularDatas = getDataProvider().getTabularData(Arrays.asList("duration:median", "duration:count"), dataFilter, timeFilter, "name");
 
 		final List<TaskModel> tasks = Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
 				.stream()
@@ -50,9 +51,14 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 
 	}
 
-	private static Double getValue(final TabularDatas tabularDatas, final String serieName, final String measureName) {
-		if (tabularDatas.getDataSeries().containsKey(serieName)) {
-			final TimedDataSerie timedDataSerie = tabularDatas.getDataSeries().get(serieName);
+	private static Double getValue(final TimedDatas tabularDatas, final String serieName, final String measureName) {
+		final Optional<TimedDataSerie> timedDataSerieOpt = tabularDatas.getTimedDataSeries()
+				.stream()
+				.filter(timedDataSerie -> timedDataSerie.getValues().containsKey("name") && measureName.equals(timedDataSerie.getValues().get("name")))
+				.findAny();
+
+		if (timedDataSerieOpt.isPresent()) {
+			final TimedDataSerie timedDataSerie = timedDataSerieOpt.get();
 			if (timedDataSerie.getValues().containsKey(serieName)) {
 				return (Double) timedDataSerie.getValues().get(serieName);
 			}
