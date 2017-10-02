@@ -12,7 +12,7 @@
 			    data-url="data/tabular/tops" 
 			    data-query-measures='["duration:sum"]'
 			   	data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*" }'
-			    data-query-time-filter='{ "from": "now() - 1w", "to": "now()", "dim": "1h"}'
+			    data-query-time-filter='{ "from": "now() - 1w", "to": "now()"}'
 			    data-query-group-by='name'
 			   	data-query-max-rows='5' 
 			    data-columns='[
@@ -24,7 +24,7 @@
 			    data-url="data/tabular/tops" 
 			    data-query-measures='["duration:mean"]'
 			   	data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*" }'
-			    data-query-time-filter='{ "from": "now() - 1w", "to": "now()", "dim": "1h"}'
+			    data-query-time-filter='{ "from": "now() - 1w", "to": "now()"}'
 			    data-query-group-by='name'
 			   	data-query-max-rows='5' 
 			    data-columns='[
