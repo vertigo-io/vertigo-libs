@@ -41,44 +41,37 @@ public final class ExecutionPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_HANDLE_PROCESSES_OF_DEAD_NODES.
-	 * @param maxDate java.util.Date 
-	*/
-	public void handleProcessesOfDeadNodes(final java.util.Date maxDate) {
-		final Task task = createTaskBuilder("TK_HANDLE_PROCESSES_OF_DEAD_NODES")
-				.addValue("MAX_DATE", maxDate)
-				.build();
-		getTaskManager().execute(task);
-	}
-
-	/**
-	 * Execute la tache TK_RESERVE_ACTIVITIES_TO_LAUNCH.
+	 * Execute la tache TK_DELETE_JOB_RUNNING.
 	 * @param nodId Long 
-	 * @param maxNumber Integer 
+	 * @param jobId String 
+	 * @return Integer intSqlRowcount
 	*/
-	public void reserveActivitiesToLaunch(final Long nodId, final Integer maxNumber) {
-		final Task task = createTaskBuilder("TK_RESERVE_ACTIVITIES_TO_LAUNCH")
+	public Integer deleteJobRunning(final Long nodId, final String jobId) {
+		final Task task = createTaskBuilder("TK_DELETE_JOB_RUNNING")
 				.addValue("NOD_ID", nodId)
-				.addValue("MAX_NUMBER", maxNumber)
+				.addValue("JOB_ID", jobId)
 				.build();
-		getTaskManager().execute(task);
+		return getTaskManager()
+				.execute(task)
+				.getResult();
 	}
 
 	/**
-	 * Execute la tache TK_UPDATE_PROCESS_EXECUTION_TREATMENT.
-	 * @param preId Long 
-	 * @param checked Boolean 
-	 * @param checkingDate java.util.Date 
-	 * @param checkingComment String 
+	 * Execute la tache TK_INSERT_JOB_RUNNING_TO_LAUNCH.
+	 * @param nodId Long 
+	 * @param dateExec java.time.ZonedDateTime 
+	 * @param processesNextRun io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.schedule.OProcessNextRun> 
+	 * @return Integer intSqlRowcount
 	*/
-	public void updateProcessExecutionTreatment(final Long preId, final Boolean checked, final java.util.Date checkingDate, final String checkingComment) {
-		final Task task = createTaskBuilder("TK_UPDATE_PROCESS_EXECUTION_TREATMENT")
-				.addValue("PRE_ID", preId)
-				.addValue("CHECKED", checked)
-				.addValue("CHECKING_DATE", checkingDate)
-				.addValue("CHECKING_COMMENT", checkingComment)
+	public Integer insertJobRunningToLaunch(final Long nodId, final java.time.ZonedDateTime dateExec, final io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.schedule.OProcessNextRun> processesNextRun) {
+		final Task task = createTaskBuilder("TK_INSERT_JOB_RUNNING_TO_LAUNCH")
+				.addValue("NOD_ID", nodId)
+				.addValue("DATE_EXEC", dateExec)
+				.addValue("PROCESSES_NEXT_RUN", processesNextRun)
 				.build();
-		getTaskManager().execute(task);
+		return getTaskManager()
+				.execute(task)
+				.getResult();
 	}
 
 	private TaskManager getTaskManager() {

@@ -24,7 +24,6 @@ import java.util.Optional;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
-import io.vertigo.orchestra.services.execution.ActivityEngine;
 import io.vertigo.util.ListBuilder;
 import io.vertigo.util.MapBuilder;
 
@@ -42,9 +41,7 @@ public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition
 	private Optional<String> myCronExpression = Optional.empty();
 	private final MapBuilder<String, String> myInitialParams = new MapBuilder<>();
 	private boolean multiExecution;
-	private boolean needUpdate;
 	private int myRescuePeriod;
-	private final ListBuilder<ActivityDefinition> activitiesBuilder = new ListBuilder<>();
 
 	private final Map<String, String> myMetadatas = new HashMap<>();
 
@@ -135,19 +132,6 @@ public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition
 	}
 
 	/**
-	 * Ajoute une activité à un processus.
-	 * @param activityName le nom de l'activité (Code)
-	 * @param activityLabel Le libelle de l'activité (Ihm)
-	 * @param engineClass Le moteur d'exécution de l'activité
-	 * @return this
-	 */
-	public ProcessDefinitionBuilder addActivity(final String activityName, final String activityLabel, final Class<? extends ActivityEngine> engineClass) {
-		final ActivityDefinition activity = new ActivityDefinition(activityName, activityLabel, engineClass);
-		activitiesBuilder.add(activity);
-		return this;
-	}
-
-	/**
 	 * Définit le informations du process.
 	 * @param metadatas les métadonnées sous format JSON
 	 * @return this
@@ -156,15 +140,6 @@ public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition
 		Assertion.checkNotNull(metadatas);
 		// ---
 		myMetadatas.putAll(metadatas);
-		return this;
-	}
-
-	/**
-	 * Définit si au prochain démarrage de l'application la définition doit être mise à jour.
-	 * @return this
-	 */
-	public ProcessDefinitionBuilder withNeedUpdate() {
-		needUpdate = true;
 		return this;
 	}
 
@@ -182,13 +157,11 @@ public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition
 				myActive,
 				myType,
 				myMetadatas,
-				needUpdate,
 				new ProcessTriggeringStrategy(
 						myCronExpression,
 						myInitialParams.unmodifiable().build(),
 						multiExecution,
-						myRescuePeriod),
-				activitiesBuilder.unmodifiable().build());
+						myRescuePeriod));
 	}
 
 }

@@ -16,7 +16,9 @@ public final class OExecutionState implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private String estCd;
+
 	private String label;
+
 
 	/** {@inheritDoc} */
 	@Override
@@ -24,6 +26,7 @@ public final class OExecutionState implements Entity {
 		return DtObjectUtil.createURI(this);
 	}
 
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Code'.
@@ -42,7 +45,8 @@ public final class OExecutionState implements Entity {
 	public void setEstCd(final String estCd) {
 		this.estCd = estCd;
 	}
-
+	
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Libellé'.
@@ -61,8 +65,7 @@ public final class OExecutionState implements Entity {
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

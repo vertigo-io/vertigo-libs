@@ -86,17 +86,6 @@ public class WsExecution implements WebServices {
 	}
 
 	/**
-	 * Récupère la liste des activités d'une execution de processus.
-	 * @param preId l'id de l'exécution
-	 * @return la liste des activités associées
-	 */
-	@GET("/{preId}/activities")
-	public List<ActivityExecution> getActivityExecutionsByPreId(@PathParam("preId") final Long preId) {
-		return orchestraServices.getReport()
-				.getActivityExecutionsByProcessExecution(preId);
-	}
-
-	/**
 	 * Récupère le fichier de log d'une execution de processus
 	 * @param preId l'id de l'exécution
 	 * @return le fichier de log
@@ -105,39 +94,6 @@ public class WsExecution implements WebServices {
 	public VFile getLogFileByPreId(@PathParam("preId") final Long preId) {
 		return orchestraServices.getLogger()
 				.getLogFileForProcess(preId).get();
-	}
-
-	/**
-	 * Retourne une execution d'activité par son id.
-	 * @param aceId l'id de l'execution d'activité
-	 * @return l'activité
-	 */
-	@GET("/{preId}/activities/{aceId}")
-	public ActivityExecution getActivityExecutionById(@PathParam("aceId") final Long aceId, @PathParam("preId") final Long preId) {
-		return orchestraServices.getReport()
-				.getActivityExecution(aceId);
-	}
-
-	/**
-	 * Récupère le fichier de log d'une execution d'activité
-	 * @param aceId l'id de l'exécution
-	 * @return le fichier de log
-	 */
-	@GET("/{preId}/activities/{aceId}/attachment")
-	public VFile getLogFileByAceId(@PathParam("aceId") final Long aceId, @PathParam("preId") final Long preId) {
-		return orchestraServices.getLogger()
-				.getActivityAttachment(aceId).get();
-	}
-
-	/**
-	 * Récupère le fichier de log d'une execution d'activité
-	 * @param aceId l'id de l'exécution
-	 * @return le fichier de log
-	 */
-	@GET("/{preId}/activities/{aceId}/logFile")
-	public VFile getTechnicalLogFileByAceId(@PathParam("aceId") final Long aceId, @PathParam("preId") final Long preId) {
-		return orchestraServices.getLogger()
-				.getActivityLogFile(aceId).get();
 	}
 
 	/**

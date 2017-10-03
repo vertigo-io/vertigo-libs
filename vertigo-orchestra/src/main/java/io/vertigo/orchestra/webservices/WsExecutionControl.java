@@ -63,8 +63,8 @@ public class WsExecutionControl implements WebServices {
 		Assertion.checkNotNull(activityExecutionId);
 		Assertion.checkArgNotEmpty(token);
 		// ---
-		orchestraServices.getExecutor()
-				.endPendingActivityExecution(activityExecutionId, token, ExecutionState.DONE, Optional.empty());
+		/*orchestraServices.getExecutor()
+				.endPendingActivityExecution(activityExecutionId, token, ExecutionState.DONE, Optional.empty());*/
 	}
 
 	/**
@@ -81,8 +81,8 @@ public class WsExecutionControl implements WebServices {
 		Assertion.checkArgNotEmpty(token);
 		Assertion.checkArgNotEmpty(errorMessage);
 		// ---
-		orchestraServices.getExecutor()
-				.endPendingActivityExecution(activityExecutionId, token, ExecutionState.ERROR, Optional.of(errorMessage));
+		/*orchestraServices.getExecutor()
+				.endPendingActivityExecution(activityExecutionId, token, ExecutionState.ERROR, Optional.of(errorMessage));*/
 	}
 
 	/**
@@ -97,8 +97,8 @@ public class WsExecutionControl implements WebServices {
 		Assertion.checkNotNull(processName);
 		// ---
 		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
-		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, DateUtil.newDateTime(), initialParams);
+		/*orchestraServices.getScheduler()
+				.scheduleAt(processDefinition, DateUtil.newDateTime(), initialParams);*/
 	}
 
 	/**
@@ -110,8 +110,8 @@ public class WsExecutionControl implements WebServices {
 		Assertion.checkArgNotEmpty(processName);
 		// ---
 		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
-		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, DateUtil.newDateTime(), Collections.emptyMap());
+		/*orchestraServices.getScheduler()
+				.scheduleAt(processDefinition, DateUtil.newDateTime(), Collections.emptyMap());*/
 	}
 
 }

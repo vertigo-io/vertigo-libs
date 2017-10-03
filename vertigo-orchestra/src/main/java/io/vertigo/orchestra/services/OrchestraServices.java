@@ -19,7 +19,7 @@
 package io.vertigo.orchestra.services;
 
 import io.vertigo.core.component.Component;
-import io.vertigo.orchestra.services.execution.ProcessExecutor;
+import io.vertigo.orchestra.services.execution.JobExecutor;
 import io.vertigo.orchestra.services.log.ProcessLogger;
 import io.vertigo.orchestra.services.report.ProcessReport;
 import io.vertigo.orchestra.services.schedule.ProcessScheduler;
@@ -35,7 +35,7 @@ public interface OrchestraServices extends Component {
 	 * Executes the processes (scheduled or manual)
 	 * @return the executor
 	 */
-	ProcessExecutor getExecutor();
+	JobExecutor getExecutor();
 
 	/**
 	 * Only accessible if a plugin has been registered
@@ -48,10 +48,5 @@ public interface OrchestraServices extends Component {
 	 * @return the processLogger
 	 */
 	ProcessLogger getLogger();
-
-	/**
-	 * @return the scheduler
-	 */
-	ProcessScheduler getScheduler();
 
 }

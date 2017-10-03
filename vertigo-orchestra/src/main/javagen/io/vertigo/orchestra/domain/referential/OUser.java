@@ -16,12 +16,19 @@ public final class OUser implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long usrId;
+
 	private String firstName;
+
 	private String lastName;
+
 	private String email;
+
 	private String password;
+
 	private Boolean mailAlert;
+
 	private Boolean active;
+
 
 	/** {@inheritDoc} */
 	@Override
@@ -29,6 +36,7 @@ public final class OUser implements Entity {
 		return DtObjectUtil.createURI(this);
 	}
 
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id'.
@@ -47,7 +55,8 @@ public final class OUser implements Entity {
 	public void setUsrId(final Long usrId) {
 		this.usrId = usrId;
 	}
-
+	
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Nom'.
@@ -66,7 +75,8 @@ public final class OUser implements Entity {
 	public void setFirstName(final String firstName) {
 		this.firstName = firstName;
 	}
-
+	
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Prénom'.
@@ -85,7 +95,8 @@ public final class OUser implements Entity {
 	public void setLastName(final String lastName) {
 		this.lastName = lastName;
 	}
-
+	
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Email'.
@@ -104,7 +115,8 @@ public final class OUser implements Entity {
 	public void setEmail(final String email) {
 		this.email = email;
 	}
-
+	
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Mot de passe'.
@@ -123,7 +135,8 @@ public final class OUser implements Entity {
 	public void setPassword(final String password) {
 		this.password = password;
 	}
-
+	
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Alerté en cas d'erreur'.
@@ -142,7 +155,8 @@ public final class OUser implements Entity {
 	public void setMailAlert(final Boolean mailAlert) {
 		this.mailAlert = mailAlert;
 	}
-
+	
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Compte Actif'.
@@ -161,8 +175,7 @@ public final class OUser implements Entity {
 	public void setActive(final Boolean active) {
 		this.active = active;
 	}
-
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

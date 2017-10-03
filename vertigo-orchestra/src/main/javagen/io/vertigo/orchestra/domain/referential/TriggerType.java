@@ -16,7 +16,9 @@ public final class TriggerType implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private String trtCd;
+
 	private String label;
+
 
 	/** {@inheritDoc} */
 	@Override
@@ -24,6 +26,7 @@ public final class TriggerType implements Entity {
 		return DtObjectUtil.createURI(this);
 	}
 
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Code'.
@@ -42,7 +45,8 @@ public final class TriggerType implements Entity {
 	public void setTrtCd(final String trtCd) {
 		this.trtCd = trtCd;
 	}
-
+	
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Libellé'.
@@ -61,8 +65,7 @@ public final class TriggerType implements Entity {
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

@@ -4,133 +4,80 @@
  */
 
 module.exports = {
-    oActivity: {
-        actId: "Id Activité",
-        name: "Nom de l'activité",
-        label: "Libellé de l'activité",
-        number: "Numéro de l'activité",
-        milestone: "Jalon",
-        engine: "Implémentation de l'activité",
-        proId: "Processus"
-    },
-    oActivityExecution: {
-        aceId: "Id de l'execution d'un processus",
-        creationTime: "Date de création",
-        beginTime: "Date de début",
-        endTime: "Date de fin",
-        engine: "Implémentation effective de l'execution",
-        token: "Token d'identification",
-        actId: "Activity",
-        preId: "Processus",
-        nodId: "Node",
-        estCd: "ExecutionState"
-    },
-    oActivityExecutionUi: {
-        aceId: "Id de l'activité",
-        label: "Libellé",
-        beginTime: "Nom du processus",
-        endTime: "Nom du processus",
-        executionTime: "Durée",
-        status: "Statut",
-        workspaceIn: "Paramètres entrants",
-        workspaceOut: "Paramètres sortants",
-        hasAttachment: "Fichier de log",
-        hasTechnicalLog: "Log technique"
-    },
-    oActivityLog: {
-        aclId: "Id du log",
-        log: "Contenu du log",
-        attachment: "Fichier joint",
-        aceId: "ActivityExecution"
-    },
-    oActivityWorkspace: {
-        acwId: "Id de l'execution d'un processus",
-        isIn: "Workspace in/out",
-        workspace: "Contenu du workspace",
-        aceId: "ActivityExecution"
-    },
     oExecutionState: {
         estCd: "Code",
         label: "Libellé"
     },
-    oExecutionSummary: {
-        proId: "Id du processus",
-        processName: "Nom du processus",
-        processLabel: "Libellé du processus",
-        lastExecutionTime: "Dernière exécution le",
-        nextExecutionTime: "Prochaine exécution le",
-        errorsCount: "Nombre en erreur",
-        misfiredCount: "Nombre non executés",
-        successfulCount: "Nombre en succès",
-        runningCount: "Nombre en cours",
-        averageExecutionTime: "Durée moyenne d'exécution",
-        health: "Santé du processus"
+    oJobBoard: {
+        jid: "Id de l'execution du job",
+        status: "Status de l'execution",
+        nodeId: "Id du noeud",
+        maxDate: "Date max d'execution",
+        maxRetry: "Nb max de retry",
+        currentRetry: "Nb courrant de retry"
     },
-    oNode: {
-        nodId: "Id du noeud",
-        name: "Nom du noeud",
-        heartbeat: "Date de dernière activité"
-    },
-    oProcess: {
-        proId: "Id de la definition du processus",
-        name: "Nom du processus",
-        label: "Libellé du processus",
+    oJobCron: {
+        jcrId: "Id de la definition du schedule CRON",
         cronExpression: "Expression récurrence du processus",
-        initialParams: "Paramètres initiaux sous forme de JSON",
-        multiexecution: "Accepte la multi-execution",
-        activeVersion: "Version active",
-        active: "Processus actif",
-        rescuePeriod: "Temps de validité d'une planification",
-        metadatas: "Meta-données du processus",
-        needUpdate: "Doit être mise à jour lors du démarrage",
-        trtCd: "TriggerType",
-        prtCd: "ProcessType"
+        params: "Paramètres initiaux sous forme de JSON",
+        jmoId: "JobModel"
     },
-    oProcessExecution: {
-        preId: "Id de l'execution d'un processus",
-        beginTime: "Date de début",
-        endTime: "Date de fin",
-        engine: "Implémentation effective de l'execution",
-        checked: "Pris en charge",
-        checkingDate: "Date de prise en charge",
-        checkingComment: "Commentaire",
-        proId: "Processus",
-        estCd: "ExecutionState",
+    oJobExecution: {
+        jexId: "Id d'une trace d'execution d'un job",
+        jobname: "Status général d'execution",
+        status: "Status général d'execution",
+        reason: "Code d'erreur fonctionel de l'execution",
+        dateDebut: "Date de début d'execution",
+        dateFin: "Date de fin d'execution",
+        classEngine: "Implémentation effective de l'execution",
+        workspaceIn: "Workspace d'entrée de l'execution",
+        workspaceOut: "Workspace de sortie de l'execution",
+        nodId: "Id du noeud"
+    },
+    oJobLog: {
+        jloId: "Id d'une trace d'execution d'un job",
+        dateTrace: "Date de la trace",
+        level: "Niveau de la trace",
+        typeExecCd: "Type de trace",
+        message: "Message",
+        parametre: "Paramètre",
+        erreur: "Stacktrace d'erreur",
+        proId: "JobExecution"
+    },
+    oJobModel: {
+        jmoId: "Identifiant du Model de Job",
+        jobname: "Nom du job",
+        desc: "Description du job",
+        classEngine: "Classe d'implémentation du Job",
+        maxRetry: "Nombre max de retry",
+        maxDelay: "Delai max de d'excution/retry",
+        timeout: "Délai max de d'attente d'execution",
+        creationDate: "Date de création",
+        active: "Job Actif/Inactif"
+    },
+    oJobRunning: {
+        jid: "Id de l'execution du job",
+        jobname: "Nom du job",
+        nodeId: "Id du noeud",
+        execDate: "Date d'execution",
+        maxExecDate: "Date Max d'execution (Date d'exec + TO)",
         usrId: "User"
     },
-    oProcessExecutionUi: {
-        preId: "Id de l'activité",
-        beginTime: "Nom du processus",
-        endTime: "Nom du processus",
-        executionTime: "Durée",
-        status: "Statut",
-        checked: "Pris en charge",
-        checkingDate: "Date de prise en charge",
-        checkingComment: "Commentaire",
-        hasAttachment: "Fichier de log"
+    oJobSchedule: {
+        jscId: "Id de la definition de la planification à date",
+        scheduleDate: "Date d'execution prévue",
+        params: "Paramètres initiaux sous forme de JSON",
+        jmoId: "JobModel"
     },
-    oProcessPlanification: {
-        prpId: "Id Planification",
+    oProcessNextRun: {
+        jobname: "Nom du job",
+        jobId: "Job Id",
         expectedTime: "Date d'execution prévue",
-        initialParams: "Paramètres initiaux sous forme de JSON",
-        proId: "Processus",
-        nodId: "Node",
-        sstCd: "PlanificationState"
+        initialParams: "Paramètres initiaux sous forme de JSON"
     },
     oProcessType: {
         prtCd: "Code",
         label: "Libellé"
-    },
-    oProcessUi: {
-        proId: "Id du processus",
-        name: "Nom du processus",
-        label: "Libellé du processus",
-        cronExpression: "Expression récurrence du processus",
-        initialParams: "Paramètres initiaux sous forme de JSON",
-        multiexecution: "Accepte la multi-execution",
-        active: "Processus actif",
-        rescuePeriod: "Temps de validité d'une planification",
-        metadatas: "Métadonnées du processus"
     },
     oSchedulerState: {
         sstCd: "Code",

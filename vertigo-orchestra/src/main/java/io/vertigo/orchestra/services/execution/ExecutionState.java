@@ -20,23 +20,15 @@ package io.vertigo.orchestra.services.execution;
 
 /**
  * Enumération des états d'execution.
- * @author mlaroche.
+ * @author xdurand.
  * @version $Id$
  */
 public enum ExecutionState {
 
-	WAITING,
-
-	SUBMITTED,
-
 	RUNNING,
 
-	DONE,
+	SUCCESS,
 
-	ERROR,
-
-	ABORTED,
-
-	PENDING;
+	ERROR;
 
 }
