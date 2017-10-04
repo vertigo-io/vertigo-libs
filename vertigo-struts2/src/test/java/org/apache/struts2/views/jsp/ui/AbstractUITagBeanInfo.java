@@ -31,7 +31,7 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
 /**
  * Describes properties supported by the AbstractUITag - base class for all UI tags
  * This bases on HtmlTagSupportBeanInfo class from StripesFramework - thanks!
- * Klee : Added a fix for jacoco coverage
+ * Fix by Klee : Added a fix for jacoco coverage
  */
 public class AbstractUITagBeanInfo extends SimpleBeanInfo {
 

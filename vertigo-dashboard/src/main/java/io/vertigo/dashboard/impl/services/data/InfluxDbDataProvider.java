@@ -129,7 +129,6 @@ public final class InfluxDbDataProvider implements DataProvider {
 			final Integer minThreshold,
 			final Integer maxThreshold,
 			final String measure) {
-		final String op = "";
 		if (minThreshold == null) {
 			return measure + "<" + maxThreshold;
 		} else if (maxThreshold == null) {
