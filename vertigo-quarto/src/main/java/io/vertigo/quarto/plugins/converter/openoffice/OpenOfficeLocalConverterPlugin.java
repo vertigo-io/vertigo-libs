@@ -25,7 +25,8 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.star.beans.PropertyValue;
 import com.sun.star.frame.XStorable;
@@ -41,7 +42,7 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  */
 public final class OpenOfficeLocalConverterPlugin extends AbstractOpenOfficeConverterPlugin {
-	private static final Logger LOGGER = Logger.getLogger(OpenOfficeLocalConverterPlugin.class);
+	private static final Logger LOGGER = LogManager.getLogger(OpenOfficeLocalConverterPlugin.class);
 
 	/**
 	 * Constructeur.

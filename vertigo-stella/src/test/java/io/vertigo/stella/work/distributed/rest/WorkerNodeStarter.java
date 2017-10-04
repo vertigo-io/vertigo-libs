@@ -20,7 +20,8 @@ package io.vertigo.stella.work.distributed.rest;
 
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
@@ -31,7 +32,7 @@ import io.vertigo.lang.Assertion;
  * @author npiedeloup
  */
 public class WorkerNodeStarter {
-	private static final Logger LOG = Logger.getLogger(WorkerNodeStarter.class);
+	private static final Logger LOG = LogManager.getLogger(WorkerNodeStarter.class);
 
 	/**
 	 * Lance l'environnement et attend indéfiniment.

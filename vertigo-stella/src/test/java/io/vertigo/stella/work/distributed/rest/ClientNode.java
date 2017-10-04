@@ -26,7 +26,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import io.vertigo.lang.Assertion;
 
@@ -77,7 +77,7 @@ final class ClientNode {
 	public void stop() throws InterruptedException {
 		nodeProcess.destroy();
 		nodeProcess.waitFor();
-		Logger.getLogger(ClientNode.class).info("ClientNode stopped");
+		LogManager.getLogger(ClientNode.class).info("ClientNode stopped");
 		for (final Thread subThread : subThreads) {
 			subThread.interrupt();
 		}

@@ -18,7 +18,7 @@
  */
 package io.vertigo.stella.work.mock;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import io.vertigo.stella.work.WorkEngine;
 
@@ -30,7 +30,7 @@ public final class DivideWorkEngine implements WorkEngine<DivideWork, Long> {
 	@Override
 	public Long process(final DivideWork work) {
 		if (i++ % 5000 == 0) {
-			Logger.getLogger(DivideWorkEngine.class).info("\nDivideWork : i=" + i);
+			LogManager.getLogger(DivideWorkEngine.class).info("\nDivideWork : i=" + i);
 		}
 		return work.getValue1() / work.getValue2();
 	}

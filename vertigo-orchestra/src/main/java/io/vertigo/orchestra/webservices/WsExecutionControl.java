@@ -18,18 +18,9 @@
  */
 package io.vertigo.orchestra.webservices;
 
-import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
-
-import javax.inject.Inject;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
-import io.vertigo.orchestra.definitions.ProcessDefinition;
-import io.vertigo.orchestra.services.OrchestraServices;
-import io.vertigo.orchestra.services.execution.ExecutionState;
-import io.vertigo.util.DateUtil;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.InnerBodyParam;
@@ -40,16 +31,15 @@ import io.vertigo.vega.webservice.stereotype.SessionLess;
 /**
  * WebService API for managing Executions
  * @author mlaroche.
- * @version $Id$
  */
 @PathPrefix("/orchestra/executionsControl")
 public class WsExecutionControl implements WebServices {
 
-	@Inject
-	private OrchestraDefinitionManager orchestraDefinitionManager;
+	//	@Inject
+	//	private OrchestraDefinitionManager orchestraDefinitionManager;
 
-	@Inject
-	private OrchestraServices orchestraServices;
+	//	@Inject
+	//	private OrchestraServices orchestraServices;
 
 	/**
 	 * Termine une exécution mise en attente.
@@ -63,8 +53,7 @@ public class WsExecutionControl implements WebServices {
 		Assertion.checkNotNull(activityExecutionId);
 		Assertion.checkArgNotEmpty(token);
 		// ---
-		/*orchestraServices.getExecutor()
-				.endPendingActivityExecution(activityExecutionId, token, ExecutionState.DONE, Optional.empty());*/
+		//		orchestraServices.getExecutor().endPendingActivityExecution(activityExecutionId, token, ExecutionState.DONE, Optional.empty());
 	}
 
 	/**
@@ -96,9 +85,8 @@ public class WsExecutionControl implements WebServices {
 	public void executeNow(@InnerBodyParam("processName") final String processName, @InnerBodyParam("initialParams") final Map<String, String> initialParams) {
 		Assertion.checkNotNull(processName);
 		// ---
-		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
-		/*orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, DateUtil.newDateTime(), initialParams);*/
+		//		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
+		//		orchestraServices.getScheduler().scheduleAt(processDefinition, DateUtil.newDateTime(), initialParams);
 	}
 
 	/**
@@ -109,9 +97,8 @@ public class WsExecutionControl implements WebServices {
 	public void executeNowIhm(@InnerBodyParam("processName") final String processName) {
 		Assertion.checkArgNotEmpty(processName);
 		// ---
-		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
-		/*orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, DateUtil.newDateTime(), Collections.emptyMap());*/
+		//		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
+		//		orchestraServices.getScheduler().scheduleAt(processDefinition, DateUtil.newDateTime(), Collections.emptyMap());
 	}
 
 }

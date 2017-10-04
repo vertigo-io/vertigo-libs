@@ -1,12 +1,13 @@
 package io.vertigo.orchestra.services.execution.engine;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.orchestra.services.execution.RunnableJobEngine;
 
 public class SleepJobEngine extends RunnableJobEngine {
 
-	private static final Logger LOG = Logger.getLogger(SleepJobEngine.class);
+	private static final Logger LOG = LogManager.getLogger(SleepJobEngine.class);
 	
 	@Override
 	public void run() {

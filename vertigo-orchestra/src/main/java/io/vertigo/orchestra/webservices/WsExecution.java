@@ -31,7 +31,6 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.OrchestraServices;
-import io.vertigo.orchestra.services.report.ActivityExecution;
 import io.vertigo.orchestra.services.report.ExecutionSummary;
 import io.vertigo.orchestra.services.report.ProcessExecution;
 import io.vertigo.vega.webservice.WebServices;

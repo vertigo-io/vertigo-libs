@@ -6,8 +6,8 @@ import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.workflow.domain.model.WfMultiplicityDefinition;
 import io.vertigo.lang.Generated;
+import io.vertigo.workflow.domain.model.WfMultiplicityDefinition;
 
 /**
  * This class is automatically generated.

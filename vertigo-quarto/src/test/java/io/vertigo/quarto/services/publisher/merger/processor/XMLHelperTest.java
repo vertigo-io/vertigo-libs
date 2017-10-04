@@ -20,7 +20,8 @@ package io.vertigo.quarto.services.publisher.merger.processor;
 
 import java.util.Deque;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,7 +36,7 @@ import io.vertigo.quarto.impl.services.publisher.merger.processor.TagXML;
  */
 public final class XMLHelperTest {
 	/** Logger. */
-	private final Logger LOG = Logger.getLogger(getClass());
+	private final Logger LOG = LogManager.getLogger(getClass());
 
 	@Test
 	public void testMinimalXML() {

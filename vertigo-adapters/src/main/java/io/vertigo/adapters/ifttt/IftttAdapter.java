@@ -10,7 +10,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
@@ -21,7 +22,7 @@ import io.vertigo.lang.VSystemException;
  *
  */
 public class IftttAdapter {
-	private static final Logger LOGGER = Logger.getLogger(IftttAdapter.class);
+	private static final Logger LOGGER = LogManager.getLogger(IftttAdapter.class);
 
 	public static void sendMakerEvent(
 			final MakerEvent event,

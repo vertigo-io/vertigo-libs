@@ -1,6 +1,7 @@
 package io.vertigo.adapters.twitter;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.component.Plugin;
 import io.vertigo.lang.WrappedException;
@@ -16,7 +17,7 @@ import twitter4j.TwitterFactory;
  *
  */
 public class TwitterAdapter implements Plugin {
-	private static final Logger LOGGER = Logger.getLogger(TwitterAdapter.class);
+	private static final Logger LOGGER = LogManager.getLogger(TwitterAdapter.class);
 	private static final Twitter TWITTER = TwitterFactory.getSingleton();
 
 	public static void sendMessage(final String message) {

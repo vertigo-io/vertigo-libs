@@ -21,13 +21,13 @@ package io.vertigo.orchestra.impl.services.execution;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.component.Activeable;
 import io.vertigo.lang.Assertion;
@@ -35,14 +35,13 @@ import io.vertigo.lang.VSystemException;
 import io.vertigo.orchestra.domain.model.OJobModel;
 import io.vertigo.orchestra.plugins.store.OParams;
 import io.vertigo.orchestra.plugins.store.OWorkspace;
-import io.vertigo.orchestra.plugins.store.OrchestraStore;
 import io.vertigo.orchestra.services.execution.JobEngine;
 import io.vertigo.orchestra.services.execution.JobExecutor;
 
 public final class JobExecutorImpl implements Activeable, JobExecutor {
 
 	private ExecutorService executor = Executors.newFixedThreadPool(10); // TODO: named parameter
-	private static final Logger LOG = Logger.getLogger(JobExecutorImpl.class);
+	private static final Logger LOG = LogManager.getLogger(JobExecutorImpl.class);
 	
 	private int myTimeout;
 	

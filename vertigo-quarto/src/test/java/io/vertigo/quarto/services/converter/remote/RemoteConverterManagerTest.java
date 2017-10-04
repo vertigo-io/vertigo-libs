@@ -24,7 +24,8 @@ import java.io.InputStream;
 
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Test;
 
 import io.vertigo.AbstractTestCaseJU4;
@@ -43,7 +44,7 @@ import io.vertigo.util.TempFile;
  */
 public final class RemoteConverterManagerTest extends AbstractTestCaseJU4 {
 	/** Logger. */
-	private final Logger log = Logger.getLogger(getClass());
+	private final Logger log = LogManager.getLogger(getClass());
 
 	@Inject
 	private ConverterManager converterManager;

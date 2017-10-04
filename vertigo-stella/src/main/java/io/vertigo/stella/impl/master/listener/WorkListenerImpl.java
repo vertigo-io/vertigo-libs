@@ -18,7 +18,8 @@
  */
 package io.vertigo.stella.impl.master.listener;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.stella.master.MasterManager;
 
@@ -29,10 +30,10 @@ import io.vertigo.stella.master.MasterManager;
 public final class WorkListenerImpl implements WorkListener {
 
 	/** Mécanisme de log utilisé pour les taches. */
-	private static final Logger LOGGER = Logger.getLogger(MasterManager.class);
+	private static final Logger LOGGER = LogManager.getLogger(MasterManager.class);
 
 	/** Mécanisme de log utilisé pour les performances. */
-	private static final Logger LOGGER_PERFORMANCE = Logger.getLogger("Performance");
+	private static final Logger LOGGER_PERFORMANCE = LogManager.getLogger("Performance");
 
 	private static void logWorkStart(final String workName) {
 		if (LOGGER.isDebugEnabled()) {

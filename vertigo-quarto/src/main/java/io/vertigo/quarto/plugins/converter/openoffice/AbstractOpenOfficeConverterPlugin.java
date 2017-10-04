@@ -29,7 +29,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.star.beans.PropertyValue;
 import com.sun.star.io.XInputStream;
@@ -54,7 +55,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 	/** Le port par défaut pour accéder à OpenOffice est 8100. */
 	public static final int DEFAULT_UNO_PORT = 8100;
 
-	private static final Logger LOGGER = Logger.getLogger(AbstractOpenOfficeConverterPlugin.class);
+	private static final Logger LOGGER = LogManager.getLogger(AbstractOpenOfficeConverterPlugin.class);
 
 	private final ExecutorService executors = Executors.newFixedThreadPool(1);
 

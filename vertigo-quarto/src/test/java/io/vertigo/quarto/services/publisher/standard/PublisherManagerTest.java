@@ -18,7 +18,8 @@
  */
 package io.vertigo.quarto.services.publisher.standard;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -37,7 +38,7 @@ import io.vertigo.quarto.services.publisher.model.PublisherData;
  */
 public final class PublisherManagerTest extends AbstractTestCaseJU4 {
 	/** Logger. */
-	private final Logger log = Logger.getLogger(getClass());
+	private final Logger log = LogManager.getLogger(getClass());
 
 	/**
 	 * Créer une Définition simple avec 1 bool, 1 string.

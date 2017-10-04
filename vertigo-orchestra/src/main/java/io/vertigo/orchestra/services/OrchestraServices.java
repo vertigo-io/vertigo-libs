@@ -22,7 +22,6 @@ import io.vertigo.core.component.Component;
 import io.vertigo.orchestra.services.execution.JobExecutor;
 import io.vertigo.orchestra.services.log.ProcessLogger;
 import io.vertigo.orchestra.services.report.ProcessReport;
-import io.vertigo.orchestra.services.schedule.ProcessScheduler;
 
 /**
  * Interface (interne) de gestion des executions des processus Orchestra.

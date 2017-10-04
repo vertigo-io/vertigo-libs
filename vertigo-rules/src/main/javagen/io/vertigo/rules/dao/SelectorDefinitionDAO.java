@@ -3,15 +3,15 @@ package io.vertigo.rules.dao;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.rules.domain.SelectorDefinition;
+import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.dynamo.task.model.Task;
+import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.lang.Generated;
+import io.vertigo.rules.domain.SelectorDefinition;
 
 /**
  * This class is automatically generated.

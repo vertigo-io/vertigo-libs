@@ -24,7 +24,8 @@ import java.net.URI;
 import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,7 +40,7 @@ import spark.Spark;
  * @author npiedeloup
  */
 public final class RestWorkManagerTest extends AbstractWorkManagerTest {
-	private static final Logger LOG = Logger.getLogger(RestWorkManagerTest.class);
+	private static final Logger LOG = LogManager.getLogger(RestWorkManagerTest.class);
 	@Inject
 	private MasterManager masterManager;
 	private ClientNode clientNode1;

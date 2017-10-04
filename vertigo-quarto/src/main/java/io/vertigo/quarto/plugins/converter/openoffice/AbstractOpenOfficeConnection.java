@@ -35,7 +35,8 @@ package io.vertigo.quarto.plugins.converter.openoffice;
 
 import java.net.ConnectException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.star.beans.XPropertySet;
 import com.sun.star.bridge.XBridge;
@@ -65,7 +66,7 @@ import com.sun.star.uno.XComponentContext;
  */
 abstract class AbstractOpenOfficeConnection implements OpenOfficeConnection, XEventListener {
 
-	private static final Logger LOGGER = Logger.getLogger(AbstractOpenOfficeConnection.class);
+	private static final Logger LOGGER = LogManager.getLogger(AbstractOpenOfficeConnection.class);
 
 	private final String connectionString;
 	private XComponent bridgeComponent;

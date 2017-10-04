@@ -32,7 +32,8 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status.Family;
 import javax.ws.rs.core.Response.StatusType;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.message.GZipEncoder;
 
@@ -52,7 +53,7 @@ import io.vertigo.util.ClassUtil;
  */
 final class RestQueueClient {
 	private static final int CONNECT_TIMEOUT = 10 * 1000; // 10s
-	private static final Logger LOG = Logger.getLogger(RestQueueClient.class);
+	private static final Logger LOG = LogManager.getLogger(RestQueueClient.class);
 	private final CodecManager codecManager;
 	private final String serverUrl;
 	private final Client locatorClient;

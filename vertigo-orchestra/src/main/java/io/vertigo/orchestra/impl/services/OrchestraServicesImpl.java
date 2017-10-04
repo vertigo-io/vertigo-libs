@@ -18,13 +18,11 @@
  */
 package io.vertigo.orchestra.impl.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.orchestra.impl.services.execution.JobExecutorImpl;
 import io.vertigo.orchestra.services.OrchestraServices;
 import io.vertigo.orchestra.services.execution.JobExecutor;
 import io.vertigo.orchestra.services.log.ProcessLogger;
@@ -45,10 +43,8 @@ public final class OrchestraServicesImpl implements OrchestraServices {
 
 	/**
 	 * Constructeur du gestionnaire de l'execution des processus orchestra.
-	 * @param processExecutorPlugins plugins of execution
 	 * @param logProviderPlugin plugin for logging
 	 * @param processReportPlugin plugin for reporting
-	 * @param processSchedulerPlugins plugins for scheduling
 	 */
 	@Inject
 	public OrchestraServicesImpl(

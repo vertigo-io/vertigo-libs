@@ -20,7 +20,7 @@ package io.vertigo.struts2.boot;
 
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
@@ -40,7 +40,7 @@ public final class Struts2TestGen {
 					.displayResultMessage(System.out);
 		} catch (final Exception e) {
 			e.printStackTrace();
-			Logger.getLogger(Struts2TestGen.class).warn("an error occured when generating", e);
+			LogManager.getLogger(Struts2TestGen.class).warn("an error occured when generating", e);
 		}
 	}
 }

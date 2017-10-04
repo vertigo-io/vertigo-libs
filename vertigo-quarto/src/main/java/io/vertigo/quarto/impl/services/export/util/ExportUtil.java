@@ -21,7 +21,8 @@ package io.vertigo.quarto.impl.services.export.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -39,7 +40,7 @@ import io.vertigo.quarto.services.export.model.ExportField;
  */
 public final class ExportUtil {
 
-	private static final Logger LOGGER = Logger.getLogger(ExportUtil.class);
+	private static final Logger LOGGER = LogManager.getLogger(ExportUtil.class);
 
 	private ExportUtil() {
 		//private constructor

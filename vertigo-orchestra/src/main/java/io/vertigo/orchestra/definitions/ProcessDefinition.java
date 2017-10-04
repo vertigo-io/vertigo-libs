@@ -18,7 +18,6 @@
  */
 package io.vertigo.orchestra.definitions;
 
-import java.util.List;
 import java.util.Map;
 
 import io.vertigo.core.definition.Definition;

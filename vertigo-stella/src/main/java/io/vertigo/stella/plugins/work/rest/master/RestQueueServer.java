@@ -32,7 +32,8 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
@@ -52,7 +53,7 @@ final class RestQueueServer {
 	//pas besoin de synchronized la map, car le obtain est le seul accès et est synchronized
 	private final Map<String, BlockingQueue<WaitingWorkInfos>> workQueueMap = new HashMap<>();
 
-	private static final Logger LOG = Logger.getLogger(RestQueueServer.class);
+	private static final Logger LOG = LogManager.getLogger(RestQueueServer.class);
 
 	//On conserve l'état des work en cours, afin de pouvoir les relancer si besoin (avec un autre uuid)
 	private final ConcurrentMap<String, RunningWorkInfos> runningWorkInfosMap = new ConcurrentHashMap<>();
