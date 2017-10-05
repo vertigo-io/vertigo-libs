@@ -42,6 +42,10 @@ function showDataTable(elem, datas, dataColumns) {
 }
 
 var timeRendererSeconds = function ( data, type, row ) {
+	if (type == "sort" || type == 'type') {
+		return data;
+	}
+	
 	if (data > 1000) {
 		return $.fn.dataTable.render.number( ' ', ',', 2, '', 's' ).display(data/1000);
 	}

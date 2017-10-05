@@ -10,19 +10,22 @@ public final class TimeFilter implements Serializable {
 
 	private final String from;
 	private final String to;
-	private final String dim;
+	private final String dim; // may be null
 
-	public TimeFilter(
+	TimeFilter(
 			final String from,
 			final String to,
 			final String dim) {
 		Assertion.checkNotNull(from);
 		Assertion.checkNotNull(to);
-		Assertion.checkNotNull(dim);
 		//---
 		this.from = from;
 		this.to = to;
 		this.dim = dim;
+	}
+
+	public static TimeFilterBuilder builder(final String from, final String to) {
+		return new TimeFilterBuilder(from, to);
 	}
 
 	public String getFrom() {
