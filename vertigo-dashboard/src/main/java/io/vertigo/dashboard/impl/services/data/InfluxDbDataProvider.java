@@ -60,6 +60,10 @@ public final class InfluxDbDataProvider implements DataProvider {
 
 	@Override
 	public TimedDatas getTimeSeries(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
+		Assertion.checkNotNull(measures);
+		Assertion.checkNotNull(dataFilter);
+		Assertion.checkNotNull(timeFilter.getDim());// we check dim is not null because we need it
+		//---
 		final String q = buildQuery(measures, dataFilter, timeFilter)
 				.append(" group by time(").append(timeFilter.getDim()).append(")")
 				.toString();
@@ -72,6 +76,7 @@ public final class InfluxDbDataProvider implements DataProvider {
 	public TimedDatas getClusteredTimeSeries(final ClusteredMeasure clusteredMeasure, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		Assertion.checkNotNull(dataFilter);
 		Assertion.checkNotNull(timeFilter);
+		Assertion.checkNotNull(timeFilter.getDim()); // we check dim is not null because we need it
 		Assertion.checkNotNull(clusteredMeasure);
 		//---
 		Assertion.checkArgNotEmpty(clusteredMeasure.getMeasure());
@@ -263,6 +268,9 @@ public final class InfluxDbDataProvider implements DataProvider {
 		if (!"*".equals(dataFilter.getTopic())) {
 			queryBuilder.append(" and \"topic\"='").append(dataFilter.getTopic()).append("'");
 		}
+		if (dataFilter.getAdditionalWhereClause() != null) {
+			queryBuilder.append(" and ").append(dataFilter.getAdditionalWhereClause());
+		}
 		return queryBuilder.toString();
 	}
 
@@ -309,8 +317,8 @@ public final class InfluxDbDataProvider implements DataProvider {
 	public List<HealthCheck> getHealthChecks() {
 
 		final List<String> measures = Arrays.asList("status:last", "message:last", "name:last", "topic:last", "feature:last", "checker:last");
-		final DataFilter dataFilter = new DataFilter("healthcheck", "*", "*", "*");
-		final TimeFilter timeFilter = new TimeFilter("now() - 5w", "now()", "*");// before 5 weeks we consider that we don't have data
+		final DataFilter dataFilter = DataFilter.builder("healthcheck").build();
+		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
 
 		return getTabularData(measures, dataFilter, timeFilter, "name", "topic")
 				.getTimedDataSeries()
@@ -352,8 +360,8 @@ public final class InfluxDbDataProvider implements DataProvider {
 	@Override
 	public List<Metric> getMetrics() {
 		final List<String> measures = Arrays.asList("value:last", "name:last", "topic:last");
-		final DataFilter dataFilter = new DataFilter("metric", "*", "*", "*");
-		final TimeFilter timeFilter = new TimeFilter("now() - 5w", "now()", "*");// before 5 weeks we consider that we don't have data
+		final DataFilter dataFilter = DataFilter.builder("metric").build();
+		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
 
 		return getTabularData(measures, dataFilter, timeFilter, "name", "topic")
 				.getTimedDataSeries()
