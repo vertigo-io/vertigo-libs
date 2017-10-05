@@ -200,6 +200,16 @@ final class XLSExporter {
 		evenDateCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy" /* "m/d/yy h:mm" */));
 		oddHssfStyleCache.put(DataType.Date, oddDateCellStyle);
 		evenHssfStyleCache.put(DataType.Date, evenDateCellStyle);
+		oddHssfStyleCache.put(DataType.LocalDate, oddDateCellStyle);
+		evenHssfStyleCache.put(DataType.LocalDate, evenDateCellStyle);
+
+		// Date Time
+		final HSSFCellStyle oddDateTimeCellStyle = createRowCellStyle(workbook, true);
+		final HSSFCellStyle evenDateTimeCellStyle = createRowCellStyle(workbook, true);
+		oddDateTimeCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy h:mm"));
+		evenDateTimeCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy h:mm"));
+		oddHssfStyleCache.put(DataType.ZonedDateTime, oddDateTimeCellStyle);
+		evenHssfStyleCache.put(DataType.ZonedDateTime, evenDateTimeCellStyle);
 
 	}
 
