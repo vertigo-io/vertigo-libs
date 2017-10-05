@@ -18,6 +18,8 @@
  */
 package io.vertigo.orchestra.impl.services.execution;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,19 +31,24 @@ import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.orchestra.domain.model.OJobModel;
 import io.vertigo.orchestra.plugins.store.OParams;
 import io.vertigo.orchestra.plugins.store.OWorkspace;
-import io.vertigo.orchestra.services.execution.JobEngine;
-import io.vertigo.orchestra.services.execution.JobExecutor;
+import io.vertigo.orchestra.services.run.JobEndedEvent;
+import io.vertigo.orchestra.services.run.JobEngine;
+import io.vertigo.orchestra.services.run.JobExecutor;
 
 public final class JobExecutorImpl implements Activeable, JobExecutor {
 
 	private ExecutorService executor = Executors.newFixedThreadPool(10); // TODO: named parameter
 	private static final Logger LOG = LogManager.getLogger(JobExecutorImpl.class);
+	
+	@Inject
+	private EventBusManager eventBusManager;
 	
 	private int myTimeout;
 	
@@ -52,7 +59,7 @@ public final class JobExecutorImpl implements Activeable, JobExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public void execute(OJobModel job, OParams initialParams) {
+	public void execute(OJobModel job, OParams initialParams, String jobId) {
 		Assertion.checkNotNull(job);
 		Assertion.checkNotNull(initialParams);
 		// ---
@@ -64,7 +71,7 @@ public final class JobExecutorImpl implements Activeable, JobExecutor {
 		} catch (ClassNotFoundException e) {
 			throw new VSystemException(e, "Impossible de trouver la classe {0}", classToLauch);
 		}
-		Assertion.checkArgument(clazz.isAssignableFrom(JobEngine.class), "ClassEngine is not Runnable");
+		Assertion.checkArgument(JobEngine.class.isAssignableFrom(clazz), "ClassEngine is not a JobEngine");
 		
 		JobEngine run;
 		try {
@@ -72,16 +79,15 @@ public final class JobExecutorImpl implements Activeable, JobExecutor {
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new VSystemException(e, "Impossible d'instancier la classe {0}", classToLauch);
 		}
+		OWorkspace ws = new OWorkspace(initialParams.asMap(), jobId, job.getJobname(), classToLauch);
 		
-		OWorkspace ws = new OWorkspace(initialParams.asMap());
-		
-		CompletableFuture.supplyAsync(() -> run.execute(ws), executor);
-						 //.thenAccept(this::fireSuccess);
+		CompletableFuture.supplyAsync(() -> run.execute(ws), executor)
+						 .thenAccept(this::fireSuccess);
 	}
 	
-	/*public void fireSuccess(OWorkspace ws) {
-		orchestraStore.fireSuccessJob(ws.getJobId(), ws);
-	}*/
+	public void fireSuccess(OWorkspace ws) {
+		eventBusManager.post(new JobEndedEvent(ws));
+	}
 
 	@Override
 	public void awaitTermination() {

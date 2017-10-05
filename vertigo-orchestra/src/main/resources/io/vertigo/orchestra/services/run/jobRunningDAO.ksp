@@ -1,23 +1,23 @@
-package io.vertigo.orchestra.dao.execution
+package io.vertigo.orchestra.dao.run
 
 create Task TK_INSERT_JOB_RUNNING_TO_LAUNCH {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
-        	INSERT INTO O_JOB_RUNNING (JRU_ID, JOBNAME, NOD_ID, DATE_EXEC, USR_ID)
-        		 (SELECT nextval('SEQ_O_JOB_RUNNING'), PRO.NAME, #NOD_ID#, #DATE_EXEC#, NULL
-				   FROM O_PROCESS PRO
+        	INSERT INTO O_JOB_RUNNING (JID, JOBNAME, NODE_ID, EXEC_DATE, USR_ID)
+        		 (SELECT #JOB_ID#, JMO.JOBNAME, #NODE_ID#, #EXEC_DATE#, NULL
+				   FROM O_JOB_MODEL JMO
         		  WHERE NOT EXISTS (SELECT 1 
 									 FROM O_JOB_RUNNING RUN
-									WHERE RUN.JOBNAME = PRO.NAME)
-					AND PRO.NAME IN (#PROCESSES_NEXT_RUN.ROWNUM.JOBNAME#))
+									WHERE RUN.JOBNAME = JMO.JOBNAME)
+					AND JMO.JOBNAME = #PROCESSES_NEXT_RUN.JOBNAME#)
 			"
-		attribute NOD_ID				{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
-		attribute DATE_EXEC				{domain : DO_O_TIMESTAMP		notNull:"true" 	inOut :"in"}
-		attribute PROCESSES_NEXT_RUN	{domain : DO_DT_O_PROCESS_NEXT_RUN_DTC 	notNull:"true" 	inOut :"in"}
-		attribute INT_SQL_ROWCOUNT		{domain : DO_O_NOMBRE 	notNull:"true" 	inOut :"out"}
+		attribute NODE_ID				{domain : DO_O_IDENTIFIANT 					notNull:"true" 	inOut :"in"}
+		attribute EXEC_DATE				{domain : DO_O_TIMESTAMP					notNull:"true" 	inOut :"in"}
+		attribute JOB_ID				{domain : DO_O_IDENTIFIANT_JOB				notNull:"true" 	inOut :"in"}
+		attribute PROCESSES_NEXT_RUN	{domain : DO_DT_O_PROCESS_NEXT_RUN_DTO	 	notNull:"true" 	inOut :"in"}
+		attribute INT_SQL_ROWCOUNT		{domain : DO_O_NOMBRE 						notNull:"true" 	inOut :"out"}
 }
-
 
 /* TODO remplacer NOD_ID par un token ID */
 
@@ -30,7 +30,7 @@ create Task TK_DELETE_JOB_RUNNING {
         	   AND NOD_ID = #NOD_ID#
 			"
 		attribute NOD_ID				{domain : DO_O_IDENTIFIANT 			notNull:"true" 	inOut :"in"}
-		attribute JOB_ID				{domain : DO_O_CODE_IDENTIFIANT		notNull:"true" 	inOut :"in"}
+		attribute JOB_ID				{domain : DO_O_IDENTIFIANT_JOB		notNull:"true" 	inOut :"in"}
 		attribute INT_SQL_ROWCOUNT		{domain : DO_O_NOMBRE 				notNull:"true" 	inOut :"out"}
 }
 

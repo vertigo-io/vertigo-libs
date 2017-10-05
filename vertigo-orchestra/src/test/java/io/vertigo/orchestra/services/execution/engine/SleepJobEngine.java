@@ -3,7 +3,7 @@ package io.vertigo.orchestra.services.execution.engine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.orchestra.services.execution.RunnableJobEngine;
+import io.vertigo.orchestra.services.run.RunnableJobEngine;
 
 public class SleepJobEngine extends RunnableJobEngine {
 

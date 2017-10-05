@@ -1,4 +1,5 @@
 services/domain.ksp
 
 services/run/jobRunningDAO.ksp
+services/run/jobBoardDAO.ksp
 services/schedule/schedulingDAO.ksp

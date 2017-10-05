@@ -16,19 +16,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.orchestra.services.execution;
+package io.vertigo.orchestra.services.run;
+
+import io.vertigo.core.component.Component;
+import io.vertigo.orchestra.domain.model.OJobModel;
+import io.vertigo.orchestra.plugins.store.OParams;
 
 /**
- * Enumération des états d'execution.
- * @author xdurand.
- * @version $Id$
+ * 
+ * @author xdurand
+ *
  */
-public enum ExecutionState {
+public interface JobExecutor extends Component {
+	/**
+	 * Execute un job.
+	 * @param job le job à lancer
+	 * @param initialParams paramètres initiaux
+	 * @param jobId le job id
+	 */
+	void execute(OJobModel job, OParams initialParams, String jobId);
 
-	RUNNING,
-
-	SUCCESS,
-
-	ERROR;
+	
+	/**
+	 * 
+	 */
+	void awaitTermination();
 
 }

@@ -17,8 +17,6 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 * Enumération des DtDefinitions.
 	 */
 	public enum Definitions {
-		/** Objet de données OExecutionState. */
-		OExecutionState(io.vertigo.orchestra.domain.referential.OExecutionState.class),
 		/** Objet de données OJobBoard. */
 		OJobBoard(io.vertigo.orchestra.domain.run.OJobBoard.class),
 		/** Objet de données OJobCron. */
@@ -35,14 +33,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		OJobSchedule(io.vertigo.orchestra.domain.schedule.OJobSchedule.class),
 		/** Objet de données OProcessNextRun. */
 		OProcessNextRun(io.vertigo.orchestra.domain.schedule.OProcessNextRun.class),
-		/** Objet de données OProcessType. */
-		OProcessType(io.vertigo.orchestra.domain.referential.OProcessType.class),
-		/** Objet de données OSchedulerState. */
-		OSchedulerState(io.vertigo.orchestra.domain.referential.OSchedulerState.class),
 		/** Objet de données OUser. */
-		OUser(io.vertigo.orchestra.domain.referential.OUser.class),
-		/** Objet de données TriggerType. */
-		TriggerType(io.vertigo.orchestra.domain.referential.TriggerType.class)		;
+		OUser(io.vertigo.orchestra.domain.referential.OUser.class)		;
 
 		private final Class<?> clazz;
 
@@ -58,15 +50,6 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 			return clazz;
 		}
 	}
-
-	/**
-	 * Enumération des champs de OExecutionState.
-	 */
-	public enum OExecutionStateFields implements DtFieldName<io.vertigo.orchestra.domain.referential.OExecutionState> {
-		/** Propriété 'Code'. */
-		EST_CD,
-		/** Propriété 'Libellé'. */
-		LABEL	}
 
 	/**
 	 * Enumération des champs de OJobBoard.
@@ -211,24 +194,6 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		INITIAL_PARAMS	}
 
 	/**
-	 * Enumération des champs de OProcessType.
-	 */
-	public enum OProcessTypeFields implements DtFieldName<io.vertigo.orchestra.domain.referential.OProcessType> {
-		/** Propriété 'Code'. */
-		PRT_CD,
-		/** Propriété 'Libellé'. */
-		LABEL	}
-
-	/**
-	 * Enumération des champs de OSchedulerState.
-	 */
-	public enum OSchedulerStateFields implements DtFieldName<io.vertigo.orchestra.domain.referential.OSchedulerState> {
-		/** Propriété 'Code'. */
-		SST_CD,
-		/** Propriété 'Libellé'. */
-		LABEL	}
-
-	/**
 	 * Enumération des champs de OUser.
 	 */
 	public enum OUserFields implements DtFieldName<io.vertigo.orchestra.domain.referential.OUser> {
@@ -246,15 +211,6 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		MAIL_ALERT,
 		/** Propriété 'Compte Actif'. */
 		ACTIVE	}
-
-	/**
-	 * Enumération des champs de TriggerType.
-	 */
-	public enum TriggerTypeFields implements DtFieldName<io.vertigo.orchestra.domain.referential.TriggerType> {
-		/** Propriété 'Code'. */
-		TRT_CD,
-		/** Propriété 'Libellé'. */
-		LABEL	}
 
 	/** {@inheritDoc} */
 	@Override

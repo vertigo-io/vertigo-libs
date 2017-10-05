@@ -4,10 +4,6 @@
  */
 
 module.exports = {
-    oExecutionState: {
-        estCd: "Code",
-        label: "Libellé"
-    },
     oJobBoard: {
         jid: "Id de l'execution du job",
         status: "Status de l'execution",
@@ -75,14 +71,6 @@ module.exports = {
         expectedTime: "Date d'execution prévue",
         initialParams: "Paramètres initiaux sous forme de JSON"
     },
-    oProcessType: {
-        prtCd: "Code",
-        label: "Libellé"
-    },
-    oSchedulerState: {
-        sstCd: "Code",
-        label: "Libellé"
-    },
     oUser: {
         usrId: "Id",
         firstName: "Nom",
@@ -91,9 +79,5 @@ module.exports = {
         password: "Mot de passe",
         mailAlert: "Alerté en cas d'erreur",
         active: "Compte Actif"
-    },
-    triggerType: {
-        trtCd: "Code",
-        label: "Libellé"
     }
 };

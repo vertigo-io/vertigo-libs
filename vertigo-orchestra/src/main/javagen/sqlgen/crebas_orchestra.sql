@@ -8,9 +8,6 @@
 -- ============================================================
 --   Sequences                                      
 -- ============================================================
-create sequence SEQ_O_EXECUTION_STATE
-	start with 1000 cache 20; 
-
 create sequence SEQ_O_JOB_BOARD
 	start with 1000 cache 20; 
 
@@ -32,41 +29,16 @@ create sequence SEQ_O_JOB_RUNNING
 create sequence SEQ_O_JOB_SCHEDULE
 	start with 1000 cache 20; 
 
-create sequence SEQ_O_PROCESS_TYPE
-	start with 1000 cache 20; 
-
-create sequence SEQ_O_SCHEDULER_STATE
-	start with 1000 cache 20; 
-
 create sequence SEQ_O_USER
 	start with 1000 cache 20; 
 
-create sequence SEQ_TRIGGER_TYPE
-	start with 1000 cache 20; 
-
-
--- ============================================================
---   Table : O_EXECUTION_STATE                                        
--- ============================================================
-create table O_EXECUTION_STATE
-(
-    EST_CD      	 VARCHAR(20) 	not null,
-    LABEL       	 VARCHAR(100)	,
-    constraint PK_O_EXECUTION_STATE primary key (EST_CD)
-);
-
-comment on column O_EXECUTION_STATE.EST_CD is
-'Code';
-
-comment on column O_EXECUTION_STATE.LABEL is
-'Libellé';
 
 -- ============================================================
 --   Table : O_JOB_BOARD                                        
 -- ============================================================
 create table O_JOB_BOARD
 (
-    JID         	 VARCHAR(20) 	not null,
+    JID         	 VARCHAR(30) 	not null,
     STATUS      	 VARCHAR(1)  	not null,
     NODE_ID     	 NUMERIC     	not null,
     MAX_DATE    	 TIMESTAMP   	,
@@ -125,11 +97,11 @@ create table O_JOB_EXECUTION
     JEX_ID      	 NUMERIC     	not null,
     JOBNAME     	 VARCHAR(20) 	not null,
     STATUS      	 VARCHAR(20) 	not null,
-    REASON      	 VARCHAR(20) 	not null,
+    REASON      	 VARCHAR(20) 	,
     DATE_DEBUT  	 TIMESTAMP   	not null,
-    DATE_FIN    	 TIMESTAMP   	not null,
-    CLASS_ENGINE	 VARCHAR(200)	,
-    WORKSPACE_IN	 TEXT        	,
+    DATE_FIN    	 TIMESTAMP   	,
+    CLASS_ENGINE	 VARCHAR(200)	not null,
+    WORKSPACE_IN	 TEXT        	not null,
     WORKSPACE_OUT	 TEXT        	,
     NOD_ID      	 NUMERIC     	not null,
     constraint PK_O_JOB_EXECUTION primary key (JEX_ID)
@@ -254,7 +226,7 @@ comment on column O_JOB_MODEL.ACTIVE is
 -- ============================================================
 create table O_JOB_RUNNING
 (
-    JID         	 VARCHAR(20) 	not null,
+    JID         	 VARCHAR(30) 	not null,
     JOBNAME     	 VARCHAR(100)	,
     NODE_ID     	 NUMERIC     	not null,
     EXEC_DATE   	 TIMESTAMP   	,
@@ -306,38 +278,6 @@ comment on column O_JOB_SCHEDULE.JMO_ID is
 'JobModel';
 
 -- ============================================================
---   Table : O_PROCESS_TYPE                                        
--- ============================================================
-create table O_PROCESS_TYPE
-(
-    PRT_CD      	 VARCHAR(20) 	not null,
-    LABEL       	 VARCHAR(100)	,
-    constraint PK_O_PROCESS_TYPE primary key (PRT_CD)
-);
-
-comment on column O_PROCESS_TYPE.PRT_CD is
-'Code';
-
-comment on column O_PROCESS_TYPE.LABEL is
-'Libellé';
-
--- ============================================================
---   Table : O_SCHEDULER_STATE                                        
--- ============================================================
-create table O_SCHEDULER_STATE
-(
-    SST_CD      	 VARCHAR(20) 	not null,
-    LABEL       	 VARCHAR(100)	,
-    constraint PK_O_SCHEDULER_STATE primary key (SST_CD)
-);
-
-comment on column O_SCHEDULER_STATE.SST_CD is
-'Code';
-
-comment on column O_SCHEDULER_STATE.LABEL is
-'Libellé';
-
--- ============================================================
 --   Table : O_USER                                        
 -- ============================================================
 create table O_USER
@@ -372,22 +312,6 @@ comment on column O_USER.MAIL_ALERT is
 
 comment on column O_USER.ACTIVE is
 'Compte Actif';
-
--- ============================================================
---   Table : TRIGGER_TYPE                                        
--- ============================================================
-create table TRIGGER_TYPE
-(
-    TRT_CD      	 VARCHAR(20) 	not null,
-    LABEL       	 VARCHAR(100)	,
-    constraint PK_TRIGGER_TYPE primary key (TRT_CD)
-);
-
-comment on column TRIGGER_TYPE.TRT_CD is
-'Code';
-
-comment on column TRIGGER_TYPE.LABEL is
-'Libellé';
 
 
 

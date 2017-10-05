@@ -106,9 +106,9 @@ public final class OJobExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Code d'erreur fonctionel de l'execution'.
-	 * @return String reason <b>Obligatoire</b>
+	 * @return String reason
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", required = true, label = "Code d'erreur fonctionel de l'execution")
+	@Field(domain = "DO_O_CODE_IDENTIFIANT", label = "Code d'erreur fonctionel de l'execution")
 	public String getReason() {
 		return reason;
 	}
@@ -116,7 +116,7 @@ public final class OJobExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Code d'erreur fonctionel de l'execution'.
-	 * @param reason String <b>Obligatoire</b>
+	 * @param reason String
 	 */
 	public void setReason(final String reason) {
 		this.reason = reason;
@@ -146,9 +146,9 @@ public final class OJobExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de fin d'execution'.
-	 * @return java.time.ZonedDateTime dateFin <b>Obligatoire</b>
+	 * @return java.time.ZonedDateTime dateFin
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Date de fin d'execution")
+	@Field(domain = "DO_O_TIMESTAMP", label = "Date de fin d'execution")
 	public java.time.ZonedDateTime getDateFin() {
 		return dateFin;
 	}
@@ -156,7 +156,7 @@ public final class OJobExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de fin d'execution'.
-	 * @param dateFin java.time.ZonedDateTime <b>Obligatoire</b>
+	 * @param dateFin java.time.ZonedDateTime
 	 */
 	public void setDateFin(final java.time.ZonedDateTime dateFin) {
 		this.dateFin = dateFin;
@@ -166,9 +166,9 @@ public final class OJobExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Implémentation effective de l'execution'.
-	 * @return String classEngine
+	 * @return String classEngine <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_CLASSE", label = "Implémentation effective de l'execution")
+	@Field(domain = "DO_O_CLASSE", required = true, label = "Implémentation effective de l'execution")
 	public String getClassEngine() {
 		return classEngine;
 	}
@@ -176,7 +176,7 @@ public final class OJobExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Implémentation effective de l'execution'.
-	 * @param classEngine String
+	 * @param classEngine String <b>Obligatoire</b>
 	 */
 	public void setClassEngine(final String classEngine) {
 		this.classEngine = classEngine;
@@ -186,9 +186,9 @@ public final class OJobExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Workspace d'entrée de l'execution'.
-	 * @return String workspaceIn
+	 * @return String workspaceIn <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_JSON_TEXT", label = "Workspace d'entrée de l'execution")
+	@Field(domain = "DO_O_JSON_TEXT", required = true, label = "Workspace d'entrée de l'execution")
 	public String getWorkspaceIn() {
 		return workspaceIn;
 	}
@@ -196,7 +196,7 @@ public final class OJobExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Workspace d'entrée de l'execution'.
-	 * @param workspaceIn String
+	 * @param workspaceIn String <b>Obligatoire</b>
 	 */
 	public void setWorkspaceIn(final String workspaceIn) {
 		this.workspaceIn = workspaceIn;

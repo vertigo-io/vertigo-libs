@@ -9,6 +9,13 @@ create Domain DO_O_IDENTIFIANT {
 	storeType : "NUMERIC"
 },
 
+create Domain DO_O_IDENTIFIANT_JOB {
+	dataType : String
+	formatter : FMT_O_DEFAULT
+	constraint : [CK_O_JOB_ID,CK_O_MAX_LENGTH_30]
+	storeType : "VARCHAR(30)"
+},
+
 create Domain DO_O_CODE_IDENTIFIANT {
 	dataType : String
 	formatter : FMT_O_DEFAULT
@@ -112,6 +119,11 @@ create Constraint CK_O_MAX_LENGTH_20 {
 	args :"20",
 },
 
+create Constraint CK_O_MAX_LENGTH_30 {
+	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength",
+	args :"30",
+},
+
 create Constraint CK_O_MAX_LENGTH_1 {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength",
 	args :"1",
@@ -132,3 +144,11 @@ create Constraint CK_O_CODE {
 	args : "([0-9A-Z_-]+)*$",
 	msg : "La liste des identifiants n'est pas valide",
 },
+
+
+create Constraint CK_O_JOB_ID {
+	className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex",
+	args : "\\d{4}_\\d{2}_\\d{2}_\\d{2}_\\d{2}_\\d{2}_[R|S|E]_\\d+$",
+	msg : "L'identifiant du Job n'est pas valide",
+},
+

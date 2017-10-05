@@ -11,6 +11,7 @@ import io.vertigo.orchestra.domain.model.OJobModel;
 import io.vertigo.orchestra.plugins.store.OParams;
 import io.vertigo.orchestra.plugins.store.OrchestraStore;
 import io.vertigo.orchestra.services.execution.engine.SleepJobEngine;
+import io.vertigo.orchestra.services.run.JobExecutor;
 
 /**
  * TODO : Description de la classe.

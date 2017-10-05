@@ -23,7 +23,7 @@ import java.util.Map;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionPrefix;
 import io.vertigo.lang.Assertion;
-import io.vertigo.orchestra.services.execution.JobEngine;
+import io.vertigo.orchestra.services.run.JobEngine;
 
 /**
  * Définition d'un processus Orchestra.

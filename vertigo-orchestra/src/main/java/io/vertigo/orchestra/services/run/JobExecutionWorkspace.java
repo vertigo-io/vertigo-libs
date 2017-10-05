@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.orchestra.services.execution;
+package io.vertigo.orchestra.services.run;
 
 import java.util.Map;
 import java.util.Map.Entry;

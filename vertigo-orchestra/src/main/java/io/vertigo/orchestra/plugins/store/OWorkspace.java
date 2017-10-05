@@ -18,8 +18,11 @@ public class OWorkspace {
 	
 	private final Map<String, String> map = new HashMap<>();
 
-	public OWorkspace(Map<String, String> ws) {
+	public OWorkspace(Map<String, String> ws, String jobId, String jobName, String classEngine) {
 		map.putAll(ws);
+		map.put(JOB_ID, jobId);
+		map.put(JOB_NAME, jobName);
+		map.put(CLASS_ENGINE, classEngine);
 	}
 
 	public OWorkspace(String json) {

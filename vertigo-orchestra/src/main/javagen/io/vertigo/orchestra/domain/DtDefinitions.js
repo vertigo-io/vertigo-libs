@@ -3,19 +3,9 @@
  * @type {Object}
  */
 module.exports = {
-        oExecutionState: {
-        estCd: {
-            domain: "DO_O_CODE_IDENTIFIANT",
-            required: true
-        },
-        label: {
-            domain: "DO_O_LIBELLE",
-            required: false
-        }
-    },
-    oJobBoard: {
+        oJobBoard: {
         jid: {
-            domain: "DO_O_CODE_IDENTIFIANT",
+            domain: "DO_O_IDENTIFIANT_JOB",
             required: true
         },
         status: {
@@ -72,7 +62,7 @@ module.exports = {
         },
         reason: {
             domain: "DO_O_CODE_IDENTIFIANT",
-            required: true
+            required: false
         },
         dateDebut: {
             domain: "DO_O_TIMESTAMP",
@@ -80,15 +70,15 @@ module.exports = {
         },
         dateFin: {
             domain: "DO_O_TIMESTAMP",
-            required: true
+            required: false
         },
         classEngine: {
             domain: "DO_O_CLASSE",
-            required: false
+            required: true
         },
         workspaceIn: {
             domain: "DO_O_JSON_TEXT",
-            required: false
+            required: true
         },
         workspaceOut: {
             domain: "DO_O_JSON_TEXT",
@@ -173,7 +163,7 @@ module.exports = {
     },
     oJobRunning: {
         jid: {
-            domain: "DO_O_CODE_IDENTIFIANT",
+            domain: "DO_O_IDENTIFIANT_JOB",
             required: true
         },
         jobname: {
@@ -221,7 +211,7 @@ module.exports = {
             required: false
         },
         jobId: {
-            domain: "DO_O_CODE_IDENTIFIANT",
+            domain: "DO_O_IDENTIFIANT_JOB",
             required: true
         },
         expectedTime: {
@@ -230,26 +220,6 @@ module.exports = {
         },
         initialParams: {
             domain: "DO_O_JSON_TEXT",
-            required: false
-        }
-    },
-    oProcessType: {
-        prtCd: {
-            domain: "DO_O_CODE_IDENTIFIANT",
-            required: true
-        },
-        label: {
-            domain: "DO_O_LIBELLE",
-            required: false
-        }
-    },
-    oSchedulerState: {
-        sstCd: {
-            domain: "DO_O_CODE_IDENTIFIANT",
-            required: true
-        },
-        label: {
-            domain: "DO_O_LIBELLE",
             required: false
         }
     },
@@ -280,16 +250,6 @@ module.exports = {
         },
         active: {
             domain: "DO_O_BOOLEEN",
-            required: false
-        }
-    },
-    triggerType: {
-        trtCd: {
-            domain: "DO_O_CODE_IDENTIFIANT",
-            required: true
-        },
-        label: {
-            domain: "DO_O_LIBELLE",
             required: false
         }
     }

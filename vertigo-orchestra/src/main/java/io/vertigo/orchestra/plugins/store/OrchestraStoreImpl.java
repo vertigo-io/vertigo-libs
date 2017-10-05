@@ -8,10 +8,10 @@ import javax.inject.Inject;
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.orchestra.dao.execution.ExecutionPAO;
 import io.vertigo.orchestra.dao.history.OJobExecutionDAO;
 import io.vertigo.orchestra.dao.model.OJobModelDAO;
 import io.vertigo.orchestra.dao.run.OJobBoardDAO;
+import io.vertigo.orchestra.dao.run.RunPAO;
 import io.vertigo.orchestra.dao.schedule.OJobScheduleDAO;
 import io.vertigo.orchestra.domain.history.OJobExecution;
 import io.vertigo.orchestra.domain.model.OJobModel;
@@ -19,7 +19,7 @@ import io.vertigo.orchestra.domain.run.OJobBoard;
 import io.vertigo.orchestra.domain.schedule.OJobSchedule;
 import io.vertigo.orchestra.domain.schedule.OProcessNextRun;
 import io.vertigo.orchestra.plugins.services.JobRunnerUtil;
-import io.vertigo.orchestra.services.execution.JobExecutor;
+import io.vertigo.orchestra.services.run.JobExecutor;
 
 @Transactional
 public class OrchestraStoreImpl implements OrchestraStore {
@@ -29,7 +29,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	@Inject
 	private OJobScheduleDAO jobScheduleDAO;
 	@Inject
-	private ExecutionPAO executionPAO;
+	private RunPAO runPAO;
 	@Inject
 	private OJobBoardDAO jobBoardDAO;
 	@Inject
@@ -38,7 +38,6 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	private JobExecutor jobExecutor;
 	
 	private Long nodId = 2L;
-	
 	
 	@Override
 	public OJobModel createJobModel(OJobModel model) {
@@ -73,16 +72,19 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		nextRun.setExpectedTime(jobSchedule.getScheduleDate());
 		nextRun.setInitialParams(jobSchedule.getParams());
 		nextRun.setJobname(jobModel.getJobname());
-		nextRun.setJobId(JobRunnerUtil.generateJobId(jobSchedule.getScheduleDate(), "S", jscId));
-		long count = executionPAO.insertJobRunningToLaunch(nodId, ZonedDateTime.now(), DtList.of(nextRun));
+		String jobId = JobRunnerUtil.generateJobId(jobSchedule.getScheduleDate(), "S", jscId);
+		nextRun.setJobId(jobId);
+		long count = runPAO.insertJobRunningToLaunch(nodId, ZonedDateTime.now(), nextRun.getJobId(), nextRun);
 		
 		if (count > 0) {
 			OJobBoard jobBoard = new OJobBoard();
+			jobBoard.setJid(jobId);
 			jobBoard.setCurrentRetry(0);
 			jobBoard.setMaxRetry(jobModel.getMaxRetry());
 			jobBoard.setMaxDate(null);
 			jobBoard.setStatus("R");
-			jobBoardDAO.create(jobBoard);
+			jobBoard.setNodeId(nodId);
+			runPAO.insertJobBoardToLaunch(jobBoard);
 			
 			OJobExecution jobExecution = new OJobExecution();
 			jobExecution.setClassEngine(jobModel.getClassEngine());
@@ -94,18 +96,16 @@ public class OrchestraStoreImpl implements OrchestraStore {
 			jobExecutionDAO.create(jobExecution);
 			
 			OParams params = new OParams(jobSchedule.getParams());
-			jobExecutor.execute(jobModel, params);
-			
-			
+			jobExecutor.execute(jobModel, params, jobId);
 		}
 		
-		return null;
+		return jobId;
 	}
 
 	@Override
 	public void fireSuccessJob(String jobId, OWorkspace workspace) {
 		
-		long countNbDeleted = executionPAO.deleteJobRunning(nodId, jobId);
+		long countNbDeleted = runPAO.deleteJobRunning(nodId, jobId);
 		
 		if (countNbDeleted > 0) {
 			OJobBoard jobBoard = jobBoardDAO.get(jobId);

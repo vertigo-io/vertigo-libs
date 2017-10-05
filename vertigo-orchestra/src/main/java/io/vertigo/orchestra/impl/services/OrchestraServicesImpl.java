@@ -24,7 +24,7 @@ import javax.inject.Inject;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.services.OrchestraServices;
-import io.vertigo.orchestra.services.execution.JobExecutor;
+import io.vertigo.orchestra.services.run.JobExecutor;
 import io.vertigo.orchestra.services.log.ProcessLogger;
 import io.vertigo.orchestra.services.report.ProcessReport;
 

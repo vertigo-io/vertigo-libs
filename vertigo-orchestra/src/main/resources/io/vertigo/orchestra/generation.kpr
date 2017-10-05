@@ -4,9 +4,6 @@ execution.kpr
 
 model/schedule/process_next_run.ksp
 
-
-model/referential/states.ksp
-model/referential/types.ksp
 model/referential/users.ksp
 
 model/model/job_model.ksp
@@ -14,7 +11,7 @@ model/model/job_model.ksp
 model/run/job_board.ksp
 model/run/job_running.ksp
 
-model/history/job_history.ksp
+model/history/job_execution.ksp
 model/history/job_log.ksp
 
 model/schedule/job_cron.ksp

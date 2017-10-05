@@ -48,7 +48,7 @@ public final class OProcessNextRun implements DtObject {
 	 * Récupère la valeur de la propriété 'Job Id'.
 	 * @return String jobId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", required = true, label = "Job Id")
+	@Field(domain = "DO_O_IDENTIFIANT_JOB", required = true, label = "Job Id")
 	public String getJobId() {
 		return jobId;
 	}

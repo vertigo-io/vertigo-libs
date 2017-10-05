@@ -40,7 +40,7 @@ public final class OJobBoard implements Entity {
 	 * Récupère la valeur de la propriété 'Id de l'execution du job'.
 	 * @return String jid <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "ID", required = true, label = "Id de l'execution du job")
+	@Field(domain = "DO_O_IDENTIFIANT_JOB", type = "ID", required = true, label = "Id de l'execution du job")
 	public String getJid() {
 		return jid;
 	}
