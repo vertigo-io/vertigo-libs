@@ -20,7 +20,6 @@ package io.vertigo.orchestra;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
-import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
@@ -34,11 +33,7 @@ import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.orchestra.boot.DataBaseInitializer;
-import io.vertigo.orchestra.webservices.WsDefinition;
-import io.vertigo.orchestra.webservices.WsExecution;
-import io.vertigo.orchestra.webservices.WsExecutionControl;
 import io.vertigo.orchestra.webservices.data.user.TestUserSession;
-import io.vertigo.orchestra.webservices.data.user.WsTestLogin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.vega.VegaFeatures;
 
@@ -101,16 +96,6 @@ public final class MyAppConfig {
 						.build());
 	}
 
-	public static void addWebServices(final AppConfigBuilder appConfigBuilder) {
-		appConfigBuilder
-				.addModule(ModuleConfig.builder("orchestra-ws")
-						.addComponent(WsDefinition.class)
-						.addComponent(WsExecution.class)
-						.addComponent(WsExecutionControl.class)
-						.addComponent(WsTestLogin.class)
-						.build());
-	}
-
 	public static AppConfig config() {
 		// @formatter:off
 		return createAppConfigBuilder().build();
@@ -120,7 +105,6 @@ public final class MyAppConfig {
 		// @formatter:off
 		final AppConfigBuilder builder = createAppConfigBuilder();
 		addVegaEmbeded(builder);
-		addWebServices(builder);
 		return builder.build();
 	}
 

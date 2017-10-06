@@ -18,6 +18,7 @@
  */
 package io.vertigo.orchestra.impl.services.execution;
 
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -59,7 +60,7 @@ public final class JobExecutorImpl implements Activeable, JobExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public void execute(OJobModel job, OParams initialParams, String jobId) {
+	public void execute(OJobModel job, OParams initialParams, String jobId, ZonedDateTime execDate) {
 		Assertion.checkNotNull(job);
 		Assertion.checkNotNull(initialParams);
 		// ---
@@ -79,7 +80,7 @@ public final class JobExecutorImpl implements Activeable, JobExecutor {
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new VSystemException(e, "Impossible d'instancier la classe {0}", classToLauch);
 		}
-		OWorkspace ws = new OWorkspace(initialParams.asMap(), jobId, job.getJobname(), classToLauch);
+		OWorkspace ws = new OWorkspace(initialParams.asMap(), jobId, job.getJobname(), classToLauch, execDate);
 		
 		CompletableFuture.supplyAsync(() -> run.execute(ws), executor)
 						 .thenAccept(this::fireSuccess);
@@ -112,5 +113,5 @@ public final class JobExecutorImpl implements Activeable, JobExecutor {
 		}
 	}
 
-	
 }
+

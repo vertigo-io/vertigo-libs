@@ -13,6 +13,7 @@ create Task TK_GET_JOBS_SCHEDULE_TO_RUN {
         	   AND NOT EXISTS (SELECT 1 
         	   					 FROM O_JOB_BOARD JBO
         	   					WHERE JBO.JID = to_char(JSC.SCHEDULE_DATE , 'YYYY-MM-DD-HH24:MI:SS') || 'S' || to_char(JSC.JSC_ID)
+								   OR JBO.JID = to_char(JSC.SCHEDULE_DATE , 'YYYY-MM-DD-HH24:MI:SS') || 'R' || to_char(JSC.JSC_ID)
  								   OR JBO.JID = to_char(JSC.SCHEDULE_DATE , 'YYYY-MM-DD-HH24:MI:SS') || 'E' || to_char(JSC.JSC_ID))"
 	attribute DTO_O_JOB_SCHEDULE	{domain : DO_DT_O_JOB_SCHEDULE_DTC 	notNull:"true" 	inOut :"out"}
 	attribute SCHEDULE_DATE		{domain : DO_O_TIMESTAMP			notNull:"true" 	inOut :"in"}

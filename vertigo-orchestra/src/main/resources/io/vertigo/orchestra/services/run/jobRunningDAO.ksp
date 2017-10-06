@@ -5,7 +5,7 @@ create Task TK_INSERT_JOB_RUNNING_TO_LAUNCH {
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
         	INSERT INTO O_JOB_RUNNING (JID, JOBNAME, NODE_ID, EXEC_DATE, USR_ID)
-        		 (SELECT #JOB_ID#, JMO.JOBNAME, #NODE_ID#, #EXEC_DATE#, NULL
+        		 (SELECT #PROCESSES_NEXT_RUN.JOB_ID#, JMO.JOBNAME, #NODE_ID#, #EXEC_DATE#, #USR_ID#
 				   FROM O_JOB_MODEL JMO
         		  WHERE NOT EXISTS (SELECT 1 
 									 FROM O_JOB_RUNNING RUN
@@ -14,7 +14,7 @@ create Task TK_INSERT_JOB_RUNNING_TO_LAUNCH {
 			"
 		attribute NODE_ID				{domain : DO_O_IDENTIFIANT 					notNull:"true" 	inOut :"in"}
 		attribute EXEC_DATE				{domain : DO_O_TIMESTAMP					notNull:"true" 	inOut :"in"}
-		attribute JOB_ID				{domain : DO_O_IDENTIFIANT_JOB				notNull:"true" 	inOut :"in"}
+		attribute USR_ID				{domain : DO_O_IDENTIFIANT					notNull:"false"	inOut :"in"}
 		attribute PROCESSES_NEXT_RUN	{domain : DO_DT_O_PROCESS_NEXT_RUN_DTO	 	notNull:"true" 	inOut :"in"}
 		attribute INT_SQL_ROWCOUNT		{domain : DO_O_NOMBRE 						notNull:"true" 	inOut :"out"}
 }
@@ -26,11 +26,13 @@ create Task TK_DELETE_JOB_RUNNING {
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
         	DELETE O_JOB_RUNNING
-        	 WHERE JOB_ID = #JOB_ID#
-        	   AND NOD_ID = #NOD_ID#
+        	 WHERE JID = #JOB_ID#
+        	   AND NODE_ID = #NODE_ID#
+        	   AND EXEC_DATE = #EXEC_DATE#
 			"
-		attribute NOD_ID				{domain : DO_O_IDENTIFIANT 			notNull:"true" 	inOut :"in"}
 		attribute JOB_ID				{domain : DO_O_IDENTIFIANT_JOB		notNull:"true" 	inOut :"in"}
+		attribute NODE_ID				{domain : DO_O_IDENTIFIANT 			notNull:"true" 	inOut :"in"}
+		attribute EXEC_DATE				{domain : DO_O_TIMESTAMP			notNull:"true" 	inOut :"in"}
 		attribute INT_SQL_ROWCOUNT		{domain : DO_O_NOMBRE 				notNull:"true" 	inOut :"out"}
 }
 

@@ -5,6 +5,8 @@ import java.time.ZonedDateTime;
 
 import javax.inject.Inject;
 
+import org.apache.log4j.Logger;
+
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -24,6 +26,8 @@ import io.vertigo.orchestra.services.run.JobExecutor;
 @Transactional
 public class OrchestraStoreImpl implements OrchestraStore {
 
+	private static final Logger LOG = Logger.getLogger(OrchestraStoreImpl.class);
+	
 	@Inject
 	private OJobModelDAO jobModelDAO;
 	@Inject
@@ -74,7 +78,9 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		nextRun.setJobname(jobModel.getJobname());
 		String jobId = JobRunnerUtil.generateJobId(jobSchedule.getScheduleDate(), "S", jscId);
 		nextRun.setJobId(jobId);
-		long count = runPAO.insertJobRunningToLaunch(nodId, ZonedDateTime.now(), nextRun.getJobId(), nextRun);
+		
+		ZonedDateTime execDate = ZonedDateTime.now();
+		long count = runPAO.insertJobRunningToLaunch(nodId, execDate, null, nextRun);
 		
 		if (count > 0) {
 			OJobBoard jobBoard = new OJobBoard();
@@ -88,7 +94,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 			
 			OJobExecution jobExecution = new OJobExecution();
 			jobExecution.setClassEngine(jobModel.getClassEngine());
-			jobExecution.setDateDebut(ZonedDateTime.now());
+			jobExecution.setDateDebut(execDate);
 			jobExecution.setJobname(jobModel.getJobname());
 			jobExecution.setNodId(nodId);
 			jobExecution.setStatus("R");
@@ -96,7 +102,9 @@ public class OrchestraStoreImpl implements OrchestraStore {
 			jobExecutionDAO.create(jobExecution);
 			
 			OParams params = new OParams(jobSchedule.getParams());
-			jobExecutor.execute(jobModel, params, jobId);
+			jobExecutor.execute(jobModel, params, jobId, execDate);
+		} else {
+			LOG.info("Race condition on Insert JobRunning");
 		}
 		
 		return jobId;
@@ -105,7 +113,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	@Override
 	public void fireSuccessJob(String jobId, OWorkspace workspace) {
 		
-		long countNbDeleted = runPAO.deleteJobRunning(nodId, jobId);
+		long countNbDeleted = runPAO.deleteJobRunning(jobId, nodId, workspace.getExecDate());
 		
 		if (countNbDeleted > 0) {
 			OJobBoard jobBoard = jobBoardDAO.get(jobId);
@@ -121,6 +129,8 @@ public class OrchestraStoreImpl implements OrchestraStore {
 			jobExecution.setStatus("R");
 			jobExecution.setWorkspaceIn(workspace.toJson());
 			jobExecutionDAO.create(jobExecution);
+		} else {
+			LOG.info("Race condition on Delete JobRunning");
 		}
 		
 	}

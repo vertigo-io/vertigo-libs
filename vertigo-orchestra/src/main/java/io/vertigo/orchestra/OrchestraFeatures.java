@@ -22,27 +22,21 @@ import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
-import io.vertigo.orchestra.dao.run.RunPAO;
 import io.vertigo.orchestra.dao.history.OJobExecutionDAO;
 import io.vertigo.orchestra.dao.history.OJobLogDAO;
 import io.vertigo.orchestra.dao.model.OJobModelDAO;
 import io.vertigo.orchestra.dao.run.OJobBoardDAO;
 import io.vertigo.orchestra.dao.run.OJobRunningDAO;
+import io.vertigo.orchestra.dao.run.RunPAO;
 import io.vertigo.orchestra.dao.schedule.OJobCronDAO;
 import io.vertigo.orchestra.dao.schedule.OJobScheduleDAO;
 import io.vertigo.orchestra.domain.DtDefinitions;
-import io.vertigo.orchestra.impl.services.OrchestraServicesImpl;
 import io.vertigo.orchestra.impl.services.execution.JobExecutorImpl;
 import io.vertigo.orchestra.plugins.services.schedule.db.OrchestraSchedulerProvider;
 import io.vertigo.orchestra.plugins.store.OrchestraStore;
 import io.vertigo.orchestra.plugins.store.OrchestraStoreImpl;
-import io.vertigo.orchestra.services.OrchestraServices;
 import io.vertigo.orchestra.services.run.JobEndedEventSubscriber;
 import io.vertigo.orchestra.services.run.JobExecutor;
-import io.vertigo.orchestra.webservices.WsDefinition;
-import io.vertigo.orchestra.webservices.WsExecution;
-import io.vertigo.orchestra.webservices.WsExecutionControl;
-import io.vertigo.orchestra.webservices.WsInfos;
 
 /**
  * Defines extension orchestra.
@@ -89,25 +83,10 @@ public final class OrchestraFeatures extends Features {
 		return this;
 	}
 
-	/**
-	 * Activate Orchestra's REST WebServices.
-	 * @return these features
-	 */
-	public OrchestraFeatures withWebApi() {
-		getModuleConfigBuilder()
-				.addComponent(WsDefinition.class)
-				.addComponent(WsExecution.class)
-				.addComponent(WsExecutionControl.class)
-				.addComponent(WsInfos.class);
-
-		return this;
-	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
-		getModuleConfigBuilder()
-				.addComponent(OrchestraServices.class, OrchestraServicesImpl.class);
-
+		getModuleConfigBuilder();
 	}
 }

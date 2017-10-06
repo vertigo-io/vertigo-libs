@@ -1,5 +1,6 @@
 package io.vertigo.orchestra.plugins.store;
 
+import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -13,16 +14,16 @@ public class OWorkspace {
 	private static final String JOB_NAME = "JobName";
 	private static final String JOB_ID = "JobId";
 	private static final String RUN_STATUS = "RunStatus";
-	
-	
+	private static final String EXEC_DATE = "ExecDate";
 	
 	private final Map<String, String> map = new HashMap<>();
 
-	public OWorkspace(Map<String, String> ws, String jobId, String jobName, String classEngine) {
+	public OWorkspace(Map<String, String> ws, String jobId, String jobName, String classEngine, ZonedDateTime execDate) {
 		map.putAll(ws);
 		map.put(JOB_ID, jobId);
 		map.put(JOB_NAME, jobName);
 		map.put(CLASS_ENGINE, classEngine);
+		map.put(EXEC_DATE, execDate.toString());
 	}
 
 	public OWorkspace(String json) {
@@ -31,13 +32,13 @@ public class OWorkspace {
 
 	public String get(String key) {
 		Assertion.checkArgument(map.containsKey(key), "Paramètre absent : {}", key);
-		return map.get(key);
+		return (String) map.get(key);
 	}
 	
 	public void put(String key, String value) {
 		map.put(key, value);
 	}
-	
+
 	public Set<String> keys() {
 		return map.keySet();
 	}
@@ -52,6 +53,10 @@ public class OWorkspace {
 
 	public String getJobId() {
 		return get(JOB_ID);
+	}
+	
+	public ZonedDateTime getExecDate() {
+		return ZonedDateTime.parse(get(EXEC_DATE));
 	}
 	
 	public String toJson() {

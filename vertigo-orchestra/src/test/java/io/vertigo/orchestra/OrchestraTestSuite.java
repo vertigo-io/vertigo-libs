@@ -22,7 +22,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import io.vertigo.orchestra.definitions.AllTestDefinition;
 import io.vertigo.orchestra.services.execution.AllTestExecution;
 import io.vertigo.orchestra.services.schedule.AllTestPlanification;
 
@@ -34,7 +33,6 @@ import io.vertigo.orchestra.services.schedule.AllTestPlanification;
  */
 @RunWith(Suite.class)
 @SuiteClasses(value = {
-		AllTestDefinition.class,
 		AllTestPlanification.class,
 		AllTestExecution.class
 })

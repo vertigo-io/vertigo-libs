@@ -51,6 +51,7 @@ public class OrchestraSchedulerProvider implements SimpleDefinitionProvider {
 	private void scheduleAndInit() {
 		try (VTransactionWritable t = vTransactionManager.createCurrentTransaction()){
 			initNewProcessesToLaunch();
+			t.commit();
 		} catch (final Exception e) {
 			// We log the error and we continue the timer
 			LOGGER.error("Exception planning recurrent processes", e);

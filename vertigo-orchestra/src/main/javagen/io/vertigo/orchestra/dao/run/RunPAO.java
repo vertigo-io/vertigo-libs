@@ -42,14 +42,16 @@ public final class RunPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TK_DELETE_JOB_RUNNING.
-	 * @param nodId Long 
 	 * @param jobId String 
+	 * @param nodeId Long 
+	 * @param execDate java.time.ZonedDateTime 
 	 * @return Integer intSqlRowcount
 	*/
-	public Integer deleteJobRunning(final Long nodId, final String jobId) {
+	public Integer deleteJobRunning(final String jobId, final Long nodeId, final java.time.ZonedDateTime execDate) {
 		final Task task = createTaskBuilder("TK_DELETE_JOB_RUNNING")
-				.addValue("NOD_ID", nodId)
 				.addValue("JOB_ID", jobId)
+				.addValue("NODE_ID", nodeId)
+				.addValue("EXEC_DATE", execDate)
 				.build();
 		return getTaskManager()
 				.execute(task)
@@ -71,15 +73,15 @@ public final class RunPAO implements StoreServices {
 	 * Execute la tache TK_INSERT_JOB_RUNNING_TO_LAUNCH.
 	 * @param nodeId Long 
 	 * @param execDate java.time.ZonedDateTime 
-	 * @param jobId String 
+	 * @param usrId Long 
 	 * @param processesNextRun io.vertigo.orchestra.domain.schedule.OProcessNextRun 
 	 * @return Integer intSqlRowcount
 	*/
-	public Integer insertJobRunningToLaunch(final Long nodeId, final java.time.ZonedDateTime execDate, final String jobId, final io.vertigo.orchestra.domain.schedule.OProcessNextRun processesNextRun) {
+	public Integer insertJobRunningToLaunch(final Long nodeId, final java.time.ZonedDateTime execDate, final Long usrId, final io.vertigo.orchestra.domain.schedule.OProcessNextRun processesNextRun) {
 		final Task task = createTaskBuilder("TK_INSERT_JOB_RUNNING_TO_LAUNCH")
 				.addValue("NODE_ID", nodeId)
 				.addValue("EXEC_DATE", execDate)
-				.addValue("JOB_ID", jobId)
+				.addValue("USR_ID", usrId)
 				.addValue("PROCESSES_NEXT_RUN", processesNextRun)
 				.build();
 		return getTaskManager()
