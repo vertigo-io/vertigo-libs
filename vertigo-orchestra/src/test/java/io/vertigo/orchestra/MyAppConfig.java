@@ -33,7 +33,6 @@ import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.orchestra.boot.DataBaseInitializer;
-import io.vertigo.orchestra.webservices.data.user.TestUserSession;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.vega.VegaFeatures;
 
@@ -86,7 +85,6 @@ public final class MyAppConfig {
 	public static void addVegaEmbeded(final AppConfigBuilder appConfigBuilder) {
 		appConfigBuilder
 				.addModule(new PersonaFeatures()
-						.withUserSession(TestUserSession.class)
 						.build())
 				.addModule(new VegaFeatures()
 						.withTokens("tokens")

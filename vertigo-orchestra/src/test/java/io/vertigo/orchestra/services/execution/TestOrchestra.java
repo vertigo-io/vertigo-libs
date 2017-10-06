@@ -53,5 +53,4 @@ public class TestOrchestra extends AbstractOrchestraTestCaseJU4 {
 		
 	}
 	
-	
 }
