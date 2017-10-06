@@ -13,6 +13,7 @@ function showChart(elem) {
 		
 		var queryMeasures = elem.data("query-measures");
 		var queryClusteredMeasure = elem.data("query-clustered-measure");
+		var queryGroupBy = elem.data("query-group-by");
 		var queryDataFilter = elem.data("query-data-filter");
 		var queryTimeFilter = elem.data("query-time-filter");
 		//--- query
@@ -22,6 +23,9 @@ function showChart(elem) {
 		}
 		if (queryClusteredMeasure) {
 			dataQuery['clusteredMeasure'] = queryClusteredMeasure;
+		}
+		if (queryGroupBy) {
+			dataQuery['groupBy'] = queryGroupBy;
 		}
 		//--- styling
 		var dataLabels =  elem.attr('data-labels');
