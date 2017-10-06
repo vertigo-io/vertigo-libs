@@ -89,6 +89,9 @@ function getDonutOptions(dataQuery, datas, timedSeries, dataColors) {
 				innerRadius: 0.5,
 				label: {
 	                show: false,
+	            },
+	            combine: {
+	            	threshold: 0.03
 	            }
 			}
 		},
@@ -483,9 +486,9 @@ function inverseFlotData(flotData, dataLabels) {
 	var newSeries = new Array();
 	for(var i = 0 ; i< flotData[0].data.length; i++) {
 		var serie = new Object();
-		serie.label = flotData[0].data[i][0];
-		if(dataLabels && dataLabels[flotData[0].data[i][0]]) {
-			serie.label = dataLabels[flotData[0].data[i][0]];			
+		serie.label = flotData[1].data[i][1];
+		if(dataLabels && dataLabels[flotData[1].data[i][1]]) {
+			serie.label = dataLabels[flotData[1].data[i][1]];			
 		}
 		serie.data  = flotData[0].data[i][1];
 		newSeries.push(serie);
