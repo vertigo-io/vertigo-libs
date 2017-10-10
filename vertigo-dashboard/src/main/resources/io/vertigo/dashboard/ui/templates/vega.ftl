@@ -4,19 +4,11 @@
 <@page.header/>
 
 	<div class="card-deck px-3 pb-3 justify-content-around"">
-		<@module.indicator title="WebServices Hits" icon="schedule" status='GREEN' metric=webservicesCount legend="" />
+		<@module.indicator title="WebServices Hits" icon="schedule" status='GREEN' metric=webservicesCount!'0' legend="" />
 		<@module.indicator title="WebServices Mean Duration" icon="vertical_align_center" status=(webservicesMeanDuration<300)?then('GREEN', 'RED')  metric=webservicesMeanDuration?string["0"] legend="ms" />
 		<@module.indicator title="WebServices Exception Rate" icon="vertical_align_center" status=(webservicesExceptionRate<0.5)?then('GREEN', 'RED') metric=webservicesExceptionRate?string["0.##"] legend="%" />
 	</div>
 	
-	<div class="chart flotchart donut" style="height:400px; width: 90%"
-					    data-url="data/tabular" 
-					    data-query-measures='["duration:sum"]'
-					    data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*" }'
-					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
-					    data-query-group-by='name'
-						data-labels='{}' 
-					    data-colors='GREEN2BLUE'></div>   
 	
 	<div>
 		<div class="row" >
@@ -48,25 +40,37 @@
 			</div>
 		</div>
 		<div class="row" >
-			<div class="col-6" >
-				<div class="chart flotchart linechart" style="height:400px"
-					    data-url="data/series" 
-					    data-query-measures='["duration:min", "duration:mean", "duration:percentile_80"]'
-					    data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*" }'
-					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1h"}'
-						data-labels='{"duration:min":"Minimum", "duration:mean":"Moyenne", "duration:percentile_80":"Per80" }' 
-					    data-colors='GREEN2BLUE'></div>   
-			</div>
+			<div class="col-6" >	 
+				<div class="chart chartjs bubbles" style="width:100%"
+					    data-url="data/tabular" 
+					    data-query-measures='["duration:count", "duration:mean", "sql_count:mean"]'
+					    data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*", "additionalWhereClause": "\"duration\"< 30000 "}'
+					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
+					    data-query-group-by='name'
+						data-labels='{"duration:count":"Nombre de hits", "duration:mean":"Durée moyenne", "sql_count:mean":"Nombre dappels SQL" }' 
+					    data-colors='GREEN2BLUE'></div> 		
+			</div>	
+					    
 			<div class="col-6" >	    
 				<div class="chart flotchart stakedbarchart"  style="height:400px"
 					    data-url="data/series/clustered" 
 					    data-query-clustered-measure='{ "measure": "duration:count", "thresholds": ["10","20","50","100","200","500","1000","2000"] }'
 					    data-query-data-filter='{ "measurement": "webservices", "location": "*", "name": "*", "topic": "*" }'
-					    data-query-time-filter='{ "from": "now() - 5d", "to": "now() - 3d", "dim": "1h" }'
+					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1h" }'
 					    data-labels='{"duration:count<10":"<10ms","duration:count_20":"<20ms","duration:count_50":"<50ms","duration:count_100":"<100ms", "duration:count_200":"<200ms", "duration:count_500":"<500ms", "duration:count_1000":"<1s", "duration:count_2000":"<2s", "duration:count>2000":">2s"}'
 					    data-colors='iRED2GREEN'></div>
 			</div>
 		</div>
+	</div>
+	<div class="row" >
+		<div class="chart flotchart donut" style="height:400px; width: 90%"
+					    data-url="data/tabular" 
+					    data-query-measures='["duration:mean"]'
+					    data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*", "additionalWhereClause": "\"duration\"> 2500 "}'
+					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
+					    data-query-group-by='name'
+						data-labels='{}' 
+					    data-colors='GREEN2BLUE'></div>   
 	</div>
 
 

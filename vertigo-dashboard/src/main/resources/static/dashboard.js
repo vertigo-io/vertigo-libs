@@ -16,6 +16,10 @@ function showChart(elem) {
 		var queryGroupBy = elem.data("query-group-by");
 		var queryDataFilter = elem.data("query-data-filter");
 		var queryTimeFilter = elem.data("query-time-filter");
+		var queryMaxRows = elem.data("query-max-rows");
+		//--- retrieve time filter from input
+		updateTimeFilterFromSelection(queryTimeFilter);
+		
 		//--- query
 		var dataQuery = { dataFilter : queryDataFilter, timeFilter : queryTimeFilter };
 		if (queryMeasures) {
@@ -26,6 +30,9 @@ function showChart(elem) {
 		}
 		if (queryGroupBy) {
 			dataQuery['groupBy'] = queryGroupBy;
+		}
+		if (queryMaxRows) {
+			dataQuery['maxRows'] = queryMaxRows;
 		}
 		//--- styling
 		var dataLabels =  elem.attr('data-labels');
@@ -55,10 +62,37 @@ function showChart(elem) {
 					  showFlotChart(elem, datas.timedDataSeries, dataMetrics, dataQuery, dataLabels, dataColors);
 				  } else if (elem.hasClass ("rickshaw")) {
 					  showRickshawChart(elem, datas.timedDataSeries, dataMetrics);
+				  } else if (elem.hasClass ("chartjs")) {
+					  showChartJsChart(elem, datas.timedDataSeries, dataMetrics, dataQuery, dataLabels, dataColors);
 				  }
 			  }
 		  });
 		dashboardTools.zoomOnClick(elem);
+}
+
+
+function updateTimeFilterFromSelection(queryTimeFilter) {
+	var timeSelection = $('#timeSelection').val();
+	var to = 'now()';
+	var from = null;
+	var dim = null;
+	if(timeSelection === 'last_day') {
+		from = 'now() - 1d'; 
+		dim = '6m';
+	} else if(timeSelection === 'last_3_days') {
+		from = 'now() - 3d';
+		dim = '1h';
+	} else if(timeSelection === 'last_week') {
+		from = 'now() - 1w';
+		dim = '2h';
+	} 
+	if(from){
+		queryTimeFilter.from = from;
+	}
+	if(dim){
+		queryTimeFilter.dim = dim;
+	}
+	queryTimeFilter.to = to;
 }
 
 function notEmpty(datas) {
@@ -88,6 +122,8 @@ function showTables() {
 		if (queryMaxRows) {
 			dataQuery['maxRows'] = queryMaxRows;
 		}
+		//--- retrieve time filter from input
+		updateTimeFilterFromSelection(queryTimeFilter);
 		
 		var dataColumns =  elem.attr('data-columns');
 		if(dataColumns) {
@@ -331,7 +367,7 @@ dashboardTools = function() {
 		var interpolatedColor = new Array();
 		var nbInterpolatedColor = mainColors.length;
 		var nbInterpolatedColorDegree = 0;
-		while ((nbInterpolatedColor - 1) % (nbColors - 1) != 0 && nbInterpolatedColorDegree < 10) {
+		while ((nbInterpolatedColor - 1) % (nbColors - 1) != 0 && nbInterpolatedColorDegree < 20) {
 			nbInterpolatedColorDegree++;
 			nbInterpolatedColor = mainColors.length + nbInterpolatedColorDegree * (mainColors.length - 1);
 		}
@@ -350,6 +386,7 @@ dashboardTools = function() {
 		var result = new Array();
 		for (var i = 0; i < nbColors; i++) {
 			var index = (interpolatedColor.length - 1) / (nbColors - 1) * i;
+			//var index = i % (interpolatedColor.length - 1);
 			result.push(interpolatedColor[index]);
 		}
 		return result;

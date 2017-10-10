@@ -187,6 +187,10 @@ public final class InfluxDbDataProvider implements DataProvider {
 
 	@Override
 	public TimedDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+		return getTabularData(measures, dataFilter, timeFilter, false, groupBy);
+	}
+
+	private TimedDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean keepTime, final String... groupBy) {
 		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter);
 
 		final String groupByClause = Stream.of(groupBy)
@@ -195,10 +199,10 @@ public final class InfluxDbDataProvider implements DataProvider {
 		queryBuilder.append(" group by ").append(groupByClause);
 		final String queryString = queryBuilder.toString();
 
-		return executeTabularQuery(queryString);
+		return executeTabularQuery(queryString, keepTime);
 	}
 
-	private TimedDatas executeTabularQuery(final String queryString) {
+	private TimedDatas executeTabularQuery(final String queryString, final boolean keepTime) {
 		final Query query = new Query(queryString.toString(), appName);
 		final QueryResult queryResult = influxDB.query(query);
 
@@ -215,7 +219,7 @@ public final class InfluxDbDataProvider implements DataProvider {
 					.map(mySeries -> {
 						final Map<String, Object> mapValues = buildMapValue(mySeries.getColumns(), mySeries.getValues().get(0));
 						mapValues.putAll(mySeries.getTags());
-						return new TimedDataSerie(LocalDateTime.parse(mySeries.getValues().get(0).get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond(ZoneOffset.UTC), mapValues);
+						return new TimedDataSerie(keepTime ? LocalDateTime.parse(mySeries.getValues().get(0).get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toEpochSecond(ZoneOffset.UTC) : null, mapValues);
 					})
 					.collect(Collectors.toList());
 
@@ -320,7 +324,7 @@ public final class InfluxDbDataProvider implements DataProvider {
 		final DataFilter dataFilter = DataFilter.builder("healthcheck").build();
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
 
-		return getTabularData(measures, dataFilter, timeFilter, "name", "topic")
+		return getTabularData(measures, dataFilter, timeFilter, true, "name", "topic")
 				.getTimedDataSeries()
 				.stream()
 				.map(timedDataSerie -> new HealthCheck(
@@ -363,7 +367,7 @@ public final class InfluxDbDataProvider implements DataProvider {
 		final DataFilter dataFilter = DataFilter.builder("metric").build();
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
 
-		return getTabularData(measures, dataFilter, timeFilter, "name", "topic")
+		return getTabularData(measures, dataFilter, timeFilter, true, "name", "topic")
 				.getTimedDataSeries()
 				.stream()
 				.map(timedDataSerie -> Metric.builder()

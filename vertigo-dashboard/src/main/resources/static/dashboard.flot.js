@@ -2,7 +2,7 @@
 function showFlotChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataColors) {
 	var allMetrics = dataMetrics;
 	var timedSeries = datas[0].time;
-	var flotDatas = toFlotData(datas, dataMetrics, allMetrics, dataLabels, timedSeries);
+	var flotDatas = toFlotData(datas, dataMetrics, allMetrics, dataLabels, timedSeries, dataQuery.groupBy);
 	var defaultChartOptions = createDefaultChartOptions(allMetrics, dataQuery, datas, timedSeries);
 	setColorOptions(defaultChartOptions, allMetrics.length, dataColors);
 	
@@ -23,7 +23,7 @@ function showFlotChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataColo
 		flotDatas = inverseFlotData(flotDatas, dataLabels);
 		chartOptions = getDonutOptions(dataQuery, datas, timedSeries, dataColors);
 		setColorOptions(chartOptions, flotDatas.length, dataColors);
-	}
+	} 
 	var options = $.extend(defaultChartOptions, chartOptions);
 	var plot = $.plot(elem, flotDatas, options);
 	elem.bind("plothover", options.tooltipsFunction(plot));
@@ -91,7 +91,7 @@ function getDonutOptions(dataQuery, datas, timedSeries, dataColors) {
 	                show: false,
 	            },
 	            combine: {
-	            	threshold: 0.03
+	            	threshold: 0.01
 	            }
 			}
 		},
@@ -440,7 +440,7 @@ function showTooltipsFunction(previousPoint, plot, showAllValues, showSameValue)
 
 
 /** Conversion de données servers List<date, Map<NomMetric, value>> en données Flot.*/
-function toFlotData(datas, metrics, allMetrics, dataLabels, timedSeries) {
+function toFlotData(datas, metrics, allMetrics, dataLabels, timedSeries, xAxisMeasure) {
 	_endsWith = function(string, suffix) {
 	    return string.indexOf(suffix, string.length - suffix.length) !== -1;
 	};
@@ -455,7 +455,7 @@ function toFlotData(datas, metrics, allMetrics, dataLabels, timedSeries) {
 		}
 		serie.data = new Array();
 		for(var j = 0 ; j<datas.length; j++) {
-			var x = timedSeries ? datas[j].time*1000.0 : datas[j].category; // timed series by default, else categories 
+			var x = timedSeries ? datas[j].time*1000.0 : datas[j].values[xAxisMeasure]; // timed series by default, else categories 
 			var y = datas[j].values[metric];
 			if (!$.isEmptyObject(datas[j].values) && !y) {
 				y = 0;
@@ -495,4 +495,6 @@ function inverseFlotData(flotData, dataLabels) {
 	}
 	return newSeries;
 }
+
+
 
