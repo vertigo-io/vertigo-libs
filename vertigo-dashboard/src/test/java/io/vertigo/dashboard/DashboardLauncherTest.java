@@ -83,13 +83,13 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 	public void server() {
 		final App app = getApp();
 		Dashboard.start(app);
-		while (!Thread.interrupted()) {
-			try {
-				Thread.sleep(10 * 1000);
-			} catch (final InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		//		while (!Thread.interrupted()) {
+		//			try {
+		//				Thread.sleep(10 * 1000);
+		//			} catch (final InterruptedException e) {
+		//				e.printStackTrace();
+		//			}
+		//		}
 	}
 
 }
