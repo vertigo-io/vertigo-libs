@@ -19,8 +19,6 @@
 package io.vertigo.orchestra.impl.services.execution;
 
 import java.time.ZonedDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,48 +43,48 @@ import io.vertigo.orchestra.services.run.JobExecutor;
 
 public final class JobExecutorImpl implements Activeable, JobExecutor {
 
-	private ExecutorService executor = Executors.newFixedThreadPool(10); // TODO: named parameter
+	private final ExecutorService executor = Executors.newFixedThreadPool(10); // TODO: named parameter
 	private static final Logger LOG = LogManager.getLogger(JobExecutorImpl.class);
-	
+
 	@Inject
 	private EventBusManager eventBusManager;
-	
-	private int myTimeout;
-	
+
+	private final int myTimeout;
+
 	@Inject
-	public JobExecutorImpl(@Named("timeout") int timeout) {
+	public JobExecutorImpl(@Named("timeout") final int timeout) {
 		this.myTimeout = timeout;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void execute(OJobModel job, OParams initialParams, String jobId, ZonedDateTime execDate) {
+	public void execute(final OJobModel job, final OParams initialParams, final String jobId, final ZonedDateTime execDate) {
 		Assertion.checkNotNull(job);
 		Assertion.checkNotNull(initialParams);
 		// ---
-		String classToLauch = job.getClassEngine();
-		
+		final String classToLauch = job.getClassEngine();
+
 		Class clazz;
 		try {
 			clazz = Class.forName(classToLauch);
-		} catch (ClassNotFoundException e) {
+		} catch (final ClassNotFoundException e) {
 			throw new VSystemException(e, "Impossible de trouver la classe {0}", classToLauch);
 		}
 		Assertion.checkArgument(JobEngine.class.isAssignableFrom(clazz), "ClassEngine is not a JobEngine");
-		
+
 		JobEngine run;
 		try {
 			run = (JobEngine) clazz.newInstance();
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new VSystemException(e, "Impossible d'instancier la classe {0}", classToLauch);
 		}
-		OWorkspace ws = new OWorkspace(initialParams.asMap(), jobId, job.getJobname(), classToLauch, execDate);
-		
+		final OWorkspace ws = new OWorkspace(initialParams.asMap(), jobId, job.getJobname(), classToLauch, execDate);
+
 		CompletableFuture.supplyAsync(() -> run.execute(ws), executor)
-						 .thenAccept(this::fireSuccess);
+				.thenAccept(this::fireSuccess);
 	}
-	
-	public void fireSuccess(OWorkspace ws) {
+
+	public void fireSuccess(final OWorkspace ws) {
 		eventBusManager.post(new JobEndedEvent(ws));
 	}
 
@@ -94,7 +92,7 @@ public final class JobExecutorImpl implements Activeable, JobExecutor {
 	public void awaitTermination() {
 		try {
 			executor.awaitTermination(myTimeout, TimeUnit.SECONDS);
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			throw new VSystemException(e, "Temps d'attente dépassé");
 		}
 	}
@@ -108,10 +106,9 @@ public final class JobExecutorImpl implements Activeable, JobExecutor {
 	public void stop() {
 		try {
 			awaitTermination();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			LOG.error("Erreur lors de l'arret du JobExecutor :", e);
 		}
 	}
 
 }
-

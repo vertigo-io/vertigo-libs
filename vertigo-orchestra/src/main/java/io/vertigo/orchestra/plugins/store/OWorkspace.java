@@ -15,10 +15,10 @@ public class OWorkspace {
 	private static final String JOB_ID = "JobId";
 	private static final String RUN_STATUS = "RunStatus";
 	private static final String EXEC_DATE = "ExecDate";
-	
+
 	private final Map<String, String> map = new HashMap<>();
 
-	public OWorkspace(Map<String, String> ws, String jobId, String jobName, String classEngine, ZonedDateTime execDate) {
+	public OWorkspace(final Map<String, String> ws, final String jobId, final String jobName, final String classEngine, final ZonedDateTime execDate) {
 		map.putAll(ws);
 		map.put(JOB_ID, jobId);
 		map.put(JOB_NAME, jobName);
@@ -26,23 +26,23 @@ public class OWorkspace {
 		map.put(EXEC_DATE, execDate.toString());
 	}
 
-	public OWorkspace(String json) {
+	public OWorkspace(final String json) {
 		map.putAll(JobRunnerUtil.jsonToMap(json));
 	}
 
-	public String get(String key) {
+	public String get(final String key) {
 		Assertion.checkArgument(map.containsKey(key), "Paramètre absent : {}", key);
-		return (String) map.get(key);
+		return map.get(key);
 	}
-	
-	public void put(String key, String value) {
+
+	public void put(final String key, final String value) {
 		map.put(key, value);
 	}
 
 	public Set<String> keys() {
 		return map.keySet();
 	}
-	
+
 	public String getClassEngine() {
 		return get(CLASS_ENGINE);
 	}
@@ -54,15 +54,15 @@ public class OWorkspace {
 	public String getJobId() {
 		return get(JOB_ID);
 	}
-	
+
 	public ZonedDateTime getExecDate() {
 		return ZonedDateTime.parse(get(EXEC_DATE));
 	}
-	
+
 	public String toJson() {
 		return JobRunnerUtil.mapToJson(map);
 	}
-	
+
 	public void setSuccess() {
 		map.put(RUN_STATUS, "S");
 	}
