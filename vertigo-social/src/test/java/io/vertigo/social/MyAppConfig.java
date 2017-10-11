@@ -23,7 +23,7 @@ import java.util.Optional;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.account.cache.memory.MemoryAccountCachePlugin;
 import io.vertigo.account.plugins.account.store.loader.LoaderAccountStorePlugin;
-import io.vertigo.account.plugins.authentication.mock.MockAuthenticatingPlugin;
+import io.vertigo.account.plugins.authentication.mock.MockAuthenticationPlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
@@ -71,7 +71,7 @@ public final class MyAppConfig {
 					.build());
 
 			final AccountFeatures accountFeatures = new AccountFeatures()
-					.withAuthentication(MockAuthenticatingPlugin.class)
+					.withAuthentication(MockAuthenticationPlugin.class)
 					.withAccountStorePlugin(LoaderAccountStorePlugin.class,
 							Param.of("accountLoaderName", "MockIdentities"),
 							Param.of("groupLoaderName", "MockIdentities"));
