@@ -17,9 +17,6 @@ import io.vertigo.commons.plugins.analytics.log.SocketLoggerAnalyticsConnectorPl
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dashboard.impl.services.data.InfluxDbDataProvider;
-import io.vertigo.dashboard.services.data.DataProvider;
-import io.vertigo.dashboard.webservices.DashboardDataProviderWebServices;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
@@ -64,14 +61,12 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 				.addModule(new VegaFeatures()
 						.withEmbeddedServer(8080)
 						.build())
+				.addModule(new DashboardFeatures()
+						.withInfluxDb("http://analytica.part.klee.lan.net:8086", "analytica", "kleeklee")
+						.build())
 				.addModule(
-						ModuleConfig.builder("dashboard")
+						ModuleConfig.builder("metrics")
 								.addComponent(DomainMetricsProvider.class)
-								.addComponent(DataProvider.class, InfluxDbDataProvider.class,
-										Param.of("host", "http://analytica.part.klee.lan.net:8086"),
-										Param.of("user", "analytica"),
-										Param.of("password", "kleeklee"))
-								.addComponent(DashboardDataProviderWebServices.class)
 								.build())
 				.withNodeConfig(NodeConfig.builder()
 						.withAppName("dashboard-test")

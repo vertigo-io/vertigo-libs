@@ -54,7 +54,7 @@ public class DashboardDataProviderWebServices implements WebServices {
 			@InnerBodyParam("timeFilter") final TimeFilter timeFilter,
 			@InnerBodyParam("groupBy") final String groupBy) {
 
-		return dataProvider.getTabularData(measures, dataFilter, timeFilter, groupBy);
+		return dataProvider.getTabularData(measures, dataFilter, timeFilter, false, groupBy);
 	}
 
 	@SessionLess

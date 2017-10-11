@@ -1,6 +1,5 @@
-package io.vertigo.dashboard.impl.services.data;
+package io.vertigo.dashboard.plugins.data.influxdb;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -11,7 +10,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,14 +22,9 @@ import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 import org.influxdb.dto.QueryResult.Series;
 
-import io.vertigo.app.Home;
-import io.vertigo.commons.analytics.health.HealthCheck;
-import io.vertigo.commons.analytics.health.HealthMeasure;
-import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
-import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.dashboard.impl.services.data.DataProviderPlugin;
 import io.vertigo.dashboard.services.data.ClusteredMeasure;
 import io.vertigo.dashboard.services.data.DataFilter;
-import io.vertigo.dashboard.services.data.DataProvider;
 import io.vertigo.dashboard.services.data.TimeFilter;
 import io.vertigo.dashboard.services.data.TimedDataSerie;
 import io.vertigo.dashboard.services.data.TimedDatas;
@@ -39,14 +32,12 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Tuples;
 import io.vertigo.lang.Tuples.Tuple2;
 
-public final class InfluxDbDataProvider implements DataProvider {
+public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 
 	private final InfluxDB influxDB;
-	private final String appName;
 
 	@Inject
-	public InfluxDbDataProvider(
-			@Named("appName") final Optional<String> appNameOpt,
+	public InfluxDbDataProviderPlugin(
 			@Named("host") final String host,
 			@Named("user") final String user,
 			@Named("password") final String password) {
@@ -55,11 +46,11 @@ public final class InfluxDbDataProvider implements DataProvider {
 		Assertion.checkArgNotEmpty(password);
 		//---
 		influxDB = InfluxDBFactory.connect(host, user, password);
-		appName = appNameOpt.orElse(Home.getApp().getConfig().getNodeConfig().getAppName());
+
 	}
 
 	@Override
-	public TimedDatas getTimeSeries(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
+	public TimedDatas getTimeSeries(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		Assertion.checkNotNull(measures);
 		Assertion.checkNotNull(dataFilter);
 		Assertion.checkNotNull(timeFilter.getDim());// we check dim is not null because we need it
@@ -68,12 +59,12 @@ public final class InfluxDbDataProvider implements DataProvider {
 				.append(" group by time(").append(timeFilter.getDim()).append(")")
 				.toString();
 
-		return executeTimedQuery(q);
+		return executeTimedQuery(appName, q);
 
 	}
 
 	@Override
-	public TimedDatas getClusteredTimeSeries(final ClusteredMeasure clusteredMeasure, final DataFilter dataFilter, final TimeFilter timeFilter) {
+	public TimedDatas getClusteredTimeSeries(final String appName, final ClusteredMeasure clusteredMeasure, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		Assertion.checkNotNull(dataFilter);
 		Assertion.checkNotNull(timeFilter);
 		Assertion.checkNotNull(timeFilter.getDim()); // we check dim is not null because we need it
@@ -127,7 +118,7 @@ public final class InfluxDbDataProvider implements DataProvider {
 				.append(standardwhereClause)
 				.append(" group by time(").append(timeFilter.getDim()).append(")");
 
-		return executeTimedQuery(request.toString());
+		return executeTimedQuery(appName, request.toString());
 	}
 
 	private static String clusterName(
@@ -167,7 +158,7 @@ public final class InfluxDbDataProvider implements DataProvider {
 		fromClauseBuilder.append(")");
 	}
 
-	private TimedDatas executeTimedQuery(final String q) {
+	private TimedDatas executeTimedQuery(final String appName, final String q) {
 		final Query query = new Query(q, appName);
 		final QueryResult queryResult = influxDB.query(query);
 
@@ -186,11 +177,7 @@ public final class InfluxDbDataProvider implements DataProvider {
 	}
 
 	@Override
-	public TimedDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		return getTabularData(measures, dataFilter, timeFilter, false, groupBy);
-	}
-
-	private TimedDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean keepTime, final String... groupBy) {
+	public TimedDatas getTabularData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean keepTime, final String... groupBy) {
 		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter);
 
 		final String groupByClause = Stream.of(groupBy)
@@ -199,10 +186,10 @@ public final class InfluxDbDataProvider implements DataProvider {
 		queryBuilder.append(" group by ").append(groupByClause);
 		final String queryString = queryBuilder.toString();
 
-		return executeTabularQuery(queryString, keepTime);
+		return executeTabularQuery(appName, queryString, keepTime);
 	}
 
-	private TimedDatas executeTabularQuery(final String queryString, final boolean keepTime) {
+	private TimedDatas executeTabularQuery(final String appName, final String queryString, final boolean keepTime) {
 		final Query query = new Query(queryString.toString(), appName);
 		final QueryResult queryResult = influxDB.query(query);
 
@@ -229,7 +216,7 @@ public final class InfluxDbDataProvider implements DataProvider {
 	}
 
 	@Override
-	public TimedDatas getTops(final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
+	public TimedDatas getTops(final String appName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
 		final StringBuilder queryBuilder = new StringBuilder();
 
 		final String queryString = queryBuilder
@@ -241,7 +228,7 @@ public final class InfluxDbDataProvider implements DataProvider {
 				.append(")")
 				.toString();
 
-		return executeTimedQuery(queryString);
+		return executeTimedQuery(appName, queryString);
 	}
 
 	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
@@ -315,70 +302,6 @@ public final class InfluxDbDataProvider implements DataProvider {
 			valueMap.put(columns.get(i), values.get(i));
 		}
 		return valueMap;
-	}
-
-	@Override
-	public List<HealthCheck> getHealthChecks() {
-
-		final List<String> measures = Arrays.asList("status:last", "message:last", "name:last", "topic:last", "feature:last", "checker:last");
-		final DataFilter dataFilter = DataFilter.builder("healthcheck").build();
-		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
-
-		return getTabularData(measures, dataFilter, timeFilter, true, "name", "topic")
-				.getTimedDataSeries()
-				.stream()
-				.map(timedDataSerie -> new HealthCheck(
-						(String) timedDataSerie.getValues().get("name:last"),
-						(String) timedDataSerie.getValues().get("checker:last"),
-						(String) timedDataSerie.getValues().get("feature:last"),
-						(String) timedDataSerie.getValues().get("topic:last"),
-						Instant.ofEpochMilli(timedDataSerie.getTime()),
-						buildHealthMeasure(
-								(Double) timedDataSerie.getValues().get("status:last"),
-								(String) timedDataSerie.getValues().get("message:last"))))
-				.collect(Collectors.toList());
-
-	}
-
-	private static HealthMeasure buildHealthMeasure(final Double status, final String message) {
-		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
-		switch (status.intValue()) {
-			case 0:
-				healthMeasureBuilder
-						.withRedStatus(message, null);
-				break;
-			case 1:
-				healthMeasureBuilder
-						.withYellowStatus(message, null);
-				break;
-			case 2:
-				healthMeasureBuilder
-						.withGreenStatus(message);
-				break;
-			default:
-				throw new IllegalArgumentException("HealthStatus with number '" + status + "' is unknown");
-		}
-		return healthMeasureBuilder.build();
-	}
-
-	@Override
-	public List<Metric> getMetrics() {
-		final List<String> measures = Arrays.asList("value:last", "name:last", "topic:last");
-		final DataFilter dataFilter = DataFilter.builder("metric").build();
-		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
-
-		return getTabularData(measures, dataFilter, timeFilter, true, "name", "topic")
-				.getTimedDataSeries()
-				.stream()
-				.map(timedDataSerie -> Metric.builder()
-						.withName((String) timedDataSerie.getValues().get("name:last"))
-						.withTopic((String) timedDataSerie.getValues().get("topic:last"))
-						.withMeasureInstant(Instant.ofEpochMilli(timedDataSerie.getTime()))
-						.withValue((Double) timedDataSerie.getValues().get("value:last"))
-						.withSuccess()
-						.build())
-				.collect(Collectors.toList());
-
 	}
 
 }
