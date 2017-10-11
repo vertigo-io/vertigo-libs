@@ -22,11 +22,13 @@
 					<@module.formGroup>
 					 	<@module.property 'Period' daemon.periodInSeconds+' seconds' />
 					  </@module.formGroup>
-					   <div class="graph-panel rickshaw" 
+					   <div class="chart-panel chartjs linechart" 
 					  		data-url="data/series" 
 					  		data-query-measures='["duration:median","duration:percentile_90","duration:max"]'
 					  		data-query-data-filter='{"measurement":"daemon","name":"${daemon.name}","location":"*","topic":"*"}'
-					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}' >
+					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}'
+					  		data-labels='{"duration:median":"Médiane", "duration:percentile_90":"Per90", "duration:max":"Maximum" }' 
+				    		data-colors='iRED2GREEN' >
 					  	</div>
 				</@module.lineDetail >
 			</#list>

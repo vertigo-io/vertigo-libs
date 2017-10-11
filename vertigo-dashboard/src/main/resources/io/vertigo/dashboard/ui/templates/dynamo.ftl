@@ -35,7 +35,7 @@
 		<@module.standardDetail>
 			<#list entities as entity>
 				<@module.lineDetail  type='entity' name=entity.name >
-					   <div class="graph-panel" 
+					   <div class="chart-panel chartjs linechart" 
 					  		data-url="data/series" 
 					  		data-query-measures='["value:median"]'
 					  		data-query-data-filter='{"measurement":"metric","name":"entityCount", "topic":"${entity.name}" ,"location":"*","topic":"*"}'
@@ -44,13 +44,6 @@
 				</@module.lineDetail >
 			</#list>
 		</@module.standardDetail>
-		 <div id="myStandAloneBarChart"
-	  		data-url="data/tabular" 
-	  		data-query-measures='["value:median"]'
-	  		data-query-data-filter='{"measurement":"tasks","name":"*", "location":"*","topic":"*"}'
-	  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()"}' 
-	  		data-query-group-by='name' >
-	  	</div>
 	</@module.standardPanel>
 	
 	<@module.standardPanel 'Tasks' 'tasks' >
@@ -77,7 +70,7 @@
 		<@module.standardDetail>
 			<#list tasks as task>
 				<@module.lineDetail  type='task' name=task.name?replace("/", "_") >
-					   <div class="graph-panel" 
+					   <div class="chart-panel chartjs linechart" 
 					  		data-url="/data/series" 
 					  		data-query-measures='["duration:median","duration:max"]'
 					  		data-query-data-filter='{"measurement":"tasks","name":"${task.name}","location":"*","topic":"*"}'

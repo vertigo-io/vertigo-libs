@@ -11,6 +11,17 @@
 	
 	
 	<div>
+		<div class="row">
+			<div class="col-6">
+				<div class="chart chartjs linechart" style="width:90%;height:400px"
+				    data-url="data/series" 
+				    data-query-measures='["duration:median", "duration:percentile_70", "duration:percentile_90"]'
+				    data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*" }'
+				    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1h"}'
+					data-labels='{"duration:median":"Médiane", "duration:percentile_70":"Per70", "duration:percentile_90":"Per90" }' 
+				    data-colors='iRED2GREEN'></div>   
+			</div>
+		</div>
 		<div class="row" >
 			<div class="col-6" >
 				<div class="datatable"
