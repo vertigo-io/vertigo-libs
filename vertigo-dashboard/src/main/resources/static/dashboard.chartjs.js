@@ -15,6 +15,10 @@ function showChartJsChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataC
 		type = 'line';
 		chartJsDataSets = toChartJsData(datas, dataMetrics, allMetrics, dataLabels, timedSeries, dataQuery.groupBy);
 		chartOptions = getChartJsLineOptions(datas, dataQuery, dataLabels, timedSeries);
+	} else if (elem.hasClass("stakedbarchart")) {
+		type = 'bar';
+		chartJsDataSets = toChartJsData(datas, dataMetrics, allMetrics, dataLabels, timedSeries, dataQuery.groupBy);
+		chartOptions = getStackedOptions(datas, dataQuery, dataLabels, timedSeries);
 	}
 	//colors
 	setChartJsColorOptions(chartJsDataSets, dataColors);
@@ -122,9 +126,22 @@ function getChartJsLineOptions(datas, dataQuery, dataLabels, timedSeries){
 		             }
 		         }
 		     }]
+	 } else {
+		 options.scales.xAxes = [{
+	         type: 'category'
+	     }]
 	 }
 	 return options;
 }
+
+
+function getStackedOptions(datas, dataQuery, dataLabels, timedSeries){
+	var options = getChartJsLineOptions(datas, dataQuery, dataLabels, timedSeries)
+	options.scales.xAxes[0].stacked = true;
+	options.scales.yAxes[0].stacked = true;
+	return options;
+}
+
 
 function toChartJsBubblesData(data, dataMeasures,  dataLabels, groupBy) {
 	var newSeries = new Array();

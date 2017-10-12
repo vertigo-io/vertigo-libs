@@ -21,6 +21,15 @@
 					data-labels='{"duration:median":"Médiane", "duration:percentile_70":"Per70", "duration:percentile_90":"Per90" }' 
 				    data-colors='iRED2GREEN'></div>   
 			</div>
+			<div class="col-6">
+				<div class="chart chartjs stakedbarchart" style="width:90%;height:400px"
+				    data-url="data/series" 
+				    data-query-measures='["sql_duration:mean", "search_duration:mean", "inner_duration:mean"]'
+				    data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*" }'
+				    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1h"}'
+					data-labels='{"sql_duration:mean":"Durée SQL", "search_duration:mean":"Durée Search", "inner_duration:mean":"Durée interne" }' 
+				    data-colors='GREEN2BLUE'></div>   
+			</div>
 		</div>
 		<div class="row" >
 			<div class="col-6" >
@@ -76,11 +85,11 @@
 	<div class="row" >
 		<div class="chart flotchart donut" style="height:400px; width: 90%"
 					    data-url="data/tabular" 
-					    data-query-measures='["duration:mean"]'
-					    data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*", "additionalWhereClause": "\"duration\"> 2500 "}'
+					    data-query-measures='["duration:count"]'
+					    data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*"}'
 					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
-					    data-query-group-by='name'
-						data-labels='{}' 
+					    data-query-group-by='exception'
+						data-labels='{"0":"OK"}' 
 					    data-colors='GREEN2BLUE'></div>   
 	</div>
 
