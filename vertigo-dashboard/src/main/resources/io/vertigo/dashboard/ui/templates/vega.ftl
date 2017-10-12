@@ -72,7 +72,7 @@
 			</div>	
 					    
 			<div class="col-6" >	    
-				<div class="chart flotchart stakedbarchart"  style="height:400px"
+				<div class="chart chartjs stakedbarchart"  style="height:400px"
 					    data-url="data/series/clustered" 
 					    data-query-clustered-measure='{ "measure": "duration:count", "thresholds": ["10","20","50","100","200","500","1000","2000"] }'
 					    data-query-data-filter='{ "measurement": "webservices", "location": "*", "name": "*", "topic": "*" }'
@@ -83,14 +83,16 @@
 		</div>
 	</div>
 	<div class="row" >
-		<div class="chart flotchart donut" style="height:400px; width: 90%"
-					    data-url="data/tabular" 
-					    data-query-measures='["duration:count"]'
-					    data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*"}'
-					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
-					    data-query-group-by='exception'
-						data-labels='{"0":"OK"}' 
-					    data-colors='GREEN2BLUE'></div>   
+		<div class="col-4" >
+			<div class="chart chartjs doughnut" style="height:400px; width: 90%"
+						    data-url="data/tabular" 
+						    data-query-measures='["duration:count"]'
+						    data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*"}'
+						    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
+						    data-query-group-by='exception'
+							data-labels='{"":"OK"}' 
+						    data-colors='GREEN2BLUE'></div>   
+		</div>
 	</div>
 
 

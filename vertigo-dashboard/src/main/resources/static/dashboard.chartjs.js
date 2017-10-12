@@ -1,27 +1,39 @@
 
 function showChartJsChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataColors) {
-	var allMetrics = dataMetrics;
 	var timedSeries = datas[0].time;
-	
+	var labels = dataLabels
 	var chartOptions;
 	var chartJsDataSets;
 	var type;
 	if ( elem.hasClass("bubbles") ) {
 		type = 'bubble';
-		var bubblesData = toChartJsBubblesData(datas, dataQuery.measures , dataLabels, dataQuery.groupBy);
+		var bubblesData = toChartJsBubblesData(datas, dataMetrics , dataLabels, dataQuery.groupBy);
 		chartJsDataSets = [ {data: bubblesData }];
-		chartOptions = getChartJsBubblesOptions(datas, dataQuery, dataLabels);
+		chartOptions = getChartJsBubblesOptions(datas, dataMetrics, dataQuery, dataLabels);
+		setChartJsColorOptions(chartJsDataSets, dataColors);
 	} else if (elem.hasClass("linechart")) {
 		type = 'line';
-		chartJsDataSets = toChartJsData(datas, dataMetrics, allMetrics, dataLabels, timedSeries, dataQuery.groupBy);
-		chartOptions = getChartJsLineOptions(datas, dataQuery, dataLabels, timedSeries);
+		chartJsDataSets = toChartJsData(datas, dataMetrics, dataLabels, timedSeries, dataQuery.groupBy);
+		chartOptions = getChartJsLineOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries);
+		setChartJsColorOptions(chartJsDataSets, dataColors);
 	} else if (elem.hasClass("stakedbarchart")) {
 		type = 'bar';
-		chartJsDataSets = toChartJsData(datas, dataMetrics, allMetrics, dataLabels, timedSeries, dataQuery.groupBy);
-		chartOptions = getStackedOptions(datas, dataQuery, dataLabels, timedSeries);
+		chartJsDataSets = toChartJsData(datas, dataMetrics,  dataLabels, timedSeries, dataQuery.groupBy);
+		chartOptions = getStackedOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries);
+		setChartJsColorOptions(chartJsDataSets, dataColors);
+	} else if (elem.hasClass("doughnut")) {
+		type = 'doughnut';
+		chartJsDataSets = toChartJsData(datas, dataMetrics, dataLabels, timedSeries, dataQuery.groupBy);
+		var pieData  = toChartJsPieData(chartJsDataSets, dataLabels);
+		chartJsDataSets = pieData.datasets;
+		labels = pieData.labels;
+		setChartJsPieColorOptions(chartJsDataSets, dataColors );
+		chartOptions = {
+			legend : {
+				display:false
+			}
+		};
 	}
-	//colors
-	setChartJsColorOptions(chartJsDataSets, dataColors);
 	//
 	$(elem).html("");
 	$(elem).append("<canvas></canvas>");
@@ -29,7 +41,7 @@ function showChartJsChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataC
 	var myBubbleChart = new Chart(ctx,{
 	    type: type,
 	    data: {
-	    	labels : dataLabels,
+	    	labels : labels,
 			datasets: chartJsDataSets
 		},
 	    options: chartOptions
@@ -47,9 +59,17 @@ function setChartJsColorOptions(datasets, dataColors) {
 	}
 }
 
+function setChartJsPieColorOptions(datasets, dataColors) {
+	if(dataColors) {
+		for(var i = 0 ; i<datasets.length; i++) {
+			datasets[i].backgroundColor = dashboardTools.getColors(dataColors, datasets[i].data.length);//we have one dataset
+		}
+	}
+}
 
-function getChartJsBubblesOptions(datas, dataQuery, dataLabels){
-	var maxRadius = getMaxRadius(datas, dataQuery.measures[2]); //always the thirs columns
+
+function getChartJsBubblesOptions(datas, dataMetrics, dataQuery, dataLabels){
+	var maxRadius = getMaxRadius(datas, dataMetrics[2]); //always the thirs columns
 	return {
 			elements: {
 			    point: {
@@ -71,9 +91,9 @@ function getChartJsBubblesOptions(datas, dataQuery, dataLabels){
 	                	var point = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 	                	return [
 	                    	data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].name,
-	                    	dataLabels[dataQuery.measures[0]] +" : "+ Math.floor(point.x),
-	                    	dataLabels[dataQuery.measures[1]] +" : "+ Math.floor(point.y),
-	                    	dataLabels[dataQuery.measures[2]] +" : "+ point.r_measure,
+	                    	dataLabels[dataMetrics[0]] +" : "+ Math.floor(point.x),
+	                    	dataLabels[dataMetrics[1]] +" : "+ Math.floor(point.y),
+	                    	dataLabels[dataMetrics[2]] +" : "+ point.r_measure,
 	                    	];
 	                }
 	            }
@@ -81,7 +101,7 @@ function getChartJsBubblesOptions(datas, dataQuery, dataLabels){
 	};
 }
 
-function getChartJsLineOptions(datas, dataQuery, dataLabels, timedSeries){
+function getChartJsLineOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries){
 	var options =  {
 		scales : {
 			yAxes : [{
@@ -95,7 +115,7 @@ function getChartJsLineOptions(datas, dataQuery, dataLabels, timedSeries){
             callbacks: {
                 label: function(tooltipItem, data) {
                 	var point = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-                	return dataLabels[dataQuery.measures[tooltipItem.datasetIndex]] +" : "+ Math.floor(point.y);
+                	return dataLabels[dataMetrics[tooltipItem.datasetIndex]] +" : "+ Math.floor(point.y);
                 },
                 title: function(tooltipItems, data) {
                 	return '';
@@ -135,8 +155,8 @@ function getChartJsLineOptions(datas, dataQuery, dataLabels, timedSeries){
 }
 
 
-function getStackedOptions(datas, dataQuery, dataLabels, timedSeries){
-	var options = getChartJsLineOptions(datas, dataQuery, dataLabels, timedSeries)
+function getStackedOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries){
+	var options = getChartJsLineOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries)
 	options.scales.xAxes[0].stacked = true;
 	options.scales.yAxes[0].stacked = true;
 	return options;
@@ -174,7 +194,7 @@ function getMaxRadius(datas, radiusField) {
 
 
 /** Conversion de données servers List<date, Map<NomMetric, value>> en données Chartjs.*/
-function toChartJsData(datas, metrics, allMetrics, dataLabels, timedSeries, xAxisMeasure) {
+function toChartJsData(datas, metrics, dataLabels, timedSeries, xAxisMeasure) {
 	_endsWith = function(string, suffix) {
 	    return string.indexOf(suffix, string.length - suffix.length) !== -1;
 	};
@@ -199,9 +219,6 @@ function toChartJsData(datas, metrics, allMetrics, dataLabels, timedSeries, xAxi
 				y, y
 			});
 		}
-		var index = allMetrics.indexOf(metric);
-		serie.color = index>=0 ? index : i;
-		
 		if(!serie.label) {
 			if(_endsWith(metric, 'count')) {
 				serie.label = "Quantit&eacute;";
@@ -217,4 +234,23 @@ function toChartJsData(datas, metrics, allMetrics, dataLabels, timedSeries, xAxi
 		newSeries.push(serie);
 	}
 	return newSeries;
+}
+
+function toChartJsPieData(chartJsDataSets, dataLabels) {
+	var newSeries = new Array();
+	var labels = new Array();
+	for(var i = 0 ; i< chartJsDataSets[0].data.length; i++) {
+		var serie = new Object();
+		var label = chartJsDataSets[0].data[i].x;
+		if(dataLabels && dataLabels[chartJsDataSets[0].data[i].x]) {
+			label = dataLabels[chartJsDataSets[0].data[i].x];			
+		}
+		labels.push(label);
+		newSeries.push(chartJsDataSets[0].data[i].y);
+	}
+	return { 
+		datasets : [{ data : newSeries }],
+		labels : labels
+	}
+	
 }
