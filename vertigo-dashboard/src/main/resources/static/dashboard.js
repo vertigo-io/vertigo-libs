@@ -67,7 +67,6 @@ function showChart(elem) {
 				  }
 			  }
 		  });
-		dashboardTools.zoomOnClick(elem);
 }
 
 
@@ -231,26 +230,6 @@ dashboardTools = function() {
 		})
 	}
 		
-	dashboardTools.zoomOnClick = function(elem) {
-		elem.on({
-			click :function() {
-				var parent = elem.parent().parent();
-				if(parent.hasClass('zoom')) {
-					$("#overlay").remove();
-					parent.removeClass('zoom');
-					$('canvas', parent).each(function () {
-						$(this).attr('load','false');
-					});
-				} else {
-					$("<div/>", {"id":"overlay", "class":"modal-backdrop fade in"}).appendTo($("body"));
-					parent.addClass('zoom').fadeIn(1000);
-					$('canvas', parent).each(function () {
-						$(this).attr('load','false');
-					});
-				}
-			}
-		})
-	}
 	
 	dashboardTools.showTooltip = function (x, y, contents, serieColor) {
 		var attrs = {display: "none", top: y + 5, left :  x + 5, "border-color":serieColor};
