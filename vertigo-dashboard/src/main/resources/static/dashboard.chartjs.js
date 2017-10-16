@@ -10,7 +10,7 @@ function showChartJsChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataC
 		var bubblesData = toChartJsBubblesData(datas, dataMetrics , dataLabels, dataQuery.groupBy);
 		chartJsDataSets = [ {data: bubblesData }];
 		chartOptions = getChartJsBubblesOptions(datas, dataMetrics, dataQuery, dataLabels);
-		setChartJsColorOptions(chartJsDataSets, dataColors);
+		setChartJsColorOptions(chartJsDataSets, dataColors, 0.5);
 	} else if (elem.hasClass("linechart")) {
 		type = 'line';
 		chartJsDataSets = toChartJsData(datas, dataMetrics, dataLabels, timedSeries, dataQuery.groupBy);
@@ -27,7 +27,7 @@ function showChartJsChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataC
 		var pieData  = toChartJsPieData(chartJsDataSets, dataLabels);
 		chartJsDataSets = pieData.datasets;
 		labels = pieData.labels;
-		setChartJsPieColorOptions(chartJsDataSets, dataColors );
+		setChartJsPieColorOptions(chartJsDataSets, dataColors);
 		chartOptions = {
 			legend : {
 				display:false
@@ -49,9 +49,9 @@ function showChartJsChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataC
 }
 
 
-function setChartJsColorOptions(datasets, dataColors) {
+function setChartJsColorOptions(datasets, dataColors, opacity) {
 	if(dataColors) {
-		var myColors = dashboardTools.getColors(dataColors, datasets.length);
+		var myColors = dashboardTools.getColors(dataColors, datasets.length, opacity);
 		for(var i = 0 ; i<datasets.length; i++) {
 			datasets[i].backgroundColor = myColors[i];
 		}
@@ -59,10 +59,10 @@ function setChartJsColorOptions(datasets, dataColors) {
 	}
 }
 
-function setChartJsPieColorOptions(datasets, dataColors) {
+function setChartJsPieColorOptions(datasets, dataColors, opacity) {
 	if(dataColors) {
 		for(var i = 0 ; i<datasets.length; i++) {
-			datasets[i].backgroundColor = dashboardTools.getColors(dataColors, datasets[i].data.length);//we have one dataset
+			datasets[i].backgroundColor = dashboardTools.getColors(dataColors, datasets[i].data.length, opacity);//we have one dataset
 		}
 	}
 }
@@ -86,11 +86,16 @@ function getChartJsBubblesOptions(datas, dataMetrics, dataQuery, dataLabels){
 				 display: false,
 			 },
 			 tooltips: {
+				displayColors: false,
 	            callbacks: {
+	            	title: function(tooltipItems, data) {
+	            		//we have on serie so we keep only the first one
+	            		var tooltipItem = tooltipItems[0];
+	            		return data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].name;
+	            	},
 	                label: function(tooltipItem, data) {
 	                	var point = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 	                	return [
-	                    	data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index].name,
 	                    	dataLabels[dataMetrics[0]] +" : "+ Math.floor(point.x),
 	                    	dataLabels[dataMetrics[1]] +" : "+ Math.floor(point.y),
 	                    	dataLabels[dataMetrics[2]] +" : "+ point.r_measure,

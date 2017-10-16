@@ -182,13 +182,7 @@ refreshClock();
 
 dashboardTools = function() {
 	var dashboardTools = {
-			"version" : "1.4.0"
-	};
-	
-	//From https://gist.github.com/varemenos/2531765
-	dashboardTools.getUrlVar =  function (key) {
-		var result = new RegExp(key + "=([^&]*)", "i").exec(window.location.search); 
-		return result && unescape(result[1]) || ""; 
+			"version" : "2.0.0"
 	};
 	
 	dashboardTools.guid = function () {
@@ -219,47 +213,6 @@ dashboardTools = function() {
 		}
 	};
 	
-	dashboardTools.toggleVisibilityOnMouseOver = function (triggerElement, showedElement) {
-		triggerElement.on({
-		    mouseover: function() {
-		    	showedElement.fadeIn(100);
-		    },
-		    mouseout: function() {
-		    	showedElement.stop().stop().fadeOut();
-		    }
-		})
-	}
-		
-	
-	dashboardTools.showTooltip = function (x, y, contents, serieColor) {
-		var attrs = {display: "none", top: y + 5, left :  x + 5, "border-color":serieColor};
-		var elem = $("<div id='tooltip'>" + contents + "</div>").appendTo("body");//we must appends in order to get the correct size
-		if($( window ).width() - elem.width() - x -5 < 20) { //if no more space at right, we align a right of the cursor
-			attrs.left = 'initial';
-			attrs.right = $( window ).width() - x + 5;			
-		}
-		elem.css(attrs).fadeIn(200);
-		
-	}
-	
-	dashboardTools.getTimeDimStep = function(timeDim) {
-		if(timeDim == 'Year' || timeDim.endsWith('y')) {
-			return 364*24*60*60*1000.0;
-		} else if(timeDim == 'Month' || timeDim.endsWith('M')) {
-			return 28*24*60*60*1000.0;
-		} else if(timeDim == 'Day' || timeDim.endsWith('d')) {
-			return 24*60*60*1000.0;
-		} else if(timeDim == 'Hour' || timeDim.endsWith('h')) {
-			return 60*60*1000.0;
-		} else if(timeDim == 'QuarterHour' || timeDim.endsWith('15m')) {
-			return 15*60*1000.0;
-		} else if(timeDim == 'SixMinutes' || timeDim.endsWith('6m')) {
-			return 6*60*1000.0;
-		} else if(timeDim == 'Minute' || timeDim.endsWith('m')) {
-			return 60*1000.0;
-		}
-		return 60*1000.0;
-	}
 	
 	dashboardTools.getTimeFormat = function (timeDim) {
 		if(timeDim == 'Year'|| timeDim.endsWith('y')) {
@@ -275,7 +228,7 @@ dashboardTools = function() {
 		}
 	}
 		
-	dashboardTools.getColors = function (colorName, nbSeries) {
+	dashboardTools.getColors = function (colorName, nbSeries, opacity) {
 		if ("DEFAULT" == colorName) {
 			//default on ne fait rien
 			return;
@@ -308,6 +261,15 @@ dashboardTools = function() {
 		var resultColors;
 		var isCycle = mainColors[0] == mainColors[mainColors.length-1];
 		var resultColors = interpolation(mainColors, nbSeries + (isCycle ? 1 : 0)); //si les couleurs représente un cycle, on exclue la derniére couleur (qui est aussi la premiére)
+		
+		if (opacity) {
+			// use the alpha
+			return  $.map(resultColors, function( val, i ) {
+				var d3Color = d3.color(val);
+				d3Color.opacity = opacity;
+				return d3Color.rgb();
+			});
+		}
 		return resultColors;
 	}
 	
