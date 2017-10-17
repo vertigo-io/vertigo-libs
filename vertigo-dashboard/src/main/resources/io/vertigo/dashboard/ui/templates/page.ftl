@@ -19,7 +19,6 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-color/1.0.3/d3-color.min.js" ></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-interpolate/1.1.5/d3-interpolate.min.js" ></script>
 		
-		
 		<script src="/dashboard/static/dashboard.js"></script>
 		<script src="/dashboard/static/dashboard.chartjs.js"></script>
 		<script src="/dashboard/static/dashboard.datatable.js"></script>

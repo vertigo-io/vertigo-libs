@@ -18,6 +18,10 @@ function showDataTable(elem, datas, dataColumns) {
 			renderer = timeRendererSeconds;
 			cssClass = 'text-right';
 		}
+		if (column.format === 'number') {
+			renderer = $.fn.dataTable.render.number(' ', ',', 0, '');
+			cssClass = 'text-right';
+		}
 		
 		return { 
 			name:  column.data,
@@ -37,6 +41,9 @@ function showDataTable(elem, datas, dataColumns) {
 		columns : columns,
 		paging : paging != null &&  paging != undefined ? paging : true,
 		searching: false,
+		info: false,
+		lengthChange: false,
+		pageLength: 10,
 		  /* No ordering applied by DataTables during initialisation */
         order: []
 	});	

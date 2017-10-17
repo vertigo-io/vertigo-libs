@@ -10,6 +10,17 @@
 </div> 
 </#macro>
 
+<#macro card title >
+<div class="card">
+	<div class="card-header font-weight-bold">
+	    <span>${title}</span>
+	 </div>
+	 <div class="card-body text-center">
+	 	<#nested>
+	 </div>
+</div> 
+</#macro>
+
 
 <#macro health>
 	<div class="row" >

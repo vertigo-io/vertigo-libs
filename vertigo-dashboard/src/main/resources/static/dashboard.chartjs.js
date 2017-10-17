@@ -1,5 +1,5 @@
 
-function showChartJsChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataColors) {
+function showChartJsChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataColors, additionalOptions) {
 	var timedSeries = datas[0].time;
 	var labels = dataLabels
 	var chartOptions;
@@ -9,17 +9,17 @@ function showChartJsChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataC
 		type = 'bubble';
 		var bubblesData = toChartJsBubblesData(datas, dataMetrics , dataLabels, dataQuery.groupBy);
 		chartJsDataSets = [ {data: bubblesData }];
-		chartOptions = getChartJsBubblesOptions(datas, dataMetrics, dataQuery, dataLabels);
+		chartOptions = getChartJsBubblesOptions(datas, dataMetrics, dataQuery, dataLabels, additionalOptions);
 		setChartJsColorOptions(chartJsDataSets, dataColors, 0.5);
 	} else if (elem.hasClass("linechart")) {
 		type = 'line';
 		chartJsDataSets = toChartJsData(datas, dataMetrics, dataLabels, timedSeries, dataQuery.groupBy);
-		chartOptions = getChartJsLineOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries);
+		chartOptions = getChartJsLineOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions);
 		setChartJsColorOptions(chartJsDataSets, dataColors);
 	} else if (elem.hasClass("stakedbarchart")) {
 		type = 'bar';
 		chartJsDataSets = toChartJsData(datas, dataMetrics,  dataLabels, timedSeries, dataQuery.groupBy);
-		chartOptions = getStackedOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries);
+		chartOptions = getStackedOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions);
 		setChartJsColorOptions(chartJsDataSets, dataColors);
 	} else if (elem.hasClass("doughnut")) {
 		type = 'doughnut';
@@ -30,7 +30,8 @@ function showChartJsChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataC
 		setChartJsPieColorOptions(chartJsDataSets, dataColors);
 		chartOptions = {
 			legend : {
-				display:false
+				display: true,
+				position: 'bottom'
 			}
 		};
 	}
@@ -68,9 +69,19 @@ function setChartJsPieColorOptions(datasets, dataColors, opacity) {
 }
 
 
-function getChartJsBubblesOptions(datas, dataMetrics, dataQuery, dataLabels){
-	var maxRadius = getMaxRadius(datas, dataMetrics[2]); //always the thirs columns
+function getChartJsBubblesOptions(datas, dataMetrics, dataQuery, dataLabels, additionalOptions){
+	var maxRadius = getMaxRadius(datas, dataMetrics[2]); //always the third columns
+	var xAxisType = getAxisType(datas, additionalOptions, 'xAxisType', dataMetrics[0]);
+	var yAxisType = getAxisType(datas, additionalOptions, 'yAxisType', dataMetrics[1]);
 	return {
+			scales: {
+				xAxes: [{
+			         type: xAxisType
+					}],
+				yAxes: [{
+			        type: yAxisType
+					}]
+			},
 			elements: {
 			    point: {
 			      radius: function(context) {
@@ -96,9 +107,9 @@ function getChartJsBubblesOptions(datas, dataMetrics, dataQuery, dataLabels){
 	                label: function(tooltipItem, data) {
 	                	var point = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
 	                	return [
-	                    	dataLabels[dataMetrics[0]] +" : "+ Math.floor(point.x),
-	                    	dataLabels[dataMetrics[1]] +" : "+ Math.floor(point.y),
-	                    	dataLabels[dataMetrics[2]] +" : "+ point.r_measure,
+	                    	dataLabels[dataMetrics[0]] +" : "+ Math.round(point.x),
+	                    	dataLabels[dataMetrics[1]] +" : "+ Math.round(point.y),
+	                    	dataLabels[dataMetrics[2]] +" : "+ Math.round(point.r_measure),
 	                    	];
 	                }
 	            }
@@ -106,7 +117,25 @@ function getChartJsBubblesOptions(datas, dataMetrics, dataQuery, dataLabels){
 	};
 }
 
-function getChartJsLineOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries){
+function getAxisType(datas, additionalOptions, optionKey, metric) {
+	var axisType = 'linear';//linear by default
+	if (additionalOptions) {
+		if (additionalOptions[optionKey]) {
+			if(additionalOptions[optionKey] === 'auto') {
+				var minMax = getMinMax(datas,metric)//the x axis
+				if (minMax.max > 0 &&  minMax.min/minMax.max < 0.001){
+					axisType = 'logarithmic';
+				}
+			} else {
+				axisType = additionalOptions[optionKey];
+			}
+		}
+		
+	}
+	return axisType
+}
+
+function getChartJsLineOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions){
 	var options =  {
 		scales : {
 			yAxes : [{
@@ -160,8 +189,8 @@ function getChartJsLineOptions(datas, dataMetrics, dataQuery, dataLabels, timedS
 }
 
 
-function getStackedOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries){
-	var options = getChartJsLineOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries)
+function getStackedOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions){
+	var options = getChartJsLineOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions)
 	options.scales.xAxes[0].stacked = true;
 	options.scales.yAxes[0].stacked = true;
 	return options;
@@ -196,6 +225,25 @@ function getMaxRadius(datas, radiusField) {
 	}
 	return Math.max(maxRadius, 1);
 }
+
+function getMinMax(datas, field) {
+	var min= 0;
+	var max= 0;
+	for(var i = 0 ; i< datas.length; i++) {
+		var value = datas[i].values[field];
+		if (value > max) {
+			max = value;
+		}
+		if (value < min) {
+			min = value
+		}
+	}
+	return {
+		min: min,
+		max: max
+	}
+}
+
 
 
 /** Conversion de données servers List<date, Map<NomMetric, value>> en données Chartjs.*/

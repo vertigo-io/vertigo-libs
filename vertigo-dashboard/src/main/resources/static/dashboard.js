@@ -17,6 +17,7 @@ function showChart(elem) {
 		var queryDataFilter = elem.data("query-data-filter");
 		var queryTimeFilter = elem.data("query-time-filter");
 		var queryMaxRows = elem.data("query-max-rows");
+		var additionalOptions = elem.data("options");
 		//--- retrieve time filter from input
 		updateTimeFilterFromSelection(queryTimeFilter);
 		
@@ -56,14 +57,8 @@ function showChart(elem) {
 					  showObjective(elem, datas, dataMetrics, dataQuery, dataLabels, dataIcons, dataColors);
 				  } else if (elem.hasClass ("healthMonitor")) {
 					  showHealthMonitor(elem, datas, dataMetrics, dataQuery, dataLabels, dataIcons, dataColors);
-				  } else if (elem.hasClass ("d3chart")) {
-					  showD3Chart(elem, datas, dataMetrics, dataQuery, dataLabels, dataColors);
-				  } else if (elem.hasClass ("flotchart")) {
-					  showFlotChart(elem, datas.timedDataSeries, dataMetrics, dataQuery, dataLabels, dataColors);
-				  } else if (elem.hasClass ("rickshaw")) {
-					  showRickshawChart(elem, datas.timedDataSeries, dataMetrics);
 				  } else if (elem.hasClass ("chartjs")) {
-					  showChartJsChart(elem, datas.timedDataSeries, dataMetrics, dataQuery, dataLabels, dataColors);
+					  showChartJsChart(elem, datas.timedDataSeries, dataMetrics, dataQuery, dataLabels, dataColors, additionalOptions);
 				  }
 			  }
 		  });
