@@ -1,12 +1,13 @@
-<#macro indicator title icon status metric legend >
-<div class="card topic-abstract">
-	<div class="card-header font-weight-bold text-light bg-<@classByStatus status/>">
-	    <span>${title}</span>
-	    <i class="material-icons float-right">${icon}</i>
-	 </div>
-	 <div class="card-body text-center">
-	 	<span class="indicator">${metric}</span><span> ${legend}</span>
-	 </div>
+<#macro indicator icon status metric legend title="">
+<div class="topic-abstract text-center">
+<#if title?has_content> 
+	<div>
+    	<span>${title}</span>
+    </div>
+</#if>
+    <div>
+ 	<span class="indicator text-<@classByStatus status/>">${metric}</span><span> ${legend}</span>
+ 	</div>
 </div> 
 </#macro>
 

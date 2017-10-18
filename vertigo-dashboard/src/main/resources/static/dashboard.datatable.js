@@ -9,6 +9,7 @@ function completeDataTableQuery(dataColumns, dataQuery) {
 
 function showDataTable(elem, datas, dataColumns) {
 	elem.html("");
+	elem.parent().addClass("p-0");
 	var dataTableDatas = toDataTableDatas(datas.timedDataSeries, dataColumns);
 	var table = $('<table cellspacing="0"/>').appendTo(elem);
 	var columns = $.map(dataColumns , function(column, index){ 

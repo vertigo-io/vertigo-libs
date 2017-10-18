@@ -69,10 +69,16 @@ h1 {
 .topic-abstract {
 	min-width: 250px;
 	max-width: 250px;
+	/*min-height: 250px;
+	max-height: 250px;
+	border : 1px solid;*/
+	border-radius: 50%;
+	vertical-align: middle;
+	font-size: 1em;
 }
 
 .indicator {
-	font-size: xx-large;
+	font-size: 3em;
 }
 
 .topic-panel {
@@ -88,6 +94,9 @@ h1 {
 
 
 .table.datatable td, .table.datatable th {
-	padding: .5rem;
+	padding: .45rem;
+	font-size: 0.95em;
 }
+
+
 

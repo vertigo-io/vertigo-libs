@@ -4,9 +4,9 @@
 <@page.header/>
 
 	<div class="card-deck px-3 pb-3 justify-content-around"">
-		<@module.indicator title="Daemons" icon="schedule" status=daemonsStatus metric=daemons.size() legend="daemon(s)" />
-		<@module.indicator title="EventBus" icon="vertical_align_center" status=eventsStatus metric=eventSubcriptionsCount legend="subscription(s)" />
-		<@module.indicator title="Cache" icon="cached" status=cacheStatus metric=caches.size() legend="cache(s)" />
+		<@module.indicator icon="schedule" status=daemonsStatus metric=daemons.size() legend="daemon(s)" />
+		<@module.indicator icon="vertical_align_center" status=eventsStatus metric=eventSubcriptionsCount legend="subscription(s)" />
+		<@module.indicator icon="cached" status=cacheStatus metric=caches.size() legend="cache(s)" />
 	</div>
 
 

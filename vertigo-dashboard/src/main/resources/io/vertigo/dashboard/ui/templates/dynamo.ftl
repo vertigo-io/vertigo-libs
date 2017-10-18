@@ -4,8 +4,8 @@
 <@page.header/>
 
 	<div class="card-deck px-3 pb-3 justify-content-around"">
-		<@module.indicator title="Entities" icon="schedule" status='GREEN' metric=entityCount legend="entitie(s)" />
-		<@module.indicator title="KeyConcept" icon="vertical_align_center" status='GREEN' metric=keyConceptCount legend="key concept(s)" />
+		<@module.indicator icon="schedule" status='GREEN' metric=entityCount legend="entitie(s)" />
+		<@module.indicator icon="vertical_align_center" status='GREEN' metric=keyConceptCount legend="key concept(s)" />
 	</div>
 
 
