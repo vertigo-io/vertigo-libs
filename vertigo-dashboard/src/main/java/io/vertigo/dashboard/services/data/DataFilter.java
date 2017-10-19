@@ -11,23 +11,27 @@ public final class DataFilter implements Serializable {
 	private final String measurement;
 	private final String location;
 	private final String name;
-	private final String topic;
+	private final String module;
+	private final String feature;
 	private final String additionalWhereClause;// may be null
 
 	DataFilter(
 			final String measurement,
 			final String location,
 			final String name,
-			final String topic,
+			final String module,
+			final String feature,
 			final String additionalWhereClause) {
 		Assertion.checkNotNull(location);
 		Assertion.checkNotNull(name);
-		Assertion.checkNotNull(topic);
+		Assertion.checkNotNull(module);
+		Assertion.checkNotNull(feature);
 		//---
 		this.measurement = measurement;
 		this.location = location;
 		this.name = name;
-		this.topic = topic;
+		this.module = module;
+		this.feature = feature;
 		this.additionalWhereClause = additionalWhereClause;
 	}
 
@@ -47,8 +51,12 @@ public final class DataFilter implements Serializable {
 		return name;
 	}
 
-	public String getTopic() {
-		return topic;
+	public String getModule() {
+		return module;
+	}
+
+	public String getFeature() {
+		return feature;
 	}
 
 	public String getAdditionalWhereClause() {

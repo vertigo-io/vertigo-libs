@@ -8,7 +8,8 @@ public final class DataFilterBuilder implements Builder<DataFilter> {
 	private final String myMeasurement;
 	private String myLocation;
 	private String myName;
-	private String myTopic;
+	private String myModule;
+	private String myFeature;
 	private String myAdditionalWhereClause;
 
 	DataFilterBuilder(
@@ -32,10 +33,17 @@ public final class DataFilterBuilder implements Builder<DataFilter> {
 		return this;
 	}
 
-	public DataFilterBuilder withTopic(final String topic) {
-		Assertion.checkArgNotEmpty(topic);
+	public DataFilterBuilder withModule(final String module) {
+		Assertion.checkArgNotEmpty(module);
 		//---
-		myTopic = topic;
+		myModule = module;
+		return this;
+	}
+
+	public DataFilterBuilder withFeature(final String feature) {
+		Assertion.checkArgNotEmpty(feature);
+		//---
+		myFeature = feature;
 		return this;
 	}
 
@@ -54,14 +62,18 @@ public final class DataFilterBuilder implements Builder<DataFilter> {
 		if (myName == null) {
 			myName = "*";
 		}
-		if (myTopic == null) {
-			myTopic = "*";
+		if (myModule == null) {
+			myModule = "*";
+		}
+		if (myFeature == null) {
+			myFeature = "*";
 		}
 		return new DataFilter(
 				myMeasurement,
 				myLocation,
 				myName,
-				myTopic,
+				myModule,
+				myFeature,
 				myAdditionalWhereClause);
 	}
 

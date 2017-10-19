@@ -25,12 +25,12 @@
 
 <#macro health>
 	<div class="row" >
-		<#list topics as topic>
+		<#list features as feature>
 			<div class="card" style="width: 20rem;">
 			  <div class="card-block">
-			    <h4 class="card-title">${topic}</h4>
+			    <h4 class="card-title">${feature}</h4>
 			    <ul class="list-group">
-			    <#list healthchecksByTopic[topic] as healthcheck>
+			    <#list healthchecksByFeature[feature] as healthcheck>
 					<li class="list-group-item list-group-item-<#switch healthcheck.measure.status >
 							<#case 'GREEN'>success<#break>
 							<#case 'YELLOW'>warning<#break>
@@ -55,11 +55,11 @@
 </#macro>
 
 
-<#macro standardPanel title topic>
+<#macro standardPanel title feature>
 <div class="card mx-3 mb-3">
 	<div class="card-header">
 		${title}
-		<@healthByTopic topic />
+		<@healthByFeature feature />
 	</div>
 	<div class="card-body">
 		<div class="row">
@@ -89,9 +89,9 @@
 
 
 
-<#macro healthByTopic topic >
-	<#if healthchecksByTopic[topic]?? >
-		<#list healthchecksByTopic[topic] as healthCheck>
+<#macro healthByFeature feature >
+	<#if healthchecksByFeature[feature]?? >
+		<#list healthchecksByFeature[feature] as healthCheck>
 			<span class="badge badge-<#switch healthCheck.measure.status >
 						<#case 'GREEN'>success<#break>
 						<#case 'YELLOW'>warning<#break>

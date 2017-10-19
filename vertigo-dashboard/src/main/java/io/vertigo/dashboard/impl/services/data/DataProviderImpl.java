@@ -77,18 +77,18 @@ public final class DataProviderImpl implements DataProvider {
 	@Override
 	public List<HealthCheck> getHealthChecks() {
 
-		final List<String> measures = Arrays.asList("status:last", "message:last", "name:last", "topic:last", "feature:last", "checker:last");
+		final List<String> measures = Arrays.asList("status:last", "message:last", "name:last", "module:last", "feature:last", "checker:last");
 		final DataFilter dataFilter = DataFilter.builder("healthcheck").build();
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
 
-		return getTabularData(measures, dataFilter, timeFilter, true, "name", "topic")
+		return getTabularData(measures, dataFilter, timeFilter, true, "name", "feature")
 				.getTimedDataSeries()
 				.stream()
 				.map(timedDataSerie -> new HealthCheck(
 						(String) timedDataSerie.getValues().get("name:last"),
 						(String) timedDataSerie.getValues().get("checker:last"),
+						(String) timedDataSerie.getValues().get("module:last"),
 						(String) timedDataSerie.getValues().get("feature:last"),
-						(String) timedDataSerie.getValues().get("topic:last"),
 						Instant.ofEpochMilli(timedDataSerie.getTime()),
 						buildHealthMeasure(
 								(Double) timedDataSerie.getValues().get("status:last"),
@@ -120,16 +120,16 @@ public final class DataProviderImpl implements DataProvider {
 
 	@Override
 	public List<Metric> getMetrics() {
-		final List<String> measures = Arrays.asList("value:last", "name:last", "topic:last");
+		final List<String> measures = Arrays.asList("value:last", "name:last", "feature:last");
 		final DataFilter dataFilter = DataFilter.builder("metric").build();
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
 
-		return getTabularData(measures, dataFilter, timeFilter, true, "name", "topic")
+		return getTabularData(measures, dataFilter, timeFilter, true, "name", "feature")
 				.getTimedDataSeries()
 				.stream()
 				.map(timedDataSerie -> Metric.builder()
 						.withName((String) timedDataSerie.getValues().get("name:last"))
-						.withTopic((String) timedDataSerie.getValues().get("topic:last"))
+						.withFeature((String) timedDataSerie.getValues().get("feature:last"))
 						.withMeasureInstant(Instant.ofEpochMilli(timedDataSerie.getTime()))
 						.withValue((Double) timedDataSerie.getValues().get("value:last"))
 						.withSuccess()

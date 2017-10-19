@@ -72,19 +72,19 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 		metrics
 				.stream()
 				.filter(metric -> "entityCount".equals(metric.getName()))
-				.forEach(metric -> entityCounts.put(metric.getTopic(), metric.getValue()));
+				.forEach(metric -> entityCounts.put(metric.getFeature(), metric.getValue()));
 
 		final Map<String, Double> taskCounts = new HashMap<>();
 		metrics
 				.stream()
 				.filter(metric -> "definitionUsageInDao".equals(metric.getName()))
-				.forEach(metric -> taskCounts.put(metric.getTopic(), metric.getValue()));
+				.forEach(metric -> taskCounts.put(metric.getFeature(), metric.getValue()));
 
 		final Map<String, Double> fieldCount = new HashMap<>();
 		metrics
 				.stream()
 				.filter(metric -> "definitionFieldCount".equals(metric.getName()))
-				.forEach(metric -> fieldCount.put(metric.getTopic(), metric.getValue()));
+				.forEach(metric -> fieldCount.put(metric.getFeature(), metric.getValue()));
 
 		final Collection<DtDefinition> dtDefinitions = Home.getApp().getDefinitionSpace().getAll(DtDefinition.class);
 		final List<EntityModel> entities = dtDefinitions
@@ -109,18 +109,18 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 		metrics
 				.stream()
 				.filter(metric -> "domainUsageInTasks".equals(metric.getName()))
-				.forEach(metric -> taskCount.put(metric.getTopic(), metric.getValue()));
+				.forEach(metric -> taskCount.put(metric.getFeature(), metric.getValue()));
 
 		final Map<String, Double> dtDefinitionCount = new HashMap<>();
 		metrics
 				.stream()
 				.filter(metric -> "domainUsageInDtDefinitions".equals(metric.getName()))
-				.forEach(metric -> dtDefinitionCount.put(metric.getTopic(), metric.getValue()));
+				.forEach(metric -> dtDefinitionCount.put(metric.getFeature(), metric.getValue()));
 
 		final Collection<Domain> domains = Home.getApp().getDefinitionSpace().getAll(Domain.class);
 		final List<DomainModel> domainModels = domains
 				.stream()
-				.filter(domain -> domain.isPrimitive()) // we display only primitives
+				.filter(domain -> domain.getScope().isPrimitive()) // we display only primitives
 				.map(domain -> new DomainModel(
 						domain,
 						taskCount.get(domain.getName()),

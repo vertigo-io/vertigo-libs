@@ -256,8 +256,11 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 		if (!"*".equals(dataFilter.getLocation())) {
 			queryBuilder.append(" and \"location\"='").append(dataFilter.getLocation()).append("'");
 		}
-		if (!"*".equals(dataFilter.getTopic())) {
-			queryBuilder.append(" and \"topic\"='").append(dataFilter.getTopic()).append("'");
+		if (!"*".equals(dataFilter.getModule())) {
+			queryBuilder.append(" and \"module\"='").append(dataFilter.getModule()).append("'");
+		}
+		if (!"*".equals(dataFilter.getFeature())) {
+			queryBuilder.append(" and \"feature\"='").append(dataFilter.getFeature()).append("'");
 		}
 		if (dataFilter.getAdditionalWhereClause() != null) {
 			queryBuilder.append(" and ").append(dataFilter.getAdditionalWhereClause());

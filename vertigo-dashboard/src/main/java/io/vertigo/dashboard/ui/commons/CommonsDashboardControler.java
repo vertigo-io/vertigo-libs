@@ -76,7 +76,7 @@ public class CommonsDashboardControler extends AbstractDashboardModuleControler 
 
 	private static HealthStatus getHealthStatus(final App app, final Map<String, Object> model, final String... topics) {
 		final AnalyticsManager analyticsManager = app.getComponentSpace().resolve(AnalyticsManager.class);
-		final Map<String, List<HealthCheck>> healthCheckByTopic = (Map<String, List<HealthCheck>>) model.get("healthchecksByTopic");
+		final Map<String, List<HealthCheck>> healthCheckByTopic = (Map<String, List<HealthCheck>>) model.get("healthchecksByFeature");
 		final List<String> myTopics = Arrays.asList(topics);
 		final List<HealthCheck> healtChecksToAggregate = healthCheckByTopic
 				.entrySet()

@@ -25,7 +25,7 @@
 					   <div class="chart-panel chartjs linechart" 
 					  		data-url="data/series" 
 					  		data-query-measures='["duration:median","duration:percentile_90","duration:max"]'
-					  		data-query-data-filter='{"measurement":"daemon","name":"${daemon.name}","location":"*","topic":"*"}'
+					  		data-query-data-filter='{"measurement":"daemon","name":"${daemon.name}","location":"*", "module":"*" ,"feature":"*"}'
 					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}'
 					  		data-labels='{"duration:median":"Médiane", "duration:percentile_90":"Per90", "duration:max":"Maximum" }' 
 				    		data-colors='iRED2GREEN' >

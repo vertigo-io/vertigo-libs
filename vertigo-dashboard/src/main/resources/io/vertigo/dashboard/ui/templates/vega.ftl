@@ -15,7 +15,7 @@
 					<div class="chart chartjs stakedbarchart"
 						    data-url="data/series/clustered" 
 						    data-query-clustered-measure='{ "measure": "duration:count", "thresholds": ["10","20","50","100","200","500","1000","2000"] }'
-						    data-query-data-filter='{ "measurement": "webservices", "location": "*", "name": "*", "topic": "*" }'
+						    data-query-data-filter='{ "measurement": "webservices", "location": "*", "name": "*", "module": "*", "feature": "*" }'
 						    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1h" }'
 						    data-labels='{"duration:count<10":"<10ms","duration:count_20":"<20ms","duration:count_50":"<50ms","duration:count_100":"<100ms", "duration:count_200":"<200ms", "duration:count_500":"<500ms", "duration:count_1000":"<1s", "duration:count_2000":"<2s", "duration:count>2000":">2s"}'
 						    data-colors='iRED2GREEN'></div>
@@ -24,7 +24,7 @@
 					<div class="chart chartjs stakedbarchart" 
 					    data-url="data/series" 
 					    data-query-measures='["sql_duration:mean", "search_duration:mean", "inner_duration:mean"]'
-					    data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*" }'
+					     data-query-data-filter='{ "measurement": "webservices", "location": "*", "name": "*", "module": "*", "feature": "*" }'
 					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1h"}'
 						data-labels='{"sql_duration:mean":"SQL duration", "search_duration:mean":"Search duration", "inner_duration:mean":"Internal duration" }' 
 					    data-colors='GREEN2BLUE'></div> 
@@ -35,7 +35,7 @@
 					<div class="datatable"
 						    data-url="data/tabular/tops" 
 						    data-query-measures='["duration:sum"]'
-						   	data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*" }'
+						   	 data-query-data-filter='{ "measurement": "webservices", "location": "*", "name": "*", "module": "*", "feature": "*" }'
 						    data-query-time-filter='{ "from": "now() - 1w", "to": "now()"}'
 						    data-query-group-by='name'
 						   	data-query-max-rows='5' 
@@ -48,7 +48,7 @@
 						<div class="datatable"
 						    data-url="data/tabular/tops" 
 						    data-query-measures='["duration:mean"]'
-						   	data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*" }'
+						   	 data-query-data-filter='{ "measurement": "webservices", "location": "*", "name": "*", "module": "*", "feature": "*" }'
 						    data-query-time-filter='{ "from": "now() - 1w", "to": "now()"}'
 						    data-query-group-by='name'
 						   	data-query-max-rows='5' 
@@ -61,7 +61,7 @@
 						<div class="chart chartjs doughnut"
 						    data-url="data/tabular" 
 						    data-query-measures='["duration:count"]'
-						    data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*"}'
+						     data-query-data-filter='{ "measurement": "webservices", "location": "*", "name": "*", "module": "*", "feature": "*" }'
 						    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
 						    data-query-group-by='exception'
 							data-labels='{"":"OK"}' 
@@ -73,7 +73,7 @@
 				<div class="chart chartjs bubbles"
 					    data-url="data/tabular" 
 					    data-query-measures='["duration:count", "duration:mean", "sql_count:mean"]'
-					    data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*", "additionalWhereClause": "\"duration\"< 30000 "}'
+					    data-query-data-filter='{ "measurement": "webservices", "location": "*", "name": "*", "module": "*", "feature": "*" }'
 					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
 					    data-query-group-by='name'
 						data-labels='{"duration:count":"Hits", "duration:mean":"Mean duration", "sql_count:mean":"SQL hits" }' 
@@ -84,7 +84,7 @@
 						<div class="datatable"
 						    data-url="data/tabular" 
 						    data-query-measures='["sql_count:mean","sql_count:max", "sql_duration:sum"]'
-						   	data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*" }'
+						   	data-query-data-filter='{ "measurement": "webservices", "location": "*", "name": "*", "module": "*", "feature": "*" }'
 						    data-query-time-filter='{ "from": "now() - 1w", "to": "now()"}'
 						    data-query-group-by='name'
 						   	data-query-max-rows='5' 
@@ -101,7 +101,7 @@
 					<div class="chart chartjs linechart" 
 					    data-url="data/series" 
 					    data-query-measures='["duration:median", "duration:percentile_70", "duration:percentile_90"]'
-					    data-query-data-filter='{"measurement": "webservices", "location": "*","name": "*","topic": "*" }'
+					     data-query-data-filter='{ "measurement": "webservices", "location": "*", "name": "*", "module": "*", "feature": "*" }'
 					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1h"}'
 						data-labels='{"duration:median":"Médiane", "duration:percentile_70":"Per70", "duration:percentile_90":"Per90" }' 
 					    data-colors='iRED2GREEN'></div>   
