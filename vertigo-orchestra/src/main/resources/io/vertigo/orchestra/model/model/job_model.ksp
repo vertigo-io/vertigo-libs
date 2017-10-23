@@ -1,14 +1,15 @@
 package io.vertigo.orchestra.domain.model
 
+
 create DtDefinition DT_O_JOB_MODEL {
 	storeName : "orchestra"
-	key		JMO_ID			{ domain : DO_O_IDENTIFIANT		label :"id"	 								notNull:"false" }
-	field 	JOBNAME			{ domain : DO_O_LABEL 			label :"Name" 								notNull:"false" }
-	field 	DESC			{ domain : DO_O_LABEL 			label :"Description" 						notNull:"false" }
-	field 	CLASS_ENGINE	{ domain : DO_O_CLASS			label :"Class of the Job" 					notNull:"false" }
-	field 	MAX_RETRY		{ domain : DO_O_INTEGER			label :"max retry limit"					notNull:"false" }
-	field 	MAX_DELAY		{ domain : DO_O_INTEGER			label :"Max delay of all executions"		notNull:"false" }
-	field 	TIMEOUT			{ domain : DO_O_INTEGER			label :"Max delay of a single execution"	notNull:"false" }
-	field 	CREATION_DATE	{ domain : DO_O_TIMESTAMP 		label :"creation date" 						notNull:"false" }
-	field 	ACTIVE			{ domain : DO_O_BOOLEAN			label :"Active/Inactive"					notNull:"false" }
+	key		JMO_ID			{ domain : DO_O_IDENTIFIANT		label :"id"	 										notNull:"true" }
+	field 	JOBNAME			{ domain : DO_O_LABEL 			label :"Name" 										notNull:"true" }
+	field 	DESC			{ domain : DO_O_LABEL 			label :"Description" 								notNull:"true" }
+	field 	CLASS_ENGINE	{ domain : DO_O_CLASS			label :"Class of the Job" 							notNull:"true" }
+	field 	MAX_RETRY		{ domain : DO_O_INTEGER			label :"Max retry limit"							notNull:"true" }
+	field 	RUN_TIMEOUT		{ domain : DO_O_INTEGER			label :"Max delay in seconds of all executions"		notNull:"true" }
+	field 	EXEC_TIMEOUT	{ domain : DO_O_INTEGER			label :"Max delay in seconds of a single execution"	notNull:"true" }
+	field 	CREATION_DATE	{ domain : DO_O_TIMESTAMP 		label :"Creation date" 								notNull:"true" }
+	field 	ACTIVE			{ domain : DO_O_BOOLEAN			label :"Active/Inactive"							notNull:"true" }
 }

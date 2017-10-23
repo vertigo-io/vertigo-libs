@@ -50,7 +50,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 
 	@Override
 	public DtList<OJobModel> getAllModel() {
-		return jobModelDAO.findAll(Criterions.alwaysTrue(), Integer.MAX_VALUE);
+		return jobModelDAO.findAll(Criterions.alwaysTrue(), null);
 	}
 
 	@Override

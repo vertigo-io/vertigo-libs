@@ -2,6 +2,7 @@ package io.vertigo.orchestra.dao.run;
 
 import javax.inject.Inject;
 
+import java.util.Optional;
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -73,15 +74,15 @@ public final class RunPAO implements StoreServices {
 	 * Execute la tache TK_INSERT_JOB_RUNNING_TO_LAUNCH.
 	 * @param nodeId Long 
 	 * @param execDate java.time.ZonedDateTime 
-	 * @param usrId Long 
+	 * @param usrId Long (peut être null)
 	 * @param processesNextRun io.vertigo.orchestra.domain.schedule.OProcessNextRun 
 	 * @return Integer intSqlRowcount
 	*/
-	public Integer insertJobRunningToLaunch(final Long nodeId, final java.time.ZonedDateTime execDate, final Long usrId, final io.vertigo.orchestra.domain.schedule.OProcessNextRun processesNextRun) {
+	public Integer insertJobRunningToLaunch(final Long nodeId, final java.time.ZonedDateTime execDate, final Optional<Long> usrId, final io.vertigo.orchestra.domain.schedule.OProcessNextRun processesNextRun) {
 		final Task task = createTaskBuilder("TK_INSERT_JOB_RUNNING_TO_LAUNCH")
 				.addValue("NODE_ID", nodeId)
 				.addValue("EXEC_DATE", execDate)
-				.addValue("USR_ID", usrId)
+				.addValue("USR_ID", usrId.orElse(null))
 				.addValue("PROCESSES_NEXT_RUN", processesNextRun)
 				.build();
 		return getTaskManager()

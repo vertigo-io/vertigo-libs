@@ -25,9 +25,9 @@ public final class OJobModel implements Entity {
 
 	private Integer maxRetry;
 
-	private Integer maxDelay;
+	private Integer runTimeout;
 
-	private Integer timeout;
+	private Integer execTimeout;
 
 	private java.time.ZonedDateTime creationDate;
 
@@ -67,9 +67,9 @@ public final class OJobModel implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Name'.
-	 * @return String jobname
+	 * @return String jobname <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_LABEL", label = "Name")
+	@Field(domain = "DO_O_LABEL", required = true, label = "Name")
 	public String getJobname() {
 		return jobname;
 	}
@@ -77,7 +77,7 @@ public final class OJobModel implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Name'.
-	 * @param jobname String
+	 * @param jobname String <b>Obligatoire</b>
 	 */
 	
 	public void setJobname(final String jobname) {
@@ -89,9 +89,9 @@ public final class OJobModel implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Description'.
-	 * @return String desc
+	 * @return String desc <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_LABEL", label = "Description")
+	@Field(domain = "DO_O_LABEL", required = true, label = "Description")
 	public String getDesc() {
 		return desc;
 	}
@@ -99,7 +99,7 @@ public final class OJobModel implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Description'.
-	 * @param desc String
+	 * @param desc String <b>Obligatoire</b>
 	 */
 	
 	public void setDesc(final String desc) {
@@ -111,9 +111,9 @@ public final class OJobModel implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Class of the Job'.
-	 * @return String classEngine
+	 * @return String classEngine <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_CLASS", label = "Class of the Job")
+	@Field(domain = "DO_O_CLASS", required = true, label = "Class of the Job")
 	public String getClassEngine() {
 		return classEngine;
 	}
@@ -121,7 +121,7 @@ public final class OJobModel implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Class of the Job'.
-	 * @param classEngine String
+	 * @param classEngine String <b>Obligatoire</b>
 	 */
 	
 	public void setClassEngine(final String classEngine) {
@@ -132,18 +132,18 @@ public final class OJobModel implements Entity {
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'max retry limit'.
-	 * @return Integer maxRetry
+	 * Récupère la valeur de la propriété 'Max retry limit'.
+	 * @return Integer maxRetry <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_INTEGER", label = "max retry limit")
+	@Field(domain = "DO_O_INTEGER", required = true, label = "Max retry limit")
 	public Integer getMaxRetry() {
 		return maxRetry;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'max retry limit'.
-	 * @param maxRetry Integer
+	 * Définit la valeur de la propriété 'Max retry limit'.
+	 * @param maxRetry Integer <b>Obligatoire</b>
 	 */
 	
 	public void setMaxRetry(final Integer maxRetry) {
@@ -154,62 +154,62 @@ public final class OJobModel implements Entity {
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Max delay of all executions'.
-	 * @return Integer maxDelay
+	 * Récupère la valeur de la propriété 'Max delay in seconds of all executions'.
+	 * @return Integer runTimeout <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_INTEGER", label = "Max delay of all executions")
-	public Integer getMaxDelay() {
-		return maxDelay;
+	@Field(domain = "DO_O_INTEGER", required = true, label = "Max delay in seconds of all executions")
+	public Integer getRunTimeout() {
+		return runTimeout;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Max delay of all executions'.
-	 * @param maxDelay Integer
+	 * Définit la valeur de la propriété 'Max delay in seconds of all executions'.
+	 * @param runTimeout Integer <b>Obligatoire</b>
 	 */
 	
-	public void setMaxDelay(final Integer maxDelay) {
-		this.maxDelay = maxDelay;
+	public void setRunTimeout(final Integer runTimeout) {
+		this.runTimeout = runTimeout;
 	}
 	
 	
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Max delay of a single execution'.
-	 * @return Integer timeout
+	 * Récupère la valeur de la propriété 'Max delay in seconds of a single execution'.
+	 * @return Integer execTimeout <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_INTEGER", label = "Max delay of a single execution")
-	public Integer getTimeout() {
-		return timeout;
+	@Field(domain = "DO_O_INTEGER", required = true, label = "Max delay in seconds of a single execution")
+	public Integer getExecTimeout() {
+		return execTimeout;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Max delay of a single execution'.
-	 * @param timeout Integer
+	 * Définit la valeur de la propriété 'Max delay in seconds of a single execution'.
+	 * @param execTimeout Integer <b>Obligatoire</b>
 	 */
 	
-	public void setTimeout(final Integer timeout) {
-		this.timeout = timeout;
+	public void setExecTimeout(final Integer execTimeout) {
+		this.execTimeout = execTimeout;
 	}
 	
 	
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'creation date'.
-	 * @return java.time.ZonedDateTime creationDate
+	 * Récupère la valeur de la propriété 'Creation date'.
+	 * @return java.time.ZonedDateTime creationDate <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "creation date")
+	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Creation date")
 	public java.time.ZonedDateTime getCreationDate() {
 		return creationDate;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'creation date'.
-	 * @param creationDate java.time.ZonedDateTime
+	 * Définit la valeur de la propriété 'Creation date'.
+	 * @param creationDate java.time.ZonedDateTime <b>Obligatoire</b>
 	 */
 	
 	public void setCreationDate(final java.time.ZonedDateTime creationDate) {
@@ -221,9 +221,9 @@ public final class OJobModel implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Active/Inactive'.
-	 * @return Boolean active
+	 * @return Boolean active <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_BOOLEAN", label = "Active/Inactive")
+	@Field(domain = "DO_O_BOOLEAN", required = true, label = "Active/Inactive")
 	public Boolean getActive() {
 		return active;
 	}
@@ -231,7 +231,7 @@ public final class OJobModel implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Active/Inactive'.
-	 * @param active Boolean
+	 * @param active Boolean <b>Obligatoire</b>
 	 */
 	
 	public void setActive(final Boolean active) {
