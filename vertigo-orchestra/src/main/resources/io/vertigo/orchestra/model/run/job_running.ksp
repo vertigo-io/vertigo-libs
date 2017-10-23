@@ -3,7 +3,7 @@ package io.vertigo.orchestra.domain.run
 create DtDefinition DT_O_JOB_RUNNING {
 	storeName : "orchestra"
 	key JID						{domain : DO_O_IDENTIFIANT_JOB, label :"Id de l'execution du job", notNull:"true",}
-	field JOBNAME   			{domain : DO_O_LIBELLE, label :"Nom du job", notNull:"false",}
+	field JOBNAME   			{domain : DO_O_LABEL, label :"Nom du job", notNull:"false",}
 	field NODE_ID				{domain : DO_O_IDENTIFIANT, label :"Id du noeud", notNull:"true",}
 	field EXEC_DATE 			{domain : DO_O_TIMESTAMP, label :"Date d'execution", notNull:"false",},
 	field MAX_EXEC_DATE 		{domain : DO_O_TIMESTAMP, label :"Date Max d'execution (Date d'exec + TO)", notNull:"false",},

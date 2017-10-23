@@ -1,0 +1,120 @@
+package io.vertigo.orchestra.services
+/**************************************************************************************************/
+/* 											Gestion des domaines 								  */
+/**************************************************************************************************/
+
+
+create Domain DO_O_IDENTIFIANT_JOB {
+	dataType : String
+	formatter : FMT_O_DEFAULT
+	constraint : [CK_O_JOB_ID,CK_O_MAX_LENGTH_30]
+	storeType : "VARCHAR(30)"
+},
+
+create Domain DO_O_CODE_IDENTIFIANT {
+	dataType : String
+	formatter : FMT_O_DEFAULT
+	constraint : [CK_O_CODE,CK_O_MAX_LENGTH_20]
+	storeType : "VARCHAR(20)"
+},
+
+create Domain DO_O_STATUS_CODE {
+	dataType : String
+	formatter : FMT_O_DEFAULT
+	constraint : [CK_O_CODE,CK_O_MAX_LENGTH_1]
+	storeType : "VARCHAR(1)"
+},
+
+create Domain DO_O_TOKEN {
+	dataType : String
+	formatter : FMT_O_DEFAULT
+	constraint : [CK_O_MAX_LENGTH_100]
+	storeType : "VARCHAR(100)"
+},
+
+
+
+create Domain DO_O_JSON_TEXT {
+	dataType : String
+	formatter : FMT_O_DEFAULT
+	storeType : "TEXT"
+},
+
+create Domain DO_O_METADATAS {
+	dataType : String
+	formatter : FMT_O_DEFAULT
+	storeType : "TEXT"
+},
+
+
+create Domain DO_O_TEXT {
+	dataType : String
+	formatter : FMT_O_DEFAULT
+	storeType : "TEXT"
+},
+
+
+/**************************************************************************************************/
+/* 											Gestion des formatters 								  */
+/**************************************************************************************************/
+
+create Formatter FMT_O_OUI_NON {
+      className :"io.vertigo.dynamox.domain.formatter.FormatterBoolean"
+      args : "Oui;Non"
+},
+
+
+
+create Formatter FMT_O_DATE_HEURE {
+     className :"io.vertigo.dynamox.domain.formatter.FormatterDate"
+     args : "dd/MM/yyyy HH:mm"
+},
+
+/**************************************************************************************************/
+/* 											Gestion des contraintes 							  */
+/**************************************************************************************************/
+
+create Constraint CK_O_MAX_LENGTH_20 {
+	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength",
+	args :"20",
+},
+
+create Constraint CK_O_MAX_LENGTH_30 {
+	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength",
+	args :"30",
+},
+
+create Constraint CK_O_MAX_LENGTH_1 {
+	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength",
+	args :"1",
+},
+
+
+create Constraint CK_O_CODE {
+	className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex",
+	args : "([0-9A-Z_-]+)*$",
+	msg : "La liste des identifiants n'est pas valide",
+},
+
+
+create Constraint CK_O_JOB_ID {
+	className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex",
+	args : "\\d{4}_\\d{2}_\\d{2}_\\d{2}_\\d{2}_\\d{2}_[R|S|E]_\\d+$",
+	msg : "L'identifiant du Job n'est pas valide",
+},
+
+
+create Task TK_MOVIES {
+    className : "io.vertigo.dynamox.task.TaskEngineSelect"
+        request : "
+        	select name	from movie
+			"
+	attribute NAMES	 	{domain : DO_NAMES		notNull:"true" 	inOut :"out"}
+}
+
+create Domain DO_NAMES {
+	dataType : String
+	formatter : FMT_O_DEFAULT
+	multiple : "true"
+}
+

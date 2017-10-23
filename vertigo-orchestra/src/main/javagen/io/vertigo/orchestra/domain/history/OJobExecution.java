@@ -43,6 +43,7 @@ public final class OJobExecution implements Entity {
 	}
 
 	
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id d'une trace d'execution d'un job'.
@@ -58,9 +59,11 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Id d'une trace d'execution d'un job'.
 	 * @param jexId Long <b>Obligatoire</b>
 	 */
+	
 	public void setJexId(final Long jexId) {
 		this.jexId = jexId;
 	}
+	
 	
 	
 	/**
@@ -78,9 +81,11 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Status général d'execution'.
 	 * @param jobname String <b>Obligatoire</b>
 	 */
+	
 	public void setJobname(final String jobname) {
 		this.jobname = jobname;
 	}
+	
 	
 	
 	/**
@@ -98,9 +103,11 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Status général d'execution'.
 	 * @param status String <b>Obligatoire</b>
 	 */
+	
 	public void setStatus(final String status) {
 		this.status = status;
 	}
+	
 	
 	
 	/**
@@ -118,9 +125,11 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Code d'erreur fonctionel de l'execution'.
 	 * @param reason String
 	 */
+	
 	public void setReason(final String reason) {
 		this.reason = reason;
 	}
+	
 	
 	
 	/**
@@ -138,9 +147,11 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Date de début d'execution'.
 	 * @param dateDebut java.time.ZonedDateTime <b>Obligatoire</b>
 	 */
+	
 	public void setDateDebut(final java.time.ZonedDateTime dateDebut) {
 		this.dateDebut = dateDebut;
 	}
+	
 	
 	
 	/**
@@ -158,9 +169,11 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Date de fin d'execution'.
 	 * @param dateFin java.time.ZonedDateTime
 	 */
+	
 	public void setDateFin(final java.time.ZonedDateTime dateFin) {
 		this.dateFin = dateFin;
 	}
+	
 	
 	
 	/**
@@ -168,7 +181,7 @@ public final class OJobExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Implémentation effective de l'execution'.
 	 * @return String classEngine <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_CLASSE", required = true, label = "Implémentation effective de l'execution")
+	@Field(domain = "DO_O_CLASS", required = true, label = "Implémentation effective de l'execution")
 	public String getClassEngine() {
 		return classEngine;
 	}
@@ -178,9 +191,11 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Implémentation effective de l'execution'.
 	 * @param classEngine String <b>Obligatoire</b>
 	 */
+	
 	public void setClassEngine(final String classEngine) {
 		this.classEngine = classEngine;
 	}
+	
 	
 	
 	/**
@@ -198,9 +213,11 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Workspace d'entrée de l'execution'.
 	 * @param workspaceIn String <b>Obligatoire</b>
 	 */
+	
 	public void setWorkspaceIn(final String workspaceIn) {
 		this.workspaceIn = workspaceIn;
 	}
+	
 	
 	
 	/**
@@ -218,9 +235,11 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Workspace de sortie de l'execution'.
 	 * @param workspaceOut String
 	 */
+	
 	public void setWorkspaceOut(final String workspaceOut) {
 		this.workspaceOut = workspaceOut;
 	}
+	
 	
 	
 	/**
@@ -238,6 +257,7 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Id du noeud'.
 	 * @param nodId Long <b>Obligatoire</b>
 	 */
+	
 	public void setNodId(final Long nodId) {
 		this.nodId = nodId;
 	}

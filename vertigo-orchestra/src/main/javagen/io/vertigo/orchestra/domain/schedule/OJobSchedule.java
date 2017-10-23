@@ -45,6 +45,7 @@ public final class OJobSchedule implements Entity {
 	}
 
 	
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id de la definition de la planification à date'.
@@ -60,9 +61,11 @@ public final class OJobSchedule implements Entity {
 	 * Définit la valeur de la propriété 'Id de la definition de la planification à date'.
 	 * @param jscId Long <b>Obligatoire</b>
 	 */
+	
 	public void setJscId(final Long jscId) {
 		this.jscId = jscId;
 	}
+	
 	
 	
 	/**
@@ -80,9 +83,11 @@ public final class OJobSchedule implements Entity {
 	 * Définit la valeur de la propriété 'Date d'execution prévue'.
 	 * @param scheduleDate java.time.ZonedDateTime
 	 */
+	
 	public void setScheduleDate(final java.time.ZonedDateTime scheduleDate) {
 		this.scheduleDate = scheduleDate;
 	}
+	
 	
 	
 	/**
@@ -100,6 +105,7 @@ public final class OJobSchedule implements Entity {
 	 * Définit la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
 	 * @param params String
 	 */
+	
 	public void setParams(final String params) {
 		this.params = params;
 	}
@@ -111,6 +117,7 @@ public final class OJobSchedule implements Entity {
 	 * @return Long jmoId <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "JobModel")
+	@Deprecated
 	public Long getJmoId() {
 		return (Long)  jmoIdAccessor.getId();
 	}
@@ -120,15 +127,22 @@ public final class OJobSchedule implements Entity {
 	 * Définit la valeur de la propriété 'JobModel'.
 	 * @param jmoId Long <b>Obligatoire</b>
 	 */
+	@Deprecated
 	public void setJmoId(final Long jmoId) {
 		jmoIdAccessor.setId(jmoId);
 	}
 	
-	/**
+	
+	
+	 /**
 	 * Association : JobModel.
-	 * @return io.vertigo.orchestra.domain.model.OJobModel
+	 * @return l'accesseur vers la propriété 'JobModel'
 	 */
-				
+	public VAccessor<io.vertigo.orchestra.domain.model.OJobModel> getJobModelAccessor() {
+		return jmoIdAccessor;
+	}
+	
+	@Deprecated
 	public io.vertigo.orchestra.domain.model.OJobModel getJobModel() {
 		return jmoIdAccessor.get();
 	}
@@ -137,6 +151,7 @@ public final class OJobSchedule implements Entity {
 	 * Retourne l'URI: JobModel.
 	 * @return URI de l'association
 	 */
+	@Deprecated
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.model.OJobModel> getJobModelURI() {
 		return jmoIdAccessor.getURI();
 	}

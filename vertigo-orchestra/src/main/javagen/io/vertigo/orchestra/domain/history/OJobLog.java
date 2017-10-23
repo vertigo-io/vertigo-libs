@@ -53,6 +53,7 @@ public final class OJobLog implements Entity {
 	}
 
 	
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id d'une trace d'execution d'un job'.
@@ -68,9 +69,11 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'Id d'une trace d'execution d'un job'.
 	 * @param jloId Long <b>Obligatoire</b>
 	 */
+	
 	public void setJloId(final Long jloId) {
 		this.jloId = jloId;
 	}
+	
 	
 	
 	/**
@@ -88,9 +91,11 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'Date de la trace'.
 	 * @param dateTrace java.time.ZonedDateTime <b>Obligatoire</b>
 	 */
+	
 	public void setDateTrace(final java.time.ZonedDateTime dateTrace) {
 		this.dateTrace = dateTrace;
 	}
+	
 	
 	
 	/**
@@ -108,9 +113,11 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'Niveau de la trace'.
 	 * @param level String <b>Obligatoire</b>
 	 */
+	
 	public void setLevel(final String level) {
 		this.level = level;
 	}
+	
 	
 	
 	/**
@@ -128,9 +135,11 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'Type de trace'.
 	 * @param typeExecCd String <b>Obligatoire</b>
 	 */
+	
 	public void setTypeExecCd(final String typeExecCd) {
 		this.typeExecCd = typeExecCd;
 	}
+	
 	
 	
 	/**
@@ -148,9 +157,11 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'Message'.
 	 * @param message String
 	 */
+	
 	public void setMessage(final String message) {
 		this.message = message;
 	}
+	
 	
 	
 	/**
@@ -168,9 +179,11 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'Paramètre'.
 	 * @param parametre String
 	 */
+	
 	public void setParametre(final String parametre) {
 		this.parametre = parametre;
 	}
+	
 	
 	
 	/**
@@ -188,6 +201,7 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'Stacktrace d'erreur'.
 	 * @param erreur String
 	 */
+	
 	public void setErreur(final String erreur) {
 		this.erreur = erreur;
 	}
@@ -199,6 +213,7 @@ public final class OJobLog implements Entity {
 	 * @return Long proId <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "JobExecution")
+	@Deprecated
 	public Long getProId() {
 		return (Long)  proIdAccessor.getId();
 	}
@@ -208,15 +223,22 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'JobExecution'.
 	 * @param proId Long <b>Obligatoire</b>
 	 */
+	@Deprecated
 	public void setProId(final Long proId) {
 		proIdAccessor.setId(proId);
 	}
 	
-	/**
+	
+	
+	 /**
 	 * Association : JobExecution.
-	 * @return io.vertigo.orchestra.domain.history.OJobExecution
+	 * @return l'accesseur vers la propriété 'JobExecution'
 	 */
-				
+	public VAccessor<io.vertigo.orchestra.domain.history.OJobExecution> getJobExecutionAccessor() {
+		return proIdAccessor;
+	}
+	
+	@Deprecated
 	public io.vertigo.orchestra.domain.history.OJobExecution getJobExecution() {
 		return proIdAccessor.get();
 	}
@@ -225,6 +247,7 @@ public final class OJobLog implements Entity {
 	 * Retourne l'URI: JobExecution.
 	 * @return URI de l'association
 	 */
+	@Deprecated
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.history.OJobExecution> getJobExecutionURI() {
 		return proIdAccessor.getURI();
 	}

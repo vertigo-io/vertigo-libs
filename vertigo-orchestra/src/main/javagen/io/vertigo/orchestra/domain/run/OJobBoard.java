@@ -35,6 +35,7 @@ public final class OJobBoard implements Entity {
 	}
 
 	
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id de l'execution du job'.
@@ -50,9 +51,11 @@ public final class OJobBoard implements Entity {
 	 * Définit la valeur de la propriété 'Id de l'execution du job'.
 	 * @param jid String <b>Obligatoire</b>
 	 */
+	
 	public void setJid(final String jid) {
 		this.jid = jid;
 	}
+	
 	
 	
 	/**
@@ -70,9 +73,11 @@ public final class OJobBoard implements Entity {
 	 * Définit la valeur de la propriété 'Status de l'execution'.
 	 * @param status String <b>Obligatoire</b>
 	 */
+	
 	public void setStatus(final String status) {
 		this.status = status;
 	}
+	
 	
 	
 	/**
@@ -90,9 +95,11 @@ public final class OJobBoard implements Entity {
 	 * Définit la valeur de la propriété 'Id du noeud'.
 	 * @param nodeId Long <b>Obligatoire</b>
 	 */
+	
 	public void setNodeId(final Long nodeId) {
 		this.nodeId = nodeId;
 	}
+	
 	
 	
 	/**
@@ -110,9 +117,11 @@ public final class OJobBoard implements Entity {
 	 * Définit la valeur de la propriété 'Date max d'execution'.
 	 * @param maxDate java.time.ZonedDateTime
 	 */
+	
 	public void setMaxDate(final java.time.ZonedDateTime maxDate) {
 		this.maxDate = maxDate;
 	}
+	
 	
 	
 	/**
@@ -120,7 +129,7 @@ public final class OJobBoard implements Entity {
 	 * Récupère la valeur de la propriété 'Nb max de retry'.
 	 * @return Integer maxRetry
 	 */
-	@Field(domain = "DO_O_NOMBRE", label = "Nb max de retry")
+	@Field(domain = "DO_O_INTEGER", label = "Nb max de retry")
 	public Integer getMaxRetry() {
 		return maxRetry;
 	}
@@ -130,9 +139,11 @@ public final class OJobBoard implements Entity {
 	 * Définit la valeur de la propriété 'Nb max de retry'.
 	 * @param maxRetry Integer
 	 */
+	
 	public void setMaxRetry(final Integer maxRetry) {
 		this.maxRetry = maxRetry;
 	}
+	
 	
 	
 	/**
@@ -140,7 +151,7 @@ public final class OJobBoard implements Entity {
 	 * Récupère la valeur de la propriété 'Nb courrant de retry'.
 	 * @return Integer currentRetry
 	 */
-	@Field(domain = "DO_O_NOMBRE", label = "Nb courrant de retry")
+	@Field(domain = "DO_O_INTEGER", label = "Nb courrant de retry")
 	public Integer getCurrentRetry() {
 		return currentRetry;
 	}
@@ -150,6 +161,7 @@ public final class OJobBoard implements Entity {
 	 * Définit la valeur de la propriété 'Nb courrant de retry'.
 	 * @param currentRetry Integer
 	 */
+	
 	public void setCurrentRetry(final Integer currentRetry) {
 		this.currentRetry = currentRetry;
 	}

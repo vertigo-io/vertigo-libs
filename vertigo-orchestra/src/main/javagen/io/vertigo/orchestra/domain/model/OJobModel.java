@@ -41,181 +41,199 @@ public final class OJobModel implements Entity {
 	}
 
 	
+	
 	/**
 	 * Champ : ID.
-	 * Récupère la valeur de la propriété 'Identifiant du Model de Job'.
+	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long jmoId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Identifiant du Model de Job")
+	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "id")
 	public Long getJmoId() {
 		return jmoId;
 	}
 
 	/**
 	 * Champ : ID.
-	 * Définit la valeur de la propriété 'Identifiant du Model de Job'.
+	 * Définit la valeur de la propriété 'id'.
 	 * @param jmoId Long <b>Obligatoire</b>
 	 */
+	
 	public void setJmoId(final Long jmoId) {
 		this.jmoId = jmoId;
 	}
 	
 	
+	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Nom du job'.
+	 * Récupère la valeur de la propriété 'Name'.
 	 * @return String jobname
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Nom du job")
+	@Field(domain = "DO_O_LABEL", label = "Name")
 	public String getJobname() {
 		return jobname;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Nom du job'.
+	 * Définit la valeur de la propriété 'Name'.
 	 * @param jobname String
 	 */
+	
 	public void setJobname(final String jobname) {
 		this.jobname = jobname;
 	}
 	
 	
+	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Description du job'.
+	 * Récupère la valeur de la propriété 'Description'.
 	 * @return String desc
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Description du job")
+	@Field(domain = "DO_O_LABEL", label = "Description")
 	public String getDesc() {
 		return desc;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Description du job'.
+	 * Définit la valeur de la propriété 'Description'.
 	 * @param desc String
 	 */
+	
 	public void setDesc(final String desc) {
 		this.desc = desc;
 	}
 	
 	
+	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Classe d'implémentation du Job'.
+	 * Récupère la valeur de la propriété 'Class of the Job'.
 	 * @return String classEngine
 	 */
-	@Field(domain = "DO_O_CLASSE", label = "Classe d'implémentation du Job")
+	@Field(domain = "DO_O_CLASS", label = "Class of the Job")
 	public String getClassEngine() {
 		return classEngine;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Classe d'implémentation du Job'.
+	 * Définit la valeur de la propriété 'Class of the Job'.
 	 * @param classEngine String
 	 */
+	
 	public void setClassEngine(final String classEngine) {
 		this.classEngine = classEngine;
 	}
 	
 	
+	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Nombre max de retry'.
+	 * Récupère la valeur de la propriété 'max retry limit'.
 	 * @return Integer maxRetry
 	 */
-	@Field(domain = "DO_O_NOMBRE", label = "Nombre max de retry")
+	@Field(domain = "DO_O_INTEGER", label = "max retry limit")
 	public Integer getMaxRetry() {
 		return maxRetry;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Nombre max de retry'.
+	 * Définit la valeur de la propriété 'max retry limit'.
 	 * @param maxRetry Integer
 	 */
+	
 	public void setMaxRetry(final Integer maxRetry) {
 		this.maxRetry = maxRetry;
 	}
 	
 	
+	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Delai max de d'excution/retry'.
+	 * Récupère la valeur de la propriété 'Max delay of all executions'.
 	 * @return Integer maxDelay
 	 */
-	@Field(domain = "DO_O_NOMBRE", label = "Delai max de d'excution/retry")
+	@Field(domain = "DO_O_INTEGER", label = "Max delay of all executions")
 	public Integer getMaxDelay() {
 		return maxDelay;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Delai max de d'excution/retry'.
+	 * Définit la valeur de la propriété 'Max delay of all executions'.
 	 * @param maxDelay Integer
 	 */
+	
 	public void setMaxDelay(final Integer maxDelay) {
 		this.maxDelay = maxDelay;
 	}
 	
 	
+	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Délai max de d'attente d'execution'.
+	 * Récupère la valeur de la propriété 'Max delay of a single execution'.
 	 * @return Integer timeout
 	 */
-	@Field(domain = "DO_O_NOMBRE", label = "Délai max de d'attente d'execution")
+	@Field(domain = "DO_O_INTEGER", label = "Max delay of a single execution")
 	public Integer getTimeout() {
 		return timeout;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Délai max de d'attente d'execution'.
+	 * Définit la valeur de la propriété 'Max delay of a single execution'.
 	 * @param timeout Integer
 	 */
+	
 	public void setTimeout(final Integer timeout) {
 		this.timeout = timeout;
 	}
 	
 	
+	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Date de création'.
+	 * Récupère la valeur de la propriété 'creation date'.
 	 * @return java.time.ZonedDateTime creationDate
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Date de création")
+	@Field(domain = "DO_O_TIMESTAMP", label = "creation date")
 	public java.time.ZonedDateTime getCreationDate() {
 		return creationDate;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Date de création'.
+	 * Définit la valeur de la propriété 'creation date'.
 	 * @param creationDate java.time.ZonedDateTime
 	 */
+	
 	public void setCreationDate(final java.time.ZonedDateTime creationDate) {
 		this.creationDate = creationDate;
 	}
 	
 	
+	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Job Actif/Inactif'.
+	 * Récupère la valeur de la propriété 'Active/Inactive'.
 	 * @return Boolean active
 	 */
-	@Field(domain = "DO_O_BOOLEEN", label = "Job Actif/Inactif")
+	@Field(domain = "DO_O_BOOLEAN", label = "Active/Inactive")
 	public Boolean getActive() {
 		return active;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Job Actif/Inactif'.
+	 * Définit la valeur de la propriété 'Active/Inactive'.
 	 * @param active Boolean
 	 */
+	
 	public void setActive(final Boolean active) {
 		this.active = active;
 	}

@@ -23,6 +23,7 @@ public final class OProcessNextRun implements DtObject {
 
 
 	
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Nom du job'.
@@ -38,9 +39,11 @@ public final class OProcessNextRun implements DtObject {
 	 * Définit la valeur de la propriété 'Nom du job'.
 	 * @param jobname String
 	 */
+	
 	public void setJobname(final String jobname) {
 		this.jobname = jobname;
 	}
+	
 	
 	
 	/**
@@ -58,9 +61,11 @@ public final class OProcessNextRun implements DtObject {
 	 * Définit la valeur de la propriété 'Job Id'.
 	 * @param jobId String <b>Obligatoire</b>
 	 */
+	
 	public void setJobId(final String jobId) {
 		this.jobId = jobId;
 	}
+	
 	
 	
 	/**
@@ -78,9 +83,11 @@ public final class OProcessNextRun implements DtObject {
 	 * Définit la valeur de la propriété 'Date d'execution prévue'.
 	 * @param expectedTime java.time.ZonedDateTime
 	 */
+	
 	public void setExpectedTime(final java.time.ZonedDateTime expectedTime) {
 		this.expectedTime = expectedTime;
 	}
+	
 	
 	
 	/**
@@ -98,6 +105,7 @@ public final class OProcessNextRun implements DtObject {
 	 * Définit la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
 	 * @param initialParams String
 	 */
+	
 	public void setInitialParams(final String initialParams) {
 		this.initialParams = initialParams;
 	}

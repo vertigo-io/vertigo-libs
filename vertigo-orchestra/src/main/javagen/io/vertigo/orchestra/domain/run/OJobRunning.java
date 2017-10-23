@@ -49,6 +49,7 @@ public final class OJobRunning implements Entity {
 	}
 
 	
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id de l'execution du job'.
@@ -64,9 +65,11 @@ public final class OJobRunning implements Entity {
 	 * Définit la valeur de la propriété 'Id de l'execution du job'.
 	 * @param jid String <b>Obligatoire</b>
 	 */
+	
 	public void setJid(final String jid) {
 		this.jid = jid;
 	}
+	
 	
 	
 	/**
@@ -74,7 +77,7 @@ public final class OJobRunning implements Entity {
 	 * Récupère la valeur de la propriété 'Nom du job'.
 	 * @return String jobname
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Nom du job")
+	@Field(domain = "DO_O_LABEL", label = "Nom du job")
 	public String getJobname() {
 		return jobname;
 	}
@@ -84,9 +87,11 @@ public final class OJobRunning implements Entity {
 	 * Définit la valeur de la propriété 'Nom du job'.
 	 * @param jobname String
 	 */
+	
 	public void setJobname(final String jobname) {
 		this.jobname = jobname;
 	}
+	
 	
 	
 	/**
@@ -104,9 +109,11 @@ public final class OJobRunning implements Entity {
 	 * Définit la valeur de la propriété 'Id du noeud'.
 	 * @param nodeId Long <b>Obligatoire</b>
 	 */
+	
 	public void setNodeId(final Long nodeId) {
 		this.nodeId = nodeId;
 	}
+	
 	
 	
 	/**
@@ -124,9 +131,11 @@ public final class OJobRunning implements Entity {
 	 * Définit la valeur de la propriété 'Date d'execution'.
 	 * @param execDate java.time.ZonedDateTime
 	 */
+	
 	public void setExecDate(final java.time.ZonedDateTime execDate) {
 		this.execDate = execDate;
 	}
+	
 	
 	
 	/**
@@ -144,6 +153,7 @@ public final class OJobRunning implements Entity {
 	 * Définit la valeur de la propriété 'Date Max d'execution (Date d'exec + TO)'.
 	 * @param maxExecDate java.time.ZonedDateTime
 	 */
+	
 	public void setMaxExecDate(final java.time.ZonedDateTime maxExecDate) {
 		this.maxExecDate = maxExecDate;
 	}
@@ -155,6 +165,7 @@ public final class OJobRunning implements Entity {
 	 * @return Long usrId
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "User")
+	@Deprecated
 	public Long getUsrId() {
 		return (Long)  usrIdAccessor.getId();
 	}
@@ -164,15 +175,22 @@ public final class OJobRunning implements Entity {
 	 * Définit la valeur de la propriété 'User'.
 	 * @param usrId Long
 	 */
+	@Deprecated
 	public void setUsrId(final Long usrId) {
 		usrIdAccessor.setId(usrId);
 	}
 	
-	/**
+	
+	
+	 /**
 	 * Association : User.
-	 * @return io.vertigo.orchestra.domain.referential.OUser
+	 * @return l'accesseur vers la propriété 'User'
 	 */
-				
+	public VAccessor<io.vertigo.orchestra.domain.referential.OUser> getUserAccessor() {
+		return usrIdAccessor;
+	}
+	
+	@Deprecated
 	public io.vertigo.orchestra.domain.referential.OUser getUser() {
 		return usrIdAccessor.get();
 	}
@@ -181,6 +199,7 @@ public final class OJobRunning implements Entity {
 	 * Retourne l'URI: User.
 	 * @return URI de l'association
 	 */
+	@Deprecated
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.OUser> getUserURI() {
 		return usrIdAccessor.getURI();
 	}

@@ -37,6 +37,7 @@ public final class OUser implements Entity {
 	}
 
 	
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id'.
@@ -52,9 +53,11 @@ public final class OUser implements Entity {
 	 * Définit la valeur de la propriété 'Id'.
 	 * @param usrId Long <b>Obligatoire</b>
 	 */
+	
 	public void setUsrId(final Long usrId) {
 		this.usrId = usrId;
 	}
+	
 	
 	
 	/**
@@ -62,7 +65,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Nom'.
 	 * @return String firstName
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Nom")
+	@Field(domain = "DO_O_LABEL", label = "Nom")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -72,9 +75,11 @@ public final class OUser implements Entity {
 	 * Définit la valeur de la propriété 'Nom'.
 	 * @param firstName String
 	 */
+	
 	public void setFirstName(final String firstName) {
 		this.firstName = firstName;
 	}
+	
 	
 	
 	/**
@@ -82,7 +87,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Prénom'.
 	 * @return String lastName
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Prénom")
+	@Field(domain = "DO_O_LABEL", label = "Prénom")
 	public String getLastName() {
 		return lastName;
 	}
@@ -92,9 +97,11 @@ public final class OUser implements Entity {
 	 * Définit la valeur de la propriété 'Prénom'.
 	 * @param lastName String
 	 */
+	
 	public void setLastName(final String lastName) {
 		this.lastName = lastName;
 	}
+	
 	
 	
 	/**
@@ -102,7 +109,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Email'.
 	 * @return String email
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Email")
+	@Field(domain = "DO_O_LABEL", label = "Email")
 	public String getEmail() {
 		return email;
 	}
@@ -112,9 +119,11 @@ public final class OUser implements Entity {
 	 * Définit la valeur de la propriété 'Email'.
 	 * @param email String
 	 */
+	
 	public void setEmail(final String email) {
 		this.email = email;
 	}
+	
 	
 	
 	/**
@@ -122,7 +131,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Mot de passe'.
 	 * @return String password
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Mot de passe")
+	@Field(domain = "DO_O_LABEL", label = "Mot de passe")
 	public String getPassword() {
 		return password;
 	}
@@ -132,9 +141,11 @@ public final class OUser implements Entity {
 	 * Définit la valeur de la propriété 'Mot de passe'.
 	 * @param password String
 	 */
+	
 	public void setPassword(final String password) {
 		this.password = password;
 	}
+	
 	
 	
 	/**
@@ -142,7 +153,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Alerté en cas d'erreur'.
 	 * @return Boolean mailAlert
 	 */
-	@Field(domain = "DO_O_BOOLEEN", label = "Alerté en cas d'erreur")
+	@Field(domain = "DO_O_BOOLEAN", label = "Alerté en cas d'erreur")
 	public Boolean getMailAlert() {
 		return mailAlert;
 	}
@@ -152,9 +163,11 @@ public final class OUser implements Entity {
 	 * Définit la valeur de la propriété 'Alerté en cas d'erreur'.
 	 * @param mailAlert Boolean
 	 */
+	
 	public void setMailAlert(final Boolean mailAlert) {
 		this.mailAlert = mailAlert;
 	}
+	
 	
 	
 	/**
@@ -162,7 +175,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Compte Actif'.
 	 * @return Boolean active
 	 */
-	@Field(domain = "DO_O_BOOLEEN", label = "Compte Actif")
+	@Field(domain = "DO_O_BOOLEAN", label = "Compte Actif")
 	public Boolean getActive() {
 		return active;
 	}
@@ -172,6 +185,7 @@ public final class OUser implements Entity {
 	 * Définit la valeur de la propriété 'Compte Actif'.
 	 * @param active Boolean
 	 */
+	
 	public void setActive(final Boolean active) {
 		this.active = active;
 	}
