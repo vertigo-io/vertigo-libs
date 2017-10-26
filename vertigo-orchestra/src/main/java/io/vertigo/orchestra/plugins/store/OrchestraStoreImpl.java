@@ -63,6 +63,11 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	}
 
 	@Override
+	public DtList<OJobSchedule> getAllJobSchedules() {
+		return jobScheduleDAO.findAll(Criterions.alwaysTrue(), Integer.MAX_VALUE);
+	}
+
+	@Override
 	public void removeJobSchedule(final long jscId) {
 		jobScheduleDAO.delete(jscId);
 	}

@@ -25,7 +25,7 @@ import io.vertigo.orchestra.domain.model.OJobModel;
 import io.vertigo.orchestra.plugins.store.OParams;
 
 /**
- * 
+ *
  * @author xdurand
  *
  */
@@ -37,11 +37,10 @@ public interface JobExecutor extends Component {
 	 * @param jobId le job id
 	 * @param execDate la date exacte d'execution faisant reférence
 	 */
-	void execute(OJobModel job, OParams initialParams, String jobId, ZonedDateTime execDate);
+	void execute(OJobModel jobModel, OParams initialParams, String jobId, ZonedDateTime execDate);
 
-	
 	/**
-	 * 
+	 *
 	 */
 	void awaitTermination();
 

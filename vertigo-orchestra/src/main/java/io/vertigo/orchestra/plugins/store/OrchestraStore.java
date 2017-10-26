@@ -19,9 +19,11 @@ public interface OrchestraStore extends Component {
 
 	DtList<OJobModel> getAllJobModels();
 
-	/* ----------- Scheduling --------- */
+	/* ----------- Schedule --------- */
 	OJobSchedule scheduleAt(long jmoId, OParams params, ZonedDateTime scheduleDate);
 	//OJobSchedule scheduleCron(long jmoId, OParams params, String cronExpression);
+
+	DtList<OJobSchedule> getAllJobSchedules();
 
 	void removeJobSchedule(long jscId);
 	//void removeJobCron(long jcrId);

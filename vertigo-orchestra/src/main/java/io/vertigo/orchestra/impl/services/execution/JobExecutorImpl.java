@@ -40,6 +40,7 @@ import io.vertigo.orchestra.plugins.store.OWorkspace;
 import io.vertigo.orchestra.services.run.JobEndedEvent;
 import io.vertigo.orchestra.services.run.JobEngine;
 import io.vertigo.orchestra.services.run.JobExecutor;
+import io.vertigo.util.ClassUtil;
 
 public final class JobExecutorImpl implements Activeable, JobExecutor {
 
@@ -62,25 +63,14 @@ public final class JobExecutorImpl implements Activeable, JobExecutor {
 		Assertion.checkNotNull(job);
 		Assertion.checkNotNull(initialParams);
 		// ---
-		final String classToLauch = job.getClassEngine();
+		final String engineclassName = job.getClassEngine();
 
-		Class clazz;
-		try {
-			clazz = Class.forName(classToLauch);
-		} catch (final ClassNotFoundException e) {
-			throw new VSystemException(e, "Impossible de trouver la classe {0}", classToLauch);
-		}
-		Assertion.checkArgument(JobEngine.class.isAssignableFrom(clazz), "ClassEngine is not a JobEngine");
+		final Class<? extends JobEngine> engineClass = ClassUtil.classForName(engineclassName, JobEngine.class);
 
-		JobEngine run;
-		try {
-			run = (JobEngine) clazz.newInstance();
-		} catch (InstantiationException | IllegalAccessException e) {
-			throw new VSystemException(e, "Impossible d'instancier la classe {0}", classToLauch);
-		}
-		final OWorkspace ws = new OWorkspace(initialParams.asMap(), jobId, job.getJobName(), classToLauch, execDate);
+		final JobEngine jobEngine = ClassUtil.newInstance(engineClass);
+		final OWorkspace ws = new OWorkspace(initialParams.asMap(), jobId, job.getJobName(), engineclassName, execDate);
 
-		CompletableFuture.supplyAsync(() -> run.execute(ws), executor)
+		CompletableFuture.supplyAsync(() -> jobEngine.execute(ws), executor)
 				.thenAccept(this::fireSuccess);
 	}
 

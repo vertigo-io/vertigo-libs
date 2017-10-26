@@ -9,6 +9,7 @@ import org.junit.Test;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
 import io.vertigo.orchestra.domain.model.OJobModel;
+import io.vertigo.orchestra.domain.schedule.OJobSchedule;
 import io.vertigo.orchestra.plugins.store.OParams;
 import io.vertigo.orchestra.plugins.store.OrchestraStore;
 import io.vertigo.orchestra.services.execution.engine.SleepJobEngine;
@@ -59,6 +60,9 @@ public class OrchestraTest extends AbstractOrchestraTestCaseJU4 {
 		final OJobModel jobModel = createJobModel();
 		final OParams params = new OParams();
 		orchestraStore.scheduleAt(jobModel.getJmoId(), params, ZonedDateTime.now());
+
+		final DtList<OJobSchedule> jobSchedules = orchestraStore.getAllJobSchedules();
+		Assert.assertEquals(1, jobSchedules.size());
 	}
 
 }
