@@ -123,7 +123,6 @@ public final class RuleConditionDefinition implements Entity {
 	 * @return Long rudId
 	 */
 	@Field(domain = "DO_RULES_ID", type = "FOREIGN_KEY", label = "RuleDefinition")
-	@Deprecated
 	public Long getRudId() {
 		return (Long)  rudIdAccessor.getId();
 	}
@@ -133,7 +132,6 @@ public final class RuleConditionDefinition implements Entity {
 	 * Définit la valeur de la propriété 'RuleDefinition'.
 	 * @param rudId Long
 	 */
-	@Deprecated
 	public void setRudId(final Long rudId) {
 		rudIdAccessor.setId(rudId);
 	}
@@ -142,7 +140,7 @@ public final class RuleConditionDefinition implements Entity {
 	 * Association : RuleDefinition.
 	 * @return l'accesseur vers la propriété 'RuleDefinition'
 	 */
-	public VAccessor<io.vertigo.rules.domain.RuleDefinition> getRuleDefinitionAccessor() {
+	public VAccessor<io.vertigo.rules.domain.RuleDefinition> ruleDefinition() {
 		return rudIdAccessor;
 	}
 	

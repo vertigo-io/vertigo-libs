@@ -143,7 +143,6 @@ public final class WfDecision implements Entity {
 	 * @return Long wfaId
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", label = "WfActivity")
-	@Deprecated
 	public Long getWfaId() {
 		return (Long)  wfaIdAccessor.getId();
 	}
@@ -153,7 +152,6 @@ public final class WfDecision implements Entity {
 	 * Définit la valeur de la propriété 'WfActivity'.
 	 * @param wfaId Long
 	 */
-	@Deprecated
 	public void setWfaId(final Long wfaId) {
 		wfaIdAccessor.setId(wfaId);
 	}
@@ -162,7 +160,7 @@ public final class WfDecision implements Entity {
 	 * Association : WfActivity.
 	 * @return l'accesseur vers la propriété 'WfActivity'
 	 */
-	public VAccessor<io.vertigo.workflow.domain.instance.WfActivity> getWfActivityAccessor() {
+	public VAccessor<io.vertigo.workflow.domain.instance.WfActivity> wfActivity() {
 		return wfaIdAccessor;
 	}
 	

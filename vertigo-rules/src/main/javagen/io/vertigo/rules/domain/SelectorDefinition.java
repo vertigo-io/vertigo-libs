@@ -121,7 +121,7 @@ public final class SelectorDefinition implements Entity {
 	 * Association : RuleFilterDefinition.
 	 * @return l'accesseur vers la propriété 'RuleFilterDefinition'
 	 */
-	public ListVAccessor<io.vertigo.rules.domain.RuleFilterDefinition> getRuleFilterDefinitionAccessor() {
+	public ListVAccessor<io.vertigo.rules.domain.RuleFilterDefinition> ruleFilterDefinition() {
 		return ruleFilterDefinitionAccessor;
 	}
 	

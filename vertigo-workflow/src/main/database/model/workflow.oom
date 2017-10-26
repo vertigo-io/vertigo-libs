@@ -4000,6 +4000,7 @@ LABL 0 Arial,8,N</a:FontList>
 <a:ObjectID>05C15D54-51A4-4A05-8F98-6717769C48EC</a:ObjectID>
 <a:Name>WF_Multiplicity_Definition</a:Name>
 <a:Code>WF_MULTIPLICITY_DEFINITION</a:Code>
+<a:Stereotype>StaticMasterData</a:Stereotype>
 <a:CreationDate>1467885065</a:CreationDate>
 <a:Creator>xdurand</a:Creator>
 <a:ModificationDate>1469544247</a:ModificationDate>
@@ -5179,6 +5180,7 @@ LABL 0 Arial,8,N</a:FontList>
 </o:Shortcut>
 <o:Class Id="o82">
 <a:ObjectID>837318C1-7E56-41F7-9F9B-0331FF20F0EA</a:ObjectID>
+<a:Stereotype>StaticMasterData</a:Stereotype>
 <a:Name>WF_Status</a:Name>
 <a:Code>WF_STATUS</a:Code>
 <a:CreationDate>1467884394</a:CreationDate>

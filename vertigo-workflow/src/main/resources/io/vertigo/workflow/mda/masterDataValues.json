@@ -1,0 +1,33 @@
+{"io.vertigo.workflow.domain.instance.WfStatus" : 
+	{
+		"CRE" : {
+			"wfsCode" : "CRE",
+			"label" : "Created"
+		},
+		"STA" : {
+			"wfsCode" : "STA",
+			"label" : "Started"
+		},
+		"PAU" : {
+			"wfsCode" : "PAU",
+			"label" : "Paused"
+		},
+		"END" : {
+			"wfsCode" : "END",
+			"label" : "Ended"
+		}	
+				
+	},
+	"io.vertigo.workflow.domain.model.WfMultiplicityDefinition" : 
+	{
+		"SIN" : {
+			"wfmdCode" : "SIN",
+			"label" : "Single"
+		},
+		"MUL" : {
+			"wfmdCode" : "MUL",
+			"label" : "Multiple"
+		}
+				
+	}
+}

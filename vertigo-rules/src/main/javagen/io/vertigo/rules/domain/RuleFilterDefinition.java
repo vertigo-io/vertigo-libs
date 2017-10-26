@@ -123,7 +123,6 @@ public final class RuleFilterDefinition implements Entity {
 	 * @return Long selId
 	 */
 	@Field(domain = "DO_RULES_ID", type = "FOREIGN_KEY", label = "SelectorDefinition")
-	@Deprecated
 	public Long getSelId() {
 		return (Long)  selIdAccessor.getId();
 	}
@@ -133,7 +132,6 @@ public final class RuleFilterDefinition implements Entity {
 	 * Définit la valeur de la propriété 'SelectorDefinition'.
 	 * @param selId Long
 	 */
-	@Deprecated
 	public void setSelId(final Long selId) {
 		selIdAccessor.setId(selId);
 	}
@@ -142,7 +140,7 @@ public final class RuleFilterDefinition implements Entity {
 	 * Association : SelectorDefinition.
 	 * @return l'accesseur vers la propriété 'SelectorDefinition'
 	 */
-	public VAccessor<io.vertigo.rules.domain.SelectorDefinition> getSelectorDefinitionAccessor() {
+	public VAccessor<io.vertigo.rules.domain.SelectorDefinition> selectorDefinition() {
 		return selIdAccessor;
 	}
 	

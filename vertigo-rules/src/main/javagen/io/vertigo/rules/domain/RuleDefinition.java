@@ -121,7 +121,7 @@ public final class RuleDefinition implements Entity {
 	 * Association : RuleConditionDefinition.
 	 * @return l'accesseur vers la propriété 'RuleConditionDefinition'
 	 */
-	public ListVAccessor<io.vertigo.rules.domain.RuleConditionDefinition> getRuleConditionDefinitionAccessor() {
+	public ListVAccessor<io.vertigo.rules.domain.RuleConditionDefinition> ruleConditionDefinition() {
 		return ruleConditionDefinitionAccessor;
 	}
 	

@@ -3,6 +3,7 @@ package io.vertigo.workflow.domain.model;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.model.VAccessor;
+import io.vertigo.dynamo.domain.model.EnumVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -32,7 +33,7 @@ public final class WfActivityDefinition implements Entity {
 			foreignRole = "WfActivityDefinition",
 			foreignLabel = "WfActivityDefinition",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.workflow.domain.model.WfMultiplicityDefinition> wfmdCodeAccessor = new VAccessor<>(io.vertigo.workflow.domain.model.WfMultiplicityDefinition.class, "WfMultiplicityDefinition");
+	private final EnumVAccessor<io.vertigo.workflow.domain.model.WfMultiplicityDefinition, io.vertigo.workflow.domain.model.WfMultiplicityDefinitionEnum> wfmdCodeAccessor = new EnumVAccessor<>(io.vertigo.workflow.domain.model.WfMultiplicityDefinition.class, "WfMultiplicityDefinition", io.vertigo.workflow.domain.model.WfMultiplicityDefinitionEnum.class);
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_WFWD_WFAD_CURRENT",
@@ -118,7 +119,6 @@ public final class WfActivityDefinition implements Entity {
 	 * @return String wfmdCode
 	 */
 	@Field(domain = "DO_WF_CODE", type = "FOREIGN_KEY", label = "WfMultiplicityDefinition")
-	@Deprecated
 	public String getWfmdCode() {
 		return (String)  wfmdCodeAccessor.getId();
 	}
@@ -128,7 +128,6 @@ public final class WfActivityDefinition implements Entity {
 	 * Définit la valeur de la propriété 'WfMultiplicityDefinition'.
 	 * @param wfmdCode String
 	 */
-	@Deprecated
 	public void setWfmdCode(final String wfmdCode) {
 		wfmdCodeAccessor.setId(wfmdCode);
 	}
@@ -139,7 +138,6 @@ public final class WfActivityDefinition implements Entity {
 	 * @return Long wfwdId <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", required = true, label = "WfWorkflowDefinition")
-	@Deprecated
 	public Long getWfwdId() {
 		return (Long)  wfwdIdAccessor.getId();
 	}
@@ -149,7 +147,6 @@ public final class WfActivityDefinition implements Entity {
 	 * Définit la valeur de la propriété 'WfWorkflowDefinition'.
 	 * @param wfwdId Long <b>Obligatoire</b>
 	 */
-	@Deprecated
 	public void setWfwdId(final Long wfwdId) {
 		wfwdIdAccessor.setId(wfwdId);
 	}
@@ -158,7 +155,7 @@ public final class WfActivityDefinition implements Entity {
 	 * Association : WfMultiplicityDefinition.
 	 * @return l'accesseur vers la propriété 'WfMultiplicityDefinition'
 	 */
-	public VAccessor<io.vertigo.workflow.domain.model.WfMultiplicityDefinition> getWfMultiplicityDefinitionAccessor() {
+	public EnumVAccessor<io.vertigo.workflow.domain.model.WfMultiplicityDefinition, io.vertigo.workflow.domain.model.WfMultiplicityDefinitionEnum> wfMultiplicityDefinition() {
 		return wfmdCodeAccessor;
 	}
 	
@@ -184,7 +181,7 @@ public final class WfActivityDefinition implements Entity {
 	 * Association : WfWorkflowDefinition.
 	 * @return l'accesseur vers la propriété 'WfWorkflowDefinition'
 	 */
-	public VAccessor<io.vertigo.workflow.domain.model.WfWorkflowDefinition> getWfWorkflowDefinitionAccessor() {
+	public VAccessor<io.vertigo.workflow.domain.model.WfWorkflowDefinition> wfWorkflowDefinition() {
 		return wfwdIdAccessor;
 	}
 	

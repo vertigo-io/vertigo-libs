@@ -114,7 +114,6 @@ public final class WfActivity implements Entity {
 	 * @return Long wfwId <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", required = true, label = "WfWorkflow")
-	@Deprecated
 	public Long getWfwId() {
 		return (Long)  wfwIdAccessor.getId();
 	}
@@ -124,7 +123,6 @@ public final class WfActivity implements Entity {
 	 * Définit la valeur de la propriété 'WfWorkflow'.
 	 * @param wfwId Long <b>Obligatoire</b>
 	 */
-	@Deprecated
 	public void setWfwId(final Long wfwId) {
 		wfwIdAccessor.setId(wfwId);
 	}
@@ -135,7 +133,6 @@ public final class WfActivity implements Entity {
 	 * @return Long wfadId <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", required = true, label = "WfActivityDefinition")
-	@Deprecated
 	public Long getWfadId() {
 		return (Long)  wfadIdAccessor.getId();
 	}
@@ -145,7 +142,6 @@ public final class WfActivity implements Entity {
 	 * Définit la valeur de la propriété 'WfActivityDefinition'.
 	 * @param wfadId Long <b>Obligatoire</b>
 	 */
-	@Deprecated
 	public void setWfadId(final Long wfadId) {
 		wfadIdAccessor.setId(wfadId);
 	}
@@ -154,7 +150,7 @@ public final class WfActivity implements Entity {
 	 * Association : WfActivityDefinition.
 	 * @return l'accesseur vers la propriété 'WfActivityDefinition'
 	 */
-	public VAccessor<io.vertigo.workflow.domain.model.WfActivityDefinition> getWfActivityDefinitionAccessor() {
+	public VAccessor<io.vertigo.workflow.domain.model.WfActivityDefinition> wfActivityDefinition() {
 		return wfadIdAccessor;
 	}
 	
@@ -180,7 +176,7 @@ public final class WfActivity implements Entity {
 	 * Association : WfDecision.
 	 * @return l'accesseur vers la propriété 'WfDecision'
 	 */
-	public ListVAccessor<io.vertigo.workflow.domain.instance.WfDecision> getWfDecisionAccessor() {
+	public ListVAccessor<io.vertigo.workflow.domain.instance.WfDecision> wfDecision() {
 		return wfDecisionAccessor;
 	}
 	
@@ -210,7 +206,7 @@ public final class WfActivity implements Entity {
 	 * Association : WfWorkflow.
 	 * @return l'accesseur vers la propriété 'WfWorkflow'
 	 */
-	public VAccessor<io.vertigo.workflow.domain.instance.WfWorkflow> getWfWorkflowAccessor() {
+	public VAccessor<io.vertigo.workflow.domain.instance.WfWorkflow> wfWorkflow() {
 		return wfwIdAccessor;
 	}
 	

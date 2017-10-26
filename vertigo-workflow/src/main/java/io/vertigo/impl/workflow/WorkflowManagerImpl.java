@@ -41,8 +41,6 @@ import io.vertigo.rules.domain.SelectorDefinition;
 import io.vertigo.rules.services.RuleConstants;
 import io.vertigo.rules.services.RuleContext;
 import io.vertigo.rules.services.RuleServices;
-import io.vertigo.workflow.WfCodeMultiplicityDefinition;
-import io.vertigo.workflow.WfCodeStatusWorkflow;
 import io.vertigo.workflow.WfCodeTransition;
 import io.vertigo.workflow.WfTransitionBuilder;
 import io.vertigo.workflow.WfTransitionCriteria;
@@ -50,8 +48,10 @@ import io.vertigo.workflow.WfWorkflowDecision;
 import io.vertigo.workflow.WorkflowManager;
 import io.vertigo.workflow.domain.instance.WfActivity;
 import io.vertigo.workflow.domain.instance.WfDecision;
+import io.vertigo.workflow.domain.instance.WfStatusEnum;
 import io.vertigo.workflow.domain.instance.WfWorkflow;
 import io.vertigo.workflow.domain.model.WfActivityDefinition;
+import io.vertigo.workflow.domain.model.WfMultiplicityDefinitionEnum;
 import io.vertigo.workflow.domain.model.WfTransitionDefinition;
 import io.vertigo.workflow.domain.model.WfWorkflowDefinition;
 
@@ -74,7 +74,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	 * @param workflowStorePlugin
 	 * @param itemStorePlugin
 	 * @param ruleServices
-	 * @param workflowPredicateAutoValidatePlugin 
+	 * @param workflowPredicateAutoValidatePlugin
 	 */
 	@Inject
 	public WorkflowManagerImpl(final WorkflowStorePlugin workflowStorePlugin, final ItemStorePlugin itemStorePlugin,
@@ -106,7 +106,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		final WfWorkflow wfWorkflow = new WfWorkflow();
 		wfWorkflow.setCreationDate(new Date());
 		wfWorkflow.setItemId(item);
-		wfWorkflow.setWfsCode(WfCodeStatusWorkflow.CRE.name());
+		wfWorkflow.wfStatus().setEnumValue(WfStatusEnum.CRE);
 		wfWorkflow.setWfwdId(wfwdId);
 		wfWorkflow.setUserLogic(userLogic);
 		wfWorkflow.setUsername(username);
@@ -126,10 +126,10 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	@Override
 	public void startInstance(final WfWorkflow wfWorkflow) {
 		Assertion.checkNotNull(wfWorkflow);
-		Assertion.checkState(WfCodeStatusWorkflow.CRE.name().equals(wfWorkflow.getWfsCode()),
+		Assertion.checkState(WfStatusEnum.CRE == wfWorkflow.wfStatus().getEnumValue(),
 				"A workflow must be created before starting");
 		// ---
-		wfWorkflow.setWfsCode(WfCodeStatusWorkflow.STA.name());
+		wfWorkflow.wfStatus().setEnumValue(WfStatusEnum.STA);
 
 		final WfWorkflowDefinition wfWorkflowDefinition = workflowStorePlugin
 				.readWorkflowDefinition(wfWorkflow.getWfwdId());
@@ -148,31 +148,29 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	@Override
 	public void endInstance(final WfWorkflow wfWorkflow) {
 		Assertion.checkNotNull(wfWorkflow);
-		final WfCodeStatusWorkflow wcsw = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
-		Assertion.checkState(wcsw == WfCodeStatusWorkflow.STA || wcsw == WfCodeStatusWorkflow.PAU,
+		final WfStatusEnum wcsw = wfWorkflow.wfStatus().getEnumValue();
+		Assertion.checkState(wcsw == WfStatusEnum.STA || wcsw == WfStatusEnum.PAU,
 				"A workflow must be started or paused before ending");
 		// ---
-		wfWorkflow.setWfsCode(WfCodeStatusWorkflow.END.name());
+		wfWorkflow.wfStatus().setEnumValue(WfStatusEnum.END);
 		workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
 	}
 
 	@Override
 	public void pauseInstance(final WfWorkflow wfWorkflow) {
 		Assertion.checkNotNull(wfWorkflow);
-		final WfCodeStatusWorkflow wcsw = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
-		Assertion.checkState(wcsw == WfCodeStatusWorkflow.STA, "A workflow must be started before pausing");
+		Assertion.checkState(wfWorkflow.wfStatus().getEnumValue() == WfStatusEnum.STA, "A workflow must be started before pausing");
 		// ---
-		wfWorkflow.setWfsCode(WfCodeStatusWorkflow.PAU.name());
+		wfWorkflow.wfStatus().setEnumValue(WfStatusEnum.PAU);
 		workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
 	}
 
 	@Override
 	public void resumeInstance(final WfWorkflow wfWorkflow) {
 		Assertion.checkNotNull(wfWorkflow);
-		final WfCodeStatusWorkflow wcsw = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
-		Assertion.checkState(wcsw == WfCodeStatusWorkflow.PAU, "A workflow must be paused before resuming");
+		Assertion.checkState(wfWorkflow.wfStatus().getEnumValue() == WfStatusEnum.PAU, "A workflow must be paused before resuming");
 		// ---
-		wfWorkflow.setWfsCode(WfCodeStatusWorkflow.STA.name());
+		wfWorkflow.wfStatus().setEnumValue(WfStatusEnum.STA);
 		workflowStorePlugin.updateWorkflowInstance(wfWorkflow);
 
 	}
@@ -285,11 +283,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	 */
 	@Override
 	public void saveDecision(final WfWorkflow wfWorkflow, final WfDecision wfDecision) {
-		final WfCodeStatusWorkflow wcsw = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
-		if (wcsw != WfCodeStatusWorkflow.STA) {
-			throw new IllegalStateException("A workflow must be started before saving decision");
-		}
-
+		Assertion.checkState(wfWorkflow.wfStatus().getEnumValue() == WfStatusEnum.STA, "A workflow must be started before saving decision");
 		// ---
 		final WfWorkflow wfWorkflowFetch = workflowStorePlugin.readWorkflowInstanceForUpdateById(wfWorkflow.getWfwId());
 
@@ -313,10 +307,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		// ---
 		final WfActivityDefinition wfActivityDefinition = workflowStorePlugin.readActivityDefinition(wfActivity.getWfadId());
 
-		final WfCodeMultiplicityDefinition multiplicity = WfCodeMultiplicityDefinition
-				.valueOf(wfActivityDefinition.getWfmdCode());
-
-		if (multiplicity != WfCodeMultiplicityDefinition.SIN) {
+		if (wfActivityDefinition.wfMultiplicityDefinition().getEnumValue() != WfMultiplicityDefinitionEnum.SIN) {
 			throw new IllegalArgumentException();
 		}
 		return workflowStorePlugin.readDecisionsByActivityId(wfActivity.getWfaId())
@@ -330,10 +321,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		// ---
 		final WfActivityDefinition wfActivityDefinition = workflowStorePlugin.readActivityDefinition(wfActivity.getWfadId());
 
-		final WfCodeMultiplicityDefinition multiplicity = WfCodeMultiplicityDefinition
-				.valueOf(wfActivityDefinition.getWfmdCode());
-
-		if (multiplicity != WfCodeMultiplicityDefinition.MUL) {
+		if (wfActivityDefinition.wfMultiplicityDefinition().getEnumValue() != WfMultiplicityDefinitionEnum.MUL) {
 			throw new IllegalStateException();
 		}
 		return workflowStorePlugin.readDecisionsByActivityId(wfActivity.getWfaId());
@@ -345,11 +333,8 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		final WfActivityDefinition currentActivityDefinition = workflowStorePlugin
 				.readActivityDefinition(currentActivity.getWfadId());
 
-		final WfCodeMultiplicityDefinition wfCodeMultiplicityDefinition = WfCodeMultiplicityDefinition
-				.valueOf(currentActivityDefinition.getWfmdCode());
-
 		Optional<WfDecision> wfDecision;
-		if (wfCodeMultiplicityDefinition == WfCodeMultiplicityDefinition.SIN) {
+		if (currentActivityDefinition.wfMultiplicityDefinition().getEnumValue() == WfMultiplicityDefinitionEnum.SIN) {
 			wfDecision = getDecision(currentActivity);
 			if (!wfDecision.isPresent()) {
 				return false;
@@ -363,12 +348,9 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		final WfActivityDefinition currentActivityDefinition = workflowStorePlugin
 				.readActivityDefinition(currentActivity.getWfadId());
 
-		final WfCodeMultiplicityDefinition wfCodeMultiplicityDefinition = WfCodeMultiplicityDefinition
-				.valueOf(currentActivityDefinition.getWfmdCode());
-
 		boolean canGoToNextActivity = false;
 
-		if (wfCodeMultiplicityDefinition == WfCodeMultiplicityDefinition.MUL) {
+		if (currentActivityDefinition.wfMultiplicityDefinition().getEnumValue() == WfMultiplicityDefinitionEnum.MUL) {
 			final List<WfDecision> wfDecisions = workflowStorePlugin.findAllDecisionByActivity(currentActivity);
 			final DtObject obj = itemStorePlugin.readItem(wfWorkflow.getItemId());
 			final RuleConstants ruleConstants = ruleServices.getConstants(wfWorkflow.getWfwdId());
@@ -446,12 +428,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	@Override
 	public void saveDecisionAndGoToNextActivity(final WfWorkflow wfWorkflow, final String transitionName, final WfDecision wfDecision) {
-
-		final WfCodeStatusWorkflow wfCodeMultiplicityDefinition = WfCodeStatusWorkflow.valueOf(wfWorkflow.getWfsCode());
-
-		if (wfCodeMultiplicityDefinition != WfCodeStatusWorkflow.STA) {
-			throw new IllegalStateException("A workflow must be started before saving a decision");
-		}
+		Assertion.checkState(wfWorkflow.wfStatus().getEnumValue() == WfStatusEnum.STA, "A workflow must be started before saving decision");
 		// ---
 		final WfActivity currentActivity = workflowStorePlugin.readActivity(wfWorkflow.getWfaId2());
 

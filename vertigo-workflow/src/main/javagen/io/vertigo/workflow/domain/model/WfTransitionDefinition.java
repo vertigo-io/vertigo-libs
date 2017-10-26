@@ -113,7 +113,6 @@ public final class WfTransitionDefinition implements Entity {
 	 * @return Long wfwdId
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", label = "WfWorkflowDefinition")
-	@Deprecated
 	public Long getWfwdId() {
 		return (Long)  wfwdIdAccessor.getId();
 	}
@@ -123,7 +122,6 @@ public final class WfTransitionDefinition implements Entity {
 	 * Définit la valeur de la propriété 'WfWorkflowDefinition'.
 	 * @param wfwdId Long
 	 */
-	@Deprecated
 	public void setWfwdId(final Long wfwdId) {
 		wfwdIdAccessor.setId(wfwdId);
 	}
@@ -134,7 +132,6 @@ public final class WfTransitionDefinition implements Entity {
 	 * @return Long wfadIdFrom <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", required = true, label = "transitionFrom")
-	@Deprecated
 	public Long getWfadIdFrom() {
 		return (Long)  wfadIdFromAccessor.getId();
 	}
@@ -144,7 +141,6 @@ public final class WfTransitionDefinition implements Entity {
 	 * Définit la valeur de la propriété 'transitionFrom'.
 	 * @param wfadIdFrom Long <b>Obligatoire</b>
 	 */
-	@Deprecated
 	public void setWfadIdFrom(final Long wfadIdFrom) {
 		wfadIdFromAccessor.setId(wfadIdFrom);
 	}
@@ -155,7 +151,6 @@ public final class WfTransitionDefinition implements Entity {
 	 * @return Long wfadIdTo <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", required = true, label = "transitionTo")
-	@Deprecated
 	public Long getWfadIdTo() {
 		return (Long)  wfadIdToAccessor.getId();
 	}
@@ -165,7 +160,6 @@ public final class WfTransitionDefinition implements Entity {
 	 * Définit la valeur de la propriété 'transitionTo'.
 	 * @param wfadIdTo Long <b>Obligatoire</b>
 	 */
-	@Deprecated
 	public void setWfadIdTo(final Long wfadIdTo) {
 		wfadIdToAccessor.setId(wfadIdTo);
 	}
@@ -174,7 +168,7 @@ public final class WfTransitionDefinition implements Entity {
 	 * Association : transitionFrom.
 	 * @return l'accesseur vers la propriété 'transitionFrom'
 	 */
-	public VAccessor<io.vertigo.workflow.domain.model.WfActivityDefinition> getTransitionFromAccessor() {
+	public VAccessor<io.vertigo.workflow.domain.model.WfActivityDefinition> transitionFrom() {
 		return wfadIdFromAccessor;
 	}
 	
@@ -200,7 +194,7 @@ public final class WfTransitionDefinition implements Entity {
 	 * Association : transitionTo.
 	 * @return l'accesseur vers la propriété 'transitionTo'
 	 */
-	public VAccessor<io.vertigo.workflow.domain.model.WfActivityDefinition> getTransitionToAccessor() {
+	public VAccessor<io.vertigo.workflow.domain.model.WfActivityDefinition> transitionTo() {
 		return wfadIdToAccessor;
 	}
 	
@@ -226,7 +220,7 @@ public final class WfTransitionDefinition implements Entity {
 	 * Association : WfWorkflowDefinition.
 	 * @return l'accesseur vers la propriété 'WfWorkflowDefinition'
 	 */
-	public VAccessor<io.vertigo.workflow.domain.model.WfWorkflowDefinition> getWfWorkflowDefinitionAccessor() {
+	public VAccessor<io.vertigo.workflow.domain.model.WfWorkflowDefinition> wfWorkflowDefinition() {
 		return wfwdIdAccessor;
 	}
 	
