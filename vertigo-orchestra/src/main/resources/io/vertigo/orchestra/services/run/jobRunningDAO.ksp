@@ -44,7 +44,7 @@ create Task TK_GET_JOBS_TO_RUN {
         	  FROM O_JOB_RUNNING JRU
         	 WHERE JRU.DATE_EXEC = #DATE_EXEC# AND NOD_ID = #NOD_ID#
 			"
-	attribute DTO_O_JOB_RUNNING	 	{domain : DO_DT_O_JOB_RUNNING_DTC 	notNull:"true" 	inOut :"out"}
+	attribute DTO_O_JOB_RUNNING	 	{domain : DO_DT_O_JOB_EXEC_DTC 	notNull:"true" 	inOut :"out"}
 	attribute NOD_ID	 			{domain : DO_O_IDENTIFIANT 			notNull:"true" 	inOut :"in"}
 	attribute DATE_EXEC				{domain : DO_O_TIMESTAMP			notNull:"true" 	inOut :"in"}
 },

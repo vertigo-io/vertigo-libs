@@ -17,9 +17,7 @@ public final class OJobCron implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long jcrId;
-
 	private String cronExpression;
-
 	private String params;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
@@ -35,81 +33,70 @@ public final class OJobCron implements Entity {
 			foreignRole = "JobCron",
 			foreignLabel = "JobCron",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.model.OJobModel> jmoIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.model.OJobModel.class, "jobModel");
-
+	private final VAccessor<io.vertigo.orchestra.domain.model.OJobModel> jmoIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.model.OJobModel.class, "JobModel");
 
 	/** {@inheritDoc} */
 	@Override
 	public URI<OJobCron> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
-
-	
 	
 	/**
 	 * Champ : ID.
-	 * Récupère la valeur de la propriété 'Id de la definition du schedule CRON'.
+	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long jcrId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id de la definition du schedule CRON")
+	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "id")
 	public Long getJcrId() {
 		return jcrId;
 	}
 
 	/**
 	 * Champ : ID.
-	 * Définit la valeur de la propriété 'Id de la definition du schedule CRON'.
+	 * Définit la valeur de la propriété 'id'.
 	 * @param jcrId Long <b>Obligatoire</b>
 	 */
-	
 	public void setJcrId(final Long jcrId) {
 		this.jcrId = jcrId;
 	}
 	
-	
-	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Expression récurrence du processus'.
-	 * @return String cronExpression
+	 * Récupère la valeur de la propriété 'cron expression'.
+	 * @return String cronExpression <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_LABEL", label = "Expression récurrence du processus")
+	@Field(domain = "DO_O_LABEL", required = true, label = "cron expression")
 	public String getCronExpression() {
 		return cronExpression;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Expression récurrence du processus'.
-	 * @param cronExpression String
+	 * Définit la valeur de la propriété 'cron expression'.
+	 * @param cronExpression String <b>Obligatoire</b>
 	 */
-	
 	public void setCronExpression(final String cronExpression) {
 		this.cronExpression = cronExpression;
 	}
 	
-	
-	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
-	 * @return String params
+	 * Récupère la valeur de la propriété 'init params as JSON'.
+	 * @return String params <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_JSON_TEXT", label = "Paramètres initiaux sous forme de JSON")
+	@Field(domain = "DO_O_JSON_TEXT", required = true, label = "init params as JSON")
 	public String getParams() {
 		return params;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
-	 * @param params String
+	 * Définit la valeur de la propriété 'init params as JSON'.
+	 * @param params String <b>Obligatoire</b>
 	 */
-	
 	public void setParams(final String params) {
 		this.params = params;
 	}
-	
 	
 	/**
 	 * Champ : FOREIGN_KEY.
@@ -131,10 +118,8 @@ public final class OJobCron implements Entity {
 	public void setJmoId(final Long jmoId) {
 		jmoIdAccessor.setId(jmoId);
 	}
-	
-	
-	
-	 /**
+
+ 	/**
 	 * Association : JobModel.
 	 * @return l'accesseur vers la propriété 'JobModel'
 	 */
@@ -144,6 +129,10 @@ public final class OJobCron implements Entity {
 	
 	@Deprecated
 	public io.vertigo.orchestra.domain.model.OJobModel getJobModel() {
+		// we keep the lazyness
+		if (!jmoIdAccessor.isLoaded()) {
+			jmoIdAccessor.load();
+		}
 		return jmoIdAccessor.get();
 	}
 
@@ -155,7 +144,7 @@ public final class OJobCron implements Entity {
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.model.OJobModel> getJobModelURI() {
 		return jmoIdAccessor.getURI();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

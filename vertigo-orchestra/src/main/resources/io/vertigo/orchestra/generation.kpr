@@ -1,18 +1,18 @@
 execution.kpr
 
+model/model/job_model.ksp
+
+model/schedule/job_cron.ksp
+model/schedule/job_schedule.ksp
+
+model/run/job_run.ksp
+model/run/job_exec.ksp
 
 
-model/schedule/process_next_run.ksp
+
+model/trash/process_next_run.ksp
 
 model/referential/users.ksp
 
-model/model/job_model.ksp
-
-model/run/job_board.ksp
-model/run/job_running.ksp
-
 model/history/job_execution.ksp
 model/history/job_log.ksp
-
-model/schedule/job_cron.ksp
-model/schedule/job_scheduling.ksp

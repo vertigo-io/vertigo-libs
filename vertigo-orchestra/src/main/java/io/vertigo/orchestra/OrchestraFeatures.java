@@ -25,8 +25,8 @@ import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.orchestra.dao.history.OJobExecutionDAO;
 import io.vertigo.orchestra.dao.history.OJobLogDAO;
 import io.vertigo.orchestra.dao.model.OJobModelDAO;
-import io.vertigo.orchestra.dao.run.OJobBoardDAO;
-import io.vertigo.orchestra.dao.run.OJobRunningDAO;
+import io.vertigo.orchestra.dao.run.OJobExecDAO;
+import io.vertigo.orchestra.dao.run.OJobRunDAO;
 import io.vertigo.orchestra.dao.run.RunPAO;
 import io.vertigo.orchestra.dao.schedule.OJobCronDAO;
 import io.vertigo.orchestra.dao.schedule.OJobScheduleDAO;
@@ -59,17 +59,21 @@ public final class OrchestraFeatures extends Features {
 	 * @param forecastDurationSeconds the time to forecast planifications
 	 * @return these features
 	 */
-	public OrchestraFeatures withDataBase(final String nodeName, final int daemonPeriodSeconds, final int workersCount, final int forecastDurationSeconds) {
+	public OrchestraFeatures withDataBase(
+			final String nodeName,
+			final int daemonPeriodSeconds,
+			final int workersCount,
+			final int forecastDurationSeconds) {
 		getModuleConfigBuilder()
 				.addComponent(OrchestraStore.class, OrchestraStoreImpl.class)
 				.addComponent(JobExecutor.class, JobExecutorImpl.class, Param.of("timeout", String.valueOf(10)))
 				.addComponent(JobEndedEventSubscriber.class)
 				.addDefinitionProvider(OrchestraSchedulerProvider.class, Param.of("planningPeriod", String.valueOf(daemonPeriodSeconds)))
 				//----DAO
-				.addComponent(OJobRunningDAO.class)
+				.addComponent(OJobExecDAO.class)
 				.addComponent(OJobScheduleDAO.class)
 				.addComponent(OJobExecutionDAO.class)
-				.addComponent(OJobBoardDAO.class)
+				.addComponent(OJobRunDAO.class)
 				.addComponent(OJobModelDAO.class)
 				.addComponent(OJobCronDAO.class)
 				.addComponent(OJobLogDAO.class)
@@ -83,7 +87,6 @@ public final class OrchestraFeatures extends Features {
 		return this;
 	}
 
-	
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {

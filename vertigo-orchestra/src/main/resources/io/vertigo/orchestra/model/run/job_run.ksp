@@ -1,0 +1,12 @@
+package io.vertigo.orchestra.domain.run
+
+create DtDefinition DT_O_JOB_RUN {
+	storeName : "orchestra"
+	key	  JID				{ domain : DO_O_IDENTIFIANT_JOB 	label :"Id" 						notNull:"true"}
+	field STATUS			{ domain : DO_O_STATUS_CODE 		label :"Exec status" 				notNull:"true"}
+	field NODE_ID			{ domain : DO_O_IDENTIFIANT 		label :"Node Id" 					notNull:"true"}
+	field MAX_DATE			{ domain : DO_O_TIMESTAMP 			label :"Max date of the run"		notNull:"true"}
+	field MAX_RETRY			{ domain : DO_O_INTEGER 			label :"Max retry" 					notNull:"true"}
+	field CURRENT_TRY		{ domain : DO_O_INTEGER 			label :"Current try" 				notNull:"true"}
+}
+

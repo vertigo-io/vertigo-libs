@@ -12,158 +12,134 @@ import io.vertigo.lang.Generated;
  */
 @Generated
 @io.vertigo.dynamo.domain.stereotype.DataSpace("orchestra")
-public final class OJobBoard implements Entity {
+public final class OJobRun implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private String jid;
-
 	private String status;
-
 	private Long nodeId;
-
 	private java.time.ZonedDateTime maxDate;
-
 	private Integer maxRetry;
-
-	private Integer currentRetry;
-
+	private Integer currentTry;
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<OJobBoard> getURI() {
+	public URI<OJobRun> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
-
-	
 	
 	/**
 	 * Champ : ID.
-	 * Récupère la valeur de la propriété 'Id de l'execution du job'.
+	 * Récupère la valeur de la propriété 'Id'.
 	 * @return String jid <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT_JOB", type = "ID", required = true, label = "Id de l'execution du job")
+	@Field(domain = "DO_O_IDENTIFIANT_JOB", type = "ID", required = true, label = "Id")
 	public String getJid() {
 		return jid;
 	}
 
 	/**
 	 * Champ : ID.
-	 * Définit la valeur de la propriété 'Id de l'execution du job'.
+	 * Définit la valeur de la propriété 'Id'.
 	 * @param jid String <b>Obligatoire</b>
 	 */
-	
 	public void setJid(final String jid) {
 		this.jid = jid;
 	}
 	
-	
-	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Status de l'execution'.
+	 * Récupère la valeur de la propriété 'Exec status'.
 	 * @return String status <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_STATUS_CODE", required = true, label = "Status de l'execution")
+	@Field(domain = "DO_O_STATUS_CODE", required = true, label = "Exec status")
 	public String getStatus() {
 		return status;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Status de l'execution'.
+	 * Définit la valeur de la propriété 'Exec status'.
 	 * @param status String <b>Obligatoire</b>
 	 */
-	
 	public void setStatus(final String status) {
 		this.status = status;
 	}
 	
-	
-	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Id du noeud'.
+	 * Récupère la valeur de la propriété 'Node Id'.
 	 * @return Long nodeId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", required = true, label = "Id du noeud")
+	@Field(domain = "DO_O_IDENTIFIANT", required = true, label = "Node Id")
 	public Long getNodeId() {
 		return nodeId;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Id du noeud'.
+	 * Définit la valeur de la propriété 'Node Id'.
 	 * @param nodeId Long <b>Obligatoire</b>
 	 */
-	
 	public void setNodeId(final Long nodeId) {
 		this.nodeId = nodeId;
 	}
 	
-	
-	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Date max d'execution'.
-	 * @return java.time.ZonedDateTime maxDate
+	 * Récupère la valeur de la propriété 'Max date of the run'.
+	 * @return java.time.ZonedDateTime maxDate <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Date max d'execution")
+	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Max date of the run")
 	public java.time.ZonedDateTime getMaxDate() {
 		return maxDate;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Date max d'execution'.
-	 * @param maxDate java.time.ZonedDateTime
+	 * Définit la valeur de la propriété 'Max date of the run'.
+	 * @param maxDate java.time.ZonedDateTime <b>Obligatoire</b>
 	 */
-	
 	public void setMaxDate(final java.time.ZonedDateTime maxDate) {
 		this.maxDate = maxDate;
 	}
 	
-	
-	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Nb max de retry'.
-	 * @return Integer maxRetry
+	 * Récupère la valeur de la propriété 'Max retry'.
+	 * @return Integer maxRetry <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_INTEGER", label = "Nb max de retry")
+	@Field(domain = "DO_O_INTEGER", required = true, label = "Max retry")
 	public Integer getMaxRetry() {
 		return maxRetry;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Nb max de retry'.
-	 * @param maxRetry Integer
+	 * Définit la valeur de la propriété 'Max retry'.
+	 * @param maxRetry Integer <b>Obligatoire</b>
 	 */
-	
 	public void setMaxRetry(final Integer maxRetry) {
 		this.maxRetry = maxRetry;
 	}
 	
-	
-	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Nb courrant de retry'.
-	 * @return Integer currentRetry
+	 * Récupère la valeur de la propriété 'Current try'.
+	 * @return Integer currentTry <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_INTEGER", label = "Nb courrant de retry")
-	public Integer getCurrentRetry() {
-		return currentRetry;
+	@Field(domain = "DO_O_INTEGER", required = true, label = "Current try")
+	public Integer getCurrentTry() {
+		return currentTry;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Nb courrant de retry'.
-	 * @param currentRetry Integer
+	 * Définit la valeur de la propriété 'Current try'.
+	 * @param currentTry Integer <b>Obligatoire</b>
 	 */
-	
-	public void setCurrentRetry(final Integer currentRetry) {
-		this.currentRetry = currentRetry;
+	public void setCurrentTry(final Integer currentTry) {
+		this.currentTry = currentTry;
 	}
 	
 	/** {@inheritDoc} */

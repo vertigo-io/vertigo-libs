@@ -4,11 +4,9 @@ package io.vertigo.orchestra.dao.run
 create Task TK_INSERT_JOB_BOARD_TO_LAUNCH {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineProc"
-        request : "
-        	INSERT INTO O_JOB_BOARD (JID, STATUS, NODE_ID, MAX_DATE, MAX_RETRY, CURRENT_RETRY)
-        		 VALUES (#JOB_BOARD.JID#, #JOB_BOARD.STATUS#, #JOB_BOARD.NODE_ID#, #JOB_BOARD.MAX_DATE#, #JOB_BOARD.MAX_RETRY#, #JOB_BOARD.CURRENT_RETRY#)  
-			"
+        request : "	INSERT INTO O_JOB_BOARD (JID, STATUS, NODE_ID, MAX_DATE, MAX_RETRY, CURRENT_RETRY)
+        		 VALUES (#JOB_BOARD.JID#, #JOB_BOARD.STATUS#, #JOB_BOARD.NODE_ID#, #JOB_BOARD.MAX_DATE#, #JOB_BOARD.MAX_RETRY#, #JOB_BOARD.CURRENT_RETRY#)"
 
-	attribute JOB_BOARD			{domain : DO_DT_O_JOB_BOARD_DTO, notNull:"true" 	inOut :"in"}
+	attribute JOB_BOARD			{domain : DO_DT_O_JOB_RUN_DTO  notNull:"true" 	inOut :"in"}
 }
 

@@ -17,9 +17,7 @@ public final class OJobSchedule implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long jscId;
-
 	private java.time.ZonedDateTime scheduleDate;
-
 	private String params;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
@@ -35,81 +33,70 @@ public final class OJobSchedule implements Entity {
 			foreignRole = "JobSchedule",
 			foreignLabel = "JobSchedule",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.model.OJobModel> jmoIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.model.OJobModel.class, "jobModel");
-
+	private final VAccessor<io.vertigo.orchestra.domain.model.OJobModel> jmoIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.model.OJobModel.class, "JobModel");
 
 	/** {@inheritDoc} */
 	@Override
 	public URI<OJobSchedule> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
-
-	
 	
 	/**
 	 * Champ : ID.
-	 * Récupère la valeur de la propriété 'Id de la definition de la planification à date'.
+	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long jscId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id de la definition de la planification à date")
+	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "id")
 	public Long getJscId() {
 		return jscId;
 	}
 
 	/**
 	 * Champ : ID.
-	 * Définit la valeur de la propriété 'Id de la definition de la planification à date'.
+	 * Définit la valeur de la propriété 'id'.
 	 * @param jscId Long <b>Obligatoire</b>
 	 */
-	
 	public void setJscId(final Long jscId) {
 		this.jscId = jscId;
 	}
 	
-	
-	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Date d'execution prévue'.
-	 * @return java.time.ZonedDateTime scheduleDate
+	 * Récupère la valeur de la propriété 'schedule date'.
+	 * @return java.time.ZonedDateTime scheduleDate <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Date d'execution prévue")
+	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "schedule date")
 	public java.time.ZonedDateTime getScheduleDate() {
 		return scheduleDate;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Date d'execution prévue'.
-	 * @param scheduleDate java.time.ZonedDateTime
+	 * Définit la valeur de la propriété 'schedule date'.
+	 * @param scheduleDate java.time.ZonedDateTime <b>Obligatoire</b>
 	 */
-	
 	public void setScheduleDate(final java.time.ZonedDateTime scheduleDate) {
 		this.scheduleDate = scheduleDate;
 	}
 	
-	
-	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
-	 * @return String params
+	 * Récupère la valeur de la propriété 'init params as JSON'.
+	 * @return String params <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_JSON_TEXT", label = "Paramètres initiaux sous forme de JSON")
+	@Field(domain = "DO_O_JSON_TEXT", required = true, label = "init params as JSON")
 	public String getParams() {
 		return params;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
-	 * @param params String
+	 * Définit la valeur de la propriété 'init params as JSON'.
+	 * @param params String <b>Obligatoire</b>
 	 */
-	
 	public void setParams(final String params) {
 		this.params = params;
 	}
-	
 	
 	/**
 	 * Champ : FOREIGN_KEY.
@@ -131,10 +118,8 @@ public final class OJobSchedule implements Entity {
 	public void setJmoId(final Long jmoId) {
 		jmoIdAccessor.setId(jmoId);
 	}
-	
-	
-	
-	 /**
+
+ 	/**
 	 * Association : JobModel.
 	 * @return l'accesseur vers la propriété 'JobModel'
 	 */
@@ -144,6 +129,10 @@ public final class OJobSchedule implements Entity {
 	
 	@Deprecated
 	public io.vertigo.orchestra.domain.model.OJobModel getJobModel() {
+		// we keep the lazyness
+		if (!jmoIdAccessor.isLoaded()) {
+			jmoIdAccessor.load();
+		}
 		return jmoIdAccessor.get();
 	}
 
@@ -155,7 +144,7 @@ public final class OJobSchedule implements Entity {
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.model.OJobModel> getJobModelURI() {
 		return jmoIdAccessor.getURI();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

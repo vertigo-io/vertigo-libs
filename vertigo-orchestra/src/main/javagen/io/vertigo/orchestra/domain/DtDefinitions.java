@@ -17,18 +17,18 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 * Enumération des DtDefinitions.
 	 */
 	public enum Definitions {
-		/** Objet de données OJobBoard. */
-		OJobBoard(io.vertigo.orchestra.domain.run.OJobBoard.class),
 		/** Objet de données OJobCron. */
 		OJobCron(io.vertigo.orchestra.domain.schedule.OJobCron.class),
+		/** Objet de données OJobExec. */
+		OJobExec(io.vertigo.orchestra.domain.run.OJobExec.class),
 		/** Objet de données OJobExecution. */
 		OJobExecution(io.vertigo.orchestra.domain.history.OJobExecution.class),
 		/** Objet de données OJobLog. */
 		OJobLog(io.vertigo.orchestra.domain.history.OJobLog.class),
 		/** Objet de données OJobModel. */
 		OJobModel(io.vertigo.orchestra.domain.model.OJobModel.class),
-		/** Objet de données OJobRunning. */
-		OJobRunning(io.vertigo.orchestra.domain.run.OJobRunning.class),
+		/** Objet de données OJobRun. */
+		OJobRun(io.vertigo.orchestra.domain.run.OJobRun.class),
 		/** Objet de données OJobSchedule. */
 		OJobSchedule(io.vertigo.orchestra.domain.schedule.OJobSchedule.class),
 		/** Objet de données OProcessNextRun. */
@@ -52,34 +52,34 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	}
 
 	/**
-	 * Enumération des champs de OJobBoard.
-	 */
-	public enum OJobBoardFields implements DtFieldName<io.vertigo.orchestra.domain.run.OJobBoard> {
-		/** Propriété 'Id de l'execution du job'. */
-		JID,
-		/** Propriété 'Status de l'execution'. */
-		STATUS,
-		/** Propriété 'Id du noeud'. */
-		NODE_ID,
-		/** Propriété 'Date max d'execution'. */
-		MAX_DATE,
-		/** Propriété 'Nb max de retry'. */
-		MAX_RETRY,
-		/** Propriété 'Nb courrant de retry'. */
-		CURRENT_RETRY	}
-
-	/**
 	 * Enumération des champs de OJobCron.
 	 */
 	public enum OJobCronFields implements DtFieldName<io.vertigo.orchestra.domain.schedule.OJobCron> {
-		/** Propriété 'Id de la definition du schedule CRON'. */
+		/** Propriété 'id'. */
 		JCR_ID,
-		/** Propriété 'Expression récurrence du processus'. */
+		/** Propriété 'cron expression'. */
 		CRON_EXPRESSION,
-		/** Propriété 'Paramètres initiaux sous forme de JSON'. */
+		/** Propriété 'init params as JSON'. */
 		PARAMS,
 		/** Propriété 'JobModel'. */
 		JMO_ID	}
+
+	/**
+	 * Enumération des champs de OJobExec.
+	 */
+	public enum OJobExecFields implements DtFieldName<io.vertigo.orchestra.domain.run.OJobExec> {
+		/** Propriété 'Id'. */
+		JID,
+		/** Propriété 'Job Name'. */
+		JOB_NAME,
+		/** Propriété 'Node Id'. */
+		NODE_ID,
+		/** Propriété 'start exec date'. */
+		START_EXEC_DATE,
+		/** Propriété 'max date Max execution (start + timeout)'. */
+		MAX_EXEC_DATE,
+		/** Propriété 'User'. */
+		USR_ID	}
 
 	/**
 	 * Enumération des champs de OJobExecution.
@@ -131,51 +131,51 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 * Enumération des champs de OJobModel.
 	 */
 	public enum OJobModelFields implements DtFieldName<io.vertigo.orchestra.domain.model.OJobModel> {
-		/** Propriété 'Identifiant du Model de Job'. */
+		/** Propriété 'id'. */
 		JMO_ID,
-		/** Propriété 'Nom du job'. */
-		JOBNAME,
-		/** Propriété 'Description du job'. */
+		/** Propriété 'Name'. */
+		JOB_NAME,
+		/** Propriété 'Description'. */
 		DESC,
-		/** Propriété 'Classe d'implémentation du Job'. */
+		/** Propriété 'Class of the Job'. */
 		CLASS_ENGINE,
-		/** Propriété 'Nombre max de retry'. */
+		/** Propriété 'Max retry limit'. */
 		MAX_RETRY,
-		/** Propriété 'Delai max de d'excution/retry'. */
-		MAX_DELAY,
-		/** Propriété 'Délai max de d'attente d'execution'. */
-		TIMEOUT,
-		/** Propriété 'Date de création'. */
+		/** Propriété 'Max delay in seconds of all executions from scheduled date'. */
+		RUN_MAX_DELAY,
+		/** Propriété 'Timeout in seconds of a single execution'. */
+		EXEC_TIMEOUT,
+		/** Propriété 'Creation date'. */
 		CREATION_DATE,
-		/** Propriété 'Job Actif/Inactif'. */
+		/** Propriété 'Active/Inactive'. */
 		ACTIVE	}
 
 	/**
-	 * Enumération des champs de OJobRunning.
+	 * Enumération des champs de OJobRun.
 	 */
-	public enum OJobRunningFields implements DtFieldName<io.vertigo.orchestra.domain.run.OJobRunning> {
-		/** Propriété 'Id de l'execution du job'. */
+	public enum OJobRunFields implements DtFieldName<io.vertigo.orchestra.domain.run.OJobRun> {
+		/** Propriété 'Id'. */
 		JID,
-		/** Propriété 'Nom du job'. */
-		JOBNAME,
-		/** Propriété 'Id du noeud'. */
+		/** Propriété 'Exec status'. */
+		STATUS,
+		/** Propriété 'Node Id'. */
 		NODE_ID,
-		/** Propriété 'Date d'execution'. */
-		EXEC_DATE,
-		/** Propriété 'Date Max d'execution (Date d'exec + TO)'. */
-		MAX_EXEC_DATE,
-		/** Propriété 'User'. */
-		USR_ID	}
+		/** Propriété 'Max date of the run'. */
+		MAX_DATE,
+		/** Propriété 'Max retry'. */
+		MAX_RETRY,
+		/** Propriété 'Current try'. */
+		CURRENT_TRY	}
 
 	/**
 	 * Enumération des champs de OJobSchedule.
 	 */
 	public enum OJobScheduleFields implements DtFieldName<io.vertigo.orchestra.domain.schedule.OJobSchedule> {
-		/** Propriété 'Id de la definition de la planification à date'. */
+		/** Propriété 'id'. */
 		JSC_ID,
-		/** Propriété 'Date d'execution prévue'. */
+		/** Propriété 'schedule date'. */
 		SCHEDULE_DATE,
-		/** Propriété 'Paramètres initiaux sous forme de JSON'. */
+		/** Propriété 'init params as JSON'. */
 		PARAMS,
 		/** Propriété 'JobModel'. */
 		JMO_ID	}

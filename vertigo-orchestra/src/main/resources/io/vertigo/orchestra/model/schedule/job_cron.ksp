@@ -2,11 +2,10 @@ package io.vertigo.orchestra.domain.schedule
 
 create DtDefinition DT_O_JOB_CRON {
 	storeName : "orchestra"
-	key JCR_ID				{domain : DO_O_IDENTIFIANT, label :"Id de la definition du schedule CRON", notNull:"true",}
-	field CRON_EXPRESSION	{domain : DO_O_LABEL, label :"Expression récurrence du processus", notNull:"false",}
-	field PARAMS			{domain : DO_O_JSON_TEXT, label :"Paramètres initiaux sous forme de JSON ", notNull:"false",},	
+	key 	JCR_ID			{ domain : DO_O_IDENTIFIANT 	label :"id" 					notNull:"true"}
+	field 	CRON_EXPRESSION	{ domain : DO_O_LABEL 			label :"cron expression" 		notNull:"true"}
+	field 	PARAMS			{ domain : DO_O_JSON_TEXT 		label :"init params as JSON " 	notNull:"true"}	
 }
-
 
 create Association A_JCR_JMO {
     fkFieldName : "JMO_ID"

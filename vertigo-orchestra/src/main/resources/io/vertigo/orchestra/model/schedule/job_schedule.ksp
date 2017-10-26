@@ -1,0 +1,27 @@
+package io.vertigo.orchestra.domain.schedule
+
+create DtDefinition DT_O_JOB_SCHEDULE {
+	storeName : "orchestra"
+	key JSC_ID				{domain : DO_O_IDENTIFIANT 	label :"id" 					notNull:"true" }
+	field SCHEDULE_DATE		{domain : DO_O_TIMESTAMP 	label :"schedule date" 		 	notNull:"true" }
+	field PARAMS			{domain : DO_O_JSON_TEXT 	label :"init params as JSON" 	notNull:"true" }
+}
+
+create Association A_JSC_JMO {
+	fkFieldName : "JMO_ID"
+
+	dtDefinitionA : DT_O_JOB_SCHEDULE
+	dtDefinitionB : DT_O_JOB_MODEL
+	
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"1..1"
+	
+	labelA : "JobSchedule"
+	labelB : "JobModel"
+	roleA : "JobSchedule"
+	roleB : "JobModel"
+}
+

@@ -3,48 +3,48 @@
  * @type {Object}
  */
 module.exports = {
-        oJobBoard: {
+        oJobCron: {
+        jcrId: {
+            domain: "DO_O_IDENTIFIANT",
+            required: true
+        },
+        cronExpression: {
+            domain: "DO_O_LABEL",
+            required: true
+        },
+        params: {
+            domain: "DO_O_JSON_TEXT",
+            required: true
+        },
+        jmoId: {
+            domain: "DO_O_IDENTIFIANT",
+            required: true
+        }
+    },
+    oJobExec: {
         jid: {
             domain: "DO_O_IDENTIFIANT_JOB",
             required: true
         },
-        status: {
-            domain: "DO_O_STATUS_CODE",
+        jobName: {
+            domain: "DO_O_LABEL",
             required: true
         },
         nodeId: {
             domain: "DO_O_IDENTIFIANT",
             required: true
         },
-        maxDate: {
+        startExecDate: {
             domain: "DO_O_TIMESTAMP",
-            required: false
-        },
-        maxRetry: {
-            domain: "DO_O_NOMBRE",
-            required: false
-        },
-        currentRetry: {
-            domain: "DO_O_NOMBRE",
-            required: false
-        }
-    },
-    oJobCron: {
-        jcrId: {
-            domain: "DO_O_IDENTIFIANT",
             required: true
         },
-        cronExpression: {
-            domain: "DO_O_LIBELLE",
-            required: false
-        },
-        params: {
-            domain: "DO_O_JSON_TEXT",
-            required: false
-        },
-        jmoId: {
-            domain: "DO_O_IDENTIFIANT",
+        maxExecDate: {
+            domain: "DO_O_TIMESTAMP",
             required: true
+        },
+        usrId: {
+            domain: "DO_O_IDENTIFIANT",
+            required: false
         }
     },
     oJobExecution: {
@@ -73,7 +73,7 @@ module.exports = {
             required: false
         },
         classEngine: {
-            domain: "DO_O_CLASSE",
+            domain: "DO_O_CLASS",
             required: true
         },
         workspaceIn: {
@@ -128,63 +128,63 @@ module.exports = {
             domain: "DO_O_IDENTIFIANT",
             required: true
         },
-        jobname: {
-            domain: "DO_O_LIBELLE",
-            required: false
+        jobName: {
+            domain: "DO_O_LABEL",
+            required: true
         },
         desc: {
-            domain: "DO_O_LIBELLE",
-            required: false
+            domain: "DO_O_LABEL",
+            required: true
         },
         classEngine: {
-            domain: "DO_O_CLASSE",
-            required: false
+            domain: "DO_O_CLASS",
+            required: true
         },
         maxRetry: {
-            domain: "DO_O_NOMBRE",
-            required: false
+            domain: "DO_O_INTEGER",
+            required: true
         },
-        maxDelay: {
-            domain: "DO_O_NOMBRE",
-            required: false
+        runMaxDelay: {
+            domain: "DO_O_INTEGER",
+            required: true
         },
-        timeout: {
-            domain: "DO_O_NOMBRE",
-            required: false
+        execTimeout: {
+            domain: "DO_O_INTEGER",
+            required: true
         },
         creationDate: {
             domain: "DO_O_TIMESTAMP",
-            required: false
+            required: true
         },
         active: {
-            domain: "DO_O_BOOLEEN",
-            required: false
+            domain: "DO_O_BOOLEAN",
+            required: true
         }
     },
-    oJobRunning: {
+    oJobRun: {
         jid: {
             domain: "DO_O_IDENTIFIANT_JOB",
             required: true
         },
-        jobname: {
-            domain: "DO_O_LIBELLE",
-            required: false
+        status: {
+            domain: "DO_O_STATUS_CODE",
+            required: true
         },
         nodeId: {
             domain: "DO_O_IDENTIFIANT",
             required: true
         },
-        execDate: {
+        maxDate: {
             domain: "DO_O_TIMESTAMP",
-            required: false
+            required: true
         },
-        maxExecDate: {
-            domain: "DO_O_TIMESTAMP",
-            required: false
+        maxRetry: {
+            domain: "DO_O_INTEGER",
+            required: true
         },
-        usrId: {
-            domain: "DO_O_IDENTIFIANT",
-            required: false
+        currentTry: {
+            domain: "DO_O_INTEGER",
+            required: true
         }
     },
     oJobSchedule: {
@@ -194,11 +194,11 @@ module.exports = {
         },
         scheduleDate: {
             domain: "DO_O_TIMESTAMP",
-            required: false
+            required: true
         },
         params: {
             domain: "DO_O_JSON_TEXT",
-            required: false
+            required: true
         },
         jmoId: {
             domain: "DO_O_IDENTIFIANT",
@@ -229,27 +229,27 @@ module.exports = {
             required: true
         },
         firstName: {
-            domain: "DO_O_LIBELLE",
+            domain: "DO_O_LABEL",
             required: false
         },
         lastName: {
-            domain: "DO_O_LIBELLE",
+            domain: "DO_O_LABEL",
             required: false
         },
         email: {
-            domain: "DO_O_LIBELLE",
+            domain: "DO_O_LABEL",
             required: false
         },
         password: {
-            domain: "DO_O_LIBELLE",
+            domain: "DO_O_LABEL",
             required: false
         },
         mailAlert: {
-            domain: "DO_O_BOOLEEN",
+            domain: "DO_O_BOOLEAN",
             required: false
         },
         active: {
-            domain: "DO_O_BOOLEEN",
+            domain: "DO_O_BOOLEAN",
             required: false
         }
     }

@@ -16,33 +16,21 @@ public final class OJobExecution implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long jexId;
-
 	private String jobname;
-
 	private String status;
-
 	private String reason;
-
 	private java.time.ZonedDateTime dateDebut;
-
 	private java.time.ZonedDateTime dateFin;
-
 	private String classEngine;
-
 	private String workspaceIn;
-
 	private String workspaceOut;
-
 	private Long nodId;
-
 
 	/** {@inheritDoc} */
 	@Override
 	public URI<OJobExecution> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
-
-	
 	
 	/**
 	 * Champ : ID.
@@ -59,12 +47,9 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Id d'une trace d'execution d'un job'.
 	 * @param jexId Long <b>Obligatoire</b>
 	 */
-	
 	public void setJexId(final Long jexId) {
 		this.jexId = jexId;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -81,12 +66,9 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Status général d'execution'.
 	 * @param jobname String <b>Obligatoire</b>
 	 */
-	
 	public void setJobname(final String jobname) {
 		this.jobname = jobname;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -103,12 +85,9 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Status général d'execution'.
 	 * @param status String <b>Obligatoire</b>
 	 */
-	
 	public void setStatus(final String status) {
 		this.status = status;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -125,12 +104,9 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Code d'erreur fonctionel de l'execution'.
 	 * @param reason String
 	 */
-	
 	public void setReason(final String reason) {
 		this.reason = reason;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -147,12 +123,9 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Date de début d'execution'.
 	 * @param dateDebut java.time.ZonedDateTime <b>Obligatoire</b>
 	 */
-	
 	public void setDateDebut(final java.time.ZonedDateTime dateDebut) {
 		this.dateDebut = dateDebut;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -169,12 +142,9 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Date de fin d'execution'.
 	 * @param dateFin java.time.ZonedDateTime
 	 */
-	
 	public void setDateFin(final java.time.ZonedDateTime dateFin) {
 		this.dateFin = dateFin;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -191,12 +161,9 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Implémentation effective de l'execution'.
 	 * @param classEngine String <b>Obligatoire</b>
 	 */
-	
 	public void setClassEngine(final String classEngine) {
 		this.classEngine = classEngine;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -213,12 +180,9 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Workspace d'entrée de l'execution'.
 	 * @param workspaceIn String <b>Obligatoire</b>
 	 */
-	
 	public void setWorkspaceIn(final String workspaceIn) {
 		this.workspaceIn = workspaceIn;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -235,12 +199,9 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Workspace de sortie de l'execution'.
 	 * @param workspaceOut String
 	 */
-	
 	public void setWorkspaceOut(final String workspaceOut) {
 		this.workspaceOut = workspaceOut;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -257,7 +218,6 @@ public final class OJobExecution implements Entity {
 	 * Définit la valeur de la propriété 'Id du noeud'.
 	 * @param nodId Long <b>Obligatoire</b>
 	 */
-	
 	public void setNodId(final Long nodId) {
 		this.nodId = nodId;
 	}

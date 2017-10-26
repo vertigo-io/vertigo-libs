@@ -8,10 +8,10 @@
 -- ============================================================
 --   Sequences                                      
 -- ============================================================
-create sequence SEQ_O_JOB_BOARD
+create sequence SEQ_O_JOB_CRON
 	start with 1000 cache 20; 
 
-create sequence SEQ_O_JOB_CRON
+create sequence SEQ_O_JOB_EXEC
 	start with 1000 cache 20; 
 
 create sequence SEQ_O_JOB_EXECUTION
@@ -23,7 +23,7 @@ create sequence SEQ_O_JOB_LOG
 create sequence SEQ_O_JOB_MODEL
 	start with 1000 cache 20; 
 
-create sequence SEQ_O_JOB_RUNNING
+create sequence SEQ_O_JOB_RUN
 	start with 1000 cache 20; 
 
 create sequence SEQ_O_JOB_SCHEDULE
@@ -34,60 +34,60 @@ create sequence SEQ_O_USER
 
 
 -- ============================================================
---   Table : O_JOB_BOARD                                        
--- ============================================================
-create table O_JOB_BOARD
-(
-    JID         	 VARCHAR(30) 	not null,
-    STATUS      	 VARCHAR(1)  	not null,
-    NODE_ID     	 NUMERIC     	not null,
-    MAX_DATE    	 TIMESTAMP   	,
-    MAX_RETRY   	 NUMERIC     	,
-    CURRENT_RETRY	 NUMERIC     	,
-    constraint PK_O_JOB_BOARD primary key (JID)
-);
-
-comment on column O_JOB_BOARD.JID is
-'Id de l''execution du job';
-
-comment on column O_JOB_BOARD.STATUS is
-'Status de l''execution';
-
-comment on column O_JOB_BOARD.NODE_ID is
-'Id du noeud';
-
-comment on column O_JOB_BOARD.MAX_DATE is
-'Date max d''execution';
-
-comment on column O_JOB_BOARD.MAX_RETRY is
-'Nb max de retry';
-
-comment on column O_JOB_BOARD.CURRENT_RETRY is
-'Nb courrant de retry';
-
--- ============================================================
 --   Table : O_JOB_CRON                                        
 -- ============================================================
 create table O_JOB_CRON
 (
     JCR_ID      	 NUMERIC     	not null,
-    CRON_EXPRESSION	 VARCHAR(100)	,
-    PARAMS      	 TEXT        	,
+    CRON_EXPRESSION	 VARCHAR(100)	not null,
+    PARAMS      	 TEXT        	not null,
     JMO_ID      	 NUMERIC     	not null,
     constraint PK_O_JOB_CRON primary key (JCR_ID)
 );
 
 comment on column O_JOB_CRON.JCR_ID is
-'Id de la definition du schedule CRON';
+'id';
 
 comment on column O_JOB_CRON.CRON_EXPRESSION is
-'Expression récurrence du processus';
+'cron expression';
 
 comment on column O_JOB_CRON.PARAMS is
-'Paramètres initiaux sous forme de JSON';
+'init params as JSON';
 
 comment on column O_JOB_CRON.JMO_ID is
 'JobModel';
+
+-- ============================================================
+--   Table : O_JOB_EXEC                                        
+-- ============================================================
+create table O_JOB_EXEC
+(
+    JID         	 VARCHAR(30) 	not null,
+    JOB_NAME    	 VARCHAR(100)	not null,
+    NODE_ID     	 NUMERIC     	not null,
+    START_EXEC_DATE	 TIMESTAMP   	not null,
+    MAX_EXEC_DATE	 TIMESTAMP   	not null,
+    USR_ID      	 NUMERIC     	,
+    constraint PK_O_JOB_EXEC primary key (JID)
+);
+
+comment on column O_JOB_EXEC.JID is
+'Id';
+
+comment on column O_JOB_EXEC.JOB_NAME is
+'Job Name';
+
+comment on column O_JOB_EXEC.NODE_ID is
+'Node Id';
+
+comment on column O_JOB_EXEC.START_EXEC_DATE is
+'start exec date';
+
+comment on column O_JOB_EXEC.MAX_EXEC_DATE is
+'max date Max execution (start + timeout)';
+
+comment on column O_JOB_EXEC.USR_ID is
+'User';
 
 -- ============================================================
 --   Table : O_JOB_EXECUTION                                        
@@ -183,75 +183,75 @@ comment on column O_JOB_LOG.PRO_ID is
 create table O_JOB_MODEL
 (
     JMO_ID      	 NUMERIC     	not null,
-    JOBNAME     	 VARCHAR(100)	,
-    DESC        	 VARCHAR(100)	,
-    CLASS_ENGINE	 VARCHAR(200)	,
-    MAX_RETRY   	 NUMERIC     	,
-    MAX_DELAY   	 NUMERIC     	,
-    TIMEOUT     	 NUMERIC     	,
-    CREATION_DATE	 TIMESTAMP   	,
-    ACTIVE      	 BOOL        	,
+    JOB_NAME    	 VARCHAR(100)	not null,
+    DESC        	 VARCHAR(100)	not null,
+    CLASS_ENGINE	 VARCHAR(200)	not null,
+    MAX_RETRY   	 NUMERIC     	not null,
+    RUN_MAX_DELAY	 NUMERIC     	not null,
+    EXEC_TIMEOUT	 NUMERIC     	not null,
+    CREATION_DATE	 TIMESTAMP   	not null,
+    ACTIVE      	 BOOL        	not null,
     constraint PK_O_JOB_MODEL primary key (JMO_ID)
 );
 
 comment on column O_JOB_MODEL.JMO_ID is
-'Identifiant du Model de Job';
+'id';
 
-comment on column O_JOB_MODEL.JOBNAME is
-'Nom du job';
+comment on column O_JOB_MODEL.JOB_NAME is
+'Name';
 
 comment on column O_JOB_MODEL.DESC is
-'Description du job';
+'Description';
 
 comment on column O_JOB_MODEL.CLASS_ENGINE is
-'Classe d''implémentation du Job';
+'Class of the Job';
 
 comment on column O_JOB_MODEL.MAX_RETRY is
-'Nombre max de retry';
+'Max retry limit';
 
-comment on column O_JOB_MODEL.MAX_DELAY is
-'Delai max de d''excution/retry';
+comment on column O_JOB_MODEL.RUN_MAX_DELAY is
+'Max delay in seconds of all executions from scheduled date';
 
-comment on column O_JOB_MODEL.TIMEOUT is
-'Délai max de d''attente d''execution';
+comment on column O_JOB_MODEL.EXEC_TIMEOUT is
+'Timeout in seconds of a single execution';
 
 comment on column O_JOB_MODEL.CREATION_DATE is
-'Date de création';
+'Creation date';
 
 comment on column O_JOB_MODEL.ACTIVE is
-'Job Actif/Inactif';
+'Active/Inactive';
 
 -- ============================================================
---   Table : O_JOB_RUNNING                                        
+--   Table : O_JOB_RUN                                        
 -- ============================================================
-create table O_JOB_RUNNING
+create table O_JOB_RUN
 (
     JID         	 VARCHAR(30) 	not null,
-    JOBNAME     	 VARCHAR(100)	,
+    STATUS      	 VARCHAR(1)  	not null,
     NODE_ID     	 NUMERIC     	not null,
-    EXEC_DATE   	 TIMESTAMP   	,
-    MAX_EXEC_DATE	 TIMESTAMP   	,
-    USR_ID      	 NUMERIC     	,
-    constraint PK_O_JOB_RUNNING primary key (JID)
+    MAX_DATE    	 TIMESTAMP   	not null,
+    MAX_RETRY   	 NUMERIC     	not null,
+    CURRENT_TRY 	 NUMERIC     	not null,
+    constraint PK_O_JOB_RUN primary key (JID)
 );
 
-comment on column O_JOB_RUNNING.JID is
-'Id de l''execution du job';
+comment on column O_JOB_RUN.JID is
+'Id';
 
-comment on column O_JOB_RUNNING.JOBNAME is
-'Nom du job';
+comment on column O_JOB_RUN.STATUS is
+'Exec status';
 
-comment on column O_JOB_RUNNING.NODE_ID is
-'Id du noeud';
+comment on column O_JOB_RUN.NODE_ID is
+'Node Id';
 
-comment on column O_JOB_RUNNING.EXEC_DATE is
-'Date d''execution';
+comment on column O_JOB_RUN.MAX_DATE is
+'Max date of the run';
 
-comment on column O_JOB_RUNNING.MAX_EXEC_DATE is
-'Date Max d''execution (Date d''exec + TO)';
+comment on column O_JOB_RUN.MAX_RETRY is
+'Max retry';
 
-comment on column O_JOB_RUNNING.USR_ID is
-'User';
+comment on column O_JOB_RUN.CURRENT_TRY is
+'Current try';
 
 -- ============================================================
 --   Table : O_JOB_SCHEDULE                                        
@@ -259,20 +259,20 @@ comment on column O_JOB_RUNNING.USR_ID is
 create table O_JOB_SCHEDULE
 (
     JSC_ID      	 NUMERIC     	not null,
-    SCHEDULE_DATE	 TIMESTAMP   	,
-    PARAMS      	 TEXT        	,
+    SCHEDULE_DATE	 TIMESTAMP   	not null,
+    PARAMS      	 TEXT        	not null,
     JMO_ID      	 NUMERIC     	not null,
     constraint PK_O_JOB_SCHEDULE primary key (JSC_ID)
 );
 
 comment on column O_JOB_SCHEDULE.JSC_ID is
-'Id de la definition de la planification à date';
+'id';
 
 comment on column O_JOB_SCHEDULE.SCHEDULE_DATE is
-'Date d''execution prévue';
+'schedule date';
 
 comment on column O_JOB_SCHEDULE.PARAMS is
-'Paramètres initiaux sous forme de JSON';
+'init params as JSON';
 
 comment on column O_JOB_SCHEDULE.JMO_ID is
 'JobModel';
@@ -327,11 +327,11 @@ alter table O_JOB_LOG
 
 create index JLO_JEX_O_JOB_EXECUTION_FK on O_JOB_LOG (PRO_ID asc);
 
-alter table O_JOB_RUNNING
+alter table O_JOB_EXEC
 	add constraint FK_JOB_USR_O_USER foreign key (USR_ID)
 	references O_USER (USR_ID);
 
-create index JOB_USR_O_USER_FK on O_JOB_RUNNING (USR_ID asc);
+create index JOB_USR_O_USER_FK on O_JOB_EXEC (USR_ID asc);
 
 alter table O_JOB_SCHEDULE
 	add constraint FK_JSC_JMO_O_JOB_MODEL foreign key (JMO_ID)

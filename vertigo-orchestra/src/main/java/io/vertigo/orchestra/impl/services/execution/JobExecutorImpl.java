@@ -78,7 +78,7 @@ public final class JobExecutorImpl implements Activeable, JobExecutor {
 		} catch (InstantiationException | IllegalAccessException e) {
 			throw new VSystemException(e, "Impossible d'instancier la classe {0}", classToLauch);
 		}
-		final OWorkspace ws = new OWorkspace(initialParams.asMap(), jobId, job.getJobname(), classToLauch, execDate);
+		final OWorkspace ws = new OWorkspace(initialParams.asMap(), jobId, job.getJobName(), classToLauch, execDate);
 
 		CompletableFuture.supplyAsync(() -> run.execute(ws), executor)
 				.thenAccept(this::fireSuccess);

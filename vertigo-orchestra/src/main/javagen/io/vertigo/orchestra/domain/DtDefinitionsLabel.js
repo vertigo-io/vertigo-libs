@@ -4,19 +4,19 @@
  */
 
 module.exports = {
-    oJobBoard: {
-        jid: "Id de l'execution du job",
-        status: "Status de l'execution",
-        nodeId: "Id du noeud",
-        maxDate: "Date max d'execution",
-        maxRetry: "Nb max de retry",
-        currentRetry: "Nb courrant de retry"
-    },
     oJobCron: {
-        jcrId: "Id de la definition du schedule CRON",
-        cronExpression: "Expression récurrence du processus",
-        params: "Paramètres initiaux sous forme de JSON",
+        jcrId: "id",
+        cronExpression: "cron expression",
+        params: "init params as JSON",
         jmoId: "JobModel"
+    },
+    oJobExec: {
+        jid: "Id",
+        jobName: "Job Name",
+        nodeId: "Node Id",
+        startExecDate: "start exec date",
+        maxExecDate: "max date Max execution (start + timeout)",
+        usrId: "User"
     },
     oJobExecution: {
         jexId: "Id d'une trace d'execution d'un job",
@@ -41,28 +41,28 @@ module.exports = {
         proId: "JobExecution"
     },
     oJobModel: {
-        jmoId: "Identifiant du Model de Job",
-        jobname: "Nom du job",
-        desc: "Description du job",
-        classEngine: "Classe d'implémentation du Job",
-        maxRetry: "Nombre max de retry",
-        maxDelay: "Delai max de d'excution/retry",
-        timeout: "Délai max de d'attente d'execution",
-        creationDate: "Date de création",
-        active: "Job Actif/Inactif"
+        jmoId: "id",
+        jobName: "Name",
+        desc: "Description",
+        classEngine: "Class of the Job",
+        maxRetry: "Max retry limit",
+        runMaxDelay: "Max delay in seconds of all executions from scheduled date",
+        execTimeout: "Timeout in seconds of a single execution",
+        creationDate: "Creation date",
+        active: "Active/Inactive"
     },
-    oJobRunning: {
-        jid: "Id de l'execution du job",
-        jobname: "Nom du job",
-        nodeId: "Id du noeud",
-        execDate: "Date d'execution",
-        maxExecDate: "Date Max d'execution (Date d'exec + TO)",
-        usrId: "User"
+    oJobRun: {
+        jid: "Id",
+        status: "Exec status",
+        nodeId: "Node Id",
+        maxDate: "Max date of the run",
+        maxRetry: "Max retry",
+        currentTry: "Current try"
     },
     oJobSchedule: {
-        jscId: "Id de la definition de la planification à date",
-        scheduleDate: "Date d'execution prévue",
-        params: "Paramètres initiaux sous forme de JSON",
+        jscId: "id",
+        scheduleDate: "schedule date",
+        params: "init params as JSON",
         jmoId: "JobModel"
     },
     oProcessNextRun: {

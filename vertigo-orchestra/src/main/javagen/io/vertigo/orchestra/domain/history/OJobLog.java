@@ -17,17 +17,11 @@ public final class OJobLog implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long jloId;
-
 	private java.time.ZonedDateTime dateTrace;
-
 	private String level;
-
 	private String typeExecCd;
-
 	private String message;
-
 	private String parametre;
-
 	private String erreur;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
@@ -43,16 +37,13 @@ public final class OJobLog implements Entity {
 			foreignRole = "JobLog",
 			foreignLabel = "JobLog",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.history.OJobExecution> proIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.history.OJobExecution.class, "jobExecution");
-
+	private final VAccessor<io.vertigo.orchestra.domain.history.OJobExecution> proIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.history.OJobExecution.class, "JobExecution");
 
 	/** {@inheritDoc} */
 	@Override
 	public URI<OJobLog> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
-
-	
 	
 	/**
 	 * Champ : ID.
@@ -69,12 +60,9 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'Id d'une trace d'execution d'un job'.
 	 * @param jloId Long <b>Obligatoire</b>
 	 */
-	
 	public void setJloId(final Long jloId) {
 		this.jloId = jloId;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -91,12 +79,9 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'Date de la trace'.
 	 * @param dateTrace java.time.ZonedDateTime <b>Obligatoire</b>
 	 */
-	
 	public void setDateTrace(final java.time.ZonedDateTime dateTrace) {
 		this.dateTrace = dateTrace;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -113,12 +98,9 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'Niveau de la trace'.
 	 * @param level String <b>Obligatoire</b>
 	 */
-	
 	public void setLevel(final String level) {
 		this.level = level;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -135,12 +117,9 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'Type de trace'.
 	 * @param typeExecCd String <b>Obligatoire</b>
 	 */
-	
 	public void setTypeExecCd(final String typeExecCd) {
 		this.typeExecCd = typeExecCd;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -157,12 +136,9 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'Message'.
 	 * @param message String
 	 */
-	
 	public void setMessage(final String message) {
 		this.message = message;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -179,12 +155,9 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'Paramètre'.
 	 * @param parametre String
 	 */
-	
 	public void setParametre(final String parametre) {
 		this.parametre = parametre;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -201,11 +174,9 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'Stacktrace d'erreur'.
 	 * @param erreur String
 	 */
-	
 	public void setErreur(final String erreur) {
 		this.erreur = erreur;
 	}
-	
 	
 	/**
 	 * Champ : FOREIGN_KEY.
@@ -227,10 +198,8 @@ public final class OJobLog implements Entity {
 	public void setProId(final Long proId) {
 		proIdAccessor.setId(proId);
 	}
-	
-	
-	
-	 /**
+
+ 	/**
 	 * Association : JobExecution.
 	 * @return l'accesseur vers la propriété 'JobExecution'
 	 */
@@ -240,6 +209,10 @@ public final class OJobLog implements Entity {
 	
 	@Deprecated
 	public io.vertigo.orchestra.domain.history.OJobExecution getJobExecution() {
+		// we keep the lazyness
+		if (!proIdAccessor.isLoaded()) {
+			proIdAccessor.load();
+		}
 		return proIdAccessor.get();
 	}
 
@@ -251,7 +224,7 @@ public final class OJobLog implements Entity {
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.history.OJobExecution> getJobExecutionURI() {
 		return proIdAccessor.getURI();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

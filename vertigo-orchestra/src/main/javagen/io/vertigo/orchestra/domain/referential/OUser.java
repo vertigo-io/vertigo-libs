@@ -16,27 +16,18 @@ public final class OUser implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long usrId;
-
 	private String firstName;
-
 	private String lastName;
-
 	private String email;
-
 	private String password;
-
 	private Boolean mailAlert;
-
 	private Boolean active;
-
 
 	/** {@inheritDoc} */
 	@Override
 	public URI<OUser> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
-
-	
 	
 	/**
 	 * Champ : ID.
@@ -53,12 +44,9 @@ public final class OUser implements Entity {
 	 * Définit la valeur de la propriété 'Id'.
 	 * @param usrId Long <b>Obligatoire</b>
 	 */
-	
 	public void setUsrId(final Long usrId) {
 		this.usrId = usrId;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -75,12 +63,9 @@ public final class OUser implements Entity {
 	 * Définit la valeur de la propriété 'Nom'.
 	 * @param firstName String
 	 */
-	
 	public void setFirstName(final String firstName) {
 		this.firstName = firstName;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -97,12 +82,9 @@ public final class OUser implements Entity {
 	 * Définit la valeur de la propriété 'Prénom'.
 	 * @param lastName String
 	 */
-	
 	public void setLastName(final String lastName) {
 		this.lastName = lastName;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -119,12 +101,9 @@ public final class OUser implements Entity {
 	 * Définit la valeur de la propriété 'Email'.
 	 * @param email String
 	 */
-	
 	public void setEmail(final String email) {
 		this.email = email;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -141,12 +120,9 @@ public final class OUser implements Entity {
 	 * Définit la valeur de la propriété 'Mot de passe'.
 	 * @param password String
 	 */
-	
 	public void setPassword(final String password) {
 		this.password = password;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -163,12 +139,9 @@ public final class OUser implements Entity {
 	 * Définit la valeur de la propriété 'Alerté en cas d'erreur'.
 	 * @param mailAlert Boolean
 	 */
-	
 	public void setMailAlert(final Boolean mailAlert) {
 		this.mailAlert = mailAlert;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -185,7 +158,6 @@ public final class OUser implements Entity {
 	 * Définit la valeur de la propriété 'Compte Actif'.
 	 * @param active Boolean
 	 */
-	
 	public void setActive(final Boolean active) {
 		this.active = active;
 	}

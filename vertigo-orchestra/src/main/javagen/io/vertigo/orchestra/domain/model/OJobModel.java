@@ -16,31 +16,20 @@ public final class OJobModel implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long jmoId;
-
-	private String jobname;
-
+	private String jobName;
 	private String desc;
-
 	private String classEngine;
-
 	private Integer maxRetry;
-
-	private Integer runTimeout;
-
+	private Integer runMaxDelay;
 	private Integer execTimeout;
-
 	private java.time.ZonedDateTime creationDate;
-
 	private Boolean active;
-
 
 	/** {@inheritDoc} */
 	@Override
 	public URI<OJobModel> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
-
-	
 	
 	/**
 	 * Champ : ID.
@@ -57,34 +46,28 @@ public final class OJobModel implements Entity {
 	 * Définit la valeur de la propriété 'id'.
 	 * @param jmoId Long <b>Obligatoire</b>
 	 */
-	
 	public void setJmoId(final Long jmoId) {
 		this.jmoId = jmoId;
 	}
 	
-	
-	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Name'.
-	 * @return String jobname <b>Obligatoire</b>
+	 * @return String jobName <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_LABEL", required = true, label = "Name")
-	public String getJobname() {
-		return jobname;
+	public String getJobName() {
+		return jobName;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Name'.
-	 * @param jobname String <b>Obligatoire</b>
+	 * @param jobName String <b>Obligatoire</b>
 	 */
-	
-	public void setJobname(final String jobname) {
-		this.jobname = jobname;
+	public void setJobName(final String jobName) {
+		this.jobName = jobName;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -101,12 +84,9 @@ public final class OJobModel implements Entity {
 	 * Définit la valeur de la propriété 'Description'.
 	 * @param desc String <b>Obligatoire</b>
 	 */
-	
 	public void setDesc(final String desc) {
 		this.desc = desc;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -123,12 +103,9 @@ public final class OJobModel implements Entity {
 	 * Définit la valeur de la propriété 'Class of the Job'.
 	 * @param classEngine String <b>Obligatoire</b>
 	 */
-	
 	public void setClassEngine(final String classEngine) {
 		this.classEngine = classEngine;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -145,56 +122,47 @@ public final class OJobModel implements Entity {
 	 * Définit la valeur de la propriété 'Max retry limit'.
 	 * @param maxRetry Integer <b>Obligatoire</b>
 	 */
-	
 	public void setMaxRetry(final Integer maxRetry) {
 		this.maxRetry = maxRetry;
 	}
 	
-	
-	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Max delay in seconds of all executions'.
-	 * @return Integer runTimeout <b>Obligatoire</b>
+	 * Récupère la valeur de la propriété 'Max delay in seconds of all executions from scheduled date'.
+	 * @return Integer runMaxDelay <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_INTEGER", required = true, label = "Max delay in seconds of all executions")
-	public Integer getRunTimeout() {
-		return runTimeout;
+	@Field(domain = "DO_O_INTEGER", required = true, label = "Max delay in seconds of all executions from scheduled date")
+	public Integer getRunMaxDelay() {
+		return runMaxDelay;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Max delay in seconds of all executions'.
-	 * @param runTimeout Integer <b>Obligatoire</b>
+	 * Définit la valeur de la propriété 'Max delay in seconds of all executions from scheduled date'.
+	 * @param runMaxDelay Integer <b>Obligatoire</b>
 	 */
-	
-	public void setRunTimeout(final Integer runTimeout) {
-		this.runTimeout = runTimeout;
+	public void setRunMaxDelay(final Integer runMaxDelay) {
+		this.runMaxDelay = runMaxDelay;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Max delay in seconds of a single execution'.
+	 * Récupère la valeur de la propriété 'Timeout in seconds of a single execution'.
 	 * @return Integer execTimeout <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_INTEGER", required = true, label = "Max delay in seconds of a single execution")
+	@Field(domain = "DO_O_INTEGER", required = true, label = "Timeout in seconds of a single execution")
 	public Integer getExecTimeout() {
 		return execTimeout;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Max delay in seconds of a single execution'.
+	 * Définit la valeur de la propriété 'Timeout in seconds of a single execution'.
 	 * @param execTimeout Integer <b>Obligatoire</b>
 	 */
-	
 	public void setExecTimeout(final Integer execTimeout) {
 		this.execTimeout = execTimeout;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -211,12 +179,9 @@ public final class OJobModel implements Entity {
 	 * Définit la valeur de la propriété 'Creation date'.
 	 * @param creationDate java.time.ZonedDateTime <b>Obligatoire</b>
 	 */
-	
 	public void setCreationDate(final java.time.ZonedDateTime creationDate) {
 		this.creationDate = creationDate;
 	}
-	
-	
 	
 	/**
 	 * Champ : DATA.
@@ -233,7 +198,6 @@ public final class OJobModel implements Entity {
 	 * Définit la valeur de la propriété 'Active/Inactive'.
 	 * @param active Boolean <b>Obligatoire</b>
 	 */
-	
 	public void setActive(final Boolean active) {
 		this.active = active;
 	}

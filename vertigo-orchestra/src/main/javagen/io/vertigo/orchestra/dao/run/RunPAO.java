@@ -61,9 +61,9 @@ public final class RunPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TK_INSERT_JOB_BOARD_TO_LAUNCH.
-	 * @param jobBoard io.vertigo.orchestra.domain.run.OJobBoard 
+	 * @param jobBoard io.vertigo.orchestra.domain.run.OJobRun 
 	*/
-	public void insertJobBoardToLaunch(final io.vertigo.orchestra.domain.run.OJobBoard jobBoard) {
+	public void insertJobBoardToLaunch(final io.vertigo.orchestra.domain.run.OJobRun jobBoard) {
 		final Task task = createTaskBuilder("TK_INSERT_JOB_BOARD_TO_LAUNCH")
 				.addValue("JOB_BOARD", jobBoard)
 				.build();
