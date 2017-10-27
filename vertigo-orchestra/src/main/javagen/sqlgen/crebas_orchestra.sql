@@ -62,16 +62,15 @@ comment on column O_JOB_CRON.JMO_ID is
 -- ============================================================
 create table O_JOB_EXEC
 (
-    JID         	 VARCHAR(30) 	not null,
+    JOB_ID      	 VARCHAR(30) 	not null,
     JOB_NAME    	 VARCHAR(100)	not null,
     NODE_ID     	 NUMERIC     	not null,
     START_EXEC_DATE	 TIMESTAMP   	not null,
     MAX_EXEC_DATE	 TIMESTAMP   	not null,
-    USR_ID      	 NUMERIC     	,
-    constraint PK_O_JOB_EXEC primary key (JID)
+    constraint PK_O_JOB_EXEC primary key (JOB_ID)
 );
 
-comment on column O_JOB_EXEC.JID is
+comment on column O_JOB_EXEC.JOB_ID is
 'Id';
 
 comment on column O_JOB_EXEC.JOB_NAME is
@@ -85,9 +84,6 @@ comment on column O_JOB_EXEC.START_EXEC_DATE is
 
 comment on column O_JOB_EXEC.MAX_EXEC_DATE is
 'Max date Max execution (start + timeout)';
-
-comment on column O_JOB_EXEC.USR_ID is
-'User';
 
 -- ============================================================
 --   Table : O_JOB_EXECUTION                                        
@@ -226,16 +222,16 @@ comment on column O_JOB_MODEL.ACTIVE is
 -- ============================================================
 create table O_JOB_RUN
 (
-    JID         	 VARCHAR(30) 	not null,
+    JOB_ID      	 VARCHAR(30) 	not null,
     STATUS      	 VARCHAR(1)  	not null,
     NODE_ID     	 NUMERIC     	not null,
     MAX_DATE    	 TIMESTAMP   	not null,
     MAX_RETRY   	 NUMERIC     	not null,
     CURRENT_TRY 	 NUMERIC     	not null,
-    constraint PK_O_JOB_RUN primary key (JID)
+    constraint PK_O_JOB_RUN primary key (JOB_ID)
 );
 
-comment on column O_JOB_RUN.JID is
+comment on column O_JOB_RUN.JOB_ID is
 'Id';
 
 comment on column O_JOB_RUN.STATUS is
@@ -326,12 +322,6 @@ alter table O_JOB_LOG
 	references O_JOB_EXECUTION (JEX_ID);
 
 create index JLO_JEX_O_JOB_EXECUTION_FK on O_JOB_LOG (PRO_ID asc);
-
-alter table O_JOB_EXEC
-	add constraint FK_JOB_USR_O_USER foreign key (USR_ID)
-	references O_USER (USR_ID);
-
-create index JOB_USR_O_USER_FK on O_JOB_EXEC (USR_ID asc);
 
 alter table O_JOB_SCHEDULE
 	add constraint FK_JSC_JMO_O_JOB_MODEL foreign key (JMO_ID)

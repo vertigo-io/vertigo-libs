@@ -18,7 +18,6 @@
  */
 package io.vertigo.orchestra.impl.services.execution;
 
-import java.time.ZonedDateTime;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -36,7 +35,7 @@ import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.orchestra.domain.model.OJobModel;
+import io.vertigo.orchestra.domain.run.OJobExec;
 import io.vertigo.orchestra.plugins.store.OParams;
 import io.vertigo.orchestra.plugins.store.OWorkspace;
 import io.vertigo.orchestra.services.run.JobEndedEvent;
@@ -44,10 +43,9 @@ import io.vertigo.orchestra.services.run.JobEngine;
 import io.vertigo.orchestra.services.run.JobExecutorManager;
 import io.vertigo.util.ClassUtil;
 
-public final class JobExecutorImpl implements Activeable, JobExecutorManager {
-
+public final class JobExecutorManagerImpl implements Activeable, JobExecutorManager {
 	private final ExecutorService executor = Executors.newFixedThreadPool(10); // TODO: named parameter
-	private static final Logger LOG = LogManager.getLogger(JobExecutorImpl.class);
+	private static final Logger LOG = LogManager.getLogger(JobExecutorManagerImpl.class);
 
 	@Inject
 	private EventBusManager eventBusManager;
@@ -55,18 +53,14 @@ public final class JobExecutorImpl implements Activeable, JobExecutorManager {
 	private final int myTimeout;
 
 	@Inject
-	public JobExecutorImpl(@Named("timeout") final int timeout) {
+	public JobExecutorManagerImpl(@Named("timeout") final int timeout) {
 		this.myTimeout = timeout;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void execute(
-			final OJobModel jobModel,
-			final OParams initialParams,
-			final String jobId,
-			final ZonedDateTime execDate) {
-		Assertion.checkNotNull(jobModel);
+	public void execute(final OJobExec jobExec, final OParams initialParams) {
+		Assertion.checkNotNull(jobExec);
 		Assertion.checkNotNull(initialParams);
 		// ---
 		final String engineclassName = jobModel.getClassEngine();

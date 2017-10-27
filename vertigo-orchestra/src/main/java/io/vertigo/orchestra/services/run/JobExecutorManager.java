@@ -18,16 +18,12 @@
  */
 package io.vertigo.orchestra.services.run;
 
-import java.time.ZonedDateTime;
-
 import io.vertigo.core.component.Manager;
-import io.vertigo.orchestra.domain.model.OJobModel;
+import io.vertigo.orchestra.domain.run.OJobExec;
 import io.vertigo.orchestra.plugins.store.OParams;
 
 /**
- *
  * @author xdurand
- *
  */
 public interface JobExecutorManager extends Manager {
 	/**
@@ -37,7 +33,8 @@ public interface JobExecutorManager extends Manager {
 	 * @param jobId le job id
 	 * @param execDate la date exacte d'execution faisant reférence
 	 */
-	void execute(OJobModel jobModel, OParams initialParams, String jobId, ZonedDateTime execDate);
+	//	void execute(OJobModel jobModel, OParams initialParams, String jobId, ZonedDateTime execDate);
+	void execute(OJobExec jobExec, OParams initialParams);
 
 	/**
 	 *

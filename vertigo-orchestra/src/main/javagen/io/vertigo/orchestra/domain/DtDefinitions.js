@@ -22,7 +22,7 @@ module.exports = {
         }
     },
     oJobExec: {
-        jid: {
+        jobId: {
             domain: "DO_O_IDENTIFIANT_JOB",
             required: true
         },
@@ -41,10 +41,6 @@ module.exports = {
         maxExecDate: {
             domain: "DO_O_TIMESTAMP",
             required: true
-        },
-        usrId: {
-            domain: "DO_O_IDENTIFIANT",
-            required: false
         }
     },
     oJobExecution: {
@@ -162,7 +158,7 @@ module.exports = {
         }
     },
     oJobRun: {
-        jid: {
+        jobId: {
             domain: "DO_O_IDENTIFIANT_JOB",
             required: true
         },

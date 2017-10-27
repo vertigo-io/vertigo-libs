@@ -4,7 +4,10 @@ import java.time.ZonedDateTime;
 
 import io.vertigo.core.component.Component;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.lang.Tuples;
 import io.vertigo.orchestra.domain.model.OJobModel;
+import io.vertigo.orchestra.domain.run.OJobExec;
+import io.vertigo.orchestra.domain.run.OJobRun;
 import io.vertigo.orchestra.domain.schedule.OJobSchedule;
 
 public interface OrchestraStore extends Component {
@@ -26,17 +29,17 @@ public interface OrchestraStore extends Component {
 
 	DtList<OJobSchedule> getAllJobSchedules();
 
-	void removeJobSchedule(long jscId);
+	//void removeJobSchedule(long jscId);
 	//void removeJobCron(long jcrId);
 
 	/* ----------- Run --------- */
 
 	/**
-	 *
+	 * Starts a job
+	 *  - create a new run and the first exec
 	 * @param jscId
-	 * @return JobID le jobId
 	 */
-	String startJobSchedule(long jscId);
+	Tuples.Tuple2<OJobRun, OJobExec> startJobSchedule(long jscId);
 
 	/**
 	 *

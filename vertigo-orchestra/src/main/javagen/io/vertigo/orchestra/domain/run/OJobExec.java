@@ -2,7 +2,6 @@ package io.vertigo.orchestra.domain.run;
 
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -16,26 +15,11 @@ import io.vertigo.lang.Generated;
 public final class OJobExec implements Entity {
 	private static final long serialVersionUID = 1L;
 
-	private String jid;
+	private String jobId;
 	private String jobName;
 	private Long nodeId;
 	private java.time.ZonedDateTime startExecDate;
 	private java.time.ZonedDateTime maxExecDate;
-
-	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_JOB_USR",
-			fkFieldName = "USR_ID",
-			primaryDtDefinitionName = "DT_O_USER",
-			primaryIsNavigable = true,
-			primaryRole = "User",
-			primaryLabel = "User",
-			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_O_JOB_EXEC",
-			foreignIsNavigable = false,
-			foreignRole = "JobRunning",
-			foreignLabel = "JobRunning",
-			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.referential.OUser> usrIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.referential.OUser.class, "User");
 
 	/** {@inheritDoc} */
 	@Override
@@ -46,20 +30,20 @@ public final class OJobExec implements Entity {
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id'.
-	 * @return String jid <b>Obligatoire</b>
+	 * @return String jobId <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT_JOB", type = "ID", required = true, label = "Id")
-	public String getJid() {
-		return jid;
+	public String getJobId() {
+		return jobId;
 	}
 
 	/**
 	 * Champ : ID.
 	 * Définit la valeur de la propriété 'Id'.
-	 * @param jid String <b>Obligatoire</b>
+	 * @param jobId String <b>Obligatoire</b>
 	 */
-	public void setJid(final String jid) {
-		this.jid = jid;
+	public void setJobId(final String jobId) {
+		this.jobId = jobId;
 	}
 	
 	/**
@@ -136,53 +120,6 @@ public final class OJobExec implements Entity {
 	 */
 	public void setMaxExecDate(final java.time.ZonedDateTime maxExecDate) {
 		this.maxExecDate = maxExecDate;
-	}
-	
-	/**
-	 * Champ : FOREIGN_KEY.
-	 * Récupère la valeur de la propriété 'User'.
-	 * @return Long usrId
-	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "User")
-	@Deprecated
-	public Long getUsrId() {
-		return (Long)  usrIdAccessor.getId();
-	}
-
-	/**
-	 * Champ : FOREIGN_KEY.
-	 * Définit la valeur de la propriété 'User'.
-	 * @param usrId Long
-	 */
-	@Deprecated
-	public void setUsrId(final Long usrId) {
-		usrIdAccessor.setId(usrId);
-	}
-
- 	/**
-	 * Association : User.
-	 * @return l'accesseur vers la propriété 'User'
-	 */
-	public VAccessor<io.vertigo.orchestra.domain.referential.OUser> getUserAccessor() {
-		return usrIdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.referential.OUser getUser() {
-		// we keep the lazyness
-		if (!usrIdAccessor.isLoaded()) {
-			usrIdAccessor.load();
-		}
-		return usrIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'URI: User.
-	 * @return URI de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.OUser> getUserURI() {
-		return usrIdAccessor.getURI();
 	}
 	
 	/** {@inheritDoc} */

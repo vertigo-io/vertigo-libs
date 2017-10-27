@@ -11,12 +11,11 @@ module.exports = {
         jmoId: "JobModel"
     },
     oJobExec: {
-        jid: "Id",
+        jobId: "Id",
         jobName: "Job Name",
         nodeId: "Node Id",
         startExecDate: "Start exec date",
-        maxExecDate: "Max date Max execution (start + timeout)",
-        usrId: "User"
+        maxExecDate: "Max date Max execution (start + timeout)"
     },
     oJobExecution: {
         jexId: "Id d'une trace d'execution d'un job",
@@ -52,7 +51,7 @@ module.exports = {
         active: "Active/Inactive"
     },
     oJobRun: {
-        jid: "Id",
+        jobId: "Id",
         status: "Exec status",
         nodeId: "Node Id",
         maxDate: "Max date of the run",

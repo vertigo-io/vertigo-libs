@@ -69,7 +69,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum OJobExecFields implements DtFieldName<io.vertigo.orchestra.domain.run.OJobExec> {
 		/** Propriété 'Id'. */
-		JID,
+		JOB_ID,
 		/** Propriété 'Job Name'. */
 		JOB_NAME,
 		/** Propriété 'Node Id'. */
@@ -77,9 +77,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Start exec date'. */
 		START_EXEC_DATE,
 		/** Propriété 'Max date Max execution (start + timeout)'. */
-		MAX_EXEC_DATE,
-		/** Propriété 'User'. */
-		USR_ID	}
+		MAX_EXEC_DATE	}
 
 	/**
 	 * Enumération des champs de OJobExecution.
@@ -155,7 +153,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum OJobRunFields implements DtFieldName<io.vertigo.orchestra.domain.run.OJobRun> {
 		/** Propriété 'Id'. */
-		JID,
+		JOB_ID,
 		/** Propriété 'Exec status'. */
 		STATUS,
 		/** Propriété 'Node Id'. */

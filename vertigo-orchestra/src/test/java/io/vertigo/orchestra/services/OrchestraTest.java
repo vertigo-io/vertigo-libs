@@ -76,12 +76,22 @@ public class OrchestraTest extends AbstractOrchestraTestCaseJU4 {
 	}
 
 	@Test
-	public void testScheduleAt() {
+	public void testCreateJobSchedule() {
 		final OJobModel jobModel = createJobModel();
 		final OParams params = new OParams();
-		orchestraStore.scheduleAt(jobModel.getJmoId(), params, ZonedDateTime.now());
+		final OJobSchedule jobSchedule = orchestraStore.scheduleAt(jobModel.getJmoId(), params, ZonedDateTime.now());
 
 		final DtList<OJobSchedule> jobSchedules = orchestraStore.getAllJobSchedules();
 		Assert.assertEquals(1, jobSchedules.size());
+		Assert.assertEquals(jobSchedule.getJscId(), jobSchedules.get(0).getJscId());
+	}
+
+	@Test
+	public void testStartJobSchedule() {
+		final OJobModel jobModel = createJobModel();
+		final OParams params = new OParams();
+		final OJobSchedule jobSchedule = orchestraStore.scheduleAt(jobModel.getJmoId(), params, ZonedDateTime.now());
+
+		orchestraStore.startJobSchedule(jobSchedule.getJscId());
 	}
 }

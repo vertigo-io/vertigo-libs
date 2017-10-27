@@ -15,7 +15,7 @@ import io.vertigo.lang.Generated;
 public final class OJobRun implements Entity {
 	private static final long serialVersionUID = 1L;
 
-	private String jid;
+	private String jobId;
 	private String status;
 	private Long nodeId;
 	private java.time.ZonedDateTime maxDate;
@@ -31,20 +31,20 @@ public final class OJobRun implements Entity {
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id'.
-	 * @return String jid <b>Obligatoire</b>
+	 * @return String jobId <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT_JOB", type = "ID", required = true, label = "Id")
-	public String getJid() {
-		return jid;
+	public String getJobId() {
+		return jobId;
 	}
 
 	/**
 	 * Champ : ID.
 	 * Définit la valeur de la propriété 'Id'.
-	 * @param jid String <b>Obligatoire</b>
+	 * @param jobId String <b>Obligatoire</b>
 	 */
-	public void setJid(final String jid) {
-		this.jid = jid;
+	public void setJobId(final String jobId) {
+		this.jobId = jobId;
 	}
 	
 	/**
