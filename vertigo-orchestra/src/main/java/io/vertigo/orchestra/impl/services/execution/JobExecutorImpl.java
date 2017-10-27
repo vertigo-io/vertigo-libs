@@ -30,8 +30,10 @@ import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.orchestra.domain.model.OJobModel;
@@ -39,10 +41,10 @@ import io.vertigo.orchestra.plugins.store.OParams;
 import io.vertigo.orchestra.plugins.store.OWorkspace;
 import io.vertigo.orchestra.services.run.JobEndedEvent;
 import io.vertigo.orchestra.services.run.JobEngine;
-import io.vertigo.orchestra.services.run.JobExecutor;
+import io.vertigo.orchestra.services.run.JobExecutorManager;
 import io.vertigo.util.ClassUtil;
 
-public final class JobExecutorImpl implements Activeable, JobExecutor {
+public final class JobExecutorImpl implements Activeable, JobExecutorManager {
 
 	private final ExecutorService executor = Executors.newFixedThreadPool(10); // TODO: named parameter
 	private static final Logger LOG = LogManager.getLogger(JobExecutorImpl.class);
@@ -59,16 +61,21 @@ public final class JobExecutorImpl implements Activeable, JobExecutor {
 
 	/** {@inheritDoc} */
 	@Override
-	public void execute(final OJobModel job, final OParams initialParams, final String jobId, final ZonedDateTime execDate) {
-		Assertion.checkNotNull(job);
+	public void execute(
+			final OJobModel jobModel,
+			final OParams initialParams,
+			final String jobId,
+			final ZonedDateTime execDate) {
+		Assertion.checkNotNull(jobModel);
 		Assertion.checkNotNull(initialParams);
 		// ---
-		final String engineclassName = job.getClassEngine();
+		final String engineclassName = jobModel.getClassEngine();
 
 		final Class<? extends JobEngine> engineClass = ClassUtil.classForName(engineclassName, JobEngine.class);
 
-		final JobEngine jobEngine = ClassUtil.newInstance(engineClass);
-		final OWorkspace ws = new OWorkspace(initialParams.asMap(), jobId, job.getJobName(), engineclassName, execDate);
+		final JobEngine jobEngine = DIInjector.newInstance(engineClass, Home.getApp().getComponentSpace());
+
+		final OWorkspace ws = new OWorkspace(initialParams.asMap(), jobId, jobModel.getJobName(), engineclassName, execDate);
 
 		CompletableFuture.supplyAsync(() -> jobEngine.execute(ws), executor)
 				.thenAccept(this::fireSuccess);

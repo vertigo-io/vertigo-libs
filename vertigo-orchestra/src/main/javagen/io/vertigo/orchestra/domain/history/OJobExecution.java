@@ -16,7 +16,7 @@ public final class OJobExecution implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long jexId;
-	private String jobname;
+	private String jobName;
 	private String status;
 	private String reason;
 	private java.time.ZonedDateTime dateDebut;
@@ -54,20 +54,20 @@ public final class OJobExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Status général d'execution'.
-	 * @return String jobname <b>Obligatoire</b>
+	 * @return String jobName <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", required = true, label = "Status général d'execution")
-	public String getJobname() {
-		return jobname;
+	public String getJobName() {
+		return jobName;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Status général d'execution'.
-	 * @param jobname String <b>Obligatoire</b>
+	 * @param jobName String <b>Obligatoire</b>
 	 */
-	public void setJobname(final String jobname) {
-		this.jobname = jobname;
+	public void setJobName(final String jobName) {
+		this.jobName = jobName;
 	}
 	
 	/**

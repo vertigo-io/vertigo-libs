@@ -2,25 +2,25 @@ package io.vertigo.orchestra.domain.run
 
 create DtDefinition DT_O_JOB_EXEC {
 	storeName : "orchestra"
-	key JID						{ domain : DO_O_IDENTIFIANT_JOB label :"Id" 									notNull:"true" }
-	field JOB_NAME   			{ domain : DO_O_LABEL 			label :"Job Name" 								notNull:"true" }
-	field NODE_ID				{ domain : DO_O_IDENTIFIANT 	label :"Node Id" 								notNull:"true" }
-	field START_EXEC_DATE 		{ domain : DO_O_TIMESTAMP 		label :"start exec date" 						notNull:"true" }
-	field MAX_EXEC_DATE 		{ domain : DO_O_TIMESTAMP 		label :"max date Max execution (start + timeout)" notNull:"true"}
+	key JID						{domain : DO_O_IDENTIFIANT_JOB 	label : "Id" 										notNull:"true"}
+	field JOB_NAME   			{domain : DO_O_LABEL 			label : "Job Name" 									notNull:"true"}
+	field NODE_ID				{domain : DO_O_IDENTIFIANT 		label : "Node Id" 									notNull:"true"}
+	field START_EXEC_DATE 		{domain : DO_O_TIMESTAMP 		label : "Start exec date" 							notNull:"true"}
+	field MAX_EXEC_DATE 		{domain : DO_O_TIMESTAMP 		label : "Max date Max execution (start + timeout)" 	notNull:"true"}
 }
 
 create Association A_JOB_USR {
-  fkFieldName : "USR_ID"
-    
- 	dtDefinitionA : DT_O_JOB_EXEC
+	fkFieldName : "USR_ID"
+
+	dtDefinitionA : DT_O_JOB_EXEC
 	dtDefinitionB : DT_O_USER
-	
+
 	navigabilityA : "false"
 	navigabilityB : "true"
-	
+
 	multiplicityA:"0..*"
 	multiplicityB:"0..1"
-	
+
 	labelA : "JobRunning"
 	labelB : "User"
 	roleA : "JobRunning"

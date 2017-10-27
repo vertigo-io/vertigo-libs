@@ -52,7 +52,7 @@ module.exports = {
             domain: "DO_O_IDENTIFIANT",
             required: true
         },
-        jobname: {
+        jobName: {
             domain: "DO_O_CODE_IDENTIFIANT",
             required: true
         },
@@ -136,7 +136,7 @@ module.exports = {
             domain: "DO_O_LABEL",
             required: true
         },
-        classEngine: {
+        jobEngineClassName: {
             domain: "DO_O_CLASS",
             required: true
         },

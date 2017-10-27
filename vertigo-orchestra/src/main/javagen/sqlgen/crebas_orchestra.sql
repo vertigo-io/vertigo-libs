@@ -81,10 +81,10 @@ comment on column O_JOB_EXEC.NODE_ID is
 'Node Id';
 
 comment on column O_JOB_EXEC.START_EXEC_DATE is
-'start exec date';
+'Start exec date';
 
 comment on column O_JOB_EXEC.MAX_EXEC_DATE is
-'max date Max execution (start + timeout)';
+'Max date Max execution (start + timeout)';
 
 comment on column O_JOB_EXEC.USR_ID is
 'User';
@@ -95,7 +95,7 @@ comment on column O_JOB_EXEC.USR_ID is
 create table O_JOB_EXECUTION
 (
     JEX_ID      	 NUMERIC     	not null,
-    JOBNAME     	 VARCHAR(20) 	not null,
+    JOB_NAME    	 VARCHAR(20) 	not null,
     STATUS      	 VARCHAR(20) 	not null,
     REASON      	 VARCHAR(20) 	,
     DATE_DEBUT  	 TIMESTAMP   	not null,
@@ -110,7 +110,7 @@ create table O_JOB_EXECUTION
 comment on column O_JOB_EXECUTION.JEX_ID is
 'Id d''une trace d''execution d''un job';
 
-comment on column O_JOB_EXECUTION.JOBNAME is
+comment on column O_JOB_EXECUTION.JOB_NAME is
 'Status général d''execution';
 
 comment on column O_JOB_EXECUTION.STATUS is
@@ -185,7 +185,7 @@ create table O_JOB_MODEL
     JMO_ID      	 NUMERIC     	not null,
     JOB_NAME    	 VARCHAR(100)	not null,
     DESC        	 VARCHAR(100)	not null,
-    CLASS_ENGINE	 VARCHAR(200)	not null,
+    JOB_ENGINE_CLASS_NAME	 VARCHAR(200)	not null,
     MAX_RETRY   	 NUMERIC     	not null,
     RUN_MAX_DELAY	 NUMERIC     	not null,
     EXEC_TIMEOUT	 NUMERIC     	not null,
@@ -195,7 +195,7 @@ create table O_JOB_MODEL
 );
 
 comment on column O_JOB_MODEL.JMO_ID is
-'id';
+'Id';
 
 comment on column O_JOB_MODEL.JOB_NAME is
 'Name';
@@ -203,14 +203,14 @@ comment on column O_JOB_MODEL.JOB_NAME is
 comment on column O_JOB_MODEL.DESC is
 'Description';
 
-comment on column O_JOB_MODEL.CLASS_ENGINE is
-'Class of the Job';
+comment on column O_JOB_MODEL.JOB_ENGINE_CLASS_NAME is
+'Class name of the Job';
 
 comment on column O_JOB_MODEL.MAX_RETRY is
 'Max retry limit';
 
 comment on column O_JOB_MODEL.RUN_MAX_DELAY is
-'Max delay in seconds of all executions from scheduled date';
+'Max delay in seconds of a run from its scheduled date';
 
 comment on column O_JOB_MODEL.EXEC_TIMEOUT is
 'Timeout in seconds of a single execution';

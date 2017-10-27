@@ -16,8 +16,8 @@ create Association A_JCR_JMO {
 	navigabilityA : "false"
 	navigabilityB : "true"
 	
-	multiplicityA:"0..*"
-	multiplicityB:"1..1"
+	multiplicityA : "0..*"
+	multiplicityB : "1..1"
 	
 	labelA : "JobCron"
 	labelB : "JobModel"

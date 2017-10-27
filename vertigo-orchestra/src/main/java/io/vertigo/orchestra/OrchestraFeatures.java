@@ -36,7 +36,7 @@ import io.vertigo.orchestra.plugins.services.schedule.db.OrchestraSchedulerProvi
 import io.vertigo.orchestra.plugins.store.OrchestraStore;
 import io.vertigo.orchestra.plugins.store.OrchestraStoreImpl;
 import io.vertigo.orchestra.services.run.JobEndedEventSubscriber;
-import io.vertigo.orchestra.services.run.JobExecutor;
+import io.vertigo.orchestra.services.run.JobExecutorManager;
 
 /**
  * Defines extension orchestra.
@@ -66,7 +66,7 @@ public final class OrchestraFeatures extends Features {
 			final int forecastDurationSeconds) {
 		getModuleConfigBuilder()
 				.addComponent(OrchestraStore.class, OrchestraStoreImpl.class)
-				.addComponent(JobExecutor.class, JobExecutorImpl.class, Param.of("timeout", String.valueOf(10)))
+				.addComponent(JobExecutorManager.class, JobExecutorImpl.class, Param.of("timeout", String.valueOf(10)))
 				.addComponent(JobEndedEventSubscriber.class)
 				.addDefinitionProvider(OrchestraSchedulerProvider.class, Param.of("planningPeriod", String.valueOf(daemonPeriodSeconds)))
 				//----DAO

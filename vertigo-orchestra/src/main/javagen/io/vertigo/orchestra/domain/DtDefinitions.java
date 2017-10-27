@@ -74,9 +74,9 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		JOB_NAME,
 		/** Propriété 'Node Id'. */
 		NODE_ID,
-		/** Propriété 'start exec date'. */
+		/** Propriété 'Start exec date'. */
 		START_EXEC_DATE,
-		/** Propriété 'max date Max execution (start + timeout)'. */
+		/** Propriété 'Max date Max execution (start + timeout)'. */
 		MAX_EXEC_DATE,
 		/** Propriété 'User'. */
 		USR_ID	}
@@ -88,7 +88,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Id d'une trace d'execution d'un job'. */
 		JEX_ID,
 		/** Propriété 'Status général d'execution'. */
-		JOBNAME,
+		JOB_NAME,
 		/** Propriété 'Status général d'execution'. */
 		STATUS,
 		/** Propriété 'Code d'erreur fonctionel de l'execution'. */
@@ -131,17 +131,17 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 * Enumération des champs de OJobModel.
 	 */
 	public enum OJobModelFields implements DtFieldName<io.vertigo.orchestra.domain.model.OJobModel> {
-		/** Propriété 'id'. */
+		/** Propriété 'Id'. */
 		JMO_ID,
 		/** Propriété 'Name'. */
 		JOB_NAME,
 		/** Propriété 'Description'. */
 		DESC,
-		/** Propriété 'Class of the Job'. */
-		CLASS_ENGINE,
+		/** Propriété 'Class name of the Job'. */
+		JOB_ENGINE_CLASS_NAME,
 		/** Propriété 'Max retry limit'. */
 		MAX_RETRY,
-		/** Propriété 'Max delay in seconds of all executions from scheduled date'. */
+		/** Propriété 'Max delay in seconds of a run from its scheduled date'. */
 		RUN_MAX_DELAY,
 		/** Propriété 'Timeout in seconds of a single execution'. */
 		EXEC_TIMEOUT,

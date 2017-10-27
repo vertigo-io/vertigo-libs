@@ -12,12 +12,13 @@ public interface OrchestraStore extends Component {
 	/* ----------- JobModel	--------- */
 	OJobModel createJobModel(OJobModel model);
 
-	//OJobModel disableJobModel(long jmoId);
-	//OJobModel enableJobModel(long jmoId);
+	DtList<OJobModel> getAllJobModels();
+
+	OJobModel deactivateJobModel(long jmoId);
+
+	OJobModel activateJobModel(long jmoId);
 
 	//void updateJobModel(long jmoId, long maxRetry, long maxDelay, long timeout);
-
-	DtList<OJobModel> getAllJobModels();
 
 	/* ----------- Schedule --------- */
 	OJobSchedule scheduleAt(long jmoId, OParams params, ZonedDateTime scheduleDate);

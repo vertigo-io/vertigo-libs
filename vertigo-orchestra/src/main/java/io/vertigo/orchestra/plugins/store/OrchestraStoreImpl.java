@@ -10,6 +10,10 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.dao.history.OJobExecutionDAO;
 import io.vertigo.orchestra.dao.model.OJobModelDAO;
 import io.vertigo.orchestra.dao.run.OJobRunDAO;
@@ -21,7 +25,7 @@ import io.vertigo.orchestra.domain.run.OJobRun;
 import io.vertigo.orchestra.domain.schedule.OJobSchedule;
 import io.vertigo.orchestra.domain.schedule.OProcessNextRun;
 import io.vertigo.orchestra.plugins.services.JobRunnerUtil;
-import io.vertigo.orchestra.services.run.JobExecutor;
+import io.vertigo.orchestra.services.run.JobExecutorManager;
 
 @Transactional
 public class OrchestraStoreImpl implements OrchestraStore {
@@ -39,19 +43,45 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	@Inject
 	private OJobExecutionDAO jobExecutionDAO;
 	@Inject
-	private JobExecutor jobExecutor;
+	private StoreManager storeManager;
+	@Inject
+	private JobExecutorManager jobExecutorManager;
 
 	private final Long nodId = 2L;
 
+	//--------------------------------------------------------------
 	@Override
-	public OJobModel createJobModel(final OJobModel model) {
-		return jobModelDAO.create(model);
+	public OJobModel createJobModel(final OJobModel jobModel) {
+		Assertion.checkNotNull(jobModel);
+		//---
+		return jobModelDAO.create(jobModel);
 	}
 
 	@Override
 	public DtList<OJobModel> getAllJobModels() {
 		return jobModelDAO.findAll(Criterions.alwaysTrue(), Integer.MAX_VALUE);
 	}
+
+	@Override
+	public OJobModel deactivateJobModel(final long jmoId) {
+		final URI<OJobModel> uri = new URI(DtObjectUtil.findDtDefinition(OJobModel.class), jmoId);
+		final OJobModel jobModel = storeManager.getDataStore()
+				.readOneForUpdate(uri);
+		jobModel.setActive(false);
+		jobModelDAO.update(jobModel);
+		return jobModel;
+	}
+
+	@Override
+	public OJobModel activateJobModel(final long jmoId) {
+		final URI<OJobModel> uri = new URI(DtObjectUtil.findDtDefinition(OJobModel.class), jmoId);
+		final OJobModel jobModel = storeManager.getDataStore()
+				.readOneForUpdate(uri);
+		jobModel.setActive(true);
+		jobModelDAO.update(jobModel);
+		return jobModel;
+	}
+	//--------------------------------------------------------------
 
 	@Override
 	public OJobSchedule scheduleAt(final long jmoId, final OParams params, final ZonedDateTime scheduleDate) {
@@ -67,6 +97,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		return jobScheduleDAO.findAll(Criterions.alwaysTrue(), Integer.MAX_VALUE);
 	}
 
+	//--------------------------------------------------------------
 	@Override
 	public void removeJobSchedule(final long jscId) {
 		jobScheduleDAO.delete(jscId);
@@ -98,16 +129,16 @@ public class OrchestraStoreImpl implements OrchestraStore {
 			runPAO.insertJobBoardToLaunch(jobBoard);
 
 			final OJobExecution jobExecution = new OJobExecution();
-			jobExecution.setClassEngine(jobModel.getClassEngine());
+			jobExecution.setClassEngine(jobModel.getJobEngineClassName());
 			jobExecution.setDateDebut(execDate);
-			jobExecution.setJobname(jobModel.getJobName());
+			jobExecution.setJobName(jobModel.getJobName());
 			jobExecution.setNodId(nodId);
 			jobExecution.setStatus("R");
 			jobExecution.setWorkspaceIn("");
 			jobExecutionDAO.create(jobExecution);
 
 			final OParams params = new OParams(jobSchedule.getParams());
-			jobExecutor.execute(jobModel, params, jobId, execDate);
+			jobExecutorManager.execute(jobModel, params, jobId, execDate);
 		} else {
 			LOG.info("Race condition on Insert JobRunning");
 		}
@@ -129,7 +160,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 			final OJobExecution jobExecution = new OJobExecution();
 			jobExecution.setClassEngine(workspace.getClassEngine());
 			jobExecution.setDateDebut(ZonedDateTime.now());
-			jobExecution.setJobname(workspace.getJobName());
+			jobExecution.setJobName(workspace.getJobName());
 			jobExecution.setNodId(nodId);
 			jobExecution.setStatus("R");
 			jobExecution.setWorkspaceIn(workspace.toJson());

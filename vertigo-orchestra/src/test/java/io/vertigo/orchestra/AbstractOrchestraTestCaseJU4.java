@@ -95,7 +95,6 @@ public abstract class AbstractOrchestraTestCaseJU4 {
 			}
 			transaction.commit();
 		}
-
 	}
 
 }

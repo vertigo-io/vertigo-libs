@@ -102,17 +102,17 @@ public final class OJobExec implements Entity {
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'start exec date'.
+	 * Récupère la valeur de la propriété 'Start exec date'.
 	 * @return java.time.ZonedDateTime startExecDate <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "start exec date")
+	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Start exec date")
 	public java.time.ZonedDateTime getStartExecDate() {
 		return startExecDate;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'start exec date'.
+	 * Définit la valeur de la propriété 'Start exec date'.
 	 * @param startExecDate java.time.ZonedDateTime <b>Obligatoire</b>
 	 */
 	public void setStartExecDate(final java.time.ZonedDateTime startExecDate) {
@@ -121,17 +121,17 @@ public final class OJobExec implements Entity {
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'max date Max execution (start + timeout)'.
+	 * Récupère la valeur de la propriété 'Max date Max execution (start + timeout)'.
 	 * @return java.time.ZonedDateTime maxExecDate <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "max date Max execution (start + timeout)")
+	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Max date Max execution (start + timeout)")
 	public java.time.ZonedDateTime getMaxExecDate() {
 		return maxExecDate;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'max date Max execution (start + timeout)'.
+	 * Définit la valeur de la propriété 'Max date Max execution (start + timeout)'.
 	 * @param maxExecDate java.time.ZonedDateTime <b>Obligatoire</b>
 	 */
 	public void setMaxExecDate(final java.time.ZonedDateTime maxExecDate) {

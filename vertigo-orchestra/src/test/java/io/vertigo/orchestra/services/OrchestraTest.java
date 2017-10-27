@@ -16,8 +16,6 @@ import io.vertigo.orchestra.services.execution.engine.SleepJobEngine;
 import junit.framework.Assert;
 
 /**
- * TODO : Description de la classe.
- *
  * @author xdurand.
  */
 public class OrchestraTest extends AbstractOrchestraTestCaseJU4 {
@@ -31,7 +29,7 @@ public class OrchestraTest extends AbstractOrchestraTestCaseJU4 {
 	private OJobModel createJobModel() {
 		final OJobModel jobModel = new OJobModel();
 		jobModel.setActive(true);
-		jobModel.setClassEngine(SleepJobEngine.class.getCanonicalName());
+		jobModel.setJobEngineClassName(SleepJobEngine.class.getCanonicalName());
 		jobModel.setCreationDate(ZonedDateTime.now());
 		jobModel.setDesc("unit test 1");
 		jobModel.setJobName("JOB_TEST");
@@ -44,15 +42,37 @@ public class OrchestraTest extends AbstractOrchestraTestCaseJU4 {
 
 	@Test
 	public void testCreateJobModel() {
-		createJobModel();
+		final OJobModel jobModel = createJobModel();
 		final DtList<OJobModel> jobModels = orchestraStore.getAllJobModels();
 		Assert.assertEquals(1, jobModels.size());
+		Assert.assertEquals(jobModel.getJmoId(), jobModels.get(0).getJmoId());
+
 		//
 		//		final OParams params = new OParams();
 		//		orchestraStore.scheduleAt(model.getJmoId(), params, ZonedDateTime.now());
 		//
 		//		jobExecutor.awaitTermination();
 		// Asserts here
+	}
+
+	@Test
+	public void testActivateDeactivateJobModel() {
+		final OJobModel jobModel = createJobModel();
+
+		long activeCount;
+		//count active job-models
+		activeCount = orchestraStore.getAllJobModels().stream().filter(OJobModel::getActive).count();
+		Assert.assertEquals(1, activeCount);
+
+		//deactivate
+		orchestraStore.deactivateJobModel(jobModel.getJmoId());
+		activeCount = orchestraStore.getAllJobModels().stream().filter(OJobModel::getActive).count();
+		Assert.assertEquals(0, activeCount);
+
+		//activate
+		orchestraStore.activateJobModel(jobModel.getJmoId());
+		activeCount = orchestraStore.getAllJobModels().stream().filter(OJobModel::getActive).count();
+		Assert.assertEquals(1, activeCount);
 	}
 
 	@Test
@@ -64,5 +84,4 @@ public class OrchestraTest extends AbstractOrchestraTestCaseJU4 {
 		final DtList<OJobSchedule> jobSchedules = orchestraStore.getAllJobSchedules();
 		Assert.assertEquals(1, jobSchedules.size());
 	}
-
 }

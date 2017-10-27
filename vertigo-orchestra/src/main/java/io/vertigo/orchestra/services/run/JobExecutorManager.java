@@ -20,7 +20,7 @@ package io.vertigo.orchestra.services.run;
 
 import java.time.ZonedDateTime;
 
-import io.vertigo.core.component.Component;
+import io.vertigo.core.component.Manager;
 import io.vertigo.orchestra.domain.model.OJobModel;
 import io.vertigo.orchestra.plugins.store.OParams;
 
@@ -29,7 +29,7 @@ import io.vertigo.orchestra.plugins.store.OParams;
  * @author xdurand
  *
  */
-public interface JobExecutor extends Component {
+public interface JobExecutorManager extends Manager {
 	/**
 	 * Execute un job.
 	 * @param job le job à lancer

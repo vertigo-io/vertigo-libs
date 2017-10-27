@@ -14,13 +14,13 @@ module.exports = {
         jid: "Id",
         jobName: "Job Name",
         nodeId: "Node Id",
-        startExecDate: "start exec date",
-        maxExecDate: "max date Max execution (start + timeout)",
+        startExecDate: "Start exec date",
+        maxExecDate: "Max date Max execution (start + timeout)",
         usrId: "User"
     },
     oJobExecution: {
         jexId: "Id d'une trace d'execution d'un job",
-        jobname: "Status général d'execution",
+        jobName: "Status général d'execution",
         status: "Status général d'execution",
         reason: "Code d'erreur fonctionel de l'execution",
         dateDebut: "Date de début d'execution",
@@ -41,12 +41,12 @@ module.exports = {
         proId: "JobExecution"
     },
     oJobModel: {
-        jmoId: "id",
+        jmoId: "Id",
         jobName: "Name",
         desc: "Description",
-        classEngine: "Class of the Job",
+        jobEngineClassName: "Class name of the Job",
         maxRetry: "Max retry limit",
-        runMaxDelay: "Max delay in seconds of all executions from scheduled date",
+        runMaxDelay: "Max delay in seconds of a run from its scheduled date",
         execTimeout: "Timeout in seconds of a single execution",
         creationDate: "Creation date",
         active: "Active/Inactive"

@@ -9,7 +9,7 @@ create DtDefinition DT_O_JOB_LOG {
 	field MESSAGE				{domain : DO_O_TEXT, label :"Message", notNull:"false",}
 	field PARAMETRE				{domain : DO_O_TEXT, label :"Paramètre", notNull:"false",}
 	field ERREUR				{domain : DO_O_TEXT, label :"Stacktrace d'erreur", notNull:"false",}
-},
+}
 
 
 create Association A_JLO_JEX {
