@@ -9,6 +9,7 @@ import org.junit.Test;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
 import io.vertigo.orchestra.domain.model.OJobModel;
+import io.vertigo.orchestra.domain.run.OJobExec;
 import io.vertigo.orchestra.domain.schedule.OJobSchedule;
 import io.vertigo.orchestra.plugins.store.OParams;
 import io.vertigo.orchestra.plugins.store.OrchestraStore;
@@ -23,10 +24,7 @@ public class OrchestraTest extends AbstractOrchestraTestCaseJU4 {
 	@Inject
 	private OrchestraStore orchestraStore;
 
-	//	@Inject
-	//	private JobExecutor jobExecutor;
-
-	private OJobModel createJobModel() {
+	private static OJobModel newJobModel() {
 		final OJobModel jobModel = new OJobModel();
 		jobModel.setActive(true);
 		jobModel.setJobEngineClassName(SleepJobEngine.class.getCanonicalName());
@@ -36,28 +34,20 @@ public class OrchestraTest extends AbstractOrchestraTestCaseJU4 {
 		jobModel.setRunMaxDelay(10);
 		jobModel.setMaxRetry(3);
 		jobModel.setExecTimeout(3600);
-
-		return orchestraStore.createJobModel(jobModel);
+		return jobModel;
 	}
 
 	@Test
 	public void testCreateJobModel() {
-		final OJobModel jobModel = createJobModel();
+		final OJobModel jobModel = orchestraStore.createJobModel(newJobModel());
 		final DtList<OJobModel> jobModels = orchestraStore.getAllJobModels();
 		Assert.assertEquals(1, jobModels.size());
 		Assert.assertEquals(jobModel.getJmoId(), jobModels.get(0).getJmoId());
-
-		//
-		//		final OParams params = new OParams();
-		//		orchestraStore.scheduleAt(model.getJmoId(), params, ZonedDateTime.now());
-		//
-		//		jobExecutor.awaitTermination();
-		// Asserts here
 	}
 
 	@Test
 	public void testActivateDeactivateJobModel() {
-		final OJobModel jobModel = createJobModel();
+		final OJobModel jobModel = orchestraStore.createJobModel(newJobModel());
 
 		long activeCount;
 		//count active job-models
@@ -77,7 +67,7 @@ public class OrchestraTest extends AbstractOrchestraTestCaseJU4 {
 
 	@Test
 	public void testCreateJobSchedule() {
-		final OJobModel jobModel = createJobModel();
+		final OJobModel jobModel = orchestraStore.createJobModel(newJobModel());
 		final OParams params = new OParams();
 		final OJobSchedule jobSchedule = orchestraStore.scheduleAt(jobModel.getJmoId(), params, ZonedDateTime.now());
 
@@ -87,11 +77,22 @@ public class OrchestraTest extends AbstractOrchestraTestCaseJU4 {
 	}
 
 	@Test
-	public void testStartJobSchedule() {
-		final OJobModel jobModel = createJobModel();
+	public void testStartJobSchedule() throws InterruptedException {
+		final OJobModel jobModel = orchestraStore.createJobModel(newJobModel());
 		final OParams params = new OParams();
 		final OJobSchedule jobSchedule = orchestraStore.scheduleAt(jobModel.getJmoId(), params, ZonedDateTime.now());
 
-		orchestraStore.startJobSchedule(jobSchedule.getJscId());
+		final String jobId = orchestraStore.startJobSchedule(jobSchedule.getJscId());
+		//---
+		DtList<OJobExec> currentJobExecs;
+		currentJobExecs = orchestraStore.getAllJobExecs();
+		Assert.assertEquals(1, currentJobExecs.size());
+		Assert.assertEquals(jobId, currentJobExecs.get(0).getJobId());
+		//---
+		Thread.sleep(400);
+		//---
+
+		currentJobExecs = orchestraStore.getAllJobExecs();
+		Assert.assertEquals(0, currentJobExecs.size());
 	}
 }

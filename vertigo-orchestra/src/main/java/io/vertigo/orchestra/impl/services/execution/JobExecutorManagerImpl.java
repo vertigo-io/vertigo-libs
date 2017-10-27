@@ -35,16 +35,15 @@ import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
-import io.vertigo.orchestra.domain.run.OJobExec;
+import io.vertigo.orchestra.domain.model.OJobModel;
 import io.vertigo.orchestra.plugins.store.OParams;
 import io.vertigo.orchestra.plugins.store.OWorkspace;
-import io.vertigo.orchestra.services.run.JobEndedEvent;
 import io.vertigo.orchestra.services.run.JobEngine;
 import io.vertigo.orchestra.services.run.JobExecutorManager;
 import io.vertigo.util.ClassUtil;
 
 public final class JobExecutorManagerImpl implements Activeable, JobExecutorManager {
-	private final ExecutorService executor = Executors.newFixedThreadPool(10); // TODO: named parameter
+	private final ExecutorService executorService = Executors.newFixedThreadPool(10); // TODO: named parameter
 	private static final Logger LOG = LogManager.getLogger(JobExecutorManagerImpl.class);
 
 	@Inject
@@ -59,25 +58,29 @@ public final class JobExecutorManagerImpl implements Activeable, JobExecutorMana
 
 	/** {@inheritDoc} */
 	@Override
-	public void execute(final OJobExec jobExec, final OParams initialParams) {
-		Assertion.checkNotNull(jobExec);
+	public void execute(final OJobModel jobModel, final OParams initialParams) {
+		Assertion.checkNotNull(jobModel);
 		Assertion.checkNotNull(initialParams);
 		// ---
-		final String engineclassName = jobModel.getClassEngine();
+		final String jobEngineClassName = jobModel.getJobEngineClassName();
 
-		final Class<? extends JobEngine> engineClass = ClassUtil.classForName(engineclassName, JobEngine.class);
+		final Class<? extends JobEngine> jobEngineclass = ClassUtil.classForName(jobEngineClassName, JobEngine.class);
 
-		final JobEngine jobEngine = DIInjector.newInstance(engineClass, Home.getApp().getComponentSpace());
+		final JobEngine jobEngine = DIInjector.newInstance(jobEngineclass, Home.getApp().getComponentSpace());
 
-		final OWorkspace ws = new OWorkspace(initialParams.asMap(), jobId, jobModel.getJobName(), engineclassName, execDate);
+		final OWorkspace workSpace = new OWorkspace(); //initialParams.asMap(), jobId, jobModel.getJobName(), engineclassName, execDate);
 
-		CompletableFuture.supplyAsync(() -> jobEngine.execute(ws), executor)
+		CompletableFuture.supplyAsync(() -> jobEngine.execute(workSpace), executorService)
 				.thenAccept(this::fireSuccess);
 	}
 
-	public void fireSuccess(final OWorkspace ws) {
-		eventBusManager.post(new JobEndedEvent(ws));
+	private void fireSuccess(final OWorkspace ws) {
+		orchestraStore.fireSuccessJob(jobId, jobEvent.getWorkspace());
 	}
+
+	//	public void fireSuccess(final OWorkspace workspace) {
+	//		eventBusManager.post(new JobEndedEvent(ws));
+	//	}
 
 	@Override
 	public void awaitTermination() {

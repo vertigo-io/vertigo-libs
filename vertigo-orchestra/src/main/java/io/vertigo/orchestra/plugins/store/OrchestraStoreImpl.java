@@ -3,37 +3,36 @@ package io.vertigo.orchestra.plugins.store;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
+import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.Transactional;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuples;
-import io.vertigo.orchestra.dao.history.OJobExecutionDAO;
 import io.vertigo.orchestra.dao.model.OJobModelDAO;
 import io.vertigo.orchestra.dao.run.OJobExecDAO;
 import io.vertigo.orchestra.dao.run.OJobRunDAO;
-import io.vertigo.orchestra.dao.run.RunPAO;
 import io.vertigo.orchestra.dao.schedule.OJobScheduleDAO;
-import io.vertigo.orchestra.domain.history.OJobExecution;
 import io.vertigo.orchestra.domain.model.OJobModel;
 import io.vertigo.orchestra.domain.run.OJobExec;
 import io.vertigo.orchestra.domain.run.OJobRun;
 import io.vertigo.orchestra.domain.schedule.OJobSchedule;
-import io.vertigo.orchestra.services.run.JobExecutorManager;
+import io.vertigo.orchestra.services.run.JobEngine;
+import io.vertigo.util.ClassUtil;
 
 @Transactional
 public class OrchestraStoreImpl implements OrchestraStore {
-
-	private static final Logger LOG = LogManager.getLogger(OrchestraStoreImpl.class);
+	//	private static final Logger LOG = Logger.getLogger(OrchestraStoreImpl.class);
+	private final ExecutorService executorService = Executors.newFixedThreadPool(10); // TODO: named parameter
 
 	@Inject
 	private OJobModelDAO jobModelDAO;
@@ -45,14 +44,12 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	private OJobExecDAO jobExecDAO;
 	//----
 
-	@Inject
-	private RunPAO runPAO;
-	@Inject
-	private OJobExecutionDAO jobExecutionDAO;
+	//	@Inject
+	//	private RunPAO runPAO;
+	//	@Inject
+	//	private OJobExecutionDAO jobExecutionDAO;
 	@Inject
 	private StoreManager storeManager;
-	@Inject
-	private JobExecutorManager jobExecutorManager;
 
 	private final long nodeId = 2L;
 
@@ -65,6 +62,12 @@ public class OrchestraStoreImpl implements OrchestraStore {
 
 	private OJobModel readJobModelForUpdate(final long jmoId) {
 		final URI<OJobModel> uri = new URI(DtObjectUtil.findDtDefinition(OJobModel.class), jmoId);
+		return storeManager.getDataStore()
+				.readOneForUpdate(uri);
+	}
+
+	private OJobRun readJobRunForUpdate(final String jobId) {
+		final URI<OJobRun> uri = new URI(DtObjectUtil.findDtDefinition(OJobRun.class), jobId);
 		return storeManager.getDataStore()
 				.readOneForUpdate(uri);
 	}
@@ -100,15 +103,13 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	//--------------------------------------------------------------
 
 	@Override
+	//a job can be scheduled even if it is deactivated.
 	public OJobSchedule scheduleAt(final long jmoId, final OParams params, final ZonedDateTime scheduleDate) {
 		Assertion.checkNotNull(params);
 		Assertion.checkNotNull(scheduleDate);
 		//---
-		final OJobModel jobModel = readJobModelForUpdate(jmoId);
-		Assertion.checkArgument(jobModel.getActive(), "The selected job {0} must be active to be scheduled", jobModel.getJobName());
-
 		final OJobSchedule schedule = new OJobSchedule();
-		schedule.setJmoId(jmoId);
+		schedule.getJobModelAccessor().setId(jmoId);
 		schedule.setParams(params.toJson());
 		schedule.setScheduleDate(scheduleDate);
 		return jobScheduleDAO.create(schedule);
@@ -134,8 +135,8 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		//---
 		final ZonedDateTime maxDate = jobSchedule.getScheduleDate().plusSeconds(jobModel.getRunMaxDelay());
 
-		final ZonedDateTime startExecDate = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC"));
-		Assertion.checkArgument(startExecDate.isAfter(startExecDate), "delay has been expired, the job {0} can't be executed", jobModel.getJobName());
+		final ZonedDateTime now = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC"));
+		Assertion.checkArgument(now.isAfter(maxDate), "delay has been expired, the job {0} can't be executed", jobModel.getJobName());
 		final OJobRun jobRun = new OJobRun();
 		jobRun.setJobId(jobId);
 		jobRun.setCurrentTry(1);
@@ -144,7 +145,6 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		jobRun.setStatus("R"); //Run
 		jobRun.setNodeId(nodeId);
 		return jobRunDAO.create(jobRun);
-
 	}
 
 	private OJobExec createJobExec(final OJobModel jobModel, final OJobRun jobRun) {
@@ -163,9 +163,11 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	}
 
 	@Override
-	public Tuples.Tuple2<OJobRun, OJobExec> startJobSchedule(final long jscId) {
+	public String startJobSchedule(final long jscId) {
 		final OJobSchedule jobSchedule = readJobScheduleForUpdate(jscId);
-		final OJobModel jobModel = readJobModelForUpdate(jobSchedule.getJmoId());
+		jobSchedule.getJobModelAccessor().load();
+		final OJobModel jobModel = jobSchedule.getJobModelAccessor().get();
+		//		final OJobModel jobModel = readJobModelForUpdate(jobSchedule.getJobMSodel().getJmoId());
 		final String jobId = "SCH:" + String.valueOf(jscId);
 		//---
 		Assertion.checkArgument(jobModel.getActive(), "The selected job {0} must be active to be executed", jobModel.getJobName());
@@ -174,12 +176,15 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		// 1. create a run
 		// 2. create the first exec attached to this run
 		final OJobRun jobRun = createJobRun(jobModel, jobSchedule, jobId);
-
 		final OJobExec jobExec = createJobExec(jobModel, jobRun);
 		//---
 		final OParams initialParams = OParams.of(jobSchedule.getParams());
-		jobExecutorManager.execute(jobExec, initialParams);
-		return Tuples.of(jobRun, jobExec);
+
+		final String jobEngineClassName = jobModel.getJobEngineClassName();
+		final Class<? extends JobEngine> jobEngineClass = ClassUtil.classForName(jobEngineClassName, JobEngine.class);
+
+		execute(jobExec, jobEngineClass, initialParams);
+		return jobId; //Tuples.of(jobRun, jobExec);
 		//		final OProcessNextRun nextRun = new OProcessNextRun();
 		//		nextRun.setExpectedTime(jobSchedule.getScheduleDate());
 		//		nextRun.setInitialParams(jobSchedule.getParams());
@@ -218,28 +223,59 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		//return jobId;
 	}
 
-	@Override
-	public void fireSuccessJob(final String jobId, final OWorkspace workspace) {
-		final long countNbDeleted = runPAO.deleteJobRunning(jobId, nodeId, workspace.getExecDate());
+	//	@Override
+	//	public void fireSuccessJob(final String jobId, final OWorkspace workspace) {
+	//		final long countNbDeleted = runPAO.deleteJobRunning(jobId, nodeId, workspace.getExecDate());
+	//
+	//		if (countNbDeleted > 0) {
+	//			final OJobRun jobBoard = jobRunDAO.get(jobId);
+	//
+	//			jobBoard.setStatus("S");
+	//			jobRunDAO.update(jobBoard);
+	//
+	//			final OJobExecution jobExecution = new OJobExecution();
+	//			jobExecution.setClassEngine(workspace.getClassEngine());
+	//			jobExecution.setDateDebut(ZonedDateTime.now());
+	//			jobExecution.setJobName(workspace.getJobName());
+	//			jobExecution.setNodId(nodeId);
+	//			jobExecution.setStatus("R");
+	//			jobExecution.setWorkspaceIn(workspace.toJson());
+	//			jobExecutionDAO.create(jobExecution);
+	//		} else {
+	//			LOG.info("Race condition on Delete JobRunning");
+	//		}
+	//
+	//	}
+	private void execute(final OJobExec jobExec, final Class<? extends JobEngine> jobEngineClass, final OParams initialParams) {
+		Assertion.checkNotNull(jobExec);
+		Assertion.checkNotNull(jobEngineClass);
+		Assertion.checkNotNull(initialParams);
+		// ---
+		final JobEngine jobEngine = DIInjector.newInstance(jobEngineClass, Home.getApp().getComponentSpace());
 
-		if (countNbDeleted > 0) {
-			final OJobRun jobBoard = jobRunDAO.get(jobId);
+		final OWorkspace workspace = new OWorkspace(jobExec.getJobId()); //initialParams.asMap(), jobId, jobModel.getJobName(), engineclassName, execDate);
 
-			jobBoard.setStatus("S");
-			jobRunDAO.update(jobBoard);
-
-			final OJobExecution jobExecution = new OJobExecution();
-			jobExecution.setClassEngine(workspace.getClassEngine());
-			jobExecution.setDateDebut(ZonedDateTime.now());
-			jobExecution.setJobName(workspace.getJobName());
-			jobExecution.setNodId(nodeId);
-			jobExecution.setStatus("R");
-			jobExecution.setWorkspaceIn(workspace.toJson());
-			jobExecutionDAO.create(jobExecution);
-		} else {
-			LOG.info("Race condition on Delete JobRunning");
-		}
-
+		CompletableFuture.supplyAsync(() -> jobEngine.execute(workspace), executorService)
+				.whenComplete(this::onComplete);
 	}
 
+	private void onComplete(final OWorkspace workspace, final Throwable t) {
+		//We have to
+		// - to update JobRun
+		// - to delete JobExec
+
+		final OJobRun jobRun = readJobRunForUpdate(workspace.getJobId());
+		jobExecDAO.delete(workspace.getJobId());
+		if (t != null) {
+			jobRun.setStatus("F");
+		} else {
+			jobRun.setStatus("S");
+		}
+		jobRunDAO.update(jobRun);
+	}
+
+	@Override
+	public DtList<OJobExec> getAllJobExecs() {
+		return jobExecDAO.findAll(Criterions.alwaysTrue(), Integer.MAX_VALUE);
+	}
 }

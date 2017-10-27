@@ -7,7 +7,7 @@ import java.util.Set;
 import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.plugins.services.JobRunnerUtil;
 
-public class OParams {
+public final class OParams {
 
 	private final Map<String, String> map = new HashMap<>();
 
