@@ -16,10 +16,11 @@ public final class OJobExec implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private String jobId;
-	private String jobName;
-	private Long nodeId;
+	private String jobExecUuid;
 	private java.time.ZonedDateTime startExecDate;
 	private java.time.ZonedDateTime maxExecDate;
+	private String jobName;
+	private Long nodeId;
 
 	/** {@inheritDoc} */
 	@Override
@@ -32,7 +33,7 @@ public final class OJobExec implements Entity {
 	 * Récupère la valeur de la propriété 'Id'.
 	 * @return String jobId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT_JOB", type = "ID", required = true, label = "Id")
+	@Field(domain = "DO_O_JOB_IDENTIFIANT", type = "ID", required = true, label = "Id")
 	public String getJobId() {
 		return jobId;
 	}
@@ -48,40 +49,21 @@ public final class OJobExec implements Entity {
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Job Name'.
-	 * @return String jobName <b>Obligatoire</b>
+	 * Récupère la valeur de la propriété 'Exec UUID'.
+	 * @return String jobExecUuid <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_LABEL", required = true, label = "Job Name")
-	public String getJobName() {
-		return jobName;
+	@Field(domain = "DO_O_EXEC_UUID", required = true, label = "Exec UUID")
+	public String getJobExecUuid() {
+		return jobExecUuid;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Job Name'.
-	 * @param jobName String <b>Obligatoire</b>
+	 * Définit la valeur de la propriété 'Exec UUID'.
+	 * @param jobExecUuid String <b>Obligatoire</b>
 	 */
-	public void setJobName(final String jobName) {
-		this.jobName = jobName;
-	}
-	
-	/**
-	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Node Id'.
-	 * @return Long nodeId <b>Obligatoire</b>
-	 */
-	@Field(domain = "DO_O_IDENTIFIANT", required = true, label = "Node Id")
-	public Long getNodeId() {
-		return nodeId;
-	}
-
-	/**
-	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Node Id'.
-	 * @param nodeId Long <b>Obligatoire</b>
-	 */
-	public void setNodeId(final Long nodeId) {
-		this.nodeId = nodeId;
+	public void setJobExecUuid(final String jobExecUuid) {
+		this.jobExecUuid = jobExecUuid;
 	}
 	
 	/**
@@ -120,6 +102,44 @@ public final class OJobExec implements Entity {
 	 */
 	public void setMaxExecDate(final java.time.ZonedDateTime maxExecDate) {
 		this.maxExecDate = maxExecDate;
+	}
+	
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'Job Name'.
+	 * @return String jobName <b>Obligatoire</b>
+	 */
+	@Field(domain = "DO_O_LABEL", required = true, label = "Job Name")
+	public String getJobName() {
+		return jobName;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'Job Name'.
+	 * @param jobName String <b>Obligatoire</b>
+	 */
+	public void setJobName(final String jobName) {
+		this.jobName = jobName;
+	}
+	
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'Node Id'.
+	 * @return Long nodeId <b>Obligatoire</b>
+	 */
+	@Field(domain = "DO_O_IDENTIFIANT", required = true, label = "Node Id")
+	public Long getNodeId() {
+		return nodeId;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'Node Id'.
+	 * @param nodeId Long <b>Obligatoire</b>
+	 */
+	public void setNodeId(final Long nodeId) {
+		this.nodeId = nodeId;
 	}
 	
 	/** {@inheritDoc} */

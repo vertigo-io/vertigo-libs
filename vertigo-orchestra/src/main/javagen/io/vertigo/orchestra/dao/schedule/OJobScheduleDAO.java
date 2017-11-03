@@ -42,12 +42,12 @@ public final class OJobScheduleDAO extends DAO<OJobSchedule, java.lang.Long> imp
 	}
 
 	/**
-	 * Execute la tache TK_GET_JOBS_SCHEDULE_TO_RUN.
+	 * Execute la tache TK_GET_JOB_SCHEDULE_TO_RUN.
 	 * @param scheduleDate java.time.ZonedDateTime 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.schedule.OJobSchedule> dtoOJobSchedule
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.schedule.OJobSchedule> getJobsScheduleToRun(final java.time.ZonedDateTime scheduleDate) {
-		final Task task = createTaskBuilder("TK_GET_JOBS_SCHEDULE_TO_RUN")
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.schedule.OJobSchedule> getJobScheduleToRun(final java.time.ZonedDateTime scheduleDate) {
+		final Task task = createTaskBuilder("TK_GET_JOB_SCHEDULE_TO_RUN")
 				.addValue("SCHEDULE_DATE", scheduleDate)
 				.build();
 		return getTaskManager()

@@ -6,6 +6,7 @@ package io.vertigo.orchestra.dao.monitoring
 /*****************************************************************************************************/
 
 
+/*
 create Task TK_GET_EXECUTIONS_BY_PRO_ID {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
@@ -62,10 +63,4 @@ create Task TK_GET_ACTIVITY_LOG_BY_ACE_ID {
 	attribute ACE_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
 	attribute DTC_O_ACTIVITY_LOG	 	{domain : DO_DT_O_ACTIVITY_LOG_DTO		notNull:"false" 	inOut :"out"}
 }
-
-
-
-
-
-
-
+*/

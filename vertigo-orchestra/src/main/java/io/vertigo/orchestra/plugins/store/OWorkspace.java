@@ -1,5 +1,7 @@
 package io.vertigo.orchestra.plugins.store;
 
+import java.util.UUID;
+
 import io.vertigo.lang.Assertion;
 
 public final class OWorkspace {
@@ -12,17 +14,21 @@ public final class OWorkspace {
 	//	private final Map<String, String> map = new HashMap<>();
 
 	private final String jobId;
+	private final UUID jobExecUuid;
 
 	public OWorkspace(
 			//			final O<String, String> ws,
-			final String jobId
+			final String jobId,
+			final UUID execUuid
 	//			final String jobName,
 	//			final String classEngine,
 	//			final ZonedDateTime execDate
 	) {
 		Assertion.checkArgNotEmpty(jobId);
+		Assertion.checkNotNull(execUuid);
 		//---
 		this.jobId = jobId;
+		this.jobExecUuid = execUuid;
 		//		map.putAll(ws);
 		//		map.put(JOB_ID, jobId);
 		//		map.put(JOB_NAME, jobName);
@@ -33,7 +39,10 @@ public final class OWorkspace {
 	public String getJobId() {
 		return jobId;
 	}
-	//
+
+	public UUID getJobExecUuid() {
+		return jobExecUuid;
+	}
 
 	//	public OWorkspace(final String json) {
 	//		map.putAll(JobRunnerUtil.jsonToMap(json));

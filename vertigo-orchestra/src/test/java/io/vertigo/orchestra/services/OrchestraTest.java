@@ -10,6 +10,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
 import io.vertigo.orchestra.domain.model.OJobModel;
 import io.vertigo.orchestra.domain.run.OJobExec;
+import io.vertigo.orchestra.domain.run.OJobRun;
 import io.vertigo.orchestra.domain.schedule.OJobSchedule;
 import io.vertigo.orchestra.plugins.store.OParams;
 import io.vertigo.orchestra.plugins.store.OrchestraStore;
@@ -31,9 +32,9 @@ public class OrchestraTest extends AbstractOrchestraTestCaseJU4 {
 		jobModel.setCreationDate(ZonedDateTime.now());
 		jobModel.setDesc("unit test 1");
 		jobModel.setJobName("JOB_TEST");
-		jobModel.setRunMaxDelay(10);
+		jobModel.setRunMaxDelay(2 * 3600); //2h
 		jobModel.setMaxRetry(3);
-		jobModel.setExecTimeout(3600);
+		jobModel.setExecTimeout(100);
 		return jobModel;
 	}
 
@@ -80,19 +81,73 @@ public class OrchestraTest extends AbstractOrchestraTestCaseJU4 {
 	public void testStartJobSchedule() throws InterruptedException {
 		final OJobModel jobModel = orchestraStore.createJobModel(newJobModel());
 		final OParams params = new OParams();
-		final OJobSchedule jobSchedule = orchestraStore.scheduleAt(jobModel.getJmoId(), params, ZonedDateTime.now());
+		final OJobSchedule jobSchedule = orchestraStore.scheduleAt(jobModel.getJmoId(), params, ZonedDateTime.now().plusHours(1));
 
 		final String jobId = orchestraStore.startJobSchedule(jobSchedule.getJscId());
 		//---
+		DtList<OJobRun> currentJobRuns;
 		DtList<OJobExec> currentJobExecs;
+		currentJobRuns = orchestraStore.getAllJobRuns();
 		currentJobExecs = orchestraStore.getAllJobExecs();
+		Assert.assertEquals(1, currentJobRuns.size());
 		Assert.assertEquals(1, currentJobExecs.size());
 		Assert.assertEquals(jobId, currentJobExecs.get(0).getJobId());
 		//---
-		Thread.sleep(400);
+		Thread.sleep(1000);
 		//---
-
+		currentJobRuns = orchestraStore.getAllJobRuns();
 		currentJobExecs = orchestraStore.getAllJobExecs();
+		Assert.assertEquals(1, currentJobRuns.size());
 		Assert.assertEquals(0, currentJobExecs.size());
+	}
+
+	@Test
+	public void testKillJob() throws InterruptedException {
+		final OJobModel jobModel = orchestraStore.createJobModel(newJobModel());
+		final OParams params = new OParams();
+		final OJobSchedule jobSchedule = orchestraStore.scheduleAt(jobModel.getJmoId(), params, ZonedDateTime.now().plusHours(1));
+
+		final String jobId = orchestraStore.startJobSchedule(jobSchedule.getJscId());
+		//---
+		DtList<OJobRun> currentJobRuns;
+		DtList<OJobExec> currentJobExecs;
+		currentJobRuns = orchestraStore.getAllJobRuns();
+		currentJobExecs = orchestraStore.getAllJobExecs();
+		Assert.assertEquals(1, currentJobRuns.size());
+		Assert.assertEquals(1, currentJobExecs.size());
+		Assert.assertEquals(jobId, currentJobExecs.get(0).getJobId());
+		//---
+		orchestraStore.killJob(jobId);
+		Thread.sleep(1000);
+		//---
+		currentJobRuns = orchestraStore.getAllJobRuns();
+		currentJobExecs = orchestraStore.getAllJobExecs();
+		Assert.assertEquals(1, currentJobRuns.size());
+		Assert.assertEquals(0, currentJobExecs.size());
+	}
+
+	@Test
+	public void testJobSchedule() throws InterruptedException {
+		/*******************************************************/
+		/***************The interesting test ******************/
+		/******************************************************/
+		final OJobModel jobModel = orchestraStore.createJobModel(newJobModel());
+		final OParams params = new OParams();
+		final OJobSchedule jobSchedule = orchestraStore.scheduleAt(jobModel.getJmoId(), params, ZonedDateTime.now().plusSeconds(1));
+		//---
+		DtList<OJobRun> currentJobRuns;
+		DtList<OJobExec> currentJobExecs;
+		currentJobRuns = orchestraStore.getAllJobRuns();
+		currentJobExecs = orchestraStore.getAllJobExecs();
+		Assert.assertEquals(0, currentJobRuns.size());
+		Assert.assertEquals(0, currentJobExecs.size());
+		//---
+		Thread.sleep(35 * 1000);
+		//---
+		currentJobRuns = orchestraStore.getAllJobRuns();
+		currentJobExecs = orchestraStore.getAllJobExecs();
+		Assert.assertEquals(1, currentJobRuns.size());
+		Assert.assertEquals(0, currentJobExecs.size());
+		Assert.assertEquals("SCH:" + jobSchedule.getJscId(), currentJobRuns.get(0).getJobId());
 	}
 }

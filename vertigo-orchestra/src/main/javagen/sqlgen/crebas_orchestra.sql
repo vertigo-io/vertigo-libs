@@ -11,10 +11,10 @@
 create sequence SEQ_O_JOB_CRON
 	start with 1000 cache 20; 
 
-create sequence SEQ_O_JOB_EXEC
+create sequence SEQ_O_JOB_EVENT
 	start with 1000 cache 20; 
 
-create sequence SEQ_O_JOB_EXECUTION
+create sequence SEQ_O_JOB_EXEC
 	start with 1000 cache 20; 
 
 create sequence SEQ_O_JOB_LOG
@@ -27,9 +27,6 @@ create sequence SEQ_O_JOB_RUN
 	start with 1000 cache 20; 
 
 create sequence SEQ_O_JOB_SCHEDULE
-	start with 1000 cache 20; 
-
-create sequence SEQ_O_USER
 	start with 1000 cache 20; 
 
 
@@ -58,26 +55,72 @@ comment on column O_JOB_CRON.JMO_ID is
 'JobModel';
 
 -- ============================================================
+--   Table : O_JOB_EVENT                                        
+-- ============================================================
+create table O_JOB_EVENT
+(
+    JEVT_ID     	 NUMERIC     	not null,
+    JOB_NAME    	 VARCHAR(20) 	not null,
+    STATUS      	 VARCHAR(20) 	not null,
+    REASON      	 VARCHAR(20) 	,
+    START_DATE  	 TIMESTAMP   	not null,
+    END_DATE    	 TIMESTAMP   	,
+    CLASS_ENGINE	 VARCHAR(200)	not null,
+    WORKSPACE_IN	 TEXT        	not null,
+    WORKSPACE_OUT	 TEXT        	,
+    NOD_ID      	 NUMERIC     	not null,
+    constraint PK_O_JOB_EVENT primary key (JEVT_ID)
+);
+
+comment on column O_JOB_EVENT.JEVT_ID is
+'Id d''une trace d''execution d''un job';
+
+comment on column O_JOB_EVENT.JOB_NAME is
+'Status général d''execution';
+
+comment on column O_JOB_EVENT.STATUS is
+'Status général d''execution';
+
+comment on column O_JOB_EVENT.REASON is
+'Code d''erreur fonctionel de l''execution';
+
+comment on column O_JOB_EVENT.START_DATE is
+'Date de début d''execution';
+
+comment on column O_JOB_EVENT.END_DATE is
+'Date de fin d''execution';
+
+comment on column O_JOB_EVENT.CLASS_ENGINE is
+'Implémentation effective de l''execution';
+
+comment on column O_JOB_EVENT.WORKSPACE_IN is
+'Workspace d''entrée de l''execution';
+
+comment on column O_JOB_EVENT.WORKSPACE_OUT is
+'Workspace de sortie de l''execution';
+
+comment on column O_JOB_EVENT.NOD_ID is
+'Id du noeud';
+
+-- ============================================================
 --   Table : O_JOB_EXEC                                        
 -- ============================================================
 create table O_JOB_EXEC
 (
     JOB_ID      	 VARCHAR(30) 	not null,
-    JOB_NAME    	 VARCHAR(100)	not null,
-    NODE_ID     	 NUMERIC     	not null,
+    JOB_EXEC_UUID	 CHAR(36)    	not null,
     START_EXEC_DATE	 TIMESTAMP   	not null,
     MAX_EXEC_DATE	 TIMESTAMP   	not null,
+    JOB_NAME    	 VARCHAR(100)	not null,
+    NODE_ID     	 NUMERIC     	not null,
     constraint PK_O_JOB_EXEC primary key (JOB_ID)
 );
 
 comment on column O_JOB_EXEC.JOB_ID is
 'Id';
 
-comment on column O_JOB_EXEC.JOB_NAME is
-'Job Name';
-
-comment on column O_JOB_EXEC.NODE_ID is
-'Node Id';
+comment on column O_JOB_EXEC.JOB_EXEC_UUID is
+'Exec UUID';
 
 comment on column O_JOB_EXEC.START_EXEC_DATE is
 'Start exec date';
@@ -85,53 +128,11 @@ comment on column O_JOB_EXEC.START_EXEC_DATE is
 comment on column O_JOB_EXEC.MAX_EXEC_DATE is
 'Max date Max execution (start + timeout)';
 
--- ============================================================
---   Table : O_JOB_EXECUTION                                        
--- ============================================================
-create table O_JOB_EXECUTION
-(
-    JEX_ID      	 NUMERIC     	not null,
-    JOB_NAME    	 VARCHAR(20) 	not null,
-    STATUS      	 VARCHAR(20) 	not null,
-    REASON      	 VARCHAR(20) 	,
-    DATE_DEBUT  	 TIMESTAMP   	not null,
-    DATE_FIN    	 TIMESTAMP   	,
-    CLASS_ENGINE	 VARCHAR(200)	not null,
-    WORKSPACE_IN	 TEXT        	not null,
-    WORKSPACE_OUT	 TEXT        	,
-    NOD_ID      	 NUMERIC     	not null,
-    constraint PK_O_JOB_EXECUTION primary key (JEX_ID)
-);
+comment on column O_JOB_EXEC.JOB_NAME is
+'Job Name';
 
-comment on column O_JOB_EXECUTION.JEX_ID is
-'Id d''une trace d''execution d''un job';
-
-comment on column O_JOB_EXECUTION.JOB_NAME is
-'Status général d''execution';
-
-comment on column O_JOB_EXECUTION.STATUS is
-'Status général d''execution';
-
-comment on column O_JOB_EXECUTION.REASON is
-'Code d''erreur fonctionel de l''execution';
-
-comment on column O_JOB_EXECUTION.DATE_DEBUT is
-'Date de début d''execution';
-
-comment on column O_JOB_EXECUTION.DATE_FIN is
-'Date de fin d''execution';
-
-comment on column O_JOB_EXECUTION.CLASS_ENGINE is
-'Implémentation effective de l''execution';
-
-comment on column O_JOB_EXECUTION.WORKSPACE_IN is
-'Workspace d''entrée de l''execution';
-
-comment on column O_JOB_EXECUTION.WORKSPACE_OUT is
-'Workspace de sortie de l''execution';
-
-comment on column O_JOB_EXECUTION.NOD_ID is
-'Id du noeud';
+comment on column O_JOB_EXEC.NODE_ID is
+'Node Id';
 
 -- ============================================================
 --   Table : O_JOB_LOG                                        
@@ -223,31 +224,31 @@ comment on column O_JOB_MODEL.ACTIVE is
 create table O_JOB_RUN
 (
     JOB_ID      	 VARCHAR(30) 	not null,
+    JOB_EXEC_UUID	 CHAR(36)    	,
     STATUS      	 VARCHAR(1)  	not null,
-    NODE_ID     	 NUMERIC     	not null,
+    CURRENT_TRY 	 NUMERIC     	not null,
     MAX_DATE    	 TIMESTAMP   	not null,
     MAX_RETRY   	 NUMERIC     	not null,
-    CURRENT_TRY 	 NUMERIC     	not null,
     constraint PK_O_JOB_RUN primary key (JOB_ID)
 );
 
 comment on column O_JOB_RUN.JOB_ID is
 'Id';
 
+comment on column O_JOB_RUN.JOB_EXEC_UUID is
+'Exec UUID';
+
 comment on column O_JOB_RUN.STATUS is
 'Exec status';
 
-comment on column O_JOB_RUN.NODE_ID is
-'Node Id';
+comment on column O_JOB_RUN.CURRENT_TRY is
+'Current try';
 
 comment on column O_JOB_RUN.MAX_DATE is
 'Max date of the run';
 
 comment on column O_JOB_RUN.MAX_RETRY is
 'Max retry';
-
-comment on column O_JOB_RUN.CURRENT_TRY is
-'Current try';
 
 -- ============================================================
 --   Table : O_JOB_SCHEDULE                                        
@@ -273,42 +274,6 @@ comment on column O_JOB_SCHEDULE.PARAMS is
 comment on column O_JOB_SCHEDULE.JMO_ID is
 'JobModel';
 
--- ============================================================
---   Table : O_USER                                        
--- ============================================================
-create table O_USER
-(
-    USR_ID      	 NUMERIC     	not null,
-    FIRST_NAME  	 VARCHAR(100)	,
-    LAST_NAME   	 VARCHAR(100)	,
-    EMAIL       	 VARCHAR(100)	,
-    PASSWORD    	 VARCHAR(100)	,
-    MAIL_ALERT  	 BOOL        	,
-    ACTIVE      	 BOOL        	,
-    constraint PK_O_USER primary key (USR_ID)
-);
-
-comment on column O_USER.USR_ID is
-'Id';
-
-comment on column O_USER.FIRST_NAME is
-'Nom';
-
-comment on column O_USER.LAST_NAME is
-'Prénom';
-
-comment on column O_USER.EMAIL is
-'Email';
-
-comment on column O_USER.PASSWORD is
-'Mot de passe';
-
-comment on column O_USER.MAIL_ALERT is
-'Alerté en cas d''erreur';
-
-comment on column O_USER.ACTIVE is
-'Compte Actif';
-
 
 
 alter table O_JOB_CRON
@@ -318,10 +283,10 @@ alter table O_JOB_CRON
 create index JCR_JMO_O_JOB_MODEL_FK on O_JOB_CRON (JMO_ID asc);
 
 alter table O_JOB_LOG
-	add constraint FK_JLO_JEX_O_JOB_EXECUTION foreign key (PRO_ID)
-	references O_JOB_EXECUTION (JEX_ID);
+	add constraint FK_JLO_JEX_O_JOB_EVENT foreign key (PRO_ID)
+	references O_JOB_EVENT (JEVT_ID);
 
-create index JLO_JEX_O_JOB_EXECUTION_FK on O_JOB_LOG (PRO_ID asc);
+create index JLO_JEX_O_JOB_EVENT_FK on O_JOB_LOG (PRO_ID asc);
 
 alter table O_JOB_SCHEDULE
 	add constraint FK_JSC_JMO_O_JOB_MODEL foreign key (JMO_ID)

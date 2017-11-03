@@ -21,30 +21,8 @@ module.exports = {
             required: true
         }
     },
-    oJobExec: {
-        jobId: {
-            domain: "DO_O_IDENTIFIANT_JOB",
-            required: true
-        },
-        jobName: {
-            domain: "DO_O_LABEL",
-            required: true
-        },
-        nodeId: {
-            domain: "DO_O_IDENTIFIANT",
-            required: true
-        },
-        startExecDate: {
-            domain: "DO_O_TIMESTAMP",
-            required: true
-        },
-        maxExecDate: {
-            domain: "DO_O_TIMESTAMP",
-            required: true
-        }
-    },
-    oJobExecution: {
-        jexId: {
+    oJobEvent: {
+        jevtId: {
             domain: "DO_O_IDENTIFIANT",
             required: true
         },
@@ -60,11 +38,11 @@ module.exports = {
             domain: "DO_O_CODE_IDENTIFIANT",
             required: false
         },
-        dateDebut: {
+        startDate: {
             domain: "DO_O_TIMESTAMP",
             required: true
         },
-        dateFin: {
+        endDate: {
             domain: "DO_O_TIMESTAMP",
             required: false
         },
@@ -81,6 +59,32 @@ module.exports = {
             required: false
         },
         nodId: {
+            domain: "DO_O_IDENTIFIANT",
+            required: true
+        }
+    },
+    oJobExec: {
+        jobId: {
+            domain: "DO_O_JOB_IDENTIFIANT",
+            required: true
+        },
+        jobExecUuid: {
+            domain: "DO_O_EXEC_UUID",
+            required: true
+        },
+        startExecDate: {
+            domain: "DO_O_TIMESTAMP",
+            required: true
+        },
+        maxExecDate: {
+            domain: "DO_O_TIMESTAMP",
+            required: true
+        },
+        jobName: {
+            domain: "DO_O_LABEL",
+            required: true
+        },
+        nodeId: {
             domain: "DO_O_IDENTIFIANT",
             required: true
         }
@@ -159,15 +163,19 @@ module.exports = {
     },
     oJobRun: {
         jobId: {
-            domain: "DO_O_IDENTIFIANT_JOB",
+            domain: "DO_O_JOB_IDENTIFIANT",
             required: true
+        },
+        jobExecUuid: {
+            domain: "DO_O_EXEC_UUID",
+            required: false
         },
         status: {
             domain: "DO_O_STATUS_CODE",
             required: true
         },
-        nodeId: {
-            domain: "DO_O_IDENTIFIANT",
+        currentTry: {
+            domain: "DO_O_INTEGER",
             required: true
         },
         maxDate: {
@@ -175,10 +183,6 @@ module.exports = {
             required: true
         },
         maxRetry: {
-            domain: "DO_O_INTEGER",
-            required: true
-        },
-        currentTry: {
             domain: "DO_O_INTEGER",
             required: true
         }
@@ -199,54 +203,6 @@ module.exports = {
         jmoId: {
             domain: "DO_O_IDENTIFIANT",
             required: true
-        }
-    },
-    oProcessNextRun: {
-        jobname: {
-            domain: "DO_O_CODE_IDENTIFIANT",
-            required: false
-        },
-        jobId: {
-            domain: "DO_O_IDENTIFIANT_JOB",
-            required: true
-        },
-        expectedTime: {
-            domain: "DO_O_TIMESTAMP",
-            required: false
-        },
-        initialParams: {
-            domain: "DO_O_JSON_TEXT",
-            required: false
-        }
-    },
-    oUser: {
-        usrId: {
-            domain: "DO_O_IDENTIFIANT",
-            required: true
-        },
-        firstName: {
-            domain: "DO_O_LABEL",
-            required: false
-        },
-        lastName: {
-            domain: "DO_O_LABEL",
-            required: false
-        },
-        email: {
-            domain: "DO_O_LABEL",
-            required: false
-        },
-        password: {
-            domain: "DO_O_LABEL",
-            required: false
-        },
-        mailAlert: {
-            domain: "DO_O_BOOLEAN",
-            required: false
-        },
-        active: {
-            domain: "DO_O_BOOLEAN",
-            required: false
         }
     }
 };

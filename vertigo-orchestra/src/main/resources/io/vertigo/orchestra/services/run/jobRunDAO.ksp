@@ -1,0 +1,15 @@
+package io.vertigo.orchestra.dao.run
+
+create Task TK_INSERT_JOB_RUN_WITH_JOB_ID {
+	storeName : "orchestra"
+	className : "io.vertigo.dynamox.task.TaskEngineProc"
+	request : "
+		INSERT INTO O_JOB_RUN 
+			(JOB_ID, JOB_EXEC_UUID, STATUS, MAX_DATE, MAX_RETRY, CURRENT_TRY)
+		VALUES 
+			(#JOB_RUN.JOB_ID#, #JOB_RUN.JOB_EXEC_UUID#, #JOB_RUN.STATUS#, #JOB_RUN.MAX_DATE#, #JOB_RUN.MAX_RETRY#, #JOB_RUN.CURRENT_TRY#)
+		 "
+
+	attribute JOB_RUN	{domain : DO_DT_O_JOB_RUN_DTO  notNull:"true" 	inOut :"in"}
+}
+

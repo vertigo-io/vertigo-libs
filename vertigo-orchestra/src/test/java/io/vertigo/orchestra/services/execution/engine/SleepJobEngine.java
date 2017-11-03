@@ -3,22 +3,26 @@ package io.vertigo.orchestra.services.execution.engine;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.orchestra.services.run.RunnableJobEngine;
+import io.vertigo.orchestra.plugins.store.OWorkspace;
+import io.vertigo.orchestra.services.run.JobEngine;
 
-public class SleepJobEngine extends RunnableJobEngine {
+public final class SleepJobEngine implements JobEngine {
 
 	private static final Logger LOG = LogManager.getLogger(SleepJobEngine.class);
-	
+
 	@Override
-	public void run() {
+	public OWorkspace execute(final OWorkspace workspace) {
 		try {
 			LOG.info("[Début] Execution de SleepJobEngine");
-			Thread.sleep(100);
+			Thread.sleep(500);
 			LOG.info("[Fin] Execution de SleepJobEngine");
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			//NOP
 			LOG.error(e);
 		}
+		System.out.println("inside >>thred" + Thread.currentThread().getId());
+
+		return workspace;
 	}
-	
+
 }

@@ -1,4 +1,4 @@
-package io.vertigo.orchestra.domain.history;
+package io.vertigo.orchestra.domain.event;
 
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
@@ -27,7 +27,7 @@ public final class OJobLog implements Entity {
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_JLO_JEX",
 			fkFieldName = "PRO_ID",
-			primaryDtDefinitionName = "DT_O_JOB_EXECUTION",
+			primaryDtDefinitionName = "DT_O_JOB_EVENT",
 			primaryIsNavigable = true,
 			primaryRole = "JobExecution",
 			primaryLabel = "JobExecution",
@@ -37,7 +37,7 @@ public final class OJobLog implements Entity {
 			foreignRole = "JobLog",
 			foreignLabel = "JobLog",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.history.OJobExecution> proIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.history.OJobExecution.class, "JobExecution");
+	private final VAccessor<io.vertigo.orchestra.domain.event.OJobEvent> proIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.event.OJobEvent.class, "JobExecution");
 
 	/** {@inheritDoc} */
 	@Override
@@ -184,7 +184,6 @@ public final class OJobLog implements Entity {
 	 * @return Long proId <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "JobExecution")
-	@Deprecated
 	public Long getProId() {
 		return (Long)  proIdAccessor.getId();
 	}
@@ -194,7 +193,6 @@ public final class OJobLog implements Entity {
 	 * Définit la valeur de la propriété 'JobExecution'.
 	 * @param proId Long <b>Obligatoire</b>
 	 */
-	@Deprecated
 	public void setProId(final Long proId) {
 		proIdAccessor.setId(proId);
 	}
@@ -203,12 +201,12 @@ public final class OJobLog implements Entity {
 	 * Association : JobExecution.
 	 * @return l'accesseur vers la propriété 'JobExecution'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.history.OJobExecution> getJobExecutionAccessor() {
+	public VAccessor<io.vertigo.orchestra.domain.event.OJobEvent> jobExecution() {
 		return proIdAccessor;
 	}
 	
 	@Deprecated
-	public io.vertigo.orchestra.domain.history.OJobExecution getJobExecution() {
+	public io.vertigo.orchestra.domain.event.OJobEvent getJobExecution() {
 		// we keep the lazyness
 		if (!proIdAccessor.isLoaded()) {
 			proIdAccessor.load();
@@ -221,7 +219,7 @@ public final class OJobLog implements Entity {
 	 * @return URI de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.history.OJobExecution> getJobExecutionURI() {
+	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.event.OJobEvent> getJobExecutionURI() {
 		return proIdAccessor.getURI();
 	}
 	

@@ -6,9 +6,11 @@ import io.vertigo.core.component.Component;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.orchestra.domain.model.OJobModel;
 import io.vertigo.orchestra.domain.run.OJobExec;
+import io.vertigo.orchestra.domain.run.OJobRun;
 import io.vertigo.orchestra.domain.schedule.OJobSchedule;
 
 public interface OrchestraStore extends Component {
+	void tick();
 
 	/* ----------- JobModel	--------- */
 	OJobModel createJobModel(OJobModel model);
@@ -41,6 +43,8 @@ public interface OrchestraStore extends Component {
 
 	DtList<OJobExec> getAllJobExecs();
 
+	DtList<OJobRun> getAllJobRuns();
+
 	/**
 	 *
 	 * @parbam jcrId
@@ -56,9 +60,9 @@ public interface OrchestraStore extends Component {
 
 	/**
 	 *
-	 * @param jobId le jobId
+	 * @param jobId the jobId
 	 */
-	//void fireKilledJob(String jobId);
+	void killJob(String jobId);
 
 	/**
 	 *

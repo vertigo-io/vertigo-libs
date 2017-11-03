@@ -1,4 +1,4 @@
-package io.vertigo.orchestra.domain.history
+package io.vertigo.orchestra.domain.event
 
 create DtDefinition DT_O_JOB_LOG {
 	storeName : "orchestra"
@@ -16,7 +16,7 @@ create Association A_JLO_JEX {
     fkFieldName : "PRO_ID"
     
  	dtDefinitionA : DT_O_JOB_LOG
-	dtDefinitionB : DT_O_JOB_EXECUTION
+	dtDefinitionB : DT_O_JOB_EVENT
 	
 	navigabilityA : "false"
 	navigabilityB : "true"

@@ -1,0 +1,16 @@
+package io.vertigo.orchestra.domain.event
+
+create DtDefinition DT_O_JOB_EVENT {
+	storeName : "orchestra"
+	key JEVT_ID				{domain : DO_O_IDENTIFIANT 		label :"Id d'une trace d'execution d'un job"		notNull:"true"}
+	field JOB_NAME			{domain : DO_O_CODE_IDENTIFIANT label :"Status général d'execution"					notNull:"true"}
+	field STATUS			{domain : DO_O_CODE_IDENTIFIANT label :"Status général d'execution"					notNull:"true"}
+	field REASON			{domain : DO_O_CODE_IDENTIFIANT label :"Code d'erreur fonctionel de l'execution"	notNull:"false"}
+	field START_DATE		{domain : DO_O_TIMESTAMP 		label :"Date de début d'execution"					notNull:"true"}
+	field END_DATE			{domain : DO_O_TIMESTAMP 		label :"Date de fin d'execution"					notNull:"false"}
+	field CLASS_ENGINE		{domain : DO_O_CLASS 			label :"Implémentation effective de l'execution", 	notNull:"true"}
+	field WORKSPACE_IN		{domain : DO_O_JSON_TEXT 		label :"Workspace d'entrée de l'execution"	 		notNull:"true"}
+	field WORKSPACE_OUT 	{domain : DO_O_JSON_TEXT 		label :"Workspace de sortie de l'execution"			notNull:"false"}
+	field NOD_ID			{domain : DO_O_IDENTIFIANT 		label :"Id du noeud"								notNull:"true"}
+}
+

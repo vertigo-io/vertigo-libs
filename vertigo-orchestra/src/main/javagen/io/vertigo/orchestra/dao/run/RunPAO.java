@@ -2,7 +2,6 @@ package io.vertigo.orchestra.dao.run;
 
 import javax.inject.Inject;
 
-import java.util.Optional;
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -42,52 +41,25 @@ public final class RunPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_DELETE_JOB_RUNNING.
-	 * @param jobId String 
-	 * @param nodeId Long 
-	 * @param execDate java.time.ZonedDateTime 
-	 * @return Integer intSqlRowcount
+	 * Execute la tache TK_INSERT_JOB_EXEC_WITH_JOB_ID.
+	 * @param jobExec io.vertigo.orchestra.domain.run.OJobExec 
 	*/
-	public Integer deleteJobRunning(final String jobId, final Long nodeId, final java.time.ZonedDateTime execDate) {
-		final Task task = createTaskBuilder("TK_DELETE_JOB_RUNNING")
-				.addValue("JOB_ID", jobId)
-				.addValue("NODE_ID", nodeId)
-				.addValue("EXEC_DATE", execDate)
-				.build();
-		return getTaskManager()
-				.execute(task)
-				.getResult();
-	}
-
-	/**
-	 * Execute la tache TK_INSERT_JOB_BOARD_TO_LAUNCH.
-	 * @param jobBoard io.vertigo.orchestra.domain.run.OJobRun 
-	*/
-	public void insertJobBoardToLaunch(final io.vertigo.orchestra.domain.run.OJobRun jobBoard) {
-		final Task task = createTaskBuilder("TK_INSERT_JOB_BOARD_TO_LAUNCH")
-				.addValue("JOB_BOARD", jobBoard)
+	public void insertJobExecWithJobId(final io.vertigo.orchestra.domain.run.OJobExec jobExec) {
+		final Task task = createTaskBuilder("TK_INSERT_JOB_EXEC_WITH_JOB_ID")
+				.addValue("JOB_EXEC", jobExec)
 				.build();
 		getTaskManager().execute(task);
 	}
 
 	/**
-	 * Execute la tache TK_INSERT_JOB_RUNNING_TO_LAUNCH.
-	 * @param nodeId Long 
-	 * @param execDate java.time.ZonedDateTime 
-	 * @param usrId Long (peut être null)
-	 * @param processesNextRun io.vertigo.orchestra.domain.schedule.OProcessNextRun 
-	 * @return Integer intSqlRowcount
+	 * Execute la tache TK_INSERT_JOB_RUN_WITH_JOB_ID.
+	 * @param jobRun io.vertigo.orchestra.domain.run.OJobRun 
 	*/
-	public Integer insertJobRunningToLaunch(final Long nodeId, final java.time.ZonedDateTime execDate, final Optional<Long> usrId, final io.vertigo.orchestra.domain.schedule.OProcessNextRun processesNextRun) {
-		final Task task = createTaskBuilder("TK_INSERT_JOB_RUNNING_TO_LAUNCH")
-				.addValue("NODE_ID", nodeId)
-				.addValue("EXEC_DATE", execDate)
-				.addValue("USR_ID", usrId.orElse(null))
-				.addValue("PROCESSES_NEXT_RUN", processesNextRun)
+	public void insertJobRunWithJobId(final io.vertigo.orchestra.domain.run.OJobRun jobRun) {
+		final Task task = createTaskBuilder("TK_INSERT_JOB_RUN_WITH_JOB_ID")
+				.addValue("JOB_RUN", jobRun)
 				.build();
-		return getTaskManager()
-				.execute(task)
-				.getResult();
+		getTaskManager().execute(task);
 	}
 
 	private TaskManager getTaskManager() {

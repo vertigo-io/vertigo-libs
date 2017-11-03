@@ -10,24 +10,25 @@ module.exports = {
         params: "init params as JSON",
         jmoId: "JobModel"
     },
-    oJobExec: {
-        jobId: "Id",
-        jobName: "Job Name",
-        nodeId: "Node Id",
-        startExecDate: "Start exec date",
-        maxExecDate: "Max date Max execution (start + timeout)"
-    },
-    oJobExecution: {
-        jexId: "Id d'une trace d'execution d'un job",
+    oJobEvent: {
+        jevtId: "Id d'une trace d'execution d'un job",
         jobName: "Status général d'execution",
         status: "Status général d'execution",
         reason: "Code d'erreur fonctionel de l'execution",
-        dateDebut: "Date de début d'execution",
-        dateFin: "Date de fin d'execution",
+        startDate: "Date de début d'execution",
+        endDate: "Date de fin d'execution",
         classEngine: "Implémentation effective de l'execution",
         workspaceIn: "Workspace d'entrée de l'execution",
         workspaceOut: "Workspace de sortie de l'execution",
         nodId: "Id du noeud"
+    },
+    oJobExec: {
+        jobId: "Id",
+        jobExecUuid: "Exec UUID",
+        startExecDate: "Start exec date",
+        maxExecDate: "Max date Max execution (start + timeout)",
+        jobName: "Job Name",
+        nodeId: "Node Id"
     },
     oJobLog: {
         jloId: "Id d'une trace d'execution d'un job",
@@ -52,31 +53,16 @@ module.exports = {
     },
     oJobRun: {
         jobId: "Id",
+        jobExecUuid: "Exec UUID",
         status: "Exec status",
-        nodeId: "Node Id",
+        currentTry: "Current try",
         maxDate: "Max date of the run",
-        maxRetry: "Max retry",
-        currentTry: "Current try"
+        maxRetry: "Max retry"
     },
     oJobSchedule: {
         jscId: "id",
         scheduleDate: "schedule date",
         params: "init params as JSON",
         jmoId: "JobModel"
-    },
-    oProcessNextRun: {
-        jobname: "Nom du job",
-        jobId: "Job Id",
-        expectedTime: "Date d'execution prévue",
-        initialParams: "Paramètres initiaux sous forme de JSON"
-    },
-    oUser: {
-        usrId: "Id",
-        firstName: "Nom",
-        lastName: "Prénom",
-        email: "Email",
-        password: "Mot de passe",
-        mailAlert: "Alerté en cas d'erreur",
-        active: "Compte Actif"
     }
 };

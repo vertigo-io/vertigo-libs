@@ -104,7 +104,6 @@ public final class OJobCron implements Entity {
 	 * @return Long jmoId <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "JobModel")
-	@Deprecated
 	public Long getJmoId() {
 		return (Long)  jmoIdAccessor.getId();
 	}
@@ -114,7 +113,6 @@ public final class OJobCron implements Entity {
 	 * Définit la valeur de la propriété 'JobModel'.
 	 * @param jmoId Long <b>Obligatoire</b>
 	 */
-	@Deprecated
 	public void setJmoId(final Long jmoId) {
 		jmoIdAccessor.setId(jmoId);
 	}
@@ -123,7 +121,7 @@ public final class OJobCron implements Entity {
 	 * Association : JobModel.
 	 * @return l'accesseur vers la propriété 'JobModel'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.model.OJobModel> getJobModelAccessor() {
+	public VAccessor<io.vertigo.orchestra.domain.model.OJobModel> jobModel() {
 		return jmoIdAccessor;
 	}
 	

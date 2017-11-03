@@ -3,14 +3,18 @@ package io.vertigo.orchestra.plugins.store;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.transaction.Transactional;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -18,21 +22,25 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VUserException;
 import io.vertigo.orchestra.dao.model.OJobModelDAO;
 import io.vertigo.orchestra.dao.run.OJobExecDAO;
 import io.vertigo.orchestra.dao.run.OJobRunDAO;
+import io.vertigo.orchestra.dao.run.RunPAO;
 import io.vertigo.orchestra.dao.schedule.OJobScheduleDAO;
 import io.vertigo.orchestra.domain.model.OJobModel;
 import io.vertigo.orchestra.domain.run.OJobExec;
 import io.vertigo.orchestra.domain.run.OJobRun;
+import io.vertigo.orchestra.domain.run.OJobRunStatus;
 import io.vertigo.orchestra.domain.schedule.OJobSchedule;
 import io.vertigo.orchestra.services.run.JobEngine;
 import io.vertigo.util.ClassUtil;
 
 @Transactional
 public class OrchestraStoreImpl implements OrchestraStore {
-	//	private static final Logger LOG = Logger.getLogger(OrchestraStoreImpl.class);
-	private final ExecutorService executorService = Executors.newFixedThreadPool(10); // TODO: named parameter
+	//	private static final Logger LOGGER = LogManager.getLogger(OrchestraStoreImpl.class);
+
+	private final Executor executor = Executors.newFixedThreadPool(10); // TODO: named parameter
 
 	@Inject
 	private OJobModelDAO jobModelDAO;
@@ -42,6 +50,12 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	private OJobRunDAO jobRunDAO;
 	@Inject
 	private OJobExecDAO jobExecDAO;
+	@Inject
+	private RunPAO runPAO;
+	@Inject
+	private VTransactionManager transactionManager;
+	//	@Inject
+	//	private SqlDataBaseManager dataBaseManager;
 	//----
 
 	//	@Inject
@@ -52,6 +66,25 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	private StoreManager storeManager;
 
 	private final long nodeId = 2L;
+
+	@Override
+	@DaemonScheduled(name = "DMN_TICK", periodInSeconds = 30)
+	public void tick() {
+		//0. Launch cron Jobs
+
+		//1. Launch scheduled Jobs
+		startJobSchedule();
+		//---
+		//2. Watch jobs in timeout
+		//watchJobTimeOut();
+	}
+
+	private void startJobSchedule() {
+		final DtList<OJobSchedule> jobSchedules = jobScheduleDAO.getJobScheduleToRun(ZonedDateTime.now());
+		for (final OJobSchedule jobSchedule : jobSchedules) {
+			startJobSchedule(jobSchedule);
+		}
+	}
 
 	//-------------------------------------------------------------------------
 	private OJobSchedule readJobScheduleForUpdate(final long jscId) {
@@ -109,7 +142,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		Assertion.checkNotNull(scheduleDate);
 		//---
 		final OJobSchedule schedule = new OJobSchedule();
-		schedule.getJobModelAccessor().setId(jmoId);
+		schedule.jobModel().setId(jmoId);
 		schedule.setParams(params.toJson());
 		schedule.setScheduleDate(scheduleDate);
 		return jobScheduleDAO.create(schedule);
@@ -135,16 +168,23 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		//---
 		final ZonedDateTime maxDate = jobSchedule.getScheduleDate().plusSeconds(jobModel.getRunMaxDelay());
 
-		final ZonedDateTime now = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC"));
-		Assertion.checkArgument(now.isAfter(maxDate), "delay has been expired, the job {0} can't be executed", jobModel.getJobName());
+		final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+		System.out.println(">>now = " + now);
+		System.out.println(">>max = " + maxDate);
+		Assertion.checkArgument(maxDate.isAfter(now), "delay has been expired, the job {0} can't be executed", jobModel.getJobName());
+		final UUID uuid = UUID.randomUUID();
 		final OJobRun jobRun = new OJobRun();
 		jobRun.setJobId(jobId);
-		jobRun.setCurrentTry(1);
 		jobRun.setMaxRetry(jobModel.getMaxRetry());
 		jobRun.setMaxDate(maxDate);
-		jobRun.setStatus("R"); //Run
-		jobRun.setNodeId(nodeId);
-		return jobRunDAO.create(jobRun);
+
+		//mutables fields
+		jobRun.setCurrentTry(1);
+		jobRun.setJobExecUuid(uuid.toString());
+		jobRun.setStatus(OJobRunStatus.RUNNING.getCode());
+
+		runPAO.insertJobRunWithJobId(jobRun);
+		return jobRun;
 	}
 
 	private OJobExec createJobExec(final OJobModel jobModel, final OJobRun jobRun) {
@@ -155,20 +195,34 @@ public class OrchestraStoreImpl implements OrchestraStore {
 
 		final OJobExec jobExec = new OJobExec();
 		jobExec.setJobId(jobRun.getJobId());
+		jobExec.setJobExecUuid(jobRun.getJobExecUuid());
 		jobExec.setJobName(jobModel.getJobName());
-		jobExec.setNodeId(nodeId);
 		jobExec.setMaxExecDate(maxExecDate);
 		jobExec.setStartExecDate(startExecDate);
-		return jobExecDAO.create(jobExec);
+		jobExec.setJobExecUuid(jobRun.getJobExecUuid());
+		jobExec.setNodeId(nodeId);
+		runPAO.insertJobExecWithJobId(jobExec);
+		return jobExec;
+	}
+
+	private static String createJobId(final OJobSchedule jobSchedule) {
+		return "SCH:" + String.valueOf(jobSchedule.getJscId());
 	}
 
 	@Override
 	public String startJobSchedule(final long jscId) {
 		final OJobSchedule jobSchedule = readJobScheduleForUpdate(jscId);
-		jobSchedule.getJobModelAccessor().load();
-		final OJobModel jobModel = jobSchedule.getJobModelAccessor().get();
+		return startJobSchedule(jobSchedule);
+	}
+
+	//jobSchedule must have been locked
+	private String startJobSchedule(final OJobSchedule jobSchedule) {
+		Assertion.checkNotNull(jobSchedule);
+		//---
+		jobSchedule.jobModel().load();
+		final OJobModel jobModel = jobSchedule.jobModel().get();
 		//		final OJobModel jobModel = readJobModelForUpdate(jobSchedule.getJobMSodel().getJmoId());
-		final String jobId = "SCH:" + String.valueOf(jscId);
+		final String jobId = createJobId(jobSchedule);
 		//---
 		Assertion.checkArgument(jobModel.getActive(), "The selected job {0} must be active to be executed", jobModel.getJobName());
 		//---
@@ -183,7 +237,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		final String jobEngineClassName = jobModel.getJobEngineClassName();
 		final Class<? extends JobEngine> jobEngineClass = ClassUtil.classForName(jobEngineClassName, JobEngine.class);
 
-		execute(jobExec, jobEngineClass, initialParams);
+		executeASync(jobExec, jobEngineClass, initialParams);
 		return jobId; //Tuples.of(jobRun, jobExec);
 		//		final OProcessNextRun nextRun = new OProcessNextRun();
 		//		nextRun.setExpectedTime(jobSchedule.getScheduleDate());
@@ -246,36 +300,118 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	//		}
 	//
 	//	}
-	private void execute(final OJobExec jobExec, final Class<? extends JobEngine> jobEngineClass, final OParams initialParams) {
+	private void executeASync(
+			final OJobExec jobExec,
+			final Class<? extends JobEngine> jobEngineClass,
+			final OParams initialParams) {
 		Assertion.checkNotNull(jobExec);
 		Assertion.checkNotNull(jobEngineClass);
 		Assertion.checkNotNull(initialParams);
 		// ---
 		final JobEngine jobEngine = DIInjector.newInstance(jobEngineClass, Home.getApp().getComponentSpace());
 
-		final OWorkspace workspace = new OWorkspace(jobExec.getJobId()); //initialParams.asMap(), jobId, jobModel.getJobName(), engineclassName, execDate);
+		final OWorkspace workspace = new OWorkspace(jobExec.getJobId(), UUID.fromString(jobExec.getJobExecUuid())); //initialParams.asMap(), jobId, jobModel.getJobName(), engineclassName, execDate);
 
-		CompletableFuture.supplyAsync(() -> jobEngine.execute(workspace), executorService)
-				.whenComplete(this::onComplete);
+		CompletableFuture.supplyAsync(() -> jobEngine.execute(workspace), executor)
+				.whenCompleteAsync(this::onComplete);
 	}
 
 	private void onComplete(final OWorkspace workspace, final Throwable t) {
-		//We have to
-		// - to update JobRun
-		// - to delete JobExec
+		//case X : the run is not found
+		// 	this case is abnormal !!
+		// When the run is found there is two cases
+		//case A : an exec is found
 
-		final OJobRun jobRun = readJobRunForUpdate(workspace.getJobId());
-		jobExecDAO.delete(workspace.getJobId());
-		if (t != null) {
-			jobRun.setStatus("F");
-		} else {
-			jobRun.setStatus("S");
+		// normaly the exec has been destroyed, so we have nothing to do...
+		//except log this fail --Timeout
+		//case B : an exec is found and is still the same
+		// - the delay has expired => TimeOut
+		// - the delay has not expired
+		//     -- Success
+		//
+		//LOGGER.catching(t);
+		System.out.println(">>onComplete" + Thread.currentThread().getId());
+		try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
+			//dataBaseManager.getConnectionProvider("orchestra").obtainConnection();
+			//We have to
+			// - to update JobRun
+			// - to delete JobExec
+			final OJobRun jobRun = readJobRunForUpdate(workspace.getJobId());
+
+			final boolean stillTheSameExec = jobRun.getJobExecUuid().equals(workspace.getJobExecUuid().toString());
+			if (stillTheSameExec) {
+				Assertion.checkState(jobRun.getStatus().equals(OJobRunStatus.RUNNING.getCode()), "The status of this job is not valid. expected [R]UNNING, [{0}] found.", jobRun.getStatus());
+				//--
+				jobExecDAO.delete(workspace.getJobId());
+				if (t == null) {
+					if (delayExceeded(jobRun)) {
+						jobRun.setStatus(OJobRunStatus.TIMEOUT.getCode());
+					} else {
+						jobRun.setStatus(OJobRunStatus.SUCCEEDED.getCode());
+					}
+				} else {
+					if (delayExceeded(jobRun) || jobRun.getCurrentTry() > jobRun.getMaxRetry()) {
+						jobRun.setStatus(OJobRunStatus.FAILED.getCode());
+					} else {
+						jobRun.setStatus(OJobRunStatus.ERROR.getCode());
+					}
+				}
+				jobRun.setJobExecUuid(null);
+				jobRunDAO.update(jobRun);
+				//TODO
+				//créer un event
+			} else {
+				//TODO
+				//créer un event
+			}
+			tx.commit();
+		} catch (final Throwable th) {
+			System.err.println("err>>>>" + th);
+			th.printStackTrace();
+			//LOGGER.catching(th);
 		}
-		jobRunDAO.update(jobRun);
 	}
 
 	@Override
 	public DtList<OJobExec> getAllJobExecs() {
 		return jobExecDAO.findAll(Criterions.alwaysTrue(), Integer.MAX_VALUE);
+	}
+
+	@Override
+	public DtList<OJobRun> getAllJobRuns() {
+		return jobRunDAO.findAll(Criterions.alwaysTrue(), Integer.MAX_VALUE);
+	}
+
+	private static boolean delayExceeded(final OJobRun jobRun) {
+		return !jobRun.getMaxDate().isAfter(ZonedDateTime.now());
+	}
+
+	//	@Override
+	//	public void timeoutJob(final String jobId) {
+	//		Assertion.checkNotNull(jobId);
+	//		//---
+	//		final OJobRun jobRun = readJobRunForUpdate(jobId);
+	//		if (OJobRunStatus.isAlive(jobRun)) {
+	//			jobExecDAO.delete(jobId);
+	//			jobRun.setStatus(OJobRunStatus.KILLED.getCode());
+	//			jobRunDAO.update(jobRun);
+	//		} else {
+	//			throw new VUserException("Only a living job can be killed");
+	//		}
+	//	}
+
+	@Override
+	public void killJob(final String jobId) {
+		Assertion.checkNotNull(jobId);
+		//---
+		final OJobRun jobRun = readJobRunForUpdate(jobId);
+		if (OJobRunStatus.isAlive(jobRun)) {
+			jobExecDAO.delete(jobId);
+			jobRun.setStatus(OJobRunStatus.KILLED.getCode());
+			jobRun.setJobExecUuid(null);
+			jobRunDAO.update(jobRun);
+		} else {
+			throw new VUserException("Only a living job can be killed");
+		}
 	}
 }

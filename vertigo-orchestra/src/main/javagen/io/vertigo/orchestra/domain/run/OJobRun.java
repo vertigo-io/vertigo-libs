@@ -16,11 +16,11 @@ public final class OJobRun implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private String jobId;
+	private String jobExecUuid;
 	private String status;
-	private Long nodeId;
+	private Integer currentTry;
 	private java.time.ZonedDateTime maxDate;
 	private Integer maxRetry;
-	private Integer currentTry;
 
 	/** {@inheritDoc} */
 	@Override
@@ -33,7 +33,7 @@ public final class OJobRun implements Entity {
 	 * Récupère la valeur de la propriété 'Id'.
 	 * @return String jobId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT_JOB", type = "ID", required = true, label = "Id")
+	@Field(domain = "DO_O_JOB_IDENTIFIANT", type = "ID", required = true, label = "Id")
 	public String getJobId() {
 		return jobId;
 	}
@@ -45,6 +45,25 @@ public final class OJobRun implements Entity {
 	 */
 	public void setJobId(final String jobId) {
 		this.jobId = jobId;
+	}
+	
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'Exec UUID'.
+	 * @return String jobExecUuid
+	 */
+	@Field(domain = "DO_O_EXEC_UUID", label = "Exec UUID")
+	public String getJobExecUuid() {
+		return jobExecUuid;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'Exec UUID'.
+	 * @param jobExecUuid String
+	 */
+	public void setJobExecUuid(final String jobExecUuid) {
+		this.jobExecUuid = jobExecUuid;
 	}
 	
 	/**
@@ -68,21 +87,21 @@ public final class OJobRun implements Entity {
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Node Id'.
-	 * @return Long nodeId <b>Obligatoire</b>
+	 * Récupère la valeur de la propriété 'Current try'.
+	 * @return Integer currentTry <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", required = true, label = "Node Id")
-	public Long getNodeId() {
-		return nodeId;
+	@Field(domain = "DO_O_INTEGER", required = true, label = "Current try")
+	public Integer getCurrentTry() {
+		return currentTry;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Node Id'.
-	 * @param nodeId Long <b>Obligatoire</b>
+	 * Définit la valeur de la propriété 'Current try'.
+	 * @param currentTry Integer <b>Obligatoire</b>
 	 */
-	public void setNodeId(final Long nodeId) {
-		this.nodeId = nodeId;
+	public void setCurrentTry(final Integer currentTry) {
+		this.currentTry = currentTry;
 	}
 	
 	/**
@@ -121,25 +140,6 @@ public final class OJobRun implements Entity {
 	 */
 	public void setMaxRetry(final Integer maxRetry) {
 		this.maxRetry = maxRetry;
-	}
-	
-	/**
-	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Current try'.
-	 * @return Integer currentTry <b>Obligatoire</b>
-	 */
-	@Field(domain = "DO_O_INTEGER", required = true, label = "Current try")
-	public Integer getCurrentTry() {
-		return currentTry;
-	}
-
-	/**
-	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Current try'.
-	 * @param currentTry Integer <b>Obligatoire</b>
-	 */
-	public void setCurrentTry(final Integer currentTry) {
-		this.currentTry = currentTry;
 	}
 	
 	/** {@inheritDoc} */

@@ -20,18 +20,12 @@ package io.vertigo.orchestra;
 
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
-import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
-import io.vertigo.orchestra.dao.history.OJobExecutionDAO;
-import io.vertigo.orchestra.dao.history.OJobLogDAO;
 import io.vertigo.orchestra.dao.model.OJobModelDAO;
 import io.vertigo.orchestra.dao.run.OJobExecDAO;
 import io.vertigo.orchestra.dao.run.OJobRunDAO;
 import io.vertigo.orchestra.dao.run.RunPAO;
-import io.vertigo.orchestra.dao.schedule.OJobCronDAO;
 import io.vertigo.orchestra.dao.schedule.OJobScheduleDAO;
-import io.vertigo.orchestra.domain.DtDefinitions;
-import io.vertigo.orchestra.plugins.services.schedule.db.OrchestraSchedulerProvider;
 import io.vertigo.orchestra.plugins.store.OrchestraStore;
 import io.vertigo.orchestra.plugins.store.OrchestraStoreImpl;
 
@@ -65,21 +59,21 @@ public final class OrchestraFeatures extends Features {
 				.addComponent(OrchestraStore.class, OrchestraStoreImpl.class)
 				//				.addComponent(JobExecutorManager.class, JobExecutorManagerImpl.class, Param.of("timeout", String.valueOf(10)))
 				//				.addComponent(JobEndedEventSubscriber.class)
-				.addDefinitionProvider(OrchestraSchedulerProvider.class, Param.of("planningPeriod", String.valueOf(daemonPeriodSeconds)))
+				//	.addDefinitionProvider(OrchestraSchedulerProvider.class, Param.of("planningPeriod", String.valueOf(daemonPeriodSeconds)))
 				//----DAO
-				.addComponent(OJobExecDAO.class)
-				.addComponent(OJobScheduleDAO.class)
-				.addComponent(OJobExecutionDAO.class)
-				.addComponent(OJobRunDAO.class)
 				.addComponent(OJobModelDAO.class)
-				.addComponent(OJobCronDAO.class)
-				.addComponent(OJobLogDAO.class)
+				.addComponent(OJobScheduleDAO.class)
+				.addComponent(OJobExecDAO.class)
+				.addComponent(OJobRunDAO.class)
+				//				.addComponent(OJobExecutionDAO.class)
+				//	.addComponent(OJobCronDAO.class)
+				//	.addComponent(OJobLogDAO.class)
 				//----PAO
 				.addComponent(RunPAO.class)
 				//----Definitions
 				.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
-						.addDefinitionResource("kpr", "io/vertigo/orchestra/execution.kpr")
-						.addDefinitionResource("classes", DtDefinitions.class.getName())
+						.addDefinitionResource("kpr", "io/vertigo/orchestra/generation.kpr")
+						//.addDefinitionResource("classes", DtDefinitions.class.getName())
 						.build());
 		return this;
 	}

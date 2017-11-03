@@ -345,12 +345,16 @@ public final class CronExpression {
 	 *         if the string expression cannot be parsed into a valid
 	 *         <CODE>CronExpression</CODE>
 	 */
-	public CronExpression(final String cronExpression) throws ParseException {
+	private CronExpression(final String cronExpression) throws ParseException {
 		Assertion.checkNotNull(cronExpression, "cronExpression cannot be null");
 		//--
 
 		this.cronExpression = cronExpression.toUpperCase(Locale.FRENCH);
 		buildExpression(this.cronExpression);
+	}
+
+	public static CronExpression of(final String cronExpression) throws ParseException {
+		return new CronExpression(cronExpression);
 	}
 
 	/**

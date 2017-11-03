@@ -9,10 +9,5 @@ model/run/job_run.ksp
 model/run/job_exec.ksp
 
 
-
-model/trash/process_next_run.ksp
-
-model/referential/users.ksp
-
-model/history/job_execution.ksp
-model/history/job_log.ksp
+model/event/job_event.ksp
+model/event/job_log.ksp

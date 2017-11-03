@@ -1,4 +1,4 @@
-package io.vertigo.orchestra.domain.history;
+package io.vertigo.orchestra.domain.event;
 
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
@@ -12,15 +12,15 @@ import io.vertigo.lang.Generated;
  */
 @Generated
 @io.vertigo.dynamo.domain.stereotype.DataSpace("orchestra")
-public final class OJobExecution implements Entity {
+public final class OJobEvent implements Entity {
 	private static final long serialVersionUID = 1L;
 
-	private Long jexId;
+	private Long jevtId;
 	private String jobName;
 	private String status;
 	private String reason;
-	private java.time.ZonedDateTime dateDebut;
-	private java.time.ZonedDateTime dateFin;
+	private java.time.ZonedDateTime startDate;
+	private java.time.ZonedDateTime endDate;
 	private String classEngine;
 	private String workspaceIn;
 	private String workspaceOut;
@@ -28,27 +28,27 @@ public final class OJobExecution implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<OJobExecution> getURI() {
+	public URI<OJobEvent> getURI() {
 		return DtObjectUtil.createURI(this);
 	}
 	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id d'une trace d'execution d'un job'.
-	 * @return Long jexId <b>Obligatoire</b>
+	 * @return Long jevtId <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id d'une trace d'execution d'un job")
-	public Long getJexId() {
-		return jexId;
+	public Long getJevtId() {
+		return jevtId;
 	}
 
 	/**
 	 * Champ : ID.
 	 * Définit la valeur de la propriété 'Id d'une trace d'execution d'un job'.
-	 * @param jexId Long <b>Obligatoire</b>
+	 * @param jevtId Long <b>Obligatoire</b>
 	 */
-	public void setJexId(final Long jexId) {
-		this.jexId = jexId;
+	public void setJevtId(final Long jevtId) {
+		this.jevtId = jevtId;
 	}
 	
 	/**
@@ -111,39 +111,39 @@ public final class OJobExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de début d'execution'.
-	 * @return java.time.ZonedDateTime dateDebut <b>Obligatoire</b>
+	 * @return java.time.ZonedDateTime startDate <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Date de début d'execution")
-	public java.time.ZonedDateTime getDateDebut() {
-		return dateDebut;
+	public java.time.ZonedDateTime getStartDate() {
+		return startDate;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de début d'execution'.
-	 * @param dateDebut java.time.ZonedDateTime <b>Obligatoire</b>
+	 * @param startDate java.time.ZonedDateTime <b>Obligatoire</b>
 	 */
-	public void setDateDebut(final java.time.ZonedDateTime dateDebut) {
-		this.dateDebut = dateDebut;
+	public void setStartDate(final java.time.ZonedDateTime startDate) {
+		this.startDate = startDate;
 	}
 	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de fin d'execution'.
-	 * @return java.time.ZonedDateTime dateFin
+	 * @return java.time.ZonedDateTime endDate
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Date de fin d'execution")
-	public java.time.ZonedDateTime getDateFin() {
-		return dateFin;
+	public java.time.ZonedDateTime getEndDate() {
+		return endDate;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de fin d'execution'.
-	 * @param dateFin java.time.ZonedDateTime
+	 * @param endDate java.time.ZonedDateTime
 	 */
-	public void setDateFin(final java.time.ZonedDateTime dateFin) {
-		this.dateFin = dateFin;
+	public void setEndDate(final java.time.ZonedDateTime endDate) {
+		this.endDate = endDate;
 	}
 	
 	/**

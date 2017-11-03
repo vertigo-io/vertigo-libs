@@ -4,19 +4,19 @@ package io.vertigo.orchestra.services
 /**************************************************************************************************/
 
 
-create Domain DO_O_IDENTIFIANT_JOB {
+create Domain DO_O_JOB_IDENTIFIANT {
 	dataType : String
 	formatter : FMT_O_DEFAULT
-	constraint : [CK_O_JOB_ID,CK_O_MAX_LENGTH_30]
+	constraint : [ /*CK_O_JOB_ID,*/ CK_O_MAX_LENGTH_30]
 	storeType : "VARCHAR(30)"
-},
+}
 
 create Domain DO_O_CODE_IDENTIFIANT {
 	dataType : String
 	formatter : FMT_O_DEFAULT
 	constraint : [CK_O_CODE,CK_O_MAX_LENGTH_20]
 	storeType : "VARCHAR(20)"
-},
+}
 
 create Domain DO_O_STATUS_CODE {
 	dataType : String
@@ -104,17 +104,4 @@ create Constraint CK_O_JOB_ID {
 },
 
 
-create Task TK_MOVIES {
-    className : "io.vertigo.dynamox.task.TaskEngineSelect"
-        request : "
-        	select name	from movie
-			"
-	attribute NAMES	 	{domain : DO_NAMES		notNull:"true" 	inOut :"out"}
-}
-
-create Domain DO_NAMES {
-	dataType : String
-	formatter : FMT_O_DEFAULT
-	multiple : "true"
-}
 

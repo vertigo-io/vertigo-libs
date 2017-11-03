@@ -39,6 +39,12 @@ create Domain DO_O_INTEGER {
 	storeType : "NUMERIC"
 }
 
+create Domain DO_O_EXEC_UUID {
+	dataType : String
+	formatter : FMT_O_DEFAULT
+	storeType : "CHAR(36)"
+}
+
 /**************************************************************************************************/
 /* 											Formatters											  */
 /**************************************************************************************************/

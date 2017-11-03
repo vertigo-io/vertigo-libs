@@ -76,7 +76,7 @@ public abstract class AbstractOrchestraTestCaseJU4 {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final List<String> requests = new ListBuilder<String>()
 					.add(" delete from o_job_log;")
-					.add(" delete from o_job_execution;")
+					.add(" delete from o_job_event;")
 					.add(" delete from o_job_run;")
 					.add(" delete from o_job_exec;")
 					.add(" delete from o_job_cron;")

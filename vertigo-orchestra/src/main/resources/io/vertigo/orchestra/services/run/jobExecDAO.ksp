@@ -1,6 +1,19 @@
 package io.vertigo.orchestra.dao.run
 
-create Task TK_INSERT_JOB_RUNNING_TO_LAUNCH {
+create Task TK_INSERT_JOB_EXEC_WITH_JOB_ID {
+	storeName : "orchestra"
+	className : "io.vertigo.dynamox.task.TaskEngineProc"
+	request : "
+		INSERT INTO O_JOB_EXEC 
+			(JOB_ID, JOB_EXEC_UUID, JOB_NAME, NODE_ID, START_EXEC_DATE, MAX_EXEC_DATE)
+			values  
+			(#JOB_EXEC.JOB_ID#, #JOB_EXEC.JOB_EXEC_UUID#, #JOB_EXEC.JOB_NAME#, #JOB_EXEC.NODE_ID#, #JOB_EXEC.START_EXEC_DATE#, #JOB_EXEC.MAX_EXEC_DATE#)
+		"
+		
+	attribute JOB_EXEC	{domain : DO_DT_O_JOB_EXEC_DTO  notNull:"true" 	inOut :"in"}
+}
+
+/*create Task TK_INSERT_JOB_RUNNING_TO_LAUNCH {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
@@ -18,9 +31,9 @@ create Task TK_INSERT_JOB_RUNNING_TO_LAUNCH {
 		attribute PROCESSES_NEXT_RUN	{domain : DO_DT_O_PROCESS_NEXT_RUN_DTO	 	notNull:"true" 	inOut :"in"}
 		attribute INT_SQL_ROWCOUNT		{domain : DO_O_INTEGER						notNull:"true" 	inOut :"out"}
 }
-
+*/
 /* TODO remplacer NOD_ID par un token ID */
-
+/*
 create Task TK_DELETE_JOB_RUNNING {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineProc"
@@ -30,7 +43,7 @@ create Task TK_DELETE_JOB_RUNNING {
         	   AND NODE_ID = #NODE_ID#
         	   AND EXEC_DATE = #EXEC_DATE#
 			"
-		attribute JOB_ID				{domain : DO_O_IDENTIFIANT_JOB		notNull:"true" 	inOut :"in"}
+		attribute JOB_ID				{domain : DO_O_JOB_IDENTIFIANT		notNull:"true" 	inOut :"in"}
 		attribute NODE_ID				{domain : DO_O_IDENTIFIANT 			notNull:"true" 	inOut :"in"}
 		attribute EXEC_DATE				{domain : DO_O_TIMESTAMP			notNull:"true" 	inOut :"in"}
 		attribute INT_SQL_ROWCOUNT		{domain : DO_O_INTEGER 				notNull:"true" 	inOut :"out"}
@@ -49,3 +62,4 @@ create Task TK_GET_JOBS_TO_RUN {
 	attribute DATE_EXEC				{domain : DO_O_TIMESTAMP			notNull:"true" 	inOut :"in"}
 },
 
+*/
