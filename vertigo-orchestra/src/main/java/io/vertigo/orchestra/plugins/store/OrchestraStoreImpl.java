@@ -188,6 +188,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	}
 
 	@Override
+	//a job can be croned even if it is deactivated.
 	public OJobCron cron(final long jmoId, final OParams params, final CronExpression cronExpression) {
 		Assertion.checkNotNull(params);
 		Assertion.checkNotNull(cronExpression);
@@ -220,8 +221,6 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		final ZonedDateTime maxDate = scheduledDate.plusSeconds(jobModel.getRunMaxDelay());
 
 		final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
-		System.out.println(">>now = " + now);
-		System.out.println(">>max = " + maxDate);
 		Assertion.checkArgument(maxDate.isAfter(now), "delay has been expired, the job {0} can't be executed", jobModel.getJobName());
 		final UUID uuid = UUID.randomUUID();
 		final OJobRun jobRun = new OJobRun();
@@ -318,27 +317,17 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		executeASync(jobExec, jobEngineClass, initialParams);
 	}
 
-	//Tuples.of(jobRun, jobExec);
-	//		final OProcessNextRun nextRun = new OProcessNextRun();
-	//		nextRun.setExpectedTime(jobSchedule.getScheduleDate());
-	//		nextRun.setInitialParams(jobSchedule.getParams());
-	//		nextRun.setJobname(jobModel.getJobName());
-	//		final String jobId = JobRunnerUtil.generateJobId(jobSchedule.getScheduleDate(), "S", jscId);
-	//		nextRun.setJobId(jobId);
+	//	private void addStartJobEvent(final OJobSchedule jobSchedule) {
+	//		Assertion.checkNotNull(jobSchedule);
+	//		//---
+	//		final ZonedDateTime execDate = ZonedDateTime.now();
 	//
+	//		final OJobEvent jobEvent = new OJobEvent();
+	//		jobEvent.setStartDate(startDate);
+	//		JobName(jobName);
+	//	}
 	//		final ZonedDateTime execDate = ZonedDateTime.now();
 	//		final long count = runPAO.insertJobRunningToLaunch(nodId, execDate, null, nextRun);
-	//
-	//		if (count > 0) {
-	//			final OJobRun jobBoard = new OJobRun();
-	//			jobBoard.setJid(jobId);
-	//			jobBoard.setCurrentTry(0);
-	//			jobBoard.setMaxRetry(jobModel.getMaxRetry());
-	//			jobBoard.setMaxDate(null);
-	//			jobBoard.setStatus("R");
-	//			jobBoard.setNodeId(nodId);
-	//			runPAO.insertJobBoardToLaunch(jobBoard);
-	//
 	//			final OJobExecution jobExecution = new OJobExecution();
 	//			jobExecution.setClassEngine(jobModel.getJobEngineClassName());
 	//			jobExecution.setDateDebut(execDate);

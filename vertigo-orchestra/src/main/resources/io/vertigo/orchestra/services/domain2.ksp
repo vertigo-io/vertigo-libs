@@ -22,7 +22,7 @@ create Domain DO_O_STATUS_CODE {
 	dataType : String
 	formatter : FMT_O_DEFAULT
 	constraint : [CK_O_CODE,CK_O_MAX_LENGTH_1]
-	storeType : "VARCHAR(1)"
+	storeType : "CHAR(1)"
 },
 
 create Domain DO_O_TOKEN {

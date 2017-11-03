@@ -225,7 +225,7 @@ create table O_JOB_RUN
 (
     JOB_ID      	 VARCHAR(30) 	not null,
     JOB_EXEC_UUID	 CHAR(36)    	,
-    STATUS      	 VARCHAR(1)  	not null,
+    STATUS      	 CHAR(1)     	not null,
     CURRENT_TRY 	 NUMERIC     	not null,
     MAX_DATE    	 TIMESTAMP   	not null,
     MAX_RETRY   	 NUMERIC     	not null,
