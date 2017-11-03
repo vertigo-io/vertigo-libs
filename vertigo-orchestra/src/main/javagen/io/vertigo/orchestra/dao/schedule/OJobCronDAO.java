@@ -2,6 +2,10 @@ package io.vertigo.orchestra.dao.schedule;
 
 import javax.inject.Inject;
 
+import io.vertigo.app.Home;
+import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.dynamo.task.model.Task;
+import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
@@ -24,6 +28,29 @@ public final class OJobCronDAO extends DAO<OJobCron, java.lang.Long> implements 
 	@Inject
 	public OJobCronDAO(final StoreManager storeManager, final TaskManager taskManager) {
 		super(OJobCron.class, storeManager, taskManager);
+	}
+
+
+	/**
+	 * Creates a taskBuilder.
+	 * @param name  the name of the task
+	 * @return the builder 
+	 */
+	private static TaskBuilder createTaskBuilder(final String name) {
+		final TaskDefinition taskDefinition = Home.getApp().getDefinitionSpace().resolve(name, TaskDefinition.class);
+		return Task.builder(taskDefinition);
+	}
+
+	/**
+	 * Execute la tache TK_GET_JOB_CRON.
+	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.schedule.OJobCron> dtoOJobCron
+	*/
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.schedule.OJobCron> getJobCron() {
+		final Task task = createTaskBuilder("TK_GET_JOB_CRON")
+				.build();
+		return getTaskManager()
+				.execute(task)
+				.getResult();
 	}
 
 }

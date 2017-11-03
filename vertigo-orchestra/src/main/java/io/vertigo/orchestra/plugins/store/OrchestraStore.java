@@ -7,7 +7,9 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.orchestra.domain.model.OJobModel;
 import io.vertigo.orchestra.domain.run.OJobExec;
 import io.vertigo.orchestra.domain.run.OJobRun;
+import io.vertigo.orchestra.domain.schedule.OJobCron;
 import io.vertigo.orchestra.domain.schedule.OJobSchedule;
+import io.vertigo.orchestra.impl.services.schedule.CronExpression;
 
 public interface OrchestraStore extends Component {
 	void tick();
@@ -25,7 +27,8 @@ public interface OrchestraStore extends Component {
 
 	/* ----------- Schedule --------- */
 	OJobSchedule scheduleAt(long jmoId, OParams params, ZonedDateTime scheduleDate);
-	//OJobSchedule scheduleCron(long jmoId, OParams params, String cronExpression);
+
+	OJobCron cron(long jmoId, OParams params, CronExpression cronExpression);
 
 	DtList<OJobSchedule> getAllJobSchedules();
 

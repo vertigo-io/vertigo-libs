@@ -361,21 +361,21 @@ public final class CronExpression {
 	 * Returns the time zone for which this <code>CronExpression</code>
 	 * will be resolved.
 	 */
-	public TimeZone getTimeZone() {
+	private TimeZone getTimeZone() {
 		if (timeZone == null) {
 			timeZone = TimeZone.getDefault();
 		}
 
 		return timeZone;
 	}
-
-	/**
-	 * Sets the time zone for which  this <code>CronExpression</code>
-	 * will be resolved.
-	 */
-	public void setTimeZone(final TimeZone timeZone) {
-		this.timeZone = timeZone;
-	}
+	//
+	//	/**
+	//	 * Sets the time zone for which  this <code>CronExpression</code>
+	//	 * will be resolved.
+	//	 */
+	//	public void setTimeZone(final TimeZone timeZone) {
+	//		this.timeZone = timeZone;
+	//	}
 
 	/**
 	 * Returns the string representation of the <CODE>CronExpression</CODE>
@@ -1061,7 +1061,6 @@ public final class CronExpression {
 	////////////////////////////////////////////////////////////////////////////
 
 	public Date getNextValidTimeAfter(final Date afterTime) {
-
 		// Computation is based on Gregorian year only.
 		final Calendar cl = new java.util.GregorianCalendar(getTimeZone());
 

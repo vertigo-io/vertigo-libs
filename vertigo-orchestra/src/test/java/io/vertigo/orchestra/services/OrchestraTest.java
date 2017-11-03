@@ -11,7 +11,9 @@ import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
 import io.vertigo.orchestra.domain.model.OJobModel;
 import io.vertigo.orchestra.domain.run.OJobExec;
 import io.vertigo.orchestra.domain.run.OJobRun;
+import io.vertigo.orchestra.domain.schedule.OJobCron;
 import io.vertigo.orchestra.domain.schedule.OJobSchedule;
+import io.vertigo.orchestra.impl.services.schedule.CronExpression;
 import io.vertigo.orchestra.plugins.store.OParams;
 import io.vertigo.orchestra.plugins.store.OrchestraStore;
 import io.vertigo.orchestra.services.execution.engine.SleepJobEngine;
@@ -129,7 +131,7 @@ public class OrchestraTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void testJobSchedule() throws InterruptedException {
 		/*******************************************************/
-		/***************The interesting test ******************/
+		/***************The SCHEDULE interesting test ******************/
 		/******************************************************/
 		final OJobModel jobModel = orchestraStore.createJobModel(newJobModel());
 		final OParams params = new OParams();
@@ -149,5 +151,30 @@ public class OrchestraTest extends AbstractOrchestraTestCaseJU4 {
 		Assert.assertEquals(1, currentJobRuns.size());
 		Assert.assertEquals(0, currentJobExecs.size());
 		Assert.assertEquals("SCH:" + jobSchedule.getJscId(), currentJobRuns.get(0).getJobId());
+	}
+
+	@Test
+	public void testJobCron() throws Exception {
+		/*******************************************************/
+		/***************The CRON interesting test ******************/
+		/******************************************************/
+		final OJobModel jobModel = orchestraStore.createJobModel(newJobModel());
+		final OParams params = new OParams();
+		final OJobCron jobCron = orchestraStore.cron(jobModel.getJmoId(), params, CronExpression.of("0 0/1 * 1/1 * ? *")); //every min
+		//---
+		DtList<OJobRun> currentJobRuns;
+		DtList<OJobExec> currentJobExecs;
+		currentJobRuns = orchestraStore.getAllJobRuns();
+		currentJobExecs = orchestraStore.getAllJobExecs();
+		Assert.assertEquals(0, currentJobRuns.size());
+		Assert.assertEquals(0, currentJobExecs.size());
+		//---
+		Thread.sleep(65 * 1000);
+		//---
+		currentJobRuns = orchestraStore.getAllJobRuns();
+		currentJobExecs = orchestraStore.getAllJobExecs();
+		Assert.assertEquals(1, currentJobRuns.size());
+		Assert.assertEquals(0, currentJobExecs.size());
+		Assert.assertEquals("CRN:" + jobCron.getJcrId(), currentJobRuns.get(0).getJobId());
 	}
 }

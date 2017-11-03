@@ -7,7 +7,8 @@ create Task TK_GET_JOB_SCHEDULE_TO_RUN {
 		SELECT JSC.*
 			FROM O_JOB_SCHEDULE JSC
 			JOIN O_JOB_MODEL JMO ON (JSC.JMO_ID = JMO.JMO_ID)
-		WHERE JSC.SCHEDULE_DATE <= #SCHEDULE_DATE# 
+		WHERE JMO.ACTIVE = TRUE
+			AND JSC.SCHEDULE_DATE <= #SCHEDULE_DATE# 
 			AND (DATEDIFF('SECOND', JSC.SCHEDULE_DATE, #SCHEDULE_DATE#) < JMO.RUN_MAX_DELAY)
 			AND NOT EXISTS (SELECT 1 
 				FROM O_JOB_RUN JRUN
@@ -20,3 +21,16 @@ create Task TK_GET_JOB_SCHEDULE_TO_RUN {
 	attribute DTO_O_JOB_SCHEDULE	{domain : DO_DT_O_JOB_SCHEDULE_DTC 	notNull:"true" 	inOut :"out"}
 }
 
+create Task TK_GET_JOB_CRON {
+	storeName : "orchestra"
+	className : "io.vertigo.dynamox.task.TaskEngineSelect"
+	request : "
+		SELECT JCR.*
+			FROM O_JOB_CRON JCR
+			JOIN O_JOB_MODEL JMO ON (JCR.JMO_ID = JMO.JMO_ID)
+		WHERE JMO.ACTIVE = TRUE
+		FOR UPDATE
+ 		"
+	
+	attribute DTO_O_JOB_CRON	{domain : DO_DT_O_JOB_CRON_DTC 			notNull:"true" 	inOut :"out"}
+}

@@ -25,6 +25,7 @@ import io.vertigo.orchestra.dao.model.OJobModelDAO;
 import io.vertigo.orchestra.dao.run.OJobExecDAO;
 import io.vertigo.orchestra.dao.run.OJobRunDAO;
 import io.vertigo.orchestra.dao.run.RunPAO;
+import io.vertigo.orchestra.dao.schedule.OJobCronDAO;
 import io.vertigo.orchestra.dao.schedule.OJobScheduleDAO;
 import io.vertigo.orchestra.plugins.store.OrchestraStore;
 import io.vertigo.orchestra.plugins.store.OrchestraStoreImpl;
@@ -66,7 +67,7 @@ public final class OrchestraFeatures extends Features {
 				.addComponent(OJobExecDAO.class)
 				.addComponent(OJobRunDAO.class)
 				//				.addComponent(OJobExecutionDAO.class)
-				//	.addComponent(OJobCronDAO.class)
+				.addComponent(OJobCronDAO.class)
 				//	.addComponent(OJobLogDAO.class)
 				//----PAO
 				.addComponent(RunPAO.class)

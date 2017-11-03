@@ -1,8 +1,10 @@
 package io.vertigo.orchestra.plugins.store;
 
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
@@ -27,18 +29,21 @@ import io.vertigo.orchestra.dao.model.OJobModelDAO;
 import io.vertigo.orchestra.dao.run.OJobExecDAO;
 import io.vertigo.orchestra.dao.run.OJobRunDAO;
 import io.vertigo.orchestra.dao.run.RunPAO;
+import io.vertigo.orchestra.dao.schedule.OJobCronDAO;
 import io.vertigo.orchestra.dao.schedule.OJobScheduleDAO;
 import io.vertigo.orchestra.domain.model.OJobModel;
 import io.vertigo.orchestra.domain.run.OJobExec;
 import io.vertigo.orchestra.domain.run.OJobRun;
 import io.vertigo.orchestra.domain.run.OJobRunStatus;
+import io.vertigo.orchestra.domain.schedule.OJobCron;
 import io.vertigo.orchestra.domain.schedule.OJobSchedule;
+import io.vertigo.orchestra.impl.services.schedule.CronExpression;
 import io.vertigo.orchestra.services.run.JobEngine;
 import io.vertigo.util.ClassUtil;
 
 @Transactional
 public class OrchestraStoreImpl implements OrchestraStore {
-	//	private static final Logger LOGGER = LogManager.getLogger(OrchestraStoreImpl.class);
+	//private static final Logger LOGGER = LogManager.getLogger(OrchestraStoreImpl.class);
 
 	private final Executor executor = Executors.newFixedThreadPool(10); // TODO: named parameter
 
@@ -46,6 +51,8 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	private OJobModelDAO jobModelDAO;
 	@Inject
 	private OJobScheduleDAO jobScheduleDAO;
+	@Inject
+	private OJobCronDAO jobCronDAO;
 	@Inject
 	private OJobRunDAO jobRunDAO;
 	@Inject
@@ -71,18 +78,39 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	@DaemonScheduled(name = "DMN_TICK", periodInSeconds = 30)
 	public void tick() {
 		//0. Launch cron Jobs
-
+		startJobCron();
 		//1. Launch scheduled Jobs
 		startJobSchedule();
 		//---
-		//2. Watch jobs in timeout
+		//2. Watch jobs alive 
+		//- in timeout
+		//- in error (=> restart)
 		//watchJobTimeOut();
+		//3. Watch jobs in error
+		//TODO
 	}
 
 	private void startJobSchedule() {
 		final DtList<OJobSchedule> jobSchedules = jobScheduleDAO.getJobScheduleToRun(ZonedDateTime.now());
 		for (final OJobSchedule jobSchedule : jobSchedules) {
 			startJobSchedule(jobSchedule);
+		}
+	}
+
+	private void startJobCron() {
+		final DtList<OJobCron> jobCrons = jobCronDAO.getJobCron();
+		for (final OJobCron jobCron : jobCrons) {
+			jobCron.jobModel().load();
+			final Date start = Date.from(ZonedDateTime.now().minusSeconds(jobCron.jobModel().get().getRunMaxDelay()).toInstant());
+			try {
+				final ZonedDateTime scheduledDate = CronExpression.of(jobCron.getCronExpression()).getNextValidTimeAfter(start).toInstant().atZone(ZoneId.of("UTC"));
+				if (scheduledDate.isBefore(ZonedDateTime.now())) {
+					startJobCron(jobCron, scheduledDate);
+				}
+			} catch (final ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -141,11 +169,23 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		Assertion.checkNotNull(params);
 		Assertion.checkNotNull(scheduleDate);
 		//---
-		final OJobSchedule schedule = new OJobSchedule();
-		schedule.jobModel().setId(jmoId);
-		schedule.setParams(params.toJson());
-		schedule.setScheduleDate(scheduleDate);
-		return jobScheduleDAO.create(schedule);
+		final OJobSchedule jobSchedule = new OJobSchedule();
+		jobSchedule.jobModel().setId(jmoId);
+		jobSchedule.setParams(params.toJson());
+		jobSchedule.setScheduleDate(scheduleDate);
+		return jobScheduleDAO.create(jobSchedule);
+	}
+
+	@Override
+	public OJobCron cron(final long jmoId, final OParams params, final CronExpression cronExpression) {
+		Assertion.checkNotNull(params);
+		Assertion.checkNotNull(cronExpression);
+		//---
+		final OJobCron jobCron = new OJobCron();
+		jobCron.jobModel().setId(jmoId);
+		jobCron.setParams(params.toJson());
+		jobCron.setCronExpression(cronExpression.getCronExpression());
+		return jobCronDAO.create(jobCron);
 	}
 
 	@Override
@@ -161,12 +201,12 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	//--------------------------------------------------------------
 	private OJobRun createJobRun(
 			final OJobModel jobModel,
-			final OJobSchedule jobSchedule,
+			final ZonedDateTime scheduledDate,
 			final String jobId) {
 		Assertion.checkNotNull(jobModel);
-		Assertion.checkNotNull(jobSchedule);
+		Assertion.checkNotNull(scheduledDate);
 		//---
-		final ZonedDateTime maxDate = jobSchedule.getScheduleDate().plusSeconds(jobModel.getRunMaxDelay());
+		final ZonedDateTime maxDate = scheduledDate.plusSeconds(jobModel.getRunMaxDelay());
 
 		final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
 		System.out.println(">>now = " + now);
@@ -205,8 +245,35 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		return jobExec;
 	}
 
+	private static String createJobId(final OJobCron jobCron) {
+		//TODO
+		//TODO
+		//TODO
+		//TODO
+		//TODO
+		return "CRN:" + String.valueOf(jobCron.getJcrId());
+	}
+
 	private static String createJobId(final OJobSchedule jobSchedule) {
 		return "SCH:" + String.valueOf(jobSchedule.getJscId());
+	}
+
+	//jobCron must have been locked
+	private String startJobCron(final OJobCron jobCron, final ZonedDateTime scheduledDate) {
+		Assertion.checkNotNull(jobCron);
+		//---
+		jobCron.jobModel().load();
+		final OJobModel jobModel = jobCron.jobModel().get();
+		Assertion.checkArgument(jobModel.getActive(), "The selected job {0} must be active to be executed", jobModel.getJobName());
+		//--- To start a Job---
+		// 1. create a run
+		// 2. create the first exec attached to this run
+		final String jobId = createJobId(jobCron);
+		final OJobRun jobRun = createJobRun(jobModel, scheduledDate, jobId);
+		final OParams initialParams = OParams.of(jobCron.getParams());
+		startRun(jobModel, jobRun, initialParams);
+		return jobId;
+
 	}
 
 	@Override
@@ -221,61 +288,62 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		//---
 		jobSchedule.jobModel().load();
 		final OJobModel jobModel = jobSchedule.jobModel().get();
-		//		final OJobModel jobModel = readJobModelForUpdate(jobSchedule.getJobMSodel().getJmoId());
-		final String jobId = createJobId(jobSchedule);
-		//---
 		Assertion.checkArgument(jobModel.getActive(), "The selected job {0} must be active to be executed", jobModel.getJobName());
-		//---
 		//--- To start a Job---
 		// 1. create a run
 		// 2. create the first exec attached to this run
-		final OJobRun jobRun = createJobRun(jobModel, jobSchedule, jobId);
+		final String jobId = createJobId(jobSchedule);
+		final OJobRun jobRun = createJobRun(jobModel, jobSchedule.getScheduleDate(), jobId);
+		final OParams initialParams = OParams.of(jobSchedule.getParams());
+		startRun(jobModel, jobRun, initialParams);
+		return jobId;
+	}
+
+	private void startRun(final OJobModel jobModel, final OJobRun jobRun, final OParams initialParams) {
 		final OJobExec jobExec = createJobExec(jobModel, jobRun);
 		//---
-		final OParams initialParams = OParams.of(jobSchedule.getParams());
-
 		final String jobEngineClassName = jobModel.getJobEngineClassName();
 		final Class<? extends JobEngine> jobEngineClass = ClassUtil.classForName(jobEngineClassName, JobEngine.class);
-
 		executeASync(jobExec, jobEngineClass, initialParams);
-		return jobId; //Tuples.of(jobRun, jobExec);
-		//		final OProcessNextRun nextRun = new OProcessNextRun();
-		//		nextRun.setExpectedTime(jobSchedule.getScheduleDate());
-		//		nextRun.setInitialParams(jobSchedule.getParams());
-		//		nextRun.setJobname(jobModel.getJobName());
-		//		final String jobId = JobRunnerUtil.generateJobId(jobSchedule.getScheduleDate(), "S", jscId);
-		//		nextRun.setJobId(jobId);
-		//
-		//		final ZonedDateTime execDate = ZonedDateTime.now();
-		//		final long count = runPAO.insertJobRunningToLaunch(nodId, execDate, null, nextRun);
-		//
-		//		if (count > 0) {
-		//			final OJobRun jobBoard = new OJobRun();
-		//			jobBoard.setJid(jobId);
-		//			jobBoard.setCurrentTry(0);
-		//			jobBoard.setMaxRetry(jobModel.getMaxRetry());
-		//			jobBoard.setMaxDate(null);
-		//			jobBoard.setStatus("R");
-		//			jobBoard.setNodeId(nodId);
-		//			runPAO.insertJobBoardToLaunch(jobBoard);
-		//
-		//			final OJobExecution jobExecution = new OJobExecution();
-		//			jobExecution.setClassEngine(jobModel.getJobEngineClassName());
-		//			jobExecution.setDateDebut(execDate);
-		//			jobExecution.setJobName(jobModel.getJobName());
-		//			jobExecution.setNodId(nodId);
-		//			jobExecution.setStatus("R");
-		//			jobExecution.setWorkspaceIn("");
-		//			jobExecutionDAO.create(jobExecution);
-		//
-		//			final OParams params = new OParams(jobSchedule.getParams());
-		//			jobExecutorManager.execute(jobModel, params, jobId, execDate);
-		//		} else {
-		//			LOG.info("Race condition on Insert JobRunning");
-		//		}
-
-		//return jobId;
 	}
+
+	//Tuples.of(jobRun, jobExec);
+	//		final OProcessNextRun nextRun = new OProcessNextRun();
+	//		nextRun.setExpectedTime(jobSchedule.getScheduleDate());
+	//		nextRun.setInitialParams(jobSchedule.getParams());
+	//		nextRun.setJobname(jobModel.getJobName());
+	//		final String jobId = JobRunnerUtil.generateJobId(jobSchedule.getScheduleDate(), "S", jscId);
+	//		nextRun.setJobId(jobId);
+	//
+	//		final ZonedDateTime execDate = ZonedDateTime.now();
+	//		final long count = runPAO.insertJobRunningToLaunch(nodId, execDate, null, nextRun);
+	//
+	//		if (count > 0) {
+	//			final OJobRun jobBoard = new OJobRun();
+	//			jobBoard.setJid(jobId);
+	//			jobBoard.setCurrentTry(0);
+	//			jobBoard.setMaxRetry(jobModel.getMaxRetry());
+	//			jobBoard.setMaxDate(null);
+	//			jobBoard.setStatus("R");
+	//			jobBoard.setNodeId(nodId);
+	//			runPAO.insertJobBoardToLaunch(jobBoard);
+	//
+	//			final OJobExecution jobExecution = new OJobExecution();
+	//			jobExecution.setClassEngine(jobModel.getJobEngineClassName());
+	//			jobExecution.setDateDebut(execDate);
+	//			jobExecution.setJobName(jobModel.getJobName());
+	//			jobExecution.setNodId(nodId);
+	//			jobExecution.setStatus("R");
+	//			jobExecution.setWorkspaceIn("");
+	//			jobExecutionDAO.create(jobExecution);
+	//
+	//			final OParams params = new OParams(jobSchedule.getParams());
+	//			jobExecutorManager.execute(jobModel, params, jobId, execDate);
+	//		} else {
+	//			LOG.info("Race condition on Insert JobRunning");
+	//		}
+
+	//return jobId;
 
 	//	@Override
 	//	public void fireSuccessJob(final String jobId, final OWorkspace workspace) {
