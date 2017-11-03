@@ -74,6 +74,17 @@ public class OrchestraStoreImpl implements OrchestraStore {
 
 	private final long nodeId = 2L;
 
+	//	@Inject
+	//	public OrchestraSchedulerProvider(@Named("planningPeriod") int planningPeriod) {
+	//		this.myPlanningPeriod = planningPeriod;
+	//	}
+	//
+	//
+	//	@Override
+	//	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+	//		return Collections.singletonList(new DaemonDefinition("DMN_O_DB_PROCESS_SCHEDULER_DAEMON", () -> this::scheduleAndInit, myPlanningPeriod));
+	//	}
+
 	@Override
 	@DaemonScheduled(name = "DMN_TICK", periodInSeconds = 30)
 	public void tick() {
@@ -82,7 +93,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		//1. Launch scheduled Jobs
 		startJobSchedule();
 		//---
-		//2. Watch jobs alive 
+		//2. Watch jobs alive
 		//- in timeout
 		//- in error (=> restart)
 		//watchJobTimeOut();
