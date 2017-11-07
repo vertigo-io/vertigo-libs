@@ -187,7 +187,7 @@ public final class PublisherDataUtil {
 			final String fieldName = dtField.getName();
 			if (DataType.Boolean == dtField.getDomain().getDataType()) {
 				sb.append("\t\tbooleanField[").append(fieldName).append(")] = new DataField ();\n");
-			} else if (dtField.getDomain().isDtObject()) {
+			} else if (dtField.getDomain().getScope().isDataObject()) {
 				sb.append("\t\tdataField[").append(fieldName).append(")] = new NodeField (type = PN_").append(dtField.getDomain().getDtDefinition().getLocalName()).append(";);\n");
 			} else if (dtField.getDomain().isDtList()) {
 				sb.append("\t\tlistField[").append(fieldName).append(")] = new NodeField (type = PN_").append(dtField.getDomain().getDtDefinition().getLocalName()).append(";);\n");
