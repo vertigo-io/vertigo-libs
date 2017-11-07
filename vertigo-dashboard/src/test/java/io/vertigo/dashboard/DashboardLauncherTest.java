@@ -69,7 +69,7 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 								.addComponent(DomainMetricsProvider.class)
 								.build())
 				.withNodeConfig(NodeConfig.builder()
-						.withAppName("dashboard-test")
+						.withAppName("dashboardtest")
 						.build())
 				.build();
 	}
