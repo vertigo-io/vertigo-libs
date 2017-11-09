@@ -22,7 +22,7 @@ module.exports = {
         }
     },
     oJobEvent: {
-        jevtId: {
+        jevId: {
             domain: "DO_O_IDENTIFIANT",
             required: true
         },
@@ -64,11 +64,7 @@ module.exports = {
         }
     },
     oJobExec: {
-        jobId: {
-            domain: "DO_O_JOB_IDENTIFIANT",
-            required: true
-        },
-        jobExecUuid: {
+        jexId: {
             domain: "DO_O_EXEC_UUID",
             required: true
         },
@@ -80,11 +76,11 @@ module.exports = {
             domain: "DO_O_TIMESTAMP",
             required: true
         },
-        jobName: {
-            domain: "DO_O_LABEL",
+        jobId: {
+            domain: "DO_O_JOB_IDENTIFIANT",
             required: true
         },
-        nodeId: {
+        jmoId: {
             domain: "DO_O_IDENTIFIANT",
             required: true
         }
@@ -166,9 +162,13 @@ module.exports = {
             domain: "DO_O_JOB_IDENTIFIANT",
             required: true
         },
-        jobExecUuid: {
+        jexId: {
             domain: "DO_O_EXEC_UUID",
             required: false
+        },
+        alive: {
+            domain: "DO_O_BOOLEAN",
+            required: true
         },
         status: {
             domain: "DO_O_STATUS_CODE",
@@ -178,12 +178,20 @@ module.exports = {
             domain: "DO_O_INTEGER",
             required: true
         },
+        startDate: {
+            domain: "DO_O_TIMESTAMP",
+            required: true
+        },
         maxDate: {
             domain: "DO_O_TIMESTAMP",
             required: true
         },
         maxRetry: {
             domain: "DO_O_INTEGER",
+            required: true
+        },
+        jmoId: {
+            domain: "DO_O_IDENTIFIANT",
             required: true
         }
     },
