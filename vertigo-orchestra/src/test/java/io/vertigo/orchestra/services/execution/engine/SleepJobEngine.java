@@ -11,7 +11,7 @@ public final class SleepJobEngine implements JobEngine {
 	private static final Logger LOG = LogManager.getLogger(SleepJobEngine.class);
 
 	@Override
-	public OWorkspace execute(final OWorkspace workspace) {
+	public void execute(final OWorkspace workspace) {
 		try {
 			LOG.info("[Début] Execution de SleepJobEngine");
 			Thread.sleep(500);
@@ -20,9 +20,6 @@ public final class SleepJobEngine implements JobEngine {
 			//NOP
 			LOG.error(e);
 		}
-		System.out.println("inside >>thred" + Thread.currentThread().getId());
-
-		return workspace;
 	}
 
 }

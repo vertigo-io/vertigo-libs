@@ -431,7 +431,10 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 
 		final OWorkspace workspace = new OWorkspace(jobExec.getJobId(), jobExec.getJexId()); //initialParams.asMap(), jobId, jobModel.getJobName(), engineclassName, execDate);
 
-		CompletableFuture.supplyAsync(() -> jobEngine.execute(workspace), executor)
+		CompletableFuture.supplyAsync(() -> {
+			jobEngine.execute(workspace);
+			return workspace;
+		}, executor)
 				.whenCompleteAsync(this::onComplete);
 	}
 
