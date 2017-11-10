@@ -200,19 +200,21 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 
 	@Override
 	public OJobModel deactivateJobModel(final long jmoId) {
-		final OJobModel jobModel = readJobModelForUpdate(jmoId);
-		jobModel.setActive(false);
-		jobModelDAO.update(jobModel);
-		return jobModel;
+		return updateJobModel(jmoId, false);
 	}
 
 	@Override
 	public OJobModel activateJobModel(final long jmoId) {
+		return updateJobModel(jmoId, true);
+	}
+
+	private OJobModel updateJobModel(final long jmoId, final boolean active) {
 		final OJobModel jobModel = readJobModelForUpdate(jmoId);
-		jobModel.setActive(true);
+		jobModel.setActive(active);
 		jobModelDAO.update(jobModel);
 		return jobModel;
 	}
+
 	//--------------------------------------------------------------
 
 	@Override
@@ -368,57 +370,6 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		executeASync(jobExec, jobEngineClass, initialParams);
 	}
 
-	//	private void addStartJobEvent(final OJobSchedule jobSchedule) {
-	//		Assertion.checkNotNull(jobSchedule);
-	//		//---
-	//		final ZonedDateTime execDate = now();
-	//
-	//		final OJobEvent jobEvent = new OJobEvent();
-	//		jobEvent.setStartDate(startDate);
-	//		JobName(jobName);
-	//	}
-	//		final ZonedDateTime execDate = now();
-	//		final long count = runPAO.insertJobRunningToLaunch(nodId, execDate, null, nextRun);
-	//			final OJobExecution jobExecution = new OJobExecution();
-	//			jobExecution.setClassEngine(jobModel.getJobEngineClassName());
-	//			jobExecution.setDateDebut(execDate);
-	//			jobExecution.setJobName(jobModel.getJobName());
-	//			jobExecution.setNodId(nodId);
-	//			jobExecution.setStatus("R");
-	//			jobExecution.setWorkspaceIn("");
-	//			jobExecutionDAO.create(jobExecution);
-	//
-	//			final OParams params = new OParams(jobSchedule.getParams());
-	//			jobExecutorManager.execute(jobModel, params, jobId, execDate);
-	//		} else {
-	//			LOG.info("Race condition on Insert JobRunning");
-	//		}
-
-	//return jobId;
-
-	//	@Override
-	//	public void fireSuccessJob(final String jobId, final OWorkspace workspace) {
-	//		final long countNbDeleted = runPAO.deleteJobRunning(jobId, nodeId, workspace.getExecDate());
-	//
-	//		if (countNbDeleted > 0) {
-	//			final OJobRun jobBoard = jobRunDAO.get(jobId);
-	//
-	//			jobBoard.setStatus("S");
-	//			jobRunDAO.update(jobBoard);
-	//
-	//			final OJobExecution jobExecution = new OJobExecution();
-	//			jobExecution.setClassEngine(workspace.getClassEngine());
-	//			jobExecution.setDateDebut(now());
-	//			jobExecution.setJobName(workspace.getJobName());
-	//			jobExecution.setNodId(nodeId);
-	//			jobExecution.setStatus("R");
-	//			jobExecution.setWorkspaceIn(workspace.toJson());
-	//			jobExecutionDAO.create(jobExecution);
-	//		} else {
-	//			LOG.info("Race condition on Delete JobRunning");
-	//		}
-	//
-	//	}
 	private void executeASync(
 			final OJobExec jobExec,
 			final Class<? extends JobEngine> jobEngineClass,
