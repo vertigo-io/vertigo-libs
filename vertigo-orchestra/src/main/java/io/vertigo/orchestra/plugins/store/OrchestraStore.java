@@ -132,13 +132,13 @@ public interface OrchestraStore extends Component {
 
 	/**
 	 * Rule : none
-
+	
 	 * A run can have at most one execution.
 	 * @return the alive job-executions.
 	 */
 	DtList<OJobExec> getAliveJobExecs();
 
-	/*
+	/**
 	 * PRIVATE
 	 * Starts a job from a job-schedule.
 	 *

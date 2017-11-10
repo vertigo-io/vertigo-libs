@@ -66,5 +66,9 @@ module.exports = {
         scheduleDate: "schedule date",
         params: "init params as JSON",
         jmoId: "JobModel"
+    },
+    oNode: {
+        nodId: "Id",
+        lastHeartbeat: "Last activity"
     }
 };

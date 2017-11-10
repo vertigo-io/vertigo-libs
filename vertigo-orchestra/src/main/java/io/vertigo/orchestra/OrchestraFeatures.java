@@ -22,9 +22,9 @@ import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.orchestra.dao.model.OJobModelDAO;
+import io.vertigo.orchestra.dao.node.ONodeDAO;
 import io.vertigo.orchestra.dao.run.OJobExecDAO;
 import io.vertigo.orchestra.dao.run.OJobRunDAO;
-import io.vertigo.orchestra.dao.run.RunPAO;
 import io.vertigo.orchestra.dao.schedule.OJobCronDAO;
 import io.vertigo.orchestra.dao.schedule.OJobScheduleDAO;
 import io.vertigo.orchestra.plugins.store.OrchestraStore;
@@ -69,8 +69,8 @@ public final class OrchestraFeatures extends Features {
 				//				.addComponent(OJobExecutionDAO.class)
 				.addComponent(OJobCronDAO.class)
 				//	.addComponent(OJobLogDAO.class)
-				//----PAO
-				.addComponent(RunPAO.class)
+
+				.addComponent(ONodeDAO.class)
 				//----Definitions
 				.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 						.addDefinitionResource("kpr", "io/vertigo/orchestra/generation.kpr")

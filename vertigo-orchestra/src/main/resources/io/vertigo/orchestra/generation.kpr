@@ -8,6 +8,7 @@ model/schedule/job_schedule.ksp
 model/run/job_run.ksp
 model/run/job_exec.ksp
 
+model/node/node.ksp
 
 model/event/job_event.ksp
 model/event/job_log.ksp

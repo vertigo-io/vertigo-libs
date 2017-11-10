@@ -30,7 +30,9 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Objet de données OJobRun. */
 		OJobRun(io.vertigo.orchestra.domain.run.OJobRun.class),
 		/** Objet de données OJobSchedule. */
-		OJobSchedule(io.vertigo.orchestra.domain.schedule.OJobSchedule.class)		;
+		OJobSchedule(io.vertigo.orchestra.domain.schedule.OJobSchedule.class),
+		/** Objet de données ONode. */
+		ONode(io.vertigo.orchestra.domain.node.ONode.class)		;
 
 		private final Class<?> clazz;
 
@@ -179,6 +181,15 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		PARAMS,
 		/** Propriété 'JobModel'. */
 		JMO_ID	}
+
+	/**
+	 * Enumération des champs de ONode.
+	 */
+	public enum ONodeFields implements DtFieldName<io.vertigo.orchestra.domain.node.ONode> {
+		/** Propriété 'Id'. */
+		NOD_ID,
+		/** Propriété 'Last activity'. */
+		LAST_HEARTBEAT	}
 
 	/** {@inheritDoc} */
 	@Override

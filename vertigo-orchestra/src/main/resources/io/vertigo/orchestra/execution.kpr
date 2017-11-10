@@ -3,4 +3,7 @@ services/domain2.ksp
 
 services/run/jobRunDAO.ksp
 services/run/jobExecDAO.ksp
+
 services/schedule/schedulingDAO.ksp
+
+services/node/nodeDAO.ksp

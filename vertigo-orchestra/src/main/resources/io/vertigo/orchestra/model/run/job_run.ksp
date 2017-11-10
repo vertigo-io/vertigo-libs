@@ -5,7 +5,7 @@ create DtDefinition DT_O_JOB_RUN {
 	key	  JOB_ID			{ domain : DO_O_JOB_IDENTIFIANT 	label :"Id" 						notNull:"true"}
 	
 	/* mutables fields*/
-	field JEX_ID			{ domain : DO_O_EXEC_UUID			label :"Exec UUID" 					notNull:"false"}
+	field JEX_ID			{ domain : DO_O_UUID			label :"Exec UUID" 					notNull:"false"}
 	field ALIVE 			{ domain : DO_O_BOOLEAN				label : "alive y/n"					notNull:"true" }
 	field STATUS			{ domain : DO_O_STATUS_CODE 		label :"Exec status" 				notNull:"true"}
 	field CURRENT_TRY		{ domain : DO_O_INTEGER 			label :"Current try" 				notNull:"true"}

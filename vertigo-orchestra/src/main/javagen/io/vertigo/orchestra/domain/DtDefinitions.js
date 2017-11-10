@@ -65,7 +65,7 @@ module.exports = {
     },
     oJobExec: {
         jexId: {
-            domain: "DO_O_EXEC_UUID",
+            domain: "DO_O_UUID",
             required: true
         },
         startExecDate: {
@@ -163,7 +163,7 @@ module.exports = {
             required: true
         },
         jexId: {
-            domain: "DO_O_EXEC_UUID",
+            domain: "DO_O_UUID",
             required: false
         },
         alive: {
@@ -210,6 +210,16 @@ module.exports = {
         },
         jmoId: {
             domain: "DO_O_IDENTIFIANT",
+            required: true
+        }
+    },
+    oNode: {
+        nodId: {
+            domain: "DO_O_UUID",
+            required: true
+        },
+        lastHeartbeat: {
+            domain: "DO_O_TIMESTAMP",
             required: true
         }
     }

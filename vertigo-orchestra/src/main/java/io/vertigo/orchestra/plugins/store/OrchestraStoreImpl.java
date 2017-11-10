@@ -17,6 +17,7 @@ import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -26,12 +27,13 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
 import io.vertigo.orchestra.dao.model.OJobModelDAO;
+import io.vertigo.orchestra.dao.node.ONodeDAO;
 import io.vertigo.orchestra.dao.run.OJobExecDAO;
 import io.vertigo.orchestra.dao.run.OJobRunDAO;
-import io.vertigo.orchestra.dao.run.RunPAO;
 import io.vertigo.orchestra.dao.schedule.OJobCronDAO;
 import io.vertigo.orchestra.dao.schedule.OJobScheduleDAO;
 import io.vertigo.orchestra.domain.model.OJobModel;
+import io.vertigo.orchestra.domain.node.ONode;
 import io.vertigo.orchestra.domain.run.OJobExec;
 import io.vertigo.orchestra.domain.run.OJobRun;
 import io.vertigo.orchestra.domain.run.OJobRunStatus;
@@ -42,7 +44,7 @@ import io.vertigo.orchestra.services.run.JobEngine;
 import io.vertigo.util.ClassUtil;
 
 @Transactional
-public class OrchestraStoreImpl implements OrchestraStore {
+public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 	//private static final Logger LOGGER = LogManager.getLogger(OrchestraStoreImpl.class);
 
 	private final Executor executor = Executors.newFixedThreadPool(10); // TODO: named parameter
@@ -58,7 +60,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	@Inject
 	private OJobExecDAO jobExecDAO;
 	@Inject
-	private RunPAO runPAO;
+	private ONodeDAO nodeDAO;
 	@Inject
 	private VTransactionManager transactionManager;
 	//	@Inject
@@ -72,6 +74,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	@Inject
 	private StoreManager storeManager;
 
+	private final String nodId = UUID.randomUUID().toString();
 	//	private final long nodeId = 2L;
 
 	//	@Inject
@@ -86,8 +89,35 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	//	}
 
 	@Override
+	public void start() {
+		createNode();
+	}
+
+	private void createNode() {
+		final ONode node = new ONode();
+		node.setNodId(nodId);
+		node.setLastHeartbeat(now());
+		nodeDAO.insertNode(node);
+	}
+
+	private void updateNode() {
+		final ONode node = new ONode();
+		node.setNodId(nodId);
+		node.setLastHeartbeat(now());
+		nodeDAO.update(node);
+	}
+
+	@Override
+	public void stop() {
+		//
+	}
+
+	@Override
 	@DaemonScheduled(name = "DMN_TICK", periodInSeconds = 30)
 	public void tick() {
+		updateNode();
+		//
+
 		//0. Launch cron Jobs
 		if (startFirstJobCron()) {
 			return;
@@ -95,14 +125,17 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		//1. Launch scheduled Jobs
 		if (startFirstJobSchedule()) {
 			return;
-			//---
-			//2. Watch jobs alive
-			//- in timeout
-			//- in error (=> restart)
-			//watchJobTimeOut();
-			//3. Watch jobs in error
-			//TODO
 		}
+		//---
+
+		//2. Watch jobs alive
+		//- in timeout
+		// - delay exceeded
+		//- in error (=> restart)
+		//watchJobTimeOut();
+		//3. Watch jobs in error
+		//TODO
+
 	}
 
 	private boolean startFirstJobSchedule() {
@@ -118,10 +151,10 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		final DtList<OJobCron> jobCrons = jobCronDAO.getJobCron();
 		for (final OJobCron jobCron : jobCrons) {
 			jobCron.jobModel().load();
-			final Date start = Date.from(ZonedDateTime.now().minusSeconds(jobCron.jobModel().get().getRunMaxDelay()).toInstant());
+			final Date start = Date.from(now().minusSeconds(jobCron.jobModel().get().getRunMaxDelay()).toInstant());
 			try {
 				final ZonedDateTime scheduledDate = CronExpression.of(jobCron.getCronExpression()).getNextValidTimeAfter(start).toInstant().atZone(ZoneId.of("UTC"));
-				if (scheduledDate.isBefore(ZonedDateTime.now())) {
+				if (scheduledDate.isBefore(now())) {
 					startJobCron(jobCron, scheduledDate);
 					return true;
 				}
@@ -218,6 +251,10 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	//		jobScheduleDAO.delete(jscId);
 	//	}
 
+	private static ZonedDateTime now() {
+		return ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC"));
+	}
+
 	//--------------------------------------------------------------
 	private OJobRun createJobRun(
 			final OJobModel jobModel,
@@ -226,7 +263,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		Assertion.checkNotNull(jobModel);
 		Assertion.checkNotNull(scheduledDate);
 		//---
-		final ZonedDateTime startDate = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC"));
+		final ZonedDateTime startDate = now();
 		final ZonedDateTime maxDate = scheduledDate.plusSeconds(jobModel.getRunMaxDelay());
 
 		final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
@@ -245,14 +282,14 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		jobRun.setJexId(uuid.toString());
 		jobRun.setStatus(OJobRunStatus.RUNNING.getCode());
 
-		runPAO.insertJobRunWithJobId(jobRun);
+		jobRunDAO.insertJobRunWithJobId(jobRun);
 		return jobRun;
 	}
 
 	private OJobExec createJobExec(final OJobModel jobModel, final OJobRun jobRun) {
 		Assertion.checkNotNull(jobRun);
 		//---
-		final ZonedDateTime startExecDate = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC"));
+		final ZonedDateTime startExecDate = now();
 		final ZonedDateTime maxExecDate = startExecDate.plusSeconds(jobModel.getExecTimeout());
 
 		final OJobExec jobExec = new OJobExec();
@@ -265,7 +302,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		/*to attach a unique constraint*/
 		jobExec.jobModel().setId(jobRun.jobModel().getId());
 		//		jobExec.setNodeId(nodeId);
-		runPAO.insertJobExecWithJobId(jobExec);
+		jobExecDAO.insertJobExecWithJobId(jobExec);
 		return jobExec;
 	}
 
@@ -334,13 +371,13 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	//	private void addStartJobEvent(final OJobSchedule jobSchedule) {
 	//		Assertion.checkNotNull(jobSchedule);
 	//		//---
-	//		final ZonedDateTime execDate = ZonedDateTime.now();
+	//		final ZonedDateTime execDate = now();
 	//
 	//		final OJobEvent jobEvent = new OJobEvent();
 	//		jobEvent.setStartDate(startDate);
 	//		JobName(jobName);
 	//	}
-	//		final ZonedDateTime execDate = ZonedDateTime.now();
+	//		final ZonedDateTime execDate = now();
 	//		final long count = runPAO.insertJobRunningToLaunch(nodId, execDate, null, nextRun);
 	//			final OJobExecution jobExecution = new OJobExecution();
 	//			jobExecution.setClassEngine(jobModel.getJobEngineClassName());
@@ -371,7 +408,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	//
 	//			final OJobExecution jobExecution = new OJobExecution();
 	//			jobExecution.setClassEngine(workspace.getClassEngine());
-	//			jobExecution.setDateDebut(ZonedDateTime.now());
+	//			jobExecution.setDateDebut(now());
 	//			jobExecution.setJobName(workspace.getJobName());
 	//			jobExecution.setNodId(nodeId);
 	//			jobExecution.setStatus("R");
@@ -467,7 +504,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	}
 
 	private static boolean delayExceeded(final OJobRun jobRun) {
-		return !jobRun.getMaxDate().isAfter(ZonedDateTime.now());
+		return !jobRun.getMaxDate().isAfter(now());
 	}
 
 	//	@Override

@@ -70,7 +70,7 @@ public final class OJobRun implements Entity {
 	 * Récupère la valeur de la propriété 'Exec UUID'.
 	 * @return String jexId
 	 */
-	@Field(domain = "DO_O_EXEC_UUID", label = "Exec UUID")
+	@Field(domain = "DO_O_UUID", label = "Exec UUID")
 	public String getJexId() {
 		return jexId;
 	}

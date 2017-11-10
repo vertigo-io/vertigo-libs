@@ -29,6 +29,9 @@ create sequence SEQ_O_JOB_RUN
 create sequence SEQ_O_JOB_SCHEDULE
 	start with 1000 cache 20; 
 
+create sequence SEQ_O_NODE
+	start with 1000 cache 20; 
+
 
 -- ============================================================
 --   Table : O_JOB_CRON                                        
@@ -281,6 +284,22 @@ comment on column O_JOB_SCHEDULE.PARAMS is
 
 comment on column O_JOB_SCHEDULE.JMO_ID is
 'JobModel';
+
+-- ============================================================
+--   Table : O_NODE                                        
+-- ============================================================
+create table O_NODE
+(
+    NOD_ID      	 CHAR(36)    	not null,
+    LAST_HEARTBEAT	 TIMESTAMP   	not null,
+    constraint PK_O_NODE primary key (NOD_ID)
+);
+
+comment on column O_NODE.NOD_ID is
+'Id';
+
+comment on column O_NODE.LAST_HEARTBEAT is
+'Last activity';
 
 
 

@@ -2,7 +2,7 @@ package io.vertigo.orchestra.domain.run
 
 create DtDefinition DT_O_JOB_EXEC {
 	storeName : "orchestra"
-	key 	JEX_ID			{domain : DO_O_EXEC_UUID		label :"Id" 										notNull:"true"}
+	key 	JEX_ID			{domain : DO_O_UUID		label :"Id" 										notNull:"true"}
 	field 	START_EXEC_DATE {domain : DO_O_TIMESTAMP 		label : "Start exec date" 							notNull:"true"}
 	field 	MAX_EXEC_DATE 	{domain : DO_O_TIMESTAMP 		label : "Max date Max execution (start + timeout)" 	notNull:"true"}
 	/*INFOS : what, where, who*/

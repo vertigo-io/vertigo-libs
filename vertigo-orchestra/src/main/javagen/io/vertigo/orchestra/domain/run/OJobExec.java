@@ -61,7 +61,7 @@ public final class OJobExec implements Entity {
 	 * Récupère la valeur de la propriété 'Id'.
 	 * @return String jexId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_EXEC_UUID", type = "ID", required = true, label = "Id")
+	@Field(domain = "DO_O_UUID", type = "ID", required = true, label = "Id")
 	public String getJexId() {
 		return jexId;
 	}
