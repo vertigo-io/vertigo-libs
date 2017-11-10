@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.commons.transaction.VTransactionManager;
@@ -63,14 +64,9 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 	private ONodeDAO nodeDAO;
 	@Inject
 	private VTransactionManager transactionManager;
-	//	@Inject
-	//	private SqlDataBaseManager dataBaseManager;
-	//----
+	@Inject
+	private AnalyticsManager analyticsManager;
 
-	//	@Inject
-	//	private RunPAO runPAO;
-	//	@Inject
-	//	private OJobExecutionDAO jobExecutionDAO;
 	@Inject
 	private StoreManager storeManager;
 
@@ -382,11 +378,18 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 
 		final OWorkspace workspace = new OWorkspace(jobExec.getJobId(), jobExec.getJexId()); //initialParams.asMap(), jobId, jobModel.getJobName(), engineclassName, execDate);
 
-		CompletableFuture.supplyAsync(() -> {
-			jobEngine.execute(workspace);
-			return workspace;
-		}, executor)
+		CompletableFuture.supplyAsync(() -> execute(jobEngine, workspace), executor)
 				.whenCompleteAsync(this::onComplete);
+	}
+
+	private OWorkspace execute(final JobEngine jobEngine, final OWorkspace workspace) {
+		return analyticsManager.traceWithReturn(
+				"jobs",
+				"/execute/",
+				tracer -> {
+					jobEngine.execute(workspace);
+					return workspace;
+				});
 	}
 
 	private void onComplete(final OWorkspace workspace, final Throwable t) {
