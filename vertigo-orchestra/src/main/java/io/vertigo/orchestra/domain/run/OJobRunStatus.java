@@ -8,6 +8,7 @@ public enum OJobRunStatus {
 	SUCCEEDED("S"),
 	KILLED("K"),
 	TIMEOUT("T"),
+	DELAY_EXCEEDED("D"),
 	FAILED("F");
 
 	private final String code;

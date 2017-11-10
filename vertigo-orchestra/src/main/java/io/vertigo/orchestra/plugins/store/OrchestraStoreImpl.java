@@ -1,7 +1,6 @@
 package io.vertigo.orchestra.plugins.store;
 
 import java.text.ParseException;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Date;
@@ -250,7 +249,7 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 	//	}
 
 	private static ZonedDateTime now() {
-		return ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC"));
+		return ZonedDateTime.now(ZoneId.of("UTC"));
 	}
 
 	//--------------------------------------------------------------
@@ -363,19 +362,19 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		//---
 		final String jobEngineClassName = jobModel.getJobEngineClassName();
 		final Class<? extends JobEngine> jobEngineClass = ClassUtil.classForName(jobEngineClassName, JobEngine.class);
-		executeASync(jobExec, jobEngineClass, initialParams);
+		final JobEngine jobEngine = DIInjector.newInstance(jobEngineClass, Home.getApp().getComponentSpace());
+
+		executeASync(jobExec, jobEngine, initialParams);
 	}
 
 	private void executeASync(
 			final OJobExec jobExec,
-			final Class<? extends JobEngine> jobEngineClass,
+			final JobEngine jobEngine,
 			final OParams initialParams) {
 		Assertion.checkNotNull(jobExec);
-		Assertion.checkNotNull(jobEngineClass);
+		Assertion.checkNotNull(jobEngine);
 		Assertion.checkNotNull(initialParams);
 		// ---
-		final JobEngine jobEngine = DIInjector.newInstance(jobEngineClass, Home.getApp().getComponentSpace());
-
 		final OWorkspace workspace = new OWorkspace(jobExec.getJobId(), jobExec.getJexId()); //initialParams.asMap(), jobId, jobModel.getJobName(), engineclassName, execDate);
 
 		CompletableFuture.supplyAsync(() -> execute(jobEngine, workspace), executor)
@@ -383,6 +382,7 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 	}
 
 	private OWorkspace execute(final JobEngine jobEngine, final OWorkspace workspace) {
+		/*execution is done with analytics*/
 		return analyticsManager.traceWithReturn(
 				"jobs",
 				"/execute/",
@@ -420,7 +420,7 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 				jobExecDAO.delete(workspace.getJexId());
 				if (t == null) {
 					if (delayExceeded(jobRun)) {
-						jobRun.setStatus(OJobRunStatus.TIMEOUT.getCode());
+						jobRun.setStatus(OJobRunStatus.DELAY_EXCEEDED.getCode());
 						jobRun.setAlive(false);
 					} else {
 						jobRun.setStatus(OJobRunStatus.SUCCEEDED.getCode());
