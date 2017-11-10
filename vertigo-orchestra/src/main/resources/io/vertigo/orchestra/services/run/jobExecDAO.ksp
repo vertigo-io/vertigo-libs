@@ -5,9 +5,9 @@ create Task TK_INSERT_JOB_EXEC_WITH_JOB_ID {
 	className : "io.vertigo.dynamox.task.TaskEngineProc"
 	request : "
 		INSERT INTO O_JOB_EXEC 
-			(JOB_ID, JOB_EXEC_UUID, JOB_NAME, NODE_ID, START_EXEC_DATE, MAX_EXEC_DATE)
+			(JEX_ID, JOB_ID, JMO_ID, START_EXEC_DATE, MAX_EXEC_DATE)
 			values  
-			(#JOB_EXEC.JOB_ID#, #JOB_EXEC.JOB_EXEC_UUID#, #JOB_EXEC.JOB_NAME#, #JOB_EXEC.NODE_ID#, #JOB_EXEC.START_EXEC_DATE#, #JOB_EXEC.MAX_EXEC_DATE#)
+			(#JOB_EXEC.JEX_ID#, #JOB_EXEC.JOB_ID#, #JOB_EXEC.JMO_ID#, #JOB_EXEC.START_EXEC_DATE#, #JOB_EXEC.MAX_EXEC_DATE#)
 		"
 		
 	attribute JOB_EXEC	{domain : DO_DT_O_JOB_EXEC_DTO  notNull:"true" 	inOut :"in"}
@@ -18,7 +18,7 @@ create Task TK_INSERT_JOB_EXEC_WITH_JOB_ID {
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
         	INSERT INTO O_JOB_RUNNING (JID, JOBNAME, NODE_ID, EXEC_DATE, USR_ID)
-        		 (SELECT #PROCESSES_NEXT_RUN.JOB_ID#, JMO.JOBNAME, #NODE_ID#, #EXEC_DATE#, #USR_ID#
+        		 (SELECT #PROCESSES_NEXT_RUN.JOB_ID#, #NODE_ID#, #EXEC_DATE#, #USR_ID#
 				   FROM O_JOB_MODEL JMO
         		  WHERE NOT EXISTS (SELECT 1 
 									 FROM O_JOB_RUNNING RUN

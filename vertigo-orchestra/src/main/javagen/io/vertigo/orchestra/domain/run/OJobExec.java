@@ -2,6 +2,7 @@ package io.vertigo.orchestra.domain.run;
 
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -15,12 +16,39 @@ import io.vertigo.lang.Generated;
 public final class OJobExec implements Entity {
 	private static final long serialVersionUID = 1L;
 
-	private String jobId;
-	private String jobExecUuid;
+	private String jexId;
 	private java.time.ZonedDateTime startExecDate;
 	private java.time.ZonedDateTime maxExecDate;
-	private String jobName;
-	private Long nodeId;
+
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_JEX_JRN",
+			fkFieldName = "JOB_ID",
+			primaryDtDefinitionName = "DT_O_JOB_RUN",
+			primaryIsNavigable = true,
+			primaryRole = "JobRun",
+			primaryLabel = "JobRun",
+			primaryMultiplicity = "1..1",
+			foreignDtDefinitionName = "DT_O_JOB_EXEC",
+			foreignIsNavigable = false,
+			foreignRole = "JobExec",
+			foreignLabel = "JobEXec",
+			foreignMultiplicity = "0..*")
+	private final VAccessor<io.vertigo.orchestra.domain.run.OJobRun> jobIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.run.OJobRun.class, "JobRun");
+
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_JEX_JMO",
+			fkFieldName = "JMO_ID",
+			primaryDtDefinitionName = "DT_O_JOB_MODEL",
+			primaryIsNavigable = true,
+			primaryRole = "JobModel",
+			primaryLabel = "JobModel",
+			primaryMultiplicity = "1..1",
+			foreignDtDefinitionName = "DT_O_JOB_EXEC",
+			foreignIsNavigable = false,
+			foreignRole = "JobExec",
+			foreignLabel = "JobExec",
+			foreignMultiplicity = "0..*")
+	private final VAccessor<io.vertigo.orchestra.domain.model.OJobModel> jmoIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.model.OJobModel.class, "JobModel");
 
 	/** {@inheritDoc} */
 	@Override
@@ -31,39 +59,20 @@ public final class OJobExec implements Entity {
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id'.
-	 * @return String jobId <b>Obligatoire</b>
+	 * @return String jexId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_JOB_IDENTIFIANT", type = "ID", required = true, label = "Id")
-	public String getJobId() {
-		return jobId;
+	@Field(domain = "DO_O_EXEC_UUID", type = "ID", required = true, label = "Id")
+	public String getJexId() {
+		return jexId;
 	}
 
 	/**
 	 * Champ : ID.
 	 * Définit la valeur de la propriété 'Id'.
-	 * @param jobId String <b>Obligatoire</b>
+	 * @param jexId String <b>Obligatoire</b>
 	 */
-	public void setJobId(final String jobId) {
-		this.jobId = jobId;
-	}
-	
-	/**
-	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Exec UUID'.
-	 * @return String jobExecUuid <b>Obligatoire</b>
-	 */
-	@Field(domain = "DO_O_EXEC_UUID", required = true, label = "Exec UUID")
-	public String getJobExecUuid() {
-		return jobExecUuid;
-	}
-
-	/**
-	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Exec UUID'.
-	 * @param jobExecUuid String <b>Obligatoire</b>
-	 */
-	public void setJobExecUuid(final String jobExecUuid) {
-		this.jobExecUuid = jobExecUuid;
+	public void setJexId(final String jexId) {
+		this.jexId = jexId;
 	}
 	
 	/**
@@ -105,41 +114,93 @@ public final class OJobExec implements Entity {
 	}
 	
 	/**
-	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Job Name'.
-	 * @return String jobName <b>Obligatoire</b>
+	 * Champ : FOREIGN_KEY.
+	 * Récupère la valeur de la propriété 'JobRun'.
+	 * @return String jobId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_LABEL", required = true, label = "Job Name")
-	public String getJobName() {
-		return jobName;
+	@Field(domain = "DO_O_JOB_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "JobRun")
+	public String getJobId() {
+		return (String)  jobIdAccessor.getId();
 	}
 
 	/**
-	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Job Name'.
-	 * @param jobName String <b>Obligatoire</b>
+	 * Champ : FOREIGN_KEY.
+	 * Définit la valeur de la propriété 'JobRun'.
+	 * @param jobId String <b>Obligatoire</b>
 	 */
-	public void setJobName(final String jobName) {
-		this.jobName = jobName;
+	public void setJobId(final String jobId) {
+		jobIdAccessor.setId(jobId);
 	}
 	
 	/**
-	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Node Id'.
-	 * @return Long nodeId <b>Obligatoire</b>
+	 * Champ : FOREIGN_KEY.
+	 * Récupère la valeur de la propriété 'JobModel'.
+	 * @return Long jmoId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", required = true, label = "Node Id")
-	public Long getNodeId() {
-		return nodeId;
+	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "JobModel")
+	public Long getJmoId() {
+		return (Long)  jmoIdAccessor.getId();
 	}
 
 	/**
-	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Node Id'.
-	 * @param nodeId Long <b>Obligatoire</b>
+	 * Champ : FOREIGN_KEY.
+	 * Définit la valeur de la propriété 'JobModel'.
+	 * @param jmoId Long <b>Obligatoire</b>
 	 */
-	public void setNodeId(final Long nodeId) {
-		this.nodeId = nodeId;
+	public void setJmoId(final Long jmoId) {
+		jmoIdAccessor.setId(jmoId);
+	}
+
+ 	/**
+	 * Association : JobModel.
+	 * @return l'accesseur vers la propriété 'JobModel'
+	 */
+	public VAccessor<io.vertigo.orchestra.domain.model.OJobModel> jobModel() {
+		return jmoIdAccessor;
+	}
+	
+	@Deprecated
+	public io.vertigo.orchestra.domain.model.OJobModel getJobModel() {
+		// we keep the lazyness
+		if (!jmoIdAccessor.isLoaded()) {
+			jmoIdAccessor.load();
+		}
+		return jmoIdAccessor.get();
+	}
+
+	/**
+	 * Retourne l'URI: JobModel.
+	 * @return URI de l'association
+	 */
+	@Deprecated
+	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.model.OJobModel> getJobModelURI() {
+		return jmoIdAccessor.getURI();
+	}
+
+ 	/**
+	 * Association : JobRun.
+	 * @return l'accesseur vers la propriété 'JobRun'
+	 */
+	public VAccessor<io.vertigo.orchestra.domain.run.OJobRun> jobRun() {
+		return jobIdAccessor;
+	}
+	
+	@Deprecated
+	public io.vertigo.orchestra.domain.run.OJobRun getJobRun() {
+		// we keep the lazyness
+		if (!jobIdAccessor.isLoaded()) {
+			jobIdAccessor.load();
+		}
+		return jobIdAccessor.get();
+	}
+
+	/**
+	 * Retourne l'URI: JobRun.
+	 * @return URI de l'association
+	 */
+	@Deprecated
+	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.run.OJobRun> getJobRunURI() {
+		return jobIdAccessor.getURI();
 	}
 	
 	/** {@inheritDoc} */

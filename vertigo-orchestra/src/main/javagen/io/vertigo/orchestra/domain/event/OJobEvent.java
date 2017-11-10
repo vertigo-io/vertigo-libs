@@ -15,7 +15,7 @@ import io.vertigo.lang.Generated;
 public final class OJobEvent implements Entity {
 	private static final long serialVersionUID = 1L;
 
-	private Long jevtId;
+	private Long jevId;
 	private String jobName;
 	private String status;
 	private String reason;
@@ -35,20 +35,20 @@ public final class OJobEvent implements Entity {
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id d'une trace d'execution d'un job'.
-	 * @return Long jevtId <b>Obligatoire</b>
+	 * @return Long jevId <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id d'une trace d'execution d'un job")
-	public Long getJevtId() {
-		return jevtId;
+	public Long getJevId() {
+		return jevId;
 	}
 
 	/**
 	 * Champ : ID.
 	 * Définit la valeur de la propriété 'Id d'une trace d'execution d'un job'.
-	 * @param jevtId Long <b>Obligatoire</b>
+	 * @param jevId Long <b>Obligatoire</b>
 	 */
-	public void setJevtId(final Long jevtId) {
-		this.jevtId = jevtId;
+	public void setJevId(final Long jevId) {
+		this.jevId = jevId;
 	}
 	
 	/**

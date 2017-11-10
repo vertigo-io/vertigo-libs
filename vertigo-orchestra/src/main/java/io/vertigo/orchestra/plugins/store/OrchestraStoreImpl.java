@@ -72,7 +72,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	@Inject
 	private StoreManager storeManager;
 
-	private final long nodeId = 2L;
+	//	private final long nodeId = 2L;
 
 	//	@Inject
 	//	public OrchestraSchedulerProvider(@Named("planningPeriod") int planningPeriod) {
@@ -89,26 +89,32 @@ public class OrchestraStoreImpl implements OrchestraStore {
 	@DaemonScheduled(name = "DMN_TICK", periodInSeconds = 30)
 	public void tick() {
 		//0. Launch cron Jobs
-		startJobCron();
+		if (startFirstJobCron()) {
+			return;
+		}
 		//1. Launch scheduled Jobs
-		startJobSchedule();
-		//---
-		//2. Watch jobs alive
-		//- in timeout
-		//- in error (=> restart)
-		//watchJobTimeOut();
-		//3. Watch jobs in error
-		//TODO
-	}
-
-	private void startJobSchedule() {
-		final DtList<OJobSchedule> jobSchedules = jobScheduleDAO.getJobScheduleToRun(ZonedDateTime.now());
-		for (final OJobSchedule jobSchedule : jobSchedules) {
-			startJobSchedule(jobSchedule);
+		if (startFirstJobSchedule()) {
+			return;
+			//---
+			//2. Watch jobs alive
+			//- in timeout
+			//- in error (=> restart)
+			//watchJobTimeOut();
+			//3. Watch jobs in error
+			//TODO
 		}
 	}
 
-	private void startJobCron() {
+	private boolean startFirstJobSchedule() {
+		final DtList<OJobSchedule> jobSchedules = jobScheduleDAO.getJobScheduleToRun(ZonedDateTime.now());
+		for (final OJobSchedule jobSchedule : jobSchedules) {
+			startJobSchedule(jobSchedule);
+			return true;
+		}
+		return false;
+	}
+
+	private boolean startFirstJobCron() {
 		final DtList<OJobCron> jobCrons = jobCronDAO.getJobCron();
 		for (final OJobCron jobCron : jobCrons) {
 			jobCron.jobModel().load();
@@ -117,12 +123,14 @@ public class OrchestraStoreImpl implements OrchestraStore {
 				final ZonedDateTime scheduledDate = CronExpression.of(jobCron.getCronExpression()).getNextValidTimeAfter(start).toInstant().atZone(ZoneId.of("UTC"));
 				if (scheduledDate.isBefore(ZonedDateTime.now())) {
 					startJobCron(jobCron, scheduledDate);
+					return true;
 				}
 			} catch (final ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		return false;
 	}
 
 	//-------------------------------------------------------------------------
@@ -218,19 +226,23 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		Assertion.checkNotNull(jobModel);
 		Assertion.checkNotNull(scheduledDate);
 		//---
+		final ZonedDateTime startDate = ZonedDateTime.of(LocalDateTime.now(), ZoneId.of("UTC"));
 		final ZonedDateTime maxDate = scheduledDate.plusSeconds(jobModel.getRunMaxDelay());
 
 		final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
-		Assertion.checkArgument(maxDate.isAfter(now), "delay has been expired, the job {0} can't be executed", jobModel.getJobName());
+		Assertion.checkArgument(maxDate.isAfter(now), "delay has expired, the job {0} can't be executed", jobModel.getJobName());
 		final UUID uuid = UUID.randomUUID();
 		final OJobRun jobRun = new OJobRun();
 		jobRun.setJobId(jobId);
+		jobRun.jobModel().set(jobModel);
 		jobRun.setMaxRetry(jobModel.getMaxRetry());
 		jobRun.setMaxDate(maxDate);
+		jobRun.setStartDate(startDate);
 
 		//mutables fields
+		jobRun.setAlive(true);
 		jobRun.setCurrentTry(1);
-		jobRun.setJobExecUuid(uuid.toString());
+		jobRun.setJexId(uuid.toString());
 		jobRun.setStatus(OJobRunStatus.RUNNING.getCode());
 
 		runPAO.insertJobRunWithJobId(jobRun);
@@ -244,13 +256,15 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		final ZonedDateTime maxExecDate = startExecDate.plusSeconds(jobModel.getExecTimeout());
 
 		final OJobExec jobExec = new OJobExec();
+		jobExec.setJexId(jobRun.getJexId());
 		jobExec.setJobId(jobRun.getJobId());
-		jobExec.setJobExecUuid(jobRun.getJobExecUuid());
-		jobExec.setJobName(jobModel.getJobName());
+		//	jobExec.setJobName(jobModel.getJobName());
 		jobExec.setMaxExecDate(maxExecDate);
 		jobExec.setStartExecDate(startExecDate);
-		jobExec.setJobExecUuid(jobRun.getJobExecUuid());
-		jobExec.setNodeId(nodeId);
+		jobExec.jobRun().set(jobRun);
+		/*to attach a unique constraint*/
+		jobExec.jobModel().setId(jobRun.jobModel().getId());
+		//		jobExec.setNodeId(nodeId);
 		runPAO.insertJobExecWithJobId(jobExec);
 		return jobExec;
 	}
@@ -378,7 +392,7 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		// ---
 		final JobEngine jobEngine = DIInjector.newInstance(jobEngineClass, Home.getApp().getComponentSpace());
 
-		final OWorkspace workspace = new OWorkspace(jobExec.getJobId(), UUID.fromString(jobExec.getJobExecUuid())); //initialParams.asMap(), jobId, jobModel.getJobName(), engineclassName, execDate);
+		final OWorkspace workspace = new OWorkspace(jobExec.getJobId(), jobExec.getJexId()); //initialParams.asMap(), jobId, jobModel.getJobName(), engineclassName, execDate);
 
 		CompletableFuture.supplyAsync(() -> jobEngine.execute(workspace), executor)
 				.whenCompleteAsync(this::onComplete);
@@ -398,7 +412,6 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		//     -- Success
 		//
 		//LOGGER.catching(t);
-		System.out.println(">>onComplete" + Thread.currentThread().getId());
 		try (final VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			//dataBaseManager.getConnectionProvider("orchestra").obtainConnection();
 			//We have to
@@ -406,25 +419,29 @@ public class OrchestraStoreImpl implements OrchestraStore {
 			// - to delete JobExec
 			final OJobRun jobRun = readJobRunForUpdate(workspace.getJobId());
 
-			final boolean stillTheSameExec = jobRun.getJobExecUuid().equals(workspace.getJobExecUuid().toString());
+			final boolean stillTheSameExec = jobRun.getJexId().equals(workspace.getJexId());
 			if (stillTheSameExec) {
 				Assertion.checkState(jobRun.getStatus().equals(OJobRunStatus.RUNNING.getCode()), "The status of this job is not valid. expected [R]UNNING, [{0}] found.", jobRun.getStatus());
 				//--
-				jobExecDAO.delete(workspace.getJobId());
+				jobExecDAO.delete(workspace.getJexId());
 				if (t == null) {
 					if (delayExceeded(jobRun)) {
 						jobRun.setStatus(OJobRunStatus.TIMEOUT.getCode());
+						jobRun.setAlive(false);
 					} else {
 						jobRun.setStatus(OJobRunStatus.SUCCEEDED.getCode());
+						jobRun.setAlive(false);
 					}
 				} else {
 					if (delayExceeded(jobRun) || jobRun.getCurrentTry() > jobRun.getMaxRetry()) {
 						jobRun.setStatus(OJobRunStatus.FAILED.getCode());
+						jobRun.setAlive(false);
 					} else {
 						jobRun.setStatus(OJobRunStatus.ERROR.getCode());
+						//Still alive
 					}
 				}
-				jobRun.setJobExecUuid(null);
+				jobRun.setJexId(null);
 				jobRunDAO.update(jobRun);
 				//TODO
 				//créer un event
@@ -434,19 +451,18 @@ public class OrchestraStoreImpl implements OrchestraStore {
 			}
 			tx.commit();
 		} catch (final Throwable th) {
-			System.err.println("err>>>>" + th);
 			th.printStackTrace();
 			//LOGGER.catching(th);
 		}
 	}
 
 	@Override
-	public DtList<OJobExec> getAllJobExecs() {
+	public DtList<OJobExec> getAliveJobExecs() {
 		return jobExecDAO.findAll(Criterions.alwaysTrue(), Integer.MAX_VALUE);
 	}
 
 	@Override
-	public DtList<OJobRun> getAllJobRuns() {
+	public DtList<OJobRun> getAliveJobRuns() {
 		return jobRunDAO.findAll(Criterions.alwaysTrue(), Integer.MAX_VALUE);
 	}
 
@@ -473,13 +489,15 @@ public class OrchestraStoreImpl implements OrchestraStore {
 		Assertion.checkNotNull(jobId);
 		//---
 		final OJobRun jobRun = readJobRunForUpdate(jobId);
-		if (OJobRunStatus.isAlive(jobRun)) {
-			jobExecDAO.delete(jobId);
-			jobRun.setStatus(OJobRunStatus.KILLED.getCode());
-			jobRun.setJobExecUuid(null);
-			jobRunDAO.update(jobRun);
-		} else {
+
+		if (!OJobRunStatus.isAlive(jobRun)) {
 			throw new VUserException("Only a living job can be killed");
 		}
+
+		jobExecDAO.delete(jobRun.getJexId());
+		jobRun.setStatus(OJobRunStatus.KILLED.getCode());
+		jobRun.setAlive(false);
+		jobRun.setJexId(null);
+		jobRunDAO.update(jobRun);
 	}
 }

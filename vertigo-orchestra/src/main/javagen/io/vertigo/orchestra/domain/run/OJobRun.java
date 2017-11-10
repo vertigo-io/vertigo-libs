@@ -2,6 +2,7 @@ package io.vertigo.orchestra.domain.run;
 
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -16,11 +17,28 @@ public final class OJobRun implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private String jobId;
-	private String jobExecUuid;
+	private String jexId;
+	private Boolean alive;
 	private String status;
 	private Integer currentTry;
+	private java.time.ZonedDateTime startDate;
 	private java.time.ZonedDateTime maxDate;
 	private Integer maxRetry;
+
+	@io.vertigo.dynamo.domain.stereotype.Association(
+			name = "A_JRN_JMO",
+			fkFieldName = "JMO_ID",
+			primaryDtDefinitionName = "DT_O_JOB_MODEL",
+			primaryIsNavigable = true,
+			primaryRole = "JobModel",
+			primaryLabel = "JobModel",
+			primaryMultiplicity = "1..1",
+			foreignDtDefinitionName = "DT_O_JOB_RUN",
+			foreignIsNavigable = false,
+			foreignRole = "JobRun",
+			foreignLabel = "JobRun",
+			foreignMultiplicity = "0..*")
+	private final VAccessor<io.vertigo.orchestra.domain.model.OJobModel> jmoIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.model.OJobModel.class, "JobModel");
 
 	/** {@inheritDoc} */
 	@Override
@@ -50,20 +68,39 @@ public final class OJobRun implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Exec UUID'.
-	 * @return String jobExecUuid
+	 * @return String jexId
 	 */
 	@Field(domain = "DO_O_EXEC_UUID", label = "Exec UUID")
-	public String getJobExecUuid() {
-		return jobExecUuid;
+	public String getJexId() {
+		return jexId;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Exec UUID'.
-	 * @param jobExecUuid String
+	 * @param jexId String
 	 */
-	public void setJobExecUuid(final String jobExecUuid) {
-		this.jobExecUuid = jobExecUuid;
+	public void setJexId(final String jexId) {
+		this.jexId = jexId;
+	}
+	
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'alive y/n'.
+	 * @return Boolean alive <b>Obligatoire</b>
+	 */
+	@Field(domain = "DO_O_BOOLEAN", required = true, label = "alive y/n")
+	public Boolean getAlive() {
+		return alive;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'alive y/n'.
+	 * @param alive Boolean <b>Obligatoire</b>
+	 */
+	public void setAlive(final Boolean alive) {
+		this.alive = alive;
 	}
 	
 	/**
@@ -106,6 +143,25 @@ public final class OJobRun implements Entity {
 	
 	/**
 	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'Start date of the run'.
+	 * @return java.time.ZonedDateTime startDate <b>Obligatoire</b>
+	 */
+	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Start date of the run")
+	public java.time.ZonedDateTime getStartDate() {
+		return startDate;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'Start date of the run'.
+	 * @param startDate java.time.ZonedDateTime <b>Obligatoire</b>
+	 */
+	public void setStartDate(final java.time.ZonedDateTime startDate) {
+		this.startDate = startDate;
+	}
+	
+	/**
+	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Max date of the run'.
 	 * @return java.time.ZonedDateTime maxDate <b>Obligatoire</b>
 	 */
@@ -140,6 +196,51 @@ public final class OJobRun implements Entity {
 	 */
 	public void setMaxRetry(final Integer maxRetry) {
 		this.maxRetry = maxRetry;
+	}
+	
+	/**
+	 * Champ : FOREIGN_KEY.
+	 * Récupère la valeur de la propriété 'JobModel'.
+	 * @return Long jmoId <b>Obligatoire</b>
+	 */
+	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "JobModel")
+	public Long getJmoId() {
+		return (Long)  jmoIdAccessor.getId();
+	}
+
+	/**
+	 * Champ : FOREIGN_KEY.
+	 * Définit la valeur de la propriété 'JobModel'.
+	 * @param jmoId Long <b>Obligatoire</b>
+	 */
+	public void setJmoId(final Long jmoId) {
+		jmoIdAccessor.setId(jmoId);
+	}
+
+ 	/**
+	 * Association : JobModel.
+	 * @return l'accesseur vers la propriété 'JobModel'
+	 */
+	public VAccessor<io.vertigo.orchestra.domain.model.OJobModel> jobModel() {
+		return jmoIdAccessor;
+	}
+	
+	@Deprecated
+	public io.vertigo.orchestra.domain.model.OJobModel getJobModel() {
+		// we keep the lazyness
+		if (!jmoIdAccessor.isLoaded()) {
+			jmoIdAccessor.load();
+		}
+		return jmoIdAccessor.get();
+	}
+
+	/**
+	 * Retourne l'URI: JobModel.
+	 * @return URI de l'association
+	 */
+	@Deprecated
+	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.model.OJobModel> getJobModelURI() {
+		return jmoIdAccessor.getURI();
 	}
 	
 	/** {@inheritDoc} */

@@ -11,8 +11,14 @@ create Task TK_GET_JOB_SCHEDULE_TO_RUN {
 			AND JSC.SCHEDULE_DATE <= #SCHEDULE_DATE# 
 			AND (DATEDIFF('SECOND', JSC.SCHEDULE_DATE, #SCHEDULE_DATE#) < JMO.RUN_MAX_DELAY)
 			AND NOT EXISTS (SELECT 1 
-				FROM O_JOB_RUN JRUN
-				WHERE JRUN.JOB_ID = 'SCH:' || to_char(JSC.JSC_ID))
+				FROM O_JOB_RUN JRN
+				WHERE 
+				/* already executed*/
+				JRN.JOB_ID = 'SCH:' || to_char(JSC.JSC_ID) 
+				OR 
+				/*exclusive execution : an active job is still running*/
+				(JRN.JMO_ID = JSC.JMO_ID AND JRN.ALIVE=TRUE) 
+			)
 		FOR UPDATE
  		"
 /*							WHERE JRUN.JOB_ID = to_char(JSC.SCHEDULE_DATE , 'YYYY-MM-DD-HH24:MI:SS') || 'S' || to_char(JSC.JSC_ID)*/
@@ -29,6 +35,12 @@ create Task TK_GET_JOB_CRON {
 			FROM O_JOB_CRON JCR
 			JOIN O_JOB_MODEL JMO ON (JCR.JMO_ID = JMO.JMO_ID)
 		WHERE JMO.ACTIVE = TRUE
+			AND NOT EXISTS (SELECT 1 
+				FROM O_JOB_RUN JRN
+				WHERE 
+				/*exclusive execution : an active job is still running*/
+				(JRN.JMO_ID = JCR.JMO_ID AND JRN.ALIVE=TRUE) 
+			)
 		FOR UPDATE
  		"
 	

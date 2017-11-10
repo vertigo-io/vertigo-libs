@@ -65,7 +65,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum OJobEventFields implements DtFieldName<io.vertigo.orchestra.domain.event.OJobEvent> {
 		/** Propriété 'Id d'une trace d'execution d'un job'. */
-		JEVT_ID,
+		JEV_ID,
 		/** Propriété 'Status général d'execution'. */
 		JOB_NAME,
 		/** Propriété 'Status général d'execution'. */
@@ -90,17 +90,15 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum OJobExecFields implements DtFieldName<io.vertigo.orchestra.domain.run.OJobExec> {
 		/** Propriété 'Id'. */
-		JOB_ID,
-		/** Propriété 'Exec UUID'. */
-		JOB_EXEC_UUID,
+		JEX_ID,
 		/** Propriété 'Start exec date'. */
 		START_EXEC_DATE,
 		/** Propriété 'Max date Max execution (start + timeout)'. */
 		MAX_EXEC_DATE,
-		/** Propriété 'Job Name'. */
-		JOB_NAME,
-		/** Propriété 'Node Id'. */
-		NODE_ID	}
+		/** Propriété 'JobRun'. */
+		JOB_ID,
+		/** Propriété 'JobModel'. */
+		JMO_ID	}
 
 	/**
 	 * Enumération des champs de OJobLog.
@@ -153,15 +151,21 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Id'. */
 		JOB_ID,
 		/** Propriété 'Exec UUID'. */
-		JOB_EXEC_UUID,
+		JEX_ID,
+		/** Propriété 'alive y/n'. */
+		ALIVE,
 		/** Propriété 'Exec status'. */
 		STATUS,
 		/** Propriété 'Current try'. */
 		CURRENT_TRY,
+		/** Propriété 'Start date of the run'. */
+		START_DATE,
 		/** Propriété 'Max date of the run'. */
 		MAX_DATE,
 		/** Propriété 'Max retry'. */
-		MAX_RETRY	}
+		MAX_RETRY,
+		/** Propriété 'JobModel'. */
+		JMO_ID	}
 
 	/**
 	 * Enumération des champs de OJobSchedule.

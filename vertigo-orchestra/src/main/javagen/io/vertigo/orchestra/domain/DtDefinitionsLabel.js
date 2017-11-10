@@ -11,7 +11,7 @@ module.exports = {
         jmoId: "JobModel"
     },
     oJobEvent: {
-        jevtId: "Id d'une trace d'execution d'un job",
+        jevId: "Id d'une trace d'execution d'un job",
         jobName: "Status général d'execution",
         status: "Status général d'execution",
         reason: "Code d'erreur fonctionel de l'execution",
@@ -23,12 +23,11 @@ module.exports = {
         nodId: "Id du noeud"
     },
     oJobExec: {
-        jobId: "Id",
-        jobExecUuid: "Exec UUID",
+        jexId: "Id",
         startExecDate: "Start exec date",
         maxExecDate: "Max date Max execution (start + timeout)",
-        jobName: "Job Name",
-        nodeId: "Node Id"
+        jobId: "JobRun",
+        jmoId: "JobModel"
     },
     oJobLog: {
         jloId: "Id d'une trace d'execution d'un job",
@@ -53,11 +52,14 @@ module.exports = {
     },
     oJobRun: {
         jobId: "Id",
-        jobExecUuid: "Exec UUID",
+        jexId: "Exec UUID",
+        alive: "alive y/n",
         status: "Exec status",
         currentTry: "Current try",
+        startDate: "Start date of the run",
         maxDate: "Max date of the run",
-        maxRetry: "Max retry"
+        maxRetry: "Max retry",
+        jmoId: "JobModel"
     },
     oJobSchedule: {
         jscId: "id",

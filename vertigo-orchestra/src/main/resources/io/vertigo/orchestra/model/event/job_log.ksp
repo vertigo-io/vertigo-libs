@@ -12,7 +12,7 @@ create DtDefinition DT_O_JOB_LOG {
 }
 
 
-create Association A_JLO_JEX {
+create Association A_JLO_JEV {
     fkFieldName : "PRO_ID"
     
  	dtDefinitionA : DT_O_JOB_LOG

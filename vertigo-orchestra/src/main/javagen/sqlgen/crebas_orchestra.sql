@@ -59,7 +59,7 @@ comment on column O_JOB_CRON.JMO_ID is
 -- ============================================================
 create table O_JOB_EVENT
 (
-    JEVT_ID     	 NUMERIC     	not null,
+    JEV_ID      	 NUMERIC     	not null,
     JOB_NAME    	 VARCHAR(20) 	not null,
     STATUS      	 VARCHAR(20) 	not null,
     REASON      	 VARCHAR(20) 	,
@@ -69,10 +69,10 @@ create table O_JOB_EVENT
     WORKSPACE_IN	 TEXT        	not null,
     WORKSPACE_OUT	 TEXT        	,
     NOD_ID      	 NUMERIC     	not null,
-    constraint PK_O_JOB_EVENT primary key (JEVT_ID)
+    constraint PK_O_JOB_EVENT primary key (JEV_ID)
 );
 
-comment on column O_JOB_EVENT.JEVT_ID is
+comment on column O_JOB_EVENT.JEV_ID is
 'Id d''une trace d''execution d''un job';
 
 comment on column O_JOB_EVENT.JOB_NAME is
@@ -107,20 +107,16 @@ comment on column O_JOB_EVENT.NOD_ID is
 -- ============================================================
 create table O_JOB_EXEC
 (
-    JOB_ID      	 VARCHAR(30) 	not null,
-    JOB_EXEC_UUID	 CHAR(36)    	not null,
+    JEX_ID      	 CHAR(36)    	not null,
     START_EXEC_DATE	 TIMESTAMP   	not null,
     MAX_EXEC_DATE	 TIMESTAMP   	not null,
-    JOB_NAME    	 VARCHAR(100)	not null,
-    NODE_ID     	 NUMERIC     	not null,
-    constraint PK_O_JOB_EXEC primary key (JOB_ID)
+    JOB_ID      	 VARCHAR(30) 	not null,
+    JMO_ID      	 NUMERIC     	not null,
+    constraint PK_O_JOB_EXEC primary key (JEX_ID)
 );
 
-comment on column O_JOB_EXEC.JOB_ID is
+comment on column O_JOB_EXEC.JEX_ID is
 'Id';
-
-comment on column O_JOB_EXEC.JOB_EXEC_UUID is
-'Exec UUID';
 
 comment on column O_JOB_EXEC.START_EXEC_DATE is
 'Start exec date';
@@ -128,11 +124,11 @@ comment on column O_JOB_EXEC.START_EXEC_DATE is
 comment on column O_JOB_EXEC.MAX_EXEC_DATE is
 'Max date Max execution (start + timeout)';
 
-comment on column O_JOB_EXEC.JOB_NAME is
-'Job Name';
+comment on column O_JOB_EXEC.JOB_ID is
+'JobRun';
 
-comment on column O_JOB_EXEC.NODE_ID is
-'Node Id';
+comment on column O_JOB_EXEC.JMO_ID is
+'JobModel';
 
 -- ============================================================
 --   Table : O_JOB_LOG                                        
@@ -224,19 +220,25 @@ comment on column O_JOB_MODEL.ACTIVE is
 create table O_JOB_RUN
 (
     JOB_ID      	 VARCHAR(30) 	not null,
-    JOB_EXEC_UUID	 CHAR(36)    	,
+    JEX_ID      	 CHAR(36)    	,
+    ALIVE       	 BOOL        	not null,
     STATUS      	 CHAR(1)     	not null,
     CURRENT_TRY 	 NUMERIC     	not null,
+    START_DATE  	 TIMESTAMP   	not null,
     MAX_DATE    	 TIMESTAMP   	not null,
     MAX_RETRY   	 NUMERIC     	not null,
+    JMO_ID      	 NUMERIC     	not null,
     constraint PK_O_JOB_RUN primary key (JOB_ID)
 );
 
 comment on column O_JOB_RUN.JOB_ID is
 'Id';
 
-comment on column O_JOB_RUN.JOB_EXEC_UUID is
+comment on column O_JOB_RUN.JEX_ID is
 'Exec UUID';
+
+comment on column O_JOB_RUN.ALIVE is
+'alive y/n';
 
 comment on column O_JOB_RUN.STATUS is
 'Exec status';
@@ -244,11 +246,17 @@ comment on column O_JOB_RUN.STATUS is
 comment on column O_JOB_RUN.CURRENT_TRY is
 'Current try';
 
+comment on column O_JOB_RUN.START_DATE is
+'Start date of the run';
+
 comment on column O_JOB_RUN.MAX_DATE is
 'Max date of the run';
 
 comment on column O_JOB_RUN.MAX_RETRY is
 'Max retry';
+
+comment on column O_JOB_RUN.JMO_ID is
+'JobModel';
 
 -- ============================================================
 --   Table : O_JOB_SCHEDULE                                        
@@ -282,11 +290,29 @@ alter table O_JOB_CRON
 
 create index JCR_JMO_O_JOB_MODEL_FK on O_JOB_CRON (JMO_ID asc);
 
-alter table O_JOB_LOG
-	add constraint FK_JLO_JEX_O_JOB_EVENT foreign key (PRO_ID)
-	references O_JOB_EVENT (JEVT_ID);
+alter table O_JOB_EXEC
+	add constraint FK_JEX_JMO_O_JOB_MODEL foreign key (JMO_ID)
+	references O_JOB_MODEL (JMO_ID);
 
-create index JLO_JEX_O_JOB_EVENT_FK on O_JOB_LOG (PRO_ID asc);
+create index JEX_JMO_O_JOB_MODEL_FK on O_JOB_EXEC (JMO_ID asc);
+
+alter table O_JOB_EXEC
+	add constraint FK_JEX_JRN_O_JOB_RUN foreign key (JOB_ID)
+	references O_JOB_RUN (JOB_ID);
+
+create index JEX_JRN_O_JOB_RUN_FK on O_JOB_EXEC (JOB_ID asc);
+
+alter table O_JOB_LOG
+	add constraint FK_JLO_JEV_O_JOB_EVENT foreign key (PRO_ID)
+	references O_JOB_EVENT (JEV_ID);
+
+create index JLO_JEV_O_JOB_EVENT_FK on O_JOB_LOG (PRO_ID asc);
+
+alter table O_JOB_RUN
+	add constraint FK_JRN_JMO_O_JOB_MODEL foreign key (JMO_ID)
+	references O_JOB_MODEL (JMO_ID);
+
+create index JRN_JMO_O_JOB_MODEL_FK on O_JOB_RUN (JMO_ID asc);
 
 alter table O_JOB_SCHEDULE
 	add constraint FK_JSC_JMO_O_JOB_MODEL foreign key (JMO_ID)

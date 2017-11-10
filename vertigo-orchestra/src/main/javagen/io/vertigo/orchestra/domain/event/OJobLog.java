@@ -25,7 +25,7 @@ public final class OJobLog implements Entity {
 	private String erreur;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_JLO_JEX",
+			name = "A_JLO_JEV",
 			fkFieldName = "PRO_ID",
 			primaryDtDefinitionName = "DT_O_JOB_EVENT",
 			primaryIsNavigable = true,

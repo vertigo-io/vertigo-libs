@@ -2,7 +2,7 @@ package io.vertigo.orchestra.domain.event
 
 create DtDefinition DT_O_JOB_EVENT {
 	storeName : "orchestra"
-	key JEVT_ID				{domain : DO_O_IDENTIFIANT 		label :"Id d'une trace d'execution d'un job"		notNull:"true"}
+	key   JEV_ID			{domain : DO_O_IDENTIFIANT 		label :"Id d'une trace d'execution d'un job"		notNull:"true"}
 	field JOB_NAME			{domain : DO_O_CODE_IDENTIFIANT label :"Status général d'execution"					notNull:"true"}
 	field STATUS			{domain : DO_O_CODE_IDENTIFIANT label :"Status général d'execution"					notNull:"true"}
 	field REASON			{domain : DO_O_CODE_IDENTIFIANT label :"Code d'erreur fonctionel de l'execution"	notNull:"false"}

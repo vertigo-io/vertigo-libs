@@ -27,7 +27,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.di.injector.DIInjector;
@@ -65,7 +64,7 @@ public abstract class AbstractOrchestraTestCaseJU4 {
 
 	public final void setUpInjection() throws Exception {
 		if (app != null) {
-			DIInjector.injectMembers(this, Home.getApp().getComponentSpace());
+			DIInjector.injectMembers(this, app.getComponentSpace());
 		}
 	}
 
@@ -77,8 +76,8 @@ public abstract class AbstractOrchestraTestCaseJU4 {
 			final List<String> requests = new ListBuilder<String>()
 					.add(" delete from o_job_log;")
 					.add(" delete from o_job_event;")
-					.add(" delete from o_job_run;")
 					.add(" delete from o_job_exec;")
+					.add(" delete from o_job_run;")
 					.add(" delete from o_job_cron;")
 					.add(" delete from o_job_schedule;")
 					.add(" delete from o_job_model;")
