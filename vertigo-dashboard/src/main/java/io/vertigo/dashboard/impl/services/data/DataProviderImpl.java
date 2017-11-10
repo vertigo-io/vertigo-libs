@@ -127,6 +127,7 @@ public final class DataProviderImpl implements DataProvider {
 		return getTabularData(measures, dataFilter, timeFilter, true, "name", "feature")
 				.getTimedDataSeries()
 				.stream()
+				.filter(timedDataSerie -> timedDataSerie.getValues().get("value:last") != null)
 				.map(timedDataSerie -> Metric.builder()
 						.withName((String) timedDataSerie.getValues().get("name:last"))
 						.withFeature((String) timedDataSerie.getValues().get("feature:last"))

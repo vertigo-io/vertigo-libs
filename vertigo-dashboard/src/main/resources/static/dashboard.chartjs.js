@@ -21,6 +21,14 @@ function showChartJsChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataC
 		chartJsDataSets = toChartJsData(datas, dataMetrics,  dataLabels, timedSeries, dataQuery.groupBy);
 		chartOptions = getStackedOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions);
 		setChartJsColorOptions(chartJsDataSets, dataColors);
+	} else if (elem.hasClass("polararea")) {
+		type = 'polarArea';
+		chartJsDataSets = toChartJsData(datas, dataMetrics,  dataLabels, timedSeries, dataQuery.groupBy);
+		var pieData  = toChartJsPieData(chartJsDataSets, dataLabels);
+		chartJsDataSets = pieData.datasets;
+		labels = pieData.labels;
+		chartOptions = getPolarChartOptions(datas, dataMetrics, dataQuery, dataLabels, timedSeries, additionalOptions);
+		setChartJsPieColorOptions(chartJsDataSets, dataColors);
 	} else if (elem.hasClass("doughnut")) {
 		type = 'doughnut';
 		chartJsDataSets = toChartJsData(datas, dataMetrics, dataLabels, timedSeries, dataQuery.groupBy);
@@ -115,6 +123,10 @@ function getChartJsBubblesOptions(datas, dataMetrics, dataQuery, dataLabels, add
 	            }
 			 }
 	};
+}
+
+function getPolarChartOptions(datas, dataMetrics, dataQuery, dataLabels, additionalOptions){
+	return {};
 }
 
 function getAxisType(datas, additionalOptions, optionKey, metric) {

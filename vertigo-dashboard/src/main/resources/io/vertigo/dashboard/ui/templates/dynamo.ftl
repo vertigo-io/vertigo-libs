@@ -7,9 +7,31 @@
 		<@module.indicator icon="schedule" status='GREEN' metric=entityCount legend="entitie(s)" />
 		<@module.indicator icon="vertical_align_center" status='GREEN' metric=keyConceptCount legend="key concept(s)" />
 	</div>
+	
+	<div class="card-deck my-3">
+		<@module.card title="Entities volumetry" >   
+			<div class="chart chartjs polararea"
+				    data-url="data/tabular" 
+				    data-query-measures='["value:last"]'
+				     data-query-data-filter='{ "measurement": "metric", "location": "*", "name": "entityCount", "module": "*", "feature": "*" }'
+				    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
+				    data-query-group-by='feature'
+				    data-colors='GREEN2BLUE'></div> 
+		</@module.card>  
+		<@module.card title="Global volumetry" >   
+			<div class="chart chartjs linechart"
+				    data-url="data/series" 
+				    data-query-measures='["value:sum"]'
+				    data-query-data-filter='{ "measurement": "metric", "location": "*", "name": "entityCount", "module": "*", "feature": "DT_PERSON" }'
+				    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "6h"}'
+				    data-colors='GREEN2BLUE'></div> 
+		</@module.card>  
+	</div>
 
 
 	<@module.standardPanel 'Entities' 'entity' >
+		
+		
 		<@module.standardList>
 			<table class="table table-sm table-striped">
 				<thead>

@@ -31,7 +31,7 @@
 				</@module.card>  
 		</div>
 		<div class="card-deck my-3" >
-				<@module.card title="Most consumming WebSerices" >
+				<@module.card title="Most consumming WebServices" >
 					<div class="datatable"
 						    data-url="data/tabular/tops" 
 						    data-query-measures='["duration:sum"]'
@@ -97,7 +97,7 @@
 		</div>	
 		<div class="row" >	
 			<div class="col-6" >    
-				<@module.card title="WebServices' response time (ms)" >
+				<@module.card title="WebServices' usage" >
 					<div class="chart chartjs linechart" 
 					    data-url="data/series" 
 					    data-query-measures='["duration:median", "duration:percentile_70", "duration:percentile_90"]'
