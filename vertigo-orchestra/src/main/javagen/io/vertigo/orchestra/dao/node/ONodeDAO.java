@@ -42,6 +42,18 @@ public final class ONodeDAO extends DAO<ONode, java.lang.String> implements Stor
 	}
 
 	/**
+	 * Execute la tache TK_GET_NODES.
+	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.node.ONode> dtoONode
+	*/
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.node.ONode> getNodes() {
+		final Task task = createTaskBuilder("TK_GET_NODES")
+				.build();
+		return getTaskManager()
+				.execute(task)
+				.getResult();
+	}
+
+	/**
 	 * Execute la tache TK_INSERT_NODE.
 	 * @param node io.vertigo.orchestra.domain.node.ONode 
 	*/

@@ -6,8 +6,9 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.inject.Inject;
 
@@ -47,7 +48,7 @@ import io.vertigo.util.ClassUtil;
 public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 	//private static final Logger LOGGER = LogManager.getLogger(OrchestraStoreImpl.class);
 
-	private final Executor executor = Executors.newFixedThreadPool(10); // TODO: named parameter
+	private final ExecutorService executor = Executors.newFixedThreadPool(10); // TODO: named parameter
 
 	@Inject
 	private OJobModelDAO jobModelDAO;
@@ -88,10 +89,17 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		createNode();
 	}
 
+	@Override
+	public void stop() {
+		//
+	}
+
 	private void createNode() {
 		final ONode node = new ONode();
 		node.setNodId(nodId);
 		node.setLastHeartbeat(now());
+		node.setCapacity(getCapacity());
+		node.setUsed(getUsed());
 		nodeDAO.insertNode(node);
 	}
 
@@ -99,19 +107,35 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		final ONode node = new ONode();
 		node.setNodId(nodId);
 		node.setLastHeartbeat(now());
+		node.setCapacity(getCapacity());
+		node.setUsed(getUsed());
 		nodeDAO.update(node);
 	}
 
-	@Override
-	public void stop() {
-		//
+	private int getUsed() {
+		final ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executor;
+		final int used = threadPoolExecutor.getActiveCount();
+		return used;
+	}
+
+	private int getCapacity() {
+		final ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executor;
+		final int capacity = threadPoolExecutor.getPoolSize();
+		return capacity;
 	}
 
 	@Override
 	@DaemonScheduled(name = "DMN_TICK", periodInSeconds = 30)
 	public void tick() {
-		updateNode();
-		//
+		//For Update : lLock all nodes
+		/*	final List<ONode> nodes = nodeDAO.getNodes();
+			int globalCapacity = 0;
+			int globalUsed = 0;
+			for (final ONode node : nodes) {
+				globalCapacity += node.getCapacity();
+				globalUsed += node.getUsed();
+			}*/
+		//The objective is to have the same ratio used/capacity on each node.
 
 		//0. Launch cron Jobs
 		if (startFirstJobCron()) {
@@ -130,8 +154,31 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		//watchJobTimeOut();
 		//3. Watch jobs in error
 		//TODO
+		//How to calculate the numbers of jobs to lauch
+		//For the current node [C]apacity = [U]sed + [F]ree
+		//For all nodes GC= GU + GF
+		//[N]odes = number of active nodes
+		//ih there are J jobs to launch
+		//1 node :
+		//The global idea is to distribute the todo list on each node
+		//Examples
+		//|||||||||-------
+		//||||------------
+		//
+		// J> GF : overload => we have to take the max/N
+		// J<=GF :
+		//	if (J/N)
+		updateNode();
 
 	}
+
+	//	private void watchJobExecInTimeout() {
+	//		//		return false;
+	//	}
+	//
+	//	private void watchJobRunInTimeout() {
+	//		//		return false;
+	//	}
 
 	private boolean startFirstJobSchedule() {
 		final DtList<OJobSchedule> jobSchedules = jobScheduleDAO.getJobScheduleToRun(ZonedDateTime.now());
@@ -144,18 +191,19 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 
 	private boolean startFirstJobCron() {
 		final DtList<OJobCron> jobCrons = jobCronDAO.getJobCron();
+
 		for (final OJobCron jobCron : jobCrons) {
 			jobCron.jobModel().load();
 			final Date start = Date.from(now().minusSeconds(jobCron.jobModel().get().getRunMaxDelay()).toInstant());
+			final ZonedDateTime scheduledDate;
 			try {
-				final ZonedDateTime scheduledDate = CronExpression.of(jobCron.getCronExpression()).getNextValidTimeAfter(start).toInstant().atZone(ZoneId.of("UTC"));
-				if (scheduledDate.isBefore(now())) {
-					startJobCron(jobCron, scheduledDate);
-					return true;
-				}
+				scheduledDate = CronExpression.of(jobCron.getCronExpression()).getNextValidTimeAfter(start).toInstant().atZone(ZoneId.of("UTC"));
 			} catch (final ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+			if (scheduledDate.isBefore(now())) {
+				startJobCron(jobCron, scheduledDate);
+				return true;
 			}
 		}
 		return false;
@@ -283,11 +331,11 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		return jobRun;
 	}
 
-	private OJobExec createJobExec(final OJobModel jobModel, final OJobRun jobRun) {
+	private OJobExec createJobExec(final OJobRun jobRun) {
 		Assertion.checkNotNull(jobRun);
 		//---
 		final ZonedDateTime startExecDate = now();
-		final ZonedDateTime maxExecDate = startExecDate.plusSeconds(jobModel.getExecTimeout());
+		final ZonedDateTime maxExecDate = startExecDate.plusSeconds(jobRun.jobModel().get().getExecTimeout());
 
 		final OJobExec jobExec = new OJobExec();
 		jobExec.setJexId(jobRun.getJexId());
@@ -297,7 +345,7 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		jobExec.setStartExecDate(startExecDate);
 		jobExec.jobRun().set(jobRun);
 		/*to attach a unique constraint*/
-		jobExec.jobModel().setId(jobRun.jobModel().getId());
+		jobExec.jobModel().set(jobRun.jobModel().get());
 		//		jobExec.setNodeId(nodeId);
 		jobExecDAO.insertJobExecWithJobId(jobExec);
 		return jobExec;
@@ -329,7 +377,7 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		final String jobId = createJobId(jobCron);
 		final OJobRun jobRun = createJobRun(jobModel, scheduledDate, jobId);
 		final OParams initialParams = OParams.of(jobCron.getParams());
-		startRun(jobModel, jobRun, initialParams);
+		startRun(jobRun, initialParams);
 		return jobId;
 
 	}
@@ -353,14 +401,14 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		final String jobId = createJobId(jobSchedule);
 		final OJobRun jobRun = createJobRun(jobModel, jobSchedule.getScheduleDate(), jobId);
 		final OParams initialParams = OParams.of(jobSchedule.getParams());
-		startRun(jobModel, jobRun, initialParams);
+		startRun(jobRun, initialParams);
 		return jobId;
 	}
 
-	private void startRun(final OJobModel jobModel, final OJobRun jobRun, final OParams initialParams) {
-		final OJobExec jobExec = createJobExec(jobModel, jobRun);
+	private void startRun(final OJobRun jobRun, final OParams initialParams) {
+		final OJobExec jobExec = createJobExec(jobRun);
 		//---
-		final String jobEngineClassName = jobModel.getJobEngineClassName();
+		final String jobEngineClassName = jobRun.jobModel().get().getJobEngineClassName();
 		final Class<? extends JobEngine> jobEngineClass = ClassUtil.classForName(jobEngineClassName, JobEngine.class);
 		final JobEngine jobEngine = DIInjector.newInstance(jobEngineClass, Home.getApp().getComponentSpace());
 

@@ -12,20 +12,23 @@ import io.vertigo.orchestra.domain.schedule.OJobSchedule;
 import io.vertigo.orchestra.impl.services.schedule.CronExpression;
 
 public interface OrchestraStore extends Component {
-	/* ----------- JobModel	--------- */
+	/* ----------- JobModel	---------------------------------------------------*/
 	/**
 	 * Creates a job-model in the database.
 	 *
 	 * Rule : none
 	 *
-	 * @param jobModel the job model
-	 * @return the created job-model.
+	 * @param jobModel the job model without id.
+	 * @return the created job-model with an id.
 	 */
 	OJobModel createJobModel(OJobModel jobModel);
 
 	/**
 	 * Lists all the job-models.
-	 * The number of job-models must be
+	 *
+	 * As the number of job-models is low,
+	 * it's possible (and preferable) to list all the job-models.
+	 *
 	 * Rule : none
 	 *
 	 * @return all the job-models
@@ -35,7 +38,9 @@ public interface OrchestraStore extends Component {
 	/**
 	 * Deactivates the job model.
 	 *
-	 * Rule : All the running jobs associated with this model will be killed.
+	 * What are the consequences of this action on the living jobs ?
+	 *
+	 * Rule : All the living jobs associated with this model will be killed.
 	 *
 	 * @param jmoId the job-model Id
 	 * @return the updated job-model
@@ -132,7 +137,7 @@ public interface OrchestraStore extends Component {
 
 	/**
 	 * Rule : none
-	
+
 	 * A run can have at most one execution.
 	 * @return the alive job-executions.
 	 */

@@ -291,12 +291,20 @@ comment on column O_JOB_SCHEDULE.JMO_ID is
 create table O_NODE
 (
     NOD_ID      	 CHAR(36)    	not null,
+    CAPACITY    	 NUMERIC     	not null,
+    USED        	 NUMERIC     	not null,
     LAST_HEARTBEAT	 TIMESTAMP   	not null,
     constraint PK_O_NODE primary key (NOD_ID)
 );
 
 comment on column O_NODE.NOD_ID is
 'Id';
+
+comment on column O_NODE.CAPACITY is
+'capacity';
+
+comment on column O_NODE.USED is
+'used';
 
 comment on column O_NODE.LAST_HEARTBEAT is
 'Last activity';

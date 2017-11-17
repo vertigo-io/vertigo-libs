@@ -69,6 +69,8 @@ module.exports = {
     },
     oNode: {
         nodId: "Id",
+        capacity: "capacity",
+        used: "used",
         lastHeartbeat: "Last activity"
     }
 };

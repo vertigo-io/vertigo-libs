@@ -188,6 +188,10 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	public enum ONodeFields implements DtFieldName<io.vertigo.orchestra.domain.node.ONode> {
 		/** Propriété 'Id'. */
 		NOD_ID,
+		/** Propriété 'capacity'. */
+		CAPACITY,
+		/** Propriété 'used'. */
+		USED,
 		/** Propriété 'Last activity'. */
 		LAST_HEARTBEAT	}
 

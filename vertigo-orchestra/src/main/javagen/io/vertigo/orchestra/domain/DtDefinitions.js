@@ -218,6 +218,14 @@ module.exports = {
             domain: "DO_O_UUID",
             required: true
         },
+        capacity: {
+            domain: "DO_O_INTEGER",
+            required: true
+        },
+        used: {
+            domain: "DO_O_INTEGER",
+            required: true
+        },
         lastHeartbeat: {
             domain: "DO_O_TIMESTAMP",
             required: true

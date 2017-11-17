@@ -16,6 +16,8 @@ public final class ONode implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private String nodId;
+	private Integer capacity;
+	private Integer used;
 	private java.time.ZonedDateTime lastHeartbeat;
 
 	/** {@inheritDoc} */
@@ -41,6 +43,44 @@ public final class ONode implements Entity {
 	 */
 	public void setNodId(final String nodId) {
 		this.nodId = nodId;
+	}
+	
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'capacity'.
+	 * @return Integer capacity <b>Obligatoire</b>
+	 */
+	@Field(domain = "DO_O_INTEGER", required = true, label = "capacity")
+	public Integer getCapacity() {
+		return capacity;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'capacity'.
+	 * @param capacity Integer <b>Obligatoire</b>
+	 */
+	public void setCapacity(final Integer capacity) {
+		this.capacity = capacity;
+	}
+	
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'used'.
+	 * @return Integer used <b>Obligatoire</b>
+	 */
+	@Field(domain = "DO_O_INTEGER", required = true, label = "used")
+	public Integer getUsed() {
+		return used;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'used'.
+	 * @param used Integer <b>Obligatoire</b>
+	 */
+	public void setUsed(final Integer used) {
+		this.used = used;
 	}
 	
 	/**

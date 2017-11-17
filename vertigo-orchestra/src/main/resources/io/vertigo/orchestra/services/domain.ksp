@@ -26,7 +26,6 @@ create Domain DO_O_BOOLEAN {
 	storeType : "BOOL"
 }
 
-
 create Domain DO_O_TIMESTAMP {
 	dataType : ZonedDateTime
 	formatter : FMT_O_DEFAULT

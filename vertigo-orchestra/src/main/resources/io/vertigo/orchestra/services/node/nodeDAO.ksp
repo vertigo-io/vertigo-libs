@@ -5,10 +5,22 @@ create Task TK_INSERT_NODE {
 	className : "io.vertigo.dynamox.task.TaskEngineProc"
 	request : "
 		INSERT INTO O_NODE 
-			(NOD_ID, LAST_HEARTBEAT)
+			(NOD_ID, CAPACITY, USED, LAST_HEARTBEAT)
 		values  
-			(#NODE.NOD_ID#, #NODE.LAST_HEARTBEAT#)
+			(#NODE.NOD_ID#, #NODE.CAPACITY#, #NODE.USED#, #NODE.LAST_HEARTBEAT#)
 		"
 		
 	attribute NODE	{domain : DO_DT_O_NODE_DTO  notNull:"true" 	inOut :"in"}
+}
+
+create Task TK_GET_NODES {
+	storeName : "orchestra"
+	className : "io.vertigo.dynamox.task.TaskEngineSelect"
+	request : "
+		SELECT *
+			FROM O_NODE 
+		FOR UPDATE
+ 		"
+	
+	attribute DTO_O_NODE	{domain : DO_DT_O_NODE_DTC 			notNull:"true" 	inOut :"out"}
 }
