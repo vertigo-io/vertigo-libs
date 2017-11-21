@@ -3,12 +3,15 @@ package io.vertigo.orchestra.plugins.store;
 import java.text.ParseException;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -43,6 +46,7 @@ import io.vertigo.orchestra.domain.schedule.OJobSchedule;
 import io.vertigo.orchestra.impl.services.schedule.CronExpression;
 import io.vertigo.orchestra.services.run.JobEngine;
 import io.vertigo.util.ClassUtil;
+import io.vertigo.util.ListBuilder;
 
 @Transactional
 public class OrchestraStoreImpl implements OrchestraStore, Activeable {
@@ -120,33 +124,86 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 
 	private int getCapacity() {
 		final ThreadPoolExecutor threadPoolExecutor = (ThreadPoolExecutor) executor;
-		final int capacity = threadPoolExecutor.getPoolSize();
+		final int capacity = threadPoolExecutor.getMaximumPoolSize();
 		return capacity;
+
 	}
 
 	@Override
 	@DaemonScheduled(name = "DMN_TICK", periodInSeconds = 30)
 	public void tick() {
 		//For Update : lLock all nodes
-		/*	final List<ONode> nodes = nodeDAO.getNodes();
-			int globalCapacity = 0;
-			int globalUsed = 0;
-			for (final ONode node : nodes) {
+		final List<ONode> nodes = nodeDAO.getNodes();
+		final int localCapacity = getCapacity();
+		final int localUsed = getUsed();
+		int globalCapacity = 0;
+		int globalUsed = 0;
+		for (final ONode node : nodes) {
+			if (node.getNodId() != nodId) {
 				globalCapacity += node.getCapacity();
 				globalUsed += node.getUsed();
-			}*/
+			} else {
+				globalCapacity += localCapacity;
+				globalUsed += localUsed;
+			}
+		}
+
 		//The objective is to have the same ratio used/capacity on each node.
 
-		//0. Launch cron Jobs
-		if (startFirstJobCron()) {
-			return;
-		}
-		//1. Launch scheduled Jobs
-		if (startFirstJobSchedule()) {
-			return;
-		}
-		//---
+		//00. find candidates (job to start).
+		//		List<OJobModel> still
+		final List<OJobToLaunch> jobsToLaunch2 = new ListBuilder<OJobToLaunch>()
+				.addAll(findJobCronCandidates())
+				.addAll(findJobScheduleCandidates())
+				.sort((o1, o2) -> o1.getScheduledDate().isEqual(o2.getScheduledDate()) ? 0 : o1.getScheduledDate().isBefore(o2.getScheduledDate()) ? 1 : -1)
+				.build();
 
+		final List<OJobToLaunch> jobsToLaunch = new ArrayList<>();
+		for (final OJobToLaunch jobToLaunch : jobsToLaunch2) {
+			if (jobsToLaunch.stream().allMatch(j -> j.getJmoId() != jobToLaunch.getJmoId())) {
+				jobsToLaunch.add(jobToLaunch);
+			}
+		}
+		//sort by date and keep only the first job as a same models is concerned.
+
+		/*We want to equilibrate the load on each node
+		* That's to say
+		* localCapacity/globalCapacity = localUsed/globalUsed
+		* LC/GC = LU/GU
+		* so what is the number max [J] of jobs to start if we have to start [N].
+		* (J+LU)/(N+GU) = LC/GC
+		* J = (LC/GC).(N+GU)-LU
+		*
+		* we have to round or truncate J
+		* J must be so that (J + LU) < LC
+		* Indeed  J<= Free
+		* J = RoundUp(J)
+		*
+		* J = min (LC - LU, J)
+		*
+		*/
+
+		//0. Launch cron Jobs
+
+		//	jobCronCandidates.stream().findFirst().map(candidate->
+		//
+		//	startJobCron(candidate.getVal1(), candidate.getVal2()));
+		//
+		//		//1. Launch scheduled Jobs
+		//		jobScheduleCandidates
+		//				.stream()
+		//				.findFirst()
+		//				.map(candidate -> startJobSchedule(candidate));
+		//		//---
+
+		// J = (LC/GC).(N+GU)-LU
+		int j = (localCapacity / globalCapacity) * (jobsToLaunch.size() + globalUsed) - localUsed;
+		j = Math.min(j, localCapacity - localUsed);
+
+		for (int i = 0; i < j; i++) {
+			jobsToLaunch.get(i);
+			startJob(jobsToLaunch.get(i));
+		}
 		//2. Watch jobs alive
 		//- in timeout
 		// - delay exceeded
@@ -180,18 +237,17 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 	//		//		return false;
 	//	}
 
-	private boolean startFirstJobSchedule() {
-		final DtList<OJobSchedule> jobSchedules = jobScheduleDAO.getJobScheduleToRun(ZonedDateTime.now());
-		for (final OJobSchedule jobSchedule : jobSchedules) {
-			startJobSchedule(jobSchedule);
-			return true;
-		}
-		return false;
+	private List<OJobToLaunch> findJobScheduleCandidates() {
+		return jobScheduleDAO.getJobScheduleToRun(ZonedDateTime.now())
+				.stream()
+				.map(jobSchedule -> new OJobToLaunch(jobSchedule))
+				.collect(Collectors.toList());
 	}
 
-	private boolean startFirstJobCron() {
+	private List<OJobToLaunch> findJobCronCandidates() {
 		final DtList<OJobCron> jobCrons = jobCronDAO.getJobCron();
 
+		final ListBuilder<OJobToLaunch> candidatesBuilder = new ListBuilder<>();
 		for (final OJobCron jobCron : jobCrons) {
 			jobCron.jobModel().load();
 			final Date start = Date.from(now().minusSeconds(jobCron.jobModel().get().getRunMaxDelay()).toInstant());
@@ -201,12 +257,12 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 			} catch (final ParseException e) {
 				throw new RuntimeException(e);
 			}
-			if (scheduledDate.isBefore(now())) {
-				startJobCron(jobCron, scheduledDate);
-				return true;
+			final boolean mustBeStarted = scheduledDate.isBefore(now());
+			if (mustBeStarted) {
+				candidatesBuilder.add(new OJobToLaunch(jobCron, scheduledDate));
 			}
 		}
-		return false;
+		return candidatesBuilder.build();
 	}
 
 	//-------------------------------------------------------------------------
@@ -364,6 +420,15 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		return "SCH:" + String.valueOf(jobSchedule.getJscId());
 	}
 
+	private String startJob(final OJobToLaunch jobToLaunch) {
+		Assertion.checkNotNull(jobToLaunch);
+		//---
+		if (jobToLaunch.isCron()) {
+			return startJobCron(jobToLaunch.getJobCron(), jobToLaunch.getScheduledDate());
+		}
+		return startJobSchedule(jobToLaunch.getJobSchedule());
+	}
+
 	//jobCron must have been locked
 	private String startJobCron(final OJobCron jobCron, final ZonedDateTime scheduledDate) {
 		Assertion.checkNotNull(jobCron);
@@ -379,7 +444,6 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		final OParams initialParams = OParams.of(jobCron.getParams());
 		startRun(jobRun, initialParams);
 		return jobId;
-
 	}
 
 	@Override
