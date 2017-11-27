@@ -75,6 +75,11 @@ public final class DataProviderImpl implements DataProvider {
 	}
 
 	@Override
+	public List<String> getTagValues(final String measurement, final String tag) {
+		return dataProviderPlugin.getTagValues(appName, measurement, tag);
+	}
+
+	@Override
 	public List<HealthCheck> getHealthChecks() {
 
 		final List<String> measures = Arrays.asList("status:last", "message:last", "name:last", "module:last", "feature:last", "checker:last");

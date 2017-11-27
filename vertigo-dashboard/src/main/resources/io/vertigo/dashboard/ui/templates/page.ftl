@@ -37,7 +37,7 @@
 		    </ul>
 		  </div>
 		   <div class="float-right">
-		  	<select id="timeSelection" onc>
+		  	<select id="timeSelection" >
 				  <option value="last_day">Last day</option>
 				  <option value="last_3_days" selected >Last 3 days</option>
 				  <option value="last_week">Last week</option>

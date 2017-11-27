@@ -307,4 +307,27 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 		return valueMap;
 	}
 
+	@Override
+	public List<String> getTagValues(final String appName, final String measurement, final String tag) {
+		final String queryString = new StringBuilder("show tag values on ")
+				.append("\"").append(appName).append("\"")
+				.append(" from ").append("\"").append(measurement).append("\"")
+				.append("  with key= ").append("\"").append(tag).append("\"")
+				.toString();
+
+		final Query query = new Query(queryString, appName);
+		final QueryResult queryResult = influxDB.query(query);
+
+		final List<Series> seriesList = queryResult.getResults().get(0).getSeries();
+		if (seriesList != null && seriesList.size() > 0) {
+			final Series series = seriesList.get(0);
+			return series
+					.getValues()
+					.stream()
+					.map(values -> values.get(1).toString()) //always the second columns
+					.collect(Collectors.toList());
+		}
+		return Collections.emptyList();
+	}
+
 }

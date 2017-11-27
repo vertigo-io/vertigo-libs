@@ -20,4 +20,6 @@ public interface DataProvider extends Component {
 
 	TimedDatas getTops(final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows);
 
+	List<String> getTagValues(final String measurement, final String tag);
+
 }

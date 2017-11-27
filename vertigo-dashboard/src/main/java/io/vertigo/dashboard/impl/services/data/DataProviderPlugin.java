@@ -18,4 +18,6 @@ public interface DataProviderPlugin extends Plugin {
 
 	TimedDatas getTops(final String appName, final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows);
 
+	List<String> getTagValues(final String appName, final String measurement, final String tag);
+
 }
