@@ -5,9 +5,9 @@ create Task TK_INSERT_JOB_EXEC_WITH_JOB_ID {
 	className : "io.vertigo.dynamox.task.TaskEngineProc"
 	request : "
 		INSERT INTO O_JOB_EXEC 
-			(JEX_ID, JOB_ID, JMO_ID, START_EXEC_DATE, MAX_EXEC_DATE)
+			(JEX_ID, JOB_ID, JMO_ID, START_EXEC_INSTANT, MAX_EXEC_INSTANT)
 		VALUES  
-			(#JOB_EXEC.JEX_ID#, #JOB_EXEC.JOB_ID#, #JOB_EXEC.JMO_ID#, #JOB_EXEC.START_EXEC_DATE#, #JOB_EXEC.MAX_EXEC_DATE#)
+			(#JOB_EXEC.JEX_ID#, #JOB_EXEC.JOB_ID#, #JOB_EXEC.JMO_ID#, #JOB_EXEC.START_EXEC_INSTANT#, #JOB_EXEC.MAX_EXEC_INSTANT#)
 		"
 		
 	attribute JOB_EXEC	{domain : DO_DT_O_JOB_EXEC_DTO  notNull:"true" 	inOut :"in"}
@@ -55,7 +55,7 @@ create Task TK_GET_JOBS_TO_RUN {
         request : "
         	SELECT JRU.*
         	  FROM O_JOB_RUNNING JRU
-        	 WHERE JRU.DATE_EXEC = #DATE_EXEC# AND NOD_ID = #NOD_ID#
+        	 WHERE JRU.EXEC_INSTANT = #EXEC_INSTANT# AND NOD_ID = #NOD_ID#
 			"
 	attribute DTO_O_JOB_RUNNING	 	{domain : DO_DT_O_JOB_EXEC_DTC 	notNull:"true" 	inOut :"out"}
 	attribute NOD_ID	 			{domain : DO_O_IDENTIFIANT 			notNull:"true" 	inOut :"in"}
