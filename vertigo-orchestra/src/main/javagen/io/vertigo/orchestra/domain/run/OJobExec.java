@@ -17,8 +17,8 @@ public final class OJobExec implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private String jexId;
-	private java.time.ZonedDateTime startExecDate;
-	private java.time.ZonedDateTime maxExecDate;
+	private java.time.Instant startExecInstant;
+	private java.time.Instant maxExecInstant;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_JEX_JRN",
@@ -77,40 +77,40 @@ public final class OJobExec implements Entity {
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Start exec date'.
-	 * @return java.time.ZonedDateTime startExecDate <b>Obligatoire</b>
+	 * Récupère la valeur de la propriété 'Start exec'.
+	 * @return java.time.Instant startExecInstant <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Start exec date")
-	public java.time.ZonedDateTime getStartExecDate() {
-		return startExecDate;
+	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Start exec")
+	public java.time.Instant getStartExecInstant() {
+		return startExecInstant;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Start exec date'.
-	 * @param startExecDate java.time.ZonedDateTime <b>Obligatoire</b>
+	 * Définit la valeur de la propriété 'Start exec'.
+	 * @param startExecInstant java.time.Instant <b>Obligatoire</b>
 	 */
-	public void setStartExecDate(final java.time.ZonedDateTime startExecDate) {
-		this.startExecDate = startExecDate;
+	public void setStartExecInstant(final java.time.Instant startExecInstant) {
+		this.startExecInstant = startExecInstant;
 	}
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Max date Max execution (start + timeout)'.
-	 * @return java.time.ZonedDateTime maxExecDate <b>Obligatoire</b>
+	 * Récupère la valeur de la propriété 'Max execution (start + timeout)'.
+	 * @return java.time.Instant maxExecInstant <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Max date Max execution (start + timeout)")
-	public java.time.ZonedDateTime getMaxExecDate() {
-		return maxExecDate;
+	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Max execution (start + timeout)")
+	public java.time.Instant getMaxExecInstant() {
+		return maxExecInstant;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Max date Max execution (start + timeout)'.
-	 * @param maxExecDate java.time.ZonedDateTime <b>Obligatoire</b>
+	 * Définit la valeur de la propriété 'Max execution (start + timeout)'.
+	 * @param maxExecInstant java.time.Instant <b>Obligatoire</b>
 	 */
-	public void setMaxExecDate(final java.time.ZonedDateTime maxExecDate) {
-		this.maxExecDate = maxExecDate;
+	public void setMaxExecInstant(final java.time.Instant maxExecInstant) {
+		this.maxExecInstant = maxExecInstant;
 	}
 	
 	/**

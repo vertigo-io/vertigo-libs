@@ -3,7 +3,7 @@ package io.vertigo.orchestra.domain.event
 create DtDefinition DT_O_JOB_LOG {
 	storeName : "orchestra"
 	key JLO_ID					{domain : DO_O_IDENTIFIANT, label :"Id d'une trace d'execution d'un job", notNull:"true",}
-	field DATE_TRACE   			{domain : DO_O_TIMESTAMP, label :"Date de la trace", notNull:"true",}
+	field TIMESTAMP  			{domain : DO_O_TIMESTAMP, label :"Date de la trace", notNull:"true",}
 	field LEVEL   				{domain : DO_O_CODE_IDENTIFIANT, label :"Niveau de la trace", notNull:"true",}
 	field TYPE_EXEC_CD			{domain : DO_O_CODE_IDENTIFIANT, label :"Type de trace", notNull:"true",}
 	field MESSAGE				{domain : DO_O_TEXT, label :"Message", notNull:"false",}

@@ -1,8 +1,7 @@
 package io.vertigo.orchestra.plugins.store;
 
 import java.text.ParseException;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -101,7 +100,7 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 	private void createNode() {
 		final ONode node = new ONode();
 		node.setNodId(nodId);
-		node.setLastHeartbeat(now());
+		node.setLastHeartbeat(Instant.now());
 		node.setCapacity(getCapacity());
 		node.setUsed(getUsed());
 		nodeDAO.insertNode(node);
@@ -110,7 +109,7 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 	private void updateNode() {
 		final ONode node = new ONode();
 		node.setNodId(nodId);
-		node.setLastHeartbeat(now());
+		node.setLastHeartbeat(Instant.now());
 		node.setCapacity(getCapacity());
 		node.setUsed(getUsed());
 		nodeDAO.update(node);
@@ -155,7 +154,7 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		final List<OJobToLaunch> jobsToLaunch2 = new ListBuilder<OJobToLaunch>()
 				.addAll(findJobCronCandidates())
 				.addAll(findJobScheduleCandidates())
-				.sort((o1, o2) -> o1.getScheduledDate().isEqual(o2.getScheduledDate()) ? 0 : o1.getScheduledDate().isBefore(o2.getScheduledDate()) ? 1 : -1)
+				.sort((o1, o2) -> o1.getScheduledInstant().equals(o2.getScheduledInstant()) ? 0 : o1.getScheduledInstant().isBefore(o2.getScheduledInstant()) ? 1 : -1)
 				.build();
 
 		final List<OJobToLaunch> jobsToLaunch = new ArrayList<>();
@@ -238,7 +237,7 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 	//	}
 
 	private List<OJobToLaunch> findJobScheduleCandidates() {
-		return jobScheduleDAO.getJobScheduleToRun(ZonedDateTime.now())
+		return jobScheduleDAO.getJobScheduleToRun(Instant.now())
 				.stream()
 				.map(jobSchedule -> new OJobToLaunch(jobSchedule))
 				.collect(Collectors.toList());
@@ -250,16 +249,18 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		final ListBuilder<OJobToLaunch> candidatesBuilder = new ListBuilder<>();
 		for (final OJobCron jobCron : jobCrons) {
 			jobCron.jobModel().load();
-			final Date start = Date.from(now().minusSeconds(jobCron.jobModel().get().getRunMaxDelay()).toInstant());
-			final ZonedDateTime scheduledDate;
+			final Instant start = Instant.now().minusSeconds(jobCron.jobModel().get().getRunMaxDelay());
+			final Instant scheduledInstant;
 			try {
-				scheduledDate = CronExpression.of(jobCron.getCronExpression()).getNextValidTimeAfter(start).toInstant().atZone(ZoneId.of("UTC"));
+				scheduledInstant = CronExpression.of(jobCron.getCronExpression())
+						.getNextValidTimeAfter(Date.from(start))
+						.toInstant();
 			} catch (final ParseException e) {
 				throw new RuntimeException(e);
 			}
-			final boolean mustBeStarted = scheduledDate.isBefore(now());
+			final boolean mustBeStarted = scheduledInstant.isBefore(Instant.now());
 			if (mustBeStarted) {
-				candidatesBuilder.add(new OJobToLaunch(jobCron, scheduledDate));
+				candidatesBuilder.add(new OJobToLaunch(jobCron, scheduledInstant));
 			}
 		}
 		return candidatesBuilder.build();
@@ -318,14 +319,14 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 
 	@Override
 	//a job can be scheduled even if it is deactivated.
-	public OJobSchedule scheduleAt(final long jmoId, final OParams params, final ZonedDateTime scheduleDate) {
+	public OJobSchedule scheduleAt(final long jmoId, final OParams params, final Instant scheduledInstant) {
 		Assertion.checkNotNull(params);
-		Assertion.checkNotNull(scheduleDate);
+		Assertion.checkNotNull(scheduledInstant);
 		//---
 		final OJobSchedule jobSchedule = new OJobSchedule();
 		jobSchedule.jobModel().setId(jmoId);
 		jobSchedule.setParams(params.toJson());
-		jobSchedule.setScheduleDate(scheduleDate);
+		jobSchedule.setScheduleInstant(scheduledInstant);
 		return jobScheduleDAO.create(jobSchedule);
 	}
 
@@ -352,30 +353,25 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 	//		jobScheduleDAO.delete(jscId);
 	//	}
 
-	private static ZonedDateTime now() {
-		return ZonedDateTime.now(ZoneId.of("UTC"));
-	}
-
 	//--------------------------------------------------------------
 	private OJobRun createJobRun(
 			final OJobModel jobModel,
-			final ZonedDateTime scheduledDate,
+			final Instant scheduledInstant,
 			final String jobId) {
 		Assertion.checkNotNull(jobModel);
-		Assertion.checkNotNull(scheduledDate);
+		Assertion.checkNotNull(scheduledInstant);
 		//---
-		final ZonedDateTime startDate = now();
-		final ZonedDateTime maxDate = scheduledDate.plusSeconds(jobModel.getRunMaxDelay());
+		final Instant startInstant = Instant.now();
+		final Instant maxInstant = scheduledInstant.plusSeconds(jobModel.getRunMaxDelay());
 
-		final ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
-		Assertion.checkArgument(maxDate.isAfter(now), "delay has expired, the job {0} can't be executed", jobModel.getJobName());
+		Assertion.checkArgument(maxInstant.isAfter(startInstant), "delay has expired, the job {0} can't be executed", jobModel.getJobName());
 		final UUID uuid = UUID.randomUUID();
 		final OJobRun jobRun = new OJobRun();
 		jobRun.setJobId(jobId);
 		jobRun.jobModel().set(jobModel);
 		jobRun.setMaxRetry(jobModel.getMaxRetry());
-		jobRun.setMaxDate(maxDate);
-		jobRun.setStartDate(startDate);
+		jobRun.setMaxInstant(maxInstant);
+		jobRun.setStartInstant(startInstant);
 
 		//mutables fields
 		jobRun.setAlive(true);
@@ -390,15 +386,15 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 	private OJobExec createJobExec(final OJobRun jobRun) {
 		Assertion.checkNotNull(jobRun);
 		//---
-		final ZonedDateTime startExecDate = now();
-		final ZonedDateTime maxExecDate = startExecDate.plusSeconds(jobRun.jobModel().get().getExecTimeout());
+		final Instant startExecInstant = Instant.now();
+		final Instant maxExecInstant = startExecInstant.plusSeconds(jobRun.jobModel().get().getExecTimeout());
 
 		final OJobExec jobExec = new OJobExec();
 		jobExec.setJexId(jobRun.getJexId());
 		jobExec.setJobId(jobRun.getJobId());
 		//	jobExec.setJobName(jobModel.getJobName());
-		jobExec.setMaxExecDate(maxExecDate);
-		jobExec.setStartExecDate(startExecDate);
+		jobExec.setMaxExecInstant(maxExecInstant);
+		jobExec.setStartExecInstant(startExecInstant);
 		jobExec.jobRun().set(jobRun);
 		/*to attach a unique constraint*/
 		jobExec.jobModel().set(jobRun.jobModel().get());
@@ -424,13 +420,13 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		Assertion.checkNotNull(jobToLaunch);
 		//---
 		if (jobToLaunch.isCron()) {
-			return startJobCron(jobToLaunch.getJobCron(), jobToLaunch.getScheduledDate());
+			return startJobCron(jobToLaunch.getJobCron(), jobToLaunch.getScheduledInstant());
 		}
 		return startJobSchedule(jobToLaunch.getJobSchedule());
 	}
 
 	//jobCron must have been locked
-	private String startJobCron(final OJobCron jobCron, final ZonedDateTime scheduledDate) {
+	private String startJobCron(final OJobCron jobCron, final Instant scheduledInstant) {
 		Assertion.checkNotNull(jobCron);
 		//---
 		jobCron.jobModel().load();
@@ -440,7 +436,7 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		// 1. create a run
 		// 2. create the first exec attached to this run
 		final String jobId = createJobId(jobCron);
-		final OJobRun jobRun = createJobRun(jobModel, scheduledDate, jobId);
+		final OJobRun jobRun = createJobRun(jobModel, scheduledInstant, jobId);
 		final OParams initialParams = OParams.of(jobCron.getParams());
 		startRun(jobRun, initialParams);
 		return jobId;
@@ -463,7 +459,7 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 		// 1. create a run
 		// 2. create the first exec attached to this run
 		final String jobId = createJobId(jobSchedule);
-		final OJobRun jobRun = createJobRun(jobModel, jobSchedule.getScheduleDate(), jobId);
+		final OJobRun jobRun = createJobRun(jobModel, jobSchedule.getScheduleInstant(), jobId);
 		final OParams initialParams = OParams.of(jobSchedule.getParams());
 		startRun(jobRun, initialParams);
 		return jobId;
@@ -573,7 +569,7 @@ public class OrchestraStoreImpl implements OrchestraStore, Activeable {
 	}
 
 	private static boolean delayExceeded(final OJobRun jobRun) {
-		return !jobRun.getMaxDate().isAfter(now());
+		return !jobRun.getMaxInstant().isAfter(Instant.now());
 	}
 
 	//	@Override

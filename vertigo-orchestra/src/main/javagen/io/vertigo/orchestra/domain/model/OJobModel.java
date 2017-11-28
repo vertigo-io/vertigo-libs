@@ -22,7 +22,7 @@ public final class OJobModel implements Entity {
 	private Integer maxRetry;
 	private Integer runMaxDelay;
 	private Integer execTimeout;
-	private java.time.ZonedDateTime creationDate;
+	private java.time.Instant creationInstant;
 	private Boolean active;
 
 	/** {@inheritDoc} */
@@ -167,20 +167,20 @@ public final class OJobModel implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Creation date'.
-	 * @return java.time.ZonedDateTime creationDate <b>Obligatoire</b>
+	 * @return java.time.Instant creationInstant <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Creation date")
-	public java.time.ZonedDateTime getCreationDate() {
-		return creationDate;
+	public java.time.Instant getCreationInstant() {
+		return creationInstant;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Creation date'.
-	 * @param creationDate java.time.ZonedDateTime <b>Obligatoire</b>
+	 * @param creationInstant java.time.Instant <b>Obligatoire</b>
 	 */
-	public void setCreationDate(final java.time.ZonedDateTime creationDate) {
-		this.creationDate = creationDate;
+	public void setCreationInstant(final java.time.Instant creationInstant) {
+		this.creationInstant = creationInstant;
 	}
 	
 	/**

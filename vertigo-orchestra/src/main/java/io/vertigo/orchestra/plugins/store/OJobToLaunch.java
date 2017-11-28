@@ -1,6 +1,6 @@
 package io.vertigo.orchestra.plugins.store;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.domain.schedule.OJobCron;
@@ -10,15 +10,15 @@ final class OJobToLaunch {
 
 	private final OJobCron jobCron;
 	private final OJobSchedule jobSchedule;
-	private final ZonedDateTime scheduledDate;
+	private final Instant scheduledInstant;
 
-	OJobToLaunch(final OJobCron jobCron, final ZonedDateTime scheduledDate) {
+	OJobToLaunch(final OJobCron jobCron, final Instant scheduledInstant) {
 		Assertion.checkNotNull(jobCron);
-		Assertion.checkNotNull(scheduledDate);
+		Assertion.checkNotNull(scheduledInstant);
 		//---
 		this.jobCron = jobCron;
 		this.jobSchedule = null;
-		this.scheduledDate = scheduledDate;
+		this.scheduledInstant = scheduledInstant;
 	}
 
 	OJobToLaunch(final OJobSchedule jobSchedule) {
@@ -26,15 +26,15 @@ final class OJobToLaunch {
 		//---
 		this.jobCron = null;
 		this.jobSchedule = jobSchedule;
-		this.scheduledDate = jobSchedule.getScheduleDate();
+		this.scheduledInstant = jobSchedule.getScheduleInstant();
 	}
 
 	boolean isCron() {
 		return jobCron != null;
 	}
 
-	ZonedDateTime getScheduledDate() {
-		return scheduledDate;
+	Instant getScheduledInstant() {
+		return scheduledInstant;
 	}
 
 	long getJmoId() {

@@ -17,7 +17,7 @@ public final class OJobSchedule implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long jscId;
-	private java.time.ZonedDateTime scheduleDate;
+	private java.time.Instant scheduleInstant;
 	private String params;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
@@ -63,20 +63,20 @@ public final class OJobSchedule implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'schedule date'.
-	 * @return java.time.ZonedDateTime scheduleDate <b>Obligatoire</b>
+	 * @return java.time.Instant scheduleInstant <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "schedule date")
-	public java.time.ZonedDateTime getScheduleDate() {
-		return scheduleDate;
+	public java.time.Instant getScheduleInstant() {
+		return scheduleInstant;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'schedule date'.
-	 * @param scheduleDate java.time.ZonedDateTime <b>Obligatoire</b>
+	 * @param scheduleInstant java.time.Instant <b>Obligatoire</b>
 	 */
-	public void setScheduleDate(final java.time.ZonedDateTime scheduleDate) {
-		this.scheduleDate = scheduleDate;
+	public void setScheduleInstant(final java.time.Instant scheduleInstant) {
+		this.scheduleInstant = scheduleInstant;
 	}
 	
 	/**

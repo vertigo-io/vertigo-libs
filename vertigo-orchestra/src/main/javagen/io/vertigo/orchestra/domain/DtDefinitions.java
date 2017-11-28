@@ -74,10 +74,10 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		STATUS,
 		/** Propriété 'Code d'erreur fonctionel de l'execution'. */
 		REASON,
-		/** Propriété 'Date de début d'execution'. */
-		START_DATE,
-		/** Propriété 'Date de fin d'execution'. */
-		END_DATE,
+		/** Propriété 'Début d'execution'. */
+		START_INSTANT,
+		/** Propriété 'Fin d'execution'. */
+		END_INSTANT,
 		/** Propriété 'Implémentation effective de l'execution'. */
 		CLASS_ENGINE,
 		/** Propriété 'Workspace d'entrée de l'execution'. */
@@ -93,10 +93,10 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	public enum OJobExecFields implements DtFieldName<io.vertigo.orchestra.domain.run.OJobExec> {
 		/** Propriété 'Id'. */
 		JEX_ID,
-		/** Propriété 'Start exec date'. */
-		START_EXEC_DATE,
-		/** Propriété 'Max date Max execution (start + timeout)'. */
-		MAX_EXEC_DATE,
+		/** Propriété 'Start exec'. */
+		START_EXEC_INSTANT,
+		/** Propriété 'Max execution (start + timeout)'. */
+		MAX_EXEC_INSTANT,
 		/** Propriété 'JobRun'. */
 		JOB_ID,
 		/** Propriété 'JobModel'. */
@@ -109,7 +109,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Id d'une trace d'execution d'un job'. */
 		JLO_ID,
 		/** Propriété 'Date de la trace'. */
-		DATE_TRACE,
+		TIMESTAMP,
 		/** Propriété 'Niveau de la trace'. */
 		LEVEL,
 		/** Propriété 'Type de trace'. */
@@ -142,7 +142,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Timeout in seconds of a single execution'. */
 		EXEC_TIMEOUT,
 		/** Propriété 'Creation date'. */
-		CREATION_DATE,
+		CREATION_INSTANT,
 		/** Propriété 'Active/Inactive'. */
 		ACTIVE	}
 
@@ -161,9 +161,9 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Current try'. */
 		CURRENT_TRY,
 		/** Propriété 'Start date of the run'. */
-		START_DATE,
+		START_INSTANT,
 		/** Propriété 'Max date of the run'. */
-		MAX_DATE,
+		MAX_INSTANT,
 		/** Propriété 'Max retry'. */
 		MAX_RETRY,
 		/** Propriété 'JobModel'. */
@@ -176,7 +176,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'id'. */
 		JSC_ID,
 		/** Propriété 'schedule date'. */
-		SCHEDULE_DATE,
+		SCHEDULE_INSTANT,
 		/** Propriété 'init params as JSON'. */
 		PARAMS,
 		/** Propriété 'JobModel'. */

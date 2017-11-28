@@ -17,7 +17,7 @@ public final class OJobLog implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long jloId;
-	private java.time.ZonedDateTime dateTrace;
+	private java.time.Instant timestamp;
 	private String level;
 	private String typeExecCd;
 	private String message;
@@ -67,20 +67,20 @@ public final class OJobLog implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de la trace'.
-	 * @return java.time.ZonedDateTime dateTrace <b>Obligatoire</b>
+	 * @return java.time.Instant timestamp <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Date de la trace")
-	public java.time.ZonedDateTime getDateTrace() {
-		return dateTrace;
+	public java.time.Instant getTimestamp() {
+		return timestamp;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de la trace'.
-	 * @param dateTrace java.time.ZonedDateTime <b>Obligatoire</b>
+	 * @param timestamp java.time.Instant <b>Obligatoire</b>
 	 */
-	public void setDateTrace(final java.time.ZonedDateTime dateTrace) {
-		this.dateTrace = dateTrace;
+	public void setTimestamp(final java.time.Instant timestamp) {
+		this.timestamp = timestamp;
 	}
 	
 	/**

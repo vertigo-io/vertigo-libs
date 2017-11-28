@@ -21,8 +21,8 @@ public final class OJobRun implements Entity {
 	private Boolean alive;
 	private String status;
 	private Integer currentTry;
-	private java.time.ZonedDateTime startDate;
-	private java.time.ZonedDateTime maxDate;
+	private java.time.Instant startInstant;
+	private java.time.Instant maxInstant;
 	private Integer maxRetry;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
@@ -144,39 +144,39 @@ public final class OJobRun implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Start date of the run'.
-	 * @return java.time.ZonedDateTime startDate <b>Obligatoire</b>
+	 * @return java.time.Instant startInstant <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Start date of the run")
-	public java.time.ZonedDateTime getStartDate() {
-		return startDate;
+	public java.time.Instant getStartInstant() {
+		return startInstant;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Start date of the run'.
-	 * @param startDate java.time.ZonedDateTime <b>Obligatoire</b>
+	 * @param startInstant java.time.Instant <b>Obligatoire</b>
 	 */
-	public void setStartDate(final java.time.ZonedDateTime startDate) {
-		this.startDate = startDate;
+	public void setStartInstant(final java.time.Instant startInstant) {
+		this.startInstant = startInstant;
 	}
 	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Max date of the run'.
-	 * @return java.time.ZonedDateTime maxDate <b>Obligatoire</b>
+	 * @return java.time.Instant maxInstant <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Max date of the run")
-	public java.time.ZonedDateTime getMaxDate() {
-		return maxDate;
+	public java.time.Instant getMaxInstant() {
+		return maxInstant;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Max date of the run'.
-	 * @param maxDate java.time.ZonedDateTime <b>Obligatoire</b>
+	 * @param maxInstant java.time.Instant <b>Obligatoire</b>
 	 */
-	public void setMaxDate(final java.time.ZonedDateTime maxDate) {
-		this.maxDate = maxDate;
+	public void setMaxInstant(final java.time.Instant maxInstant) {
+		this.maxInstant = maxInstant;
 	}
 	
 	/**

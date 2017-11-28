@@ -19,8 +19,8 @@ public final class OJobEvent implements Entity {
 	private String jobName;
 	private String status;
 	private String reason;
-	private java.time.ZonedDateTime startDate;
-	private java.time.ZonedDateTime endDate;
+	private java.time.Instant startInstant;
+	private java.time.Instant endInstant;
 	private String classEngine;
 	private String workspaceIn;
 	private String workspaceOut;
@@ -110,40 +110,40 @@ public final class OJobEvent implements Entity {
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Date de début d'execution'.
-	 * @return java.time.ZonedDateTime startDate <b>Obligatoire</b>
+	 * Récupère la valeur de la propriété 'Début d'execution'.
+	 * @return java.time.Instant startInstant <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Date de début d'execution")
-	public java.time.ZonedDateTime getStartDate() {
-		return startDate;
+	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Début d'execution")
+	public java.time.Instant getStartInstant() {
+		return startInstant;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Date de début d'execution'.
-	 * @param startDate java.time.ZonedDateTime <b>Obligatoire</b>
+	 * Définit la valeur de la propriété 'Début d'execution'.
+	 * @param startInstant java.time.Instant <b>Obligatoire</b>
 	 */
-	public void setStartDate(final java.time.ZonedDateTime startDate) {
-		this.startDate = startDate;
+	public void setStartInstant(final java.time.Instant startInstant) {
+		this.startInstant = startInstant;
 	}
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Date de fin d'execution'.
-	 * @return java.time.ZonedDateTime endDate
+	 * Récupère la valeur de la propriété 'Fin d'execution'.
+	 * @return java.time.Instant endInstant
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Date de fin d'execution")
-	public java.time.ZonedDateTime getEndDate() {
-		return endDate;
+	@Field(domain = "DO_O_TIMESTAMP", label = "Fin d'execution")
+	public java.time.Instant getEndInstant() {
+		return endInstant;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Date de fin d'execution'.
-	 * @param endDate java.time.ZonedDateTime
+	 * Définit la valeur de la propriété 'Fin d'execution'.
+	 * @param endInstant java.time.Instant
 	 */
-	public void setEndDate(final java.time.ZonedDateTime endDate) {
-		this.endDate = endDate;
+	public void setEndInstant(final java.time.Instant endInstant) {
+		this.endInstant = endInstant;
 	}
 	
 	/**

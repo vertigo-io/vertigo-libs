@@ -38,11 +38,11 @@ module.exports = {
             domain: "DO_O_CODE_IDENTIFIANT",
             required: false
         },
-        startDate: {
+        startInstant: {
             domain: "DO_O_TIMESTAMP",
             required: true
         },
-        endDate: {
+        endInstant: {
             domain: "DO_O_TIMESTAMP",
             required: false
         },
@@ -68,11 +68,11 @@ module.exports = {
             domain: "DO_O_UUID",
             required: true
         },
-        startExecDate: {
+        startExecInstant: {
             domain: "DO_O_TIMESTAMP",
             required: true
         },
-        maxExecDate: {
+        maxExecInstant: {
             domain: "DO_O_TIMESTAMP",
             required: true
         },
@@ -90,7 +90,7 @@ module.exports = {
             domain: "DO_O_IDENTIFIANT",
             required: true
         },
-        dateTrace: {
+        timestamp: {
             domain: "DO_O_TIMESTAMP",
             required: true
         },
@@ -148,7 +148,7 @@ module.exports = {
             domain: "DO_O_INTEGER",
             required: true
         },
-        creationDate: {
+        creationInstant: {
             domain: "DO_O_TIMESTAMP",
             required: true
         },
@@ -178,11 +178,11 @@ module.exports = {
             domain: "DO_O_INTEGER",
             required: true
         },
-        startDate: {
+        startInstant: {
             domain: "DO_O_TIMESTAMP",
             required: true
         },
-        maxDate: {
+        maxInstant: {
             domain: "DO_O_TIMESTAMP",
             required: true
         },
@@ -200,7 +200,7 @@ module.exports = {
             domain: "DO_O_IDENTIFIANT",
             required: true
         },
-        scheduleDate: {
+        scheduleInstant: {
             domain: "DO_O_TIMESTAMP",
             required: true
         },

@@ -1,6 +1,6 @@
 package io.vertigo.orchestra.plugins.store;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 import io.vertigo.core.component.Component;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -78,10 +78,10 @@ public interface OrchestraStore extends Component {
 	 *
 	 * @param jmoId the job-model Id
 	 * @param params the init params
-	 * @param scheduleDate the scheduled date
+	 * @param scheduledInstant the scheduled date
 	 * @return the job-schedule
 	 */
-	OJobSchedule scheduleAt(long jmoId, OParams params, ZonedDateTime scheduleDate);
+	OJobSchedule scheduleAt(long jmoId, OParams params, Instant scheduledInstant);
 
 	/**
 	 * Creates a cron from a job-model.

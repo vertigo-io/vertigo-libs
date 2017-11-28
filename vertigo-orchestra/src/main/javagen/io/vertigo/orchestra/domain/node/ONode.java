@@ -18,7 +18,7 @@ public final class ONode implements Entity {
 	private String nodId;
 	private Integer capacity;
 	private Integer used;
-	private java.time.ZonedDateTime lastHeartbeat;
+	private java.time.Instant lastHeartbeat;
 
 	/** {@inheritDoc} */
 	@Override
@@ -86,19 +86,19 @@ public final class ONode implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Last activity'.
-	 * @return java.time.ZonedDateTime lastHeartbeat <b>Obligatoire</b>
+	 * @return java.time.Instant lastHeartbeat <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Last activity")
-	public java.time.ZonedDateTime getLastHeartbeat() {
+	public java.time.Instant getLastHeartbeat() {
 		return lastHeartbeat;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Last activity'.
-	 * @param lastHeartbeat java.time.ZonedDateTime <b>Obligatoire</b>
+	 * @param lastHeartbeat java.time.Instant <b>Obligatoire</b>
 	 */
-	public void setLastHeartbeat(final java.time.ZonedDateTime lastHeartbeat) {
+	public void setLastHeartbeat(final java.time.Instant lastHeartbeat) {
 		this.lastHeartbeat = lastHeartbeat;
 	}
 	
