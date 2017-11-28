@@ -44,6 +44,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
+import io.vertigo.commons.analytics.health.HealthChecked;
+import io.vertigo.commons.analytics.health.HealthMeasure;
 import io.vertigo.core.locale.MessageKey;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
@@ -61,6 +63,9 @@ import io.vertigo.util.StringUtil;
  * @author npiedeloup
  */
 public final class JavaxSendMailPlugin implements SendMailPlugin {
+
+	/** Nom du composant. */
+	public static final String HEALTH_COMPONENT_NAME = "Mailer";
 
 	private static final String CHARSET_USED = "ISO-8859-1";
 	private final FileManager fileManager;
@@ -291,5 +296,27 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 		final VUserException mailException = new VUserException(messageKey, params);
 		mailException.initCause(messagingException);
 		return mailException;
+	}
+
+	/**
+	 * Test de la connexion SMTP.
+	 *
+	 * @return HealthMeasure
+	 */
+	@HealthChecked(feature = HEALTH_COMPONENT_NAME, name = "connection")
+	public HealthMeasure checkConnexion() {
+		// -----
+		try {
+			final Session session = createSession();
+			try (final Transport transport = session.getTransport(mailStoreProtocol)) {
+				// On tente la connexion
+				transport.connect();
+				transport.close();
+			} // La connexion s'est passée correctement. On peut la fermer
+				// si on est ici, c'est que tout va bien
+			return HealthMeasure.builder().withGreenStatus("Connection OK to Mail Server " + mailHost + " with " + mailStoreProtocol).build();
+		} catch (final Exception e) {
+			return HealthMeasure.builder().withRedStatus("Can't connect Mail Server " + mailHost + " with " + mailStoreProtocol, e).build();
+		}
 	}
 }
