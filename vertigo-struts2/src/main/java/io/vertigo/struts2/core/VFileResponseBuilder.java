@@ -81,7 +81,7 @@ public final class VFileResponseBuilder {
 				"Le fichier est trop gros pour être envoyé. Il fait " + length.longValue() / 1024 + " Ko, mais le maximum acceptable est de " + (Integer.MAX_VALUE / 1024) + " Ko.");
 		httpResponse.setContentLength(length.intValue());
 		httpResponse.addHeader("Content-Disposition", encodeFileNameToContentDisposition(vFile.getFileName(), attachment));
-		httpResponse.setDateHeader("Last-Modified", vFile.getLastModified().getTime());
+		httpResponse.setDateHeader("Last-Modified", vFile.getLastModified().toEpochMilli());
 		httpResponse.setContentType(vFile.getMimeType());
 
 		try (final InputStream input = vFile.createInputStream()) {
