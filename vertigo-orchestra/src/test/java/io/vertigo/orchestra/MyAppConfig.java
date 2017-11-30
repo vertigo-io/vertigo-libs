@@ -20,6 +20,7 @@ package io.vertigo.orchestra;
 
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
@@ -33,6 +34,14 @@ import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.orchestra.boot.DataBaseInitializer;
+import io.vertigo.orchestra.services.execution.LocalExecutionProcessInitializer;
+import io.vertigo.orchestra.util.monitoring.MonitoringServices;
+import io.vertigo.orchestra.util.monitoring.MonitoringServicesImpl;
+import io.vertigo.orchestra.webservices.WsDefinition;
+import io.vertigo.orchestra.webservices.WsExecution;
+import io.vertigo.orchestra.webservices.WsExecutionControl;
+import io.vertigo.orchestra.webservices.data.user.TestUserSession;
+import io.vertigo.orchestra.webservices.data.user.WsTestLogin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.vega.VegaFeatures;
 
@@ -40,8 +49,7 @@ public final class MyAppConfig {
 	public static final int WS_PORT = 8088;
 
 	public static AppConfigBuilder createAppConfigBuilder() {
-		return AppConfig.builder()
-				.beginBoot()
+		return AppConfig.builder().beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin(URLResourceResolverPlugin.class)
@@ -59,7 +67,7 @@ public final class MyAppConfig {
 								Param.of("name", "orchestra"),
 								Param.of("dataBaseClass", H2DataBase.class.getName()),
 								Param.of("jdbcDriver", org.h2.Driver.class.getName()),
-								Param.of("jdbcUrl", "jdbc:h2:~/vertigo/orchestra;MVCC=FALSE;AUTO_SERVER=TRUE;MODE=PostgreSQL"))
+								Param.of("jdbcUrl", "jdbc:h2:~/vertigo/orchestra;MVCC=FALSE;AUTO_SERVER=TRUE"))
 						//Param.of("jdbcUrl", "jdbc:h2:mem:orchestra;MVCC=FALSE"))
 						.build())
 				.addModule(new DynamoFeatures()
@@ -74,23 +82,39 @@ public final class MyAppConfig {
 								Param.of("sequencePrefix", "SEQ_"))
 						.build())
 				// we build h2 mem
-				.addInitializer(DataBaseInitializer.class)
+				.addModule(ModuleConfig.builder("databaseInitializer").addComponent(DataBaseInitializer.class).build())
 				//
 				.addModule(new OrchestraFeatures()
-						.withDataBase("NODE_TEST_1", 2, 3, 60)
-						//.withMemory(1)
-						.build());
+						.withDataBase("NODE_TEST_1", 1, 3, 60)
+						.withMemory(1)
+						.build())
+				.addModule(ModuleConfig.builder("orchestra-test")
+						//---Services
+						.addComponent(MonitoringServices.class, MonitoringServicesImpl.class)
+						.build())
+				.addInitializer(LocalExecutionProcessInitializer.class);
 	}
 
 	public static void addVegaEmbeded(final AppConfigBuilder appConfigBuilder) {
 		appConfigBuilder
 				.addModule(new PersonaFeatures()
+						.withUserSession(TestUserSession.class)
 						.build())
 				.addModule(new VegaFeatures()
 						.withTokens("tokens")
 						.withSecurity()
 						.withMisc()
 						.withEmbeddedServer(WS_PORT)
+						.build());
+	}
+
+	public static void addWebServices(final AppConfigBuilder appConfigBuilder) {
+		appConfigBuilder
+				.addModule(ModuleConfig.builder("orchestra-ws")
+						.addComponent(WsDefinition.class)
+						.addComponent(WsExecution.class)
+						.addComponent(WsExecutionControl.class)
+						.addComponent(WsTestLogin.class)
 						.build());
 	}
 
@@ -103,6 +127,7 @@ public final class MyAppConfig {
 		// @formatter:off
 		final AppConfigBuilder builder = createAppConfigBuilder();
 		addVegaEmbeded(builder);
+		addWebServices(builder);
 		return builder.build();
 	}
 

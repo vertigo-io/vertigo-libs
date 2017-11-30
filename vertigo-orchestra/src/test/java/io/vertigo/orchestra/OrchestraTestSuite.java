@@ -22,8 +22,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import io.vertigo.orchestra.services.OrchestraTest;
-import io.vertigo.orchestra.services.schedule.CronExpressionTest;
+import io.vertigo.orchestra.definitions.AllTestDefinition;
+import io.vertigo.orchestra.services.execution.AllTestExecution;
+import io.vertigo.orchestra.services.schedule.AllTestPlanification;
+import io.vertigo.orchestra.webservices.OrchestraWsTest;
 
 /**
  * TODO : Description de la classe.
@@ -33,8 +35,10 @@ import io.vertigo.orchestra.services.schedule.CronExpressionTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses(value = {
-		OrchestraTest.class,
-		CronExpressionTest.class
+		AllTestDefinition.class,
+		AllTestPlanification.class,
+		AllTestExecution.class,
+		OrchestraWsTest.class
 })
 public class OrchestraTestSuite {
 	// Les annotations sont suffisantes.

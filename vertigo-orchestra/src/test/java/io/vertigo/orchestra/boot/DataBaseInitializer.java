@@ -28,7 +28,8 @@ import java.sql.SQLException;
 
 import javax.inject.Inject;
 
-import io.vertigo.core.component.ComponentInitializer;
+import io.vertigo.core.component.Activeable;
+import io.vertigo.core.component.Component;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
@@ -39,9 +40,9 @@ import io.vertigo.lang.WrappedException;
  * Init masterdata list.
  * @author jmforhan
  */
-public class DataBaseInitializer implements ComponentInitializer {
+public class DataBaseInitializer implements Component, Activeable {
 
-	private final static String ORCHESTRA_CONNECTION_NAME = "orchestra";
+	private static String ORCHESTRA_CONNECTION_NAME = "orchestra";
 
 	@Inject
 	private ResourceManager resourceManager;
@@ -50,15 +51,20 @@ public class DataBaseInitializer implements ComponentInitializer {
 
 	/** {@inheritDoc} */
 	@Override
-	public void init() {
+	public void start() {
 		createDataBase();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void stop() {
+		//
 	}
 
 	private void createDataBase() {
 		final SqlConnection connection = sqlDataBaseManager.getConnectionProvider(ORCHESTRA_CONNECTION_NAME).obtainConnection();
 		execCallableStatement(connection, sqlDataBaseManager, "DROP ALL OBJECTS; ");
-		execSqlScript(connection, "file:./src/main/javagen/sqlgen/crebas_orchestra.sql");
-		execSqlScript(connection, "file:./src/main/resources/sql/alter_orchestra.sql");
+		execSqlScript(connection, "file:./src/main/database/scripts/install/orchestra_create_init_v1.0.0.sql");
 		try {
 			connection.commit();
 			connection.release();
@@ -93,4 +99,5 @@ public class DataBaseInitializer implements ComponentInitializer {
 			throw WrappedException.wrap(e, "Can't exec command {0}", sql);
 		}
 	}
+
 }

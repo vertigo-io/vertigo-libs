@@ -1,9 +1,17 @@
 services/domain.ksp
-services/domain2.ksp
+services/definition/processDAO.ksp
+services/definition/activityDAO.ksp
 
-services/run/jobRunDAO.ksp
-services/run/jobExecDAO.ksp
+services/execution/activityExecutionDAO.ksp
+services/execution/processExecutionDAO.ksp
+services/execution/coreDAO.ksp
 
-services/schedule/schedulingDAO.ksp
+services/planification/processPlanificationDAO.ksp
 
-services/node/nodeDAO.ksp
+
+services/monitoring/monitoringDAO.ksp
+
+
+monitoring/services/summary/executionSummaryDAO.ksp
+monitoring/services/executions/uiExecutionsDAO.ksp
+monitoring/services/definitions/uiDefinitionsDAO.ksp
