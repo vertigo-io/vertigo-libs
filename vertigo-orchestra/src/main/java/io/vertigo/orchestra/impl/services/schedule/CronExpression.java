@@ -345,7 +345,7 @@ public final class CronExpression {
 	 *         if the string expression cannot be parsed into a valid
 	 *         <CODE>CronExpression</CODE>
 	 */
-	public CronExpression(final String cronExpression) throws ParseException {
+	private CronExpression(final String cronExpression) throws ParseException {
 		Assertion.checkNotNull(cronExpression, "cronExpression cannot be null");
 		//--
 
@@ -353,25 +353,29 @@ public final class CronExpression {
 		buildExpression(this.cronExpression);
 	}
 
+	public static CronExpression of(final String cronExpression) throws ParseException {
+		return new CronExpression(cronExpression);
+	}
+
 	/**
 	 * Returns the time zone for which this <code>CronExpression</code>
 	 * will be resolved.
 	 */
-	public TimeZone getTimeZone() {
+	private TimeZone getTimeZone() {
 		if (timeZone == null) {
 			timeZone = TimeZone.getDefault();
 		}
 
 		return timeZone;
 	}
-
-	/**
-	 * Sets the time zone for which  this <code>CronExpression</code>
-	 * will be resolved.
-	 */
-	public void setTimeZone(final TimeZone timeZone) {
-		this.timeZone = timeZone;
-	}
+	//
+	//	/**
+	//	 * Sets the time zone for which  this <code>CronExpression</code>
+	//	 * will be resolved.
+	//	 */
+	//	public void setTimeZone(final TimeZone timeZone) {
+	//		this.timeZone = timeZone;
+	//	}
 
 	/**
 	 * Returns the string representation of the <CODE>CronExpression</CODE>
@@ -1057,7 +1061,6 @@ public final class CronExpression {
 	////////////////////////////////////////////////////////////////////////////
 
 	public Date getNextValidTimeAfter(final Date afterTime) {
-
 		// Computation is based on Gregorian year only.
 		final Calendar cl = new java.util.GregorianCalendar(getTimeZone());
 
