@@ -98,6 +98,11 @@ public class AccueilAction extends AbstractTestActionSupport {
 		return NONE;
 	}
 
+	public String saveInstant() {
+		currentDate.set(movie.readDto().getLastModified().toString());
+		return NONE;
+	}
+
 	public String addMovieList() {
 		movieListModifiables.getUiListModifiable().add(new Movie());
 		return NONE;

@@ -37,6 +37,12 @@ create Domain DO_DATE {
 	storeType : "DATE"
 }
 
+create Domain DO_LAST_MODIFIED {
+	dataType : Instant
+	formatter : FMT_DATE_TIME
+	storeType : "DATE"
+}
+
 create Domain DO_YEAR {
 	dataType : Integer
 	formatter : FMT_DEFAULT
@@ -180,6 +186,11 @@ create Formatter FMT_DATE {
      args : "dd/MM/yyyy"
 }
 
+create Formatter FMT_DATE_TIME {
+     className :"io.vertigo.dynamox.domain.formatter.FormatterDate"
+     args : "dd/MM/yyyy HH:mm;dd/MM/yy HH:mm"
+}
+
 create Formatter FMT_OUI_NON {
       className :"io.vertigo.dynamox.domain.formatter.FormatterBoolean"
       /*args : "<img src:'../static/images/icon/select_on.gif' alt:'oui'/>;<img src:'../static/images/icon/select_off.gif' alt:'non'/>"*/
@@ -194,8 +205,8 @@ create Formatter FMT_ACTIF_INACTIF {
 
 
 /*
-Formatage avec deux chiffres maximum apr�s la virgule.
-Pas d'affichage de 0 apr�s virgule si pas n�cessaire {ex: 100 sera affich� sous la forme 100 et 100.00}
+Formatage avec deux chiffres maximum après la virgule.
+Pas d'affichage de 0 après virgule si pas nécessaire {ex: 100 sera affiché sous la forme 100 et 100.00}
 */
 create Formatter FMT_TAUX {
 	 className :"io.vertigo.dynamox.domain.formatter.FormatterNumber"

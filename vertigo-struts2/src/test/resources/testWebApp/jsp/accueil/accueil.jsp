@@ -125,9 +125,17 @@ Change mode :
 		</v:div>
 	</s:form>
 	
+	<s:form id="saveInstant">
+		<h1>Test Instant</h1>	
+		<span>lastModified ${currentDate}</span>	
+		<v:div layout="table">
+			<s:textfield name="movie.lastModified" label="default" />
+			<s:submit action="saveInstantAccueil" />
+		</v:div>
+	</s:form>
 	
 <s:form id="labelTable">
-<h1>Test manual label field</h1>
+<h1>Test manual placement label field</h1>
 	| <s:label name="movie.movId" label="default"/> | <s:textfield name="movie.movId" /> |
 	<s:submit action="saveAccueil" />
 </s:form>
