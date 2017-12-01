@@ -394,7 +394,7 @@ public class TestUi {
 		assertEquals("12/10/2009 15:03", findElement(By.id("saveInstant_movie_lastModified")).getAttribute("value"));
 		final String newDate = waitElement(By.cssSelector("#saveInstant > span")).getText();
 
-		Assert.assertEquals("lastModified 2009-10-12T13:03:00Z", newDate);
+		Assert.assertEquals("currentZoneId Europe/Paris\nlastModified 2009-10-12T13:03:00Z", newDate);
 	}
 
 	private String getWebElementsAsString(final List<WebElement> webElements) {

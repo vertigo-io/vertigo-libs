@@ -18,6 +18,7 @@
  */
 package io.vertigo.struts2.ui;
 
+import java.time.ZoneId;
 import java.util.Locale;
 
 import io.vertigo.persona.security.UserSession;
@@ -38,6 +39,7 @@ public final class TestUserSession extends UserSession {
 	private static final long serialVersionUID = 2497388902473962429L;
 
 	private ApplicationUser applicationUser;
+	private ZoneId zoneId;
 
 	/**
 	 * @return Default Locale.
@@ -45,6 +47,21 @@ public final class TestUserSession extends UserSession {
 	@Override
 	public Locale getLocale() {
 		return Locale.FRANCE;
+	}
+
+	/**
+	 * @return Current ZoneId.
+	 */
+	@Override
+	public ZoneId getZoneId() {
+		return zoneId;
+	}
+
+	/**
+	 * @param zoneId New ZoneId.
+	 */
+	public void setZoneId(final ZoneId zoneId) {
+		this.zoneId = zoneId;
 	}
 
 	public void setApplicationUser(final ApplicationUser applicationUser) {

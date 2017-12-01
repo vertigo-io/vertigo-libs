@@ -127,8 +127,9 @@ Change mode :
 	
 	<s:form id="saveInstant">
 		<h1>Test Instant</h1>	
-		<span>lastModified ${currentDate}</span>	
+		<span>currentZoneId ${currentZoneId}<br/>lastModified ${currentDate}</span>	
 		<v:div layout="table">
+			<s:select name="zoneId" label="TimeZone" list="timeZoneList" listKey="top" listValue="top"  />
 			<s:textfield name="movie.lastModified" label="default" />
 			<s:submit action="saveInstantAccueil" />
 		</v:div>
