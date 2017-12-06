@@ -19,14 +19,17 @@
 package io.vertigo.struts2.ui.controller.accueil;
 
 import java.io.File;
+import java.time.ZoneId;
 import java.util.Date;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.lang.VUserException;
+import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.struts2.core.AbstractActionSupport.AcceptCtxQueryParam;
 import io.vertigo.struts2.core.ContextForm;
 import io.vertigo.struts2.core.ContextList;
@@ -42,6 +45,7 @@ import io.vertigo.struts2.domain.movies.MovieDisplay;
 import io.vertigo.struts2.domain.people.Casting;
 import io.vertigo.struts2.domain.reference.Commune;
 import io.vertigo.struts2.services.movies.MovieServices;
+import io.vertigo.struts2.ui.TestUserSession;
 import io.vertigo.struts2.ui.controller.AbstractTestActionSupport;
 import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
 
@@ -65,8 +69,19 @@ public class AccueilAction extends AbstractTestActionSupport {
 	private final ContextVFile fileTestFileRef = new ContextVFile("fileTest", this);
 	private final ContextVFiles filesTestFileRef = new ContextVFiles("filesTest", this);
 
+	private final ContextRef<String> currentZoneId = new ContextRef<>("currentZoneId", String.class, this);
+	private static final String[] timeZoneListStatic = { "Europe/Paris", "America/Cayenne", "Indian/Reunion" };
+	private final ContextRef<String[]> timeZoneList = new ContextRef<>("timeZoneList", String[].class, this);
+	private final ContextRef<String> zoneId = new ContextRef<>("zoneId", String.class, this);
+
 	@Inject
 	private MovieServices movieServices;
+
+	@Inject
+	private VSecurityManager securityManager;
+
+	@Inject
+	private LocaleManager localeManager;
 
 	@Override
 	protected void initContext() {
@@ -80,6 +95,10 @@ public class AccueilAction extends AbstractTestActionSupport {
 
 		toModeCreate();
 		currentDate.set(new Date().toString());
+
+		currentZoneId.set(localeManager.getCurrentZoneId().getId());
+		zoneId.set(timeZoneListStatic[0]);
+		timeZoneList.set(timeZoneListStatic);
 	}
 
 	public String save() {
@@ -95,6 +114,15 @@ public class AccueilAction extends AbstractTestActionSupport {
 
 	public String saveCommune() {
 		communeId.set(communeId.get());
+		return NONE;
+	}
+
+	public String saveInstant() {
+		currentDate.set(movie.readDto().getLastModified().toString());
+
+		final TestUserSession userSession = securityManager.<TestUserSession> getCurrentUserSession().get();
+		userSession.setZoneId(ZoneId.of(zoneId.get()));
+		currentZoneId.set(localeManager.getCurrentZoneId().getId());
 		return NONE;
 	}
 

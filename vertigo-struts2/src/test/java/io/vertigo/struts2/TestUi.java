@@ -382,6 +382,21 @@ public class TestUi {
 		Assert.assertNotEquals(oldDate, newDate);
 	}
 
+	@Test
+	public void testInstantForm() throws InterruptedException {
+		testLogin();
+
+		assertEquals("Test Instant", waitElement(By.cssSelector("#saveInstant > h1")).getText());
+		findElement(By.id("saveInstant_movie_lastModified")).clear();
+		findElement(By.id("saveInstant_movie_lastModified")).sendKeys("12/10/09 15:03");
+		findElement(By.id("saveInstant_saveInstantAccueil")).click();
+
+		assertEquals("12/10/2009 15:03", findElement(By.id("saveInstant_movie_lastModified")).getAttribute("value"));
+		final String newDate = waitElement(By.cssSelector("#saveInstant > span")).getText();
+
+		Assert.assertEquals("currentZoneId Europe/Paris\nlastModified 2009-10-12T13:03:00Z", newDate);
+	}
+
 	private String getWebElementsAsString(final List<WebElement> webElements) {
 		return webElements.stream()
 				.map(WebElement::getText)
