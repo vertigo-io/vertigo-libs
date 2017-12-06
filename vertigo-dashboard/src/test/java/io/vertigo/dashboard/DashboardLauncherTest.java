@@ -8,7 +8,6 @@ import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
 import io.vertigo.AbstractTestCaseJU4;
-import io.vertigo.app.App;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
@@ -76,8 +75,8 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 
 	@Test
 	public void server() {
-		final App app = getApp();
-		Dashboard.start(app);
+		//		final App app = getApp();
+		//		Dashboard.start(app);
 		//		while (!Thread.interrupted()) {
 		//			try {
 		//				Thread.sleep(10 * 1000);
