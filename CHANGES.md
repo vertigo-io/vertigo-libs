@@ -1,10 +1,19 @@
 Version history
 ===============
 
-Running 1.1.0-SNAPSHOT
+Running 2.0.0-SNAPSHOT
 ----------------------
 
 more to come :)
+
+Release 1.1.0 - 2017/12/07
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-100-to-110)
+
+* [dashboard] added module dashboard (bêta)
+* [struts2] Added multiple file upload support 
+* [quarto] Fixed #12 (LocalDate and DateTime) 
+* [all] Updated versions (javax.mail, lucene, selenium) : javaxmail 15.6 to 1.6.0, lucene 5.5.4 to 6.6.1
 
 Release 1.0.0 - 2017/07/07
 ----------------------
