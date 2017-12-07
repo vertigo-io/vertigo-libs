@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -91,7 +91,7 @@ public final class ExportHelper {
 		} else {
 			value = exportColumn.getDtField().getDataAccessor().getValue(dto);
 			if (forceStringValue) {
-				value = exportColumn.getDtField().getDomain().getFormatter().valueToString(value, exportColumn.getDtField().getDomain().getDataType());
+				value = exportColumn.getDtField().getDomain().valueToString(value);
 			}
 		}
 		//Check if we should return some magic value ("??") when exception are throw here. Previous impl manage this "useless ?" case.
@@ -111,7 +111,7 @@ public final class ExportHelper {
 	private static Map<Object, String> createDenormIndex(final DtList<?> valueList, final DtField keyField, final DtField displayField) {
 		final Map<Object, String> denormIndex = new HashMap<>(valueList.size());
 		for (final DtObject dto : valueList) {
-			final String svalue = displayField.getDomain().getFormatter().valueToString(displayField.getDataAccessor().getValue(dto), displayField.getDomain().getDataType());
+			final String svalue = displayField.getDomain().valueToString(displayField.getDataAccessor().getValue(dto));
 			denormIndex.put(keyField.getDataAccessor().getValue(dto), svalue);
 		}
 		return denormIndex;

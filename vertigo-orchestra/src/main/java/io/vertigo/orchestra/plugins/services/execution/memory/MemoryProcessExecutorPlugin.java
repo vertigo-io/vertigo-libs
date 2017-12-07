@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,7 +27,8 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
@@ -50,7 +51,7 @@ import io.vertigo.orchestra.services.execution.ExecutionState;
  */
 public class MemoryProcessExecutorPlugin implements ProcessExecutorPlugin, Activeable {
 
-	private static final Logger LOGGER = Logger.getLogger(MemoryProcessExecutorPlugin.class);
+	private static final Logger LOGGER = LogManager.getLogger(MemoryProcessExecutorPlugin.class);
 
 	private final ExecutorService localExecutor;
 	private final MapCodec mapCodec = new MapCodec();

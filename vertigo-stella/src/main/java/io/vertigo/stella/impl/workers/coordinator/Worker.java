@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,8 @@ package io.vertigo.stella.impl.workers.coordinator;
 import java.lang.reflect.Field;
 import java.util.concurrent.Callable;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.component.di.injector.DIInjector;
@@ -40,7 +41,7 @@ import io.vertigo.stella.master.WorkResultHandler;
  */
 final class Worker<R, W> implements Callable<R> {
 
-	private static final Logger LOGGER = Logger.getLogger(MasterManager.class); //même logger que le WorkListenerImpl
+	private static final Logger LOGGER = LogManager.getLogger(MasterManager.class); //même logger que le WorkListenerImpl
 
 	/**
 	 * Pour vider les threadLocal entre deux utilisations du Thread dans le pool,

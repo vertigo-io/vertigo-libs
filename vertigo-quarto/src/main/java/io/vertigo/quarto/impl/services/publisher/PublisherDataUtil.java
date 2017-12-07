@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -151,7 +151,7 @@ public final class PublisherDataUtil {
 		final String unit = dtField.getDomain().getProperties().getValue(DtProperty.UNIT);
 
 		final Object value = dtField.getDataAccessor().getValue(dto);
-		final String formattedValue = dtField.getDomain().getFormatter().valueToString(value, dtField.getDomain().getDataType());
+		final String formattedValue = dtField.getDomain().valueToString(value);
 		return formattedValue + (!StringUtil.isEmpty(unit) ? " " + unit : "");
 	}
 
@@ -187,9 +187,9 @@ public final class PublisherDataUtil {
 			final String fieldName = dtField.getName();
 			if (DataType.Boolean == dtField.getDomain().getDataType()) {
 				sb.append("\t\tbooleanField[").append(fieldName).append(")] = new DataField ();\n");
-			} else if (DataType.DtObject == dtField.getDomain().getDataType()) {
+			} else if (dtField.getDomain().getScope().isDataObject()) {
 				sb.append("\t\tdataField[").append(fieldName).append(")] = new NodeField (type = PN_").append(dtField.getDomain().getDtDefinition().getLocalName()).append(";);\n");
-			} else if (DataType.DtList == dtField.getDomain().getDataType()) {
+			} else if (dtField.getDomain().isDtList()) {
 				sb.append("\t\tlistField[").append(fieldName).append(")] = new NodeField (type = PN_").append(dtField.getDomain().getDtDefinition().getLocalName()).append(";);\n");
 			} else { //aussi si FieldType.FOREIGN_KEY == dtField.getType()
 				sb.append("\t\tstringField[").append(fieldName).append(")] = new DataField ();\n");

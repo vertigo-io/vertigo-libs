@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,7 +24,8 @@ import java.net.URI;
 import javax.inject.Inject;
 import javax.ws.rs.core.UriBuilder;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -39,7 +40,7 @@ import spark.Spark;
  * @author npiedeloup
  */
 public final class RestWorkManagerTest extends AbstractWorkManagerTest {
-	private static final Logger LOG = Logger.getLogger(RestWorkManagerTest.class);
+	private static final Logger LOG = LogManager.getLogger(RestWorkManagerTest.class);
 	@Inject
 	private MasterManager masterManager;
 	private ClientNode clientNode1;

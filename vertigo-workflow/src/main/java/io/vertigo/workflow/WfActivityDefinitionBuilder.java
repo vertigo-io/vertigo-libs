@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,6 +20,7 @@ package io.vertigo.workflow;
 
 import io.vertigo.lang.Builder;
 import io.vertigo.workflow.domain.model.WfActivityDefinition;
+import io.vertigo.workflow.domain.model.WfMultiplicityDefinitionEnum;
 
 /**
  * Builder for an activity definition
@@ -31,7 +32,7 @@ public final class WfActivityDefinitionBuilder implements Builder<WfActivityDefi
 	private final Long myWfwdId;
 	private final String myName;
 	private Integer myLevel;
-	private WfCodeMultiplicityDefinition myWfCodeMultiplicityDefinition;
+	private WfMultiplicityDefinitionEnum myWfMultiplicityDefinitionEnum;
 
 	/**
 	 * Builder for Workflow Definition
@@ -40,7 +41,7 @@ public final class WfActivityDefinitionBuilder implements Builder<WfActivityDefi
 	 */
 	public WfActivityDefinitionBuilder(final String name, final Long wfwdId) {
 		myName = name;
-		this.myWfwdId = wfwdId;
+		myWfwdId = wfwdId;
 	}
 
 	/**
@@ -55,11 +56,11 @@ public final class WfActivityDefinitionBuilder implements Builder<WfActivityDefi
 
 	/**
 	 * Optionnal multiplicity
-	 * @param wfmdCode
+	 * @param wfMultiplicityDefinition
 	 * @return the builder
 	 */
-	public WfActivityDefinitionBuilder withMultiplicity(final String wfmdCode) {
-		myWfCodeMultiplicityDefinition = WfCodeMultiplicityDefinition.valueOf(wfmdCode);
+	public WfActivityDefinitionBuilder withMultiplicity(final WfMultiplicityDefinitionEnum wfMultiplicityDefinition) {
+		myWfMultiplicityDefinitionEnum = wfMultiplicityDefinition;
 		return this;
 	}
 
@@ -72,7 +73,7 @@ public final class WfActivityDefinitionBuilder implements Builder<WfActivityDefi
 		wfActivityDefinition.setName(myName);
 		wfActivityDefinition.setLevel(myLevel);
 		// Multiplicity : Single by default
-		wfActivityDefinition.setWfmdCode(myWfCodeMultiplicityDefinition == null ? WfCodeMultiplicityDefinition.SIN.name() : myWfCodeMultiplicityDefinition.name());
+		wfActivityDefinition.wfMultiplicityDefinition().setEnumValue(myWfMultiplicityDefinitionEnum == null ? WfMultiplicityDefinitionEnum.SIN : myWfMultiplicityDefinitionEnum);
 		wfActivityDefinition.setWfwdId(myWfwdId);
 		return wfActivityDefinition;
 	}

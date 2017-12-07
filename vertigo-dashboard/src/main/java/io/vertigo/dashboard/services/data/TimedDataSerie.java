@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,20 +16,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.workflow;
+package io.vertigo.dashboard.services.data;
 
-/**
- * Enum for the workflow instance status.
- * @author xdurand
- *
+import java.util.Map;
+
+import io.vertigo.lang.Assertion;
+
+/*
+ * Couple(date, metriques)
+ * @author pchretien, npiedeloup
  */
-public enum WfCodeStatusWorkflow {
-	/** Created */
-	CRE,
-	/** Started */
-	STA,
-	/** Paused */
-	PAU,
-	/** Ended */
-	END;
+public final class TimedDataSerie {
+	private final Long time;
+	private final Map<String, Object> values;
+
+	public TimedDataSerie(final Long time, final Map<String, Object> values) {
+		Assertion.checkNotNull(values);
+		//---
+		this.time = time;
+		this.values = values;
+	}
+
+	public Long getTime() {
+		return time;
+	}
+
+	public Map<String, Object> getValues() {
+		return values;
+	}
 }

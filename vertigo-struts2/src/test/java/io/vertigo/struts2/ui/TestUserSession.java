@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,6 +18,7 @@
  */
 package io.vertigo.struts2.ui;
 
+import java.time.ZoneId;
 import java.util.Locale;
 
 import io.vertigo.persona.security.UserSession;
@@ -38,6 +39,7 @@ public final class TestUserSession extends UserSession {
 	private static final long serialVersionUID = 2497388902473962429L;
 
 	private ApplicationUser applicationUser;
+	private ZoneId zoneId;
 
 	/**
 	 * @return Default Locale.
@@ -45,6 +47,21 @@ public final class TestUserSession extends UserSession {
 	@Override
 	public Locale getLocale() {
 		return Locale.FRANCE;
+	}
+
+	/**
+	 * @return Current ZoneId.
+	 */
+	@Override
+	public ZoneId getZoneId() {
+		return zoneId;
+	}
+
+	/**
+	 * @param zoneId New ZoneId.
+	 */
+	public void setZoneId(final ZoneId zoneId) {
+		this.zoneId = zoneId;
 	}
 
 	public void setApplicationUser(final ApplicationUser applicationUser) {

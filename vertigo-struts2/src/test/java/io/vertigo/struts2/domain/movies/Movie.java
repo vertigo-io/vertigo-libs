@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 package io.vertigo.struts2.domain.movies;
+
+import java.time.Instant;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
@@ -40,6 +42,7 @@ public final class Movie implements KeyConcept {
 	private String description;
 	private String poster;
 	private String rated;
+	private Instant lastModified;
 
 	/** {@inheritDoc} */
 	@Override
@@ -197,6 +200,25 @@ public final class Movie implements KeyConcept {
 	 */
 	public void setRated(final String rated) {
 		this.rated = rated;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'lastModified'.
+	 * @return Instant lastModified
+	 */
+	@Field(domain = "DO_LAST_MODIFIED", label = "lastModified")
+	public Instant getLastModified() {
+		return lastModified;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'Released'.
+	 * @param lastModified Instant
+	 */
+	public void setLastModified(final Instant lastModified) {
+		this.lastModified = lastModified;
 	}
 
 	// Association : Casting non navigable

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,17 +19,19 @@
 package io.vertigo.rules;
 
 import io.vertigo.account.AccountFeatures;
-import io.vertigo.account.plugins.identity.memory.MemoryAccountStorePlugin;
+import io.vertigo.account.plugins.account.store.loader.LoaderAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.impl.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.persona.impl.security.PersonaFeatures;
+import io.vertigo.rules.data.MockIdentities;
 import io.vertigo.rules.data.MyDummyDtObjectProvider;
 import io.vertigo.rules.data.TestUserSession;
 import io.vertigo.rules.impl.RulesFeatures;
@@ -62,21 +64,26 @@ public class MyAppConfig {
 						.withCache(io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin.class)
 						.withScript()
 						.build())
-				.addModule(new DynamoFeatures()//
-						.withStore()//
+				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()//
-						.addDataStorePlugin(SqlDataStorePlugin.class)
 						.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
 								Param.of("dataBaseClass", PostgreSqlDataBase.class.getName()),
 								Param.of("jdbcDriver", org.postgresql.Driver.class.getName()),
 								Param.of("jdbcUrl",
 										"jdbc:postgresql://laura.dev.klee.lan.net:5432/dgac_blanche?user=blanche&password=blanche"))
 						.build())
+				.addModule(new DynamoFeatures()//
+						.withStore()//
+						.addDataStorePlugin(SqlDataStorePlugin.class)
+						.build())
 				.addModule(new AccountFeatures()
-						.withAccountStorePlugin(MemoryAccountStorePlugin.class)
+						.withAccountStorePlugin(LoaderAccountStorePlugin.class,
+								Param.of("accountLoaderName", "MockIdentities"),
+								Param.of("groupLoaderName", "MockIdentities"))
 						.build())
 				.addModule(ModuleConfig.builder("dummy")
 						.addDefinitionProvider(MyDummyDtObjectProvider.class)
+						.addComponent(MockIdentities.class)
 						.build())
 				.addModule(new RulesFeatures()
 						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)

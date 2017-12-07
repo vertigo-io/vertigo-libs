@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,7 +48,8 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathFactory;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -64,7 +65,7 @@ import io.vertigo.util.TempFile;
  * @author adufranne
  */
 final class DOCXUtil {
-	private static final Logger LOG = Logger.getLogger(DOCXUtil.class);
+	private static final Logger LOG = LogManager.getLogger(DOCXUtil.class);
 
 	/** Prefix des fichiers temporaires générés. */
 	private static final String TEMP_FILE_PREFIX = "quarto";

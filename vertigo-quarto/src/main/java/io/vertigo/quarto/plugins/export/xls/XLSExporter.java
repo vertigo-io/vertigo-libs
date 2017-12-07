@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -200,6 +200,16 @@ final class XLSExporter {
 		evenDateCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy" /* "m/d/yy h:mm" */));
 		oddHssfStyleCache.put(DataType.Date, oddDateCellStyle);
 		evenHssfStyleCache.put(DataType.Date, evenDateCellStyle);
+		oddHssfStyleCache.put(DataType.LocalDate, oddDateCellStyle);
+		evenHssfStyleCache.put(DataType.LocalDate, evenDateCellStyle);
+
+		// Instant
+		final HSSFCellStyle oddDateTimeCellStyle = createRowCellStyle(workbook, true);
+		final HSSFCellStyle evenDateTimeCellStyle = createRowCellStyle(workbook, true);
+		oddDateTimeCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy h:mm"));
+		evenDateTimeCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy h:mm"));
+		oddHssfStyleCache.put(DataType.Instant, oddDateTimeCellStyle);
+		evenHssfStyleCache.put(DataType.Instant, evenDateTimeCellStyle);
 
 	}
 
@@ -285,7 +295,7 @@ final class XLSExporter {
 			} else if (value instanceof Boolean) {
 				final Boolean bValue = (Boolean) value;
 				//cell.setCellValue(bValue.booleanValue() ? "Oui" : "Non");
-				cell.setCellValue(domain.getFormatter().valueToString(bValue.booleanValue(), domain.getDataType()));
+				cell.setCellValue(domain.valueToString(bValue.booleanValue()));
 			} else if (value instanceof Date) {
 				final Date dateValue = (Date) value;
 				// sans ce style "date" les dates apparaîtraient au format

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,14 @@
  */
 package io.vertigo.social.webservices.account;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.identity.IdentityManager;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountGroup;
+import io.vertigo.account.account.AccountManager;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.MapBuilder;
@@ -48,7 +47,7 @@ public final class AccountWebServices implements WebServices {
 	private static final String IMPL_VERSION = "0.9.2";
 
 	@Inject
-	private IdentityManager identityManager;
+	private AccountManager identityManager;
 
 	/**
 	 * Gets an account by its id.
@@ -59,7 +58,7 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/{id}")
 	@AnonymousAccessAllowed
 	public Account getAccount(@PathParam("id") final String id) {
-		return identityManager.getStore().getAccount(DtObjectUtil.createURI(Account.class, id));
+		return identityManager.getAccount(DtObjectUtil.createURI(Account.class, id));
 	}
 
 	/**
@@ -71,19 +70,8 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/{id}/photo")
 	@AnonymousAccessAllowed
 	public VFile getAccountPhoto(@PathParam("id") final String id) {
-		return identityManager.getStore().getPhoto(DtObjectUtil.createURI(Account.class, id))
+		return identityManager.getPhoto(DtObjectUtil.createURI(Account.class, id))
 				.orElse(identityManager.getDefaultPhoto());
-	}
-
-	/**
-	 * Gets all groups.
-	 *
-	 * @return all groups
-	 */
-	@GET("/api/groups")
-	@AnonymousAccessAllowed
-	public Collection<AccountGroup> getAllGroups() {
-		return identityManager.getStore().getAllGroups();
 	}
 
 	/**
@@ -95,7 +83,7 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/groups/{id}")
 	@AnonymousAccessAllowed
 	public AccountGroup getAccountGroup(@PathParam("id") final String id) {
-		return identityManager.getStore().getGroup(DtObjectUtil.createURI(AccountGroup.class, id));
+		return identityManager.getGroup(DtObjectUtil.createURI(AccountGroup.class, id));
 	}
 
 	//-----
@@ -119,8 +107,8 @@ public final class AccountWebServices implements WebServices {
 	public Map<String, Object> getStats() {
 		final Map<String, Object> stats = new HashMap<>();
 		final Map<String, Object> sizeStats = new MapBuilder<String, Object>()
-				.put("accounts", identityManager.getStore().getAccountsCount())
-				.put("groups", identityManager.getStore().getGroupsCount())
+				.put("accounts", "undefined") //TODO à voir quels stats on veut
+				.put("groups", "undefined")
 				.build();
 		stats.put("size", sizeStats);
 		return stats;

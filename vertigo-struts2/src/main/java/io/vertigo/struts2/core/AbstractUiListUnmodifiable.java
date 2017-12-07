@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -204,7 +204,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		final DtField dtField = dtDefinition.getField(StringUtil.camelToConstCase(keyFieldName));
 		Assertion.checkArgument(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
 
-		final Object key = dtField.getDomain().getFormatter().stringToValue(keyValueAsString, dtField.getDomain().getDataType());
+		final Object key = dtField.getDomain().stringToValue(keyValueAsString);
 		final O entity = (O) loadDto(key);
 		uiObject = new StrutsUiObject<>(entity);
 		uiObjectById.put(keyValueAsString, uiObject);

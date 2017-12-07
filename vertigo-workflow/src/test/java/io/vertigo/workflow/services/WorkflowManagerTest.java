@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,9 +40,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.identity.IdentityManager;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountGroup;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.URI;
@@ -54,14 +53,15 @@ import io.vertigo.rules.domain.RuleFilterDefinition;
 import io.vertigo.rules.domain.SelectorDefinition;
 import io.vertigo.workflow.MyAppConfig;
 import io.vertigo.workflow.WfActivityDefinitionBuilder;
-import io.vertigo.workflow.WfCodeStatusWorkflow;
 import io.vertigo.workflow.WfCodeTransition;
 import io.vertigo.workflow.WfWorkflowDecision;
 import io.vertigo.workflow.WfWorkflowDefinitionBuilder;
 import io.vertigo.workflow.WorkflowManager;
+import io.vertigo.workflow.data.MockIdentities;
 import io.vertigo.workflow.data.MyDummyDtObject;
 import io.vertigo.workflow.domain.instance.WfActivity;
 import io.vertigo.workflow.domain.instance.WfDecision;
+import io.vertigo.workflow.domain.instance.WfStatusEnum;
 import io.vertigo.workflow.domain.instance.WfWorkflow;
 import io.vertigo.workflow.domain.model.WfActivityDefinition;
 import io.vertigo.workflow.domain.model.WfWorkflowDefinition;
@@ -80,7 +80,7 @@ public class WorkflowManagerTest extends DbTest {
 	private WorkflowManager workflowManager;
 
 	@Inject
-	private IdentityManager identityManager;
+	private MockIdentities mockIdentities;
 
 	@Inject
 	private ItemStorePlugin itemStorePlugin;
@@ -130,11 +130,11 @@ public class WorkflowManagerTest extends DbTest {
 
 		final AccountGroup accountGroup = new AccountGroup("1", "dummy group");
 		final Account account = Account.builder("Acc1").build();
-		identityManager.getStore().saveGroup(accountGroup);
-		identityManager.getStore().saveAccounts(Arrays.asList(account));
+		mockIdentities.saveGroup(accountGroup);
+		mockIdentities.saveAccounts(Arrays.asList(account));
 		final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
 		final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
-		identityManager.getStore().attach(accountUri, accountGroupUri);
+		mockIdentities.attach(accountUri, accountGroupUri);
 
 		// Step 1 : 1 rule, 1 condition
 		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
@@ -163,7 +163,7 @@ public class WorkflowManagerTest extends DbTest {
 				myDummyDtObject.getId());
 
 		assertThat(wfWorkflow, is(not(nullValue())));
-		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.CRE.name()));
+		assertThat(wfWorkflow.wfStatus().getEnumValue(), is(WfStatusEnum.CRE));
 
 		try {
 			workflowManager.resumeInstance(wfWorkflow);
@@ -181,7 +181,7 @@ public class WorkflowManagerTest extends DbTest {
 
 		// Starting the workflow
 		workflowManager.startInstance(wfWorkflow);
-		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.STA.name()));
+		assertThat(wfWorkflow.wfStatus().getEnumValue(), is(WfStatusEnum.STA));
 
 		try {
 			workflowManager.resumeInstance(wfWorkflow);
@@ -192,7 +192,7 @@ public class WorkflowManagerTest extends DbTest {
 
 		// Pausing the workflow
 		workflowManager.pauseInstance(wfWorkflow);
-		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.PAU.name()));
+		assertThat(wfWorkflow.wfStatus().getEnumValue(), is(WfStatusEnum.PAU));
 
 		final WfDecision wfDecision = new WfDecision();
 		wfDecision.setChoice(1);
@@ -213,7 +213,7 @@ public class WorkflowManagerTest extends DbTest {
 
 		// A workflow in pause can be resumed
 		workflowManager.resumeInstance(wfWorkflow);
-		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.STA.name()));
+		assertThat(wfWorkflow.wfStatus().getEnumValue(), is(WfStatusEnum.STA));
 
 		// A workflow started can be ended
 		workflowManager.endInstance(wfWorkflow);
@@ -222,19 +222,19 @@ public class WorkflowManagerTest extends DbTest {
 				myDummyDtObject.getId());
 
 		assertThat(wfWorkflow2, is(not(nullValue())));
-		assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.CRE.name()));
+		assertThat(wfWorkflow2.wfStatus().getEnumValue(), is(WfStatusEnum.CRE));
 
 		// A workflow created can be started.
 		workflowManager.startInstance(wfWorkflow2);
-		assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.STA.name()));
+		assertThat(wfWorkflow2.wfStatus().getEnumValue(), is(WfStatusEnum.STA));
 
 		// A workflow started can be paused.
 		workflowManager.pauseInstance(wfWorkflow2);
-		assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.PAU.name()));
+		assertThat(wfWorkflow2.wfStatus().getEnumValue(), is(WfStatusEnum.PAU));
 
 		// A workflow paused can be ended.
 		workflowManager.endInstance(wfWorkflow2);
-		assertThat(wfWorkflow2.getWfsCode(), is(WfCodeStatusWorkflow.END.name()));
+		assertThat(wfWorkflow2.wfStatus().getEnumValue(), is(WfStatusEnum.END));
 
 	}
 
@@ -277,11 +277,11 @@ public class WorkflowManagerTest extends DbTest {
 
 		final AccountGroup accountGroup = new AccountGroup("1", "dummy group");
 		final Account account = Account.builder("Acc1").build();
-		identityManager.getStore().saveGroup(accountGroup);
-		identityManager.getStore().saveAccounts(Arrays.asList(account));
+		mockIdentities.saveGroup(accountGroup);
+		mockIdentities.saveAccounts(Arrays.asList(account));
 		final URI<Account> accountUri = DtObjectUtil.createURI(Account.class, account.getId());
 		final URI<AccountGroup> accountGroupUri = DtObjectUtil.createURI(AccountGroup.class, accountGroup.getId());
-		identityManager.getStore().attach(accountUri, accountGroupUri);
+		mockIdentities.attach(accountUri, accountGroupUri);
 
 		// Step 1 : 1 rule, 1 condition
 		workflowManager.addActivity(wfWorkflowDefinition, firstActivity, 1);
@@ -571,10 +571,10 @@ public class WorkflowManagerTest extends DbTest {
 		assertThat(currentActivity.getWfadId(), is(fourthActivity.getWfadId()));
 
 		// Automatic ending.
-		assertThat(wfWorkflow.getWfsCode(), is(WfCodeStatusWorkflow.END.toString()));
+		assertThat(wfWorkflow.wfStatus().getEnumValue(), is(WfStatusEnum.END));
 
 		final WfWorkflow wfWorkflowFetched5 = workflowManager.getWorkflowInstance(wfWorkflow.getWfwId());
-		assertThat(wfWorkflowFetched5.getWfsCode(), is(WfCodeStatusWorkflow.END.toString()));
+		assertThat(wfWorkflowFetched5.wfStatus().getEnumValue(), is(WfStatusEnum.END));
 
 	}
 

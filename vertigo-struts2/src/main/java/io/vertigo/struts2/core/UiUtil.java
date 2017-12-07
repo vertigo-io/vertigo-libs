@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -82,13 +82,10 @@ public final class UiUtil implements Serializable {
 	 * @return rendu du champs boolean
 	 */
 	public static String formatBoolean(final String fieldPath, final Boolean value) {
-		final Formatter formatter;
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
-			formatter = DEFAULT_FORMATTER;
-		} else {
-			formatter = getDtField(fieldPath).getDomain().getFormatter();
+			return DEFAULT_FORMATTER.valueToString(value, DataType.Boolean);
 		}
-		return formatter.valueToString(value, DataType.Boolean);
+		return getDtField(fieldPath).getDomain().valueToString(value);
 	}
 
 	/**

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,8 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.lang.Assertion;
@@ -38,7 +39,7 @@ import io.vertigo.orchestra.domain.execution.ONode;
  */
 @Transactional
 public class ONodeManagerImpl implements ONodeManager {
-	private static final Logger LOGGER = Logger.getLogger(ONodeManagerImpl.class);
+	private static final Logger LOGGER = LogManager.getLogger(ONodeManagerImpl.class);
 
 	@Inject
 	private ONodeDAO nodeDAO;

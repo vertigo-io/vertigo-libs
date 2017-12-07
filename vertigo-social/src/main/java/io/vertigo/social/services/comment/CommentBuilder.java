@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,8 +21,8 @@ package io.vertigo.social.services.comment;
 import java.util.Date;
 import java.util.UUID;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.IdentityManager;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountManager;
 import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.lang.Assertion;
@@ -47,8 +47,8 @@ public final class CommentBuilder implements Builder<Comment> {
 		//RAF
 	}
 
-	private static IdentityManager getAccountManager() {
-		return Home.getApp().getComponentSpace().resolve(IdentityManager.class);
+	private static AccountManager getIdentityManager() {
+		return Home.getApp().getComponentSpace().resolve(AccountManager.class);
 	}
 
 	/**
@@ -60,7 +60,7 @@ public final class CommentBuilder implements Builder<Comment> {
 		Assertion.checkNotNull(author);
 		//-----
 		myAuthor = author;
-		myAuthorDisplayName = getAccountManager().getStore().getAccount(author).getDisplayName();
+		myAuthorDisplayName = getIdentityManager().getAccount(author).getDisplayName();
 		return this;
 	}
 

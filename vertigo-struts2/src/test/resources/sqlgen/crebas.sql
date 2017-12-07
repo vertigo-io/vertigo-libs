@@ -125,6 +125,7 @@ create table MOVIE
     RUNTIME     	 NUMERIC     	,
     TITLE       	 VARCHAR(250)	,
     YEAR        	 NUMERIC     	,
+    LAST_MODIFIED  	 DATE     		,
     constraint PK_MOVIE primary key (MOV_ID)
 );
 

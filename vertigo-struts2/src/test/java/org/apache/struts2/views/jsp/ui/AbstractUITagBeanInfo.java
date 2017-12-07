@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,7 @@ import com.opensymphony.xwork2.util.logging.LoggerFactory;
 /**
  * Describes properties supported by the AbstractUITag - base class for all UI tags
  * This bases on HtmlTagSupportBeanInfo class from StripesFramework - thanks!
- * Klee : Added a fix for jacoco coverage
+ * Fix by Klee : Added a fix for jacoco coverage
  */
 public class AbstractUITagBeanInfo extends SimpleBeanInfo {
 

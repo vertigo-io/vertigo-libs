@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,7 +26,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 
 import io.vertigo.lang.Assertion;
 
@@ -71,7 +71,7 @@ final class OrchestraNode {
 	public void stop() throws InterruptedException {
 		nodeProcess.destroy();
 		nodeProcess.waitFor();
-		Logger.getLogger(OrchestraNode.class).info("OrchestraNode stopped");
+		LogManager.getLogger(OrchestraNode.class).info("OrchestraNode stopped");
 		for (final Thread subThread : subThreads) {
 			subThread.interrupt();
 		}

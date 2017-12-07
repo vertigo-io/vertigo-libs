@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,16 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.workflow;
+package io.vertigo.dashboard;
 
-/**
- * Enum for the multiplicity of an activity definition.
- * @author xdurand
- *
- */
-public enum WfCodeMultiplicityDefinition {
-	/** Single */
-	SIN,
-	/** Multiple */
-	MUL;
+import io.vertigo.app.App;
+import io.vertigo.dashboard.ui.DashboardRouter;
+import spark.Spark;
+
+public final class Dashboard {
+
+	/**
+	 * Creates a new studio for an existing app
+	 * @param port the port to access the studio interface
+	 */
+	public static void port(final int port) {
+		Spark.port(port);
+	}
+
+	/**
+	 * Start method of the server
+	 */
+	public static void start(final App app) {
+		final DashboardRouter dashboardRouter = new DashboardRouter(app);
+		dashboardRouter.route();
+	}
+
 }

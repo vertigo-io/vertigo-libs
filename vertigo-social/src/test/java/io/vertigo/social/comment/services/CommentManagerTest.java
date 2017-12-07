@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,9 +25,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.vertigo.account.identity.Account;
-import io.vertigo.account.identity.AccountGroup;
-import io.vertigo.account.identity.IdentityManager;
+import io.vertigo.account.account.Account;
+import io.vertigo.account.account.AccountGroup;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
@@ -37,7 +36,7 @@ import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.social.MyAppConfig;
-import io.vertigo.social.comment.data.Accounts;
+import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.services.comment.Comment;
 import io.vertigo.social.services.comment.CommentServices;
 import redis.clients.jedis.Jedis;
@@ -45,7 +44,7 @@ import redis.clients.jedis.Jedis;
 public class CommentManagerTest {
 
 	@Inject
-	private IdentityManager identityManager;
+	private MockIdentities mockIdentities;
 	@Inject
 	private CommentServices commentServices;
 	@Inject
@@ -63,8 +62,8 @@ public class CommentManagerTest {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		}
-		accountURI1 = Accounts.createAccountURI("1");
-		Accounts.initData(identityManager);
+		accountURI1 = MockIdentities.createAccountURI("1");
+		mockIdentities.initData();
 
 		//on triche un peu, car AcountGroup n'est pas un KeyConcept
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);

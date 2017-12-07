@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -81,7 +81,7 @@ public final class VFileResponseBuilder {
 				"Le fichier est trop gros pour être envoyé. Il fait " + length.longValue() / 1024 + " Ko, mais le maximum acceptable est de " + (Integer.MAX_VALUE / 1024) + " Ko.");
 		httpResponse.setContentLength(length.intValue());
 		httpResponse.addHeader("Content-Disposition", encodeFileNameToContentDisposition(vFile.getFileName(), attachment));
-		httpResponse.setDateHeader("Last-Modified", vFile.getLastModified().getTime());
+		httpResponse.setDateHeader("Last-Modified", vFile.getLastModified().toEpochMilli());
 		httpResponse.setContentType(vFile.getMimeType());
 
 		try (final InputStream input = vFile.createInputStream()) {

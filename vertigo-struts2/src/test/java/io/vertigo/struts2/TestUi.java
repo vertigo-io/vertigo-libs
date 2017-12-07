@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -380,6 +380,21 @@ public class TestUi {
 		assertEquals("2 025", findElement(By.id("saveAjax_movie_year")).getAttribute("value"));
 		final String newDate = waitElement(By.cssSelector("#saveAjax > span")).getText();
 		Assert.assertNotEquals(oldDate, newDate);
+	}
+
+	@Test
+	public void testInstantForm() throws InterruptedException {
+		testLogin();
+
+		assertEquals("Test Instant", waitElement(By.cssSelector("#saveInstant > h1")).getText());
+		findElement(By.id("saveInstant_movie_lastModified")).clear();
+		findElement(By.id("saveInstant_movie_lastModified")).sendKeys("12/10/09 15:03");
+		findElement(By.id("saveInstant_saveInstantAccueil")).click();
+
+		assertEquals("12/10/2009 15:03", findElement(By.id("saveInstant_movie_lastModified")).getAttribute("value"));
+		final String newDate = waitElement(By.cssSelector("#saveInstant > span")).getText();
+
+		Assert.assertEquals("currentZoneId Europe/Paris\nlastModified 2009-10-12T13:03:00Z", newDate);
 	}
 
 	private String getWebElementsAsString(final List<WebElement> webElements) {
