@@ -3,7 +3,7 @@ package io.vertigo.dashboard;
 import java.util.Optional;
 
 import org.h2.Driver;
-import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -75,8 +75,8 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 				.build();
 	}
 
+	@Disabled
 	@Test
-	@Ignore
 	public void server() {
 		final App app = getApp();
 		Dashboard.start(app);
