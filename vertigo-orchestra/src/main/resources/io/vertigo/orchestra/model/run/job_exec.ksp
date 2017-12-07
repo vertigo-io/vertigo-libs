@@ -1,0 +1,49 @@
+package io.vertigo.orchestra.domain.run
+
+create DtDefinition DT_O_JOB_EXEC {
+	storeName : "orchestra"
+	key 	JEX_ID				{domain : DO_O_UUID				label :"Id" 								notNull:"true"}
+	field 	START_EXEC_INSTANT	{domain : DO_O_TIMESTAMP 		label : "Start exec" 						notNull:"true"}
+	field 	MAX_EXEC_INSTANT	{domain : DO_O_TIMESTAMP 		label : "Max execution (start + timeout)" 	notNull:"true"}
+	/*INFOS : what, where, who*/
+/*	field 	NODE_ID			{domain : DO_O_IDENTIFIANT 		label : "Node Id" 									notNull:"true"}*/
+}
+
+/* An execution is associated to a run*/
+create Association A_JEX_JRN {
+	fkFieldName : "JOB_ID"
+
+ 	dtDefinitionA : DT_O_JOB_EXEC
+	dtDefinitionB : DT_O_JOB_RUN
+	
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA : "0..*"
+	multiplicityB : "1..1"
+	
+	labelA : "JobEXec"
+	labelB : "JobRun"
+	roleA : "JobExec"
+	roleB : "JobRun"
+}
+
+/* Model to define a unique constraint*/
+create Association A_JEX_JMO {
+    fkFieldName : "JMO_ID"
+    
+ 	dtDefinitionA : DT_O_JOB_EXEC
+	dtDefinitionB : DT_O_JOB_MODEL
+	
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA : "0..*"
+	multiplicityB : "1..1"
+	
+	labelA : "JobExec"
+	labelB : "JobModel"
+	roleA : "JobExec"
+	roleB : "JobModel"
+}
+

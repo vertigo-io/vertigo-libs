@@ -31,17 +31,4 @@ public interface ProcessLogger {
 	 */
 	Optional<VFile> getLogFileForProcess(final Long processExecutionId);
 
-	/**
-	 * Récupère le fichier de log d'une execution d'activité.
-	 * @param actityExecutionId l'id de l'activité
-	 * @return le fichier de log de l'activité
-	 */
-	Optional<VFile> getActivityAttachment(Long actityExecutionId);
-
-	/**
-	 * Récupère sous forme de fichier le log technique d'une activité. (Si l'activité possède un log)
-	 * @param actityExecutionId l'id de l'activité
-	 * @return le fichier de log technique de l'activité
-	 */
-	Optional<VFile> getActivityLogFile(Long actityExecutionId);
 }

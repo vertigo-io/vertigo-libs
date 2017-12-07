@@ -35,7 +35,7 @@ public class CronExpressionTest {
 
 	@Test
 	public void testSecondsFixed() throws Exception {
-		final CronExpression cronExpression = new CronExpression("5 * * * * ?");
+		final CronExpression cronExpression = CronExpression.of("5 * * * * ?");
 
 		final Calendar now = Calendar.getInstance();
 		now.set(Calendar.MILLISECOND, 0);
@@ -63,7 +63,7 @@ public class CronExpressionTest {
 
 	@Test
 	public void testSecondsInterval() throws Exception {
-		final CronExpression cronExpression = new CronExpression("*/5 * * * * ?");
+		final CronExpression cronExpression = CronExpression.of("*/5 * * * * ?");
 
 		final Calendar now = Calendar.getInstance();
 		now.set(Calendar.MILLISECOND, 0);
@@ -89,7 +89,7 @@ public class CronExpressionTest {
 
 	@Test
 	public void testMinutesFixed() throws Exception {
-		final CronExpression cronExpression = new CronExpression("0 1 * * * ?");
+		final CronExpression cronExpression = CronExpression.of("0 1 * * * ?");
 
 		final Calendar now = Calendar.getInstance();
 		now.set(Calendar.MILLISECOND, 0);
@@ -112,7 +112,7 @@ public class CronExpressionTest {
 
 	@Test
 	public void testMinutesInterval() throws Exception {
-		final CronExpression cronExpression = new CronExpression("0 */2 * * * ?");
+		final CronExpression cronExpression = CronExpression.of("0 */2 * * * ?");
 
 		final Calendar now = Calendar.getInstance();
 		now.set(Calendar.MILLISECOND, 0);
@@ -139,7 +139,7 @@ public class CronExpressionTest {
 
 	@Test
 	public void testHoursFixed() throws Exception {
-		final CronExpression cronExpression = new CronExpression("0 0 1 * * ?");
+		final CronExpression cronExpression = CronExpression.of("0 0 1 * * ?");
 
 		final Calendar now = Calendar.getInstance();
 		now.set(Calendar.MILLISECOND, 0);
@@ -163,7 +163,7 @@ public class CronExpressionTest {
 
 	@Test
 	public void testDayFixed() throws Exception {
-		final CronExpression cronExpression = new CronExpression("0 0 0 2 * ?");
+		final CronExpression cronExpression = CronExpression.of("0 0 0 2 * ?");
 
 		final Calendar now = Calendar.getInstance();
 		now.set(Calendar.MILLISECOND, 0);
@@ -189,7 +189,7 @@ public class CronExpressionTest {
 	@Test
 	public void testMonthFixed() throws Exception {
 		// Tous les 1er février
-		final CronExpression cronExpression = new CronExpression("0 0 0 1 2 ?");
+		final CronExpression cronExpression = CronExpression.of("0 0 0 1 2 ?");
 
 		final int year = 2015;
 
@@ -212,7 +212,7 @@ public class CronExpressionTest {
 
 	@Test
 	public void testLastDayOffset() throws Exception {
-		CronExpression cronExpression = new CronExpression("0 15 10 L-2 * ? 2010");
+		CronExpression cronExpression = CronExpression.of("0 15 10 L-2 * ? 2010");
 
 		final Calendar cal = Calendar.getInstance();
 
@@ -222,17 +222,17 @@ public class CronExpressionTest {
 		cal.set(2010, Calendar.OCTOBER, 28, 10, 15, 0);
 		Assert.assertFalse(cronExpression.isSatisfiedBy(cal.getTime()));
 
-		cronExpression = new CronExpression("0 15 10 L-5W * ? 2010");
+		cronExpression = CronExpression.of("0 15 10 L-5W * ? 2010");
 
 		cal.set(2010, Calendar.OCTOBER, 26, 10, 15, 0); // last day - 5
 		Assert.assertTrue(cronExpression.isSatisfiedBy(cal.getTime()));
 
-		cronExpression = new CronExpression("0 15 10 L-1 * ? 2010");
+		cronExpression = CronExpression.of("0 15 10 L-1 * ? 2010");
 
 		cal.set(2010, Calendar.OCTOBER, 30, 10, 15, 0); // last day - 1
 		Assert.assertTrue(cronExpression.isSatisfiedBy(cal.getTime()));
 
-		cronExpression = new CronExpression("0 15 10 L-1W * ? 2010");
+		cronExpression = CronExpression.of("0 15 10 L-1W * ? 2010");
 
 		cal.set(2010, Calendar.OCTOBER, 29, 10, 15, 0); // nearest weekday to last day - 1 (29th is a friday in 2010)
 		Assert.assertTrue(cronExpression.isSatisfiedBy(cal.getTime()));
