@@ -163,7 +163,7 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 		final QueryResult queryResult = influxDB.query(query);
 
 		final List<Series> seriesList = queryResult.getResults().get(0).getSeries();
-		if (seriesList != null && seriesList.size() > 0) {
+		if (seriesList != null && !seriesList.isEmpty()) {
 
 			final Series series = seriesList.get(0);
 			final List<TimedDataSerie> dataSeries = series
@@ -195,7 +195,7 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 
 		final List<Series> series = queryResult.getResults().get(0).getSeries();
 
-		if (series != null && series.size() > 0) {
+		if (series != null && !series.isEmpty()) {
 			//all columns are the measures
 			final List<String> seriesName = new ArrayList<>();
 			seriesName.addAll(series.get(0).getColumns().subList(1, series.get(0).getColumns().size()));//we remove the first one
@@ -319,7 +319,7 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 		final QueryResult queryResult = influxDB.query(query);
 
 		final List<Series> seriesList = queryResult.getResults().get(0).getSeries();
-		if (seriesList != null && seriesList.size() > 0) {
+		if (seriesList != null && !seriesList.isEmpty()) {
 			final Series series = seriesList.get(0);
 			return series
 					.getValues()
