@@ -3,7 +3,6 @@ package io.vertigo.dashboard;
 import java.util.Optional;
 
 import org.h2.Driver;
-import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
@@ -73,17 +72,17 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 				.build();
 	}
 
-	@Test
-	public void server() {
-		//		final App app = getApp();
-		//		Dashboard.start(app);
-		//		while (!Thread.interrupted()) {
-		//			try {
-		//				Thread.sleep(10 * 1000);
-		//			} catch (final InterruptedException e) {
-		//				e.printStackTrace();
-		//			}
-		//		}
-	}
+	//	@Test
+	//	public void server() {
+	//		final App app = getApp();
+	//		Dashboard.start(app);
+	//		while (!Thread.interrupted()) {
+	//			try {
+	//				Thread.sleep(10 * 1000);
+	//			} catch (final InterruptedException e) {
+	//				e.printStackTrace();
+	//			}
+	//		}
+	//	}
 
 }
