@@ -56,7 +56,7 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 		Assertion.checkNotNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
 		final String q = buildQuery(measures, dataFilter, timeFilter)
-				.append(" group by time(").append(timeFilter.getDim()).append(")")
+				.append(" group by time(").append(timeFilter.getDim()).append(')')
 				.toString();
 
 		return executeTimedQuery(appName, q);
@@ -101,10 +101,10 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 					i);
 
 			// we construct the top select clause. we use the max as the aggregate function. No conflict possible
-			selectClause.append(" max(\"").append(fieldName).append("_").append(i)
-					.append("\") as \"").append(clusterName(minThreshold, maxThreshold, clusteredMeasure.getMeasure())).append("\"");
+			selectClause.append(" max(\"").append(fieldName).append('_').append(i)
+					.append("\") as \"").append(clusterName(minThreshold, maxThreshold, clusteredMeasure.getMeasure())).append('"');
 			if (i < clusteredMeasure.getThresholds().size()) {
-				selectClause.append(",");
+				selectClause.append(',');
 				fromClause.append(", ");
 			}
 
@@ -116,7 +116,7 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 				.append("select ").append(selectClause)
 				.append(" from ").append(fromClause)
 				.append(standardwhereClause)
-				.append(" group by time(").append(timeFilter.getDim()).append(")");
+				.append(" group by time(").append(timeFilter.getDim()).append(')');
 
 		return executeTimedQuery(appName, request.toString());
 	}
@@ -126,11 +126,11 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 			final Integer maxThreshold,
 			final String measure) {
 		if (minThreshold == null) {
-			return measure + "<" + maxThreshold;
+			return measure + '<' + maxThreshold;
 		} else if (maxThreshold == null) {
-			return measure + ">" + minThreshold;
+			return measure + '>' + minThreshold;
 		} else {
-			return measure + "_" + maxThreshold;
+			return measure + '_' + maxThreshold;
 		}
 	}
 
@@ -146,16 +146,16 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 			final int i) {
 		fromClauseBuilder.append("(select ")
 				.append(buildMeasureQuery(clusteredMeasure, clusteredField + "_" + i))
-				.append(" from ").append(measurement).append(" ")
+				.append(" from ").append(measurement)
 				.append(standardwhereClause);
 		if (previousThreshold != null) {
-			fromClauseBuilder.append(" and \"").append(clusteredField).append("\"").append(" > ").append(previousThreshold.toString());
+			fromClauseBuilder.append(" and \"").append(clusteredField).append('"').append(" > ").append(previousThreshold);
 		}
 		if (currentThreshold != null) {
-			fromClauseBuilder.append(" and \"").append(clusteredField).append("\"").append(" <= ").append(currentThreshold.toString());
+			fromClauseBuilder.append(" and \"").append(clusteredField).append('"').append(" <= ").append(currentThreshold);
 		}
-		fromClauseBuilder.append(" group by time(").append(timeDimension).append(")");
-		fromClauseBuilder.append(")");
+		fromClauseBuilder.append(" group by time(").append(timeDimension).append(')');
+		fromClauseBuilder.append(')');
 	}
 
 	private TimedDatas executeTimedQuery(final String appName, final String q) {
@@ -190,7 +190,7 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 	}
 
 	private TimedDatas executeTabularQuery(final String appName, final String queryString, final boolean keepTime) {
-		final Query query = new Query(queryString.toString(), appName);
+		final Query query = new Query(queryString, appName);
 		final QueryResult queryResult = influxDB.query(query);
 
 		final List<Series> series = queryResult.getResults().get(0).getSeries();
@@ -220,12 +220,12 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 		final StringBuilder queryBuilder = new StringBuilder();
 
 		final String queryString = queryBuilder
-				.append("select top(").append("\"top_").append(measure).append("\", \"").append(groupBy).append("\", ").append(maxRows).append(") as \"").append(measure).append("\"")
+				.append("select top(").append("\"top_").append(measure).append("\", \"").append(groupBy).append("\", ").append(maxRows).append(") as \"").append(measure).append('"')
 				.append(" from ( select ").append(buildMeasureQuery(measure, "top_" + measure))
 				.append(" from ").append(dataFilter.getMeasurement())
 				.append(buildWhereClause(dataFilter, timeFilter))
-				.append(" group by \"").append(groupBy).append("\"")
-				.append(")")
+				.append(" group by \"").append(groupBy).append('"')
+				.append(')')
 				.toString();
 
 		return executeTimedQuery(appName, queryString);
@@ -251,16 +251,16 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 		final StringBuilder queryBuilder = new StringBuilder()
 				.append(" where time > ").append(timeFilter.getFrom()).append(" and time <").append(timeFilter.getTo());
 		if (!"*".equals(dataFilter.getName())) {
-			queryBuilder.append(" and \"name\"='").append(dataFilter.getName()).append("'");
+			queryBuilder.append(" and \"name\"='").append(dataFilter.getName()).append('\'');
 		}
 		if (!"*".equals(dataFilter.getLocation())) {
-			queryBuilder.append(" and \"location\"='").append(dataFilter.getLocation()).append("'");
+			queryBuilder.append(" and \"location\"='").append(dataFilter.getLocation()).append('\'');
 		}
 		if (!"*".equals(dataFilter.getModule())) {
-			queryBuilder.append(" and \"module\"='").append(dataFilter.getModule()).append("'");
+			queryBuilder.append(" and \"module\"='").append(dataFilter.getModule()).append('\'');
 		}
 		if (!"*".equals(dataFilter.getFeature())) {
-			queryBuilder.append(" and \"feature\"='").append(dataFilter.getFeature()).append("'");
+			queryBuilder.append(" and \"feature\"='").append(dataFilter.getFeature()).append('\'');
 		}
 		if (dataFilter.getAdditionalWhereClause() != null) {
 			queryBuilder.append(" and ").append(dataFilter.getAdditionalWhereClause());
@@ -283,7 +283,7 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 					.collect(Collectors.joining(",", ", ", "")));
 		}
 		// end measure and add alias
-		measureQueryBuilder.append(") as \"").append(alias).append("\"");
+		measureQueryBuilder.append(") as \"").append(alias).append('"');
 		return measureQueryBuilder.toString();
 	}
 
