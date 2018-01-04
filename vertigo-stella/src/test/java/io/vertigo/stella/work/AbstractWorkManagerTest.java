@@ -39,7 +39,7 @@ import io.vertigo.stella.work.mock.ThreadLocalWorkEngine;
  * @author pchretien
  */
 public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
-	private final long warmupTime = 3000; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
+	private final long warmupTime = 4000; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
 	private static final int WORKER_COUNT = 5; //Doit correspondre au workerCount déclaré dans managers.xlm
 
 	@Inject
@@ -114,7 +114,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		workManager.schedule(work, DivideWorkEngine.class, workResultHanlder);
 		//---
 		final boolean finished = workResultHanlder.waitFinish(2, warmupTime);
-		Assert.assertTrue(finished);
+		Assert.assertTrue("Can't finished in time : " + workResultHanlder, finished);
 		Assert.assertEquals(2, workResultHanlder.getLastResult().intValue());
 		Assert.assertEquals(null, workResultHanlder.getLastThrowable());
 	}
@@ -139,10 +139,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		//On vérifie plusieurs  choses
 		// -que l'erreur remontée est bien une ArithmeticException
 		//- que l'exception est contenue dans le handler
-		if (!finished) {
-			System.err.println("Not finished (" + workResultHanlder.toString());
-		}
-		Assert.assertTrue(finished);
+		Assert.assertTrue("Can't finished in time : " + workResultHanlder, finished);
 		Assert.assertEquals(null, workResultHanlder.getLastResult());
 		Assert.assertEquals(ArithmeticException.class, workResultHanlder.getLastThrowable().getClass());
 	}
