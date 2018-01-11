@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.dispatcher.multipart.UploadedFile;
@@ -117,7 +118,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 				contextMiss(null);
 			} else {
 				try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
-					context = kvStoreManager.find(CONTEXT_COLLECTION_NAME, ctxId, KActionContext.class).get();
+					context = kvStoreManager.find(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(ctxId, request), KActionContext.class).get();
 					transactionWritable.commit();
 				}
 
@@ -137,8 +138,30 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 		}
 	}
 
+	private String obtainStoredCtxId(final String ctxId, final HttpServletRequest request) {
+		if (bindCtxToSession()) {
+			final HttpSession session = request.getSession(false);
+			if (session != null) {
+				return new StringBuilder(ctxId)
+						.append("-")
+						.append(session.getId())
+						.toString();
+			}
+		}
+		return ctxId;
+	}
+
 	private boolean acceptCtxQueryParam() {
 		return this.getClass().isAnnotationPresent(AcceptCtxQueryParam.class);
+	}
+
+	/**
+	 * Lock context to sessionId.
+	 * Should be desactivated by devs for sessionLess actions.
+	 * @return if ctx is bind to session
+	 */
+	protected boolean bindCtxToSession() {
+		return true;
 	}
 
 	/**
@@ -199,7 +222,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 					//sinon un warn, et on le retire du context ?
 				}
 			}
-			kvStoreManager.put(CONTEXT_COLLECTION_NAME, context.getId(), context);
+			kvStoreManager.put(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(context.getId(), ServletActionContext.getRequest()), context);
 			transactionWritable.commit();
 		}
 	}
