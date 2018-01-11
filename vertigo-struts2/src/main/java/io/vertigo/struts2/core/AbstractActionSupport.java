@@ -24,6 +24,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.Map.Entry;
 
@@ -41,6 +42,9 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.codec.Codec;
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.codec.Encoder;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.di.injector.DIInjector;
@@ -89,6 +93,8 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	private KActionContext context;
 	@Inject
 	private KVStoreManager kvStoreManager;
+	@Inject
+	private CodecManager codecManager;
 	@Inject
 	private VTransactionManager transactionManager;
 	@Inject
@@ -142,9 +148,13 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 		if (bindCtxToSession()) {
 			final HttpSession session = request.getSession(false);
 			if (session != null) {
+				final Codec<byte[], String> base64Codec = codecManager.getBase64Codec();
+				final Encoder<byte[], byte[]> sha256Encoder = codecManager.getSha256Encoder();
+				final String sessionIdHash = base64Codec.encode(sha256Encoder.encode(session.getId().getBytes(Charset.forName("utf8"))));
+
 				return new StringBuilder(ctxId)
 						.append("-")
-						.append(session.getId())
+						.append(sessionIdHash)
 						.toString();
 			}
 		}
