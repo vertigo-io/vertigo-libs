@@ -47,7 +47,7 @@
 		<component api="KVStoreManager" class="io.vertigo.dynamo.impl.kvstore.KVStoreManagerImpl">
 			<plugin class="io.vertigo.dynamo.plugins.kvstore.berkeley.BerkeleyKVStorePlugin">
 				<param name="collections" value="VActionContext;TTL=43200" /> <!-- 12h -->
-				<param name="dbFilePath" value="${java.io.tmpdir}/ehcache/TestVActionContext" />
+				<param name="dbFilePath" value="${java.io.tmpdir}/vertigo/TestVActionContext" />
 			</plugin>
 		</component>
 
