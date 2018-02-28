@@ -37,6 +37,14 @@
 		    </ul>
 		  </div>
 		   <div class="float-right">
+		   	<#if locations?? >
+		  	<select id="locationSelection" >
+		  	 	  <option value="">All locations</option>
+		  	 	  <#list locations as location >
+				  <option value="${location}">${location}</option>
+				  </#list>
+			</select>
+			</#if>
 		  	<select id="timeSelection" >
 				  <option value="last_day">Last day</option>
 				  <option value="last_3_days" selected >Last 3 days</option>
@@ -110,6 +118,13 @@
 			showCharts(); 
 			showTables(); 
 		});
+		
+		<#if locations?? >
+		$('#locationSelection').on('change', function() {
+			showCharts(); 
+			showTables(); 
+		});
+		</#if>
 		
 		</script>
 	</body>
