@@ -21,7 +21,6 @@ package io.vertigo.dashboard;
 import java.util.Optional;
 
 import org.h2.Driver;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
@@ -82,6 +81,7 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 						.build())
 				.addModule(new DashboardFeatures()
 						.withInfluxDb("http://analytica.part.klee.lan.net:8086", "analytica", "kleeklee")
+						.withAppName("vision")
 						.build())
 				.addModule(
 						ModuleConfig.builder("metrics")
@@ -93,7 +93,6 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 				.build();
 	}
 
-	@Disabled
 	@Test
 	public void server() {
 		final App app = getApp();

@@ -66,7 +66,7 @@ function showChart(elem) {
 
 
 function updateTimeFilterFromSelection(queryTimeFilter) {
-	var timeSelection = $('#timeSelection').val();
+	var timeSelection = $.cookie("timeFilter");
 	var to = 'now()';
 	var from = null;
 	var dim = null;
@@ -90,7 +90,7 @@ function updateTimeFilterFromSelection(queryTimeFilter) {
 }
 
 function updateLocationFilterFromSelection(dataFilter) {
-	var locationSelection = $('#locationSelection').val();
+	var locationSelection = $.cookie('locationFilter');
 	
 	if(locationSelection) {
 		dataFilter.location = locationSelection;
