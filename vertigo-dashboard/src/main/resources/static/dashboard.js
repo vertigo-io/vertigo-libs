@@ -20,7 +20,7 @@ function showChart(elem) {
 		var additionalOptions = elem.data("options");
 		//--- retrieve time filter from input
 		updateTimeFilterFromSelection(queryTimeFilter);
-		
+		updateLocationFilterFromSelection(queryDataFilter)
 		//--- query
 		var dataQuery = { dataFilter : queryDataFilter, timeFilter : queryTimeFilter };
 		if (queryMeasures) {
@@ -66,7 +66,7 @@ function showChart(elem) {
 
 
 function updateTimeFilterFromSelection(queryTimeFilter) {
-	var timeSelection = $('#timeSelection').val();
+	var timeSelection = $.cookie("timeFilter");
 	var to = 'now()';
 	var from = null;
 	var dim = null;
@@ -87,6 +87,17 @@ function updateTimeFilterFromSelection(queryTimeFilter) {
 		queryTimeFilter.dim = dim;
 	}
 	queryTimeFilter.to = to;
+}
+
+function updateLocationFilterFromSelection(dataFilter) {
+	var locationSelection = $.cookie('locationFilter');
+	
+	if(locationSelection) {
+		dataFilter.location = locationSelection;
+	} else {
+		dataFilter.location = "*";
+	}
+	
 }
 
 function notEmpty(datas) {

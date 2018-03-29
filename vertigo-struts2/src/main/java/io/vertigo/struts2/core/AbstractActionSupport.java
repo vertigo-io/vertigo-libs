@@ -24,12 +24,14 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.Map.Entry;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.dispatcher.multipart.UploadedFile;
@@ -40,6 +42,9 @@ import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.codec.Codec;
+import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.codec.Encoder;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.di.injector.DIInjector;
@@ -89,6 +94,8 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	@Inject
 	private KVStoreManager kvStoreManager;
 	@Inject
+	private CodecManager codecManager;
+	@Inject
 	private VTransactionManager transactionManager;
 	@Inject
 	private ParamManager paramManager;
@@ -117,7 +124,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 				contextMiss(null);
 			} else {
 				try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
-					context = kvStoreManager.find(CONTEXT_COLLECTION_NAME, ctxId, KActionContext.class).get();
+					context = kvStoreManager.find(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(ctxId, request), KActionContext.class).get();
 					transactionWritable.commit();
 				}
 
@@ -137,8 +144,34 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 		}
 	}
 
+	private String obtainStoredCtxId(final String ctxId, final HttpServletRequest request) {
+		if (bindCtxToSession()) {
+			final HttpSession session = request.getSession(false);
+			if (session != null) {
+				final Codec<byte[], String> base64Codec = codecManager.getBase64Codec();
+				final Encoder<byte[], byte[]> sha256Encoder = codecManager.getSha256Encoder();
+				final String sessionIdHash = base64Codec.encode(sha256Encoder.encode(session.getId().getBytes(Charset.forName("utf8"))));
+
+				return new StringBuilder(ctxId)
+						.append("-")
+						.append(sessionIdHash)
+						.toString();
+			}
+		}
+		return ctxId;
+	}
+
 	private boolean acceptCtxQueryParam() {
 		return this.getClass().isAnnotationPresent(AcceptCtxQueryParam.class);
+	}
+
+	/**
+	 * Lock context to sessionId.
+	 * Should be desactivated by devs for sessionLess actions.
+	 * @return if ctx is bind to session
+	 */
+	protected boolean bindCtxToSession() {
+		return true;
 	}
 
 	/**
@@ -199,7 +232,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 					//sinon un warn, et on le retire du context ?
 				}
 			}
-			kvStoreManager.put(CONTEXT_COLLECTION_NAME, context.getId(), context);
+			kvStoreManager.put(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(context.getId(), ServletActionContext.getRequest()), context);
 			transactionWritable.commit();
 		}
 	}

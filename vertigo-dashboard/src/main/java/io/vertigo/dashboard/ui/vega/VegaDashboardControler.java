@@ -63,6 +63,9 @@ public final class VegaDashboardControler extends AbstractDashboardModuleControl
 		model.put("webservicesCount", count);
 		model.put("webservicesMeanDuration", meanDuration);
 		model.put("webservicesExceptionRate", exceptionRate);
+
+		//--- locations
+		model.put("locations", getDataProvider().getTagValues("webservices", "location"));
 	}
 
 }

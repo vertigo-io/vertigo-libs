@@ -11,6 +11,7 @@
 		<link rel="stylesheet" href="/dashboard/static/dashboard.css">
 		
 		<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js" ></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" ></script>
 		<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js" ></script>
 		<link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
 		
@@ -37,6 +38,14 @@
 		    </ul>
 		  </div>
 		   <div class="float-right">
+		   	<#if locations?? >
+		  	<select id="locationSelection" >
+		  	 	  <option value="">All locations</option>
+		  	 	  <#list locations as location >
+				  <option value="${location}">${location}</option>
+				  </#list>
+			</select>
+			</#if>
 		  	<select id="timeSelection" >
 				  <option value="last_day">Last day</option>
 				  <option value="last_3_days" selected >Last 3 days</option>
@@ -85,6 +94,17 @@
 		
 		$(document).ready(function() { 
 			startClock(); 
+			
+			//update input with cookies
+			if ($.cookie("timeFilter")) {
+				$('#timeSelection').val($.cookie("timeFilter"));
+			}
+			
+			if ($.cookie("locationFilter")) {
+				$('#locationSelection').val($.cookie("locationFilter"));
+			}
+			
+			
 			showCharts(); 
 			showTables(); 
 			
@@ -107,9 +127,20 @@
 		
 		
 		$('#timeSelection').on('change', function() {
+			$.cookie("timeFilter", $(this).val(), { path : '/' });
+			
 			showCharts(); 
 			showTables(); 
 		});
+		
+		<#if locations?? >
+		$('#locationSelection').on('change', function() {
+			$.cookie("locationFilter", $(this).val(), { path : '/' });
+		
+			showCharts(); 
+			showTables(); 
+		});
+		</#if>
 		
 		</script>
 	</body>

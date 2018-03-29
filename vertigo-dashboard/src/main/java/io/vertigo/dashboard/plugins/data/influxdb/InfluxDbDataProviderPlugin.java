@@ -133,7 +133,7 @@ public final class InfluxDbDataProviderPlugin implements DataProviderPlugin {
 		final StringBuilder request = new StringBuilder()
 				.append("select ").append(selectClause)
 				.append(" from ").append(fromClause)
-				.append(standardwhereClause)
+				.append(" where time > ").append(timeFilter.getFrom()).append(" and time <").append(timeFilter.getTo())
 				.append(" group by time(").append(timeFilter.getDim()).append(')');
 
 		return executeTimedQuery(appName, request.toString());

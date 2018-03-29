@@ -93,8 +93,8 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 				.build();
 	}
 
-	@Disabled
 	@Test
+	@Disabled
 	public void server() {
 		final App app = getApp();
 		Dashboard.start(app);
