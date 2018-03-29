@@ -1,0 +1,17 @@
+package io.vertigo.orchestra.monitoring.domain.summary
+
+create DtDefinition DT_O_EXECUTION_SUMMARY {
+	field PRO_ID   					{domain : DO_O_IDENTIFIANT, label :"Id du processus", notNull:"true",},
+	field PROCESS_NAME   			{domain : DO_O_LIBELLE, label :"Nom du processus", notNull:"true",},
+	field PROCESS_LABEL   			{domain : DO_O_LIBELLE, label :"Libellé du processus", notNull:"true",},
+	field LAST_EXECUTION_TIME   	{domain : DO_O_TIMESTAMP, label :"Dernière exécution le", notNull:"false",},
+	field NEXT_EXECUTION_TIME   	{domain : DO_O_TIMESTAMP, label :"Prochaine exécution le", notNull:"false",},
+	field ERRORS_COUNT   			{domain : DO_O_NOMBRE, label :"Nombre en erreur", notNull:"false",},
+	field MISFIRED_COUNT   			{domain : DO_O_NOMBRE, label :"Nombre non executés", notNull:"false",},
+	field SUCCESSFUL_COUNT   		{domain : DO_O_NOMBRE, label :"Nombre en succès", notNull:"false",},
+	field RUNNING_COUNT   			{domain : DO_O_NOMBRE, label :"Nombre en cours", notNull:"false",},
+	field AVERAGE_EXECUTION_TIME   	{domain : DO_O_NOMBRE, label :"Durée moyenne d'exécution", notNull:"false",},
+	field HEALTH   					{domain : DO_O_CODE_IDENTIFIANT, label :"Santé du processus", notNull:"true",},
+  
+},
+

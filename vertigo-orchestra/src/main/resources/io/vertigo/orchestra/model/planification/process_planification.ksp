@@ -1,0 +1,69 @@
+package io.vertigo.orchestra.domain.planification
+
+create DtDefinition DT_O_PROCESS_PLANIFICATION {
+	storeName : "orchestra"
+	key PRP_ID	{domain : DO_O_IDENTIFIANT, label :"Id Planification", notNull:"true",},
+	field EXPECTED_TIME   	{domain : DO_O_TIMESTAMP, label :"Date d'execution prévue", notNull:"false",},
+	field INITIAL_PARAMS	{domain : DO_O_JSON_TEXT, label :"Paramètres initiaux sous forme de JSON ", notNull:"false",},
+  
+},
+
+create Association A_PRP_PRO {
+  fkFieldName : "PRO_ID"
+    
+ 	dtDefinitionA : DT_O_PROCESS_PLANIFICATION
+	dtDefinitionB : DT_O_PROCESS
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"1..1"
+	
+	labelA : "PlanificationProcessus"
+	labelB : "Processus"
+	roleA : "ProcessPlanification"
+	roleB : "Processus"
+			
+},
+
+
+create Association A_PRP_NOD {
+  fkFieldName : "NOD_ID"
+    
+ 	dtDefinitionA : DT_O_PROCESS_PLANIFICATION
+	dtDefinitionB : DT_O_NODE
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"0..1"
+	
+	labelA : "PlanificationProcessus"
+	labelB : "Node"
+	roleA : "ProcessPlanification"
+	roleB : "Node"
+			
+},
+
+
+
+create Association A_PRP_PST {
+  fkFieldName : "SST_CD"
+    
+ 	dtDefinitionA : DT_O_PROCESS_PLANIFICATION
+	dtDefinitionB : DT_O_SCHEDULER_STATE
+			
+	navigabilityA : "false"
+	navigabilityB : "true"
+	
+	multiplicityA:"0..*"
+	multiplicityB:"0..1"
+	
+	labelA : "ProcessPlanification"
+	labelB : "PlanificationState"
+	roleA : "ProcessPlanification"
+	roleB : "PlanificationState"
+			
+}
