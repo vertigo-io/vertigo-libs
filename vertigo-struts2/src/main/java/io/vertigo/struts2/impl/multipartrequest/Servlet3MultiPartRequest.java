@@ -58,7 +58,7 @@ import io.vertigo.util.StringUtil;
  * {@code
  * <bean type="org.apache.struts2.dispatcher.multipart.MultiPartRequest"
  *       class="io.vertigo.struts2.impl.multipartrequest.Servlet3MultiPartRequest"
- *       name="S3MultipartParser" scope="default"/>
+ *       name="S3MultipartParser" scope="prototype"/>
  * <constant name="struts.multipart.parser" value="S3MultipartParser"/>
  * }
  * </pre>
