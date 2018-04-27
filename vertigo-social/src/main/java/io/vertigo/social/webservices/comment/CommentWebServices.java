@@ -27,7 +27,6 @@ import javax.inject.Inject;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.authentication.AuthenticationManager;
-import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.app.Home;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -41,6 +40,7 @@ import io.vertigo.social.services.comment.CommentServices;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServices;
+import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.ExcludedFields;
 import io.vertigo.vega.webservice.stereotype.GET;
