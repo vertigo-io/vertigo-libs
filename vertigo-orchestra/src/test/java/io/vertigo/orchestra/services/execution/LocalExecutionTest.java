@@ -20,6 +20,7 @@ package io.vertigo.orchestra.services.execution;
 
 import java.util.Collections;
 import java.util.Date;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -32,7 +33,9 @@ import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.OrchestraServices;
 import io.vertigo.orchestra.services.execution.engine.TestJob;
 import io.vertigo.orchestra.services.execution.engine.TestJob2;
+import io.vertigo.orchestra.services.execution.engine.TestJob3;
 import io.vertigo.orchestra.services.execution.engine.TestJobScheduled;
+import io.vertigo.util.MapBuilder;
 
 /**
  * TODO : Description de la classe.
@@ -81,6 +84,44 @@ public class LocalExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		Thread.sleep(1000 * 1);
 		Assert.assertEquals(1, TestJob.getCount());
 		Assert.assertEquals(1, TestJob2.getCount());
+
+	}
+
+	@Test
+	public void testParams() throws InterruptedException {
+		TestJob3.reset();
+
+		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition("PRO_TEST_UNSUPERVISED_MANUAL_3");
+
+		// We plan right now
+		orchestraServices.getScheduler()
+				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+
+		// The task takes 1 secondes to run we wait 12 secondes to check the final states
+		Thread.sleep(1000 * 1);
+		Assert.assertEquals("value1", TestJob3.getParam1Value());
+
+	}
+
+	@Test
+	public void testOverrideParamsInPlanif() throws InterruptedException {
+		TestJob3.reset();
+
+		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition("PRO_TEST_UNSUPERVISED_MANUAL_3");
+
+		final Map<String, String> planifParams = new MapBuilder<String, String>()
+				.put(TestJob3.PARAM_KEY_1, "overide")
+				.put(TestJob3.PARAM_KEY_2, "value2")
+				.build();
+
+		// We plan right now
+		orchestraServices.getScheduler()
+				.scheduleAt(processDefinition, new Date(), planifParams);
+
+		// The task takes 1 secondes to run we wait 12 secondes to check the final states
+		Thread.sleep(1000 * 1);
+		Assert.assertEquals("overide", TestJob3.getParam1Value());
+		Assert.assertEquals("value2", TestJob3.getParam2Value());
 
 	}
 

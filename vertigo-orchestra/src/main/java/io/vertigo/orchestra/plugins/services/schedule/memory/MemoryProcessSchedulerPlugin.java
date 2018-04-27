@@ -108,7 +108,7 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 		Assertion.checkNotNull(planifiedTime);
 		Assertion.checkNotNull(initialParams);
 		//---
-		final TimerTask task = createTimerTask(processDefinition);
+		final TimerTask task = createTimerTask(processDefinition, initialParams);
 		timerPool.getTimer(processDefinition.getName()).schedule(task, planifiedTime);
 		log("Job ", processDefinition, planifiedTime);
 
@@ -129,8 +129,8 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 		}
 	}
 
-	private TimerTask createTimerTask(final ProcessDefinition processDefinition) {
-		return new BasicTimerTask(processDefinition, myProcessExecutor);
+	private TimerTask createTimerTask(final ProcessDefinition processDefinition, final Map<String, String> additionalParams) {
+		return new BasicTimerTask(processDefinition, additionalParams, myProcessExecutor);
 	}
 
 	private TimerTask createRescheduledTimerTask(final ProcessDefinition processDefinition, final Date nextExecutionDate) {
