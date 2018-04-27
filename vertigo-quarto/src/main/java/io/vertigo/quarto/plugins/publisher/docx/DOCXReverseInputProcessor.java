@@ -82,20 +82,10 @@ final class DOCXReverseInputProcessor implements MergerProcessor {
 			// conversion des tags mal formatés en tags valides.
 			convertWrongFormattedTags(xmlDoc, xpath);
 
-			//rename du InstrText en t (InstrText est non supporté par certain outils)
-			renameInstrText(xmlDoc);
-
 			// rendu du xml final
 			return DOCXUtil.renderXML(xmlDoc);
 		} catch (final XPathExpressionException e) {
 			throw WrappedException.wrap(e, "Erreur de format du Docx");
-		}
-	}
-
-	private void renameInstrText(final Document xmlDoc) {
-		final NodeList nodes = xmlDoc.getElementsByTagName(W_INSTR_TEXT);
-		for (int i = 0; i < nodes.getLength(); i++) {
-			xmlDoc.renameNode(nodes.item(i), nodes.item(i).getNamespaceURI(), "w:t");
 		}
 	}
 
