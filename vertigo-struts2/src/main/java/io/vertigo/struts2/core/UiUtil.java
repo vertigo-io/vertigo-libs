@@ -127,14 +127,17 @@ public final class UiUtil implements Serializable {
 		final ActionContext actionContext = ActionContext.getContext();
 		final Object contextObject = actionContext.getValueStack().findValue(contextKey);
 		Assertion.checkNotNull(contextObject, "{0} n''est pas dans le context", contextKey);
-		Assertion.checkArgument(contextObject instanceof UiObject || contextObject instanceof AbstractUiListUnmodifiable, "{0}({1}) doit être un UiObject ou une UiList ", contextKey,
+		Assertion.checkArgument(contextObject instanceof UiObject || contextObject instanceof AbstractUiListUnmodifiable
+					|| contextObject instanceof AbstractUiListModifiable, "{0}({1}) doit être un UiObject ou une UiList ", contextKey,
 				contextObject.getClass().getSimpleName());
 
 		final DtDefinition dtDefinition;
 		if (contextObject instanceof UiObject) {
 			dtDefinition = ((UiObject<?>) contextObject).getDtDefinition();
-		} else {
+		} else if (contextObject instanceof AbstractUiListUnmodifiable) {
 			dtDefinition = ((AbstractUiListUnmodifiable<?>) contextObject).getDtDefinition();
+		} else {
+			dtDefinition = ((AbstractUiListModifiable<?>) contextObject).getDtDefinition();
 		}
 		Assertion.checkNotNull(dtDefinition); //, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
 		Assertion.checkNotNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
