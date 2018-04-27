@@ -49,6 +49,11 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 
 	private static final String EMPTY_STRING = "\\s+";
 
+	/**
+	 * Tag w:instrText
+	 */
+	private static final String W_INSTR_TEXT = "w:instrText";
+
 	/** {@inheritDoc} */
 	@Override
 	public String execute(final String xmlInput, final PublisherData publisherData) {
@@ -59,10 +64,20 @@ final class DOCXCleanerProcessor implements MergerProcessor {
 
 			handleCarriageReturn(xmlDoc, xpath);
 
+			//rename du InstrText en t (InstrText est non supporté par certain outils et notamment la conversion pdf)
+			renameInstrText(xmlDoc);
+
 			return DOCXUtil.renderXML(xmlDoc);
 
 		} catch (final XPathExpressionException e) {
 			throw WrappedException.wrap(e);
+		}
+	}
+
+	private static void renameInstrText(final Document xmlDoc) {
+		final NodeList nodes = xmlDoc.getElementsByTagName(W_INSTR_TEXT);
+		for (int i = 0; i < nodes.getLength(); i++) {
+			xmlDoc.renameNode(nodes.item(i), nodes.item(i).getNamespaceURI(), "w:t");
 		}
 	}
 

@@ -247,7 +247,7 @@ final class DOCXUtil {
 					ZipUtil.writeEntry(outputFichierDOCX, newXmlContents.get(entryName), entryName);
 				} else {
 					try (final InputStream zipIS = docxFile.getInputStream(zipEntry)) {
-						ZipUtil.writeEntry(outputFichierDOCX, ZipUtil.readEntry(docxFile, zipEntry.getName()), zipEntry.getName());
+						ZipUtil.writeEntry(outputFichierDOCX, zipIS, zipEntry.getName());
 					}
 				}
 				outputFichierDOCX.closeEntry();

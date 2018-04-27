@@ -23,8 +23,10 @@ import javax.inject.Inject;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
+import io.vertigo.orchestra.definitions.ProcessType;
 import io.vertigo.orchestra.services.execution.engine.TestJob;
 import io.vertigo.orchestra.services.execution.engine.TestJob2;
+import io.vertigo.orchestra.services.execution.engine.TestJob3;
 import io.vertigo.orchestra.services.execution.engine.TestJobScheduled;
 
 public class LocalExecutionProcessInitializer implements ComponentInitializer {
@@ -46,11 +48,19 @@ public class LocalExecutionProcessInitializer implements ComponentInitializer {
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition2);
 
-		final ProcessDefinition processDefinition3 = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_RECURRENT", TestJobScheduled.class)
-				.withCronExpression("*/5 * * * * ?")
+		final ProcessDefinition processDefinition3 = ProcessDefinition.builder("PRO_TEST_UNSUPERVISED_MANUAL_3", "PRO_TEST_UNSUPERVISED_MANUAL_3")
+				.addActivity("FIRST", "FIRST", TestJob3.class)
+				.withProcessType(ProcessType.UNSUPERVISED)
+				.addInitialParam(TestJob3.PARAM_KEY_1, "value1")
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition3);
+
+		final ProcessDefinition processDefinition4 = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_RECURRENT", TestJobScheduled.class)
+				.withCronExpression("*/5 * * * * ?")
+				.build();
+
+		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition4);
 
 	}
 

@@ -196,6 +196,22 @@ public final class KActionContext extends HashMap<String, Serializable> {
 		return super.put(key, value);
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public Serializable remove(final Object key) {
+		Assertion.checkState(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX));
+		Assertion.checkState(key instanceof String, "La clé doit être de type String");
+		//---
+		final String keyString = (String) key;
+		Assertion.checkArgNotEmpty(keyString);
+		//---
+		// on garde les index en cohérence après un remove
+		reverseUiObjectIndex.values().removeIf((val) -> keyString.equals(val));
+		reverseUiListIndex.values().removeIf((val) -> keyString.equals(val));
+		// on fait le remove
+		return super.remove(key);
+	}
+
 	/**
 	 * @return Clé de ce context
 	 */

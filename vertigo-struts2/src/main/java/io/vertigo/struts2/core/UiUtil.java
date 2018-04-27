@@ -30,6 +30,7 @@ import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
+import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 
 /**
@@ -105,7 +106,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiList liste du context
 	 * @return Nom du champ display de cette liste
 	 */
-	public static String getDisplayField(final AbstractUiListUnmodifiable<?> uiList) {
+	public static String getDisplayField(final UiList<?> uiList) {
 		final DtDefinition dtDefinition = uiList.getDtDefinition();
 		return StringUtil.constToLowerCamelCase(dtDefinition.getDisplayField().get().getName());
 	}
@@ -114,7 +115,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiList liste du context
 	 * @return Nom du champ de l'id de cette liste
 	 */
-	public static String getIdField(final AbstractUiListUnmodifiable<?> uiList) {
+	public static String getIdField(final UiList<?> uiList) {
 		final DtDefinition dtDefinition = uiList.getDtDefinition();
 		return StringUtil.constToLowerCamelCase(dtDefinition.getIdField().get().getName());
 	}
@@ -127,14 +128,14 @@ public final class UiUtil implements Serializable {
 		final ActionContext actionContext = ActionContext.getContext();
 		final Object contextObject = actionContext.getValueStack().findValue(contextKey);
 		Assertion.checkNotNull(contextObject, "{0} n''est pas dans le context", contextKey);
-		Assertion.checkArgument(contextObject instanceof UiObject || contextObject instanceof AbstractUiListUnmodifiable, "{0}({1}) doit être un UiObject ou une UiList ", contextKey,
+		Assertion.checkArgument(contextObject instanceof UiObject || contextObject instanceof UiList, "{0}({1}) doit être un UiObject ou une UiList ", contextKey,
 				contextObject.getClass().getSimpleName());
 
 		final DtDefinition dtDefinition;
 		if (contextObject instanceof UiObject) {
 			dtDefinition = ((UiObject<?>) contextObject).getDtDefinition();
 		} else {
-			dtDefinition = ((AbstractUiListUnmodifiable<?>) contextObject).getDtDefinition();
+			dtDefinition = ((UiList<?>) contextObject).getDtDefinition();
 		}
 		Assertion.checkNotNull(dtDefinition); //, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
 		Assertion.checkNotNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
