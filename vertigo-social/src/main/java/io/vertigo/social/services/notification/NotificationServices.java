@@ -58,4 +58,12 @@ public interface NotificationServices extends Component {
 	 * @param targetUrl Notification's target Url
 	 */
 	void removeAll(String type, String targetUrl);
+
+	/**
+	 * Updates the flag of the notification
+	 * @param accountURI User account
+	 * @param notificationUUID Notification uid
+	 * @param flag flag
+	 */
+	void updateFlag(URI<Account> accountURI, UUID notificationUUID, String flag);
 }
