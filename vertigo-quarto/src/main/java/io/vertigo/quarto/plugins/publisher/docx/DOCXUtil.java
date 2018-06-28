@@ -80,7 +80,7 @@ final class DOCXUtil {
 	/**
 	 * Pattern matchant un élément.
 	 */
-	public static final String PATTERN_KSP = "^\\s*(var|loop|if|ifnot|endloop|endvar|endif|endifnot|=|block|endblock).*";
+	public static final String PATTERN_KSP = "^\\s*(var|loop|if|ifnot|endloop|endvar|endif|endifnot|=|block).*";
 
 	/**
 	 * Requête XPATH retournant tous les noeuds de type "begin" et "end".
