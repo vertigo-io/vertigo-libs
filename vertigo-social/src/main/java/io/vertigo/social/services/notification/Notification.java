@@ -19,6 +19,7 @@
 package io.vertigo.social.services.notification;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 import io.vertigo.lang.Assertion;
@@ -35,6 +36,7 @@ public final class Notification {
 	private final int ttlInSeconds;
 	private final String targetUrl;
 	private final Date creationDate;
+	private final Optional<String> flag;
 
 	/**
 	 * Constructor.
@@ -47,7 +49,8 @@ public final class Notification {
 	 * @param creationDate Create date
 	 * @param targetUrl Target URL of this notification
 	 */
-	Notification(final UUID uuid, final String sender, final String type, final String title, final String content, final int ttlInSeconds, final Date creationDate, final String targetUrl) {
+	Notification(final UUID uuid, final String sender, final String type, final String title, final String content,
+			final int ttlInSeconds, final Date creationDate, final String targetUrl, final Optional<String> flag) {
 		Assertion.checkNotNull(uuid);
 		Assertion.checkArgNotEmpty(sender);
 		Assertion.checkArgNotEmpty(type);
@@ -56,6 +59,7 @@ public final class Notification {
 		Assertion.checkArgument(ttlInSeconds == -1 || ttlInSeconds > 0, "ttl must be positive or undefined (-1).");
 		Assertion.checkArgNotEmpty(targetUrl);
 		Assertion.checkNotNull(creationDate);
+		Assertion.checkNotNull(flag);
 		//-----
 		this.uuid = uuid;
 		this.sender = sender;
@@ -65,6 +69,7 @@ public final class Notification {
 		this.ttlInSeconds = ttlInSeconds;
 		this.creationDate = creationDate;
 		this.targetUrl = targetUrl;
+		this.flag = flag;
 	}
 
 	/**
@@ -139,4 +144,12 @@ public final class Notification {
 	public String getTargetUrl() {
 		return targetUrl;
 	}
+
+	/**
+	 * @return Notification's flag
+	 */
+	public Optional<String> getFlag() {
+		return flag;
+	}
+
 }

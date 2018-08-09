@@ -19,6 +19,7 @@
 package io.vertigo.social.services.notification;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 import io.vertigo.lang.Assertion;
@@ -37,6 +38,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	private int myTtlInSeconds = -1;
 	private String myTargetUrl;
 	private final UUID uuid;
+	private Optional<String> myFlag;
 
 	/**
 	 * Constructor.
@@ -138,12 +140,29 @@ public final class NotificationBuilder implements Builder<Notification> {
 		return this;
 	}
 
+	/**
+	 * @param flag Notification's flag
+	 * @return this builder
+	 */
+	public NotificationBuilder withFlag(final Optional<String> flag) {
+		Assertion.checkArgument(myFlag == null || !myFlag.isPresent(), "flag already set");
+		Assertion.checkNotNull(flag);
+		//-----
+		myFlag = flag;
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public Notification build() {
 		if (myCreationDate == null) {
 			myCreationDate = DateUtil.newDateTime();
 		}
-		return new Notification(uuid, mySender, myType, myTitle, myContent, myTtlInSeconds, myCreationDate, myTargetUrl);
+
+		if (myFlag == null || !myFlag.isPresent()) {
+			myFlag = Optional.empty();
+		}
+
+		return new Notification(uuid, mySender, myType, myTitle, myContent, myTtlInSeconds, myCreationDate, myTargetUrl, myFlag);
 	}
 }
