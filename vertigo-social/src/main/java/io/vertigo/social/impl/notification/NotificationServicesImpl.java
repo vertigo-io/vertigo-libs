@@ -34,6 +34,7 @@ import io.vertigo.social.services.notification.NotificationServices;
  * @author pchretien
  */
 public final class NotificationServicesImpl implements NotificationServices {
+
 	private final NotificationPlugin notificationsPlugin;
 
 	/**
@@ -42,7 +43,7 @@ public final class NotificationServicesImpl implements NotificationServices {
 	@Inject
 	public NotificationServicesImpl(final NotificationPlugin notificationsPlugin) {
 		Assertion.checkNotNull(notificationsPlugin);
-		//-----
+		// -----
 		this.notificationsPlugin = notificationsPlugin;
 	}
 
@@ -57,7 +58,7 @@ public final class NotificationServicesImpl implements NotificationServices {
 	@Override
 	public List<Notification> getCurrentNotifications(final URI<Account> userProfileURI) {
 		Assertion.checkNotNull(userProfileURI);
-		//-----
+		// -----
 		return notificationsPlugin.getCurrentNotifications(userProfileURI);
 	}
 
@@ -71,5 +72,10 @@ public final class NotificationServicesImpl implements NotificationServices {
 	@Override
 	public void removeAll(final String type, final String targetUrl) {
 		notificationsPlugin.removeAll(type, targetUrl);
+	}
+
+	@Override
+	public void updateFlag(final URI<Account> accountURI, final UUID notificationUUID, final String flag) {
+		notificationsPlugin.updateFlag(accountURI, notificationUUID, flag);
 	}
 }

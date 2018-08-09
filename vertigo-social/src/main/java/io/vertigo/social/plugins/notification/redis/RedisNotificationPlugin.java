@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -119,6 +120,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				.put("creationDate", creationDate)
 				.put("ttlInSeconds", String.valueOf(notification.getTTLInSeconds()))
 				.put("targetUrl", notification.getTargetUrl())
+				.put("flag", notification.getFlag().orElse(""))
 				.build();
 	}
 
@@ -134,6 +136,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 					.withCreationDate(creationDate)
 					.withTTLInSeconds(Integer.parseInt(data.get("ttlInSeconds")))
 					.withTargetUrl(data.get("targetUrl"))
+					.withFlag(Optional.ofNullable(data.get("flag")))
 					.build();
 		} catch (final ParseException e) {
 			throw WrappedException.wrap(e, "Can't parse notification");
@@ -162,6 +165,40 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		}
 		cleanTooOldNotifications(notifications);
 		return notifications;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void updateFlag(final URI<Account> accountURI, final UUID notificationUUID, final String flag) {
+		try (final Jedis jedis = redisConnector.getResource()) {
+			final String updatedNotificationKey = "notif:" + notificationUUID.toString();
+
+			//we get the data of the notif
+			final Notification notification = fromMap(jedis.hgetAll(updatedNotificationKey));
+
+			//we update the data of the notif
+			final Notification newNotification = Notification.builder(notificationUUID)
+					.withContent(notification.getContent())
+					.withCreationDate(notification.getCreationDate())
+					.withSender(notification.getSender())
+					.withTargetUrl(notification.getTargetUrl())
+					.withTTLInSeconds(notification.getTTLInSeconds())
+					.withType(notification.getType())
+					.withTitle(notification.getTitle())
+					.withFlag(Optional.ofNullable(flag))
+					.build();
+
+			//we remove data of this notif
+			jedis.del(updatedNotificationKey);
+
+			try (final Transaction tx = jedis.multi()) {
+				//we store the data of this notification
+				tx.hmset(updatedNotificationKey, toMap(newNotification));
+				tx.exec();
+			} catch (final IOException ex) {
+				throw WrappedException.wrap(ex);
+			}
+		}
 	}
 
 	/** {@inheritDoc} */

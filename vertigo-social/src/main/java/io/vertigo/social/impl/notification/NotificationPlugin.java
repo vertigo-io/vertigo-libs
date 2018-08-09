@@ -53,4 +53,11 @@ public interface NotificationPlugin extends Plugin {
 	 * @param targetUrl Target URL, use to filter all notifications to remove
 	 */
 	void removeAll(String type, String targetUrl);
+
+	/**
+	 * @param account Accout uri
+	 * @param notificationUUID Notification uuid
+	 * @param flag flag
+	 */
+	void updateFlag(URI<Account> accountURI, UUID notificationUUID, String flag);
 }
