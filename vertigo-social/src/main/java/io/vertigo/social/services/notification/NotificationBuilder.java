@@ -38,7 +38,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	private int myTtlInSeconds = -1;
 	private String myTargetUrl;
 	private final UUID uuid;
-	private Optional<String> myUserContent;
+	private String myUserContent;
 
 	/**
 	 * Constructor.
@@ -145,10 +145,10 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 * @return this builder
 	 */
 	public NotificationBuilder withUserContent(final String userContent) {
-		Assertion.checkArgument(myUserContent == null || !myUserContent.isPresent(), "userContent already set");
+		Assertion.checkArgument(myUserContent == null, "userContent already set");
 		Assertion.checkNotNull(userContent);
 		//-----
-		myUserContent = Optional.ofNullable("".equals(userContent) ? null : userContent);// "" translated to Optional.empty
+		myUserContent = ("".equals(userContent) ? null : userContent);// "" translated to Optional.empty
 		return this;
 	}
 
@@ -159,10 +159,6 @@ public final class NotificationBuilder implements Builder<Notification> {
 			myCreationDate = DateUtil.newDateTime();
 		}
 
-		if (myUserContent == null || !myUserContent.isPresent()) {
-			myUserContent = Optional.empty();
-		}
-
-		return new Notification(uuid, mySender, myType, myTitle, myContent, myTtlInSeconds, myCreationDate, myTargetUrl, myUserContent);
+		return new Notification(uuid, mySender, myType, myTitle, myContent, myTtlInSeconds, myCreationDate, myTargetUrl, Optional.ofNullable(myUserContent));
 	}
 }
