@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.commons.daemon.DaemonScheduled;
@@ -52,6 +53,37 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 		}
 
 		//2 - gestion globale async des erreurs
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void updateUserContent(final URI<Account> accountURI, final UUID notificationUUID, final String userContent) {
+		Assertion.checkNotNull(accountURI);
+		Assertion.checkNotNull(notificationUUID);
+		//-----
+		//on recopie la notification et on ajoute la modif
+		final List<Notification> newNotifications = getCurrentNotifications(accountURI)
+				.stream()
+				.map(notification -> (notification.getUuid().equals(notificationUUID)) ?
+				//on remplace la notif
+						updateNotification(notification, userContent)
+						: notification)
+				.collect(Collectors.toList());
+		//on remplace la liste
+		notificationsByAccountURI.put(accountURI, newNotifications);
+	}
+
+	private static Notification updateNotification(final Notification notification, final String userContent) {
+		return Notification.builder(notification.getUuid())
+				.withSender(notification.getSender())
+				.withType(notification.getType())
+				.withTitle(notification.getTitle())
+				.withContent(notification.getContent())
+				.withCreationDate(notification.getCreationDate())
+				.withTTLInSeconds(notification.getTTLInSeconds())
+				.withTargetUrl(notification.getTargetUrl())
+				.withUserContent(userContent != null ? userContent : notification.getUserContent().orElse(null)) //only used for default value
+				.build();
 	}
 
 	/** {@inheritDoc} */
@@ -96,7 +128,10 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 		}
 	}
 
-	@DaemonScheduled(name = "DMN_CLEAN_TOO_OLD_MEMORY_NOTIFICATIONS", periodInSeconds = 1000)
+	/**
+	 * Clean notifications every minutes.
+	 */
+	@DaemonScheduled(name = "DMN_CLEAN_TOO_OLD_MEMORY_NOTIFICATIONS", periodInSeconds = 60)
 	public void cleanTooOldNotifications() {
 		for (final List<Notification> notifications : notificationsByAccountURI.values()) {
 			cleanTooOldNotifications(notifications);
@@ -110,4 +145,5 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	private static boolean isTooOld(final Notification notification) {
 		return notification.getTTLInSeconds() >= 0 && notification.getCreationDate().getTime() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis();
 	}
+
 }

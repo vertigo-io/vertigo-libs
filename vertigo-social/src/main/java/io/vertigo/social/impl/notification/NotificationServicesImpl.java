@@ -31,7 +31,7 @@ import io.vertigo.social.services.notification.Notification;
 import io.vertigo.social.services.notification.NotificationServices;
 
 /**
- * @author pchretien
+ * @author pchretien, npiedeloup, btounkara
  */
 public final class NotificationServicesImpl implements NotificationServices {
 
@@ -75,7 +75,7 @@ public final class NotificationServicesImpl implements NotificationServices {
 	}
 
 	@Override
-	public void updateFlag(final URI<Account> accountURI, final UUID notificationUUID, final String flag) {
-		notificationsPlugin.updateFlag(accountURI, notificationUUID, flag);
+	public void updateUserContent(final URI<Account> accountURI, final UUID notificationUUID, final String userContent) {
+		notificationsPlugin.updateUserContent(accountURI, notificationUUID, userContent);
 	}
 }

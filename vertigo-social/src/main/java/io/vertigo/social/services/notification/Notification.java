@@ -25,7 +25,7 @@ import java.util.UUID;
 import io.vertigo.lang.Assertion;
 
 /**
- * @author pchretien
+ * @author pchretien, npiedeloup, btounkara
  */
 public final class Notification {
 	private final UUID uuid;
@@ -36,7 +36,7 @@ public final class Notification {
 	private final int ttlInSeconds;
 	private final String targetUrl;
 	private final Date creationDate;
-	private final Optional<String> flag;
+	private final Optional<String> userContent;
 
 	/**
 	 * Constructor.
@@ -48,9 +48,10 @@ public final class Notification {
 	 * @param ttlInSeconds TimeToLive in seconds
 	 * @param creationDate Create date
 	 * @param targetUrl Target URL of this notification
+	 * @param userContent Reader's specific content of this notification
 	 */
 	Notification(final UUID uuid, final String sender, final String type, final String title, final String content,
-			final int ttlInSeconds, final Date creationDate, final String targetUrl, final Optional<String> flag) {
+			final int ttlInSeconds, final Date creationDate, final String targetUrl, final Optional<String> userContent) {
 		Assertion.checkNotNull(uuid);
 		Assertion.checkArgNotEmpty(sender);
 		Assertion.checkArgNotEmpty(type);
@@ -59,7 +60,7 @@ public final class Notification {
 		Assertion.checkArgument(ttlInSeconds == -1 || ttlInSeconds > 0, "ttl must be positive or undefined (-1).");
 		Assertion.checkArgNotEmpty(targetUrl);
 		Assertion.checkNotNull(creationDate);
-		Assertion.checkNotNull(flag);
+		Assertion.checkNotNull(userContent);
 		//-----
 		this.uuid = uuid;
 		this.sender = sender;
@@ -69,7 +70,7 @@ public final class Notification {
 		this.ttlInSeconds = ttlInSeconds;
 		this.creationDate = creationDate;
 		this.targetUrl = targetUrl;
-		this.flag = flag;
+		this.userContent = userContent;
 	}
 
 	/**
@@ -146,10 +147,10 @@ public final class Notification {
 	}
 
 	/**
-	 * @return Notification's flag
+	 * @return Specific content linked to reader
 	 */
-	public Optional<String> getFlag() {
-		return flag;
+	public Optional<String> getUserContent() {
+		return userContent;
 	}
 
 }
