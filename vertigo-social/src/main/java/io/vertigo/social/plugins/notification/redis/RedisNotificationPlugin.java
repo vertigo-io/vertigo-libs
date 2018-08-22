@@ -187,11 +187,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 
 			try (final Transaction tx = jedis.multi()) {
 				//we store the data of this notification
-				if (userContent != null) {
-					tx.hset("userContent:" + uuid, updatedAccount, userContent);
-				} else {
-					tx.hdel("userContent:" + uuid, updatedAccount);
-				}
+				tx.hset("userContent:" + uuid, updatedAccount, userContent != null ? userContent : "");
 				tx.exec();
 			} catch (final IOException ex) {
 				throw WrappedException.wrap(ex);

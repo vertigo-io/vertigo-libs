@@ -213,21 +213,29 @@ public class NotificationServicesTest {
 		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
 		Assert.assertEquals("defaultUserContent", notificationServices.getCurrentNotifications(accountURI2).get(0).getUserContent().get());
 
-		notificationServices.updateUserContent(accountURI2, notification.getUuid(), "");
+		notificationServices.updateUserContent(accountURI2, notification.getUuid(), "myUserContent2");
 
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
 		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
 		Assert.assertEquals("myUserContent1", notificationServices.getCurrentNotifications(accountURI1).get(0).getUserContent().get());
 		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
-		Assert.assertEquals("", notificationServices.getCurrentNotifications(accountURI2).get(0).getUserContent().get());
+		Assert.assertEquals("myUserContent2", notificationServices.getCurrentNotifications(accountURI2).get(0).getUserContent().get());
 
-		notificationServices.updateUserContent(accountURI2, notification.getUuid(), null);
+		notificationServices.updateUserContent(accountURI2, notification.getUuid(), ""); // means no userContent => Optional.empty
 
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
 		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
 		Assert.assertEquals("myUserContent1", notificationServices.getCurrentNotifications(accountURI1).get(0).getUserContent().get());
 		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
-		Assert.assertEquals("defaultUserContent", notificationServices.getCurrentNotifications(accountURI2).get(0).getUserContent().get());
+		Assert.assertEquals(false, notificationServices.getCurrentNotifications(accountURI2).get(0).getUserContent().isPresent());
+
+		notificationServices.updateUserContent(accountURI2, notification.getUuid(), null); // means no userContent => Optional.empty
+
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
+		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
+		Assert.assertEquals("myUserContent1", notificationServices.getCurrentNotifications(accountURI1).get(0).getUserContent().get());
+		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
+		Assert.assertEquals(false, notificationServices.getCurrentNotifications(accountURI2).get(0).getUserContent().isPresent());
 	}
 
 	@Test

@@ -48,7 +48,7 @@ public final class Notification {
 	 * @param ttlInSeconds TimeToLive in seconds
 	 * @param creationDate Create date
 	 * @param targetUrl Target URL of this notification
-	 * @param userContent Reader's specific content of this notification
+	 * @param userContent Reader's specific content of this notification (can't be empty)
 	 */
 	Notification(final UUID uuid, final String sender, final String type, final String title, final String content,
 			final int ttlInSeconds, final Date creationDate, final String targetUrl, final Optional<String> userContent) {
@@ -61,6 +61,7 @@ public final class Notification {
 		Assertion.checkArgNotEmpty(targetUrl);
 		Assertion.checkNotNull(creationDate);
 		Assertion.checkNotNull(userContent);
+		Assertion.when(userContent.isPresent()).check(() -> userContent.get().length() > 0, "userContent can't be empty if set");
 		//-----
 		this.uuid = uuid;
 		this.sender = sender;

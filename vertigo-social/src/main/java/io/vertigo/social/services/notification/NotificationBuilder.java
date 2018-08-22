@@ -141,14 +141,14 @@ public final class NotificationBuilder implements Builder<Notification> {
 	}
 
 	/**
-	 * @param userContent Notification's userContent
+	 * @param userContent Notification's userContent ("" and null are translated to Optional.empty)
 	 * @return this builder
 	 */
 	public NotificationBuilder withUserContent(final String userContent) {
 		Assertion.checkArgument(myUserContent == null || !myUserContent.isPresent(), "userContent already set");
 		Assertion.checkNotNull(userContent);
 		//-----
-		myUserContent = Optional.ofNullable(userContent);
+		myUserContent = Optional.ofNullable("".equals(userContent) ? null : userContent);// "" translated to Optional.empty
 		return this;
 	}
 

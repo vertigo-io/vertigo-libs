@@ -82,7 +82,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 				.withCreationDate(notification.getCreationDate())
 				.withTTLInSeconds(notification.getTTLInSeconds())
 				.withTargetUrl(notification.getTargetUrl())
-				.withUserContent(userContent != null ? userContent : notification.getUserContent().orElse(null)) //only used for default value
+				.withUserContent(userContent != null ? userContent : notification.getUserContent().orElse("")) //only used for default value
 				.build();
 	}
 
