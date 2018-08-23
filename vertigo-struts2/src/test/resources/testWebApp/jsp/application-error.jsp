@@ -42,7 +42,7 @@
             list.add(e);
             if (e instanceof io.vertigo.vega.webservice.exception.SessionException) sessionException = true;
             if (e instanceof io.vertigo.struts2.exception.ExpiredContextException) contextException = true;
-            if (e instanceof io.vertigo.vega.webservice.exception.VSecurityException) securityException = true;
+            if (e instanceof io.vertigo.account.authorization.VSecurityException) securityException = true;
             t = e.getCause();
             if (t == null && (e instanceof ServletException)) t = ((ServletException) e).getRootCause();
             if (t == null && (e instanceof java.sql.SQLException)) t = ((java.sql.SQLException) e).getNextException();
