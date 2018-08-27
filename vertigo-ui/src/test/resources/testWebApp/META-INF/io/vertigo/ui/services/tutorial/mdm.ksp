@@ -1,0 +1,19 @@
+package io.vertigo.demo.services.tutorial
+
+alter DtDefinition DT_COMMUNE  {
+ 	sortField : "ID_INSEE"
+ 	displayField : "COMMUNE"
+  	storeName:"inseeCsv"
+}
+
+alter DtDefinition DT_OUI_NON_CHOICE  {
+ 	sortField : "LIBELLE"
+ 	displayField : "LIBELLE"
+  	storeName:"staticOuiNon"
+}
+
+
+alter DtDefinition DT_MOVIE {
+ 	sortField : "TITLE"
+ 	displayField : "TITLE"
+}
