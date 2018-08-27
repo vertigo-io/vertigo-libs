@@ -40,6 +40,7 @@
 		<module>vertigo-geo</module>
 		<module>vertigo-adapters</module>
 		<module>vertigo-dashboard</module>
+		<module>vertigo-ui</module>
 	</modules>
 
 	<scm>
