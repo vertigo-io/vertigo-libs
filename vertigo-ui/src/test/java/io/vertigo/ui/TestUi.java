@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
-import org.eclipse.jetty.apache.jsp.JettyJasperInitializer;
 import org.eclipse.jetty.jsp.JettyJspServlet;
 import org.eclipse.jetty.plus.annotation.ContainerInitializer;
 import org.eclipse.jetty.server.Server;
@@ -35,17 +34,22 @@ import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
+import org.springframework.web.SpringServletContainerInitializer;
 
 import com.machinepublishers.jbrowserdriver.JBrowserDriver;
 import com.machinepublishers.jbrowserdriver.Settings;
 import com.machinepublishers.jbrowserdriver.Timezone;
 
+import io.vertigo.ui.config.MvcWebApplicationInitializer;
+
 public class TestUi {
 
-	private static List<ContainerInitializer> jspInitializers() {
-		final JettyJasperInitializer sci = new JettyJasperInitializer();
+	private static List<ContainerInitializer> springInitializers() {
+		final SpringServletContainerInitializer sci = new SpringServletContainerInitializer();
 		final ContainerInitializer initializer = new ContainerInitializer(sci, null);
+		initializer.addApplicableTypeName(MvcWebApplicationInitializer.class.getCanonicalName());
 		final List<ContainerInitializer> initializers = new ArrayList<>();
 		initializers.add(initializer);
 		return initializers;
@@ -91,10 +95,9 @@ public class TestUi {
 		context.setAttribute("jacoco.exclClassLoaders", "*");
 
 		context.setAttribute("javax.servlet.context.tempdir", getScratchDir());
-		context.setAttribute("org.eclipse.jetty.containerInitializers", jspInitializers());
+		context.setAttribute("org.eclipse.jetty.containerInitializers", springInitializers());
 		context.addBean(new ServletContainerInitializersStarter(context), true);
 		context.setClassLoader(getUrlClassLoader());
-		context.addServlet(jspServletHolder(), "*.jsp");
 
 		context.setClassLoader(new WebAppClassLoader(TestUi.class.getClassLoader(), context));
 
@@ -124,9 +127,9 @@ public class TestUi {
 		}
 	}
 
-	//	@Test
-	//	public void testServer() throws Exception {
-	//		server.join();
-	//	}
+	@Test
+	public void testServer() throws Exception {
+		server.join();
+	}
 
 }
