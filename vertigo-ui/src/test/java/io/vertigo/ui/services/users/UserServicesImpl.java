@@ -23,8 +23,8 @@ import javax.inject.Inject;
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.lang.VUserException;
 import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.ui.controller.TestUserSession;
 import io.vertigo.ui.domain.users.ApplicationUser;
-import io.vertigo.ui.ui.TestUserSession;
 
 @Transactional
 public class UserServicesImpl implements UserServices {

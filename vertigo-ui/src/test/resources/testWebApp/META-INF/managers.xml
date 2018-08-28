@@ -29,7 +29,7 @@
 		<component api="VTransactionManager" class="io.vertigo.commons.impl.transaction.VTransactionManagerImpl" />
 
 		<component api="VSecurityManager" class="io.vertigo.persona.impl.security.VSecurityManagerImpl">
-			<param name="userSessionClassName" value="io.vertigo.ui.ui.TestUserSession" />
+			<param name="userSessionClassName" value="io.vertigo.ui.controller.TestUserSession" />
 		</component>
 
 		<component api="CodecManager" class="io.vertigo.commons.impl.codec.CodecManagerImpl" />

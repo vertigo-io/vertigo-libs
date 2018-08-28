@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui.ui;
+package io.vertigo.ui.controller;
 
 import java.time.ZoneId;
 import java.util.Locale;
