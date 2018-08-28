@@ -34,7 +34,6 @@ import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.springframework.web.SpringServletContainerInitializer;
 
@@ -92,13 +91,12 @@ public class TestUi {
 		server = new Server(port);
 		final WebAppContext context = new WebAppContext(TestUi.class.getClassLoader().getResource("testWebApp/").getFile(), "/test");
 		System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
-		context.setAttribute("jacoco.exclClassLoaders", "*");
+		//context.setAttribute("jacoco.exclClassLoaders", "*");
 
 		context.setAttribute("javax.servlet.context.tempdir", getScratchDir());
 		context.setAttribute("org.eclipse.jetty.containerInitializers", springInitializers());
 		context.addBean(new ServletContainerInitializersStarter(context), true);
-		context.setClassLoader(getUrlClassLoader());
-
+		//context.setClassLoader(getUrlClassLoader());
 		context.setClassLoader(new WebAppClassLoader(TestUi.class.getClassLoader(), context));
 
 		server.setHandler(context);
@@ -127,9 +125,9 @@ public class TestUi {
 		}
 	}
 
-	@Test
-	public void testServer() throws Exception {
-		server.join();
-	}
+	//	@Test
+	//	public void testServer() throws Exception {
+	//		server.join();
+	//	}
 
 }
