@@ -131,7 +131,7 @@ public class TestUi {
 			server.stop();
 		}
 		if (driver != null) {
-			//driver.close();
+			//driver.close(); //plante en NPE sinon
 		}
 	}
 
