@@ -18,6 +18,8 @@
  */
 package io.vertigo.ui;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -26,14 +28,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.jetty.annotations.ServletContainerInitializersStarter;
-import org.eclipse.jetty.jsp.JettyJspServlet;
 import org.eclipse.jetty.plus.annotation.ContainerInitializer;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
 import org.springframework.web.SpringServletContainerInitializer;
 
@@ -57,21 +58,7 @@ public class TestUi {
 	private static ClassLoader getUrlClassLoader() {
 		return new URLClassLoader(new URL[0], TestUi.class.getClassLoader());
 	}
-
-	/**
-	 * Create JSP Servlet (must be named "jsp")
-	 */
-	private static ServletHolder jspServletHolder() {
-		final ServletHolder holderJsp = new ServletHolder("jsp", JettyJspServlet.class);
-		holderJsp.setInitOrder(0);
-		holderJsp.setInitParameter("logVerbosityLevel", "DEBUG");
-		holderJsp.setInitParameter("fork", "false");
-		holderJsp.setInitParameter("xpoweredBy", "false");
-		holderJsp.setInitParameter("compilerTargetVM", "1.8");
-		holderJsp.setInitParameter("compilerSourceVM", "1.8");
-		holderJsp.setInitParameter("keepgenerated", "true");
-		return holderJsp;
-	}
+	
 
 	private static final int port = 18080;
 	private final String baseUrl = "http://localhost:" + port;
@@ -96,7 +83,7 @@ public class TestUi {
 		context.setAttribute("javax.servlet.context.tempdir", getScratchDir());
 		context.setAttribute("org.eclipse.jetty.containerInitializers", springInitializers());
 		context.addBean(new ServletContainerInitializersStarter(context), true);
-		//context.setClassLoader(getUrlClassLoader());
+		context.setClassLoader(getUrlClassLoader());
 		context.setClassLoader(new WebAppClassLoader(TestUi.class.getClassLoader(), context));
 
 		server.setHandler(context);
@@ -120,14 +107,17 @@ public class TestUi {
 		if (server != null) {
 			server.stop();
 		}
-		if (driver != null) {
-			//driver.close();
-		}
 	}
 
-	//	@Test
-	//	public void testServer() throws Exception {
-	//		server.join();
-	//	}
+//	@Test
+//	public void testServer() throws Exception {
+//		server.join();
+//	}
+	
+	@Test
+	public void testLoadLoginPage() {
+		driver.get(baseUrl + "/test/");
+		assertEquals(baseUrl + "/test/", driver.getCurrentUrl());
+	}
 
 }
