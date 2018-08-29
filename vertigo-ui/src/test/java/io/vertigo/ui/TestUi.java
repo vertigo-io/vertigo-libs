@@ -42,7 +42,7 @@ import com.machinepublishers.jbrowserdriver.JBrowserDriver;
 import com.machinepublishers.jbrowserdriver.Settings;
 import com.machinepublishers.jbrowserdriver.Timezone;
 
-import io.vertigo.ui.config.MvcWebApplicationInitializer;
+import io.vertigo.ui.impl.config.MvcWebApplicationInitializer;
 
 public class TestUi {
 
@@ -58,7 +58,6 @@ public class TestUi {
 	private static ClassLoader getUrlClassLoader() {
 		return new URLClassLoader(new URL[0], TestUi.class.getClassLoader());
 	}
-	
 
 	private static final int port = 18080;
 	private final String baseUrl = "http://localhost:" + port;
@@ -109,11 +108,11 @@ public class TestUi {
 		}
 	}
 
-//	@Test
-//	public void testServer() throws Exception {
-//		server.join();
-//	}
-	
+	public static void main(final String[] args) throws Exception {
+		startServer();
+		server.join();
+	}
+
 	@Test
 	public void testLoadLoginPage() {
 		driver.get(baseUrl + "/test/");

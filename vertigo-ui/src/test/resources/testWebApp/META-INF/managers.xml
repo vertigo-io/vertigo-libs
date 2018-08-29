@@ -70,7 +70,11 @@
 		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
 
 	</module>
-
+	<module name="ui">
+		<component api="UiManager" class="io.vertigo.ui.impl.UiManagerImpl" >
+			<param name="controllerRootPackage" value="io.vertigo.ui.controller" />
+		</component>
+	</module>
 	<init>
 		<initializer class="io.vertigo.ui.boot.initializer.LocaleManagerInitializer"/>
 		<initializer class="io.vertigo.ui.boot.initializer.DataBaseInitializer"/>
