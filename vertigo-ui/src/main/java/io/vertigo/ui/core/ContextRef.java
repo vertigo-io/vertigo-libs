@@ -29,7 +29,7 @@ import io.vertigo.lang.Assertion;
  * @param <O> Type d'objet
  */
 public final class ContextRef<O extends Serializable> {
-	private final AbstractActionSupport action;
+	private final AbstractVSpringMvcController controller;
 	private final String contextKey;
 	private final Class<O> valueClass;
 
@@ -37,16 +37,16 @@ public final class ContextRef<O extends Serializable> {
 	 * Constructeur.
 	 * @param contextKey Clé dans le context
 	 * @param valueClass Type du paramètre
-	 * @param action Action struts
+	 * @param controller Action struts
 	 */
-	public ContextRef(final String contextKey, final Class<O> valueClass, final AbstractActionSupport action) {
+	public ContextRef(final String contextKey, final Class<O> valueClass, final AbstractVSpringMvcController controller) {
 		Assertion.checkArgNotEmpty(contextKey);
-		Assertion.checkNotNull(action);
+		Assertion.checkNotNull(controller);
 		Assertion.checkNotNull(valueClass);
 		Assertion.checkArgument(String[].class.equals(valueClass) || String.class.equals(valueClass) || Long.class.equals(valueClass) || Integer.class.equals(valueClass) || Boolean.class.equals(valueClass) || File.class.equals(valueClass), "Le type du paramètre doit être un type primitif (String, Long, Integer, Boolean ou String[]) ou de type File ici {0}.", valueClass.getName());
 		//-----
 		this.contextKey = contextKey;
-		this.action = action;
+		this.controller = controller;
 		this.valueClass = valueClass;
 	}
 
@@ -57,14 +57,14 @@ public final class ContextRef<O extends Serializable> {
 		if (value != null) {
 			Assertion.checkArgument(valueClass.isInstance(value), "Cette valeur n'est pas du bon type ({0} au lieu de {1})", value.getClass(), valueClass);
 		}
-		action.getModel().put(contextKey, value);
+		controller.getModel().put(contextKey, value);
 	}
 
 	/**
 	 * @return Object du context
 	 */
 	public O get() {
-		final Serializable value = action.getModel().get(contextKey);
+		final Serializable value = controller.getModel().get(contextKey);
 		if (value instanceof String[] && !String[].class.equals(valueClass)) { //cas ou la valeur a été settée depuis la request
 			final String firstValue = ((String[]) value).length > 0 ? ((String[]) value)[0] : null;
 			if (firstValue == null || firstValue.isEmpty()) { //depuis la request : empty == null
@@ -90,6 +90,6 @@ public final class ContextRef<O extends Serializable> {
 	 * @return Si cet élément est dans le context.
 	 */
 	public boolean exists() {
-		return action.getModel().containsKey(contextKey);
+		return controller.getModel().containsKey(contextKey);
 	}
 }

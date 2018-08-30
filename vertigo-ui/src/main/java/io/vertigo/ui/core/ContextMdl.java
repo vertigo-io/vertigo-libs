@@ -30,20 +30,20 @@ import io.vertigo.lang.Assertion;
  * @param <O> Type d'objet
  */
 public final class ContextMdl<O extends Entity> {
-	private final AbstractActionSupport action;
+	private final AbstractVSpringMvcController controller;
 	private final String contextKey;
 
 	/**
 	 * Constructeur.
 	 * @param contextKey Clé dans le context
-	 * @param action Action struts
+	 * @param controller Action struts
 	 */
-	public ContextMdl(final String contextKey, final AbstractActionSupport action) {
+	public ContextMdl(final String contextKey, final AbstractVSpringMvcController controller) {
 		Assertion.checkArgNotEmpty(contextKey);
-		Assertion.checkNotNull(action);
+		Assertion.checkNotNull(controller);
 		//-----
 		this.contextKey = contextKey;
-		this.action = action;
+		this.controller = controller;
 	}
 
 	/**
@@ -53,6 +53,6 @@ public final class ContextMdl<O extends Entity> {
 	 */
 	public void publish(final Class<O> dtObjectClass, final String code) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtObjectClass);
-		action.getModel().put(contextKey, new UiMdList<O>(new DtListURIForMasterData(dtDefinition, code)));
+		controller.getModel().put(contextKey, new UiMdList<O>(new DtListURIForMasterData(dtDefinition, code)));
 	}
 }

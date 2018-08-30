@@ -18,40 +18,71 @@
  */
 package io.vertigo.ui.core;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
-import io.vertigo.vega.webservice.model.UiList;
-import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
  * Class d'enregistrement des messages.
- *
  * @author npiedeloup
  */
 public final class SpringMvcUiMessageStack implements UiMessageStack {
 
-	private static final long serialVersionUID = 9216344511798624184L;
+	private static final long serialVersionUID = -2650689827844300786L;
 
-	private final AbstractActionSupport actionSupport;
+	private final List<String> globalErrors = new ArrayList<>();
+	private final List<String> globalWarnings = new ArrayList<>();
+	private final List<String> globalInfos = new ArrayList<>();
+	private final List<String> globalSuccess = new ArrayList<>();
 
-	private static final String FIELD_LABEL_PREFIX = "<label>";
-	private static final String FIELD_LABEL_SUFFIX = "</label>";
+	private final Map<String, List<String>> fieldErrors = new HashMap<>();
+	private final Map<String, List<String>> fieldWarnings = new HashMap<>();
+	private final Map<String, List<String>> fieldInfos = new HashMap<>();
+
+	private final Map<String, Map<String, List<String>>> objectFieldErrors = new HashMap<>();
+	private final Map<String, Map<String, List<String>>> objectFieldWarnings = new HashMap<>();
+	private final Map<String, Map<String, List<String>>> objectFieldInfos = new HashMap<>();
+
+	private final AbstractVSpringMvcController controller;
 
 	/**
-	 * Constructeur.
-	 * @param actionSupport Action où déverser les messages
+	 * Constructor.
+	 * @param uiContextResolver Resolver object to contextKey in request
 	 */
-	public SpringMvcUiMessageStack(final AbstractActionSupport actionSupport) {
-		Assertion.checkNotNull(actionSupport);
+	public SpringMvcUiMessageStack(final AbstractVSpringMvcController controller) {
+		Assertion.checkNotNull(controller);
 		//-----
-		this.actionSupport = actionSupport;
+		this.controller = controller;
+	}
+
+	/**
+	 * Ajoute un message.
+	 * @param level Niveau de message
+	 * @param message Message
+	 */
+	@Override
+	public void addGlobalMessage(final Level level, final String message) {
+		switch (level) {
+			case ERROR:
+				globalErrors.add(message);
+				break;
+			case WARNING:
+				globalWarnings.add(message);
+				break;
+			case INFO:
+				globalInfos.add(message);
+				break;
+			case SUCCESS:
+				globalSuccess.add(message);
+				break;
+			default:
+				throw new UnsupportedOperationException("Unknowned level");
+		}
 	}
 
 	/**
@@ -78,24 +109,12 @@ public final class SpringMvcUiMessageStack implements UiMessageStack {
 		addGlobalMessage(Level.INFO, message);
 	}
 
+	/**
+	 * @param message Message d'info
+	 */
 	@Override
 	public void success(final String message) {
 		addGlobalMessage(Level.SUCCESS, message);
-
-	}
-
-	/**
-	 * Ajoute un message.
-	 * @param level Niveau de message
-	 * @param message Message
-	 */
-	@Override
-	public void addGlobalMessage(final Level level, final String message) {
-		if (level == Level.ERROR) {
-			actionSupport.addActionError(message);
-		} else {
-			actionSupport.addActionMessage(getLevelPrefixMarker(level) + message);
-		}
 	}
 
 	/**
@@ -128,46 +147,90 @@ public final class SpringMvcUiMessageStack implements UiMessageStack {
 		addFieldMessage(Level.INFO, message, dto, fieldName);
 	}
 
+	/* (non-Javadoc)
+	 * @see io.vertigo.vega.webservice.validation.UiMessageStack#addFieldMessage(io.vertigo.vega.webservice.validation.UiMessageStack.Level, java.lang.String, io.vertigo.dynamo.domain.model.DtObject, java.lang.String)
+	 */
 	@Override
-	public void addFieldMessage(final Level level, final String message, final DtObject dtObject, final String fieldName) {
-		addObjectFieldMessage(actionSupport.getModel().findKey(dtObject), level, message, DtObjectUtil.findDtDefinition(dtObject), fieldName);
+	public void addFieldMessage(final Level level, final String message, final DtObject dto, final String fieldName) {
+		addFieldMessage(level, message, controller.getModel().findKey(dto), fieldName);
+
 	}
 
+	/**
+	 * @param level Message level
+	 * @param message Message text
+	 * @param contextKey contextKey in request
+	 * @param fieldName field name
+	 */
 	@Override
 	public void addFieldMessage(final Level level, final String message, final String contextKey, final String fieldName) {
-		final String rootContextKey = contextKey.split("\\.")[0];// We only support List and objects
-		final Serializable object = actionSupport.getModel().get(rootContextKey);
-		if (object instanceof UiObject) {
-			addObjectFieldMessage(contextKey, level, message, ((UiObject) object).getDtDefinition(), fieldName);
-		} else if (object instanceof UiList) {
-			addObjectFieldMessage(contextKey, level, message, ((UiList) object).getDtDefinition(), fieldName);
+		if (contextKey.isEmpty()) {
+			addFieldMessage(level, message, fieldName);
+		} else {
+			addObjectFieldMessage(level, message, contextKey, fieldName);
 		}
-
 	}
 
+	private void addFieldMessage(final Level level, final String message, final String fieldName) {
+		final Map<String, List<String>> fieldMessageMap;
+		switch (level) {
+			case ERROR:
+				fieldMessageMap = fieldErrors;
+				break;
+			case WARNING:
+				fieldMessageMap = fieldWarnings;
+				break;
+			case INFO:
+				fieldMessageMap = fieldInfos;
+				break;
+			case SUCCESS: //unsupported for fields
+			default:
+				throw new UnsupportedOperationException("Unknowned level");
+		}
+		final String fieldKey = fieldName;
+		List<String> messages = fieldMessageMap.get(fieldKey);
+		if (messages == null) {
+			messages = new ArrayList<>();
+			fieldMessageMap.put(fieldKey, messages);
+		}
+		messages.add(message);
+	}
+
+	private void addObjectFieldMessage(final Level level, final String message, final String contextKey, final String fieldName) {
+		final Map<String, Map<String, List<String>>> fieldMessageMap;
+		switch (level) {
+			case ERROR:
+				fieldMessageMap = objectFieldErrors;
+				break;
+			case WARNING:
+				fieldMessageMap = objectFieldWarnings;
+				break;
+			case INFO:
+				fieldMessageMap = objectFieldInfos;
+				break;
+			case SUCCESS: //unsupported for fields
+			default:
+				throw new UnsupportedOperationException("Unknowned level");
+		}
+		Map<String, List<String>> objectMessages = fieldMessageMap.get(contextKey);
+		if (objectMessages == null) {
+			objectMessages = new HashMap<>();
+			fieldMessageMap.put(contextKey, objectMessages);
+		}
+		List<String> messages = objectMessages.get(fieldName);
+		if (messages == null) {
+			messages = new ArrayList<>();
+			objectMessages.put(fieldName, messages);
+		}
+		messages.add(message);
+	}
+
+	/**
+	 * @return if there are errors in this stack.
+	 */
 	@Override
 	public boolean hasErrors() {
-		return actionSupport.hasActionErrors() || actionSupport.hasErrors() || actionSupport.hasFieldErrors();
+		return !globalErrors.isEmpty() || !fieldErrors.isEmpty() || !objectFieldErrors.isEmpty();
 	}
 
-	private void addObjectFieldMessage(final String contextKey, final Level level, final String message, final DtDefinition dtDefinition, final String fieldName) {
-		Assertion.checkArgNotEmpty(contextKey);
-		Assertion.checkNotNull(level);
-		Assertion.checkArgNotEmpty(message);
-		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkArgNotEmpty(fieldName);
-		//-----
-		if (level == Level.ERROR) {
-			actionSupport.addFieldError(contextKey + "." + fieldName, message);
-		} else {
-			final String constFieldName = StringUtil.camelToConstCase(fieldName);
-			final DtField dtField = dtDefinition.getField(constFieldName);
-			actionSupport.addActionMessage(getLevelPrefixMarker(level) + FIELD_LABEL_PREFIX + dtField.getLabel().getDisplay() + FIELD_LABEL_SUFFIX + message);
-		}
-
-	}
-
-	private static String getLevelPrefixMarker(final Level level) {
-		return level.toString() + ":";
-	}
 }

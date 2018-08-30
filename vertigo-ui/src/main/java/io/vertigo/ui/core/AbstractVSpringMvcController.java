@@ -19,45 +19,33 @@
 package io.vertigo.ui.core;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.nio.charset.Charset;
 import java.util.Enumeration;
-import java.util.Map.Entry;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
-
-import io.vertigo.app.Home;
-import io.vertigo.commons.codec.Codec;
-import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.codec.Encoder;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.ui.exception.ExpiredContextException;
 
 /**
  * Super class des Actions SpringMvc.
  *
- * @author npiedeloup
+ * @author npiedeloup, mlaroche
  */
-@Controller
-public abstract class AbstractActionSupport  {
-	
+public abstract class AbstractVSpringMvcController {
+
 	/** Clé de la collection des contexts dans le KVStoreManager. */
 	public static final String CONTEXT_COLLECTION_NAME = "VActionContext";
 
@@ -87,14 +75,10 @@ public abstract class AbstractActionSupport  {
 	}
 
 	@Inject
-	private HttpServletRequest request;
-	@Inject
 	private HttpServletResponse response;
 	private KActionContext context;
 	@Inject
 	private KVStoreManager kvStoreManager;
-	@Inject
-	private CodecManager codecManager;
 	@Inject
 	private VTransactionManager transactionManager;
 	@Inject
@@ -102,28 +86,18 @@ public abstract class AbstractActionSupport  {
 
 	private final SpringMvcUiMessageStack uiMessageStack;
 
-	/**
-	 * Constructeur.
-	 */
-	protected AbstractActionSupport() {
-		DIInjector.injectMembers(this, Home.getApp().getComponentSpace());
+	protected AbstractVSpringMvcController() {
 		uiMessageStack = new SpringMvcUiMessageStack(this);
 	}
 
-	/** {@inheritDoc} */
-	
-	public final void prepare() throws ExpiredContextException {
-		prepareContext(request);
-	}
-
-	private void prepareContext(final HttpServletRequest request) throws ExpiredContextException {
+	public void prepareContext(final HttpServletRequest request) throws ExpiredContextException {
 		final String ctxId = request.getParameter(KActionContext.CTX);
 		if ("POST".equals(request.getMethod()) || ctxId != null && acceptCtxQueryParam()) {
 			if (ctxId == null) {
 				contextMiss(null);
 			} else {
 				try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
-					context = kvStoreManager.find(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(ctxId, request), KActionContext.class).get();
+					context = kvStoreManager.find(CONTEXT_COLLECTION_NAME, ctxId, KActionContext.class).get();
 					transactionWritable.commit();
 				}
 
@@ -143,34 +117,8 @@ public abstract class AbstractActionSupport  {
 		}
 	}
 
-	private String obtainStoredCtxId(final String ctxId, final HttpServletRequest request) {
-		if (bindCtxToSession()) {
-			final HttpSession session = request.getSession(false);
-			if (session != null) {
-				final Codec<byte[], String> base64Codec = codecManager.getBase64Codec();
-				final Encoder<byte[], byte[]> sha256Encoder = codecManager.getSha256Encoder();
-				final String sessionIdHash = base64Codec.encode(sha256Encoder.encode(session.getId().getBytes(Charset.forName("utf8"))));
-
-				return new StringBuilder(ctxId)
-						.append("-")
-						.append(sessionIdHash)
-						.toString();
-			}
-		}
-		return ctxId;
-	}
-
 	private boolean acceptCtxQueryParam() {
 		return this.getClass().isAnnotationPresent(AcceptCtxQueryParam.class);
-	}
-
-	/**
-	 * Lock context to sessionId.
-	 * Should be desactivated by devs for sessionLess actions.
-	 * @return if ctx is bind to session
-	 */
-	protected boolean bindCtxToSession() {
-		return true;
 	}
 
 	/**
@@ -225,13 +173,13 @@ public abstract class AbstractActionSupport  {
 		try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
 			//Suite à SpringMvc 2.5 : les fichiers sont des UploadedFile non sérializable.
 			//On vérifie qu'ils ont été consommés
-//			for (final Entry<String, Serializable> contextEntry : context.entrySet()) {
-//				if (contextEntry.getValue() instanceof UploadedFile[]) { //plus globalement !Serializable, mais on ne peut plus adapter le message
-//					throw new VSystemException("Le fichier '{0}' a été envoyé mais pas consommé par l'action", contextEntry.getKey());
-//					//sinon un warn, et on le retire du context ?
-//				}
-//			}
-			kvStoreManager.put(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(context.getId(), ServletActionContext.getRequest()), context);
+			//			for (final Entry<String, Serializable> contextEntry : context.entrySet()) {
+			//				if (contextEntry.getValue() instanceof UploadedFile[]) { //plus globalement !Serializable, mais on ne peut plus adapter le message
+			//					throw new VSystemException("Le fichier '{0}' a été envoyé mais pas consommé par l'action", contextEntry.getKey());
+			//					//sinon un warn, et on le retire du context ?
+			//				}
+			//			}
+			kvStoreManager.put(CONTEXT_COLLECTION_NAME, context.getId(), context);
 			transactionWritable.commit();
 		}
 	}
@@ -242,13 +190,13 @@ public abstract class AbstractActionSupport  {
 	}
 
 	/** {@inheritDoc} */
-	
+
 	public final void validate() {
 		//rien
 	}
 
 	/** {@inheritDoc} */
-	
+
 	public final KActionContext getModel() {
 		return context;
 	}
@@ -320,12 +268,12 @@ public abstract class AbstractActionSupport  {
 		}
 	}
 
-//	/**
-//	 * @return VFileResponseBuilder pour l'envoi de fichier
-//	 */
-//	public final VFileResponseBuilder createVFileResponseBuilder() {
-//		return new VFileResponseBuilder(response);
-//	}
+	//	/**
+	//	 * @return VFileResponseBuilder pour l'envoi de fichier
+	//	 */
+	//	public final VFileResponseBuilder createVFileResponseBuilder() {
+	//		return new VFileResponseBuilder(response);
+	//	}
 
 	/**
 	 * @return Pile des messages utilisateur.
@@ -335,13 +283,20 @@ public abstract class AbstractActionSupport  {
 	}
 
 	/** {@inheritDoc} */
-	
+
 	public final void setServletResponse(final HttpServletResponse servletResponse) {
 		response = servletResponse;
 	}
 
-	/** {@inheritDoc}
-	 * @deprecated Utiliser getUiMessageStack() */
-	//We keep the deprecated, to keep a warning to not use the SpringMvc method
-	
+	@GetMapping("/")
+	public String none() {
+		return "index";
+	}
+
+	public String refresh() {
+		return getPageName();
+	}
+
+	public abstract String getPageName();
+
 }

@@ -35,7 +35,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
  * @param <O> Type d'objet
  */
 public final class ContextList<O extends DtObject> {
-	private final AbstractActionSupport action;
+	private final AbstractVSpringMvcController controller;
 	private final UiMessageStack uiMessageStack;
 	private final String contextKey;
 	private final DtObjectValidator<O> validator;
@@ -44,46 +44,46 @@ public final class ContextList<O extends DtObject> {
 	/**
 	* Constructeur.
 	* @param contextKey Clé dans le context
-	* @param action Action struts
+	* @param controller Action struts
 	*/
-	public ContextList(final String contextKey, final AbstractActionSupport action) {
-		this(contextKey, new DefaultDtObjectValidator<O>(), Optional.empty(), action);
+	public ContextList(final String contextKey, final AbstractVSpringMvcController controller) {
+		this(contextKey, new DefaultDtObjectValidator<O>(), Optional.empty(), controller);
 	}
 
 	/**
 	* Constructeur.
 	* @param contextKey Clé dans le context
-	* @param action Action struts
+	* @param controller Action struts
 	*/
-	public ContextList(final String contextKey, final DtFieldName<O> keyFieldName, final AbstractActionSupport action) {
-		this(contextKey, new DefaultDtObjectValidator<O>(), Optional.of(keyFieldName), action);
+	public ContextList(final String contextKey, final DtFieldName<O> keyFieldName, final AbstractVSpringMvcController controller) {
+		this(contextKey, new DefaultDtObjectValidator<O>(), Optional.of(keyFieldName), controller);
 	}
 
 	/**
 	 * Constructeur.
 	 * @param contextKey Clé dans le context
 	 * @param validator Validator a utiliser
-	 * @param action Action struts
+	 * @param controller Action struts
 	 */
-	public ContextList(final String contextKey, final DtObjectValidator<O> validator, final AbstractActionSupport action) {
-		this(contextKey, new DefaultDtObjectValidator<O>(), Optional.empty(), action);
+	public ContextList(final String contextKey, final DtObjectValidator<O> validator, final AbstractVSpringMvcController controller) {
+		this(contextKey, new DefaultDtObjectValidator<O>(), Optional.empty(), controller);
 	}
 
 	/**
 	 * Constructeur.
 	 * @param contextKey Clé dans le context
 	 * @param validator Validator a utiliser
-	 * @param action Action struts
+	 * @param controller Action struts
 	 */
-	public ContextList(final String contextKey, final DtObjectValidator<O> validator, final Optional<DtFieldName<O>> keyFieldNameOpt, final AbstractActionSupport action) {
+	public ContextList(final String contextKey, final DtObjectValidator<O> validator, final Optional<DtFieldName<O>> keyFieldNameOpt, final AbstractVSpringMvcController controller) {
 		Assertion.checkArgNotEmpty(contextKey);
-		Assertion.checkNotNull(action);
+		Assertion.checkNotNull(controller);
 		Assertion.checkNotNull(validator);
 		Assertion.checkNotNull(keyFieldNameOpt);
 		//-----
 		this.contextKey = contextKey;
-		this.action = action;
-		this.uiMessageStack = action.getUiMessageStack();
+		this.controller = controller;
+		this.uiMessageStack = controller.getUiMessageStack();
 		this.validator = validator;
 		this.keyFieldNameOpt = keyFieldNameOpt;
 	}
@@ -93,14 +93,14 @@ public final class ContextList<O extends DtObject> {
 	 * @param dtList List à publier
 	 */
 	public void publish(final DtList<O> dtList) {
-		action.getModel().put(contextKey, new UiListUnmodifiable<>(dtList, keyFieldNameOpt));
+		controller.getModel().put(contextKey, new UiListUnmodifiable<>(dtList, keyFieldNameOpt));
 	}
 
 	/**
 	 * @return List des objets métiers validée. Lance une exception si erreur.
 	 */
 	public DtList<O> readDtList() {
-		return ((UiListUnmodifiable<O>) action.getModel().<O> getUiList(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
+		return ((UiListUnmodifiable<O>) controller.getModel().<O> getUiList(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
 	}
 
 }

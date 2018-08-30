@@ -34,7 +34,7 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
  * @param <O> Type d'objet
  */
 public final class ContextForm<O extends DtObject> {
-	private final AbstractActionSupport action;
+	private final AbstractVSpringMvcController controller;
 	private final UiMessageStack uiMessageStack;
 	private final String contextKey;
 	private final DtObjectValidator<O> validator;
@@ -46,10 +46,10 @@ public final class ContextForm<O extends DtObject> {
 	/**
 	 * Constructeur.
 	 * @param contextKey Clé dans le context
-	 * @param action Action struts
+	 * @param controller Action struts
 	 */
-	public ContextForm(final String contextKey, final AbstractActionSupport action) {
-		this(contextKey, new DefaultDtObjectValidator<O>(), action);
+	public ContextForm(final String contextKey, final AbstractVSpringMvcController controller) {
+		this(contextKey, new DefaultDtObjectValidator<O>(), controller);
 	}
 
 	/**
@@ -58,14 +58,14 @@ public final class ContextForm<O extends DtObject> {
 	 * @param validator Validator a utiliser
 	 * @param action Action struts
 	 */
-	public ContextForm(final String contextKey, final DtObjectValidator<O> validator, final AbstractActionSupport action) {
+	public ContextForm(final String contextKey, final DtObjectValidator<O> validator, final AbstractVSpringMvcController controller) {
 		Assertion.checkArgNotEmpty(contextKey);
-		Assertion.checkNotNull(action);
+		Assertion.checkNotNull(controller);
 		Assertion.checkNotNull(validator);
 		//-----
 		this.contextKey = contextKey;
-		this.action = action;
-		this.uiMessageStack = action.getUiMessageStack();
+		this.controller = controller;
+		this.uiMessageStack = controller.getUiMessageStack();
 		this.validator = validator;
 	}
 
@@ -76,7 +76,7 @@ public final class ContextForm<O extends DtObject> {
 	public void publish(final O dto) {
 		final UiObject<O> strutsUiObject = new SpringMvcUiObject<>(dto);
 		strutsUiObject.setInputKey(contextKey);
-		action.getModel().put(contextKey, strutsUiObject);
+		controller.getModel().put(contextKey, strutsUiObject);
 	}
 
 	/**
@@ -106,6 +106,6 @@ public final class ContextForm<O extends DtObject> {
 	 * @return Objet d'IHM. Peut contenir des erreurs.
 	 */
 	public UiObject<O> getUiObject() {
-		return action.getModel().<O> getUiObject(contextKey);
+		return controller.getModel().<O> getUiObject(contextKey);
 	}
 }

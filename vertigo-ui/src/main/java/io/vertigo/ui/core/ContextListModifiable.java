@@ -34,7 +34,7 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
  * @param <O> Type d'objet
  */
 public final class ContextListModifiable<O extends DtObject> {
-	private final AbstractActionSupport action;
+	private final AbstractVSpringMvcController controller;
 	private final UiMessageStack uiMessageStack;
 	private final String contextKey;
 	private final DtObjectValidator<O> validator;
@@ -46,26 +46,26 @@ public final class ContextListModifiable<O extends DtObject> {
 	/**
 	 * Constructeur.
 	 * @param contextKey Clé dans le context
-	 * @param action Action struts
+	 * @param controller Action struts
 	 */
-	public ContextListModifiable(final String contextKey, final AbstractActionSupport action) {
-		this(contextKey, new DefaultDtObjectValidator<O>(), action);
+	public ContextListModifiable(final String contextKey, final AbstractVSpringMvcController controller) {
+		this(contextKey, new DefaultDtObjectValidator<O>(), controller);
 	}
 
 	/**
 	 * Constructeur.
 	 * @param contextKey Clé dans le context
 	 * @param validator Validator a utiliser
-	 * @param action Action struts
+	 * @param controller Action struts
 	 */
-	public ContextListModifiable(final String contextKey, final DtObjectValidator<O> validator, final AbstractActionSupport action) {
+	public ContextListModifiable(final String contextKey, final DtObjectValidator<O> validator, final AbstractVSpringMvcController controller) {
 		Assertion.checkArgNotEmpty(contextKey);
-		Assertion.checkNotNull(action);
+		Assertion.checkNotNull(controller);
 		Assertion.checkNotNull(validator);
 		//-----
 		this.contextKey = contextKey;
-		this.action = action;
-		this.uiMessageStack = action.getUiMessageStack();
+		this.controller = controller;
+		this.uiMessageStack = controller.getUiMessageStack();
 		this.validator = validator;
 	}
 
@@ -74,7 +74,7 @@ public final class ContextListModifiable<O extends DtObject> {
 	 * @param dtList List à publier
 	 */
 	public void publish(final DtList<O> dtList) {
-		action.getModel().put(contextKey, new SpringMvcUiListModifiable<>(dtList, contextKey));
+		controller.getModel().put(contextKey, new SpringMvcUiListModifiable<>(dtList, contextKey));
 	}
 
 	/**
@@ -103,6 +103,6 @@ public final class ContextListModifiable<O extends DtObject> {
 	 * @return List des objets d'IHM. Peut contenir des erreurs.
 	 */
 	public SpringMvcUiListModifiable<O> getUiListModifiable() {
-		return action.getModel().<O> getUiListModifiable(contextKey);
+		return controller.getModel().<O> getUiListModifiable(contextKey);
 	}
 }
