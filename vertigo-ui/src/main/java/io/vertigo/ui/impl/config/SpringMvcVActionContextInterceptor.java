@@ -31,7 +31,7 @@ public class SpringMvcVActionContextInterceptor implements HandlerInterceptor {
 				if (!controller.getModel().isDirty()) {
 					controller.storeContext();
 				}
-				modelAndView.getModel().put("vContext", controller.getModel());
+				//modelAndView.getModel().put("vContext", controller.getModel());
 			}
 		}
 	}

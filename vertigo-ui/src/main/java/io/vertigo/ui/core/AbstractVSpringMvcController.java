@@ -29,7 +29,10 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -282,21 +285,28 @@ public abstract class AbstractVSpringMvcController {
 		return uiMessageStack;
 	}
 
-	/** {@inheritDoc} */
-
-	public final void setServletResponse(final HttpServletResponse servletResponse) {
-		response = servletResponse;
-	}
-
 	@GetMapping("/")
 	public String none() {
-		return "index";
+		return getPageName();
 	}
 
 	public String refresh() {
 		return getPageName();
 	}
 
-	public abstract String getPageName();
+	public String getPageName() {
+		Assertion.checkState(this.getClass().isAnnotationPresent(RequestMapping.class), "Impossible to retrieve pageName from annotation. You must provide a @RequestMapping on the controler {0} or override getPageName()", getClass().getName());
+		final String path = this.getClass().getAnnotation(RequestMapping.class).value()[0];
+		return path.startsWith("/") ? path.substring(1) : path;
+	}
+
+	@ModelAttribute
+	public void initModel(final Model model) {
+		model.addAttribute("vContext", getModel());
+		// here we can retrieve anything and put it into the model or in our context
+		// we can also use argument resolvers to retrieve attributes in our context for convenience (a DtObject or an UiObject can be retrieved as parameters
+		// easily from our vContext since we have access to the modelandviewContainer in a parameterResolver...)
+
+	}
 
 }

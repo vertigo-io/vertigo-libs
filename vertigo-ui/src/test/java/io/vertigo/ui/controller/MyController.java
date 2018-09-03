@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.WebApplicationContext;
@@ -12,12 +12,13 @@ import org.springframework.web.context.WebApplicationContext;
 import io.vertigo.ui.core.AbstractVSpringMvcController;
 import io.vertigo.ui.core.ContextForm;
 import io.vertigo.ui.core.ContextRef;
+import io.vertigo.ui.core.KActionContext;
 import io.vertigo.ui.domain.movies.Movie;
 import io.vertigo.ui.services.movies.MovieServices;
 
 @Controller
 @Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.NO)
-@RequestMapping("/my")
+@RequestMapping("/my/toto")
 public class MyController extends AbstractVSpringMvcController {
 
 	@Autowired
@@ -37,15 +38,10 @@ public class MyController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/")
-	public String testPost(final Model model) {
+	public String testPost(@ModelAttribute("vContext") final KActionContext context) {
 		final Movie movie = movieForm.readDto();
 		messageRef.set("Movie retrieved in storedContext : " + movie.getTitle());
 		return refresh();
-	}
-
-	@Override
-	public String getPageName() {
-		return "index";
 	}
 
 }

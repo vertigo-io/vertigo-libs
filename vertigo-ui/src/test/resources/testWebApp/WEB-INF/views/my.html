@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+
+<title>My</title>
+</head>
+<body>
+   <h1>MyController</h1>
+   <p th:text="${vContext.message}"></p>
+   <p th:text="${vContext.CTX}"></p>
+   <form method="post">
+   		<button type="submit" value="Post"></button>
+   		<input type="hidden" name="CTX" th:value="${vContext.CTX}">
+   </form>
+</body>
+</html>
