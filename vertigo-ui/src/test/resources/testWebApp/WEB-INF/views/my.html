@@ -7,11 +7,11 @@
 </head>
 <body>
    <h1>MyController</h1>
-   <p th:text="${vContext.message}"></p>
-   <p th:text="${vContext.CTX}"></p>
-   <form method="post">
-   		<button type="submit" value="Post"></button>
-   		<input type="hidden" name="CTX" th:value="${vContext.CTX}">
+   <h1>Form</h1>
+   <form action="#" th:action="@{/my/}" th:object="${model}" method="post">
+        <p>Title: <input type="text" th:field="*{vContext[movie][title]}" /></p>
+        <p><input type="submit" value="Submit" />
+   		<input type="hidden" name="CTX" th:value="${model.vContext[CTX]}">
    </form>
 </body>
 </html>

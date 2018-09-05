@@ -56,7 +56,7 @@ public final class UiUtil implements Serializable {
 	 * @return Nom de l'object dans le context
 	 */
 	public static String contextKey(final UiObject<?> uiObject, final Model model) {
-		final KActionContext kActionContext = ((AbstractActionSupport) model.getActionInvocation().getAction()).getModel();
+		final ViewContext kActionContext = ((AbstractActionSupport) model.getActionInvocation().getAction()).getModel();
 		return kActionContext.findKey(uiObject);
 	}
 

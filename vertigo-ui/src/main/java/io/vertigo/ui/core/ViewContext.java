@@ -19,6 +19,7 @@
 package io.vertigo.ui.core;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -29,12 +30,16 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
+import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
+import io.vertigo.vega.webservice.validation.DtObjectValidator;
+import io.vertigo.vega.webservice.validation.UiMessageStack;
+import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 /**
  * Liste des couples (clé, object) enregistrés.
  * @author npiedeloup
  */
-public final class KActionContext extends HashMap<String, Serializable> {
+public final class ViewContext extends HashMap<String, Serializable> {
 	/** Clée de l'id de context dans le context. */
 	public static final String CTX = "CTX";
 	private static final long serialVersionUID = 2850788652438173312L;
@@ -46,13 +51,6 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	private final Map<UiList<?>, String> reverseUiListIndex = new IdentityHashMap<>();
 	private boolean unmodifiable; //initialisé à false
 	private boolean dirty = false;
-
-	/**
-	 * Constructeur.
-	 */
-	public KActionContext() {
-		super();
-	}
 
 	/** {@inheritDoc} */
 	@Override
@@ -251,5 +249,49 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	 */
 	public boolean isDirty() {
 		return dirty;
+	}
+
+	public ViewContext getVContext() {
+		return this;
+	}
+
+	/**
+	 * Ajoute un objet de type form au context.
+	 * @param dto Objet à publier
+	 */
+	public <O extends DtObject> void publish(final String contextKey, final O dto) {
+		final UiObject<O> strutsUiObject = new SpringMvcUiObject<>(dto);
+		strutsUiObject.setInputKey(contextKey);
+		put(contextKey, strutsUiObject);
+	}
+
+	/**
+	 * Vérifie les erreurs de l'objet. Celles-ci sont ajoutées à l'uiMessageStack si nécessaire.
+	 */
+	public void checkErrors(final String contextKey, final UiMessageStack uiMessageStack) {
+		getUiObject(contextKey).checkFormat(uiMessageStack);
+		if (uiMessageStack.hasErrors()) {
+			throw new ValidationUserException();
+		}
+	}
+
+	/**
+	 * @return objet métier valid�. Lance une exception si erreur.
+	 */
+	public <O extends DtObject> O readDto(final String contextKey, final UiMessageStack uiMessageStack) {
+		return readDto(contextKey, new DefaultDtObjectValidator<>(), uiMessageStack);
+	}
+
+	/**
+	 * @return objet métier valid�. Lance une exception si erreur.
+	 */
+	public <O extends DtObject> O readDto(final String contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
+		checkErrors(contextKey, uiMessageStack);
+		// ---
+		final O validatedDto = ((UiObject<O>) getUiObject(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
+		if (uiMessageStack.hasErrors()) {
+			throw new ValidationUserException();
+		}
+		return validatedDto;
 	}
 }

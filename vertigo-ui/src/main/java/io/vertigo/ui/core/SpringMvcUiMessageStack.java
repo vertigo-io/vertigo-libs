@@ -48,16 +48,16 @@ public final class SpringMvcUiMessageStack implements UiMessageStack {
 	private final Map<String, Map<String, List<String>>> objectFieldWarnings = new HashMap<>();
 	private final Map<String, Map<String, List<String>>> objectFieldInfos = new HashMap<>();
 
-	private final AbstractVSpringMvcController controller;
+	private final ViewContext viewContext;
 
 	/**
 	 * Constructor.
 	 * @param uiContextResolver Resolver object to contextKey in request
 	 */
-	public SpringMvcUiMessageStack(final AbstractVSpringMvcController controller) {
-		Assertion.checkNotNull(controller);
+	public SpringMvcUiMessageStack(final ViewContext viewContext) {
+		Assertion.checkNotNull(viewContext);
 		//-----
-		this.controller = controller;
+		this.viewContext = viewContext;
 	}
 
 	/**
@@ -152,7 +152,7 @@ public final class SpringMvcUiMessageStack implements UiMessageStack {
 	 */
 	@Override
 	public void addFieldMessage(final Level level, final String message, final DtObject dto, final String fieldName) {
-		addFieldMessage(level, message, controller.getModel().findKey(dto), fieldName);
+		addFieldMessage(level, message, viewContext.findKey(dto), fieldName);
 
 	}
 

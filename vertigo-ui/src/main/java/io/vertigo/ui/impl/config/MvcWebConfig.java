@@ -36,6 +36,7 @@ public class MvcWebConfig implements WebMvcConfigurer, ApplicationContextAware {
 		templateResolver.setApplicationContext(applicationContext);
 		templateResolver.setPrefix("/WEB-INF/views/");
 		templateResolver.setSuffix(".html");
+		templateResolver.setCacheable(false);
 		return templateResolver;
 	}
 

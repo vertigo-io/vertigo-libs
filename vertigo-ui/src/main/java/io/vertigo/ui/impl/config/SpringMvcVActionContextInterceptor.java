@@ -28,7 +28,7 @@ public class SpringMvcVActionContextInterceptor implements HandlerInterceptor {
 			final HandlerMethod handlerMethod = (HandlerMethod) handler;
 			if (AbstractVSpringMvcController.class.isAssignableFrom(handlerMethod.getBeanType())) {
 				final AbstractVSpringMvcController controller = (AbstractVSpringMvcController) handlerMethod.getBean();
-				if (!controller.getModel().isDirty()) {
+				if (!controller.isViewContextDirty()) {
 					controller.storeContext();
 				}
 				//modelAndView.getModel().put("vContext", controller.getModel());
