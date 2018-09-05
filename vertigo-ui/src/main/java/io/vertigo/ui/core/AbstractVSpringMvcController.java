@@ -18,7 +18,6 @@
  */
 package io.vertigo.ui.core;
 
-import java.io.IOException;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -27,18 +26,17 @@ import java.util.Enumeration;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 import io.vertigo.ui.exception.ExpiredContextException;
 
 /**
@@ -77,19 +75,15 @@ public abstract class AbstractVSpringMvcController {
 	}
 
 	@Inject
-	private HttpServletResponse response;
-
-	private ViewContext viewContext;
-	@Inject
 	private KVStoreManager kvStoreManager;
 	@Inject
 	private VTransactionManager transactionManager;
 	@Inject
 	private ParamManager paramManager;
 
-	private SpringMvcUiMessageStack uiMessageStack;
-
 	public void prepareContext(final HttpServletRequest request) throws ExpiredContextException {
+		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+		ViewContext viewContext = null;
 		final String ctxId = request.getParameter(ViewContext.CTX);
 		if ("POST".equals(request.getMethod()) || ctxId != null && acceptCtxQueryParam()) {
 			if (ctxId == null) {
@@ -105,16 +99,37 @@ public abstract class AbstractVSpringMvcController {
 				}
 				viewContext.makeModifiable();
 			}
+			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
+			attributes.setAttribute("uiMessageStack", new SpringMvcUiMessageStack(viewContext), RequestAttributes.SCOPE_REQUEST);
 		} else {
 			viewContext = new ViewContext();
-			initContextUrlParameters(request);
+			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
+			attributes.setAttribute("uiMessageStack", new SpringMvcUiMessageStack(viewContext), RequestAttributes.SCOPE_REQUEST);
+			initContextUrlParameters(request, viewContext);
 			//TODO vérifier que l'action demandée n'attendait pas de context : il va etre recrée vide ce qui n'est pas bon dans certains cas.
-			preInitContext();
+			preInitContext(viewContext);
 			Assertion.checkState(viewContext.containsKey(UTIL_CONTEXT_KEY), "Pour surcharger preInitContext vous devez rappeler les parents super.preInitContext(). Action: {0}",
 					getClass().getSimpleName());
 			//initContext();
 		}
-		uiMessageStack = new SpringMvcUiMessageStack(viewContext);
+
+	}
+
+	@ModelAttribute
+	public void storeContext(final Model model) {
+		//model.addAllAttributes(getModel());
+		model.addAttribute("model", getViewContext());
+		// here we can retrieve anything and put it into the model or in our context
+		// we can also use argument resolvers to retrieve attributes in our context for convenience (a DtObject or an UiObject can be retrieved as parameters
+		// easily from our vContext since we have access to the modelandviewContainer in a parameterResolver...)
+
+	}
+
+	@ModelAttribute
+	public void mapRequestParams(@ModelAttribute("model") final ViewContext kActionContext, final Model model) {
+		// just use springMVC value mapper
+		model.addAttribute("viewContextLoaded", Boolean.TRUE);
+
 	}
 
 	private boolean acceptCtxQueryParam() {
@@ -146,7 +161,7 @@ public abstract class AbstractVSpringMvcController {
 	 * Preinitialisation du context, pour ajouter les composants standard.
 	 * Si surcharger doit rappeler le super.preInitContext();
 	 */
-	protected void preInitContext() {
+	protected void preInitContext(final ViewContext viewContext) {
 		viewContext.put("appVersion", paramManager.getParam("app.version").getValueAsString());
 		viewContext.put(UTIL_CONTEXT_KEY, new UiUtil());
 		toModeReadOnly();
@@ -156,7 +171,7 @@ public abstract class AbstractVSpringMvcController {
 	 * Initialisation du context pour ajouter les paramètres passés par l'url.
 	 * Les paramètres sont préfixés par "param."
 	 */
-	private void initContextUrlParameters(final HttpServletRequest request) {
+	private static void initContextUrlParameters(final HttpServletRequest request, final ViewContext viewContext) {
 		String name;
 		for (final Enumeration<String> names = request.getParameterNames(); names.hasMoreElements();) {
 			name = names.nextElement();
@@ -169,6 +184,7 @@ public abstract class AbstractVSpringMvcController {
 	 * Utilisé par le KActionContextStoreInterceptor.
 	 */
 	public final void storeContext() {
+		final ViewContext viewContext = getViewContext();
 		viewContext.makeUnmodifiable();
 		try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
 			//Suite à SpringMvc 2.5 : les fichiers sont des UploadedFile non sérializable.
@@ -185,27 +201,26 @@ public abstract class AbstractVSpringMvcController {
 	}
 
 	/** {@inheritDoc} */
-	public String execute() {
-		return NONE;
-	}
-
-	/** {@inheritDoc} */
 
 	public final void validate() {
 		//rien
 	}
 
 	/** {@inheritDoc} */
-	protected final ViewContext getModel() {
-		// TODO : to remove context____ objects are not neaded anymore
+	private final static ViewContext getViewContext() {
+		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+		final ViewContext viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
+		Assertion.checkNotNull(viewContext);
+		//---
 		return viewContext;
 	}
 
 	/**
 	 * Passe en mode edition.
 	 */
-	protected final void toModeEdit() {
+	protected final static void toModeEdit() {
 		//TODO voir pour déléguer cette gestion des modes
+		final ViewContext viewContext = getViewContext();
 		viewContext.put(MODE_CONTEXT_KEY, FormMode.edit);
 		viewContext.put(MODE_READ_ONLY_CONTEXT_KEY, false);
 		viewContext.put(MODE_EDIT_CONTEXT_KEY, true);
@@ -215,8 +230,9 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * Passe en mode creation.
 	 */
-	protected final void toModeCreate() {
+	protected final static void toModeCreate() {
 		//TODO voir pour déléguer cette gestion des modes
+		final ViewContext viewContext = getViewContext();
 		viewContext.put(MODE_CONTEXT_KEY, FormMode.create);
 		viewContext.put(MODE_READ_ONLY_CONTEXT_KEY, false);
 		viewContext.put(MODE_EDIT_CONTEXT_KEY, false);
@@ -226,8 +242,9 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * Passe en mode readonly.
 	 */
-	protected final void toModeReadOnly() {
+	protected final static void toModeReadOnly() {
 		//TODO voir pour déléguer cette gestion des modes
+		final ViewContext viewContext = getViewContext();
 		viewContext.put(MODE_CONTEXT_KEY, FormMode.readOnly);
 		viewContext.put(MODE_READ_ONLY_CONTEXT_KEY, true);
 		viewContext.put(MODE_EDIT_CONTEXT_KEY, false);
@@ -237,36 +254,39 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * @return Si on est en mode edition
 	 */
-	protected final boolean isModeEdit() {
+	protected final static boolean isModeEdit() {
+		final ViewContext viewContext = getViewContext();
 		return FormMode.edit.equals(viewContext.get(MODE_CONTEXT_KEY));
 	}
 
 	/**
 	 * @return Si on est en mode readOnly
 	 */
-	protected final boolean isModeRead() {
+	protected final static boolean isModeRead() {
+		final ViewContext viewContext = getViewContext();
 		return FormMode.readOnly.equals(viewContext.get(MODE_CONTEXT_KEY));
 	}
 
 	/**
 	 * @return Si on est en mode create
 	 */
-	protected final boolean isModeCreate() {
+	protected final static boolean isModeCreate() {
+		final ViewContext viewContext = getViewContext();
 		return FormMode.create.equals(viewContext.get(MODE_CONTEXT_KEY));
 	}
 
-	/**
-	 * @return AjaxResponseBuilder pour les requetes Ajax
-	 */
-	public final AjaxResponseBuilder createAjaxResponseBuilder() {
-		//TODO Voir pour l'usage de return AjaxMessage ou FileMessage
-		try {
-			response.setCharacterEncoding("UTF-8");
-			return new AjaxResponseBuilder(response.getWriter(), false);
-		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Impossible de récupérer la response.");
-		}
-	}
+	//	/**
+	//	 * @return AjaxResponseBuilder pour les requetes Ajax
+	//	 */
+	//	public final AjaxResponseBuilder createAjaxResponseBuilder() {
+	//		//TODO Voir pour l'usage de return AjaxMessage ou FileMessage
+	//		try {
+	//			response.setCharacterEncoding("UTF-8");
+	//			return new AjaxResponseBuilder(response.getWriter(), false);
+	//		} catch (final IOException e) {
+	//			throw WrappedException.wrap(e, "Impossible de récupérer la response.");
+	//		}
+	//	}
 
 	//	/**
 	//	 * @return VFileResponseBuilder pour l'envoi de fichier
@@ -278,38 +298,16 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * @return Pile des messages utilisateur.
 	 */
-	public final SpringMvcUiMessageStack getUiMessageStack() {
+	public final static SpringMvcUiMessageStack getUiMessageStack() {
+		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+		final SpringMvcUiMessageStack uiMessageStack = (SpringMvcUiMessageStack) attributes.getAttribute("uiMessageStack", RequestAttributes.SCOPE_REQUEST);
+		Assertion.checkNotNull(uiMessageStack);
+		//---
 		return uiMessageStack;
 	}
 
 	public boolean isViewContextDirty() {
-		return viewContext.isDirty();
-	}
-
-	public String refresh() {
-		return getPageName();
-	}
-
-	public String getPageName() {
-		Assertion.checkState(this.getClass().isAnnotationPresent(RequestMapping.class), "Impossible to retrieve pageName from annotation. You must provide a @RequestMapping on the controler {0} or override getPageName()", getClass().getName());
-		final String path = this.getClass().getAnnotation(RequestMapping.class).value()[0];
-		return path.startsWith("/") ? path.substring(1) : path;
-	}
-
-	@ModelAttribute
-	public void storeContext(final Model model) {
-		//model.addAllAttributes(getModel());
-		model.addAttribute("model", viewContext);
-		// here we can retrieve anything and put it into the model or in our context
-		// we can also use argument resolvers to retrieve attributes in our context for convenience (a DtObject or an UiObject can be retrieved as parameters
-		// easily from our vContext since we have access to the modelandviewContainer in a parameterResolver...)
-
-	}
-
-	@ModelAttribute
-	public void mapRequestParams(@ModelAttribute("model") final ViewContext kActionContext) {
-		// just use springMVC value mapper
-
+		return getViewContext().isDirty();
 	}
 
 }
