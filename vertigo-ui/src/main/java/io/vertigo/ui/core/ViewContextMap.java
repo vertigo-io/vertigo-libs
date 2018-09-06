@@ -43,7 +43,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	/** Clée de l'id de context dans le context. */
 	public static final String CTX = "CTX";
 	private static final long serialVersionUID = 2850788652438173312L;
-	private static final String INPUT_CTX = "INPUT_CTX";
+	public static final String INPUT_CTX = "INPUT_CTX";
 
 	//Index UiObject et DtObject vers clé de context.
 	private final Map<Serializable, String> reverseUiObjectIndex = new HashMap<>();
@@ -181,9 +181,6 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		Assertion.checkArgument(!(value instanceof DtObject), "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key);
 		Assertion.checkArgument(!(value instanceof DtList), "Vous devez poser des uiList dans le context pas des listes d'objets métiers ({0})", key);
 		//-----
-		if (CTX.equals(key)) { //struts tente de mettre a jour la clé lors de la reception de la request
-			return super.put(INPUT_CTX, value);
-		}
 		if (value instanceof UiObject) {
 			reverseUiObjectIndex.put(value, key);
 			reverseUiObjectIndex.put(((UiObject<?>) value).getServerSideObject(), key);
@@ -239,7 +236,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * Mark this context as Dirty : shouldn't be stored and keep old id.
 	 */
 	public void markDirty() {
-		super.put(CTX, ((String[]) super.get(INPUT_CTX))[0]);
+		super.put(CTX, super.get(INPUT_CTX));
 		unmodifiable = true;
 		dirty = true;
 	}

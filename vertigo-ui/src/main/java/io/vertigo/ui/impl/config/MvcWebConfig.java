@@ -21,8 +21,9 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Component;
-import io.vertigo.ui.core.ViewContextControllerAdvice;
+import io.vertigo.ui.core.UiMessageStackMethodArgumentResolver;
 import io.vertigo.ui.core.ViewAttributeMethodArgumentResolver;
+import io.vertigo.ui.core.ViewContextControllerAdvice;
 import io.vertigo.ui.core.ViewContextMethodArgumentResolver;
 
 @Configuration
@@ -71,6 +72,7 @@ public class MvcWebConfig implements WebMvcConfigurer, ApplicationContextAware {
 	public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> resolvers) {
 		resolvers.add(new ViewAttributeMethodArgumentResolver());
 		resolvers.add(new ViewContextMethodArgumentResolver());
+		resolvers.add(new UiMessageStackMethodArgumentResolver());
 	}
 
 	@Override

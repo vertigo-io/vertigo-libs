@@ -97,6 +97,7 @@ public abstract class AbstractVSpringMvcController {
 				//				}
 				viewContext.makeModifiable();
 			}
+			viewContext.setInputCtxId(ctxId);
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
 			attributes.setAttribute("uiMessageStack", new SpringMvcUiMessageStack(viewContext), RequestAttributes.SCOPE_REQUEST);
 		} else {

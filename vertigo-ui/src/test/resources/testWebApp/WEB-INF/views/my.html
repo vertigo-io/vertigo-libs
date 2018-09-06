@@ -9,7 +9,10 @@
    <h1>MyController</h1>
    <h1>Form</h1>
    <form action="#" th:action="@{/my/}" th:object="${model}" method="post">
-        <p>Title: <input type="text" th:field="*{vContext[movie][title]}" /></p>
+  		 <p>Id 1: <input type="text" th:field="*{vContext[movie][movId]}" /></p>
+  		 <p th:text="${model.vContext[movie][title]}"></p>
+      <!--   <p>Title: <input type="text" th:field="*{vContext[movie][title]}" /></p> -->
+         <p>Id 2: <input type="text" th:field="*{vContext[movie2][movId]}" /></p>
         <p><input type="submit" value="Submit" />
    		<input type="hidden" name="CTX" th:value="${model.vContext[CTX]}">
    </form>

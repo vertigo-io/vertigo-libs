@@ -153,6 +153,10 @@ public final class ViewContext implements Serializable {
 		return getString(CTX);
 	}
 
+	public void setInputCtxId(final String ctxId) {
+		viewContextMap.put(ViewContextMap.INPUT_CTX, ctxId);
+	}
+
 	/**
 	 * Génère un nouvel Id et passe le context en modifiable.
 	 */

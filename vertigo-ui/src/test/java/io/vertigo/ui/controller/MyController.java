@@ -14,6 +14,7 @@ import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.domain.movies.Movie;
 import io.vertigo.ui.services.movies.MovieServices;
 import io.vertigo.vega.webservice.model.UiObject;
+import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 @Controller
 @RequestMapping("/my")
@@ -29,17 +30,24 @@ public class MyController extends AbstractVSpringMvcController {
 	}
 
 	@GetMapping("/")
-	public void initContext(@ModelAttribute("model") final ViewContext viewContext) {
+	public void initContext(final ViewContext viewContext) {
 		viewContext.put("movId", 1000L);
 		final Movie movie = movieServices.get(viewContext.getLong("movId"));
 		viewContext.publish("movie", movie);
+		viewContext.publish("movie2", new Movie());
 		viewContext.put("message", "Hello!  movie id :" + viewContext.getLong("movId"));
 
 	}
 
 	@PostMapping("/")
-	public void testPost(final ViewContext viewContext, @ViewAttribute("movie") final UiObject<Movie> movieUiObject, @ViewAttribute("movie") final Movie movieDtObject) {
-		final Movie movie = viewContext.readDto("movie", getUiMessageStack());
+	public void testPost(final ViewContext viewContext,
+			@ViewAttribute("movie") final UiObject<Movie> movieUiObject,
+			@ViewAttribute("movie") final Movie movieDtObject,
+			@ViewAttribute("movie2") final Movie movieDtObject2,
+			@ViewAttribute("message") final String message,
+			final UiMessageStack uiMessageStack) {
+		final Movie movie = viewContext.readDto("movie", uiMessageStack);
+		System.out.println(message);
 		viewContext.put("message", "Movie retrieved in storedContext : " + movie.getTitle());
 	}
 
