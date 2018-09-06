@@ -20,7 +20,12 @@ package io.vertigo.ui.core;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.Map;
+import java.util.UUID;
 
+import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.model.UiList;
@@ -34,23 +39,27 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
  * Liste des couples (clé, object) enregistrés.
  * @author npiedeloup
  */
-public final class ViewContext implements Serializable {
-
-	private static final long serialVersionUID = -8237448155016161135L;
-
+public final class ViewContextMap extends HashMap<String, Serializable> {
 	/** Clée de l'id de context dans le context. */
 	public static final String CTX = "CTX";
+	private static final long serialVersionUID = 2850788652438173312L;
+	private static final String INPUT_CTX = "INPUT_CTX";
 
-	private final ViewContextMap viewContextMap;
+	//Index UiObject et DtObject vers clé de context.
+	private final Map<Serializable, String> reverseUiObjectIndex = new HashMap<>();
+	//Index UiList et DtList vers clé de context. //identity HashMap because two empty list aren't the same
+	private final Map<UiList<?>, String> reverseUiListIndex = new IdentityHashMap<>();
+	private boolean unmodifiable; //initialisé à false
+	private boolean dirty = false;
 
-	public ViewContext(final ViewContextMap viewContextMap) {
-		Assertion.checkNotNull(viewContextMap);
-		//---
-		this.viewContextMap = viewContextMap;
-	}
-
+	/** {@inheritDoc} */
+	@Override
 	public Serializable get(final Object key) {
-		return viewContextMap.get(key);
+		Assertion.checkNotNull(key);
+		//-----
+		final Serializable o = super.get(key);
+		Assertion.checkNotNull(o, "Objet :{0} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Clés disponibles {1}", key, keySet());
+		return o;
 	}
 
 	/**
@@ -116,8 +125,11 @@ public final class ViewContext implements Serializable {
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public boolean containsKey(final Object key) {
-		return viewContextMap.containsKey(key);
+		Assertion.checkNotNull(key);
+		//-----
+		return super.containsKey(key);
 	}
 
 	/**
@@ -125,7 +137,19 @@ public final class ViewContext implements Serializable {
 	 * @return Clé de context de l'élément (null si non trouvé)
 	 */
 	public String findKey(final UiObject<?> uiObject) {
-		return viewContextMap.findKey(uiObject);
+		Assertion.checkNotNull(uiObject);
+		//-----
+		final String contextKey = reverseUiObjectIndex.get(uiObject);
+		if (contextKey != null) {
+			return contextKey;
+		}
+		for (final Map.Entry<UiList<?>, String> entry : reverseUiListIndex.entrySet()) {
+			final int index = entry.getKey().indexOf(uiObject);
+			if (index >= 0) {
+				return entry.getValue() + ".get(" + index + ")";
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -133,17 +157,57 @@ public final class ViewContext implements Serializable {
 	 * @return Clé de context de l'élément (null si non trouvé)
 	 */
 	public String findKey(final DtObject dtObject) {
-		return viewContextMap.findKey(dtObject);
+		Assertion.checkNotNull(dtObject);
+		//-----
+		final String contextKey = reverseUiObjectIndex.get(dtObject);
+		if (contextKey != null) {
+			return contextKey;
+		}
+		for (final Map.Entry<UiList<?>, String> entry : reverseUiListIndex.entrySet()) {
+			final int index = entry.getKey().indexOf(dtObject);
+			if (index >= 0) {
+				return entry.getValue() + ".get(" + index + ")";
+			}
+		}
+		return null;
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Serializable put(final String key, final Serializable value) {
-		return viewContextMap.put(key, value);
+		Assertion.checkState(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX));
+		Assertion.checkArgNotEmpty(key);
+		Assertion.checkNotNull(value, "la valeur doit être renseignée pour {0}", key);
+		Assertion.checkArgument(!(value instanceof DtObject), "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key);
+		Assertion.checkArgument(!(value instanceof DtList), "Vous devez poser des uiList dans le context pas des listes d'objets métiers ({0})", key);
+		//-----
+		if (CTX.equals(key)) { //struts tente de mettre a jour la clé lors de la reception de la request
+			return super.put(INPUT_CTX, value);
+		}
+		if (value instanceof UiObject) {
+			reverseUiObjectIndex.put(value, key);
+			reverseUiObjectIndex.put(((UiObject<?>) value).getServerSideObject(), key);
+		} else if (value instanceof UiList) {
+			reverseUiListIndex.put((UiList<?>) value, key);
+		}
+
+		return super.put(key, value);
 	}
 
 	/** {@inheritDoc} */
+	@Override
 	public Serializable remove(final Object key) {
-		return viewContextMap.remove(key);
+		Assertion.checkState(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX));
+		Assertion.checkState(key instanceof String, "La clé doit être de type String");
+		//---
+		final String keyString = (String) key;
+		Assertion.checkArgNotEmpty(keyString);
+		//---
+		// on garde les index en cohérence après un remove
+		reverseUiObjectIndex.values().removeIf((val) -> keyString.equals(val));
+		reverseUiListIndex.values().removeIf((val) -> keyString.equals(val));
+		// on fait le remove
+		return super.remove(key);
 	}
 
 	/**
@@ -157,32 +221,38 @@ public final class ViewContext implements Serializable {
 	 * Génère un nouvel Id et passe le context en modifiable.
 	 */
 	public void makeModifiable() {
-		viewContextMap.makeModifiable();
+		unmodifiable = false;
+		super.remove(CTX);
 	}
 
 	/**
 	 * passe le context en non-modifiable.
 	 */
 	public void makeUnmodifiable() {
-		viewContextMap.makeUnmodifiable();
+		Assertion.checkState(!dirty, "Can't fixed a dirty context");
+		//-----
+		super.put(CTX, UUID.randomUUID().toString());
+		unmodifiable = true;
 	}
 
 	/**
 	 * Mark this context as Dirty : shouldn't be stored and keep old id.
 	 */
 	public void markDirty() {
-		viewContextMap.markDirty();
+		super.put(CTX, ((String[]) super.get(INPUT_CTX))[0]);
+		unmodifiable = true;
+		dirty = true;
 	}
 
 	/**
 	 * @return if context dirty : shouldn't be stored and keep old id
 	 */
 	public boolean isDirty() {
-		return viewContextMap.isDirty();
+		return dirty;
 	}
 
-	public ViewContextMap asMap() {
-		return viewContextMap;
+	public ViewContextMap getVContext() {
+		return this;
 	}
 
 	/**

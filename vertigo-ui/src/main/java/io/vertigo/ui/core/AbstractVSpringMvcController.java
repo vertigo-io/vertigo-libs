@@ -27,8 +27,6 @@ import java.util.Enumeration;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
@@ -47,7 +45,7 @@ import io.vertigo.ui.exception.ExpiredContextException;
 public abstract class AbstractVSpringMvcController {
 
 	/** Clé de la collection des contexts dans le KVStoreManager. */
-	public static final String CONTEXT_COLLECTION_NAME = "VActionContext";
+	public static final String CONTEXT_COLLECTION_NAME = "VViewContext";
 
 	/** Clé de context du UiUtil. */
 	public static final String UTIL_CONTEXT_KEY = "util";
@@ -90,19 +88,19 @@ public abstract class AbstractVSpringMvcController {
 				contextMiss(null);
 			} else {
 				try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
-					viewContext = kvStoreManager.find(CONTEXT_COLLECTION_NAME, ctxId, ViewContext.class).get();
+					viewContext = new ViewContext(kvStoreManager.find(CONTEXT_COLLECTION_NAME, ctxId, ViewContextMap.class).get());
 					transactionWritable.commit();
 				}
 
-				if (viewContext == null) {
-					contextMiss(ctxId);
-				}
+				//				if (viewContext == null) {
+				//					contextMiss(ctxId);
+				//				}
 				viewContext.makeModifiable();
 			}
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
 			attributes.setAttribute("uiMessageStack", new SpringMvcUiMessageStack(viewContext), RequestAttributes.SCOPE_REQUEST);
 		} else {
-			viewContext = new ViewContext();
+			viewContext = new ViewContext(new ViewContextMap());
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
 			attributes.setAttribute("uiMessageStack", new SpringMvcUiMessageStack(viewContext), RequestAttributes.SCOPE_REQUEST);
 			initContextUrlParameters(request, viewContext);
@@ -112,23 +110,6 @@ public abstract class AbstractVSpringMvcController {
 					getClass().getSimpleName());
 			//initContext();
 		}
-
-	}
-
-	@ModelAttribute
-	public void storeContext(final Model model) {
-		//model.addAllAttributes(getModel());
-		model.addAttribute("model", getViewContext());
-		// here we can retrieve anything and put it into the model or in our context
-		// we can also use argument resolvers to retrieve attributes in our context for convenience (a DtObject or an UiObject can be retrieved as parameters
-		// easily from our vContext since we have access to the modelandviewContainer in a parameterResolver...)
-
-	}
-
-	@ModelAttribute
-	public void mapRequestParams(@ModelAttribute("model") final ViewContext kActionContext, final Model model) {
-		// just use springMVC value mapper
-		model.addAttribute("viewContextLoaded", Boolean.TRUE);
 
 	}
 
@@ -195,7 +176,7 @@ public abstract class AbstractVSpringMvcController {
 			//					//sinon un warn, et on le retire du context ?
 			//				}
 			//			}
-			kvStoreManager.put(CONTEXT_COLLECTION_NAME, viewContext.getId(), viewContext);
+			kvStoreManager.put(CONTEXT_COLLECTION_NAME, viewContext.getId(), viewContext.asMap());// we only store the underlying map
 			transactionWritable.commit();
 		}
 	}

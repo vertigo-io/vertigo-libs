@@ -1,5 +1,7 @@
 package io.vertigo.ui.impl.config;
 
+import java.util.List;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -8,6 +10,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -18,6 +21,9 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Component;
+import io.vertigo.ui.core.ViewContextControllerAdvice;
+import io.vertigo.ui.core.ViewAttributeMethodArgumentResolver;
+import io.vertigo.ui.core.ViewContextMethodArgumentResolver;
 
 @Configuration
 @EnableWebMvc
@@ -62,12 +68,20 @@ public class MvcWebConfig implements WebMvcConfigurer, ApplicationContextAware {
 	}
 
 	@Override
+	public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> resolvers) {
+		resolvers.add(new ViewAttributeMethodArgumentResolver());
+		resolvers.add(new ViewContextMethodArgumentResolver());
+	}
+
+	@Override
 	public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
 		if (applicationContext instanceof ConfigurableApplicationContext) {
 			Home.getApp().getComponentSpace().keySet()
 					.stream()
 					.forEach(key -> ((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton(key, Home.getApp().getComponentSpace().resolve(key, Component.class)));
 
+			final ViewContextControllerAdvice controllerAdvice = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(ViewContextControllerAdvice.class);
+			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("viewContextControllerAdvice", controllerAdvice);
 		}
 
 	}

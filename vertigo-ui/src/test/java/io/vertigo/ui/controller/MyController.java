@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.vertigo.ui.core.AbstractVSpringMvcController;
+import io.vertigo.ui.core.ViewAttribute;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.domain.movies.Movie;
 import io.vertigo.ui.services.movies.MovieServices;
+import io.vertigo.vega.webservice.model.UiObject;
 
 @Controller
 @RequestMapping("/my")
@@ -21,7 +23,8 @@ public class MyController extends AbstractVSpringMvcController {
 	private MovieServices movieServices;
 
 	@ModelAttribute
-	public void test(@ModelAttribute("viewContextLoaded") final Boolean viewContextLoaded, final Model model) {
+	public void test(final Model model) {
+		model.addAttribute("postInit", "it works");
 		// we are after vertigo initialization
 	}
 
@@ -35,7 +38,7 @@ public class MyController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/")
-	public void testPost(@ModelAttribute("model") final ViewContext viewContext) {
+	public void testPost(final ViewContext viewContext, @ViewAttribute("movie") final UiObject<Movie> movieUiObject, @ViewAttribute("movie") final Movie movieDtObject) {
 		final Movie movie = viewContext.readDto("movie", getUiMessageStack());
 		viewContext.put("message", "Movie retrieved in storedContext : " + movie.getTitle());
 	}
