@@ -75,8 +75,9 @@ public final class UiListUnmodifiable<O extends DtObject> extends AbstractUiList
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
 	 */
 	@Override
-	public void checkFormat(final UiMessageStack uiMessageStack) {
+	public boolean checkFormat(final UiMessageStack uiMessageStack) {
 		// nothing for unmodifiable (we don't use the data in the buffers)
+		return true;
 	}
 
 	/** {@inheritDoc} */

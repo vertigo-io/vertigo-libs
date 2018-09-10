@@ -7,8 +7,6 @@ import java.util.stream.Stream;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
@@ -32,9 +30,8 @@ public class ViewAttributeMethodArgumentResolver implements HandlerMethodArgumen
 
 	@Override
 	public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) throws Exception {
-		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-		final ViewContext viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
-		final UiMessageStack uiMessageStack = (UiMessageStack) webRequest.getAttribute("uiMessageStack", RequestAttributes.SCOPE_REQUEST);
+		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
+		final UiMessageStack uiMessageStack = UiRequestUtil.getCurrentUiMessageStack();
 		Assertion.checkNotNull(viewContext);
 		//---
 		final String contextKey = parameter.getParameterAnnotation(ViewAttribute.class).value();
@@ -47,10 +44,18 @@ public class ViewAttributeMethodArgumentResolver implements HandlerMethodArgumen
 			final Object value;
 			if (DtObject.class.isAssignableFrom(parameter.getParameterType())) {
 				//object
-				value = viewContext.getUiObject(contextKey).mergeAndCheckInput(defaultDtObjectValidators, uiMessageStack);
+				if (viewContext.getUiObject(contextKey).checkFormat(uiMessageStack)) {
+					value = viewContext.getUiObject(contextKey).mergeAndCheckInput(defaultDtObjectValidators, uiMessageStack);
+				} else {
+					value = null;
+				}
 			} else {
 				//list
-				value = viewContext.getUiList(contextKey).mergeAndCheckInput(defaultDtObjectValidators, uiMessageStack);
+				if (viewContext.getUiList(contextKey).checkFormat(uiMessageStack)) {
+					value = viewContext.getUiList(contextKey).mergeAndCheckInput(defaultDtObjectValidators, uiMessageStack);
+				} else {
+					value = null;
+				}
 			}
 			if (!isNotLastDt(parameter) && uiMessageStack.hasErrors()) {
 				// if we are the last one

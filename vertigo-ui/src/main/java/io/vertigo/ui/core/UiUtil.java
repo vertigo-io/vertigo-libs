@@ -23,7 +23,6 @@ import java.util.List;
 
 import org.springframework.ui.Model;
 
-
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -56,8 +55,8 @@ public final class UiUtil implements Serializable {
 	 * @return Nom de l'object dans le context
 	 */
 	public static String contextKey(final UiObject<?> uiObject, final Model model) {
-		final ViewContext kActionContext = ((AbstractActionSupport) model.getActionInvocation().getAction()).getModel();
-		return kActionContext.findKey(uiObject);
+		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
+		return viewContext.findKey(uiObject);
 	}
 
 	/**
@@ -125,8 +124,8 @@ public final class UiUtil implements Serializable {
 		//Assertion.checkArgument(fieldPath.indexOf('.') == fieldPath.lastIndexOf('.'), "Seul un point est autorisé ({0})", fieldPath);
 		final String contextKey = fieldPath.substring(0, fieldPath.lastIndexOf('.'));
 		final String fieldName = fieldPath.substring(fieldPath.lastIndexOf('.') + 1);
-		final ActionContext actionContext = ActionContext.getContext();
-		final Object contextObject = actionContext.getValueStack().findValue(contextKey);
+		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
+		final Object contextObject = viewContext.get(contextKey);
 		Assertion.checkNotNull(contextObject, "{0} n''est pas dans le context", contextKey);
 		Assertion.checkArgument(contextObject instanceof UiObject || contextObject instanceof UiList, "{0}({1}) doit être un UiObject ou une UiList ", contextKey,
 				contextObject.getClass().getSimpleName());

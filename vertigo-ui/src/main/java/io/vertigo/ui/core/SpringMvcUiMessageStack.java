@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
@@ -47,18 +46,6 @@ public final class SpringMvcUiMessageStack implements UiMessageStack {
 	private final Map<String, Map<String, List<String>>> objectFieldErrors = new HashMap<>();
 	private final Map<String, Map<String, List<String>>> objectFieldWarnings = new HashMap<>();
 	private final Map<String, Map<String, List<String>>> objectFieldInfos = new HashMap<>();
-
-	private final ViewContext viewContext;
-
-	/**
-	 * Constructor.
-	 * @param uiContextResolver Resolver object to contextKey in request
-	 */
-	public SpringMvcUiMessageStack(final ViewContext viewContext) {
-		Assertion.checkNotNull(viewContext);
-		//-----
-		this.viewContext = viewContext;
-	}
 
 	/**
 	 * Ajoute un message.
@@ -152,7 +139,7 @@ public final class SpringMvcUiMessageStack implements UiMessageStack {
 	 */
 	@Override
 	public void addFieldMessage(final Level level, final String message, final DtObject dto, final String fieldName) {
-		addFieldMessage(level, message, viewContext.findKey(dto), fieldName);
+		addFieldMessage(level, message, UiRequestUtil.getCurrentViewContext().findKey(dto), fieldName);
 
 	}
 
@@ -231,6 +218,46 @@ public final class SpringMvcUiMessageStack implements UiMessageStack {
 	@Override
 	public boolean hasErrors() {
 		return !globalErrors.isEmpty() || !fieldErrors.isEmpty() || !objectFieldErrors.isEmpty();
+	}
+
+	public List<String> getGlobalErrors() {
+		return globalErrors;
+	}
+
+	public List<String> getGlobalWarnings() {
+		return globalWarnings;
+	}
+
+	public List<String> getGlobalInfos() {
+		return globalInfos;
+	}
+
+	public List<String> getGlobalSuccess() {
+		return globalSuccess;
+	}
+
+	public Map<String, List<String>> getFieldErrors() {
+		return fieldErrors;
+	}
+
+	public Map<String, List<String>> getFieldWarnings() {
+		return fieldWarnings;
+	}
+
+	public Map<String, List<String>> getFieldInfos() {
+		return fieldInfos;
+	}
+
+	public Map<String, Map<String, List<String>>> getObjectFieldErrors() {
+		return objectFieldErrors;
+	}
+
+	public Map<String, Map<String, List<String>>> getObjectFieldWarnings() {
+		return objectFieldWarnings;
+	}
+
+	public Map<String, Map<String, List<String>>> getObjectFieldInfos() {
+		return objectFieldInfos;
 	}
 
 }

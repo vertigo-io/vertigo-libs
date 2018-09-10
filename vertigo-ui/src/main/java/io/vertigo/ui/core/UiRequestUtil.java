@@ -20,7 +20,12 @@ package io.vertigo.ui.core;
 
 import javax.servlet.http.HttpSession;
 
-import org.apache.struts2.ServletActionContext;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
  * Utilitaire d'accès à la Request.
@@ -36,10 +41,29 @@ public final class UiRequestUtil {
 	 * Invalide la session Http (ie Logout)
 	 */
 	public static void invalidateHttpSession() {
-		final HttpSession session = ServletActionContext.getRequest().getSession(false);
+
+		final HttpSession session = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getSession(false);
 		if (session != null) {
 			session.invalidate();
 		}
+	}
+
+	public static ViewContext getCurrentViewContext() {
+		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+		final ViewContext viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
+		//---
+		Assertion.checkNotNull(viewContext);
+		//---
+		return viewContext;
+	}
+
+	public static UiMessageStack getCurrentUiMessageStack() {
+		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+		final UiMessageStack uiMessageStack = (UiMessageStack) attributes.getAttribute("uiMessageStack", RequestAttributes.SCOPE_REQUEST);
+		//---
+		Assertion.checkNotNull(uiMessageStack);
+		//---
+		return uiMessageStack;
 	}
 
 }

@@ -4,11 +4,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.servlet.ModelAndView;
 
-import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
 
@@ -17,14 +14,9 @@ public class ViewContextControllerAdvice {
 
 	@ModelAttribute
 	public void storeContext(final Model model) {
-		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-		final ViewContext viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
-		final UiMessageStack uiMessageStack = (UiMessageStack) attributes.getAttribute("uiMessageStack", RequestAttributes.SCOPE_REQUEST);
+		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
+		final UiMessageStack uiMessageStack = UiRequestUtil.getCurrentUiMessageStack();
 		//---
-		Assertion.checkNotNull(viewContext);
-		Assertion.checkNotNull(uiMessageStack);
-		//---
-		//model.addAllAttributes(getModel());
 		model.addAttribute("model", viewContext.asMap());
 		model.addAttribute("uiMessageStack", uiMessageStack);
 		// here we can retrieve anything and put it into the model or in our context
@@ -43,14 +35,10 @@ public class ViewContextControllerAdvice {
 	public ModelAndView handleCustomException(final ValidationUserException ex) {
 		final ModelAndView modelAndView = new ModelAndView();
 		//---
-		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-		final ViewContext viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
-		final UiMessageStack uiMessageStack = (UiMessageStack) attributes.getAttribute("uiMessageStack", RequestAttributes.SCOPE_REQUEST);
+		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
+		final UiMessageStack uiMessageStack = UiRequestUtil.getCurrentUiMessageStack();
 		//---
-		Assertion.checkNotNull(viewContext);
-		Assertion.checkNotNull(uiMessageStack);
 		//---
-		//model.addAllAttributes(getModel());
 		viewContext.markDirty();
 
 		modelAndView.addObject("model", viewContext.asMap());

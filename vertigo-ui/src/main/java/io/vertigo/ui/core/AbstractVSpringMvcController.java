@@ -99,11 +99,11 @@ public abstract class AbstractVSpringMvcController {
 			}
 			viewContext.setInputCtxId(ctxId);
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
-			attributes.setAttribute("uiMessageStack", new SpringMvcUiMessageStack(viewContext), RequestAttributes.SCOPE_REQUEST);
+			attributes.setAttribute("uiMessageStack", new SpringMvcUiMessageStack(), RequestAttributes.SCOPE_REQUEST);
 		} else {
 			viewContext = new ViewContext(new ViewContextMap());
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
-			attributes.setAttribute("uiMessageStack", new SpringMvcUiMessageStack(viewContext), RequestAttributes.SCOPE_REQUEST);
+			attributes.setAttribute("uiMessageStack", new SpringMvcUiMessageStack(), RequestAttributes.SCOPE_REQUEST);
 			initContextUrlParameters(request, viewContext);
 			//TODO vérifier que l'action demandée n'attendait pas de context : il va etre recrée vide ce qui n'est pas bon dans certains cas.
 			preInitContext(viewContext);
