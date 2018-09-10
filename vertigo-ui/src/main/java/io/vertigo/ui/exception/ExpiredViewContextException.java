@@ -16,28 +16,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui.core;
+package io.vertigo.ui.exception;
 
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.vega.engines.webservice.json.AbstractUiListModifiable;
-import io.vertigo.vega.webservice.model.UiObject;
+/**
+ * Exception lancée dans le cas ou l'on recherche un context expiré.
+ * @author npiedeloup
+ */
+public final class ExpiredViewContextException extends Exception {
 
-public class SpringMvcUiListModifiable<D extends DtObject> extends AbstractUiListModifiable<D> {
+	private static final long serialVersionUID = 4871828055854233637L;
 
-	private static final long serialVersionUID = -6612061761970992295L;
-
-	SpringMvcUiListModifiable(final DtList<D> dtList, final String inputKey) {
-		super(dtList, inputKey);
-
-	}
-
-	/* (non-Javadoc)
-	 * @see io.vertigo.struts2.core.AbstractUiListModifiable#createUiObject(io.vertigo.dynamo.domain.model.DtObject)
+	/**
+	 * Constructeur.
+	 * @param message Message d'erreur
 	 */
-	@Override
-	protected UiObject<D> createUiObject(final D dto) {
-		return new SpringMvcUiObject<>(dto);
+	public ExpiredViewContextException(final String message) {
+		super(message);
 	}
-
 }

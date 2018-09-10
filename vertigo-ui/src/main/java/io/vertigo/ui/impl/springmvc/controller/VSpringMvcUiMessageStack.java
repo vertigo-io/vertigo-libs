@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui.core;
+package io.vertigo.ui.impl.springmvc.controller;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,13 +24,14 @@ import java.util.List;
 import java.util.Map;
 
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
  * Class d'enregistrement des messages.
  * @author npiedeloup
  */
-public final class SpringMvcUiMessageStack implements UiMessageStack {
+public final class VSpringMvcUiMessageStack implements UiMessageStack {
 
 	private static final long serialVersionUID = -2650689827844300786L;
 

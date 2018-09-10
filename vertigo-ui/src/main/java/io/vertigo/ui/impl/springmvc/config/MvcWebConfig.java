@@ -1,4 +1,4 @@
-package io.vertigo.ui.impl.config;
+package io.vertigo.ui.impl.springmvc.config;
 
 import java.util.List;
 
@@ -21,10 +21,10 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Component;
-import io.vertigo.ui.core.UiMessageStackMethodArgumentResolver;
-import io.vertigo.ui.core.ViewAttributeMethodArgumentResolver;
-import io.vertigo.ui.core.ViewContextControllerAdvice;
-import io.vertigo.ui.core.ViewContextMethodArgumentResolver;
+import io.vertigo.ui.impl.springmvc.argumentresolvers.UiMessageStackMethodArgumentResolver;
+import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttributeMethodArgumentResolver;
+import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewContextMethodArgumentResolver;
+import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
 
 @Configuration
 @EnableWebMvc
@@ -82,7 +82,7 @@ public class MvcWebConfig implements WebMvcConfigurer, ApplicationContextAware {
 					.stream()
 					.forEach(key -> ((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton(key, Home.getApp().getComponentSpace().resolve(key, Component.class)));
 
-			final ViewContextControllerAdvice controllerAdvice = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(ViewContextControllerAdvice.class);
+			final VSpringMvcControllerAdvice controllerAdvice = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(VSpringMvcControllerAdvice.class);
 			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("viewContextControllerAdvice", controllerAdvice);
 		}
 

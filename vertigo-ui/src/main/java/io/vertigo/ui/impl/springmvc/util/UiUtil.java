@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui.core;
+package io.vertigo.ui.impl.springmvc.util;
 
 import java.io.Serializable;
 import java.util.List;
@@ -29,6 +29,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.lang.Assertion;
+import io.vertigo.ui.core.ViewContext;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
@@ -46,7 +47,7 @@ public final class UiUtil implements Serializable {
 	 * Constructor.
 	 */
 	//can't be private, because an instance must be put into struts context, for access from tags.
-	UiUtil() {
+	public UiUtil() {
 		//empty
 	}
 

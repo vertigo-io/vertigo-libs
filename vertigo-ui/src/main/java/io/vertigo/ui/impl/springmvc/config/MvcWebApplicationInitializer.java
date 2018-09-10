@@ -1,4 +1,4 @@
-package io.vertigo.ui.impl.config;
+package io.vertigo.ui.impl.springmvc.config;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 

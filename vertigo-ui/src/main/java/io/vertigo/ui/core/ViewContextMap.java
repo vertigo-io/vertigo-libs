@@ -82,8 +82,8 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @param key Clé de context
 	 * @return UiListModifiable du context
 	 */
-	public <O extends DtObject> SpringMvcUiListModifiable<O> getUiListModifiable(final String key) {
-		return (SpringMvcUiListModifiable<O>) get(key);
+	public <O extends DtObject> BasicUiListModifiable<O> getUiListModifiable(final String key) {
+		return (BasicUiListModifiable<O>) get(key);
 	}
 
 	/**
@@ -257,7 +257,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @param dto Objet à publier
 	 */
 	public <O extends DtObject> void publish(final String contextKey, final O dto) {
-		final UiObject<O> strutsUiObject = new SpringMvcUiObject<>(dto);
+		final UiObject<O> strutsUiObject = new MapUiObject<>(dto);
 		strutsUiObject.setInputKey(contextKey);
 		put(contextKey, strutsUiObject);
 	}

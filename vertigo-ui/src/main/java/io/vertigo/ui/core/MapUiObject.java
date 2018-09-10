@@ -40,15 +40,15 @@ import io.vertigo.vega.engines.webservice.json.VegaUiObject;
  * @author pchretien, npiedeloup
  * @param <D> Type de DtObject représenté par cet Input
  */
-public final class SpringMvcUiObject<D extends DtObject> extends VegaUiObject<D> implements Map<String, Serializable> {
+public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> implements Map<String, Serializable> {
 	private static final long serialVersionUID = -4639050257543017072L;
 	private static final String DOMAIN_MULTIPLE_IDS = "DO_MULTIPLE_IDS";
 
-	public SpringMvcUiObject(final D serverSideDto) {
+	public MapUiObject(final D serverSideDto) {
 		this(serverSideDto, (D) DtObjectUtil.createDtObject(DtObjectUtil.findDtDefinition(serverSideDto)), Collections.emptySet());
 	}
 
-	public SpringMvcUiObject(final D serverSideDto, final D inputDto, final Set<String> modifiedFields) {
+	public MapUiObject(final D serverSideDto, final D inputDto, final Set<String> modifiedFields) {
 		super(inputDto, modifiedFields);
 		setServerSideObject(serverSideDto);
 	}

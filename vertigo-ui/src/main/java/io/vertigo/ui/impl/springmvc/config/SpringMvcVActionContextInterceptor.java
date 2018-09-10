@@ -1,4 +1,4 @@
-package io.vertigo.ui.impl.config;
+package io.vertigo.ui.impl.springmvc.config;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -7,7 +7,7 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
-import io.vertigo.ui.core.AbstractVSpringMvcController;
+import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 
 public class SpringMvcVActionContextInterceptor implements HandlerInterceptor {
 

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui.core;
+package io.vertigo.ui.impl.springmvc.controller;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -35,7 +35,11 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
-import io.vertigo.ui.exception.ExpiredContextException;
+import io.vertigo.ui.core.FormMode;
+import io.vertigo.ui.core.ViewContext;
+import io.vertigo.ui.core.ViewContextMap;
+import io.vertigo.ui.exception.ExpiredViewContextException;
+import io.vertigo.ui.impl.springmvc.util.UiUtil;
 
 /**
  * Super class des Actions SpringMvc.
@@ -79,7 +83,7 @@ public abstract class AbstractVSpringMvcController {
 	@Inject
 	private ParamManager paramManager;
 
-	public void prepareContext(final HttpServletRequest request) throws ExpiredContextException {
+	public void prepareContext(final HttpServletRequest request) throws ExpiredViewContextException {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
 		ViewContext viewContext = null;
 		final String ctxId = request.getParameter(ViewContext.CTX);
@@ -99,11 +103,11 @@ public abstract class AbstractVSpringMvcController {
 			}
 			viewContext.setInputCtxId(ctxId);
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
-			attributes.setAttribute("uiMessageStack", new SpringMvcUiMessageStack(), RequestAttributes.SCOPE_REQUEST);
+			attributes.setAttribute("uiMessageStack", new VSpringMvcUiMessageStack(), RequestAttributes.SCOPE_REQUEST);
 		} else {
 			viewContext = new ViewContext(new ViewContextMap());
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
-			attributes.setAttribute("uiMessageStack", new SpringMvcUiMessageStack(), RequestAttributes.SCOPE_REQUEST);
+			attributes.setAttribute("uiMessageStack", new VSpringMvcUiMessageStack(), RequestAttributes.SCOPE_REQUEST);
 			initContextUrlParameters(request, viewContext);
 			//TODO vérifier que l'action demandée n'attendait pas de context : il va etre recrée vide ce qui n'est pas bon dans certains cas.
 			preInitContext(viewContext);
@@ -123,10 +127,10 @@ public abstract class AbstractVSpringMvcController {
 	 * Par défaut lance une ExpiredContextException.
 	 * Mais une action spécifique pourrait reconstruire le context si c'est pertinent.
 	 * @param ctxId Id du context manquant (seule info disponible)
-	 * @throws ExpiredContextException Context expiré (comportement standard)
+	 * @throws ExpiredViewContextException Context expiré (comportement standard)
 	 */
-	protected void contextMiss(final String ctxId) throws ExpiredContextException {
-		throw new ExpiredContextException("Context ctxId:'" + ctxId + "' manquant");
+	protected void contextMiss(final String ctxId) throws ExpiredViewContextException {
+		throw new ExpiredViewContextException("Context ctxId:'" + ctxId + "' manquant");
 	}
 
 	/**
@@ -280,9 +284,9 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * @return Pile des messages utilisateur.
 	 */
-	public final static SpringMvcUiMessageStack getUiMessageStack() {
+	public final static VSpringMvcUiMessageStack getUiMessageStack() {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-		final SpringMvcUiMessageStack uiMessageStack = (SpringMvcUiMessageStack) attributes.getAttribute("uiMessageStack", RequestAttributes.SCOPE_REQUEST);
+		final VSpringMvcUiMessageStack uiMessageStack = (VSpringMvcUiMessageStack) attributes.getAttribute("uiMessageStack", RequestAttributes.SCOPE_REQUEST);
 		Assertion.checkNotNull(uiMessageStack);
 		//---
 		return uiMessageStack;

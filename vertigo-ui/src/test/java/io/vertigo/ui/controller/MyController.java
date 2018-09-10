@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import io.vertigo.ui.core.AbstractVSpringMvcController;
-import io.vertigo.ui.core.ViewAttribute;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.domain.movies.Movie;
+import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttribute;
+import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 import io.vertigo.ui.services.movies.MovieServices;
 import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -33,8 +33,8 @@ public class MyController extends AbstractVSpringMvcController {
 	public void initContext(final ViewContext viewContext) {
 		viewContext.put("movId", 1000L);
 		final Movie movie = movieServices.get(viewContext.getLong("movId"));
-		viewContext.publish("movie", movie);
-		viewContext.publish("movie2", new Movie());
+		viewContext.publishDto("movie", movie);
+		viewContext.publishDto("movie2", new Movie());
 		viewContext.put("message", "Hello!  movie id :" + viewContext.getLong("movId"));
 
 	}

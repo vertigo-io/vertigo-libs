@@ -134,7 +134,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	public final UiObject<O> get(final int index) {
 		UiObject<O> element = uiObjectByIndex.get(index);
 		if (element == null) {
-			element = new SpringMvcUiObject<>(obtainDtList().get(index));
+			element = new MapUiObject<>(obtainDtList().get(index));
 			uiObjectByIndex.put(index, element);
 			Assertion.checkState(uiObjectByIndex.size() < 1000, "Trop d'élément dans le buffer uiObjectByIndex de la liste de {0}", getDtDefinition().getName());
 		}
@@ -206,7 +206,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 
 		final Object key = dtField.getDomain().stringToValue(keyValueAsString);
 		final O entity = (O) loadDto(key);
-		uiObject = new SpringMvcUiObject<>(entity);
+		uiObject = new MapUiObject<>(entity);
 		uiObjectById.put(keyValueAsString, uiObject);
 		Assertion.checkState(uiObjectById.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
 		return uiObject;

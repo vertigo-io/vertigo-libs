@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui.core;
+package io.vertigo.ui.impl.springmvc.util;
 
 import javax.servlet.http.HttpSession;
 
@@ -25,6 +25,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.ui.core.ViewContext;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**

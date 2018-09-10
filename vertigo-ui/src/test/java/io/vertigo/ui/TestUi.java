@@ -42,7 +42,7 @@ import com.machinepublishers.jbrowserdriver.JBrowserDriver;
 import com.machinepublishers.jbrowserdriver.Settings;
 import com.machinepublishers.jbrowserdriver.Timezone;
 
-import io.vertigo.ui.impl.config.MvcWebApplicationInitializer;
+import io.vertigo.ui.impl.springmvc.config.MvcWebApplicationInitializer;
 
 public class TestUi {
 

@@ -19,33 +19,21 @@
 package io.vertigo.ui.core;
 
 /**
- * Mode du formulaire 
+ * Mode du formulaire
  * @author npiedeloup
  */
 public enum FormMode {
 	/**
 	 * Mode lecture seul.
 	 */
-	readOnly("xhtml_read"),
+	readOnly,
 	/**
 	 * Mode edition.
 	 */
-	edit("xhtml"),
+	edit,
 	/**
 	 * Mode création.
 	 */
-	create("xhtml");
+	create;
 
-	private final String themeName;
-
-	private FormMode(final String themeName) {
-		this.themeName = themeName;
-	}
-
-	/**
-	 * @return Nom du theme utilisé.
-	 */
-	public String getTheme() {
-		return themeName;
-	}
 }

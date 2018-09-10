@@ -1,4 +1,4 @@
-package io.vertigo.ui.core;
+package io.vertigo.ui.impl.springmvc.argumentresolvers;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

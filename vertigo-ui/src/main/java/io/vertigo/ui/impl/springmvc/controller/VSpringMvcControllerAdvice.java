@@ -1,4 +1,4 @@
-package io.vertigo.ui.core;
+package io.vertigo.ui.impl.springmvc.controller;
 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -6,11 +6,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
+import io.vertigo.ui.core.ViewContext;
+import io.vertigo.ui.core.ViewContextMap;
+import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 @ControllerAdvice(assignableTypes = { AbstractVSpringMvcController.class })
-public class ViewContextControllerAdvice {
+public class VSpringMvcControllerAdvice {
 
 	@ModelAttribute
 	public void storeContext(final Model model) {

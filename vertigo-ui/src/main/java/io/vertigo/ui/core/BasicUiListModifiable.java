@@ -16,21 +16,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui.exception;
+package io.vertigo.ui.core;
 
-/**
- * Exception lancée dans le cas ou l'on recherche un context expiré.
- * @author npiedeloup
- */
-public final class ExpiredContextException extends Exception {
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.vega.engines.webservice.json.AbstractUiListModifiable;
+import io.vertigo.vega.webservice.model.UiObject;
 
-	private static final long serialVersionUID = 4871828055854233637L;
+public class BasicUiListModifiable<D extends DtObject> extends AbstractUiListModifiable<D> {
 
-	/**
-	 * Constructeur.
-	 * @param message Message d'erreur
-	 */
-	public ExpiredContextException(final String message) {
-		super(message);
+	private static final long serialVersionUID = -6612061761970992295L;
+
+	BasicUiListModifiable(final DtList<D> dtList, final String inputKey) {
+		super(dtList, inputKey);
+
 	}
+
+	@Override
+	protected UiObject<D> createUiObject(final D dto) {
+		return new MapUiObject<>(dto);
+	}
+
 }

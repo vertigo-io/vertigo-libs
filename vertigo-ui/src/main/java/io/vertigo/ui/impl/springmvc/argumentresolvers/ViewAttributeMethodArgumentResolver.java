@@ -1,4 +1,4 @@
-package io.vertigo.ui.core;
+package io.vertigo.ui.impl.springmvc.argumentresolvers;
 
 import java.util.Collections;
 import java.util.List;
@@ -13,6 +13,8 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
+import io.vertigo.ui.core.ViewContext;
+import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
