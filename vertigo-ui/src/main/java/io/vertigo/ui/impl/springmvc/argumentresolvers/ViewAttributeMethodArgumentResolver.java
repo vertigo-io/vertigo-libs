@@ -21,7 +21,7 @@ import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
 
-public class ViewAttributeMethodArgumentResolver implements HandlerMethodArgumentResolver {
+public final class ViewAttributeMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	private final List<DtObjectValidator<DtObject>> defaultDtObjectValidators = Collections.singletonList(new DefaultDtObjectValidator<>());
 

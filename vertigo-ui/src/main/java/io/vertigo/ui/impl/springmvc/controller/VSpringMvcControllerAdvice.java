@@ -13,7 +13,7 @@ import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 @ControllerAdvice(assignableTypes = { AbstractVSpringMvcController.class })
-public class VSpringMvcControllerAdvice {
+public final class VSpringMvcControllerAdvice {
 
 	@ModelAttribute
 	public void storeContext(final Model model) {

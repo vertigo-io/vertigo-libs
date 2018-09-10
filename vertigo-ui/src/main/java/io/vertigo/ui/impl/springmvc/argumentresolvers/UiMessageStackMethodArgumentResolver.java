@@ -9,7 +9,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
-public class UiMessageStackMethodArgumentResolver implements HandlerMethodArgumentResolver {
+public final class UiMessageStackMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override
 	public boolean supportsParameter(final MethodParameter parameter) {

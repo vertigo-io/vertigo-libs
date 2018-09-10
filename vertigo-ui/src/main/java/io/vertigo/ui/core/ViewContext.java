@@ -232,7 +232,7 @@ public final class ViewContext implements Serializable {
 	}
 
 	/**
-	 * @return objet métier valid�. Lance une exception si erreur.
+	 * @return objet métier validé. Lance une exception si erreur.
 	 */
 	public <O extends DtObject> O readDto(final String contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		checkDtoErrors(contextKey, uiMessageStack);
@@ -250,7 +250,7 @@ public final class ViewContext implements Serializable {
 	 * Ajoute une liste au context.
 	 * @param dtList List à publier
 	 */
-	public <O extends DtObject> void publishDtList(final String contextKey, final Optional<DtFieldName<O>> keyFieldNameOpt, final DtList<O> dtList, final boolean modifiable) {
+	private <O extends DtObject> void publishDtList(final String contextKey, final Optional<DtFieldName<O>> keyFieldNameOpt, final DtList<O> dtList, final boolean modifiable) {
 		if (modifiable) {
 			put(contextKey, new BasicUiListModifiable<>(dtList, contextKey));
 		} else {
@@ -335,7 +335,7 @@ public final class ViewContext implements Serializable {
 	 * @param entityClass Class associée
 	 * @param code Code
 	 */
-	public <E extends Entity> void publish(final String contextKey, final Class<E> entityClass, final String code) {
+	public <E extends Entity> void publishMdl(final String contextKey, final Class<E> entityClass, final String code) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
 		put(contextKey, new UiMdList<E>(new DtListURIForMasterData(dtDefinition, code)));
 	}

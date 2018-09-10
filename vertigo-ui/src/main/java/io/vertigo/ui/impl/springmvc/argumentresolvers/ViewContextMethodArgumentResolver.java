@@ -9,7 +9,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 
-public class ViewContextMethodArgumentResolver implements HandlerMethodArgumentResolver {
+public final class ViewContextMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	@Override
 	public boolean supportsParameter(final MethodParameter parameter) {
