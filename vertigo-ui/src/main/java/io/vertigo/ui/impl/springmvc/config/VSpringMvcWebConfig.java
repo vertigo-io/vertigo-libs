@@ -29,7 +29,7 @@ import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
 @Configuration
 @EnableWebMvc
 @ComponentScan("${springMvcControllerRootPackage}")
-public class MvcWebConfig implements WebMvcConfigurer, ApplicationContextAware {
+public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContextAware {
 
 	@Autowired
 	private ApplicationContext applicationContext;
@@ -43,6 +43,7 @@ public class MvcWebConfig implements WebMvcConfigurer, ApplicationContextAware {
 		templateResolver.setApplicationContext(applicationContext);
 		templateResolver.setPrefix("/WEB-INF/views/");
 		templateResolver.setSuffix(".html");
+		// for dev purpose
 		templateResolver.setCacheable(false);
 		return templateResolver;
 	}
@@ -90,7 +91,7 @@ public class MvcWebConfig implements WebMvcConfigurer, ApplicationContextAware {
 
 	@Override
 	public void addInterceptors(final InterceptorRegistry registry) {
-		registry.addInterceptor(new SpringMvcVActionContextInterceptor());
+		registry.addInterceptor(new VSpringMvcViewContextInterceptor());
 	}
 
 }

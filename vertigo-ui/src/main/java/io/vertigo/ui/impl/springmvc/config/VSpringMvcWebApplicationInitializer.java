@@ -2,7 +2,7 @@ package io.vertigo.ui.impl.springmvc.config;
 
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
-public class MvcWebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
+public class VSpringMvcWebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
 
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
@@ -11,7 +11,7 @@ public class MvcWebApplicationInitializer extends AbstractAnnotationConfigDispat
 
 	@Override
 	protected Class<?>[] getServletConfigClasses() {
-		return new Class[] { MvcWebConfig.class };
+		return new Class[] { VSpringMvcWebConfig.class };
 	}
 
 	@Override

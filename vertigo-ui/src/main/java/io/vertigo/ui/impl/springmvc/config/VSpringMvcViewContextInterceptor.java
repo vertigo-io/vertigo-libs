@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 
-public class SpringMvcVActionContextInterceptor implements HandlerInterceptor {
+public class VSpringMvcViewContextInterceptor implements HandlerInterceptor {
 
 	@Override
 	public boolean preHandle(final HttpServletRequest request, final HttpServletResponse response, final Object handler) throws Exception {
