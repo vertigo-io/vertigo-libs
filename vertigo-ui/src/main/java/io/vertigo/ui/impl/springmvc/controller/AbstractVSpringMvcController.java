@@ -65,8 +65,6 @@ public abstract class AbstractVSpringMvcController {
 	/** Préfix des clés des paramètres passés par l'url. */
 	public static final String URL_PARAM_PREFIX = "params.";
 
-	private static final String NONE = "refresh";
-
 	/**
 	 * Indique que l'initialisation du context par un parametre de l'url est autorisé.
 	 */
@@ -86,7 +84,7 @@ public abstract class AbstractVSpringMvcController {
 	public void prepareContext(final HttpServletRequest request) throws ExpiredViewContextException {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
 		ViewContext viewContext = null;
-		final String ctxId = request.getParameter(ViewContext.CTX);
+		final String ctxId = request.getParameter(ViewContext.CTX.get());
 		if ("POST".equals(request.getMethod()) || ctxId != null && acceptCtxQueryParam()) {
 			if (ctxId == null) {
 				contextMiss(null);

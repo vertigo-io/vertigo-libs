@@ -39,22 +39,22 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 		final String contextKey = parameter.getParameterAnnotation(ViewAttribute.class).value();
 		//---
 		if (UiObject.class.isAssignableFrom(parameter.getParameterType())) {
-			return viewContext.getUiObject(contextKey);
+			return viewContext.getUiObject(() -> contextKey);
 		} else if (DtObject.class.isAssignableFrom(parameter.getParameterType()) || DtList.class.isAssignableFrom(parameter.getParameterType())) {
 			Assertion.checkNotNull(uiMessageStack);
 			//---
 			final Object value;
 			if (DtObject.class.isAssignableFrom(parameter.getParameterType())) {
 				//object
-				if (viewContext.getUiObject(contextKey).checkFormat(uiMessageStack)) {
-					value = viewContext.getUiObject(contextKey).mergeAndCheckInput(defaultDtObjectValidators, uiMessageStack);
+				if (viewContext.getUiObject(()->contextKey).checkFormat(uiMessageStack)) {
+					value = viewContext.getUiObject(()->contextKey).mergeAndCheckInput(defaultDtObjectValidators, uiMessageStack);
 				} else {
 					value = null;
 				}
 			} else {
 				//list
-				if (viewContext.getUiList(contextKey).checkFormat(uiMessageStack)) {
-					value = viewContext.getUiList(contextKey).mergeAndCheckInput(defaultDtObjectValidators, uiMessageStack);
+				if (viewContext.getUiList(()->contextKey).checkFormat(uiMessageStack)) {
+					value = viewContext.getUiList(()->contextKey).mergeAndCheckInput(defaultDtObjectValidators, uiMessageStack);
 				} else {
 					value = null;
 				}

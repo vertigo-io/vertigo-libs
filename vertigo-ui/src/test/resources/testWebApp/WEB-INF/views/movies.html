@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+
+<title>Movies</title>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+
+</head>
+<body>
+   <h1>Movies</h1>
+   <h1>List</h1>
+   <script type="text/x-template" id="grid-template">
+   <table>
+    <thead>
+      <tr>
+        <th @click="sortBy(key)" :class="{ active: sortKey == key }">
+          {{ key | capitalize }}
+          <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+          </span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="entry in filteredData">
+        <td v-for="key in columns">
+          {{entry[key]}}
+        </td>
+      </tr>
+    </tbody>
+  </script>
+  </table>
+  	<div id="demo">
+	  <form id="search">
+	    Search <input name="query" v-model="searchQuery">
+	  </form>
+	  <demo-grid
+	    :data="gridData"
+	    :columns="gridColumns"
+	    :filter-key="searchQuery">
+	  </demo-grid>
+	</div>
+	
+	<script>
+	// register the grid component
+Vue.component('demo-grid', {
+  template: '#grid-template',
+  props: {
+    data: Array,
+    columns: Array,
+    filterKey: String
+  },
+  data: function () {
+    var sortOrders = {}
+    this.columns.forEach(function (key) {
+      sortOrders[key] = 1
+    })
+    return {
+      sortKey: '',
+      sortOrders: sortOrders
+    }
+  },
+  computed: {
+    filteredData: function () {
+      var sortKey = this.sortKey
+      var filterKey = this.filterKey && this.filterKey.toLowerCase()
+      var order = this.sortOrders[sortKey] || 1
+      var data = this.data
+      if (filterKey) {
+        data = data.filter(function (row) {
+          return Object.keys(row).some(function (key) {
+            return String(row[key]).toLowerCase().indexOf(filterKey) > -1
+          })
+        })
+      }
+      if (sortKey) {
+        data = data.slice().sort(function (a, b) {
+          a = a[sortKey]
+          b = b[sortKey]
+          return (a === b ? 0 : a > b ? 1 : -1) * order
+        })
+      }
+      return data
+    }
+  },
+  filters: {
+    capitalize: function (str) {
+      return str.charAt(0).toUpperCase() + str.slice(1)
+    }
+  },
+  methods: {
+    sortBy: function (key) {
+      this.sortKey = key
+      this.sortOrders[key] = this.sortOrders[key] * -1
+    }
+  }
+})
+
+// bootstrap the demo
+var demo = new Vue({
+  el: '#demo',
+  data: {
+    searchQuery: '',
+    gridColumns: ['name', 'power'],
+    gridData: [
+      { name: 'Chuck Norris', power: Infinity },
+      { name: 'Bruce Lee', power: 9000 },
+      { name: 'Jackie Chan', power: 7000 },
+      { name: 'Jet Li', power: 8000 }
+    ]
+  }
+})
+	</script>
+   <form action="#" th:action="@{/my/}" th:object="${model}" method="post">
+  		 <p>Id 1: <input type="text" th:field="*{vContext[movie][movId]}" /></p>
+  		 <p th:text="${model.vContext[movie][title]}"></p>
+      <!--   <p>Title: <input type="text" th:field="*{vContext[movie][title]}" /></p> -->
+         <p>Id 2: <input type="text" th:field="*{vContext[movie2][movId]}" /></p>
+        <p><input type="submit" value="Submit" />
+   		<input type="hidden" name="CTX" th:value="${model.vContext[CTX]}">
+   </form>
+</body>
+</html>
