@@ -37,6 +37,7 @@ import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.ui.core.FormMode;
 import io.vertigo.ui.core.ViewContext;
+import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.core.ViewContextMap;
 import io.vertigo.ui.exception.ExpiredViewContextException;
 import io.vertigo.ui.impl.springmvc.util.UiUtil;
@@ -52,16 +53,16 @@ public abstract class AbstractVSpringMvcController {
 	public static final String CONTEXT_COLLECTION_NAME = "VViewContext";
 
 	/** Clé de context du UiUtil. */
-	public static final String UTIL_CONTEXT_KEY = "util";
+	public static final ViewContextKey<UiUtil> UTIL_CONTEXT_KEY = ViewContextKey.of("util");
 	/** Clé de context du mode. */
-	public static final String MODE_CONTEXT_KEY = "mode";
+	public static final ViewContextKey<FormMode> MODE_CONTEXT_KEY = ViewContextKey.of("mode");
 	//TODO voir pour déléguer cette gestion des modes
 	/** Clé de context du mode Edit. */
-	public static final String MODE_EDIT_CONTEXT_KEY = "modeEdit";
+	public static final ViewContextKey<Boolean> MODE_EDIT_CONTEXT_KEY = ViewContextKey.of("modeEdit");
 	/** Clé de context du mode ReadOnly. */
-	public static final String MODE_READ_ONLY_CONTEXT_KEY = "modeReadOnly";
+	public static final ViewContextKey<Boolean> MODE_READ_ONLY_CONTEXT_KEY = ViewContextKey.of("modeReadOnly");
 	/** Clé de context du mode Create. */
-	public static final String MODE_CREATE_CONTEXT_KEY = "modeCreate";
+	public static final ViewContextKey<Boolean> MODE_CREATE_CONTEXT_KEY = ViewContextKey.of("modeCreate");
 	/** Préfix des clés des paramètres passés par l'url. */
 	public static final String URL_PARAM_PREFIX = "params.";
 
@@ -146,8 +147,8 @@ public abstract class AbstractVSpringMvcController {
 	 * Si surcharger doit rappeler le super.preInitContext();
 	 */
 	protected void preInitContext(final ViewContext viewContext) {
-		viewContext.put("appVersion", paramManager.getParam("app.version").getValueAsString());
-		viewContext.put(UTIL_CONTEXT_KEY, new UiUtil());
+		viewContext.publishRef(() -> "appVersion", paramManager.getParam("app.version").getValueAsString());
+		viewContext.publishRef(UTIL_CONTEXT_KEY, new UiUtil());
 		toModeReadOnly();
 	}
 
@@ -159,7 +160,8 @@ public abstract class AbstractVSpringMvcController {
 		String name;
 		for (final Enumeration<String> names = request.getParameterNames(); names.hasMoreElements();) {
 			name = names.nextElement();
-			viewContext.put(URL_PARAM_PREFIX + name, request.getParameterValues(name));
+			final String fullParamName = URL_PARAM_PREFIX + name;
+			viewContext.publishRef(() -> fullParamName, request.getParameterValues(name));
 		}
 	}
 
@@ -205,10 +207,10 @@ public abstract class AbstractVSpringMvcController {
 	protected final static void toModeEdit() {
 		//TODO voir pour déléguer cette gestion des modes
 		final ViewContext viewContext = getViewContext();
-		viewContext.put(MODE_CONTEXT_KEY, FormMode.edit);
-		viewContext.put(MODE_READ_ONLY_CONTEXT_KEY, false);
-		viewContext.put(MODE_EDIT_CONTEXT_KEY, true);
-		viewContext.put(MODE_CREATE_CONTEXT_KEY, false);
+		viewContext.publishRef(MODE_CONTEXT_KEY, FormMode.edit);
+		viewContext.publishRef(MODE_READ_ONLY_CONTEXT_KEY, false);
+		viewContext.publishRef(MODE_EDIT_CONTEXT_KEY, true);
+		viewContext.publishRef(MODE_CREATE_CONTEXT_KEY, false);
 	}
 
 	/**
@@ -217,10 +219,10 @@ public abstract class AbstractVSpringMvcController {
 	protected final static void toModeCreate() {
 		//TODO voir pour déléguer cette gestion des modes
 		final ViewContext viewContext = getViewContext();
-		viewContext.put(MODE_CONTEXT_KEY, FormMode.create);
-		viewContext.put(MODE_READ_ONLY_CONTEXT_KEY, false);
-		viewContext.put(MODE_EDIT_CONTEXT_KEY, false);
-		viewContext.put(MODE_CREATE_CONTEXT_KEY, true);
+		viewContext.publishRef(MODE_CONTEXT_KEY, FormMode.create);
+		viewContext.publishRef(MODE_READ_ONLY_CONTEXT_KEY, false);
+		viewContext.publishRef(MODE_EDIT_CONTEXT_KEY, false);
+		viewContext.publishRef(MODE_CREATE_CONTEXT_KEY, true);
 	}
 
 	/**
@@ -229,10 +231,10 @@ public abstract class AbstractVSpringMvcController {
 	protected final static void toModeReadOnly() {
 		//TODO voir pour déléguer cette gestion des modes
 		final ViewContext viewContext = getViewContext();
-		viewContext.put(MODE_CONTEXT_KEY, FormMode.readOnly);
-		viewContext.put(MODE_READ_ONLY_CONTEXT_KEY, true);
-		viewContext.put(MODE_EDIT_CONTEXT_KEY, false);
-		viewContext.put(MODE_CREATE_CONTEXT_KEY, false);
+		viewContext.publishRef(MODE_CONTEXT_KEY, FormMode.readOnly);
+		viewContext.publishRef(MODE_READ_ONLY_CONTEXT_KEY, true);
+		viewContext.publishRef(MODE_EDIT_CONTEXT_KEY, false);
+		viewContext.publishRef(MODE_CREATE_CONTEXT_KEY, false);
 	}
 
 	/**

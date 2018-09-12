@@ -14,9 +14,14 @@
    <table>
     <thead>
       <tr>
-        <th @click="sortBy(key)" :class="{ active: sortKey == key }">
-          {{ key | capitalize }}
-          <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+        <th @click="sortBy('name')" :class="{ active: sortKey == 'name' }">
+          {{ 'name' | capitalize }}
+          <span class="arrow" :class="sortOrders['name'] > 0 ? 'asc' : 'dsc'">
+          </span>
+        </th>
+ 		<th @click="sortBy('power')" :class="{ active: sortKey == 'power' }">
+          {{ 'power' | capitalize }}
+          <span class="arrow" :class="sortOrders['power'] > 0 ? 'asc' : 'dsc'">
           </span>
         </th>
       </tr>
@@ -28,6 +33,7 @@
         </td>
       </tr>
     </tbody>
+  </table>
   </script>
   </table>
   	<div id="demo">
@@ -111,12 +117,12 @@ var demo = new Vue({
   }
 })
 	</script>
-   <form action="#" th:action="@{/my/}" th:object="${model}" method="post">
-  		 <p>Id 1: <input type="text" th:field="*{vContext[movie][movId]}" /></p>
-  		 <p th:text="${model.vContext[movie][title]}"></p>
-      <!--   <p>Title: <input type="text" th:field="*{vContext[movie][title]}" /></p> -->
-         <p>Id 2: <input type="text" th:field="*{vContext[movie2][movId]}" /></p>
-        <p><input type="submit" value="Submit" />
+	
+	<form action="#" th:action="@{/movies/}"  method="post">
+	
+		<input type="hidden" name="top" value="30">
+		<input type="hidden" name="skip" value="60">
+        <p><button type="submit" >Submit</button></p>
    		<input type="hidden" name="CTX" th:value="${model.vContext[CTX]}">
    </form>
 </body>

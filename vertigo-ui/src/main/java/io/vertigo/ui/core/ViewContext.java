@@ -283,8 +283,8 @@ public final class ViewContext implements Serializable {
 	 * Ajoute une liste au context.
 	 * @param dtList List à publier
 	 */
-	public <O extends DtObject> void publishDtList(final ViewContextKey<O> contextKey, final Optional<DtFieldName<O>> keyFieldNameOpt, final DtList<O> dtList) {
-		publishDtList(contextKey, keyFieldNameOpt, dtList, false);
+	public <O extends DtObject> void publishDtList(final ViewContextKey<O> contextKey, final DtFieldName<O> keyFieldName, final DtList<O> dtList) {
+		publishDtList(contextKey, Optional.of(keyFieldName), dtList, false);
 	}
 
 	/**
@@ -292,7 +292,7 @@ public final class ViewContext implements Serializable {
 	 * @param dtList List à publier
 	 */
 	public <O extends DtObject> void publishDtList(final ViewContextKey<O> contextKey, final DtList<O> dtList) {
-		publishDtList(contextKey, Optional.empty(), dtList);
+		publishDtList(contextKey, Optional.empty(), dtList, false);
 	}
 
 	/**

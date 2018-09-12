@@ -13,6 +13,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
+import io.vertigo.ui.domain.DtDefinitions.MovieDisplayFields;
 import io.vertigo.ui.domain.movies.MovieDisplay;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttribute;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
@@ -32,7 +33,7 @@ public final class MoviesController extends AbstractVSpringMvcController {
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) {
-		viewContext.publishDtList(MOVIES, movieServices.getMoviesDisplay(new DtListState(200, 0, null, null)));
+		viewContext.publishDtList(MOVIES, MovieDisplayFields.MOV_ID, movieServices.getMoviesDisplay(new DtListState(200, 0, null, null)));
 	}
 
 	@PostMapping("/")
