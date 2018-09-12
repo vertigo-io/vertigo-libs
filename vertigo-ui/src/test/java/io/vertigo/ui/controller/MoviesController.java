@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -37,9 +38,15 @@ public final class MoviesController extends AbstractVSpringMvcController {
 	}
 
 	@PostMapping("/")
+	@ResponseBody
 	public DtList<MovieDisplay> doPaginate(@ViewAttribute("movies") final DtList<MovieDisplay> moviesDisplay, final DtListState dtListState) {
 		applySortAndPagination(moviesDisplay, dtListState);
 		return moviesDisplay;
+	}
+
+	@PostMapping("/toto")
+	public void doSomeAction() {
+		//doNothing
 	}
 
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
