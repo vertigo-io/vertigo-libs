@@ -22,7 +22,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Enumeration;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -66,6 +65,8 @@ public abstract class AbstractVSpringMvcController {
 	/** Préfix des clés des paramètres passés par l'url. */
 	public static final String URL_PARAM_PREFIX = "params.";
 
+	private static final String SLASH = "/";
+
 	/**
 	 * Indique que l'initialisation du context par un parametre de l'url est autorisé.
 	 */
@@ -107,7 +108,7 @@ public abstract class AbstractVSpringMvcController {
 			viewContext = new ViewContext(new ViewContextMap());
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
 			attributes.setAttribute("uiMessageStack", new VSpringMvcUiMessageStack(), RequestAttributes.SCOPE_REQUEST);
-			initContextUrlParameters(request, viewContext);
+			//initContextUrlParameters(request, viewContext);
 			//TODO vérifier que l'action demandée n'attendait pas de context : il va etre recrée vide ce qui n'est pas bon dans certains cas.
 			preInitContext(viewContext);
 			Assertion.checkState(viewContext.containsKey(UTIL_CONTEXT_KEY), "Pour surcharger preInitContext vous devez rappeler les parents super.preInitContext(). Action: {0}",
@@ -115,6 +116,26 @@ public abstract class AbstractVSpringMvcController {
 			//initContext();
 		}
 
+		request.setAttribute("defaultViewName", getDefaultViewName(request));
+
+	}
+
+	public static String getDefaultViewName(final HttpServletRequest request) {
+		String path = request.getRequestURI();
+		if (request.getContextPath() != null) {
+			//remove the context path if exists
+			path = path.substring(request.getContextPath().length());
+		}
+		if (path.startsWith(SLASH)) {
+			path = path.substring(1);
+		}
+		if (path.endsWith(SLASH)) {
+			path = path.substring(0, path.length() - 1);
+		} else {
+			// we remove the subaction
+			path = path.substring(0, path.lastIndexOf(SLASH));
+		}
+		return path;
 	}
 
 	private boolean acceptCtxQueryParam() {
@@ -152,18 +173,19 @@ public abstract class AbstractVSpringMvcController {
 		toModeReadOnly();
 	}
 
-	/**
-	 * Initialisation du context pour ajouter les paramètres passés par l'url.
-	 * Les paramètres sont préfixés par "param."
-	 */
-	private static void initContextUrlParameters(final HttpServletRequest request, final ViewContext viewContext) {
-		String name;
-		for (final Enumeration<String> names = request.getParameterNames(); names.hasMoreElements();) {
-			name = names.nextElement();
-			final String fullParamName = URL_PARAM_PREFIX + name;
-			viewContext.publishRef(() -> fullParamName, request.getParameterValues(name));
-		}
-	}
+	//	/**
+	//	 * Initialisation du context pour ajouter les paramètres passés par l'url.
+	//	 * Les paramètres sont préfixés par "param."
+	//	 */
+	// TODO : a garder???? (garde dans le context les paramètres initiaux pour redirect? refresh)
+	//	private static void initContextUrlParameters(final HttpServletRequest request, final ViewContext viewContext) {
+	//		String name;
+	//		for (final Enumeration<String> names = request.getParameterNames(); names.hasMoreElements();) {
+	//			name = names.nextElement();
+	//			final String fullParamName = URL_PARAM_PREFIX + name;
+	//			viewContext.publishRef(() -> fullParamName, request.getParameterValues(name));
+	//		}
+	//	}
 
 	/**
 	 * Conserve et fige le context.
