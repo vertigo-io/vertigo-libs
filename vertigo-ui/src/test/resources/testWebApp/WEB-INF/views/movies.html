@@ -4,117 +4,138 @@
 <meta charset="ISO-8859-1">
 
 <title>Movies</title>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"> </script>
+<script> 
+var vueData = { searchQuery : '' };
+var data = {
+		  rawData : vueData,
+		  componentStates : {}
+	  };</script>
 
 </head>
 <body>
    <h1>Movies</h1>
    <h1>List</h1>
-   <script type="text/x-template" id="grid-template">
-   <table>
-    <thead>
-      <tr>
-        <th @click="sortBy('name')" :class="{ active: sortKey == 'name' }">
-          {{ 'name' | capitalize }}
-          <span class="arrow" :class="sortOrders['name'] > 0 ? 'asc' : 'dsc'">
-          </span>
-        </th>
- 		<th @click="sortBy('power')" :class="{ active: sortKey == 'power' }">
-          {{ 'power' | capitalize }}
-          <span class="arrow" :class="sortOrders['power'] > 0 ? 'asc' : 'dsc'">
-          </span>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="entry in filteredData">
-        <td v-for="key in columns">
-          {{entry[key]}}
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  </script>
-  </table>
+   <table id="movies1" model="movies">
+	<column name="name" sortable=true/>
+	<column name="power" sortable=true/>
+	</table>
+  
+<script> vueData.movies =  [
+    { name: 'Chuck Norris', power: Infinity },
+    { name: 'Bruce Lee', power: 9000 },
+    { name: 'Jackie Chan', power: 7000 },
+    { name: 'Jet Li', power: 8000 }
+  ];
+</script>
   	<div id="demo">
 	  <form id="search">
-	    Search <input name="query" v-model="searchQuery">
+	    Search <input name="query" v-model="rawData.searchQuery">
 	  </form>
-	  <demo-grid
-	    :data="gridData"
-	    :columns="gridColumns"
-	    :filter-key="searchQuery">
-	  </demo-grid>
+	  <v-table
+	  	component-id="movie1"
+	    :list="rawData.movies"
+	    :filter-key="rawData.searchQuery"
+	    :columns="['name', 'power']">
+	    </v-table>
 	</div>
-	
-	<script>
+
+
+
+ <script type="text/x-template" id="v-table-template">
+   <table>
+    <thead>
+			<slot name="header" v-bind:columns="columns"  v-bind:listState="listState">
+			    <v-table-header :columns="columns" @sort="sortBy" :listState="listState" ></v-table-header>
+			</slot>
+    </thead>
+    <tbody>
+      	<slot name="body" v-bind:columns="columns">
+			<tr v-for="entry in filteredData">
+					<td v-for="column in columns">
+			          {{entry[column]}}
+			        </td>
+			</tr>	
+		</slot>
+    </tbody>
+  </table>
+</script>	
+<script>
+
+Vue.component('v-table', {
+	  template: '#v-table-template',
+	  props: {
+	    list: Array,
+	    columns: Array,
+	    componentId: String,
+	    filterKey: String
+	  },
+	  data: function () {
+	    return {
+	    	listState : {
+		      sortFieldName: '',
+		      sortDesc: true
+	    	}
+	    }
+	  },
+	  computed: {
+	    filteredData: function () {
+	      window.data.componentStates[this.$props.componentId] = this.$data;
+	      var sortFieldName = this.listState.sortFieldName;
+	      var filterKey = this.filterKey && this.filterKey.toLowerCase()
+	      var order = this.listState.sortDesc ? -1 : 1;
+	      var data = this.list;
+	      
+	      if (filterKey) {
+	        data = data.filter(function (row) {
+	          return Object.keys(row).some(function (key) {
+	            return String(row[key]).toLowerCase().indexOf(filterKey) > -1
+	          })
+	        })
+	      }
+	      if (sortFieldName) {
+	        data = data.slice().sort(function (a, b) {
+	          a = a[sortFieldName]
+	          b = b[sortFieldName]
+	          return (a === b ? 0 : a > b ? 1 : -1) * order
+	        })
+	      }
+	      return data
+	    }
+	  },
+	  methods: {
+	    sortBy: function (key) {
+	      this.listState.sortFieldName = key
+	      this.listState.sortDesc = !this.listState.sortDesc
+	    }
+	  }
+	})
+
 	// register the grid component
-Vue.component('demo-grid', {
-  template: '#grid-template',
+Vue.component('v-table-header', {
+  template: `
+	  <tr>
+	  	<th v-for="column in columns" @click="$emit('sort', column)" :class="{ active: listState.sortFieldName == column }">
+	  	  <slot name="head" v-bind:column="column" v-bind:listState="listState">
+	  	  	{{ column }}
+	  	  </slot>
+	      <span class="arrow" :class="listState.sortDesc ? 'dsc' : 'asc' ">
+	      </span>
+	  	</th>
+	  </tr>
+	  `,
   props: {
-    data: Array,
-    columns: Array,
-    filterKey: String
-  },
-  data: function () {
-    var sortOrders = {}
-    this.columns.forEach(function (key) {
-      sortOrders[key] = 1
-    })
-    return {
-      sortKey: '',
-      sortOrders: sortOrders
-    }
-  },
-  computed: {
-    filteredData: function () {
-      var sortKey = this.sortKey
-      var filterKey = this.filterKey && this.filterKey.toLowerCase()
-      var order = this.sortOrders[sortKey] || 1
-      var data = this.data
-      if (filterKey) {
-        data = data.filter(function (row) {
-          return Object.keys(row).some(function (key) {
-            return String(row[key]).toLowerCase().indexOf(filterKey) > -1
-          })
-        })
-      }
-      if (sortKey) {
-        data = data.slice().sort(function (a, b) {
-          a = a[sortKey]
-          b = b[sortKey]
-          return (a === b ? 0 : a > b ? 1 : -1) * order
-        })
-      }
-      return data
-    }
-  },
-  filters: {
-    capitalize: function (str) {
-      return str.charAt(0).toUpperCase() + str.slice(1)
-    }
-  },
-  methods: {
-    sortBy: function (key) {
-      this.sortKey = key
-      this.sortOrders[key] = this.sortOrders[key] * -1
-    }
+	columns: Array,
+    listState: Object
   }
-})
+});
+
+
 
 // bootstrap the demo
 var demo = new Vue({
   el: '#demo',
-  data: {
-    searchQuery: '',
-    gridColumns: ['name', 'power'],
-    gridData: [
-      { name: 'Chuck Norris', power: Infinity },
-      { name: 'Bruce Lee', power: 9000 },
-      { name: 'Jackie Chan', power: 7000 },
-      { name: 'Jet Li', power: 8000 }
-    ]
-  }
+  data: data
 })
 	</script>
 	
