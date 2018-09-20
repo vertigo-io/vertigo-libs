@@ -28,6 +28,9 @@ import io.vertigo.ui.impl.springmvc.argumentresolvers.UiMessageStackMethodArgume
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttributeMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewContextMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
+import io.vertigo.ui.impl.thymeleaf.VUiStandardDialect;
+import io.vertigo.ui.impl.thymeleaf.composite.parser.StandardThymeleafComponentParser;
+import io.vertigo.ui.impl.thymeleaf.composite.parser.VuiResourceTemplateResolver;
 
 @Configuration
 @EnableWebMvc
@@ -51,6 +54,17 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 		return templateResolver;
 	}
 
+	@Bean
+	public VuiResourceTemplateResolver compositeResolver() {
+		final VuiResourceTemplateResolver templateResolver = new VuiResourceTemplateResolver();
+		templateResolver.setApplicationContext(applicationContext);
+		templateResolver.setPrefix("/WEB-INF/views/composites/");
+		templateResolver.setSuffix(".html");
+		// for dev purpose
+		templateResolver.setCacheable(true);
+		return templateResolver;
+	}
+
 	/*
 	* STEP 2 - Create SpringTemplateEngine
 	* */
@@ -59,6 +73,11 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 		final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
 		templateEngine.setTemplateResolver(templateResolver());
 		templateEngine.setEnableSpringELCompiler(true);
+
+		final VUiStandardDialect dialect = new VUiStandardDialect();
+		dialect.addParser(new StandardThymeleafComponentParser("vu", compositeResolver()));
+
+		templateEngine.addDialect("vu", dialect);
 		return templateEngine;
 	}
 

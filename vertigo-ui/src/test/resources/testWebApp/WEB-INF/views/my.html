@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:vu="http://www.morphbit.com/thymeleaf/component">>
 <head>
 <meta charset="ISO-8859-1">
 
@@ -16,6 +16,7 @@
          <p>Id 2: <input type="text" th:field="*{vContext[movie2][movId]}" /></p>
         <p><input type="submit" value="Submit" />
    		<input type="hidden" name="CTX" th:value="${model.vContext[CTX]}">
+   		<vu:valid-input title="testLabel" field="vContext[movie][movId]"/>
    </form>
 </body>
 </html>

@@ -18,12 +18,6 @@
  */
 package io.vertigo.ui.controller;
 
-import javax.inject.Inject;
-
-import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.dynamo.collections.CollectionsManager;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
@@ -36,10 +30,10 @@ public final class ListAutocompleteAction {
 	//	private final ContextRef<String> listRef = new ContextRef<>("list", String.class, this);
 	//	private final ContextRef<String> listKeyRef = new ContextRef<>("listKey", String.class, this);
 	//	private final ContextRef<String> listValueRef = new ContextRef<>("listValue", String.class, this);
-	@Inject
-	private CollectionsManager collectionsManager;
-	@Inject
-	private VTransactionManager transactionManager; //used for search in linked masterdatalist
+//	@Inject
+//	private CollectionsManager collectionsManager;
+//	@Inject
+//	private VTransactionManager transactionManager; //used for search in linked masterdatalist
 
 	/** {@inheritDoc} */
 	protected void initContext() {
@@ -89,30 +83,30 @@ public final class ListAutocompleteAction {
 		return null;
 	}
 
-	private static String toJson(final DtList<?> dtList, final DtField keyField, final DtField labelField) {
-		final StringBuilder sb = new StringBuilder("[");
-		String sep = "";
-		for (final DtObject dto : dtList) {
-			final Object keyValue = keyField.getDataAccessor().getValue(dto);
-			final String labelValue = (String) labelField.getDataAccessor().getValue(dto);
-			final String labelEncoded = jsonEncode(labelValue);
-			sb.append(sep)
-					.append("{\"key\":")
-					.append('\"')
-					.append(keyValue)
-					.append("\",\"value\":")
-					.append('\"')
-					.append(labelEncoded)
-					.append("\"}");
-			sep = ", ";
-		}
-		sb.append(']');
-		return sb.toString();
-	}
+//	private static String toJson(final DtList<?> dtList, final DtField keyField, final DtField labelField) {
+//		final StringBuilder sb = new StringBuilder("[");
+//		String sep = "";
+//		for (final DtObject dto : dtList) {
+//			final Object keyValue = keyField.getDataAccessor().getValue(dto);
+//			final String labelValue = (String) labelField.getDataAccessor().getValue(dto);
+//			final String labelEncoded = jsonEncode(labelValue);
+//			sb.append(sep)
+//					.append("{\"key\":")
+//					.append('\"')
+//					.append(keyValue)
+//					.append("\",\"value\":")
+//					.append('\"')
+//					.append(labelEncoded)
+//					.append("\"}");
+//			sep = ", ";
+//		}
+//		sb.append(']');
+//		return sb.toString();
+//	}
 
-	private static String jsonEncode(final String json) {
-		return json
-				.replaceAll("([\"\\\\])", "\\\\$1")// " => \" et \ => \\ (ils sont echappés avec \ devant)
-				.replaceAll("\n", "|");// \n => | (interdit en json)
-	}
+//	private static String jsonEncode(final String json) {
+//		return json
+//				.replaceAll("([\"\\\\])", "\\\\$1")// " => \" et \ => \\ (ils sont echappés avec \ devant)
+//				.replaceAll("\n", "|");// \n => | (interdit en json)
+//	}
 }
