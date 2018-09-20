@@ -3,12 +3,12 @@ Vue.component('v-table', {
   <table>
     <thead>
 		<slot name="header" v-bind:columns="columns"  v-bind:listState="listState">
-		    <v-table-header :columns="columns" @sort="sortBy" :listState="listState" ></v-table-header>
+		    <v-table-header v-bind:columns="columns" @sort="sortBy" v-bind:listState="listState" ></v-table-header>
 		</slot>
     </thead>
     <tbody>
       	<slot name="body" v-bind:columns="columns"  v-bind:filteredData="filteredData">
-			<v-table-line v-for="entry in filteredData" :columns="columns" :entry="entry" ></v-table-line>
+			<v-table-line v-for="entry in filteredData" v-bind:columns="columns" v-bind:entry="entry" ></v-table-line>
 		</slot>
     </tbody>
   </table>

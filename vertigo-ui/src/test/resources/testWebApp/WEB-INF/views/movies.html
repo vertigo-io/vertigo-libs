@@ -6,28 +6,7 @@
 <title>Movies</title>
 <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"> </script>
 <script th:src="@{/static/js/v-components/v-table.js}"> </script>
-<script> 
-var vueData = {};
-var data = {
-		  rawData : vueData,
-		  componentStates : {}
-	  };
-</script>
 
-<!-- form -->
-<script>
-  	vueData.searchQuery = '';
-</script>
-
-<!-- table -->
-<script> 
-  vueData.movies =  [
-	    { name: 'Chuck Norris', power: Infinity },
-	    { name: 'Bruce Lee', power: 9000 },
-	    { name: 'Jackie Chan', power: 7000 },
-	    { name: 'Jet Li', power: 8000 }
-	  ];
-</script>
 </head>
 <body>
    <h1>Movies</h1>
@@ -45,12 +24,36 @@ var data = {
 		:list="rawData.movies"
 		:filter-key="rawData.searchQuery"
 		:columns="['name', 'power']">
+		<template slot="header" scope="slotProps">
+			<v-table-header v-bind:columns="slotProps.columns" v-bind:list-state="slotProps.listState" ></v-table-header>
+		</template>
 	</v-table>
+	
 </div>
 
 
 <!-- Init the vue page -->
 <script>
+var vueData = {};
+var data = {
+		  rawData : vueData,
+		  componentStates : {}
+	  };
+vueData.searchQuery = '';
+
+vueData.movies =  [
+    { name: 'Chuck Norris', power: Infinity },
+    { name: 'Bruce Lee', power: 9000 },
+    { name: 'Jackie Chan', power: 7000 },
+    { name: 'Jet Li', power: 8000 }
+  ];
+
+data.componentStates.movies2 = {
+		listState : {
+			page : 1
+		}
+}
+
 var demo = new Vue({
   el: '#page',
   data: data

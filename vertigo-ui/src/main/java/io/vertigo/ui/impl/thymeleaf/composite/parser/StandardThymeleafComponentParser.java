@@ -69,7 +69,7 @@ public class StandardThymeleafComponentParser extends AbstractElementParser
 	public Set<ThymeleafComponent> parseComposite(final String compositeName) {
 		final Set<ThymeleafComponent> components = new HashSet<>();
 
-		final ITemplateResource templateResource = compositeResolver.resolveResource(compositeName);
+		final ITemplateResource templateResource = compositeResolver.resolveResource("composites/" + compositeName);
 		for (final Element element : parseElements(templateResource)) {
 			if (isThymeleafComponent(element)) {
 				components.add(createComponent(element, compositeName));

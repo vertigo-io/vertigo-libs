@@ -5,9 +5,10 @@
 
 	<display-name>Test Vertigo Struts</display-name>
 	<listener>
-		<listener-class>io.vertigo.vega.impl.webservice.servlet.AppServletContextListener</listener-class>
+		<listener-class>io.vertigo.vega.impl.webservice.servlet.AppServletContextListener
+		</listener-class>
 	</listener>
-	
+
 	<!-- Paramètrage des variables du managers.xml -->
 	<context-param>
 		<param-name>boot.configXmlInterne</param-name>
@@ -19,12 +20,14 @@
 		Task/MDM de execution.kpr -->
 	<context-param>
 		<param-name>boot.applicationConfiguration</param-name>
-		<param-value>/testWebApp/META-INF/managers.xml;/testWebApp/META-INF/test-services.xml</param-value>
+		<param-value>/testWebApp/META-INF/managers.xml;/testWebApp/META-INF/test-services.xml
+		</param-value>
 	</context-param>
-	
+
 	<filter>
 		<filter-name>Character Encoding Filter</filter-name>
-		<filter-class>io.vertigo.vega.impl.servlet.filter.SetCharsetEncodingFilter</filter-class>
+		<filter-class>io.vertigo.vega.impl.servlet.filter.SetCharsetEncodingFilter
+		</filter-class>
 		<init-param>
 			<param-name>charset</param-name>
 			<param-value>UTF-8</param-value>
@@ -34,12 +37,19 @@
 		<filter-name>Character Encoding Filter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	
+
+
+	<!-- prevent Locking of static files on windows -->
+	<context-param>
+		<param-name>org.eclipse.jetty.servlet.Default.useFileMappedBuffer</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	<!-- serve static files by jetty -->
 	<servlet-mapping>
-	    <servlet-name>default</servlet-name>
-	    <url-pattern>/static/*</url-pattern>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/static/*</url-pattern>
 	</servlet-mapping>
-	
+
 
 	<session-config>
 		<session-timeout>60</session-timeout>
@@ -61,5 +71,5 @@
 		<welcome-file>index.html</welcome-file>
 	</welcome-file-list>
 
-	
+
 </web-app>

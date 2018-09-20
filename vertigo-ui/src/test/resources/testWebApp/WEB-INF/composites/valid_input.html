@@ -3,10 +3,9 @@
 <head>
 </head>
 <body>
-<div th:fragment="valid-input">
+	<div th:fragment="valid-input">
         <label th:text="${title}"></label>
-        <input type="text" th:field="${model.__${field}__}" />
-</div>
-
+        <input type="text" th:field="${model.vContext__${field}__}" />
+	</div>
 </body>
 </html>

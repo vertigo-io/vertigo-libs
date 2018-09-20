@@ -1,5 +1,6 @@
 package io.vertigo.ui.impl.springmvc.config;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.BeansException;
@@ -58,8 +59,9 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 	public VuiResourceTemplateResolver compositeResolver() {
 		final VuiResourceTemplateResolver templateResolver = new VuiResourceTemplateResolver();
 		templateResolver.setApplicationContext(applicationContext);
-		templateResolver.setPrefix("/WEB-INF/views/composites/");
+		templateResolver.setPrefix("/WEB-INF/");
 		templateResolver.setSuffix(".html");
+		templateResolver.setResolvablePatterns(Collections.singleton("composites/*"));
 		// for dev purpose
 		templateResolver.setCacheable(false);
 		return templateResolver;
@@ -71,12 +73,18 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 	@Bean
 	public SpringTemplateEngine templateEngine() {
 		final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-		templateEngine.setTemplateResolver(templateResolver());
+		final SpringResourceTemplateResolver viewsResolvers = templateResolver();
+		viewsResolvers.setOrder(2);
+		templateEngine.setTemplateResolver(viewsResolvers);
 		templateEngine.setEnableSpringELCompiler(true);
-
+		//---
+		// add composites
+		final VuiResourceTemplateResolver compositeResolvers = compositeResolver();
+		compositeResolvers.setOrder(1);
+		templateEngine.addTemplateResolver(compositeResolvers);
+		//---
 		final VUiStandardDialect dialect = new VUiStandardDialect();
 		dialect.addParser(new StandardThymeleafComponentParser("vu", compositeResolver()));
-
 		templateEngine.addDialect("vu", dialect);
 		return templateEngine;
 	}
