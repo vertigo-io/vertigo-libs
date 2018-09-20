@@ -61,7 +61,7 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 		templateResolver.setPrefix("/WEB-INF/views/composites/");
 		templateResolver.setSuffix(".html");
 		// for dev purpose
-		templateResolver.setCacheable(true);
+		templateResolver.setCacheable(false);
 		return templateResolver;
 	}
 

@@ -1,23 +1,19 @@
 package io.vertigo.ui.impl.thymeleaf;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
+import org.thymeleaf.dialect.AbstractProcessorDialect;
 import org.thymeleaf.processor.IProcessor;
-import org.thymeleaf.spring5.expression.SPELVariableExpressionEvaluator;
-import org.thymeleaf.standard.StandardDialect;
-import org.thymeleaf.standard.expression.IStandardVariableExpressionEvaluator;
 
 import io.vertigo.ui.impl.thymeleaf.composite.model.ThymeleafComponent;
 import io.vertigo.ui.impl.thymeleaf.composite.parser.IThymeleafComponentParser;
 import io.vertigo.ui.impl.thymeleaf.composite.processor.ComponentNamedElementProcessor;
 import io.vertigo.ui.impl.thymeleaf.composite.processor.OnceAttributeTagProcessor;
 
-public final class VUiStandardDialect extends StandardDialect {
+public final class VUiStandardDialect extends AbstractProcessorDialect {
 
 	public static final String NAME = "VertigoStandard";
 	public static final String PREFIX = "vu";
@@ -37,18 +33,8 @@ public final class VUiStandardDialect extends StandardDialect {
 	}
 
 	@Override
-	public IStandardVariableExpressionEvaluator getVariableExpressionEvaluator() {
-		return SPELVariableExpressionEvaluator.INSTANCE;
-	}
-
-	@Override
 	public Set<IProcessor> getProcessors(final String dialectPrefix) {
 		return createVUiStandardProcessorsSet(dialectPrefix);
-	}
-
-	@Override
-	public Map<String, Object> getExecutionAttributes() {
-		return Collections.emptyMap();
 	}
 
 	private Set<IProcessor> createVUiStandardProcessorsSet(final String dialectPrefix) {

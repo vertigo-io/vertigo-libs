@@ -16,7 +16,7 @@
          <p>Id 2: <input type="text" th:field="*{vContext[movie2][movId]}" /></p>
         <p><input type="submit" value="Submit" />
    		<input type="hidden" name="CTX" th:value="${model.vContext[CTX]}">
-   		<vu:valid-input title="testLabel" field="vContext[movie][movId]"/>
+   		<vu:valid-input label="testLabel" field="[movie][movId]"/>
    </form>
 </body>
 </html>
