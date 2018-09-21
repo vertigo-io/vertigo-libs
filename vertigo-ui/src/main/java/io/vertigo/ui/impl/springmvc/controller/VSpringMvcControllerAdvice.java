@@ -48,6 +48,7 @@ public final class VSpringMvcControllerAdvice {
 		viewContext.markDirty();
 		modelAndView.addObject("model", viewContext.asMap());
 		modelAndView.addObject("uiMessageStack", uiMessageStack);
+		modelAndView.addObject("dataKeySetFilter", new HashSet<>());//--- add the filterKeys for creating the vue's data object (JS)
 
 		return modelAndView;
 	}
