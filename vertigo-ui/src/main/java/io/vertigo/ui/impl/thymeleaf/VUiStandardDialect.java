@@ -67,6 +67,8 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 		for (final IThymeleafComponentParser parser : parsers) {
 			parsedComponents.addAll(parser.parseComposite("valid_input"));
 			parsedComponents.addAll(parser.parseComposite("link"));
+			parsedComponents.addAll(parser.parseComposite("vue-data"));
+			parsedComponents.addAll(parser.parseComposite("include-data"));
 		}
 
 		return parsedComponents;

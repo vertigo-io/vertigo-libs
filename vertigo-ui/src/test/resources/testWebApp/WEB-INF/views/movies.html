@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:vu="http://www.morphbit.com/thymeleaf/component">
 <head>
 <meta charset="ISO-8859-1">
 
@@ -11,49 +11,40 @@
 <body>
    <h1>Movies</h1>
    <h1>List</h1>
-  
 	
   	<div id="page">
 	  <form id="search">
 	  	
-	    Search <input name="query" v-model="rawData.searchQuery">
+	    Search <input name="query" v-model="vueData.searchQuery">
 	  </form>
 	
 	<v-table
 		component-id="movie1"
-		:list="rawData.movies"
-		:filter-key="rawData.searchQuery"
-		:columns="['name', 'power']">
+		:list="vueData.movies"
+		:filter-key="vueData.searchQuery"
+		:columns="['movId', 'title']">
 		<template slot="header" scope="slotProps">
 			<v-table-header v-bind:columns="slotProps.columns" v-bind:list-state="slotProps.listState" ></v-table-header>
 		</template>
 	</v-table>
-	
 </div>
 
-
-<!-- Init the vue page -->
+<!-- add movies in vueData -->
+<vu:include-data contextKey="movies"/>
+<!-- include vueData -->
+<vu:vue-data/>
 <script>
-var vueData = {};
 var data = {
-		  rawData : vueData,
+		  vueData : vueData,
 		  componentStates : {}
 	  };
 vueData.searchQuery = '';
-
-vueData.movies =  [
-    { name: 'Chuck Norris', power: Infinity },
-    { name: 'Bruce Lee', power: 9000 },
-    { name: 'Jackie Chan', power: 7000 },
-    { name: 'Jet Li', power: 8000 }
-  ];
 
 data.componentStates.movies2 = {
 		listState : {
 			page : 1
 		}
 }
-
 var demo = new Vue({
   el: '#page',
   data: data

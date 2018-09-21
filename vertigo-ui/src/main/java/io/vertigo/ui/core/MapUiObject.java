@@ -19,6 +19,7 @@
 package io.vertigo.ui.core;
 
 import java.io.Serializable;
+import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -130,10 +131,13 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		throw new UnsupportedOperationException();
 	}
 
-	/** Non implémenté. */
+	/** Implémentation : TODO : see if it's ok */
 	@Override
 	public Set<java.util.Map.Entry<String, Serializable>> entrySet() {
-		throw new UnsupportedOperationException();
+		return camel2ConstIndex.keySet()
+				.stream()
+				.map(key -> new AbstractMap.SimpleEntry<>(key, get(key)))
+				.collect(Collectors.toSet());
 	}
 
 	/** {@inheritDoc} */

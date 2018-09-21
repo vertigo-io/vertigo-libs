@@ -1,5 +1,7 @@
 package io.vertigo.ui.impl.springmvc.controller;
 
+import java.util.HashSet;
+
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +24,7 @@ public final class VSpringMvcControllerAdvice {
 		//---
 		model.addAttribute("model", viewContext.asMap());
 		model.addAttribute("uiMessageStack", uiMessageStack);
+		model.addAttribute("dataKeySetFilter", new HashSet<>());//--- add the filterKeys for creating the vue's data object (JS)
 		// here we can retrieve anything and put it into the model or in our context
 		// we can also use argument resolvers to retrieve attributes in our context for convenience (a DtObject or an UiObject can be retrieved as parameters
 		// easily from our vContext since we have access to the modelandviewContainer in a parameterResolver...)
@@ -43,7 +46,6 @@ public final class VSpringMvcControllerAdvice {
 		//---
 		//---
 		viewContext.markDirty();
-
 		modelAndView.addObject("model", viewContext.asMap());
 		modelAndView.addObject("uiMessageStack", uiMessageStack);
 

@@ -17,6 +17,8 @@
         <p><input type="submit" value="Submit" />
    		<input type="hidden" name="CTX" th:value="${model.vContext[CTX]}">
    		<vu:valid-input label="testLabel" field="[movie][movId]"/>
+   		<vu:include-data contextKey="movie"/>
+   		<vu:vue-data/>
    </form>
 </body>
 </html>
