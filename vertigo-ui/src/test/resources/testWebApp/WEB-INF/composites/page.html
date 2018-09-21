@@ -1,0 +1,24 @@
+<th:block th:fragment="page">
+	<vu:head title=${title} />
+	<body>
+		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"> </script>
+		<script src="https://cdn.jsdelivr.net/npm/quasar-framework@0.17.16/dist/umd/quasar.mat.umd.min.js"></script>
+		<span th:text="${title}" />
+		<div id="page">
+			<p th:text="${uiMessageStack.objectFieldErrors}"></p>
+			<vu:content></vu:content>
+		</div>
+		<vu:vue-data/>
+		<script>
+			var data = {
+					  vueData : vueData,
+					  componentStates : {}
+				  };
+			var demo = new Vue({
+			  el: '#page',
+			  data: data
+			})
+		</script>
+		</div>
+	</body>
+</th:block>

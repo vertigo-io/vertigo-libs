@@ -69,6 +69,9 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 			parsedComponents.addAll(parser.parseComposite("link"));
 			parsedComponents.addAll(parser.parseComposite("vue-data"));
 			parsedComponents.addAll(parser.parseComposite("include-data"));
+			parsedComponents.addAll(parser.parseComposite("page"));
+			parsedComponents.addAll(parser.parseComposite("form"));
+			parsedComponents.addAll(parser.parseComposite("head"));
 		}
 
 		return parsedComponents;
