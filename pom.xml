@@ -13,11 +13,11 @@
 	<parent>
 		<groupId>io.vertigo</groupId>
 		<artifactId>vertigo-parent</artifactId>
-		<version>1.1.1</version>
+		<version>1.1.2</version>
 	</parent>
 
 	<artifactId>vertigo-extensions</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
+	<version>1.1.2</version>
 	<name>vertigo-extensions</name>
 	<packaging>pom</packaging>
 
@@ -46,7 +46,7 @@
 		<connection>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</connection>
 		<developerConnection>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</developerConnection>
 		<url>scm:git:https://github.com/KleeGroup/vertigo-extensions.git</url>
-		<tag>vertigo-extensions-2.0.0-SNAPSHOT</tag>
+		<tag>vertigo-1.1.2</tag>
 	</scm>
 
 </project>

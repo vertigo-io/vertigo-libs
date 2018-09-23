@@ -27,13 +27,13 @@ import javax.inject.Inject;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.authentication.AuthenticationManager;
+import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.social.services.notification.Notification;
 import io.vertigo.social.services.notification.NotificationServices;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.webservice.WebServices;
-import io.vertigo.vega.webservice.exception.VSecurityException;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.DELETE;
 import io.vertigo.vega.webservice.stereotype.GET;

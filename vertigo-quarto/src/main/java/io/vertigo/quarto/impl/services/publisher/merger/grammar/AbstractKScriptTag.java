@@ -58,7 +58,7 @@ abstract class AbstractKScriptTag {
 	 * @return Appel de la methode report
 	 */
 	protected static final String getCallForFieldPath(final String fieldPath, final String currentVariableName) {
-		return getCallByOperation("getString", fieldPath, currentVariableName);
+		return currentVariableName + ".getString(\"" + fieldPath + "\")";
 	}
 
 	/**
@@ -69,7 +69,7 @@ abstract class AbstractKScriptTag {
 	 * @return Appel de la methode report
 	 */
 	protected static final String getCallForBooleanFieldPath(final String fieldPath, final String currentVariableName) {
-		return getCallByOperation("getBoolean", fieldPath, currentVariableName);
+		return currentVariableName + ".getBoolean(\"" + fieldPath + "\")";
 	}
 
 	/**
@@ -96,7 +96,7 @@ abstract class AbstractKScriptTag {
 	 * @return Code java resultant.
 	 */
 	protected static final String getCallForCollectionFieldPath(final String fieldPath, final String currentVariableName) {
-		return getCallByOperation("getNodes", fieldPath, currentVariableName);
+		return currentVariableName + ".getNodes(\"" + fieldPath + "\")";
 	}
 
 	/**
@@ -106,15 +106,7 @@ abstract class AbstractKScriptTag {
 	 * @return Code java resultant.
 	 */
 	protected static final String getCallForObjectFieldPath(final String fieldPath, final String currentVariableName) {
-		return getCallByOperation("getNode", fieldPath, currentVariableName);
-	}
-
-	private static final String getCallByOperation(final String operation, final String fieldPath, final String currentVariableName) {
-		if (fieldPath.contains(".")) {
-			final int dotPosition = fieldPath.indexOf('.') + 1;
-			return fieldPath.substring(0, dotPosition) + operation + "(\"" + fieldPath.substring(dotPosition) + "\")";
-		}
-		return currentVariableName + "." + operation + "(\"" + fieldPath + "\")";
+		return currentVariableName + ".getNode(\"" + fieldPath + "\")";
 	}
 
 	/**

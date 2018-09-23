@@ -64,7 +64,7 @@ public final class ScriptGrammarUtil {
 		/**
 		 * BLOCK.
 		 */
-		BLOCK("block ", false, TagBlock.class),
+		BLOCK("block ", true, TagBlock.class),
 		/**
 		 * OBJECT.
 		 */
