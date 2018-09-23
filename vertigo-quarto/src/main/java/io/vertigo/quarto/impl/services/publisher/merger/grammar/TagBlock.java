@@ -37,7 +37,7 @@ public final class TagBlock extends AbstractKScriptTag implements ScriptTag {
 	/** {@inheritDoc} */
 	@Override
 	public String renderClose(final ScriptTagContent tag, final ScriptContext context) {
-		return START_BLOC_JSP + decode(tag.getAttribute()) + END_BLOC_JSP;
+		return "";
 	}
 
 	private static String decode(final String s) {

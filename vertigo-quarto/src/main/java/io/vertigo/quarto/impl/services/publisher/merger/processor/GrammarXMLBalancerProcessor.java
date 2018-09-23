@@ -219,7 +219,9 @@ public final class GrammarXMLBalancerProcessor implements MergerProcessor {
 
 	private static int nextBeginGramarIndex(final StringBuilder output, final int fromIndex) {
 		int index = output.indexOf(BEGIN_XML_CODE, fromIndex);
-		while (index != -1 && (BEGIN_END_XML_CODE.equals(output.substring(index, index + BEGIN_END_XML_CODE.length())) || output.charAt(index + BEGIN_XML_CODE.length()) == '=')) {
+		while (index != -1 && (BEGIN_END_XML_CODE.equals(output.substring(index, index + BEGIN_END_XML_CODE.length()))
+				|| output.charAt(index + BEGIN_XML_CODE.length()) == '='
+				|| "block".equals(output.substring(index + BEGIN_XML_CODE.length(), index + BEGIN_XML_CODE.length() + "block".length())))) {
 			index = output.indexOf(BEGIN_XML_CODE, index + BEGIN_END_XML_CODE.length());
 		}
 		return index;
