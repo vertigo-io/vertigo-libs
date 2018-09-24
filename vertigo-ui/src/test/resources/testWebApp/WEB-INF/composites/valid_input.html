@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+	<div th:fragment="valid-input">
+        <label th:text="${title}"></label>
+        <input type="text" th:field="${model.vContext__${field}__}" />
+	</div>
+</body>
+</html>

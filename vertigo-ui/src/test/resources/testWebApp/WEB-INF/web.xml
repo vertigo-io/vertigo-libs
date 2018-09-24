@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="4.0" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_4_0.xsd">
+
+	<display-name>Test Vertigo Struts</display-name>
+	<listener>
+		<listener-class>io.vertigo.vega.impl.webservice.servlet.AppServletContextListener
+		</listener-class>
+	</listener>
+
+	<!-- Paramètrage des variables du managers.xml -->
+	<context-param>
+		<param-name>boot.configXmlInterne</param-name>
+		<param-value>/META-INF/application-config.xml</param-value>
+	</context-param>
+
+	<!-- Paramètrage des composants : assemblage de : - Dt de DtDefinitions; 
+		- Managers de managers.xml - Services de demo-services.xml - Autres éléments 
+		Task/MDM de execution.kpr -->
+	<context-param>
+		<param-name>boot.applicationConfiguration</param-name>
+		<param-value>/testWebApp/META-INF/managers.xml;/testWebApp/META-INF/test-services.xml
+		</param-value>
+	</context-param>
+
+	<filter>
+		<filter-name>Character Encoding Filter</filter-name>
+		<filter-class>io.vertigo.vega.impl.servlet.filter.SetCharsetEncodingFilter
+		</filter-class>
+		<init-param>
+			<param-name>charset</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>Character Encoding Filter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
+	<!-- prevent Locking of static files on windows -->
+	<context-param>
+		<param-name>org.eclipse.jetty.servlet.Default.useFileMappedBuffer</param-name>
+		<param-value>false</param-value>
+	</context-param>
+	<!-- serve static files by jetty -->
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/static/*</url-pattern>
+	</servlet-mapping>
+
+
+	<session-config>
+		<session-timeout>60</session-timeout>
+	</session-config>
+
+	<mime-mapping>
+		<extension>html</extension>
+		<mime-type>text/html</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>txt</extension>
+		<mime-type>text/plain</mime-type>
+	</mime-mapping>
+	<mime-mapping>
+		<extension>css</extension>
+		<mime-type>text/css</mime-type>
+	</mime-mapping>
+	<welcome-file-list>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+
+</web-app>
