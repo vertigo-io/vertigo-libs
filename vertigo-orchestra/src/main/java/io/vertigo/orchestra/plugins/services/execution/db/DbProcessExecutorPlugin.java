@@ -47,6 +47,7 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.orchestra.dao.definition.OActivityDAO;
 import io.vertigo.orchestra.dao.execution.ExecutionPAO;
 import io.vertigo.orchestra.dao.execution.OActivityExecutionDAO;
@@ -300,13 +301,21 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void doRunActivity(final OActivityExecution activityExecution, final ActivityExecutionWorkspace workspace) {
 		clearAllThreadLocals();
-		ActivityExecutionWorkspace result;
+		ActivityExecutionWorkspace result = null;
+		Throwable throwable = null;
 		try {
 			result = execute(activityExecution, workspace);
-			putResult(activityExecution, result, null);
-		} catch (final Exception e) {
-			LOGGER.info("Error executing activity", e);
-			putResult(activityExecution, null, e.getCause());
+		} catch (final WrappedException e) {
+			LOGGER.error("Error executing activity", e);
+			throwable = e.getCause();
+		} catch (final Throwable t) {
+			LOGGER.error("Error executing activity", t);
+			if (t instanceof InterruptedException) {
+				throw t;
+			}
+			throwable = t;
+		} finally {
+			putResult(activityExecution, result, throwable);
 		}
 	}
 
