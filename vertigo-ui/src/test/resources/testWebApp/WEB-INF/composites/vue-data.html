@@ -1,8 +1,5 @@
-<th:block th:fragment="vue-data" th:assert="${dataKeySetFilter} != null">
-       <script th:inline="javascript">
-       	var vueData = {};
-       	[#th:block th:each="contextKey: ${dataKeySetFilter}"]
-        	vueData.[(${contextKey})] = [[${model.vContext[__${contextKey}__]}]];
-       	[/th:block]
+<th:block th:fragment="vue-data" >
+    <script th:inline="javascript">
+       	var vueData = [[${model.filteredViewContext}]];
 	</script>
 </th:block>

@@ -2,7 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:vu="http://www.morphbit.com/thymeleaf/component">
 <vu:page title="'Movie Detail'" >
 	<vu:form>
-		<vu:include-data contextKey="movie"/>
+		<vu:include-data object="movie" field="movId"/>
+		<vu:include-data object="movie" field="title"/>
 	  	<q-input v-model="vueData.movie.movId" name="vContext[movie][movId]" ></q-input>
 		<q-input v-model="vueData.movie.title" name="vContext[movie][title]" ></q-input>
 		

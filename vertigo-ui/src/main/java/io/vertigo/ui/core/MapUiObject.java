@@ -23,6 +23,8 @@ import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,6 +46,8 @@ import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> implements Map<String, Serializable> {
 	private static final long serialVersionUID = -4639050257543017072L;
 	private static final String DOMAIN_MULTIPLE_IDS = "DO_MULTIPLE_IDS";
+
+	private final Set<String> fieldsForClient = new HashSet<>();
 
 	public MapUiObject(final D serverSideDto) {
 		this(serverSideDto, (D) DtObjectUtil.createDtObject(DtObjectUtil.findDtDefinition(serverSideDto)), Collections.emptySet());
@@ -174,5 +178,21 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	@Override
 	public Collection<Serializable> values() {
 		throw new UnsupportedOperationException();
+	}
+
+	public void addFieldForClient(final String fieldName) {
+		if ("*".equals(fieldName)) {
+			fieldsForClient.addAll(camel2ConstIndex.keySet());
+		} else {
+			fieldsForClient.add(fieldName);
+		}
+	}
+
+	public HashMap<String, Serializable> mapForClient() {
+		final HashMap<String, Serializable> mapForClient = new HashMap<>(fieldsForClient.size());
+		fieldsForClient
+				.forEach(key -> mapForClient.put(key, get(key)));
+		return mapForClient;
+
 	}
 }

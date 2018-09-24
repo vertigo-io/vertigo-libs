@@ -30,7 +30,8 @@
 </div>
 
 <!-- add movies in vueData -->
-<vu:include-data contextKey="movies"/>
+<vu:include-data object="movies" field="movId"/>
+<vu:include-data object="movies" field="title"/>
 <!-- include vueData -->
 <vu:vue-data/>
 <script>

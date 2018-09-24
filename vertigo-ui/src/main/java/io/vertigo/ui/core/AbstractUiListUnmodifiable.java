@@ -20,10 +20,12 @@ package io.vertigo.ui.core;
 
 import java.io.Serializable;
 import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -245,6 +247,17 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 */
 	protected final void clearUiObjectBuffer() {
 		uiObjectByIndex.clear();
+	}
+
+	public void addFieldForClient(final String fieldName) {
+		forEach(uiObject -> ((MapUiObject) uiObject).addFieldForClient(fieldName));
+	}
+
+	public ArrayList<HashMap<String, Serializable>> listForClient() {
+		return stream()
+				.map(uiObject -> ((MapUiObject) uiObject).mapForClient())
+				.collect(Collectors.toCollection(ArrayList::new));
+
 	}
 
 }

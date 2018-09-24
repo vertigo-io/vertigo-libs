@@ -3,6 +3,6 @@
 <head>
 </head>
 <body>
-	<th:block th:fragment="include-data" th:assert="${dataKeySetFilter} != null and ${contextKey} != null" th:text="${dataKeySetFilter.add('__${contextKey}__')}" th:remove="all"></th:block>
+	<th:block th:fragment="include-data" th:assert="${object} != null and ${field} != null" th:attr="objectKey=${model.vContext.addKeyForClient('__${object}__')}, fieldName=${model.vContext[__${object}__].addFieldForClient('__${field}__')}" th:remove="all"></th:block>
 </body>
 </html>

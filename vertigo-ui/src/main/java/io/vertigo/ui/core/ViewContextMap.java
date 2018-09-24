@@ -21,8 +21,10 @@ package io.vertigo.ui.core;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import io.vertigo.dynamo.domain.model.DtList;
@@ -51,6 +53,8 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	private final Map<UiList<?>, String> reverseUiListIndex = new IdentityHashMap<>();
 	private boolean unmodifiable; //initialisé à false
 	private boolean dirty = false;
+
+	private final Set<String> keysForClient = new HashSet<>();
 
 	/** {@inheritDoc} */
 	@Override
@@ -291,4 +295,28 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		}
 		return validatedDto;
 	}
+
+	public ViewContextMap getFilteredViewContext() {
+		final ViewContextMap viewContextMap = new ViewContextMap();
+		for (final Map.Entry<String, Serializable> entry : entrySet()) {
+			if (keysForClient.contains(entry.getKey())) {
+				if (entry.getValue() instanceof MapUiObject) {
+					viewContextMap.put(entry.getKey(), ((MapUiObject) entry.getValue()).mapForClient());
+				} else if (entry.getValue() instanceof AbstractUiListUnmodifiable) {
+					//handle lists
+					viewContextMap.put(entry.getKey(), ((AbstractUiListUnmodifiable) entry.getValue()).listForClient());
+				} else {
+					// just copy it
+					viewContextMap.put(entry.getKey(), entry.getValue());
+				}
+			}
+		}
+		return viewContextMap;
+	}
+
+	public void addKeyForClient(final String key) {
+		keysForClient.add(key);
+
+	}
+
 }
