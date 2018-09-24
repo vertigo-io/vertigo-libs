@@ -100,8 +100,8 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 
 	/** {@inheritDoc} */
 	@Override
-	public void checkFormat(final UiMessageStack uiMessageStack) {
-		//rien
+	public boolean checkFormat(final UiMessageStack uiMessageStack) {
+		return true;
 	}
 
 }
