@@ -38,38 +38,33 @@ public interface RuleServices extends Manager {
 	/**
 	 * Select accounts matching the selector for an activity
 	 *
-	 * @param idActivityDefinition
-	 *            Activity definition id
-	 * @param context
-	 *            Context : Business Object + Constants
-	 * @return a list of account
+	 * @param idActivityDefinition Activity definition id
+	 * @param context Context : Business Object + Constants
+	 * @return a list of accounts
 	 */
 	List<Account> selectAccounts(final Long idActivityDefinition, final RuleContext context);
 
 	/**
 	 * Select groups matching the selector for an activity
 	 *
-	 * @param idActivityDefinition
-	 *            Activity definition id
-	 * @param context
-	 *            Context : Business Object + Constants
-	 * @param mapSelectors
-	 *            Selectors to use
-	 * @param mapFilters
-	 *            Filters associated to Selectors
+	 * @param idActivityDefinition Activity definition id
+	 * @param context Context : Business Object + Constants
+	 * @param mapSelectors Selectors to use
+	 * @param mapFilters Filters associated to Selectors
 	 *
 	 * @return a list of groups
 	 */
-	List<AccountGroup> selectGroups(Long idActivityDefinition, RuleContext context,
-			Map<Long, List<SelectorDefinition>> mapSelectors, Map<Long, List<RuleFilterDefinition>> mapFilters);
+	List<AccountGroup> selectGroups(
+			Long idActivityDefinition,
+			RuleContext context,
+			Map<Long, List<SelectorDefinition>> mapSelectors,
+			Map<Long, List<RuleFilterDefinition>> mapFilters);
 
 	/**
 	 * Validate a rule for an activity
 	 *
-	 * @param idActivityDefinition
-	 *            Activity definition id
-	 * @param context
-	 *            Context : Business Object + Constants
+	 * @param idActivityDefinition Activity definition id
+	 * @param context Context : Business Object + Constants
 	 * @return true is the rule is valid, false otherwise
 	 */
 	boolean isRuleValid(Long idActivityDefinition, RuleContext context);
@@ -79,26 +74,23 @@ public interface RuleServices extends Manager {
 	 * Version sans IO, optimisÃ©e vitesse execution, utilisÃ©e dans le
 	 * cadre d'un recalcul de workflow
 	 *
-	 * @param idActivityDefinition
-	 *            Activity definition id
-	 * @param item
-	 *            Business object
-	 * @param context
-	 *            Context : Business Object + Constants
-	 * @param mapRules
-	 *            Rules to use
-	 * @param mapConditions
-	 *            Conditions associated to rules
+	 * @param idActivityDefinition Activity definition id
+	 * @param item Business object
+	 * @param context Context : Business Object + Constants
+	 * @param mapRules Rules to use
+	 * @param mapConditions Conditions associated to rules
 	 * @return true is a rule match, false otherwise
 	 */
-	boolean isRuleValid(Long idActivityDefinition, RuleContext context,
-			Map<Long, List<RuleDefinition>> mapRules, Map<Long, List<RuleConditionDefinition>> mapConditions);
+	boolean isRuleValid(
+			Long idActivityDefinition,
+			RuleContext context,
+			Map<Long, List<RuleDefinition>> mapRules,
+			Map<Long, List<RuleConditionDefinition>> mapConditions);
 
 	/**
-	 * Add a new rule
+	 * Adds a new rule
 	 *
-	 * @param ruleDefinition
-	 *            the rule to add
+	 * @param ruleDefinition the rule to add
 	 */
 	void addRule(RuleDefinition ruleDefinition);
 
@@ -111,52 +103,46 @@ public interface RuleServices extends Manager {
 	List<RuleDefinition> getRulesForItemId(Long itemId);
 
 	/**
-	 * Add a new condition
+	 * Adds a new condition
 	 *
-	 * @param ruleConditionDefinition
-	 *            condition to add
+	 * @param ruleConditionDefinition condition to add
 	 */
 	void addCondition(RuleConditionDefinition ruleConditionDefinition);
 
 	/**
 	 * Get all the conditions for a specified rule
 	 *
-	 * @param ruleId
-	 *            the rule Id
+	 * @param ruleId the rule Id
 	 * @return all the conditions associated to the provided rule
 	 */
 	List<RuleConditionDefinition> getConditionsForRuleId(Long ruleId);
 
 	/**
-	 * Add a new selector
+	 * Adds a new selector
 	 *
-	 * @param selectorDefinition
-	 *            the selector to add
+	 * @param selectorDefinition the selector to add
 	 */
 	void addSelector(SelectorDefinition selectorDefinition);
 
 	/**
 	 * Get the selectors for the specified item Id.
 	 *
-	 * @param itemId
-	 *            itemId
+	 * @param itemId itemId
 	 * @return the all the rules defined for the provided itemId
 	 */
 	List<SelectorDefinition> getSelectorsForItemId(Long itemId);
 
 	/**
-	 * Add a new filter
+	 * Adds a new filter
 	 *
-	 * @param ruleFilterDefinition
-	 *            the filter to add
+	 * @param ruleFilterDefinition the filter to add
 	 */
 	void addFilter(RuleFilterDefinition ruleFilterDefinition);
 
 	/**
 	 * Get filters for the selectors id
 	 *
-	 * @param selectorId
-	 *            the selector id
+	 * @param selectorId the selector id
 	 * @return the all the filters associated to the provided selector
 	 */
 	List<RuleFilterDefinition> getFiltersForSelectorId(Long selectorId);
@@ -164,18 +150,15 @@ public interface RuleServices extends Manager {
 	/**
 	 * Define the constants for this key
 	 *
-	 * @param key
-	 *            the key
-	 * @param ruleConstants
-	 *            constants to associate
+	 * @param key the key
+	 * @param ruleConstants constants to associate
 	 */
 	void addConstants(Long key, RuleConstants ruleConstants);
 
 	/**
 	 * Get the constants associated to a key
 	 *
-	 * @param key
-	 *            the key
+	 * @param key the key
 	 * @return the constants defined for this key
 	 */
 	RuleConstants getConstants(Long key);
@@ -184,12 +167,9 @@ public interface RuleServices extends Manager {
 	 * Find itemIds using the specified criteria and in the specified sublist
 	 * itemsIds
 	 *
-	 * @param criteria
-	 *            rules criteria
-	 * @param items
-	 *            sublist of itemsId
+	 * @param criteria rules criteria
+	 * @param items sublist of itemsId
 	 * @return list of itemIds
 	 */
 	List<Long> findItemsByCriteria(RuleCriteria criteria, List<Long> items);
-
 }

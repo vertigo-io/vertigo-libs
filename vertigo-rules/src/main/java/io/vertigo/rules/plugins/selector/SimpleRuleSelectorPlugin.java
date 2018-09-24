@@ -79,11 +79,11 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 		return collected;
 	}
 
-	private List<SelectorDefinition> findMatchingSelectors(final List<SelectorDefinition> selectors,
+	private List<SelectorDefinition> findMatchingSelectors(final List<SelectorDefinition> selectorDefinitions,
 			final Map<Long, List<RuleFilterDefinition>> mapFilters, final RuleContext ruleContext) {
 		final List<SelectorDefinition> collected = new ArrayList<>();
 
-		for (final SelectorDefinition selectorDefinition : selectors) {
+		for (final SelectorDefinition selectorDefinition : selectorDefinitions) {
 
 			List<RuleFilterDefinition> filters = mapFilters.get(selectorDefinition.getId());
 			if (filters == null) {

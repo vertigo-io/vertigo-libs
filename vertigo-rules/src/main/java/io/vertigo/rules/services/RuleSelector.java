@@ -36,26 +36,23 @@ public interface RuleSelector {
 	/**
 	 * Select accounts matching the selector provided from an activity.
 	 *
-	 * @param selectors
-	 *            Selectors.
-	 * @param ruleContext
-	 *            ruleContext
-	 * @return a list of account
+	 * @param selectors Selectors.
+	 * @param ruleContext ruleContext
+	 * @return a list of accounts
 	 */
 	List<Account> selectAccounts(List<SelectorDefinition> selectors, RuleContext ruleContext);
 
 	/**
 	 * Select accounts for an activity using selectors and filters provided.
 	 *
-	 * @param selectors
-	 *            selectors
-	 * @param mapFilters
-	 *            filters linked to the selectors
-	 * @param ruleContext
-	 *            ruleContext
-	 * @return a list of account
+	 * @param selectors selectors
+	 * @param mapFilters filters linked to the selectors
+	 * @param ruleContext ruleContext
+	 * @return a list of accounts
 	 */
-	List<Account> selectAccounts(List<SelectorDefinition> selectors, Map<Long, List<RuleFilterDefinition>> mapFilters,
+	List<Account> selectAccounts(
+			List<SelectorDefinition> selectors,
+			Map<Long, List<RuleFilterDefinition>> mapFilters,
 			RuleContext ruleContext);
 
 	/**
@@ -70,15 +67,14 @@ public interface RuleSelector {
 	/**
 	 * Select groups for an activity using selectors and filters provided
 	 *
-	 * @param selectors
-	 *            selectors
-	 * @param mapFilters
-	 *            filters linked to the selectors
-	 * @param ruleContext
-	 *            ruleContext
+	 * @param selectors selectors
+	 * @param mapFilters filters linked to the selectors
+	 * @param ruleContext ruleContext
 	 * @return All the groups matching the selectors and rules
 	 */
-	List<AccountGroup> selectGroups(List<SelectorDefinition> selectors,
-			Map<Long, List<RuleFilterDefinition>> mapFilters, RuleContext ruleContext);
+	List<AccountGroup> selectGroups(
+			List<SelectorDefinition> selectors,
+			Map<Long, List<RuleFilterDefinition>> mapFilters,
+			RuleContext ruleContext);
 
 }
