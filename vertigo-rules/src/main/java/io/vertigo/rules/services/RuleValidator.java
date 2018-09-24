@@ -32,7 +32,7 @@ import io.vertigo.rules.domain.RuleDefinition;
 public interface RuleValidator {
 
 	/**
-	 * Validate a rule for an activity
+	 * Validates a rule for an activity
 	 *
 	 * @param idActivityDefinition
 	 * @param rules
@@ -42,16 +42,15 @@ public interface RuleValidator {
 	boolean isRuleValid(final List<RuleDefinition> rules, RuleContext ruleContext);
 
 	/**
-	 * Validate a rule for an activity using rules and conditions provided
+	 * Validates a rule for an activity using rules and conditions provided
 	 *
-	 * @param rules
-	 *            rules
-	 * @param mapConditions
-	 *            conditions linked to the rules
-	 * @param ruleContext
-	 *            ruleContext
+	 * @param rules rules
+	 * @param mapConditions conditions linked to the rules
+	 * @param ruleContext ruleContext
 	 * @return true is the rule is valid
 	 */
-	boolean isRuleValid(List<RuleDefinition> rules, Map<Long, List<RuleConditionDefinition>> mapConditions,
+	boolean isRuleValid(
+			List<RuleDefinition> rules,
+			Map<Long, List<RuleConditionDefinition>> mapConditions,
 			RuleContext ruleContext);
 }
