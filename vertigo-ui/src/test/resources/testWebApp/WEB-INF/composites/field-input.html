@@ -1,0 +1,5 @@
+<div th:fragment="field-input">
+	<vu:include-data object="${object}" field="${field}"/>
+	
+	<q-input v-model="vueData.${object}.${field}" name="vContext[${object}][${field}]" ></q-input>
+</div>

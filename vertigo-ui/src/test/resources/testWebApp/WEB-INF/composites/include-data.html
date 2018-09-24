@@ -1,8 +1,5 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-</head>
-<body>
-	<th:block th:fragment="include-data" th:assert="${object} != null and ${field} != null" th:attr="objectKey=${model.vContext.addKeyForClient('__${object}__')}, fieldName=${model.vContext[__${object}__].addFieldForClient('__${field}__')}" th:remove="all"></th:block>
-</body>
-</html>
+<th:block 
+		th:fragment="include-data" 
+		th:assert="${object} != null and ${field} != null" 
+		th:attr="objectKey=${model.vContext.addKeyForClient('__${object}__', '__${field}__')}" 
+		th:remove="all"></th:block>

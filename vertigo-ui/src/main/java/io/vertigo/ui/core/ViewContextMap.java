@@ -314,9 +314,13 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		return viewContextMap;
 	}
 
-	public void addKeyForClient(final String key) {
-		keysForClient.add(key);
-
+	public void addKeyForClient(final String object, final String fieldName) {
+		keysForClient.add(object);
+		final Object contextValue = get(object);
+		if (contextValue instanceof MapUiObject) {
+			((MapUiObject) contextValue).addFieldForClient(fieldName);
+		} else if (contextValue instanceof AbstractUiListUnmodifiable) {
+			((AbstractUiListUnmodifiable) contextValue).addFieldForClient(fieldName);
+		}
 	}
-
 }
