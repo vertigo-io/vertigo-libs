@@ -27,7 +27,7 @@ import io.vertigo.core.component.Component;
 import io.vertigo.dynamo.domain.model.URI;
 
 /**
- * @author pchretien
+ * @author pchretien, npiedeloup, btounkara
  */
 public interface NotificationServices extends Component {
 	/**
@@ -58,4 +58,12 @@ public interface NotificationServices extends Component {
 	 * @param targetUrl Notification's target Url
 	 */
 	void removeAll(String type, String targetUrl);
+
+	/**
+	 * Updates the flag of the notification
+	 * @param accountURI User account
+	 * @param notificationUUID Notification uid
+	 * @param userContent userContent
+	 */
+	void updateUserContent(URI<Account> accountURI, UUID notificationUUID, String userContent);
 }
