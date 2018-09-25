@@ -1,9 +1,13 @@
 <th:block  th:fragment="field-input">
 	<vu:include-data object="${object}" field="${field}"/>
-	<q-input 
-		th:v-model="${'vueData.' + object + '.' + field}" 
-		th:name="${'vContext['+object+']['+ field +']'}" 
-		th:float-label="${field}" 
-		th::error="${uiMessageStack.objectFieldErrors.containsKey('__${object}__') and uiMessageStack.objectFieldErrors[__${object}__].containsKey('__${field}__')}" >
-		</q-input>
+	<q-field
+	  :label-width="3"
+	 th:label="${field}"
+	>
+		<q-input 
+			th:v-model="${'vueData.' + object + '.' + field}" 
+			th:name="${'vContext['+object+']['+ field +']'}" 
+			th::error="${uiMessageStack.objectFieldErrors.containsKey('__${object}__') and uiMessageStack.objectFieldErrors[__${object}__].containsKey('__${field}__')}" >
+			</q-input>
+	</q-field>
 </th:block> 
