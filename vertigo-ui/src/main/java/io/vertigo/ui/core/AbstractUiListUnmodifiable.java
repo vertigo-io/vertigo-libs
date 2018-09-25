@@ -254,10 +254,11 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	}
 
 	public ArrayList<HashMap<String, Serializable>> listForClient() {
-		return stream()
-				.map(uiObject -> ((MapUiObject) uiObject).mapForClient())
-				.collect(Collectors.toCollection(ArrayList::new));
-
+		final ArrayList<HashMap<String, Serializable>> listForClient = new ArrayList<>();
+		for (UiObject uiObject : this) {
+			listForClient.add( ((MapUiObject) uiObject).mapForClient());
+		}
+		return listForClient;
 	}
 
 }
