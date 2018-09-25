@@ -2,9 +2,8 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:vu="http://www.morphbit.com/thymeleaf/component">
 <vu:page title="'Movie Detail'" >
 	<vu:form>
-		<vu:field-input object="movie" field="movId"></vu:field>
-	  	<vu:field-input object="movie" field="title"></vu:field>
-		<q-input v-model="vueData.movie.title" name="vContext[movie][movie]" ></q-input>
+		<vu:field-input object="movie" field="movId" />
+		<vu:field-input object="movie" field="title" />
 		
 		<input type="submit" value="Submit" th:formaction="@{/movie/_save}" />
 	</vu:form>
