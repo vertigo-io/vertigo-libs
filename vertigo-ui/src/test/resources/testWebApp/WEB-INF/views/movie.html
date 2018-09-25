@@ -4,8 +4,9 @@
 	<vu:form>
 		<vu:field-input object="movie" field="movId" />
 		<vu:field-input object="movie" field="title" />
-		
-		<input type="submit" value="Submit" th:formaction="@{/movie/_save}" />
+		<span th:text="${model.mode}"></span>
+		<input th:if="${!model.modeEdit}" type="submit" value="To Mode Edit" th:formaction="@{/movie/_edit}" />
+		<input th:if="${model.modeEdit}"  type="submit" value="Submit" th:formaction="@{/movie/_save}" />
 	</vu:form>
  </vu:page>
 </body>

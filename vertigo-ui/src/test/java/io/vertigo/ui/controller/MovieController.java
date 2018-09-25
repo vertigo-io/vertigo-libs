@@ -29,6 +29,11 @@ public class MovieController extends AbstractVSpringMvcController {
 		viewContext.publishDto(movieKey, movie);
 	}
 
+	@PostMapping("/_edit")
+	public void doEdit() {
+		toModeEdit();
+	}
+
 	@PostMapping("/_save")
 	public void doSave(
 			@ViewAttribute("movie") final Movie movie) {

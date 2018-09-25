@@ -22,6 +22,9 @@ import org.thymeleaf.standard.expression.StandardExpressions;
 import org.thymeleaf.util.EscapedAttributeUtils;
 import org.thymeleaf.util.StringUtils;
 
+import io.vertigo.ui.core.FormMode;
+import io.vertigo.ui.core.ViewContextMap;
+
 public class FragmentHelper {
 
 	private FragmentHelper() {
@@ -147,16 +150,15 @@ public class FragmentHelper {
 
 		final IStandardExpressionParser expressionParser = StandardExpressions
 				.getExpressionParser(context.getConfiguration());
-
+		final ViewContextMap viewContextMap = (ViewContextMap) context.getVariable("model");
+		final String mode = ((FormMode) viewContextMap.get("mode")) == FormMode.edit ? "edit" : "read";
 		final FragmentExpression fragmentExpression = (FragmentExpression) expressionParser.parseExpression(context,
-				"~{" + input.trim() + "}");
+				"~{" + input.trim() + "." + mode + "}");
 
 		final FragmentExpression.ExecutedFragmentExpression executedFragmentExpression = FragmentExpression.createExecutedFragmentExpression(context,
 				fragmentExpression);
 
-		if (executedFragmentExpression
-				.getFragmentSelectorExpressionResult() == null
-				&& executedFragmentExpression.getFragmentParameters() == null) {
+		if (executedFragmentExpression.getFragmentSelectorExpressionResult() == null && executedFragmentExpression.getFragmentParameters() == null) {
 			// We might be in the scenario that what we thought was a template
 			// name in fact was instead an expression
 			// returning a Fragment itself, so we should simply return it
@@ -180,7 +182,6 @@ public class FragmentHelper {
 		// underlying resolution system would
 		// have to execute a (potentially costly) resource.exists() call on the
 		// resolved resource.
-		return FragmentExpression.resolveExecutedFragmentExpression(context,
-				executedFragmentExpression, true);
+		return FragmentExpression.resolveExecutedFragmentExpression(context, executedFragmentExpression, true);
 	}
 }

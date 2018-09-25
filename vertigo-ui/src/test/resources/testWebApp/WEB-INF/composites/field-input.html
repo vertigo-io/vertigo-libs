@@ -1,13 +1,26 @@
-<th:block  th:fragment="field-input">
+<th:block  th:fragment="field-input" class="edit">
 	<vu:include-data object="${object}" field="${field}"/>
 	<q-field
-	  :label-width="3"
-	 th:label="${field}"
+		:label-width="3"
+		th:label="${field}"
+		th::error="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__')}"
+		th:error-label="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__') ? uiMessageStack.objectFieldErrors[__${object}__][__${field}__] : ''}"
+		th::warning="${uiMessageStack.hasFieldWarnings('__${object}__', '__${field}__')}"
 	>
 		<q-input 
 			th:v-model="${'vueData.' + object + '.' + field}" 
 			th:name="${'vContext['+object+']['+ field +']'}" 
-			th::error="${uiMessageStack.objectFieldErrors.containsKey('__${object}__') and uiMessageStack.objectFieldErrors[__${object}__].containsKey('__${field}__')}" >
-			</q-input>
+			 >
+		</q-input>
+	</q-field>
+</th:block> 
+
+<th:block th:fragment="field-input" class="read">
+	<vu:include-data object="${object}" field="${field}"/>
+	<q-field
+		:label-width="3"
+		th:label="${field}"
+	>
+		toto
 	</q-field>
 </th:block> 

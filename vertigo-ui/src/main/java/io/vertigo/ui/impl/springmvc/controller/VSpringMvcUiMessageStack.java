@@ -40,10 +40,6 @@ public final class VSpringMvcUiMessageStack implements UiMessageStack {
 	private final List<String> globalInfos = new ArrayList<>();
 	private final List<String> globalSuccess = new ArrayList<>();
 
-	private final Map<String, List<String>> fieldErrors = new HashMap<>();
-	private final Map<String, List<String>> fieldWarnings = new HashMap<>();
-	private final Map<String, List<String>> fieldInfos = new HashMap<>();
-
 	private final Map<String, Map<String, List<String>>> objectFieldErrors = new HashMap<>();
 	private final Map<String, Map<String, List<String>>> objectFieldWarnings = new HashMap<>();
 	private final Map<String, Map<String, List<String>>> objectFieldInfos = new HashMap<>();
@@ -152,36 +148,7 @@ public final class VSpringMvcUiMessageStack implements UiMessageStack {
 	 */
 	@Override
 	public void addFieldMessage(final Level level, final String message, final String contextKey, final String fieldName) {
-		if (contextKey.isEmpty()) {
-			addFieldMessage(level, message, fieldName);
-		} else {
-			addObjectFieldMessage(level, message, contextKey, fieldName);
-		}
-	}
-
-	private void addFieldMessage(final Level level, final String message, final String fieldName) {
-		final Map<String, List<String>> fieldMessageMap;
-		switch (level) {
-			case ERROR:
-				fieldMessageMap = fieldErrors;
-				break;
-			case WARNING:
-				fieldMessageMap = fieldWarnings;
-				break;
-			case INFO:
-				fieldMessageMap = fieldInfos;
-				break;
-			case SUCCESS: //unsupported for fields
-			default:
-				throw new UnsupportedOperationException("Unknowned level");
-		}
-		final String fieldKey = fieldName;
-		List<String> messages = fieldMessageMap.get(fieldKey);
-		if (messages == null) {
-			messages = new ArrayList<>();
-			fieldMessageMap.put(fieldKey, messages);
-		}
-		messages.add(message);
+		addObjectFieldMessage(level, message, contextKey, fieldName);
 	}
 
 	private void addObjectFieldMessage(final Level level, final String message, final String contextKey, final String fieldName) {
@@ -218,7 +185,7 @@ public final class VSpringMvcUiMessageStack implements UiMessageStack {
 	 */
 	@Override
 	public boolean hasErrors() {
-		return !globalErrors.isEmpty() || !fieldErrors.isEmpty() || !objectFieldErrors.isEmpty();
+		return !globalErrors.isEmpty() || !objectFieldErrors.isEmpty();
 	}
 
 	public List<String> getGlobalErrors() {
@@ -237,18 +204,6 @@ public final class VSpringMvcUiMessageStack implements UiMessageStack {
 		return globalSuccess;
 	}
 
-	public Map<String, List<String>> getFieldErrors() {
-		return fieldErrors;
-	}
-
-	public Map<String, List<String>> getFieldWarnings() {
-		return fieldWarnings;
-	}
-
-	public Map<String, List<String>> getFieldInfos() {
-		return fieldInfos;
-	}
-
 	public Map<String, Map<String, List<String>>> getObjectFieldErrors() {
 		return objectFieldErrors;
 	}
@@ -259,6 +214,14 @@ public final class VSpringMvcUiMessageStack implements UiMessageStack {
 
 	public Map<String, Map<String, List<String>>> getObjectFieldInfos() {
 		return objectFieldInfos;
+	}
+
+	public boolean hasFieldErrors(final String object, final String field) {
+		return objectFieldErrors.containsKey(object) && objectFieldErrors.get(object).containsKey(field);
+	}
+
+	public boolean hasFieldWarnings(final String object, final String field) {
+		return objectFieldWarnings.containsKey(object) && objectFieldWarnings.get(object).containsKey(field);
 	}
 
 }
