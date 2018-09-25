@@ -5,7 +5,7 @@
 		<script src="https://cdn.jsdelivr.net/npm/quasar-framework@0.17.16/dist/umd/quasar.mat.umd.min.js"></script>
 		<span th:text="${title}" />
 		<div id="page">
-			<p th:text="${uiMessageStack.objectFieldErrors}"></p>
+			<p th:text="${uiMessageStack.objectFieldErrors}" th:if="${uiMessageStack.hasErrors()}"></p>
 			<vu:content></vu:content>
 		</div>
 		<vu:vue-data/>
