@@ -18,6 +18,10 @@
  */
 package io.vertigo.ui.core;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.vega.engines.webservice.json.AbstractUiListModifiable;
@@ -35,6 +39,18 @@ public class BasicUiListModifiable<D extends DtObject> extends AbstractUiListMod
 	@Override
 	protected UiObject<D> createUiObject(final D dto) {
 		return new MapUiObject<>(dto);
+	}
+
+	public void addFieldForClient(final String fieldName) {
+		forEach(uiObject -> ((MapUiObject) uiObject).addFieldForClient(fieldName));
+	}
+
+	public ArrayList<HashMap<String, Serializable>> listForClient() {
+		final ArrayList<HashMap<String, Serializable>> listForClient = new ArrayList<>();
+		for (final UiObject uiObject : this) {
+			listForClient.add(((MapUiObject) uiObject).mapForClient());
+		}
+		return listForClient;
 	}
 
 }

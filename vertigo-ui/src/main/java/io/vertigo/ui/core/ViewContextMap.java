@@ -305,6 +305,9 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 				} else if (entry.getValue() instanceof AbstractUiListUnmodifiable) {
 					//handle lists
 					viewContextMap.put(entry.getKey(), ((AbstractUiListUnmodifiable) entry.getValue()).listForClient());
+				} else if (entry.getValue() instanceof BasicUiListModifiable) {
+					//handle lists modifiable
+					viewContextMap.put(entry.getKey(), ((BasicUiListModifiable) entry.getValue()).listForClient());
 				} else {
 					// just copy it
 					viewContextMap.put(entry.getKey(), entry.getValue());
@@ -321,6 +324,8 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 			((MapUiObject) contextValue).addFieldForClient(fieldName);
 		} else if (contextValue instanceof AbstractUiListUnmodifiable) {
 			((AbstractUiListUnmodifiable) contextValue).addFieldForClient(fieldName);
+		} else if (contextValue instanceof BasicUiListModifiable) {
+			((BasicUiListModifiable) contextValue).addFieldForClient(fieldName);
 		}
 	}
 }

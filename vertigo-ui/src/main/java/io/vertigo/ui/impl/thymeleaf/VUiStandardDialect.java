@@ -72,7 +72,8 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 			parsedComponents.addAll(parser.parseComposite("page"));
 			parsedComponents.addAll(parser.parseComposite("form"));
 			parsedComponents.addAll(parser.parseComposite("head"));
-			parsedComponents.addAll(parser.parseComposite("field-input"));
+			parsedComponents.addAll(parser.parseComposite("text-field"));
+			parsedComponents.addAll(parser.parseComposite("select"));
 		}
 
 		return parsedComponents;

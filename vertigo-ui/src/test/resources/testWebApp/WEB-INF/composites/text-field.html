@@ -1,4 +1,4 @@
-<th:block  th:fragment="field-input" class="edit">
+<th:block  th:fragment="text-field" class="edit">
 	<vu:include-data object="${object}" field="${field}"/>
 	<q-field
 		:label-width="3"
@@ -15,12 +15,11 @@
 	</q-field>
 </th:block> 
 
-<th:block th:fragment="field-input" class="read">
-	<vu:include-data object="${object}" field="${field}"/>
+<th:block th:fragment="text-field" class="read">
 	<q-field
 		:label-width="3"
 		th:label="${field}"
 	>
-		toto
+		<span th:text="${model.vContext[__${object}__][__${field}__]}"></span>
 	</q-field>
 </th:block> 

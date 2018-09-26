@@ -16,7 +16,14 @@
 				  };
 			var demo = new Vue({
 			  el: '#page',
-			  data: data
+			  data: data,
+			  methods: {
+				transformListForSelection: function (list, valueField, labelField) {
+					return this.$data.vueData[list].map(function (object) {
+						return { value: object[valueField], label: object[labelField]}
+					});
+				}
+			  }
 			})
 		</script>
 		</div>

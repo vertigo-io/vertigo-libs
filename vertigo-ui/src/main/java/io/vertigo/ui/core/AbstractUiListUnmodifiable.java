@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -255,8 +254,8 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 
 	public ArrayList<HashMap<String, Serializable>> listForClient() {
 		final ArrayList<HashMap<String, Serializable>> listForClient = new ArrayList<>();
-		for (UiObject uiObject : this) {
-			listForClient.add( ((MapUiObject) uiObject).mapForClient());
+		for (final UiObject uiObject : this) {
+			listForClient.add(((MapUiObject) uiObject).mapForClient());
 		}
 		return listForClient;
 	}
