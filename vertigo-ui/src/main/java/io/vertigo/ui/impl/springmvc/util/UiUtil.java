@@ -106,8 +106,8 @@ public final class UiUtil implements Serializable {
 	 * @param uiList liste du context
 	 * @return Nom du champ display de cette liste
 	 */
-	public static String getDisplayField(final UiList<?> uiList) {
-		final DtDefinition dtDefinition = uiList.getDtDefinition();
+	public static String getDisplayField(final String uiListKey) {
+		final DtDefinition dtDefinition = getUiList(uiListKey).getDtDefinition();
 		return StringUtil.constToLowerCamelCase(dtDefinition.getDisplayField().get().getName());
 	}
 
@@ -115,9 +115,14 @@ public final class UiUtil implements Serializable {
 	 * @param uiList liste du context
 	 * @return Nom du champ de l'id de cette liste
 	 */
-	public static String getIdField(final UiList<?> uiList) {
-		final DtDefinition dtDefinition = uiList.getDtDefinition();
+	public static String getIdField(final String uiListKey) {
+		final DtDefinition dtDefinition = getUiList(uiListKey).getDtDefinition();
 		return StringUtil.constToLowerCamelCase(dtDefinition.getIdField().get().getName());
+	}
+
+	private static UiList getUiList(final String uiListKey) {
+		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
+		return (UiList) viewContext.get(uiListKey);
 	}
 
 	private static DtField getDtField(final String fieldPath) {
