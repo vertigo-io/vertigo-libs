@@ -20,10 +20,14 @@ public class ThymeleafComponent {
 
 	private String name;
 	private String fragmentTemplate;
+	private final String selectionExpression;
+	private final String frag;
 
-	public ThymeleafComponent(final String name, final String fragmentTemplate) {
+	public ThymeleafComponent(final String name, final String fragmentTemplate, final String selectionExpression, final String frag) {
 		this.name = name;
 		this.fragmentTemplate = fragmentTemplate;
+		this.selectionExpression = selectionExpression;
+		this.frag = frag;
 	}
 
 	/**
@@ -53,6 +57,14 @@ public class ThymeleafComponent {
 	 */
 	public String getFragmentTemplate() {
 		return fragmentTemplate;
+	}
+
+	public String getSelectionExpression() {
+		return selectionExpression;
+	}
+
+	public String getFrag() {
+		return frag;
 	}
 
 	/**

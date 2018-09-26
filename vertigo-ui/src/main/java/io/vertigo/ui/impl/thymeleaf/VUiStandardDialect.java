@@ -43,12 +43,12 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 
 		if (components != null) {
 			for (final ThymeleafComponent comp : components) {
-				processors.add(new ComponentNamedElementProcessor(dialectPrefix, comp.getName(), comp.getFragmentTemplate()));
+				processors.add(new ComponentNamedElementProcessor(dialectPrefix, comp.getName(), comp.getFragmentTemplate(), comp.getSelectionExpression(), comp.getFrag()));
 			}
 		}
 
 		for (final ThymeleafComponent comp : parseComponents()) {
-			processors.add(new ComponentNamedElementProcessor(dialectPrefix, comp.getName(), comp.getFragmentTemplate()));
+			processors.add(new ComponentNamedElementProcessor(dialectPrefix, comp.getName(), comp.getFragmentTemplate(), comp.getSelectionExpression(), comp.getFrag()));
 		}
 
 		return processors;

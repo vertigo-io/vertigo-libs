@@ -135,7 +135,7 @@ public class FragmentHelper {
 		final IStandardExpressionParser expressionParser = StandardExpressions.getExpressionParser(context.getConfiguration());
 		//final ViewContextMap viewContextMap = (ViewContextMap) context.getVariable("model");
 		//final String mode = ((FormMode) viewContextMap.get("mode")) == FormMode.edit ? "edit" : "read";
-		final FragmentExpression fragmentExpression = (FragmentExpression) expressionParser.parseExpression(context, "~{" + input.trim() /*+ "." + mode*/ + "}");
+		final FragmentExpression fragmentExpression = (FragmentExpression) expressionParser.parseExpression(context, input.trim() /*+ "." + mode*/);
 
 		final ExecutedFragmentExpression executedFragmentExpression = FragmentExpression.createExecutedFragmentExpression(context, fragmentExpression);
 

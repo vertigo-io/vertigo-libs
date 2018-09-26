@@ -63,11 +63,15 @@ public class StandardThymeleafComponentParser extends AbstractElementParser
 		}
 
 		final String selector = getDynamicAttributeValue(element, dialectPrefix, SELECTOR_ATTRIBUTE);
+		final String selectionExpression;
 		if (selector != null && !selector.isEmpty()) {
-			frag = "((" + selector + ")?'" + frag + "':~{})";
+			//frag = "((" + selector + ")?'" + frag + "':~{})";
+			selectionExpression = selector; //if selector is true display the corresponding fragment otherwise the empty one
+		} else {
+			selectionExpression = "${true}";
 		}
 
-		return new ThymeleafComponent(name, "composites/" + compositeName + ".html" + " :: " + frag);
+		return new ThymeleafComponent(name, "composites/" + compositeName + ".html", selectionExpression, frag);
 	}
 
 	private boolean isThymeleafComponent(final Element element) {

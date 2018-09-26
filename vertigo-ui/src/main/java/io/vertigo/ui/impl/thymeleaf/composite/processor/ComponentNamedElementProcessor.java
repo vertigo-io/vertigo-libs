@@ -36,6 +36,7 @@ import org.thymeleaf.model.ITemplateEvent;
 import org.thymeleaf.processor.element.AbstractElementModelProcessor;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
 import org.thymeleaf.standard.StandardDialect;
+import org.thymeleaf.standard.expression.VariableExpression;
 import org.thymeleaf.templatemode.TemplateMode;
 
 import io.vertigo.ui.impl.thymeleaf.composite.helper.FragmentHelper;
@@ -49,19 +50,23 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 	private static final int PRECEDENCE = 350;
 
 	private final Set<String> excludeAttributes = singleton("params");
-	private final String fragmentName;
+	private final String compositeName;
+	private final String selectionExpression;
+	private final String frag;
 
 	/**
 	 * Constructor
 	 *
 	 * @param dialectPrefix Dialect prefix (tc)
 	 * @param tagName Tag name to search for (e.g. panel)
-	 * @param fragmentName Fragment to search for
+	 * @param compositeName Fragment to search for
 	 */
-	public ComponentNamedElementProcessor(final String dialectPrefix, final String tagName, final String fragmentName) {
+	public ComponentNamedElementProcessor(final String dialectPrefix, final String tagName, final String compositeName, final String selectionExpression, final String frag) {
 		super(TemplateMode.HTML, dialectPrefix, tagName, true, null, false, PRECEDENCE);
 		REPLACE_CONTENT_TAG = dialectPrefix + ":content";
-		this.fragmentName = fragmentName;
+		this.compositeName = compositeName;
+		this.selectionExpression = selectionExpression;
+		this.frag = frag;
 	}
 
 	@Override
@@ -78,15 +83,23 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 			componentModel.remove(componentModel.size() - 1);
 		}
 
-		final IModel fragmentModel = FragmentHelper.getFragmentModel(context,
-				fragmentName + (param == null ? "" : "(" + param + ")"),
-				structureHandler, StandardDialect.PREFIX, FRAGMENT_ATTRIBUTE);
-		model.reset();
+		final String trimmedSelectionExpression = selectionExpression.substring(2, selectionExpression.length() - 1);
+		final Boolean isSelectionValid = (Boolean) new VariableExpression(trimmedSelectionExpression).execute(context);
 
-		final IModel replacedFragmentModel = replaceAllAttributeValues(attributes, context, fragmentModel);
-		model.addModel(mergeModels(replacedFragmentModel, componentModel, REPLACE_CONTENT_TAG));
+		if (isSelectionValid) {
+			final String fragmentToUse = "~{" + compositeName + " :: " + frag + "}";
 
-		processVariables(attributes, context, structureHandler, excludeAttributes);
+			final IModel fragmentModel = FragmentHelper.getFragmentModel(context,
+					fragmentToUse + (param == null ? "" : "(" + param + ")"),
+					structureHandler, StandardDialect.PREFIX, FRAGMENT_ATTRIBUTE);
+			model.reset();
+
+			final IModel replacedFragmentModel = replaceAllAttributeValues(attributes, context, fragmentModel);
+			model.addModel(mergeModels(replacedFragmentModel, componentModel, REPLACE_CONTENT_TAG));
+
+			processVariables(attributes, context, structureHandler, excludeAttributes);
+		} // else nothing
+
 	}
 
 	private IProcessableElementTag processElementTag(final ITemplateContext context, final IModel model) {
