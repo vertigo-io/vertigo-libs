@@ -28,41 +28,15 @@ import io.vertigo.ui.impl.thymeleaf.composite.model.ThymeleafComponent;
 public class StandardThymeleafComponentParser extends AbstractElementParser
 		implements IThymeleafComponentParser {
 
-	protected static final String NAME_ATTRIBUTE = "selector";
+	protected static final String NAME_ATTRIBUTE = "alias";
+	protected static final String SELECTOR_ATTRIBUTE = "selector";
 	protected static final String FRAGMENT_ATTRIBUTE = "fragment";
 
-	//private final String directory;
-	//private final String templatePrefix;
-	//private final String templateSuffix;
-
 	private final VuiResourceTemplateResolver compositeResolver;
-	//private final SpringTemplateEngine templateEngine;
-
-	/**
-	 * Constructor
-	 * @param templatePrefix
-	 *            Template prefix (e.g. templates/)
-	 * @param templateSuffix
-	 *            Template suffix (e.g. .html)
-	 * @param directory
-	 *            Subdirectory of param templatePrefix to find components in
-	 *            (e.g. components)
-	 */
-	//	public StandardThymeleafComponentParser(
-	//			final String dialectPrefix,
-	//			final String templatePrefix,
-	//			final String templateSuffix,
-	//			final String directory) {
-	//		super(dialectPrefix);
-	//		this.directory = directory;
-	//		this.templatePrefix = templatePrefix;
-	//		this.templateSuffix = templateSuffix;
-	//	}
 
 	public StandardThymeleafComponentParser(final String dialectPrefix, final VuiResourceTemplateResolver compositeResolver) {
 		super(dialectPrefix);
 		this.compositeResolver = compositeResolver;
-		//templateEngine = templateEngine;
 	}
 
 	@Override
@@ -78,53 +52,35 @@ public class StandardThymeleafComponentParser extends AbstractElementParser
 		return components;
 	}
 
-	//	@Override
-	//	public Set<ThymeleafComponent> parse() {
-	//		final Set<ThymeleafComponent> components = new HashSet<>();
-	//
-	//		compositeResolver.resolveTemplate(configuration, ownerTemplate, template, templateResolutionAttributes)
-	//		for (final String file : new ResourcePathFinder(templatePrefix + directory)
-	//				.findResourceFiles()) {
-	//			for (final Element element : parseElements(file)) {
-	//				if (isThymeleafComponent(element)) {
-	//					components.add(createComponent(element, file));
-	//				}
-	//			}
-	//		}
-	//		return components;
-	//	}
+	private ThymeleafComponent createComponent(final Element element, final String compositeName) {
 
-	private ThymeleafComponent createComponent(final Element element,
-			final String compositeName) {
-
-		String frag = getDynamicAttributeValue(element, StandardDialect.PREFIX,
-				FRAGMENT_ATTRIBUTE);
+		String frag = getDynamicAttributeValue(element, StandardDialect.PREFIX, FRAGMENT_ATTRIBUTE);
 		frag = frag.replaceAll("\\(.*\\)", "");
 
-		String name = getDynamicAttributeValue(element, dialectPrefix,
-				NAME_ATTRIBUTE);
+		String name = getDynamicAttributeValue(element, dialectPrefix, NAME_ATTRIBUTE);
 		if (name == null) {
 			name = frag;
+		}
+
+		final String selector = getDynamicAttributeValue(element, dialectPrefix, SELECTOR_ATTRIBUTE);
+		if (selector != null && !selector.isEmpty()) {
+			frag = "((" + selector + ")?'" + frag + "':~{})";
 		}
 
 		return new ThymeleafComponent(name, "composites/" + compositeName + ".html" + " :: " + frag);
 	}
 
 	private boolean isThymeleafComponent(final Element element) {
-		return hasDynamicAttribute(element, StandardDialect.PREFIX,
-				FRAGMENT_ATTRIBUTE);
+		return hasDynamicAttribute(element, StandardDialect.PREFIX, FRAGMENT_ATTRIBUTE);
 	}
 
-	private boolean hasDynamicAttribute(final Element element, final String prefix,
-			final String dynamicAttribute) {
+	private boolean hasDynamicAttribute(final Element element, final String prefix, final String dynamicAttribute) {
 		return element.hasAttribute("data-" + prefix + "-" + dynamicAttribute)
 				|| element.hasAttribute(prefix + ":" + dynamicAttribute);
 	}
 
-	private String getDynamicAttributeValue(final Element element, final String prefix,
-			final String dynamicAttribute) {
-		final String value = element
-				.getAttributeValue("data-" + prefix + "-" + dynamicAttribute);
+	private String getDynamicAttributeValue(final Element element, final String prefix, final String dynamicAttribute) {
+		final String value = element.getAttributeValue("data-" + prefix + "-" + dynamicAttribute);
 		if (value != null) {
 			return value;
 		}

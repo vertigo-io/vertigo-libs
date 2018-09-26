@@ -19,21 +19,33 @@
 package io.vertigo.ui.core;
 
 /**
- * Mode du formulaire
+ * Mode du formulaire.
  * @author npiedeloup
  */
 public enum FormMode {
 	/**
 	 * Mode lecture seul.
 	 */
-	readOnly,
+	readOnly("read"),
 	/**
 	 * Mode edition.
 	 */
-	edit,
+	edit("edit"),
 	/**
 	 * Mode création.
 	 */
-	create;
+	create("edit");
 
+	private final String viewMode;
+
+	private FormMode(final String viewMode) {
+		this.viewMode = viewMode;
+	}
+
+	/**
+	 * @return Nom du mode de rendu utilisé.
+	 */
+	public String getViewMode() {
+		return viewMode;
+	}
 }

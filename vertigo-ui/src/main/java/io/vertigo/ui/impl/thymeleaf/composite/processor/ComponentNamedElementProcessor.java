@@ -41,8 +41,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import io.vertigo.ui.impl.thymeleaf.composite.helper.FragmentHelper;
 import io.vertigo.ui.impl.thymeleaf.composite.helper.WithHelper;
 
-public class ComponentNamedElementProcessor
-		extends AbstractElementModelProcessor {
+public class ComponentNamedElementProcessor extends AbstractElementModelProcessor {
 
 	private static final String FRAGMENT_ATTRIBUTE = "fragment";
 	private final String REPLACE_CONTENT_TAG;
@@ -55,24 +54,18 @@ public class ComponentNamedElementProcessor
 	/**
 	 * Constructor
 	 *
-	 * @param dialectPrefix
-	 *            Dialect prefix (tc)
-	 * @param tagName
-	 *            Tag name to search for (e.g. panel)
-	 * @param fragmentName
-	 *            Fragment to search for
+	 * @param dialectPrefix Dialect prefix (tc)
+	 * @param tagName Tag name to search for (e.g. panel)
+	 * @param fragmentName Fragment to search for
 	 */
-	public ComponentNamedElementProcessor(final String dialectPrefix,
-			final String tagName, final String fragmentName) {
-		super(TemplateMode.HTML, dialectPrefix, tagName, true, null, false,
-				PRECEDENCE);
+	public ComponentNamedElementProcessor(final String dialectPrefix, final String tagName, final String fragmentName) {
+		super(TemplateMode.HTML, dialectPrefix, tagName, true, null, false, PRECEDENCE);
 		REPLACE_CONTENT_TAG = dialectPrefix + ":content";
 		this.fragmentName = fragmentName;
 	}
 
 	@Override
-	protected void doProcess(final ITemplateContext context, final IModel model,
-			final IElementModelStructureHandler structureHandler) {
+	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
 		final IProcessableElementTag tag = processElementTag(context, model);
 		final Map<String, String> attributes = processAttribute(tag);
 
@@ -88,7 +81,6 @@ public class ComponentNamedElementProcessor
 		final IModel fragmentModel = FragmentHelper.getFragmentModel(context,
 				fragmentName + (param == null ? "" : "(" + param + ")"),
 				structureHandler, StandardDialect.PREFIX, FRAGMENT_ATTRIBUTE);
-
 		model.reset();
 
 		final IModel replacedFragmentModel = replaceAllAttributeValues(attributes, context, fragmentModel);
@@ -97,8 +89,7 @@ public class ComponentNamedElementProcessor
 		processVariables(attributes, context, structureHandler, excludeAttributes);
 	}
 
-	private IProcessableElementTag processElementTag(final ITemplateContext context,
-			final IModel model) {
+	private IProcessableElementTag processElementTag(final ITemplateContext context, final IModel model) {
 		final ITemplateEvent firstEvent = model.get(0);
 		for (final IProcessableElementTag tag : context.getElementStack()) {
 			if (locationMatches(firstEvent, tag)) {
@@ -119,16 +110,14 @@ public class ComponentNamedElementProcessor
 			final IElementModelStructureHandler structureHandler,
 			final Set<String> excludeAttr) {
 		for (final Map.Entry<String, String> entry : attributes.entrySet()) {
-			if (excludeAttr.contains(entry.getKey()) || isDynamicAttribute(
-					entry.getKey(), getDialectPrefix())) {
+			if (excludeAttr.contains(entry.getKey()) || isDynamicAttribute(entry.getKey(), getDialectPrefix())) {
 				continue;
 			}
 			String attributeValue = entry.getValue();
 			if (attributeValue == null) {
 				attributeValue = "${true}";
 			}
-			WithHelper.processWith(context, entry.getKey() + "=" + attributeValue,
-					structureHandler);
+			WithHelper.processWith(context, entry.getKey() + "=" + attributeValue, structureHandler);
 		}
 	}
 
@@ -147,8 +136,7 @@ public class ComponentNamedElementProcessor
 	}
 
 	private boolean isDynamicAttribute(final String attribute, final String prefix) {
-		return attribute.startsWith(prefix + ":")
-				|| attribute.startsWith("data-" + prefix + "-");
+		return attribute.startsWith(prefix + ":") || attribute.startsWith("data-" + prefix + "-");
 	}
 
 	private IModel mergeModels(final IModel base, final IModel insert, final String replaceTag) {
@@ -189,10 +177,8 @@ public class ComponentNamedElementProcessor
 		return -1;
 	}
 
-	private IModel replaceAllAttributeValues(final Map<String, String> attributes,
-			final ITemplateContext context, final IModel model) {
-		final Map<String, String> replaceAttributes = findAllAttributesStartsWith(
-				attributes, super.getDialectPrefix(), "repl-", true);
+	private IModel replaceAllAttributeValues(final Map<String, String> attributes, final ITemplateContext context, final IModel model) {
+		final Map<String, String> replaceAttributes = findAllAttributesStartsWith(attributes, super.getDialectPrefix(), "repl-", true);
 
 		if (replaceAttributes.isEmpty()) {
 			return model;
@@ -205,27 +191,21 @@ public class ComponentNamedElementProcessor
 			if (replacedEvent != null) {
 				clonedModel.replace(i, replacedEvent);
 			}
-
 		}
 		return clonedModel;
 	}
 
-	private ITemplateEvent replaceAttributeValue(final ITemplateContext context,
-			final ITemplateEvent model, final Map<String, String> replaceValueMap) {
+	private ITemplateEvent replaceAttributeValue(final ITemplateContext context, final ITemplateEvent model, final Map<String, String> replaceValueMap) {
 		IProcessableElementTag firstEvent = null;
-		if (!replaceValueMap.isEmpty()
-				&& model instanceof IProcessableElementTag) {
+		if (!replaceValueMap.isEmpty() && model instanceof IProcessableElementTag) {
 			final IModelFactory modelFactory = context.getModelFactory();
 
 			firstEvent = (IProcessableElementTag) model;
-			for (final Map.Entry<String, String> entry : firstEvent.getAttributeMap()
-					.entrySet()) {
+			for (final Map.Entry<String, String> entry : firstEvent.getAttributeMap().entrySet()) {
 				final String oldAttrValue = entry.getValue();
 				final String replacePart = getReplaceAttributePart(oldAttrValue);
-				if (replacePart != null
-						&& replaceValueMap.containsKey(replacePart)) {
-					final String newStringValue = oldAttrValue.replace("?[" + replacePart + "]",
-							replaceValueMap.get(replacePart));
+				if (replacePart != null && replaceValueMap.containsKey(replacePart)) {
+					final String newStringValue = oldAttrValue.replace("?[" + replacePart + "]", replaceValueMap.get(replacePart));
 					firstEvent = modelFactory.replaceAttribute(firstEvent,
 							AttributeNames.forTextName(entry.getKey()),
 							entry.getKey(), newStringValue);
@@ -235,9 +215,7 @@ public class ComponentNamedElementProcessor
 		return firstEvent;
 	}
 
-	private Map<String, String> findAllAttributesStartsWith(
-			final Map<String, String> attributes, final String prefix,
-			final String attributeName, final boolean removeStart) {
+	private Map<String, String> findAllAttributesStartsWith(final Map<String, String> attributes, final String prefix, final String attributeName, final boolean removeStart) {
 		final Map<String, String> matchingAttributes = new HashMap<>();
 		for (final Map.Entry<String, String> entry : attributes.entrySet()) {
 			String key = entry.getKey();

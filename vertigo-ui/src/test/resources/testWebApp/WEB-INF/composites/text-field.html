@@ -1,5 +1,7 @@
-<th:block  th:fragment="text-field" class="edit">
+
+<th:block th:fragment="text-field-edit" vu:selector="${viewMode=='edit'}" vu:alias="text-field">
 	<vu:include-data object="${object}" field="${field}"/>
+	
 	<q-field
 		:label-width="3"
 		th:label="${field}"
@@ -15,11 +17,14 @@
 	</q-field>
 </th:block> 
 
-<th:block th:fragment="text-field" class="read">
+<th:block th:fragment="text-field-read" vu:selector="${viewMode=='read'}" vu:alias="text-field">
+	<vu:include-data object="${object}" field="${field}"/>
+	
 	<q-field
 		:label-width="3"
 		th:label="${field}"
 	>
 		<span th:text="${model.vContext[__${object}__][__${field}__]}"></span>
+
 	</q-field>
-</th:block> 
+</th:block>

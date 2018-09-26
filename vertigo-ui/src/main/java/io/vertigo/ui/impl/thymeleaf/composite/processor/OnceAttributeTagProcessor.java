@@ -23,17 +23,14 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.standard.processor.AbstractStandardConditionalVisibilityTagProcessor;
 import org.thymeleaf.templatemode.TemplateMode;
 
-public class OnceAttributeTagProcessor
-		extends AbstractStandardConditionalVisibilityTagProcessor {
+public class OnceAttributeTagProcessor extends AbstractStandardConditionalVisibilityTagProcessor {
 
 	public static final int PRECEDENCE = 300;
 	public static final String ATTR_NAME = "once";
 
 	/**
-	 * Constructor
-	 *
-	 * @param dialectPrefix
-	 *            Dialect prefix (tc)
+	 * Constructor.
+	 * @param dialectPrefix Dialect prefix (tc)
 	 */
 	public OnceAttributeTagProcessor(final String dialectPrefix) {
 		super(TemplateMode.HTML, dialectPrefix, ATTR_NAME, PRECEDENCE);
@@ -47,5 +44,4 @@ public class OnceAttributeTagProcessor
 		final String id = ids.seq(attributeValue);
 		return (attributeValue + "1").equals(id);
 	}
-
 }

@@ -14,6 +14,7 @@ import org.thymeleaf.model.ITemplateEvent;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
 import org.thymeleaf.standard.expression.Fragment;
 import org.thymeleaf.standard.expression.FragmentExpression;
+import org.thymeleaf.standard.expression.FragmentExpression.ExecutedFragmentExpression;
 import org.thymeleaf.standard.expression.FragmentSignature;
 import org.thymeleaf.standard.expression.FragmentSignatureUtils;
 import org.thymeleaf.standard.expression.IStandardExpressionParser;
@@ -21,9 +22,6 @@ import org.thymeleaf.standard.expression.NoOpToken;
 import org.thymeleaf.standard.expression.StandardExpressions;
 import org.thymeleaf.util.EscapedAttributeUtils;
 import org.thymeleaf.util.StringUtils;
-
-import io.vertigo.ui.core.FormMode;
-import io.vertigo.ui.core.ViewContextMap;
 
 public class FragmentHelper {
 
@@ -34,7 +32,8 @@ public class FragmentHelper {
 	public static IModel getFragmentModel(final ITemplateContext context,
 			final String attributeValue,
 			final IElementModelStructureHandler structureHandler,
-			final String dialectPrefix, final String FRAGMENT_ATTR_NAME) {
+			final String dialectPrefix,
+			final String fragmentAttrName) {
 
 		final IEngineConfiguration configuration = context.getConfiguration();
 
@@ -44,11 +43,7 @@ public class FragmentHelper {
 			// If the Fragment result is null, this is an error. Note a NULL
 			// result is not the same as the result being the empty fragment
 			// (~{})
-
-			throw new TemplateInputException(
-					"Error resolving fragment: \"" + attributeValue + "\": "
-							+ "template or fragment could not be resolved");
-
+			throw new TemplateInputException("Error resolving fragment: \"" + attributeValue + "\": " + "template or fragment could not be resolved");
 		}
 
 		final Fragment fragment = (Fragment) fragmentObj;
@@ -73,24 +68,21 @@ public class FragmentHelper {
 
 		boolean signatureApplied = false;
 		final ITemplateEvent firstEvent = fragmentModel.size() > 2 ? fragmentModel.get(1) : null;
-		if (firstEvent != null && IProcessableElementTag.class
-				.isAssignableFrom(firstEvent.getClass())) {
+		if (firstEvent != null && IProcessableElementTag.class.isAssignableFrom(firstEvent.getClass())) {
 
 			final IProcessableElementTag fragmentHolderEvent = (IProcessableElementTag) firstEvent;
 
-			if (fragmentHolderEvent.hasAttribute(dialectPrefix,
-					FRAGMENT_ATTR_NAME)) {
+			if (fragmentHolderEvent.hasAttribute(dialectPrefix, fragmentAttrName)) {
 				// The selected fragment actually has a "th:fragment" attribute,
 				// so we should process its signature
 
 				final String fragmentSignatureSpec = EscapedAttributeUtils
 						.unescapeAttribute(fragmentModel.getTemplateMode(),
 								fragmentHolderEvent.getAttributeValue(dialectPrefix,
-										FRAGMENT_ATTR_NAME));
+										fragmentAttrName));
 				if (!StringUtils.isEmptyOrWhitespace(fragmentSignatureSpec)) {
 
-					final FragmentSignature fragmentSignature = FragmentSignatureUtils.parseFragmentSignature(
-							configuration, fragmentSignatureSpec);
+					final FragmentSignature fragmentSignature = FragmentSignatureUtils.parseFragmentSignature(configuration, fragmentSignatureSpec);
 					if (fragmentSignature != null) {
 
 						// Reshape the fragment parameters into the ones that we
@@ -99,13 +91,9 @@ public class FragmentHelper {
 								fragmentSignature, fragmentParameters,
 								fragment.hasSyntheticParameters());
 						signatureApplied = true;
-
 					}
-
 				}
-
 			}
-
 		}
 
 		// If no signature applied, we must check if the parameters map contains
@@ -134,36 +122,28 @@ public class FragmentHelper {
 		 * reshaping it according to the fragment signature
 		 */
 		if (fragmentParameters != null && fragmentParameters.size() > 0) {
-			for (final Map.Entry<String, Object> fragmentParameterEntry : fragmentParameters
-					.entrySet()) {
-				structureHandler.setLocalVariable(
-						fragmentParameterEntry.getKey(),
-						fragmentParameterEntry.getValue());
+			for (final Map.Entry<String, Object> fragmentParameterEntry : fragmentParameters.entrySet()) {
+				structureHandler.setLocalVariable(fragmentParameterEntry.getKey(), fragmentParameterEntry.getValue());
 			}
 		}
 
 		return fragmentModel;
 	}
 
-	private static Object computeFragment(final ITemplateContext context,
-			final String input) {
+	private static Object computeFragment(final ITemplateContext context, final String input) {
 
-		final IStandardExpressionParser expressionParser = StandardExpressions
-				.getExpressionParser(context.getConfiguration());
-		final ViewContextMap viewContextMap = (ViewContextMap) context.getVariable("model");
-		final String mode = ((FormMode) viewContextMap.get("mode")) == FormMode.edit ? "edit" : "read";
-		final FragmentExpression fragmentExpression = (FragmentExpression) expressionParser.parseExpression(context,
-				"~{" + input.trim() + "." + mode + "}");
+		final IStandardExpressionParser expressionParser = StandardExpressions.getExpressionParser(context.getConfiguration());
+		//final ViewContextMap viewContextMap = (ViewContextMap) context.getVariable("model");
+		//final String mode = ((FormMode) viewContextMap.get("mode")) == FormMode.edit ? "edit" : "read";
+		final FragmentExpression fragmentExpression = (FragmentExpression) expressionParser.parseExpression(context, "~{" + input.trim() /*+ "." + mode*/ + "}");
 
-		final FragmentExpression.ExecutedFragmentExpression executedFragmentExpression = FragmentExpression.createExecutedFragmentExpression(context,
-				fragmentExpression);
+		final ExecutedFragmentExpression executedFragmentExpression = FragmentExpression.createExecutedFragmentExpression(context, fragmentExpression);
 
 		if (executedFragmentExpression.getFragmentSelectorExpressionResult() == null && executedFragmentExpression.getFragmentParameters() == null) {
 			// We might be in the scenario that what we thought was a template
 			// name in fact was instead an expression
 			// returning a Fragment itself, so we should simply return it
-			final Object templateNameExpressionResult = executedFragmentExpression
-					.getTemplateNameExpressionResult();
+			final Object templateNameExpressionResult = executedFragmentExpression.getTemplateNameExpressionResult();
 			if (templateNameExpressionResult != null) {
 				if (templateNameExpressionResult instanceof Fragment) {
 					return templateNameExpressionResult;

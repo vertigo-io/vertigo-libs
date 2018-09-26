@@ -1,4 +1,14 @@
 <div th:fragment="valid-input">
 	<label th:text="${title}"></label>
 	<input type="text" th:field="${model.vContext__${field}__}" />
+	
+    <script type="text/javascript" tc:once="valid-input.script">
+    	function onceFunction() {
+    		console.log("Once");
+    	}
+    </script>
+</div>
+
+<div th:fragment="valid-input" vu:selector="input-named" class="edit read">
+	Yop
 </div>

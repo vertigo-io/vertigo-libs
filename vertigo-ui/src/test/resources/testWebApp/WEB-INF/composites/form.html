@@ -1,4 +1,4 @@
-<th:block th:fragment="form" class="read edit">
+<th:block th:fragment="form" th:with="viewMode=${model.mode.viewMode}">
 	<form action="#" method="post" >
 		<vu:content></vu:content>
 		<input type="hidden" name="CTX" th:value="${model.vContext[CTX]}">

@@ -43,14 +43,12 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 
 		if (components != null) {
 			for (final ThymeleafComponent comp : components) {
-				processors.add(new ComponentNamedElementProcessor(dialectPrefix,
-						comp.getName(), comp.getFragmentTemplate()));
+				processors.add(new ComponentNamedElementProcessor(dialectPrefix, comp.getName(), comp.getFragmentTemplate()));
 			}
 		}
 
 		for (final ThymeleafComponent comp : parseComponents()) {
-			processors.add(new ComponentNamedElementProcessor(dialectPrefix,
-					comp.getName(), comp.getFragmentTemplate()));
+			processors.add(new ComponentNamedElementProcessor(dialectPrefix, comp.getName(), comp.getFragmentTemplate()));
 		}
 
 		return processors;
@@ -63,19 +61,7 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 	 */
 	private Set<ThymeleafComponent> parseComponents() {
 		final Set<ThymeleafComponent> parsedComponents = new HashSet<>();
-
-		for (final IThymeleafComponentParser parser : parsers) {
-			parsedComponents.addAll(parser.parseComposite("valid_input"));
-			parsedComponents.addAll(parser.parseComposite("link"));
-			parsedComponents.addAll(parser.parseComposite("vue-data"));
-			parsedComponents.addAll(parser.parseComposite("include-data"));
-			parsedComponents.addAll(parser.parseComposite("page"));
-			parsedComponents.addAll(parser.parseComposite("form"));
-			parsedComponents.addAll(parser.parseComposite("head"));
-			parsedComponents.addAll(parser.parseComposite("text-field"));
-			parsedComponents.addAll(parser.parseComposite("select"));
-		}
-
+		//TODO autodetect composites
 		return parsedComponents;
 	}
 

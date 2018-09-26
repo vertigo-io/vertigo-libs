@@ -12,36 +12,27 @@ import org.thymeleaf.standard.expression.AssignationUtils;
 import org.thymeleaf.standard.expression.IStandardExpression;
 import org.thymeleaf.util.StringUtils;
 
-public class WithHelper {
+public final class WithHelper {
 
 	private WithHelper() {
-
+		//private constructor for Helper
 	}
 
-	public static void processWith(final ITemplateContext context,
-			final String attributeValue,
-			final IElementModelStructureHandler structureHandler) {
-		final AssignationSequence assignations = AssignationUtils.parseAssignationSequence(context,
-				attributeValue, false /* no parameters without value */);
+	public static void processWith(final ITemplateContext context, final String attributeValue, final IElementModelStructureHandler structureHandler) {
+
+		final AssignationSequence assignations = AssignationUtils.parseAssignationSequence(context, attributeValue, false /* no parameters without value */);
 		if (assignations == null) {
-			throw new TemplateProcessingException(
-					"Could not parse value as attribute assignations: \""
-							+ attributeValue + "\"");
+			throw new TemplateProcessingException("Could not parse value as attribute assignations: \"" + attributeValue + "\"");
 		}
 
-		// Normally we would just allow the structure handler to be in charge of
-		// declaring the local variables
-		// by using structureHandler.setLocalVariable(...) but in this case we
-		// want each variable defined at an
-		// expression to be available for the next expressions, and that forces
-		// us to cast our ITemplateContext into
-		// a more specific interface --which shouldn't be used directly except
-		// in this specific, special case-- and
+		// Normally we would just allow the structure handler to be in charge of declaring the local variables
+		// by using structureHandler.setLocalVariable(...) but in this case we want each variable defined at an
+		// expression to be available for the next expressions, and that forces us to cast our ITemplateContext into
+		// a more specific interface --which shouldn't be used directly except in this specific, special case-- and
 		// put the local variables directly into it.
 		IEngineContext engineContext = null;
 		if (context instanceof IEngineContext) {
-			// NOTE this interface is internal and should not be used in users'
-			// code
+			// NOTE this interface is internal and should not be used in users' code
 			engineContext = (IEngineContext) context;
 		}
 
@@ -60,23 +51,17 @@ public class WithHelper {
 
 			final String newVariableName = leftValue == null ? null : leftValue.toString();
 			if (StringUtils.isEmptyOrWhitespace(newVariableName)) {
-				throw new TemplateProcessingException(
-						"Variable name expression evaluated as null or empty: \""
-								+ leftExpr + "\"");
+				throw new TemplateProcessingException("Variable name expression evaluated as null or empty: \"" + leftExpr + "\"");
 			}
 
 			if (engineContext != null) {
-				// The advantage of this vs. using the structure handler is that
-				// we will be able to
-				// use this newly created value in other expressions in the same
-				// 'th:with'
+				// The advantage of this vs. using the structure handler is that we will be able to
+				// use this newly created value in other expressions in the same 'th:with'
 				engineContext.setVariable(newVariableName, rightValue);
 			} else {
-				// The problem is, these won't be available until we execute the
-				// next processor
+				// The problem is, these won't be available until we execute the next processor
 				structureHandler.setLocalVariable(newVariableName, rightValue);
 			}
-
 		}
 	}
 }
