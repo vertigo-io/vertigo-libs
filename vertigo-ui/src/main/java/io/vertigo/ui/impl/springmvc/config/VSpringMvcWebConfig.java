@@ -44,8 +44,11 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 	@Autowired
 	private ApplicationContext applicationContext;
 
-	private final static String[] STANDARD_UI_COMPONENTS_NAME = { "valid_input", "link", "vue-data", "include-data", "page", "form", "head", "label",
-			"text-field", "select" };
+	private final static String[] STANDARD_UI_COMPONENTS_NAME = {
+			"vue-data", "include-data", //technical components
+			"page", "head", "form", //layout components
+			"label", "text-field", "select" //standard controls components 
+	};
 
 	/*
 	* STEP 1 - Create SpringResourceTemplateResolver

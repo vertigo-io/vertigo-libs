@@ -1,4 +1,4 @@
-<th:block th:fragment="select-edit" vu:alias="select" vu:selector="viewMode=='edit'"
+<th:block th:fragment="select-edit" vu:alias="select" vu:selector="${viewMode=='edit'}"
 	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${valueField != null ? valueField : model.util.getDisplayField(list)}">
 	<vu:include-data object="${object}" field="${field}"/>
 	<vu:include-data object="${list}" field="${myValueField}"/>

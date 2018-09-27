@@ -1,4 +1,4 @@
-<th:block th:fragment="text-field-edit" vu:selector="${viewMode=='edit'}" vu:alias="text-field">
+<th:block th:fragment="text-field-edit" vu:alias="text-field" vu:selector="${viewMode=='edit'}">
 	<vu:include-data object="${object}" field="${field}"/>
 	<vu:label object="${object}" field="${field}">
 		<q-input 
@@ -9,7 +9,7 @@
 	</vu:label>
 </th:block> 
 
-<th:block th:fragment="text-field-read" vu:selector="${viewMode=='read'}" vu:alias="text-field">
+<th:block th:fragment="text-field-read" vu:alias="text-field" vu:selector="${viewMode=='read'}">
 	<vu:include-data object="${object}" field="${field}"/>
 	<vu:label object="${object}" field="${field}">
 		<span th:text="${model.vContext[__${object}__][__${field}__]}"></span>
