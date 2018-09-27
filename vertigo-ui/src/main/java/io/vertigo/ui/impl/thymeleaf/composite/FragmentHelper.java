@@ -1,4 +1,4 @@
-package io.vertigo.ui.impl.thymeleaf.composite.helper;
+package io.vertigo.ui.impl.thymeleaf.composite;
 
 import java.util.Map;
 

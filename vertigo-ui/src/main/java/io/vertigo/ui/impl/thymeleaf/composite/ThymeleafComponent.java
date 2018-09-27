@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.ui.impl.thymeleaf.composite.model;
+package io.vertigo.ui.impl.thymeleaf.composite;
 
 public class ThymeleafComponent {
 

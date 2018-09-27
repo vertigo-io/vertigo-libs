@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.ui.impl.thymeleaf.composite.processor;
+package io.vertigo.ui.impl.thymeleaf.composite;
 
 import static java.util.Collections.singleton;
 
@@ -47,10 +47,7 @@ import org.thymeleaf.standard.expression.VariableExpression;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.util.StringUtils;
 
-import io.vertigo.ui.impl.thymeleaf.composite.helper.FragmentHelper;
-import io.vertigo.ui.impl.thymeleaf.composite.model.ThymeleafComponent;
-
-public class ComponentNamedElementProcessor extends AbstractElementModelProcessor {
+public class ThymeleafComponentNamedElementProcessor extends AbstractElementModelProcessor {
 
 	private static final String FRAGMENT_ATTRIBUTE = "fragment";
 	private final String REPLACE_CONTENT_TAG;
@@ -69,7 +66,7 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 	 * @param tagName Tag name to search for (e.g. panel)
 	 * @param compositeName Fragment to search for
 	 */
-	public ComponentNamedElementProcessor(final String dialectPrefix, final ThymeleafComponent thymeleafComponent) {
+	public ThymeleafComponentNamedElementProcessor(final String dialectPrefix, final ThymeleafComponent thymeleafComponent) {
 		super(TemplateMode.HTML, dialectPrefix, thymeleafComponent.getName(), true, null, false, PRECEDENCE);
 		REPLACE_CONTENT_TAG = dialectPrefix + ":content";
 		compositeName = thymeleafComponent.getFragmentTemplate();
@@ -142,7 +139,7 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 		}
 	}
 
-	private Map<String, String> processAttribute(final IProcessableElementTag tag) {
+	private static Map<String, String> processAttribute(final IProcessableElementTag tag) {
 		final Map<String, String> attributes = new HashMap<>();
 		if (tag != null) {
 			for (final IAttribute attribute : tag.getAllAttributes()) {
@@ -160,14 +157,14 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 		return attribute.startsWith(prefix + ":") || attribute.startsWith("data-" + prefix + "-");
 	}
 
-	private IModel mergeModels(final IModel base, final IModel insert, final String replaceTag) {
+	private static IModel mergeModels(final IModel base, final IModel insert, final String replaceTag) {
 		IModel mergedModel = insertModel(base, insert, replaceTag);
 		mergedModel = removeTag(mergedModel, replaceTag);
 		mergedModel = removeTag(mergedModel, replaceTag);
 		return mergedModel;
 	}
 
-	private IModel insertModel(final IModel base, final IModel insert, final String replaceTag) {
+	private static IModel insertModel(final IModel base, final IModel insert, final String replaceTag) {
 		final IModel clonedModel = base.cloneModel();
 		final int index = findTagIndex(base, replaceTag, IElementTag.class);
 		if (index > -1) {
@@ -176,7 +173,7 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 		return clonedModel;
 	}
 
-	private IModel removeTag(final IModel model, final String tag) {
+	private static IModel removeTag(final IModel model, final String tag) {
 		final IModel clonedModel = model.cloneModel();
 		final int index = findTagIndex(model, tag, IElementTag.class);
 		if (index > -1) {
@@ -185,7 +182,7 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 		return clonedModel;
 	}
 
-	private int findTagIndex(final IModel model, final String search, final Class<?> clazz) {
+	private static int findTagIndex(final IModel model, final String search, final Class<?> clazz) {
 		final int size = model.size();
 		ITemplateEvent event = null;
 		for (int i = 0; i < size; i++) {
@@ -216,7 +213,7 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 		return clonedModel;
 	}
 
-	private ITemplateEvent replaceAttributeValue(final ITemplateContext context, final ITemplateEvent model, final Map<String, String> replaceValueMap) {
+	private static ITemplateEvent replaceAttributeValue(final ITemplateContext context, final ITemplateEvent model, final Map<String, String> replaceValueMap) {
 		IProcessableElementTag firstEvent = null;
 		if (!replaceValueMap.isEmpty() && model instanceof IProcessableElementTag) {
 			final IModelFactory modelFactory = context.getModelFactory();
@@ -236,7 +233,7 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 		return firstEvent;
 	}
 
-	private Map<String, String> findAllAttributesStartsWith(final Map<String, String> attributes, final String prefix, final String attributeName, final boolean removeStart) {
+	private static Map<String, String> findAllAttributesStartsWith(final Map<String, String> attributes, final String prefix, final String attributeName, final boolean removeStart) {
 		final Map<String, String> matchingAttributes = new HashMap<>();
 		for (final Map.Entry<String, String> entry : attributes.entrySet()) {
 			String key = entry.getKey();
@@ -255,7 +252,7 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 		return matchingAttributes;
 	}
 
-	private String getReplaceAttributePart(final String attributeValue) {
+	private static String getReplaceAttributePart(final String attributeValue) {
 		final Pattern pattern = Pattern.compile(".*\\?\\[([\\w|\\d|.|\\-|_]*)\\].*");
 		final Matcher matcher = pattern.matcher(attributeValue);
 		while (matcher.find()) {

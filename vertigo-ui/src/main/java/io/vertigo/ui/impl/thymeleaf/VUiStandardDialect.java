@@ -9,10 +9,10 @@ import org.thymeleaf.dialect.AbstractProcessorDialect;
 import org.thymeleaf.processor.IProcessor;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.ui.impl.thymeleaf.composite.model.ThymeleafComponent;
-import io.vertigo.ui.impl.thymeleaf.composite.parser.ThymeleafComponentParser;
-import io.vertigo.ui.impl.thymeleaf.composite.processor.ComponentNamedElementProcessor;
-import io.vertigo.ui.impl.thymeleaf.composite.processor.OnceAttributeTagProcessor;
+import io.vertigo.ui.impl.thymeleaf.composite.ThymeleafComponentNamedElementProcessor;
+import io.vertigo.ui.impl.thymeleaf.composite.OnceAttributeTagProcessor;
+import io.vertigo.ui.impl.thymeleaf.composite.ThymeleafComponent;
+import io.vertigo.ui.impl.thymeleaf.composite.ThymeleafComponentParser;
 
 public final class VUiStandardDialect extends AbstractProcessorDialect {
 
@@ -42,12 +42,12 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 
 		//standard components
 		for (final ThymeleafComponent comp : components) {
-			processors.add(new ComponentNamedElementProcessor(dialectPrefix, comp));
+			processors.add(new ThymeleafComponentNamedElementProcessor(dialectPrefix, comp));
 		}
 
 		//additionalComponents
 		for (final ThymeleafComponent comp : parseComponents()) {
-			processors.add(new ComponentNamedElementProcessor(dialectPrefix, comp));
+			processors.add(new ThymeleafComponentNamedElementProcessor(dialectPrefix, comp));
 		}
 
 		return processors;

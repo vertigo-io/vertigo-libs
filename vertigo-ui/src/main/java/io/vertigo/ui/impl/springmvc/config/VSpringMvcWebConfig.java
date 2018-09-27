@@ -32,9 +32,9 @@ import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttributeMethodArgumen
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewContextMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
 import io.vertigo.ui.impl.thymeleaf.VUiStandardDialect;
-import io.vertigo.ui.impl.thymeleaf.composite.model.ThymeleafComponent;
-import io.vertigo.ui.impl.thymeleaf.composite.parser.ThymeleafComponentParser;
-import io.vertigo.ui.impl.thymeleaf.composite.parser.VuiResourceTemplateResolver;
+import io.vertigo.ui.impl.thymeleaf.composite.ThymeleafComponent;
+import io.vertigo.ui.impl.thymeleaf.composite.ThymeleafComponentParser;
+import io.vertigo.ui.impl.thymeleaf.composite.VuiResourceTemplateResolver;
 
 @Configuration
 @EnableWebMvc

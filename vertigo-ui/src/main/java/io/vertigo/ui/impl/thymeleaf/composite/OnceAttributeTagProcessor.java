@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.ui.impl.thymeleaf.composite.processor;
+package io.vertigo.ui.impl.thymeleaf.composite;
 
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.engine.AttributeName;
