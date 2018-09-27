@@ -19,6 +19,7 @@ package io.vertigo.ui.impl.thymeleaf.components;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +60,7 @@ public class ThymeleafComponentParser extends AbstractMarkupHandler {
 		final ITemplateResource templateResource = componentResolver.resolveResource("components/" + componentName);
 		for (final Element element : parseElements(templateResource)) {
 			if (isThymeleafComponent(element)) {
-				components.add(createComponent(element, componentName));
+				components.addAll(createComponent(element, componentName));
 			}
 		}
 		return components;
@@ -106,7 +107,7 @@ public class ThymeleafComponentParser extends AbstractMarkupHandler {
 		return elements;
 	}
 
-	private ThymeleafComponent createComponent(final Element element, final String componentName) {
+	private Set<ThymeleafComponent> createComponent(final Element element, final String componentName) {
 
 		String frag = getDynamicAttributeValue(element, StandardDialect.PREFIX, FRAGMENT_ATTRIBUTE);
 		frag = frag.replaceAll("\\(.*\\)", "");
@@ -117,15 +118,15 @@ public class ThymeleafComponentParser extends AbstractMarkupHandler {
 		}
 
 		final String selector = getDynamicAttributeValue(element, dialectPrefix, SELECTOR_ATTRIBUTE);
-		final String selectionExpression;
 		if (selector != null && !selector.isEmpty()) {
 			//frag = "((" + selector + ")?'" + frag + "':~{})";
-			selectionExpression = selector; //if selector is true display the corresponding fragment otherwise the empty one
+			final Set<ThymeleafComponent> thymeleafComponents = new HashSet<>();
+			thymeleafComponents.add(new ThymeleafComponent(name, "components/" + componentName + ".html", selector, frag));
+			thymeleafComponents.add(new ThymeleafComponent(frag, "components/" + componentName + ".html", frag)); //Fragment always accessible without
+			return thymeleafComponents;
 		} else {
-			selectionExpression = "${true}";
+			return Collections.singleton(new ThymeleafComponent(name, "components/" + componentName + ".html", frag));
 		}
-
-		return new ThymeleafComponent(name, "components/" + componentName + ".html", selectionExpression, frag);
 	}
 
 	private static boolean isThymeleafComponent(final Element element) {

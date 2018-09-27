@@ -16,17 +16,41 @@
 
 package io.vertigo.ui.impl.thymeleaf.components;
 
+import java.util.Optional;
+
+import org.thymeleaf.standard.expression.VariableExpression;
+
+import io.vertigo.lang.Assertion;
+
 public class ThymeleafComponent {
 
 	private String name;
 	private String fragmentTemplate;
-	private final String selectionExpression;
+	private final Optional<VariableExpression> selectionExpression;
 	private final String frag;
 
 	public ThymeleafComponent(final String name, final String fragmentTemplate, final String selectionExpression, final String frag) {
+		Assertion.checkArgNotEmpty(name);
+		Assertion.checkArgNotEmpty(fragmentTemplate);
+		Assertion.checkArgNotEmpty(selectionExpression);
+		Assertion.checkArgument(selectionExpression.startsWith("${") && selectionExpression.endsWith("}"), "Component {0} selector expression must starts with $\\{ and ends with \\} ({1})", name, selectionExpression);
+		Assertion.checkArgNotEmpty(frag);
+		//-----
 		this.name = name;
 		this.fragmentTemplate = fragmentTemplate;
-		this.selectionExpression = selectionExpression;
+		final String trimmedSelectionExpression = selectionExpression.substring(2, selectionExpression.length() - 1);
+		this.selectionExpression = Optional.of(new VariableExpression(trimmedSelectionExpression));
+		this.frag = frag;
+	}
+
+	public ThymeleafComponent(final String name, final String fragmentTemplate, final String frag) {
+		Assertion.checkArgNotEmpty(name);
+		Assertion.checkArgNotEmpty(fragmentTemplate);
+		Assertion.checkArgNotEmpty(frag);
+		//-----
+		this.name = name;
+		this.fragmentTemplate = fragmentTemplate;
+		selectionExpression = Optional.empty();
 		this.frag = frag;
 	}
 
@@ -59,7 +83,7 @@ public class ThymeleafComponent {
 		return fragmentTemplate;
 	}
 
-	public String getSelectionExpression() {
+	public Optional<VariableExpression> getSelectionExpression() {
 		return selectionExpression;
 	}
 
@@ -81,8 +105,7 @@ public class ThymeleafComponent {
 
 	@Override
 	public String toString() {
-		return "Component [name=" + name + ", fragmentTemplate="
-				+ fragmentTemplate + "]";
+		return "Component [name=" + name + ", fragmentTemplate=" + fragmentTemplate + "]";
 	}
 
 }

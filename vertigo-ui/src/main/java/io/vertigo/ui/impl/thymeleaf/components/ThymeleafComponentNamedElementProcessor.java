@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,7 +57,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 
 	private final Set<String> excludeAttributes = singleton("params");
 	private final String componentName;
-	private final String selectionExpression;
+	private final Optional<VariableExpression> selectionExpression;
 	private final String frag;
 
 	/**
@@ -88,10 +89,8 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			componentModel.remove(componentModel.size() - 1);
 		}
 
-		final String trimmedSelectionExpression = selectionExpression.substring(2, selectionExpression.length() - 1);
-		final Boolean isSelectionValid = (Boolean) new VariableExpression(trimmedSelectionExpression).execute(context);
-
-		if (isSelectionValid) {
+		if (!selectionExpression.isPresent() //no selector
+				|| (boolean) selectionExpression.get().execute(context)) { //or selector valid
 			final String fragmentToUse = "~{" + componentName + " :: " + frag + "}";
 
 			final IModel fragmentModel = FragmentHelper.getFragmentModel(context,
