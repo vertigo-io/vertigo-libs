@@ -1,27 +1,19 @@
-<th:block  th:fragment="select-edit" vu:selector="${viewMode=='edit'}" vu:alias="select" th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${valueField != null ? valueField : model.util.getDisplayField(list)}">
+<th:block th:fragment="select-edit" vu:alias="select" vu:selector="viewMode=='edit'"
+	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${valueField != null ? valueField : model.util.getDisplayField(list)}">
 	<vu:include-data object="${object}" field="${field}"/>
 	<vu:include-data object="${list}" field="${myValueField}"/>
 	<vu:include-data object="${list}" field="${myLabelField}"/>
-	<q-field
-		:label-width="3"
-		th:label="${field}"
-		th::error="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__')}"
-		th:error-label="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__') ? uiMessageStack.objectFieldErrors[__${object}__][__${field}__] : ''}"
-		th::warning="${uiMessageStack.hasFieldWarnings('__${object}__', '__${field}__')}"
-		>
+	<vu:label object="${object}" field="${field}">
 		 <q-select
 			th:v-model="|vueData.${object}.${field}|" 
 			th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}')|"
 			/>
-	</q-field>
+	</vu:label>
 	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
 </th:block> 
 
-<th:block th:fragment="select-read" vu:selector="${viewMode=='read'}" vu:alias="select">
-	<q-field
-		:label-width="3"
-		th:label="${field}"
-		>
+<th:block th:fragment="select-read" vu:alias="select" vu:selector="${viewMode=='read'}" >
+	<vu:label object="${object}" field="${field}">
 		<span th:text="${model.vContext[__${object}__][__${field}__]}"></span>
-	</q-field>
+	</vu:label>
 </th:block> 

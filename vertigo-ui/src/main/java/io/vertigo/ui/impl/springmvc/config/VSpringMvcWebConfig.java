@@ -44,7 +44,7 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 	@Autowired
 	private ApplicationContext applicationContext;
 
-	private final static String[] STANDARD_UI_COMPONENTS_NAME = { "valid_input", "link", "vue-data", "include-data", "page", "form", "head",
+	private final static String[] STANDARD_UI_COMPONENTS_NAME = { "valid_input", "link", "vue-data", "include-data", "page", "form", "head", "label",
 			"text-field", "select" };
 
 	/*

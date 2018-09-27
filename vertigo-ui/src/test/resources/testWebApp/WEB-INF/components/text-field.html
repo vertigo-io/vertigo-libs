@@ -1,27 +1,17 @@
 <th:block th:fragment="text-field-edit" vu:selector="${viewMode=='edit'}" vu:alias="text-field">
 	<vu:include-data object="${object}" field="${field}"/>
-	
-	<q-field
-		:label-width="3"
-		th:label="${field}"
-		th::error="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__')}"
-		th:error-label="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__') ? uiMessageStack.objectFieldErrors[__${object}__][__${field}__] : ''}"
-		th::warning="${uiMessageStack.hasFieldWarnings('__${object}__', '__${field}__')}"
-	>
+	<vu:label object="${object}" field="${field}">
 		<q-input 
 			th:v-model="${'vueData.' + object + '.' + field}" 
 			th:name="${'vContext['+object+']['+ field +']'}" 
 			 >
 		</q-input>
-	</q-field>
+	</vu:label>
 </th:block> 
 
 <th:block th:fragment="text-field-read" vu:selector="${viewMode=='read'}" vu:alias="text-field">
 	<vu:include-data object="${object}" field="${field}"/>
-	<q-field
-		:label-width="3"
-		th:label="${field}"
-	>
-	<span th:text="${model.vContext[__${object}__][__${field}__]}"></span>
-	</q-field>
+	<vu:label object="${object}" field="${field}">
+		<span th:text="${model.vContext[__${object}__][__${field}__]}"></span>
+	</vu:label>
 </th:block>
