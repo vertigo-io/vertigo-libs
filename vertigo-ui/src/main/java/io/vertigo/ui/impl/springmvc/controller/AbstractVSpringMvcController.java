@@ -34,6 +34,7 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.ui.core.ComponentStates;
 import io.vertigo.ui.core.FormMode;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
@@ -170,6 +171,7 @@ public abstract class AbstractVSpringMvcController {
 	protected void preInitContext(final ViewContext viewContext) {
 		viewContext.publishRef(() -> "appVersion", paramManager.getParam("app.version").getValueAsString());
 		viewContext.publishRef(UTIL_CONTEXT_KEY, new UiUtil());
+		viewContext.asMap().put("componentStates", new ComponentStates());
 		toModeReadOnly();
 	}
 

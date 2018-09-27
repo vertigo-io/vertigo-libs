@@ -1,0 +1,10 @@
+<th:block th:fragment="table" 
+	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')}" >
+	<vu:include-data object="${list}" field="'*'"/>
+	<q-table
+	    th::data="|vueData.${list}|"
+	    th::columns="|componentStates.${componentId}.columns|"
+	    row-key="name"
+	  ></q-table>
+	<vu:content></vu:content>
+</th:block> 

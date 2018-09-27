@@ -1,5 +1,5 @@
 <th:block th:fragment="label-edit" vu:alias="label" vu:selector="${viewMode=='edit'}"
-	  th:assert="${object} != null and ${field} != null">
+		th:assert="${object} != null and ${field} != null">
 	<q-field
 		:label-width="3"
 		th:label="${model.util.label(object + '.' + field)}"

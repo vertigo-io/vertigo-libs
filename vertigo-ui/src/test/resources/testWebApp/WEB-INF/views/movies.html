@@ -1,64 +1,10 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:vu="http://www.morphbit.com/thymeleaf/component">
-<head>
-<meta charset="ISO-8859-1">
-
-<title>Movies</title>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"> </script>
-<script th:src="@{/static/js/v-components/v-table.js}"> </script>
-
-</head>
-<body>
-   <h1>Movies</h1>
-   <h1>List</h1>
-	
-  	<div id="page">
-	  <form id="search">
-	  	
-	    Search <input name="query" v-model="vueData.searchQuery">
-	  </form>
-	
-	<v-table
-		component-id="movie1"
-		:list="vueData.movies"
-		:filter-key="vueData.searchQuery"
-		:columns="['movId', 'title']">
-		<template slot="header" scope="slotProps">
-			<v-table-header v-bind:columns="slotProps.columns" v-bind:list-state="slotProps.listState" ></v-table-header>
-		</template>
-	</v-table>
-</div>
-
-<!-- add movies in vueData -->
-<vu:include-data object="movies" field="movId"/>
-<vu:include-data object="movies" field="title"/>
-<!-- include vueData -->
-<vu:vue-data/>
-<script>
-var data = {
-		  vueData : vueData,
-		  componentStates : {}
-	  };
-vueData.searchQuery = '';
-
-data.componentStates.movies2 = {
-		listState : {
-			page : 1
-		}
-}
-var demo = new Vue({
-  el: '#page',
-  data: data
-})
-</script>
-	
-	<!-- anything we want -->
-	<form action="#" th:action="@{/movies/toto}"  method="post">
-	
-		<input type="hidden" name="top" value="30">
-		<input type="hidden" name="skip" value="60">
-        <p><button type="submit" >Submit</button></p>
-   		<input type="hidden" name="CTX" th:value="${model.vContext[CTX]}">
-   </form>
+<vu:page title="'Movie Detail'" >
+	<vu:table list="movies" componentId="movieTable">
+		<vu:column field="movId" />
+		<vu:column field="title" />
+	</vu:table>
+ </vu:page>
 </body>
 </html>
