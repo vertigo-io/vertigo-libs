@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.ui.impl.thymeleaf.composite;
+package io.vertigo.ui.impl.thymeleaf.components;
 
 import java.io.IOException;
 import java.util.ArrayList;

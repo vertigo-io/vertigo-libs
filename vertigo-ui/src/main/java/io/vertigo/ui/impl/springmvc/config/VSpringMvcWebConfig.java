@@ -32,9 +32,9 @@ import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttributeMethodArgumen
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewContextMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
 import io.vertigo.ui.impl.thymeleaf.VUiStandardDialect;
-import io.vertigo.ui.impl.thymeleaf.composite.ThymeleafComponent;
-import io.vertigo.ui.impl.thymeleaf.composite.ThymeleafComponentParser;
-import io.vertigo.ui.impl.thymeleaf.composite.VuiResourceTemplateResolver;
+import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponent;
+import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponentParser;
+import io.vertigo.ui.impl.thymeleaf.components.VuiResourceTemplateResolver;
 
 @Configuration
 @EnableWebMvc
@@ -44,7 +44,7 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 	@Autowired
 	private ApplicationContext applicationContext;
 
-	private final static String[] STANDARD_UI_COMPOSITES_NAME = { "valid_input", "link", "vue-data", "include-data", "page", "form", "head",
+	private final static String[] STANDARD_UI_COMPONENTS_NAME = { "valid_input", "link", "vue-data", "include-data", "page", "form", "head",
 			"text-field", "select" };
 
 	/*
@@ -61,12 +61,12 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 		return templateResolver;
 	}
 
-	private VuiResourceTemplateResolver compositesResolver() {
+	private VuiResourceTemplateResolver componentsResolver() {
 		final VuiResourceTemplateResolver templateResolver = new VuiResourceTemplateResolver();
 		templateResolver.setApplicationContext(applicationContext);
 		templateResolver.setPrefix("/WEB-INF/");
 		templateResolver.setSuffix(".html");
-		templateResolver.setResolvablePatterns(Collections.singleton("composites/*"));
+		templateResolver.setResolvablePatterns(Collections.singleton("components/*"));
 		// for dev purpose
 		templateResolver.setCacheable(false);
 		return templateResolver;
@@ -83,22 +83,22 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 		templateEngine.setTemplateResolver(viewsResolvers);
 		templateEngine.setEnableSpringELCompiler(true);
 		//---
-		// add composites
-		final VuiResourceTemplateResolver compositeResolvers = compositesResolver();
-		compositeResolvers.setOrder(1);
-		templateEngine.addTemplateResolver(compositeResolvers);
+		// add components
+		final VuiResourceTemplateResolver componentResolvers = componentsResolver();
+		componentResolvers.setOrder(1);
+		templateEngine.addTemplateResolver(componentResolvers);
 		//---
-		final VUiStandardDialect dialect = new VUiStandardDialect(getStandardUiComposites(compositeResolvers));
+		final VUiStandardDialect dialect = new VUiStandardDialect(getStandardUiComponents(componentResolvers));
 		templateEngine.addDialect("vu", dialect);
 		return templateEngine;
 	}
 
-	private final Set<ThymeleafComponent> getStandardUiComposites(final VuiResourceTemplateResolver compositeResolvers) {
-		final ThymeleafComponentParser parser = new ThymeleafComponentParser("vu", compositeResolvers);
+	private final Set<ThymeleafComponent> getStandardUiComponents(final VuiResourceTemplateResolver componentResolvers) {
+		final ThymeleafComponentParser parser = new ThymeleafComponentParser("vu", componentResolvers);
 
 		final Set<ThymeleafComponent> standardUiComponents = new HashSet<>();
-		for (final String compositeName : STANDARD_UI_COMPOSITES_NAME) {
-			standardUiComponents.addAll(parser.parseComposite(compositeName));
+		for (final String componentName : STANDARD_UI_COMPONENTS_NAME) {
+			standardUiComponents.addAll(parser.parseComponent(componentName));
 		}
 		return standardUiComponents;
 	}

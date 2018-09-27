@@ -1,4 +1,4 @@
-package io.vertigo.ui.impl.thymeleaf.composite;
+package io.vertigo.ui.impl.thymeleaf.components;
 
 import java.util.Collections;
 import java.util.Map;

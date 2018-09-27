@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.ui.impl.thymeleaf.composite;
+package io.vertigo.ui.impl.thymeleaf.components;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -41,25 +41,25 @@ public class ThymeleafComponentParser extends AbstractMarkupHandler {
 	protected static final String SELECTOR_ATTRIBUTE = "selector";
 	protected static final String FRAGMENT_ATTRIBUTE = "fragment";
 
-	private final VuiResourceTemplateResolver compositeResolver;
+	private final VuiResourceTemplateResolver componentResolver;
 
 	protected final String dialectPrefix;
 
 	private List<Element> elements;
 	private Element currentElement;
 
-	public ThymeleafComponentParser(final String dialectPrefix, final VuiResourceTemplateResolver compositeResolver) {
+	public ThymeleafComponentParser(final String dialectPrefix, final VuiResourceTemplateResolver componentResolver) {
 		this.dialectPrefix = dialectPrefix;
-		this.compositeResolver = compositeResolver;
+		this.componentResolver = componentResolver;
 	}
 
-	public Set<ThymeleafComponent> parseComposite(final String compositeName) {
+	public Set<ThymeleafComponent> parseComponent(final String componentName) {
 		final Set<ThymeleafComponent> components = new HashSet<>();
 
-		final ITemplateResource templateResource = compositeResolver.resolveResource("composites/" + compositeName);
+		final ITemplateResource templateResource = componentResolver.resolveResource("components/" + componentName);
 		for (final Element element : parseElements(templateResource)) {
 			if (isThymeleafComponent(element)) {
-				components.add(createComponent(element, compositeName));
+				components.add(createComponent(element, componentName));
 			}
 		}
 		return components;
@@ -106,7 +106,7 @@ public class ThymeleafComponentParser extends AbstractMarkupHandler {
 		return elements;
 	}
 
-	private ThymeleafComponent createComponent(final Element element, final String compositeName) {
+	private ThymeleafComponent createComponent(final Element element, final String componentName) {
 
 		String frag = getDynamicAttributeValue(element, StandardDialect.PREFIX, FRAGMENT_ATTRIBUTE);
 		frag = frag.replaceAll("\\(.*\\)", "");
@@ -125,7 +125,7 @@ public class ThymeleafComponentParser extends AbstractMarkupHandler {
 			selectionExpression = "${true}";
 		}
 
-		return new ThymeleafComponent(name, "composites/" + compositeName + ".html", selectionExpression, frag);
+		return new ThymeleafComponent(name, "components/" + componentName + ".html", selectionExpression, frag);
 	}
 
 	private static boolean isThymeleafComponent(final Element element) {

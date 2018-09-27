@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package io.vertigo.ui.impl.thymeleaf.composite;
+package io.vertigo.ui.impl.thymeleaf.components;
 
 import static java.util.Collections.singleton;
 
@@ -55,7 +55,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 	private static final int PRECEDENCE = 350;
 
 	private final Set<String> excludeAttributes = singleton("params");
-	private final String compositeName;
+	private final String componentName;
 	private final String selectionExpression;
 	private final String frag;
 
@@ -64,12 +64,12 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 	 *
 	 * @param dialectPrefix Dialect prefix (tc)
 	 * @param tagName Tag name to search for (e.g. panel)
-	 * @param compositeName Fragment to search for
+	 * @param componentName Fragment to search for
 	 */
 	public ThymeleafComponentNamedElementProcessor(final String dialectPrefix, final ThymeleafComponent thymeleafComponent) {
 		super(TemplateMode.HTML, dialectPrefix, thymeleafComponent.getName(), true, null, false, PRECEDENCE);
 		REPLACE_CONTENT_TAG = dialectPrefix + ":content";
-		compositeName = thymeleafComponent.getFragmentTemplate();
+		componentName = thymeleafComponent.getFragmentTemplate();
 		selectionExpression = thymeleafComponent.getSelectionExpression();
 		frag = thymeleafComponent.getFrag();
 	}
@@ -92,7 +92,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		final Boolean isSelectionValid = (Boolean) new VariableExpression(trimmedSelectionExpression).execute(context);
 
 		if (isSelectionValid) {
-			final String fragmentToUse = "~{" + compositeName + " :: " + frag + "}";
+			final String fragmentToUse = "~{" + componentName + " :: " + frag + "}";
 
 			final IModel fragmentModel = FragmentHelper.getFragmentModel(context,
 					fragmentToUse + (param == null ? "" : "(" + param + ")"),
