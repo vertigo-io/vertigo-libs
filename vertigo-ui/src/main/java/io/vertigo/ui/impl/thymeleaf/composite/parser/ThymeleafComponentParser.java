@@ -16,17 +16,28 @@
 
 package io.vertigo.ui.impl.thymeleaf.composite.parser;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import org.attoparser.AbstractMarkupHandler;
+import org.attoparser.MarkupParser;
+import org.attoparser.ParseException;
+import org.attoparser.config.ParseConfiguration;
 import org.attoparser.dom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.thymeleaf.standard.StandardDialect;
 import org.thymeleaf.templateresource.ITemplateResource;
 
 import io.vertigo.ui.impl.thymeleaf.composite.model.ThymeleafComponent;
 
-public class StandardThymeleafComponentParser extends AbstractElementParser
-		implements IThymeleafComponentParser {
+public class ThymeleafComponentParser extends AbstractMarkupHandler {
+
+	private static final Logger LOG = LoggerFactory.getLogger(ThymeleafComponentParser.class);
 
 	protected static final String NAME_ATTRIBUTE = "alias";
 	protected static final String SELECTOR_ATTRIBUTE = "selector";
@@ -34,12 +45,16 @@ public class StandardThymeleafComponentParser extends AbstractElementParser
 
 	private final VuiResourceTemplateResolver compositeResolver;
 
-	public StandardThymeleafComponentParser(final String dialectPrefix, final VuiResourceTemplateResolver compositeResolver) {
-		super(dialectPrefix);
+	protected final String dialectPrefix;
+
+	private List<Element> elements;
+	private Element currentElement;
+
+	public ThymeleafComponentParser(final String dialectPrefix, final VuiResourceTemplateResolver compositeResolver) {
+		this.dialectPrefix = dialectPrefix;
 		this.compositeResolver = compositeResolver;
 	}
 
-	@Override
 	public Set<ThymeleafComponent> parseComposite(final String compositeName) {
 		final Set<ThymeleafComponent> components = new HashSet<>();
 
@@ -50,6 +65,47 @@ public class StandardThymeleafComponentParser extends AbstractElementParser
 			}
 		}
 		return components;
+	}
+
+	@Override
+	public void handleAttribute(final char[] buffer, final int nameOffset, final int nameLen,
+			final int nameLine, final int nameCol, final int operatorOffset, final int operatorLen,
+			final int operatorLine, final int operatorCol, final int valueContentOffset,
+			final int valueContentLen, final int valueOuterOffset, final int valueOuterLen,
+			final int valueLine, final int valueCol) throws ParseException {
+		final String attributeName = new String(buffer, nameOffset, nameLen);
+		final String attributeValue = new String(buffer, valueContentOffset, valueContentLen);
+		if (currentElement != null) {
+			currentElement.addAttribute(attributeName, attributeValue);
+		}
+	}
+
+	@Override
+	public void handleOpenElementStart(final char[] buffer, final int nameOffset,
+			final int nameLen, final int line, final int col) throws ParseException {
+		final String attributeName = new String(buffer, nameOffset, nameLen);
+		currentElement = new Element(attributeName);
+		elements.add(currentElement);
+	}
+
+	private List<Element> parseElements(final ITemplateResource templateResource) {
+		elements = new ArrayList<>();
+
+		try (Reader reader = templateResource.reader()) {
+			final ParseConfiguration config = ParseConfiguration.htmlConfiguration();
+
+			final ParseConfiguration autoCloseConfig = ParseConfiguration.htmlConfiguration();
+			autoCloseConfig.setElementBalancing(
+					ParseConfiguration.ElementBalancing.AUTO_OPEN_CLOSE);
+
+			final MarkupParser htmlStandardParser = new MarkupParser(config);
+			htmlStandardParser.parse(reader, this);
+
+		} catch (IOException | ParseException e) {
+			LOG.error("Error while parsing elements: {}", e);
+		}
+
+		return elements;
 	}
 
 	private ThymeleafComponent createComponent(final Element element, final String compositeName) {
@@ -74,16 +130,16 @@ public class StandardThymeleafComponentParser extends AbstractElementParser
 		return new ThymeleafComponent(name, "composites/" + compositeName + ".html", selectionExpression, frag);
 	}
 
-	private boolean isThymeleafComponent(final Element element) {
+	private static boolean isThymeleafComponent(final Element element) {
 		return hasDynamicAttribute(element, StandardDialect.PREFIX, FRAGMENT_ATTRIBUTE);
 	}
 
-	private boolean hasDynamicAttribute(final Element element, final String prefix, final String dynamicAttribute) {
+	private static boolean hasDynamicAttribute(final Element element, final String prefix, final String dynamicAttribute) {
 		return element.hasAttribute("data-" + prefix + "-" + dynamicAttribute)
 				|| element.hasAttribute(prefix + ":" + dynamicAttribute);
 	}
 
-	private String getDynamicAttributeValue(final Element element, final String prefix, final String dynamicAttribute) {
+	private static String getDynamicAttributeValue(final Element element, final String prefix, final String dynamicAttribute) {
 		final String value = element.getAttributeValue("data-" + prefix + "-" + dynamicAttribute);
 		if (value != null) {
 			return value;

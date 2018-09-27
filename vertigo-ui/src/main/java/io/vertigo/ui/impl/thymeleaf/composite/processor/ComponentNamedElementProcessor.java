@@ -19,14 +19,17 @@ package io.vertigo.ui.impl.thymeleaf.composite.processor;
 import static java.util.Collections.singleton;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.thymeleaf.context.IEngineContext;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.engine.AttributeNames;
+import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IAttribute;
 import org.thymeleaf.model.IElementTag;
 import org.thymeleaf.model.IModel;
@@ -36,11 +39,16 @@ import org.thymeleaf.model.ITemplateEvent;
 import org.thymeleaf.processor.element.AbstractElementModelProcessor;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
 import org.thymeleaf.standard.StandardDialect;
+import org.thymeleaf.standard.expression.Assignation;
+import org.thymeleaf.standard.expression.AssignationSequence;
+import org.thymeleaf.standard.expression.AssignationUtils;
+import org.thymeleaf.standard.expression.IStandardExpression;
 import org.thymeleaf.standard.expression.VariableExpression;
 import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.util.StringUtils;
 
 import io.vertigo.ui.impl.thymeleaf.composite.helper.FragmentHelper;
-import io.vertigo.ui.impl.thymeleaf.composite.helper.WithHelper;
+import io.vertigo.ui.impl.thymeleaf.composite.model.ThymeleafComponent;
 
 public class ComponentNamedElementProcessor extends AbstractElementModelProcessor {
 
@@ -61,12 +69,12 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 	 * @param tagName Tag name to search for (e.g. panel)
 	 * @param compositeName Fragment to search for
 	 */
-	public ComponentNamedElementProcessor(final String dialectPrefix, final String tagName, final String compositeName, final String selectionExpression, final String frag) {
-		super(TemplateMode.HTML, dialectPrefix, tagName, true, null, false, PRECEDENCE);
+	public ComponentNamedElementProcessor(final String dialectPrefix, final ThymeleafComponent thymeleafComponent) {
+		super(TemplateMode.HTML, dialectPrefix, thymeleafComponent.getName(), true, null, false, PRECEDENCE);
 		REPLACE_CONTENT_TAG = dialectPrefix + ":content";
-		this.compositeName = compositeName;
-		this.selectionExpression = selectionExpression;
-		this.frag = frag;
+		compositeName = thymeleafComponent.getFragmentTemplate();
+		selectionExpression = thymeleafComponent.getSelectionExpression();
+		frag = thymeleafComponent.getFrag();
 	}
 
 	@Override
@@ -102,7 +110,7 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 
 	}
 
-	private IProcessableElementTag processElementTag(final ITemplateContext context, final IModel model) {
+	private static IProcessableElementTag processElementTag(final ITemplateContext context, final IModel model) {
 		final ITemplateEvent firstEvent = model.get(0);
 		for (final IProcessableElementTag tag : context.getElementStack()) {
 			if (locationMatches(firstEvent, tag)) {
@@ -112,7 +120,7 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 		return null;
 	}
 
-	private boolean locationMatches(final ITemplateEvent a, final ITemplateEvent b) {
+	private static boolean locationMatches(final ITemplateEvent a, final ITemplateEvent b) {
 		return Objects.equals(a.getTemplateName(), b.getTemplateName())
 				&& Objects.equals(a.getLine(), b.getLine())
 				&& Objects.equals(a.getCol(), b.getCol());
@@ -130,7 +138,7 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 			if (attributeValue == null) {
 				attributeValue = "${true}";
 			}
-			WithHelper.processWith(context, entry.getKey() + "=" + attributeValue, structureHandler);
+			processWith(context, entry.getKey() + "=" + attributeValue, structureHandler);
 		}
 	}
 
@@ -148,7 +156,7 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 		return attributes;
 	}
 
-	private boolean isDynamicAttribute(final String attribute, final String prefix) {
+	private static boolean isDynamicAttribute(final String attribute, final String prefix) {
 		return attribute.startsWith(prefix + ":") || attribute.startsWith("data-" + prefix + "-");
 	}
 
@@ -256,5 +264,52 @@ public class ComponentNamedElementProcessor extends AbstractElementModelProcesso
 			}
 		}
 		return null;
+	}
+
+	private static void processWith(final ITemplateContext context, final String attributeValue, final IElementModelStructureHandler structureHandler) {
+
+		final AssignationSequence assignations = AssignationUtils.parseAssignationSequence(context, attributeValue, false /* no parameters without value */);
+		if (assignations == null) {
+			throw new TemplateProcessingException("Could not parse value as attribute assignations: \"" + attributeValue + "\"");
+		}
+
+		// Normally we would just allow the structure handler to be in charge of declaring the local variables
+		// by using structureHandler.setLocalVariable(...) but in this case we want each variable defined at an
+		// expression to be available for the next expressions, and that forces us to cast our ITemplateContext into
+		// a more specific interface --which shouldn't be used directly except in this specific, special case-- and
+		// put the local variables directly into it.
+		IEngineContext engineContext = null;
+		if (context instanceof IEngineContext) {
+			// NOTE this interface is internal and should not be used in users' code
+			engineContext = (IEngineContext) context;
+		}
+
+		final List<Assignation> assignationValues = assignations.getAssignations();
+		final int assignationValuesLen = assignationValues.size();
+
+		for (int i = 0; i < assignationValuesLen; i++) {
+
+			final Assignation assignation = assignationValues.get(i);
+
+			final IStandardExpression leftExpr = assignation.getLeft();
+			final Object leftValue = leftExpr.execute(context);
+
+			final IStandardExpression rightExpr = assignation.getRight();
+			final Object rightValue = rightExpr.execute(context);
+
+			final String newVariableName = leftValue == null ? null : leftValue.toString();
+			if (StringUtils.isEmptyOrWhitespace(newVariableName)) {
+				throw new TemplateProcessingException("Variable name expression evaluated as null or empty: \"" + leftExpr + "\"");
+			}
+
+			if (engineContext != null) {
+				// The advantage of this vs. using the structure handler is that we will be able to
+				// use this newly created value in other expressions in the same 'th:with'
+				engineContext.setVariable(newVariableName, rightValue);
+			} else {
+				// The problem is, these won't be available until we execute the next processor
+				structureHandler.setLocalVariable(newVariableName, rightValue);
+			}
+		}
 	}
 }

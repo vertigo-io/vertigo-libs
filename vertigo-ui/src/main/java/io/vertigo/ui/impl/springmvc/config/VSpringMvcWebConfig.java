@@ -33,8 +33,7 @@ import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewContextMethodArgumentR
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
 import io.vertigo.ui.impl.thymeleaf.VUiStandardDialect;
 import io.vertigo.ui.impl.thymeleaf.composite.model.ThymeleafComponent;
-import io.vertigo.ui.impl.thymeleaf.composite.parser.IThymeleafComponentParser;
-import io.vertigo.ui.impl.thymeleaf.composite.parser.StandardThymeleafComponentParser;
+import io.vertigo.ui.impl.thymeleaf.composite.parser.ThymeleafComponentParser;
 import io.vertigo.ui.impl.thymeleaf.composite.parser.VuiResourceTemplateResolver;
 
 @Configuration
@@ -95,7 +94,7 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 	}
 
 	private final Set<ThymeleafComponent> getStandardUiComposites(final VuiResourceTemplateResolver compositeResolvers) {
-		final IThymeleafComponentParser parser = new StandardThymeleafComponentParser("vu", compositeResolvers);
+		final ThymeleafComponentParser parser = new ThymeleafComponentParser("vu", compositeResolvers);
 
 		final Set<ThymeleafComponent> standardUiComponents = new HashSet<>();
 		for (final String compositeName : STANDARD_UI_COMPOSITES_NAME) {
