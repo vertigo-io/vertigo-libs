@@ -9,7 +9,6 @@
 		>
 		 <vu:content></vu:content>
 	</q-field>
-	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
 </th:block> 
 
 <th:block th:fragment="label-read" vu:alias="label" vu:selector="${viewMode=='read'}" 

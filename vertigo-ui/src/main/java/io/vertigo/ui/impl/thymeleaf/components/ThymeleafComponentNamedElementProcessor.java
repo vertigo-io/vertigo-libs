@@ -36,6 +36,7 @@ import org.thymeleaf.model.IElementTag;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IModelFactory;
 import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.model.IStandaloneElementTag;
 import org.thymeleaf.model.ITemplateEvent;
 import org.thymeleaf.processor.element.AbstractElementModelProcessor;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
@@ -99,7 +100,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			model.reset();
 
 			final IModel replacedFragmentModel = replaceAllAttributeValues(attributes, context, fragmentModel);
-			model.addModel(mergeModels(replacedFragmentModel, componentModel, REPLACE_CONTENT_TAG));
+			model.addModel(mergeModels(replacedFragmentModel, componentModel, REPLACE_CONTENT_TAG, tag instanceof IStandaloneElementTag));
 
 			processVariables(attributes, context, structureHandler, excludeAttributes);
 		} // else nothing
@@ -156,10 +157,17 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		return attribute.startsWith(prefix + ":") || attribute.startsWith("data-" + prefix + "-");
 	}
 
-	private static IModel mergeModels(final IModel base, final IModel insert, final String replaceTag) {
-		IModel mergedModel = insertModel(base, insert, replaceTag);
-		mergedModel = removeTag(mergedModel, replaceTag);
-		mergedModel = removeTag(mergedModel, replaceTag);
+	private static IModel mergeModels(final IModel base, final IModel insert, final String replaceTag, final boolean useDefaultContent) {
+		IModel mergedModel = base;
+		if (useDefaultContent) {
+			mergedModel = removeTagMinus(mergedModel, replaceTag); //remove the begin Tag
+			mergedModel = removeTag(mergedModel, replaceTag); //remove the end Tag
+		} else {
+			mergedModel = removeInsideTag(mergedModel, replaceTag); // remove all inside the vu:content tag for preparing merge
+			mergedModel = insertModel(mergedModel, insert, replaceTag); // merge
+			mergedModel = removeTag(mergedModel, replaceTag);
+			mergedModel = removeTag(mergedModel, replaceTag);
+		}
 		return mergedModel;
 	}
 
@@ -172,11 +180,32 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		return clonedModel;
 	}
 
+	private static IModel removeInsideTag(final IModel model, final String tag) {
+		final IModel clonedModel = model.cloneModel();
+		final int index = findTagIndex(model, tag, IElementTag.class);
+		final int indexEnd = findTagIndex(model, "/" + tag, IElementTag.class);
+		if (index > -1) {
+			for (int i = 0; i < indexEnd - index - 1; i++) {
+				clonedModel.remove(index);
+			}
+		}
+		return clonedModel;
+	}
+
 	private static IModel removeTag(final IModel model, final String tag) {
 		final IModel clonedModel = model.cloneModel();
 		final int index = findTagIndex(model, tag, IElementTag.class);
 		if (index > -1) {
 			clonedModel.remove(index);
+		}
+		return clonedModel;
+	}
+
+	private static IModel removeTagMinus(final IModel model, final String tag) {
+		final IModel clonedModel = model.cloneModel();
+		final int index = findTagIndex(model, tag, IElementTag.class);
+		if (index > -1) {
+			clonedModel.remove(index - 1);
 		}
 		return clonedModel;
 	}

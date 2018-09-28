@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.vertigo.lang.Assertion;
 
@@ -51,6 +52,15 @@ public final class ComponentStates extends HashMap<String, Serializable> {
 			final ArrayList<Serializable> list = new ArrayList<>();
 			put(key, list);
 			return list;
+		}
+
+		public HashMap<String, Serializable> addObjectToList(final String listKey, final Map object) {
+			Assertion.checkArgNotEmpty(listKey);
+			Assertion.checkNotNull(object);
+			//---
+			final HashMap<String, Serializable> modifiableObject = new HashMap<>(object);// just to have a modifiable map
+			((List) get(listKey)).add(modifiableObject);
+			return modifiableObject;
 		}
 
 		public HashMap<String, Serializable> addObject(final String key) {

@@ -2,4 +2,4 @@
 		th:fragment="include-data" 
 		th:assert="${object} != null and ${field} != null" 
 		th:attr="objectKey=${model.vContext.addKeyForClient('__${object}__', '__${field}__')}" 
-		th:remove="all"><vu:include></vu:include></th:block>
+		th:remove="all"></th:block>

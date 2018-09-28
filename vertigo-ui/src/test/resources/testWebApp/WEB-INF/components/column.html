@@ -1,3 +1,6 @@
 <th:block th:fragment="column"
-	th:attr="objectKey=${model.vContext['componentStates']['__${componentId}__']['columns'].add({name: '__${field}__', field: '__${field}__'})}" >
+	th:attr="objectKey=${model.vContext['componentStates']['__${componentId}__'].addObjectToList('columns', {name: '__${field != null ? field : name }__', field: '__${field}__'})}" >
+	<q-td th:key="${field != null ? field : name }" :props="props">
+		<vu:content>{{ props.row.[[${field}]] }}</vu:content><!--/* Default content */-->
+	</q-td>
 </th:block> 

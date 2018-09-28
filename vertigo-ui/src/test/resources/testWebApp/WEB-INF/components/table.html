@@ -5,6 +5,9 @@
 	    th::data="|vueData.${list}|"
 	    th::columns="|componentStates.${componentId}.columns|"
 	    row-key="name"
-	  ></q-table>
-	<vu:content></vu:content>
+	  >
+	  	<q-tr slot="body" slot-scope="props" :props="props">
+			<vu:content></vu:content>
+	  	</q-tr>
+	  </q-table>
 </th:block> 
