@@ -1,12 +1,17 @@
 <th:block th:fragment="table" 
-	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')}" >
+	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')}, objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')} " >
 	<vu:include-data object="${list}" field="'*'"/>
 	<q-table
 	    th::data="|vueData.${list}|"
 	    th::columns="|componentStates.${componentId}.columns|"
-	    row-key="name"
+	    row-key="movId"
+	    th:selection="${selectable ? 'multiple' : ''}"
+	    th::selected.sync="|componentStates.${componentId}.selected|"
 	  >
 	  	<q-tr slot="body" slot-scope="props" :props="props">
+	  		<q-td th:if="${selectable != null}" auto-width>
+		       <q-checkbox color="primary" v-model="props.selected"  />
+		     </q-td>
 			<vu:content></vu:content>
 	  	</q-tr>
 	  </q-table>

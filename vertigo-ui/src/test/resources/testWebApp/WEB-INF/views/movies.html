@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:vu="http://www.morphbit.com/thymeleaf/component">
 <vu:page title="'Movie Detail'" >
-	<vu:table list="movies" componentId="movieTable">
+	<vu:table list="movies" componentId="movieTable" selectable="true">
 		<vu:column field="movId" >
-			titi
+			id : {{props.row.movId}}
 		</vu:column>
-		<vu:column field="title" />
-		<vu:column name="tata">
-			tata
+		<vu:column field="title" sortable="true" />
+		<vu:column name="tata" label="Tata">
+			another column  : {{props.row.movId}} : {{props.row.title}}
 		</vu:column>
 	</vu:table>
  </vu:page>
