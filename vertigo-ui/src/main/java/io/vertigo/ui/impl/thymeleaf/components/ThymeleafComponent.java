@@ -16,7 +16,11 @@
 
 package io.vertigo.ui.impl.thymeleaf.components;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 import org.thymeleaf.standard.expression.VariableExpression;
 
@@ -27,9 +31,10 @@ public class ThymeleafComponent {
 	private String name;
 	private String fragmentTemplate;
 	private final Optional<VariableExpression> selectionExpression;
+	private final Set<String> parameters;
 	private final String frag;
 
-	public ThymeleafComponent(final String name, final String fragmentTemplate, final String selectionExpression, final String frag) {
+	public ThymeleafComponent(final String name, final String fragmentTemplate, final String selectionExpression, final Optional<String> parameters, final String frag) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkArgNotEmpty(fragmentTemplate);
 		Assertion.checkArgNotEmpty(selectionExpression);
@@ -40,10 +45,11 @@ public class ThymeleafComponent {
 		this.fragmentTemplate = fragmentTemplate;
 		final String trimmedSelectionExpression = selectionExpression.substring(2, selectionExpression.length() - 1);
 		this.selectionExpression = Optional.of(new VariableExpression(trimmedSelectionExpression));
+		this.parameters = splitAsSet(parameters);
 		this.frag = frag;
 	}
 
-	public ThymeleafComponent(final String name, final String fragmentTemplate, final String frag) {
+	public ThymeleafComponent(final String name, final String fragmentTemplate, final Optional<String> parameters, final String frag) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkArgNotEmpty(fragmentTemplate);
 		Assertion.checkArgNotEmpty(frag);
@@ -51,7 +57,15 @@ public class ThymeleafComponent {
 		this.name = name;
 		this.fragmentTemplate = fragmentTemplate;
 		selectionExpression = Optional.empty();
+		this.parameters = splitAsSet(parameters);
 		this.frag = frag;
+	}
+
+	private Set<String> splitAsSet(final Optional<String> parameters) {
+		if (parameters.isPresent()) {
+			return new HashSet<>(Arrays.asList(parameters.get().split("\\s*,\\s*")));
+		}
+		return Collections.emptySet();
 	}
 
 	/**
@@ -85,6 +99,10 @@ public class ThymeleafComponent {
 
 	public Optional<VariableExpression> getSelectionExpression() {
 		return selectionExpression;
+	}
+
+	public Set<String> getParameters() {
+		return parameters;
 	}
 
 	public String getFrag() {

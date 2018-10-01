@@ -22,7 +22,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.attoparser.AbstractMarkupHandler;
 import org.attoparser.MarkupParser;
@@ -33,6 +36,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.thymeleaf.standard.StandardDialect;
 import org.thymeleaf.templateresource.ITemplateResource;
+
+import io.vertigo.lang.Assertion;
 
 public class ThymeleafComponentParser extends AbstractMarkupHandler {
 
@@ -108,9 +113,14 @@ public class ThymeleafComponentParser extends AbstractMarkupHandler {
 	}
 
 	private Set<ThymeleafComponent> createComponent(final Element element, final String componentName) {
-
-		String frag = getDynamicAttributeValue(element, StandardDialect.PREFIX, FRAGMENT_ATTRIBUTE);
-		frag = frag.replaceAll("\\(.*\\)", "");
+		final String fragmentAttribute = getDynamicAttributeValue(element, StandardDialect.PREFIX, FRAGMENT_ATTRIBUTE);
+		final Pattern parametersPattern = Pattern.compile("^\\s*([^(]+)\\s*(?:\\((.*)\\))?");
+		final Matcher matcher = parametersPattern.matcher(fragmentAttribute);
+		final boolean matches = matcher.matches();
+		Assertion.checkState(matches, "fragment '{0}' should match 'xxx' or 'xxx(params, ...)'", fragmentAttribute);
+		//----
+		final String frag = matcher.group(1);
+		final Optional<String> parameters = Optional.ofNullable(matcher.group(2));
 
 		String name = getDynamicAttributeValue(element, dialectPrefix, NAME_ATTRIBUTE);
 		if (name == null) {
@@ -119,13 +129,12 @@ public class ThymeleafComponentParser extends AbstractMarkupHandler {
 
 		final String selector = getDynamicAttributeValue(element, dialectPrefix, SELECTOR_ATTRIBUTE);
 		if (selector != null && !selector.isEmpty()) {
-			//frag = "((" + selector + ")?'" + frag + "':~{})";
 			final Set<ThymeleafComponent> thymeleafComponents = new HashSet<>();
-			thymeleafComponents.add(new ThymeleafComponent(name, "components/" + componentName + ".html", selector, frag));
-			thymeleafComponents.add(new ThymeleafComponent(frag, "components/" + componentName + ".html", frag)); //Fragment always accessible without
+			thymeleafComponents.add(new ThymeleafComponent(name, "components/" + componentName + ".html", selector, parameters, frag));
+			thymeleafComponents.add(new ThymeleafComponent(frag, "components/" + componentName + ".html", parameters, frag)); //Fragment always accessible without selector
 			return thymeleafComponents;
 		} else {
-			return Collections.singleton(new ThymeleafComponent(name, "components/" + componentName + ".html", frag));
+			return Collections.singleton(new ThymeleafComponent(name, "components/" + componentName + ".html", parameters, frag));
 		}
 	}
 

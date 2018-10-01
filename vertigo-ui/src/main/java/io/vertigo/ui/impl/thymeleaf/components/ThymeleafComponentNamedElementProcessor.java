@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.thymeleaf.context.IEngineContext;
 import org.thymeleaf.context.ITemplateContext;
@@ -59,6 +60,8 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 	private final Set<String> excludeAttributes = singleton("params");
 	private final String componentName;
 	private final Optional<VariableExpression> selectionExpression;
+	private final Set<String> parameterNames;
+	private final Set<String> placeholderPrefixes;
 	private final String frag;
 
 	/**
@@ -73,25 +76,31 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		REPLACE_CONTENT_TAG = dialectPrefix + ":content";
 		componentName = thymeleafComponent.getFragmentTemplate();
 		selectionExpression = thymeleafComponent.getSelectionExpression();
+		parameterNames = thymeleafComponent.getParameters();
+		placeholderPrefixes = parameterNames.stream()
+				.filter((parameterName) -> parameterName.endsWith("_attrs"))
+				.map((parameterName) -> parameterName.substring(0, parameterName.length() - "attrs".length()))
+				.collect(Collectors.toSet());
 		frag = thymeleafComponent.getFrag();
 	}
 
 	@Override
 	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
-		final IProcessableElementTag tag = processElementTag(context, model);
-		final Map<String, String> attributes = processAttribute(tag);
-
-		final String param = attributes.get("params");
-
-		final IModel componentModel = model.cloneModel();
-		componentModel.remove(0);
-
-		if (componentModel.size() > 1) {
-			componentModel.remove(componentModel.size() - 1);
-		}
-
 		if (!selectionExpression.isPresent() //no selector
 				|| (boolean) selectionExpression.get().execute(context)) { //or selector valid
+
+			final IProcessableElementTag tag = processElementTag(context, model);
+			final Map<String, String> attributes = processAttribute(model);
+
+			final String param = attributes.get("params");
+
+			final IModel componentModel = model.cloneModel();
+			componentModel.remove(0);
+
+			if (componentModel.size() > 1) {
+				componentModel.remove(componentModel.size() - 1);
+			}
+
 			final String fragmentToUse = "~{" + componentName + " :: " + frag + "}";
 
 			final IModel fragmentModel = FragmentHelper.getFragmentModel(context,
@@ -127,6 +136,9 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			final ITemplateContext context,
 			final IElementModelStructureHandler structureHandler,
 			final Set<String> excludeAttr) {
+
+		final Map<String, Map<String, Object>> placeholders = new HashMap<>();
+
 		for (final Map.Entry<String, String> entry : attributes.entrySet()) {
 			if (excludeAttr.contains(entry.getKey()) || isDynamicAttribute(entry.getKey(), getDialectPrefix())) {
 				continue;
@@ -135,14 +147,35 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			if (attributeValue == null) {
 				attributeValue = "${true}";
 			}
-			processWith(context, entry.getKey() + "=" + attributeValue, structureHandler);
+			processWith(context, entry.getKey() + "=" + attributeValue, structureHandler, placeholders);
+		}
+
+		//we set placeholders as localvariables (inner components shouldn't affect these in case of name conflict)
+		setLocalPlaceholderVariables(structureHandler, placeholders);
+	}
+
+	private void setLocalPlaceholderVariables(final IElementModelStructureHandler structureHandler, final Map<String, Map<String, Object>> placeholders) {
+		for (final String placeholderPrefix : placeholderPrefixes) {
+			final String placeholder = placeholderPrefix + "attrs";
+			final String affectationString;
+			if (placeholders.containsKey(placeholder)) {
+				affectationString = placeholders.get(placeholder)
+						.entrySet().stream()
+						.map(entry1 -> entry1.getKey() + "=" + entry1.getValue())
+						.collect(Collectors.joining(", "));
+			} else {
+				affectationString = "noOp=_";
+			}
+			structureHandler.setLocalVariable(placeholder, affectationString);
 		}
 	}
 
-	private static Map<String, String> processAttribute(final IProcessableElementTag tag) {
+	private Map<String, String> processAttribute(final IModel model) {
+		final ITemplateEvent firstEvent = model.get(0);
 		final Map<String, String> attributes = new HashMap<>();
-		if (tag != null) {
-			for (final IAttribute attribute : tag.getAllAttributes()) {
+		if (firstEvent instanceof IProcessableElementTag) {
+			final IProcessableElementTag processableElementTag = (IProcessableElementTag) firstEvent;
+			for (final IAttribute attribute : processableElementTag.getAllAttributes()) {
 				final String completeName = attribute.getAttributeCompleteName();
 				if (!isDynamicAttribute(completeName, StandardDialect.PREFIX)) {
 					attributes.put(completeName, attribute.getValue());
@@ -151,6 +184,33 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		}
 
 		return attributes;
+	}
+
+	private void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String variableName, final Object value) {
+		for (final String placeholderPrefix : placeholderPrefixes) {
+			if (variableName.startsWith(placeholderPrefix)) {
+				final String attributeName = variableName.substring(placeholderPrefix.length());
+				addPlaceholderVariable(placeholders, placeholderPrefix, attributeName, value);
+			}
+		}
+	}
+
+	private static void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String placeholderPrefix, final String attributeName, final Object value) {
+		Map<String, Object> previousPlaceholderValues = placeholders.get(placeholderPrefix + "attrs");
+		if (previousPlaceholderValues == null) {
+			previousPlaceholderValues = new HashMap<>();
+			placeholders.put(placeholderPrefix + "attrs", previousPlaceholderValues);
+		}
+		previousPlaceholderValues.put(attributeName, value);
+	}
+
+	private boolean isPlaceholder(final String completeName) {
+		for (final String placeholderPrefix : placeholderPrefixes) {
+			if (completeName.startsWith(placeholderPrefix)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static boolean isDynamicAttribute(final String attribute, final String prefix) {
@@ -291,7 +351,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		return null;
 	}
 
-	private static void processWith(final ITemplateContext context, final String attributeValue, final IElementModelStructureHandler structureHandler) {
+	private void processWith(final ITemplateContext context, final String attributeValue, final IElementModelStructureHandler structureHandler, final Map<String, Map<String, Object>> placeholders) {
 
 		final AssignationSequence assignations = AssignationUtils.parseAssignationSequence(context, attributeValue, false /* no parameters without value */);
 		if (assignations == null) {
@@ -319,17 +379,26 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			final IStandardExpression leftExpr = assignation.getLeft();
 			final Object leftValue = leftExpr.execute(context);
 
-			final IStandardExpression rightExpr = assignation.getRight();
-			final Object rightValue = rightExpr.execute(context);
-
 			final String newVariableName = leftValue == null ? null : leftValue.toString();
 			if (StringUtils.isEmptyOrWhitespace(newVariableName)) {
 				throw new TemplateProcessingException("Variable name expression evaluated as null or empty: \"" + leftExpr + "\"");
 			}
 
+			final IStandardExpression rightExpr = assignation.getRight();
+			final Object rightValue = rightExpr.execute(context);
+
+			if (isPlaceholder(newVariableName)) {
+				//We prepared prefixed placeholders variables.
+				addPlaceholderVariable(placeholders, newVariableName, rightValue);
+			} else if (!parameterNames.contains(newVariableName)) {
+				//We prepared unknowned placeholders variables.
+				addPlaceholderVariable(placeholders, "other_", newVariableName, rightValue);
+			}
+
 			if (engineContext != null) {
 				// The advantage of this vs. using the structure handler is that we will be able to
 				// use this newly created value in other expressions in the same 'th:with'
+				//	engineContext.setVariable(newVariableName, rightValue);
 				engineContext.setVariable(newVariableName, rightValue);
 			} else {
 				// The problem is, these won't be available until we execute the next processor

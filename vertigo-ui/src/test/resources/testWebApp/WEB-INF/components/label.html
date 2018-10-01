@@ -1,4 +1,4 @@
-<th:block th:fragment="label-edit" vu:alias="label" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="label-edit(object,field,other_attrs)" vu:alias="label" vu:selector="${viewMode=='edit'}"
 		th:assert="${object} != null and ${field} != null">
 	<q-field
 		:label-width="3"
@@ -6,16 +6,18 @@
 		th::error="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__')}"
 		th:error-label="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__') ? uiMessageStack.objectFieldErrors[__${object}__][__${field}__] : ''}"
 		th::warning="${uiMessageStack.hasFieldWarnings('__${object}__', '__${field}__')}"
+		th:attr="__${other_attrs}__"
 		>
 		 <vu:content></vu:content>
 	</q-field>
 </th:block> 
 
-<th:block th:fragment="label-read" vu:alias="label" vu:selector="${viewMode=='read'}" 
+<th:block th:fragment="label-read(object,field,other_attrs)" vu:alias="label" vu:selector="${viewMode=='read'}" 
  	 th:assert="${object} != null and ${field} != null">
 	<q-field
 		:label-width="3"
 		th:label="${model.util.label(object + '.' + field)}"
+		th:attr="__${other_attrs}__"
 		>
 		<vu:content></vu:content>
 	</q-field>

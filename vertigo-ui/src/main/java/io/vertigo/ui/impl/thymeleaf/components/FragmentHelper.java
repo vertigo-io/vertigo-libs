@@ -2,26 +2,18 @@ package io.vertigo.ui.impl.thymeleaf.components;
 
 import java.util.Map;
 
-import org.thymeleaf.IEngineConfiguration;
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.engine.TemplateData;
 import org.thymeleaf.engine.TemplateModel;
 import org.thymeleaf.exceptions.TemplateInputException;
-import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IModel;
-import org.thymeleaf.model.IProcessableElementTag;
-import org.thymeleaf.model.ITemplateEvent;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
 import org.thymeleaf.standard.expression.Fragment;
 import org.thymeleaf.standard.expression.FragmentExpression;
 import org.thymeleaf.standard.expression.FragmentExpression.ExecutedFragmentExpression;
-import org.thymeleaf.standard.expression.FragmentSignature;
-import org.thymeleaf.standard.expression.FragmentSignatureUtils;
 import org.thymeleaf.standard.expression.IStandardExpressionParser;
 import org.thymeleaf.standard.expression.NoOpToken;
 import org.thymeleaf.standard.expression.StandardExpressions;
-import org.thymeleaf.util.EscapedAttributeUtils;
-import org.thymeleaf.util.StringUtils;
 
 public class FragmentHelper {
 
@@ -35,7 +27,7 @@ public class FragmentHelper {
 			final String dialectPrefix,
 			final String fragmentAttrName) {
 
-		final IEngineConfiguration configuration = context.getConfiguration();
+		//final IEngineConfiguration configuration = context.getConfiguration();
 
 		final Object fragmentObj = computeFragment(context, attributeValue);
 		if (fragmentObj == null) {
@@ -49,7 +41,7 @@ public class FragmentHelper {
 		final Fragment fragment = (Fragment) fragmentObj;
 
 		final TemplateModel fragmentModel = fragment.getTemplateModel();
-		Map<String, Object> fragmentParameters = fragment.getParameters();
+		final Map<String, Object> fragmentParameters = fragment.getParameters();
 
 		/*
 		 * ONCE WE HAVE THE FRAGMENT MODEL (its events, in fact), CHECK THE
@@ -66,7 +58,7 @@ public class FragmentHelper {
 		// avoid creating an immutably-wrapped
 		// event object when calling "model.get(pos)"
 
-		boolean signatureApplied = false;
+		/*boolean signatureApplied = false;
 		final ITemplateEvent firstEvent = fragmentModel.size() > 2 ? fragmentModel.get(1) : null;
 		if (firstEvent != null && IProcessableElementTag.class.isAssignableFrom(firstEvent.getClass())) {
 
@@ -107,7 +99,7 @@ public class FragmentHelper {
 					+ "' specifies synthetic (unnamed) parameters, but the resolved fragment "
 					+ "does not match a fragment signature (th:fragment,data-th-fragment) which could apply names to "
 					+ "the specified parameters.");
-		}
+		}*/
 
 		/*
 		 * APPLY THE FRAGMENT'S TEMPLATE RESOLUTION so that all code inside the
