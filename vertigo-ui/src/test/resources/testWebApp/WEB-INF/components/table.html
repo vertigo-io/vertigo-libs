@@ -1,6 +1,5 @@
 <th:block th:fragment="table" 
 	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')}, objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')} " >
-	<vu:include-data object="${list}" field="'*'"/>
 	<q-table
 	    th::data="|vueData.${list}|"
 	    th::columns="|componentStates.${componentId}.columns|"
