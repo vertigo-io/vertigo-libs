@@ -3,6 +3,8 @@
 	<body>
 		<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"> </script>
 		<script src="https://cdn.jsdelivr.net/npm/quasar-framework@0.17.16/dist/umd/quasar.mat.umd.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/quasar-framework@0.17.16/dist/umd/i18n.fr.umd.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
 		<span th:text="${title}" />
 		<div id="page">
 			<p th:text="${uiMessageStack.objectFieldErrors}" th:if="${uiMessageStack.hasErrors()}"></p>
@@ -10,9 +12,11 @@
 		</div>
 		<vu:vue-data/>
 		<script>
+			Quasar.i18n.set(Quasar.i18n.fr)
 			var data = {
 					  vueData : vueData,
-					  componentStates : componentStates
+					  componentStates : componentStates,
+					  ctxId : ctxId
 				  };
 			var demo = new Vue({
 			  el: '#page',
@@ -22,7 +26,26 @@
 					return this.$data.vueData[list].map(function (object) {
 						return { value: object[valueField], label: object[labelField]}
 					});
-				}
+				},
+				request ({ pagination, filter }) {
+					var oldPagination = componentStates[pagination.componentId].pagination;
+					if (oldPagination.sortBy != pagination.sortBy ||  oldPagination.descending != pagination.descending ) {
+						// it's a sort order call the server
+						pagination.page = 1 //reset pagination
+						this.$http.post(pagination.sortUrl, { sortFieldName : pagination.sortBy, sortDesc : pagination.descending, CTX: this.$data.ctxId}, { emulateJSON: true }).then( function (response ) {
+							vueData[pagination.listKey] = response.body;
+						});
+					}
+						// otherwise it's pagination or filter : do it locally
+						// nothing to do everything is done by the paginatedData function
+					componentStates[pagination.componentId].pagination = pagination;
+				},
+				paginatedData: function (list, componentId) {
+					var pagination = componentStates[componentId].pagination;
+					var firstRowIndex = (pagination.page - 1) * pagination.rowsPerPage;
+					var lastRowIndex = pagination.page * pagination.rowsPerPage;
+					return this.$data.vueData[list].slice(firstRowIndex, lastRowIndex);
+				},
 			  }
 			})
 		</script>

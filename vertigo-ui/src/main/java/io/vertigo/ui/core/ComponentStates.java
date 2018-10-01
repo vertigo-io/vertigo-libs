@@ -20,6 +20,7 @@ package io.vertigo.ui.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,9 +65,13 @@ public final class ComponentStates extends HashMap<String, Serializable> {
 		}
 
 		public HashMap<String, Serializable> addObject(final String key) {
+			return addObject(key, Collections.emptyMap());
+		}
+
+		public HashMap<String, Serializable> addObject(final String key, final Map object) {
 			Assertion.checkArgNotEmpty(key);
 			//---
-			final HashMap<String, Serializable> map = new HashMap<>();
+			final HashMap<String, Serializable> map = new HashMap<>(object);
 			put(key, map);
 			return map;
 		}

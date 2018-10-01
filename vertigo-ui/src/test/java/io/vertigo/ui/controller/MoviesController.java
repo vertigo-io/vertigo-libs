@@ -40,8 +40,7 @@ public final class MoviesController extends AbstractVSpringMvcController {
 	@PostMapping("/")
 	@ResponseBody
 	public DtList<MovieDisplay> doPaginate(@ViewAttribute("movies") final DtList<MovieDisplay> moviesDisplay, final DtListState dtListState) {
-		applySortAndPagination(moviesDisplay, dtListState);
-		return moviesDisplay;
+		return applySortAndPagination(moviesDisplay, dtListState);
 	}
 
 	@PostMapping("/toto")

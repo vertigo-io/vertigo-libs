@@ -61,7 +61,7 @@ public class ThymeleafComponent {
 		this.frag = frag;
 	}
 
-	private Set<String> splitAsSet(final Optional<String> parameters) {
+	private static Set<String> splitAsSet(final Optional<String> parameters) {
 		if (parameters.isPresent()) {
 			return new HashSet<>(Arrays.asList(parameters.get().split("\\s*,\\s*")));
 		}
