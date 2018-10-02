@@ -1,4 +1,4 @@
-package io.vertigo.ui.impl.springmvc;
+package io.vertigo.ui.impl.springmvc.argumentresolvers;
 
 import java.util.Collections;
 
@@ -12,10 +12,11 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor;
 
 import io.vertigo.ui.core.ViewContext;
+import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 
-public class ViewContextReturnValueHandler extends AbstractMessageConverterMethodProcessor {
+public class ViewContextReturnValueAndArgumentResolver extends AbstractMessageConverterMethodProcessor {
 
-	public ViewContextReturnValueHandler() {
+	public ViewContextReturnValueAndArgumentResolver() {
 		super(Collections.singletonList(new GsonHttpMessageConverter()));
 	}
 
@@ -37,14 +38,12 @@ public class ViewContextReturnValueHandler extends AbstractMessageConverterMetho
 
 	@Override
 	public boolean supportsParameter(final MethodParameter parameter) {
-		// not used
-		return false;
+		return ViewContext.class.isAssignableFrom(parameter.getParameterType());
 	}
 
 	@Override
 	public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) throws Exception {
-		// not used
-		return null;
+		return UiRequestUtil.getCurrentViewContext();
 	}
 
 }

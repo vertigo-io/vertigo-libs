@@ -43,9 +43,12 @@
 				},
 				paginatedData: function (list, componentId) {
 					var pagination = componentStates[componentId].pagination;
-					var firstRowIndex = (pagination.page - 1) * pagination.rowsPerPage;
-					var lastRowIndex = pagination.page * pagination.rowsPerPage;
-					return this.$data.vueData[list].slice(firstRowIndex, lastRowIndex);
+					if (pagination.rowsPerPage != 0) { // not all
+						var firstRowIndex = (pagination.page - 1) * pagination.rowsPerPage;
+						var lastRowIndex = pagination.page * pagination.rowsPerPage;
+						return this.$data.vueData[list].slice(firstRowIndex, lastRowIndex);
+					}
+					return this.$data.vueData[list];
 				},
 			  }
 			})

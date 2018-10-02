@@ -27,11 +27,10 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Component;
-import io.vertigo.ui.impl.springmvc.ViewContextReturnValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.DtListStateMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.UiMessageStackMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttributeMethodArgumentResolver;
-import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewContextMethodArgumentResolver;
+import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewContextReturnValueAndArgumentResolver;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
 import io.vertigo.ui.impl.thymeleaf.VUiStandardDialect;
 import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponent;
@@ -127,14 +126,14 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 	@Override
 	public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> resolvers) {
 		resolvers.add(new ViewAttributeMethodArgumentResolver());
-		resolvers.add(new ViewContextMethodArgumentResolver());
+		resolvers.add(new ViewContextReturnValueAndArgumentResolver());
 		resolvers.add(new UiMessageStackMethodArgumentResolver());
 		resolvers.add(new DtListStateMethodArgumentResolver());
 	}
 
 	@Override
 	public void addReturnValueHandlers(final List<HandlerMethodReturnValueHandler> handlers) {
-		handlers.add(new ViewContextReturnValueHandler());
+		handlers.add(new ViewContextReturnValueAndArgumentResolver());
 	}
 
 	@Override
