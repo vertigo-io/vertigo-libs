@@ -116,7 +116,7 @@ public abstract class AbstractVSpringMvcController {
 					getClass().getSimpleName());
 			//initContext();
 		}
-
+		viewContext.setCtxId();
 		request.setAttribute("defaultViewName", getDefaultViewName(request));
 
 	}
@@ -195,7 +195,6 @@ public abstract class AbstractVSpringMvcController {
 	 */
 	public final void storeContext() {
 		final ViewContext viewContext = getViewContext();
-		viewContext.makeUnmodifiable();
 		try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
 			//Suite à SpringMvc 2.5 : les fichiers sont des UploadedFile non sérializable.
 			//On vérifie qu'ils ont été consommés
@@ -208,6 +207,15 @@ public abstract class AbstractVSpringMvcController {
 			kvStoreManager.put(CONTEXT_COLLECTION_NAME, viewContext.getId(), viewContext.asMap());// we only store the underlying map
 			transactionWritable.commit();
 		}
+	}
+
+	/**
+	 * Conserve et fige le context.
+	 * Utilisé par le KActionContextStoreInterceptor.
+	 */
+	public final void makeUnmodifiable() {
+		final ViewContext viewContext = getViewContext();
+		viewContext.makeUnmodifiable();
 	}
 
 	/** {@inheritDoc} */

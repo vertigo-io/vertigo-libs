@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.RequestToViewNameTranslator;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -26,6 +27,7 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Component;
+import io.vertigo.ui.impl.springmvc.ViewContextReturnValueHandler;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.DtListStateMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.UiMessageStackMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttributeMethodArgumentResolver;
@@ -128,6 +130,11 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 		resolvers.add(new ViewContextMethodArgumentResolver());
 		resolvers.add(new UiMessageStackMethodArgumentResolver());
 		resolvers.add(new DtListStateMethodArgumentResolver());
+	}
+
+	@Override
+	public void addReturnValueHandlers(final List<HandlerMethodReturnValueHandler> handlers) {
+		handlers.add(new ViewContextReturnValueHandler());
 	}
 
 	@Override

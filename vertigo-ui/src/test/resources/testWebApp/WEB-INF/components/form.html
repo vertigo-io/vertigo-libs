@@ -1,6 +1,6 @@
 <th:block th:fragment="form" th:with="viewMode=${model.mode.viewMode}">
 	<form action="#" method="post" autocomplete="off">
 		<vu:content></vu:content>
-		<input type="hidden" name="CTX" th:value="${model.vContext[CTX]}">
+		<input type="hidden" name="CTX" v-bind:value="ctxId">
 	</form>
 </th:block>

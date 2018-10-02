@@ -33,7 +33,8 @@
 						// it's a sort order call the server
 						pagination.page = 1 //reset pagination
 						this.$http.post(pagination.sortUrl, { sortFieldName : pagination.sortBy, sortDesc : pagination.descending, CTX: this.$data.ctxId}, { emulateJSON: true }).then( function (response ) {
-							vueData[pagination.listKey] = response.body;
+							vueData[pagination.listKey] = response.body[pagination.listKey];
+							this.$data.ctxId = response.body['CTX'];
 						});
 					}
 						// otherwise it's pagination or filter : do it locally

@@ -20,7 +20,10 @@ package io.vertigo.ui.core;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
@@ -49,6 +52,7 @@ public final class ViewContext implements Serializable {
 	/** Clée de l'id de context dans le context. */
 	public static final ViewContextKey<String> CTX = ViewContextKey.of("CTX");
 
+	private final Set<String> modifiedKeys = new HashSet<>();
 	private final ViewContextMap viewContextMap;
 
 	public ViewContext(final ViewContextMap viewContextMap) {
@@ -70,6 +74,10 @@ public final class ViewContext implements Serializable {
 		viewContextMap.put(ViewContextMap.INPUT_CTX, ctxId);
 	}
 
+	public void setCtxId() {
+		viewContextMap.put(CTX.get(), UUID.randomUUID().toString());
+	}
+
 	/**
 	 * Génère un nouvel Id et passe le context en modifiable.
 	 */
@@ -82,6 +90,7 @@ public final class ViewContext implements Serializable {
 	 */
 	public void makeUnmodifiable() {
 		viewContextMap.makeUnmodifiable();
+		modifiedKeys.add(CTX.get());
 	}
 
 	/**
@@ -100,6 +109,10 @@ public final class ViewContext implements Serializable {
 
 	public ViewContextMap asMap() {
 		return viewContextMap;
+	}
+
+	public ViewContextMap asUpdatesMap() {
+		return viewContextMap.getFilteredViewContext(modifiedKeys);
 	}
 
 	/* ================================== Map =====================================*/
@@ -141,15 +154,8 @@ public final class ViewContext implements Serializable {
 	//	}
 
 	private Serializable put(final ViewContextKey<?> key, final Serializable value) {
+		modifiedKeys.add(key.get());
 		return viewContextMap.put(key.get(), value);
-	}
-
-	/** {@inheritDoc} */
-	public Serializable remove(final Object key) {
-		if (key instanceof ViewContextKey) {
-			return viewContextMap.remove(((ViewContextKey<?>) key).get());
-		}
-		return viewContextMap.remove(key);
 	}
 
 	/* ================================== ContextRef =====================================*/

@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -54,7 +53,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	private boolean unmodifiable; //initialisé à false
 	private boolean dirty = false;
 
-	private final Set<String> keysForClient = new HashSet<>();
+	private final Map<String, Set<String>> keysForClient = new HashMap<>();
 
 	/** {@inheritDoc} */
 	@Override
@@ -232,7 +231,6 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	public void makeUnmodifiable() {
 		Assertion.checkState(!dirty, "Can't fixed a dirty context");
 		//-----
-		super.put(CTX, UUID.randomUUID().toString());
 		unmodifiable = true;
 	}
 
@@ -297,17 +295,23 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	public ViewContextMap getFilteredViewContext() {
+		return getFilteredViewContext(Collections.emptySet());
+	}
+
+	ViewContextMap getFilteredViewContext(final Set<String> subFilter) {
 		final ViewContextMap viewContextMap = new ViewContextMap();
+		viewContextMap.put(CTX, get(CTX));
 		for (final Map.Entry<String, Serializable> entry : entrySet()) {
-			if (keysForClient.contains(entry.getKey())) {
+			final String key = entry.getKey();
+			if (keysForClient.containsKey(key) && (subFilter.isEmpty() || subFilter.contains(key))) {
 				if (entry.getValue() instanceof MapUiObject) {
-					viewContextMap.put(entry.getKey(), ((MapUiObject) entry.getValue()).mapForClient());
+					viewContextMap.put(entry.getKey(), ((MapUiObject) entry.getValue()).mapForClient(keysForClient.get(key)));
 				} else if (entry.getValue() instanceof AbstractUiListUnmodifiable) {
 					//handle lists
-					viewContextMap.put(entry.getKey(), ((AbstractUiListUnmodifiable) entry.getValue()).listForClient());
+					viewContextMap.put(entry.getKey(), ((AbstractUiListUnmodifiable) entry.getValue()).listForClient(keysForClient.get(key)));
 				} else if (entry.getValue() instanceof BasicUiListModifiable) {
 					//handle lists modifiable
-					viewContextMap.put(entry.getKey(), ((BasicUiListModifiable) entry.getValue()).listForClient());
+					viewContextMap.put(entry.getKey(), ((BasicUiListModifiable) entry.getValue()).listForClient(keysForClient.get(key)));
 				} else {
 					// just copy it
 					viewContextMap.put(entry.getKey(), entry.getValue());
@@ -318,14 +322,11 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	public void addKeyForClient(final String object, final String fieldName) {
-		keysForClient.add(object);
-		final Object contextValue = get(object);
-		if (contextValue instanceof MapUiObject) {
-			((MapUiObject) contextValue).addFieldForClient(fieldName);
-		} else if (contextValue instanceof AbstractUiListUnmodifiable) {
-			((AbstractUiListUnmodifiable) contextValue).addFieldForClient(fieldName);
-		} else if (contextValue instanceof BasicUiListModifiable) {
-			((BasicUiListModifiable) contextValue).addFieldForClient(fieldName);
-		}
+		keysForClient.computeIfAbsent(object, k -> new HashSet<>()).add(fieldName);
 	}
+
+	public void addKeyForClient(final String object) {
+		keysForClient.put(object, Collections.emptySet());// notmodifiable because used only for primitives
+	}
+
 }

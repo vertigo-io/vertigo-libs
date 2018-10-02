@@ -29,9 +29,22 @@ public final class VSpringMvcViewContextInterceptor implements HandlerIntercepto
 			if (AbstractVSpringMvcController.class.isAssignableFrom(handlerMethod.getBeanType())) {
 				final AbstractVSpringMvcController controller = (AbstractVSpringMvcController) handlerMethod.getBean();
 				if (!controller.isViewContextDirty()) {
-					controller.storeContext();
+					controller.makeUnmodifiable();
 				}
 				//modelAndView.getModel().put("vContext", controller.getModel());
+			}
+		}
+	}
+
+	@Override
+	public void afterCompletion(final HttpServletRequest request, final HttpServletResponse response, final Object handler, final Exception ex) throws Exception {
+		if (handler instanceof HandlerMethod) {
+			final HandlerMethod handlerMethod = (HandlerMethod) handler;
+			if (AbstractVSpringMvcController.class.isAssignableFrom(handlerMethod.getBeanType())) {
+				final AbstractVSpringMvcController controller = (AbstractVSpringMvcController) handlerMethod.getBean();
+				if (!controller.isViewContextDirty()) {
+					controller.storeContext();
+				}
 			}
 		}
 	}

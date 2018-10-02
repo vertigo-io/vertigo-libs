@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -248,14 +249,10 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		uiObjectByIndex.clear();
 	}
 
-	public void addFieldForClient(final String fieldName) {
-		forEach(uiObject -> ((MapUiObject) uiObject).addFieldForClient(fieldName));
-	}
-
-	public ArrayList<HashMap<String, Serializable>> listForClient() {
+	public ArrayList<HashMap<String, Serializable>> listForClient(final Set<String> fieldsForClient) {
 		final ArrayList<HashMap<String, Serializable>> listForClient = new ArrayList<>();
 		for (final UiObject uiObject : this) {
-			listForClient.add(((MapUiObject) uiObject).mapForClient());
+			listForClient.add(((MapUiObject) uiObject).mapForClient(fieldsForClient));
 		}
 		return listForClient;
 	}

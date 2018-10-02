@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:vu="http://www.morphbit.com/thymeleaf/component">
 <vu:page title="'Movie Detail'" >
-	<vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/}">
+	<vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}">
 		<vu:column field="movId" >
 			id : {{props.row.movId}}
 		</vu:column>
@@ -10,7 +10,7 @@
 			another column  : {{props.row.movId}} : {{props.row.title}}
 		</vu:column>
 	</vu:table>
-	<vu:table list="movies" componentId="movieTable2" selectable="true" sortUrl="@{/movies/}">
+	<vu:table list="movies" componentId="movieTable2" selectable="true" sortUrl="@{/movies/_sort}">
 		<vu:column field="movId" />
 		<vu:column field="title" sortable="true" />
 	</vu:table>
