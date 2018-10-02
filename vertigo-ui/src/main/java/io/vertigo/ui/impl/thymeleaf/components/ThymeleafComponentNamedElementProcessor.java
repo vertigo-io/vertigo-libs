@@ -58,7 +58,6 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 
 	private static final String CONTENT_TAG_NAME = "content";
 	private static final String ATTRS_SUFFIX = "attrs";
-	private static final String FRAGMENT_ATTRIBUTE = "fragment";
 	private final String DIALECT_CONTENT_TAG;
 
 	private static final int PRECEDENCE = 350;
@@ -113,7 +112,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			final String fragmentToUse = "~{" + componentName + " :: " + frag + "}";
 			final IModel fragmentModel = FragmentHelper.getFragmentModel(context,
 					fragmentToUse + (param == null ? "" : "(" + param + ")"),
-					structureHandler, StandardDialect.PREFIX, FRAGMENT_ATTRIBUTE);
+					structureHandler);
 			final IModel replacedFragmentModel = replaceAllAttributeValues(attributes, context, fragmentModel);
 
 			//We merge models : ie replace vu:content tag in component fragment by the body of tag in call page
