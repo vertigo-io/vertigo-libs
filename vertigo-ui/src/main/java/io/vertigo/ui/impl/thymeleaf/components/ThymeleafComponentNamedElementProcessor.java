@@ -18,6 +18,8 @@ package io.vertigo.ui.impl.thymeleaf.components;
 
 import static java.util.Collections.singleton;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,10 +39,12 @@ import org.thymeleaf.model.ICloseElementTag;
 import org.thymeleaf.model.IElementTag;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IModelFactory;
+import org.thymeleaf.model.IModelVisitor;
 import org.thymeleaf.model.IOpenElementTag;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.model.IStandaloneElementTag;
 import org.thymeleaf.model.ITemplateEvent;
+import org.thymeleaf.model.IText;
 import org.thymeleaf.processor.element.AbstractElementModelProcessor;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
 import org.thymeleaf.standard.StandardDialect;
@@ -123,6 +127,80 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 
 			processVariables(attributes, context, structureHandler, excludeAttributes);
 		} // else nothing
+
+	}
+
+	private static IModel cloneAndCleanModel(final IModel model) {
+		final IModel cleanerModel = model.cloneModel();
+		final int size = cleanerModel.size();
+		for (int i = 0; i < size; i++) {
+			if (cleanerModel.get(i) instanceof IText) {
+				final IText innerText = (IText) cleanerModel.get(i);
+				cleanerModel.replace(i, new TrimedText(innerText));
+			}
+		}
+		return cleanerModel;
+	}
+
+	private static class TrimedText implements IText {
+
+		private final IText subText;
+		private final String content;
+
+		TrimedText(final IText subText) {
+			this.subText = subText;
+			content = subText.getText().trim();
+		}
+
+		@Override
+		public boolean hasLocation() {
+			return subText.hasLocation();
+		}
+
+		@Override
+		public String getTemplateName() {
+			return subText.getTemplateName();
+		}
+
+		@Override
+		public int getLine() {
+			return subText.getLine();
+		}
+
+		@Override
+		public int getCol() {
+			return subText.getCol();
+		}
+
+		@Override
+		public void accept(final IModelVisitor visitor) {
+			subText.accept(visitor);
+		}
+
+		@Override
+		public void write(final Writer writer) throws IOException {
+			writer.append(content);
+		}
+
+		@Override
+		public char charAt(final int index) {
+			return content.charAt(index);
+		}
+
+		@Override
+		public int length() {
+			return content.length();
+		}
+
+		@Override
+		public CharSequence subSequence(final int start, final int end) {
+			return content.subSequence(start, end);
+		}
+
+		@Override
+		public String getText() {
+			return content;
+		}
 
 	}
 
@@ -236,7 +314,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 	}
 
 	private static IModel mergeModels(final IModel base, final IModel insert, final String replaceTag, final boolean useDefaultContent) {
-		final IModel mergedModel = base.cloneModel();
+		final IModel mergedModel = cloneAndCleanModel(base);
 		return replaceTag(mergedModel, replaceTag, useDefaultContent ? Optional.empty() : Optional.of(insert));
 	}
 
