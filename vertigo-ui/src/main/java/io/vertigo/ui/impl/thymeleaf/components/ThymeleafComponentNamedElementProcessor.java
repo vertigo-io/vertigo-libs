@@ -104,21 +104,23 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			final String param = attributes.get("params");
 
 			final IModel componentModel = model.cloneModel();
-			componentModel.remove(0);
 
+			componentModel.remove(0);
 			if (componentModel.size() > 1) {
 				componentModel.remove(componentModel.size() - 1);
 			}
 
 			final String fragmentToUse = "~{" + componentName + " :: " + frag + "}";
-
 			final IModel fragmentModel = FragmentHelper.getFragmentModel(context,
 					fragmentToUse + (param == null ? "" : "(" + param + ")"),
 					structureHandler, StandardDialect.PREFIX, FRAGMENT_ATTRIBUTE);
-			model.reset();
-
 			final IModel replacedFragmentModel = replaceAllAttributeValues(attributes, context, fragmentModel);
-			model.addModel(mergeModels(replacedFragmentModel, componentModel, DIALECT_CONTENT_TAG, tag instanceof IStandaloneElementTag));
+
+			//We merge models : ie replace vu:content tag in component fragment by the body of tag in call page
+			final IModel mergedModel = mergeModels(replacedFragmentModel, componentModel, DIALECT_CONTENT_TAG, tag instanceof IStandaloneElementTag);
+			//We replace the whole model
+			model.reset();
+			model.addModel(mergedModel);
 
 			processVariables(attributes, context, structureHandler, excludeAttributes);
 		} // else nothing
@@ -235,65 +237,41 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 	}
 
 	private static IModel mergeModels(final IModel base, final IModel insert, final String replaceTag, final boolean useDefaultContent) {
-		IModel mergedModel = base;
-		if (useDefaultContent) {
-			mergedModel = removeTagMinus(mergedModel, replaceTag); //remove the begin Tag
-			mergedModel = removeTag(mergedModel, replaceTag); //remove the end Tag
-		} else {
-			mergedModel = removeInsideTag(mergedModel, replaceTag); // remove all inside the vu:content tag for preparing merge
-			mergedModel = insertModel(mergedModel, insert, replaceTag); // merge
-			mergedModel = removeTag(mergedModel, replaceTag);
-			mergedModel = removeTag(mergedModel, replaceTag);
-		}
-		return mergedModel;
+		final IModel mergedModel = base.cloneModel();
+		return replaceTag(mergedModel, replaceTag, useDefaultContent ? Optional.empty() : Optional.of(insert));
 	}
 
-	private static IModel insertModel(final IModel base, final IModel insert, final String replaceTag) {
-		final IModel clonedModel = base.cloneModel();
-		final int index = findTagIndex(base, replaceTag, IElementTag.class);
+	private static IModel replaceTag(final IModel model, final String tag, final Optional<IModel> replaceTagModel) {
+		final int index = findTagIndex(0, model, tag, IElementTag.class);//Open or standalone
 		if (index > -1) {
-			clonedModel.insertModel(index, insert);
-		}
-		return clonedModel;
-	}
-
-	private static IModel removeInsideTag(final IModel model, final String tag) {
-		final IModel clonedModel = model.cloneModel();
-		final int index = findTagIndex(model, tag, IElementTag.class);
-		final int indexEnd = findTagIndex(model, "/" + tag, IElementTag.class);
-		if (index > -1) {
-			for (int i = 0; i < indexEnd - index - 1; i++) {
-				clonedModel.remove(index);
+			final int indexEnd = findTagIndex(index, model, tag, ICloseElementTag.class);
+			if (indexEnd > -1) {
+				model.remove(indexEnd);
 			}
+			if (replaceTagModel.isPresent()) {
+				//We remove old body
+				if (indexEnd > -1) {
+					for (int i = indexEnd - 1; i > index; i--) {
+						model.remove(i);
+					}
+				}
+				//We insert new body after content tag (index+1)
+				model.insertModel(index + 1, replaceTagModel.get());
+			} else {
+				//
+			}
+			model.remove(index);
 		}
-		return clonedModel;
+		return model;
 	}
 
-	private static IModel removeTag(final IModel model, final String tag) {
-		final IModel clonedModel = model.cloneModel();
-		final int index = findTagIndex(model, tag, IElementTag.class);
-		if (index > -1) {
-			clonedModel.remove(index);
-		}
-		return clonedModel;
-	}
-
-	private static IModel removeTagMinus(final IModel model, final String tag) {
-		final IModel clonedModel = model.cloneModel();
-		final int index = findTagIndex(model, tag, IElementTag.class);
-		if (index > -1) {
-			clonedModel.remove(index - 1);
-		}
-		return clonedModel;
-	}
-
-	private static int findTagIndex(final IModel model, final String search, final Class<?> clazz) {
-		final int size = model.size();
+	private static int findTagIndex(final int from, final IModel model, final String tagName, final Class<? extends IElementTag> tagClass) {
 		ITemplateEvent event = null;
-		for (int i = 0; i < size; i++) {
+		final int size = model.size();
+		for (int i = from; i < size; i++) {
 			event = model.get(i);
-			if ((clazz == null || clazz.isInstance(event))
-					&& event.toString().contains(search)) {
+			if (tagClass.isInstance(event)
+					&& ((IElementTag) event).getElementCompleteName().equals(tagName)) {
 				return i;
 			}
 		}
@@ -309,8 +287,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		final IModel clonedModel = model.cloneModel();
 		final int size = model.size();
 		for (int i = 0; i < size; i++) {
-			final ITemplateEvent replacedEvent = replaceAttributeValue(context,
-					clonedModel.get(i), replaceAttributes);
+			final ITemplateEvent replacedEvent = replaceAttributeValue(context, clonedModel.get(i), replaceAttributes);
 			if (replacedEvent != null) {
 				clonedModel.replace(i, replacedEvent);
 			}
