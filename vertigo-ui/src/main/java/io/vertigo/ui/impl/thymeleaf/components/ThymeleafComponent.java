@@ -18,20 +18,19 @@ package io.vertigo.ui.impl.thymeleaf.components;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.thymeleaf.standard.expression.VariableExpression;
 
 import io.vertigo.lang.Assertion;
 
-public class ThymeleafComponent {
+public final class ThymeleafComponent {
 
 	private String name;
 	private String fragmentTemplate;
 	private final Optional<VariableExpression> selectionExpression;
-	private final Set<String> parameters;
+	private final List<String> parameters;
 	private final String frag;
 
 	public ThymeleafComponent(final String name, final String fragmentTemplate, final String selectionExpression, final Optional<String> parameters, final String frag) {
@@ -61,11 +60,11 @@ public class ThymeleafComponent {
 		this.frag = frag;
 	}
 
-	private static Set<String> splitAsSet(final Optional<String> parameters) {
+	private static List<String> splitAsSet(final Optional<String> parameters) {
 		if (parameters.isPresent()) {
-			return new HashSet<>(Arrays.asList(parameters.get().split("\\s*,\\s*")));
+			return Arrays.asList(parameters.get().split("\\s*,\\s*"));
 		}
-		return Collections.emptySet();
+		return Collections.emptyList();
 	}
 
 	/**
@@ -101,7 +100,7 @@ public class ThymeleafComponent {
 		return selectionExpression;
 	}
 
-	public Set<String> getParameters() {
+	public List<String> getParameters() {
 		return parameters;
 	}
 

@@ -1,5 +1,5 @@
 <th:block
-		th:fragment="include-data" 
+		th:fragment="include-data(object,field)" 
 		th:assert="${object} != null and ${field} != null" 
 		th:attr="objectKey=${model.vContext.addKeyForClient('__${object}__', '__${field}__')}" 
 		th:remove="all"></th:block>
