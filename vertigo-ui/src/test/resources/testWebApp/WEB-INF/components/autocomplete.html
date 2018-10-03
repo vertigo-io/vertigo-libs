@@ -9,7 +9,7 @@
 	<vu:label-edit object="${object}" field="${field}">
 		<q-input th:v-model="|componentStates.${myComponentId}.placeHolder|">
 		  <q-autocomplete
-		  	th::static-data="|transformListForAutocomplete('${list}', '${myValueField}', '${myLabelField}')|"
+		  	th:@search="|function (terms, done) { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', terms, done)}|"
 		    :min-characters="3"
 		    value-field="label"
 		    th:@selected="|function (item, keyboard) { selectedFunction('${object}', '${field}', item, keyboard)}|"

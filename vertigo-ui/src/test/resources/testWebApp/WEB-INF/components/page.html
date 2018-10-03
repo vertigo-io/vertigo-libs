@@ -27,15 +27,6 @@
 						return { value: object[valueField], label: object[labelField]}
 					});
 				},
-				transformListForAutocomplete: function (list, valueField, labelField) {
-					var finalList =  this.$data.vueData[list].map(function (object) {
-						return { value: object[valueField], label: object[labelField]}
-					});
-					return {
-						 field: 'label',
-						 list: finalList
-						}
-				},
 				request ({ pagination, filter }) {
 					var oldPagination = componentStates[pagination.componentId].pagination;
 					if (oldPagination.sortBy != pagination.sortBy ||  oldPagination.descending != pagination.descending ) {
@@ -61,6 +52,19 @@
 				},
 				selectedFunction : function (object, field, item, keyboard) {
 					this.$data.vueData[object][field] = item.value;
+				},
+				searchAutocomplete : function (list, valueField, labelField, terms, done) {
+					this.$http.post("/test/autocomplete/_searchFullText", {terms: terms, list : list , valueField : valueField,labelField : labelField, CTX: this.$data.ctxId}, { emulateJSON: true }).then( function (response ) {
+						var finalList =  response.body.map(function (object) {
+							return { value: object[valueField].toString(), label: object[labelField].toString()}
+						});
+						done(finalList);
+					}, 
+					function (response) {
+						this.$q.notify(response.status + ":" +response.statusText);
+						done([]);
+					});
+					
 				}
 			  }
 			})
