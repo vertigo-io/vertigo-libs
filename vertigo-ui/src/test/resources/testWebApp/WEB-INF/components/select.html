@@ -18,4 +18,4 @@
 	<vu:label-read object="${object}" field="${field}">
 		<span th:with="value=${model.vContext[__${object}__][__${field}__]}" th:text="${model.vContext[__${list}__].getById('__${myValueField}__', '__${value}__')['__${myLabelField}__']}"></span>
 	</vu:label-read>
-</th:block> 
+</th:block>

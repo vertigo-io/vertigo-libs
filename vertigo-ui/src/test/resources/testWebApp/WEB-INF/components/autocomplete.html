@@ -1,0 +1,24 @@
+<th:block th:fragment="autocomplete-edit(object,list,field,valueField)" vu:alias="autocomplete" vu:selector="${viewMode=='edit'}"
+	  th:assert="${object} != null and ${field} != null and ${list} != null"
+	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${valueField != null ? valueField : model.util.getDisplayField(list)}, value=${model.vContext[__${object}__][__${field}__]}">
+	<th:block th:with="valueLabel=${model.vContext[__${list}__].getById('__${myValueField}__', '__${value}__')['__${myLabelField}__']}"
+		th:attr="objectKey=${model.vContext['componentStates'].addComponentState(list + '_' + object + '_' + field).addPrimitive('placeHolder', valueLabel)}" />
+	<vu:include-data object="${object}" field="${field}"/>
+	<vu:include-data object="${list}" field="${myValueField}"/>
+	<vu:include-data object="${list}" field="${myLabelField}"/>
+	<vu:label-edit object="${object}" field="${field}">
+		<q-input th:v-model="componentStates.movies_movie_movId.placeHolder">
+		  <q-autocomplete
+		  	th::static-data="|transformListForAutocomplete('${list}', '${myValueField}', '${myLabelField}')|"
+		    :min-characters="3"
+		    value-field="label"
+		    th:@selected="|function (item, keyboard) { selectedFunction('${object}', '${field}', item, keyboard)}|"
+		  />
+		</q-input>
+	</vu:label-edit>
+	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
+</th:block> 
+
+<th:block th:fragment="autocomplete-read(object,field,list,valueField)" vu:alias="autocomplete" vu:selector="${viewMode=='read'}" >
+	<vu:select-read object="${object}" field="${field}" list="${list}" />
+</th:block>

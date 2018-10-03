@@ -68,6 +68,11 @@ public final class ComponentStates extends HashMap<String, Serializable> {
 			return addObject(key, Collections.emptyMap());
 		}
 
+		public void addPrimitive(final String key, final Serializable value) {
+			Assertion.checkArgNotEmpty(key);
+			put(key, value);
+		}
+
 		public HashMap<String, Serializable> addObject(final String key, final Map object) {
 			Assertion.checkArgNotEmpty(key);
 			//---

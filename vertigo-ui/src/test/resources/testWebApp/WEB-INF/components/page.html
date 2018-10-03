@@ -27,6 +27,15 @@
 						return { value: object[valueField], label: object[labelField]}
 					});
 				},
+				transformListForAutocomplete: function (list, valueField, labelField) {
+					var finalList =  this.$data.vueData[list].map(function (object) {
+						return { value: object[valueField], label: object[labelField]}
+					});
+					return {
+						 field: 'label',
+						 list: finalList
+						}
+				},
 				request ({ pagination, filter }) {
 					var oldPagination = componentStates[pagination.componentId].pagination;
 					if (oldPagination.sortBy != pagination.sortBy ||  oldPagination.descending != pagination.descending ) {
@@ -50,6 +59,9 @@
 					}
 					return this.$data.vueData[list];
 				},
+				selectedFunction : function (object, field, item, keyboard) {
+					this.$data.vueData[object][field] = item.value;
+				}
 			  }
 			})
 		</script>
