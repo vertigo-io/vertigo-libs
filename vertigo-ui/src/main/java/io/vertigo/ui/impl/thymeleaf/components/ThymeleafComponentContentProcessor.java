@@ -1,0 +1,76 @@
+/*
+ * Copyright 2017, Danny Rottstegge
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package io.vertigo.ui.impl.thymeleaf.components;
+
+import java.util.Optional;
+
+import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.model.IModel;
+import org.thymeleaf.processor.element.AbstractElementModelProcessor;
+import org.thymeleaf.processor.element.IElementModelStructureHandler;
+import org.thymeleaf.templatemode.TemplateMode;
+
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
+
+public class ThymeleafComponentContentProcessor extends AbstractElementModelProcessor {
+
+	private static final String CONTENT_TAG_NAME = "content";
+	private static final int PRECEDENCE = 400;
+
+	/**
+	 * Constructor
+	 *
+	 * @param dialectPrefix Dialect prefix (tc)
+	 */
+	public ThymeleafComponentContentProcessor(final String dialectPrefix) {
+		super(TemplateMode.HTML, dialectPrefix, CONTENT_TAG_NAME, true, null, false, PRECEDENCE);
+	}
+
+	private void removeCurrentTag(final IModel model) {
+		model.remove(0);
+		if (model.size() > 0) {
+			model.remove(model.size() - 1);
+		}
+	}
+
+	@Override
+	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
+		final Object content = context.getVariable(ThymeleafComponentNamedElementProcessor.CONTENT_VAR_NAME);
+		Assertion.checkNotNull(content, "'Content' variable missing. For loop use th:each=\"content:contentTags\".");
+		//-----
+		removeCurrentTag(model);
+		final IModel defaultModel = model.cloneModel(); //default is the body of the content tag
+		final IModel mergedModel;
+		if (content instanceof Optional) {
+			final Optional<IModel> contentModel = (Optional<IModel>) content;
+			if (((Optional) content).isPresent()) {
+				//We merge models : ie replace vu:content tag in component fragment by the body of tag in call page
+				mergedModel = contentModel.get();
+			} else {
+				mergedModel = defaultModel; //We use default value (in vu:content tag)
+			}
+		} else if (content instanceof IModel) {
+			//We merge models : ie replace vu:content tag in component fragment by the body of tag in call page
+			mergedModel = (IModel) content;
+		} else {
+			throw new VSystemException("Content variable type not supported ({0})", content.getClass().getName());
+		}
+		model.reset();//we prepared the model to be set
+		model.addModel(mergedModel);
+	}
+}

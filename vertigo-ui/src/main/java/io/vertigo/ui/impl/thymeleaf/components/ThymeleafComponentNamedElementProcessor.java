@@ -18,6 +18,8 @@ package io.vertigo.ui.impl.thymeleaf.components;
 
 import static java.util.Collections.singleton;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,13 +36,13 @@ import org.thymeleaf.engine.AttributeNames;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IAttribute;
 import org.thymeleaf.model.ICloseElementTag;
-import org.thymeleaf.model.IElementTag;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IModelFactory;
 import org.thymeleaf.model.IOpenElementTag;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.model.IStandaloneElementTag;
 import org.thymeleaf.model.ITemplateEvent;
+import org.thymeleaf.model.IText;
 import org.thymeleaf.processor.element.AbstractElementModelProcessor;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
 import org.thymeleaf.standard.StandardDialect;
@@ -53,12 +55,13 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.util.StringUtils;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 
 public class ThymeleafComponentNamedElementProcessor extends AbstractElementModelProcessor {
-
-	private static final String CONTENT_TAG_NAME = "content";
+	private static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";
 	private static final String ATTRS_SUFFIX = "attrs";
-	private final String DIALECT_CONTENT_TAG;
+	private static final String CONTENT_TAGS = "contentTags";
+	public static final String CONTENT_VAR_NAME = "content";
 
 	private static final int PRECEDENCE = 350;
 
@@ -79,14 +82,13 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 	 */
 	public ThymeleafComponentNamedElementProcessor(final String dialectPrefix, final ThymeleafComponent thymeleafComponent) {
 		super(TemplateMode.HTML, dialectPrefix, thymeleafComponent.getName(), true, null, false, PRECEDENCE);
-		DIALECT_CONTENT_TAG = dialectPrefix + ":" + CONTENT_TAG_NAME;
 		componentName = thymeleafComponent.getFragmentTemplate();
 		frag = thymeleafComponent.getFrag();
 
 		selectionExpression = thymeleafComponent.getSelectionExpression();
 		parameterNames = thymeleafComponent.getParameters();
 		placeholderPrefixes = parameterNames.stream()
-				.filter((parameterName) -> parameterName.endsWith("_" + ATTRS_SUFFIX))
+				.filter((parameterName) -> parameterName.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + ATTRS_SUFFIX))
 				.map((parameterName) -> parameterName.substring(0, parameterName.length() - ATTRS_SUFFIX.length()))
 				.collect(Collectors.toList());
 		unnamedPlaceholderPrefix = placeholderPrefixes.isEmpty() ? Optional.empty() : Optional.of(placeholderPrefixes.get(placeholderPrefixes.size() - 1));
@@ -102,28 +104,69 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 
 			final String param = attributes.get("params");
 
-			final IModel componentModel = model.cloneModel();
+			final IModel contentModel = cloneAndCleanModel(model);
 
-			componentModel.remove(0);
-			if (componentModel.size() > 1) {
-				componentModel.remove(componentModel.size() - 1);
+			removeCurrentTag(contentModel);
+
+			if (parameterNames.contains(CONTENT_TAGS)) {
+				structureHandler.setLocalVariable(CONTENT_TAGS, tag instanceof IStandaloneElementTag ? Collections.emptyList() : asList(contentModel));
 			}
+			structureHandler.setLocalVariable(CONTENT_VAR_NAME, tag instanceof IStandaloneElementTag ? Optional.empty() : Optional.ofNullable(contentModel));
 
 			final String fragmentToUse = "~{" + componentName + " :: " + frag + "}";
-			final IModel fragmentModel = FragmentHelper.getFragmentModel(context,
-					fragmentToUse + (param == null ? "" : "(" + param + ")"),
-					structureHandler);
+			final IModel fragmentModel = FragmentHelper.getFragmentModel(context, fragmentToUse + (param == null ? "" : "(" + param + ")"), structureHandler);
 			final IModel replacedFragmentModel = replaceAllAttributeValues(attributes, context, fragmentModel);
 
-			//We merge models : ie replace vu:content tag in component fragment by the body of tag in call page
-			final IModel mergedModel = mergeModels(replacedFragmentModel, componentModel, DIALECT_CONTENT_TAG, tag instanceof IStandaloneElementTag);
 			//We replace the whole model
 			model.reset();
-			model.addModel(mergedModel);
+			model.addModel(replacedFragmentModel);
 
 			processVariables(attributes, context, structureHandler, excludeAttributes);
 		} // else nothing
 
+	}
+
+	private void removeCurrentTag(final IModel model) {
+		model.remove(0);
+		if (model.size() > 1) {
+			model.remove(model.size() - 1);
+		}
+	}
+
+	private static IModel cloneAndCleanModel(final IModel model) {
+		final IModel cleanerModel = model.cloneModel();
+		final int size = cleanerModel.size();
+		for (int i = size - 1; i > 0; i--) { //We loop decreasly for remove by index
+			if (cleanerModel.get(i) instanceof IText) {
+				final IText innerText = (IText) cleanerModel.get(i);
+				if (StringUtil.isEmpty(innerText.getText())) {
+					cleanerModel.remove(i);
+				}
+			}
+		}
+		return cleanerModel;
+	}
+
+	private List<IModel> asList(final IModel componentModel) {
+		final List<IModel> asList = new ArrayList<>();
+		final IModel firstLevelTagModel = componentModel.cloneModel(); //contains each first level tag (and all it's sub-tags)
+		firstLevelTagModel.reset();
+		int tapDepth = 0;
+		for (int i = 0; i < componentModel.size(); i++) {
+			final ITemplateEvent templateEvent = componentModel.get(i);
+			firstLevelTagModel.add(componentModel.get(i));
+			if (templateEvent instanceof IOpenElementTag) {
+				tapDepth++;
+			} else if (templateEvent instanceof ICloseElementTag) {
+				tapDepth--;
+			}
+			if (tapDepth == 0) {
+				//Si on est à la base, on ajout que le model qu'on a préparé, et on reset
+				asList.add(firstLevelTagModel.cloneModel());
+				firstLevelTagModel.reset();
+			}
+		}
+		return asList;
 	}
 
 	private static IProcessableElementTag processElementTag(final ITemplateContext context, final IModel model) {
@@ -200,7 +243,6 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 				}
 			}
 		}
-
 		return attributes;
 	}
 
@@ -233,48 +275,6 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 
 	private static boolean isDynamicAttribute(final String attribute, final String prefix) {
 		return attribute.startsWith(prefix + ":") || attribute.startsWith("data-" + prefix + "-");
-	}
-
-	private static IModel mergeModels(final IModel base, final IModel insert, final String replaceTag, final boolean useDefaultContent) {
-		final IModel mergedModel = base.cloneModel();
-		return replaceTag(mergedModel, replaceTag, useDefaultContent ? Optional.empty() : Optional.of(insert));
-	}
-
-	private static IModel replaceTag(final IModel model, final String tag, final Optional<IModel> replaceTagModel) {
-		final int index = findTagIndex(0, model, tag, IElementTag.class);//Open or standalone
-		if (index > -1) {
-			final int indexEnd = findTagIndex(index, model, tag, ICloseElementTag.class);
-			if (indexEnd > -1) {
-				model.remove(indexEnd);
-			}
-			if (replaceTagModel.isPresent()) {
-				//We remove old body
-				if (indexEnd > -1) {
-					for (int i = indexEnd - 1; i > index; i--) {
-						model.remove(i);
-					}
-				}
-				//We insert new body after content tag (index+1)
-				model.insertModel(index + 1, replaceTagModel.get());
-			} else {
-				//
-			}
-			model.remove(index);
-		}
-		return model;
-	}
-
-	private static int findTagIndex(final int from, final IModel model, final String tagName, final Class<? extends IElementTag> tagClass) {
-		ITemplateEvent event = null;
-		final int size = model.size();
-		for (int i = from; i < size; i++) {
-			event = model.get(i);
-			if (tagClass.isInstance(event)
-					&& ((IElementTag) event).getElementCompleteName().equals(tagName)) {
-				return i;
-			}
-		}
-		return -1;
 	}
 
 	private IModel replaceAllAttributeValues(final Map<String, String> attributes, final ITemplateContext context, final IModel model) {

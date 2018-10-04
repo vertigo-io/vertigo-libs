@@ -1,0 +1,9 @@
+<th:block th:fragment="grid(cols, contentTags)" 
+	th:with="layout='grid', currentColumnCount=0, tableCols=${cols?:2}" >
+	<div class="row" >
+		<th:block th:each="content:${contentTags}">
+			<th:block th:if="${content.get(0).toString().contains('grid-cell')}"><vu:content/></th:block>
+			<div th:class="${'col-'+(12/tableCols)}" th:if="${!content.get(0).toString().contains('grid-cell')}"><vu:content/></div>
+		</th:block>
+	</div>
+</th:block> 
