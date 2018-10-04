@@ -9,11 +9,11 @@
 	<vu:label-edit object="${object}" field="${field}">
 		<q-input th:v-model="|componentStates.${myComponentId}.placeHolder|">
 		  <q-autocomplete
-		  	th:@search="|function (terms, done) { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', terms, done)}|"
+		  	th:@search="|function (terms, done) { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '@{/autocomplete/_searchFullText}' , terms, done)}|"
 		    :min-characters="3"
 		    value-field="label"
 		    th:@selected="|function (item, keyboard) { selectedFunction('${object}', '${field}', item, keyboard)}|"
-		  />
+		  ></q-autocomplete>
 		</q-input>
 	</vu:label-edit>
 	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />

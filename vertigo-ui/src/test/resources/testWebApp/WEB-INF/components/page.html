@@ -27,7 +27,9 @@
 						return { value: object[valueField], label: object[labelField]}
 					});
 				},
-				request ({ pagination, filter }) {
+				request : function (params) {
+					var pagination = params.pagination;
+					var filter = params.filter;
 					var oldPagination = componentStates[pagination.componentId].pagination;
 					if (oldPagination.sortBy != pagination.sortBy ||  oldPagination.descending != pagination.descending ) {
 						// it's a sort order call the server
@@ -53,8 +55,8 @@
 				selectedFunction : function (object, field, item, keyboard) {
 					this.$data.vueData[object][field] = item.value;
 				},
-				searchAutocomplete : function (list, valueField, labelField, terms, done) {
-					this.$http.post("/test/autocomplete/_searchFullText", {terms: terms, list : list , valueField : valueField,labelField : labelField, CTX: this.$data.ctxId}, { emulateJSON: true }).then( function (response ) {
+				searchAutocomplete : function (list, valueField, labelField, url, terms, done) {
+					this.$http.post(url, {terms: terms, list : list , valueField : valueField,labelField : labelField, CTX: this.$data.ctxId}, { emulateJSON: true }).then( function (response ) {
 						var finalList =  response.body.map(function (object) {
 							return { value: object[valueField].toString(), label: object[labelField].toString()}
 						});
@@ -65,7 +67,17 @@
 						done([]);
 					});
 					
-				}
+				},
+				formatDate : function (object, field, newValue, format) {
+					this.$data.vueData[object][field] = Quasar.utils.date.formatDate(newValue, format);
+				},
+				parseDate : function (object, field, format) {
+					var parts = this.$data.vueData[object][field].match(/(\d+)/g);
+					var i=0;
+					var fmt={};
+					format.replace(/(YYYY|MM|DD)/g, function(part) { fmt[part] = i++; });
+					return Quasar.utils.date.buildDate({year :parts[fmt['YYYY']], month :parts[fmt['MM']], date : parts[fmt['DD']]});
+				},
 			  }
 			})
 		</script>

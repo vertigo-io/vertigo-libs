@@ -1,4 +1,4 @@
-<th:block th:fragment="table(list, componentId, selectable, sortUrl)" 
+<th:block th:fragment="table(list, componentId, selectable, sortUrl, tableClass)" 
 	th:with="listSize=${model.vContext[__${list}__].size()}"
 	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')}, objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')}, objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false }, objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {page: 1 , rowsNumber: __${listSize}__, componentId : '__${componentId}__', listKey : '__${list}__', sortUrl : '__${sortUrl}__'})}" >
 	<q-table
@@ -9,11 +9,12 @@
 	    th::selected.sync="|componentStates.${componentId}.selected|"
 	    th::loading="|componentStates.${componentId}.loading|"
 	    th::pagination.sync="|componentStates.${componentId}.pagination|"
+	    th:table-class="${tableClass != null ? tableClass : ''}"
 	    @request="request"
 	  >
 	  	<q-tr slot="body" slot-scope="props" :props="props">
 	  		<q-td th:if="${selectable != null}" auto-width>
-		       <q-checkbox color="primary" v-model="props.selected"  />
+		       <q-checkbox color="primary" v-model="props.selected"  ></q-checkbox>
 		     </q-td>
 			<vu:content></vu:content>
 	  	</q-tr>
