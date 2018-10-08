@@ -100,7 +100,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 				|| (boolean) selectionExpression.get().execute(context)) { //or selector valid
 
 			final IProcessableElementTag tag = processElementTag(context, model);
-			final Map<String, String> attributes = processAttribute(model);
+			final Map<String, String> attributes = processAttribute(model, context, structureHandler);
 
 			final String param = attributes.get("params");
 
@@ -231,9 +231,16 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		}
 	}
 
-	private Map<String, String> processAttribute(final IModel model) {
+	private Map<String, String> processAttribute(final IModel model, final ITemplateContext context, final IElementModelStructureHandler structureHandler) {
 		final ITemplateEvent firstEvent = model.get(0);
 		final Map<String, String> attributes = new HashMap<>();
+
+		final Map<String, String> contentAttrs = (Map<String, String>) context.getVariable("contentAttrs");
+		if (contentAttrs != null && !contentAttrs.isEmpty()) {
+			structureHandler.removeLocalVariable("contentAttrs");
+			attributes.putAll(contentAttrs);
+		}
+
 		if (firstEvent instanceof IProcessableElementTag) {
 			final IProcessableElementTag processableElementTag = (IProcessableElementTag) firstEvent;
 			for (final IAttribute attribute : processableElementTag.getAllAttributes()) {

@@ -16,10 +16,15 @@
 
 package io.vertigo.ui.impl.thymeleaf.components;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.thymeleaf.context.ITemplateContext;
+import org.thymeleaf.model.IAttribute;
 import org.thymeleaf.model.IModel;
+import org.thymeleaf.model.IProcessableElementTag;
+import org.thymeleaf.model.ITemplateEvent;
 import org.thymeleaf.processor.element.AbstractElementModelProcessor;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
 import org.thymeleaf.templatemode.TemplateMode;
@@ -50,6 +55,7 @@ public class ThymeleafComponentContentProcessor extends AbstractElementModelProc
 
 	@Override
 	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
+		final Map<String, String> attributes = processAttribute(model);
 		final Object content = context.getVariable(ThymeleafComponentNamedElementProcessor.CONTENT_VAR_NAME);
 		Assertion.checkNotNull(content, "'Content' variable missing. For loop use th:each=\"content:contentTags\".");
 		//-----
@@ -72,5 +78,19 @@ public class ThymeleafComponentContentProcessor extends AbstractElementModelProc
 		}
 		model.reset();//we prepared the model to be set
 		model.addModel(mergedModel);
+		structureHandler.setLocalVariable("contentAttrs", attributes);
+	}
+
+	private Map<String, String> processAttribute(final IModel model) {
+		final ITemplateEvent firstEvent = model.get(0);
+		final Map<String, String> attributes = new HashMap<>();
+		if (firstEvent instanceof IProcessableElementTag) {
+			final IProcessableElementTag processableElementTag = (IProcessableElementTag) firstEvent;
+			for (final IAttribute attribute : processableElementTag.getAllAttributes()) {
+				final String completeName = attribute.getAttributeCompleteName();
+				attributes.put(completeName, attribute.getValue());
+			}
+		}
+		return attributes;
 	}
 }
