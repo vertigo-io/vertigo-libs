@@ -67,8 +67,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 			final String strValue = getInputValue(keyFieldName);
 			return parseMultipleValue(strValue);
 		} else if (isBoolean(dtField)) {
-			final Boolean value = getTypedValue(keyFieldName, Boolean.class);
-			return value != null ? String.valueOf(value) : null;
+			return getTypedValue(keyFieldName, Boolean.class);
 		} else {
 			return getInputValue(keyFieldName);
 		}

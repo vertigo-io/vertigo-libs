@@ -13,6 +13,8 @@
 			<vu:autocomplete object="movie" field="movId" list="movies" />
 			<vu:radio object="movie" field="movId" list="movies" />
 			<vu:radio object="movie" field="movId" list="movies" layout="horizontal" labelField="movId"/>
+			<vu:checkbox object="oui" field="key" />
+			<vu:checkbox object="non" field="key" />
 			<vu:grid-cell>
 				<input th:if="${!model.modeEdit}" type="submit" value="To Mode Edit" th:formaction="@{/movie/_edit}" />
 				<input th:if="${model.modeEdit}"  type="submit" value="Submit" th:formaction="@{/movie/_save}" />

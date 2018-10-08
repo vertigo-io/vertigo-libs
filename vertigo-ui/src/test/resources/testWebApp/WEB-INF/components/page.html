@@ -77,7 +77,7 @@
 					var fmt={};
 					format.replace(/(YYYY|MM|DD)/g, function(part) { fmt[part] = i++; });
 					return Quasar.utils.date.buildDate({year :parts[fmt['YYYY']], month :parts[fmt['MM']], date : parts[fmt['DD']]});
-				},
+				}
 			  }
 			})
 		</script>

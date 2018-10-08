@@ -12,6 +12,7 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.domain.movies.Movie;
+import io.vertigo.ui.domain.reference.OuiNonChoice;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttribute;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 import io.vertigo.ui.services.movies.MovieServices;
@@ -20,8 +21,10 @@ import io.vertigo.ui.services.movies.MovieServices;
 @RequestMapping("/movie")
 public class MovieController extends AbstractVSpringMvcController {
 
-	private static final ViewContextKey<Movie> movieKey = ViewContextKey.of("movie");
-	private static final ViewContextKey<Movie> moviesKey = ViewContextKey.of("movies");
+	private final ViewContextKey<Movie> movieKey = ViewContextKey.of("movie");
+	private final ViewContextKey<OuiNonChoice> ouiKey = ViewContextKey.of("oui");
+	private final ViewContextKey<OuiNonChoice> nonKey = ViewContextKey.of("non");
+	private final ViewContextKey<Movie> moviesKey = ViewContextKey.of("movies");
 
 	@Autowired
 	private MovieServices movieServices;
@@ -30,6 +33,12 @@ public class MovieController extends AbstractVSpringMvcController {
 	public void initContext(final ViewContext viewContext, @RequestParam("movId") final Long movId) {
 		final Movie movie = movieServices.get(movId);
 		viewContext.publishDto(movieKey, movie);
+		final OuiNonChoice oui = new OuiNonChoice();
+		oui.setKey(Boolean.TRUE);
+		final OuiNonChoice non = new OuiNonChoice();
+		non.setKey(Boolean.FALSE);
+		viewContext.publishDto(ouiKey, oui);
+		viewContext.publishDto(nonKey, non);
 		viewContext.publishDtList(moviesKey, movieServices.getMovies(new DtListState(200, 0, null, null)));
 	}
 

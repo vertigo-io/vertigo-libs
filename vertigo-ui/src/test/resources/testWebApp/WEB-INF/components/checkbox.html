@@ -1,0 +1,20 @@
+<th:block th:fragment="checkbox-edit(object,field)" vu:alias="checkbox" vu:selector="${viewMode=='edit'}" 
+	  th:assert="${object} != null and ${field} != null">
+	<vu:include-data object="${object}" field="${field}"/>
+	<vu:label-edit object="${object}" field="${field}">
+		<q-checkbox 
+			th:v-model="|vueData.${object}.${field}|"  >
+		</q-checkbox>
+	</vu:label-edit>
+	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
+</th:block> 
+
+<th:block th:fragment="checkbox-read(object,field)" vu:alias="checkbox" vu:selector="${viewMode=='read'}" >
+	<vu:include-data object="${object}" field="${field}"/>
+	<vu:label-read object="${object}" field="${field}">
+		<q-checkbox 
+			readonly="true"
+			th:v-model="|vueData.${object}.${field}|"  >
+		</q-checkbox>
+	</vu:label-read>
+</th:block>
