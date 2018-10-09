@@ -147,23 +147,24 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		return cleanerModel;
 	}
 
-	private List<IModel> asList(final IModel componentModel) {
-		final List<IModel> asList = new ArrayList<>();
-		final IModel firstLevelTagModel = componentModel.cloneModel(); //contains each first level tag (and all it's sub-tags)
-		firstLevelTagModel.reset();
+	private List<ThymeleafContentComponent> asList(final IModel componentModel) {
+		final List<ThymeleafContentComponent> asList = new ArrayList<>();
+		final IModel buildingModel = componentModel.cloneModel(); //contains each first level tag (and all it's sub-tags)
+		buildingModel.reset();
 		int tapDepth = 0;
 		for (int i = 0; i < componentModel.size(); i++) {
 			final ITemplateEvent templateEvent = componentModel.get(i);
-			firstLevelTagModel.add(componentModel.get(i));
+			buildingModel.add(templateEvent);
 			if (templateEvent instanceof IOpenElementTag) {
 				tapDepth++;
 			} else if (templateEvent instanceof ICloseElementTag) {
 				tapDepth--;
 			}
 			if (tapDepth == 0) {
-				//Si on est à la base, on ajout que le model qu'on a préparé, et on reset
-				asList.add(firstLevelTagModel.cloneModel());
-				firstLevelTagModel.reset();
+				//Si on est à la base, on ajout que le model qu'on a préparé, on le close et on reset pour la boucle suivante
+				final IModel firstLevelTagModel = buildingModel.cloneModel();
+				asList.add(new ThymeleafContentComponent(firstLevelTagModel));
+				buildingModel.reset();
 			}
 		}
 		return asList;

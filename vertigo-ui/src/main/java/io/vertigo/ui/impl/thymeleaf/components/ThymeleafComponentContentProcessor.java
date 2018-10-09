@@ -70,9 +70,9 @@ public class ThymeleafComponentContentProcessor extends AbstractElementModelProc
 			} else {
 				mergedModel = defaultModel; //We use default value (in vu:content tag)
 			}
-		} else if (content instanceof IModel) {
+		} else if (content instanceof ThymeleafContentComponent) {
 			//We merge models : ie replace vu:content tag in component fragment by the body of tag in call page
-			mergedModel = (IModel) content;
+			mergedModel = ((ThymeleafContentComponent) content).getModel();
 		} else {
 			throw new VSystemException("Content variable type not supported ({0})", content.getClass().getName());
 		}
