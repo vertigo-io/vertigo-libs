@@ -205,15 +205,22 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			if (excludeAttr.contains(entry.getKey()) || isDynamicAttribute(entry.getKey(), getDialectPrefix())) {
 				continue;
 			}
-			String attributeValue = entry.getValue();
-			if (attributeValue == null) {
-				attributeValue = "${true}";
-			}
+			final Object attributeValue = encodeAttributeValue(entry.getValue());
 			processWith(context, entry.getKey() + "=" + attributeValue, structureHandler, placeholders);
 		}
 
 		//we set placeholders as localvariables (inner components shouldn't affect these in case of name conflict)
 		setLocalPlaceholderVariables(structureHandler, placeholders);
+	}
+
+	private static Object encodeAttributeValue(final Object attributeValue) {
+		if (attributeValue == null) {
+			return "${true}";
+		} else if (attributeValue instanceof String
+				&& ((String) attributeValue).matches("^[a-zA-Z]+[^$#|]*")) {
+			return "'" + attributeValue + "'";
+		}
+		return attributeValue;
 	}
 
 	private void setLocalPlaceholderVariables(final IElementModelStructureHandler structureHandler, final Map<String, Map<String, Object>> placeholders) {
@@ -258,7 +265,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		for (final String placeholderPrefix : placeholderPrefixes) {
 			if (prefixedVariableName.startsWith(placeholderPrefix)) {
 				final String attributeName = prefixedVariableName.substring(placeholderPrefix.length());
-				addPlaceholderVariable(placeholders, placeholderPrefix, attributeName, value);
+				addPlaceholderVariable(placeholders, placeholderPrefix, attributeName, encodeAttributeValue(value));
 			}
 		}
 	}
@@ -269,7 +276,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			previousPlaceholderValues = new HashMap<>();
 			placeholders.put(placeholderPrefix + ATTRS_SUFFIX, previousPlaceholderValues);
 		}
-		previousPlaceholderValues.put(attributeName, value);
+		previousPlaceholderValues.put(attributeName, encodeAttributeValue(value));
 	}
 
 	private boolean isPlaceholder(final String prefixedVariableName) {
@@ -400,7 +407,6 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			if (engineContext != null) {
 				// The advantage of this vs. using the structure handler is that we will be able to
 				// use this newly created value in other expressions in the same 'th:with'
-				//engineContext.setVariable(newVariableName, rightValue);
 				engineContext.setVariable(newVariableName, rightValue);
 			} else {
 				// The problem is, these won't be available until we execute the next processor
