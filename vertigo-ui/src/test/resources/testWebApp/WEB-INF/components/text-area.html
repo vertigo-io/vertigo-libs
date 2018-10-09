@@ -20,7 +20,7 @@
 	<vu:label-read th:attr="__${label_attrs}__">
 		<q-input 
 			type="textarea"
-			readonly="true"
+			:readonly="true"
 			th:v-model="${'vueData.' + object + '.' + field}" 
 			th:name="${'vContext['+object+']['+ field +']'}"
 			th:attr="__${input_attrs}__"

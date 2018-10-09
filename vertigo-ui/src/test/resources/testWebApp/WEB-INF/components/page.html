@@ -24,7 +24,7 @@
 			  methods: {
 				transformListForSelection: function (list, valueField, labelField) {
 					return this.$data.vueData[list].map(function (object) {
-						return { value: object[valueField], label: object[labelField]}
+						return { value: object[valueField], label: object[labelField].toString()} // a label is always a string
 					});
 				},
 				request : function (params) {
@@ -58,7 +58,7 @@
 				searchAutocomplete : function (list, valueField, labelField, url, terms, done) {
 					this.$http.post(url, {terms: terms, list : list , valueField : valueField,labelField : labelField, CTX: this.$data.ctxId}, { emulateJSON: true }).then( function (response ) {
 						var finalList =  response.body.map(function (object) {
-							return { value: object[valueField].toString(), label: object[labelField].toString()}
+							return { value: object[valueField], label: object[labelField].toString()} // a label is always a string
 						});
 						done(finalList);
 					}, 

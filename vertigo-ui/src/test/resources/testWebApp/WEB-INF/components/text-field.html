@@ -14,7 +14,6 @@
 <th:block th:fragment="text-field-read(object, field, label_attrs, input_attrs)" 
 	vu:alias="text-field" vu:selector="${viewMode=='read'}"
 	th:assert="${object} != null and ${field} != null" >
-	<vu:include-data object="${object}" field="${field}"/>
 	<vu:label-read th:attr="__${label_attrs}__">
 		<span th:text="${model.vContext[__${object}__][__${field}__]}" th:attr="__${input_attrs}__"></span>
 	</vu:label-read>

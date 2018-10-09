@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -67,7 +68,8 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 			final String strValue = getInputValue(keyFieldName);
 			return parseMultipleValue(strValue);
 		} else if (isBoolean(dtField)) {
-			return getTypedValue(keyFieldName, Boolean.class);
+			final Boolean value = getTypedValue(keyFieldName, Boolean.class);
+			return value != null ? String.valueOf(value) : null;
 		} else {
 			return getInputValue(keyFieldName);
 		}
@@ -111,6 +113,10 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 
 	private static boolean isBoolean(final DtField dtField) {
 		return dtField.getDomain().getDataType() == DataType.Boolean;
+	}
+
+	private static boolean isAboutDate(final DtField dtField) {
+		return dtField.getDomain().getDataType().isAboutDate();
 	}
 
 	/** {@inheritDoc} */
@@ -185,8 +191,48 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		}
 		final HashMap<String, Serializable> mapForClient = new HashMap<>(filterSet.size());
 		filterSet
-				.forEach(key -> mapForClient.put(key, get(key)));
+				.forEach(key -> mapForClient.put(key, getValueForClient(key)));
 		return mapForClient;
 
+	}
+
+	private Serializable getValueForClient(final String fieldKey) {
+		final boolean hasFormatModifier = fieldKey.endsWith("_fmt");
+		final String fieldName = hasFormatModifier ? fieldKey.substring(0, fieldKey.length() - "_fmt".length()) : fieldKey;
+		//--- if error
+		if (hasFormatError(fieldName)) {
+			return getInputValue(fieldName);
+		}
+		//--- good data
+		if (hasFormatModifier) {
+			return getFormattedValue(fieldName);
+		}
+		return getEncodedValue(fieldName);
+
+	}
+
+	private Serializable getEncodedValue(final String key) {
+		final String keyFieldName = String.class.cast(key);
+		Assertion.checkArgNotEmpty(keyFieldName);
+		Assertion.checkArgument(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
+		//-----
+		if (hasFormatError(keyFieldName)) {
+			return getInputValue(keyFieldName);
+		}
+		//---
+		final DtField dtField = getDtField(keyFieldName);
+		if (isAboutDate(dtField)) {
+			final Serializable value = getTypedValue(keyFieldName, Serializable.class);
+			final Domain domain = dtField.getDomain();
+			return domain.valueToString(value);// encodeValue
+		}
+		return getTypedValue(keyFieldName, Serializable.class);
+	}
+
+	private String getFormattedValue(final String keyFieldName) {
+
+		final DtField dtField = getDtField(keyFieldName);
+		final Serializable typedValue = getEncodedValue(keyFieldName);
+		return typedValue != null ? dtField.getDomain().valueToString(typedValue) : null;
 	}
 }

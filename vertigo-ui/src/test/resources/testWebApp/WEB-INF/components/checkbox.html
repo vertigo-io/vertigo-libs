@@ -13,7 +13,7 @@
 	<vu:include-data object="${object}" field="${field}"/>
 	<vu:label-read object="${object}" field="${field}">
 		<q-checkbox 
-			readonly="true"
+			:readonly="true"
 			th:v-model="|vueData.${object}.${field}|"  >
 		</q-checkbox>
 	</vu:label-read>
