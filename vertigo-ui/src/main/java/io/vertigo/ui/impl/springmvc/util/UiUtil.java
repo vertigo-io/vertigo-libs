@@ -26,6 +26,7 @@ import org.springframework.ui.Model;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.lang.Assertion;
@@ -87,6 +88,35 @@ public final class UiUtil implements Serializable {
 			return DEFAULT_FORMATTER.valueToString(value, DataType.Boolean);
 		}
 		return getDtField(fieldPath).getDomain().valueToString(value);
+	}
+
+	public static Double getMinValue(final String fieldPath) {
+		return getDtField(fieldPath).getDomain().getProperties().getValue(DtProperty.MIN_VALUE);
+	}
+
+	public static Double getMaxValue(final String fieldPath) {
+		return getDtField(fieldPath).getDomain().getProperties().getValue(DtProperty.MAX_VALUE);
+	}
+
+	public static Double getStep(final Double minValue, final Double maxValue) {
+		Assertion.checkNotNull(minValue);
+		Assertion.checkNotNull(maxValue);
+		Assertion.checkState(maxValue > minValue, "Unable to calculate step : maxValue '{0}' must be superior to minValue '{1}'", maxValue, minValue);
+		//---
+		final Double rawStep = (maxValue - minValue) / 200; // we allow at max 200 possible values
+
+		final double index = Math.floor(Math.log10(rawStep));
+		final double step = Math.pow(10, index);
+		if (rawStep <= step) {
+			return step;
+		} else if (rawStep <= 2 * step) {
+			return 2 * step;
+		} else if (rawStep <= 5 * step) {
+			return 5 * step;
+		} else {
+			return 10 * step;
+		}
+
 	}
 
 	/**

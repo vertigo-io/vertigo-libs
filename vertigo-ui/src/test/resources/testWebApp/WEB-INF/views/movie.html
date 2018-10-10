@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:vu="http://www.morphbit.com/thymeleaf/component">
 <vu:page title="Movie Detail" >
+	<div class="row justify-center"  >
+		<div class="col-6  " >
 	<vu:form>		
 		<vu:grid cols="3">
 			<vu:text-field object="movie" field="movId"/>
 			<vu:text-field object="movie" field="title" />
 			<vu:text-field object="movie" field="year" />
+			<vu:slider object="movie" field="year" />
 			<vu:select object="movie" field="movId" list="movies" />
 			<vu:grid-cell>
 				<vu:text-field object="movie" field="title"/>
@@ -22,5 +25,7 @@
 			</vu:grid-cell>
 		</vu:grid>
 	</vu:form>
+	</div>
+	</div>
  </vu:page>
 </html>

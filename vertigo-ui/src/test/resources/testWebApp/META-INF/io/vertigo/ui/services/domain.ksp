@@ -46,6 +46,7 @@ create Domain DO_LAST_MODIFIED {
 create Domain DO_YEAR {
 	dataType : Integer
 	formatter : FMT_DEFAULT
+	constraint : [CK_MIN_VALUE_1500, CK_MAX_VALUE_2500]
 	storeType : "NUMERIC"
 }
 
@@ -260,9 +261,19 @@ create Constraint CK_MIN_VALUE_0 {
 	args :"0"
 }
 
+create Constraint CK_MIN_VALUE_1500 {
+	className: "io.vertigo.dynamox.domain.constraint.ConstraintNumberMinimum"
+	args :"1500"
+}
+
 create Constraint CK_MAX_VALUE_100 {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintNumberMaximum"
 	args :"100"
+}
+
+create Constraint CK_MAX_VALUE_2500 {
+	className: "io.vertigo.dynamox.domain.constraint.ConstraintNumberMaximum"
+	args :"2500"
 }
 
 /*
