@@ -205,8 +205,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			if (excludeAttr.contains(entry.getKey()) || isDynamicAttribute(entry.getKey(), getDialectPrefix())) {
 				continue;
 			}
-			final Object attributeValue = encodeAttributeValue(entry.getValue());
-			processWith(context, entry.getKey() + "=" + attributeValue, structureHandler, placeholders);
+			processWith(context, entry.getKey(), entry.getValue(), structureHandler, placeholders);
 		}
 
 		//we set placeholders as localvariables (inner components shouldn't affect these in case of name conflict)
@@ -217,10 +216,19 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		if (attributeValue == null) {
 			return "${true}";
 		} else if (attributeValue instanceof String
+				&& !((String) attributeValue).equalsIgnoreCase("true")
+				&& !((String) attributeValue).equalsIgnoreCase("false")
 				&& ((String) attributeValue).matches("^[a-zA-Z]+[^$#|]*")) {
 			return "'" + attributeValue + "'";
 		}
 		return attributeValue;
+	}
+
+	private static String encodeAttributeName(final String attributeName) {
+		if (attributeName.matches("^[^a-zA-Z].*")) {
+			return "'" + attributeName + "'";
+		}
+		return attributeName;
 	}
 
 	private void setLocalPlaceholderVariables(final IElementModelStructureHandler structureHandler, final Map<String, Map<String, Object>> placeholders) {
@@ -265,7 +273,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		for (final String placeholderPrefix : placeholderPrefixes) {
 			if (prefixedVariableName.startsWith(placeholderPrefix)) {
 				final String attributeName = prefixedVariableName.substring(placeholderPrefix.length());
-				addPlaceholderVariable(placeholders, placeholderPrefix, attributeName, encodeAttributeValue(value));
+				addPlaceholderVariable(placeholders, placeholderPrefix, encodeAttributeName(attributeName), encodeAttributeValue(value));
 			}
 		}
 	}
@@ -359,58 +367,59 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		return null;
 	}
 
-	private void processWith(final ITemplateContext context, final String attributeValue, final IElementModelStructureHandler structureHandler, final Map<String, Map<String, Object>> placeholders) {
+	private void processWith(final ITemplateContext context, final String attributeKey, final Object attributeValue, final IElementModelStructureHandler structureHandler, final Map<String, Map<String, Object>> placeholders) {
+		Assertion.checkArgNotEmpty(attributeKey, "Variable name can't be null or empty");
+		//-----
+		if (isPlaceholder(attributeKey)) {
+			//We prepared prefixed placeholders variables.
+			addPlaceholderVariable(placeholders, attributeKey, attributeValue);
+		} else if (!parameterNames.contains(attributeKey)) {
+			Assertion.checkState(unnamedPlaceholderPrefix.isPresent(), "Component '{0}' can't accept this parameter : '{1}' (accepted params : {2})", componentName, attributeKey, parameterNames);
+			//We prepared unnamed placeholder variable
+			addPlaceholderVariable(placeholders, unnamedPlaceholderPrefix.get(), attributeKey, attributeValue);
+		} else {
 
-		final AssignationSequence assignations = AssignationUtils.parseAssignationSequence(context, attributeValue, false /* no parameters without value */);
-		if (assignations == null) {
-			throw new TemplateProcessingException("Could not parse value as attribute assignations: \"" + attributeValue + "\"");
-		}
-
-		// Normally we would just allow the structure handler to be in charge of declaring the local variables
-		// by using structureHandler.setLocalVariable(...) but in this case we want each variable defined at an
-		// expression to be available for the next expressions, and that forces us to cast our ITemplateContext into
-		// a more specific interface --which shouldn't be used directly except in this specific, special case-- and
-		// put the local variables directly into it.
-		IEngineContext engineContext = null;
-		if (context instanceof IEngineContext) {
-			// NOTE this interface is internal and should not be used in users' code
-			engineContext = (IEngineContext) context;
-		}
-
-		final List<Assignation> assignationValues = assignations.getAssignations();
-		final int assignationValuesLen = assignationValues.size();
-
-		for (int i = 0; i < assignationValuesLen; i++) {
-
-			final Assignation assignation = assignationValues.get(i);
-
-			final IStandardExpression leftExpr = assignation.getLeft();
-			final Object leftValue = leftExpr.execute(context);
-
-			final String newVariableName = leftValue == null ? null : leftValue.toString();
-			if (StringUtils.isEmptyOrWhitespace(newVariableName)) {
-				throw new TemplateProcessingException("Variable name expression evaluated as null or empty: \"" + leftExpr + "\"");
+			// Normally we would just allow the structure handler to be in charge of declaring the local variables
+			// by using structureHandler.setLocalVariable(...) but in this case we want each variable defined at an
+			// expression to be available for the next expressions, and that forces us to cast our ITemplateContext into
+			// a more specific interface --which shouldn't be used directly except in this specific, special case-- and
+			// put the local variables directly into it.
+			IEngineContext engineContext = null;
+			if (context instanceof IEngineContext) {
+				// NOTE this interface is internal and should not be used in users' code
+				engineContext = (IEngineContext) context;
 			}
 
-			final IStandardExpression rightExpr = assignation.getRight();
-			final Object rightValue = rightExpr.execute(context);
-
-			if (isPlaceholder(newVariableName)) {
-				//We prepared prefixed placeholders variables.
-				addPlaceholderVariable(placeholders, newVariableName, rightValue);
-			} else if (!parameterNames.contains(newVariableName)) {
-				Assertion.checkState(unnamedPlaceholderPrefix.isPresent(), "Component '{0}' can't accept this parameter : '{1}' (accepted params : {2})", componentName, newVariableName, parameterNames);
-				//We prepared unnamed placeholder variable
-				addPlaceholderVariable(placeholders, unnamedPlaceholderPrefix.get(), newVariableName, rightValue);
+			final Object encodedAttributeValue = encodeAttributeValue(attributeValue);
+			final AssignationSequence assignations = AssignationUtils.parseAssignationSequence(context, attributeKey + "=" + encodedAttributeValue, false /* no parameters without value */);
+			if (assignations == null) {
+				throw new TemplateProcessingException("Could not parse value as attribute assignations: \"" + attributeKey + "=" + encodedAttributeValue + "\"");
 			}
+			final List<Assignation> assignationValues = assignations.getAssignations();
+			final int assignationValuesLen = assignationValues.size();
 
-			if (engineContext != null) {
-				// The advantage of this vs. using the structure handler is that we will be able to
-				// use this newly created value in other expressions in the same 'th:with'
-				engineContext.setVariable(newVariableName, rightValue);
-			} else {
-				// The problem is, these won't be available until we execute the next processor
-				structureHandler.setLocalVariable(newVariableName, rightValue);
+			for (int i = 0; i < assignationValuesLen; i++) {
+
+				final Assignation assignation = assignationValues.get(i);
+
+				final IStandardExpression leftExpr = assignation.getLeft();
+				final Object leftValue = leftExpr.execute(context);
+
+				final String newVariableName = leftValue == null ? null : leftValue.toString();
+				if (StringUtils.isEmptyOrWhitespace(newVariableName)) {
+					throw new TemplateProcessingException("Variable name expression evaluated as null or empty: \"" + leftExpr + "\"");
+				}
+
+				final IStandardExpression rightExpr = assignation.getRight();
+				final Object rightValue = rightExpr.execute(context);
+				if (engineContext != null) {
+					// The advantage of this vs. using the structure handler is that we will be able to
+					// use this newly created value in other expressions in the same 'th:with'
+					engineContext.setVariable(newVariableName, rightValue);
+				} else {
+					// The problem is, these won't be available until we execute the next processor
+					structureHandler.setLocalVariable(newVariableName, rightValue);
+				}
 			}
 		}
 	}
