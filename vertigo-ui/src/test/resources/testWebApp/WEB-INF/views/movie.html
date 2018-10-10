@@ -4,12 +4,12 @@
 	<div class="row justify-center"  >
 		<div class="col-6  " >
 	<vu:form>		
-			<vu:include-data object="movie" field="lastModified"/>
 		<vu:grid cols="3">
 			<vu:text-field object="movie" field="movId"/>
 			<vu:text-field object="movie" field="title" />
 			<vu:text-field object="movie" field="year" />
 			<vu:slider object="movie" field="year" :snap="true" />
+			<vu:knob object="movie" field="year" />
 			<vu:select object="movie" field="movId" list="movies" />
 			<vu:grid-cell>
 				<vu:text-field object="movie" field="title"/>
