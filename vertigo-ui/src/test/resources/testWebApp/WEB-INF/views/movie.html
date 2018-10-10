@@ -9,13 +9,13 @@
 			<vu:text-field object="movie" field="title" />
 			<vu:text-field object="movie" field="year" />
 			<vu:slider object="movie" field="year" :snap="true" />
-			<vu:knob object="movie" field="year" />
+			<vu:knob object="movie" field="year" readonly />
 			<vu:select object="movie" field="movId" list="movies" />
 			<vu:grid-cell>
 				<vu:text-field object="movie" field="title"/>
 			</vu:grid-cell>
 			<vu:date object="movie" field="released"  />
-			<vu:text-field object="movie" field="lastModified" />
+			<vu:datetime object="movie" field="lastModified" />
 			<vu:autocomplete object="movie" field="movId" list="movies" />
 			<vu:radio object="movie" field="movId" list="movies" layout="horizontal" labelField="movId"/>
 			<vu:radio object="movie" field="movId" list="movies" />
