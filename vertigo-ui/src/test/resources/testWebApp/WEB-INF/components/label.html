@@ -6,6 +6,7 @@
 		th::error="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__')}"
 		th:error-label="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__') ? uiMessageStack.objectFieldErrors[__${object}__][__${field}__] : ''}"
 		th::warning="${uiMessageStack.hasFieldWarnings('__${object}__', '__${field}__')}"
+		orientation="vertical"
 		th:attr="__${other_attrs}__"
 		>
 		 <vu:content/>
@@ -17,6 +18,7 @@
 	<q-field
 		th::label-width="${overridedLabelWidth?:3}"
 		th:label="${model.util.label(object + '.' + field)}"
+		orientation="vertical"
 		th:attr="__${other_attrs}__"
 		>
 		<vu:content/>
