@@ -284,7 +284,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			previousPlaceholderValues = new HashMap<>();
 			placeholders.put(placeholderPrefix + ATTRS_SUFFIX, previousPlaceholderValues);
 		}
-		previousPlaceholderValues.put(attributeName, encodeAttributeValue(value));
+		previousPlaceholderValues.put(encodeAttributeName(attributeName), encodeAttributeValue(value));
 	}
 
 	private boolean isPlaceholder(final String prefixedVariableName) {
