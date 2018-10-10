@@ -25,6 +25,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Calendar;
 
 import javax.inject.Inject;
@@ -125,6 +126,7 @@ public class DataBaseInitializer implements ComponentInitializer {
 		movie.setRuntime(runtime);
 		movie.setPoster(poster);
 		movie.setDescription(description);
+		movie.setLastModified(Instant.now());
 		return movie;
 	}
 }

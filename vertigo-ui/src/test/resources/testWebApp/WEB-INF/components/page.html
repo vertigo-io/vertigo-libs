@@ -77,6 +77,16 @@
 					var fmt={};
 					format.replace(/(YYYY|MM|DD)/g, function(part) { fmt[part] = i++; });
 					return Quasar.utils.date.buildDate({year :parts[fmt['YYYY']], month :parts[fmt['MM']], date : parts[fmt['DD']]});
+				},
+				formatDateTime : function (object, field, newValue, format) {
+					this.$data.vueData[object][field] = Quasar.utils.date.formatDate(newValue, format);
+				},
+				parseDateTime : function (object, field, format) {
+					var parts = this.$data.vueData[object][field].match(/(\d+)/g);
+					var i=0;
+					var fmt={};
+					format.replace(/(YYYY|MM|DD|HH|mm)/g, function(part) { fmt[part] = i++; });
+					return Quasar.utils.date.buildDate({year :parts[fmt['YYYY']], month :parts[fmt['MM']], date : parts[fmt['DD']], date : parts[fmt['DD']], hours : parts[fmt['HH']], minutes : parts[fmt['mm']]});
 				}
 			  }
 			})

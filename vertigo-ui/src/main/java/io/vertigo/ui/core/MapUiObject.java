@@ -31,9 +31,11 @@ import java.util.stream.Collectors;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.ui.core.encoders.EncoderDate;
 import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 
 /**
@@ -83,14 +85,22 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		Assertion.checkState(value instanceof String || value instanceof String[], "Les données saisies doivent être de type String ou String[] ({0} : {1})", fieldName, value.getClass());
 		//-----
 		final DtField dtField = getDtField(fieldName);
-		final String strValue;
+		String strValue;
 		if (isMultiple(dtField)) {
 			strValue = formatMultipleValue((String[]) value);
+		} else if (isAboutDate(dtField)) {
+			strValue = requestParameterToString(value);
+			try {
+				final Object typedValue = EncoderDate.stringToValue(strValue, dtField.getDomain().getDataType());
+				strValue = dtField.getDomain().valueToString(typedValue);// we fall back in the normal case if everything is right -> go to formatter
+			} catch (final FormatterException e) {
+				// do nothing we keep the input value
+			}
 		} else {
 			strValue = requestParameterToString(value);
 		}
 		setInputValue(fieldName, strValue);
-		return null;// TODO voir comment faire autrement
+		return null;
 	}
 
 	private static String requestParameterToString(final Serializable value) {
@@ -224,7 +234,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		if (isAboutDate(dtField)) {
 			final Serializable value = getTypedValue(keyFieldName, Serializable.class);
 			final Domain domain = dtField.getDomain();
-			return domain.valueToString(value);// encodeValue
+			return EncoderDate.valueToString(value, domain.getDataType());// encodeValue
 		}
 		return getTypedValue(keyFieldName, Serializable.class);
 	}

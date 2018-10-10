@@ -51,7 +51,7 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 			"page", "head", "form", //layout components
 			"label", "text-field", "text-area", "checkbox", "slider", //standard controls components
 			"select", "radio", //select controls components
-			"autocomplete", "date", //with client-worflow controls components
+			"autocomplete", "date", "datetime", //with client-worflow controls components
 			"table", "column", //table
 			"grid", "grid-cell", //grid
 	};

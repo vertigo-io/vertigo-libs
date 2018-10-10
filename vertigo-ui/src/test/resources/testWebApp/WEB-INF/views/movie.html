@@ -4,16 +4,18 @@
 	<div class="row justify-center"  >
 		<div class="col-6  " >
 	<vu:form>		
+			<vu:include-data object="movie" field="lastModified"/>
 		<vu:grid cols="3">
 			<vu:text-field object="movie" field="movId"/>
 			<vu:text-field object="movie" field="title" />
 			<vu:text-field object="movie" field="year" />
-			<vu:slider object="movie" field="year" />
+			<vu:slider object="movie" field="year" :snap="true" />
 			<vu:select object="movie" field="movId" list="movies" />
 			<vu:grid-cell>
 				<vu:text-field object="movie" field="title"/>
 			</vu:grid-cell>
 			<vu:date object="movie" field="released"  />
+			<vu:text-field object="movie" field="lastModified" />
 			<vu:autocomplete object="movie" field="movId" list="movies" />
 			<vu:radio object="movie" field="movId" list="movies" layout="horizontal" labelField="movId"/>
 			<vu:radio object="movie" field="movId" list="movies" />
