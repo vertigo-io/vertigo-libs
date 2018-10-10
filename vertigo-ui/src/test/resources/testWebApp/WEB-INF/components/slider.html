@@ -14,6 +14,7 @@
 		>
 		</q-slider>
 	</vu:label-edit>
+	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
 </th:block>
 <th:block th:fragment="slider-read(object, field, min, max, step, label_attrs, input_attrs)" 
 	vu:alias="slider" vu:selector="${viewMode=='read'}"
