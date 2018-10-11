@@ -126,6 +126,7 @@ create table MOVIE
     TITLE       	 VARCHAR(250)	,
     YEAR        	 NUMERIC     	,
     LAST_MODIFIED  	 TIMESTAMP		,
+    TAGS		 	 TEXT        	,
     constraint PK_MOVIE primary key (MOV_ID)
 );
 

@@ -11,6 +11,12 @@ create Domain DO_ACTIF {
 	storeType : "BOOLEAN"
 }
 
+create Domain DO_MULTIPLE_IDS {
+	dataType : String
+	formatter : FMT_DEFAULT
+    storeType : "TEXT"
+}
+
 create Domain DO_OUI_NON {
 	dataType : Boolean
 	formatter : FMT_OUI_NON

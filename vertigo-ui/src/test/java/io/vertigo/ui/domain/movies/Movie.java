@@ -42,6 +42,7 @@ public final class Movie implements KeyConcept {
 	private String description;
 	private String poster;
 	private String rated;
+	private String tags;
 	private Instant lastModified;
 
 	/** {@inheritDoc} */
@@ -200,6 +201,15 @@ public final class Movie implements KeyConcept {
 	 */
 	public void setRated(final String rated) {
 		this.rated = rated;
+	}
+
+	@Field(domain = "DO_MULTIPLE_IDS", label = "Tags")
+	public String getTags() {
+		return tags;
+	}
+
+	public void setTags(final String tags) {
+		this.tags = tags;
 	}
 
 	/**
