@@ -1,0 +1,4 @@
+<th:block th:fragment="button-submit(label, action, button_attrs)"
+	  th:assert="${label} != null and ${action} != null">
+	<q-btn type="submit" th:label="${label}"  th:formaction="${action}" th:attr="__${button_attrs}__"></q-btn>
+</th:block> 

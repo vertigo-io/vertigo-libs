@@ -23,8 +23,9 @@
 					<vu:text-field object="movie" field="title" />
 					<vu:chips-autocomplete object="movie" field="tags" list="movies" />
 					<vu:grid-cell>
-						<input th:if="${!model.modeEdit}" type="submit" value="To Mode Edit" th:formaction="@{/movie/_edit}" />
-						<input th:if="${model.modeEdit}"  type="submit" value="Submit" th:formaction="@{/movie/_save}" />
+						<vu:button-submit th:if="${!model.modeEdit}" label="Edit" action="@{/movie/_edit}" color="primary"/>
+						<vu:button-submit th:if="${model.modeEdit}"  label="Save" action="@{/movie/_save}" color="primary" />
+						<a th:href="@{/movies/}" >Movies</a>
 					</vu:grid-cell>
 				</vu:grid>
 			</vu:form>

@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:vu="http://www.morphbit.com/thymeleaf/component">
 <vu:page title="'Movie Detail'" >
-	<vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}">
+	<div v-cloak>
+	<vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}" >
 		<vu:column field="movId" >
-			id : {{props.row.movId}}
+			<a th::href="|'@{/movie/}?movId='+props.row.movId|" >{{props.row.movId}}</a>
 		</vu:column>
 		<vu:column field="title" sortable="true" />
 		<vu:column name="tata" label="Tata">
 			another column  : {{props.row.movId}} : {{props.row.title}}
 		</vu:column>
 	</vu:table>
+	
 	<vu:table list="movies" componentId="movieTable2" selectable="true" sortUrl="@{/movies/_sort}">
 		<vu:column field="movId" />
 		<vu:column field="title" sortable="true" />
 	</vu:table>
+	</div>
  </vu:page>
 </body>
 </html>

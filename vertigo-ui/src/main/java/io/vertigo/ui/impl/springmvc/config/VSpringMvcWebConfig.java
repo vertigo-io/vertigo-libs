@@ -54,6 +54,7 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 			"autocomplete", "date", "datetime", "chips-autocomplete", //with client-worflow controls components
 			"table", "column", //table
 			"grid", "grid-cell", //grid
+			"button-submit", //buttons
 	};
 
 	/*
