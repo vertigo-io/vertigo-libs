@@ -11,6 +11,7 @@
 			th::step="${myStep}"
 			th:attr="__${input_attrs}__"
 		>
+		<vu:content/>
 		</q-knob>
 	</vu:label-edit>
 	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />

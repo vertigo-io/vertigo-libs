@@ -36,6 +36,7 @@ import org.thymeleaf.engine.AttributeNames;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IAttribute;
 import org.thymeleaf.model.ICloseElementTag;
+import org.thymeleaf.model.IElementTag;
 import org.thymeleaf.model.IModel;
 import org.thymeleaf.model.IModelFactory;
 import org.thymeleaf.model.IOpenElementTag;
@@ -61,7 +62,6 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 	private static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";
 	private static final String ATTRS_SUFFIX = "attrs";
 	private static final String CONTENT_TAGS = "contentTags";
-	public static final String CONTENT_VAR_NAME = "content";
 
 	private static final int PRECEDENCE = 350;
 
@@ -106,31 +106,60 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 
 			final IModel contentModel = cloneAndCleanModel(model);
 
-			removeCurrentTag(contentModel);
-
 			if (parameterNames.contains(CONTENT_TAGS)) {
 				structureHandler.setLocalVariable(CONTENT_TAGS, tag instanceof IStandaloneElementTag ? Collections.emptyList() : asList(contentModel));
 			}
-			structureHandler.setLocalVariable(CONTENT_VAR_NAME, tag instanceof IStandaloneElementTag ? Optional.empty() : Optional.ofNullable(contentModel));
 
 			final String fragmentToUse = "~{" + componentName + " :: " + frag + "}";
 			final IModel fragmentModel = FragmentHelper.getFragmentModel(context, fragmentToUse + (param == null ? "" : "(" + param + ")"), structureHandler);
-			final IModel replacedFragmentModel = replaceAllAttributeValues(attributes, context, fragmentModel);
+			final IModel replacedContentFragmentModel = replaceContentTag(fragmentModel, tag instanceof IStandaloneElementTag ? Optional.empty() : Optional.ofNullable(contentModel));
+			final IModel replacedAttributeFragmentModel = replaceAllAttributeValues(attributes, context, replacedContentFragmentModel);
 
 			//We replace the whole model
 			model.reset();
-			model.addModel(replacedFragmentModel);
+			model.addModel(replacedAttributeFragmentModel);
 
 			processVariables(attributes, context, structureHandler, excludeAttributes);
 		} // else nothing
 
 	}
 
-	private void removeCurrentTag(final IModel model) {
-		model.remove(0);
-		if (model.size() > 1) {
-			model.remove(model.size() - 1);
+	private static IModel replaceContentTag(final IModel model, final Optional<IModel> contentModel) {
+		final IModel fragmentModel = model.cloneModel(); //le clone change l'index des éléments
+		final int index = findContentTagIndex(0, fragmentModel, IElementTag.class);//Open or standalone
+		if (index > -1) {
+			final int indexEnd = findContentTagIndex(index, fragmentModel, ICloseElementTag.class);
+			if (indexEnd > -1) {
+				fragmentModel.remove(indexEnd);
+			}
+			if (contentModel.isPresent()) {
+				//We remove old body
+				if (indexEnd > -1) {
+					for (int i = indexEnd - 1; i > index; i--) {
+						fragmentModel.remove(i);
+					}
+				}
+				//We insert new body after content tag (index+1)
+				fragmentModel.insertModel(index + 1, contentModel.get());
+			} else {
+				//
+			}
+			fragmentModel.remove(index);
 		}
+		return fragmentModel;
+	}
+
+	private static int findContentTagIndex(final int from, final IModel model, final Class<? extends IElementTag> tagClass) {
+		ITemplateEvent event = null;
+		final int size = model.size();
+		for (int i = from; i < size; i++) {
+			event = model.get(i);
+			if (tagClass.isInstance(event)
+					&& ((IElementTag) event).getElementCompleteName().equals("vu:content")) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 	private static IModel cloneAndCleanModel(final IModel model) {
@@ -143,6 +172,11 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 					cleanerModel.remove(i);
 				}
 			}
+		}
+		//Remove container tag
+		cleanerModel.remove(0);
+		if (cleanerModel.size() > 1) {
+			cleanerModel.remove(cleanerModel.size() - 1);
 		}
 		return cleanerModel;
 	}
@@ -207,7 +241,6 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			}
 			processWith(context, entry.getKey(), entry.getValue(), structureHandler, placeholders);
 		}
-
 		//we set placeholders as localvariables (inner components shouldn't affect these in case of name conflict)
 		setLocalPlaceholderVariables(structureHandler, placeholders);
 	}

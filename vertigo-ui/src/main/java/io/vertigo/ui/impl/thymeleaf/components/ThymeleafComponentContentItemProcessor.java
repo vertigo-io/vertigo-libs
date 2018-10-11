@@ -32,9 +32,10 @@ import org.thymeleaf.templatemode.TemplateMode;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 
-public class ThymeleafComponentContentProcessor extends AbstractElementModelProcessor {
+public class ThymeleafComponentContentItemProcessor extends AbstractElementModelProcessor {
 
-	private static final String CONTENT_TAG_NAME = "content";
+	private static final String CONTENT_VAR_NAME = "contentItem";
+	private static final String CONTENT_TAG_NAME = "content-item";
 	private static final int PRECEDENCE = 400;
 
 	/**
@@ -42,7 +43,7 @@ public class ThymeleafComponentContentProcessor extends AbstractElementModelProc
 	 *
 	 * @param dialectPrefix Dialect prefix (tc)
 	 */
-	public ThymeleafComponentContentProcessor(final String dialectPrefix) {
+	public ThymeleafComponentContentItemProcessor(final String dialectPrefix) {
 		super(TemplateMode.HTML, dialectPrefix, CONTENT_TAG_NAME, true, null, false, PRECEDENCE);
 	}
 
@@ -56,7 +57,7 @@ public class ThymeleafComponentContentProcessor extends AbstractElementModelProc
 	@Override
 	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
 		final Map<String, String> attributes = processAttribute(model);
-		final Object content = context.getVariable(ThymeleafComponentNamedElementProcessor.CONTENT_VAR_NAME);
+		final Object content = context.getVariable(CONTENT_VAR_NAME);
 		Assertion.checkNotNull(content, "'Content' variable missing. For loop use th:each=\"content:contentTags\".");
 		//-----
 		removeCurrentTag(model);

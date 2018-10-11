@@ -1,9 +1,9 @@
 <th:block th:fragment="grid(cols, contentTags)" 
 	th:with="layout='grid', currentColumnCount=0, tableCols=${cols?:2}, overridedLabelWidth=${cols?:2}" >
 	<div class="row gutter-md" >
-		<th:block th:each="content:${contentTags}">
-			<th:block th:if="${content.isTag('grid-cell')}"><vu:content/></th:block>
-			<div th:if="${!content.isTag('grid-cell')}" th:class="${'col-'+(12/tableCols)}"><vu:content/></div>
+		<th:block th:each="contentItem:${contentTags}">
+			<th:block th:if="${contentItem.isTag('grid-cell')}"><vu:content-item/></th:block>
+			<div th:if="${!contentItem.isTag('grid-cell')}" th:class="${'col-'+(12/tableCols)}"><vu:content-item/></div>
 		</th:block>
 	</div>
 </th:block> 

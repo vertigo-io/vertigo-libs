@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:vu="http://www.morphbit.com/thymeleaf/component">
 <vu:page title="Movie Detail" >
-	<div class="row justify-center"  >
-		<div class="col-6  " >
-	<vu:form>		
-		<vu:grid cols="3">
-			<vu:text-field object="movie" field="movId"/>
-			<vu:text-field object="movie" field="title" />
-			<vu:text-field object="movie" field="year" />
-			<vu:slider object="movie" field="year" :snap="true" />
-			<vu:knob object="movie" field="year" readonly />
-			<vu:select object="movie" field="movId" list="movies" />
-			<vu:grid-cell>
-				<vu:text-field object="movie" field="title"/>
-			</vu:grid-cell>
-			<vu:date object="movie" field="released"  />
-			<vu:datetime object="movie" field="lastModified" />
-			<vu:autocomplete object="movie" field="movId" list="movies" />
-			<vu:radio object="movie" field="movId" list="movies" layout="horizontal" labelField="movId"/>
-			<vu:radio object="movie" field="movId" list="movies" />
-			<vu:text-field object="movie" field="movId"/>
-			<vu:text-field object="movie" field="title" />
-			<vu:grid-cell>
-				<input th:if="${!model.modeEdit}" type="submit" value="To Mode Edit" th:formaction="@{/movie/_edit}" />
-				<input th:if="${model.modeEdit}"  type="submit" value="Submit" th:formaction="@{/movie/_save}" />
-			</vu:grid-cell>
-		</vu:grid>
-	</vu:form>
+	<div class="row justify-center">
+		<div class="col-6" >
+			<vu:form>		
+				<vu:grid cols="3">
+					<vu:text-field object="movie" field="movId" />
+					<vu:text-field object="movie" field="title" />
+					<vu:text-field object="movie" field="year" />
+					<vu:slider object="movie" field="year" :snap="true" />
+					<vu:knob object="movie" field="year" readonly />
+					<vu:select object="movie" field="movId" list="movies" />
+					<vu:grid-cell>
+						<vu:text-field object="movie" field="title"/>
+					</vu:grid-cell>
+					<vu:date object="movie" field="released"  />
+					<vu:datetime object="movie" field="lastModified" />
+					<vu:autocomplete object="movie" field="movId" list="movies" />
+					<vu:radio object="movie" field="movId" list="movies" layout="horizontal" labelField="movId"/>
+					<vu:radio object="movie" field="movId" list="movies" />
+					<vu:text-field object="movie" field="movId"/>
+					<vu:text-field object="movie" field="title" />
+					<vu:grid-cell>
+						<input th:if="${!model.modeEdit}" type="submit" value="To Mode Edit" th:formaction="@{/movie/_edit}" />
+						<input th:if="${model.modeEdit}"  type="submit" value="Submit" th:formaction="@{/movie/_save}" />
+					</vu:grid-cell>
+				</vu:grid>
+			</vu:form>
+		</div>
 	</div>
-	</div>
- </vu:page>
+</vu:page>
 </html>

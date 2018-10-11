@@ -11,7 +11,7 @@ import org.thymeleaf.processor.IProcessor;
 import io.vertigo.lang.Assertion;
 import io.vertigo.ui.impl.thymeleaf.components.OnceAttributeTagProcessor;
 import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponent;
-import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponentContentProcessor;
+import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponentContentItemProcessor;
 import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponentNamedElementProcessor;
 import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponentParser;
 
@@ -40,7 +40,7 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 	private Set<IProcessor> createVUiStandardProcessorsSet(final String dialectPrefix) {
 		final Set<IProcessor> processors = new HashSet<>();
 		processors.add(new OnceAttributeTagProcessor(dialectPrefix));
-		processors.add(new ThymeleafComponentContentProcessor(dialectPrefix));
+		processors.add(new ThymeleafComponentContentItemProcessor(dialectPrefix));
 
 		//standard components
 		for (final ThymeleafComponent comp : components) {
