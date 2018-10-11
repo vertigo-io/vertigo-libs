@@ -5,7 +5,6 @@
 	<vu:include-data th:if="${staticData}" object="${list}" field="${myValueField}"/>
 	<vu:label-edit object="${object}" field="${field}">
 		<q-chips-input th:v-model="|vueData.${object}.${field}|">
-			
 		  <q-autocomplete th:if="${!myStaticData}"
 		  	th:@search="|function (terms, done) { searchAutocomplete('${list}', '${myValueField}', '${myValueField}', '@{/autocomplete/_searchFullText}' , terms, done)}|"
 		    :min-characters="3"
