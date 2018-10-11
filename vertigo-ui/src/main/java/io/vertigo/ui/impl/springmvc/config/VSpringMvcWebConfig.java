@@ -74,7 +74,7 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 	private VuiResourceTemplateResolver componentsResolver() {
 		final VuiResourceTemplateResolver templateResolver = new VuiResourceTemplateResolver();
 		templateResolver.setApplicationContext(applicationContext);
-		templateResolver.setPrefix("/WEB-INF/");
+		templateResolver.setPrefix("classpath://");
 		templateResolver.setSuffix(".html");
 		templateResolver.setResolvablePatterns(Collections.singleton("components/*"));
 		// for dev purpose
