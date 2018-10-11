@@ -11,7 +11,7 @@
 		    :min-characters="3"
 		    value-field="value"
 		  ></q-autocomplete>
-		  <q-autocomplete th:if="${staticData}"
+		  <q-autocomplete th:if="${myStaticData}"
 		  	th::static-data="|transformListForStaticSelection('${list}', '${myValueField}', '${myValueField}')|"
 		    :min-characters="3"
 		    value-field="value"
