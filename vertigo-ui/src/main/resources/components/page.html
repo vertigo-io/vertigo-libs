@@ -6,44 +6,40 @@
 		<script src="https://cdn.jsdelivr.net/npm/quasar-framework@0.17.16/dist/umd/i18n.fr.umd.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/vue-resource@1.5.1"></script>
 		
-		<span th:text="${title}" />	
-<div id="page" class="q-layout">
+<div id="page" class="q-layout" v-cloak>
  <div class="q-layout">
 		<!-- BEGIN HEADER-->
 	<header class="q-layout-header q-layout-marginal q-layout-transition fixed-top">
-				<div class="q-toolbar row no-wrap items-center relative-position q-toolbar-normal bg-primary text-white">
+		<div class="q-toolbar row no-wrap items-center relative-position q-toolbar-normal bg-primary text-white justify-between">
 	<!-- Brand and toggle get grouped for better mobile display -->
-	<div class="col">
+	<div class="row">
 		<button tabindex="0" type="button" class="q-btn inline relative-position q-btn-item non-selectable q-btn-round q-btn-flat q-focusable q-hoverable q-btn-dense" aria-label="Toggle menu on left side">
 		<div class="q-focus-helper"></div>
-		<div class="q-btn-inner row col items-center justify-center">
 		<i aria-hidden="true" class="q-icon material-icons">menu</i>
-		</div>
 		</button>
-		<div class="q-toolbar-title">
-			MMC Managment
-        <div class="q-toolbar-subtitle"><span>Mars Mining Company</span></div></div>		
+		<div ><img th:src="@{/static/img/logo MMC v0.1.png}" height="50px"/></div>
+		<div class="q-toolbar-title">MMC Managment 	<div class="q-toolbar-subtitle"><span>Mars Mining Company</span></div></div>
 	</div>
-	<div class="col">
+	<div>
 		<input type="text"/>
 		<i aria-hidden="true" class="q-icon material-icons">search</i>
 	</div>
-	<div class="col ">
+	<div>
 		<button tabindex="0" type="button" class="q-btn inline relative-position q-btn-item non-selectable q-btn-round q-focusable q-hoverable bg-dark text-white q-btn-dense"><div class="q-focus-helper"></div><div class="q-btn-inner row col items-center justify-center"><i aria-hidden="true" class="q-icon material-icons">mail</i><div class="q-chip row no-wrap inline items-center q-chip-floating q-chip-dense q-chip-square bg-red text-white"><div class="q-chip-main ellipsis">22</div></div></div></button>
 
 		<button tabindex="0" type="button" class="q-btn inline relative-position q-btn-item non-selectable q-btn-rectangle q-focusable q-hoverable bg-primary text-white q-btn-dropdown q-btn-dropdown-simple cursor-pointer">
 		<div class="q-focus-helper"></div>
 		<div class="q-btn-inner row col items-center justify-center">
-			<img src="http://www.codecovers.eu/assets/img/modules/materialadmin/avatar1.jpg?1422538623" class="avatar">
-					<div>Daniel Johnson<br/><small>Administrator</small></div><i aria-hidden="true" class="q-icon transition-generic material-icons on-right q-btn-dropdown-arrow">arrow_drop_down</i></div></button>
+			<img th:src="@{/static/img/woman.png}" class="avatar">
+			<div>Daniel Johnson<br/><small>Administrator</small></div><i aria-hidden="true" class="q-icon transition-generic material-icons on-right q-btn-dropdown-arrow">arrow_drop_down</i>
+			</div></button>
 					
 		<button tabindex="0" type="button" class="q-btn inline relative-position q-btn-item non-selectable q-btn-round q-btn-flat q-focusable q-hoverable q-btn-dense" aria-label="Toggle menu on left side">
 		<div class="q-focus-helper"></div>
 		<div class="q-btn-inner row col items-center justify-center">
 		<i aria-hidden="true" class="q-icon material-icons">more_vert</i>
 		</div>
-		</button>
-		
+		</button>		
 	</div>
 	</div>
 	</header>
