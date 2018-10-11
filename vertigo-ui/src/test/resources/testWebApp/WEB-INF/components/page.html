@@ -73,6 +73,12 @@
 						return { value: object[valueField], label: object[labelField].toString()} // a label is always a string
 					});
 				},
+				transformListForStaticSelection: function (list, valueField, labelField) {
+					var finalList =  this.$data.vueData[list].map(function (object) {
+						return { value: object[valueField], label: object[labelField].toString()} // a label is always a string
+					});
+					return {field : 'label', list : finalList}
+				},
 				request : function (params) {
 					var pagination = params.pagination;
 					var filter = params.filter;

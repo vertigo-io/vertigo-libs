@@ -87,7 +87,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		final DtField dtField = getDtField(fieldName);
 		String strValue;
 		if (isMultiple(dtField)) {
-			strValue = formatMultipleValue((String[]) value);
+			strValue = formatMultipleValue(value);
 		} else if (isAboutDate(dtField)) {
 			strValue = requestParameterToString(value);
 			try {
@@ -107,9 +107,14 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		return value instanceof String[] ? ((String[]) value)[0] : (String) value;
 	}
 
-	private static String formatMultipleValue(final String[] values) {
+	private static String formatMultipleValue(final Object values) {
+		if (values instanceof String) {
+			// just one
+			return (String) values;
+		}
+		// we are a String array
 		return Arrays
-				.stream(values)
+				.stream((String[]) values)
 				.collect(Collectors.joining(";"));
 	}
 
@@ -235,6 +240,9 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 			final Serializable value = getTypedValue(keyFieldName, Serializable.class);
 			final Domain domain = dtField.getDomain();
 			return EncoderDate.valueToString(value, domain.getDataType());// encodeValue
+		} else if (isMultiple(dtField)) {
+			final String value = getTypedValue(keyFieldName, String.class);
+			return value != null ? parseMultipleValue(value) : new String[0];
 		}
 		return getTypedValue(keyFieldName, Serializable.class);
 	}

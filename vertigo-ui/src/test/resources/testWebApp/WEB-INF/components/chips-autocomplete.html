@@ -1,0 +1,30 @@
+<th:block th:fragment="chips-autocomplete-edit(object,list,field,valueField, staticData)" vu:alias="chips-autocomplete" vu:selector="${viewMode=='edit'}"
+	  th:assert="${object} != null and ${field} != null and ${list} != null"
+	  th:with="myValueField=${valueField != null ? valueField : model.util.getDisplayField(list)}, value=${model.vContext[__${object}__][__${field}__]}, myStaticData=${staticData?:true}">
+	<vu:include-data object="${object}" field="${field}"/>
+	<vu:include-data th:if="${staticData}" object="${list}" field="${myValueField}"/>
+	<vu:label-edit object="${object}" field="${field}">
+		<q-chips-input th:v-model="|vueData.${object}.${field}|">
+			
+		  <q-autocomplete th:if="${!myStaticData}"
+		  	th:@search="|function (terms, done) { searchAutocomplete('${list}', '${myValueField}', '${myValueField}', '@{/autocomplete/_searchFullText}' , terms, done)}|"
+		    :min-characters="3"
+		    value-field="value"
+		  ></q-autocomplete>
+		  <q-autocomplete th:if="${myStaticData}"
+		  	th::static-data="|transformListForStaticSelection('${list}', '${myValueField}', '${myValueField}')|"
+		    :min-characters="3"
+		    value-field="value"
+		  ></q-autocomplete>
+		</q-chips-input>
+	</vu:label-edit>
+	<input th:v-for="|id in vueData.${object}.${field}|" type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="id" />
+</th:block> 
+
+<th:block th:fragment="chips-autocomplete-read(object,field,list,valueField, staticData)" vu:alias="chips-autocomplete" vu:selector="${viewMode=='read'}" >
+	<vu:include-data object="${object}" field="${field}"/>
+	<vu:label-read object="${object}" field="${field}">
+		<q-chips-input th:v-model="|vueData.${object}.${field}|" :readonly="true" :hide-underline="true">
+		</q-chips-input>
+	</vu:label-read>
+</th:block>
