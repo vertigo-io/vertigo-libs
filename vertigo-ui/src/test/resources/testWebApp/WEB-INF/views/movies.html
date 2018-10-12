@@ -10,12 +10,17 @@
 		<vu:column name="tata" label="Tata">
 			another column  : {{props.row.movId}} : {{props.row.title}}
 		</vu:column>
+		<vu:column name="action" label="Actions">
+			<q-btn  label="View detail" th:@click="|componentStates.movieDetailModal.srcUrl = '@{/movie/}?movId='+props.row.movId ;componentStates.movieDetailModal.opened = true|"></q-btn>
+		</vu:column>
 	</vu:table>
 	
 	<vu:table list="movies" componentId="movieTable2" selectable="true" sortUrl="@{/movies/_sort}">
 		<vu:column field="movId" />
 		<vu:column field="title" sortable="true" />
 	</vu:table>
+	
+	<vu:modal componentId="movieDetailModal" closeLabel="Close"/>
 	</div>
  </vu:page>
 </body>

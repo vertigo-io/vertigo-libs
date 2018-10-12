@@ -22,10 +22,12 @@
 					<vu:text-field object="movie" field="movId"/>
 					<vu:text-field object="movie" field="title" />
 					<vu:chips-autocomplete object="movie" field="tags" list="movies" staticData="false"/>
+					<vu:modal componentId="myModal" closeLabel="Close" srcUrl="@{/movies/}"/>
 					<vu:grid-cell>
 						<vu:button-submit th:if="${!model.modeEdit}" label="Edit" action="@{/movie/_edit}" color="primary"/>
 						<vu:button-submit th:if="${model.modeEdit}"  label="Save" action="@{/movie/_save}" color="primary" />
 						<q-btn  th:label="Movies" type="a" th:href="@{/movies/}"></q-btn>
+						<q-btn  th:label="OpenModal" @click="componentStates.myModal.opened = true"></q-btn>
 					</vu:grid-cell>
 				</vu:grid>
 			</vu:form>

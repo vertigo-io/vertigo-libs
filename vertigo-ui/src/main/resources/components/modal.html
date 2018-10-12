@@ -1,0 +1,16 @@
+<th:block th:fragment="modal(componentId, closeLabel, srcUrl)" 
+	  th:assert="${componentId} != null and ${closeLabel} != null"
+	  th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('opened', false)}, objectKey=${model.vContext['componentStates']['__${componentId}__'].addPrimitive('srcUrl', srcUrl?:'')}" >
+	<q-modal th:v-model="|componentStates.${componentId}.opened|">
+		<q-modal-layout>
+			<iframe width="1000" height="800" th:v-bind:src="|componentStates.${componentId}.srcUrl|"></iframe>
+			<q-toolbar slot="footer">
+			    <q-btn
+			      color="primary"
+			      th:@click="|componentStates.${componentId}.opened = false|"
+			      th:label="${closeLabel}"
+			    />
+		    </q-toolbar>
+	    </q-modal-layout>
+  	</q-modal>
+</th:block> 
