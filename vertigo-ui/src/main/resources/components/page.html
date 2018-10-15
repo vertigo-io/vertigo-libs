@@ -135,6 +135,19 @@
 					var fmt={};
 					format.replace(/(YYYY|MM|DD|HH|mm)/g, function(part) { fmt[part] = i++; });
 					return Quasar.utils.date.buildDate({year :parts[fmt['YYYY']], month :parts[fmt['MM']], date : parts[fmt['DD']], date : parts[fmt['DD']], hours : parts[fmt['HH']], minutes : parts[fmt['mm']]});
+				},
+				openModal : function (modalId, url, params) {
+					if (url) {
+						var finalUrl = url;
+						if (params && Object.keys(params).length > 0) {
+							var paramsString = Object.keys(params).map(function(key){
+							    return key + '=' + params[key] ;
+							}).join("&");
+							finalUrl = finalUrl + '?' + paramsString;
+						}
+						this.$data.componentStates[modalId].srcUrl = finalUrl;
+					}
+					this.$data.componentStates[modalId].opened = true;
 				}
 			  }
 			})
