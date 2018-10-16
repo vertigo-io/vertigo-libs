@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:vu="http://www.morphbit.com/thymeleaf/component">
-<vu:page title="Movie Detail" >
+<vu:head title="Movie Detail"/>
+	<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.2.0/build/ol.js"></script>
+	<script th:src="@{/static/js/v-components/v-map.js}"></script>
+</vu:head>
+<vu:page>
 	<div class="row justify-center">
-		<div class="col-6" >
+		<div class="col-md-6 col-xs-12" >
+			<v-map></v-map>
 			<vu:form>		
 				<vu:grid cols="3">
 					<vu:text-field object="movie" field="movId"/>
