@@ -19,6 +19,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.RequestToViewNameTranslator;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -158,6 +159,13 @@ public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContext
 	@Override
 	public void addInterceptors(final InterceptorRegistry registry) {
 		registry.addInterceptor(new VSpringMvcViewContextInterceptor());
+	}
+
+	@Override
+	public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/vertigo-ui/static/**")
+				.addResourceLocations("classpath:/io/vertigo/ui/static/");
+
 	}
 
 }

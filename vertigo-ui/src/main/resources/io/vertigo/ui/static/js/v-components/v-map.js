@@ -1,24 +1,22 @@
 Vue.component('v-map', {
-	template : '<div id="map" style="width:100%; height:50vh"></div>',
+	template : '<div :id="id" ></div>',
 	props : {
-		list : Array
+		id: String,
+		list : Array,
+		color : String,
 	},
 	mounted : function() {
-		digitalFactory = {lat : 2.239230, lon: 48.773744 };
-		issy = {lat : 2.280263, lon: 48.827317 };
-		imt = {lat : -4.570026, lon: 48.357621 };
-		myList = [digitalFactory, issy, imt];
 		var view = new ol.View();
 
 		var styleIcon = new ol.style.Style({
 			text : new ol.style.Text({
 				font : "45px Material Icons",
 				text : "place",
-				fill : new ol.style.Fill({color : "#027BE3" })
+				fill : new ol.style.Fill({color : this.$props.color })
 			})
 		});
 
-		features = myList.map(function(object) {
+		features = this.$props.list.map(function(object) {
 			var iconFeature = new ol.Feature({
 				geometry : new ol.geom.Point(ol.proj.fromLonLat([ object.lat, object.lon ])),
 				name : 'Klee Digital Factory',
@@ -43,11 +41,9 @@ Vue.component('v-map', {
 			source : new ol.source.OSM()
 		})
 		var map = new ol.Map({
-			target : 'map',
+			target : this.$props.id,
 			layers : [ osmLayer, vectorLayer ],
-			// Improve user experience by loading tiles while animating. Will
-			// make
-			// animations stutter on mobile or slow devices.
+			// Improve user experience by loading tiles while animating. Will make animations stutter on mobile or slow devices.
 			loadTilesWhileAnimating : true,
 			view : view
 		});

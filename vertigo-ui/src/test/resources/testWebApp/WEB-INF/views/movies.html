@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:vu="http://www.morphbit.com/thymeleaf/component">
-<vu:head title="Movie Detail"/>
-	<script src="https://cdn.rawgit.com/openlayers/openlayers.github.io/master/en/v5.2.0/build/ol.js"></script>
-	<script th:src="@{/static/js/v-components/v-map.js}"></script>
-</vu:head>
+<vu:head title="Movie List"/>
 <vu:page>
 	<div v-cloak>
 	<vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}" >
