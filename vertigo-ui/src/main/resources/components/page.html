@@ -3,100 +3,58 @@
 		<script src="https://cdn.jsdelivr.net/npm/quasar-framework@0.17.16/dist/umd/quasar.mat.umd.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/quasar-framework@0.17.16/dist/umd/i18n.fr.umd.min.js"></script>
 		<script th:src="@{/static/js/vertigo-ui.js}"></script>
-		<div id="page" class="q-layout" v-cloak>
-			<div class="q-layout">
-				<!-- BEGIN HEADER-->
-				<header
-					class="q-layout-header q-layout-marginal q-layout-transition fixed-top">
-					<div
-						class="q-toolbar row no-wrap items-center relative-position q-toolbar-normal bg-primary text-white justify-between">
-						<!-- Brand and toggle get grouped for better mobile display -->
-						<div class="row">
-							<button tabindex="0" type="button"
-								class="q-btn inline relative-position q-btn-item non-selectable q-btn-round q-btn-flat q-focusable q-hoverable q-btn-dense"
-								aria-label="Toggle menu on left side">
-								<div class="q-focus-helper"></div>
-								<i aria-hidden="true" class="q-icon material-icons">menu</i>
-							</button>
-							<div>
-								<img th:src="@{/static/img/logo MMC v0.1.png}" height="50px" />
-							</div>
-							<div class="q-toolbar-title">
-								MMC Managment
-								<div class="q-toolbar-subtitle">
-									<span>Mars Mining Company</span>
-								</div>
-							</div>
-						</div>
-						<div>
-							<input type="text" /> <i aria-hidden="true"
-								class="q-icon material-icons">search</i>
-						</div>
-						<div>
-							<button tabindex="0" type="button"
-								class="q-btn inline relative-position q-btn-item non-selectable q-btn-round q-focusable q-hoverable bg-dark text-white q-btn-dense">
-								<div class="q-focus-helper"></div>
-								<div class="q-btn-inner row col items-center justify-center">
-									<i aria-hidden="true" class="q-icon material-icons">mail</i>
-									<div
-										class="q-chip row no-wrap inline items-center q-chip-floating q-chip-dense q-chip-square bg-red text-white">
-										<div class="q-chip-main ellipsis">22</div>
-									</div>
-								</div>
-							</button>
-
-							<button tabindex="0" type="button"
-								class="q-btn inline relative-position q-btn-item non-selectable q-btn-rectangle q-focusable q-hoverable bg-primary text-white q-btn-dropdown q-btn-dropdown-simple cursor-pointer">
-								<div class="q-focus-helper"></div>
-								<div class="q-btn-inner row col items-center justify-center">
-									<img th:src="@{/static/img/woman.png}" class="avatar">
-									<div>
-										Daniel Johnson<br />
-										<small>Administrator</small>
-									</div>
-									<i aria-hidden="true"
-										class="q-icon transition-generic material-icons on-right q-btn-dropdown-arrow">arrow_drop_down</i>
-								</div>
-							</button>
-
-							<button tabindex="0" type="button"
-								class="q-btn inline relative-position q-btn-item non-selectable q-btn-round q-btn-flat q-focusable q-hoverable q-btn-dense"
-								aria-label="Toggle menu on left side">
-								<div class="q-focus-helper"></div>
-								<div class="q-btn-inner row col items-center justify-center">
-									<i aria-hidden="true" class="q-icon material-icons">more_vert</i>
-								</div>
-							</button>
-						</div>
+		<q-layout view="hHr LpR lFf" id="page" v-cloak>
+			<!-- BEGIN HEADER-->
+			<q-layout-header class="items-center">
+				<q-toolbar class="justify-between">
+					<div class="row">
+						<q-btn flat round dense @click="componentStates.showLeft = !componentStates.showLeft" icon="menu" aria-label="Toggle menu on left side"></q-btn>
+						<div><img th:src="@{/static/img/logo MMC v0.1.png}" height="30px"/></div>
+						<q-toolbar-title>
+								MMC Managment 
+								<span slot="subtitle">Mars Mining Company</span>
+						</q-toolbar-title>
 					</div>
-				</header>
-				<!-- END HEADER-->
-
-				<!-- sub-routes get injected here: -->
-				<div>
-					<br />
-					<br />
-					<br />
-					<br />
-					<p th:text="${uiMessageStack.objectFieldErrors}"
-						th:if="${uiMessageStack.hasErrors()}"></p>
-					<vu:content />
-				</div>
-			</div>
-			<vu:vue-data />
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div>
+						<input type="text"/>
+						<i aria-hidden="true" class="q-icon material-icons">search</i>
+					</div>
+					<div>
+						<q-btn round dense color="primary" icon="mail" class="on-left" >
+							<q-chip floating color="red">22</q-chip>
+						</q-btn>
+						<q-btn icon-right="arrow_drop_down"  class="on-left">
+							<img th:src="@{/static/img/woman.png}" class="avatar"/>
+							<div>Daniel Johnson<br/><small>Administrator</small></div>
+						</q-btn>
+						<q-btn flat round dense icon="apps" aria-label="Toggle apps"></q-btn>
+					</div>
+				</q-toolbar>
+			</q-layout-header>
+			<!-- END HEADER-->
+			<!-- sub-routes get injected here: -->
+			<q-page-container>
+				<q-page>
+					<br/><br/><br/><br/>
+					<p th:text="${uiMessageStack.objectFieldErrors}" th:if="${uiMessageStack.hasErrors()}"></p>
+					<vu:content/>
+				</q-page>
+			</q-page-container>
+			<vu:vue-data/>
 			<script>
-			Quasar.i18n.set(Quasar.i18n.fr)
-			var data = {
-					  vueData : vueData,
-					  componentStates : componentStates,
-					  ctxId : ctxId
-				  };
-			var demo = new Vue({
-			  el: '#page',
-			  data: data,
-			  methods: VUi.methods
-			})
-		</script>
-		</div>
+				Quasar.i18n.set(Quasar.i18n.fr)
+				var data = {
+						  vueData : vueData,
+						  componentStates : componentStates,
+						  ctxId : ctxId
+					  };
+				var demo = new Vue({
+				  el: '#page',
+				  data: data,
+				  methods: VUi.methods
+				})
+			</script>
+		</q-layout>
 	</body>
 </th:block>
