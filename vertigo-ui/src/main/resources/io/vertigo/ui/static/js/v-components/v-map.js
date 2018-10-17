@@ -1,25 +1,27 @@
 Vue.component('v-map', {
 	template : '<div :id="id" ></div>',
 	props : {
-		id: String,
-		list : Array,
-		color : String,
+		id: { type: String, required: true},
+		list : { type: Array, required: true },
+		markerColor : { type: String, 'default': "#000000" },
+		markerFont : { type: String, 'default': "Material Icons" },
+		markerIcon : { type: String, 'default': "place" },
+		markerSize : { type: String, 'default': "45px" }
 	},
 	mounted : function() {
 		var view = new ol.View();
 
 		var styleIcon = new ol.style.Style({
 			text : new ol.style.Text({
-				font : "45px Material Icons",
-				text : "place",
-				fill : new ol.style.Fill({color : this.$props.color })
+				font : this.$props.markerSize +' ' + this.$props.markerFont,
+				text : this.$props.markerIcon,
+				fill : new ol.style.Fill({color : this.$props.markerColor })
 			})
 		});
 
 		features = this.$props.list.map(function(object) {
 			var iconFeature = new ol.Feature({
 				geometry : new ol.geom.Point(ol.proj.fromLonLat([ object.lat, object.lon ])),
-				name : 'Klee Digital Factory',
 			});
 			
 			iconFeature.setStyle(styleIcon);
