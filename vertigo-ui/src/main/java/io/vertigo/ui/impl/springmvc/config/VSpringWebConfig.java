@@ -11,7 +11,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
@@ -41,8 +40,7 @@ import io.vertigo.ui.impl.thymeleaf.components.VuiResourceTemplateResolver;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan("${springMvcControllerRootPackage}")
-public class VSpringMvcWebConfig implements WebMvcConfigurer, ApplicationContextAware {
+public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAware {
 
 	@Autowired
 	private ApplicationContext applicationContext;

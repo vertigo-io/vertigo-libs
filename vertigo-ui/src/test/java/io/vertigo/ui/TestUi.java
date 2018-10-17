@@ -42,14 +42,12 @@ import com.machinepublishers.jbrowserdriver.JBrowserDriver;
 import com.machinepublishers.jbrowserdriver.Settings;
 import com.machinepublishers.jbrowserdriver.Timezone;
 
-import io.vertigo.ui.impl.springmvc.config.VSpringMvcWebApplicationInitializer;
-
 public class TestUi {
 
 	private static List<ContainerInitializer> springInitializers() {
 		final SpringServletContainerInitializer sci = new SpringServletContainerInitializer();
 		final ContainerInitializer initializer = new ContainerInitializer(sci, null);
-		initializer.addApplicableTypeName(VSpringMvcWebApplicationInitializer.class.getCanonicalName());
+		initializer.addApplicableTypeName(TestVSpringWebApplicationInitializer.class.getCanonicalName());
 		final List<ContainerInitializer> initializers = new ArrayList<>();
 		initializers.add(initializer);
 		return initializers;
