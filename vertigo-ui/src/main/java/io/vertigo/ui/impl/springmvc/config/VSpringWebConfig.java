@@ -37,6 +37,7 @@ import io.vertigo.ui.impl.thymeleaf.VUiStandardDialect;
 import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponent;
 import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponentParser;
 import io.vertigo.ui.impl.thymeleaf.components.VuiResourceTemplateResolver;
+import nz.net.ultraq.thymeleaf.LayoutDialect;
 
 @Configuration
 @EnableWebMvc
@@ -99,6 +100,9 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		//---
 		final VUiStandardDialect dialect = new VUiStandardDialect(getStandardUiComponents(componentResolvers));
 		templateEngine.addDialect("vu", dialect);
+
+		templateEngine.addDialect(new LayoutDialect());
+
 		return templateEngine;
 	}
 

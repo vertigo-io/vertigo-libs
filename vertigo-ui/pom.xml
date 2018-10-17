@@ -48,6 +48,11 @@
 			<artifactId>thymeleaf-spring5</artifactId>
 			<version>3.0.10.RELEASE</version>
 		</dependency>
+		<dependency>
+		  <groupId>nz.net.ultraq.thymeleaf</groupId>
+		  <artifactId>thymeleaf-layout-dialect</artifactId>
+		  <version>2.3.0</version>
+		</dependency>
 		<!-- for tests -->
 		<!-- for Embedded Jetty Server and tests -->
 		<!-- Connections Pool -->

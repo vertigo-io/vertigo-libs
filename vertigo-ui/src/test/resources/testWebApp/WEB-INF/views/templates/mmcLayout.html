@@ -1,5 +1,9 @@
-<head th:fragment="header(title, links, scripts)" th:remove="tag">
-    <vu:head title="${title}" >
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" 
+  xmlns:vu="http://www.morphbit.com/thymeleaf/component"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <vu:head-meta/>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,18 +18,14 @@
     <!-- [if lt IE 9]>     	
     <![endif]-->
 
-	<link rel="stylesheet" href="@{static/mars.css}">
-	<link rel="icon" href="@{static/img/favicon.ico}">
-   	<th:block th:replace="${links}" />
+	<link rel="stylesheet" th:href="@{/static/mars.css}">
+	<link rel="icon" th:href="@{/static/img/favicon.ico}">
+          
+   	<script th:src="@{/static/mars.js}"></script>
    	
-   
-    
-   	<script src="@{static/mars.js}"></script>
-   	<th:block th:replace="${scripts}" />
-   	</vu:head>
 </head>
 
-<body class="mat desktop no-touch platform-mat" th:fragment="body(pageContent)">
+<body class="mat desktop no-touch platform-mat">
 	<vu:page>
       <q-layout view="hHr LpR lFf" id="page" v-cloak>
 			<!-- BEGIN HEADER-->
@@ -61,7 +61,7 @@
 			<q-page-container>
 				<div class="row justify-center">
 					<div class="col-md-6 col-xs-12" >
-						<th:block th:replace="${pageContent}" />
+						<section layout:fragment="content"></section>
 					</div>
 				</div>
 			</q-page-container>
