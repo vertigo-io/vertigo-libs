@@ -1,60 +1,22 @@
 <th:block th:fragment="page(content)">
-	<body class="mat desktop no-touch platform-mat">
-		<script src="https://cdn.jsdelivr.net/npm/quasar-framework@0.17.16/dist/umd/quasar.mat.umd.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/quasar-framework@0.17.16/dist/umd/i18n.fr.umd.min.js"></script>
-		<script th:src="@{/vertigo-ui/static/js/vertigo-ui.js}"></script>
-		<q-layout view="hHr LpR lFf" id="page" v-cloak>
-			<!-- BEGIN HEADER-->
-			<q-layout-header class="items-center">
-				<q-toolbar class="justify-between">
-					<div class="row">
-						<q-btn flat round dense @click="componentStates.showLeft = !componentStates.showLeft" icon="menu" aria-label="Toggle menu on left side"></q-btn>
-						<div><img th:src="@{/static/img/logo MMC v0.1.png}" height="30px"/></div>
-						<q-toolbar-title>
-								MMC Managment 
-								<span slot="subtitle">Mars Mining Company</span>
-						</q-toolbar-title>
-					</div>
-					<!-- Brand and toggle get grouped for better mobile display -->
-					<div>
-						<input type="text"/>
-						<i aria-hidden="true" class="q-icon material-icons">search</i>
-					</div>
-					<div>
-						<q-btn round dense color="primary" icon="mail" class="on-left" >
-							<q-chip floating color="red">22</q-chip>
-						</q-btn>
-						<q-btn icon-right="arrow_drop_down"  class="on-left">
-							<img th:src="@{/static/img/woman.png}" class="avatar"/>
-							<div>Daniel Johnson<br/><small>Administrator</small></div>
-						</q-btn>
-						<q-btn flat round dense icon="apps" aria-label="Toggle apps"></q-btn>
-					</div>
-				</q-toolbar>
-			</q-layout-header>
-			<!-- END HEADER-->
-			<!-- sub-routes get injected here: -->
-			<q-page-container>
-				<q-page>
-					<br/><br/><br/><br/>
-					<p th:text="${uiMessageStack.objectFieldErrors}" th:if="${uiMessageStack.hasErrors()}"></p>
-					<vu:content/>
-				</q-page>
-			</q-page-container>
-			<vu:vue-data/>
-			<script>
-				Quasar.i18n.set(Quasar.i18n.fr)
-				var data = {
-						  vueData : vueData,
-						  componentStates : componentStates,
-						  ctxId : ctxId
-					  };
-				var demo = new Vue({
-				  el: '#page',
-				  data: data,
-				  methods: VUi.methods
-				})
-			</script>
-		</q-layout>
-	</body>
+	<script src="https://cdn.jsdelivr.net/npm/quasar-framework@0.17.16/dist/umd/quasar.mat.umd.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/quasar-framework@0.17.16/dist/umd/i18n.fr.umd.min.js"></script>
+	<script th:src="@{/vertigo-ui/static/js/vertigo-ui.js}"></script>
+		
+	<vu:content/>
+	
+	<vu:vue-data/>
+	<script>
+		Quasar.i18n.set(Quasar.i18n.fr)
+		var data = {
+				  vueData : vueData,
+				  componentStates : componentStates,
+				  ctxId : ctxId
+			  };
+		var demo = new Vue({
+		  el: '#page',
+		  data: data,
+		  methods: VUi.methods
+		})
+	</script>
 </th:block>
