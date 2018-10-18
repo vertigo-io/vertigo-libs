@@ -1,5 +1,12 @@
 /******** CSS SPECIFIQUE A CERTAINES PAGES *******/
 
+nav a {
+	text-decoration: none;
+}
+
+.q-item-side {
+	text-align: center;	
+}
 
 /* --------------------------- PAGE LOGIN ------------------------------ */
 
