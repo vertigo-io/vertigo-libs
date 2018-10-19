@@ -42,7 +42,7 @@ public final class Casting implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public URI<Casting> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**

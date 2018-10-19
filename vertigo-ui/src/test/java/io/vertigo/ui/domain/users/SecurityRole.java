@@ -38,7 +38,7 @@ public final class SecurityRole implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public URI<SecurityRole> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**

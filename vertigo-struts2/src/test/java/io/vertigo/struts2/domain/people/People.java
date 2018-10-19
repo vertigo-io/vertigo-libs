@@ -41,7 +41,7 @@ public final class People implements KeyConcept {
 	/** {@inheritDoc} */
 	@Override
 	public URI<People> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**

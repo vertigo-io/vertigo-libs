@@ -41,7 +41,7 @@ public final class UserAuthentification implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public URI<UserAuthentification> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**

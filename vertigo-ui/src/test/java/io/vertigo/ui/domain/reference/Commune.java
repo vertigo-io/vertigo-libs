@@ -41,7 +41,7 @@ public final class Commune implements DtMasterData {
 	/** {@inheritDoc} */
 	@Override
 	public URI<Commune> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**

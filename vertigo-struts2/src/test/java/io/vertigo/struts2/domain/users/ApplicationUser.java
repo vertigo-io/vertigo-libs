@@ -42,7 +42,7 @@ public final class ApplicationUser implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public URI<ApplicationUser> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**
@@ -140,7 +140,6 @@ public final class ApplicationUser implements Entity {
 		this.proId = proId;
 	}
 
-
 	// Association : User authentification non navigable
 	/**
 	 * Association : Profil.
@@ -162,7 +161,7 @@ public final class ApplicationUser implements Entity {
 	 * Retourne l'URI: Profil.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association (
+	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_USR_PRO",
 			fkFieldName = "PRO_ID",
 			primaryDtDefinitionName = "DT_PROFIL",

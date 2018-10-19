@@ -39,7 +39,7 @@ public final class Profil implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public URI<Profil> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	/**
