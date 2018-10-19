@@ -56,9 +56,9 @@ public final class OActivityLog implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public URI<OActivityLog> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id du log'.
@@ -77,7 +77,7 @@ public final class OActivityLog implements Entity {
 	public void setAclId(final Long aclId) {
 		this.aclId = aclId;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Contenu du log'.
@@ -96,7 +96,7 @@ public final class OActivityLog implements Entity {
 	public void setLog(final String log) {
 		this.log = log;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Fichier joint'.
@@ -115,7 +115,7 @@ public final class OActivityLog implements Entity {
 	public void setAttachment(final String attachment) {
 		this.attachment = attachment;
 	}
-	
+
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'ActivityExecution'.
@@ -123,7 +123,7 @@ public final class OActivityLog implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "ActivityExecution")
 	public Long getAceId() {
-		return (Long)  aceIdAccessor.getId();
+		return (Long) aceIdAccessor.getId();
 	}
 
 	/**
@@ -135,14 +135,14 @@ public final class OActivityLog implements Entity {
 		aceIdAccessor.setId(aceId);
 	}
 
- 	/**
+	/**
 	 * Association : ActivityExecution.
 	 * @return l'accesseur vers la propriété 'ActivityExecution'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.execution.OActivityExecution> activityExecution() {
 		return aceIdAccessor;
 	}
-	
+
 	@Deprecated
 	public io.vertigo.orchestra.domain.execution.OActivityExecution getActivityExecution() {
 		// we keep the lazyness
@@ -160,7 +160,7 @@ public final class OActivityLog implements Entity {
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivityExecutionURI() {
 		return aceIdAccessor.getURI();
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

@@ -38,9 +38,9 @@ public final class WfStatus implements DtStaticMasterData {
 	/** {@inheritDoc} */
 	@Override
 	public URI<WfStatus> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Code Status'.
@@ -59,7 +59,7 @@ public final class WfStatus implements DtStaticMasterData {
 	public void setWfsCode(final String wfsCode) {
 		this.wfsCode = wfsCode;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'label'.
@@ -78,7 +78,7 @@ public final class WfStatus implements DtStaticMasterData {
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

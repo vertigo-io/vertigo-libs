@@ -57,9 +57,9 @@ public final class WfDecision implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public URI<WfDecision> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id Decision'.
@@ -78,7 +78,7 @@ public final class WfDecision implements Entity {
 	public void setWfeId(final Long wfeId) {
 		this.wfeId = wfeId;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'username'.
@@ -97,7 +97,7 @@ public final class WfDecision implements Entity {
 	public void setUsername(final String username) {
 		this.username = username;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'choice'.
@@ -116,7 +116,7 @@ public final class WfDecision implements Entity {
 	public void setChoice(final Integer choice) {
 		this.choice = choice;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'decision date'.
@@ -135,7 +135,7 @@ public final class WfDecision implements Entity {
 	public void setDecisionDate(final java.util.Date decisionDate) {
 		this.decisionDate = decisionDate;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'comments'.
@@ -154,7 +154,7 @@ public final class WfDecision implements Entity {
 	public void setComments(final String comments) {
 		this.comments = comments;
 	}
-	
+
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'WfActivity'.
@@ -162,7 +162,7 @@ public final class WfDecision implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", label = "WfActivity")
 	public Long getWfaId() {
-		return (Long)  wfaIdAccessor.getId();
+		return (Long) wfaIdAccessor.getId();
 	}
 
 	/**
@@ -174,14 +174,14 @@ public final class WfDecision implements Entity {
 		wfaIdAccessor.setId(wfaId);
 	}
 
- 	/**
+	/**
 	 * Association : WfActivity.
 	 * @return l'accesseur vers la propriété 'WfActivity'
 	 */
 	public VAccessor<io.vertigo.workflow.domain.instance.WfActivity> wfActivity() {
 		return wfaIdAccessor;
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

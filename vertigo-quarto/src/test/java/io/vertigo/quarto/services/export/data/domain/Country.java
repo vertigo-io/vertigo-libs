@@ -37,7 +37,7 @@ public final class Country implements Entity {
 
 	@Override
 	public URI getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "id of the country")

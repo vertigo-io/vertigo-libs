@@ -84,9 +84,9 @@ public final class WfTransitionDefinition implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public URI<WfTransitionDefinition> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id Transition Definition'.
@@ -105,7 +105,7 @@ public final class WfTransitionDefinition implements Entity {
 	public void setWftdId(final Long wftdId) {
 		this.wftdId = wftdId;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'name'.
@@ -124,7 +124,7 @@ public final class WfTransitionDefinition implements Entity {
 	public void setName(final String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'WfWorkflowDefinition'.
@@ -132,7 +132,7 @@ public final class WfTransitionDefinition implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", label = "WfWorkflowDefinition")
 	public Long getWfwdId() {
-		return (Long)  wfwdIdAccessor.getId();
+		return (Long) wfwdIdAccessor.getId();
 	}
 
 	/**
@@ -143,7 +143,7 @@ public final class WfTransitionDefinition implements Entity {
 	public void setWfwdId(final Long wfwdId) {
 		wfwdIdAccessor.setId(wfwdId);
 	}
-	
+
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'transitionFrom'.
@@ -151,7 +151,7 @@ public final class WfTransitionDefinition implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", required = true, label = "transitionFrom")
 	public Long getWfadIdFrom() {
-		return (Long)  wfadIdFromAccessor.getId();
+		return (Long) wfadIdFromAccessor.getId();
 	}
 
 	/**
@@ -162,7 +162,7 @@ public final class WfTransitionDefinition implements Entity {
 	public void setWfadIdFrom(final Long wfadIdFrom) {
 		wfadIdFromAccessor.setId(wfadIdFrom);
 	}
-	
+
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'transitionTo'.
@@ -170,7 +170,7 @@ public final class WfTransitionDefinition implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", required = true, label = "transitionTo")
 	public Long getWfadIdTo() {
-		return (Long)  wfadIdToAccessor.getId();
+		return (Long) wfadIdToAccessor.getId();
 	}
 
 	/**
@@ -182,14 +182,14 @@ public final class WfTransitionDefinition implements Entity {
 		wfadIdToAccessor.setId(wfadIdTo);
 	}
 
- 	/**
+	/**
 	 * Association : transitionFrom.
 	 * @return l'accesseur vers la propriété 'transitionFrom'
 	 */
 	public VAccessor<io.vertigo.workflow.domain.model.WfActivityDefinition> transitionFrom() {
 		return wfadIdFromAccessor;
 	}
-	
+
 	@Deprecated
 	public io.vertigo.workflow.domain.model.WfActivityDefinition getTransitionFrom() {
 		// we keep the lazyness
@@ -208,14 +208,14 @@ public final class WfTransitionDefinition implements Entity {
 		return wfadIdFromAccessor.getURI();
 	}
 
- 	/**
+	/**
 	 * Association : transitionTo.
 	 * @return l'accesseur vers la propriété 'transitionTo'
 	 */
 	public VAccessor<io.vertigo.workflow.domain.model.WfActivityDefinition> transitionTo() {
 		return wfadIdToAccessor;
 	}
-	
+
 	@Deprecated
 	public io.vertigo.workflow.domain.model.WfActivityDefinition getTransitionTo() {
 		// we keep the lazyness
@@ -234,14 +234,14 @@ public final class WfTransitionDefinition implements Entity {
 		return wfadIdToAccessor.getURI();
 	}
 
- 	/**
+	/**
 	 * Association : WfWorkflowDefinition.
 	 * @return l'accesseur vers la propriété 'WfWorkflowDefinition'
 	 */
 	public VAccessor<io.vertigo.workflow.domain.model.WfWorkflowDefinition> wfWorkflowDefinition() {
 		return wfwdIdAccessor;
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

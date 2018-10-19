@@ -59,9 +59,9 @@ public final class OActivity implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public URI<OActivity> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id Activité'.
@@ -80,7 +80,7 @@ public final class OActivity implements Entity {
 	public void setActId(final Long actId) {
 		this.actId = actId;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Nom de l'activité'.
@@ -99,7 +99,7 @@ public final class OActivity implements Entity {
 	public void setName(final String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Libellé de l'activité'.
@@ -118,7 +118,7 @@ public final class OActivity implements Entity {
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Numéro de l'activité'.
@@ -137,7 +137,7 @@ public final class OActivity implements Entity {
 	public void setNumber(final Integer number) {
 		this.number = number;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Jalon'.
@@ -156,7 +156,7 @@ public final class OActivity implements Entity {
 	public void setMilestone(final Boolean milestone) {
 		this.milestone = milestone;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Implémentation de l'activité'.
@@ -175,7 +175,7 @@ public final class OActivity implements Entity {
 	public void setEngine(final String engine) {
 		this.engine = engine;
 	}
-	
+
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Processus'.
@@ -183,7 +183,7 @@ public final class OActivity implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getProId() {
-		return (Long)  proIdAccessor.getId();
+		return (Long) proIdAccessor.getId();
 	}
 
 	/**
@@ -195,14 +195,14 @@ public final class OActivity implements Entity {
 		proIdAccessor.setId(proId);
 	}
 
- 	/**
+	/**
 	 * Association : Processus.
 	 * @return l'accesseur vers la propriété 'Processus'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.definition.OProcess> process() {
 		return proIdAccessor;
 	}
-	
+
 	@Deprecated
 	public io.vertigo.orchestra.domain.definition.OProcess getProcess() {
 		// we keep the lazyness
@@ -220,7 +220,7 @@ public final class OActivity implements Entity {
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.definition.OProcess> getProcessURI() {
 		return proIdAccessor.getURI();
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

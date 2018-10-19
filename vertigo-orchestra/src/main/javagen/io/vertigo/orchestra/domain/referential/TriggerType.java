@@ -39,9 +39,9 @@ public final class TriggerType implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public URI<TriggerType> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Code'.
@@ -60,7 +60,7 @@ public final class TriggerType implements Entity {
 	public void setTrtCd(final String trtCd) {
 		this.trtCd = trtCd;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Libellé'.
@@ -79,7 +79,7 @@ public final class TriggerType implements Entity {
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

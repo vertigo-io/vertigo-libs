@@ -35,7 +35,7 @@ public final class Continent implements Entity {
 
 	@Override
 	public URI getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
 
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "id of the Continent")

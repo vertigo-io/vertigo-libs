@@ -56,9 +56,9 @@ public final class RuleConditionDefinition implements Entity {
 	/** {@inheritDoc} */
 	@Override
 	public URI<RuleConditionDefinition> getURI() {
-		return DtObjectUtil.createURI(this);
+		return URI.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.
@@ -77,7 +77,7 @@ public final class RuleConditionDefinition implements Entity {
 	public void setId(final Long id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'field'.
@@ -96,7 +96,7 @@ public final class RuleConditionDefinition implements Entity {
 	public void setField(final String field) {
 		this.field = field;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'operator'.
@@ -115,7 +115,7 @@ public final class RuleConditionDefinition implements Entity {
 	public void setOperator(final String operator) {
 		this.operator = operator;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'expression'.
@@ -134,7 +134,7 @@ public final class RuleConditionDefinition implements Entity {
 	public void setExpression(final String expression) {
 		this.expression = expression;
 	}
-	
+
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'RuleDefinition'.
@@ -142,7 +142,7 @@ public final class RuleConditionDefinition implements Entity {
 	 */
 	@Field(domain = "DO_RULES_ID", type = "FOREIGN_KEY", label = "RuleDefinition")
 	public Long getRudId() {
-		return (Long)  rudIdAccessor.getId();
+		return (Long) rudIdAccessor.getId();
 	}
 
 	/**
@@ -154,14 +154,14 @@ public final class RuleConditionDefinition implements Entity {
 		rudIdAccessor.setId(rudId);
 	}
 
- 	/**
+	/**
 	 * Association : RuleDefinition.
 	 * @return l'accesseur vers la propriété 'RuleDefinition'
 	 */
 	public VAccessor<io.vertigo.rules.domain.RuleDefinition> ruleDefinition() {
 		return rudIdAccessor;
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
