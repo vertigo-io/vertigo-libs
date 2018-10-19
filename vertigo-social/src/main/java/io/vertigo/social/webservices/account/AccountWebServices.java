@@ -26,7 +26,7 @@ import javax.inject.Inject;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.webservice.WebServices;
@@ -58,7 +58,7 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/{id}")
 	@AnonymousAccessAllowed
 	public Account getAccount(@PathParam("id") final String id) {
-		return identityManager.getAccount(DtObjectUtil.createURI(Account.class, id));
+		return identityManager.getAccount(URI.of(Account.class, id));
 	}
 
 	/**
@@ -70,7 +70,7 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/{id}/photo")
 	@AnonymousAccessAllowed
 	public VFile getAccountPhoto(@PathParam("id") final String id) {
-		return identityManager.getPhoto(DtObjectUtil.createURI(Account.class, id))
+		return identityManager.getPhoto(URI.of(Account.class, id))
 				.orElse(identityManager.getDefaultPhoto());
 	}
 
@@ -83,7 +83,7 @@ public final class AccountWebServices implements WebServices {
 	@GET("/api/groups/{id}")
 	@AnonymousAccessAllowed
 	public AccountGroup getAccountGroup(@PathParam("id") final String id) {
-		return identityManager.getGroup(DtObjectUtil.createURI(AccountGroup.class, id));
+		return identityManager.getGroup(URI.of(AccountGroup.class, id));
 	}
 
 	//-----

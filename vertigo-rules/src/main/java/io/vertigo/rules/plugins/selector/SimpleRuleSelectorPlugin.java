@@ -30,7 +30,6 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.rules.domain.RuleFilterDefinition;
 import io.vertigo.rules.domain.SelectorDefinition;
 import io.vertigo.rules.impl.RuleSelectorPlugin;
@@ -59,7 +58,7 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 	}
 
 	private static URI<AccountGroup> createGroupURI(final String id) {
-		return DtObjectUtil.createURI(AccountGroup.class, id);
+		return URI.of(AccountGroup.class, id);
 	}
 
 	private List<SelectorDefinition> findMatchingSelectors(final List<SelectorDefinition> selectors,
