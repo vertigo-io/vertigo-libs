@@ -67,9 +67,8 @@ public class CommentManagerTest {
 
 		//on triche un peu, car AcountGroup n'est pas un KeyConcept
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);
-		keyConcept1Uri = new URI<>(dtDefinition, "10");
-		keyConcept1Uri = new URI<>(dtDefinition, "20");
-
+		keyConcept1Uri = URI.of(dtDefinition, "10");
+		keyConcept1Uri = URI.of(dtDefinition, "20");
 	}
 
 	@After

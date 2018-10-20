@@ -157,7 +157,7 @@ public final class CommentWebServices implements WebServices {
 	private static URI<KeyConcept> readKeyConceptURI(final String keyConcept, @QueryParam("id") final String id) {
 		final DtDefinition dtDefinition = Home.getApp().getDefinitionSpace().resolve("DT_" + StringUtil.camelToConstCase(keyConcept), DtDefinition.class);
 		final Object keyConceptId = stringToId(id, dtDefinition);
-		return new URI<>(dtDefinition, keyConceptId);
+		return URI.of(dtDefinition, keyConceptId);
 	}
 
 	private static Object stringToId(final String id, final DtDefinition dtDefinition) {

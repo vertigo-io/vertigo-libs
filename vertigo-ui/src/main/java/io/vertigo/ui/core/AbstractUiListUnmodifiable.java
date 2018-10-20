@@ -217,7 +217,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	private Entity loadDto(final Object key) {
 		//-- Transaction BEGIN
 		try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-			return storeManager.get().getDataStore().<Entity> readOne(new URI<>(getDtDefinition(), key));
+			return storeManager.get().getDataStore().<Entity> readOne(URI.of(getDtDefinition(), key));
 		}
 	}
 

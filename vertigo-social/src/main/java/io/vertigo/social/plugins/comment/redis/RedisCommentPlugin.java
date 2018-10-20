@@ -31,10 +31,8 @@ import javax.inject.Inject;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.social.impl.comment.CommentPlugin;
@@ -138,13 +136,12 @@ public final class RedisCommentPlugin implements CommentPlugin {
 
 	private static Comment fromMap(final Map<String, String> data) {
 		try {
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);
 			final Date creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT).parse(data.get("creationDate"));
 			final Date lastModified = data.get("lastModified") != null ? new SimpleDateFormat(CODEC_DATE_FORMAT).parse(data.get("lastModified")) : null;
 
 			return Comment.builder()
 					.withUuid(UUID.fromString(data.get("uuid")))
-					.withAuthor(new URI<Account>(dtDefinition, data.get("author")))
+					.withAuthor(URI.of(Account.class, data.get("author")))
 					.withCreationDate(creationDate)
 					.withMsg(data.get("msg"))
 					.withLastModified(lastModified)

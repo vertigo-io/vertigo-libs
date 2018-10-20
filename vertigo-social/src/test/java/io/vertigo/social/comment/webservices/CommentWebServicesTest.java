@@ -86,8 +86,8 @@ public final class CommentWebServicesTest {
 
 		//on triche un peu, car AcountGroup n'est pas un KeyConcept
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);
-		keyConcept1Uri = new URI<>(dtDefinition, "10");
-		keyConcept2Uri = new URI<>(dtDefinition, "20");
+		keyConcept1Uri = URI.of(dtDefinition, "10");
+		keyConcept2Uri = URI.of(dtDefinition, "20");
 		CONCEPT_KEY_NAME = dtDefinition.getClassSimpleName();
 
 		preTestLogin();

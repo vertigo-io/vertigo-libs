@@ -38,9 +38,7 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.social.MyAppConfig;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.services.notification.Notification;
@@ -92,7 +90,7 @@ public class NotificationServicesTest {
 		accountURI0 = createAccountURI("0");
 		accountURI1 = createAccountURI("1");
 		accountURI2 = createAccountURI("2");
-		groupURI = new URI<>(DtObjectUtil.findDtDefinition(AccountGroup.class), "100");
+		groupURI = URI.of(AccountGroup.class, "100");
 
 		mockIdentities.initData();
 	}
@@ -105,8 +103,7 @@ public class NotificationServicesTest {
 	}
 
 	private static URI<Account> createAccountURI(final String id) {
-		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);
-		return new URI<>(dtDefinition, id);
+		return URI.of(Account.class, id);
 	}
 
 	@Test
