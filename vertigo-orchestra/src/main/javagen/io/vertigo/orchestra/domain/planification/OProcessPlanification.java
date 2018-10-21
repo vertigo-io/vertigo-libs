@@ -88,7 +88,7 @@ public final class OProcessPlanification implements Entity {
 	public URI<OProcessPlanification> getURI() {
 		return URI.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id Planification'.
@@ -107,7 +107,7 @@ public final class OProcessPlanification implements Entity {
 	public void setPrpId(final Long prpId) {
 		this.prpId = prpId;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date d'execution prévue'.
@@ -126,7 +126,7 @@ public final class OProcessPlanification implements Entity {
 	public void setExpectedTime(final java.util.Date expectedTime) {
 		this.expectedTime = expectedTime;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
@@ -145,7 +145,7 @@ public final class OProcessPlanification implements Entity {
 	public void setInitialParams(final String initialParams) {
 		this.initialParams = initialParams;
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Processus'.
@@ -153,7 +153,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getProId() {
-		return (Long) proIdAccessor.getId();
+		return (Long)  proIdAccessor.getId();
 	}
 
 	/**
@@ -164,7 +164,7 @@ public final class OProcessPlanification implements Entity {
 	public void setProId(final Long proId) {
 		proIdAccessor.setId(proId);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Node'.
@@ -172,7 +172,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Node")
 	public Long getNodId() {
-		return (Long) nodIdAccessor.getId();
+		return (Long)  nodIdAccessor.getId();
 	}
 
 	/**
@@ -183,7 +183,7 @@ public final class OProcessPlanification implements Entity {
 	public void setNodId(final Long nodId) {
 		nodIdAccessor.setId(nodId);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'PlanificationState'.
@@ -191,7 +191,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "PlanificationState")
 	public String getSstCd() {
-		return (String) sstCdAccessor.getId();
+		return (String)  sstCdAccessor.getId();
 	}
 
 	/**
@@ -203,14 +203,14 @@ public final class OProcessPlanification implements Entity {
 		sstCdAccessor.setId(sstCd);
 	}
 
-	/**
+ 	/**
 	 * Association : Node.
 	 * @return l'accesseur vers la propriété 'Node'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.execution.ONode> node() {
 		return nodIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.execution.ONode getNode() {
 		// we keep the lazyness
@@ -229,14 +229,14 @@ public final class OProcessPlanification implements Entity {
 		return nodIdAccessor.getURI();
 	}
 
-	/**
+ 	/**
 	 * Association : Processus.
 	 * @return l'accesseur vers la propriété 'Processus'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.definition.OProcess> processus() {
 		return proIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.definition.OProcess getProcessus() {
 		// we keep the lazyness
@@ -255,14 +255,14 @@ public final class OProcessPlanification implements Entity {
 		return proIdAccessor.getURI();
 	}
 
-	/**
+ 	/**
 	 * Association : PlanificationState.
 	 * @return l'accesseur vers la propriété 'PlanificationState'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.OSchedulerState> planificationState() {
 		return sstCdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.referential.OSchedulerState getPlanificationState() {
 		// we keep the lazyness
@@ -280,7 +280,7 @@ public final class OProcessPlanification implements Entity {
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.OSchedulerState> getPlanificationStateURI() {
 		return sstCdAccessor.getURI();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

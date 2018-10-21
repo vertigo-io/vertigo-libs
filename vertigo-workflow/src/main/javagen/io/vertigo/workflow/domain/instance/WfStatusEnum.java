@@ -28,17 +28,18 @@ public enum WfStatusEnum implements MasterDataEnum<io.vertigo.workflow.domain.in
 	CRE("CRE"), //
 	STA("STA"), //
 	PAU("PAU"), //
-	END("END");
+	END("END")
+	;
 
-	private final URI<io.vertigo.workflow.domain.instance.WfStatus> entityUri;
+	private final Serializable entityId;
 
 	private WfStatusEnum(final Serializable id) {
-		entityUri = URI.of(io.vertigo.workflow.domain.instance.WfStatus.class, id);
+		entityId = id;
 	}
 
 	@Override
 	public URI<io.vertigo.workflow.domain.instance.WfStatus> getEntityUri() {
-		return entityUri;
+		return URI.of(io.vertigo.workflow.domain.instance.WfStatus.class, entityId);
 	}
 
 }

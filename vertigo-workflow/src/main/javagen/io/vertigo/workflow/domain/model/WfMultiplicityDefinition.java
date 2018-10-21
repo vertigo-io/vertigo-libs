@@ -40,7 +40,7 @@ public final class WfMultiplicityDefinition implements DtStaticMasterData {
 	public URI<WfMultiplicityDefinition> getURI() {
 		return URI.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Multiplicity code'.
@@ -59,7 +59,7 @@ public final class WfMultiplicityDefinition implements DtStaticMasterData {
 	public void setWfmdCode(final String wfmdCode) {
 		this.wfmdCode = wfmdCode;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Label'.
@@ -78,7 +78,7 @@ public final class WfMultiplicityDefinition implements DtStaticMasterData {
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

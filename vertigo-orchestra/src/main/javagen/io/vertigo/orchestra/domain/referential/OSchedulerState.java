@@ -41,7 +41,7 @@ public final class OSchedulerState implements Entity {
 	public URI<OSchedulerState> getURI() {
 		return URI.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Code'.
@@ -60,7 +60,7 @@ public final class OSchedulerState implements Entity {
 	public void setSstCd(final String sstCd) {
 		this.sstCd = sstCd;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Libellé'.
@@ -79,7 +79,7 @@ public final class OSchedulerState implements Entity {
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

@@ -106,7 +106,7 @@ public final class OActivityExecution implements Entity {
 	public URI<OActivityExecution> getURI() {
 		return URI.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id de l'execution d'un processus'.
@@ -125,7 +125,7 @@ public final class OActivityExecution implements Entity {
 	public void setAceId(final Long aceId) {
 		this.aceId = aceId;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de création'.
@@ -144,7 +144,7 @@ public final class OActivityExecution implements Entity {
 	public void setCreationTime(final java.util.Date creationTime) {
 		this.creationTime = creationTime;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de début'.
@@ -163,7 +163,7 @@ public final class OActivityExecution implements Entity {
 	public void setBeginTime(final java.util.Date beginTime) {
 		this.beginTime = beginTime;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de fin'.
@@ -182,7 +182,7 @@ public final class OActivityExecution implements Entity {
 	public void setEndTime(final java.util.Date endTime) {
 		this.endTime = endTime;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Implémentation effective de l'execution'.
@@ -201,7 +201,7 @@ public final class OActivityExecution implements Entity {
 	public void setEngine(final String engine) {
 		this.engine = engine;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Token d'identification'.
@@ -220,7 +220,7 @@ public final class OActivityExecution implements Entity {
 	public void setToken(final String token) {
 		this.token = token;
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Activity'.
@@ -228,7 +228,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Activity")
 	public Long getActId() {
-		return (Long) actIdAccessor.getId();
+		return (Long)  actIdAccessor.getId();
 	}
 
 	/**
@@ -239,7 +239,7 @@ public final class OActivityExecution implements Entity {
 	public void setActId(final Long actId) {
 		actIdAccessor.setId(actId);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Processus'.
@@ -247,7 +247,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getPreId() {
-		return (Long) preIdAccessor.getId();
+		return (Long)  preIdAccessor.getId();
 	}
 
 	/**
@@ -258,7 +258,7 @@ public final class OActivityExecution implements Entity {
 	public void setPreId(final Long preId) {
 		preIdAccessor.setId(preId);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Node'.
@@ -266,7 +266,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Node")
 	public Long getNodId() {
-		return (Long) nodIdAccessor.getId();
+		return (Long)  nodIdAccessor.getId();
 	}
 
 	/**
@@ -277,7 +277,7 @@ public final class OActivityExecution implements Entity {
 	public void setNodId(final Long nodId) {
 		nodIdAccessor.setId(nodId);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'ExecutionState'.
@@ -285,7 +285,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "ExecutionState")
 	public String getEstCd() {
-		return (String) estCdAccessor.getId();
+		return (String)  estCdAccessor.getId();
 	}
 
 	/**
@@ -297,14 +297,14 @@ public final class OActivityExecution implements Entity {
 		estCdAccessor.setId(estCd);
 	}
 
-	/**
+ 	/**
 	 * Association : Activity.
 	 * @return l'accesseur vers la propriété 'Activity'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.definition.OActivity> activity() {
 		return actIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.definition.OActivity getActivity() {
 		// we keep the lazyness
@@ -323,14 +323,14 @@ public final class OActivityExecution implements Entity {
 		return actIdAccessor.getURI();
 	}
 
-	/**
+ 	/**
 	 * Association : ExecutionState.
 	 * @return l'accesseur vers la propriété 'ExecutionState'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> executionState() {
 		return estCdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.referential.OExecutionState getExecutionState() {
 		// we keep the lazyness
@@ -349,14 +349,14 @@ public final class OActivityExecution implements Entity {
 		return estCdAccessor.getURI();
 	}
 
-	/**
+ 	/**
 	 * Association : Node.
 	 * @return l'accesseur vers la propriété 'Node'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.execution.ONode> node() {
 		return nodIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.execution.ONode getNode() {
 		// we keep the lazyness
@@ -375,14 +375,14 @@ public final class OActivityExecution implements Entity {
 		return nodIdAccessor.getURI();
 	}
 
-	/**
+ 	/**
 	 * Association : Processus.
 	 * @return l'accesseur vers la propriété 'Processus'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.execution.OProcessExecution> processusExecution() {
 		return preIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.execution.OProcessExecution getProcessusExecution() {
 		// we keep the lazyness
@@ -400,7 +400,7 @@ public final class OActivityExecution implements Entity {
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.execution.OProcessExecution> getProcessusExecutionURI() {
 		return preIdAccessor.getURI();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

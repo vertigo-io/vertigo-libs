@@ -19,9 +19,9 @@
 package io.vertigo.workflow.domain.instance;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.EnumVAccessor;
 import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.model.VAccessor;
+import io.vertigo.dynamo.domain.model.EnumVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -90,7 +90,7 @@ public final class WfWorkflow implements Entity {
 	public URI<WfWorkflow> getURI() {
 		return URI.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id Workflow'.
@@ -109,7 +109,7 @@ public final class WfWorkflow implements Entity {
 	public void setWfwId(final Long wfwId) {
 		this.wfwId = wfwId;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'creation date'.
@@ -128,7 +128,7 @@ public final class WfWorkflow implements Entity {
 	public void setCreationDate(final java.util.Date creationDate) {
 		this.creationDate = creationDate;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'itemId'.
@@ -147,7 +147,7 @@ public final class WfWorkflow implements Entity {
 	public void setItemId(final Long itemId) {
 		this.itemId = itemId;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'username'.
@@ -166,7 +166,7 @@ public final class WfWorkflow implements Entity {
 	public void setUsername(final String username) {
 		this.username = username;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'user_logic'.
@@ -185,7 +185,7 @@ public final class WfWorkflow implements Entity {
 	public void setUserLogic(final Boolean userLogic) {
 		this.userLogic = userLogic;
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'WfWorkflowDefinition'.
@@ -193,7 +193,7 @@ public final class WfWorkflow implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", required = true, label = "WfWorkflowDefinition")
 	public Long getWfwdId() {
-		return (Long) wfwdIdAccessor.getId();
+		return (Long)  wfwdIdAccessor.getId();
 	}
 
 	/**
@@ -204,7 +204,7 @@ public final class WfWorkflow implements Entity {
 	public void setWfwdId(final Long wfwdId) {
 		wfwdIdAccessor.setId(wfwdId);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'WfStatus'.
@@ -212,7 +212,7 @@ public final class WfWorkflow implements Entity {
 	 */
 	@Field(domain = "DO_WF_CODE", type = "FOREIGN_KEY", required = true, label = "WfStatus")
 	public String getWfsCode() {
-		return (String) wfsCodeAccessor.getId();
+		return (String)  wfsCodeAccessor.getId();
 	}
 
 	/**
@@ -223,7 +223,7 @@ public final class WfWorkflow implements Entity {
 	public void setWfsCode(final String wfsCode) {
 		wfsCodeAccessor.setId(wfsCode);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'current'.
@@ -231,7 +231,7 @@ public final class WfWorkflow implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", label = "current")
 	public Long getWfaId2() {
-		return (Long) wfaId2Accessor.getId();
+		return (Long)  wfaId2Accessor.getId();
 	}
 
 	/**
@@ -243,14 +243,14 @@ public final class WfWorkflow implements Entity {
 		wfaId2Accessor.setId(wfaId2);
 	}
 
-	/**
+ 	/**
 	 * Association : WfWorkflowDefinition.
 	 * @return l'accesseur vers la propriété 'WfWorkflowDefinition'
 	 */
 	public VAccessor<io.vertigo.workflow.domain.model.WfWorkflowDefinition> wfWorkflowDefinition() {
 		return wfwdIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.workflow.domain.model.WfWorkflowDefinition getWfWorkflowDefinition() {
 		// we keep the lazyness
@@ -269,14 +269,14 @@ public final class WfWorkflow implements Entity {
 		return wfwdIdAccessor.getURI();
 	}
 
-	/**
+ 	/**
 	 * Association : current.
 	 * @return l'accesseur vers la propriété 'current'
 	 */
 	public VAccessor<io.vertigo.workflow.domain.instance.WfActivity> current() {
 		return wfaId2Accessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.workflow.domain.instance.WfActivity getCurrent() {
 		// we keep the lazyness
@@ -295,14 +295,14 @@ public final class WfWorkflow implements Entity {
 		return wfaId2Accessor.getURI();
 	}
 
-	/**
+ 	/**
 	 * Association : WfStatus.
 	 * @return l'accesseur vers la propriété 'WfStatus'
 	 */
 	public EnumVAccessor<io.vertigo.workflow.domain.instance.WfStatus, io.vertigo.workflow.domain.instance.WfStatusEnum> wfStatus() {
 		return wfsCodeAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.workflow.domain.instance.WfStatus getWfStatus() {
 		// we keep the lazyness
@@ -320,7 +320,7 @@ public final class WfWorkflow implements Entity {
 	public io.vertigo.dynamo.domain.model.URI<io.vertigo.workflow.domain.instance.WfStatus> getWfStatusURI() {
 		return wfsCodeAccessor.getURI();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
