@@ -120,7 +120,7 @@ public final class WfDecision implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'decision date'.
-	 * @return java.util.Date decisionDate
+	 * @return Date decisionDate
 	 */
 	@Field(domain = "DO_WF_DATE", label = "decision date")
 	public java.util.Date getDecisionDate() {
@@ -130,7 +130,7 @@ public final class WfDecision implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'decision date'.
-	 * @param decisionDate java.util.Date
+	 * @param decisionDate Date
 	 */
 	public void setDecisionDate(final java.util.Date decisionDate) {
 		this.decisionDate = decisionDate;

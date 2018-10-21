@@ -81,7 +81,7 @@ public final class RuleDefinition implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'creationDate'.
-	 * @return java.util.Date creationDate
+	 * @return Date creationDate
 	 */
 	@Field(domain = "DO_RULES_DATE", label = "creationDate")
 	public java.util.Date getCreationDate() {
@@ -91,7 +91,7 @@ public final class RuleDefinition implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'creationDate'.
-	 * @param creationDate java.util.Date
+	 * @param creationDate Date
 	 */
 	public void setCreationDate(final java.util.Date creationDate) {
 		this.creationDate = creationDate;
@@ -145,7 +145,7 @@ public final class RuleDefinition implements Entity {
 
 	/**
 	 * Association : RuleConditionDefinition.
-	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.rules.domain.RuleConditionDefinition>
+	 * @return DtList de io.vertigo.rules.domain.RuleConditionDefinition
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.rules.domain.RuleConditionDefinition> getRuleConditionDefinitionList() {

@@ -17,8 +17,8 @@ create Task TK_GET_PROCESS_BY_PRO_ID {
         	from o_process pro   
         	where pro.PRO_ID = #PRO_ID#     	
 			"
-	attribute PRO_ID	 	{domain : DO_O_IDENTIFIANT		notNull:"true" 	inOut :"in"}
-	attribute DT_O_PROCESS_UI	 	{domain : DO_DT_O_PROCESS_UI_DTO		notNull:"true" 	inOut :"out"}
+	attribute PRO_ID	 	{domain : DO_O_IDENTIFIANT		required:"true" 	inOut :"in"}
+	attribute DT_O_PROCESS_UI	 	{domain : DO_DT_O_PROCESS_UI_DTO		required:"true" 	inOut :"out"}
 },
 
 create Task TK_SEARCH_PROCESS_BY_LABEL {
@@ -37,7 +37,7 @@ create Task TK_SEARCH_PROCESS_BY_LABEL {
         	from o_process pro   
         	where lower(pro.LABEL) like lower(#SEARCH#)  and pro.ACTIVE_VERSION is true
 			"
-	attribute SEARCH	 	{domain : DO_O_LIBELLE		notNull:"true" 	inOut :"in"}
-	attribute DTC_O_PROCESS_UI	 	{domain : DO_DT_O_PROCESS_UI_DTC		notNull:"true" 	inOut :"out"}
+	attribute SEARCH	 	{domain : DO_O_LIBELLE		required:"true" 	inOut :"in"}
+	attribute DTC_O_PROCESS_UI	 	{domain : DO_DT_O_PROCESS_UI_DTC		required:"true" 	inOut :"out"}
 }
 

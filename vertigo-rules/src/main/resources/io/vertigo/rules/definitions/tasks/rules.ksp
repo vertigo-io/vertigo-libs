@@ -11,8 +11,8 @@ create Task TK_FIND_ALL_RULES_BY_WORKFLOW_DEFINITION_ID {
 		WHERE 
 			WAD.WFWD_ID = #WFWD_ID#
 	"
-	attribute WFWD_ID					{domain : DO_RULES_ID			  			  notNull:"true" 	  inOut:"in"}
-	attribute RULE_DEFINITION_LIST    {domain:DO_DT_RULE_DEFINITION_DTC,            notNull:"true",     inOut :"out"}
+	attribute WFWD_ID					{domain : DO_RULES_ID			  			  required:"true" 	  inOut:"in"}
+	attribute RULE_DEFINITION_LIST    {domain:DO_DT_RULE_DEFINITION_DTC,            required:"true",     inOut :"out"}
 
 }
 
@@ -29,8 +29,8 @@ WHERE
 	WAD.WFWD_ID = #WFWD_ID#
 	
 	"
-	attribute WFWD_ID					{domain : DO_RULES_ID			  			  notNull:"true" 	  inOut:"in"}
-	attribute RULE_CONDITION_DEFINITION_LIST    {domain:DO_DT_RULE_CONDITION_DEFINITION_DTC,            notNull:"true",     inOut :"out"}
+	attribute WFWD_ID					{domain : DO_RULES_ID			  			  required:"true" 	  inOut:"in"}
+	attribute RULE_CONDITION_DEFINITION_LIST    {domain:DO_DT_RULE_CONDITION_DEFINITION_DTC,            required:"true",     inOut :"out"}
 }
 
 create Task TK_FIND_ALL_SELECTORS_BY_WORKFLOW_DEFINITION_ID {
@@ -44,8 +44,8 @@ create Task TK_FIND_ALL_SELECTORS_BY_WORKFLOW_DEFINITION_ID {
 		WHERE 
 			WAD.WFWD_ID = #WFWD_ID#
 	"
-	attribute WFWD_ID 					{domain : DO_RULES_ID			  		  notNull:"true" 	  inOut:"in"}
-	attribute SELECTOR_DEFINITION_LIST    {domain:DO_DT_SELECTOR_DEFINITION_DTC,            notNull:"true",     inOut :"out"}
+	attribute WFWD_ID 					{domain : DO_RULES_ID			  		  required:"true" 	  inOut:"in"}
+	attribute SELECTOR_DEFINITION_LIST    {domain:DO_DT_SELECTOR_DEFINITION_DTC,            required:"true",     inOut :"out"}
 }
 
 create Task TK_FIND_ALL_FILTERS_BY_WORKFLOW_DEFINITION_ID {
@@ -60,8 +60,8 @@ create Task TK_FIND_ALL_FILTERS_BY_WORKFLOW_DEFINITION_ID {
 		WHERE 
 			WAD.WFWD_ID = #WFWD_ID#
 	"
-	attribute WFWD_ID 					{domain : DO_RULES_ID			  			  notNull:"true" 	  inOut:"in"}
-	attribute RULE_FILTER_DEFINITION_LIST    {domain:DO_DT_RULE_FILTER_DEFINITION_DTC,            notNull:"true",     inOut :"out"}
+	attribute WFWD_ID 					{domain : DO_RULES_ID			  			  required:"true" 	  inOut:"in"}
+	attribute RULE_FILTER_DEFINITION_LIST    {domain:DO_DT_RULE_FILTER_DEFINITION_DTC,            required:"true",     inOut :"out"}
 }
 
 create Task TK_FIND_ITEMS_BY_CRITERIA {
@@ -80,10 +80,10 @@ create Task TK_FIND_ITEMS_BY_CRITERIA {
 		AND EXIST (SELECT 1 FROM RULE_CONDITION_DEFINITION RCD2 RCD2.FIELD = #RULE_CONDITION_CRITERIA_2.FIELD# AND RCD.EXPRESSION = #RULE_CONDITION_CRITERIA_1.VALUE# AND RCD2.ID = RUD.ID)
 		<% } %>
 	"
-	attribute RULE_DEFINITION			{domain: DO_DT_RULE_DEFINITION_DTC,			notNull:"true",	  inOut:"out"}
-	attribute RULE_CONDITION_CRITERIA_1 {domain: DO_DT_RULE_CONDITION_CRITERIA_DTO,	notNull:"true",   inOut:"in"}
-	attribute RULE_CONDITION_CRITERIA_2	{domain: DO_DT_RULE_CONDITION_CRITERIA_DTO,	notNull:"true",   inOut:"in"}
-	attribute ITEMS_ID    				{domain: DO_DT_ITEM_ID_DTC,    				notNull:"true",   inOut:"in"}
+	attribute RULE_DEFINITION			{domain: DO_DT_RULE_DEFINITION_DTC,			required:"true",	  inOut:"out"}
+	attribute RULE_CONDITION_CRITERIA_1 {domain: DO_DT_RULE_CONDITION_CRITERIA_DTO,	required:"true",   inOut:"in"}
+	attribute RULE_CONDITION_CRITERIA_2	{domain: DO_DT_RULE_CONDITION_CRITERIA_DTO,	required:"true",   inOut:"in"}
+	attribute ITEMS_ID    				{domain: DO_DT_ITEM_ID_DTC,    				required:"true",   inOut:"in"}
 }
 
 

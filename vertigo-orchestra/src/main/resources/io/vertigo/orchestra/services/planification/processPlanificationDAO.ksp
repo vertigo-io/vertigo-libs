@@ -11,8 +11,8 @@ create Task TK_GET_PROCESS_TO_EXECUTE {
         	and prp.NOD_ID = #NOD_ID#
         	
 			"
-	attribute DTC_O_PROCESS_PLANIFICATION	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC		notNull:"true" 	inOut :"out"}
-	attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+	attribute DTC_O_PROCESS_PLANIFICATION	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC		required:"true" 	inOut :"out"}
+	attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
 }
 
 
@@ -25,9 +25,9 @@ create Task TK_RESERVE_PROCESS_TO_EXECUTE {
         	where (SST_CD = 'WAITING' and expected_time >= #LOWER_LIMIT# and expected_time <= #UPPER_LIMIT#) 
         			or (SST_CD = 'RESCUED')
 			"
-	 attribute LOWER_LIMIT	 	{domain : DO_O_TIMESTAMP 		notNull:"true" 	inOut :"in"}
-	 attribute UPPER_LIMIT	 	{domain : DO_O_TIMESTAMP 		notNull:"true" 	inOut :"in"}
-	 attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+	 attribute LOWER_LIMIT	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
+	 attribute UPPER_LIMIT	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
+	 attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
 }
 
 create Task TK_GET_LAST_PLANIFICATION_BY_PRO_ID {
@@ -39,8 +39,8 @@ create Task TK_GET_LAST_PLANIFICATION_BY_PRO_ID {
         	order by prp.expected_time desc
         	limit 1
 			"
-		attribute PRO_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
-		attribute DT_O_PROCESS_PLANIFICATION	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTO		notNull:"false" 	inOut :"out"}
+		attribute PRO_ID	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
+		attribute DT_O_PROCESS_PLANIFICATION	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTO		required:"false" 	inOut :"out"}
 }
 
 
@@ -53,8 +53,8 @@ create Task TK_GET_ALL_LAST_PAST_PLANIFICATIONS {
 			for update
 			
 			"
-		attribute CURRENT_DATE 	{domain : DO_O_TIMESTAMP 			notNull:"true" 	inOut :"in"}
-		attribute PROCESS_PLANIFICATIONS	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC		notNull:"true" 	inOut :"out"}
+		attribute CURRENT_DATE 	{domain : DO_O_TIMESTAMP 			required:"true" 	inOut :"in"}
+		attribute PROCESS_PLANIFICATIONS	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC		required:"true" 	inOut :"out"}
 }
 
 
@@ -71,7 +71,7 @@ create Task TK_CLEAN_PLANIFICATIONS_ON_BOOT {
 				    group by pro_id
 				) pp on pp.pro_id = prp.pro_id and pp.MaxDate = prp.expected_time)
 			"
-		attribute CURRENT_DATE 	{domain : DO_O_TIMESTAMP 			notNull:"true" 	inOut :"in"}
+		attribute CURRENT_DATE 	{domain : DO_O_TIMESTAMP 			required:"true" 	inOut :"in"}
 }
 
 
@@ -82,7 +82,7 @@ create Task TK_CLEAN_FUTURE_PLANIFICATIONS {
         	delete from o_process_planification prp
         	where prp.PRO_ID in (select pro.PRO_ID from o_process pro where pro.NAME = #PROCESS_NAME#) and prp.SST_CD = 'WAITING' and prp.expected_time > current_timestamp
 			"
-	 attribute PROCESS_NAME	 	{domain : DO_O_LIBELLE 		notNull:"true" 	inOut :"in"}
+	 attribute PROCESS_NAME	 	{domain : DO_O_LIBELLE 		required:"true" 	inOut :"in"}
 }
 
 

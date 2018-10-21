@@ -113,7 +113,7 @@ public final class WfWorkflow implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'creation date'.
-	 * @return java.util.Date creationDate
+	 * @return Date creationDate
 	 */
 	@Field(domain = "DO_WF_DATE", label = "creation date")
 	public java.util.Date getCreationDate() {
@@ -123,7 +123,7 @@ public final class WfWorkflow implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'creation date'.
-	 * @param creationDate java.util.Date
+	 * @param creationDate Date
 	 */
 	public void setCreationDate(final java.util.Date creationDate) {
 		this.creationDate = creationDate;

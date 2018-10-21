@@ -2,47 +2,47 @@ package io.vertigo.publisher.mock
 
 /*Pour chargement des données*/
 create DtDefinition DT_VILLE {
-  	field NOM 			{domain : DO_STRING      	label : "Nom"      		notNull : "false"}
-  	field CODE_POSTAL 	{domain : DO_STRING      	label : "Code postal" 	notNull : "false"}
+  	field NOM 			{domain : DO_STRING      	label : "Nom"      		required : "false"}
+  	field CODE_POSTAL 	{domain : DO_STRING      	label : "Code postal" 	required : "false"}
 }
  
 create DtDefinition DT_ADDRESS {
-  	field RUE			{domain : DO_STRING      	label : "Rue"      		notNull : "false"}
-  	field VILLE 		{domain : DO_DT_VILLE_DTO   label : "Ville"      	notNull : "false"}
+  	field RUE			{domain : DO_STRING      	label : "Rue"      		required : "false"}
+  	field VILLE 		{domain : DO_DT_VILLE_DTO   label : "Ville"      	required : "false"}
 }
  
 create DtDefinition DT_ENQUETEUR {
-  	field NOM 			{domain : DO_STRING      	label : "Nom"      		notNull : "false"}
-  	field PRENOM 		{domain : DO_STRING      	label : "Prenom"      	notNull : "false"}
+  	field NOM 			{domain : DO_STRING      	label : "Nom"      		required : "false"}
+  	field PRENOM 		{domain : DO_STRING      	label : "Prenom"      	required : "false"}
 }
  
 create DtDefinition DT_MIS_EN_CAUSE {
-  	field SI_HOMME 			{domain : DO_BOOLEAN      	label : "Sexe"      		notNull : "false"}
-  	field NOM 				{domain : DO_STRING      	label : "Nom"      			notNull : "false"}
-  	field PRENOM 			{domain : DO_STRING      	label : "Prenom"      		notNull : "false"}
-  	field ADRESSES_CONNUES 	{domain : DO_DT_ADDRESS_DTC	label : "Addresses connues"	notNull : "false"}   
+  	field SI_HOMME 			{domain : DO_BOOLEAN      	label : "Sexe"      		required : "false"}
+  	field NOM 				{domain : DO_STRING      	label : "Nom"      			required : "false"}
+  	field PRENOM 			{domain : DO_STRING      	label : "Prenom"      		required : "false"}
+  	field ADRESSES_CONNUES 	{domain : DO_DT_ADDRESS_DTC	label : "Addresses connues"	required : "false"}   
 }
 
 create DtDefinition DT_ENQUETE {
-  	field ENQUETE_TERMINEE {domain : DO_BOOLEAN      			label : "Terminée?" notNull : "false"}
-  	field CODE_ENQUETE 		{domain : DO_STRING      			label : "Code"      notNull : "false"}
-  	field FAIT 				{domain : DO_STRING      			label : "Sexe"      notNull : "false"}
-  	field SI_GRAVE 			{domain : DO_BOOLEAN      			label : "Sexe"      notNull : "false"}
+  	field ENQUETE_TERMINEE {domain : DO_BOOLEAN      			label : "Terminée?" required : "false"}
+  	field CODE_ENQUETE 		{domain : DO_STRING      			label : "Code"      required : "false"}
+  	field FAIT 				{domain : DO_STRING      			label : "Sexe"      required : "false"}
+  	field SI_GRAVE 			{domain : DO_BOOLEAN      			label : "Sexe"      required : "false"}
 }
 
 create DtDefinition DT_PUBLISHER_MOCK {
-	field TITRE 		{ domain : DO_STRING      				label : "Titre"      						notNull : "false"}
-	field NOM 			{ domain : DO_STRING      				label : "Nom"      							notNull : "false"}
-	field PRENOM 		{ domain : DO_STRING      				label : "Prénom"      						notNull : "false"}
-	field ADDRESS 		{ domain : DO_STRING      				label : "Adresse {multi ligne}"      		notNull : "false"}
-	field COMMENTAIRE 	{ domain : DO_STRING      				label : "Commentaire {multi paragraphe}" 	notNull : "false"}
-	field BOOLEAN_1 	{ domain : DO_BOOLEAN     				label : "booleen 1"      					notNull : "false"}
-	field BOOLEAN_2 	{ domain : DO_BOOLEAN     				label : "booleen 2"      					notNull : "false"}
-	field BOOLEAN_3 	{ domain : DO_BOOLEAN     				label : "booleen 3"      					notNull : "false"}
-	field TEST_DUMMY 	{ domain : DO_STRING    				label : "Test champs inutilisé"     		notNull : "false"}
-	field TEST_LONG 	{ domain : DO_LONG      				label : "Test long"      					notNull : "false"}
-	field TEST_DOUBLE 	{ domain : DO_DOUBLE      				label : "Test double"      					notNull : "false"}
-	field TEST_INTEGER 	{ domain : DO_INTEGER      				label : "Test integer"      				notNull : "false"}
-	field TEST_DATE 	{ domain : DO_DATE      				label : "Test date"      					notNull : "false"}
-	field DTC_TEST 		{ domain : DO_DT_PUBLISHER_MOCK_DTC 	label : "Test list"      					notNull : "false"}
+	field TITRE 		{ domain : DO_STRING      				label : "Titre"      						required : "false"}
+	field NOM 			{ domain : DO_STRING      				label : "Nom"      							required : "false"}
+	field PRENOM 		{ domain : DO_STRING      				label : "Prénom"      						required : "false"}
+	field ADDRESS 		{ domain : DO_STRING      				label : "Adresse {multi ligne}"      		required : "false"}
+	field COMMENTAIRE 	{ domain : DO_STRING      				label : "Commentaire {multi paragraphe}" 	required : "false"}
+	field BOOLEAN_1 	{ domain : DO_BOOLEAN     				label : "booleen 1"      					required : "false"}
+	field BOOLEAN_2 	{ domain : DO_BOOLEAN     				label : "booleen 2"      					required : "false"}
+	field BOOLEAN_3 	{ domain : DO_BOOLEAN     				label : "booleen 3"      					required : "false"}
+	field TEST_DUMMY 	{ domain : DO_STRING    				label : "Test champs inutilisé"     		required : "false"}
+	field TEST_LONG 	{ domain : DO_LONG      				label : "Test long"      					required : "false"}
+	field TEST_DOUBLE 	{ domain : DO_DOUBLE      				label : "Test double"      					required : "false"}
+	field TEST_INTEGER 	{ domain : DO_INTEGER      				label : "Test integer"      				required : "false"}
+	field TEST_DATE 	{ domain : DO_DATE      				label : "Test date"      					required : "false"}
+	field DTC_TEST 		{ domain : DO_DT_PUBLISHER_MOCK_DTC 	label : "Test list"      					required : "false"}
 }

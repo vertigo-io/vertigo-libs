@@ -78,10 +78,10 @@ create Task TK_GET_EXECUTION_SUMMARIES_BY_DATE {
 			;
         	
 			"
-	attribute DTC_EXECUTION_SUMMARY	 	{domain : DO_DT_O_EXECUTION_SUMMARY_DTC 		notNull:"true" 	inOut :"out"}
-	attribute DATE_MIN	 	{domain : DO_O_TIMESTAMP 		notNull:"true" 	inOut :"in"}
-	attribute DATE_MAX	 	{domain : DO_O_TIMESTAMP 		notNull:"true" 	inOut :"in"}
-	attribute STATUS	 	{domain : DO_O_CODE_IDENTIFIANT		notNull:"true" 	inOut :"in"}
+	attribute DTC_EXECUTION_SUMMARY	 	{domain : DO_DT_O_EXECUTION_SUMMARY_DTC 		required:"true" 	inOut :"out"}
+	attribute DATE_MIN	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
+	attribute DATE_MAX	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
+	attribute STATUS	 	{domain : DO_O_CODE_IDENTIFIANT		required:"true" 	inOut :"in"}
 },
 
 create Task TK_GET_EXECUTION_SUMMARY_BY_DATE_AND_NAME {
@@ -155,8 +155,8 @@ create Task TK_GET_EXECUTION_SUMMARY_BY_DATE_AND_NAME {
 					) lat_planif on true;
         	
 			"
-	attribute DT_EXECUTION_SUMMARY	 	{domain : DO_DT_O_EXECUTION_SUMMARY_DTO 		notNull:"true" 	inOut :"out"}
-	attribute DATE_MIN	 	{domain : DO_O_TIMESTAMP 		notNull:"true" 	inOut :"in"}
-	attribute DATE_MAX	 	{domain : DO_O_TIMESTAMP 		notNull:"true" 	inOut :"in"}
-	attribute NAME	 		{domain : DO_O_LIBELLE 		notNull:"true" 	inOut :"in"}
+	attribute DT_EXECUTION_SUMMARY	 	{domain : DO_DT_O_EXECUTION_SUMMARY_DTO 		required:"true" 	inOut :"out"}
+	attribute DATE_MIN	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
+	attribute DATE_MAX	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
+	attribute NAME	 		{domain : DO_O_LIBELLE 		required:"true" 	inOut :"in"}
 },

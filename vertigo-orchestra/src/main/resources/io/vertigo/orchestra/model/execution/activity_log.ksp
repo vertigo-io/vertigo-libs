@@ -2,9 +2,9 @@ package io.vertigo.orchestra.domain.execution
 
 create DtDefinition DT_O_ACTIVITY_LOG {
 	storeName : "orchestra"
-	key ACL_ID			{domain : DO_O_IDENTIFIANT, label :"Id du log", notNull:"true",}
-	field LOG 			{domain : DO_O_TEXT, label :"Contenu du log", notNull:"false",}
-	field ATTACHMENT 		{domain : DO_O_TEXT, label :"Fichier joint", notNull:"false",}
+	id ACL_ID			{domain : DO_O_IDENTIFIANT, label :"Id du log", }
+	field LOG 			{domain : DO_O_TEXT, label :"Contenu du log", required:"false",}
+	field ATTACHMENT 		{domain : DO_O_TEXT, label :"Fichier joint", required:"false",}
   
 },
 

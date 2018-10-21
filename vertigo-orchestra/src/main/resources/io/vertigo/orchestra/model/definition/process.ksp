@@ -2,17 +2,17 @@ package io.vertigo.orchestra.domain.definition
 
 create DtDefinition DT_O_PROCESS{
 	storeName : "orchestra"
-	key PRO_ID					{domain : DO_O_IDENTIFIANT, label :"Id de la definition du processus", notNull:"true",}
-	field NAME   				{domain : DO_O_LIBELLE, label :"Nom du processus", notNull:"false",}
-	field LABEL   				{domain : DO_O_LIBELLE, label :"Libellé du processus", notNull:"false",},
-	field CRON_EXPRESSION		{domain : DO_O_LIBELLE, label :"Expression récurrence du processus", notNull:"false",}
-	field INITIAL_PARAMS		{domain : DO_O_JSON_TEXT, label :"Paramètres initiaux sous forme de JSON ", notNull:"false",}
-	field MULTIEXECUTION   		{domain : DO_O_BOOLEEN, label :"Accepte la multi-execution", notNull:"false",}
-	field ACTIVE_VERSION  		{domain : DO_O_BOOLEEN, label :"Version active", notNull:"true",}
-	field ACTIVE   				{domain : DO_O_BOOLEEN, label :"Processus actif", notNull:"true",}
-	field RESCUE_PERIOD			{domain : DO_O_NOMBRE, label :"Temps de validité d'une planification", notNull:"true",}
-	field METADATAS				{domain : DO_O_METADATAS, label :"Meta-données du processus", notNull:"false",}
-  	field NEED_UPDATE  			{domain : DO_O_BOOLEEN, label :"Doit être mise à jour lors du démarrage", notNull:"true",}
+	id PRO_ID					{domain : DO_O_IDENTIFIANT, label :"Id de la definition du processus"}
+	field NAME   				{domain : DO_O_LIBELLE, label :"Nom du processus", required:"false",}
+	field LABEL   				{domain : DO_O_LIBELLE, label :"Libellé du processus", required:"false",},
+	field CRON_EXPRESSION		{domain : DO_O_LIBELLE, label :"Expression récurrence du processus", required:"false",}
+	field INITIAL_PARAMS		{domain : DO_O_JSON_TEXT, label :"Paramètres initiaux sous forme de JSON ", required:"false",}
+	field MULTIEXECUTION   		{domain : DO_O_BOOLEEN, label :"Accepte la multi-execution", required:"false",}
+	field ACTIVE_VERSION  		{domain : DO_O_BOOLEEN, label :"Version active", required:"true",}
+	field ACTIVE   				{domain : DO_O_BOOLEEN, label :"Processus actif", required:"true",}
+	field RESCUE_PERIOD			{domain : DO_O_NOMBRE, label :"Temps de validité d'une planification", required:"true",}
+	field METADATAS				{domain : DO_O_METADATAS, label :"Meta-données du processus", required:"false",}
+  	field NEED_UPDATE  			{domain : DO_O_BOOLEEN, label :"Doit être mise à jour lors du démarrage", required:"true",}
 },
 
 

@@ -10,8 +10,8 @@ create Task TK_GET_ACTIVE_PROCESS_EXECUTION_BY_PRO_ID {
         	where pre.PRO_ID = #PRO_ID#
         	and (pre.EST_CD = 'WAITING' or pre.EST_CD = 'RESERVED' or pre.EST_CD = 'SUBMITTED' or pre.EST_CD = 'RUNNING' or pre.EST_CD = 'PENDING')     	
 			"
-		attribute PRO_ID					{domain : DO_O_IDENTIFIANT 						notNull:"true" 	inOut :"in"}
-		attribute DTC_PROCESS_EXECUTION	 	{domain : DO_DT_O_PROCESS_EXECUTION_DTC 		notNull:"true" 	inOut :"out"}
+		attribute PRO_ID					{domain : DO_O_IDENTIFIANT 						required:"true" 	inOut :"in"}
+		attribute DTC_PROCESS_EXECUTION	 	{domain : DO_DT_O_PROCESS_EXECUTION_DTC 		required:"true" 	inOut :"out"}
 },
 
 create Task TK_GET_LOG_BY_PRE_ID {
@@ -25,8 +25,8 @@ create Task TK_GET_LOG_BY_PRE_ID {
 			where ace.PRE_ID = #PRE_ID#
 			order by ace.end_time desc limit 1         	
 			"
-		attribute PRE_ID					{domain : DO_O_IDENTIFIANT 				notNull:"true" 		inOut :"in" }
-		attribute DT_ACTIVITY_LOG	 		{domain : DO_DT_O_ACTIVITY_LOG_DTO 		notNull:"false" 	inOut :"out"}
+		attribute PRE_ID					{domain : DO_O_IDENTIFIANT 				required:"true" 		inOut :"in" }
+		attribute DT_ACTIVITY_LOG	 		{domain : DO_DT_O_ACTIVITY_LOG_DTO 		required:"false" 	inOut :"out"}
 },
 
 create Task TK_UPDATE_PROCESS_EXECUTION_TREATMENT {
@@ -40,10 +40,10 @@ create Task TK_UPDATE_PROCESS_EXECUTION_TREATMENT {
         		where PRE_ID = #PRE_ID#
          	
 			"
-		attribute PRE_ID					{domain : DO_O_IDENTIFIANT 			notNull:"true" 		inOut :"in" }
-		attribute CHECKED					{domain : DO_O_BOOLEEN 				notNull:"true" 		inOut :"in" }
-		attribute CHECKING_DATE				{domain : DO_O_TIMESTAMP 			notNull:"true" 		inOut :"in" }
-		attribute CHECKING_COMMENT			{domain : DO_O_TEXT 				notNull:"true" 		inOut :"in" }
+		attribute PRE_ID					{domain : DO_O_IDENTIFIANT 			required:"true" 		inOut :"in" }
+		attribute CHECKED					{domain : DO_O_BOOLEEN 				required:"true" 		inOut :"in" }
+		attribute CHECKING_DATE				{domain : DO_O_TIMESTAMP 			required:"true" 		inOut :"in" }
+		attribute CHECKING_COMMENT			{domain : DO_O_TEXT 				required:"true" 		inOut :"in" }
 },
 
 

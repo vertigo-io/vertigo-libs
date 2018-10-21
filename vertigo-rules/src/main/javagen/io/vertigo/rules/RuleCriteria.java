@@ -57,7 +57,7 @@ public final class RuleCriteria implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Field 1'.
-	 * @return io.vertigo.rules.RuleConditionCriteria conditionCriteria1
+	 * @return RuleConditionCriteria conditionCriteria1
 	 */
 	@Field(domain = "DO_DT_RULE_CONDITION_CRITERIA_DTO", label = "Field 1")
 	public io.vertigo.rules.RuleConditionCriteria getConditionCriteria1() {
@@ -67,7 +67,7 @@ public final class RuleCriteria implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Field 1'.
-	 * @param conditionCriteria1 io.vertigo.rules.RuleConditionCriteria
+	 * @param conditionCriteria1 RuleConditionCriteria
 	 */
 	public void setConditionCriteria1(final io.vertigo.rules.RuleConditionCriteria conditionCriteria1) {
 		this.conditionCriteria1 = conditionCriteria1;
@@ -76,7 +76,7 @@ public final class RuleCriteria implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Field 2'.
-	 * @return io.vertigo.rules.RuleConditionCriteria conditionCriteria2
+	 * @return RuleConditionCriteria conditionCriteria2
 	 */
 	@Field(domain = "DO_DT_RULE_CONDITION_CRITERIA_DTO", label = "Field 2")
 	public io.vertigo.rules.RuleConditionCriteria getConditionCriteria2() {
@@ -86,7 +86,7 @@ public final class RuleCriteria implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Field 2'.
-	 * @param conditionCriteria2 io.vertigo.rules.RuleConditionCriteria
+	 * @param conditionCriteria2 RuleConditionCriteria
 	 */
 	public void setConditionCriteria2(final io.vertigo.rules.RuleConditionCriteria conditionCriteria2) {
 		this.conditionCriteria2 = conditionCriteria2;

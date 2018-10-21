@@ -115,7 +115,7 @@ public final class WfWorkflowDefinition implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'date'.
-	 * @return java.util.Date date
+	 * @return Date date
 	 */
 	@Field(domain = "DO_WF_DATE", label = "date")
 	public java.util.Date getDate() {
@@ -125,7 +125,7 @@ public final class WfWorkflowDefinition implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'date'.
-	 * @param date java.util.Date
+	 * @param date Date
 	 */
 	public void setDate(final java.util.Date date) {
 		this.date = date;
@@ -186,7 +186,7 @@ public final class WfWorkflowDefinition implements Entity {
 
 	/**
 	 * Association : WfTransitionDefinition.
-	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.workflow.domain.model.WfTransitionDefinition>
+	 * @return DtList de io.vertigo.workflow.domain.model.WfTransitionDefinition
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.workflow.domain.model.WfTransitionDefinition> getWfTransitionDefinitionList() {

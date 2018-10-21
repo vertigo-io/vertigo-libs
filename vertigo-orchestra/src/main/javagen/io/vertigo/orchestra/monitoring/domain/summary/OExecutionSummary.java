@@ -103,7 +103,7 @@ public final class OExecutionSummary implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Dernière exécution le'.
-	 * @return java.util.Date lastExecutionTime
+	 * @return Date lastExecutionTime
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Dernière exécution le")
 	public java.util.Date getLastExecutionTime() {
@@ -113,7 +113,7 @@ public final class OExecutionSummary implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Dernière exécution le'.
-	 * @param lastExecutionTime java.util.Date
+	 * @param lastExecutionTime Date
 	 */
 	public void setLastExecutionTime(final java.util.Date lastExecutionTime) {
 		this.lastExecutionTime = lastExecutionTime;
@@ -122,7 +122,7 @@ public final class OExecutionSummary implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Prochaine exécution le'.
-	 * @return java.util.Date nextExecutionTime
+	 * @return Date nextExecutionTime
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Prochaine exécution le")
 	public java.util.Date getNextExecutionTime() {
@@ -132,7 +132,7 @@ public final class OExecutionSummary implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Prochaine exécution le'.
-	 * @param nextExecutionTime java.util.Date
+	 * @param nextExecutionTime Date
 	 */
 	public void setNextExecutionTime(final java.util.Date nextExecutionTime) {
 		this.nextExecutionTime = nextExecutionTime;

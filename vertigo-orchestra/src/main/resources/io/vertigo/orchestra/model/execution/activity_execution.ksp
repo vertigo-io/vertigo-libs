@@ -2,12 +2,12 @@ package io.vertigo.orchestra.domain.execution
 
 create DtDefinition DT_O_ACTIVITY_EXECUTION {
 	storeName : "orchestra"
-	key ACE_ID			{domain : DO_O_IDENTIFIANT, label :"Id de l'execution d'un processus", notNull:"true",},
-	field CREATION_TIME   	{domain : DO_O_TIMESTAMP, label :"Date de création", notNull:"true",},
-	field BEGIN_TIME   	{domain : DO_O_TIMESTAMP, label :"Date de début", notNull:"false",},
-	field END_TIME   	{domain : DO_O_TIMESTAMP, label :"Date de fin", notNull:"false",},
-	field ENGINE   	{domain : DO_O_CLASSE, label :"Implémentation effective de l'execution", notNull:"false",},
-	field TOKEN   	{domain : DO_O_TOKEN, label :"Token d'identification", notNull:"false",},
+	id ACE_ID			{domain : DO_O_IDENTIFIANT, label :"Id de l'execution d'un processus", },
+	field CREATION_TIME   	{domain : DO_O_TIMESTAMP, label :"Date de création", required:"true",},
+	field BEGIN_TIME   	{domain : DO_O_TIMESTAMP, label :"Date de début", required:"false",},
+	field END_TIME   	{domain : DO_O_TIMESTAMP, label :"Date de fin", required:"false",},
+	field ENGINE   	{domain : DO_O_CLASSE, label :"Implémentation effective de l'execution", required:"false",},
+	field TOKEN   	{domain : DO_O_TOKEN, label :"Token d'identification", required:"false",},
   
 },
 

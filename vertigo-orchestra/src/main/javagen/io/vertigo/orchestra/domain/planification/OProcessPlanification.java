@@ -111,7 +111,7 @@ public final class OProcessPlanification implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date d'execution prévue'.
-	 * @return java.util.Date expectedTime
+	 * @return Date expectedTime
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Date d'execution prévue")
 	public java.util.Date getExpectedTime() {
@@ -121,7 +121,7 @@ public final class OProcessPlanification implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date d'execution prévue'.
-	 * @param expectedTime java.util.Date
+	 * @param expectedTime Date
 	 */
 	public void setExpectedTime(final java.util.Date expectedTime) {
 		this.expectedTime = expectedTime;

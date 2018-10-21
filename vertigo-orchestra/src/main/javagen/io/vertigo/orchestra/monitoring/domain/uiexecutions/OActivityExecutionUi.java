@@ -83,7 +83,7 @@ public final class OActivityExecutionUi implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Nom du processus'.
-	 * @return java.util.Date beginTime <b>Obligatoire</b>
+	 * @return Date beginTime <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Nom du processus")
 	public java.util.Date getBeginTime() {
@@ -93,7 +93,7 @@ public final class OActivityExecutionUi implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Nom du processus'.
-	 * @param beginTime java.util.Date <b>Obligatoire</b>
+	 * @param beginTime Date <b>Obligatoire</b>
 	 */
 	public void setBeginTime(final java.util.Date beginTime) {
 		this.beginTime = beginTime;
@@ -102,7 +102,7 @@ public final class OActivityExecutionUi implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Nom du processus'.
-	 * @return java.util.Date endTime <b>Obligatoire</b>
+	 * @return Date endTime <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Nom du processus")
 	public java.util.Date getEndTime() {
@@ -112,7 +112,7 @@ public final class OActivityExecutionUi implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Nom du processus'.
-	 * @param endTime java.util.Date <b>Obligatoire</b>
+	 * @param endTime Date <b>Obligatoire</b>
 	 */
 	public void setEndTime(final java.util.Date endTime) {
 		this.endTime = endTime;

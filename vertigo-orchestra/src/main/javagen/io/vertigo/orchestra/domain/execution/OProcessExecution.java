@@ -115,7 +115,7 @@ public final class OProcessExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de début'.
-	 * @return java.util.Date beginTime <b>Obligatoire</b>
+	 * @return Date beginTime <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Date de début")
 	public java.util.Date getBeginTime() {
@@ -125,7 +125,7 @@ public final class OProcessExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de début'.
-	 * @param beginTime java.util.Date <b>Obligatoire</b>
+	 * @param beginTime Date <b>Obligatoire</b>
 	 */
 	public void setBeginTime(final java.util.Date beginTime) {
 		this.beginTime = beginTime;
@@ -134,7 +134,7 @@ public final class OProcessExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de fin'.
-	 * @return java.util.Date endTime
+	 * @return Date endTime
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Date de fin")
 	public java.util.Date getEndTime() {
@@ -144,7 +144,7 @@ public final class OProcessExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de fin'.
-	 * @param endTime java.util.Date
+	 * @param endTime Date
 	 */
 	public void setEndTime(final java.util.Date endTime) {
 		this.endTime = endTime;
@@ -191,7 +191,7 @@ public final class OProcessExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de prise en charge'.
-	 * @return java.util.Date checkingDate
+	 * @return Date checkingDate
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Date de prise en charge")
 	public java.util.Date getCheckingDate() {
@@ -201,7 +201,7 @@ public final class OProcessExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de prise en charge'.
-	 * @param checkingDate java.util.Date
+	 * @param checkingDate Date
 	 */
 	public void setCheckingDate(final java.util.Date checkingDate) {
 		this.checkingDate = checkingDate;

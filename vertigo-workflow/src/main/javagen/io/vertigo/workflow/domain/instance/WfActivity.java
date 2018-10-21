@@ -110,7 +110,7 @@ public final class WfActivity implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'creation date'.
-	 * @return java.util.Date creationDate
+	 * @return Date creationDate
 	 */
 	@Field(domain = "DO_WF_DATE", label = "creation date")
 	public java.util.Date getCreationDate() {
@@ -120,7 +120,7 @@ public final class WfActivity implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'creation date'.
-	 * @param creationDate java.util.Date
+	 * @param creationDate Date
 	 */
 	public void setCreationDate(final java.util.Date creationDate) {
 		this.creationDate = creationDate;
@@ -200,7 +200,7 @@ public final class WfActivity implements Entity {
 
 	/**
 	 * Association : WfDecision.
-	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.workflow.domain.instance.WfDecision>
+	 * @return DtList de io.vertigo.workflow.domain.instance.WfDecision
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.workflow.domain.instance.WfDecision> getWfDecisionList() {

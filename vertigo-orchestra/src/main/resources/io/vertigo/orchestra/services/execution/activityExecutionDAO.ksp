@@ -11,8 +11,8 @@ create Task TK_GET_ACTIVITIES_TO_LAUNCH {
         	and ace.NOD_ID = #NOD_ID#
         	
 			"
-	attribute DTC_ACTIVITY_EXECUTION	 	{domain : DO_DT_O_ACTIVITY_EXECUTION_DTC 		notNull:"true" 	inOut :"out"}
-	attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
+	attribute DTC_ACTIVITY_EXECUTION	 	{domain : DO_DT_O_ACTIVITY_EXECUTION_DTC 		required:"true" 	inOut :"out"}
+	attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
 },
 
 
@@ -27,9 +27,9 @@ create Task TK_GET_ACTIVITY_EXECUTION_BY_TOKEN {
         	and ace.TOKEN = #TOKEN#
         	
 			"
-	attribute DT_ACTIVITY_EXECUTION	 	{domain : DO_DT_O_ACTIVITY_EXECUTION_DTO 		notNull:"true" 	inOut :"out"}
-	attribute ACE_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
-	attribute TOKEN	 	{domain : DO_O_TOKEN 		notNull:"true" 	inOut :"in"}
+	attribute DT_ACTIVITY_EXECUTION	 	{domain : DO_DT_O_ACTIVITY_EXECUTION_DTO 		required:"true" 	inOut :"out"}
+	attribute ACE_ID	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
+	attribute TOKEN	 	{domain : DO_O_TOKEN 		required:"true" 	inOut :"in"}
 },
 
 create Task TK_RESERVE_ACTIVITIES_TO_LAUNCH {
@@ -48,8 +48,8 @@ create Task TK_RESERVE_ACTIVITIES_TO_LAUNCH {
         			limit #MAX_NUMBER#
         	)
 			"
-		attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
-		attribute MAX_NUMBER	 	{domain : DO_O_NOMBRE 		notNull:"true" 	inOut :"in"}
+		attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
+		attribute MAX_NUMBER	 	{domain : DO_O_NOMBRE 		required:"true" 	inOut :"in"}
 }
 
 
@@ -64,8 +64,8 @@ create Task TK_GET_ACTIVITY_WORKSPACE {
         	
 			"
 			
-		attribute ACE_ID	{domain : DO_O_IDENTIFIANT 		notNull:"true" 	inOut :"in"}
-		attribute IN	 	{domain : DO_O_BOOLEEN 			notNull:"true" 	inOut :"in"}
-		attribute DT_O_ACTIVITY_WORKSPACE	 	{domain : DO_DT_O_ACTIVITY_WORKSPACE_DTO 		notNull:"false" 	inOut :"out"}
+		attribute ACE_ID	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
+		attribute IN	 	{domain : DO_O_BOOLEEN 			required:"true" 	inOut :"in"}
+		attribute DT_O_ACTIVITY_WORKSPACE	 	{domain : DO_DT_O_ACTIVITY_WORKSPACE_DTO 		required:"false" 	inOut :"out"}
 }
 

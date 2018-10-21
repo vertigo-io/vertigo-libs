@@ -129,7 +129,7 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de création'.
-	 * @return java.util.Date creationTime <b>Obligatoire</b>
+	 * @return Date creationTime <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Date de création")
 	public java.util.Date getCreationTime() {
@@ -139,7 +139,7 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de création'.
-	 * @param creationTime java.util.Date <b>Obligatoire</b>
+	 * @param creationTime Date <b>Obligatoire</b>
 	 */
 	public void setCreationTime(final java.util.Date creationTime) {
 		this.creationTime = creationTime;
@@ -148,7 +148,7 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de début'.
-	 * @return java.util.Date beginTime
+	 * @return Date beginTime
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Date de début")
 	public java.util.Date getBeginTime() {
@@ -158,7 +158,7 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de début'.
-	 * @param beginTime java.util.Date
+	 * @param beginTime Date
 	 */
 	public void setBeginTime(final java.util.Date beginTime) {
 		this.beginTime = beginTime;
@@ -167,7 +167,7 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de fin'.
-	 * @return java.util.Date endTime
+	 * @return Date endTime
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Date de fin")
 	public java.util.Date getEndTime() {
@@ -177,7 +177,7 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de fin'.
-	 * @param endTime java.util.Date
+	 * @param endTime Date
 	 */
 	public void setEndTime(final java.util.Date endTime) {
 		this.endTime = endTime;

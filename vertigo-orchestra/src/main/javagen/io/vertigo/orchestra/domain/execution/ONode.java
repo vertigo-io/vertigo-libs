@@ -84,7 +84,7 @@ public final class ONode implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de dernière activité'.
-	 * @return java.util.Date heartbeat
+	 * @return Date heartbeat
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Date de dernière activité")
 	public java.util.Date getHeartbeat() {
@@ -94,7 +94,7 @@ public final class ONode implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de dernière activité'.
-	 * @param heartbeat java.util.Date
+	 * @param heartbeat Date
 	 */
 	public void setHeartbeat(final java.util.Date heartbeat) {
 		this.heartbeat = heartbeat;

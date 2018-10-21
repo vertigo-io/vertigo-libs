@@ -11,8 +11,8 @@ create Task TK_GET_ACTIVE_PROCESS_BY_NAME {
 	        	and pro.ACTIVE_VERSION is true
         	
 			"
-	attribute NAME			 	{domain : DO_O_LIBELLE 				notNull:"true" 		inOut :"in"}
-	attribute DT_PROCESS	 	{domain : DO_DT_O_PROCESS_DTO 		notNull:"false" 	inOut :"out"}
+	attribute NAME			 	{domain : DO_O_LIBELLE 				required:"true" 		inOut :"in"}
+	attribute DT_PROCESS	 	{domain : DO_DT_O_PROCESS_DTO 		required:"false" 	inOut :"out"}
 }
 
 create Task TK_GET_PROCESSES_BY_NAME {
@@ -25,8 +25,8 @@ create Task TK_GET_PROCESSES_BY_NAME {
         	where pro.NAME = #NAME#
         	
 			"
-	attribute NAME			 	{domain : DO_O_LIBELLE 				notNull:"true" 		inOut :"in"}
-	attribute NOMBRE			 	{domain : DO_O_NOMBRE				notNull:"true" 		inOut :"out"}
+	attribute NAME			 	{domain : DO_O_LIBELLE 				required:"true" 		inOut :"in"}
+	attribute NOMBRE			 	{domain : DO_O_NOMBRE				required:"true" 		inOut :"out"}
 }
 
 
@@ -40,7 +40,7 @@ create Task TK_GET_ALL_ACTIVE_PROCESSES {
         	where pro.ACTIVE_VERSION is true
         	
 			"
-	attribute DTC_PROCESSES	 	{domain : DO_DT_O_PROCESS_DTC 		notNull:"true" 	inOut :"out"}
+	attribute DTC_PROCESSES	 	{domain : DO_DT_O_PROCESS_DTC 		required:"true" 	inOut :"out"}
 }
 
 
@@ -54,5 +54,5 @@ create Task TK_DISABLE_OLD_PROCESS_DEFINITIONS {
         	where NAME = #NAME#
         	
 			"
-	attribute NAME			 	{domain : DO_O_LIBELLE 				notNull:"true" 		inOut :"in"}
+	attribute NAME			 	{domain : DO_O_LIBELLE 				required:"true" 		inOut :"in"}
 }
