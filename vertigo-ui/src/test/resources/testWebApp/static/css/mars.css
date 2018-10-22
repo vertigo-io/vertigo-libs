@@ -2,10 +2,15 @@
 
 nav a {
 	text-decoration: none;
+	
 }
 
 .q-item-side {
 	text-align: center;	
+}
+
+a.q-item {
+	color: #737373;	
 }
 
 /* --------------------------- PAGE LOGIN ------------------------------ */

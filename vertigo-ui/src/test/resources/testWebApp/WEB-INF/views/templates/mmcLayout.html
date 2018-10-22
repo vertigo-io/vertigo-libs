@@ -24,7 +24,7 @@
 				<q-toolbar class="justify-between">
 					<div class="row">
 						<q-btn flat round dense 
-						th:with="miniState=${model.vContext['componentStates'].addComponentState('navDrawer').addPrimitive('showLeft', true)}"
+						th:with="showLeft=${model.vContext['componentStates'].addComponentState('navDrawer').addPrimitive('showLeft', true)}"
 						@click="componentStates.navDrawer.showLeft = !componentStates.navDrawer.showLeft" icon="menu" aria-label="Toggle menu on left side"></q-btn>
 						<div><img th:src="@{/static/img/logo MMC v0.1.png}" height="40px"/></div>
 						<q-toolbar-title>
@@ -86,25 +86,25 @@
 		      <div slot="mini" style="height:100%">
 		      	 <q-list link style="height:100%">
 			      <nav>
-			        <q-item tag="a" th:href="@{/movies/}">
-			          <q-item-side icon="fas fa-globe-asia "></q-item-side>
+			        <q-item tag="a" th:href="@{#}">
+			          <q-item-side icon="fas fa-globe-asia"></q-item-side>
 			        </q-item>
-			        <q-item >
+			        <q-item tag="a" th:href="@{#}">
 			          <q-item-side icon="fas fa-store-alt"></q-item-side>
 			        </q-item>
-			        <q-item>
+			        <q-item tag="a" th:href="@{#}">
 			          <q-item-side icon="fas fa-user-friends"></q-item-side>
 			        </q-item>
-			        <q-item >
+			        <q-item tag="a" th:href="@{#}">
 			          <q-item-side icon="fas fa-box-open"></q-item-side>
 			        </q-item>
-			        <q-item >
+			        <q-item tag="a" th:href="@{#}">
 			          <q-item-side icon="fas fa-cubes"></q-item-side>
 			        </q-item>
-			        <q-item >
+			        <q-item tag="a" th:href="@{#}">
 			          <q-item-side icon="fas fa-thermometer-empty"></q-item-side>
 			        </q-item>
-			        <q-item>
+			        <q-item tag="a" th:href="@{#}">
 			          <q-item-side icon="fas fa-chart-pie" ></q-item-side>
 			        </q-item>
 			        </nav>
@@ -112,32 +112,32 @@
 		      </div>
 		      
 		      <q-list link style="height:100%">
-		      <nav>
-		        <q-item tag="a" th:href="@{/movies/}">
+		      <nav class="text-no-wrap">
+		        <q-item tag="a" th:href="@{#}">
 		          <q-item-side icon="fas fa-globe-asia "></q-item-side>
 		          <q-item-main label="Planetary Status"></q-item-main>
 		        </q-item>
-		        <q-item >
+		        <q-item tag="a" th:href="@{#}">
 		          <q-item-side icon="fas fa-store-alt"></q-item-side>
 		          <q-item-main label="Managed Bases"></q-item-main>
 		        </q-item>
-		        <q-item>
+		        <q-item tag="a" th:href="@{#}">
 		          <q-item-side icon="fas fa-user-friends"></q-item-side>
 		          <q-item-main label="Personnel" sublabel="Base managers, Workers,..."></q-item-main>
 		        </q-item>
-		        <q-item >
+		        <q-item tag="a" th:href="@{#}">
 		          <q-item-side icon="fas fa-box-open"></q-item-side>
 		          <q-item-main label="Open Data"></q-item-main>
 		        </q-item>
-		        <q-item >
+		        <q-item tag="a" th:href="@{#}">
 		          <q-item-side icon="fas fa-cubes"></q-item-side>
 		          <q-item-main label="Equipment Catalog"></q-item-main>
 		        </q-item>
-		        <q-item >
+		        <q-item tag="a" th:href="@{#}">
 		          <q-item-side icon="fas fa-thermometer-empty"></q-item-side>
 		          <q-item-main label="Environment Monitoring" ></q-item-main>
 		        </q-item>
-		        <q-item>
+		        <q-item tag="a" th:href="@{#}">
 		          <q-item-side icon="fas fa-chart-pie" ></q-item-side>
 		          <q-item-main label="My Analytics" ></q-item-main>
 		        </q-item>
