@@ -92,14 +92,14 @@ public abstract class AbstractVSpringMvcController {
 			if (ctxId == null) {
 				contextMiss(null);
 			} else {
+				ViewContextMap viewContextMap;
 				try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
-					viewContext = new ViewContext(kvStoreManager.find(CONTEXT_COLLECTION_NAME, ctxId, ViewContextMap.class).get());
-					transactionWritable.commit();
+					viewContextMap = kvStoreManager.find(CONTEXT_COLLECTION_NAME, ctxId, ViewContextMap.class).orElse(null);
 				}
-
-				//				if (viewContext == null) {
-				//					contextMiss(ctxId);
-				//				}
+				if (viewContextMap == null) {
+					contextMiss(ctxId);
+				}
+				viewContext = new ViewContext(viewContextMap);
 				viewContext.makeModifiable();
 			}
 			viewContext.setInputCtxId(ctxId);

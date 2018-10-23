@@ -124,10 +124,8 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 				contextMiss(null);
 			} else {
 				try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
-					context = kvStoreManager.find(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(ctxId, request), KActionContext.class).get();
-					transactionWritable.commit();
+					context = kvStoreManager.find(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(ctxId, request), KActionContext.class).orElse(null);
 				}
-
 				if (context == null) {
 					contextMiss(ctxId);
 				}
