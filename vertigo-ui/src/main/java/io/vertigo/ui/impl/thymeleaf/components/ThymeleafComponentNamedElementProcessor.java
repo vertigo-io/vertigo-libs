@@ -260,7 +260,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 	}
 
 	private static String encodeAttributeName(final String attributeName) {
-		if (attributeName.matches("^[^a-zA-Z].*")) {
+		if (attributeName.matches("^[^'a-zA-Z].*")) {
 			return "'" + attributeName + "'";
 		}
 		return attributeName;
