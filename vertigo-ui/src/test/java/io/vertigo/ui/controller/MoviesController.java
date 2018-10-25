@@ -18,6 +18,9 @@
  */
 package io.vertigo.ui.controller;
 
+import java.util.Collections;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -43,6 +47,7 @@ import io.vertigo.util.StringUtil;
 public final class MoviesController extends AbstractVSpringMvcController {
 
 	private static final ViewContextKey<MovieDisplay> MOVIES = ViewContextKey.of("movies");
+	private static final ViewContextKey<FacetedQueryResult<MovieDisplay, String>> FCTS = ViewContextKey.of("result");
 
 	@Autowired
 	private MovieServices movieServices;
@@ -51,7 +56,14 @@ public final class MoviesController extends AbstractVSpringMvcController {
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) {
-		viewContext.publishDtList(MOVIES, MovieDisplayFields.MOV_ID, movieServices.getMoviesDisplay(new DtListState(200, 0, null, null)));
+		final DtList<MovieDisplay> sortedList = movieServices.getMoviesDisplay(new DtListState(200, 0, null, null));
+		viewContext.publishDtList(MOVIES, MovieDisplayFields.MOV_ID, sortedList);
+		final FacetedQueryResult<MovieDisplay, String> facetedQueryResult = new FacetedQueryResult<>(Optional.empty(),
+				sortedList.size(), sortedList,
+				Collections.emptyList(), Optional.empty(),
+				Collections.emptyMap(), Collections.emptyMap(),
+				"test");
+		viewContext.publishFacetedQueryResult(FCTS, MovieDisplayFields.MOV_ID, facetedQueryResult);
 	}
 
 	@PostMapping("/_sort")

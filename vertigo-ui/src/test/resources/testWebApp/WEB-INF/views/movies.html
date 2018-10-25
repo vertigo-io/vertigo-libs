@@ -9,7 +9,23 @@
 	</head>
 	
 	<body>
+		
+		<section layout:fragment="content-nav">
+			<nav data-spy="content-nav">
+			    <ul>
+			      <li><a href="#first">First</a></li>
+			      <li><a href="#second">Second</a></li>
+			      <li><a href="#third">Third</a></li>
+			    </ul>
+		    </nav>
+		</section>
+		
 		<section layout:fragment="content">
+			<vu:include-data object="result_list" field="'*'"/>
+			<vu:include-data-primitive key="result_facets"/>
+			<vu:include-data-primitive key="result_totalcount"/>
+			<div id="first">
+			<h1>First</h1>
 			<vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}" >
 				<vu:column field="movId" >
 					<a th::href="|'@{/movie/}?movId='+props.row.movId|" >{{props.row.movId}}</a>
@@ -22,12 +38,19 @@
 					<q-btn  label="View detail" th:@click="|openModal('movieDetailModal', '@{/movie/}', { 'movId' : props.row.movId })|"></q-btn>
 				</vu:column>
 			</vu:table>
+			</div>
 			
+			<div id="second">
+			<h1>Second</h1>
 			<vu:table list="movies" componentId="movieTable2" selectable="true" sortUrl="@{/movies/_sort}">
 				<vu:column field="movId" />
 				<vu:column field="title" sortable="true" />
 			</vu:table>
+			</div>
 			
+			<div id="third">
+			<h1>Third</h1>
+			aaaa<br/>aaaa<br/>aaaa<br/>aaaa<br/>aaaa<br/>aaaa<br/></div>
 			<vu:modal componentId="movieDetailModal" closeLabel="Close" />
 		</section>
 	</body>

@@ -75,13 +75,13 @@
   			
   			<q-layout-drawer
 		      side="left"
-		      overlay
+		      :overlay="!componentStates.navDrawer.miniState"
 		      v-model="componentStates.navDrawer.showLeft"
 		      th:with="miniState=${model.vContext['componentStates']['navDrawer'].addPrimitive('miniState', true)}"
 		      :mini="componentStates.navDrawer.miniState"
 			    @mouseover="componentStates.navDrawer.miniState = false"
 			    @mouseout="componentStates.navDrawer.miniState = true"
-			    >
+			  >
 		      
 		      <div slot="mini" style="height:100%">
 		      	 <q-list link style="height:100%">
@@ -144,16 +144,20 @@
 		        </nav>
 		        </q-list>
 		    </q-layout-drawer>
+		    
+		    <q-layout-drawer side="right" show-if-above>
+		    
+		     	<section layout:fragment="content-nav"></section>
+		     	
+		    </q-layout-drawer>
   			
 			<q-page-container class="row justify-center">
-			 	<q-page class="layout-padding">
+			 	<q-page class="layout-padding col-10 scroll">
 					<section layout:fragment="content"></section>
 				</q-page>
 			</q-page-container>
   			
 		</q-layout>
-		<script>
-		vue.data.ministate</script>
 	</vu:page>
 </body>
 
