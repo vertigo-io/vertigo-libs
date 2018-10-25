@@ -3,3 +3,9 @@
 		th:assert="${object} != null and ${field} != null" 
 		th:attr="objectKey=${model.vContext.addKeyForClient('__${object}__', '__${field}__')}" 
 		th:remove="all"></th:block>
+		
+<th:block
+		th:fragment="include-data-primitive(key)" 
+		th:assert="${key} != null" 
+		th:attr="objectKey=${model.vContext.addKeyForClient('__${key}__')}" 
+		th:remove="all"></th:block>

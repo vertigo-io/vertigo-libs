@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -359,12 +360,28 @@ public final class ViewContext implements Serializable {
 
 	/**
 	 * Publie une liste de référence.
+	 * @param contextKey Context key
 	 * @param entityClass Class associée
 	 * @param code Code
 	 */
 	public <E extends Entity> void publishMdl(final ViewContextKey<E> contextKey, final Class<E> entityClass, final String code) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entityClass);
 		put(contextKey, new UiMdList<E>(new DtListURIForMasterData(dtDefinition, code)));
+	}
+
+	/* ================================ FacetedQueryResult ==================================*/
+
+	/**
+	 * Publie une FacetedQueryResult.
+	 * @param contextKey Context key
+	 * @param keyFieldName Id's fieldName
+	 * @param facetedQueryResult Result
+	 */
+	public <O extends DtObject, S> void publishFacetedQueryResult(final ViewContextKey<FacetedQueryResult<O, S>> contextKey,
+			final DtFieldName<O> keyFieldName, final FacetedQueryResult<O, S> facetedQueryResult) {
+		publishDtList(() -> contextKey.get() + "_list", Optional.of(keyFieldName), facetedQueryResult.getDtList(), false);
+		put(() -> contextKey.get() + "_facets", (Serializable) facetedQueryResult.getFacets());
+		put(() -> contextKey.get() + "_totalcount", facetedQueryResult.getCount());
 	}
 
 }
