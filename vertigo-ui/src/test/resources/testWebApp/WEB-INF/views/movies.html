@@ -6,21 +6,22 @@
 >
 	<head>
 		<title>Movie List</title>
+		<script th:src="@{/vertigo-ui/static/js/v-components/v-scroll-spy.js}"></script>
 	</head>
 	
 	<body>
 		
 		<section layout:fragment="content-nav">
-			<nav data-spy="content-nav">
-			    <ul>
-			      <li><a href="#first">First</a></li>
-			      <li><a href="#second">Second</a></li>
-			      <li><a href="#third">Third</a></li>
-			    </ul>
-		    </nav>
+			<q-list link style="height:100%">
+			      <nav v-scroll-spy="{offset:50}">
+			        <q-item tag="a" href="#first">First section label</q-item>			        
+			        <q-item tag="a" href="#second">Second section label</q-item>
+			        <q-item tag="a" href="#third">Third section label</q-item>
+			        </nav>
+	        </q-list>		    
 		</section>
 		
-		<section layout:fragment="content">
+		<section layout:fragment="content" >
 			<vu:include-data object="result_list" field="'*'"/>
 			<vu:include-data-primitive key="result_facets"/>
 			<vu:include-data-primitive key="result_totalcount"/>
@@ -35,7 +36,7 @@
 					another column  : {{props.row.movId}} : {{props.row.title}}
 				</vu:column>
 				<vu:column name="action" label="Actions">
-					<q-btn  label="View detail" th:@click="|openModal('movieDetailModal', '@{/movie/}', { 'movId' : props.row.movId })|"></q-btn>
+					<q-btn label="View detail" th:@click="|openModal('movieDetailModal', '@{/movie/}', { 'movId' : props.row.movId })|"></q-btn>
 				</vu:column>
 			</vu:table>
 			</div>
