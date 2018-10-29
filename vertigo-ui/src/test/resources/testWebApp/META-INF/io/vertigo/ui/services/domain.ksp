@@ -17,10 +17,37 @@ create Domain DO_MULTIPLE_IDS {
     storeType : "TEXT"
 }
 
+create Domain DO_LONGS {
+	dataType : Long
+	formatter : FMT_DEFAULT
+	multiple : "true"
+}
+
+create Domain DO_MULTI_VALUES {
+	dataType : String
+	formatter : FMT_DEFAULT
+	storeType : "VARCHAR(500)"
+	indexType : "multiple_code"
+}
+
 create Domain DO_OUI_NON {
 	dataType : Boolean
 	formatter : FMT_OUI_NON
 	storeType : "BOOLEAN"
+}
+
+create Domain DO_TEXT_NOT_TOKENIZED {
+	dataType : String
+	formatter : FMT_DEFAULT
+	storeType : "VARCHAR(250)"
+	indexType : "text_fr_not_tokenized"
+}
+
+create Domain DO_TEXT {
+	dataType : String
+	formatter : FMT_DEFAULT
+	storeType : "VARCHAR(10000)"
+	indexType : "text_fr"
 }
 
 create Domain DO_CODE {
@@ -28,6 +55,7 @@ create Domain DO_CODE {
 	formatter : FMT_UPPERCASE
 	constraint : [CK_MAX_LENGTH_30]
     storeType : "VARCHAR(30)"
+    indexType : "code"
 }
 
 create Domain DO_CODE_POSTAL {
@@ -80,6 +108,7 @@ create Domain DO_LABEL {
 	formatter : FMT_DEFAULT
 	constraint : [CK_MAX_LENGTH_100]
 	storeType : "VARCHAR(100)"
+	indexType : "text_fr:facetable"
 }
 
 create Domain DO_LABEL_LONG {
@@ -161,6 +190,12 @@ create Domain DO_PASSWORD {
 	dataType : String
 	formatter : FMT_DEFAULT
 	storeType : "VARCHAR(250)"
+}
+
+create Domain DO_RATING {
+	dataType : Integer
+	formatter : FMT_DEFAULT
+	storeType : "INT"
 }
 
 /**** Domaines utilisés uniquement dans des fichiers KSP  ****/

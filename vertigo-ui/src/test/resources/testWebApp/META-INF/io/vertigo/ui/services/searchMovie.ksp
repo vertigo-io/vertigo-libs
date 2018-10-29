@@ -1,0 +1,59 @@
+package io.vertigo.pandora.domain.movies
+
+
+/************************/
+/***** Index Movie  *****/
+/************************/
+
+create IndexDefinition IDX_MOVIE {  
+  keyConcept : DT_MOVIE
+  dtIndex : DT_MOVIE_INDEX
+  loaderId : "MovieSearchLoader"
+}
+
+create FacetDefinition FCT_SCOPE {  
+  dtDefinition:DT_MOVIE_INDEX, fieldName:"MOVIE_TYPE", label:"Par scope"
+}
+
+create FacetDefinition FCT_MOVIE_TYPE {  
+  dtDefinition:DT_MOVIE_INDEX, fieldName:"MOVIE_TYPE", label:"Par type"
+}
+
+create FacetDefinition FCT_MOVIE_TITLE {  
+  dtDefinition:DT_MOVIE_INDEX, fieldName:"TITLE_SORT_ONLY", label:"Par titre"
+  range R1 { filter:"TITLE_SORT_ONLY:[* TO a]", label:"#"},
+  range R2 { filter:"TITLE_SORT_ONLY:[a TO g]", label:"a-f"},
+  range R3 { filter:"TITLE_SORT_ONLY:[g TO n]", label:"g-m"},
+  range R4 { filter:"TITLE_SORT_ONLY:[n TO t]", label:"n-s"},
+  range R4 { filter:"TITLE_SORT_ONLY:[t TO *]", label:"t-z"},
+}
+
+create FacetDefinition FCT_MOVIE_YEAR {  
+  dtDefinition:DT_MOVIE_INDEX, fieldName:"PRODUCTION_YEAR", label:"Par date"
+  range R1 { filter:"PRODUCTION_YEAR:[* TO 1930]", label:"< années 30"},
+  range R2 { filter:"PRODUCTION_YEAR:[1930 TO 1940]", label:"années 30"},
+  range R3 { filter:"PRODUCTION_YEAR:[1940 TO 1950]", label:"années 40"},
+  range R4 { filter:"PRODUCTION_YEAR:[1950 TO 1960]", label:"années 50"},
+  range R5 { filter:"PRODUCTION_YEAR:[1960 TO 1970]", label:"années 60"},
+  range R6 { filter:"PRODUCTION_YEAR:[1970 TO 1980]", label:"années 70"},
+  range R7 { filter:"PRODUCTION_YEAR:[1980 TO 1990]", label:"années 80"},
+  range R8 { filter:"PRODUCTION_YEAR:[1990 TO 2000]", label:"années 90"},
+  range R9 { filter:"PRODUCTION_YEAR:[2000 TO 2010]", label:"années 2000"},
+  range R10 { filter:"PRODUCTION_YEAR:[2010 TO *]", label:"> années 2010"},  
+}
+
+create FacetedQueryDefinition QRY_MOVIE {  
+  keyConcept : DT_MOVIE
+  facets : [FCT_MOVIE_TYPE, FCT_MOVIE_TITLE, FCT_MOVIE_YEAR]
+  domainCriteria : DO_LABEL
+  listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
+  listFilterBuilderQuery : "_all:#+query*#"
+}
+
+create FacetedQueryDefinition QRY_MOVIE_WITH_POSTER {  
+  keyConcept : DT_MOVIE
+  facets : [FCT_MOVIE_TYPE, FCT_MOVIE_TITLE, FCT_MOVIE_YEAR]
+  domainCriteria : DO_LABEL
+  listFilterBuilderClass : "io.vertigo.dynamox.search.DslListFilterBuilder"  
+  listFilterBuilderQuery : "_all:#+query*# +_exists_:POSTER"
+}

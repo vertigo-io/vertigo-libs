@@ -28,6 +28,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
@@ -58,21 +59,23 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 		//---
 		if (UiObject.class.isAssignableFrom(parameter.getParameterType())) {
 			return viewContext.getUiObject(() -> contextKey);
+		} else if (SelectedFacetValues.class.isAssignableFrom(parameter.getParameterType())) {
+			return viewContext.getSelectedFacetValues(() -> contextKey);
 		} else if (DtObject.class.isAssignableFrom(parameter.getParameterType()) || DtList.class.isAssignableFrom(parameter.getParameterType())) {
 			Assertion.checkNotNull(uiMessageStack);
 			//---
 			final Object value;
 			if (DtObject.class.isAssignableFrom(parameter.getParameterType())) {
 				//object
-				if (viewContext.getUiObject(()->contextKey).checkFormat(uiMessageStack)) {
-					value = viewContext.getUiObject(()->contextKey).mergeAndCheckInput(defaultDtObjectValidators, uiMessageStack);
+				if (viewContext.getUiObject(() -> contextKey).checkFormat(uiMessageStack)) {
+					value = viewContext.getUiObject(() -> contextKey).mergeAndCheckInput(defaultDtObjectValidators, uiMessageStack);
 				} else {
 					value = null;
 				}
 			} else {
 				//list
-				if (viewContext.getUiList(()->contextKey).checkFormat(uiMessageStack)) {
-					value = viewContext.getUiList(()->contextKey).mergeAndCheckInput(defaultDtObjectValidators, uiMessageStack);
+				if (viewContext.getUiList(() -> contextKey).checkFormat(uiMessageStack)) {
+					value = viewContext.getUiList(() -> contextKey).mergeAndCheckInput(defaultDtObjectValidators, uiMessageStack);
 				} else {
 					value = null;
 				}

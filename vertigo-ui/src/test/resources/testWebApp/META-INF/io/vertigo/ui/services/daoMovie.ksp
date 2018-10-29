@@ -1,0 +1,21 @@
+package io.vertigo.pandora.dao.movies
+
+create Task TK_LOAD_MOVIE_INDEX {
+	className : "io.vertigo.dynamox.task.TaskEngineSelect",
+	request : "	select MOV_ID,
+						 TITLE,
+						 TITLE as TITLE_SORT_ONLY,
+						 YEAR as PRODUCTION_YEAR,
+						 'Film' as MOVIE_TYPE,
+						 POSTER,
+						 TAGS as KEYWORDS,
+						 TITLE as ORIGINAL_TITLE,
+						 RUNTIME,
+						 DESCRIPTION as SHORT_SYNOPSIS,
+						 DESCRIPTION as SYNOPSIS,
+						 RATED as USER_RATING
+				from MOVIE mov
+				where MOV_ID in (#MOVIE_IDS.ROWNUM#);"
+	attribute MOVIE_IDS {domain : DO_LONGS, required:"true", inOut :"in",} 
+	attribute DTC_INDEX {domain : DO_DT_MOVIE_INDEX_DTC, required:"true", inOut :"out",} 
+}

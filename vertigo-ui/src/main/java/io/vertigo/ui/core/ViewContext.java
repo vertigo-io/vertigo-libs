@@ -19,13 +19,21 @@
 package io.vertigo.ui.core;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+import io.vertigo.dynamo.collections.model.Facet;
+import io.vertigo.dynamo.collections.model.FacetValue;
+import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -33,6 +41,7 @@ import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.webservice.model.UiList;
@@ -377,11 +386,45 @@ public final class ViewContext implements Serializable {
 	 * @param keyFieldName Id's fieldName
 	 * @param facetedQueryResult Result
 	 */
-	public <O extends DtObject, S> void publishFacetedQueryResult(final ViewContextKey<FacetedQueryResult<O, S>> contextKey,
-			final DtFieldName<O> keyFieldName, final FacetedQueryResult<O, S> facetedQueryResult) {
+	public <O extends DtObject> void publishFacetedQueryResult(final ViewContextKey<FacetedQueryResult<O, SearchQuery>> contextKey,
+			final DtFieldName<O> keyFieldName, final FacetedQueryResult<O, SearchQuery> facetedQueryResult) {
 		publishDtList(() -> contextKey.get() + "_list", Optional.of(keyFieldName), facetedQueryResult.getDtList(), false);
-		put(() -> contextKey.get() + "_facets", (Serializable) facetedQueryResult.getFacets());
+		put(() -> contextKey.get() + "_facets", translateFacets(facetedQueryResult.getFacets()));
+
+		final FacetedQuery facetedQuery = facetedQueryResult.getSource().getFacetedQuery().get();
+		put(() -> contextKey.get() + "_selectedFacets", new UiSelectedFacetValues(facetedQuery.getSelectedFacetValues(), facetedQuery.getDefinition().getFacetDefinitions()));
 		put(() -> contextKey.get() + "_totalcount", facetedQueryResult.getCount());
+	}
+
+	private static ArrayList<Serializable> translateFacets(final List<Facet> facets) {
+		final ArrayList<Serializable> facetsList = new ArrayList<>();
+		for (final Facet facet : facets) {
+			final ArrayList<HashMap<String, Serializable>> facetValues = new ArrayList<>();
+			for (final Entry<FacetValue, Long> entry : facet.getFacetValues().entrySet()) {
+				if (entry.getValue() > 0) {
+					final HashMap<String, Serializable> facetValue = new HashMap<>();
+					facetValue.put("code", entry.getKey().getCode());
+					facetValue.put("count", entry.getValue());
+					facetValue.put("label", entry.getKey().getLabel().getDisplay());
+					facetValues.add(facetValue);
+				}
+			}
+			final HashMap<String, Serializable> facetAsMap = new HashMap<>();
+			facetAsMap.put("code", facet.getDefinition().getName());
+			facetAsMap.put("label", facet.getDefinition().getLabel().getDisplay());
+			facetAsMap.put("values", facetValues);
+			facetsList.add(facetAsMap);
+		}
+		return facetsList;
+	}
+
+	/**
+	 * Returns selectedFacetValues of a given facetedQuery.
+	 * @param contextKey Context key
+	 * @return selectedFacetValues
+	 */
+	public <O extends DtObject> SelectedFacetValues getSelectedFacetValues(final ViewContextKey<FacetedQueryResult<O, FacetedQuery>> contextKey) {
+		return ((UiSelectedFacetValues) get(contextKey.get() + "_selectedFacets")).toSelectedFacetValues();
 	}
 
 }

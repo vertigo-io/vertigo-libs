@@ -18,11 +18,18 @@
  */
 package io.vertigo.ui.services.movies;
 
+import java.util.List;
+import java.util.Optional;
+
 import io.vertigo.core.component.Component;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
+import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.ui.domain.movies.Movie;
 import io.vertigo.ui.domain.movies.MovieDisplay;
+import io.vertigo.ui.domain.movies.MovieIndex;
 
 public interface MovieServices extends Component {
 
@@ -33,4 +40,8 @@ public interface MovieServices extends Component {
 	Movie get(Long movId);
 
 	DtList<MovieDisplay> getMoviesDisplay(DtListState dtListState);
+
+	DtList<MovieIndex> getMovieIndex(List<Long> movieIds);
+
+	FacetedQueryResult<MovieIndex, SearchQuery> searchMovies(String criteria, SelectedFacetValues listFilters, DtListState dtListState, Optional<String> group);
 }
