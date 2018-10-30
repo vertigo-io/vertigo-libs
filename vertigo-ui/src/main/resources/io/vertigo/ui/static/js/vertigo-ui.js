@@ -86,7 +86,12 @@ var VUi = {
 					this.$data.componentStates[modalId].opened = true;
 				},
 				toogleFacet : function (facetCode, facetValueCode, componentId) {
-					vueData[componentId+"_selectedFacets"][facetCode].push(facetValueCode);
+					var selectedFacetValues = vueData[componentId+"_selectedFacets"][facetCode]
+					if (selectedFacetValues.includes(facetValueCode)) {
+						selectedFacetValues.splice(selectedFacetValues.indexOf(facetValueCode));
+					} else {
+						selectedFacetValues.push(facetValueCode);
+					}
 					this.search("result");
 				},
 				search : Quasar.utils.debounce(function(componentId) { 
@@ -103,6 +108,9 @@ var VUi = {
 					params['CTX'] = this.$data.ctxId;
 					this.$http.post("/test/movies/_search", params, { emulateJSON: true }).then( function (response ) {
 						console.log(response.body.result_selectedFacets);
+						Object.keys(response.body).forEach(function (key) {
+							vueData[key] = response.body[key];
+						});
 					});
 				}, 1000)
 			  }

@@ -23,11 +23,22 @@
 		</section>
 		
 		<section layout:fragment="content" >
-			<vu:include-data object="result_list" field="'*'"/>
-			<vu:include-data-primitive key="result_facets"/>
-			<vu:include-data-primitive key="result_totalcount"/>
-			<vu:include-data-primitive key="result_selectedFacets"/>
-			<v-facets v-bind:facets="vueData.result_facets" v-bind:selected-facets="vueData.result_selectedFacets" component-id="result" @toogle-facet="toogleFacet"></v-facets>
+			
+			<h1>Recherche</h1>
+			<div class="row">
+				<div class="col-3">
+					<vu:include-data-primitive key="result_facets"/>
+					<vu:include-data-primitive key="result_totalcount"/>
+					<vu:include-data-primitive key="result_selectedFacets"/>
+					<v-facets v-bind:facets="vueData.result_facets" v-bind:selected-facets="vueData.result_selectedFacets" component-id="result" @toogle-facet="toogleFacet"></v-facets>
+				</div>
+				<div class="col-9">
+					<vu:table list="result_list" componentId="moviesRecherche" selectable="true" sortUrl="@{/movies/_sort}">
+						<vu:column field="movId" />
+						<vu:column field="title" sortable="true" />
+					</vu:table>
+				</div>
+			</div>
 			<div id="first">
 			<h1>First</h1>
 			<vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}" >

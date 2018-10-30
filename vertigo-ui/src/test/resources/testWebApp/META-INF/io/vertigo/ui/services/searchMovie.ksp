@@ -25,7 +25,7 @@ create FacetDefinition FCT_MOVIE_TITLE {
   range R2 { filter:"TITLE_SORT_ONLY:[a TO g]", label:"a-f"},
   range R3 { filter:"TITLE_SORT_ONLY:[g TO n]", label:"g-m"},
   range R4 { filter:"TITLE_SORT_ONLY:[n TO t]", label:"n-s"},
-  range R4 { filter:"TITLE_SORT_ONLY:[t TO *]", label:"t-z"},
+  range R5 { filter:"TITLE_SORT_ONLY:[t TO *]", label:"t-z"},
 }
 
 create FacetDefinition FCT_MOVIE_YEAR {  
