@@ -68,13 +68,22 @@
 		</component>
 		<component api="EventBusManager" class="io.vertigo.commons.impl.eventbus.EventBusManagerImpl" />
 		<component api="DaemonManager" class="io.vertigo.commons.impl.daemon.DaemonManagerImpl" />
-
+		<component api="SearchManager" class="io.vertigo.dynamo.impl.search.SearchManagerImpl">
+			<!-- <plugin class="io.vertigo.dynamo.plugins.search.solr.commonshttp.CommonsHttpSolrSearchServicesPlugin" > <param name="solr.url" value="http://localhost:8983/solr" /> <param name="cores" value="IDX_ARTICLE,IDX_VOITURE,IDX_DEMANDE,IDX_DOCUMENT" /> </plugin> -->
+			<plugin class="io.vertigo.dynamo.plugins.search.elasticsearch.embedded.ESEmbeddedSearchServicesPlugin">
+				<param name="home" value="esconfig" />
+				<param name="config.file" value="esconfig/elasticsearch.yml" />
+				<param name="envIndex" value="TU_TEST" />
+				<param name="rowsPerQuery" value="50" />
+			</plugin>
+		</component>
 	</module>
 	<init>
 		<initializer class="io.vertigo.ui.boot.initializer.LocaleManagerInitializer"/>
 		<initializer class="io.vertigo.ui.boot.initializer.DataBaseInitializer"/>
 		<initializer class="io.vertigo.ui.boot.initializer.MasterDataInitializer"/>
 		<initializer class="io.vertigo.ui.boot.initializer.I18nResourcesInitializer"/>
+		<initializer class="io.vertigo.ui.boot.initializer.SearchInitializer"/>
 	</init>
 
 </config>

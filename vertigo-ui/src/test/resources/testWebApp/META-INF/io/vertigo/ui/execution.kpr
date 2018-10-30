@@ -3,3 +3,6 @@ services/domainFileInfo.ksp
 
 services/tutorial/mdm.ksp
 
+services/searchMovie.ksp
+services/daoMovie.ksp
+

@@ -18,22 +18,35 @@
  */
 package io.vertigo.ui.services.movies;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.inject.Inject;
 
+import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.Transactional;
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
+import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.util.VCollectors;
+import io.vertigo.dynamo.search.model.SearchQuery;
+import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 import io.vertigo.ui.dao.movies.MovieDAO;
+import io.vertigo.ui.dao.movies.MoviesPAO;
 import io.vertigo.ui.domain.movies.Movie;
 import io.vertigo.ui.domain.movies.MovieDisplay;
+import io.vertigo.ui.domain.movies.MovieIndex;
 
 @Transactional
 public class MovieServicesImpl implements MovieServices {
 
 	@Inject
 	private MovieDAO movieDAO;
+	@Inject
+	private MoviesPAO moviesPAO;
 
 	@Override
 	public Movie get(final Long movId) {
@@ -58,6 +71,21 @@ public class MovieServicesImpl implements MovieServices {
 				.stream()
 				.map(movie -> new MovieDisplay(movie.getMovId(), movie.getTitle()))
 				.collect(VCollectors.toDtList(MovieDisplay.class));
+	}
+
+	@Override
+	public FacetedQueryResult<MovieIndex, SearchQuery> searchMovies(final String criteria, final SelectedFacetValues listFilters, final DtListState dtListState, final Optional<String> group) {
+		final SearchQueryBuilder searchQueryBuilder = movieDAO.createSearchQueryBuilderMovie(criteria, listFilters);
+		if (group.isPresent()) {
+			final FacetDefinition clusteringFacetDefinition = Home.getApp().getDefinitionSpace().resolve(group.get(), FacetDefinition.class);
+			searchQueryBuilder.withFacetClustering(clusteringFacetDefinition);
+		}
+		return movieDAO.loadList(searchQueryBuilder.build(), dtListState);
+	}
+
+	@Override
+	public DtList<MovieIndex> getMovieIndex(final List<Long> movieIds) {
+		return moviesPAO.loadMovieIndex(movieIds);
 	}
 
 }

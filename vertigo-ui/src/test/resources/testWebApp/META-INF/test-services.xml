@@ -8,12 +8,18 @@
 	
 	<module name="dao">
 		<component class="io.vertigo.ui.dao.movies.MovieDAO"/>
-	    
+		<component class="io.vertigo.ui.dao.movies.MoviesPAO"/>
 	</module>
+	
+	
 	
 	<module name="services">
 		<component api="MovieServices" class="io.vertigo.ui.services.movies.MovieServicesImpl"/>	
 		<component api="UserServices" class="io.vertigo.ui.services.users.UserServicesImpl"/>
+	</module>
+	
+	<module name="search-loaders">
+	    <component class="io.vertigo.ui.services.movies.MovieSearchLoader" />
 	</module>
 	
  </config>

@@ -18,7 +18,6 @@
  */
 package io.vertigo.ui.controller;
 
-import java.util.Collections;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +28,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.VCollectors;
+import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.domain.DtDefinitions.MovieDisplayFields;
+import io.vertigo.ui.domain.DtDefinitions.MovieIndexFields;
 import io.vertigo.ui.domain.movies.MovieDisplay;
+import io.vertigo.ui.domain.movies.MovieIndex;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttribute;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 import io.vertigo.ui.services.movies.MovieServices;
@@ -47,7 +50,7 @@ import io.vertigo.util.StringUtil;
 public final class MoviesController extends AbstractVSpringMvcController {
 
 	private static final ViewContextKey<MovieDisplay> MOVIES = ViewContextKey.of("movies");
-	private static final ViewContextKey<FacetedQueryResult<MovieDisplay, String>> FCTS = ViewContextKey.of("result");
+	private static final ViewContextKey<FacetedQueryResult<MovieIndex, SearchQuery>> FCTS = ViewContextKey.of("result");
 
 	@Autowired
 	private MovieServices movieServices;
@@ -56,14 +59,18 @@ public final class MoviesController extends AbstractVSpringMvcController {
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) {
-		final DtList<MovieDisplay> sortedList = movieServices.getMoviesDisplay(new DtListState(200, 0, null, null));
+		final DtListState dtListState = new DtListState(200, 0, null, null);
+		final DtList<MovieDisplay> sortedList = movieServices.getMoviesDisplay(dtListState);
 		viewContext.publishDtList(MOVIES, MovieDisplayFields.MOV_ID, sortedList);
-		final FacetedQueryResult<MovieDisplay, String> facetedQueryResult = new FacetedQueryResult<>(Optional.empty(),
-				sortedList.size(), sortedList,
-				Collections.emptyList(), Optional.empty(),
-				Collections.emptyMap(), Collections.emptyMap(),
-				"test");
-		viewContext.publishFacetedQueryResult(FCTS, MovieDisplayFields.MOV_ID, facetedQueryResult);
+		final FacetedQueryResult<MovieIndex, SearchQuery> facetedQueryResult = movieServices.searchMovies("", SelectedFacetValues.empty().build(), dtListState, Optional.empty());
+		viewContext.publishFacetedQueryResult(FCTS, MovieIndexFields.MOV_ID, facetedQueryResult);
+	}
+
+	@PostMapping("/_search")
+	public ViewContext doSearch(final ViewContext viewContext, @ViewAttribute("result") final SelectedFacetValues selectedFacetValues, final DtListState dtListState) {
+		final FacetedQueryResult<MovieIndex, SearchQuery> facetedQueryResult = movieServices.searchMovies("", selectedFacetValues, dtListState, Optional.empty());
+		viewContext.publishFacetedQueryResult(FCTS, MovieIndexFields.MOV_ID, facetedQueryResult);
+		return viewContext;
 	}
 
 	@PostMapping("/_sort")

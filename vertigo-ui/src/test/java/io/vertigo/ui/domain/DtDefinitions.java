@@ -23,6 +23,7 @@ import java.util.Iterator;
 
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.ui.domain.movies.MovieDisplay;
+import io.vertigo.ui.domain.movies.MovieIndex;
 
 /**
  * Attention cette classe est générée automatiquement !
@@ -45,6 +46,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		Movie(io.vertigo.ui.domain.movies.Movie.class),
 		/** Objet de données MovieDisplay. */
 		MovieDisplay(io.vertigo.ui.domain.movies.MovieDisplay.class),
+		/** Objet de données MovieIndex. */
+		MovieIndex(io.vertigo.ui.domain.movies.MovieIndex.class),
 		/** Objet de données OuiNonChoice. */
 		OuiNonChoice(io.vertigo.ui.domain.reference.OuiNonChoice.class),
 		/** Objet de données People. */
@@ -155,6 +158,42 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'TITLE'. */
 		TITLE,
 
+	}
+
+	/**
+	 * Enumération des champs de MovieIndex.
+	 */
+	public enum MovieIndexFields implements DtFieldName<MovieIndex> {
+		/** Propriété 'id'. */
+		MOV_ID,
+		/** Propriété 'Title'. */
+		TITLE,
+		/** Propriété 'Title'. */
+		TITLE_SORT_ONLY,
+		/** Propriété 'Original Title'. */
+		ORIGINAL_TITLE,
+		/** Propriété 'Synopsis'. */
+		SYNOPSIS,
+		/** Propriété 'shortSynopsis'. */
+		SHORT_SYNOPSIS,
+		/** Propriété 'keywords'. */
+		KEYWORDS,
+		/** Propriété 'poster'. */
+		POSTER,
+		/** Propriété 'runtime'. */
+		RUNTIME,
+		/** Propriété 'Movie type'. */
+		MOVIE_TYPE,
+		/** Propriété 'productionYear'. */
+		PRODUCTION_YEAR,
+		/** Propriété 'userRating'. */
+		USER_RATING,
+		/** Propriété 'presRating'. */
+		PRESS_RATING,
+		/** Propriété 'Writers'. */
+		WRITERS,
+		/** Propriété 'Camera'. */
+		CAMERA,
 	}
 
 	/**
