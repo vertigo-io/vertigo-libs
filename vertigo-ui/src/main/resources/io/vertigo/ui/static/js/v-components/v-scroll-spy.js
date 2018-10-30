@@ -1,3 +1,26 @@
+/**
+ * Directive scroll-spy
+ * @param offset int : Offset from top screen, used for static header
+ * 
+ * Usage : Just put this directive on your nav container.
+ * This directive looks for all 'A' tags, extract their href and link them to page's container with same id
+ * 
+ * Example :  
+ * <nav v-scroll-spy="{offset:50}">
+ *   <q-item tag="a" href="#first">First section label</q-item>			        
+ *   <q-item tag="a" href="#second">Second section label</q-item>
+ * </nav>
+ * 
+ * <div id="first">
+ *	  <h1>First</h1>
+ *	  <!-- content -->
+ * </div>
+ * <div id="second">
+ *	  <h1>Second</h1>
+ *	  <!-- content -->
+ * </div>
+ * 
+ */
 Vue.directive('scroll-spy', {
         bind: function(el, args) {
         	const offset = args.value.offset?args.value.offset:0;
