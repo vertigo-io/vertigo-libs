@@ -67,8 +67,6 @@ public final class UiSelectedFacetValues extends HashMap<String, List<String>> {
 			} else {
 				appendTermFacetValues(entry.getValue(), facetDefinition, selectedFacetValuesBuilder);
 			}
-			return selectedFacetValuesBuilder.build();
-
 		}
 		return selectedFacetValuesBuilder.build();
 

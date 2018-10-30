@@ -84,6 +84,26 @@ var VUi = {
 						this.$data.componentStates[modalId].srcUrl = finalUrl;
 					}
 					this.$data.componentStates[modalId].opened = true;
-				}
+				},
+				toogleFacet : function (facetCode, facetValueCode, componentId) {
+					vueData[componentId+"_selectedFacets"][facetCode].push(facetValueCode);
+					this.search("result");
+				},
+				search : Quasar.utils.debounce(function(componentId) { 
+					var selectedFacetsContextKey = componentId +"_selectedFacets";
+					var params = {};
+					Object.keys(vueData[selectedFacetsContextKey]).forEach(function (key) {
+						for (var i = 0; i < vueData[selectedFacetsContextKey][key].length; i++) {
+							var array_element = vueData[selectedFacetsContextKey][key][i];
+							paramName = 'vContext['+selectedFacetsContextKey+']'+'['+key+']'+'['+i+']';
+							params[paramName] = vueData[selectedFacetsContextKey][key][i]
+							
+						}
+					})
+					params['CTX'] = this.$data.ctxId;
+					this.$http.post("/test/movies/_search", params, { emulateJSON: true }).then( function (response ) {
+						console.log(response.body.result_selectedFacets);
+					});
+				}, 1000)
 			  }
 	}
