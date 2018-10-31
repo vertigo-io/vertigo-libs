@@ -387,13 +387,14 @@ public final class ViewContext implements Serializable {
 	 * @param facetedQueryResult Result
 	 */
 	public <O extends DtObject> void publishFacetedQueryResult(final ViewContextKey<FacetedQueryResult<O, SearchQuery>> contextKey,
-			final DtFieldName<O> keyFieldName, final FacetedQueryResult<O, SearchQuery> facetedQueryResult) {
+			final DtFieldName<O> keyFieldName, final FacetedQueryResult<O, SearchQuery> facetedQueryResult, final ViewContextKey<?> criteriaContextKey) {
 		publishDtList(() -> contextKey.get() + "_list", Optional.of(keyFieldName), facetedQueryResult.getDtList(), false);
 		put(() -> contextKey.get() + "_facets", translateFacets(facetedQueryResult.getFacets()));
 
 		final FacetedQuery facetedQuery = facetedQueryResult.getSource().getFacetedQuery().get();
 		put(() -> contextKey.get() + "_selectedFacets", new UiSelectedFacetValues(facetedQuery.getSelectedFacetValues(), facetedQuery.getDefinition().getFacetDefinitions()));
 		put(() -> contextKey.get() + "_totalcount", facetedQueryResult.getCount());
+		put(() -> contextKey.get() + "_criteriaContextKey", criteriaContextKey.get());
 	}
 
 	private static ArrayList<Serializable> translateFacets(final List<Facet> facets) {
@@ -411,6 +412,7 @@ public final class ViewContext implements Serializable {
 			}
 			final HashMap<String, Serializable> facetAsMap = new HashMap<>();
 			facetAsMap.put("code", facet.getDefinition().getName());
+			facetAsMap.put("multiple", facet.getDefinition().isMultiSelectable());
 			facetAsMap.put("label", facet.getDefinition().getLabel().getDisplay());
 			facetAsMap.put("values", facetValues);
 			facetsList.add(facetAsMap);

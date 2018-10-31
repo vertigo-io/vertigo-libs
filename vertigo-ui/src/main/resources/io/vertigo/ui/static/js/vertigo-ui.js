@@ -86,9 +86,20 @@ var VUi = {
 					this.$data.componentStates[modalId].opened = true;
 				},
 				toogleFacet : function (facetCode, facetValueCode, componentId) {
+					var multiple = false;
+					vueData[componentId+"_facets"].forEach(function (facet) {
+						if (facet.code === facetCode) {
+							// get the right facet 
+							multiple = facet.multiple;
+						}
+					})
 					var selectedFacetValues = vueData[componentId+"_selectedFacets"][facetCode]
 					if (selectedFacetValues.includes(facetValueCode)) {
-						selectedFacetValues.splice(selectedFacetValues.indexOf(facetValueCode));
+						if (multiple) {
+							selectedFacetValues.splice(selectedFacetValues.indexOf(facetValueCode), 1);
+						} else {
+							selectedFacetValues.splice(0);
+						}
 					} else {
 						selectedFacetValues.push(facetValueCode);
 					}
@@ -105,14 +116,18 @@ var VUi = {
 							
 						}
 					})
-					params['vContext[criteria]'] = vueData['criteria'];
+					var criteriaContextKey = vueData[componentId + '_criteriaContextKey'];
+					params['vContext['+criteriaContextKey+']'] = vueData[criteriaContextKey];
 					params['CTX'] = this.$data.ctxId;
 					this.$http.post("/test/movies/_search", params, { emulateJSON: true }).then( function (response ) {
-						console.log(response.body.result_selectedFacets);
 						Object.keys(response.body).forEach(function (key) {
-							vueData[key] = response.body[key];
+							if ('CTX' === key) {
+								ctxId = response.body['CTX'];
+							} else {
+								vueData[key] = response.body[key];
+							}
 						});
 					});
-				}, 1000)
+				}, 400)
 			  }
 	}

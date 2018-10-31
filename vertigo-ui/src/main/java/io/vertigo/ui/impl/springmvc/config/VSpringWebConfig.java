@@ -73,6 +73,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 			"table", "column", //table
 			"grid", "grid-cell", //grid
 			"button-submit", //buttons
+			"facets" //search
 	};
 
 	/*
