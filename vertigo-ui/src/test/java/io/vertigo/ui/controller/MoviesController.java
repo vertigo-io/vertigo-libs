@@ -49,6 +49,7 @@ import io.vertigo.util.StringUtil;
 @RequestMapping("/movies")
 public final class MoviesController extends AbstractVSpringMvcController {
 
+	private static final ViewContextKey<String> CRITERIA = ViewContextKey.of("criteria");
 	private static final ViewContextKey<MovieDisplay> MOVIES = ViewContextKey.of("movies");
 	private static final ViewContextKey<FacetedQueryResult<MovieIndex, SearchQuery>> FCTS = ViewContextKey.of("result");
 
@@ -62,13 +63,14 @@ public final class MoviesController extends AbstractVSpringMvcController {
 		final DtListState dtListState = new DtListState(200, 0, null, null);
 		final DtList<MovieDisplay> sortedList = movieServices.getMoviesDisplay(dtListState);
 		viewContext.publishDtList(MOVIES, MovieDisplayFields.MOV_ID, sortedList);
+		viewContext.publishRef(CRITERIA, "");
 		final FacetedQueryResult<MovieIndex, SearchQuery> facetedQueryResult = movieServices.searchMovies("", SelectedFacetValues.empty().build(), dtListState, Optional.empty());
 		viewContext.publishFacetedQueryResult(FCTS, MovieIndexFields.MOV_ID, facetedQueryResult);
 	}
 
 	@PostMapping("/_search")
-	public ViewContext doSearch(final ViewContext viewContext, @ViewAttribute("result") final SelectedFacetValues selectedFacetValues, final DtListState dtListState) {
-		final FacetedQueryResult<MovieIndex, SearchQuery> facetedQueryResult = movieServices.searchMovies("", selectedFacetValues, dtListState, Optional.empty());
+	public ViewContext doSearch(final ViewContext viewContext, @ViewAttribute("criteria") final String criteria, @ViewAttribute("result") final SelectedFacetValues selectedFacetValues, final DtListState dtListState) {
+		final FacetedQueryResult<MovieIndex, SearchQuery> facetedQueryResult = movieServices.searchMovies(criteria, selectedFacetValues, dtListState, Optional.empty());
 		viewContext.publishFacetedQueryResult(FCTS, MovieIndexFields.MOV_ID, facetedQueryResult);
 		return viewContext;
 	}

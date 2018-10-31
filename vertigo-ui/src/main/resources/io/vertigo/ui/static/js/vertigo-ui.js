@@ -105,6 +105,7 @@ var VUi = {
 							
 						}
 					})
+					params['vContext[criteria]'] = vueData['criteria'];
 					params['CTX'] = this.$data.ctxId;
 					this.$http.post("/test/movies/_search", params, { emulateJSON: true }).then( function (response ) {
 						console.log(response.body.result_selectedFacets);
