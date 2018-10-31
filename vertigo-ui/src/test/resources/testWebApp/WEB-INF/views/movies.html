@@ -14,17 +14,20 @@
 		
 		<section layout:fragment="content-nav">
 			<q-list link style="height:100%">
-			      <nav v-scroll-spy="{offset:50}">
+			      <nav v-scroll-spy="{offset:70}">
+			        <q-item tag="a" href="#recherche">Recherche</q-item>			        
 			        <q-item tag="a" href="#first">First section label</q-item>			        
 			        <q-item tag="a" href="#second">Second section label</q-item>
 			        <q-item tag="a" href="#third">Third section label</q-item>
+			        <q-item tag="a" href="#fourth">Fourth section label</q-item>
+			        <q-item tag="a" href="#fith">Fith section label</q-item>
 			        </nav>
 	        </q-list>		    
 		</section>
 		
 		<section layout:fragment="content" >
-			
-			<h1>Recherche</h1>
+			<div id="recherche">
+			<h4>Recherche</h4>
 			<div class="row">
 				<div class="col-3">
 					<vu:include-data-primitive key="result_facets"/>
@@ -39,8 +42,9 @@
 					</vu:table>
 				</div>
 			</div>
+			</div>
 			<div id="first">
-			<h1>First</h1>
+			<h4>First</h4>
 			<vu:table list="movies" componentId="movieTable" selectable="true" sortUrl="@{/movies/_sort}" >
 				<vu:column field="movId" >
 					<a th::href="|'@{/movie/}?movId='+props.row.movId|" >{{props.row.movId}}</a>
@@ -56,7 +60,7 @@
 			</div>
 			
 			<div id="second">
-			<h1>Second</h1>
+			<h4>Second</h4>
 			<vu:table list="movies" componentId="movieTable2" selectable="true" sortUrl="@{/movies/_sort}">
 				<vu:column field="movId" />
 				<vu:column field="title" sortable="true" />
@@ -64,9 +68,16 @@
 			</div>
 			
 			<div id="third">
-			<h1>Third</h1>
+			<h4>Third</h4>
 			aaaa<br/>aaaa<br/>aaaa<br/>aaaa<br/>aaaa<br/>aaaa<br/></div>
+			<div id="fourth">
+			<h4>Fourth</h4>
+			bbbb<br/></div>
+			<div id="fith">
+			<h4>Fith</h4>
+			cccc<br/>cccc<br/>cccc<br/>cccc<br/>cccc<br/>cccc<br/></div>
 			<vu:modal componentId="movieDetailModal" closeLabel="Close" />
+						
 		</section>
 	</body>
 </html>

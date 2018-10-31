@@ -19,39 +19,92 @@
  *	  <h1>Second</h1>
  *	  <!-- content -->
  * </div>
- * 
  */
 Vue.directive('scroll-spy', {
-        bind: function(el, args) {
+        bind: function(elNav, args) {
         	const offset = args.value.offset?args.value.offset:0;
+        	const elAs = elNav.querySelectorAll('a')
+        	const scrollContainer = Quasar.utils.scroll.getScrollTarget(document.querySelector(elAs[0].hash))
+    		
         	Vue.scrollSpyHandler = function(scroll) {
-        		const els = el.querySelectorAll('a')
-        		var scrollBreakpoints = []
-        		scrollBreakpoints.push(0)
-        		
         		//We compute breakpoints
-        		for(var i = 1 ; i < els.length; i++) {
-        			const elId = els[i].href.substring(els[i].href.lastIndexOf('#'));
-				    const elSpyed = document.querySelector(elId)
-				    if(elSpyed) {
-						const elTop = elSpyed.getBoundingClientRect().top
-				        scrollBreakpoints.push(elTop)						
-					} else {
-						console.warn('ScrollSpy element '+elId+' not found')
-					}
-			    } 
+        		var scrollPosition = Quasar.utils.scroll.getScrollPosition(scrollContainer)
+        		var scrollBreakpoints = Vue.computeBreakPoints(scrollPosition);
         		//We looks between which breakpoints we are
-        		for(var i = 0 ; i < els.length; i++) {
-			      if(scrollBreakpoints[i] <= offset && (i>=els.length-1 || offset < scrollBreakpoints[i+1])) {
-			    	  els[i].classList.add("active")
+        		for(var i = 0 ; i < elAs.length; i++) {
+        			//console.log(i+' '+' '+scrollPosition+' '+scrollBreakpoints[i] )
+				    if(scrollBreakpoints[i] <= scrollPosition && (i >= elAs.length-1 || scrollPosition < scrollBreakpoints[i+1])) {
+				      elAs[i].classList.add("active")
 				  } else {
-					  els[i].classList.remove("active");
+					  elAs[i].classList.remove("active");
 				  }
+			      //elAs[i].addEventListener('scroll', Vue.scrollSpyHandler)
 			    }
         	};
+        	
+        	Vue.computeBreakPoints = function(scrollPosition){
+        		var scrollBreakpoints = []
+        		scrollBreakpoints.push(0)
+        		for(var i = 1 ; i < elAs.length; i++) {
+        			const elScrollId = elAs[i].hash;
+				    const elScroll = document.querySelector(elScrollId)
+				    if(elScroll) {
+				    	scrollBreakpoints.push(scrollPosition+elScroll.getBoundingClientRect().top-offset);      
+					} else {
+						console.warn('ScrollSpy element '+elScrollId+' not found')
+					}
+			    }
+        		
+        		const windowHeight = (window.innerHeight || document.documentElement.clientHeight);
+        		const scrollHeight = Quasar.utils.scroll.getScrollHeight(scrollContainer)
+        		const scrollMax = scrollHeight - windowHeight
+        		const lastHeight = Quasar.utils.scroll.getScrollHeight(scrollContainer) - scrollBreakpoints[scrollBreakpoints.length-1];
+        		const scrollStart = scrollMax - lastHeight + offset
+        		//console.log('scrollMax '+scrollMax+'  lastHeight '+lastHeight+'  scrollStart '+scrollStart )
+        		
+        		for(var i = 1 ; i < elAs.length; i++) {
+        			var prev = scrollBreakpoints[i];
+        			if(scrollBreakpoints[i] > scrollStart) {
+        				scrollBreakpoints[i] = scrollStart + ((scrollBreakpoints[i] - scrollStart)/lastHeight) * (scrollMax-scrollStart-offset)
+        			}	
+        			scrollBreakpoints[i] = Math.round(scrollBreakpoints[i])
+        			//console.log(i+'  from: '+prev+ '  to:'+scrollBreakpoints[i] )
+        		}        		
+        		
+        		
+        		return scrollBreakpoints;
+            };
+            
+            Vue.scrollTo = function(event){
+        		event.preventDefault();
+        		const elScrollId = event.target.hash;
+        		const elScroll = document.querySelector(elScrollId)
+                var toScroll = Quasar.utils.scroll.getScrollPosition(scrollContainer)+elScroll.getBoundingClientRect().top-offset
+                
+        		var scrollPosition = Quasar.utils.scroll.getScrollPosition(scrollContainer)
+        		var scrollBreakpoints = Vue.computeBreakPoints(scrollPosition);
+        		for(var i = 0 ; i < elAs.length; i++) {
+        			if(elAs[i].hash == elScrollId) {
+        				toScroll = scrollBreakpoints[i];
+        				break;
+        			}
+			    }
+                var duration = 200
+                //console.log(Quasar.utils.scroll.getScrollPosition(scrollContainer) +' to:'+toScroll+'  top:'+elScroll.getBoundingClientRect().top)
+                Quasar.utils.scroll.setScrollPosition(scrollContainer,toScroll, duration)
+            };
+            
+            for(var i = 0 ; i < elAs.length; i++) {
+    			elAs[i].addEventListener('click', Vue.scrollTo);
+    		}
+		    
         	window.addEventListener('scroll', Vue.scrollSpyHandler)
         },
         unbind: function(el) {
         	window.removeEventListener('scroll')
+        	const elAs = elNav.querySelectorAll('a')
+    		for(var i = 0 ; i < elAs.length; i++) {
+    			elAs.removeEventListener('click')		    
+    		}
         },
     });
