@@ -20,6 +20,7 @@ package io.vertigo.ui.boot.initializer;
 
 import javax.inject.Inject;
 
+import io.vertigo.app.Home;
 import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.ui.domain.movies.Movie;
@@ -37,11 +38,6 @@ public final class SearchInitializer implements ComponentInitializer {
 	/** {@inheritDoc} */
 	@Override
 	public void init() {
-		try {
-			Thread.sleep(5_000);
-		} catch (final InterruptedException e) {
-			//nothing
-		}
-		searchManager.reindexAll(searchManager.findFirstIndexDefinitionByKeyConcept(Movie.class));
+		Home.getApp().registerPreActivateFunction(() -> searchManager.reindexAll(searchManager.findFirstIndexDefinitionByKeyConcept(Movie.class)));
 	}
 }
