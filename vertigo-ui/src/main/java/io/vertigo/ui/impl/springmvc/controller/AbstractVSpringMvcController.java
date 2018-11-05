@@ -125,7 +125,7 @@ public abstract class AbstractVSpringMvcController {
 	private static String getDefaultViewName(final AbstractVSpringMvcController controller) {
 		String path = controller.getClass().getName();
 		path = path.substring(0, path.lastIndexOf('.'));
-		path = path.replaceAll(".controllers", "");
+		path = path.replaceAll("\\.controllers?", "");
 		path = path.substring(path.indexOf('.', 4) + 1);
 		path = path.replaceAll("\\.", SLASH);
 		String simpleName = StringUtil.first2LowerCase(controller.getClass().getSimpleName());
