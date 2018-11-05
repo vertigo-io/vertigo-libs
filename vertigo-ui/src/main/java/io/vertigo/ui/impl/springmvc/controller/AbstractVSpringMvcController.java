@@ -41,6 +41,7 @@ import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.core.ViewContextMap;
 import io.vertigo.ui.exception.ExpiredViewContextException;
 import io.vertigo.ui.impl.springmvc.util.UiUtil;
+import io.vertigo.util.StringUtil;
 
 /**
  * Super class des Actions SpringMvc.
@@ -117,27 +118,38 @@ public abstract class AbstractVSpringMvcController {
 			//initContext();
 		}
 		viewContext.setCtxId();
-		request.setAttribute("defaultViewName", getDefaultViewName(request));
+		request.setAttribute("defaultViewName", getDefaultViewName(this));
 
 	}
 
-	public static String getDefaultViewName(final HttpServletRequest request) {
-		String path = request.getRequestURI();
-		if (request.getContextPath() != null) {
-			//remove the context path if exists
-			path = path.substring(request.getContextPath().length());
-		}
-		if (path.startsWith(SLASH)) {
-			path = path.substring(1);
-		}
-		if (path.endsWith(SLASH)) {
-			path = path.substring(0, path.length() - 1);
-		} else {
-			// we remove the subaction
-			path = path.substring(0, path.lastIndexOf(SLASH));
-		}
-		return path;
+	private static String getDefaultViewName(final AbstractVSpringMvcController controller) {
+		String path = controller.getClass().getName();
+		path = path.substring(0, path.lastIndexOf('.'));
+		path = path.replaceAll(".controllers", "");
+		path = path.substring(path.indexOf('.', 4) + 1);
+		path = path.replaceAll("\\.", SLASH);
+		String simpleName = StringUtil.first2LowerCase(controller.getClass().getSimpleName());
+		simpleName = simpleName.replaceAll("Controller", "");
+		return path + SLASH + simpleName;
 	}
+
+	//	private static String getDefaultViewName(final HttpServletRequest request) {
+	//		String path = request.getRequestURI();
+	//		if (request.getContextPath() != null) {
+	//			//remove the context path if exists
+	//			path = path.substring(request.getContextPath().length());
+	//		}
+	//		if (path.startsWith(SLASH)) {
+	//			path = path.substring(1);
+	//		}
+	//		if (path.endsWith(SLASH)) {
+	//			path = path.substring(0, path.length() - 1);
+	//		} else {
+	//			// we remove the subaction
+	//			path = path.substring(0, path.lastIndexOf(SLASH));
+	//		}
+	//		return path;
+	//	}
 
 	private boolean acceptCtxQueryParam() {
 		return this.getClass().isAnnotationPresent(AcceptCtxQueryParam.class);
