@@ -30,6 +30,7 @@ import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.lang.Assertion;
+import io.vertigo.ui.core.AbstractUiListUnmodifiable;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.model.UiList;
@@ -146,6 +147,10 @@ public final class UiUtil implements Serializable {
 	 * @return Nom du champ de l'id de cette liste
 	 */
 	public static String getIdField(final String uiListKey) {
+		final UiList uiList = getUiList(uiListKey);
+		if (uiList instanceof AbstractUiListUnmodifiable) {
+			return ((AbstractUiListUnmodifiable) uiList).getIdFieldName();
+		}
 		final DtDefinition dtDefinition = getUiList(uiListKey).getDtDefinition();
 		return StringUtil.constToLowerCamelCase(dtDefinition.getIdField().get().getName());
 	}

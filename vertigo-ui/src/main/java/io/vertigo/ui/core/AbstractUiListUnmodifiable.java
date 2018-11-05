@@ -94,6 +94,10 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		return (Class<O>) ClassUtil.classForName(getDtDefinition().getClassCanonicalName());
 	}
 
+	public String getIdFieldName() {
+		return camelIdFieldName;
+	}
+
 	/**
 	 * Initialize l'index des UiObjects par Id.
 	 * Attention : nécessite la DtList (appel obtainDtList).

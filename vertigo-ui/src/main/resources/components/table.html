@@ -1,10 +1,10 @@
-<th:block th:fragment="table(list, componentId, selectable, sortUrl, tableClass)" 
-	th:with="listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}"
+<th:block th:fragment="table(list, componentId, selectable, rowKey, sortUrl, tableClass)" 
+	th:with="listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')}"
 	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')}, objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')}, objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false }, objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {page: 1 , rowsNumber: __${listSize}__, componentId : '__${componentId}__', listKey : '__${list}__', sortUrl : '__${sortUrl}__'})}" >
 	<q-table
 	    th::data="|paginatedData('${list}', '${componentId}' )|"
 	    th::columns="|componentStates.${componentId}.columns|"
-	    row-key="movId"
+	    th:row-key="${myRowKey}"
 	    th:selection="${mySelectable ? 'multiple' : ''}"
 	    th::selected.sync="|componentStates.${componentId}.selected|"
 	    th::loading="|componentStates.${componentId}.loading|"
