@@ -1,0 +1,15 @@
+<th:block th:fragment="block(title, subtitle, other_attrs)" 
+	th:assert="${title} != null">
+	<div class="q-card">
+		<div class="q-card-primary q-card-container row no-wrap">
+			<div class="col column">
+				<div class="q-card-title" th:text="${title?:''}" />
+				<div class="q-card-subtitle" th:text="${subtitle?:''}" />
+			</div>
+		</div>
+		<div class="q-card-separator"></div>
+		<div class="q-card-main q-card-container">
+			<vu:content/>
+		</div>
+	</div>
+</th:block> 

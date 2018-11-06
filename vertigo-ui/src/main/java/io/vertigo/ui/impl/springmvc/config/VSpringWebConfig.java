@@ -66,7 +66,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 
 	private final static String[] STANDARD_UI_COMPONENTS_NAME = {
 			"vue-data", "include-data", //technical components
-			"page", "head", "form", "modal", //layout components
+			"page", "head", "form", "modal", "block", //layout components
 			"label", "text-field", "text-area", "checkbox", "slider", "knob", //standard controls components
 			"select", "radio", //select controls components
 			"autocomplete", "date", "datetime", "chips-autocomplete", //with client-worflow controls components
@@ -74,6 +74,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 			"grid", "grid-cell", //grid
 			"button-submit", //buttons
 			"facets" //search
+
 	};
 
 	/*
