@@ -110,26 +110,27 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	 * Constructeur.
 	 * @param nodeManager le gestionnaire de noeud
 	 * @param transactionManager le gestionnaire de transaction
-	 * @param workersCount le nombre de worker du noeud
-	 * @param executionPeriodSeconds le timer du long-polling
+	 * @param workersCountOpt le nombre de worker du noeud (10 by default)
+	 * @param executionPeriodSecondsOpt le timer du long-polling (30 seconds by default)
 	 */
 	@Inject
 	public DbProcessExecutorPlugin(
 			final ONodeManager nodeManager,
 			final VTransactionManager transactionManager,
 			@Named("nodeName") final String nodeName,
-			@Named("workersCount") final int workersCount,
-			@Named("executionPeriodSeconds") final int executionPeriodSeconds) {
+			@Named("workersCount") final Optional<Integer> workersCountOpt,
+			@Named("executionPeriodSeconds") final Optional<Integer> executionPeriodSecondsOpt) {
 		Assertion.checkNotNull(nodeManager);
 		Assertion.checkNotNull(transactionManager);
-		// ---
-		Assertion.checkState(workersCount >= 1, "We need at least 1 worker");
 		// ---
 		this.nodeManager = nodeManager;
 		this.transactionManager = transactionManager;
 		this.nodeName = nodeName;
-		this.workersCount = workersCount;
-		this.executionPeriodSeconds = executionPeriodSeconds;
+		workersCount = workersCountOpt.orElse(10);
+		// ---
+		Assertion.checkState(workersCount >= 1, "We need at least 1 worker");
+		// ---
+		executionPeriodSeconds = executionPeriodSecondsOpt.orElse(30);
 		// ---
 		workers = Executors.newFixedThreadPool(workersCount);
 	}

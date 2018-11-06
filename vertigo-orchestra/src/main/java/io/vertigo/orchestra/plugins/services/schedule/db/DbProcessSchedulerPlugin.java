@@ -83,8 +83,8 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	private final String nodeName;
 	private Long nodId;
-	private final int planningPeriodSeconds;
-	private final int forecastDurationSeconds;
+	private final Integer planningPeriodSeconds;
+	private final Integer forecastDurationSeconds;
 	private final ONodeManager nodeManager;
 	private ProcessExecutor myProcessExecutor;
 
@@ -99,8 +99,8 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	 * @param transactionManager vertigo transaction manager
 	 * @param definitionManager orchestra definitions manager
 	 * @param nodeName le nom du noeud
-	 * @param planningPeriodSeconds le timer de planfication
-	 * @param forecastDurationSeconds la durée de prévision des planifications
+	 * @param planningPeriodSecondsOpt le timer de planfication (30 seconds by default)
+	 * @param forecastDurationSecondsOpt la durée de prévision des planifications (3600 seconds by default)
 	 */
 	@Inject
 	public DbProcessSchedulerPlugin(
@@ -108,20 +108,20 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 			final VTransactionManager transactionManager,
 			final OrchestraDefinitionManager definitionManager,
 			@Named("nodeName") final String nodeName,
-			@Named("planningPeriodSeconds") final int planningPeriodSeconds,
-			@Named("forecastDurationSeconds") final int forecastDurationSeconds) {
+			@Named("planningPeriodSeconds") final Optional<Integer> planningPeriodSecondsOpt,
+			@Named("forecastDurationSeconds") final Optional<Integer> forecastDurationSecondsOpt) {
 		Assertion.checkNotNull(nodeManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(definitionManager);
 		Assertion.checkArgNotEmpty(nodeName);
-		Assertion.checkNotNull(planningPeriodSeconds);
-		Assertion.checkNotNull(forecastDurationSeconds);
+		Assertion.checkNotNull(planningPeriodSecondsOpt);
+		Assertion.checkNotNull(forecastDurationSecondsOpt);
 		//-----
 		this.nodeManager = nodeManager;
 		this.transactionManager = transactionManager;
 		this.definitionManager = definitionManager;
-		this.planningPeriodSeconds = planningPeriodSeconds;
-		this.forecastDurationSeconds = forecastDurationSeconds;
+		planningPeriodSeconds = planningPeriodSecondsOpt.orElse(30);
+		forecastDurationSeconds = forecastDurationSecondsOpt.orElse(3600);
 		this.nodeName = nodeName;
 	}
 
