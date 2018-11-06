@@ -1,4 +1,4 @@
-<th:block th:fragment="grid-cell(colspan)">
-		<div class="col-12" th:with="overridedLabelWidth=1"><vu:content></vu:content></div>
+<th:block th:fragment="grid-cell(colspan, class)">
+		<div th:class="${'col-12 '+class}" th:with="overridedLabelWidth=1"><vu:content></vu:content></div>
 </th:block>
 

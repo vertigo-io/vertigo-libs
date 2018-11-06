@@ -1,14 +1,14 @@
-<th:block th:fragment="block(title, subtitle, other_attrs)" 
+<th:block th:fragment="block(title, subtitle, header_attrs, content_attrs, card_attrs)" 
 	th:assert="${title} != null">
-	<div class="q-card">
-		<div class="q-card-primary q-card-container row no-wrap">
+	<div class="q-card" th:attr="__${card_attrs}__">
+		<div class="q-card-container row no-wrap" th:attr="__${header_attrs}__">
 			<div class="col column">
 				<div class="q-card-title" th:text="${title?:''}" />
 				<div class="q-card-subtitle" th:text="${subtitle?:''}" />
 			</div>
 		</div>
 		<div class="q-card-separator"></div>
-		<div class="q-card-main q-card-container">
+		<div class="q-card-main q-card-container" th:attr="__${content_attrs}__">
 			<vu:content/>
 		</div>
 	</div>
