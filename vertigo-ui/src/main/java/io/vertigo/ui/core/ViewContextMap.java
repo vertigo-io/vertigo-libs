@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -54,6 +55,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	private boolean dirty = false;
 
 	private final Map<String, Set<String>> keysForClient = new HashMap<>();
+	private transient Map<String, Map<String, Function<Serializable, String>>> valueTransformers;
 
 	/** {@inheritDoc} */
 	@Override
@@ -63,6 +65,10 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		final Serializable o = super.get(key);
 		Assertion.checkNotNull(o, "Objet :{0} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Clés disponibles {1}", key, keySet());
 		return o;
+	}
+
+	public void initValueTransformers() {
+		valueTransformers = new HashMap<>();
 	}
 
 	/**
@@ -305,13 +311,13 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 			final String key = entry.getKey();
 			if (keysForClient.containsKey(key) && (subFilter.isEmpty() || subFilter.contains(key))) {
 				if (entry.getValue() instanceof MapUiObject) {
-					viewContextMap.put(entry.getKey(), ((MapUiObject) entry.getValue()).mapForClient(keysForClient.get(key)));
+					viewContextMap.put(entry.getKey(), ((MapUiObject) entry.getValue()).mapForClient(keysForClient.get(key), valueTransformers.getOrDefault(key, Collections.emptyMap())));
 				} else if (entry.getValue() instanceof AbstractUiListUnmodifiable) {
 					//handle lists
-					viewContextMap.put(entry.getKey(), ((AbstractUiListUnmodifiable) entry.getValue()).listForClient(keysForClient.get(key)));
+					viewContextMap.put(entry.getKey(), ((AbstractUiListUnmodifiable) entry.getValue()).listForClient(keysForClient.get(key), valueTransformers.getOrDefault(key, Collections.emptyMap())));
 				} else if (entry.getValue() instanceof BasicUiListModifiable) {
 					//handle lists modifiable
-					viewContextMap.put(entry.getKey(), ((BasicUiListModifiable) entry.getValue()).listForClient(keysForClient.get(key)));
+					viewContextMap.put(entry.getKey(), ((BasicUiListModifiable) entry.getValue()).listForClient(keysForClient.get(key), valueTransformers.getOrDefault(key, Collections.emptyMap())));
 				} else {
 					// just copy it
 					viewContextMap.put(entry.getKey(), entry.getValue());
@@ -323,6 +329,11 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 
 	public void addKeyForClient(final String object, final String fieldName) {
 		keysForClient.computeIfAbsent(object, k -> new HashSet<>()).add(fieldName);
+	}
+
+	public void addListValueTransformer(final String objectKey, final String objectFieldName, final String listKey, final String listKeyFieldName, final String listDisplayFieldName) {
+		valueTransformers.computeIfAbsent(objectKey, k -> new HashMap<>()).put(objectFieldName,
+				(value) -> ((AbstractUiListUnmodifiable) getUiList(listKey)).getById(listKeyFieldName, value).getString(listDisplayFieldName));
 	}
 
 	public void addKeyForClient(final String object) {

@@ -9,3 +9,10 @@
 		th:assert="${key} != null" 
 		th:attr="objectKey=${model.vContext.addKeyForClient('__${key}__')}" 
 		th:remove="all"></th:block>
+		
+<th:block
+		th:fragment="include-data-map(object, field, list, listKey, listDisplay)" 
+		th:assert="${object} != null and ${field} != null and ${list} != null" 
+		th:with="myListKey=${listKey?:model.util.getIdField(list)}, myListDisplay=${listDisplay?:model.util.getDisplayField(list)}"
+		th:attr="objectKey=${model.vContext.addListValueTransformer('__${object}__', '__${field}__', '__${list}__', '__${myListKey}__', '__${myListDisplay}__')}, objectKey=${model.vContext.addKeyForClient('__${object}__', '__${field}__')} " 
+		th:remove="all"></th:block>

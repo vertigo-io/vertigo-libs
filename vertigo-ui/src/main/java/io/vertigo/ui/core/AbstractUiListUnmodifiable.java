@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -42,6 +43,7 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
 import io.vertigo.util.StringUtil;
+import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 
@@ -65,7 +67,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	protected final ComponentRef<VTransactionManager> transactionManager = ComponentRef.makeLazyRef(VTransactionManager.class);
 
 	private final Map<Integer, UiObject<O>> uiObjectByIndex = new HashMap<>();
-	private final Map<String, Map<String, UiObject<O>>> uiObjectByFieldValue = new HashMap<>();
+	private final Map<String, Map<Serializable, UiObject<O>>> uiObjectByFieldValue = new HashMap<>();
 
 	//==========================================================================
 	private final DefinitionReference<DtDefinition> dtDefinitionRef;
@@ -114,9 +116,9 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @param keyFieldName Nom du champs à indexer
 	 */
 	public final void initUiObjectByKeyIndex(final String keyFieldName) {
-		final Map<String, UiObject<O>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
+		final Map<Serializable, UiObject<O>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
 		for (final UiObject<O> uiObject : this) {
-			uiObjectById.put(uiObject.getInputValue(keyFieldName), uiObject);
+			uiObjectById.put(((VegaUiObject<O>) uiObject).getTypedValue(keyFieldName, Serializable.class), uiObject);
 		}
 	}
 
@@ -188,20 +190,20 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * Récupère un objet par la valeur de son identifiant.
 	 * Utilisé par les select, radio et autocomplete en mode ReadOnly.
 	 * @param keyFieldName Nom du champ identifiant
-	 * @param keyValueAsString Valeur de l'identifiant
+	 * @param keyValue Valeur de l'identifiant
 	 * @return UiObject
 	 * @throws FormatterException Format error
 	 */
-	public UiObject<O> getById(final String keyFieldName, final String keyValueAsString) throws FormatterException {
-		final Map<String, UiObject<O>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
-		UiObject<O> uiObject = uiObjectById.get(keyValueAsString);
+	public UiObject<O> getById(final String keyFieldName, final Serializable keyValue) {
+		final Map<Serializable, UiObject<O>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
+		UiObject<O> uiObject = uiObjectById.get(keyValue);
 		if (uiObject == null) {
-			uiObject = loadMissingEntity(keyFieldName, keyValueAsString, uiObjectById);
+			uiObject = loadMissingEntity(keyFieldName, keyValue, uiObjectById);
 		}
 		return uiObject;
 	}
 
-	private UiObject<O> loadMissingEntity(final String keyFieldName, final String keyValueAsString, final Map<String, UiObject<O>> uiObjectById) throws FormatterException {
+	private UiObject<O> loadMissingEntity(final String keyFieldName, final Serializable keyValue, final Map<Serializable, UiObject<O>> uiObjectById) {
 		final DtDefinition dtDefinition = getDtDefinition();
 		// ---
 		Assertion.checkState(dtDefinition.getIdField().isPresent(), "The definition : {0} must have an id to retrieve elements by Id", dtDefinition);
@@ -210,10 +212,9 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		final DtField dtField = dtDefinition.getField(StringUtil.camelToConstCase(keyFieldName));
 		Assertion.checkArgument(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
 
-		final Object key = dtField.getDomain().stringToValue(keyValueAsString);
-		final O entity = (O) loadDto(key);
+		final O entity = (O) loadDto(keyValue);
 		uiObject = new MapUiObject<>(entity);
-		uiObjectById.put(keyValueAsString, uiObject);
+		uiObjectById.put(keyValue, uiObject);
 		Assertion.checkState(uiObjectById.size() < NB_MAX_ELEMENTS, "Trop d'élément dans le buffer uiObjectById de la liste de {0}", getDtDefinition().getName());
 		return uiObject;
 	}
@@ -230,8 +231,8 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @param keyFieldName Nom du champ identifiant
 	 * @return Index des UiObjects par Id
 	 */
-	protected final Map<String, UiObject<O>> obtainUiObjectByIdMap(final String keyFieldName) {
-		Map<String, UiObject<O>> uiObjectById = uiObjectByFieldValue.get(keyFieldName);
+	protected final Map<Serializable, UiObject<O>> obtainUiObjectByIdMap(final String keyFieldName) {
+		Map<Serializable, UiObject<O>> uiObjectById = uiObjectByFieldValue.get(keyFieldName);
 		if (uiObjectById == null) {
 			uiObjectById = new HashMap<>();
 			uiObjectByFieldValue.put(keyFieldName, uiObjectById);
@@ -253,10 +254,10 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		uiObjectByIndex.clear();
 	}
 
-	public ArrayList<HashMap<String, Serializable>> listForClient(final Set<String> fieldsForClient) {
+	public ArrayList<HashMap<String, Serializable>> listForClient(final Set<String> fieldsForClient, final Map<String, Function<Serializable, String>> valueTransformers) {
 		final ArrayList<HashMap<String, Serializable>> listForClient = new ArrayList<>();
 		for (final UiObject uiObject : this) {
-			listForClient.add(((MapUiObject) uiObject).mapForClient(fieldsForClient));
+			listForClient.add(((MapUiObject) uiObject).mapForClient(fieldsForClient, valueTransformers));
 		}
 		return listForClient;
 	}

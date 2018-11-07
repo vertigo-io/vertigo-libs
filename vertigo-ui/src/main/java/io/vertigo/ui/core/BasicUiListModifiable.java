@@ -21,7 +21,9 @@ package io.vertigo.ui.core;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -42,10 +44,10 @@ public class BasicUiListModifiable<D extends DtObject> extends AbstractUiListMod
 		return new MapUiObject<>(dto);
 	}
 
-	public ArrayList<HashMap<String, Serializable>> listForClient(final Set<String> fieldsForClient) {
+	public ArrayList<HashMap<String, Serializable>> listForClient(final Set<String> fieldsForClient, final Map<String, Function<Serializable, String>> valueTransformers) {
 		final ArrayList<HashMap<String, Serializable>> listForClient = new ArrayList<>();
 		for (final UiObject uiObject : this) {
-			listForClient.add(((MapUiObject) uiObject).mapForClient(fieldsForClient));
+			listForClient.add(((MapUiObject) uiObject).mapForClient(fieldsForClient, valueTransformers));
 		}
 		return listForClient;
 	}

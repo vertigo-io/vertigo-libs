@@ -1,0 +1,9 @@
+<th:block th:fragment="list(list, componentId, selectable, rowKey, sortUrl, tableClass)" 
+	th:with="collectionKey=${list}, listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')}"
+	 >
+		<q-list>
+			<q-item th:v-for="|item in vueData.${list}|" th::key="|item.${myRowKey}|" class="q-ma-sm bg-white"  >
+				<vu:content/>
+			</q-item>
+		</q-list>
+</th:block> 

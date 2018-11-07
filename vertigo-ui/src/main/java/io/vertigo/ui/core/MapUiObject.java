@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -197,7 +198,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		throw new UnsupportedOperationException();
 	}
 
-	public HashMap<String, Serializable> mapForClient(final Set<String> fieldsForClient) {
+	public HashMap<String, Serializable> mapForClient(final Set<String> fieldsForClient, final Map<String, Function<Serializable, String>> valueTransformers) {
 		final Set<String> filterSet;
 		if (fieldsForClient.contains("*")) {
 			filterSet = camel2ConstIndex.keySet();
@@ -206,14 +207,15 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		}
 		final HashMap<String, Serializable> mapForClient = new HashMap<>(filterSet.size());
 		filterSet
-				.forEach(key -> mapForClient.put(key, getValueForClient(key)));
+				.forEach(key -> mapForClient.put(key, getValueForClient(key, valueTransformers.get(key))));
 		return mapForClient;
 
 	}
 
-	private Serializable getValueForClient(final String fieldKey) {
+	private Serializable getValueForClient(final String fieldKey, final Function<Serializable, String> valueTransformer) {
 		final boolean hasFormatModifier = fieldKey.endsWith("_fmt");
-		final String fieldName = hasFormatModifier ? fieldKey.substring(0, fieldKey.length() - "_fmt".length()) : fieldKey;
+		final boolean hasDisplayModifier = fieldKey.endsWith("_display");
+		final String fieldName = hasFormatModifier ? fieldKey.substring(0, fieldKey.length() - "_fmt".length()) : hasDisplayModifier ? fieldKey.substring(0, fieldKey.length() - "_display".length()) : fieldKey;
 		//--- if error
 		if (hasFormatError(fieldName)) {
 			return getInputValue(fieldName);
@@ -221,6 +223,9 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		//--- good data
 		if (hasFormatModifier) {
 			return getFormattedValue(fieldName);
+		}
+		if (valueTransformer != null) {
+			return valueTransformer.apply(getTypedValue(fieldName, Serializable.class));
 		}
 		return getEncodedValue(fieldName);
 
@@ -230,10 +235,6 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		final String keyFieldName = String.class.cast(key);
 		Assertion.checkArgNotEmpty(keyFieldName);
 		Assertion.checkArgument(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
-		//-----
-		if (hasFormatError(keyFieldName)) {
-			return getInputValue(keyFieldName);
-		}
 		//---
 		final DtField dtField = getDtField(keyFieldName);
 		if (isAboutDate(dtField)) {
