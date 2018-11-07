@@ -88,12 +88,14 @@ Vue.directive('scroll-spy', {
         		return scrollBreakpoints;
             };
             
+            elNav.classList.add("scroll-spy-nav");
             for(var i = 0 ; i < elAs.length; i++) {
     			elAs[i].addEventListener('click', Vue.scrollTo);
     		}		    
         	window.addEventListener('scroll', Vue.scrollSpyHandler)
         },
         unbind: function(el) {
+        	elNav.classList.remove("scroll-spy-nav");
         	window.removeEventListener('scroll')
         	const elAs = elNav.querySelectorAll('a')
     		for(var i = 0 ; i < elAs.length; i++) {
