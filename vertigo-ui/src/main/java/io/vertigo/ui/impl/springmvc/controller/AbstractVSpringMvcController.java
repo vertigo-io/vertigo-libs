@@ -118,7 +118,6 @@ public abstract class AbstractVSpringMvcController {
 			//initContext();
 		}
 		viewContext.setCtxId();
-		viewContext.asMap().initValueTransformers();
 		request.setAttribute("defaultViewName", getDefaultViewName(this));
 
 	}

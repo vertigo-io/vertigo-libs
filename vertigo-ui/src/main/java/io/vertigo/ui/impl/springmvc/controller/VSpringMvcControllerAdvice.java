@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
 import io.vertigo.ui.core.ViewContext;
+import io.vertigo.ui.core.ViewContextForClientHelper;
 import io.vertigo.ui.core.ViewContextMap;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -40,6 +41,7 @@ public final class VSpringMvcControllerAdvice {
 		//---
 		model.addAttribute("model", viewContext.asMap());
 		model.addAttribute("uiMessageStack", uiMessageStack);
+		model.addAttribute("modelHelper", new ViewContextForClientHelper(viewContext.asMap()));
 		// here we can retrieve anything and put it into the model or in our context
 		// we can also use argument resolvers to retrieve attributes in our context for convenience (a DtObject or an UiObject can be retrieved as parameters
 		// easily from our vContext since we have access to the modelandviewContainer in a parameterResolver...)
@@ -63,6 +65,7 @@ public final class VSpringMvcControllerAdvice {
 		viewContext.markDirty();
 		modelAndView.addObject("model", viewContext.asMap());
 		modelAndView.addObject("uiMessageStack", uiMessageStack);
+		modelAndView.addObject("modelHelper", new ViewContextForClientHelper(viewContext.asMap()));
 
 		return modelAndView;
 	}

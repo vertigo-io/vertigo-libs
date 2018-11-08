@@ -1,7 +1,7 @@
 <th:block th:fragment="autocomplete-edit(object,list,field,valueField, labelField, componentId)" vu:alias="autocomplete" vu:selector="${viewMode=='edit'}"
 	  th:assert="${object} != null and ${field} != null and ${list} != null"
-	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, value=${model.vContext[__${object}__][__${field}__]}, myComponentId=${componentId != null ? componentId : list + '_' + object + '_' + field}">
-	<th:block th:with="valueLabel=${model.vContext[__${list}__].getById('__${myValueField}__', '__${value}__')['__${myLabelField}__']}"
+	  th:with="myValueField=${valueField != null ? valueField : model.util.getIdField(list)}, myLabelField=${labelField != null ? labelField : model.util.getDisplayField(list)}, value=${model.vContext[__${object}__].getTypedValue('__${field}__')}, myComponentId=${componentId != null ? componentId : list + '_' + object + '_' + field}">
+	<th:block th:with="valueLabel=${model.vContext[__${list}__].getById('__${myValueField}__', value)['__${myLabelField}__']}"
 		th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('placeHolder', valueLabel)}" />
 	<vu:include-data object="${object}" field="${field}"/>
 	<vu:include-data object="${list}" field="${myValueField}"/>

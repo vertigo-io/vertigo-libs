@@ -1,18 +1,18 @@
 <th:block
 		th:fragment="include-data(object,field)" 
 		th:assert="${object} != null and ${field} != null" 
-		th:attr="objectKey=${model.vContext.addKeyForClient('__${object}__', '__${field}__')}" 
+		th:attr="objectKey=${modelHelper.addKeyForClient('__${object}__', '__${field}__')}" 
 		th:remove="all"></th:block>
 		
 <th:block
 		th:fragment="include-data-primitive(key)" 
 		th:assert="${key} != null" 
-		th:attr="objectKey=${model.vContext.addKeyForClient('__${key}__')}" 
+		th:attr="objectKey=${modelHelper.addKeyForClient('__${key}__')}" 
 		th:remove="all"></th:block>
 		
 <th:block
 		th:fragment="include-data-map(object, field, list, listKey, listDisplay)" 
 		th:assert="${object} != null and ${field} != null and ${list} != null" 
 		th:with="myListKey=${listKey?:model.util.getIdField(list)}, myListDisplay=${listDisplay?:model.util.getDisplayField(list)}"
-		th:attr="objectKey=${model.vContext.addListValueTransformer('__${object}__', '__${field}__', '__${list}__', '__${myListKey}__', '__${myListDisplay}__')}, objectKey=${model.vContext.addKeyForClient('__${object}__', '__${field}__')} " 
+		th:attr="objectKey=${modelHelper.addListValueTransformer('__${object}__', '__${field}__', '__${list}__', '__${myListKey}__', '__${myListDisplay}__')}, objectKey=${modelHelper.addKeyForClient('__${object}__', '__${field}__')} " 
 		th:remove="all"></th:block>

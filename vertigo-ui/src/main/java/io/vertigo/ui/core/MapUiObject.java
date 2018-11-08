@@ -254,4 +254,8 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		final Serializable typedValue = getEncodedValue(keyFieldName);
 		return typedValue != null ? dtField.getDomain().valueToString(typedValue) : null;
 	}
+
+	public Serializable getTypedValue(final String fieldName) {
+		return getTypedValue(fieldName, Serializable.class);
+	}
 }

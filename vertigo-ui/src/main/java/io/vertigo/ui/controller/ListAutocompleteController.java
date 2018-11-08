@@ -20,6 +20,9 @@ package io.vertigo.ui.controller;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 
 import javax.inject.Inject;
@@ -37,6 +40,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.ui.core.UiListUnmodifiable;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 import io.vertigo.util.StringUtil;
@@ -57,28 +61,31 @@ public final class ListAutocompleteController extends AbstractVSpringMvcControll
 
 	@PostMapping("/_searchFullText")
 	@ResponseBody
-	public <D extends DtObject> DtList<D> searchFullText(
+	public List searchFullText(
 			final ViewContext viewContext,
 			@RequestParam("terms") final String terms,
 			@RequestParam("list") final String list,
 			@RequestParam("valueField") final String valueField,
 			@RequestParam("labelField") final String labelField) {
-		final UiList<D> contextList = viewContext.getUiList(() -> list);
-		final DtList<D> dtList = contextList.mergeAndCheckInput(Collections.EMPTY_LIST, getUiMessageStack());
+		final UiList contextList = viewContext.getUiList(() -> list);
+		final DtList dtList = contextList.mergeAndCheckInput(Collections.EMPTY_LIST, getUiMessageStack());
 		final DtDefinition dtDefinition = dtList.getDefinition();
 		//-----
 		final DtField labelDtField = dtDefinition.getField(StringUtil.camelToConstCase(labelField));
 
 		final Collection<DtField> searchedFields = Collections.singletonList(labelDtField);
-		final DtList<D> results;
+		final DtList results;
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) { //Open a transaction because all fields are indexed. If there is a MDL it was load too.
-			final UnaryOperator<DtList<D>> fullTextFilter = collectionsManager.<D> createIndexDtListFunctionBuilder()
+			final UnaryOperator<DtList<DtObject>> fullTextFilter = collectionsManager.createIndexDtListFunctionBuilder()
 					.filter(terms != null ? terms : "", 20, searchedFields)
 					.build();
 			results = fullTextFilter.apply(dtList);
 		}
 
-		return results;
+		final HashSet<String> fieldsForClient = new HashSet<>();
+		fieldsForClient.add(valueField);
+		fieldsForClient.add(labelField);
+		return new UiListUnmodifiable(results, Optional.empty()).listForClient(fieldsForClient, Collections.emptyMap());
 	}
 
 }

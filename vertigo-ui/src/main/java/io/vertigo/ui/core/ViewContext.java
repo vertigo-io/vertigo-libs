@@ -122,7 +122,7 @@ public final class ViewContext implements Serializable {
 	}
 
 	public ViewContextMap asUpdatesMap() {
-		return viewContextMap.getFilteredViewContext(modifiedKeys);
+		return new ViewContextForClientHelper(viewContextMap).getFilteredViewContext(modifiedKeys);
 	}
 
 	/* ================================== Map =====================================*/
