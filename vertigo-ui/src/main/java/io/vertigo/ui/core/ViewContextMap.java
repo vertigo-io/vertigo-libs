@@ -19,12 +19,15 @@
 package io.vertigo.ui.core;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -54,6 +57,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	private boolean dirty = false;
 
 	private final Map<String, Set<String>> keysForClient = new HashMap<>();
+	private final Map<String, Map<String, List<String>>> valueTransformers = new HashMap<>();
 
 	/** {@inheritDoc} */
 	@Override
@@ -302,12 +306,57 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		keysForClient.put(object, Collections.emptySet());// notmodifiable because used only for primitives
 	}
 
-	Set<String> getKeysForClient(final String key) {
-		return keysForClient.get(key);
+	public void addListValueTransformer(final String objectKey, final String objectFieldName, final String listKey, final String listKeyFieldName, final String listDisplayFieldName) {
+		valueTransformers.computeIfAbsent(objectKey, k -> new HashMap<>()).put(objectFieldName,
+				Arrays.asList(listKey, listKeyFieldName, listDisplayFieldName));
+
 	}
 
-	boolean containsKeyForClient(final String key) {
-		return keysForClient.containsKey(key);
+	public ViewContextMap getFilteredViewContext() {
+		return getFilteredViewContext(Collections.emptySet());
 	}
 
+	ViewContextMap getFilteredViewContext(final Set<String> subFilter) {
+		final ViewContextMap viewContextMapForClient = new ViewContextMap();
+		viewContextMapForClient.put(CTX, get(CTX));
+		for (final Map.Entry<String, Serializable> entry : entrySet()) {
+			final String key = entry.getKey();
+			if (keysForClient.containsKey(key) && (subFilter.isEmpty() || subFilter.contains(key))) {
+				if (entry.getValue() instanceof MapUiObject) {
+					viewContextMapForClient.put(entry.getKey(), ((MapUiObject) entry.getValue()).mapForClient(keysForClient.get(key), createTransformers(key)));
+				} else if (entry.getValue() instanceof AbstractUiListUnmodifiable) {
+					//handle lists
+					viewContextMapForClient.put(entry.getKey(), ((AbstractUiListUnmodifiable) entry.getValue()).listForClient(keysForClient.get(key), createTransformers(key)));
+				} else if (entry.getValue() instanceof BasicUiListModifiable) {
+					//handle lists modifiable
+					viewContextMapForClient.put(entry.getKey(), ((BasicUiListModifiable) entry.getValue()).listForClient(keysForClient.get(key), createTransformers(key)));
+				} else {
+					// just copy it
+					viewContextMapForClient.put(entry.getKey(), entry.getValue());
+				}
+			}
+		}
+		return viewContextMapForClient;
+	}
+
+	private Map<String, Function<Serializable, String>> createTransformers(final String key) {
+		if (valueTransformers.containsKey(key)) {
+			final Map<String, Function<Serializable, String>> resultMap = new HashMap<>();
+			valueTransformers.get(key).entrySet()
+					.forEach(entry -> resultMap.put(entry.getKey(), createListValueTransformer(entry.getValue())));
+			return resultMap;
+		}
+		return Collections.emptyMap();
+
+	}
+
+	private Function<Serializable, String> createListValueTransformer(final List<String> params) {
+		Assertion.checkState(params.size() == 3, "ListValueTransformer requires 3 params, provided params {0}", params);
+		// ---
+		final String listKey = params.get(0);
+		final String listKeyFieldName = params.get(1);
+		final String listDisplayFieldName = params.get(2);
+
+		return (value) -> ((AbstractUiListUnmodifiable) getUiList(listKey)).getById(listKeyFieldName, value).getString(listDisplayFieldName);
+	}
 }

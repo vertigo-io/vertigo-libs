@@ -1,9 +1,13 @@
 <th:block th:fragment="field-read(object, field, list, listKey, listDisplay, other_attrs)" 
-	th:assert="(${object} != null or ${collectionKey} != null) and ${field} != null" 
-	th:with="myObject=${object?:collectionKey}">
+	th:assert="(${object} != null or ${collectionKey} != null or ${tableKey} != null) and ${field} != null" 
+	th:with="myObject=${object?:collectionKey?:tableKey}">
 	<th:block th:if="${collectionKey != null}" >
 		<vu:include-data-map object="${myObject}" field="|${field}_display|" list="${list}" listKey="${listKey}" listDisplay="${listDisplay}" />
 		{{item.[[${field}]]_display}}
+	</th:block>
+	<th:block th:if="${tableKey != null}" >
+		<vu:include-data-map object="${myObject}" field="|${field}_display|" list="${list}" listKey="${listKey}" listDisplay="${listDisplay}" />
+		{{props.row.[[${field}]]_display}}
 	</th:block>
 	<th:block th:if="${object != null}" >
 		{{[[${object}]].[[${field}]]}}

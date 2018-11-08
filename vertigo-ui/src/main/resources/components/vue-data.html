@@ -1,6 +1,6 @@
 <th:block th:fragment="vue-data">
     <script th:inline="javascript">
-       	var vueData = [[${modelHelper.filteredViewContext}]];
+       	var vueData = [[${model.vContext.filteredViewContext}]];
        	var componentStates = [[${model['componentStates']}]];
        	var ctxId = [[${model['CTX']}]];
 	</script>

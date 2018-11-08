@@ -38,6 +38,9 @@
 					<vu:table list="result_list" componentId="moviesRecherche" selectable="true" sortUrl="@{/movies/_search}">
 						<vu:column field="movId" />
 						<vu:column field="originalTitle" sortable="true" />
+						<vu:column name="TestVT" label="TestVT">
+							<vu:field-read field="movId" list="result_list" listKey="movId" listDisplay="title" />
+						</vu:column>
 					</vu:table>
 				</div>
 			</div>
