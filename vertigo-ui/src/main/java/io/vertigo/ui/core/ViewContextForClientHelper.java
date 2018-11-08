@@ -21,7 +21,6 @@ package io.vertigo.ui.core;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -36,7 +35,6 @@ public final class ViewContextForClientHelper {
 
 	private final ViewContextMap viewContextMap;
 
-	private final Map<String, Set<String>> keysForClient = new HashMap<>();
 	private final Map<String, Map<String, Function<Serializable, String>>> valueTransformers = new HashMap<>();
 
 	public ViewContextForClientHelper(final ViewContextMap viewContextMap) {
@@ -52,15 +50,15 @@ public final class ViewContextForClientHelper {
 		viewContextMapForClient.put(CTX, viewContextMap.get(CTX));
 		for (final Map.Entry<String, Serializable> entry : viewContextMap.entrySet()) {
 			final String key = entry.getKey();
-			if (keysForClient.containsKey(key) && (subFilter.isEmpty() || subFilter.contains(key))) {
+			if (viewContextMap.containsKeyForClient(key) && (subFilter.isEmpty() || subFilter.contains(key))) {
 				if (entry.getValue() instanceof MapUiObject) {
-					viewContextMapForClient.put(entry.getKey(), ((MapUiObject) entry.getValue()).mapForClient(keysForClient.get(key), valueTransformers.getOrDefault(key, Collections.emptyMap())));
+					viewContextMapForClient.put(entry.getKey(), ((MapUiObject) entry.getValue()).mapForClient(viewContextMap.getKeysForClient(key), valueTransformers.getOrDefault(key, Collections.emptyMap())));
 				} else if (entry.getValue() instanceof AbstractUiListUnmodifiable) {
 					//handle lists
-					viewContextMapForClient.put(entry.getKey(), ((AbstractUiListUnmodifiable) entry.getValue()).listForClient(keysForClient.get(key), valueTransformers.getOrDefault(key, Collections.emptyMap())));
+					viewContextMapForClient.put(entry.getKey(), ((AbstractUiListUnmodifiable) entry.getValue()).listForClient(viewContextMap.getKeysForClient(key), valueTransformers.getOrDefault(key, Collections.emptyMap())));
 				} else if (entry.getValue() instanceof BasicUiListModifiable) {
 					//handle lists modifiable
-					viewContextMapForClient.put(entry.getKey(), ((BasicUiListModifiable) entry.getValue()).listForClient(keysForClient.get(key), valueTransformers.getOrDefault(key, Collections.emptyMap())));
+					viewContextMapForClient.put(entry.getKey(), ((BasicUiListModifiable) entry.getValue()).listForClient(viewContextMap.getKeysForClient(key), valueTransformers.getOrDefault(key, Collections.emptyMap())));
 				} else {
 					// just copy it
 					viewContextMapForClient.put(entry.getKey(), entry.getValue());
@@ -71,7 +69,7 @@ public final class ViewContextForClientHelper {
 	}
 
 	public void addKeyForClient(final String object, final String fieldName) {
-		keysForClient.computeIfAbsent(object, k -> new HashSet<>()).add(fieldName);
+		viewContextMap.addKeyForClient(object, fieldName);
 	}
 
 	public void addListValueTransformer(final String objectKey, final String objectFieldName, final String listKey, final String listKeyFieldName, final String listDisplayFieldName) {
@@ -80,7 +78,7 @@ public final class ViewContextForClientHelper {
 	}
 
 	public void addKeyForClient(final String object) {
-		keysForClient.put(object, Collections.emptySet());// notmodifiable because used only for primitives
+		viewContextMap.addKeyForClient(object);
 	}
 
 }

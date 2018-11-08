@@ -21,8 +21,10 @@ package io.vertigo.ui.core;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -50,6 +52,8 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	private final Map<UiList<?>, String> reverseUiListIndex = new IdentityHashMap<>();
 	private boolean unmodifiable; //initialisé à false
 	private boolean dirty = false;
+
+	private final Map<String, Set<String>> keysForClient = new HashMap<>();
 
 	/** {@inheritDoc} */
 	@Override
@@ -288,6 +292,22 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 			throw new ValidationUserException();
 		}
 		return validatedDto;
+	}
+
+	public void addKeyForClient(final String object, final String fieldName) {
+		keysForClient.computeIfAbsent(object, k -> new HashSet<>()).add(fieldName);
+	}
+
+	public void addKeyForClient(final String object) {
+		keysForClient.put(object, Collections.emptySet());// notmodifiable because used only for primitives
+	}
+
+	Set<String> getKeysForClient(final String key) {
+		return keysForClient.get(key);
+	}
+
+	boolean containsKeyForClient(final String key) {
+		return keysForClient.containsKey(key);
 	}
 
 }
