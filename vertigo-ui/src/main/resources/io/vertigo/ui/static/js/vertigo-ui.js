@@ -128,6 +128,16 @@ var VUi = {
 							}
 						});
 					});
-				}, 400)
+				}, 400),
+				showMore : function (componentId) {
+					var showMoreCount = componentStates[componentId].pagination.showMoreCount;
+					if (showMoreCount) {
+					} else {
+						showMoreCount = 1;
+						componentStates[componentId].pagination.showMoreCount = showMoreCount;
+					}
+					componentStates[componentId].pagination.rowsPerPage = componentStates[componentId].pagination.rowsPerPage / showMoreCount * (showMoreCount + 1);
+				}
 			  }
+			  
 	}
