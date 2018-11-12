@@ -40,6 +40,7 @@ import io.vertigo.util.StringUtil;
 public final class EncoderDate {
 
 	private static final String pattern = "dd/MM/yyyy HH:mm";
+	private static final String localDatePattern = "dd/MM/yyyy";
 
 	/**
 	 * Constructor.
@@ -107,7 +108,7 @@ public final class EncoderDate {
 	 * Converts a String to a LocalDate according to a given pattern
 	 */
 	private static LocalDate doStringToLocalDate(final String dateString) {
-		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern);
+		final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(localDatePattern);
 		return LocalDate.parse(dateString, dateTimeFormatter);
 	}
 
@@ -147,7 +148,7 @@ public final class EncoderDate {
 	}
 
 	private static String localDateToString(final LocalDate localDate) {
-		return DateTimeFormatter.ofPattern(pattern)
+		return DateTimeFormatter.ofPattern(localDatePattern)
 				.format(localDate);
 	}
 
