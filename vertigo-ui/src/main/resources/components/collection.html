@@ -1,0 +1,7 @@
+<th:block th:fragment="collection(list, componentId, rowsPerPage, showMoreLabel, selectable, rowKey, sortUrl, tableClass)" 
+	th:assert="${list} != null and ${componentId} != null and ${showMoreLabel} != null"
+	th:with="collectionKey=${list}, listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, myRowsPerPage=${rowsPerPage?:15}"
+	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('selected')}, objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false }, objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {page: 1 , rowsNumber: __${listSize}__, rowsPerPage: __${myRowsPerPage}__, componentId : '__${componentId}__', listKey : '__${list}__', sortUrl : '__${sortUrl}__'})}" 
+>
+	<vu:content />
+</th:block > 

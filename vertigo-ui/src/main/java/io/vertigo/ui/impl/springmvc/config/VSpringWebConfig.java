@@ -71,7 +71,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 			"select", "radio", //select controls components
 			"autocomplete", "date", "datetime", "chips-autocomplete", //with client-worflow controls components
 			"table", "column", //table
-			"list", "field-read",
+			"collection", "list", "cards", "field-read", // collections
 			"grid", "grid-cell", //grid
 			"button-submit", //buttons
 			"facets" //search
