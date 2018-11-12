@@ -1,7 +1,13 @@
-<th:block th:fragment="collection(list, componentId, rowsPerPage, showMoreLabel, selectable, rowKey, sortUrl, tableClass)" 
-	th:assert="${list} != null and ${componentId} != null and ${showMoreLabel} != null"
-	th:with="collectionKey=${list}, listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, myRowsPerPage=${rowsPerPage?:15}"
+<th:block th:fragment="collection(list, componentId, showMore, showMoreLabel, rowsPerPage, selectable, sortUrl)" 
+	th:assert="${list} != null and ${componentId} != null"
+	th:with="collectionKey=${list}, listSize=${model.vContext[__${list}__].size()}, myRowsPerPage=${rowsPerPage?:15}, showMoreEnabled=${showMore?:false}"
 	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('selected')}, objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false }, objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {page: 1 , rowsNumber: __${listSize}__, rowsPerPage: __${myRowsPerPage}__, componentId : '__${componentId}__', listKey : '__${list}__', sortUrl : '__${sortUrl}__'})}" 
 >
 	<vu:content />
+	<q-btn th:if="${showMoreEnabled}" color="primary" th:v-if="|componentStates.${componentId}.pagination.rowsNumber > componentStates.${componentId}.pagination.rowsPerPage|" th:label="${showMoreLabel}" th:@click="|showMore('${componentId}')|"></q-btn>
+	<q-pagination 
+		th:if="${!showMoreEnabled}" 
+		th:v-model="|componentStates.${componentId}.pagination.page|" 
+		th::max="|Math.ceil(componentStates.${componentId}.pagination.rowsNumber / componentStates.${componentId}.pagination.rowsPerPage)|" 
+		th:attr="__${pagination_attrs}__"></q-pagination>
 </th:block > 

@@ -1,10 +1,17 @@
-<th:block th:fragment="list(list, componentId, rowsPerPage, showMoreLabel, selectable, rowKey, sortUrl, tableClass)" >
-	<vu:collection list="${list}" componentId="${componentId}" rowsPerPage="${rowsPerPage}" showMoreLabel="${showMoreLabel}" selectable="${selectable}" rowKey="${rowKey}" sortUrl="${sortUrl}" tableClass="${tableClass}">
+<th:block th:fragment="list(list, componentId, rowsPerPage, showMore, showMoreLabel, selectable, rowKey, sortUrl, listClass, pagination_attrs)" 
+	th:with="myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, mySelectable=${selectable?:false}">
+	<vu:collection 
+	list="${list}" 
+	componentId="${componentId}" 
+	rowsPerPage="${rowsPerPage}" 
+	showMore=${showMore} 
+	showMoreLabel="${showMoreLabel}" 
+	selectable="${mySelectable}" 
+	sortUrl="${sortUrl}" >
 		<q-list>
 			<q-item th:v-for="|item in paginatedData('${list}', '${componentId}' )|" th::key="|item.${myRowKey}|" class="q-ma-sm bg-white"  >
 				<vu:content/>
 			</q-item>
 		</q-list>
 	</vu:collection>
-	<q-btn color="primary" th:v-if="|componentStates.${componentId}.pagination.rowsNumber > componentStates.${componentId}.pagination.rowsPerPage|" th:label="${showMoreLabel}" th:@click="|showMore('${componentId}')|"></q-btn>
 </th:block> 
