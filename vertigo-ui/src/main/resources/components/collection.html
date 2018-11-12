@@ -4,7 +4,9 @@
 	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('selected')}, objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false }, objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {page: 1 , rowsNumber: __${listSize}__, rowsPerPage: __${myRowsPerPage}__, componentId : '__${componentId}__', listKey : '__${list}__', sortUrl : '__${sortUrl}__'})}" 
 >
 	<vu:content />
-	<q-btn th:if="${showMoreEnabled}" color="primary" th:v-if="|componentStates.${componentId}.pagination.rowsNumber > componentStates.${componentId}.pagination.rowsPerPage|" th:label="${showMoreLabel}" th:@click="|showMore('${componentId}')|"></q-btn>
+	<div class="row justify-center"><q-btn flat th:if="${showMoreEnabled}" color="primary" class="q-my-md"
+	th:v-if="|componentStates.${componentId}.pagination.rowsNumber > componentStates.${componentId}.pagination.rowsPerPage|" 
+	th:label="${showMoreLabel}" th:@click="|showMore('${componentId}')|"></q-btn></div>
 	<q-pagination 
 		th:if="${!showMoreEnabled}" 
 		th:v-model="|componentStates.${componentId}.pagination.page|" 

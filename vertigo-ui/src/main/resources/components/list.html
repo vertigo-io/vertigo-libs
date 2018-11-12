@@ -9,7 +9,7 @@
 	selectable="${mySelectable}" 
 	sortUrl="${sortUrl}" >
 		<q-list>
-			<q-item th:v-for="|item in paginatedData('${list}', '${componentId}' )|" th::key="|item.${myRowKey}|" class="q-ma-sm bg-white"  >
+			<q-item th:v-for="|item in paginatedData('${list}', '${componentId}' )|" th::key="|item.${myRowKey}|" class="q-mb-sm bg-white"  >
 				<vu:content/>
 			</q-item>
 		</q-list>

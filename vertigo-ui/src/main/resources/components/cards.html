@@ -1,10 +1,12 @@
 <th:block th:fragment="cards(list, componentId, rowsPerPage, showMore, showMoreLabel, selectable, rowKey, sortUrl, cardClass)" 
 	th:with="myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, mySelectable=${selectable?:false}" >
 	<vu:collection list="${list}" componentId="${componentId}" rowsPerPage="${rowsPerPage}" showMore=${showMore} showMoreLabel="${showMoreLabel}" selectable="${mySelectable}" sortUrl="${sortUrl}">
-		<div th:v-for="|item in paginatedData('${list}', '${componentId}' )|" th::key="|item.${myRowKey}|" class="col-xl-4 col-md-6 col-xs-12" th:class="${cardClass}">
-			<q-card inline color="white" class="q-ma-sm bg-white" >
-				<vu:content/>
-			</q-card>
+		<div class="row wrap justify-start gutter-sm">
+			<div th:v-for="|item in paginatedData('${list}', '${componentId}' )|" th::key="|item.${myRowKey}|" th:class="${cardClass}">
+				<q-card inline color="white" text-color="grey" >
+					<vu:content/>
+				</q-card>
+			</div>
 		</div>
 	</vu:collection>
 </th:block> 
