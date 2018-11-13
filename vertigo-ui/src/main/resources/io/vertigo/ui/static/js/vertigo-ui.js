@@ -85,15 +85,15 @@ var VUi = {
 					}
 					this.$data.componentStates[modalId].opened = true;
 				},
-				toogleFacet : function (facetCode, facetValueCode, componentId) {
+				toogleFacet : function (facetCode, facetValueCode, contextKey) {
 					var multiple = false;
-					vueData[componentId+"_facets"].forEach(function (facet) {
+					vueData[contextKey+"_facets"].forEach(function (facet) {
 						if (facet.code === facetCode) {
 							// get the right facet 
 							multiple = facet.multiple;
 						}
 					})
-					var selectedFacetValues = vueData[componentId+"_selectedFacets"][facetCode]
+					var selectedFacetValues = vueData[contextKey+"_selectedFacets"][facetCode]
 					if (selectedFacetValues.includes(facetValueCode)) {
 						if (multiple) {
 							selectedFacetValues.splice(selectedFacetValues.indexOf(facetValueCode), 1);
@@ -103,10 +103,10 @@ var VUi = {
 					} else {
 						selectedFacetValues.push(facetValueCode);
 					}
-					this.search("result");
+					this.search(contextKey);
 				},
-				search : Quasar.utils.debounce(function(componentId) { 
-					var selectedFacetsContextKey = componentId +"_selectedFacets";
+				search : Quasar.utils.debounce(function(contextKey) { 
+					var selectedFacetsContextKey = contextKey +"_selectedFacets";
 					var params = {};
 					Object.keys(vueData[selectedFacetsContextKey]).forEach(function (key) {
 						for (var i = 0; i < vueData[selectedFacetsContextKey][key].length; i++) {
@@ -116,17 +116,36 @@ var VUi = {
 							
 						}
 					})
-					var criteriaContextKey = vueData[componentId + '_criteriaContextKey'];
+					var criteriaContextKey = vueData[contextKey + '_criteriaContextKey'];
 					params['vContext['+criteriaContextKey+']'] = vueData[criteriaContextKey];
 					params['CTX'] = this.$data.ctxId;
-					this.$http.post("/test/movies/_search", params, { emulateJSON: true }).then( function (response ) {
+					
+					
+					
+					var searchUrl = componentStates[contextKey+'Search'].searchUrl;
+					var collectionComponentId = componentStates[contextKey+'Search'].collectionComponentId;
+					
+					if (componentStates[collectionComponentId].pagination && componentStates[collectionComponentId].pagination.sortBy) {
+						var collectionPagination = componentStates[collectionComponentId].pagination;
+						params['sortFieldName'] = collectionPagination.sortBy;
+						params['sortDesc'] = collectionPagination.descending;
+					}
+					
+					this.$http.post(searchUrl, params, { emulateJSON: true }).then( function (response ) {
+						if (response.body.CTX) {
+							this.$data.ctxId = response.body.CTX;
+						}
 						Object.keys(response.body).forEach(function (key) {
-							if ('CTX' === key) {
-								ctxId = response.body['CTX'];
-							} else {
+							if ('CTX' != key) {
 								vueData[key] = response.body[key];
 							}
 						});
+						if (componentStates[collectionComponentId].pagination) {
+							var collectionPagination = componentStates[collectionComponentId].pagination;
+							collectionPagination.page = 1 // reset page
+							collectionPagination.rowsNumber = response.body[contextKey+'_list'].length
+						}
+						
 					});
 				}, 400),
 				showMore : function (componentId) {
