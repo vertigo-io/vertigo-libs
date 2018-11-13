@@ -64,6 +64,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	@Autowired
 	private ApplicationContext applicationContext;
 
+	private final static String COMPONENT_PATH_PREFIX = "io/vertigo/ui/";
 	private final static String[] STANDARD_UI_COMPONENTS_NAME = {
 			"utils/vue-data", "utils/include-data", //technical components
 			"layout/page", "layout/head", "layout/form", "layout/modal", "layout/block", //layout components
@@ -95,7 +96,18 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	private VuiResourceTemplateResolver componentsResolver() {
 		final VuiResourceTemplateResolver templateResolver = new VuiResourceTemplateResolver();
 		templateResolver.setApplicationContext(applicationContext);
-		templateResolver.setPrefix("classpath://");
+		templateResolver.setPrefix("classpath://" + COMPONENT_PATH_PREFIX);
+		templateResolver.setSuffix(".html");
+		templateResolver.setResolvablePatterns(Collections.singleton("components/*"));
+		// for dev purpose
+		templateResolver.setCacheable(false);
+		return templateResolver;
+	}
+
+	private VuiResourceTemplateResolver customComponentsResolver() {
+		final VuiResourceTemplateResolver templateResolver = new VuiResourceTemplateResolver();
+		templateResolver.setApplicationContext(applicationContext);
+		templateResolver.setPrefix("classpath://" + getCustomComponentsPathPrefix());
 		templateResolver.setSuffix(".html");
 		templateResolver.setResolvablePatterns(Collections.singleton("components/*"));
 		// for dev purpose
@@ -110,7 +122,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	public SpringTemplateEngine templateEngine() {
 		final SpringTemplateEngine templateEngine = new SpringTemplateEngine();
 		final SpringResourceTemplateResolver viewsResolvers = templateResolver();
-		viewsResolvers.setOrder(2);
+		viewsResolvers.setOrder(3);
 		templateEngine.setTemplateResolver(viewsResolvers);
 		templateEngine.setEnableSpringELCompiler(true);
 		//---
@@ -118,8 +130,12 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		final VuiResourceTemplateResolver componentResolvers = componentsResolver();
 		componentResolvers.setOrder(1);
 		templateEngine.addTemplateResolver(componentResolvers);
+		// add custom components
+		final VuiResourceTemplateResolver customComponentResolvers = customComponentsResolver();
+		customComponentResolvers.setOrder(2);
+		templateEngine.addTemplateResolver(customComponentResolvers);
 		//---
-		final VUiStandardDialect dialect = new VUiStandardDialect(getStandardUiComponents(componentResolvers));
+		final VUiStandardDialect dialect = new VUiStandardDialect(getUiComponents(componentResolvers));
 		templateEngine.addDialect("vu", dialect);
 
 		templateEngine.addDialect(new LayoutDialect());
@@ -127,14 +143,27 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		return templateEngine;
 	}
 
-	private final Set<ThymeleafComponent> getStandardUiComponents(final VuiResourceTemplateResolver componentResolvers) {
+	private final Set<ThymeleafComponent> getUiComponents(final VuiResourceTemplateResolver componentResolvers) {
 		final ThymeleafComponentParser parser = new ThymeleafComponentParser("vu", componentResolvers);
 
 		final Set<ThymeleafComponent> standardUiComponents = new HashSet<>();
+		//standard components
 		for (final String componentName : STANDARD_UI_COMPONENTS_NAME) {
 			standardUiComponents.addAll(parser.parseComponent(componentName));
 		}
+		// custom compenents
+		for (final String componentName : getCustomComponentNames()) {
+			standardUiComponents.addAll(parser.parseComponent(componentName));
+		}
 		return standardUiComponents;
+	}
+
+	protected Set<String> getCustomComponentNames() {
+		return Collections.emptySet();
+	}
+
+	protected String getCustomComponentsPathPrefix() {
+		return COMPONENT_PATH_PREFIX;
 	}
 
 	@Bean(DispatcherServlet.REQUEST_TO_VIEW_NAME_TRANSLATOR_BEAN_NAME)
