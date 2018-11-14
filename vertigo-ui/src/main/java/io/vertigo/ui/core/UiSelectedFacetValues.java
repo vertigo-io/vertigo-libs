@@ -45,12 +45,12 @@ public final class UiSelectedFacetValues extends HashMap<String, List<String>> {
 		// default constructeur is valid
 	}
 
-	public UiSelectedFacetValues(final SelectedFacetValues selectedFacetValues, final Collection<FacetDefinition> facetDefinitions) {
+	public UiSelectedFacetValues(final SelectedFacetValues selectedFacetValues, final Collection<String> facetNames) {
 		Assertion.checkNotNull(selectedFacetValues);
 		//---
-		facetDefinitions
-				.forEach(facetDefinition -> put(facetDefinition.getName(), selectedFacetValues
-						.getFacetValues(facetDefinition)
+		facetNames
+				.forEach(facetName -> put(facetName, selectedFacetValues
+						.getFacetValues(facetName)
 						.stream()
 						.map(facetValue -> facetValue.getCode())
 						.collect(Collectors.toList())));

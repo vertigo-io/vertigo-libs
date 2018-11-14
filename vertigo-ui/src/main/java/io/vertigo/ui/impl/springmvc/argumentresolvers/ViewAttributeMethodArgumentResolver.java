@@ -18,8 +18,12 @@
  */
 package io.vertigo.ui.impl.springmvc.argumentresolvers;
 
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.springframework.core.MethodParameter;
@@ -28,12 +32,17 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
+import io.vertigo.ui.core.UiSelectedFacetValues;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
+import io.vertigo.vega.engines.webservice.json.SelectedFacetValuesDeserializer;
 import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
@@ -43,6 +52,7 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
 public final class ViewAttributeMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
 	private final List<DtObjectValidator<DtObject>> defaultDtObjectValidators = Collections.singletonList(new DefaultDtObjectValidator<>());
+	private final Gson gson = new GsonBuilder().registerTypeAdapter(SelectedFacetValues.class, new SelectedFacetValuesDeserializer()).create();
 
 	@Override
 	public boolean supportsParameter(final MethodParameter parameter) {
@@ -60,6 +70,16 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 		if (UiObject.class.isAssignableFrom(parameter.getParameterType())) {
 			return viewContext.getUiObject(() -> contextKey);
 		} else if (SelectedFacetValues.class.isAssignableFrom(parameter.getParameterType())) {
+			final String jsonSelectedFacets = webRequest.getParameter("selectedFacets");
+			if (jsonSelectedFacets != null) {// param present
+				final SelectedFacetValues selectedFacetValues = gson.fromJson(jsonSelectedFacets, SelectedFacetValues.class);
+				final Collection<String> facetNames = ((List<Map<String, Serializable>>) viewContext.asMap().get(contextKey + "_facets"))
+						.stream()
+						.map(map -> (String) map.get("code"))
+						.collect(Collectors.toSet());
+				viewContext.asMap().put(contextKey + "_selectedFacets", new UiSelectedFacetValues(selectedFacetValues, facetNames));
+				return selectedFacetValues;
+			}
 			return viewContext.getSelectedFacetValues(() -> contextKey);
 		} else if (DtObject.class.isAssignableFrom(parameter.getParameterType()) || DtList.class.isAssignableFrom(parameter.getParameterType())) {
 			Assertion.checkNotNull(uiMessageStack);

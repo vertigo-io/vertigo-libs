@@ -108,19 +108,10 @@ var VUi = {
 				search : Quasar.utils.debounce(function(contextKey) { 
 					var selectedFacetsContextKey = contextKey +"_selectedFacets";
 					var params = {};
-					Object.keys(vueData[selectedFacetsContextKey]).forEach(function (key) {
-						for (var i = 0; i < vueData[selectedFacetsContextKey][key].length; i++) {
-							var array_element = vueData[selectedFacetsContextKey][key][i];
-							paramName = 'vContext['+selectedFacetsContextKey+']'+'['+key+']'+'['+i+']';
-							params[paramName] = vueData[selectedFacetsContextKey][key][i]
-							
-						}
-					})
+					params['selectedFacets'] = JSON.stringify(vueData[selectedFacetsContextKey]);
 					var criteriaContextKey = vueData[contextKey + '_criteriaContextKey'];
 					params['vContext['+criteriaContextKey+']'] = vueData[criteriaContextKey];
 					params['CTX'] = this.$data.ctxId;
-					
-					
 					
 					var searchUrl = componentStates[contextKey+'Search'].searchUrl;
 					var collectionComponentId = componentStates[contextKey+'Search'].collectionComponentId;

@@ -28,7 +28,9 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.model.Facet;
 import io.vertigo.dynamo.collections.model.FacetValue;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
@@ -392,7 +394,12 @@ public final class ViewContext implements Serializable {
 		put(() -> contextKey.get() + "_facets", translateFacets(facetedQueryResult.getFacets()));
 
 		final FacetedQuery facetedQuery = facetedQueryResult.getSource().getFacetedQuery().get();
-		put(() -> contextKey.get() + "_selectedFacets", new UiSelectedFacetValues(facetedQuery.getSelectedFacetValues(), facetedQuery.getDefinition().getFacetDefinitions()));
+		put(() -> contextKey.get() + "_selectedFacets", new UiSelectedFacetValues(
+				facetedQuery.getSelectedFacetValues(),
+				facetedQuery.getDefinition().getFacetDefinitions()
+						.stream()
+						.map(FacetDefinition::getName)
+						.collect(Collectors.toList())));
 		put(() -> contextKey.get() + "_totalcount", facetedQueryResult.getCount());
 		put(() -> contextKey.get() + "_criteriaContextKey", criteriaContextKey.get());
 	}
