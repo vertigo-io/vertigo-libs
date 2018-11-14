@@ -32,6 +32,7 @@ import java.util.function.Function;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
@@ -48,6 +49,9 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	public static final String CTX = "CTX";
 	private static final long serialVersionUID = 2850788652438173312L;
 	public static final String INPUT_CTX = "INPUT_CTX";
+
+	private static final String PROTECTED_VALUE_TRANSFORMER = "protected";
+	private static final String MAP_VALUE_TRASNFORMER = "map";
 
 	//Index UiObject et DtObject vers clé de context.
 	private final Map<Serializable, String> reverseUiObjectIndex = new HashMap<>();
@@ -299,17 +303,28 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	public void addKeyForClient(final String object, final String fieldName) {
+		Assertion.checkState(containsKey(object), "No {0} in context", object);
+		//----
 		keysForClient.computeIfAbsent(object, k -> new HashSet<>()).add(fieldName);
 	}
 
 	public void addKeyForClient(final String object) {
+		Assertion.checkState(containsKey(object), "No {0} in context", object);
+		//----
 		keysForClient.put(object, Collections.emptySet());// notmodifiable because used only for primitives
+	}
+
+	public void addProtectedValueTransformer(final String objectKey, final String objectFieldName) {
+		Assertion.checkState(containsKey(objectKey), "No {0} in context", objectKey);
+		//----
+		valueTransformers.computeIfAbsent(objectKey,
+				k -> new HashMap<>()).put(objectFieldName,
+						Arrays.asList(PROTECTED_VALUE_TRANSFORMER));
 	}
 
 	public void addListValueTransformer(final String objectKey, final String objectFieldName, final String listKey, final String listKeyFieldName, final String listDisplayFieldName) {
 		valueTransformers.computeIfAbsent(objectKey, k -> new HashMap<>()).put(objectFieldName,
-				Arrays.asList(listKey, listKeyFieldName, listDisplayFieldName));
-
+				Arrays.asList(MAP_VALUE_TRASNFORMER, listKey, listKeyFieldName, listDisplayFieldName));
 	}
 
 	public ViewContextMap getFilteredViewContext() {
@@ -343,20 +358,29 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		if (valueTransformers.containsKey(key)) {
 			final Map<String, Function<Serializable, String>> resultMap = new HashMap<>();
 			valueTransformers.get(key).entrySet()
-					.forEach(entry -> resultMap.put(entry.getKey(), createListValueTransformer(entry.getValue())));
+					.forEach(entry -> resultMap.put(entry.getKey(), createValueTransformer(entry.getValue())));
 			return resultMap;
 		}
 		return Collections.emptyMap();
 
 	}
 
-	private Function<Serializable, String> createListValueTransformer(final List<String> params) {
-		Assertion.checkState(params.size() == 3, "ListValueTransformer requires 3 params, provided params {0}", params);
-		// ---
-		final String listKey = params.get(0);
-		final String listKeyFieldName = params.get(1);
-		final String listDisplayFieldName = params.get(2);
+	private Function<Serializable, String> createValueTransformer(final List<String> params) {
+		Assertion.checkState(params.size() > 0, "ValueTransformer should be typed in first param, provided params {0}", params);
+		final String transformerType = params.get(0);
 
-		return (value) -> ((AbstractUiListUnmodifiable) getUiList(listKey)).getById(listKeyFieldName, value).getString(listDisplayFieldName);
+		if (PROTECTED_VALUE_TRANSFORMER.equals(transformerType)) {
+			return (value) -> ProtectedValueUtil.generateProtectedValue(value);
+		} else if (MAP_VALUE_TRASNFORMER.equals(transformerType)) {
+			Assertion.checkState(params.size() == 3 + 1, "ListValueTransformer requires 3 params, provided params {0}", params);
+			// ---
+			final String listKey = params.get(1);
+			final String listKeyFieldName = params.get(2);
+			final String listDisplayFieldName = params.get(3);
+
+			return (value) -> ((AbstractUiListUnmodifiable) getUiList(listKey)).getById(listKeyFieldName, value).getString(listDisplayFieldName);
+		}
+		throw new IllegalStateException(StringUtil.format("Unsupported ValueTransformer type {0}", transformerType));
 	}
+
 }
