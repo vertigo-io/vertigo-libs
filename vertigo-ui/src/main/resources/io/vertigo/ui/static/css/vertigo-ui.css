@@ -1,0 +1,8 @@
+.facets .facetValues .facetValue, .facets .selectedFacets .q-chip {
+	cursor: pointer;
+}
+
+.facets .facetValues .facetValue span{
+	width: 100%;
+	height: 100%;
+}
