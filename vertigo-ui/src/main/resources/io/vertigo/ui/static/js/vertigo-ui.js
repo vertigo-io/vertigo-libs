@@ -18,9 +18,9 @@ var VUi = {
 					if (oldPagination.sortBy != pagination.sortBy ||  oldPagination.descending != pagination.descending ) {
 						// it's a sort order call the server
 						pagination.page = 1 //reset pagination
-						this.$http.post(pagination.sortUrl, { sortFieldName : pagination.sortBy, sortDesc : pagination.descending, CTX: this.$data.ctxId}, { emulateJSON: true }).then( function (response ) {
+						this.$http.post(pagination.sortUrl, { sortFieldName : pagination.sortBy, sortDesc : pagination.descending, CTX: this.$data.vueData.CTX}, { emulateJSON: true }).then( function (response ) {
 							vueData[pagination.listKey] = response.body[pagination.listKey];
-							this.$data.ctxId = response.body['CTX'];
+							this.$data.vueData.CTX = response.body['CTX'];
 						});
 					}
 						// otherwise it's pagination or filter : do it locally
@@ -40,7 +40,7 @@ var VUi = {
 					this.$data.vueData[object][field] = item.value;
 				},
 				searchAutocomplete : function (list, valueField, labelField, url, terms, done) {
-					this.$http.post(url, {terms: terms, list : list , valueField : valueField,labelField : labelField, CTX: this.$data.ctxId}, { emulateJSON: true }).then( function (response ) {
+					this.$http.post(url, {terms: terms, list : list , valueField : valueField,labelField : labelField, CTX: this.$data.vueData.CTX}, { emulateJSON: true }).then( function (response ) {
 						var finalList =  response.body.map(function (object) {
 							return { value: object[valueField], label: object[labelField].toString()} // a label is always a string
 						});
@@ -111,7 +111,7 @@ var VUi = {
 					params['selectedFacets'] = JSON.stringify(vueData[selectedFacetsContextKey]);
 					var criteriaContextKey = vueData[contextKey + '_criteriaContextKey'];
 					params['vContext['+criteriaContextKey+']'] = vueData[criteriaContextKey];
-					params['CTX'] = this.$data.ctxId;
+					params['CTX'] = this.$data.vueData.CTX;
 					
 					var searchUrl = componentStates[contextKey+'Search'].searchUrl;
 					var collectionComponentId = componentStates[contextKey+'Search'].collectionComponentId;
@@ -124,7 +124,7 @@ var VUi = {
 					
 					this.$http.post(searchUrl, params, { emulateJSON: true }).then( function (response ) {
 						if (response.body.CTX) {
-							this.$data.ctxId = response.body.CTX;
+							this.$data.vueData.CTX = response.body.CTX;
 						}
 						Object.keys(response.body).forEach(function (key) {
 							if ('CTX' != key) {
