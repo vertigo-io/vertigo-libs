@@ -53,23 +53,6 @@ final class VFileUtil {
 	}
 
 	/**
-	 * @param request Request
-	 * @return If this request is multipart
-	 */
-	static boolean isMultipartRequest(final HttpServletRequest request) {
-		final String contentType = request.getContentType();
-		return contentType != null && "POST".equalsIgnoreCase(request.getMethod()) && contentType.startsWith("multipart/form-data");
-	}
-
-	/**
-	 * @param result WebService result
-	 * @return if result is a VFile
-	 */
-	static boolean isVFileResult(final Object result) {
-		return result instanceof VFile;
-	}
-
-	/**
 	 * @param result WebService result
 	 * @param response Response
 	 */

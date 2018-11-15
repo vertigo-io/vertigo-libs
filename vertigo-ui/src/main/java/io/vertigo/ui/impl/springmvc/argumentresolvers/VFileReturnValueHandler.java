@@ -18,11 +18,9 @@
  */
 package io.vertigo.ui.impl.springmvc.argumentresolvers;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.util.Assert;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -46,22 +44,11 @@ public class VFileReturnValueHandler implements HandlerMethodReturnValueHandler 
 	}
 
 	/**
-	 * Create a new {@link HttpInputMessage} from the given {@link NativeWebRequest}.
-	 * @param webRequest the web request to create an input message from
-	 * @return the input message
-	 */
-	protected HttpServletRequest getRequest(final NativeWebRequest webRequest) {
-		final HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
-		Assert.state(servletRequest != null, "No HttpServletRequest");
-		return servletRequest;
-	}
-
-	/**
 	 * Creates a new {@link HttpOutputMessage} from the given {@link NativeWebRequest}.
 	 * @param webRequest the web request to create an output message from
 	 * @return the output message
 	 */
-	protected HttpServletResponse getResponse(final NativeWebRequest webRequest) {
+	private HttpServletResponse getResponse(final NativeWebRequest webRequest) {
 		final HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
 		Assert.state(response != null, "No HttpServletResponse");
 		return response;

@@ -48,10 +48,10 @@ public final class ProtectedValueUtil {
 	/**
 	 * Resoud une value protégée.
 	 */
-	public static <V extends Serializable> V readProtectedValue(final String protectedValue) {
+	public static <V extends Serializable> V readProtectedValue(final String protectedValue, final Class<V> clazz) {
 		final V unprotectedValue;
 		try (VTransactionWritable transactionWritable = getTransactionManager().createCurrentTransaction()) {
-			unprotectedValue = (V) getKVStoreManager().find(PROTECTED_VALUE_COLLECTION_NAME, protectedValue, String.class).orElse(null);
+			unprotectedValue = getKVStoreManager().find(PROTECTED_VALUE_COLLECTION_NAME, protectedValue, clazz).orElse(null);
 		}
 		return unprotectedValue;
 	}
