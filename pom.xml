@@ -41,6 +41,7 @@
 		<module>vertigo-adapters</module>
 		<module>vertigo-dashboard</module>
 		<module>vertigo-ui</module>
+		<module>vertigo-ledger</module>
 	</modules>
 
 	<scm>
