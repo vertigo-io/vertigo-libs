@@ -67,7 +67,7 @@ public final class LedgerManagerImpl implements LedgerManager {
 		autoFlushPeriod = myAutoFlushPeriod;
 	}
 
-	private String dataToHash(final String data) {
+	private static String dataToHash(final String data) {
 		Assertion.checkArgNotEmpty(data);
 		//-----
 		final DigestSHA3 sha3 = new Digest256();
@@ -84,6 +84,8 @@ public final class LedgerManagerImpl implements LedgerManager {
 
 	@Override
 	public String sendData(final String data) {
+		Assertion.checkArgNotEmpty(data);
+		//---
 		final String hash = dataToHash(data);
 		if (simpleBuffer.isEmpty()) {
 			startPeriodFlush = Instant.now();
@@ -128,6 +130,8 @@ public final class LedgerManagerImpl implements LedgerManager {
 
 	@Override
 	public BigInteger getBalance(final LedgerAddress addr) {
+		Assertion.checkNotNull(addr);
+		//---
 		return ledgerPlugin.getBalance(addr);
 	}
 
@@ -138,6 +142,8 @@ public final class LedgerManagerImpl implements LedgerManager {
 
 	@Override
 	public String subscribeNewMessages(final Consumer<LedgerTransaction> consumer) {
+		Assertion.checkNotNull(consumer);
+		//---
 		final String uniqueName = "subscribeNewMessages" + subscribeNewMessagesCounter.incrementAndGet();
 		ledgerPlugin.subscribeNewMessages(uniqueName, consumer);
 		return uniqueName;
@@ -145,6 +151,8 @@ public final class LedgerManagerImpl implements LedgerManager {
 
 	@Override
 	public String subscribeExistingMessages(final Consumer<LedgerTransaction> consumer) {
+		Assertion.checkNotNull(consumer);
+		//---
 		final String uniqueName = "subscribeExistingMessages" + subscribeExistingMessagesCounter.incrementAndGet();
 		ledgerPlugin.subscribeExistingMessages(uniqueName, consumer);
 		return uniqueName;
@@ -152,6 +160,8 @@ public final class LedgerManagerImpl implements LedgerManager {
 
 	@Override
 	public String subscribeAllMessages(final Consumer<LedgerTransaction> consumer) {
+		Assertion.checkNotNull(consumer);
+		//---
 		final String uniqueName = "subscribeAllMessages" + subscribeAllMessagesCounter.incrementAndGet();
 		ledgerPlugin.subscribeAllMessages(uniqueName, consumer);
 		return uniqueName;

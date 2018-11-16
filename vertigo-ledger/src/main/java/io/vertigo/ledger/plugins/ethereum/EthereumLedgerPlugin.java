@@ -43,6 +43,7 @@ import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Convert;
 
+import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
@@ -63,8 +64,10 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 
 	private final Web3j web3j;
 	private final Credentials credentials;
-	private final LedgerAddress defaultDestAddr;
+	private final LedgerAddress defaultDestPublicAddr;
 	private final LedgerAddress myPublicAddr;
+
+	private final EventBusManager eventBusManager;
 
 	@Inject
 	public EthereumLedgerPlugin(
@@ -74,15 +77,29 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 			@Named("defaultDestAccountName") final String defaultDestAccountName,
 			@Named("defaultDestPublicAddr") final String defaultDestPublicAddr,
 			@Named("walletPassword") final String walletPassword,
-			@Named("walletPath") final String walletPath) throws IOException, CipherException {
+			@Named("walletPath") final String walletPath,
+			final EventBusManager eventBusManager) {
+		Assertion.checkArgNotEmpty(myAccountName);
+		Assertion.checkArgNotEmpty(myPublicAddr);
+		Assertion.checkArgNotEmpty(defaultDestAccountName);
+		Assertion.checkArgNotEmpty(defaultDestPublicAddr);
+		Assertion.checkArgNotEmpty(walletPassword);
+		Assertion.checkArgNotEmpty(walletPath);
+		Assertion.checkNotNull(eventBusManager);
+		//---
+		this.eventBusManager = eventBusManager;
 		this.myPublicAddr = new LedgerAddress(myAccountName, myPublicAddr);
-		defaultDestAddr = new LedgerAddress(defaultDestAccountName, defaultDestPublicAddr);
+		this.defaultDestPublicAddr = new LedgerAddress(defaultDestAccountName, defaultDestPublicAddr);
 
 		LOGGER.info("Connecting to RPC Ethereum Node: {}", urlRpcEthNode);
 		web3j = Web3j.build(new HttpService(urlRpcEthNode));
-		final Web3ClientVersion web3ClientVersion = web3j.web3ClientVersion().send();
-		LOGGER.info("Connected to RPC Ethereum Node: {}. Client version: {}", urlRpcEthNode, web3ClientVersion.getWeb3ClientVersion());
-		credentials = WalletUtils.loadCredentials(walletPassword, walletPath);
+		try {
+			final Web3ClientVersion web3ClientVersion = web3j.web3ClientVersion().send();
+			LOGGER.info("Connected to RPC Ethereum Node: {}. Client version: {}", urlRpcEthNode, web3ClientVersion.getWeb3ClientVersion());
+			credentials = WalletUtils.loadCredentials(walletPassword, walletPath);
+		} catch (final IOException | CipherException e) {
+			throw WrappedException.wrap(e);
+		}
 	}
 
 	@Override
@@ -92,6 +109,8 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 
 	@Override
 	public BigInteger getBalance(final LedgerAddress publicAddr) {
+		Assertion.checkNotNull(publicAddr);
+		//---
 		EthGetBalance balance;
 		try {
 			balance = web3j.ethGetBalance(publicAddr.getPublicAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
@@ -103,11 +122,13 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 
 	@Override
 	public void sendData(final String data) {
-		sendData(data, defaultDestAddr);
+		sendData(data, defaultDestPublicAddr);
 	}
 
 	public void sendData(final String data, final LedgerAddress destinationAdr) {
-
+		Assertion.checkArgNotEmpty(data);
+		Assertion.checkNotNull(destinationAdr);
+		//---
 		try {
 			final TransactionReceipt transactionReceipt = VTransfer.sendFunds(web3j, credentials, destinationAdr.getPublicAddress(),
 					BigDecimal.valueOf(0), Convert.Unit.WEI, data)
@@ -125,10 +146,11 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 	@Override
 	public void subscribeNewMessages(final String name, final Consumer<LedgerTransaction> consumer) {
 		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(consumer);
 		//-----
 		final Subscription subscription = web3j.transactionObservable()
 				.filter(tx -> tx.getTo().equals(myPublicAddr.getPublicAddress()))
-				.map(this::convertTransactionToLedgerTransaction)
+				.map(EthereumLedgerPlugin::convertTransactionToLedgerTransaction)
 				.subscribe(consumer::accept);
 		LOGGER.info("Getting new messages sent to {}.", myPublicAddr);
 		MAP_SUBSCRIPTIONS.put(name, subscription);
@@ -137,10 +159,11 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 	@Override
 	public void subscribeExistingMessages(final String name, final Consumer<LedgerTransaction> consumer) {
 		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(consumer);
 		//-----
 		final Subscription subscription = web3j.catchUpToLatestTransactionObservable(DefaultBlockParameterName.EARLIEST)
 				.filter(tx -> tx.getTo().equals(myPublicAddr.getPublicAddress()))
-				.map(this::convertTransactionToLedgerTransaction)
+				.map(EthereumLedgerPlugin::convertTransactionToLedgerTransaction)
 				.subscribe(consumer::accept);
 		LOGGER.info("Getting existing messages sent to {}.", myPublicAddr);
 		MAP_SUBSCRIPTIONS.put(name, subscription);
@@ -149,10 +172,11 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 	@Override
 	public void subscribeAllMessages(final String name, final Consumer<LedgerTransaction> consumer) {
 		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(consumer);
 		//-----
 		final Subscription subscription = web3j.catchUpToLatestAndSubscribeToNewTransactionsObservable(DefaultBlockParameterName.EARLIEST)
 				.filter(tx -> tx.getTo().equals(myPublicAddr.getPublicAddress()))
-				.map(this::convertTransactionToLedgerTransaction)
+				.map(EthereumLedgerPlugin::convertTransactionToLedgerTransaction)
 				.subscribe(consumer::accept);
 		LOGGER.info("Getting all messages sent to {}.", myPublicAddr);
 		MAP_SUBSCRIPTIONS.put(name, subscription);
@@ -165,7 +189,7 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 		MAP_SUBSCRIPTIONS.get(name).unsubscribe();
 	}
 
-	private LedgerTransaction convertTransactionToLedgerTransaction(final Transaction transaction) {
+	private static LedgerTransaction convertTransactionToLedgerTransaction(final Transaction transaction) {
 		final LedgerTransaction ledgerTransaction = new LedgerTransaction();
 
 		ledgerTransaction.setBlockHash(transaction.getBlockHash());
