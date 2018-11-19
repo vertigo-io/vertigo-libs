@@ -19,7 +19,7 @@
 
 package io.vertigo.ledger.services;
 
-public class LedgerCredential {
+public final class LedgerCredential {
 
 	private String password;
 	private String walletPath;
@@ -38,24 +38,9 @@ public class LedgerCredential {
 	}
 
 	/**
-	 * @param password the password to set
-	 */
-	public void setPassword(final String password) {
-		this.password = password;
-	}
-
-	/**
 	 * @return the walletPath
 	 */
 	public String getWalletPath() {
 		return walletPath;
 	}
-
-	/**
-	 * @param walletPath the walletPath to set
-	 */
-	public void setWalletPath(final String walletPath) {
-		this.walletPath = walletPath;
-	}
-
 }

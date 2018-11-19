@@ -19,7 +19,7 @@
 
 package io.vertigo.ledger.services;
 
-public class LedgerAddress {
+public final class LedgerAddress {
 
 	private String accountName;
 	private String publicAddress;
@@ -37,29 +37,12 @@ public class LedgerAddress {
 	}
 
 	/**
-	 * @param accountName the accountName to set
-	 */
-	public void setAccountName(final String accountName) {
-		this.accountName = accountName;
-	}
-
-	/**
 	 * @return the publicAddress
 	 */
 	public String getPublicAddress() {
 		return publicAddress;
 	}
 
-	/**
-	 * @param publicAddress the publicAddress to set
-	 */
-	public void setPublicAddress(final String publicAddress) {
-		this.publicAddress = publicAddress;
-	}
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		return "LedgerAddress: " + accountName + " [" + publicAddress + "]";

@@ -20,12 +20,14 @@ package io.vertigo.ledger.services;
 
 import java.math.BigInteger;
 
+import io.vertigo.lang.Assertion;
+
 /**
  *
  * @author xdurand
  *
  */
-public class LedgerTransaction {
+public final class LedgerTransaction {
 
 	private String hash;
 	private BigInteger nonce;
@@ -37,18 +39,46 @@ public class LedgerTransaction {
 	private BigInteger value;
 	private String message;
 
+	LedgerTransaction(
+			String hash,
+			BigInteger nonce,
+			String blockHash,
+			BigInteger blockNumber,
+			BigInteger transactionIndex,
+			String from,
+			String to,
+			BigInteger value,
+			String message) {
+		Assertion.checkNotNull(hash);
+		Assertion.checkNotNull(nonce);
+		Assertion.checkNotNull(blockHash);
+		Assertion.checkNotNull(blockNumber);
+		Assertion.checkNotNull(transactionIndex);
+		Assertion.checkNotNull(from);
+		Assertion.checkNotNull(to);
+		Assertion.checkNotNull(value);
+		Assertion.checkNotNull(message);
+		//-----
+		this.hash = hash;
+		this.nonce = nonce;
+		this.blockHash = blockHash;
+		this.blockNumber = blockNumber;
+		this.transactionIndex = transactionIndex;
+		this.from = from;
+		this.to = to;
+		this.value = value;
+		this.message = message;
+	}
+
+	public static LedgerTransactionBuilder builder() {
+		return new LedgerTransactionBuilder();
+	}
+
 	/**
 	 * @return the hash
 	 */
 	public String getHash() {
 		return hash;
-	}
-
-	/**
-	 * @param hash the hash to set
-	 */
-	public void setHash(final String hash) {
-		this.hash = hash;
 	}
 
 	/**
@@ -59,24 +89,10 @@ public class LedgerTransaction {
 	}
 
 	/**
-	 * @param nonce the nonce to set
-	 */
-	public void setNonce(final BigInteger nonce) {
-		this.nonce = nonce;
-	}
-
-	/**
 	 * @return the blockHash
 	 */
 	public String getBlockHash() {
 		return blockHash;
-	}
-
-	/**
-	 * @param blockHash the blockHash to set
-	 */
-	public void setBlockHash(final String blockHash) {
-		this.blockHash = blockHash;
 	}
 
 	/**
@@ -87,24 +103,10 @@ public class LedgerTransaction {
 	}
 
 	/**
-	 * @param blockNumber the blockNumber to set
-	 */
-	public void setBlockNumber(final BigInteger blockNumber) {
-		this.blockNumber = blockNumber;
-	}
-
-	/**
 	 * @return the transactionIndex
 	 */
 	public BigInteger getTransactionIndex() {
 		return transactionIndex;
-	}
-
-	/**
-	 * @param transactionIndex the transactionIndex to set
-	 */
-	public void setTransactionIndex(final BigInteger transactionIndex) {
-		this.transactionIndex = transactionIndex;
 	}
 
 	/**
@@ -115,24 +117,10 @@ public class LedgerTransaction {
 	}
 
 	/**
-	 * @param from the from to set
-	 */
-	public void setFrom(final String from) {
-		this.from = from;
-	}
-
-	/**
 	 * @return the to
 	 */
 	public String getTo() {
 		return to;
-	}
-
-	/**
-	 * @param to the to to set
-	 */
-	public void setTo(final String to) {
-		this.to = to;
 	}
 
 	/**
@@ -143,24 +131,9 @@ public class LedgerTransaction {
 	}
 
 	/**
-	 * @param value the value to set
-	 */
-	public void setValue(final BigInteger value) {
-		this.value = value;
-	}
-
-	/**
 	 * @return the message
 	 */
 	public String getMessage() {
 		return message;
 	}
-
-	/**
-	 * @param message the message to set
-	 */
-	public void setMessage(final String message) {
-		this.message = message;
-	}
-
 }

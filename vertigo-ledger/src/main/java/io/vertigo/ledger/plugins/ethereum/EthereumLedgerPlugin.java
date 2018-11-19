@@ -190,18 +190,16 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 	}
 
 	private static LedgerTransaction convertTransactionToLedgerTransaction(final Transaction transaction) {
-		final LedgerTransaction ledgerTransaction = new LedgerTransaction();
-
-		ledgerTransaction.setBlockHash(transaction.getBlockHash());
-		ledgerTransaction.setBlockNumber(transaction.getBlockNumber());
-		ledgerTransaction.setFrom(transaction.getFrom());
-		ledgerTransaction.setTo(transaction.getTo());
-		ledgerTransaction.setNonce(transaction.getNonce());
-		ledgerTransaction.setTransactionIndex(transaction.getTransactionIndex());
-		ledgerTransaction.setValue(transaction.getValue());
-		ledgerTransaction.setMessage(transaction.getInput());
-
-		return ledgerTransaction;
+		return LedgerTransaction.builder()
+				.withHash(transaction.getBlockHash())
+				.withBlockNumber(transaction.getBlockNumber())
+				.withFrom(transaction.getFrom())
+				.withTo(transaction.getTo())
+				.withNonce(transaction.getNonce())
+				.withTransactionIndex(transaction.getTransactionIndex())
+				.withValue(transaction.getValue())
+				.withMessage(transaction.getInput())
+				.build();
 	}
 
 }

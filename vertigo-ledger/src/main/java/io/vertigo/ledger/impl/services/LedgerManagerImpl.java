@@ -129,10 +129,10 @@ public final class LedgerManagerImpl implements LedgerManager {
 	}
 
 	@Override
-	public BigInteger getBalance(final LedgerAddress addr) {
-		Assertion.checkNotNull(addr);
+	public BigInteger getBalance(final LedgerAddress ledgerAddress) {
+		Assertion.checkNotNull(ledgerAddress);
 		//---
-		return ledgerPlugin.getBalance(addr);
+		return ledgerPlugin.getBalance(ledgerAddress);
 	}
 
 	@Override
