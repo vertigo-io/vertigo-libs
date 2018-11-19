@@ -33,11 +33,11 @@ import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
-public class VTransfer extends Transfer {
+final class EthereumTransfer extends Transfer {
 
 	private static final BigInteger GAS_UNIT_PER_BIT = BigInteger.valueOf(68L);
 
-	public VTransfer(final Web3j web3j, final TransactionManager transactionManager) {
+	EthereumTransfer(final Web3j web3j, final TransactionManager transactionManager) {
 		super(web3j, transactionManager);
 	}
 
@@ -110,13 +110,18 @@ public class VTransfer extends Transfer {
 	 * @param message
 	 * @return
 	 */
-	public static RemoteCall<TransactionReceipt> sendFunds(final Web3j web3j, final Credentials credentials,
-			final String toAddress, final BigDecimal value, final Convert.Unit unit, final BigInteger gasPrice,
-			final BigInteger gasLimit, final String message) {
+	static RemoteCall<TransactionReceipt> sendFunds(
+			final Web3j web3j,
+			final Credentials credentials,
+			final String toAddress,
+			final BigDecimal value,
+			final Convert.Unit unit,
+			final BigInteger gasPrice,
+			final BigInteger gasLimit,
+			final String message) {
 
 		final TransactionManager transactionManager = new RawTransactionManager(web3j, credentials);
-
-		return new RemoteCall<>(() -> new VTransfer(web3j, transactionManager).send(toAddress, value, unit, gasPrice, gasLimit, message));
+		return new RemoteCall<>(() -> new EthereumTransfer(web3j, transactionManager).send(toAddress, value, unit, gasPrice, gasLimit, message));
 	}
 
 	/**
@@ -131,10 +136,15 @@ public class VTransfer extends Transfer {
 	 * @param message
 	 * @return
 	 */
-	public static RemoteCall<TransactionReceipt> sendFunds(final Web3j web3j, final Credentials credentials,
-			final String toAddress, final BigDecimal value, final Convert.Unit unit, final String message) {
+	static RemoteCall<TransactionReceipt> sendFunds(
+			final Web3j web3j,
+			final Credentials credentials,
+			final String toAddress,
+			final BigDecimal value,
+			final Convert.Unit unit,
+			final String message) {
 		final TransactionManager transactionManager = new RawTransactionManager(web3j, credentials);
-		return new RemoteCall<>(() -> new VTransfer(web3j, transactionManager).send(toAddress, value, unit, message));
+		return new RemoteCall<>(() -> new EthereumTransfer(web3j, transactionManager).send(toAddress, value, unit, message));
 	}
 
 }

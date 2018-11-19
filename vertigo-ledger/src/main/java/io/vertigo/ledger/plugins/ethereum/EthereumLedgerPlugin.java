@@ -130,7 +130,7 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 		Assertion.checkNotNull(destinationAdr);
 		//---
 		try {
-			final TransactionReceipt transactionReceipt = VTransfer.sendFunds(web3j, credentials, destinationAdr.getPublicAddress(),
+			final TransactionReceipt transactionReceipt = EthereumTransfer.sendFunds(web3j, credentials, destinationAdr.getPublicAddress(),
 					BigDecimal.valueOf(0), Convert.Unit.WEI, data)
 					.send();
 
