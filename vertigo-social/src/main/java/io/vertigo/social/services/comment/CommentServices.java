@@ -32,23 +32,23 @@ public interface CommentServices extends Component {
 
 	/**
 	 * Gets a list of sorted comments published on this keyConcept.
-	 * @param keyConceptUri the URI of the keyConcept
+	 * @param keyConceptUID the UID of the keyConcept
 	 * @return the list of sorted comments
 	 */
-	List<Comment> getComments(UID<? extends KeyConcept> keyConceptUri);
+	List<Comment> getComments(UID<? extends KeyConcept> keyConceptUID);
 
 	/**
 	 * Publishes a comment on a key concept.
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @param comment  the comment
-	 * @param keyConceptUri the URI of the keyConcept
+	 * @param keyConceptUID the UID of the keyConcept
 	 */
-	void publish(final UID<Account> accountURI, Comment comment, UID<? extends KeyConcept> keyConceptUri);
+	void publish(final UID<Account> accountUID, Comment comment, UID<? extends KeyConcept> keyConceptUID);
 
 	/**
 	 * Updates a comment.
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @param comment the updated comment
 	 */
-	void update(final UID<Account> accountURI, Comment comment);
+	void update(final UID<Account> accountUID, Comment comment);
 }

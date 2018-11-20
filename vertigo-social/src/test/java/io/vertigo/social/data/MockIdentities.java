@@ -46,7 +46,7 @@ public final class MockIdentities implements Component, AccountLoader, GroupLoad
 
 	/**
 	 * @param id account id
-	 * @return URI of this account
+	 * @return UID of this account
 	 */
 	public static UID<Account> createAccountURI(final String id) {
 		return UID.of(Account.class, id);
