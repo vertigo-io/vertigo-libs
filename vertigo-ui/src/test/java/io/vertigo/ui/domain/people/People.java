@@ -19,7 +19,7 @@
 package io.vertigo.ui.domain.people;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -40,8 +40,8 @@ public final class People implements KeyConcept {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<People> getURI() {
-		return URI.of(this);
+	public UID<People> getUID() {
+		return UID.of(this);
 	}
 
 	/**

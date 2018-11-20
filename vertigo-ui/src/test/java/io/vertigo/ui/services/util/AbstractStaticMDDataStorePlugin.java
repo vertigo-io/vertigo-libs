@@ -27,7 +27,7 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociat
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
@@ -67,7 +67,7 @@ public class AbstractStaticMDDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final URI<E> uri) {
+	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final UID<E> uri) {
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(uri);
 		//-----
@@ -107,7 +107,7 @@ public class AbstractStaticMDDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
+	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final UID<?> uri) {
 		throw new UnsupportedOperationException();
 	}
 
@@ -131,7 +131,7 @@ public class AbstractStaticMDDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void delete(final DtDefinition dtDefinition, final URI uri) {
+	public void delete(final DtDefinition dtDefinition, final UID uri) {
 		throw new UnsupportedOperationException();
 	}
 

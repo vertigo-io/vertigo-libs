@@ -38,7 +38,7 @@ import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
@@ -222,7 +222,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	private Entity loadDto(final Object key) {
 		//-- Transaction BEGIN
 		try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-			return storeManager.get().getDataStore().<Entity> readOne(URI.of(getDtDefinition(), key));
+			return storeManager.get().getDataStore().<Entity> readOne(UID.of(getDtDefinition(), key));
 		}
 	}
 

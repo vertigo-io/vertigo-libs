@@ -20,7 +20,7 @@ package io.vertigo.ui.dao.people;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
@@ -50,7 +50,7 @@ public final class PeopleDAO extends DAO<People, java.lang.Long> implements Stor
 	 * @param uri URI du keyConcept modifié
 	 * @return KeyConcept à modifier
 	 */
-	public People readOneForUpdate(final URI<People> uri) {
+	public People readOneForUpdate(final UID<People> uri) {
 		return dataStore.readOneForUpdate(uri);
 	}
 

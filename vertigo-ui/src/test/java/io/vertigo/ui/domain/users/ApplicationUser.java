@@ -19,7 +19,7 @@
 package io.vertigo.ui.domain.users;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -41,8 +41,8 @@ public final class ApplicationUser implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<ApplicationUser> getURI() {
-		return URI.of(this);
+	public UID<ApplicationUser> getUID() {
+		return UID.of(this);
 	}
 
 	/**
@@ -146,12 +146,12 @@ public final class ApplicationUser implements Entity {
 	 * @return io.vertigo.struts2.domain.users.Profil
 	 */
 	public io.vertigo.ui.domain.users.Profil getProfil() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.ui.domain.users.Profil> fkURI = getProfilURI();
+		final io.vertigo.dynamo.domain.model.UID<io.vertigo.ui.domain.users.Profil> fkURI = getProfilURI();
 		if (fkURI == null) {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (profil == null || !fkURI.equals(profil.getURI())) {
+		if (profil == null || !fkURI.equals(profil.getUID())) {
 			profil = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return profil;
@@ -174,7 +174,7 @@ public final class ApplicationUser implements Entity {
 			foreignRole = "ApplicationUser",
 			foreignLabel = "Application user",
 			foreignMultiplicity = "0..*")
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.ui.domain.users.Profil> getProfilURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.ui.domain.users.Profil> getProfilURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_USR_PRO", io.vertigo.ui.domain.users.Profil.class);
 	}
 

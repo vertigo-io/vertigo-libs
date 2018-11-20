@@ -28,7 +28,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractStaticDataStorePlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.ui.domain.DtDefinitions;
@@ -54,11 +54,11 @@ public final class CommuneStorePlugin extends AbstractStaticDataStorePlugin {
 	}
 
 	@Override
-	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final URI<E> uri) {
+	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final UID<E> uri) {
 		//La liste est grande, donc configurée pour être chargée par morceau.
 		//Mais cette implé de POC, ne le fait pas et utilise la liste complète
 		for (final Commune commune : loadAllCommunes()) {
-			if (uri.equals(commune.getURI())) {
+			if (uri.equals(commune.getUID())) {
 				return (E) commune;
 			}
 		}
@@ -67,7 +67,7 @@ public final class CommuneStorePlugin extends AbstractStaticDataStorePlugin {
 	}
 
 	@Override
-	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
+	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final UID<?> uri) {
 		throw new UnsupportedOperationException();
 	}
 

@@ -30,7 +30,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractStaticDataStorePlugin;
 import io.vertigo.lang.Assertion;
@@ -131,14 +131,14 @@ public final class StaticStorePlugin extends AbstractStaticDataStorePlugin imple
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final URI<E> uri) {
+	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final UID<E> uri) {
 		Assertion.checkArgument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
+	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final UID<?> uri) {
 		Assertion.checkArgument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
 		throw new UnsupportedOperationException();
 	}
