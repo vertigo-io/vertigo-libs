@@ -19,7 +19,7 @@
 package io.vertigo.struts2.domain.users;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -38,8 +38,8 @@ public final class Profil implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<Profil> getURI() {
-		return URI.of(this);
+	public UID<Profil> getUID() {
+		return UID.of(this);
 	}
 
 	/**

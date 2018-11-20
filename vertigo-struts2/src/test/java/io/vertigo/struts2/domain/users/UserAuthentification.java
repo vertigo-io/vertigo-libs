@@ -19,7 +19,7 @@
 package io.vertigo.struts2.domain.users;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -40,8 +40,8 @@ public final class UserAuthentification implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<UserAuthentification> getURI() {
-		return URI.of(this);
+	public UID<UserAuthentification> getUID() {
+		return UID.of(this);
 	}
 
 	/**
@@ -125,12 +125,12 @@ public final class UserAuthentification implements Entity {
 	 * @return io.vertigo.struts2.domain.users.ApplicationUser
 	 */
 	public io.vertigo.struts2.domain.users.ApplicationUser getApplicationUser() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.struts2.domain.users.ApplicationUser> fkURI = getApplicationUserURI();
+		final io.vertigo.dynamo.domain.model.UID<io.vertigo.struts2.domain.users.ApplicationUser> fkURI = getApplicationUserURI();
 		if (fkURI == null) {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (applicationUser == null || !fkURI.equals(applicationUser.getURI())) {
+		if (applicationUser == null || !fkURI.equals(applicationUser.getUID())) {
 			applicationUser = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return applicationUser;
@@ -141,7 +141,7 @@ public final class UserAuthentification implements Entity {
 	 * @return URI de l'association
 	 */
 	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_AUTH_USR", fkFieldName = "USR_ID", primaryDtDefinitionName = "DT_APPLICATION_USER", primaryIsNavigable = true, primaryRole = "ApplicationUser", primaryLabel = "Application user", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_USER_AUTHENTIFICATION", foreignIsNavigable = false, foreignRole = "UserAuthentification", foreignLabel = "User authentification", foreignMultiplicity = "0..*")
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.struts2.domain.users.ApplicationUser> getApplicationUserURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.struts2.domain.users.ApplicationUser> getApplicationUserURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_AUTH_USR", io.vertigo.struts2.domain.users.ApplicationUser.class);
 	}
 

@@ -19,7 +19,7 @@
 package io.vertigo.struts2.domain.reference;
 
 import io.vertigo.dynamo.domain.model.DtMasterData;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -38,8 +38,8 @@ public final class OuiNonChoice implements DtMasterData {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<OuiNonChoice> getURI() {
-		return URI.of(this);
+	public UID<OuiNonChoice> getUID() {
+		return UID.of(this);
 	}
 
 	/**
