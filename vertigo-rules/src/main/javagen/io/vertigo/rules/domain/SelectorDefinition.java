@@ -19,8 +19,8 @@
 package io.vertigo.rules.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.model.ListVAccessor;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -55,10 +55,10 @@ public final class SelectorDefinition implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<SelectorDefinition> getURI() {
-		return URI.of(this);
+	public UID<SelectorDefinition> getUID() {
+		return UID.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.
@@ -77,7 +77,7 @@ public final class SelectorDefinition implements Entity {
 	public void setId(final Long id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'creationDate'.
@@ -96,7 +96,7 @@ public final class SelectorDefinition implements Entity {
 	public void setCreationDate(final java.util.Date creationDate) {
 		this.creationDate = creationDate;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'itemId'.
@@ -115,7 +115,7 @@ public final class SelectorDefinition implements Entity {
 	public void setItemId(final Long itemId) {
 		this.itemId = itemId;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'groupId'.
@@ -142,7 +142,7 @@ public final class SelectorDefinition implements Entity {
 	public ListVAccessor<io.vertigo.rules.domain.RuleFilterDefinition> ruleFilterDefinition() {
 		return ruleFilterDefinitionAccessor;
 	}
-	
+
 	/**
 	 * Association : RuleFilterDefinition.
 	 * @return DtList de io.vertigo.rules.domain.RuleFilterDefinition
@@ -160,11 +160,11 @@ public final class SelectorDefinition implements Entity {
 	 * Association URI: RuleFilterDefinition.
 	 * @return URI de l'association
 	 */
-	@Deprecated	
+	@Deprecated
 	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation getRuleFilterDefinitionDtListURI() {
 		return (io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation) ruleFilterDefinitionAccessor.getDtListURI();
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

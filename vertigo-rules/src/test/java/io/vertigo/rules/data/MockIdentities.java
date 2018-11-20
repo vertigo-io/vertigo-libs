@@ -32,20 +32,20 @@ import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.plugins.account.store.loader.AccountLoader;
 import io.vertigo.account.plugins.account.store.loader.GroupLoader;
 import io.vertigo.core.component.Component;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.util.ListBuilder;
 
 public final class MockIdentities implements Component, AccountLoader, GroupLoader {
 
-	private final Map<URI<Account>, Account> accountsMap = new HashMap<>();
+	private final Map<UID<Account>, Account> accountsMap = new HashMap<>();
 	private final Map<String, Account> accountsMapByAuth = new HashMap<>();
-	private final Map<URI<AccountGroup>, AccountGroup> groupsMap = new HashMap<>();
-	private final Map<URI<Account>, Set<URI<AccountGroup>>> groupsPerAccount = new HashMap<>();
-	private final Map<URI<AccountGroup>, Set<URI<Account>>> accountsPerGroup = new HashMap<>();
+	private final Map<UID<AccountGroup>, AccountGroup> groupsMap = new HashMap<>();
+	private final Map<UID<Account>, Set<UID<AccountGroup>>> groupsPerAccount = new HashMap<>();
+	private final Map<UID<AccountGroup>, Set<UID<Account>>> accountsPerGroup = new HashMap<>();
 
-	private static URI<Account> createAccountURI(final String id) {
-		return URI.of(Account.class, id);
+	private static UID<Account> createAccountURI(final String id) {
+		return UID.of(Account.class, id);
 	}
 
 	/**
@@ -58,19 +58,19 @@ public final class MockIdentities implements Component, AccountLoader, GroupLoad
 		final Account testAccount3 = Account.builder("3").withAuthToken("admin").withDisplayName("Phil Mormon").withEmail("phil.mormon@yopmail.com").build();
 		saveAccounts(Arrays.asList(testAccount0, testAccount1, testAccount2, testAccount3));
 
-		final URI<Account> accountURI0 = createAccountURI(testAccount0.getId());
-		final URI<Account> accountURI1 = createAccountURI(testAccount1.getId());
-		final URI<Account> accountURI2 = createAccountURI(testAccount2.getId());
+		final UID<Account> accountURI0 = createAccountURI(testAccount0.getId());
+		final UID<Account> accountURI1 = createAccountURI(testAccount1.getId());
+		final UID<Account> accountURI2 = createAccountURI(testAccount2.getId());
 
 		final AccountGroup testAccountGroup1 = new AccountGroup("100", "TIME's cover");
-		final URI<AccountGroup> group1Uri = URI.of(AccountGroup.class, testAccountGroup1.getId());
+		final UID<AccountGroup> group1Uri = UID.of(AccountGroup.class, testAccountGroup1.getId());
 		saveGroup(testAccountGroup1);
 
 		attach(accountURI1, group1Uri);
 		attach(accountURI2, group1Uri);
 
 		final AccountGroup groupAll = new AccountGroup("ALL", "Everyone");
-		final URI<AccountGroup> groupAllUri = URI.of(AccountGroup.class, groupAll.getId());
+		final UID<AccountGroup> groupAllUri = UID.of(AccountGroup.class, groupAll.getId());
 		saveGroup(groupAll);
 		attach(accountURI0, groupAllUri);
 		attach(accountURI1, groupAllUri);
@@ -80,7 +80,7 @@ public final class MockIdentities implements Component, AccountLoader, GroupLoad
 		final List<Account> accounts = createAccounts();
 		saveAccounts(accounts);
 		for (final Account account : accounts) {
-			final URI<Account> accountUri = createAccountURI(account.getId());
+			final UID<Account> accountUri = createAccountURI(account.getId());
 			attach(accountUri, groupAllUri);
 		}
 
@@ -116,7 +116,7 @@ public final class MockIdentities implements Component, AccountLoader, GroupLoad
 	 */
 	public void saveAccounts(final List<Account> accounts) {
 		accounts.stream().forEach(account -> {
-			accountsMap.put(account.getURI(), account);
+			accountsMap.put(account.getUID(), account);
 			accountsMapByAuth.put(account.getAuthToken(), account);
 		});
 	}
@@ -125,7 +125,7 @@ public final class MockIdentities implements Component, AccountLoader, GroupLoad
 	 * @param accountGroup group to save
 	 */
 	public void saveGroup(final AccountGroup accountGroup) {
-		groupsMap.put(accountGroup.getURI(), accountGroup);
+		groupsMap.put(accountGroup.getUID(), accountGroup);
 	}
 
 	/**
@@ -133,7 +133,7 @@ public final class MockIdentities implements Component, AccountLoader, GroupLoad
 	 * @param accountURI accountURI
 	 * @param groupURI groupURI
 	 */
-	public void attach(final URI<Account> accountURI, final URI<AccountGroup> groupURI) {
+	public void attach(final UID<Account> accountURI, final UID<AccountGroup> groupURI) {
 		groupsPerAccount.computeIfAbsent(accountURI, key -> new HashSet<>()).add(groupURI);
 		accountsPerGroup.computeIfAbsent(groupURI, key -> new HashSet<>()).add(accountURI);
 	}
@@ -146,13 +146,13 @@ public final class MockIdentities implements Component, AccountLoader, GroupLoad
 
 	/** {@inheritDoc} */
 	@Override
-	public Account getAccount(final URI<Account> accountURI) {
+	public Account getAccount(final UID<Account> accountURI) {
 		return accountsMap.get(accountURI);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Optional<VFile> getPhoto(final URI<Account> accountURI) {
+	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
 		return Optional.empty();
 	}
 
@@ -170,19 +170,19 @@ public final class MockIdentities implements Component, AccountLoader, GroupLoad
 
 	/** {@inheritDoc} */
 	@Override
-	public AccountGroup getGroup(final URI<AccountGroup> groupURI) {
+	public AccountGroup getGroup(final UID<AccountGroup> groupURI) {
 		return groupsMap.get(groupURI);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Set<URI<AccountGroup>> getGroupURIs(final URI<Account> accountURI) {
+	public Set<UID<AccountGroup>> getGroupURIs(final UID<Account> accountURI) {
 		return groupsPerAccount.computeIfAbsent(accountURI, key -> Collections.emptySet());
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Set<URI<Account>> getAccountURIs(final URI<AccountGroup> groupURI) {
+	public Set<UID<Account>> getAccountURIs(final UID<AccountGroup> groupURI) {
 		return accountsPerGroup.computeIfAbsent(groupURI, key -> Collections.emptySet());
 	}
 }

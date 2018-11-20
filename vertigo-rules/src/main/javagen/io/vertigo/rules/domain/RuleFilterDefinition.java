@@ -19,7 +19,7 @@
 package io.vertigo.rules.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -55,10 +55,10 @@ public final class RuleFilterDefinition implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<RuleFilterDefinition> getURI() {
-		return URI.of(this);
+	public UID<RuleFilterDefinition> getUID() {
+		return UID.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.
@@ -77,7 +77,7 @@ public final class RuleFilterDefinition implements Entity {
 	public void setId(final Long id) {
 		this.id = id;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'field'.
@@ -96,7 +96,7 @@ public final class RuleFilterDefinition implements Entity {
 	public void setField(final String field) {
 		this.field = field;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'operator'.
@@ -115,7 +115,7 @@ public final class RuleFilterDefinition implements Entity {
 	public void setOperator(final String operator) {
 		this.operator = operator;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'expression'.
@@ -134,7 +134,7 @@ public final class RuleFilterDefinition implements Entity {
 	public void setExpression(final String expression) {
 		this.expression = expression;
 	}
-	
+
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'SelectorDefinition'.
@@ -142,7 +142,7 @@ public final class RuleFilterDefinition implements Entity {
 	 */
 	@Field(domain = "DO_RULES_ID", type = "FOREIGN_KEY", label = "SelectorDefinition")
 	public Long getSelId() {
-		return (Long)  selIdAccessor.getId();
+		return (Long) selIdAccessor.getId();
 	}
 
 	/**
@@ -154,14 +154,14 @@ public final class RuleFilterDefinition implements Entity {
 		selIdAccessor.setId(selId);
 	}
 
- 	/**
+	/**
 	 * Association : SelectorDefinition.
 	 * @return l'accesseur vers la propriété 'SelectorDefinition'
 	 */
 	public VAccessor<io.vertigo.rules.domain.SelectorDefinition> selectorDefinition() {
 		return selIdAccessor;
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

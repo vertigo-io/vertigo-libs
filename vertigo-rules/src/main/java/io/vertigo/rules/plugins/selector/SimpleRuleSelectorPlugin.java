@@ -29,7 +29,7 @@ import javax.inject.Inject;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.rules.domain.RuleFilterDefinition;
 import io.vertigo.rules.domain.SelectorDefinition;
 import io.vertigo.rules.impl.RuleSelectorPlugin;
@@ -57,8 +57,8 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 		this.identityManager = identityManager;
 	}
 
-	private static URI<AccountGroup> createGroupURI(final String id) {
-		return URI.of(AccountGroup.class, id);
+	private static UID<AccountGroup> createGroupURI(final String id) {
+		return UID.of(AccountGroup.class, id);
 	}
 
 	private List<SelectorDefinition> findMatchingSelectors(final List<SelectorDefinition> selectors,
@@ -104,8 +104,8 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 		final List<SelectorDefinition> matchingSelectors = findMatchingSelectors(selectors, ruleContext);
 
 		for (final SelectorDefinition selectorDefinition : matchingSelectors) {
-			final Set<URI<Account>> accounts = identityManager.getAccountURIs(createGroupURI(selectorDefinition.getGroupId()));
-			for (final URI<Account> accountUri : accounts) {
+			final Set<UID<Account>> accounts = identityManager.getAccountURIs(createGroupURI(selectorDefinition.getGroupId()));
+			for (final UID<Account> accountUri : accounts) {
 				final Account account = identityManager.getAccount(accountUri);
 				collected.add(account);
 			}
@@ -121,9 +121,9 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 		final List<SelectorDefinition> matchingSelectors = findMatchingSelectors(selectors, mapFilters, ruleContext);
 
 		for (final SelectorDefinition selectorDefinition : matchingSelectors) {
-			final Set<URI<Account>> accounts = identityManager
+			final Set<UID<Account>> accounts = identityManager
 					.getAccountURIs(createGroupURI(selectorDefinition.getGroupId()));
-			for (final URI<Account> accountURI : accounts) {
+			for (final UID<Account> accountURI : accounts) {
 				final Account account = identityManager.getAccount(accountURI);
 				collected.add(account);
 			}

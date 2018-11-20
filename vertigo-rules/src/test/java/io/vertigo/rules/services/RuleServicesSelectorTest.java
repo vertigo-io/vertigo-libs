@@ -39,7 +39,7 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.rules.MyAppConfig;
 import io.vertigo.rules.data.MockIdentities;
 import io.vertigo.rules.data.MyDummyDtObject;
@@ -121,12 +121,12 @@ public class RuleServicesSelectorTest extends DbTest {
 		assertThat(selectorFetch2.size(), is(2));
 	}
 
-	private static URI<Account> createAccountURI(final String id) {
-		return URI.of(Account.class, id);
+	private static UID<Account> createAccountURI(final String id) {
+		return UID.of(Account.class, id);
 	}
 
-	private static URI<AccountGroup> createGroupURI(final String id) {
-		return URI.of(AccountGroup.class, id);
+	private static UID<AccountGroup> createGroupURI(final String id) {
+		return UID.of(AccountGroup.class, id);
 	}
 
 	/**
