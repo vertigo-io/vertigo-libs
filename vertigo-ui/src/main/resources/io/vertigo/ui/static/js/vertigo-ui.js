@@ -147,7 +147,20 @@ var VUi = {
 						componentStates[componentId].pagination.showMoreCount = showMoreCount;
 					}
 					componentStates[componentId].pagination.rowsPerPage = componentStates[componentId].pagination.rowsPerPage / showMoreCount * (showMoreCount + 1);
-				}
+				},
+				
+				uploadFile : function(uploaderRef) {
+					this.$refs[uploaderRef].upload()
+				},				
+				uploadedFileToField : function(event, object, field) {
+					console.log('uploadedFileToField')
+					vueData[object][field] = event.xhr.response
+				},
+				uploadedFileToCtx : function(event) {
+					console.log('uploadedFileToCtx')
+					vueData.CTX = JSON.parse(event.xhr.response).CTX
+				},
+				
 			  }
 			  
 	}

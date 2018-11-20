@@ -35,7 +35,10 @@ public final class ProtectedValueUtil {
 	 * Genere et conserve une URL protégée.
 	 */
 	public static String generateProtectedValue(final Serializable unprotectedValue) {
-		final String protectedUrl = "Prot-" + String.valueOf(unprotectedValue) + "-Prot";
+		if (unprotectedValue == null) {
+			return null;
+		}
+		final String protectedUrl = "Prot-" + unprotectedValue.hashCode() + "-Prot";
 		if (unprotectedValue != null) {
 			try (VTransactionWritable transactionWritable = getTransactionManager().createCurrentTransaction()) {
 				getKVStoreManager().put(PROTECTED_VALUE_COLLECTION_NAME, protectedUrl, unprotectedValue);
@@ -49,6 +52,9 @@ public final class ProtectedValueUtil {
 	 * Resoud une value protégée.
 	 */
 	public static <V extends Serializable> V readProtectedValue(final String protectedValue, final Class<V> clazz) {
+		if (protectedValue == null) {
+			return null;
+		}
 		final V unprotectedValue;
 		try (VTransactionWritable transactionWritable = getTransactionManager().createCurrentTransaction()) {
 			unprotectedValue = getKVStoreManager().find(PROTECTED_VALUE_COLLECTION_NAME, protectedValue, clazz).orElse(null);

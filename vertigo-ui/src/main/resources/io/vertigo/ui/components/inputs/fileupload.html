@@ -1,0 +1,31 @@
+<th:block th:fragment="fileupload-field(url, object, field, protectValue, label_attrs, input_attrs)" 
+	th:assert="${object} != null and ${field} != null"
+	th:with="uploaderRef='uploader'+${object}+'_'+${field}" >
+	<vu:include-data object="${object}" field="${field}" th:if="${protectValue!=true}"/>
+	<vu:include-data-protected object="person" field="picturefileIdTmp" th:if="${protectValue}"/>
+		
+	<vu:label-edit th:attr="__${label_attrs}__">
+		<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
+		<q-uploader th:url="${url}" :additional-fields="[{'name':'CTX', 'value':vueData.CTX}]" 
+			auto-expand 
+			th::ref="|'${uploaderRef}'|"  
+			th:@add="|uploadFile('${uploaderRef}')|"
+			th:@uploaded="|uploadedFileToField($event, '${object}','${field}')|">
+		</q-uploader>						
+		</q-input>
+	</vu:label-edit>
+</th:block>
+
+<th:block th:fragment="fileupload-ctx(url, object, field, label_attrs, input_attrs)" 
+	th:assert="${object} != null and ${field} != null"
+	th:with="uploaderRef='uploader'+${object}+'_'+${field}" >
+	<vu:label-edit th:attr="__${label_attrs}__">
+		<q-uploader th:url="${url}" :additional-fields="[{'name':'CTX', 'value':vueData.CTX}]" 
+			auto-expand 
+			th::ref="|'${uploaderRef}'|" 
+			th:@add="|uploadFile('${uploaderRef}')|"
+			@uploaded="uploadedFileToCtx">
+		</q-uploader>						
+		</q-input>
+	</vu:label-edit>
+</th:block>
