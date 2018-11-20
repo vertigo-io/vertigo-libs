@@ -19,7 +19,7 @@
 package io.vertigo.orchestra.domain.execution;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -39,10 +39,10 @@ public final class ONode implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<ONode> getURI() {
-		return URI.of(this);
+	public UID<ONode> getUID() {
+		return UID.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id du noeud'.
@@ -61,7 +61,7 @@ public final class ONode implements Entity {
 	public void setNodId(final Long nodId) {
 		this.nodId = nodId;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Nom du noeud'.
@@ -80,7 +80,7 @@ public final class ONode implements Entity {
 	public void setName(final String name) {
 		this.name = name;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de dernière activité'.
@@ -99,7 +99,7 @@ public final class ONode implements Entity {
 	public void setHeartbeat(final java.util.Date heartbeat) {
 		this.heartbeat = heartbeat;
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

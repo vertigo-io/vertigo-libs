@@ -19,7 +19,7 @@
 package io.vertigo.orchestra.domain.referential;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -38,10 +38,10 @@ public final class OProcessType implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<OProcessType> getURI() {
-		return URI.of(this);
+	public UID<OProcessType> getUID() {
+		return UID.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Code'.
@@ -60,7 +60,7 @@ public final class OProcessType implements Entity {
 	public void setPrtCd(final String prtCd) {
 		this.prtCd = prtCd;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Libellé'.
@@ -79,7 +79,7 @@ public final class OProcessType implements Entity {
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

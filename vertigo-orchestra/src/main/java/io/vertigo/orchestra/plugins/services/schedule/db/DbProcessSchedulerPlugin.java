@@ -43,7 +43,7 @@ import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -230,7 +230,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	}
 
 	private void lockProcess(final ProcessDefinition processDefinition) {
-		final URI<OProcess> processURI = URI.of(OProcess.class, processDefinition.getId());
+		final UID<OProcess> processURI = UID.of(OProcess.class, processDefinition.getId());
 		storeManager.getDataStore().readOneForUpdate(processURI);
 	}
 

@@ -43,7 +43,7 @@ import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -563,7 +563,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private void lockActivityExecution(final Long aceId) {
-		final URI<OActivityExecution> activityExecutionURI = URI.of(OActivityExecution.class, aceId);
+		final UID<OActivityExecution> activityExecutionURI = UID.of(OActivityExecution.class, aceId);
 		storeManager.getDataStore().readOneForUpdate(activityExecutionURI);
 	}
 

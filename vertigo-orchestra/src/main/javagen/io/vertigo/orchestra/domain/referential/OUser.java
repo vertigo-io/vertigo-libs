@@ -19,7 +19,7 @@
 package io.vertigo.orchestra.domain.referential;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -43,10 +43,10 @@ public final class OUser implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<OUser> getURI() {
-		return URI.of(this);
+	public UID<OUser> getUID() {
+		return UID.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id'.
@@ -65,7 +65,7 @@ public final class OUser implements Entity {
 	public void setUsrId(final Long usrId) {
 		this.usrId = usrId;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Nom'.
@@ -84,7 +84,7 @@ public final class OUser implements Entity {
 	public void setFirstName(final String firstName) {
 		this.firstName = firstName;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Prénom'.
@@ -103,7 +103,7 @@ public final class OUser implements Entity {
 	public void setLastName(final String lastName) {
 		this.lastName = lastName;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Email'.
@@ -122,7 +122,7 @@ public final class OUser implements Entity {
 	public void setEmail(final String email) {
 		this.email = email;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Mot de passe'.
@@ -141,7 +141,7 @@ public final class OUser implements Entity {
 	public void setPassword(final String password) {
 		this.password = password;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Alerté en cas d'erreur'.
@@ -160,7 +160,7 @@ public final class OUser implements Entity {
 	public void setMailAlert(final Boolean mailAlert) {
 		this.mailAlert = mailAlert;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Compte Actif'.
@@ -179,7 +179,7 @@ public final class OUser implements Entity {
 	public void setActive(final Boolean active) {
 		this.active = active;
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
