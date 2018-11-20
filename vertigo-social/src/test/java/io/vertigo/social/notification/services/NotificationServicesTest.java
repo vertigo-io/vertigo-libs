@@ -38,7 +38,7 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.social.MyAppConfig;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.services.notification.Notification;
@@ -56,10 +56,10 @@ public class NotificationServicesTest {
 	@Inject
 	private NotificationServices notificationServices;
 
-	private URI<Account> accountURI0;
-	private URI<Account> accountURI1;
-	private URI<Account> accountURI2;
-	private URI<AccountGroup> groupURI;
+	private UID<Account> accountURI0;
+	private UID<Account> accountURI1;
+	private UID<Account> accountURI2;
+	private UID<AccountGroup> groupURI;
 
 	@Parameters
 	public static Collection<Object[]> params() {
@@ -90,7 +90,7 @@ public class NotificationServicesTest {
 		accountURI0 = createAccountURI("0");
 		accountURI1 = createAccountURI("1");
 		accountURI2 = createAccountURI("2");
-		groupURI = URI.of(AccountGroup.class, "100");
+		groupURI = UID.of(AccountGroup.class, "100");
 
 		mockIdentities.initData();
 	}
@@ -102,8 +102,8 @@ public class NotificationServicesTest {
 		}
 	}
 
-	private static URI<Account> createAccountURI(final String id) {
-		return URI.of(Account.class, id);
+	private static UID<Account> createAccountURI(final String id) {
+		return UID.of(Account.class, id);
 	}
 
 	@Test

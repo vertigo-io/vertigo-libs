@@ -23,7 +23,7 @@ import java.util.UUID;
 
 import io.vertigo.core.component.Plugin;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.social.services.comment.Comment;
 
 /**
@@ -36,7 +36,7 @@ public interface CommentPlugin extends Plugin {
 	 * @param comment the comment 
 	 * @param keyConceptURI the key concept defined by its URI
 	 */
-	<S extends KeyConcept> void publish(Comment comment, URI<S> keyConceptURI);
+	<S extends KeyConcept> void publish(Comment comment, UID<S> keyConceptURI);
 
 	/**
 	 * Gets the comment by its uuid. 
@@ -50,7 +50,7 @@ public interface CommentPlugin extends Plugin {
 	 * @param keyConceptURI the key concept defined by its URI
 	 * @return the list of comments
 	 */
-	<S extends KeyConcept> List<Comment> getComments(URI<S> keyConceptURI);
+	<S extends KeyConcept> List<Comment> getComments(UID<S> keyConceptURI);
 
 	/**
 	 * Updates a comment.

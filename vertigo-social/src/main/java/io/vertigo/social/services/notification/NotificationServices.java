@@ -24,7 +24,7 @@ import java.util.UUID;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.core.component.Component;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 
 /**
  * @author pchretien, npiedeloup, btounkara
@@ -35,21 +35,21 @@ public interface NotificationServices extends Component {
 	 * @param notification Notification
 	 * @param accountURIs Destination users
 	 */
-	void send(final Notification notification, final Set<URI<Account>> accountURIs);
+	void send(final Notification notification, final Set<UID<Account>> accountURIs);
 
 	/**
 	 * Retrieves all notifications for one account
 	 * @param accountURI Account
 	 * @return List notifications
 	 */
-	List<Notification> getCurrentNotifications(URI<Account> accountURI);
+	List<Notification> getCurrentNotifications(UID<Account> accountURI);
 
 	/**
 	 * Removes one notification.
 	 * @param accountURI User account
 	 * @param notificationUUID Notification uid
 	 */
-	void remove(URI<Account> accountURI, UUID notificationUUID);
+	void remove(UID<Account> accountURI, UUID notificationUUID);
 
 	/**
 	 * Removes all notifications by type and targetUrl.
@@ -65,5 +65,5 @@ public interface NotificationServices extends Component {
 	 * @param notificationUUID Notification uid
 	 * @param userContent userContent
 	 */
-	void updateUserContent(URI<Account> accountURI, UUID notificationUUID, String userContent);
+	void updateUserContent(UID<Account> accountURI, UUID notificationUUID, String userContent);
 }

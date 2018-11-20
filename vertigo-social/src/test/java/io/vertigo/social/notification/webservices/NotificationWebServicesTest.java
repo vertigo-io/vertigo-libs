@@ -41,7 +41,7 @@ import io.vertigo.account.account.AccountManager;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.social.MyAppConfig;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.services.notification.Notification;
@@ -89,7 +89,7 @@ public final class NotificationWebServicesTest {
 
 	@After
 	public void purgeNotifications() {
-		final URI<Account> accountURI = URI.of(Account.class, "1");
+		final UID<Account> accountURI = UID.of(Account.class, "1");
 		final List<Notification> notifications = notificationServices.getCurrentNotifications(accountURI);
 		for (final Notification notification : notifications) {
 			notificationServices.remove(accountURI, notification.getUuid());
@@ -118,7 +118,7 @@ public final class NotificationWebServicesTest {
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		final Set<URI<Account>> accountURIs = identityManager.getAccountURIs(URI.of(AccountGroup.class, "100"));
+		final Set<UID<Account>> accountURIs = identityManager.getAccountURIs(UID.of(AccountGroup.class, "100"));
 		notificationServices.send(notification, accountURIs);
 
 		RestAssured.given().filter(sessionFilter)
@@ -139,7 +139,7 @@ public final class NotificationWebServicesTest {
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		final Set<URI<Account>> accountURIs = identityManager.getAccountURIs(URI.of(AccountGroup.class, "100"));
+		final Set<UID<Account>> accountURIs = identityManager.getAccountURIs(UID.of(AccountGroup.class, "100"));
 		notificationServices.send(notification, accountURIs);
 
 		RestAssured.given().filter(sessionFilter)
@@ -183,7 +183,7 @@ public final class NotificationWebServicesTest {
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		final Set<URI<Account>> accountURIs = identityManager.getAccountURIs(URI.of(AccountGroup.class, "100"));
+		final Set<UID<Account>> accountURIs = identityManager.getAccountURIs(UID.of(AccountGroup.class, "100"));
 		notificationServices.send(notification1, accountURIs);
 		notificationServices.send(notification2, accountURIs);
 

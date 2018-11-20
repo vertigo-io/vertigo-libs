@@ -34,7 +34,7 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.social.services.comment.Comment;
 import io.vertigo.social.services.comment.CommentServices;
@@ -75,7 +75,7 @@ public final class CommentWebServices implements WebServices {
 	 */
 	@GET("/api/comments")
 	public List<Comment> getComments(@QueryParam("concept") final String keyConcept, @QueryParam("id") final String id) {
-		final URI<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
+		final UID<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
 		return commentServices.getComments(keyConceptURI);
 	}
 
@@ -87,7 +87,7 @@ public final class CommentWebServices implements WebServices {
 	 */
 	@POST("/api/comments")
 	public void publishComment(@ExcludedFields("uuid") final Comment comment, @QueryParam("concept") final String keyConcept, @QueryParam("id") final String id) {
-		final URI<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
+		final UID<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
 		commentServices.publish(getLoggedAccountURI(), comment, keyConceptURI);
 	}
 
@@ -154,10 +154,10 @@ public final class CommentWebServices implements WebServices {
 				+ "\n This extension manage the comment center.";
 	}
 
-	private static URI<KeyConcept> readKeyConceptURI(final String keyConcept, @QueryParam("id") final String id) {
+	private static UID<KeyConcept> readKeyConceptURI(final String keyConcept, @QueryParam("id") final String id) {
 		final DtDefinition dtDefinition = Home.getApp().getDefinitionSpace().resolve("DT_" + StringUtil.camelToConstCase(keyConcept), DtDefinition.class);
 		final Object keyConceptId = stringToId(id, dtDefinition);
-		return URI.of(dtDefinition, keyConceptId);
+		return UID.of(dtDefinition, keyConceptId);
 	}
 
 	private static Object stringToId(final String id, final DtDefinition dtDefinition) {
@@ -175,10 +175,10 @@ public final class CommentWebServices implements WebServices {
 		throw new IllegalArgumentException("the id of the keyConcept " + dtDefinition.getLocalName() + " must be String, Long or Integer");
 	}
 
-	private URI<Account> getLoggedAccountURI() {
+	private UID<Account> getLoggedAccountURI() {
 		return authenticationManager.getLoggedAccount()
 				.orElseThrow(() -> new VSecurityException(MessageText.of("No account logged in")))
-				.getURI();
+				.getUID();
 	}
 
 }

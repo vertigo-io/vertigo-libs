@@ -33,7 +33,7 @@ import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.social.MyAppConfig;
 import io.vertigo.social.data.MockIdentities;
@@ -51,9 +51,9 @@ public class CommentManagerTest {
 	private RedisConnector redisConnector;
 
 	private AutoCloseableApp app;
-	private URI<KeyConcept> keyConcept1Uri;
+	private UID<KeyConcept> keyConcept1Uri;
 
-	private URI<Account> accountURI1;
+	private UID<Account> accountURI1;
 
 	@Before
 	public void setUp() {
@@ -67,8 +67,8 @@ public class CommentManagerTest {
 
 		//on triche un peu, car AcountGroup n'est pas un KeyConcept
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);
-		keyConcept1Uri = URI.of(dtDefinition, "10");
-		keyConcept1Uri = URI.of(dtDefinition, "20");
+		keyConcept1Uri = UID.of(dtDefinition, "10");
+		keyConcept1Uri = UID.of(dtDefinition, "20");
 	}
 
 	@After

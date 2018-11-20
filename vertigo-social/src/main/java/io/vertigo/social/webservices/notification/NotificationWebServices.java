@@ -29,7 +29,7 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.social.services.notification.Notification;
 import io.vertigo.social.services.notification.NotificationServices;
 import io.vertigo.util.MapBuilder;
@@ -62,7 +62,7 @@ public final class NotificationWebServices implements WebServices {
 	 */
 	@GET("/api/messages")
 	public List<Notification> getMessages() {
-		final URI<Account> loggedAccountURI = getLoggedAccountURI();
+		final UID<Account> loggedAccountURI = getLoggedAccountURI();
 		return notificationServices.getCurrentNotifications(loggedAccountURI);
 	}
 
@@ -72,7 +72,7 @@ public final class NotificationWebServices implements WebServices {
 	 */
 	@DELETE("/api/messages/{uuid}")
 	public void removeMessage(@PathParam("uuid") final String messageUuid) {
-		final URI<Account> loggedAccountURI = getLoggedAccountURI();
+		final UID<Account> loggedAccountURI = getLoggedAccountURI();
 		notificationServices.remove(loggedAccountURI, UUID.fromString(messageUuid));
 	}
 
@@ -82,7 +82,7 @@ public final class NotificationWebServices implements WebServices {
 	 */
 	@DELETE("/api/messages")
 	public void removeMessage(final List<String> messageUuids) {
-		final URI<Account> loggedAccountURI = getLoggedAccountURI();
+		final UID<Account> loggedAccountURI = getLoggedAccountURI();
 		for (final String messageUuid : messageUuids) {
 			notificationServices.remove(loggedAccountURI, UUID.fromString(messageUuid));
 		}
@@ -137,10 +137,10 @@ public final class NotificationWebServices implements WebServices {
 				+ "\n This extension manage the notification center.";
 	}
 
-	private URI<Account> getLoggedAccountURI() {
+	private UID<Account> getLoggedAccountURI() {
 		return authenticationManager.getLoggedAccount()
 				.orElseThrow(() -> new VSecurityException(MessageText.of("No account logged in")))
-				.getURI();
+				.getUID();
 	}
 
 }

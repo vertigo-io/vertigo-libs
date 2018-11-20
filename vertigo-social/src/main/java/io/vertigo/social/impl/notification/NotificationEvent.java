@@ -21,7 +21,7 @@ package io.vertigo.social.impl.notification;
 import java.util.Set;
 
 import io.vertigo.account.account.Account;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.social.services.notification.Notification;
 
@@ -30,14 +30,14 @@ import io.vertigo.social.services.notification.Notification;
  */
 public final class NotificationEvent {
 	private final Notification notification;
-	private final Set<URI<Account>> accountURIs;
+	private final Set<UID<Account>> accountURIs;
 
 	/**
 	 * Constructor.
 	 * @param notification Notification
 	 * @param accountURIs To accounts uri
 	 */
-	NotificationEvent(final Notification notification, final Set<URI<Account>> accountURIs) {
+	NotificationEvent(final Notification notification, final Set<UID<Account>> accountURIs) {
 		Assertion.checkNotNull(notification);
 		Assertion.checkNotNull(accountURIs);
 		//-----
@@ -55,7 +55,7 @@ public final class NotificationEvent {
 	/**
 	 * @return To accounts uri
 	 */
-	public Set<URI<Account>> getToAccountURIs() {
+	public Set<UID<Account>> getToAccountURIs() {
 		return accountURIs;
 	}
 }

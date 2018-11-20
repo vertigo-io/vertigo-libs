@@ -43,7 +43,7 @@ import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.social.MyAppConfig;
 import io.vertigo.social.data.MockIdentities;
@@ -58,9 +58,9 @@ public final class CommentWebServicesTest {
 	private static AutoCloseableApp app;
 
 	private static String CONCEPT_KEY_NAME;
-	private static URI<Account> account1Uri;
-	private static URI<KeyConcept> keyConcept1Uri;
-	private static URI<KeyConcept> keyConcept2Uri;
+	private static UID<Account> account1Uri;
+	private static UID<KeyConcept> keyConcept1Uri;
+	private static UID<KeyConcept> keyConcept2Uri;
 
 	@Inject
 	private RedisConnector redisConnector;
@@ -86,8 +86,8 @@ public final class CommentWebServicesTest {
 
 		//on triche un peu, car AcountGroup n'est pas un KeyConcept
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);
-		keyConcept1Uri = URI.of(dtDefinition, "10");
-		keyConcept2Uri = URI.of(dtDefinition, "20");
+		keyConcept1Uri = UID.of(dtDefinition, "10");
+		keyConcept2Uri = UID.of(dtDefinition, "20");
 		CONCEPT_KEY_NAME = dtDefinition.getClassSimpleName();
 
 		preTestLogin();

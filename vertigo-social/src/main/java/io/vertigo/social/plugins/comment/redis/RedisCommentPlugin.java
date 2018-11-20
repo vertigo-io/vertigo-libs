@@ -32,7 +32,7 @@ import javax.inject.Inject;
 import io.vertigo.account.account.Account;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.social.impl.comment.CommentPlugin;
@@ -61,7 +61,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends KeyConcept> void publish(final Comment comment, final URI<S> keyConceptUri) {
+	public <S extends KeyConcept> void publish(final Comment comment, final UID<S> keyConceptUri) {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			try (final Transaction tx = jedis.multi()) {
 				tx.hmset("comment:" + comment.getUuid(), toMap(comment));
@@ -98,7 +98,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends KeyConcept> List<Comment> getComments(final URI<S> keyConceptUri) {
+	public <S extends KeyConcept> List<Comment> getComments(final UID<S> keyConceptUri) {
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final List<String> uuids = jedis.lrange("comments:" + keyConceptUri.urn(), 0, -1);
@@ -141,7 +141,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 
 			return Comment.builder()
 					.withUuid(UUID.fromString(data.get("uuid")))
-					.withAuthor(URI.of(Account.class, data.get("author")))
+					.withAuthor(UID.of(Account.class, data.get("author")))
 					.withCreationDate(creationDate)
 					.withMsg(data.get("msg"))
 					.withLastModified(lastModified)

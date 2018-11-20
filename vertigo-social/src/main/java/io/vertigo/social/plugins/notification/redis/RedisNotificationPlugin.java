@@ -33,7 +33,7 @@ import io.vertigo.account.account.Account;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.social.impl.notification.NotificationEvent;
@@ -93,7 +93,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				tx.lrem("notifs:all", 0, uuid);
 				tx.lpush("notifs:all", uuid);
 
-				for (final URI<Account> accountURI : notificationEvent.getToAccountURIs()) {
+				for (final UID<Account> accountURI : notificationEvent.getToAccountURIs()) {
 					final String notifiedAccount = "notifs:" + accountURI.getId();
 					//On publie la notif (the last wins)
 					tx.lrem(notifiedAccount, 0, uuid);
@@ -147,7 +147,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<Notification> getCurrentNotifications(final URI<Account> accountURI) {
+	public List<Notification> getCurrentNotifications(final UID<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
@@ -177,7 +177,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void updateUserContent(final URI<Account> accountURI, final UUID notificationUUID, final String userContent) {
+	public void updateUserContent(final UID<Account> accountURI, final UUID notificationUUID, final String userContent) {
 		Assertion.checkNotNull(accountURI);
 		Assertion.checkNotNull(notificationUUID);
 		//-----
@@ -197,7 +197,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final URI<Account> accountURI, final UUID notificationUUID) {
+	public void remove(final UID<Account> accountURI, final UUID notificationUUID) {
 		Assertion.checkNotNull(accountURI);
 		Assertion.checkNotNull(notificationUUID);
 		//-----

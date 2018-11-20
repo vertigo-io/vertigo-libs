@@ -23,7 +23,7 @@ import java.util.UUID;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.core.component.Plugin;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.social.services.notification.Notification;
 
 /**
@@ -40,13 +40,13 @@ public interface NotificationPlugin extends Plugin {
 	 * @param account Accout uri
 	 * @return All notifications for this account
 	 */
-	List<Notification> getCurrentNotifications(URI<Account> account);
+	List<Notification> getCurrentNotifications(UID<Account> account);
 
 	/**
 	 * @param accountURI Account uri
 	 * @param notificationUUID Notification uuid
 	 */
-	void remove(URI<Account> accountURI, UUID notificationUUID);
+	void remove(UID<Account> accountURI, UUID notificationUUID);
 
 	/**
 	 * @param type Notification's type
@@ -59,5 +59,5 @@ public interface NotificationPlugin extends Plugin {
 	 * @param notificationUUID Notification uuid
 	 * @param userContent User Content
 	 */
-	void updateUserContent(URI<Account> accountURI, UUID notificationUUID, String userContent);
+	void updateUserContent(UID<Account> accountURI, UUID notificationUUID, String userContent);
 }

@@ -23,7 +23,7 @@ import java.util.List;
 import io.vertigo.account.account.Account;
 import io.vertigo.core.component.Component;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 
 /**
  * @author pchretien
@@ -35,7 +35,7 @@ public interface CommentServices extends Component {
 	 * @param keyConceptUri the URI of the keyConcept
 	 * @return the list of sorted comments
 	 */
-	List<Comment> getComments(URI<? extends KeyConcept> keyConceptUri);
+	List<Comment> getComments(UID<? extends KeyConcept> keyConceptUri);
 
 	/**
 	 * Publishes a comment on a key concept.
@@ -43,12 +43,12 @@ public interface CommentServices extends Component {
 	 * @param comment  the comment
 	 * @param keyConceptUri the URI of the keyConcept
 	 */
-	void publish(final URI<Account> accountURI, Comment comment, URI<? extends KeyConcept> keyConceptUri);
+	void publish(final UID<Account> accountURI, Comment comment, UID<? extends KeyConcept> keyConceptUri);
 
 	/**
 	 * Updates a comment.
 	 * @param accountURI the account defined by its URI
 	 * @param comment the updated comment
 	 */
-	void update(final URI<Account> accountURI, Comment comment);
+	void update(final UID<Account> accountURI, Comment comment);
 }

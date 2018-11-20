@@ -24,7 +24,7 @@ import java.util.UUID;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.app.Home;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.util.DateUtil;
@@ -35,7 +35,7 @@ import io.vertigo.util.DateUtil;
 public final class CommentBuilder implements Builder<Comment> {
 	private UUID myUuid;
 	private String myMsg;
-	private URI<Account> myAuthor;
+	private UID<Account> myAuthor;
 	private String myAuthorDisplayName;
 	private Date myCreationDate;
 	private Date myLastModified;
@@ -55,7 +55,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * @param author Author account
 	 * @return this builder
 	 */
-	public CommentBuilder withAuthor(final URI<Account> author) {
+	public CommentBuilder withAuthor(final UID<Account> author) {
 		Assertion.checkArgument(myAuthor == null, "author already set");
 		Assertion.checkNotNull(author);
 		//-----

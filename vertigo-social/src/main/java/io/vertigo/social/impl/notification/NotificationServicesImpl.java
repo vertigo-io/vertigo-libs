@@ -25,7 +25,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import io.vertigo.account.account.Account;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.social.services.notification.Notification;
 import io.vertigo.social.services.notification.NotificationServices;
@@ -49,14 +49,14 @@ public final class NotificationServicesImpl implements NotificationServices {
 
 	/** {@inheritDoc} */
 	@Override
-	public void send(final Notification notification, final Set<URI<Account>> accountURIs) {
+	public void send(final Notification notification, final Set<UID<Account>> accountURIs) {
 		final NotificationEvent notificationEvent = new NotificationEvent(notification, accountURIs);
 		notificationsPlugin.send(notificationEvent);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public List<Notification> getCurrentNotifications(final URI<Account> userProfileURI) {
+	public List<Notification> getCurrentNotifications(final UID<Account> userProfileURI) {
 		Assertion.checkNotNull(userProfileURI);
 		// -----
 		return notificationsPlugin.getCurrentNotifications(userProfileURI);
@@ -64,7 +64,7 @@ public final class NotificationServicesImpl implements NotificationServices {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final URI<Account> accountURI, final UUID notificationUUID) {
+	public void remove(final UID<Account> accountURI, final UUID notificationUUID) {
 		notificationsPlugin.remove(accountURI, notificationUUID);
 	}
 
@@ -75,7 +75,7 @@ public final class NotificationServicesImpl implements NotificationServices {
 	}
 
 	@Override
-	public void updateUserContent(final URI<Account> accountURI, final UUID notificationUUID, final String userContent) {
+	public void updateUserContent(final UID<Account> accountURI, final UUID notificationUUID, final String userContent) {
 		notificationsPlugin.updateUserContent(accountURI, notificationUUID, userContent);
 	}
 }
