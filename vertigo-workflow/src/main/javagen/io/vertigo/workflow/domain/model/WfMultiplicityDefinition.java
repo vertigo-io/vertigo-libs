@@ -19,7 +19,7 @@
 package io.vertigo.workflow.domain.model;
 
 import io.vertigo.dynamo.domain.model.DtStaticMasterData;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -37,10 +37,10 @@ public final class WfMultiplicityDefinition implements DtStaticMasterData {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<WfMultiplicityDefinition> getURI() {
-		return URI.of(this);
+	public UID<WfMultiplicityDefinition> getUID() {
+		return UID.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Multiplicity code'.
@@ -59,7 +59,7 @@ public final class WfMultiplicityDefinition implements DtStaticMasterData {
 	public void setWfmdCode(final String wfmdCode) {
 		this.wfmdCode = wfmdCode;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Label'.
@@ -78,7 +78,7 @@ public final class WfMultiplicityDefinition implements DtStaticMasterData {
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

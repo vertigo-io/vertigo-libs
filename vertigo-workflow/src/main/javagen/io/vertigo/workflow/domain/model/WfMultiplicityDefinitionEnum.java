@@ -21,7 +21,7 @@ package io.vertigo.workflow.domain.model;
 import java.io.Serializable;
 
 import io.vertigo.dynamo.domain.model.MasterDataEnum;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 
 public enum WfMultiplicityDefinitionEnum implements MasterDataEnum<io.vertigo.workflow.domain.model.WfMultiplicityDefinition> {
 
@@ -36,8 +36,8 @@ public enum WfMultiplicityDefinitionEnum implements MasterDataEnum<io.vertigo.wo
 	}
 
 	@Override
-	public URI<io.vertigo.workflow.domain.model.WfMultiplicityDefinition> getEntityUri() {
-		return URI.of(io.vertigo.workflow.domain.model.WfMultiplicityDefinition.class, entityId);
+	public UID<io.vertigo.workflow.domain.model.WfMultiplicityDefinition> getEntityUri() {
+		return UID.of(io.vertigo.workflow.domain.model.WfMultiplicityDefinition.class, entityId);
 	}
 
 }

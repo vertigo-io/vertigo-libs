@@ -44,7 +44,7 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.impl.workflow.ItemStorePlugin;
 import io.vertigo.rules.domain.RuleConditionDefinition;
 import io.vertigo.rules.domain.RuleDefinition;
@@ -131,8 +131,8 @@ public class WorkflowManagerTest extends DbTest {
 		final Account account = Account.builder("Acc1").build();
 		mockIdentities.saveGroup(accountGroup);
 		mockIdentities.saveAccounts(Arrays.asList(account));
-		final URI<Account> accountUri = URI.of(Account.class, account.getId());
-		final URI<AccountGroup> accountGroupUri = URI.of(AccountGroup.class, accountGroup.getId());
+		final UID<Account> accountUri = UID.of(Account.class, account.getId());
+		final UID<AccountGroup> accountGroupUri = UID.of(AccountGroup.class, accountGroup.getId());
 		mockIdentities.attach(accountUri, accountGroupUri);
 
 		// Step 1 : 1 rule, 1 condition
@@ -278,8 +278,8 @@ public class WorkflowManagerTest extends DbTest {
 		final Account account = Account.builder("Acc1").build();
 		mockIdentities.saveGroup(accountGroup);
 		mockIdentities.saveAccounts(Arrays.asList(account));
-		final URI<Account> accountUri = URI.of(Account.class, account.getId());
-		final URI<AccountGroup> accountGroupUri = URI.of(AccountGroup.class, accountGroup.getId());
+		final UID<Account> accountUri = UID.of(Account.class, account.getId());
+		final UID<AccountGroup> accountGroupUri = UID.of(AccountGroup.class, accountGroup.getId());
 		mockIdentities.attach(accountUri, accountGroupUri);
 
 		// Step 1 : 1 rule, 1 condition

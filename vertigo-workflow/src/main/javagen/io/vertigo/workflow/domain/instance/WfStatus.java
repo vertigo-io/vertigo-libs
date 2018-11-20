@@ -19,7 +19,7 @@
 package io.vertigo.workflow.domain.instance;
 
 import io.vertigo.dynamo.domain.model.DtStaticMasterData;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -37,10 +37,10 @@ public final class WfStatus implements DtStaticMasterData {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<WfStatus> getURI() {
-		return URI.of(this);
+	public UID<WfStatus> getUID() {
+		return UID.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Code Status'.
@@ -59,7 +59,7 @@ public final class WfStatus implements DtStaticMasterData {
 	public void setWfsCode(final String wfsCode) {
 		this.wfsCode = wfsCode;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'label'.
@@ -78,7 +78,7 @@ public final class WfStatus implements DtStaticMasterData {
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
