@@ -19,7 +19,7 @@
 package io.vertigo.quarto.services.export.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -34,8 +34,8 @@ public final class Continent implements Entity {
 	private String name;
 
 	@Override
-	public URI getURI() {
-		return URI.of(this);
+	public UID getUID() {
+		return UID.of(this);
 	}
 
 	@Field(domain = "DO_ID", type = "ID", required = true, label = "id of the Continent")
