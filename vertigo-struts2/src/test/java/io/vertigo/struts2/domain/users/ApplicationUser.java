@@ -175,7 +175,7 @@ public final class ApplicationUser implements Entity {
 			foreignLabel = "Application user",
 			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.struts2.domain.users.Profil> getProfilURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_USR_PRO", io.vertigo.struts2.domain.users.Profil.class);
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createUID(this, "A_USR_PRO", io.vertigo.struts2.domain.users.Profil.class);
 	}
 
 	/** {@inheritDoc} */

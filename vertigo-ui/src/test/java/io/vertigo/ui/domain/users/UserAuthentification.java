@@ -142,7 +142,7 @@ public final class UserAuthentification implements Entity {
 	 */
 	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_AUTH_USR", fkFieldName = "USR_ID", primaryDtDefinitionName = "DT_APPLICATION_USER", primaryIsNavigable = true, primaryRole = "ApplicationUser", primaryLabel = "Application user", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_USER_AUTHENTIFICATION", foreignIsNavigable = false, foreignRole = "UserAuthentification", foreignLabel = "User authentification", foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.ui.domain.users.ApplicationUser> getApplicationUserURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_AUTH_USR", io.vertigo.ui.domain.users.ApplicationUser.class);
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createUID(this, "A_AUTH_USR", io.vertigo.ui.domain.users.ApplicationUser.class);
 	}
 
 	/** {@inheritDoc} */

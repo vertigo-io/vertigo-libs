@@ -187,7 +187,7 @@ public final class WfActivity implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfActivityDefinition> getWfActivityDefinitionURI() {
-		return wfadIdAccessor.getURI();
+		return wfadIdAccessor.getUID();
 	}
 
 	/**
@@ -243,7 +243,7 @@ public final class WfActivity implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.instance.WfWorkflow> getWfWorkflowURI() {
-		return wfwIdAccessor.getURI();
+		return wfwIdAccessor.getUID();
 	}
 
 	/** {@inheritDoc} */

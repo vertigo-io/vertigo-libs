@@ -62,7 +62,7 @@ public final class PeopleDAO extends DAO<People, java.lang.Long> implements Stor
 	 * @return KeyConcept à modifier
 	 */
 	public People readOneForUpdate(final java.lang.Long id) {
-		return readOneForUpdate(createDtObjectURI(id));
+		return readOneForUpdate(createDtObjectUID(id));
 	}
 
 }

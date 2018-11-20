@@ -226,7 +226,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.ONode> getNodeURI() {
-		return nodIdAccessor.getURI();
+		return nodIdAccessor.getUID();
 	}
 
 	/**
@@ -252,7 +252,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OProcess> getProcessusURI() {
-		return proIdAccessor.getURI();
+		return proIdAccessor.getUID();
 	}
 
 	/**
@@ -278,7 +278,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OSchedulerState> getPlanificationStateURI() {
-		return sstCdAccessor.getURI();
+		return sstCdAccessor.getUID();
 	}
 
 	/** {@inheritDoc} */

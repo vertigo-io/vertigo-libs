@@ -26,8 +26,7 @@ import io.vertigo.dynamo.domain.model.UID;
 public enum WfMultiplicityDefinitionEnum implements MasterDataEnum<io.vertigo.workflow.domain.model.WfMultiplicityDefinition> {
 
 	SIN("SIN"), //
-	MUL("MUL")
-	;
+	MUL("MUL");
 
 	private final Serializable entityId;
 
@@ -36,7 +35,7 @@ public enum WfMultiplicityDefinitionEnum implements MasterDataEnum<io.vertigo.wo
 	}
 
 	@Override
-	public UID<io.vertigo.workflow.domain.model.WfMultiplicityDefinition> getEntityUri() {
+	public UID<io.vertigo.workflow.domain.model.WfMultiplicityDefinition> getEntityUID() {
 		return UID.of(io.vertigo.workflow.domain.model.WfMultiplicityDefinition.class, entityId);
 	}
 

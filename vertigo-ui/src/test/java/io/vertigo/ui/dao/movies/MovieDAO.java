@@ -71,7 +71,7 @@ public final class MovieDAO extends DAO<Movie, java.lang.Long> implements StoreS
 	 * @return KeyConcept à modifier
 	 */
 	public Movie readOneForUpdate(final java.lang.Long id) {
-		return readOneForUpdate(createDtObjectURI(id));
+		return readOneForUpdate(createDtObjectUID(id));
 	}
 
 	/**

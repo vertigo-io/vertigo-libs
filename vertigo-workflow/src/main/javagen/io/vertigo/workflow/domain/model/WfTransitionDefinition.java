@@ -205,7 +205,7 @@ public final class WfTransitionDefinition implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfActivityDefinition> getTransitionFromURI() {
-		return wfadIdFromAccessor.getURI();
+		return wfadIdFromAccessor.getUID();
 	}
 
 	/**
@@ -231,7 +231,7 @@ public final class WfTransitionDefinition implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfActivityDefinition> getTransitionToURI() {
-		return wfadIdToAccessor.getURI();
+		return wfadIdToAccessor.getUID();
 	}
 
 	/**

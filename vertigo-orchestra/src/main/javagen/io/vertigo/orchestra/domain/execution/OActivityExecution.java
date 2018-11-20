@@ -320,7 +320,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OActivity> getActivityURI() {
-		return actIdAccessor.getURI();
+		return actIdAccessor.getUID();
 	}
 
 	/**
@@ -346,7 +346,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OExecutionState> getExecutionStateURI() {
-		return estCdAccessor.getURI();
+		return estCdAccessor.getUID();
 	}
 
 	/**
@@ -372,7 +372,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.ONode> getNodeURI() {
-		return nodIdAccessor.getURI();
+		return nodIdAccessor.getUID();
 	}
 
 	/**
@@ -398,7 +398,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.OProcessExecution> getProcessusExecutionURI() {
-		return preIdAccessor.getURI();
+		return preIdAccessor.getUID();
 	}
 
 	/** {@inheritDoc} */

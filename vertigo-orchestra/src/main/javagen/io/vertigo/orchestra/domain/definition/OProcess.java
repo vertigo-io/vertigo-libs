@@ -352,7 +352,7 @@ public final class OProcess implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OProcessType> getProcessTypeURI() {
-		return prtCdAccessor.getURI();
+		return prtCdAccessor.getUID();
 	}
 
 	/**
@@ -378,7 +378,7 @@ public final class OProcess implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.TriggerType> getTriggerTypeURI() {
-		return trtCdAccessor.getURI();
+		return trtCdAccessor.getUID();
 	}
 
 	/** {@inheritDoc} */

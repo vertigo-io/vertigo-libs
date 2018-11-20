@@ -173,7 +173,7 @@ public final class WfWorkflowDefinition implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfActivityDefinition> getStartActivityURI() {
-		return wfadIdAccessor.getURI();
+		return wfadIdAccessor.getUID();
 	}
 
 	/**

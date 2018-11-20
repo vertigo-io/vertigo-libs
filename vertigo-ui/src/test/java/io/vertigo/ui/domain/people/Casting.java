@@ -143,7 +143,7 @@ public final class Casting implements Entity {
 	 */
 	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CAST_PEO", fkFieldName = "PEO_ID", primaryDtDefinitionName = "DT_PEOPLE", primaryIsNavigable = true, primaryRole = "People", primaryLabel = "People", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CASTING", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.ui.domain.people.People> getPeopleURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CAST_PEO", io.vertigo.ui.domain.people.People.class);
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createUID(this, "A_CAST_PEO", io.vertigo.ui.domain.people.People.class);
 	}
 
 	/**
@@ -168,7 +168,7 @@ public final class Casting implements Entity {
 	 */
 	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CAST_MOV", fkFieldName = "MOV_ID", primaryDtDefinitionName = "DT_MOVIE", primaryIsNavigable = true, primaryRole = "Movie", primaryLabel = "Movie", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CASTING", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.ui.domain.movies.Movie> getMovieURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CAST_MOV", io.vertigo.ui.domain.movies.Movie.class);
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createUID(this, "A_CAST_MOV", io.vertigo.ui.domain.movies.Movie.class);
 	}
 
 	/** {@inheritDoc} */

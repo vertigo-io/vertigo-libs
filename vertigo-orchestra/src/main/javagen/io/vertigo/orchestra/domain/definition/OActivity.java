@@ -218,7 +218,7 @@ public final class OActivity implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OProcess> getProcessURI() {
-		return proIdAccessor.getURI();
+		return proIdAccessor.getUID();
 	}
 
 	/** {@inheritDoc} */

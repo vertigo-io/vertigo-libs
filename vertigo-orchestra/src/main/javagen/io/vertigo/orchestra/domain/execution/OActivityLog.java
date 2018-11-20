@@ -158,7 +158,7 @@ public final class OActivityLog implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivityExecutionURI() {
-		return aceIdAccessor.getURI();
+		return aceIdAccessor.getUID();
 	}
 
 	/** {@inheritDoc} */
