@@ -21,7 +21,7 @@ package io.vertigo.struts2.domain.movies;
 import java.time.Instant;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -46,8 +46,8 @@ public final class Movie implements KeyConcept {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<Movie> getURI() {
-		return URI.of(this);
+	public UID<Movie> getUID() {
+		return UID.of(this);
 	}
 
 	/**

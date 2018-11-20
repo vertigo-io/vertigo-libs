@@ -19,7 +19,7 @@
 package io.vertigo.struts2.domain.people;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -41,8 +41,8 @@ public final class Casting implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<Casting> getURI() {
-		return URI.of(this);
+	public UID<Casting> getUID() {
+		return UID.of(this);
 	}
 
 	/**
@@ -126,12 +126,12 @@ public final class Casting implements Entity {
 	 * @return io.vertigo.struts2.domain.people.People
 	 */
 	public io.vertigo.struts2.domain.people.People getPeople() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.struts2.domain.people.People> fkURI = getPeopleURI();
+		final io.vertigo.dynamo.domain.model.UID<io.vertigo.struts2.domain.people.People> fkURI = getPeopleURI();
 		if (fkURI == null) {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (people == null || !fkURI.equals(people.getURI())) {
+		if (people == null || !fkURI.equals(people.getUID())) {
 			people = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return people;
@@ -142,7 +142,7 @@ public final class Casting implements Entity {
 	 * @return URI de l'association
 	 */
 	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CAST_PEO", fkFieldName = "PEO_ID", primaryDtDefinitionName = "DT_PEOPLE", primaryIsNavigable = true, primaryRole = "People", primaryLabel = "People", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CASTING", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.struts2.domain.people.People> getPeopleURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.struts2.domain.people.People> getPeopleURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CAST_PEO", io.vertigo.struts2.domain.people.People.class);
 	}
 
@@ -151,12 +151,12 @@ public final class Casting implements Entity {
 	 * @return io.vertigo.struts2.domain.movies.Movie
 	 */
 	public io.vertigo.struts2.domain.movies.Movie getMovie() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.struts2.domain.movies.Movie> fkURI = getMovieURI();
+		final io.vertigo.dynamo.domain.model.UID<io.vertigo.struts2.domain.movies.Movie> fkURI = getMovieURI();
 		if (fkURI == null) {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (movie == null || !fkURI.equals(movie.getURI())) {
+		if (movie == null || !fkURI.equals(movie.getUID())) {
 			movie = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return movie;
@@ -167,7 +167,7 @@ public final class Casting implements Entity {
 	 * @return URI de l'association
 	 */
 	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CAST_MOV", fkFieldName = "MOV_ID", primaryDtDefinitionName = "DT_MOVIE", primaryIsNavigable = true, primaryRole = "Movie", primaryLabel = "Movie", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CASTING", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.struts2.domain.movies.Movie> getMovieURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.struts2.domain.movies.Movie> getMovieURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_CAST_MOV", io.vertigo.struts2.domain.movies.Movie.class);
 	}
 

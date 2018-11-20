@@ -20,7 +20,7 @@ package io.vertigo.struts2.dao.movies;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
@@ -50,7 +50,7 @@ public final class MovieDAO extends DAO<Movie, java.lang.Long> implements StoreS
 	 * @param uri URI du keyConcept modifié
 	 * @return KeyConcept à modifier
 	 */
-	public Movie readOneForUpdate(final URI<Movie> uri) {
+	public Movie readOneForUpdate(final UID<Movie> uri) {
 		return dataStore.readOneForUpdate(uri);
 	}
 
