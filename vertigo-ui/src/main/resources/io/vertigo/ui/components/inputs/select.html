@@ -8,6 +8,7 @@
 		<q-select
 				th:v-model="|vueData.${object}.${field}|" 
 				th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}')|"
+				th:attr="__${input_attrs}__"
 				>
 		</q-select>
 	</vu:label-edit>

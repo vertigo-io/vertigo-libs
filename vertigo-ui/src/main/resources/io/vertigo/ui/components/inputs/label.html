@@ -14,7 +14,7 @@
 	</q-field>
 </th:block> 
 
-<th:block th:fragment="label-read(object,field, overidedLabel, other_attrs)" vu:alias="label" vu:selector="${viewMode=='read'}" 
+<th:block th:fragment="label-read(object, field, label, other_attrs)" vu:alias="label" vu:selector="${viewMode=='read'}" 
 	 th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
  	 th:assert="${object} != null and ${field} != null">
 	<q-field

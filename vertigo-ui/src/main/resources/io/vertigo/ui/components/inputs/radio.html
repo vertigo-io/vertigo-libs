@@ -4,17 +4,18 @@
 	<vu:include-data object="${object}" field="${field}"/>
 	<vu:include-data object="${list}" field="${myValueField}"/>
 	<vu:include-data object="${list}" field="${myLabelField}"/>
-	<vu:label-edit object="${object}" field="${field}" label="${label}">
+	<vu:label-edit object="${object}" field="${field}" label="${label}" th:attr="__${label_attrs}__">
 		<q-option-group
 			th::inline="${inline}"
 		    type="radio"
 		   	th:v-model="|vueData.${object}.${field}|" 
 			th::options="|transformListForSelection('${list}', '${myValueField}', '${myLabelField}')|"
+			th:attr="__${input_attrs}__"
 		 ></q-option-group>
 	</vu:label-edit>
 	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
 </th:block> 
 
 <th:block th:fragment="radio-read(object, field, label, list, valueField, labelField, layout, label_attrs, input_attrs)" vu:alias="radio" vu:selector="${viewMode=='read'}" >
-	<vu:select-read object="${object}" field="${field}" label="${label}" list="${list}" valueField="${valueField}" labelField="${labelField}" th:attr="__${label_attrs+', '+input_attrs}__"/>
+	<vu:select-read object="${object}" field="${field}" label="${label}" list="${list}" valueField="${valueField}" labelField="${labelField}" />
 </th:block>

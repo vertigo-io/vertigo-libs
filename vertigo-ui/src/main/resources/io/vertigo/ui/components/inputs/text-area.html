@@ -1,8 +1,8 @@
-<th:block th:fragment="text-area-edit(object, field, label_attrs, input_attrs)" 
+<th:block th:fragment="text-area-edit(object, field, label, label_attrs, input_attrs)" 
 	vu:alias="text-area" vu:selector="${viewMode=='edit'}"
 	th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}"/>
-	<vu:label-edit th:attr="__${label_attrs}__">
+	<vu:label-edit label="${label}" th:attr="__${label_attrs}__">
 		<q-input 
 			type="textarea"
 			inverted
@@ -13,11 +13,11 @@
 		</q-input>
 	</vu:label-edit>
 </th:block>
-<th:block th:fragment="text-area-read(object, field, label_attrs, input_attrs)" 
+<th:block th:fragment="text-area-read(object, field, label, label_attrs, input_attrs)" 
 	vu:alias="text-area" vu:selector="${viewMode=='read'}"
 	th:assert="${object} != null and ${field} != null" >
 	<vu:include-data object="${object}" field="${field}"/>
-	<vu:label-read th:attr="__${label_attrs}__">
+	<vu:label-read label="${label}" th:attr="__${label_attrs}__">
 		<q-input 
 			type="textarea"
 			:readonly="true"
