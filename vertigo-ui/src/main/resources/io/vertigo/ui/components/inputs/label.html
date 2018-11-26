@@ -1,8 +1,9 @@
-<th:block th:fragment="label-edit(object,field, overidedLabel, other_attrs)" vu:alias="label" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="label-edit(object,field, label, other_attrs)" vu:alias="label" vu:selector="${viewMode=='edit'}"
+		th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
 		th:assert="${object} != null and ${field} != null">
 	<q-field
 		th::label-width="${overridedLabelWidth?:3}"
-		th:label="${overidedLabel?:model.util.label(object + '.' + field)}"
+		th:label="${myLabel}"
 		th::error="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__')}"
 		th:error-label="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__') ? uiMessageStack.objectFieldErrors[__${object}__][__${field}__] : ''}"
 		th::warning="${uiMessageStack.hasFieldWarnings('__${object}__', '__${field}__')}"
@@ -14,10 +15,11 @@
 </th:block> 
 
 <th:block th:fragment="label-read(object,field, overidedLabel, other_attrs)" vu:alias="label" vu:selector="${viewMode=='read'}" 
+	 th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
  	 th:assert="${object} != null and ${field} != null">
 	<q-field
 		th::label-width="${overridedLabelWidth?:3}"
-		th:label="${overidedLabel?:model.util.label(object + '.' + field)}"
+		th:label="${myLabel}"
 		orientation="vertical"
 		th:attr="__${other_attrs}__"
 		>

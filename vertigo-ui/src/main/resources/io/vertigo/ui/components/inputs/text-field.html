@@ -1,8 +1,8 @@
-<th:block th:fragment="text-field-edit(object, field, label_attrs, input_attrs)" 
+<th:block th:fragment="text-field-edit(object, field, label, label_attrs, input_attrs)" 
 	vu:alias="text-field" vu:selector="${viewMode=='edit'}"
 	th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}"/>
-	<vu:label-edit th:attr="__${label_attrs}__">
+	<vu:label-edit label=${label} th:attr="__${label_attrs}__">
 		<q-input 
 			th:v-model="${'vueData.' + object + '.' + field}" 
 			th:name="${'vContext['+object+']['+ field +']'}"
@@ -11,10 +11,10 @@
 		</q-input>
 	</vu:label-edit>
 </th:block>
-<th:block th:fragment="text-field-read(object, field, label_attrs, input_attrs)" 
+<th:block th:fragment="text-field-read(object, field, label, label_attrs, input_attrs)" 
 	vu:alias="text-field" vu:selector="${viewMode=='read'}"
 	th:assert="${object} != null and ${field} != null" >
-	<vu:label-read th:attr="__${label_attrs}__">
+	<vu:label-read label=${label} th:attr="__${label_attrs}__" >
 		<span th:text="${model.vContext[__${object}__][__${field}__]}" th:attr="__${input_attrs}__"></span>
 	</vu:label-read>
 </th:block>
