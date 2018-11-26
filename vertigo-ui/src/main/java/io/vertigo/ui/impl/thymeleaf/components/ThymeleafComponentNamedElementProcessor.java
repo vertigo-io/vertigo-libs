@@ -250,11 +250,14 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 	private static Object encodeAttributeValue(final Object attributeValue) {
 		if (attributeValue == null) {
 			return "${true}";
+		} else if ("".equals(attributeValue)) {
+			return "''";
 		} else if (attributeValue instanceof String
-				&& !((String) attributeValue).equalsIgnoreCase("true")
+				&& !((String) attributeValue).equalsIgnoreCase("true") //not boolean
 				&& !((String) attributeValue).equalsIgnoreCase("false")
-				&& ((String) attributeValue).matches("^[a-zA-Z]+[^$#|]*")) {
-			return "'" + attributeValue + "'";
+				&& (((String) attributeValue).matches("^[a-zA-Z\\s]+[^$#|]*") //almost text
+						|| "".equals(((String) attributeValue).trim()))) { //or empty
+			return "'" + attributeValue + "'"; //escape as text
 		}
 		return attributeValue;
 	}
