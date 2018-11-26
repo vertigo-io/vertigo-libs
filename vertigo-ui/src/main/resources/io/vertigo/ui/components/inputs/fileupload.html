@@ -2,7 +2,7 @@
 	th:assert="${object} != null and ${field} != null"
 	th:with="uploaderRef='uploader'+${object}+'_'+${field}" >
 	<vu:include-data object="${object}" field="${field}" th:if="${protectValue!=true}"/>
-	<vu:include-data-protected object="person" field="picturefileIdTmp" th:if="${protectValue}"/>
+	<vu:include-data-protected object="${object}" field="|${field}|" th:if="${protectValue}"/>
 		
 	<vu:label-edit label="${label}" th:attr="__${label_attrs}__">
 		<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
@@ -16,7 +16,7 @@
 	</vu:label-edit>
 </th:block>
 
-<th:block th:fragment="fileupload-ctx(url, object, field, label, label_attrs, input_attrs)" 
+<th:block th:fragment="fileupload(url, object, field, label_attrs, input_attrs)" 
 	th:assert="${object} != null and ${field} != null"
 	th:with="uploaderRef='uploader'+${object}+'_'+${field}" >
 	<vu:label-edit label="${label}" th:attr="__${label_attrs}__">
