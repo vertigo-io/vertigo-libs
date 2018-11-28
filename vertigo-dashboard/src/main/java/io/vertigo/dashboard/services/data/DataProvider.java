@@ -23,6 +23,10 @@ import java.util.List;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.core.component.Component;
+import io.vertigo.database.timeseries.ClusteredMeasure;
+import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.TimeFilter;
+import io.vertigo.database.timeseries.TimedDatas;
 
 public interface DataProvider extends Component {
 

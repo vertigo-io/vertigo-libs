@@ -33,27 +33,28 @@ import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.health.HealthMeasure;
 import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
 import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.dashboard.services.data.ClusteredMeasure;
-import io.vertigo.dashboard.services.data.DataFilter;
 import io.vertigo.dashboard.services.data.DataProvider;
-import io.vertigo.dashboard.services.data.TimeFilter;
-import io.vertigo.dashboard.services.data.TimedDatas;
+import io.vertigo.database.timeseries.ClusteredMeasure;
+import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.TimeFilter;
+import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
+import io.vertigo.database.timeseries.TimedDatas;
 import io.vertigo.lang.Assertion;
 
 public final class DataProviderImpl implements DataProvider {
 
-	private final DataProviderPlugin dataProviderPlugin;
+	private final TimeSeriesDataBaseManager timeSeriesDataBaseManager;
 	private final String appName;
 
 	@Inject
 	public DataProviderImpl(
 			@Named("appName") final Optional<String> appNameOpt,
-			final DataProviderPlugin dataProviderPlugin) {
+			final TimeSeriesDataBaseManager timeSeriesDataBaseManager) {
 		Assertion.checkNotNull(appNameOpt);
-		Assertion.checkNotNull(dataProviderPlugin);
+		Assertion.checkNotNull(timeSeriesDataBaseManager);
 		//---
 		appName = appNameOpt.orElse(Home.getApp().getConfig().getNodeConfig().getAppName());
-		this.dataProviderPlugin = dataProviderPlugin;
+		this.timeSeriesDataBaseManager = timeSeriesDataBaseManager;
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public final class DataProviderImpl implements DataProvider {
 		Assertion.checkNotNull(dataFilter);
 		Assertion.checkNotNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
-		return dataProviderPlugin.getTimeSeries(appName, measures, dataFilter, timeFilter);
+		return timeSeriesDataBaseManager.getTimeSeries(appName, measures, dataFilter, timeFilter);
 
 	}
 
@@ -79,22 +80,22 @@ public final class DataProviderImpl implements DataProvider {
 		//we use the natural order
 		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
 		//---
-		return dataProviderPlugin.getClusteredTimeSeries(appName, clusteredMeasure, dataFilter, timeFilter);
+		return timeSeriesDataBaseManager.getClusteredTimeSeries(appName, clusteredMeasure, dataFilter, timeFilter);
 	}
 
 	@Override
 	public TimedDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean keepTime, final String... groupBy) {
-		return dataProviderPlugin.getTabularData(appName, measures, dataFilter, timeFilter, keepTime, groupBy);
+		return timeSeriesDataBaseManager.getTabularData(appName, measures, dataFilter, timeFilter, keepTime, groupBy);
 	}
 
 	@Override
 	public TimedDatas getTops(final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
-		return dataProviderPlugin.getTops(appName, measure, dataFilter, timeFilter, groupBy, maxRows);
+		return timeSeriesDataBaseManager.getTops(appName, measure, dataFilter, timeFilter, groupBy, maxRows);
 	}
 
 	@Override
 	public List<String> getTagValues(final String measurement, final String tag) {
-		return dataProviderPlugin.getTagValues(appName, measurement, tag);
+		return timeSeriesDataBaseManager.getTagValues(appName, measurement, tag);
 	}
 
 	@Override

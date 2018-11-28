@@ -22,11 +22,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.vertigo.dashboard.services.data.ClusteredMeasure;
-import io.vertigo.dashboard.services.data.DataFilter;
 import io.vertigo.dashboard.services.data.DataProvider;
-import io.vertigo.dashboard.services.data.TimeFilter;
-import io.vertigo.dashboard.services.data.TimedDatas;
+import io.vertigo.database.timeseries.ClusteredMeasure;
+import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.TimeFilter;
+import io.vertigo.database.timeseries.TimedDatas;
 import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;

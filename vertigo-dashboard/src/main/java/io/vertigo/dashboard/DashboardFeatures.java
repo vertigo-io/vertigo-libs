@@ -21,7 +21,6 @@ package io.vertigo.dashboard;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.dashboard.impl.services.data.DataProviderImpl;
-import io.vertigo.dashboard.plugins.data.influxdb.InfluxDbDataProviderPlugin;
 import io.vertigo.dashboard.services.data.DataProvider;
 import io.vertigo.dashboard.webservices.DashboardDataProviderWebServices;
 
@@ -35,15 +34,6 @@ public class DashboardFeatures extends Features {
 
 	public DashboardFeatures withAppName(final String appName) {
 		myAppName = appName;
-		return this;
-	}
-
-	public DashboardFeatures withInfluxDb(final String host, final String user, final String password) {
-		getModuleConfigBuilder()
-				.addPlugin(InfluxDbDataProviderPlugin.class,
-						Param.of("host", host),
-						Param.of("user", user),
-						Param.of("password", password));
 		return this;
 	}
 

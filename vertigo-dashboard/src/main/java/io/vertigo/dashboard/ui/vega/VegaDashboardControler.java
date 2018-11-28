@@ -22,10 +22,10 @@ import java.util.Arrays;
 import java.util.Map;
 
 import io.vertigo.app.App;
-import io.vertigo.dashboard.services.data.DataFilter;
-import io.vertigo.dashboard.services.data.TimeFilter;
-import io.vertigo.dashboard.services.data.TimedDatas;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
+import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.TimeFilter;
+import io.vertigo.database.timeseries.TimedDatas;
 import io.vertigo.lang.VUserException;
 
 public final class VegaDashboardControler extends AbstractDashboardModuleControler {
