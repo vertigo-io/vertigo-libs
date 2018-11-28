@@ -33,6 +33,8 @@ import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
+import io.vertigo.ledger.services.LedgerTransactionPriorityEnum;
+
 final class EthereumTransfer extends Transfer {
 
 	private static final BigInteger GAS_UNIT_PER_BIT = BigInteger.valueOf(68L);
@@ -43,7 +45,7 @@ final class EthereumTransfer extends Transfer {
 
 	/**
 	 *
-	 * Given the duration required to execute a transaction, asyncronous execution is strongly
+	 * Given the duration required to execute a transaction, asynchronous execution is strongly
 	 * recommended via {@link Transfer#sendFunds(String, BigDecimal, Convert.Unit)}.
 	 *
 	 * @param toAddress
@@ -58,9 +60,11 @@ final class EthereumTransfer extends Transfer {
 	 * @throws TransactionException
 	 */
 	private TransactionReceipt send(
-			final String toAddress, final BigDecimal value, final Convert.Unit unit, final String message) throws IOException, TransactionException {
+			final String toAddress, final BigDecimal value, final Convert.Unit unit, final String message, final LedgerTransactionPriorityEnum priority) throws IOException, TransactionException {
 
-		final BigInteger gasPrice = requestCurrentGasPrice();
+		final BigDecimal currentGasPrice = new BigDecimal(requestCurrentGasPrice());
+		final BigDecimal pmille = BigDecimal.valueOf(priority.getPermille());
+		final BigInteger gasPrice = currentGasPrice.multiply(pmille).divide(BigDecimal.valueOf(1000)).toBigInteger();
 
 		final int messageLength = message.length();
 		final BigInteger bitSize = BigInteger.valueOf(messageLength % 2 == 0 ? messageLength / 2 : messageLength / 2 + 1);
@@ -142,9 +146,10 @@ final class EthereumTransfer extends Transfer {
 			final String toAddress,
 			final BigDecimal value,
 			final Convert.Unit unit,
-			final String message) {
+			final String message,
+			final LedgerTransactionPriorityEnum priority) {
 		final TransactionManager transactionManager = new RawTransactionManager(web3j, credentials);
-		return new RemoteCall<>(() -> new EthereumTransfer(web3j, transactionManager).send(toAddress, value, unit, message));
+		return new RemoteCall<>(() -> new EthereumTransfer(web3j, transactionManager).send(toAddress, value, unit, message, priority));
 	}
 
 }

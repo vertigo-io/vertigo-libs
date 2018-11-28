@@ -50,6 +50,7 @@ import io.vertigo.lang.WrappedException;
 import io.vertigo.ledger.impl.services.LedgerPlugin;
 import io.vertigo.ledger.services.LedgerAddress;
 import io.vertigo.ledger.services.LedgerTransaction;
+import io.vertigo.ledger.services.LedgerTransactionPriorityEnum;
 import rx.Subscription;
 
 /**
@@ -117,21 +118,27 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 		} catch (InterruptedException | ExecutionException e) {
 			throw WrappedException.wrap(e);
 		}
+
+		if (balance.hasError()) {
+			throw new VSystemException(balance.getError().getMessage());
+		}
+
 		return balance.getBalance();
 	}
 
 	@Override
 	public void sendData(final String data) {
-		sendData(data, defaultDestPublicAddr);
+		sendData(data, defaultDestPublicAddr, LedgerTransactionPriorityEnum.FAST);
 	}
 
-	public void sendData(final String data, final LedgerAddress destinationAdr) {
+	public void sendData(final String data, final LedgerAddress destinationAdr, final LedgerTransactionPriorityEnum priority) {
 		Assertion.checkArgNotEmpty(data);
 		Assertion.checkNotNull(destinationAdr);
+		Assertion.checkNotNull(priority);
 		//---
 		try {
 			final TransactionReceipt transactionReceipt = EthereumTransfer.sendFunds(web3j, credentials, destinationAdr.getPublicAddress(),
-					BigDecimal.valueOf(0), Convert.Unit.WEI, data)
+					BigDecimal.valueOf(0), Convert.Unit.WEI, data, priority)
 					.send();
 
 			if (!transactionReceipt.isStatusOK()) {
