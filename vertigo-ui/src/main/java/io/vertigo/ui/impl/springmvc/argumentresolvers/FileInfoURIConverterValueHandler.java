@@ -34,6 +34,7 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
@@ -92,8 +93,10 @@ public final class FileInfoURIConverterValueHandler extends AbstractMessageConve
 		if (!isOptional) {
 			Assertion.checkNotNull(fileUriProtected, "Parameter {0} wasnt't found in Request.", requestParam.value());
 			return ProtectedValueUtil.readProtectedValue(fileUriProtected, Serializable.class);
+		} else if (!StringUtils.isEmpty(fileUriProtected)) {
+			return Optional.of(ProtectedValueUtil.readProtectedValue(fileUriProtected, Serializable.class));
 		} else {
-			return Optional.ofNullable(ProtectedValueUtil.readProtectedValue(fileUriProtected, Serializable.class));
+			return Optional.empty();
 		}
 	}
 
