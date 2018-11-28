@@ -42,6 +42,7 @@
 		<module>vertigo-dashboard</module>
 		<module>vertigo-ui</module>
 		<module>vertigo-ledger</module>
+		<module>vertigo-iot</module>
 	</modules>
 
 	<scm>
