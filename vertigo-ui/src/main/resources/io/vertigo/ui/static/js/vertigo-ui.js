@@ -153,11 +153,12 @@ var VUi = {
 					this.$refs[uploaderRef].upload()
 				},				
 				uploadedFileToField : function(event, object, field) {
-					console.log('uploadedFileToField')
 					vueData[object][field] = event.xhr.response
 				},
+				uploadedFileToComponent : function(event, componentId) {
+					componentStates[componentId].fileUri = event.xhr.response
+				},
 				uploadedFileToCtx : function(event) {
-					console.log('uploadedFileToCtx')
 					vueData.CTX = JSON.parse(event.xhr.response).CTX
 				},
 				
