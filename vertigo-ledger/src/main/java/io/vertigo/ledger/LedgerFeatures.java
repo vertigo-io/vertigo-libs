@@ -33,32 +33,14 @@ import io.vertigo.ledger.services.LedgerManager;
  */
 public final class LedgerFeatures extends Features {
 
-	private int myQueueSizeThreshold = 10;
-	private int myAutoFlushPeriod = 60;
+	private final int myQueueSizeThreshold = 10;
+	private final int myAutoFlushPeriod = 60;
 
 	/**
 	 * Constructor.
 	 */
 	public LedgerFeatures() {
 		super("x-ledger");
-	}
-
-	/**
-	 *
-	 * @return  the feature
-	 */
-	public LedgerFeatures withQueueSizeThreshold(final int queueSizeThreshold) {
-		myQueueSizeThreshold = queueSizeThreshold;
-		return this;
-	}
-
-	/**
-	 *
-	 * @return  the feature
-	 */
-	public LedgerFeatures withAutoFlushPeriod(final int autoFlushPeriod) {
-		myAutoFlushPeriod = autoFlushPeriod;
-		return this;
 	}
 
 	/**
@@ -76,9 +58,7 @@ public final class LedgerFeatures extends Features {
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
 				.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
-				.addComponent(LedgerManager.class, LedgerManagerImpl.class,
-						Param.of("queueSizeThreshold", String.valueOf(myQueueSizeThreshold)),
-						Param.of("autoFlushPeriod", String.valueOf(myAutoFlushPeriod)));
+				.addComponent(LedgerManager.class, LedgerManagerImpl.class);
 	}
 
 }
