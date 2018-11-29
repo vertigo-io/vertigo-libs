@@ -50,7 +50,6 @@ public class LedgerManagerEthereumTest {
 		LOGGER.info("Bob ETH Balance before : " + ledgerManager.getBalance(bobLedgerAddress));
 
 		ledgerManager.sendData(messageToAlice);
-		ledgerManager.flush();
 		//Thread.sleep(120_000);
 
 		LOGGER.info("My ETH Balance after: " + ledgerManager.getMyBalance());

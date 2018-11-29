@@ -33,11 +33,6 @@ public interface LedgerManager extends Manager {
 	String sendData(String data);
 
 	/**
-	 * Force the buffer to be written on the ledger
-	 */
-	void flush();
-
-	/**
 	 * Get the current balance of the provided address
 	 * @param addr
 	 * @return

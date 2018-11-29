@@ -43,7 +43,6 @@ import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Convert;
 
-import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
@@ -68,8 +67,6 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 	private final LedgerAddress defaultDestPublicAddr;
 	private final LedgerAddress myPublicAddr;
 
-	private final EventBusManager eventBusManager;
-
 	@Inject
 	public EthereumLedgerPlugin(
 			@Named("urlRpcEthNode") final String urlRpcEthNode,
@@ -78,17 +75,14 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 			@Named("defaultDestAccountName") final String defaultDestAccountName,
 			@Named("defaultDestPublicAddr") final String defaultDestPublicAddr,
 			@Named("walletPassword") final String walletPassword,
-			@Named("walletPath") final String walletPath,
-			final EventBusManager eventBusManager) {
+			@Named("walletPath") final String walletPath) {
 		Assertion.checkArgNotEmpty(myAccountName);
 		Assertion.checkArgNotEmpty(myPublicAddr);
 		Assertion.checkArgNotEmpty(defaultDestAccountName);
 		Assertion.checkArgNotEmpty(defaultDestPublicAddr);
 		Assertion.checkArgNotEmpty(walletPassword);
 		Assertion.checkArgNotEmpty(walletPath);
-		Assertion.checkNotNull(eventBusManager);
 		//---
-		this.eventBusManager = eventBusManager;
 		this.myPublicAddr = new LedgerAddress(myAccountName, myPublicAddr);
 		this.defaultDestPublicAddr = new LedgerAddress(defaultDestAccountName, defaultDestPublicAddr);
 

@@ -19,26 +19,17 @@
 package io.vertigo.ledger.impl.services;
 
 import java.math.BigInteger;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bouncycastle.jcajce.provider.digest.SHA3.Digest256;
 import org.bouncycastle.jcajce.provider.digest.SHA3.DigestSHA3;
 
-import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 import io.vertigo.ledger.services.LedgerAddress;
 import io.vertigo.ledger.services.LedgerManager;
 import io.vertigo.ledger.services.LedgerTransaction;
@@ -46,25 +37,16 @@ import io.vertigo.ledger.services.LedgerTransaction;
 public final class LedgerManagerImpl implements LedgerManager {
 
 	private static final Logger LOGGER = LogManager.getLogger(LedgerManagerImpl.class);
-	private final List<String> simpleBuffer = Collections.<String> synchronizedList(new ArrayList<String>());
 
 	private final LedgerPlugin ledgerPlugin;
-	private final int queueSizeThreshold;
-	private final int autoFlushPeriod;
-	private Instant startPeriodFlush = Instant.now();
 
 	private final AtomicLong subscribeNewMessagesCounter = new AtomicLong(0);
 	private final AtomicLong subscribeExistingMessagesCounter = new AtomicLong(0);
 	private final AtomicLong subscribeAllMessagesCounter = new AtomicLong(0);
 
 	@Inject
-	public LedgerManagerImpl(
-			@Named("queueSizeThreshold") final int myQueueSizeThreshold,
-			@Named("autoFlushPeriod") final int myAutoFlushPeriod,
-			final LedgerPlugin ledgerPlugin) {
+	public LedgerManagerImpl(final LedgerPlugin ledgerPlugin) {
 		this.ledgerPlugin = ledgerPlugin;
-		queueSizeThreshold = myQueueSizeThreshold;
-		autoFlushPeriod = myAutoFlushPeriod;
 	}
 
 	private static String dataToHash(final String data) {
@@ -87,45 +69,11 @@ public final class LedgerManagerImpl implements LedgerManager {
 		Assertion.checkArgNotEmpty(data);
 		//---
 		final String hash = dataToHash(data);
-		if (simpleBuffer.isEmpty()) {
-			startPeriodFlush = Instant.now();
-		}
-		simpleBuffer.add(hash);
+
+		LOGGER.info("Sending transaction to the legder... Buffer:{}", hash);
+		ledgerPlugin.sendData(hash);
+		LOGGER.info("Transaction successfully written on the legder.");
 		return hash;
-	}
-
-	@DaemonScheduled(name = "DMN_LEDGER_AUTOFLUSH", periodInSeconds = 10)
-	public void autoFlush() {
-		final Instant now = Instant.now();
-
-		if (!simpleBuffer.isEmpty() && (simpleBuffer.size() >= queueSizeThreshold || startPeriodFlush.plusSeconds(autoFlushPeriod).isBefore(now))) {
-			flush();
-		} else {
-			if (LOGGER.isDebugEnabled() && !simpleBuffer.isEmpty()) {
-				final long nextRunInSeconds = ChronoUnit.SECONDS.between(now, startPeriodFlush.plusSeconds(autoFlushPeriod));
-				LOGGER.debug("Buffer size : {}/{}, Last flush: {}, Next flush in {} seconds", simpleBuffer.size(), queueSizeThreshold, startPeriodFlush, nextRunInSeconds);
-			}
-		}
-	}
-
-	@Override
-	public void flush() {
-		String joinedData;
-		synchronized (simpleBuffer) {
-			joinedData = simpleBuffer.stream().collect(Collectors.joining());
-			simpleBuffer.clear();
-		}
-
-		try {
-			LOGGER.info("Sending transaction to the legder... Buffer:{}", joinedData);
-			ledgerPlugin.sendData(joinedData);
-			LOGGER.info("Transaction successfully written on the legder.");
-		} catch (final Exception e) {
-			LOGGER.error("Exception while sending transaction on the legder.", e);
-			throw WrappedException.wrap(e);
-		}
-
-		startPeriodFlush = Instant.now();
 	}
 
 	@Override
