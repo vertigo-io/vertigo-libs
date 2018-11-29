@@ -33,9 +33,6 @@ import io.vertigo.ledger.services.LedgerManager;
  */
 public final class LedgerFeatures extends Features {
 
-	private final int myQueueSizeThreshold = 10;
-	private final int myAutoFlushPeriod = 60;
-
 	/**
 	 * Constructor.
 	 */
