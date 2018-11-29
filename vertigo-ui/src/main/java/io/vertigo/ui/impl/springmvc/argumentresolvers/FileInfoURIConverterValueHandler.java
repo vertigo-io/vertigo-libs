@@ -18,11 +18,9 @@
  */
 package io.vertigo.ui.impl.springmvc.argumentresolvers;
 
-import java.io.Serializable;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Named;
@@ -34,7 +32,6 @@ import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
@@ -46,13 +43,18 @@ import io.vertigo.ui.core.ProtectedValueUtil;
 
 public final class FileInfoURIConverterValueHandler extends AbstractMessageConverterMethodProcessor {
 
+	private final ParameterizedTypeValueHandlerHelper<FileInfoURI> parameterizedTypeValueHandlerHelper;
+
 	public FileInfoURIConverterValueHandler() {
 		super(Collections.singletonList(new StringHttpMessageConverter(Charset.forName("utf-8"))));
+		parameterizedTypeValueHandlerHelper = new ParameterizedTypeValueHandlerHelper<>(FileInfoURI.class, FileInfoURIConverterValueHandler::toFileInfoURI);
+		parameterizedTypeValueHandlerHelper.addSupportedParameterizedType(Optional.class);
+		parameterizedTypeValueHandlerHelper.addSupportedParameterizedType(List.class);
 	}
 
 	@Override
 	public boolean supportsReturnType(final MethodParameter returnType) {
-		return FileInfoURI.class.isAssignableFrom(returnType.getParameterType());
+		return parameterizedTypeValueHandlerHelper.supportsType(returnType);
 	}
 
 	@Override
@@ -60,27 +62,15 @@ public final class FileInfoURIConverterValueHandler extends AbstractMessageConve
 		mavContainer.setRequestHandled(true);
 		final ServletServerHttpRequest inputMessage = createInputMessage(webRequest);
 		final ServletServerHttpResponse outputMessage = createOutputMessage(webRequest);
+		final String value = ProtectedValueUtil.generateProtectedValue((FileInfoURI) returnValue);
 
 		// Try even with null return value. ResponseBodyAdvice could get involved.
-		writeWithMessageConverters(ProtectedValueUtil.generateProtectedValue((FileInfoURI) returnValue), returnType, inputMessage, outputMessage);
+		writeWithMessageConverters(value, returnType, inputMessage, outputMessage);
 	}
 
 	@Override
 	public boolean supportsParameter(final MethodParameter parameter) {
-		Class<?> parameterClazz = parameter.getParameterType();
-		if (Optional.class.isAssignableFrom(parameterClazz)) {
-			parameterClazz = castAsClass(((ParameterizedType) parameter.getGenericParameterType()).getActualTypeArguments()[0]); //we known that Optional has one parameterized type
-		}
-		return FileInfoURI.class.isAssignableFrom(parameterClazz);
-	}
-
-	public static Class<?> castAsClass(final Type testedType) {
-		if (testedType instanceof Class) {
-			return (Class<?>) testedType;
-		} else if (testedType instanceof ParameterizedType) {
-			return (Class<?>) ((ParameterizedType) testedType).getRawType();
-		}
-		throw new IllegalArgumentException("Parameters Type must be Class or ParameterizedType, unsupported type:" + testedType);
+		return parameterizedTypeValueHandlerHelper.supportsType(parameter);
 	}
 
 	@Override
@@ -89,15 +79,12 @@ public final class FileInfoURIConverterValueHandler extends AbstractMessageConve
 		final Named requestParam = parameter.getParameterAnnotation(Named.class);
 		Assertion.checkNotNull(requestParam, "Parameter name wasnt't found. Use @Named('myFileParam') in your controller.");
 		final String fileUriProtected = request.getParameter(requestParam.value());
-		final boolean isOptional = Optional.class.isAssignableFrom(parameter.getParameterType());
-		if (!isOptional) {
-			Assertion.checkNotNull(fileUriProtected, "Parameter {0} wasnt't found in Request.", requestParam.value());
-			return ProtectedValueUtil.readProtectedValue(fileUriProtected, Serializable.class);
-		} else if (!StringUtils.isEmpty(fileUriProtected)) {
-			return Optional.of(ProtectedValueUtil.readProtectedValue(fileUriProtected, Serializable.class));
-		} else {
-			return Optional.empty();
-		}
+
+		return parameterizedTypeValueHandlerHelper.convert(fileUriProtected, parameter);
+	}
+
+	private static FileInfoURI toFileInfoURI(final String requestValue) {
+		return ProtectedValueUtil.readProtectedValue(requestValue, FileInfoURI.class);
 	}
 
 	/**
