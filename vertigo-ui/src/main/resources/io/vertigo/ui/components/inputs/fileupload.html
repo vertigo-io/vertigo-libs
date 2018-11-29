@@ -1,42 +1,15 @@
-<th:block th:fragment="fileupload-field(url, object, field, label, protectValue, label_attrs, input_attrs)"
-	th:assert="${object} != null and ${field} != null"
-	th:with="uploaderRef='uploader'+${object}+'_'+${field}" >
-	<vu:include-data object="${object}" field="|${field}_uri|"/>
-	
-	<vu:label-edit label="${label}" th:attr="__${label_attrs}__">
-		<input type="hidden" th:name="|vContext[${object}][${field}_uri]|" th:v-bind:value="|vueData.${object}.${field}_uri|" />
-		<q-uploader th:url="${url}"
-			auto-expand 
-			th::ref="|'${uploaderRef}'|"  
-			th:@add="|uploadFile('${uploaderRef}')|"
-			th:@uploaded="|uploadedFileToField($event, '${object}','${field}_uri')|">
-		</q-uploader>
-	</vu:label-edit>
-</th:block>
-
-<th:block th:fragment="fileupload-key(url, key, label, protectValue, label_attrs, input_attrs)" 
+<th:block th:fragment="fileupload(url, key, multiple, label_attrs, input_attrs)" 
 	th:assert="${key} != null"
 	th:with="myComponentId='uploader'+${key}"
-	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addPrimitive('fileUri', null)}" >
+	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addList('fileUris')}" >
 		
-		<input type="hidden" th:name="|${key}|" th:v-bind:value="|componentStates.${myComponentId}.fileUri|" />
+		<input type="hidden" th:name="|${key}|" th:v-bind:value="|componentStates.${myComponentId}.fileUris|" />
 		<q-uploader th:url="${url}"
-			auto-expand 
+			auto-expand 			
+			th::multiple="${multiple}"
 			th::ref="|'${myComponentId}'|"  
-			th:@add="|uploadFile('${myComponentId}')|"
-			th:@uploaded="|uploadedFileToComponent($event, '${myComponentId}')|">
+			th:@add="|uploader_uploadFile('${myComponentId}')|"
+			th:@uploaded="|uploader_uploadedFile($event, '${myComponentId}')|"
+			th:@remove:done="|uploader_removeFile($event, '${myComponentId}')|">
 		</q-uploader>
-</th:block>
-
-<th:block th:fragment="fileupload(url, object, field, label_attrs, input_attrs)" 
-	th:assert="${object} != null and ${field} != null"
-	th:with="uploaderRef='uploader'+${object}+'_'+${field}" >
-	<vu:label-edit label="${label}" th:attr="__${label_attrs}__">
-		<q-uploader th:url="${url}" :additional-fields="[{'name':'CTX', 'value':vueData.CTX}]" 
-			auto-expand 
-			th::ref="|'${uploaderRef}'|" 
-			th:@add="|uploadFile('${uploaderRef}')|"
-			@uploaded="uploadedFileToCtx">
-		</q-uploader>
-	</vu:label-edit>
 </th:block>

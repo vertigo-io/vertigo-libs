@@ -149,19 +149,30 @@ var VUi = {
 					componentStates[componentId].pagination.rowsPerPage = componentStates[componentId].pagination.rowsPerPage / showMoreCount * (showMoreCount + 1);
 				},
 				
-				uploadFile : function(uploaderRef) {
-					this.$refs[uploaderRef].upload()
-				},				
-				uploadedFileToField : function(event, object, field) {
-					vueData[object][field] = event.xhr.response
-				},
-				uploadedFileToComponent : function(event, componentId) {
-					componentStates[componentId].fileUri = event.xhr.response
-				},
-				uploadedFileToCtx : function(event) {
-					vueData.CTX = JSON.parse(event.xhr.response).CTX
-				},
-				
+				uploader_uploadFile : function(componentId) {
+						this.$refs[componentId].upload()
+					},				
+				uploader_uploadedFile : function(file, componentId) {
+						componentStates[componentId].fileUris.push(file.xhr.response);
+						file.fileUri = file.xhr.response;
+					},
+				uploader_removeFile : function(removedFile, componentId) {
+						var component = this.$refs[componentId];
+						var componentFileUris = componentStates[componentId].fileUris;
+						var indexOfFileUri = componentFileUris.indexOf(removedFile.fileUri);
+						var xhrParams = {};
+						xhrParams[component.name] = removedFile.fileUri;
+						this.$http.delete(component.url, {params : xhrParams, credentials:component.withCredentials})
+						.then( response => { //Ok
+							if (component.multiple) {
+								componentFileUris.splice(indexOfFileUri, 1);
+							} else {
+								componentFileUris.splice(0);
+							}
+						}, response => { //Ko
+							this.$q.notify(response.status + ":" +response.statusText+ " Can't remove temporary file");
+						});
+						
+					},
 			  }
-			  
 	}
