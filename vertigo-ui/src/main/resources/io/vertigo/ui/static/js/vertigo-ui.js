@@ -163,13 +163,13 @@ var VUi = {
 						var xhrParams = {};
 						xhrParams[component.name] = removedFile.fileUri;
 						this.$http.delete(component.url, {params : xhrParams, credentials:component.withCredentials})
-						.then( response => { //Ok
+						.then( function (response) { //Ok
 							if (component.multiple) {
 								componentFileUris.splice(indexOfFileUri, 1);
 							} else {
 								componentFileUris.splice(0);
 							}
-						}, response => { //Ko
+						}, function(response) { //Ko
 							this.$q.notify(response.status + ":" +response.statusText+ " Can't remove temporary file");
 						});
 						
