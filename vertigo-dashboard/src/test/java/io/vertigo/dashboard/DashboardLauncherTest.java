@@ -66,6 +66,7 @@ public class DashboardLauncherTest extends AbstractTestCaseJU4 {
 								Param.of("dataBaseClass", H2DataBase.class.getCanonicalName()),
 								Param.of("jdbcDriver", Driver.class.getCanonicalName()),
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
+						.withTimeSeriesDataBase()
 						.withInfluxDb("http://analytica.part.klee.lan.net:8086", "analytica", "kleeklee")
 						.build())
 				.addModule(new DynamoFeatures()

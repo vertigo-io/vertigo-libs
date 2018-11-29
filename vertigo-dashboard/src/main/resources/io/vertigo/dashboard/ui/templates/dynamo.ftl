@@ -13,7 +13,7 @@
 			<div class="chart chartjs polararea"
 				    data-url="data/tabular" 
 				    data-query-measures='["value:last"]'
-				     data-query-data-filter='{ "measurement": "metric", "location": "*", "name": "entityCount", "module": "*", "feature": "*" }'
+				     data-query-data-filter='{ "measurement": "metric", "filters": {"location": "*", "name": "entityCount", "module": "*", "feature": "*" }}'
 				    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
 				    data-query-group-by='feature'
 				    data-colors='GREEN2BLUE'></div> 
@@ -22,7 +22,7 @@
 			<div class="chart chartjs linechart"
 				    data-url="data/series" 
 				    data-query-measures='["value:sum"]'
-				    data-query-data-filter='{ "measurement": "metric", "location": "*", "name": "entityCount", "module": "*", "feature": "DT_PERSON" }'
+				    data-query-data-filter='{ "measurement": "metric", "filters": {"location": "*", "name": "entityCount", "module": "*", "feature": "DT_PERSON" }}'
 				    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "6h"}'
 				    data-colors='GREEN2BLUE'></div> 
 		</@module.card>  
@@ -60,7 +60,7 @@
 					   <div class="chart-panel chartjs linechart" 
 					  		data-url="data/series" 
 					  		data-query-measures='["value:median"]'
-					  		data-query-data-filter='{"measurement":"metric","name":"entityCount", "topic":"${entity.name}" ,"location":"*","topic":"*"}'
+					  		data-query-data-filter='{"measurement":"metric", "filters": {"name":"entityCount", "topic":"${entity.name}" ,"location":"*","topic":"*"}}'
 					  		data-query-time-filter='{"from" : "now() - 1w", "to" : "now()", "dim" : "6m"}' >
 					  	</div>
 				</@module.lineDetail >
