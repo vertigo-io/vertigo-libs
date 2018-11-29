@@ -22,10 +22,11 @@
 			<artifactId>vertigo-dynamo-api</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
-		<!-- MQTT -->
-		
-		<!-- /MQTT -->
-
+		<dependency>
+			<groupId>org.eclipse.paho</groupId>
+			<artifactId>org.eclipse.paho.client.mqttv3</artifactId>
+			<version>1.2.0</version>
+		</dependency>
 
 		<dependency>
 			<groupId>io.vertigo</groupId>
