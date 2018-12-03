@@ -34,9 +34,9 @@ import io.vertigo.dashboard.ui.dynamo.model.DomainModel;
 import io.vertigo.dashboard.ui.dynamo.model.EntityModel;
 import io.vertigo.dashboard.ui.dynamo.model.TaskModel;
 import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.TabularDataSerie;
+import io.vertigo.database.timeseries.TabularDatas;
 import io.vertigo.database.timeseries.TimeFilter;
-import io.vertigo.database.timeseries.TimedDataSerie;
-import io.vertigo.database.timeseries.TimedDatas;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
@@ -55,7 +55,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 	private void buildTaskModel(final App app, final Map<String, Object> model) {
 		final DataFilter dataFilter = DataFilter.builder("tasks").build();
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 1d", "now()").build();
-		final TimedDatas tabularDatas = getDataProvider().getTabularData(Arrays.asList("duration:median", "duration:count"), dataFilter, timeFilter, false, "name");
+		final TabularDatas tabularDatas = getDataProvider().getTabularData(Arrays.asList("duration:median", "duration:count"), dataFilter, timeFilter, "name");
 
 		final List<TaskModel> tasks = Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
 				.stream()
@@ -69,16 +69,16 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 
 	}
 
-	private static Double getValue(final TimedDatas tabularDatas, final String serieName, final String measureName) {
-		final Optional<TimedDataSerie> timedDataSerieOpt = tabularDatas.getTimedDataSeries()
+	private static Double getValue(final TabularDatas tabularDatas, final String serieName, final String measureName) {
+		final Optional<TabularDataSerie> tabularDataSerieOpt = tabularDatas.getTabularDataSeries()
 				.stream()
 				.filter(timedDataSerie -> timedDataSerie.getValues().containsKey("name") && measureName.equals(timedDataSerie.getValues().get("name")))
 				.findAny();
 
-		if (timedDataSerieOpt.isPresent()) {
-			final TimedDataSerie timedDataSerie = timedDataSerieOpt.get();
-			if (timedDataSerie.getValues().containsKey(serieName)) {
-				return (Double) timedDataSerie.getValues().get(serieName);
+		if (tabularDataSerieOpt.isPresent()) {
+			final TabularDataSerie tabularDataSerie = tabularDataSerieOpt.get();
+			if (tabularDataSerie.getValues().containsKey(serieName)) {
+				return (Double) tabularDataSerie.getValues().get(serieName);
 			}
 		}
 		return null;

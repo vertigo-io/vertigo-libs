@@ -25,6 +25,7 @@ import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.core.component.Component;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.TabularDatas;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.database.timeseries.TimedDatas;
 
@@ -38,9 +39,11 @@ public interface DataProvider extends Component {
 
 	List<Metric> getMetrics();
 
-	TimedDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean keepTime, final String... groupBy);
+	TabularDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy);
 
-	TimedDatas getTops(final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows);
+	TimedDatas getTabularTimedData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy);
+
+	TabularDatas getTops(final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows);
 
 	List<String> getTagValues(final String measurement, final String tag);
 

@@ -18,7 +18,6 @@
  */
 package io.vertigo.dashboard.impl.services.data;
 
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -36,6 +35,7 @@ import io.vertigo.commons.analytics.metric.Metric;
 import io.vertigo.dashboard.services.data.DataProvider;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.TabularDatas;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
 import io.vertigo.database.timeseries.TimedDatas;
@@ -84,12 +84,17 @@ public final class DataProviderImpl implements DataProvider {
 	}
 
 	@Override
-	public TimedDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean keepTime, final String... groupBy) {
-		return timeSeriesDataBaseManager.getTabularData(appName, measures, dataFilter, timeFilter, keepTime, groupBy);
+	public TimedDatas getTabularTimedData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+		return timeSeriesDataBaseManager.getTabularTimedData(appName, measures, dataFilter, timeFilter, groupBy);
 	}
 
 	@Override
-	public TimedDatas getTops(final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
+	public TabularDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+		return timeSeriesDataBaseManager.getTabularData(appName, measures, dataFilter, timeFilter, groupBy);
+	}
+
+	@Override
+	public TabularDatas getTops(final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
 		return timeSeriesDataBaseManager.getTops(appName, measure, dataFilter, timeFilter, groupBy, maxRows);
 	}
 
@@ -105,7 +110,7 @@ public final class DataProviderImpl implements DataProvider {
 		final DataFilter dataFilter = DataFilter.builder("healthcheck").build();
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
 
-		return getTabularData(measures, dataFilter, timeFilter, true, "name", "feature")
+		return getTabularTimedData(measures, dataFilter, timeFilter, "name", "feature")
 				.getTimedDataSeries()
 				.stream()
 				.map(timedDataSerie -> new HealthCheck(
@@ -113,7 +118,7 @@ public final class DataProviderImpl implements DataProvider {
 						(String) timedDataSerie.getValues().get("checker:last"),
 						(String) timedDataSerie.getValues().get("module:last"),
 						(String) timedDataSerie.getValues().get("feature:last"),
-						Instant.ofEpochMilli(timedDataSerie.getTime()),
+						timedDataSerie.getTime(),
 						buildHealthMeasure(
 								(Double) timedDataSerie.getValues().get("status:last"),
 								(String) timedDataSerie.getValues().get("message:last"))))
@@ -148,14 +153,14 @@ public final class DataProviderImpl implements DataProvider {
 		final DataFilter dataFilter = DataFilter.builder("metric").build();
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
 
-		return getTabularData(measures, dataFilter, timeFilter, true, "name", "feature")
+		return getTabularTimedData(measures, dataFilter, timeFilter, "name", "feature")
 				.getTimedDataSeries()
 				.stream()
 				.filter(timedDataSerie -> timedDataSerie.getValues().get("value:last") != null)
 				.map(timedDataSerie -> Metric.builder()
 						.withName((String) timedDataSerie.getValues().get("name:last"))
 						.withFeature((String) timedDataSerie.getValues().get("feature:last"))
-						.withMeasureInstant(Instant.ofEpochMilli(timedDataSerie.getTime()))
+						.withMeasureInstant(timedDataSerie.getTime())
 						.withValue((Double) timedDataSerie.getValues().get("value:last"))
 						.withSuccess()
 						.build())

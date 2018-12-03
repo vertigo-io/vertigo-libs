@@ -49,16 +49,17 @@ function showChart(elem) {
 		$.post(dataUrl, JSON.stringify(dataQuery) , "json")      
 		.done(
 		  function( datas ) {
-			  if(notEmpty(datas.timedDataSeries)) {
+			  if(notEmpty(datas.timedDataSeries) || notEmpty(datas.tabularDataSeries)) {
+				  var dataValues = datas.timedDataSeries ? datas.timedDataSeries : datas.tabularDataSeries;
 				  var dataMetrics = datas.seriesNames;
 				  if (elem.hasClass ("bignumber")) {
-					  showBigNumber(elem, datas, dataMetrics, dataQuery, dataLabels, dataIcons, dataColors);
+					  showBigNumber(elem, dataValues, dataMetrics, dataQuery, dataLabels, dataIcons, dataColors);
 				  } else if (elem.hasClass ("objective")) {
-					  showObjective(elem, datas, dataMetrics, dataQuery, dataLabels, dataIcons, dataColors);
+					  showObjective(elem, dataValues, dataMetrics, dataQuery, dataLabels, dataIcons, dataColors);
 				  } else if (elem.hasClass ("healthMonitor")) {
-					  showHealthMonitor(elem, datas, dataMetrics, dataQuery, dataLabels, dataIcons, dataColors);
+					  showHealthMonitor(elem, dataValues, dataMetrics, dataQuery, dataLabels, dataIcons, dataColors);
 				  } else if (elem.hasClass ("chartjs")) {
-					  showChartJsChart(elem, datas.timedDataSeries, dataMetrics, dataQuery, dataLabels, dataColors, additionalOptions);
+					  showChartJsChart(elem, dataValues, dataMetrics, dataQuery, dataLabels, dataColors, additionalOptions);
 				  }
 			  }
 		  });

@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import io.vertigo.dashboard.services.data.DataProvider;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.TabularDatas;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.database.timeseries.TimedDatas;
 import io.vertigo.lang.Assertion;
@@ -66,19 +67,19 @@ public class DashboardDataProviderWebServices implements WebServices {
 	@SessionLess
 	@AnonymousAccessAllowed
 	@POST("/tabular")
-	public TimedDatas getTimedDatas(
+	public TabularDatas getTabularDatas(
 			@InnerBodyParam("measures") final List<String> measures,
 			@InnerBodyParam("dataFilter") final DataFilter dataFilter,
 			@InnerBodyParam("timeFilter") final TimeFilter timeFilter,
 			@InnerBodyParam("groupBy") final String groupBy) {
 
-		return dataProvider.getTabularData(measures, dataFilter, timeFilter, false, groupBy);
+		return dataProvider.getTabularData(measures, dataFilter, timeFilter, groupBy);
 	}
 
 	@SessionLess
 	@AnonymousAccessAllowed
 	@POST("/tabular/tops")
-	public TimedDatas getTops(
+	public TabularDatas getTops(
 			@InnerBodyParam("measures") final List<String> measures,
 			@InnerBodyParam("dataFilter") final DataFilter dataFilter,
 			@InnerBodyParam("timeFilter") final TimeFilter timeFilter,

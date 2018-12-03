@@ -258,7 +258,7 @@ function getMinMax(datas, field) {
 
 
 
-/** Conversion de données servers List<date, Map<NomMetric, value>> en données Chartjs.*/
+/** Conversion de données servers List<Instant, Map<NomMetric, value>> en données Chartjs.*/
 function toChartJsData(datas, metrics, dataLabels, timedSeries, xAxisMeasure) {
 	_endsWith = function(string, suffix) {
 	    return string.indexOf(suffix, string.length - suffix.length) !== -1;
@@ -274,7 +274,7 @@ function toChartJsData(datas, metrics, dataLabels, timedSeries, xAxisMeasure) {
 		}
 		serie.data = new Array();
 		for(var j = 0 ; j<datas.length; j++) {
-			var x = timedSeries ? datas[j].time*1000 : datas[j].values[xAxisMeasure]; // timed series by default, else categories 
+			var x = timedSeries ? Date.parse(datas[j].time) : datas[j].values[xAxisMeasure]; // timed series by default, else categories 
 			var y = datas[j].values[metric];
 			if (!$.isEmptyObject(datas[j].values) && !y) {
 				y = 0;
