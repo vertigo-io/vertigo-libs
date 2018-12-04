@@ -24,9 +24,9 @@ import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.execution.engine.TestJob2;
@@ -48,7 +48,7 @@ public class MultiNodesExecutionTest extends ExecutionTest {
 	 * Initialisation du test pour implé spécifique.
 	 * @throws Exception Erreur
 	 */
-	@BeforeClass
+	@BeforeAll
 	public static void setUpOrchestraNode() throws Exception {
 		//pour éviter le mécanisme d'attente du client lorsque le serveur est absend, on démarre le serveur puis le client
 		orchestraNode1 = startOrchestraNode(1);
@@ -59,7 +59,7 @@ public class MultiNodesExecutionTest extends ExecutionTest {
 	 * Finalisation du test pour implé spécifique.
 	 * @throws Exception Erreur
 	 */
-	@AfterClass
+	@AfterAll
 	public static void tearDownOrchestraNode() throws Exception {
 		if (orchestraNode1 != null) {
 			LOG.info("Stopping OrchestraNode1...");

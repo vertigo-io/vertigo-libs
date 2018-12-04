@@ -20,10 +20,10 @@ package io.vertigo.social.comment.services;
 
 import javax.inject.Inject;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
@@ -55,7 +55,7 @@ public class CommentManagerTest {
 
 	private UID<Account> accountURI1;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
 		DIInjector.injectMembers(this, Home.getApp().getComponentSpace());
@@ -71,7 +71,7 @@ public class CommentManagerTest {
 		keyConcept1Uri = UID.of(dtDefinition, "20");
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 		if (app != null) {
 			app.close();
@@ -88,6 +88,6 @@ public class CommentManagerTest {
 			commentServices.publish(accountURI1, comment, keyConcept1Uri);
 		}
 
-		Assert.assertEquals(10, commentServices.getComments(keyConcept1Uri).size());
+		Assertions.assertEquals(10, commentServices.getComments(keyConcept1Uri).size());
 	}
 }

@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.App;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
@@ -46,7 +46,7 @@ import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
 import io.vertigo.vega.VegaFeatures;
 
 @RunWith(JUnitPlatform.class)
-public class DashboardLauncherTest extends AbstractTestCaseJU4 {
+public class DashboardLauncherTest extends AbstractTestCaseJU5 {
 
 	@Override
 	protected AppConfig buildAppConfig() {

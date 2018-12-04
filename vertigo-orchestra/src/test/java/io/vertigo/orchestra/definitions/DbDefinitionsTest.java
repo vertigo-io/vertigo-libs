@@ -24,10 +24,10 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
+import io.vertigo.orchestra.AbstractOrchestraTestCase;
 import io.vertigo.util.MapBuilder;
 
 /**
@@ -35,7 +35,7 @@ import io.vertigo.util.MapBuilder;
  *
  * @author mlaroche.
  */
-public class DbDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
+public class DbDefinitionsTest extends AbstractOrchestraTestCase {
 	@Inject
 
 	private OrchestraDefinitionManager orchestraDefinitionManager;
@@ -44,7 +44,7 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 	public void testRegister() {
 
 		//Before : 0
-		Assert.assertEquals(0, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.SUPERVISED).size());
+		Assertions.assertEquals(0, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.SUPERVISED).size());
 
 		final Map<String, String> metadatas = new HashMap<>();
 		metadatas.put("test", "toto");
@@ -56,11 +56,11 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 		//After :1
-		Assert.assertEquals(1, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.SUPERVISED).size());
+		Assertions.assertEquals(1, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.SUPERVISED).size());
 
 		final ProcessDefinition processDefinition2 = orchestraDefinitionManager.getProcessDefinition("TEST_BASIC");
-		Assert.assertEquals(processDefinition.getName(), processDefinition2.getName());
-		Assert.assertTrue(processDefinition2.getMetadatas().containsKey("test"));
+		Assertions.assertEquals(processDefinition.getName(), processDefinition2.getName());
+		Assertions.assertTrue(processDefinition2.getMetadatas().containsKey("test"));
 	}
 	//
 
@@ -74,11 +74,11 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 		// no initialParams
-		Assert.assertTrue(orchestraDefinitionManager.getProcessDefinition("TEST_BASIC").getTriggeringStrategy().getInitialParams().isEmpty());
+		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("TEST_BASIC").getTriggeringStrategy().getInitialParams().isEmpty());
 
 		orchestraDefinitionManager.updateProcessDefinitionInitialParams("TEST_BASIC", new MapBuilder<String, String>().put("filePath", "toto/titi").build());
 		// with initialParams
-		Assert.assertTrue(!orchestraDefinitionManager.getProcessDefinition("TEST_BASIC").getTriggeringStrategy().getInitialParams().isEmpty());
+		Assertions.assertTrue(!orchestraDefinitionManager.getProcessDefinition("TEST_BASIC").getTriggeringStrategy().getInitialParams().isEmpty());
 	}
 
 	@Test
@@ -90,12 +90,12 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 		// no initialParams
-		Assert.assertTrue(!orchestraDefinitionManager.getProcessDefinition("TEST_UPDATE_CRON").getTriggeringStrategy().getCronExpression().isPresent());
+		Assertions.assertTrue(!orchestraDefinitionManager.getProcessDefinition("TEST_UPDATE_CRON").getTriggeringStrategy().getCronExpression().isPresent());
 
 		orchestraDefinitionManager.updateProcessDefinitionProperties("TEST_UPDATE_CRON", Optional.of("*/15 * * * * ?"), processDefinition.getTriggeringStrategy().isMultiExecution(),
 				processDefinition.getTriggeringStrategy().getRescuePeriod(),
 				processDefinition.isActive());
 		// with initialParams
-		Assert.assertTrue(orchestraDefinitionManager.getProcessDefinition("TEST_UPDATE_CRON").getTriggeringStrategy().getCronExpression().isPresent());
+		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("TEST_UPDATE_CRON").getTriggeringStrategy().getCronExpression().isPresent());
 	}
 }

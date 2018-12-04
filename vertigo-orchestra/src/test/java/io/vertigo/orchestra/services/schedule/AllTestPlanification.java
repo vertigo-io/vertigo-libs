@@ -18,9 +18,9 @@
  */
 package io.vertigo.orchestra.services.schedule;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * TODO : Description de la classe.
@@ -28,10 +28,11 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author mlaroche.
  * @version $Id$
  */
-@RunWith(Suite.class)
-@SuiteClasses(value = {
-		PlanificationServicesTest.class
-})
+@RunWith(JUnitPlatform.class)
+@SelectClasses(
+		value = {
+				PlanificationServicesTest.class
+		})
 public class AllTestPlanification {
 	// Les annotations sont suffisantes.
 }

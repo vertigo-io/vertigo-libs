@@ -34,7 +34,7 @@ public final class PublisherMergerTest extends AbstractPublisherMergerTest {
 	}
 
 	@Override
-	protected AppConfig getAppConfig() {
+	protected AppConfig buildAppConfig() {
 		return MyAppConfig.config();
 	}
 }

@@ -22,21 +22,30 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.rules.MyAppConfig;
 
 /**
- * 
+ *
  * @author xdurand
  *
  */
-public class DbTest {
+public class DbTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private VTransactionManager transactionManager;
 
 	private VTransactionWritable transaction;
 
+	@Override
+	protected AppConfig buildAppConfig() {
+		return MyAppConfig.config();
+	}
+
+	@Override
 	protected void doSetUp() {
 		Assert.assertFalse("the previous test hasn't correctly close its transaction.",
 				transactionManager.hasCurrentTransaction());
@@ -44,6 +53,7 @@ public class DbTest {
 		transaction = transactionManager.createCurrentTransaction();
 	}
 
+	@Override
 	protected void doTearDown() {
 		Assert.assertTrue("All tests must rollback a transaction.", transactionManager.hasCurrentTransaction());
 		// close transaction

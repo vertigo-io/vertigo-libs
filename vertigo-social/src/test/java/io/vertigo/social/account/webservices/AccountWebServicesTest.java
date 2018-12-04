@@ -21,10 +21,10 @@ package io.vertigo.social.account.webservices;
 import javax.inject.Inject;
 
 import org.apache.http.HttpStatus;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.vertigo.app.AutoCloseableApp;
@@ -50,12 +50,12 @@ public final class AccountWebServicesTest {
 		RestAssured.port = MyAppConfig.WS_PORT;
 	}
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
 	}
 
-	@Before
+	@BeforeEach
 	public void setUpInstance() {
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		//-----
@@ -65,7 +65,7 @@ public final class AccountWebServicesTest {
 		mockIdentities.initData();
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() {
 		if (app != null) {
 			app.close();

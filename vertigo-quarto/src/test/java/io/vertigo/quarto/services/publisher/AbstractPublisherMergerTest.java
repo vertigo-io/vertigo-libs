@@ -27,18 +27,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.App;
-import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.Home;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.file.model.VFile;
@@ -60,7 +53,7 @@ import io.vertigo.quarto.services.publisher.model.PublisherNode;
  *
  * @author npiedeloup
  */
-public abstract class AbstractPublisherMergerTest {
+public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 	private static final boolean KEEP_OUTPUT_FILE = false;
 	//Répertoire de test
 	private static String OUTPUT_PATH = "c:/tmp/";
@@ -71,40 +64,6 @@ public abstract class AbstractPublisherMergerTest {
 	private PublisherManager publisherManager;
 	@Inject
 	private ResourceManager resourceManager;
-
-	private AutoCloseableApp app;
-
-	/**
-	 * Set up de l'environnement de test.
-	 *
-	 * @throws Exception exception
-	 */
-	@BeforeEach
-	@Before
-	public final void setUp() throws Exception {
-		app = new AutoCloseableApp(getAppConfig());
-		// On injecte les comosants sur la classe de test.
-		DIInjector.injectMembers(this, app.getComponentSpace());
-	}
-
-	protected final App getApp() {
-		return app;
-	}
-
-	/**
-	 * Tear down de l'environnement de test.
-	 *
-	 * @throws Exception Exception
-	 */
-	@AfterEach
-	@After
-	public final void tearDown() throws Exception {
-		if (app != null) {
-			app.close();
-		}
-	}
-
-	protected abstract AppConfig getAppConfig();
 
 	/**
 	 * @return Extension du model utilisé
@@ -123,7 +82,7 @@ public abstract class AbstractPublisherMergerTest {
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 	}
 
 	@Test
@@ -139,18 +98,20 @@ public abstract class AbstractPublisherMergerTest {
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testMergerErrorModel() {
-		final PublisherMock reportData = createTestPublisher();
-		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
-		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
-		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelError." + getExtension());
-		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionError." + getExtension(), modelFileURL, publisherData);
-		nop(result);
-		Assert.fail("La fusion ne doit pas être possible quand le modèle contient une erreur");
+		Assertions.assertThrows(IllegalStateException.class, () -> {
+			final PublisherMock reportData = createTestPublisher();
+			final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
+			PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
+			final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelError." + getExtension());
+			final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionError." + getExtension(), modelFileURL, publisherData);
+			nop(result);
+			Assertions.fail("La fusion ne doit pas être possible quand le modèle contient une erreur");
+		});
 	}
 
 	@Test
@@ -164,7 +125,7 @@ public abstract class AbstractPublisherMergerTest {
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 	}
 
 	@Test
@@ -177,7 +138,7 @@ public abstract class AbstractPublisherMergerTest {
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 	}
 
 	@Test
@@ -217,7 +178,7 @@ public abstract class AbstractPublisherMergerTest {
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 	}
 
 	@Test
@@ -242,7 +203,7 @@ public abstract class AbstractPublisherMergerTest {
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 	}
 
 	@Test
@@ -257,7 +218,7 @@ public abstract class AbstractPublisherMergerTest {
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 	}
 
 	//	/**
@@ -336,10 +297,10 @@ public abstract class AbstractPublisherMergerTest {
 
 	private static PublisherData createPublisherData(final String definitionName) {
 		final PublisherDataDefinition publisherDataDefinition = Home.getApp().getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
-		Assert.assertNotNull(publisherDataDefinition);
+		Assertions.assertNotNull(publisherDataDefinition);
 
 		final PublisherData publisherData = new PublisherData(publisherDataDefinition);
-		Assert.assertNotNull(publisherData);
+		Assertions.assertNotNull(publisherData);
 
 		return publisherData;
 	}
@@ -352,7 +313,4 @@ public abstract class AbstractPublisherMergerTest {
 		}
 	}
 
-	private static final void nop(final Object o) {
-		// rien
-	}
 }

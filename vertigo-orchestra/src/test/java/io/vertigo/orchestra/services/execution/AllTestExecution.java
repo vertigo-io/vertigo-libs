@@ -18,9 +18,9 @@
  */
 package io.vertigo.orchestra.services.execution;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * TODO : Description de la classe.
@@ -28,12 +28,13 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author mlaroche.
  * @version $Id$
  */
-@RunWith(Suite.class)
-@SuiteClasses(value = {
-		ExecutionTest.class,
-		LocalExecutionTest.class,
-		MultiNodesExecutionTest.class
-})
+@RunWith(JUnitPlatform.class)
+@SelectClasses(
+		value = {
+				ExecutionTest.class,
+				LocalExecutionTest.class,
+				MultiNodesExecutionTest.class
+		})
 public class AllTestExecution {
 	// Les annotations sont suffisantes.
 }

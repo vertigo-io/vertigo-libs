@@ -16,24 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.rules;
+package io.vertigo.social.notification.services;
 
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.platform.suite.api.SelectClasses;
-import org.junit.runner.RunWith;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.social.MyAppConfig;
 
-import io.vertigo.rules.services.RuleServicesSelectorTest;
-import io.vertigo.rules.services.RuleServicesValidatorTest;
+public final class MemoryNotificationServicesTest extends AbstractNotificationServicesTest {
 
-/**
- *
- * @author pchretien
- */
-@RunWith(JUnitPlatform.class)
-@SelectClasses({
-		RuleServicesSelectorTest.class,
-		RuleServicesValidatorTest.class
-})
-public final class RuleTestSuite {
-	//
+	@Override
+	protected AppConfig buildAppConfig() {
+		return MyAppConfig.config(false);
+	}
+
 }

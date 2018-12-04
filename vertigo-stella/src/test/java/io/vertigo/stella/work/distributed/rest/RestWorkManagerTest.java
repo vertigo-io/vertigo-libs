@@ -26,8 +26,8 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.stella.master.MasterManager;
 import io.vertigo.stella.work.AbstractWorkManagerTest;
@@ -98,7 +98,7 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 			masterManager.schedule(slowWork, SlowWorkEngine.class, workResultHanlder);
 		}
 		final boolean firstsFinished = workResultHanlder.waitFinish(5, 5 * 1000);
-		Assert.assertTrue("First 5 works should finished before 5s, to test deadnode failover", firstsFinished);
+		Assertions.assertTrue(firstsFinished, "First 5 works should finished before 5s, to test deadnode failover");
 		//On stop le client1 avec des jobs en cours. Ils doivent être redispatchés après détection des noeuds morts
 		clientNode1.stop();
 		LOG.info("Stop ClientNode 1 : " + workResultHanlder.toString());
@@ -108,8 +108,8 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		try {
 			final boolean finished = workResultHanlder.waitFinish(20, 35 * 1000); //Le timeout des nodes est configuré à 20s
 			LOG.info(workResultHanlder);
-			Assert.assertEquals(null, workResultHanlder.getLastThrowable());
-			Assert.assertTrue(finished);
+			Assertions.assertEquals(null, workResultHanlder.getLastThrowable());
+			Assertions.assertTrue(finished);
 		} finally {
 			clientNode2.stop();
 		}

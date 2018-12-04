@@ -26,9 +26,9 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
@@ -42,7 +42,7 @@ import io.vertigo.util.TempFile;
  *
  * @author npiedeloup
  */
-public final class RemoteConverterManagerTest extends AbstractTestCaseJU4 {
+public final class RemoteConverterManagerTest extends AbstractTestCaseJU5 {
 	/** Logger. */
 	private final Logger log = LogManager.getLogger(getClass());
 

@@ -2,10 +2,7 @@
 <config>
 	<module name="vertigo-labs">
 	   <component api="GeoCoderManager" class="io.vertigo.geo.impl.services.geocoder.GeoCoderManagerImpl" >
-	        <plugin class="io.vertigo.geo.plugins.geocoder.google.GoogleGeoCoderPlugin" >
-       	        <param name="proxyHost" value="172.20.170.9" />
-       	         <param name="proxyPort" value="3128" />
-	        </plugin>
+	        <plugin class="io.vertigo.geo.plugins.geocoder.google.GoogleGeoCoderPlugin" />
 	    </component>
     </module>
 </config>

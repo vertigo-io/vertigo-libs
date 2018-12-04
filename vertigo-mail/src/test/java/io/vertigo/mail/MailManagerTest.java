@@ -20,10 +20,10 @@ package io.vertigo.mail;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
@@ -34,7 +34,7 @@ import io.vertigo.lang.VUserException;
  *
  * @author npiedeloup
  */
-public final class MailManagerTest extends AbstractTestCaseJU4 {
+public final class MailManagerTest extends AbstractTestCaseJU5 {
 	//private static final String DT_MAIL = "Direction Technique<direction.technique@kleegroup.com>";
 	//private static final String NPI_MAIL = "Nicolas Piedeloup<npiedeloup@kleegroup.com>";
 	private static final String DT_MAIL = "Direction Technique<direction.technique@yopmail.com>";
@@ -64,230 +64,264 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 				.withSubject("-1-testSimpliestCreateMail")
 				.withTextContent("test")
 				.build();
-		Assert.assertNotNull(mail);
+		Assertions.assertNotNull(mail);
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testWritableMailErrorsWithNullAddress() {
-		final String to = null;
-		final Mail mail = new MailBuilder()
-				.withSubject("-3-testWritableMailErrors")
-				.to(to)
-				.build();
-		nop(mail);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final String to = null;
+			final Mail mail = new MailBuilder()
+					.withSubject("-3-testWritableMailErrors")
+					.to(to)
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testWritableMailErrorsWithEmptyAddress() {
-		final Mail mail = new MailBuilder()
-				.withSubject("-4-testWritableMailErrors")
-				.to("")
-				.build();
-		nop(mail);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.withSubject("-4-testWritableMailErrors")
+					.to("")
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testWritableMailErrorsWithNullSubject() {
-		final Mail mail = new MailBuilder()
-				.withSubject(null).to(NPI_MAIL)
-				.build();
-		nop(mail);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.withSubject(null).to(NPI_MAIL)
+					.build();
+			nop(mail);
+		});
 
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testWritableMailErrorsWithEmptySubject() {
-		final Mail mail = new MailBuilder()
-				.withSubject("")//
-				.to(NPI_MAIL)
-				.build();
-		nop(mail);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.withSubject("")//
+					.to(NPI_MAIL)
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testWritableMailErrorsWithNullFrom() {
-		final Mail mail = new MailBuilder()//
-				.withSubject("-5-testWritableMailErrors")
-				.to(DT_MAIL)
-				.from(null)
-				.build();
-		nop(mail);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final Mail mail = new MailBuilder()//
+					.withSubject("-5-testWritableMailErrors")
+					.to(DT_MAIL)
+					.from(null)
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testWritableMailErrorsWithEmptyFrom() {
-		final Mail mail = new MailBuilder()
-				.withSubject("-5-testWritableMailErrors")
-				.to(DT_MAIL)
-				.from("")
-				.build();
-		nop(mail);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.withSubject("-5-testWritableMailErrors")
+					.to(DT_MAIL)
+					.from("")
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testWritableMailErrorsWithNullHtmlContent() {
-		final Mail mail = new MailBuilder()
-				.withSubject("-5-testWritableMailErrors")
-				.to(DT_MAIL)
-				.withHtmlContent(null)
-				.build();
-		nop(mail);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.withSubject("-5-testWritableMailErrors")
+					.to(DT_MAIL)
+					.withHtmlContent(null)
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testWritableMailErrorsWithEmptyHtmlContent() {
-		final Mail mail = new MailBuilder()
-				.withSubject("-5-testWritableMailErrors")
-				.to(DT_MAIL)
-				.withHtmlContent("")
-				.build();
-		nop(mail);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.withSubject("-5-testWritableMailErrors")
+					.to(DT_MAIL)
+					.withHtmlContent("")
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testWritableMailErrorsWithNullContent() {
-		final Mail mail = new MailBuilder()
-				.withSubject("-5-testWritableMailErrors")
-				.to(DT_MAIL)
-				.withTextContent(null)
-				.build();
-		nop(mail);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.withSubject("-5-testWritableMailErrors")
+					.to(DT_MAIL)
+					.withTextContent(null)
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testWritableMailErrorsWithEmptyContent() {
-		final Mail mail = new MailBuilder()
-				.withSubject("-5-testWritableMailErrors")
-				.to(DT_MAIL)
-				.withTextContent("")
-				.build();
-		nop(mail);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.withSubject("-5-testWritableMailErrors")
+					.to(DT_MAIL)
+					.withTextContent("")
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testWritableMailErrorsWithNullReply() {
-		final Mail mail = new MailBuilder()
-				.withSubject("-5-testWritableMailErrors")
-				.to(DT_MAIL)
-				.replyTo(null)
-				.build();
-		nop(mail);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.withSubject("-5-testWritableMailErrors")
+					.to(DT_MAIL)
+					.replyTo(null)
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testWritableMailErrorsWithEmptyReply() {
-		final Mail mail = new MailBuilder()
-				.withSubject("-5-testWritableMailErrors")
-				.to(DT_MAIL)
-				.to("")
-				.build();
-		nop(mail);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.withSubject("-5-testWritableMailErrors")
+					.to(DT_MAIL)
+					.to("")
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testWritableMailErrorsWithNullTo() {
-		final String to = null;
-		final Mail mail = new MailBuilder()
-				.withSubject("-5-testWritableMailErrors")
-				.to(DT_MAIL)
-				.to(to)
-				.build();
-		nop(mail);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final String to = null;
+			final Mail mail = new MailBuilder()
+					.withSubject("-5-testWritableMailErrors")
+					.to(DT_MAIL)
+					.to(to)
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testWritableMailErrorsWithEmptyTo() {
-		final Mail mail = new MailBuilder()
-				.withSubject("-5-testWritableMailErrors")
-				.to(DT_MAIL)
-				.to("")
-				.build();
-		nop(mail);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.withSubject("-5-testWritableMailErrors")
+					.to(DT_MAIL)
+					.to("")
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testWritableMailErrorsWithNullCc() {
-		final String cc = null;
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final String cc = null;
 
-		final Mail mail = new MailBuilder()
-				.withSubject("-5-testWritableMailErrors")
-				.to(DT_MAIL)
-				.cc(cc)
-				.build();
-		nop(mail);
+			final Mail mail = new MailBuilder()
+					.withSubject("-5-testWritableMailErrors")
+					.to(DT_MAIL)
+					.cc(cc)
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testWritableMailErrorsWithEmptyCc() {
-		final Mail mail = new MailBuilder()
-				.withSubject("-5-testWritableMailErrors")
-				.to(DT_MAIL)
-				.cc("")
-				.build();
-		nop(mail);
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.withSubject("-5-testWritableMailErrors")
+					.to(DT_MAIL)
+					.cc("")
+					.build();
+			nop(mail);
+		});
 	}
 
 	/**
 	 * Test les erreurs de creation de mail.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testWritableMailErrorsWithNullAttachment() {
-		final VFile files = null;
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final VFile files = null;
 
-		final Mail mail = new MailBuilder()
-				.withSubject("-5-testWritableMailErrors")
-				.to(DT_MAIL)
-				.withAttachments(files)
-				.build();
-		nop(mail);
+			final Mail mail = new MailBuilder()
+					.withSubject("-5-testWritableMailErrors")
+					.to(DT_MAIL)
+					.withAttachments(files)
+					.build();
+			nop(mail);
+		});
 	}
 
 	//	/**
@@ -299,19 +333,21 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 	//				.to(NPI_MAIL)
 	//				.withSubject("-6-testWritableMail")
 	//				.build();
-	//		Assert.assertEquals("npiedeloup@kleegroup.com", mail.getFrom());
+	//		Assertions.assertEquals("npiedeloup@kleegroup.com", mail.getFrom());
 	//	}
 
 	/**
 	 * Test l'envoi d'un mail vide.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testSendEmptyMail() {
-		final Mail mail = new MailBuilder()
-				.to(NPI_MAIL)
-				.withSubject("-7-testSendEmptyMail")
-				.build();
-		mailManager.sendMail(mail);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.to(NPI_MAIL)
+					.withSubject("-7-testSendEmptyMail")
+					.build();
+			mailManager.sendMail(mail);
+		});
 	}
 
 	/**
@@ -345,75 +381,85 @@ public final class MailManagerTest extends AbstractTestCaseJU4 {
 	/**
 	 * Test l'envoi d'un mail avec un To erroné.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testSendMailWithBadTo() {
-		final Mail mail = new MailBuilder()
-				.withSubject("-8-testWritableMailWithBadTo")
-				.to("NOT-A-EMAIL")
-				.withTextContent("Mon test en <b>TEXT</b>")
-				.build();
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.withSubject("-8-testWritableMailWithBadTo")
+					.to("NOT-A-EMAIL")
+					.withTextContent("Mon test en <b>TEXT</b>")
+					.build();
 
-		mailManager.sendMail(mail);
+			mailManager.sendMail(mail);
+		});
 	}
 
 	/**
 	 * Test l'envoi d'un mail avec un From erroné.
 	 */
-	@Test(expected = VUserException.class)
+	@Test
 	public void testSendMailWithBadFrom() {
-		final Mail mail = new MailBuilder()
-				.to(NPI_MAIL)
-				.withSubject("-9-testWritableMailWithBadFrom")
-				.from("NOT-A-EMAIL")
-				.withTextContent("Mon test en <b>TEXT</b>")
-				.build();
+		Assertions.assertThrows(VUserException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.to(NPI_MAIL)
+					.withSubject("-9-testWritableMailWithBadFrom")
+					.from("NOT-A-EMAIL")
+					.withTextContent("Mon test en <b>TEXT</b>")
+					.build();
 
-		mailManager.sendMail(mail);
+			mailManager.sendMail(mail);
+		});
 	}
 
 	/**
 	 * Test l'envoi d'un mail avec un ReplyTo erroné.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testSendMailWithBadReplyTo() {
-		final Mail mail = new MailBuilder()
-				.to(NPI_MAIL)
-				.withSubject("-10-testWritableMailWithBadReplyTo")
-				.replyTo("NOT-A-EMAIL")
-				.withTextContent("Mon test en <b>TEXT</b>")
-				.build();
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.to(NPI_MAIL)
+					.withSubject("-10-testWritableMailWithBadReplyTo")
+					.replyTo("NOT-A-EMAIL")
+					.withTextContent("Mon test en <b>TEXT</b>")
+					.build();
 
-		mailManager.sendMail(mail);
+			mailManager.sendMail(mail);
+		});
 	}
 
 	/**
 	 * Test l'envoi d'un mail avec un To erroné.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testSendMailWithBadAddTo() {
-		final Mail mail = new MailBuilder()
-				.to(NPI_MAIL)
-				.withSubject("-11-testWritableMailWithBadAddTo")
-				.to("NOT-A-EMAIL")
-				.withTextContent("Mon test en <b>TEXT</b>")
-				.build();
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.to(NPI_MAIL)
+					.withSubject("-11-testWritableMailWithBadAddTo")
+					.to("NOT-A-EMAIL")
+					.withTextContent("Mon test en <b>TEXT</b>")
+					.build();
 
-		mailManager.sendMail(mail);
+			mailManager.sendMail(mail);
+		});
 	}
 
 	/**
 	 * Test l'envoi d'un mail avec un Cc erroné.
 	 */
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testSendMailWithBadCc() {
-		final Mail mail = new MailBuilder()
-				.from(DT_MAIL)
-				.withSubject("-12-testWritableMailWithBadCc")
-				.cc("NOT-A-EMAIL")
-				.withTextContent("Mon test en <b>TEXT</b>")
-				.build();
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			final Mail mail = new MailBuilder()
+					.from(DT_MAIL)
+					.withSubject("-12-testWritableMailWithBadCc")
+					.cc("NOT-A-EMAIL")
+					.withTextContent("Mon test en <b>TEXT</b>")
+					.build();
 
-		mailManager.sendMail(mail);
+			mailManager.sendMail(mail);
+		});
 	}
 
 	/**

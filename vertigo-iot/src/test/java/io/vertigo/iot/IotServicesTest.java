@@ -22,6 +22,8 @@ import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
 import io.vertigo.iot.services.IotServices;
 
 /**
@@ -29,10 +31,15 @@ import io.vertigo.iot.services.IotServices;
  *
  * @author mlaroche
  */
-public final class IotServicesTest extends AbstractIotTest {
+public final class IotServicesTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private IotServices iotServices;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return IotTestAppConfig.config();
+	}
 
 	@Test
 	public void testAMethod() {

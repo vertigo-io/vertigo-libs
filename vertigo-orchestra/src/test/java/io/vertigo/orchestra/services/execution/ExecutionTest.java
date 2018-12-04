@@ -26,11 +26,11 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
+import io.vertigo.orchestra.AbstractOrchestraTestCase;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.domain.execution.OActivityExecution;
@@ -48,7 +48,7 @@ import io.vertigo.orchestra.util.monitoring.MonitoringServices;
  * @author mlaroche.
  * @version $Id$
  */
-public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
+public class ExecutionTest extends AbstractOrchestraTestCase {
 
 	@Inject
 	protected OrchestraDefinitionManager orchestraDefinitionManager;
@@ -77,7 +77,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 		final Long proId = processDefinition.getId();
 		// We check the save is ok
-		Assert.assertNotNull(proId);
+		Assertions.assertNotNull(proId);
 
 		// We plan right now
 		orchestraServices.getScheduler()
@@ -88,9 +88,9 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 		final DtList<OProcessPlanification> processPlanifications = monitoringServices.getPlanificationsByProId(proId);
 		// --- We check that planification is ok
-		Assert.assertEquals(1, processPlanifications.size());
+		Assertions.assertEquals(1, processPlanifications.size());
 		final OProcessPlanification processPlanification = processPlanifications.get(0);
-		Assert.assertEquals(SchedulerState.TRIGGERED.name(), processPlanification.getSstCd());
+		Assertions.assertEquals(SchedulerState.TRIGGERED.name(), processPlanification.getSstCd());
 		// We check executions
 		checkExecutions(proId, 0, 0, 1, 0);
 	}
@@ -110,12 +110,12 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 		final Long proId = processDefinition.getId();
 		// We check the save is ok
-		Assert.assertNotNull(proId);
+		Assertions.assertNotNull(proId);
 
 		Thread.sleep(1000 * 2);
 		// --- We get the first planification
 		final DtList<OProcessPlanification> processPlanifications = monitoringServices.getPlanificationsByProId(proId);
-		Assert.assertTrue(processPlanifications.size() >= 1);
+		Assertions.assertTrue(processPlanifications.size() >= 1);
 		final OProcessPlanification processPlanification = processPlanifications.get(0);
 
 		// We wait the planif
@@ -161,7 +161,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 		final Long proId = processDefinition.getId();
 		// We check the save is ok
-		Assert.assertNotNull(proId);
+		Assertions.assertNotNull(proId);
 
 		// We plan right now
 		orchestraServices.getScheduler()
@@ -249,7 +249,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 		final OActivityWorkspace activityWorkspace = monitoringServices
 				.getActivityWorkspaceByAceId(monitoringServices.getActivityExecutionsByPreId(monitoringServices.getExecutionsByProId(proId).get(0).getPreId()).get(0).getAceId(), true);
-		Assert.assertTrue(activityWorkspace.getWorkspace().contains("filePath"));
+		Assertions.assertTrue(activityWorkspace.getWorkspace().contains("filePath"));
 
 	}
 
@@ -280,7 +280,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 		final OActivityWorkspace activityWorkspace = monitoringServices
 				.getActivityWorkspaceByAceId(monitoringServices.getActivityExecutionsByPreId(monitoringServices.getExecutionsByProId(proId).get(0).getPreId()).get(0).getAceId(), true);
-		Assert.assertTrue(activityWorkspace.getWorkspace().contains("tata/tutu"));
+		Assertions.assertTrue(activityWorkspace.getWorkspace().contains("tata/tutu"));
 	}
 
 	/**
@@ -360,8 +360,8 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 		final Optional<OActivityLog> activityLog = monitoringServices
 				.getActivityLogByAceId(monitoringServices.getActivityExecutionsByPreId(monitoringServices.getExecutionsByProId(proId).get(0).getPreId()).get(0).getAceId());
-		Assert.assertTrue(activityLog.isPresent());
-		Assert.assertEquals("/testPath", activityLog.get().getAttachment());
+		Assertions.assertTrue(activityLog.isPresent());
+		Assertions.assertEquals("/testPath", activityLog.get().getAttachment());
 
 	}
 
@@ -444,9 +444,9 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 			}
 		}
 		// --- We check the counts
-		Assert.assertEquals(waitingCount, waitingPlanificationCount);
-		Assert.assertEquals(triggeredCount, triggeredPlanificationCount);
-		Assert.assertEquals(misfiredCount, misfiredPlanificationCount);
+		Assertions.assertEquals(waitingCount, waitingPlanificationCount);
+		Assertions.assertEquals(triggeredCount, triggeredPlanificationCount);
+		Assertions.assertEquals(misfiredCount, misfiredPlanificationCount);
 	}
 
 	protected void checkExecutions(final Long proId, final int waitingCount, final int runningCount, final int doneCount, final int errorCount) {
@@ -486,19 +486,19 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 				case RUNNING:
 					runningExecutionCount++;
 					// --- We check that there is one and only one activity RUNNING if the process is Running
-					Assert.assertEquals(1, countActivitiesRunning);
+					Assertions.assertEquals(1, countActivitiesRunning);
 					break;
 				case DONE:
 					doneExecutionCount++;
 					// --- We check that all activities are done if a process is done
 					for (final OActivityExecution activityExecution : activityExecutions) {
-						Assert.assertEquals(ExecutionState.DONE.name(), activityExecution.getEstCd());
+						Assertions.assertEquals(ExecutionState.DONE.name(), activityExecution.getEstCd());
 					}
 					break;
 				case ERROR:
 					errorExecutionCount++;
 					// --- We check that there is one and only one activity is ERROR
-					Assert.assertEquals(1, countActivitiesError);
+					Assertions.assertEquals(1, countActivitiesError);
 					break;
 				case SUBMITTED:
 				case PENDING:
@@ -507,10 +507,10 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 			}
 		}
 		// --- We check the counts
-		Assert.assertEquals("waiting ", waitingCount, waitingExecutionCount);
-		Assert.assertEquals("running", runningCount, runningExecutionCount);
-		Assert.assertEquals("done", doneCount, doneExecutionCount);
-		Assert.assertEquals("error", errorCount, errorExecutionCount);
+		Assertions.assertEquals(waitingCount, waitingExecutionCount, "waiting ");
+		Assertions.assertEquals(runningCount, runningExecutionCount, "running");
+		Assertions.assertEquals(doneCount, doneExecutionCount, "done");
+		Assertions.assertEquals(errorCount, errorExecutionCount, "error");
 	}
 
 	protected void checkActivityExecutions(final Long proId, final int waitingCount, final int runningCount, final int doneCount, final int errorCount) {
@@ -544,10 +544,10 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 				}
 			}
 			// --- We check the counts
-			Assert.assertEquals("waiting ", waitingCount, waitingExecutionCount);
-			Assert.assertEquals("running", runningCount, runningExecutionCount);
-			Assert.assertEquals("done", doneCount, doneExecutionCount);
-			Assert.assertEquals("error", errorCount, errorExecutionCount);
+			Assertions.assertEquals(waitingCount, waitingExecutionCount, "waiting ");
+			Assertions.assertEquals(runningCount, runningExecutionCount, "running");
+			Assertions.assertEquals(doneCount, doneExecutionCount, "done");
+			Assertions.assertEquals(errorCount, errorExecutionCount, "error");
 
 		}
 

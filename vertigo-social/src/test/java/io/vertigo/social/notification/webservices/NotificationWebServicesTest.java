@@ -26,11 +26,11 @@ import javax.inject.Inject;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.filter.session.SessionFilter;
@@ -62,13 +62,13 @@ public final class NotificationWebServicesTest {
 	@Inject
 	private NotificationServices notificationServices;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() {
 		beforeSetUp();
 		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
 	}
 
-	@Before
+	@BeforeEach
 	public void setUpInstance() {
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		//---
@@ -87,7 +87,7 @@ public final class NotificationWebServicesTest {
 				.get("/test/login?id=1");
 	}
 
-	@After
+	@AfterEach
 	public void purgeNotifications() {
 		final UID<Account> accountURI = UID.of(Account.class, "1");
 		final List<Notification> notifications = notificationServices.getCurrentNotifications(accountURI);
@@ -96,7 +96,7 @@ public final class NotificationWebServicesTest {
 		}
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() {
 		if (app != null) {
 			app.close();

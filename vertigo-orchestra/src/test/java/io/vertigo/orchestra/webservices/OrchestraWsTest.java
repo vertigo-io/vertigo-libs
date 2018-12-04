@@ -24,9 +24,9 @@ import java.util.Map;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.filter.session.SessionFilter;
@@ -56,7 +56,7 @@ public class OrchestraWsTest {
 		RestAssured.port = MyAppConfig.WS_PORT;
 	}
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() {
 		app = new AutoCloseableApp(MyAppConfig.configWithVega());
 
@@ -84,7 +84,7 @@ public class OrchestraWsTest {
 
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() {
 		if (app != null) {
 			app.close();

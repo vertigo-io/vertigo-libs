@@ -26,12 +26,10 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
 import io.vertigo.util.DateBuilder;
 
 /**
@@ -39,30 +37,14 @@ import io.vertigo.util.DateBuilder;
  * @author xdurand
  *
  */
-public class AuditManagerTest {
-
-	private AutoCloseableApp app;
+public class AuditManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private AuditManager auditManager;
 
-	/**
-	 * Setup
-	 */
-	@Before
-	public void setUp() {
-		app = new AutoCloseableApp(MyAppConfig.config());
-		DIInjector.injectMembers(this, app.getComponentSpace());
-	}
-
-	/**
-	 * Teardown
-	 */
-	@After
-	public void tearDown() {
-		if (app != null) {
-			app.close();
-		}
+	@Override
+	protected AppConfig buildAppConfig() {
+		return MyAppConfig.config();
 	}
 
 	/**

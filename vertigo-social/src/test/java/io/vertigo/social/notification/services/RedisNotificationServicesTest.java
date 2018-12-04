@@ -16,46 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.iot;
+package io.vertigo.social.notification.services;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
-import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.Home;
-import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.social.MyAppConfig;
+import redis.clients.jedis.Jedis;
 
-/**
- * Test Junit de Vertigo-iot.
- *
- * @author mlaroche.
- * @version $Id$
- */
-public abstract class AbstractIotTest {
-	private static AutoCloseableApp app;
+public final class RedisNotificationServicesTest extends AbstractNotificationServicesTest {
 
-	@BeforeAll
-	public static final void setUp() throws Exception {
-		app = new AutoCloseableApp(IotTestAppConfig.config());
-	}
-
-	@AfterAll
-	public static final void tearDown() throws Exception {
-		if (app != null) {
-			app.close();
-		}
-	}
-
-	public final void setUpInjection() throws Exception {
-		if (app != null) {
-			DIInjector.injectMembers(this, Home.getApp().getComponentSpace());
-		}
+	@Override
+	protected AppConfig buildAppConfig() {
+		return MyAppConfig.config(true);
 	}
 
 	@BeforeEach
-	public void doSetUp() throws Exception {
-		setUpInjection();
+	public void cleanUp() {
+		final RedisConnector redisConnector = getApp().getComponentSpace().resolve(RedisConnector.class);
+		try (final Jedis jedis = redisConnector.getResource()) {
+			jedis.flushAll();
+		}
 	}
-
 }

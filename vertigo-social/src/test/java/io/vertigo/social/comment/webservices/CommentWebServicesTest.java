@@ -27,10 +27,10 @@ import javax.inject.Inject;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.filter.session.SessionFilter;
@@ -69,13 +69,13 @@ public final class CommentWebServicesTest {
 	@Inject
 	private MockIdentities mockIdentities;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() {
 		beforeSetUp();
 		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
 	}
 
-	@Before
+	@BeforeEach
 	public void setUpInstance() {
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		try (final Jedis jedis = redisConnector.getResource()) {
@@ -93,7 +93,7 @@ public final class CommentWebServicesTest {
 		preTestLogin();
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() {
 		if (app != null) {
 			app.close();

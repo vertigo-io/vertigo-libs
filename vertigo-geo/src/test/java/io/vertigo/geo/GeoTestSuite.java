@@ -36,9 +36,9 @@ package io.vertigo.geo;
  * limitations under the License.
  */
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.geo.services.geocoder.google.GoogleGeoCoderManagerTest;
 
@@ -47,8 +47,8 @@ import io.vertigo.geo.services.geocoder.google.GoogleGeoCoderManagerTest;
  *
  * @author pchretien
  */
-@RunWith(Suite.class)
-@SuiteClasses({
+@RunWith(JUnitPlatform.class)
+@SelectClasses({
 		GoogleGeoCoderManagerTest.class,
 })
 public final class GeoTestSuite {

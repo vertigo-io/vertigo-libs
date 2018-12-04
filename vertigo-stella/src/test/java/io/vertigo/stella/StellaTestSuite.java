@@ -18,9 +18,9 @@
  */
 package io.vertigo.stella;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * vertigo - simple java starter
@@ -49,8 +49,8 @@ import io.vertigo.stella.work.distributed.rest.RestWorkManagerTest;
  *
  * @author pchretien
  */
-@RunWith(Suite.class)
-@SuiteClasses({
+@RunWith(JUnitPlatform.class)
+@SelectClasses({
 		RedisWorkManagerTest.class,
 		RestWorkManagerTest.class,
 })

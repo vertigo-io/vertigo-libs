@@ -22,9 +22,9 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
@@ -43,7 +43,7 @@ import io.vertigo.util.ListBuilder;
  * @author mlaroche.
  * @version $Id$
  */
-public abstract class AbstractOrchestraTestCaseJU4 {
+public abstract class AbstractOrchestraTestCase {
 	private static AutoCloseableApp app;
 
 	@Inject
@@ -51,12 +51,12 @@ public abstract class AbstractOrchestraTestCaseJU4 {
 	@Inject
 	private TaskManager taskManager;
 
-	@BeforeClass
+	@BeforeAll
 	public static final void setUp() throws Exception {
 		app = new AutoCloseableApp(MyAppConfig.config());
 	}
 
-	@AfterClass
+	@AfterAll
 	public static final void tearDown() throws Exception {
 		if (app != null) {
 			app.close();
@@ -69,7 +69,7 @@ public abstract class AbstractOrchestraTestCaseJU4 {
 		}
 	}
 
-	@Before
+	@BeforeEach
 	public void doSetUp() throws Exception {
 		setUpInjection();
 		//A chaque test on supprime tout

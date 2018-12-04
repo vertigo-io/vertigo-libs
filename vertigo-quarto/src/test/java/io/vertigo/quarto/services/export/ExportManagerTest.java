@@ -20,9 +20,9 @@ package io.vertigo.quarto.services.export;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.file.model.VFile;
@@ -39,7 +39,7 @@ import io.vertigo.quarto.services.export.model.ExportFormat;
  *
  * @author dchallas
  */
-public final class ExportManagerTest extends AbstractTestCaseJU4 {
+public final class ExportManagerTest extends AbstractTestCaseJU5 {
 	// Répertoire de test
 	private static String OUTPUT_PATH = "c:/tmp/";
 

@@ -18,9 +18,9 @@
  */
 package io.vertigo.orchestra.services.schedule;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
+import io.vertigo.orchestra.AbstractOrchestraTestCase;
 
 /**
  * TODO : Description de la classe.
@@ -28,7 +28,7 @@ import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
  * @author mlaroche.
  * @version $Id$
  */
-public class PlanificationServicesTest extends AbstractOrchestraTestCaseJU4 {
+public class PlanificationServicesTest extends AbstractOrchestraTestCase {
 
 	/**
 	 * @throws InterruptedException

@@ -18,9 +18,9 @@
  */
 package io.vertigo.quarto;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.quarto.plugins.publisher.docx.DOCXProcessorTest;
 import io.vertigo.quarto.services.converter.remote.RemoteConverterManagerTest;
@@ -34,8 +34,8 @@ import io.vertigo.quarto.services.publisher.standard.PublisherManagerTest;
  *
  * @author pchretien
  */
-@RunWith(Suite.class)
-@SuiteClasses({
+@RunWith(JUnitPlatform.class)
+@SelectClasses({
 		PublisherManagerTest.class,
 		DOCXProcessorTest.class,
 		io.vertigo.quarto.services.publisher.docx.PublisherMergerTest.class,

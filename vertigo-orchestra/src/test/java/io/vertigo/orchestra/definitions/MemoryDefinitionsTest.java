@@ -20,17 +20,17 @@ package io.vertigo.orchestra.definitions;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
+import io.vertigo.orchestra.AbstractOrchestraTestCase;
 
 /**
  * TODO : Description de la classe.
  *
  * @author mlaroche.
  */
-public class MemoryDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
+public class MemoryDefinitionsTest extends AbstractOrchestraTestCase {
 
 	@Inject
 	private OrchestraDefinitionManager orchestraDefinitionManager;
@@ -38,7 +38,7 @@ public class MemoryDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void testRegister() {
 		//Before : 4 //from LocalExecutionProcessInitializer
-		Assert.assertEquals(4, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
+		Assertions.assertEquals(4, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
 
 		final ProcessDefinition processDefinition = ProcessDefinition.builder("PRO_TEST_BASIC", "TEST BASIC")
 				.withProcessType(ProcessType.UNSUPERVISED)
@@ -47,10 +47,10 @@ public class MemoryDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 		//After : 4 + 1
-		Assert.assertEquals(5, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
+		Assertions.assertEquals(5, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
 
 		final ProcessDefinition processDefinition2 = orchestraDefinitionManager.getProcessDefinition("PRO_TEST_BASIC");
-		Assert.assertEquals(processDefinition.getName(), processDefinition2.getName());
+		Assertions.assertEquals(processDefinition.getName(), processDefinition2.getName());
 	}
 
 }

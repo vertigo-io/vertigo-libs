@@ -18,8 +18,8 @@
  */
 package io.vertigo.struts2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,11 +37,11 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -86,7 +86,7 @@ public class TestUi {
 	private static Server server;
 	private static WebDriver driver;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() throws Exception {
 		startServer();
 		driver = new JBrowserDriver(Settings.builder()
@@ -125,7 +125,7 @@ public class TestUi {
 		return scratchDir;
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() throws Exception {
 		if (server != null) {
 			server.stop();
@@ -364,7 +364,7 @@ public class TestUi {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testPostAjaxForm() throws InterruptedException {
 		testLogin();
 
@@ -379,7 +379,7 @@ public class TestUi {
 		assertEquals("Test 3", findElement(By.id("saveAjax_movie_title")).getAttribute("value"));
 		assertEquals("2 025", findElement(By.id("saveAjax_movie_year")).getAttribute("value"));
 		final String newDate = waitElement(By.cssSelector("#saveAjax > span")).getText();
-		Assert.assertNotEquals(oldDate, newDate);
+		Assertions.assertNotEquals(oldDate, newDate);
 	}
 
 	@Test
@@ -394,7 +394,7 @@ public class TestUi {
 		assertEquals("12/10/2009 15:03", findElement(By.id("saveInstant_movie_lastModified")).getAttribute("value"));
 		final String newDate = waitElement(By.cssSelector("#saveInstant > span")).getText();
 
-		Assert.assertEquals("currentZoneId Europe/Paris\nlastModified 2009-10-12T13:03:00Z", newDate);
+		Assertions.assertEquals("currentZoneId Europe/Paris\nlastModified 2009-10-12T13:03:00Z", newDate);
 	}
 
 	private String getWebElementsAsString(final List<WebElement> webElements) {

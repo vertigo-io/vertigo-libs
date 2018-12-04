@@ -23,9 +23,9 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
+import io.vertigo.orchestra.AbstractOrchestraTestCase;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.OrchestraServices;
@@ -39,7 +39,7 @@ import io.vertigo.util.DateUtil;
  * @author mlaroche.
  * @version $Id$
  */
-public class ReportingTest extends AbstractOrchestraTestCaseJU4 {
+public class ReportingTest extends AbstractOrchestraTestCase {
 
 	@Inject
 	private OrchestraServices orchestraServices;
@@ -57,7 +57,7 @@ public class ReportingTest extends AbstractOrchestraTestCaseJU4 {
 
 		final Long proId = processDefinition.getId();
 		// We check the save is ok
-		Assert.assertNotNull(proId);
+		Assertions.assertNotNull(proId);
 
 		// We plan right now
 		orchestraServices.getScheduler()
@@ -78,7 +78,7 @@ public class ReportingTest extends AbstractOrchestraTestCaseJU4 {
 		// -1h +1h
 		final ExecutionSummary executionSummary = processExecutionManager.getReport().getSummaryByDate(processDefinition, new Date(DateUtil.newDateTime().getTime() - 60 * 60 * 1000),
 				new Date(DateUtil.newDateTime().getTime() + 60 * 60 * 1000));
-		Assert.assertTrue(1 == executionSummary.getSuccessfulCount());
+		Assertions.assertTrue(1 == executionSummary.getSuccessfulCount());
 	}
 
 	/**
@@ -90,7 +90,7 @@ public class ReportingTest extends AbstractOrchestraTestCaseJU4 {
 		// ---
 		final ActivityExecution activityExecution = processExecutionManager.getReport()
 				.getActivityExecutionsByProcessExecution(processExecutionManager.getReport().getProcessExecutions(processDefinition, "", 10, 0).get(0).getPreId()).get(0);
-		Assert.assertTrue(processExecutionManager.getLogger().getActivityLogFile(activityExecution.getAceId()).isPresent());
+		Assertions.assertTrue(processExecutionManager.getLogger().getActivityLogFile(activityExecution.getAceId()).isPresent());
 	}
 
 }

@@ -23,24 +23,19 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
-import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.rules.MyAppConfig;
 import io.vertigo.rules.data.MockIdentities;
 import io.vertigo.rules.data.MyDummyDtObject;
 import io.vertigo.rules.domain.RuleFilterDefinition;
@@ -54,34 +49,11 @@ import io.vertigo.rules.domain.SelectorDefinition;
  */
 public class RuleServicesSelectorTest extends DbTest {
 
-	private AutoCloseableApp app;
-
 	@Inject
 	private RuleServices ruleServices;
 
 	@Inject
 	private MockIdentities identities;
-
-	/**
-	 * Setup
-	 */
-	@Before
-	public void setUp() {
-		app = new AutoCloseableApp(MyAppConfig.config());
-		DIInjector.injectMembers(this, app.getComponentSpace());
-		doSetUp();
-	}
-
-	/**
-	 * Teardown
-	 */
-	@After
-	public void tearDown() {
-		doTearDown();
-		if (app != null) {
-			app.close();
-		}
-	}
 
 	/**
 	 * Add/Find Rules for RulesManager

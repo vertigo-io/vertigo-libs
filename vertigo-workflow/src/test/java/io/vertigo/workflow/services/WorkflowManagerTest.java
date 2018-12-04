@@ -21,12 +21,12 @@ package io.vertigo.workflow.services;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,14 +36,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
-import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.app.config.AppConfig;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.impl.workflow.ItemStorePlugin;
 import io.vertigo.rules.domain.RuleConditionDefinition;
@@ -73,8 +70,6 @@ import io.vertigo.workflow.domain.model.WfWorkflowDefinition;
  */
 public class WorkflowManagerTest extends DbTest {
 
-	private AutoCloseableApp app;
-
 	@Inject
 	private WorkflowManager workflowManager;
 
@@ -84,27 +79,9 @@ public class WorkflowManagerTest extends DbTest {
 	@Inject
 	private ItemStorePlugin itemStorePlugin;
 
-	/**
-	 * @throws Exception
-	 *
-	 */
-	@Before
-	public void setUp() throws Exception {
-		app = new AutoCloseableApp(MyAppConfig.config());
-		DIInjector.injectMembers(this, app.getComponentSpace());
-		doSetUp();
-	}
-
-	/**
-	 * @throws Exception
-	 *
-	 */
-	@After
-	public void tearDown() throws Exception {
-		if (app != null) {
-			app.close();
-		}
-		doTearDown();
+	@Override
+	protected AppConfig buildAppConfig() {
+		return MyAppConfig.config();
 	}
 
 	private MyDummyDtObject createDummyDtObject(final long itemId) {

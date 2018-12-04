@@ -22,8 +22,8 @@ import java.util.Deque;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.quarto.impl.services.publisher.merger.processor.GrammarXMLBalancerProcessor;
 import io.vertigo.quarto.impl.services.publisher.merger.processor.ProcessorXMLUtil;
@@ -46,7 +46,7 @@ public final class XMLHelperTest {
 		for (int i = 0; i < xmlTest.length; i++) {
 			//log.trace("Text:" + xmlTest[i]);
 			//log.trace(", \"" + getMinimalXML(xmlTest[i]) + "\"");
-			Assert.assertEquals(xmlTestResult[i], getMinimalXML(xmlTest[i]));
+			Assertions.assertEquals(xmlTestResult[i], getMinimalXML(xmlTest[i]));
 		}
 	}
 
