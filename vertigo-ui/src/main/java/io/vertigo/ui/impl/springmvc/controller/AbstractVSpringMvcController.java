@@ -167,16 +167,6 @@ public abstract class AbstractVSpringMvcController {
 	}
 
 	/**
-	//	 * Initialisation du context.
-	//	 * Pour accepter initContext avec des paramètres de la request, il est possible de le faire avec ce code :
-	//	 * <code>
-	//	 * final RequestContainerWrapper container = new RequestContainerWrapper(ServletActionContext.getRequest());
-	//	 * MethodUtil.invoke(this, "initContext", container);
-	//	 * </code>
-	//	 */
-	//	protected abstract void initContext();
-
-	/**
 	 * Preinitialisation du context, pour ajouter les composants standard.
 	 * Si surcharger doit rappeler le super.preInitContext();
 	 */
@@ -187,20 +177,6 @@ public abstract class AbstractVSpringMvcController {
 		toModeReadOnly();
 	}
 
-	//	/**
-	//	 * Initialisation du context pour ajouter les paramètres passés par l'url.
-	//	 * Les paramètres sont préfixés par "param."
-	//	 */
-	// TODO : a garder???? (garde dans le context les paramètres initiaux pour redirect? refresh)
-	//	private static void initContextUrlParameters(final HttpServletRequest request, final ViewContext viewContext) {
-	//		String name;
-	//		for (final Enumeration<String> names = request.getParameterNames(); names.hasMoreElements();) {
-	//			name = names.nextElement();
-	//			final String fullParamName = URL_PARAM_PREFIX + name;
-	//			viewContext.publishRef(() -> fullParamName, request.getParameterValues(name));
-	//		}
-	//	}
-
 	/**
 	 * Conserve et fige le context.
 	 * Utilisé par le KActionContextStoreInterceptor.
@@ -208,14 +184,6 @@ public abstract class AbstractVSpringMvcController {
 	public final void storeContext() {
 		final ViewContext viewContext = getViewContext();
 		try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
-			//Suite à SpringMvc 2.5 : les fichiers sont des UploadedFile non sérializable.
-			//On vérifie qu'ils ont été consommés
-			//			for (final Entry<String, Serializable> contextEntry : context.entrySet()) {
-			//				if (contextEntry.getValue() instanceof UploadedFile[]) { //plus globalement !Serializable, mais on ne peut plus adapter le message
-			//					throw new VSystemException("Le fichier '{0}' a été envoyé mais pas consommé par l'action", contextEntry.getKey());
-			//					//sinon un warn, et on le retire du context ?
-			//				}
-			//			}
 			kvStoreManager.put(CONTEXT_COLLECTION_NAME, viewContext.getId(), viewContext.asMap());// we only store the underlying map
 			transactionWritable.commit();
 		}
@@ -304,26 +272,6 @@ public abstract class AbstractVSpringMvcController {
 		final ViewContext viewContext = getViewContext();
 		return FormMode.create.equals(viewContext.get(MODE_CONTEXT_KEY));
 	}
-
-	//	/**
-	//	 * @return AjaxResponseBuilder pour les requetes Ajax
-	//	 */
-	//	public final AjaxResponseBuilder createAjaxResponseBuilder() {
-	//		//TODO Voir pour l'usage de return AjaxMessage ou FileMessage
-	//		try {
-	//			response.setCharacterEncoding("UTF-8");
-	//			return new AjaxResponseBuilder(response.getWriter(), false);
-	//		} catch (final IOException e) {
-	//			throw WrappedException.wrap(e, "Impossible de récupérer la response.");
-	//		}
-	//	}
-
-	//	/**
-	//	 * @return VFileResponseBuilder pour l'envoi de fichier
-	//	 */
-	//	public final VFileResponseBuilder createVFileResponseBuilder() {
-	//		return new VFileResponseBuilder(response);
-	//	}
 
 	/**
 	 * @return Pile des messages utilisateur.
