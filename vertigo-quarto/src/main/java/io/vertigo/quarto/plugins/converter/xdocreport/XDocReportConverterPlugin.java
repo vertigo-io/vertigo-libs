@@ -77,7 +77,7 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 			try (final OutputStream out = new FileOutputStream(resultFile)) {
 				converter.convert(in, out, options);
 			}
-			return new FSFile(resultFile.getName(), ConverterFormat.PDF.getTypeMime(), resultFile);
+			return new FSFile(resultFile.getName(), ConverterFormat.PDF.getTypeMime(), resultFile.toPath());
 		} catch (final IOException | XDocConverterException e) {
 			throw WrappedException.wrap(e);
 		} finally {

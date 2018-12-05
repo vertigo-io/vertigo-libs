@@ -19,6 +19,7 @@
 package io.vertigo.struts2.core;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.apache.struts2.dispatcher.multipart.UploadedFile;
 
@@ -26,6 +27,7 @@ import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
+import io.vertigo.lang.WrappedException;
 
 /**
  * Liste des couples (clé, object) enregistrés.
@@ -76,8 +78,12 @@ public final class ContextVFiles {
 		final VFile[] vFiles = new VFile[filesRef.length];
 		for (int index = 0; index < filesRef.length; index++) {
 			final UploadedFile fileRef = filesRef[index];
-			final VFile vFile = new FSFile(filesName[index], filesContentType[index], (File) fileRef.getContent());
-			vFiles[index] = vFile;
+			try {
+				final VFile vFile = new FSFile(filesName[index], filesContentType[index], ((File) fileRef.getContent()).toPath());
+				vFiles[index] = vFile;
+			} catch (final IOException e) {
+				throw WrappedException.wrap(e, "Un des fichiers attendus ({0}) n'a pas été receptionné (idx:{1})", contextKeyFile, index);
+			}
 		}
 		action.getModel().put(contextKeyVFile, vFiles);
 		//on vide les éléments de struts (non serializable et peuvent entrainner un mauvais usage)
