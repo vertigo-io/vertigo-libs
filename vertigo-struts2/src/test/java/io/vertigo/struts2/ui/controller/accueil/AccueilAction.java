@@ -19,6 +19,8 @@
 package io.vertigo.struts2.ui.controller.accueil;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.ZoneId;
@@ -163,10 +165,11 @@ public class AccueilAction extends AbstractTestActionSupport {
 	 * Exporte l'annuaire utilisateur.
 	 * @return redirection struts
 	 * @throws IOException
+	 * @throws URISyntaxException
 	 */
 	@GET
-	public String downloadFile() throws IOException {
-		final String fullPath = getClass().getResource("/data/insee.csv").getFile();
+	public String downloadFile() throws IOException, URISyntaxException {
+		final URI fullPath = getClass().getResource("/data/insee.csv").toURI();
 		final Path localFile = Paths.get(fullPath);
 		final VFile vFile = new FSFile("insee.csv", "text/csv", localFile);
 		return createVFileResponseBuilder().send(vFile);
