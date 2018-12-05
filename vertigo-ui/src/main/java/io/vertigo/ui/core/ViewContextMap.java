@@ -378,7 +378,8 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 			final String listKeyFieldName = params.get(2);
 			final String listDisplayFieldName = params.get(3);
 
-			return (value) -> ((AbstractUiListUnmodifiable) getUiList(listKey)).getById(listKeyFieldName, value).getString(listDisplayFieldName);
+			// if value is null the transformer return null
+			return (value) -> value != null ? ((AbstractUiListUnmodifiable) getUiList(listKey)).getById(listKeyFieldName, value).getString(listDisplayFieldName) : null;
 		}
 		throw new IllegalStateException(StringUtil.format("Unsupported ValueTransformer type {0}", transformerType));
 	}
