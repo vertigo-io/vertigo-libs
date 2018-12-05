@@ -46,5 +46,14 @@
 			<artifactId>core</artifactId>
 			<version>3.5.0</version>
 		</dependency>
+		
+		<!--  tests -->
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-core</artifactId>
+			<version>${vertigo.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
