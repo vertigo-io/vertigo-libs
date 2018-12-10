@@ -257,7 +257,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 				&& !((String) attributeValue).equalsIgnoreCase("false")
 				&& (((String) attributeValue).matches("^[a-zA-Z\\s]+[^$#|]*") //almost text
 						|| "".equals(((String) attributeValue).trim()))) { //or empty
-			return "'" + attributeValue + "'"; //escape as text
+			return "'" + ((String) attributeValue).replaceAll("'", "\\'") + "'"; //escape as text
 		}
 		return attributeValue;
 	}
