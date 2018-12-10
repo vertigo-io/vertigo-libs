@@ -1,7 +1,7 @@
 package io.vertigo.orchestra.monitoring.dao.uidefinitions
 
 
-create Task TK_GET_PROCESS_BY_PRO_ID {
+create Task TK_GET_PROCESS_BY_NAME {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -15,9 +15,9 @@ create Task TK_GET_PROCESS_BY_PRO_ID {
         			pro.RESCUE_PERIOD as RESCUE_PERIOD,
         			pro.METADATAS as METADATAS
         	from o_process pro   
-        	where pro.PRO_ID = #PRO_ID#     	
+        	where pro.NAME = #NAME# and pro.ACTIVE_VERSION is true  	
 			"
-	attribute PRO_ID	 	{domain : DO_O_IDENTIFIANT		required:"true" 	inOut :"in"}
+	attribute NAME	 	{domain : DO_O_LIBELLE		required:"true" 	inOut :"in"}
 	attribute DT_O_PROCESS_UI	 	{domain : DO_DT_O_PROCESS_UI_DTO		required:"true" 	inOut :"out"}
 },
 

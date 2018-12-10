@@ -1,5 +1,5 @@
 -- ============================================================
---   SGBD      		  :  H2                     
+--   SGBD      		  :  PostgreSql                     
 -- ============================================================
 
 
@@ -59,7 +59,7 @@ create table O_ACTIVITY
     NUMBER      	 NUMERIC     	,
     MILESTONE   	 BOOL        	,
     ENGINE      	 VARCHAR(200)	,
-    PRO_ID      	 NUMERIC     	not null,
+    PRO_ID      	 NUMERIC     	,
     constraint PK_O_ACTIVITY primary key (ACT_ID)
 );
 
@@ -95,10 +95,10 @@ create table O_ACTIVITY_EXECUTION
     END_TIME    	 TIMESTAMP   	,
     ENGINE      	 VARCHAR(200)	,
     TOKEN       	 VARCHAR(100)	,
-    ACT_ID      	 NUMERIC     	not null,
-    PRE_ID      	 NUMERIC     	not null,
-    NOD_ID      	 NUMERIC     	not null,
-    EST_CD      	 VARCHAR(20) 	not null,
+    ACT_ID      	 NUMERIC     	,
+    PRE_ID      	 NUMERIC     	,
+    NOD_ID      	 NUMERIC     	,
+    EST_CD      	 VARCHAR(20) 	,
     constraint PK_O_ACTIVITY_EXECUTION primary key (ACE_ID)
 );
 
@@ -140,7 +140,7 @@ create table O_ACTIVITY_LOG
     ACL_ID      	 NUMERIC     	not null,
     LOG         	 TEXT        	,
     ATTACHMENT  	 TEXT        	,
-    ACE_ID      	 NUMERIC     	not null,
+    ACE_ID      	 NUMERIC     	,
     constraint PK_O_ACTIVITY_LOG primary key (ACL_ID)
 );
 
@@ -164,7 +164,7 @@ create table O_ACTIVITY_WORKSPACE
     ACW_ID      	 NUMERIC     	not null,
     IS_IN       	 BOOL        	not null,
     WORKSPACE   	 TEXT        	,
-    ACE_ID      	 NUMERIC     	not null,
+    ACE_ID      	 NUMERIC     	,
     constraint PK_O_ACTIVITY_WORKSPACE primary key (ACW_ID)
 );
 
@@ -232,7 +232,7 @@ create table O_PROCESS
     RESCUE_PERIOD	 NUMERIC     	not null,
     METADATAS   	 TEXT        	,
     NEED_UPDATE 	 BOOL        	not null,
-    TRT_CD      	 VARCHAR(20) 	not null,
+    TRT_CD      	 VARCHAR(20) 	,
     PRT_CD      	 VARCHAR(20) 	,
     constraint PK_O_PROCESS primary key (PRO_ID)
 );
@@ -288,7 +288,7 @@ create table O_PROCESS_EXECUTION
     CHECKED     	 BOOL        	,
     CHECKING_DATE	 TIMESTAMP   	,
     CHECKING_COMMENT	 TEXT        	,
-    PRO_ID      	 NUMERIC     	not null,
+    PRO_ID      	 NUMERIC     	,
     EST_CD      	 VARCHAR(20) 	,
     USR_ID      	 NUMERIC     	,
     constraint PK_O_PROCESS_EXECUTION primary key (PRE_ID)
@@ -332,7 +332,7 @@ create table O_PROCESS_PLANIFICATION
     PRP_ID      	 NUMERIC     	not null,
     EXPECTED_TIME	 TIMESTAMP   	,
     INITIAL_PARAMS	 TEXT        	,
-    PRO_ID      	 NUMERIC     	not null,
+    PRO_ID      	 NUMERIC     	,
     NOD_ID      	 NUMERIC     	,
     SST_CD      	 VARCHAR(20) 	,
     constraint PK_O_PROCESS_PLANIFICATION primary key (PRP_ID)
@@ -531,5 +531,30 @@ alter table O_ACTIVITY_WORKSPACE
 	references O_ACTIVITY_EXECUTION (ACE_ID);
 
 create index TKW_TKE_O_ACTIVITY_EXECUTION_FK on O_ACTIVITY_WORKSPACE (ACE_ID asc);
+
+
+
+
+insert into o_execution_state(est_cd, label) values ('WAITING', 'Waiting');
+insert into o_execution_state(est_cd, label) values ('RESERVED', 'Reserved');
+insert into o_execution_state(est_cd, label) values ('SUBMITTED', 'Submitted');
+insert into o_execution_state(est_cd, label) values ('DONE', 'Done');
+insert into o_execution_state(est_cd, label) values ('RUNNING', 'Running');
+insert into o_execution_state(est_cd, label) values ('ERROR', 'Error');
+insert into o_execution_state(est_cd, label) values ('CANCELED', 'Canceled');
+insert into o_execution_state(est_cd, label) values ('ABORTED', 'Aborted');
+insert into o_execution_state(est_cd, label) values ('PENDING', 'Pending');
+
+insert into o_scheduler_state(sst_cd, label) values ('WAITING', 'Waiting');
+insert into o_scheduler_state(sst_cd, label) values ('RESERVED', 'Reserved');
+insert into o_scheduler_state(sst_cd, label) values ('TRIGGERED', 'Triggered');
+insert into o_scheduler_state(sst_cd, label) values ('MISFIRED', 'Misfired');
+insert into o_scheduler_state(sst_cd, label) values ('CANCELED', 'Canceled');
+insert into o_scheduler_state(sst_cd, label) values ('RESCUED', 'Rescued');
+
+insert into o_process_type(prt_cd, label) values ('DUMB', 'Dumb');
+
+insert into trigger_type(trt_cd, label) values ('SCHEDULED', 'scheduled');
+insert into trigger_type(trt_cd, label) values ('MANUAL', 'manual');
 
 

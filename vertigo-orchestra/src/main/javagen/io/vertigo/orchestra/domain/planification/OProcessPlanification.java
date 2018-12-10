@@ -1,21 +1,3 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.orchestra.domain.planification;
 
 import io.vertigo.dynamo.domain.model.Entity;
@@ -88,7 +70,7 @@ public final class OProcessPlanification implements Entity {
 	public UID<OProcessPlanification> getUID() {
 		return UID.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id Planification'.
@@ -107,7 +89,7 @@ public final class OProcessPlanification implements Entity {
 	public void setPrpId(final Long prpId) {
 		this.prpId = prpId;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date d'execution prévue'.
@@ -126,7 +108,7 @@ public final class OProcessPlanification implements Entity {
 	public void setExpectedTime(final java.util.Date expectedTime) {
 		this.expectedTime = expectedTime;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
@@ -145,7 +127,7 @@ public final class OProcessPlanification implements Entity {
 	public void setInitialParams(final String initialParams) {
 		this.initialParams = initialParams;
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Processus'.
@@ -153,7 +135,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getProId() {
-		return (Long) proIdAccessor.getId();
+		return (Long)  proIdAccessor.getId();
 	}
 
 	/**
@@ -164,7 +146,7 @@ public final class OProcessPlanification implements Entity {
 	public void setProId(final Long proId) {
 		proIdAccessor.setId(proId);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Node'.
@@ -172,7 +154,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Node")
 	public Long getNodId() {
-		return (Long) nodIdAccessor.getId();
+		return (Long)  nodIdAccessor.getId();
 	}
 
 	/**
@@ -183,7 +165,7 @@ public final class OProcessPlanification implements Entity {
 	public void setNodId(final Long nodId) {
 		nodIdAccessor.setId(nodId);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'PlanificationState'.
@@ -191,7 +173,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "PlanificationState")
 	public String getSstCd() {
-		return (String) sstCdAccessor.getId();
+		return (String)  sstCdAccessor.getId();
 	}
 
 	/**
@@ -203,14 +185,14 @@ public final class OProcessPlanification implements Entity {
 		sstCdAccessor.setId(sstCd);
 	}
 
-	/**
+ 	/**
 	 * Association : Node.
 	 * @return l'accesseur vers la propriété 'Node'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.execution.ONode> node() {
 		return nodIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.execution.ONode getNode() {
 		// we keep the lazyness
@@ -221,22 +203,22 @@ public final class OProcessPlanification implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: Node.
-	 * @return URI de l'association
+	 * Retourne l'UID: Node.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.ONode> getNodeURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.ONode> getNodeUID() {
 		return nodIdAccessor.getUID();
 	}
 
-	/**
+ 	/**
 	 * Association : Processus.
 	 * @return l'accesseur vers la propriété 'Processus'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.definition.OProcess> processus() {
 		return proIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.definition.OProcess getProcessus() {
 		// we keep the lazyness
@@ -247,22 +229,22 @@ public final class OProcessPlanification implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: Processus.
-	 * @return URI de l'association
+	 * Retourne l'UID: Processus.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OProcess> getProcessusURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OProcess> getProcessusUID() {
 		return proIdAccessor.getUID();
 	}
 
-	/**
+ 	/**
 	 * Association : PlanificationState.
 	 * @return l'accesseur vers la propriété 'PlanificationState'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.OSchedulerState> planificationState() {
 		return sstCdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.referential.OSchedulerState getPlanificationState() {
 		// we keep the lazyness
@@ -273,14 +255,14 @@ public final class OProcessPlanification implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: PlanificationState.
-	 * @return URI de l'association
+	 * Retourne l'UID: PlanificationState.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OSchedulerState> getPlanificationStateURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OSchedulerState> getPlanificationStateUID() {
 		return sstCdAccessor.getUID();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

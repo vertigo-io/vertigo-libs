@@ -1,21 +1,3 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.orchestra.domain.execution;
 
 import io.vertigo.dynamo.domain.model.Entity;
@@ -92,7 +74,7 @@ public final class OProcessExecution implements Entity {
 	public UID<OProcessExecution> getUID() {
 		return UID.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id de l'execution d'un processus'.
@@ -111,7 +93,7 @@ public final class OProcessExecution implements Entity {
 	public void setPreId(final Long preId) {
 		this.preId = preId;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de début'.
@@ -130,7 +112,7 @@ public final class OProcessExecution implements Entity {
 	public void setBeginTime(final java.util.Date beginTime) {
 		this.beginTime = beginTime;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de fin'.
@@ -149,7 +131,7 @@ public final class OProcessExecution implements Entity {
 	public void setEndTime(final java.util.Date endTime) {
 		this.endTime = endTime;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Implémentation effective de l'execution'.
@@ -168,7 +150,7 @@ public final class OProcessExecution implements Entity {
 	public void setEngine(final String engine) {
 		this.engine = engine;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Pris en charge'.
@@ -187,7 +169,7 @@ public final class OProcessExecution implements Entity {
 	public void setChecked(final Boolean checked) {
 		this.checked = checked;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de prise en charge'.
@@ -206,7 +188,7 @@ public final class OProcessExecution implements Entity {
 	public void setCheckingDate(final java.util.Date checkingDate) {
 		this.checkingDate = checkingDate;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Commentaire'.
@@ -225,7 +207,7 @@ public final class OProcessExecution implements Entity {
 	public void setCheckingComment(final String checkingComment) {
 		this.checkingComment = checkingComment;
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Processus'.
@@ -233,7 +215,7 @@ public final class OProcessExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getProId() {
-		return (Long) proIdAccessor.getId();
+		return (Long)  proIdAccessor.getId();
 	}
 
 	/**
@@ -244,7 +226,7 @@ public final class OProcessExecution implements Entity {
 	public void setProId(final Long proId) {
 		proIdAccessor.setId(proId);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'ExecutionState'.
@@ -252,7 +234,7 @@ public final class OProcessExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "ExecutionState")
 	public String getEstCd() {
-		return (String) estCdAccessor.getId();
+		return (String)  estCdAccessor.getId();
 	}
 
 	/**
@@ -263,7 +245,7 @@ public final class OProcessExecution implements Entity {
 	public void setEstCd(final String estCd) {
 		estCdAccessor.setId(estCd);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'User'.
@@ -271,7 +253,7 @@ public final class OProcessExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "User")
 	public Long getUsrId() {
-		return (Long) usrIdAccessor.getId();
+		return (Long)  usrIdAccessor.getId();
 	}
 
 	/**
@@ -283,14 +265,14 @@ public final class OProcessExecution implements Entity {
 		usrIdAccessor.setId(usrId);
 	}
 
-	/**
+ 	/**
 	 * Association : ExecutionState.
 	 * @return l'accesseur vers la propriété 'ExecutionState'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> executionState() {
 		return estCdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.referential.OExecutionState getExecutionState() {
 		// we keep the lazyness
@@ -301,22 +283,22 @@ public final class OProcessExecution implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: ExecutionState.
-	 * @return URI de l'association
+	 * Retourne l'UID: ExecutionState.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OExecutionState> getExecutionStateURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OExecutionState> getExecutionStateUID() {
 		return estCdAccessor.getUID();
 	}
 
-	/**
+ 	/**
 	 * Association : Processus.
 	 * @return l'accesseur vers la propriété 'Processus'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.definition.OProcess> process() {
 		return proIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.definition.OProcess getProcess() {
 		// we keep the lazyness
@@ -327,22 +309,22 @@ public final class OProcessExecution implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: Processus.
-	 * @return URI de l'association
+	 * Retourne l'UID: Processus.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OProcess> getProcessURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OProcess> getProcessUID() {
 		return proIdAccessor.getUID();
 	}
 
-	/**
+ 	/**
 	 * Association : User.
 	 * @return l'accesseur vers la propriété 'User'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.OUser> user() {
 		return usrIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.referential.OUser getUser() {
 		// we keep the lazyness
@@ -353,14 +335,14 @@ public final class OProcessExecution implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: User.
-	 * @return URI de l'association
+	 * Retourne l'UID: User.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OUser> getUserURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OUser> getUserUID() {
 		return usrIdAccessor.getUID();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

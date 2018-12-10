@@ -1,21 +1,3 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.orchestra.domain.definition;
 
 import io.vertigo.dynamo.domain.model.Entity;
@@ -61,7 +43,7 @@ public final class OActivity implements Entity {
 	public UID<OActivity> getUID() {
 		return UID.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id Activité'.
@@ -80,7 +62,7 @@ public final class OActivity implements Entity {
 	public void setActId(final Long actId) {
 		this.actId = actId;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Nom de l'activité'.
@@ -99,7 +81,7 @@ public final class OActivity implements Entity {
 	public void setName(final String name) {
 		this.name = name;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Libellé de l'activité'.
@@ -118,7 +100,7 @@ public final class OActivity implements Entity {
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Numéro de l'activité'.
@@ -137,7 +119,7 @@ public final class OActivity implements Entity {
 	public void setNumber(final Integer number) {
 		this.number = number;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Jalon'.
@@ -156,7 +138,7 @@ public final class OActivity implements Entity {
 	public void setMilestone(final Boolean milestone) {
 		this.milestone = milestone;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Implémentation de l'activité'.
@@ -175,7 +157,7 @@ public final class OActivity implements Entity {
 	public void setEngine(final String engine) {
 		this.engine = engine;
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Processus'.
@@ -183,7 +165,7 @@ public final class OActivity implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getProId() {
-		return (Long) proIdAccessor.getId();
+		return (Long)  proIdAccessor.getId();
 	}
 
 	/**
@@ -195,14 +177,14 @@ public final class OActivity implements Entity {
 		proIdAccessor.setId(proId);
 	}
 
-	/**
+ 	/**
 	 * Association : Processus.
 	 * @return l'accesseur vers la propriété 'Processus'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.definition.OProcess> process() {
 		return proIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.definition.OProcess getProcess() {
 		// we keep the lazyness
@@ -213,14 +195,14 @@ public final class OActivity implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: Processus.
-	 * @return URI de l'association
+	 * Retourne l'UID: Processus.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OProcess> getProcessURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OProcess> getProcessUID() {
 		return proIdAccessor.getUID();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

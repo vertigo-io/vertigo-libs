@@ -1,21 +1,3 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.orchestra.domain.execution;
 
 import io.vertigo.dynamo.domain.model.Entity;
@@ -58,7 +40,7 @@ public final class OActivityLog implements Entity {
 	public UID<OActivityLog> getUID() {
 		return UID.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id du log'.
@@ -77,7 +59,7 @@ public final class OActivityLog implements Entity {
 	public void setAclId(final Long aclId) {
 		this.aclId = aclId;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Contenu du log'.
@@ -96,7 +78,7 @@ public final class OActivityLog implements Entity {
 	public void setLog(final String log) {
 		this.log = log;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Fichier joint'.
@@ -115,7 +97,7 @@ public final class OActivityLog implements Entity {
 	public void setAttachment(final String attachment) {
 		this.attachment = attachment;
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'ActivityExecution'.
@@ -123,7 +105,7 @@ public final class OActivityLog implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "ActivityExecution")
 	public Long getAceId() {
-		return (Long) aceIdAccessor.getId();
+		return (Long)  aceIdAccessor.getId();
 	}
 
 	/**
@@ -135,14 +117,14 @@ public final class OActivityLog implements Entity {
 		aceIdAccessor.setId(aceId);
 	}
 
-	/**
+ 	/**
 	 * Association : ActivityExecution.
 	 * @return l'accesseur vers la propriété 'ActivityExecution'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.execution.OActivityExecution> activityExecution() {
 		return aceIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.execution.OActivityExecution getActivityExecution() {
 		// we keep the lazyness
@@ -153,14 +135,14 @@ public final class OActivityLog implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: ActivityExecution.
-	 * @return URI de l'association
+	 * Retourne l'UID: ActivityExecution.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivityExecutionURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivityExecutionUID() {
 		return aceIdAccessor.getUID();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

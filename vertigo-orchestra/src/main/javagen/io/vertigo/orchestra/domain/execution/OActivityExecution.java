@@ -1,21 +1,3 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.orchestra.domain.execution;
 
 import io.vertigo.dynamo.domain.model.Entity;
@@ -106,7 +88,7 @@ public final class OActivityExecution implements Entity {
 	public UID<OActivityExecution> getUID() {
 		return UID.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id de l'execution d'un processus'.
@@ -125,7 +107,7 @@ public final class OActivityExecution implements Entity {
 	public void setAceId(final Long aceId) {
 		this.aceId = aceId;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de création'.
@@ -144,7 +126,7 @@ public final class OActivityExecution implements Entity {
 	public void setCreationTime(final java.util.Date creationTime) {
 		this.creationTime = creationTime;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de début'.
@@ -163,7 +145,7 @@ public final class OActivityExecution implements Entity {
 	public void setBeginTime(final java.util.Date beginTime) {
 		this.beginTime = beginTime;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de fin'.
@@ -182,7 +164,7 @@ public final class OActivityExecution implements Entity {
 	public void setEndTime(final java.util.Date endTime) {
 		this.endTime = endTime;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Implémentation effective de l'execution'.
@@ -201,7 +183,7 @@ public final class OActivityExecution implements Entity {
 	public void setEngine(final String engine) {
 		this.engine = engine;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Token d'identification'.
@@ -220,7 +202,7 @@ public final class OActivityExecution implements Entity {
 	public void setToken(final String token) {
 		this.token = token;
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Activity'.
@@ -228,7 +210,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Activity")
 	public Long getActId() {
-		return (Long) actIdAccessor.getId();
+		return (Long)  actIdAccessor.getId();
 	}
 
 	/**
@@ -239,7 +221,7 @@ public final class OActivityExecution implements Entity {
 	public void setActId(final Long actId) {
 		actIdAccessor.setId(actId);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Processus'.
@@ -247,7 +229,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getPreId() {
-		return (Long) preIdAccessor.getId();
+		return (Long)  preIdAccessor.getId();
 	}
 
 	/**
@@ -258,7 +240,7 @@ public final class OActivityExecution implements Entity {
 	public void setPreId(final Long preId) {
 		preIdAccessor.setId(preId);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'Node'.
@@ -266,7 +248,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Node")
 	public Long getNodId() {
-		return (Long) nodIdAccessor.getId();
+		return (Long)  nodIdAccessor.getId();
 	}
 
 	/**
@@ -277,7 +259,7 @@ public final class OActivityExecution implements Entity {
 	public void setNodId(final Long nodId) {
 		nodIdAccessor.setId(nodId);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'ExecutionState'.
@@ -285,7 +267,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "ExecutionState")
 	public String getEstCd() {
-		return (String) estCdAccessor.getId();
+		return (String)  estCdAccessor.getId();
 	}
 
 	/**
@@ -297,14 +279,14 @@ public final class OActivityExecution implements Entity {
 		estCdAccessor.setId(estCd);
 	}
 
-	/**
+ 	/**
 	 * Association : Activity.
 	 * @return l'accesseur vers la propriété 'Activity'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.definition.OActivity> activity() {
 		return actIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.definition.OActivity getActivity() {
 		// we keep the lazyness
@@ -315,22 +297,22 @@ public final class OActivityExecution implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: Activity.
-	 * @return URI de l'association
+	 * Retourne l'UID: Activity.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OActivity> getActivityURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OActivity> getActivityUID() {
 		return actIdAccessor.getUID();
 	}
 
-	/**
+ 	/**
 	 * Association : ExecutionState.
 	 * @return l'accesseur vers la propriété 'ExecutionState'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> executionState() {
 		return estCdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.referential.OExecutionState getExecutionState() {
 		// we keep the lazyness
@@ -341,22 +323,22 @@ public final class OActivityExecution implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: ExecutionState.
-	 * @return URI de l'association
+	 * Retourne l'UID: ExecutionState.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OExecutionState> getExecutionStateURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OExecutionState> getExecutionStateUID() {
 		return estCdAccessor.getUID();
 	}
 
-	/**
+ 	/**
 	 * Association : Node.
 	 * @return l'accesseur vers la propriété 'Node'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.execution.ONode> node() {
 		return nodIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.execution.ONode getNode() {
 		// we keep the lazyness
@@ -367,22 +349,22 @@ public final class OActivityExecution implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: Node.
-	 * @return URI de l'association
+	 * Retourne l'UID: Node.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.ONode> getNodeURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.ONode> getNodeUID() {
 		return nodIdAccessor.getUID();
 	}
 
-	/**
+ 	/**
 	 * Association : Processus.
 	 * @return l'accesseur vers la propriété 'Processus'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.execution.OProcessExecution> processusExecution() {
 		return preIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.execution.OProcessExecution getProcessusExecution() {
 		// we keep the lazyness
@@ -393,14 +375,14 @@ public final class OActivityExecution implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: Processus.
-	 * @return URI de l'association
+	 * Retourne l'UID: Processus.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.OProcessExecution> getProcessusExecutionURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.OProcessExecution> getProcessusExecutionUID() {
 		return preIdAccessor.getUID();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

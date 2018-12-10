@@ -1,21 +1,3 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.orchestra.domain.definition;
 
 import io.vertigo.dynamo.domain.model.Entity;
@@ -81,7 +63,7 @@ public final class OProcess implements Entity {
 	public UID<OProcess> getUID() {
 		return UID.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id de la definition du processus'.
@@ -100,7 +82,7 @@ public final class OProcess implements Entity {
 	public void setProId(final Long proId) {
 		this.proId = proId;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Nom du processus'.
@@ -119,7 +101,7 @@ public final class OProcess implements Entity {
 	public void setName(final String name) {
 		this.name = name;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Libellé du processus'.
@@ -138,7 +120,7 @@ public final class OProcess implements Entity {
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Expression récurrence du processus'.
@@ -157,7 +139,7 @@ public final class OProcess implements Entity {
 	public void setCronExpression(final String cronExpression) {
 		this.cronExpression = cronExpression;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
@@ -176,7 +158,7 @@ public final class OProcess implements Entity {
 	public void setInitialParams(final String initialParams) {
 		this.initialParams = initialParams;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Accepte la multi-execution'.
@@ -195,7 +177,7 @@ public final class OProcess implements Entity {
 	public void setMultiexecution(final Boolean multiexecution) {
 		this.multiexecution = multiexecution;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Version active'.
@@ -214,7 +196,7 @@ public final class OProcess implements Entity {
 	public void setActiveVersion(final Boolean activeVersion) {
 		this.activeVersion = activeVersion;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Processus actif'.
@@ -233,7 +215,7 @@ public final class OProcess implements Entity {
 	public void setActive(final Boolean active) {
 		this.active = active;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Temps de validité d'une planification'.
@@ -252,7 +234,7 @@ public final class OProcess implements Entity {
 	public void setRescuePeriod(final Integer rescuePeriod) {
 		this.rescuePeriod = rescuePeriod;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Meta-données du processus'.
@@ -271,7 +253,7 @@ public final class OProcess implements Entity {
 	public void setMetadatas(final String metadatas) {
 		this.metadatas = metadatas;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Doit être mise à jour lors du démarrage'.
@@ -290,7 +272,7 @@ public final class OProcess implements Entity {
 	public void setNeedUpdate(final Boolean needUpdate) {
 		this.needUpdate = needUpdate;
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'TriggerType'.
@@ -298,7 +280,7 @@ public final class OProcess implements Entity {
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "TriggerType")
 	public String getTrtCd() {
-		return (String) trtCdAccessor.getId();
+		return (String)  trtCdAccessor.getId();
 	}
 
 	/**
@@ -309,7 +291,7 @@ public final class OProcess implements Entity {
 	public void setTrtCd(final String trtCd) {
 		trtCdAccessor.setId(trtCd);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'ProcessType'.
@@ -317,7 +299,7 @@ public final class OProcess implements Entity {
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "ProcessType")
 	public String getPrtCd() {
-		return (String) prtCdAccessor.getId();
+		return (String)  prtCdAccessor.getId();
 	}
 
 	/**
@@ -329,14 +311,14 @@ public final class OProcess implements Entity {
 		prtCdAccessor.setId(prtCd);
 	}
 
-	/**
+ 	/**
 	 * Association : ProcessType.
 	 * @return l'accesseur vers la propriété 'ProcessType'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.OProcessType> processType() {
 		return prtCdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.referential.OProcessType getProcessType() {
 		// we keep the lazyness
@@ -347,22 +329,22 @@ public final class OProcess implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: ProcessType.
-	 * @return URI de l'association
+	 * Retourne l'UID: ProcessType.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OProcessType> getProcessTypeURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OProcessType> getProcessTypeUID() {
 		return prtCdAccessor.getUID();
 	}
 
-	/**
+ 	/**
 	 * Association : TriggerType.
 	 * @return l'accesseur vers la propriété 'TriggerType'
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.TriggerType> triggerType() {
 		return trtCdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.orchestra.domain.referential.TriggerType getTriggerType() {
 		// we keep the lazyness
@@ -373,14 +355,14 @@ public final class OProcess implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: TriggerType.
-	 * @return URI de l'association
+	 * Retourne l'UID: TriggerType.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.TriggerType> getTriggerTypeURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.TriggerType> getTriggerTypeUID() {
 		return trtCdAccessor.getUID();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
