@@ -119,9 +119,9 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		ACE_ID,
 		/** Propriété 'Libellé'. */
 		LABEL,
-		/** Propriété 'Nom du processus'. */
+		/** Propriété 'Démarrage'. */
 		BEGIN_TIME,
-		/** Propriété 'Nom du processus'. */
+		/** Propriété 'Fin'. */
 		END_TIME,
 		/** Propriété 'Durée'. */
 		EXECUTION_TIME,
@@ -271,9 +271,9 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	public enum OProcessExecutionUiFields implements DtFieldName<io.vertigo.orchestra.monitoring.domain.uiexecutions.OProcessExecutionUi> {
 		/** Propriété 'Id de l'activité'. */
 		PRE_ID,
-		/** Propriété 'Nom du processus'. */
+		/** Propriété 'Démarrage'. */
 		BEGIN_TIME,
-		/** Propriété 'Nom du processus'. */
+		/** Propriété 'Fin'. */
 		END_TIME,
 		/** Propriété 'Durée'. */
 		EXECUTION_TIME,
