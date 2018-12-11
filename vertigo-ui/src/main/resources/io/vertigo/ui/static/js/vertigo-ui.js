@@ -56,21 +56,37 @@ var VUi = {
 					this.$data.vueData[object][field] = Quasar.utils.date.formatDate(newValue, format);
 				},
 				parseDate : function (object, field, format) {
-					var parts = this.$data.vueData[object][field].match(/(\d+)/g);
+					return this.parseDateAsString(this.$data.vueData[object][field], format)
+				},
+				parseDateAsString : function (dateAsString, format) {
+					var parts = dateAsString.match(/(\d+)/g);
 					var i=0;
 					var fmt={};
 					format.replace(/(YYYY|MM|DD)/g, function(part) { fmt[part] = i++; });
 					return Quasar.utils.date.buildDate({year :parts[fmt['YYYY']], month :parts[fmt['MM']], date : parts[fmt['DD']]});
 				},
+				sortDatesAsString : function (format) {
+					return function (date1, date2) {
+						return (VUi.methods.parseDateAsString(date1, format).getTime() > VUi.methods.parseDateAsString(date2, format).getTime()) ? 1 : -1;
+					}
+				},
 				formatDateTime : function (object, field, newValue, format) {
 					this.$data.vueData[object][field] = Quasar.utils.date.formatDate(newValue, format);
 				},
 				parseDateTime : function (object, field, format) {
-					var parts = this.$data.vueData[object][field].match(/(\d+)/g);
+					return this.parseDateTimeAsString(this.$data.vueData[object][field], format);
+				},
+				parseDateTimeAsString : function (dateTimeAsString, format) {
+					var parts = dateTimeAsString.match(/(\d+)/g);
 					var i=0;
 					var fmt={};
 					format.replace(/(YYYY|MM|DD|HH|mm)/g, function(part) { fmt[part] = i++; });
 					return Quasar.utils.date.buildDate({year :parts[fmt['YYYY']], month :parts[fmt['MM']], date : parts[fmt['DD']], date : parts[fmt['DD']], hours : parts[fmt['HH']], minutes : parts[fmt['mm']]});
+				},
+				sortDateTimesAsString : function (format) {
+					return function (dateTime1, dateTime2) {
+						return (VUi.methods.parseDateTimeAsString(date1, format).getTime() > VUi.methods.parseDateTimeAsString(date2, format).getTime()) ? 1 : -1;
+					}
 				},
 				openModal : function (modalId, url, params) {
 					if (url) {
