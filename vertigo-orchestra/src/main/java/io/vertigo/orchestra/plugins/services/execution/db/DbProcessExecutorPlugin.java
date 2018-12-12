@@ -153,9 +153,12 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			executeToDo();
 			nodeManager.updateHeartbeat(nodId);
 			handleDeadNodeProcesses();
-		} catch (final Exception e) {
-			// We log the error and we continue the timer
-			LOGGER.error("Exception launching activities to executes", e);
+		} catch (final Throwable t) {
+			LOGGER.error("Exception launching activities to executes", t);
+			// if it's an interrupted we rethrow it because we are asked to stop by the jvm
+			if (t instanceof InterruptedException) {
+				throw t;
+			}
 		}
 	}
 
