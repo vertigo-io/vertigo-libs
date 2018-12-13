@@ -9,7 +9,7 @@ function showCharts() {
 
 
 function showChart(elem) {
-		var dataUrl = "/dashboard/"+getDataUrl(elem); 
+		var dataUrl = getDataUrl(elem); 
 		
 		var queryMeasures = elem.data("query-measures");
 		var queryClusteredMeasure = elem.data("query-clustered-measure");

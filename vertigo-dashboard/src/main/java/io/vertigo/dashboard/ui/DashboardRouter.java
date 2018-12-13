@@ -53,9 +53,9 @@ public final class DashboardRouter {
 	private static final Map<String, Class<? extends DashboardModuleControler>> controlerMap = new HashMap<>();
 
 	static {
-		controlerMap.put("commons", CommonsDashboardControler.class);
-		controlerMap.put("dynamo", DynamoDashboardControler.class);
-		controlerMap.put("vega", VegaDashboardControler.class);
+		controlerMap.put("vertigo-commons", CommonsDashboardControler.class);
+		controlerMap.put("vertigo-dynamo", DynamoDashboardControler.class);
+		controlerMap.put("vertigo-vega", VegaDashboardControler.class);
 	}
 
 	private final App app;
@@ -82,7 +82,7 @@ public final class DashboardRouter {
 	/**
 	 * Start method of the server
 	 */
-	public void route() {
+	public void route(final String contextName) {
 
 		Spark.get("/dashboard/static/:fileName", (request, response) -> {
 			try (InputStream inputStream = DashboardRouter.class.getResource("/static/" + request.params(":fileName")).openStream();
@@ -92,10 +92,11 @@ public final class DashboardRouter {
 			return "";
 		});
 
-		Spark.get("/dashboard", (request, response) -> {
+		Spark.get("/dashboard/", (request, response) -> {
 			final Set<String> modules = app.getConfig().getModuleConfigs().stream().map(ModuleConfig::getName).collect(Collectors.toSet());
 			final Map<String, Object> model = new HashMap<>();
 			model.put("modules", modules);
+			model.put("contextName", contextName);
 			return render(response, "templates/home.ftl", model);
 		});
 
@@ -103,7 +104,7 @@ public final class DashboardRouter {
 			final String moduleName = request.params(":moduleName");
 			final DashboardModuleControler controler = DIInjector.newInstance(controlerMap.get(moduleName), app.getComponentSpace());
 			final Map<String, Object> model = controler.buildModel(app, moduleName);
-
+			model.put("contextName", contextName);
 			return render(response, "templates/" + moduleName + ".ftl", model);
 		});
 

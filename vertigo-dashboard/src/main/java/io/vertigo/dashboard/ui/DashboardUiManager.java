@@ -16,28 +16,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dashboard;
+package io.vertigo.dashboard.ui;
 
-import io.vertigo.app.App;
-import io.vertigo.dashboard.ui.DashboardRouter;
-import spark.Spark;
+import java.util.Optional;
 
-public final class Dashboard {
+import javax.inject.Inject;
+import javax.inject.Named;
 
-	/**
-	 * Creates a new studio for an existing app
-	 * @param port the port to access the studio interface
-	 */
-	public static void port(final int port) {
-		Spark.port(port);
+import io.vertigo.app.Home;
+import io.vertigo.core.component.Activeable;
+import io.vertigo.core.component.Component;
+import io.vertigo.lang.Assertion;
+
+public final class DashboardUiManager implements Component, Activeable {
+
+	private final Optional<String> contextNameOpt;
+
+	@Inject
+	public DashboardUiManager(
+			final @Named("contextName") Optional<String> contextNameOpt) {
+		Assertion.checkNotNull(contextNameOpt);
+		//---
+		this.contextNameOpt = contextNameOpt;
 	}
 
-	/**
-	 * Start method of the server
-	 */
-	public static void start(final App app) {
-		final DashboardRouter dashboardRouter = new DashboardRouter(app);
-		dashboardRouter.route();
+	@Override
+	public void start() {
+		final DashboardRouter dashboardRouter = new DashboardRouter(Home.getApp());
+		dashboardRouter.route(contextNameOpt.orElse(""));
+	}
+
+	@Override
+	public void stop() {
+		// nothing
+
 	}
 
 }

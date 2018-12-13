@@ -13,7 +13,7 @@
 		<div class="card-deck my-3">
 				<@module.card title="WebServices' hits clustered by response time" >   
 					<div class="chart chartjs stakedbarchart"
-						    data-url="data/series/clustered" 
+						    data-url="/${contextName}/api/dashboard/data/series/clustered" 
 						    data-query-clustered-measure='{ "measure": "duration:count", "thresholds": ["10","20","50","100","200","500","1000","2000"] }'
 						    data-query-data-filter='{ "measurement": "webservices", "filters": {"location": "*", "name": "*", "module": "*", "feature": "*" }}'
 						    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1h" }'
@@ -22,7 +22,7 @@
 				</@module.card>  
 				<@module.card title="WebServices' time repartition" >
 					<div class="chart chartjs stakedbarchart" 
-					    data-url="data/series" 
+					    data-url="/${contextName}/api/dashboard/data/series" 
 					    data-query-measures='["sql_duration:mean", "search_duration:mean", "inner_duration:mean"]'
 					     data-query-data-filter='{ "measurement": "webservices", "filters": {"location": "*", "name": "*", "module": "*", "feature": "*" }}'
 					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1h"}'
@@ -33,7 +33,7 @@
 		<div class="card-deck my-3" >
 				<@module.card title="Most consumming WebServices" >
 					<div class="datatable"
-						    data-url="data/tabular/tops" 
+						    data-url="/${contextName}/api/dashboard/data/tabular/tops" 
 						    data-query-measures='["duration:sum"]'
 						   	 data-query-data-filter='{ "measurement": "webservices", "filters": {"location": "*", "name": "*", "module": "*", "feature": "*" }}'
 						    data-query-time-filter='{ "from": "now() - 1w", "to": "now()"}'
@@ -46,7 +46,7 @@
 				</@module.card> 
 				<@module.card title="Slowest WebSerices" >    
 						<div class="datatable"
-						    data-url="data/tabular/tops" 
+						    data-url="/${contextName}/api/dashboard/data/tabular/tops" 
 						    data-query-measures='["duration:mean"]'
 						   	 data-query-data-filter='{ "measurement": "webservices", "filters": {"location": "*", "name": "*", "module": "*", "feature": "*" }}'
 						    data-query-time-filter='{ "from": "now() - 1w", "to": "now()"}'
@@ -59,7 +59,7 @@
 				</@module.card> 
 				<@module.card title="WebServices' Status" >
 						<div class="chart chartjs doughnut"
-						    data-url="data/tabular" 
+						    data-url="/${contextName}/api/dashboard/data/tabular" 
 						    data-query-measures='["duration:count"]'
 						     data-query-data-filter='{ "measurement": "webservices", "filters": {"location": "*", "name": "*", "module": "*", "feature": "*" }}'
 						    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
@@ -71,7 +71,7 @@
 		<div class="card-deck my-3" >
 				<@module.card title="Database load by Webservice" >   
 				<div class="chart chartjs bubbles"
-					    data-url="data/tabular" 
+					    data-url="/${contextName}/api/dashboard/data/tabular" 
 					    data-query-measures='["duration:count", "duration:mean", "sql_count:mean"]'
 					    data-query-data-filter='{ "measurement": "webservices", "filters": {"location": "*", "name": "*", "module": "*", "feature": "*" }}'
 					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
@@ -82,7 +82,7 @@
 				</@module.card>  
 				<@module.card title="Sql Usage by Webserice" >    
 						<div class="datatable"
-						    data-url="data/tabular" 
+						    data-url="/${contextName}/api/dashboard/data/tabular" 
 						    data-query-measures='["sql_count:mean","sql_count:max", "sql_duration:sum"]'
 						   	data-query-data-filter='{ "measurement": "webservices", "filters": {"location": "*", "name": "*", "module": "*", "feature": "*" }}'
 						    data-query-time-filter='{ "from": "now() - 1w", "to": "now()"}'
@@ -99,7 +99,7 @@
 			<div class="col-6" >    
 				<@module.card title="WebServices' usage" >
 					<div class="chart chartjs linechart" 
-					    data-url="data/series" 
+					    data-url="/${contextName}/api/dashboard/data/series" 
 					    data-query-measures='["duration:median", "duration:percentile_70", "duration:percentile_90"]'
 					     data-query-data-filter='{ "measurement": "webservices", "filters": {"location": "*", "name": "*", "module": "*", "feature": "*" }}'
 					    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1h"}'

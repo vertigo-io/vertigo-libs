@@ -23,7 +23,7 @@
 					 	<@module.property 'Period' daemon.periodInSeconds+' seconds' />
 					  </@module.formGroup>
 					   <div class="chart-panel chartjs linechart" 
-					  		data-url="data/series" 
+					  		data-url="/${contextName}/api/dashboard/data/series" 
 					  		data-query-measures='["duration:median","duration:percentile_90","duration:max"]'
 					  		data-query-data-filter='{"measurement":"daemon","filters": {"name":"${daemon.name}","location":"*", "module":"*" ,"feature":"*"}}'
 					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}'

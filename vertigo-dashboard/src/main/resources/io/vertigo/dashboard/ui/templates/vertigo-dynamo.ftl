@@ -11,7 +11,7 @@
 	<div class="card-deck my-3">
 		<@module.card title="Entities volumetry" >   
 			<div class="chart chartjs polararea"
-				    data-url="data/tabular" 
+				    data-url="/${contextName}/api/dashboard/data/tabular" 
 				    data-query-measures='["value:last"]'
 				     data-query-data-filter='{ "measurement": "metric", "filters": {"location": "*", "name": "entityCount", "module": "*", "feature": "*" }}'
 				    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "1w"}'
@@ -20,7 +20,7 @@
 		</@module.card>  
 		<@module.card title="Global volumetry" >   
 			<div class="chart chartjs linechart"
-				    data-url="data/series" 
+				    data-url="/${contextName}/api/dashboard/data/series" 
 				    data-query-measures='["value:sum"]'
 				    data-query-data-filter='{ "measurement": "metric", "filters": {"location": "*", "name": "entityCount", "module": "*", "feature": "DT_PERSON" }}'
 				    data-query-time-filter='{ "from": "now() - 3d", "to": "now()", "dim": "6h"}'
@@ -58,7 +58,7 @@
 			<#list entities as entity>
 				<@module.lineDetail  type='entity' name=entity.name >
 					   <div class="chart-panel chartjs linechart" 
-					  		data-url="data/series" 
+					  		data-url="/${contextName}/api/dashboard/data/series" 
 					  		data-query-measures='["value:median"]'
 					  		data-query-data-filter='{"measurement":"metric", "filters": {"name":"entityCount", "topic":"${entity.name}" ,"location":"*","topic":"*"}}'
 					  		data-query-time-filter='{"from" : "now() - 1w", "to" : "now()", "dim" : "6m"}' >
@@ -93,7 +93,7 @@
 			<#list tasks as task>
 				<@module.lineDetail  type='task' name=task.name?replace("/", "_") >
 					   <div class="chart-panel chartjs linechart" 
-					  		data-url="/data/series" 
+					  		data-url="/${contextName}/dashboard/api/data/series" 
 					  		data-query-measures='["duration:median","duration:max"]'
 					  		data-query-data-filter='{"measurement":"tasks","name":"${task.name}","location":"*","topic":"*"}'
 					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}' >

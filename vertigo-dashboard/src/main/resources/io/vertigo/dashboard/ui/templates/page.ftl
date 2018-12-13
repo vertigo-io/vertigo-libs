@@ -8,7 +8,7 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-		<link rel="stylesheet" href="/dashboard/static/dashboard.css">
+		<link rel="stylesheet" href="/${contextName}/dashboard/static/dashboard.css">
 		
 		<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js" ></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js" ></script>
@@ -20,9 +20,9 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-color/1.0.3/d3-color.min.js" ></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/d3-interpolate/1.1.5/d3-interpolate.min.js" ></script>
 		
-		<script src="/dashboard/static/dashboard.js"></script>
-		<script src="/dashboard/static/dashboard.chartjs.js"></script>
-		<script src="/dashboard/static/dashboard.datatable.js"></script>
+		<script src="/${contextName}/dashboard/static/dashboard.js"></script>
+		<script src="/${contextName}/dashboard/static/dashboard.chartjs.js"></script>
+		<script src="/${contextName}/dashboard/static/dashboard.datatable.js"></script>
 	</head>
 	<body>
 		<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
@@ -59,17 +59,17 @@
         <nav class="bg-faded sidebar">
           <ul class="nav nav-pills flex-column">
 			<li class="nav-item">
-				<a class="nav-link ${(moduleName?? && (moduleName == 'commons'))?then('active', '')}" href="/dashboard/modules/commons" data-toggle="popover" data-placement="right" data-content="Commons">
+				<a class="nav-link ${(moduleName?? && (moduleName == 'vertigo-commons'))?then('active', '')}" href="/${contextName}/dashboard/modules/vertigo-commons" data-toggle="popover" data-placement="right" data-content="Commons">
 					<i class="material-icons">build</i>
 				</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link ${(moduleName?? && (moduleName == 'dynamo'))?then('active', '')}" href="/dashboard/modules/dynamo" data-toggle="popover" data-placement="right" data-content="Dynamo">
+				<a class="nav-link ${(moduleName?? && (moduleName == 'vertigo-dynamo'))?then('active', '')}" href="/${contextName}/dashboard/modules/vertigo-dynamo" data-toggle="popover" data-placement="right" data-content="Dynamo">
 					<i class="material-icons" >view_quilt</i>
 				</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link ${(moduleName?? && (moduleName == 'vega'))?then('active', '')}" href="/dashboard/modules/vega" data-toggle="popover" data-placement="right" data-content="Vega">
+				<a class="nav-link ${(moduleName?? && (moduleName == 'vertigo-vega'))?then('active', '')}" href="/${contextName}/dashboard/modules/vertigo-vega" data-toggle="popover" data-placement="right" data-content="Vega">
 					<i class="material-icons">import_export</i>
 				</a>
 			</li>

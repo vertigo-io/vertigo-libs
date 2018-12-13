@@ -36,6 +36,7 @@ import io.vertigo.commons.plugins.analytics.log.SocketLoggerAnalyticsConnectorPl
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dashboard.ui.DashboardRouter;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
@@ -81,6 +82,7 @@ public class DashboardLauncherTest extends AbstractTestCaseJU5 {
 						.build())
 				.addModule(new VegaFeatures()
 						.withEmbeddedServer(8080)
+						.withApiPrefix("/api")
 						.build())
 				.addModule(new DashboardFeatures()
 						.build())
@@ -98,7 +100,8 @@ public class DashboardLauncherTest extends AbstractTestCaseJU5 {
 	@Disabled
 	public void server() {
 		final App app = getApp();
-		Dashboard.start(app);
+		final DashboardRouter dashboardRouter = new DashboardRouter(app);
+		dashboardRouter.route("");
 		while (!Thread.interrupted()) {
 			try {
 				Thread.sleep(10 * 1000);
