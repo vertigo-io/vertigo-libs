@@ -18,6 +18,8 @@
  */
 package io.vertigo.ui.impl.springmvc.config;
 
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.FrameworkServlet;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 public abstract class AbstractVSpringMvcWebApplicationInitializer extends AbstractAnnotationConfigDispatcherServletInitializer {
@@ -25,6 +27,11 @@ public abstract class AbstractVSpringMvcWebApplicationInitializer extends Abstra
 	@Override
 	protected Class<?>[] getRootConfigClasses() {
 		return null;
+	}
+
+	@Override
+	protected FrameworkServlet createDispatcherServlet(final WebApplicationContext servletAppContext) {
+		return new VSpringDispatcherServlet(servletAppContext);
 	}
 
 	@Override
