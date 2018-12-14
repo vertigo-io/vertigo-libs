@@ -44,6 +44,8 @@ public class VSpringDispatcherServlet extends DispatcherServlet {
 								throw WrappedException.wrap(e);
 							}
 						});
+			} else {
+				super.doDispatch(request, response);
 			}
 
 		} else {
