@@ -46,8 +46,9 @@ public class VSpringDispatcherServlet extends DispatcherServlet {
 						});
 			}
 
+		} else {
+			super.doDispatch(request, response);
 		}
-		super.doDispatch(request, response);
 
 	}
 
