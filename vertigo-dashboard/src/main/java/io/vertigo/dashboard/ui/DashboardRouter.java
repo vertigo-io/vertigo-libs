@@ -21,10 +21,10 @@ package io.vertigo.dashboard.ui;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,6 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import io.vertigo.app.App;
-import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dashboard.ui.commons.CommonsDashboardControler;
 import io.vertigo.dashboard.ui.dynamo.DynamoDashboardControler;
@@ -53,9 +52,9 @@ public final class DashboardRouter {
 	private static final Map<String, Class<? extends DashboardModuleControler>> controlerMap = new HashMap<>();
 
 	static {
-		controlerMap.put("vertigo-commons", CommonsDashboardControler.class);
-		controlerMap.put("vertigo-dynamo", DynamoDashboardControler.class);
-		controlerMap.put("vertigo-vega", VegaDashboardControler.class);
+		controlerMap.put("commons", CommonsDashboardControler.class);
+		controlerMap.put("dynamo", DynamoDashboardControler.class);
+		controlerMap.put("vega", VegaDashboardControler.class);
 	}
 
 	private final App app;
@@ -93,7 +92,7 @@ public final class DashboardRouter {
 		});
 
 		Spark.get("/dashboard/", (request, response) -> {
-			final Set<String> modules = app.getConfig().getModuleConfigs().stream().map(ModuleConfig::getName).collect(Collectors.toSet());
+			final List<String> modules = Arrays.asList("commons", "dynamo", "vega");
 			final Map<String, Object> model = new HashMap<>();
 			model.put("modules", modules);
 			model.put("contextName", contextName);

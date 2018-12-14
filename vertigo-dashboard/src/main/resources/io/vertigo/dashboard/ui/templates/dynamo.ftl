@@ -93,9 +93,9 @@
 			<#list tasks as task>
 				<@module.lineDetail  type='task' name=task.name?replace("/", "_") >
 					   <div class="chart-panel chartjs linechart" 
-					  		data-url="/${contextName}/dashboard/api/data/series" 
+					  		data-url="/${contextName}/api/dashboard/data/series" 
 					  		data-query-measures='["duration:median","duration:max"]'
-					  		data-query-data-filter='{"measurement":"tasks","name":"${task.name}","location":"*","topic":"*"}'
+					  		data-query-data-filter='{"measurement":"tasks", "filters": {"name":"${task.name}","location":"*","topic":"*"}}'
 					  		data-query-time-filter='{"from" : "now() - 1d", "to" : "now()", "dim" : "6m"}' >
 					  	</div>
 				</@module.lineDetail >
