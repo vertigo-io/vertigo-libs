@@ -1,21 +1,3 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.rules.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
@@ -58,7 +40,7 @@ public final class RuleConditionDefinition implements Entity {
 	public UID<RuleConditionDefinition> getUID() {
 		return UID.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.
@@ -77,7 +59,7 @@ public final class RuleConditionDefinition implements Entity {
 	public void setId(final Long id) {
 		this.id = id;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'field'.
@@ -96,7 +78,7 @@ public final class RuleConditionDefinition implements Entity {
 	public void setField(final String field) {
 		this.field = field;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'operator'.
@@ -115,7 +97,7 @@ public final class RuleConditionDefinition implements Entity {
 	public void setOperator(final String operator) {
 		this.operator = operator;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'expression'.
@@ -134,7 +116,7 @@ public final class RuleConditionDefinition implements Entity {
 	public void setExpression(final String expression) {
 		this.expression = expression;
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'RuleDefinition'.
@@ -142,7 +124,7 @@ public final class RuleConditionDefinition implements Entity {
 	 */
 	@Field(domain = "DO_RULES_ID", type = "FOREIGN_KEY", label = "RuleDefinition")
 	public Long getRudId() {
-		return (Long) rudIdAccessor.getId();
+		return (Long)  rudIdAccessor.getId();
 	}
 
 	/**
@@ -154,14 +136,14 @@ public final class RuleConditionDefinition implements Entity {
 		rudIdAccessor.setId(rudId);
 	}
 
-	/**
+ 	/**
 	 * Association : RuleDefinition.
 	 * @return l'accesseur vers la propriété 'RuleDefinition'
 	 */
 	public VAccessor<io.vertigo.rules.domain.RuleDefinition> ruleDefinition() {
 		return rudIdAccessor;
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

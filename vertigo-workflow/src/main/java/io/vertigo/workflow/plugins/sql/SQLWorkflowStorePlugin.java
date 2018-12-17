@@ -19,7 +19,7 @@
 /**
  *
  */
-package io.vertigo.plugins.workflow.sql;
+package io.vertigo.workflow.plugins.sql;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +28,6 @@ import javax.inject.Inject;
 
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
-import io.vertigo.impl.workflow.WorkflowStorePlugin;
 import io.vertigo.rules.dao.RuleConditionDefinitionDAO;
 import io.vertigo.rules.dao.RuleDefinitionDAO;
 import io.vertigo.rules.dao.RuleFilterDefinitionDAO;
@@ -37,8 +36,6 @@ import io.vertigo.rules.domain.RuleConditionDefinition;
 import io.vertigo.rules.domain.RuleDefinition;
 import io.vertigo.rules.domain.RuleFilterDefinition;
 import io.vertigo.rules.domain.SelectorDefinition;
-import io.vertigo.workflow.WfCodeTransition;
-import io.vertigo.workflow.WfTransitionCriteria;
 import io.vertigo.workflow.dao.instance.WfActivityDAO;
 import io.vertigo.workflow.dao.instance.WfDecisionDAO;
 import io.vertigo.workflow.dao.instance.WfWorkflowDAO;
@@ -46,6 +43,8 @@ import io.vertigo.workflow.dao.model.WfActivityDefinitionDAO;
 import io.vertigo.workflow.dao.model.WfTransitionDefinitionDAO;
 import io.vertigo.workflow.dao.model.WfWorkflowDefinitionDAO;
 import io.vertigo.workflow.dao.workflow.WorkflowPAO;
+import io.vertigo.workflow.definitions.WfCodeTransition;
+import io.vertigo.workflow.definitions.WfTransitionCriteria;
 import io.vertigo.workflow.domain.DtDefinitions.WfDecisionFields;
 import io.vertigo.workflow.domain.DtDefinitions.WfWorkflowDefinitionFields;
 import io.vertigo.workflow.domain.DtDefinitions.WfWorkflowFields;
@@ -55,6 +54,7 @@ import io.vertigo.workflow.domain.instance.WfWorkflow;
 import io.vertigo.workflow.domain.model.WfActivityDefinition;
 import io.vertigo.workflow.domain.model.WfTransitionDefinition;
 import io.vertigo.workflow.domain.model.WfWorkflowDefinition;
+import io.vertigo.workflow.impl.WorkflowStorePlugin;
 
 /**
  * @author OHJAJI

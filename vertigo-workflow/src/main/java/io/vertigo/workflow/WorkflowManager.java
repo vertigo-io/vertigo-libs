@@ -26,6 +26,7 @@ import io.vertigo.rules.domain.RuleConditionDefinition;
 import io.vertigo.rules.domain.RuleDefinition;
 import io.vertigo.rules.domain.RuleFilterDefinition;
 import io.vertigo.rules.domain.SelectorDefinition;
+import io.vertigo.workflow.definitions.WfWorkflowDecision;
 import io.vertigo.workflow.domain.instance.WfActivity;
 import io.vertigo.workflow.domain.instance.WfDecision;
 import io.vertigo.workflow.domain.instance.WfWorkflow;

@@ -1,26 +1,8 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.rules.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -58,7 +40,7 @@ public final class RuleDefinition implements Entity {
 	public UID<RuleDefinition> getUID() {
 		return UID.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'id'.
@@ -77,7 +59,7 @@ public final class RuleDefinition implements Entity {
 	public void setId(final Long id) {
 		this.id = id;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'creationDate'.
@@ -96,7 +78,7 @@ public final class RuleDefinition implements Entity {
 	public void setCreationDate(final java.util.Date creationDate) {
 		this.creationDate = creationDate;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'itemId'.
@@ -115,7 +97,7 @@ public final class RuleDefinition implements Entity {
 	public void setItemId(final Long itemId) {
 		this.itemId = itemId;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Label'.
@@ -142,7 +124,7 @@ public final class RuleDefinition implements Entity {
 	public ListVAccessor<io.vertigo.rules.domain.RuleConditionDefinition> ruleConditionDefinition() {
 		return ruleConditionDefinitionAccessor;
 	}
-
+	
 	/**
 	 * Association : RuleConditionDefinition.
 	 * @return DtList de io.vertigo.rules.domain.RuleConditionDefinition
@@ -157,14 +139,14 @@ public final class RuleDefinition implements Entity {
 	}
 
 	/**
-	 * Association URI: RuleConditionDefinition.
-	 * @return URI de l'association
+	 * Association UID: RuleConditionDefinition.
+	 * @return UID de l'association
 	 */
-	@Deprecated
+	@Deprecated	
 	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation getRuleConditionDefinitionDtListURI() {
 		return (io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation) ruleConditionDefinitionAccessor.getDtListURI();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

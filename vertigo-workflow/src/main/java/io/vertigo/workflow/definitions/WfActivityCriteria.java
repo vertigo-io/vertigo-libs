@@ -16,59 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.workflow;
+package io.vertigo.workflow.definitions;
+
+import java.util.List;
+
+import io.vertigo.rules.RuleConditionCriteria;
 
 /**
  *
  * @author xdurand
  *
  */
-public final class WfTransitionCriteria {
+public final class WfActivityCriteria {
 
-	private String transitionName;
-	private Long wfadIdFrom;
-	private Long wfadIdTo;
+	private List<RuleConditionCriteria> conditionCriteria;
 
 	/**
-	 * @return the transitionName
+	 * @return the conditionCriteria
 	 */
-	public String getTransitionName() {
-		return transitionName;
+	public List<RuleConditionCriteria> getConditionCriteria() {
+		return conditionCriteria;
 	}
 
 	/**
-	 * @param transitionName the transitionName to set
+	 * @param conditionCriteria the conditionCriteria to set
 	 */
-	public void setTransitionName(final String transitionName) {
-		this.transitionName = transitionName;
-	}
-
-	/**
-	 * @return the wfadIdFrom
-	 */
-	public Long getWfadIdFrom() {
-		return wfadIdFrom;
-	}
-
-	/**
-	 * @param wfadIdFrom the wfadIdFrom to set
-	 */
-	public void setWfadIdFrom(final Long wfadIdFrom) {
-		this.wfadIdFrom = wfadIdFrom;
-	}
-
-	/**
-	 * @return the wfadIdTo
-	 */
-	public Long getWfadIdTo() {
-		return wfadIdTo;
-	}
-
-	/**
-	 * @param wfadIdTo the wfadIdTo to set
-	 */
-	public void setWfadIdTo(final Long wfadIdTo) {
-		this.wfadIdTo = wfadIdTo;
+	public void setConditionCriteria(final List<RuleConditionCriteria> conditionCriteria) {
+		this.conditionCriteria = conditionCriteria;
 	}
 
 }

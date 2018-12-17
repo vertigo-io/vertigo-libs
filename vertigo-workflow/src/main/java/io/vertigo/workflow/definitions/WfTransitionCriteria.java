@@ -16,51 +16,59 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.workflow;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import io.vertigo.workflow.domain.instance.WfWorkflow;
+package io.vertigo.workflow.definitions;
 
 /**
- * 
+ *
  * @author xdurand
  *
  */
-public final class WfListWorkflowDecision {
-	private WfWorkflow wfWorkflow;
+public final class WfTransitionCriteria {
 
-	private List<WfWorkflowDecision> workflowDecisions = new ArrayList<>();
+	private String transitionName;
+	private Long wfadIdFrom;
+	private Long wfadIdTo;
 
 	/**
-	 * @return the wfWorkflow
+	 * @return the transitionName
 	 */
-	public WfWorkflow getWfWorkflow() {
-		return wfWorkflow;
+	public String getTransitionName() {
+		return transitionName;
 	}
 
 	/**
-	 * @param wfWorkflow
-	 *            the wfWorkflow to set
+	 * @param transitionName the transitionName to set
 	 */
-	public void setWfWorkflow(final WfWorkflow wfWorkflow) {
-		this.wfWorkflow = wfWorkflow;
+	public void setTransitionName(final String transitionName) {
+		this.transitionName = transitionName;
 	}
 
 	/**
-	 * @return the workflowDecisions
+	 * @return the wfadIdFrom
 	 */
-	public List<WfWorkflowDecision> getWorkflowDecisions() {
-		return workflowDecisions;
+	public Long getWfadIdFrom() {
+		return wfadIdFrom;
 	}
 
 	/**
-	 * @param workflowDecisions
-	 *            the workflowDecisions to set
+	 * @param wfadIdFrom the wfadIdFrom to set
 	 */
-	public void setWorkflowDecisions(final List<WfWorkflowDecision> workflowDecisions) {
-		this.workflowDecisions = workflowDecisions;
+	public void setWfadIdFrom(final Long wfadIdFrom) {
+		this.wfadIdFrom = wfadIdFrom;
+	}
+
+	/**
+	 * @return the wfadIdTo
+	 */
+	public Long getWfadIdTo() {
+		return wfadIdTo;
+	}
+
+	/**
+	 * @param wfadIdTo the wfadIdTo to set
+	 */
+	public void setWfadIdTo(final Long wfadIdTo) {
+		this.wfadIdTo = wfadIdTo;
 	}
 
 }
