@@ -16,12 +16,20 @@ var VUi = {
 					var filter = params.filter;
 					var oldPagination = componentStates[pagination.componentId].pagination;
 					if (oldPagination.sortBy != pagination.sortBy ||  oldPagination.descending != pagination.descending ) {
-						// it's a sort order call the server
-						pagination.page = 1 //reset pagination
-						this.$http.post(pagination.sortUrl, { sortFieldName : pagination.sortBy, sortDesc : pagination.descending, CTX: this.$data.vueData.CTX}, { emulateJSON: true }).then( function (response ) {
-							vueData[pagination.listKey] = response.body[pagination.listKey];
-							this.$data.vueData.CTX = response.body['CTX'];
-						});
+						if (pagination.sortBy) {
+							// it's a sort
+							if (pagination.sortUrl) {
+								//order call the server
+								pagination.page = 1 //reset pagination
+								this.$http.post(pagination.sortUrl, { sortFieldName : pagination.sortBy, sortDesc : pagination.descending, CTX: this.$data.vueData.CTX}, { emulateJSON: true }).then( function (response ) {
+									vueData[pagination.listKey] = response.body[pagination.listKey];
+									this.$data.vueData.CTX = response.body['CTX'];
+								});
+							} else {
+								//do locally
+								this.$refs[pagination.componentId].sortMethod.apply(this.$refs[pagination.componentId], [vueData[pagination.listKey], pagination.sortBy, pagination.descending])
+							}
+						} // if we reset the sort we do nothing
 					}
 						// otherwise it's pagination or filter : do it locally
 						// nothing to do everything is done by the paginatedData function

@@ -1,8 +1,9 @@
 <th:block th:fragment="table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, tableClass, other_attrs)" 
 	th:with="tableKey=${list}, listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, myRowsPerPage=${rowsPerPage?:10}"
-	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')}, objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')}, objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false }, objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {page: 1 ,  rowsPerPage : __${myRowsPerPage}__, componentId : '__${componentId}__', listKey : '__${list}__', sortUrl : '__${sortUrl}__'})}" >
-	<th:block th:if="${sortUrl != null}" th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('rowsNumber', __${listSize}__)}" th:remove="all" />
+	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')}, objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')}, objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false }, objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {page: 1 , rowsNumber: __${listSize}__, rowsPerPage : __${myRowsPerPage}__, componentId : '__${componentId}__', listKey : '__${list}__'})}" >
+	<th:block th:if="${sortUrl != null}" th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('sortUrl' : '__${sortUrl}__')}" th:remove="all" />
 	<q-table
+		th::ref="|'${componentId}'|"
 	    th::data="|paginatedData('${list}', '${componentId}' )|"
 	    th::columns="|componentStates.${componentId}.columns|"
 	    th:row-key="${myRowKey}"
@@ -11,7 +12,7 @@
 	    th::loading="|componentStates.${componentId}.loading|"
 	    th::pagination.sync="|componentStates.${componentId}.pagination|"
 	    th:table-class="${tableClass?:''}"
-	    th:attrappend="'@request'=${sortUrl != null}?'request'"
+	    th:@request="request"
 	    color="primary"
 	    class="bg-white"
 	    th:attr="__${other_attrs}__"
