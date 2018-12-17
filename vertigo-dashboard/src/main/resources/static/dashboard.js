@@ -67,10 +67,12 @@ function showChart(elem) {
 
 
 function updateTimeFilterFromSelection(queryTimeFilter) {
-	var timeSelection = $.cookie("timeFilter");
+	if ($.cookie) {
+		var timeSelection = $.cookie("timeFilter");
+	}
 	var to = 'now()';
-	var from = null;
-	var dim = null;
+	var from = 'now() - 1d';
+	var dim = '6m';
 	if(timeSelection === 'last_day') {
 		from = 'now() - 1d'; 
 		dim = '6m';
@@ -91,8 +93,10 @@ function updateTimeFilterFromSelection(queryTimeFilter) {
 }
 
 function updateLocationFilterFromSelection(dataFilter) {
-	var locationSelection = $.cookie('locationFilter');
-	
+	var locationSelection
+	if ($.cookie) {
+		locationSelection = $.cookie('locationFilter');
+	}
 	if(locationSelection) {
 		dataFilter.location = locationSelection;
 	} else {
