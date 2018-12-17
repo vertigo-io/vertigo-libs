@@ -40,29 +40,38 @@ import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Convert;
 
+import io.vertigo.commons.eventbus.EventBusManager;
+import io.vertigo.core.component.Activeable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.ledger.impl.services.LedgerPlugin;
 import io.vertigo.ledger.services.LedgerAddress;
+import io.vertigo.ledger.services.LedgerTransactionEvent;
 import io.vertigo.ledger.services.LedgerTransaction;
 import io.vertigo.ledger.services.LedgerTransactionPriorityEnum;
+import rx.Subscription;
 
 /**
  * Client RPC Ethereum (for Geth and Parity)
  * @author xdurand
  *
  */
-public final class EthereumLedgerPlugin implements LedgerPlugin {
+public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 	private static final Logger LOGGER = LogManager.getLogger(EthereumLedgerPlugin.class);
+
+	private final EventBusManager eventBusManager;
 
 	private final Web3j web3j;
 	private final Credentials credentials;
 	private final LedgerAddress defaultDestPublicAddr;
 	private final LedgerAddress myWalletAddress;
-	
+
+	private Subscription subscription;
+
 	@Inject
 	public EthereumLedgerPlugin(
+			final EventBusManager eventBusManager,
 			@Named("urlRpcEthNode") final String urlRpcEthNode,
 			@Named("myAccountName") final String myAccountName,
 			@Named("myPublicAddr") final String myPublicAddr,
@@ -70,6 +79,8 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 			@Named("defaultDestPublicAddr") final String defaultDestPublicAddr,
 			@Named("walletPassword") final String walletPassword,
 			@Named("walletPath") final String walletPath) {
+		Assertion.checkNotNull(eventBusManager);
+		//---
 		Assertion.checkArgNotEmpty(myAccountName);
 		Assertion.checkArgNotEmpty(myPublicAddr);
 		Assertion.checkArgNotEmpty(defaultDestAccountName);
@@ -77,7 +88,9 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 		Assertion.checkArgNotEmpty(walletPassword);
 		Assertion.checkArgNotEmpty(walletPath);
 		//---
-		this.myWalletAddress = new LedgerAddress(myAccountName, myPublicAddr);
+		this.eventBusManager = eventBusManager;
+		//---
+		myWalletAddress = new LedgerAddress(myAccountName, myPublicAddr);
 		this.defaultDestPublicAddr = new LedgerAddress(defaultDestAccountName, defaultDestPublicAddr);
 
 		LOGGER.info("Connecting to RPC Ethereum Node: {}", urlRpcEthNode);
@@ -89,6 +102,22 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 		} catch (final IOException | CipherException e) {
 			throw WrappedException.wrap(e);
 		}
+	}
+
+	@Override
+	public void start() {
+		subscription = web3j.transactionObservable()
+				.filter(tx -> tx.getTo().equals(myWalletAddress.getPublicAddress()))
+				.map(EthereumLedgerPlugin::convertTransactionToLedgerTransaction)
+				.subscribe(ledgerTransaction -> eventBusManager.post(new LedgerTransactionEvent(ledgerTransaction)));
+		LOGGER.info("Getting new messages sent to {}.", myWalletAddress);
+
+	}
+
+	@Override
+	public void stop() {
+		subscription.unsubscribe();
+
 	}
 
 	@Override
@@ -137,19 +166,6 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 			throw WrappedException.wrap(e);
 		}
 	}
-
-//	@Override
-//	public void subscribeNewMessages(final String name, final Consumer<LedgerTransaction> consumer) {
-//		Assertion.checkArgNotEmpty(name);
-//		Assertion.checkNotNull(consumer);
-//		//-----
-//		final Subscription subscription = web3j.transactionObservable()
-//				.filter(tx -> tx.getTo().equals(myPublicAddr.getPublicAddress()))
-//				.map(EthereumLedgerPlugin::convertTransactionToLedgerTransaction)
-//				.subscribe(consumer::accept);
-//		LOGGER.info("Getting new messages sent to {}.", myPublicAddr);
-//		MAP_SUBSCRIPTIONS.put(name, subscription);
-//	}
 
 	private static LedgerTransaction convertTransactionToLedgerTransaction(final Transaction transaction) {
 		return LedgerTransaction.builder()

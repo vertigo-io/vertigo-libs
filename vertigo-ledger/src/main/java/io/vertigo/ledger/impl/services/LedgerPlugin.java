@@ -19,11 +19,9 @@
 package io.vertigo.ledger.impl.services;
 
 import java.math.BigInteger;
-import java.util.function.Consumer;
 
 import io.vertigo.core.component.Plugin;
 import io.vertigo.ledger.services.LedgerAddress;
-import io.vertigo.ledger.services.LedgerTransaction;
 
 /**
  * @author xdurand
@@ -49,31 +47,5 @@ public interface LedgerPlugin extends Plugin {
 	 * @return
 	 */
 	BigInteger getMyWalletBalance();
-//	/**
-//	 * Subscribe only to new messages and execute the consumer function when a message is sent to the public address of the wallet.
-//	 * @param name
-//	 * @param consumer
-//	 */
-//	void subscribeNewMessages(String name, Consumer<LedgerTransaction> consumer);
-//
-//	/**
-//	 * Subscribe only to existing past messages only and execute the consumer function when a message is sent to the public address of the wallet.
-//	 * @param name
-//	 * @param consumer
-//	 */
-//	void subscribeExistingMessages(String name, Consumer<LedgerTransaction> consumer);
-//
-//	/**
-//	 * Subscribe past and new messages and execute the consumer function when a message is sent to the public address of the wallet.
-//	 * @param name
-//	 * @param consumer
-//	 */
-//	void subscribeAllMessages(String name, Consumer<LedgerTransaction> consumer);
-//
-//	/**
-//	 * Unsubcribe an existing subscription by name
-//	 * @param name
-//	 */
-//	void unsubscribe(String name);
 
 }

@@ -28,15 +28,15 @@ import io.vertigo.lang.Builder;
  *
  */
 public final class LedgerTransactionBuilder implements Builder<LedgerTransaction> {
-	private String hash;
-	private BigInteger nonce;
-	private String blockHash;
-	private BigInteger blockNumber;
-	private BigInteger transactionIndex;
-	private String from;
-	private String to;
-	private BigInteger value;
-	private String message;
+	private String myHash;
+	private BigInteger myNonce;
+	private String myBlockHash;
+	private BigInteger myBlockNumber;
+	private BigInteger myTransactionIndex;
+	private String myFrom;
+	private String myTo;
+	private BigInteger myValue;
+	private String myMessage;
 
 	LedgerTransactionBuilder() {
 		super();
@@ -46,7 +46,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param hash the hash to set
 	 */
 	public LedgerTransactionBuilder withHash(final String hash) {
-		this.hash = hash;
+		this.myHash = hash;
 		return this;
 	}
 
@@ -54,7 +54,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param nonce the nonce to set
 	 */
 	public LedgerTransactionBuilder withNonce(final BigInteger nonce) {
-		this.nonce = nonce;
+		this.myNonce = nonce;
 		return this;
 	}
 
@@ -62,7 +62,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param blockHash the blockHash to set
 	 */
 	public LedgerTransactionBuilder withBlockHash(final String blockHash) {
-		this.blockHash = blockHash;
+		this.myBlockHash = blockHash;
 		return this;
 	}
 
@@ -70,7 +70,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param blockNumber the blockNumber to set
 	 */
 	public LedgerTransactionBuilder withBlockNumber(final BigInteger blockNumber) {
-		this.blockNumber = blockNumber;
+		this.myBlockNumber = blockNumber;
 		return this;
 	}
 
@@ -78,7 +78,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param transactionIndex the transactionIndex to set
 	 */
 	public LedgerTransactionBuilder withTransactionIndex(final BigInteger transactionIndex) {
-		this.transactionIndex = transactionIndex;
+		this.myTransactionIndex = transactionIndex;
 		return this;
 	}
 
@@ -86,7 +86,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param from the from to set
 	 */
 	public LedgerTransactionBuilder withFrom(final String from) {
-		this.from = from;
+		this.myFrom = from;
 		return this;
 	}
 
@@ -94,7 +94,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param to the to to set
 	 */
 	public LedgerTransactionBuilder withTo(final String to) {
-		this.to = to;
+		this.myTo = to;
 		return this;
 	}
 
@@ -102,7 +102,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param value the value to set
 	 */
 	public LedgerTransactionBuilder withValue(final BigInteger value) {
-		this.value = value;
+		this.myValue = value;
 		return this;
 	}
 
@@ -110,22 +110,22 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param message the message to set
 	 */
 	public LedgerTransactionBuilder withMessage(final String message) {
-		this.message = message;
+		this.myMessage = message;
 		return this;
 	}
 
 	@Override
 	public LedgerTransaction build() {
 		return new LedgerTransaction(
-				hash,
-				nonce,
-				blockHash,
-				blockNumber,
-				transactionIndex,
-				from,
-				to,
-				value,
-				message);
+				myHash,
+				myNonce,
+				myBlockHash,
+				myBlockNumber,
+				myTransactionIndex,
+				myFrom,
+				myTo,
+				myValue,
+				myMessage);
 	}
 
 }

@@ -19,14 +19,13 @@
 package io.vertigo.ledger.services;
 
 import java.math.BigInteger;
-import java.util.function.Consumer;
 
 import io.vertigo.core.component.Manager;
 
 public interface LedgerManager extends Manager {
 	/**
 	 * Sends data message on the ledger.
-	 * @param data 
+	 * @param data
 	 * @return
 	 */
 	String sendData(String data);
