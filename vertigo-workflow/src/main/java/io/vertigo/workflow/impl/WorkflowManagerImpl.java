@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.impl.workflow;
+package io.vertigo.workflow.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,11 +41,11 @@ import io.vertigo.rules.domain.SelectorDefinition;
 import io.vertigo.rules.services.RuleConstants;
 import io.vertigo.rules.services.RuleContext;
 import io.vertigo.rules.services.RuleServices;
-import io.vertigo.workflow.WfCodeTransition;
-import io.vertigo.workflow.WfTransitionBuilder;
-import io.vertigo.workflow.WfTransitionCriteria;
-import io.vertigo.workflow.WfWorkflowDecision;
 import io.vertigo.workflow.WorkflowManager;
+import io.vertigo.workflow.definitions.WfCodeTransition;
+import io.vertigo.workflow.definitions.WfTransitionBuilder;
+import io.vertigo.workflow.definitions.WfTransitionCriteria;
+import io.vertigo.workflow.definitions.WfWorkflowDecision;
 import io.vertigo.workflow.domain.instance.WfActivity;
 import io.vertigo.workflow.domain.instance.WfDecision;
 import io.vertigo.workflow.domain.instance.WfStatusEnum;

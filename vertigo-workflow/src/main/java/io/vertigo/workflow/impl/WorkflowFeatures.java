@@ -16,14 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.impl.workflow;
+package io.vertigo.workflow.impl;
 
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
-import io.vertigo.plugins.workflow.sql.SQLWorkflowStorePlugin;
-import io.vertigo.plugins.workflow.validate.RuleWorkflowPredicateAutoValidatePlugin;
 import io.vertigo.workflow.WorkflowManager;
 import io.vertigo.workflow.dao.instance.WfActivityDAO;
 import io.vertigo.workflow.dao.instance.WfDecisionDAO;
@@ -35,6 +33,8 @@ import io.vertigo.workflow.dao.model.WfTransitionDefinitionDAO;
 import io.vertigo.workflow.dao.model.WfWorkflowDefinitionDAO;
 import io.vertigo.workflow.dao.workflow.WorkflowPAO;
 import io.vertigo.workflow.domain.DtDefinitions;
+import io.vertigo.workflow.plugins.sql.SQLWorkflowStorePlugin;
+import io.vertigo.workflow.plugins.validate.RuleWorkflowPredicateAutoValidatePlugin;
 
 /**
  * Defines the 'workflow' extension

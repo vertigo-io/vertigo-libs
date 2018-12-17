@@ -16,27 +16,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/**
- * 
- */
-package io.vertigo.impl.workflow;
+package io.vertigo.workflow.plugins.validate;
 
-import io.vertigo.core.component.Plugin;
+import javax.inject.Inject;
+
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.rules.services.RuleConstants;
+import io.vertigo.rules.services.RuleContext;
+import io.vertigo.rules.services.RuleServices;
 import io.vertigo.workflow.domain.model.WfActivityDefinition;
+import io.vertigo.workflow.impl.WorkflowPredicateAutoValidatePlugin;
 
 /**
+ *
  * @author xdurand
  *
  */
-public interface WorkflowPredicateAutoValidatePlugin extends Plugin {
+public final class RuleWorkflowPredicateAutoValidatePlugin implements WorkflowPredicateAutoValidatePlugin {
 
-	/**
-	 * Predicate to determine if the current activityDefinition can be autovalidated for the provided object
-	 * @param activityDefinition the activityDefinition to test
-	 * @param object the object to test
-	 * @return true if the current activity can be auto validated, false otherwise
-	 */
-	boolean canAutoValidateActivity(final WfActivityDefinition activityDefinition, final DtObject object);
+	@Inject
+	private RuleServices ruleServices;
 
+	@Override
+	public boolean canAutoValidateActivity(final WfActivityDefinition activityDefinition, final DtObject object) {
+
+		final RuleConstants ruleConstants = ruleServices.getConstants(activityDefinition.getWfwdId());
+		final RuleContext ruleContext = new RuleContext(object, ruleConstants);
+		return !ruleServices.isRuleValid(activityDefinition.getWfadId(), ruleContext);
+	}
 }

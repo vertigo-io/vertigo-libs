@@ -31,10 +31,7 @@ import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.impl.DynamoFeatures;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
-import io.vertigo.impl.workflow.WorkflowFeatures;
 import io.vertigo.persona.impl.security.PersonaFeatures;
-import io.vertigo.plugins.workflow.memory.MemoryWorkflowStorePlugin;
-import io.vertigo.plugins.workflow.validate.RuleWorkflowPredicateAutoValidatePlugin;
 import io.vertigo.rules.impl.RulesFeatures;
 import io.vertigo.rules.plugins.memory.MemoryRuleConstantsStorePlugin;
 import io.vertigo.rules.plugins.memory.MemoryRuleStorePlugin;
@@ -43,7 +40,10 @@ import io.vertigo.rules.plugins.validator.SimpleRuleValidatorPlugin;
 import io.vertigo.workflow.data.MockIdentities;
 import io.vertigo.workflow.data.MyDummyDtObjectProvider;
 import io.vertigo.workflow.data.TestUserSession;
+import io.vertigo.workflow.impl.WorkflowFeatures;
 import io.vertigo.workflow.plugin.MemoryItemStorePlugin;
+import io.vertigo.workflow.plugins.memory.MemoryWorkflowStorePlugin;
+import io.vertigo.workflow.plugins.validate.RuleWorkflowPredicateAutoValidatePlugin;
 
 /**
  * Config for Junit

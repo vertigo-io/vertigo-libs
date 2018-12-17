@@ -16,29 +16,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.workflow;
+package io.vertigo.workflow.definitions;
 
 /**
- * Enum for the workflow specific transition .
+ *
  * @author xdurand
  *
  */
-public enum WfCodeTransition {
-	/** Default transition name */
-	DEFAULT("default");
+public final class WfConditionCriteria {
+	private String field;
 
-	private final String transitionName;
+	private String value;
 
-	WfCodeTransition(final String transitionName) {
-		this.transitionName = transitionName;
+	/**
+	 * @return the field
+	 */
+	public String getField() {
+		return field;
 	}
 
 	/**
-	 * Get the transition name
-	 * @return the transition name
+	 * @param field the field to set
 	 */
-	public String getTransitionName() {
-		return transitionName;
+	public void setField(final String field) {
+		this.field = field;
+	}
+
+	/**
+	 * @return the value
+	 */
+	public String getValue() {
+		return value;
+	}
+
+	/**
+	 * @param value the value to set
+	 */
+	public void setValue(final String value) {
+		this.value = value;
 	}
 
 }

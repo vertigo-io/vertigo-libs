@@ -16,33 +16,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.workflow;
+package io.vertigo.workflow.impl;
 
 import java.util.List;
+import java.util.Map;
 
-import io.vertigo.rules.RuleConditionCriteria;
+import io.vertigo.core.component.Plugin;
+import io.vertigo.dynamo.domain.model.DtObject;
 
 /**
- *
+ * This class defines the storage of item.
  * @author xdurand
- *
  */
-public final class WfActivityCriteria {
-
-	private List<RuleConditionCriteria> conditionCriteria;
+public interface ItemStorePlugin extends Plugin {
 
 	/**
-	 * @return the conditionCriteria
+	 * Track a new item
+	 * /!\ No item will be created. It will only be tracked
+	 * @param itemId
+	 * @param item
 	 */
-	public List<RuleConditionCriteria> getConditionCriteria() {
-		return conditionCriteria;
-	}
+	void addItem(Long itemId, DtObject item);
 
 	/**
-	 * @param conditionCriteria the conditionCriteria to set
+	 * Get an item.
+	 * @param itemId
+	 * @return the DtObject corresponding to the itemId
 	 */
-	public void setConditionCriteria(final List<RuleConditionCriteria> conditionCriteria) {
-		this.conditionCriteria = conditionCriteria;
-	}
+	DtObject readItem(Long itemId);
+
+	/**
+	 * Get a list of items
+	 * @param itemIds List of Items Ids.
+	 * @return A dictionary with the itemId as a key the the object as the associated value.
+	 */
+	Map<Long, DtObject> readItems(List<Long> itemIds);
 
 }

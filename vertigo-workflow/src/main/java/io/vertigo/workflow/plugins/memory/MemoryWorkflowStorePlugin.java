@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.plugins.workflow.memory;
+package io.vertigo.workflow.plugins.memory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,21 +29,21 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import io.vertigo.impl.workflow.WorkflowStorePlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.rules.domain.RuleConditionDefinition;
 import io.vertigo.rules.domain.RuleDefinition;
 import io.vertigo.rules.domain.RuleFilterDefinition;
 import io.vertigo.rules.domain.SelectorDefinition;
 import io.vertigo.rules.services.RuleServices;
-import io.vertigo.workflow.WfCodeTransition;
-import io.vertigo.workflow.WfTransitionCriteria;
+import io.vertigo.workflow.definitions.WfCodeTransition;
+import io.vertigo.workflow.definitions.WfTransitionCriteria;
 import io.vertigo.workflow.domain.instance.WfActivity;
 import io.vertigo.workflow.domain.instance.WfDecision;
 import io.vertigo.workflow.domain.instance.WfWorkflow;
 import io.vertigo.workflow.domain.model.WfActivityDefinition;
 import io.vertigo.workflow.domain.model.WfTransitionDefinition;
 import io.vertigo.workflow.domain.model.WfWorkflowDefinition;
+import io.vertigo.workflow.impl.WorkflowStorePlugin;
 
 /**
  *

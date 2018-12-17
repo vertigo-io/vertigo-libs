@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.impl.workflow;
+package io.vertigo.workflow.impl;
 
 import java.util.List;
 

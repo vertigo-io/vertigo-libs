@@ -42,25 +42,25 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.impl.workflow.ItemStorePlugin;
 import io.vertigo.rules.domain.RuleConditionDefinition;
 import io.vertigo.rules.domain.RuleDefinition;
 import io.vertigo.rules.domain.RuleFilterDefinition;
 import io.vertigo.rules.domain.SelectorDefinition;
 import io.vertigo.workflow.MyAppConfig;
-import io.vertigo.workflow.WfActivityDefinitionBuilder;
-import io.vertigo.workflow.WfCodeTransition;
-import io.vertigo.workflow.WfWorkflowDecision;
-import io.vertigo.workflow.WfWorkflowDefinitionBuilder;
 import io.vertigo.workflow.WorkflowManager;
 import io.vertigo.workflow.data.MockIdentities;
 import io.vertigo.workflow.data.MyDummyDtObject;
+import io.vertigo.workflow.definitions.WfActivityDefinitionBuilder;
+import io.vertigo.workflow.definitions.WfCodeTransition;
+import io.vertigo.workflow.definitions.WfWorkflowDecision;
+import io.vertigo.workflow.definitions.WfWorkflowDefinitionBuilder;
 import io.vertigo.workflow.domain.instance.WfActivity;
 import io.vertigo.workflow.domain.instance.WfDecision;
 import io.vertigo.workflow.domain.instance.WfStatusEnum;
 import io.vertigo.workflow.domain.instance.WfWorkflow;
 import io.vertigo.workflow.domain.model.WfActivityDefinition;
 import io.vertigo.workflow.domain.model.WfWorkflowDefinition;
+import io.vertigo.workflow.impl.ItemStorePlugin;
 
 /**
  * Tests unitaires pour le Workflow Manager

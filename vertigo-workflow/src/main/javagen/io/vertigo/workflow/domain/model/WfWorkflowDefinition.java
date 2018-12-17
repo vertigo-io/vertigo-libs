@@ -1,27 +1,9 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.workflow.domain.model;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
+import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -73,7 +55,7 @@ public final class WfWorkflowDefinition implements Entity {
 	public UID<WfWorkflowDefinition> getUID() {
 		return UID.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id Workflow definition'.
@@ -92,7 +74,7 @@ public final class WfWorkflowDefinition implements Entity {
 	public void setWfwdId(final Long wfwdId) {
 		this.wfwdId = wfwdId;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'name'.
@@ -111,7 +93,7 @@ public final class WfWorkflowDefinition implements Entity {
 	public void setName(final String name) {
 		this.name = name;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'date'.
@@ -130,7 +112,7 @@ public final class WfWorkflowDefinition implements Entity {
 	public void setDate(final java.util.Date date) {
 		this.date = date;
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'startActivity'.
@@ -138,7 +120,7 @@ public final class WfWorkflowDefinition implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", label = "startActivity")
 	public Long getWfadId() {
-		return (Long) wfadIdAccessor.getId();
+		return (Long)  wfadIdAccessor.getId();
 	}
 
 	/**
@@ -150,14 +132,14 @@ public final class WfWorkflowDefinition implements Entity {
 		wfadIdAccessor.setId(wfadId);
 	}
 
-	/**
+ 	/**
 	 * Association : startActivity.
 	 * @return l'accesseur vers la propriété 'startActivity'
 	 */
 	public VAccessor<io.vertigo.workflow.domain.model.WfActivityDefinition> startActivity() {
 		return wfadIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.workflow.domain.model.WfActivityDefinition getStartActivity() {
 		// we keep the lazyness
@@ -168,11 +150,11 @@ public final class WfWorkflowDefinition implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: startActivity.
-	 * @return URI de l'association
+	 * Retourne l'UID: startActivity.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfActivityDefinition> getStartActivityURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfActivityDefinition> getStartActivityUID() {
 		return wfadIdAccessor.getUID();
 	}
 
@@ -183,7 +165,7 @@ public final class WfWorkflowDefinition implements Entity {
 	public ListVAccessor<io.vertigo.workflow.domain.model.WfTransitionDefinition> wfTransitionDefinition() {
 		return wfTransitionDefinitionAccessor;
 	}
-
+	
 	/**
 	 * Association : WfTransitionDefinition.
 	 * @return DtList de io.vertigo.workflow.domain.model.WfTransitionDefinition
@@ -198,14 +180,14 @@ public final class WfWorkflowDefinition implements Entity {
 	}
 
 	/**
-	 * Association URI: WfTransitionDefinition.
-	 * @return URI de l'association
+	 * Association UID: WfTransitionDefinition.
+	 * @return UID de l'association
 	 */
-	@Deprecated
+	@Deprecated	
 	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation getWfTransitionDefinitionDtListURI() {
 		return (io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation) wfTransitionDefinitionAccessor.getDtListURI();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

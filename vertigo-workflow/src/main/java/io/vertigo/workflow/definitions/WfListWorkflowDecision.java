@@ -16,40 +16,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.impl.workflow;
+package io.vertigo.workflow.definitions;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import io.vertigo.core.component.Plugin;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.workflow.domain.instance.WfWorkflow;
 
 /**
- * This class defines the storage of item.
+ * 
  * @author xdurand
+ *
  */
-public interface ItemStorePlugin extends Plugin {
+public final class WfListWorkflowDecision {
+	private WfWorkflow wfWorkflow;
+
+	private List<WfWorkflowDecision> workflowDecisions = new ArrayList<>();
 
 	/**
-	 * Track a new item
-	 * /!\ No item will be created. It will only be tracked
-	 * @param itemId
-	 * @param item
+	 * @return the wfWorkflow
 	 */
-	void addItem(Long itemId, DtObject item);
+	public WfWorkflow getWfWorkflow() {
+		return wfWorkflow;
+	}
 
 	/**
-	 * Get an item.
-	 * @param itemId
-	 * @return the DtObject corresponding to the itemId
+	 * @param wfWorkflow
+	 *            the wfWorkflow to set
 	 */
-	DtObject readItem(Long itemId);
+	public void setWfWorkflow(final WfWorkflow wfWorkflow) {
+		this.wfWorkflow = wfWorkflow;
+	}
 
 	/**
-	 * Get a list of items
-	 * @param itemIds List of Items Ids.
-	 * @return A dictionary with the itemId as a key the the object as the associated value.
+	 * @return the workflowDecisions
 	 */
-	Map<Long, DtObject> readItems(List<Long> itemIds);
+	public List<WfWorkflowDecision> getWorkflowDecisions() {
+		return workflowDecisions;
+	}
+
+	/**
+	 * @param workflowDecisions
+	 *            the workflowDecisions to set
+	 */
+	public void setWorkflowDecisions(final List<WfWorkflowDecision> workflowDecisions) {
+		this.workflowDecisions = workflowDecisions;
+	}
 
 }

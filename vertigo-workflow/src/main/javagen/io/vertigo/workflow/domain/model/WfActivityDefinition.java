@@ -1,27 +1,9 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013-2018, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.workflow.domain.model;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.EnumVAccessor;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
+import io.vertigo.dynamo.domain.model.EnumVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -73,7 +55,7 @@ public final class WfActivityDefinition implements Entity {
 	public UID<WfActivityDefinition> getUID() {
 		return UID.of(this);
 	}
-
+	
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'Id Activity Definition'.
@@ -92,7 +74,7 @@ public final class WfActivityDefinition implements Entity {
 	public void setWfadId(final Long wfadId) {
 		this.wfadId = wfadId;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'name'.
@@ -111,7 +93,7 @@ public final class WfActivityDefinition implements Entity {
 	public void setName(final String name) {
 		this.name = name;
 	}
-
+	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'level'.
@@ -130,7 +112,7 @@ public final class WfActivityDefinition implements Entity {
 	public void setLevel(final Integer level) {
 		this.level = level;
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'WfMultiplicityDefinition'.
@@ -138,7 +120,7 @@ public final class WfActivityDefinition implements Entity {
 	 */
 	@Field(domain = "DO_WF_CODE", type = "FOREIGN_KEY", label = "WfMultiplicityDefinition")
 	public String getWfmdCode() {
-		return (String) wfmdCodeAccessor.getId();
+		return (String)  wfmdCodeAccessor.getId();
 	}
 
 	/**
@@ -149,7 +131,7 @@ public final class WfActivityDefinition implements Entity {
 	public void setWfmdCode(final String wfmdCode) {
 		wfmdCodeAccessor.setId(wfmdCode);
 	}
-
+	
 	/**
 	 * Champ : FOREIGN_KEY.
 	 * Récupère la valeur de la propriété 'WfWorkflowDefinition'.
@@ -157,7 +139,7 @@ public final class WfActivityDefinition implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", required = true, label = "WfWorkflowDefinition")
 	public Long getWfwdId() {
-		return (Long) wfwdIdAccessor.getId();
+		return (Long)  wfwdIdAccessor.getId();
 	}
 
 	/**
@@ -169,14 +151,14 @@ public final class WfActivityDefinition implements Entity {
 		wfwdIdAccessor.setId(wfwdId);
 	}
 
-	/**
+ 	/**
 	 * Association : WfMultiplicityDefinition.
 	 * @return l'accesseur vers la propriété 'WfMultiplicityDefinition'
 	 */
 	public EnumVAccessor<io.vertigo.workflow.domain.model.WfMultiplicityDefinition, io.vertigo.workflow.domain.model.WfMultiplicityDefinitionEnum> wfMultiplicityDefinition() {
 		return wfmdCodeAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.workflow.domain.model.WfMultiplicityDefinition getWfMultiplicityDefinition() {
 		// we keep the lazyness
@@ -187,22 +169,22 @@ public final class WfActivityDefinition implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: WfMultiplicityDefinition.
-	 * @return URI de l'association
+	 * Retourne l'UID: WfMultiplicityDefinition.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfMultiplicityDefinition> getWfMultiplicityDefinitionURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfMultiplicityDefinition> getWfMultiplicityDefinitionUID() {
 		return wfmdCodeAccessor.getUID();
 	}
 
-	/**
+ 	/**
 	 * Association : WfWorkflowDefinition.
 	 * @return l'accesseur vers la propriété 'WfWorkflowDefinition'
 	 */
 	public VAccessor<io.vertigo.workflow.domain.model.WfWorkflowDefinition> wfWorkflowDefinition() {
 		return wfwdIdAccessor;
 	}
-
+	
 	@Deprecated
 	public io.vertigo.workflow.domain.model.WfWorkflowDefinition getWfWorkflowDefinition() {
 		// we keep the lazyness
@@ -213,14 +195,14 @@ public final class WfActivityDefinition implements Entity {
 	}
 
 	/**
-	 * Retourne l'URI: WfWorkflowDefinition.
-	 * @return URI de l'association
+	 * Retourne l'UID: WfWorkflowDefinition.
+	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfWorkflowDefinition> getWfWorkflowDefinitionURI() {
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfWorkflowDefinition> getWfWorkflowDefinitionUID() {
 		return wfwdIdAccessor.getUID();
 	}
-
+	
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

@@ -25,7 +25,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.impl.workflow.ItemStorePlugin;
+import io.vertigo.workflow.impl.ItemStorePlugin;
 
 /**
  *
