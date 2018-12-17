@@ -19,56 +19,39 @@
 package io.vertigo.ledger.impl.services;
 
 import java.math.BigInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Consumer;
 
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bouncycastle.jcajce.provider.digest.SHA3.Digest256;
-import org.bouncycastle.jcajce.provider.digest.SHA3.DigestSHA3;
 
+import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.ledger.services.LedgerAddress;
 import io.vertigo.ledger.services.LedgerManager;
-import io.vertigo.ledger.services.LedgerTransaction;
 
 public final class LedgerManagerImpl implements LedgerManager {
-
 	private static final Logger LOGGER = LogManager.getLogger(LedgerManagerImpl.class);
 
+	private final CodecManager codecManager;
 	private final LedgerPlugin ledgerPlugin;
-
-	private final AtomicLong subscribeNewMessagesCounter = new AtomicLong(0);
-	private final AtomicLong subscribeExistingMessagesCounter = new AtomicLong(0);
-	private final AtomicLong subscribeAllMessagesCounter = new AtomicLong(0);
+	
 
 	@Inject
-	public LedgerManagerImpl(final LedgerPlugin ledgerPlugin) {
+	public LedgerManagerImpl(final CodecManager codecManager, final LedgerPlugin ledgerPlugin) {
+		Assertion.checkNotNull(codecManager);
+		Assertion.checkNotNull(ledgerPlugin);
+		//---
+		this.codecManager = codecManager;
 		this.ledgerPlugin = ledgerPlugin;
 	}
 
-	private static String dataToHash(final String data) {
-		Assertion.checkArgNotEmpty(data);
-		//-----
-		final DigestSHA3 sha3 = new Digest256();
-
-		sha3.update(data.getBytes());
-		final StringBuilder buffer = new StringBuilder();
-
-		for (final byte b : sha3.digest()) {
-			buffer.append(String.format("%02x", b & 0xFF));
-		}
-
-		return buffer.toString();
-	}
 
 	@Override
 	public String sendData(final String data) {
 		Assertion.checkArgNotEmpty(data);
 		//---
-		final String hash = dataToHash(data);
+		final String hash = codecManager.getBase64Codec().encode(codecManager.getSha256Encoder().encode(data.getBytes()));
 
 		LOGGER.info("Sending transaction to the legder... Buffer:{}", hash);
 		ledgerPlugin.sendData(hash);
@@ -77,49 +60,14 @@ public final class LedgerManagerImpl implements LedgerManager {
 	}
 
 	@Override
-	public BigInteger getBalance(final LedgerAddress ledgerAddress) {
+	public BigInteger getWalletBalance(final LedgerAddress ledgerAddress) {
 		Assertion.checkNotNull(ledgerAddress);
 		//---
-		return ledgerPlugin.getBalance(ledgerAddress);
+		return ledgerPlugin.getWalletBalance(ledgerAddress);
 	}
 
 	@Override
-	public BigInteger getMyBalance() {
-		return ledgerPlugin.getWalletBalance();
+	public BigInteger getMyWalletBalance() {
+		return ledgerPlugin.getMyWalletBalance();
 	}
-
-	@Override
-	public String subscribeNewMessages(final Consumer<LedgerTransaction> consumer) {
-		Assertion.checkNotNull(consumer);
-		//---
-		final String uniqueName = "subscribeNewMessages" + subscribeNewMessagesCounter.incrementAndGet();
-		ledgerPlugin.subscribeNewMessages(uniqueName, consumer);
-		return uniqueName;
-	}
-
-	@Override
-	public String subscribeExistingMessages(final Consumer<LedgerTransaction> consumer) {
-		Assertion.checkNotNull(consumer);
-		//---
-		final String uniqueName = "subscribeExistingMessages" + subscribeExistingMessagesCounter.incrementAndGet();
-		ledgerPlugin.subscribeExistingMessages(uniqueName, consumer);
-		return uniqueName;
-	}
-
-	@Override
-	public String subscribeAllMessages(final Consumer<LedgerTransaction> consumer) {
-		Assertion.checkNotNull(consumer);
-		//---
-		final String uniqueName = "subscribeAllMessages" + subscribeAllMessagesCounter.incrementAndGet();
-		ledgerPlugin.subscribeAllMessages(uniqueName, consumer);
-		return uniqueName;
-	}
-
-	@Override
-	public void unsubscribe(final String uniqueName) {
-		Assertion.checkArgNotEmpty(uniqueName);
-		//-----
-		ledgerPlugin.unsubscribe(uniqueName);
-	}
-
 }

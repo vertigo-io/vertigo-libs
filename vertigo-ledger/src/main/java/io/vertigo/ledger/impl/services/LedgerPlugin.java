@@ -38,43 +38,42 @@ public interface LedgerPlugin extends Plugin {
 	void sendData(String data);
 
 	/**
+	 * Get the current balance of the provided address
+	 * @param ledgerAddress
+	 * @return
+	 */
+	BigInteger getWalletBalance(LedgerAddress ledgerAddress);
+
+	/**
 	 * Get the current balance of the wallet
 	 * @return
 	 */
-	BigInteger getWalletBalance();
-
-	/**
-	 * Get the current balance of the provided address
-	 * @param publicAddr
-	 * @return
-	 */
-	BigInteger getBalance(LedgerAddress publicAddr);
-
-	/**
-	 * Subscribe only to new messages and execute the consumer function when a message is sent to the public address of the wallet.
-	 * @param name
-	 * @param consumer
-	 */
-	void subscribeNewMessages(String name, Consumer<LedgerTransaction> consumer);
-
-	/**
-	 * Subscribe only to existing past messages only and execute the consumer function when a message is sent to the public address of the wallet.
-	 * @param name
-	 * @param consumer
-	 */
-	void subscribeExistingMessages(String name, Consumer<LedgerTransaction> consumer);
-
-	/**
-	 * Subscribe past and new messages and execute the consumer function when a message is sent to the public address of the wallet.
-	 * @param name
-	 * @param consumer
-	 */
-	void subscribeAllMessages(String name, Consumer<LedgerTransaction> consumer);
-
-	/**
-	 * Unsubcribe an existing subscription by name
-	 * @param name
-	 */
-	void unsubscribe(String name);
+	BigInteger getMyWalletBalance();
+//	/**
+//	 * Subscribe only to new messages and execute the consumer function when a message is sent to the public address of the wallet.
+//	 * @param name
+//	 * @param consumer
+//	 */
+//	void subscribeNewMessages(String name, Consumer<LedgerTransaction> consumer);
+//
+//	/**
+//	 * Subscribe only to existing past messages only and execute the consumer function when a message is sent to the public address of the wallet.
+//	 * @param name
+//	 * @param consumer
+//	 */
+//	void subscribeExistingMessages(String name, Consumer<LedgerTransaction> consumer);
+//
+//	/**
+//	 * Subscribe past and new messages and execute the consumer function when a message is sent to the public address of the wallet.
+//	 * @param name
+//	 * @param consumer
+//	 */
+//	void subscribeAllMessages(String name, Consumer<LedgerTransaction> consumer);
+//
+//	/**
+//	 * Unsubcribe an existing subscription by name
+//	 * @param name
+//	 */
+//	void unsubscribe(String name);
 
 }

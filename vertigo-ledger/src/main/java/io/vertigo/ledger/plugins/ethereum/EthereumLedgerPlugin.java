@@ -21,10 +21,7 @@ package io.vertigo.ledger.plugins.ethereum;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Consumer;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -50,7 +47,6 @@ import io.vertigo.ledger.impl.services.LedgerPlugin;
 import io.vertigo.ledger.services.LedgerAddress;
 import io.vertigo.ledger.services.LedgerTransaction;
 import io.vertigo.ledger.services.LedgerTransactionPriorityEnum;
-import rx.Subscription;
 
 /**
  * Client RPC Ethereum (for Geth and Parity)
@@ -58,15 +54,13 @@ import rx.Subscription;
  *
  */
 public final class EthereumLedgerPlugin implements LedgerPlugin {
-
 	private static final Logger LOGGER = LogManager.getLogger(EthereumLedgerPlugin.class);
-	private static final Map<String, Subscription> MAP_SUBSCRIPTIONS = new ConcurrentHashMap<>();
 
 	private final Web3j web3j;
 	private final Credentials credentials;
 	private final LedgerAddress defaultDestPublicAddr;
-	private final LedgerAddress myPublicAddr;
-
+	private final LedgerAddress myWalletAddress;
+	
 	@Inject
 	public EthereumLedgerPlugin(
 			@Named("urlRpcEthNode") final String urlRpcEthNode,
@@ -83,7 +77,7 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 		Assertion.checkArgNotEmpty(walletPassword);
 		Assertion.checkArgNotEmpty(walletPath);
 		//---
-		this.myPublicAddr = new LedgerAddress(myAccountName, myPublicAddr);
+		this.myWalletAddress = new LedgerAddress(myAccountName, myPublicAddr);
 		this.defaultDestPublicAddr = new LedgerAddress(defaultDestAccountName, defaultDestPublicAddr);
 
 		LOGGER.info("Connecting to RPC Ethereum Node: {}", urlRpcEthNode);
@@ -98,17 +92,17 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 	}
 
 	@Override
-	public BigInteger getWalletBalance() {
-		return getBalance(myPublicAddr);
+	public BigInteger getMyWalletBalance() {
+		return getWalletBalance(myWalletAddress);
 	}
 
 	@Override
-	public BigInteger getBalance(final LedgerAddress publicAddr) {
-		Assertion.checkNotNull(publicAddr);
+	public BigInteger getWalletBalance(final LedgerAddress ledgerAddress) {
+		Assertion.checkNotNull(ledgerAddress);
 		//---
 		EthGetBalance balance;
 		try {
-			balance = web3j.ethGetBalance(publicAddr.getPublicAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
+			balance = web3j.ethGetBalance(ledgerAddress.getPublicAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
 		} catch (InterruptedException | ExecutionException e) {
 			throw WrappedException.wrap(e);
 		}
@@ -125,13 +119,13 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 		sendData(data, defaultDestPublicAddr, LedgerTransactionPriorityEnum.FAST);
 	}
 
-	public void sendData(final String data, final LedgerAddress destinationAdr, final LedgerTransactionPriorityEnum priority) {
+	private void sendData(final String data, final LedgerAddress ledgerAddress, final LedgerTransactionPriorityEnum priority) {
 		Assertion.checkArgNotEmpty(data);
-		Assertion.checkNotNull(destinationAdr);
+		Assertion.checkNotNull(ledgerAddress);
 		Assertion.checkNotNull(priority);
 		//---
 		try {
-			final TransactionReceipt transactionReceipt = EthereumTransfer.sendFunds(web3j, credentials, destinationAdr.getPublicAddress(),
+			final TransactionReceipt transactionReceipt = EthereumTransfer.sendFunds(web3j, credentials, ledgerAddress.getPublicAddress(),
 					BigDecimal.valueOf(0), Convert.Unit.WEI, data, priority)
 					.send();
 
@@ -144,51 +138,18 @@ public final class EthereumLedgerPlugin implements LedgerPlugin {
 		}
 	}
 
-	@Override
-	public void subscribeNewMessages(final String name, final Consumer<LedgerTransaction> consumer) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(consumer);
-		//-----
-		final Subscription subscription = web3j.transactionObservable()
-				.filter(tx -> tx.getTo().equals(myPublicAddr.getPublicAddress()))
-				.map(EthereumLedgerPlugin::convertTransactionToLedgerTransaction)
-				.subscribe(consumer::accept);
-		LOGGER.info("Getting new messages sent to {}.", myPublicAddr);
-		MAP_SUBSCRIPTIONS.put(name, subscription);
-	}
-
-	@Override
-	public void subscribeExistingMessages(final String name, final Consumer<LedgerTransaction> consumer) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(consumer);
-		//-----
-		final Subscription subscription = web3j.catchUpToLatestTransactionObservable(DefaultBlockParameterName.EARLIEST)
-				.filter(tx -> tx.getTo().equals(myPublicAddr.getPublicAddress()))
-				.map(EthereumLedgerPlugin::convertTransactionToLedgerTransaction)
-				.subscribe(consumer::accept);
-		LOGGER.info("Getting existing messages sent to {}.", myPublicAddr);
-		MAP_SUBSCRIPTIONS.put(name, subscription);
-	}
-
-	@Override
-	public void subscribeAllMessages(final String name, final Consumer<LedgerTransaction> consumer) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(consumer);
-		//-----
-		final Subscription subscription = web3j.catchUpToLatestAndSubscribeToNewTransactionsObservable(DefaultBlockParameterName.EARLIEST)
-				.filter(tx -> tx.getTo().equals(myPublicAddr.getPublicAddress()))
-				.map(EthereumLedgerPlugin::convertTransactionToLedgerTransaction)
-				.subscribe(consumer::accept);
-		LOGGER.info("Getting all messages sent to {}.", myPublicAddr);
-		MAP_SUBSCRIPTIONS.put(name, subscription);
-	}
-
-	@Override
-	public void unsubscribe(final String name) {
-		Assertion.checkArgNotEmpty(name);
-		//-----
-		MAP_SUBSCRIPTIONS.get(name).unsubscribe();
-	}
+//	@Override
+//	public void subscribeNewMessages(final String name, final Consumer<LedgerTransaction> consumer) {
+//		Assertion.checkArgNotEmpty(name);
+//		Assertion.checkNotNull(consumer);
+//		//-----
+//		final Subscription subscription = web3j.transactionObservable()
+//				.filter(tx -> tx.getTo().equals(myPublicAddr.getPublicAddress()))
+//				.map(EthereumLedgerPlugin::convertTransactionToLedgerTransaction)
+//				.subscribe(consumer::accept);
+//		LOGGER.info("Getting new messages sent to {}.", myPublicAddr);
+//		MAP_SUBSCRIPTIONS.put(name, subscription);
+//	}
 
 	private static LedgerTransaction convertTransactionToLedgerTransaction(final Transaction transaction) {
 		return LedgerTransaction.builder()
