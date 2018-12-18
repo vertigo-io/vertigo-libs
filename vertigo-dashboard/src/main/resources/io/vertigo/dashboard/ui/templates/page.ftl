@@ -26,8 +26,8 @@
 	</head>
 	<body>
 		<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-		  <a class="navbar-brand" href="/dashboard">Dashboard</a>
-		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="/dashboard" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		  <a class="navbar-brand" href="/${contextName}/dashboard/">Dashboard</a>
+		  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="/${contextName}/dashboard/" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 		    <span class="navbar-toggler-icon"></span>
 		  </button>
 		  <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -71,6 +71,11 @@
 			<li class="nav-item">
 				<a class="nav-link ${(moduleName?? && (moduleName == 'vega'))?then('active', '')}" href="/${contextName}/dashboard/modules/vega" data-toggle="popover" data-placement="right" data-content="Vega">
 					<i class="material-icons">import_export</i>
+				</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link ${(moduleName?? && (moduleName == 'vui'))?then('active', '')}" href="/${contextName}/dashboard/modules/vui" data-toggle="popover" data-placement="right" data-content="VUi">
+					<i class="material-icons">insert_drive_file</i>
 				</a>
 			</li>
           </ul>

@@ -122,7 +122,7 @@ function showTables() {
 	$('div.datatable').each(function () {
 		var elem = $(this);
 		//--- query
-		var dataUrl = "/dashboard/"+getDataUrl(elem); 
+		var dataUrl = getDataUrl(elem); 
 		var queryMeasures = elem.data("query-measures");
 		var queryDataFilter = elem.data("query-data-filter");
 		var queryTimeFilter = elem.data("query-time-filter");
