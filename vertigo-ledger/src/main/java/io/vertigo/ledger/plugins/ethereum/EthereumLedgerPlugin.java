@@ -129,7 +129,7 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 	public BigInteger getWalletBalance(final LedgerAddress ledgerAddress) {
 		Assertion.checkNotNull(ledgerAddress);
 		//---
-		EthGetBalance balance;
+		final EthGetBalance balance;
 		try {
 			balance = web3j.ethGetBalance(ledgerAddress.getPublicAddress(), DefaultBlockParameterName.LATEST).sendAsync().get();
 		} catch (InterruptedException | ExecutionException e) {
