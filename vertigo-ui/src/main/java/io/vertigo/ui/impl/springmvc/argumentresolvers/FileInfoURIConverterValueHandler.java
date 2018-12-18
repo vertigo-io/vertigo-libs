@@ -43,6 +43,7 @@ import io.vertigo.ui.core.ProtectedValueUtil;
 
 public final class FileInfoURIConverterValueHandler extends AbstractMessageConverterMethodProcessor {
 
+	//Used to support ParameterizedType parameters (not used for return value)
 	private final ParameterizedTypeValueHandlerHelper<FileInfoURI> parameterizedTypeValueHandlerHelper;
 
 	public FileInfoURIConverterValueHandler() {
@@ -54,7 +55,7 @@ public final class FileInfoURIConverterValueHandler extends AbstractMessageConve
 
 	@Override
 	public boolean supportsReturnType(final MethodParameter returnType) {
-		return parameterizedTypeValueHandlerHelper.supportsType(returnType);
+		return FileInfoURI.class.isAssignableFrom(returnType.getParameterType());
 	}
 
 	@Override

@@ -40,6 +40,7 @@ import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dashboard.ui.commons.CommonsDashboardControler;
 import io.vertigo.dashboard.ui.dynamo.DynamoDashboardControler;
 import io.vertigo.dashboard.ui.vega.VegaDashboardControler;
+import io.vertigo.dashboard.ui.vui.VUiDashboardControler;
 import spark.Response;
 import spark.Spark;
 import spark.utils.GzipUtils;
@@ -55,6 +56,7 @@ public final class DashboardRouter {
 		controlerMap.put("commons", CommonsDashboardControler.class);
 		controlerMap.put("dynamo", DynamoDashboardControler.class);
 		controlerMap.put("vega", VegaDashboardControler.class);
+		controlerMap.put("vui", VUiDashboardControler.class);
 	}
 
 	private final App app;
@@ -92,7 +94,7 @@ public final class DashboardRouter {
 		});
 
 		Spark.get("/dashboard/", (request, response) -> {
-			final List<String> modules = Arrays.asList("commons", "dynamo", "vega");
+			final List<String> modules = Arrays.asList("commons", "dynamo", "vega", "vui");
 			final Map<String, Object> model = new HashMap<>();
 			model.put("modules", modules);
 			model.put("contextName", contextName);
