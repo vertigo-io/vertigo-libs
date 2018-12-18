@@ -20,6 +20,7 @@
 		</q-chips-input>
 	</vu:label-edit>
 	<input th:v-for="|id in vueData.${object}.${field}|" type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="id" />
+	<input th::v-if="|vueData.${object}.${field}.length == 0|" type="hidden" th:name="|vContext[${object}][${field}]|" value="" />
 </th:block> 
 
 <th:block th:fragment="chips-autocomplete-read(object, field, label, list, valueField, staticData, label_attrs, input_attrs)" vu:alias="chips-autocomplete" vu:selector="${viewMode=='read'}" >

@@ -67,11 +67,15 @@ var VUi = {
 					return this.parseDateAsString(this.$data.vueData[object][field], format)
 				},
 				parseDateAsString : function (dateAsString, format) {
-					var parts = dateAsString.match(/(\d+)/g);
-					var i=0;
-					var fmt={};
-					format.replace(/(YYYY|MM|DD)/g, function(part) { fmt[part] = i++; });
-					return Quasar.utils.date.buildDate({year :parts[fmt['YYYY']], month :parts[fmt['MM']], date : parts[fmt['DD']]});
+					if (dateAsString) {
+						var parts = dateAsString.match(/(\d+)/g);
+						var i=0;
+						var fmt={};
+						format.replace(/(YYYY|MM|DD)/g, function(part) { fmt[part] = i++; });
+						return Quasar.utils.date.buildDate({year :parts[fmt['YYYY']], month :parts[fmt['MM']], date : parts[fmt['DD']]});
+					} else {
+						return null;
+					}
 				},
 				sortDatesAsString : function (format) {
 					return function (date1, date2) {
@@ -85,11 +89,15 @@ var VUi = {
 					return this.parseDateTimeAsString(this.$data.vueData[object][field], format);
 				},
 				parseDateTimeAsString : function (dateTimeAsString, format) {
-					var parts = dateTimeAsString.match(/(\d+)/g);
-					var i=0;
-					var fmt={};
-					format.replace(/(YYYY|MM|DD|HH|mm)/g, function(part) { fmt[part] = i++; });
-					return Quasar.utils.date.buildDate({year :parts[fmt['YYYY']], month :parts[fmt['MM']], date : parts[fmt['DD']], date : parts[fmt['DD']], hours : parts[fmt['HH']], minutes : parts[fmt['mm']]});
+					if (dateTimeAsString) {
+						var parts = dateTimeAsString.match(/(\d+)/g);
+						var i=0;
+						var fmt={};
+						format.replace(/(YYYY|MM|DD|HH|mm)/g, function(part) { fmt[part] = i++; });
+						return Quasar.utils.date.buildDate({year :parts[fmt['YYYY']], month :parts[fmt['MM']], date : parts[fmt['DD']], date : parts[fmt['DD']], hours : parts[fmt['HH']], minutes : parts[fmt['mm']]});
+					} else {
+						return null;
+					}
 				},
 				sortDateTimesAsString : function (format) {
 					return function (dateTime1, dateTime2) {
