@@ -45,7 +45,7 @@ public final class DtListStateMethodArgumentResolver implements HandlerMethodArg
 		final String sortFieldName = parametersMap.containsKey("sortFieldName") ? !StringUtil.isEmpty(webRequest.getParameter("sortFieldName")) ? StringUtil.camelToConstCase(webRequest.getParameter("sortFieldName")) : null : null;
 		final Boolean sortDesc = parametersMap.containsKey("sortDesc") ? Boolean.valueOf(webRequest.getParameter("sortDesc")) : null;
 
-		return new DtListState(top, skip, sortFieldName, sortDesc);
+		return  DtListState.of(top, skip, sortFieldName, sortDesc);
 	}
 
 }

@@ -60,7 +60,7 @@ public final class MoviesController extends AbstractVSpringMvcController {
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) {
-		final DtListState dtListState = new DtListState(200, 0, null, null);
+		final DtListState dtListState = DtListState.of(200, 0);
 		final DtList<MovieDisplay> sortedList = movieServices.getMoviesDisplay(dtListState);
 		viewContext.publishDtList(MOVIES, MovieDisplayFields.MOV_ID, sortedList);
 		viewContext.publishRef(CRITERIA, "");
