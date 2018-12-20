@@ -1,11 +1,12 @@
 Vue.component('v-notifications', {
 	template : 
-'<q-btn round dense :color="iconColor" :icon="count>0?icon:iconNone" class="on-left" >'
+'<q-btn round dense :color="hasNew?\'primary\':\'white\'" :textColor="hasNew?\'white\':\'primary\'" :icon="count>0?icon:iconNone" class="on-left" >'
 +'	<q-chip floating color="red" v-if="count>0" >{{count}}</q-chip>'
 +'	<q-popover>'
-+'		<q-list link>'
-+'			<q-list-header>Notifications <q-btn round flat icon="settings" class="on-left"></q-btn></q-list-header>'
-+'          <q-item v-for="notif in list" :key="notif.uuid" >'
++'		<q-list link style="width:300px">'
++'			<q-list-header class="q-py-none row items-center justify-between">Notifications<q-btn round flat icon="settings"></q-btn></q-list-header>'
++'			<q-item-separator />'
++'          <q-item v-for="notif in list" :key="notif.uuid" class="q-py-none" >'
 +'    			<q-item-side><q-icon :name="toIcon(notif.type)" size="2rem"></q-icon></q-item-side>'
 +'    			<q-item-main :label="notif.title" :sublabel="notif.content" label-lines="1" sublabel-lines="4">'
 +'				</q-item-main>'
@@ -25,9 +26,9 @@ Vue.component('v-notifications', {
 	},
 	data: function() {
 	    return {
-	    	firstCall : false,
+	    	firstCall : true,
 	        list: [],
-	        iconColor : 'grey',
+	        hasNew : false,
 	        count: 0,
 	        timer: ''
 	    }
@@ -48,7 +49,8 @@ Vue.component('v-notifications', {
 	    },
 	    updateNotificationsData : function (newList) {
 	    	// Tri par ordre décroissant de date de création
-	    	const sortedList = newList.sort((a,b) => new Date(b.creationDate) - new Date(a.creationDate));	    	
+	    	const sortedList = newList.sort((a,b) => b.creationDate - a.creationDate);
+	    	console.log(sortedList);
 	    	var newElements = [];	    	
 	    	// Traverse both arrays simultaneously.
 	    	var lastOldElement = this.list[0];
@@ -60,7 +62,7 @@ Vue.component('v-notifications', {
 			        	if(sortedList[newIdx].creationDate < lastOldElement.creationDate) {
 			        		break;
 			        	} else {
-			        		newElements.add(sortedList[newIdx]);
+			        		newElements.push(sortedList[newIdx]);
 			        	}
 		        	}
 		        }
@@ -69,7 +71,7 @@ Vue.component('v-notifications', {
 	    	this.list = sortedList;
 	    	// Met à jour le nombre total de notifications
 	    	this.count = sortedList.length;
-	    	this.iconColor = newElements.length>0?'primary':'grey';
+	    	this.hasNew = newElements.length>0;
 	    	if(!this.firstCall) {
 	    		newElements.forEach(function(notif) {
 	    			this.$q.notify({ 
