@@ -3,6 +3,7 @@ Vue.component('v-map', {
 	props : {
 		id: { type: String, required: true},
 		list : { type: Array, required: true },
+		field: { type: String, required: true},
 		markerColor : { type: String, 'default': "#000000" },
 		markerFont : { type: String, 'default': "Material Icons" },
 		markerIcon : { type: String, 'default': "place" },
@@ -19,9 +20,16 @@ Vue.component('v-map', {
 			})
 		});
 
+		var geoField = this.$props.field;
 		features = this.$props.list.map(function(object) {
+			var geoObject;
+			if (typeof object[geoField] === 'string' || object[geoField] instanceof String){
+				geoObject = JSON.parse(object[geoField]);
+			} else {
+				geoObject = object[geoField];
+			}
 			var iconFeature = new ol.Feature({
-				geometry : new ol.geom.Point(ol.proj.fromLonLat([ object.lat, object.lon ])),
+				geometry : new ol.geom.Point(ol.proj.fromLonLat([ geoObject.lat, geoObject.lon ])),
 			});
 			
 			iconFeature.setStyle(styleIcon);
