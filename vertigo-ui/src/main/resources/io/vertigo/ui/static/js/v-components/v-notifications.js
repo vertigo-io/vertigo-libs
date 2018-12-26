@@ -22,6 +22,7 @@ Vue.component('v-notifications', {
 	props : {
 		icon : { type: String, 'default': 'notifications' },
 		iconNone : { type: String, 'default': 'notifications_none' },
+		typeIconMap : { type: Object, 'default': function() { return {} } },
 		baseUrl : { type: String, 'default': '/api/', required:true }
 	},
 	data: function() {
@@ -50,7 +51,6 @@ Vue.component('v-notifications', {
 	    updateNotificationsData : function (newList) {
 	    	// Tri par ordre décroissant de date de création
 	    	const sortedList = newList.sort((a,b) => b.creationDate - a.creationDate);
-	    	console.log(sortedList);
 	    	var newElements = [];	    	
 	    	// Traverse both arrays simultaneously.
 	    	var lastOldElement = this.list[0];
@@ -90,11 +90,8 @@ Vue.component('v-notifications', {
 	    },	    
 	    cancelAutoUpdate: function() { clearInterval(this.timer) },
 	    toIcon : function(type) {
-	    	if(type == 'MARS-LOGIN') {
-	    		return 'verified_user';
-	    	} else {
-	    		return 'mail';
-	    	}
+	    	var typeIcon = this.typeIconMap[type];
+	    	return typeIcon?typeIcon:'mail';
 	    },
 	    toDelay : function(creationDate) {
 	    	let diff = Quasar.utils.date.getDateDiff(Date.now(),creationDate, 'days');
