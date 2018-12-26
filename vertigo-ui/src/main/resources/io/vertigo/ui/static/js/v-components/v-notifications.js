@@ -44,8 +44,6 @@ Vue.component('v-notifications', {
 	        this.$http.get(this.baseUrl+'x/notifications/api/messages')
 	        .then( function (response) { //Ok
 	        	this.updateNotificationsData(response.body);
-			}, function(response) { //Ko
-				this.$q.notify(response.status + ":" +response.statusText+ " Can't reload notifications");
 			});
 	    },
 	    updateNotificationsData : function (newList) {

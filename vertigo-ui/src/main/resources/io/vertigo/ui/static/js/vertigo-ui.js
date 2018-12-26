@@ -1,5 +1,50 @@
 var VUi = { 
 		methods : {
+				onAjaxError: function(response) {
+				//Quasar Notif Schema
+				  let notif = {
+					  type: 'negative',
+					  message: 'Network Error.',
+					  icon: 'warning',
+				      timeout: 2500,
+				   }
+				  
+				   //Setup Error Message //if response was an error
+				   if(response.hasOwnProperty('message')){ 
+			    	  notif.message = response.message
+			       }
+				  //Setup Generic Response Messages
+				  if(response.status === 401){
+					  notif.message = 'UnAuthorized, you may login with an authorized account'
+					  //vm.$emit('logout') //Emit Logout Event
+				  } else if(response.status === 403){
+					  notif.message = 'Forbidden, your havn&quote;t enought rights'					 
+				  } else if(response.status === 404){
+					  notif.message = 'API Route is Missing or Undefined'
+				  } else if(response.status === 405){
+					  notif.message = 'API Route Method Not Allowed'
+				  } else if(response.status === 422){
+				     //Validation Message
+					  notif.message = 'Data validation errors'
+				  } else if(response.status >= 500){
+					  notif.message = 'Server Error'
+				  }
+				  if(response.statusText) { 
+			    	  notif.message = response.statusText
+			      }
+				  //Try to Use the Response Message
+				  if(response.hasOwnProperty('data')){
+					 if(response.data.hasOwnProperty('message') && response.data.message.length > 0){
+				    	 notif.message = response.data.message
+				     } else if(response.data.hasOwnProperty('globalErrors') && response.data.globalErrors.length > 0){
+				    	 notif.message = response.data.globalErrors.join('<br/>\n ');
+				     }
+				  }
+				  //Send the notif
+				  if(notif.message.length > 0) {
+				     this.$q.notify(notif);
+				  }
+				},			
 				transformListForSelection: function (list, valueField, labelField) {
 					return this.$data.vueData[list].map(function (object) {
 						return { value: object[valueField], label: object[labelField].toString()} // a label is always a string
@@ -21,7 +66,8 @@ var VUi = {
 							if (pagination.sortUrl) {
 								//order call the server
 								pagination.page = 1 //reset pagination
-								this.$http.post(pagination.sortUrl, { sortFieldName : pagination.sortBy, sortDesc : pagination.descending, CTX: this.$data.vueData.CTX}, { emulateJSON: true }).then( function (response ) {
+								this.$http.post(pagination.sortUrl, { sortFieldName : pagination.sortBy, sortDesc : pagination.descending, CTX: this.$data.vueData.CTX}, { emulateJSON: true })
+								.then( function (response ) {
 									vueData[pagination.listKey] = response.body[pagination.listKey];
 									this.$data.vueData.CTX = response.body['CTX'];
 								});
@@ -208,3 +254,7 @@ var VUi = {
 					},
 			  }
 	}
+
+Vue.http.interceptors.push(function(request) {
+   return function(response) { if(!response.ok) { VUi.methods.onAjaxError.bind(this)(response); } };
+});
