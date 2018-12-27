@@ -24,9 +24,20 @@ Vue.directive('scroll-spy', {
         bind: function(elNav, args) {
         	const offset = args.value.offset?args.value.offset:0;
         	const elAs = elNav.querySelectorAll('a')
+        	elAs[0].classList.add("active") //first active
         	const scrollContainer = Quasar.utils.scroll.getScrollTarget(document.querySelector(elAs[0].hash))
     		
         	Vue.scrollSpyHandler = function(scroll) {
+        		//We check if nav should be fixed
+        		// Add the fixed class to the header when you reach its scroll position. Remove "fixed" when you leave the scroll position
+        		if (window.pageYOffset > offset) {
+        			elNav.style.top = elNav.getBoundingClientRect().top+"px";
+        			elNav.classList.add("fixed");
+        		} else {
+        			elNav.classList.remove("fixed");
+        			elNav.style.top = null;
+        		}
+        		
         		//We compute breakpoints
         		var scrollPosition = Quasar.utils.scroll.getScrollPosition(scrollContainer)
         		var scrollBreakpoints = Vue.computeBreakPoints(scrollPosition);
