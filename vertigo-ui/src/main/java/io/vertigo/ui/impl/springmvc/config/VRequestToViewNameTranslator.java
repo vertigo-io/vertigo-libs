@@ -23,12 +23,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.web.servlet.RequestToViewNameTranslator;
 
 import io.vertigo.lang.Assertion;
+import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 
 public class VRequestToViewNameTranslator implements RequestToViewNameTranslator {
 
 	@Override
 	public String getViewName(final HttpServletRequest request) throws Exception {
-		final String defaultViewName = (String) request.getAttribute("defaultViewName");
+		final String defaultViewName = (String) request.getAttribute(AbstractVSpringMvcController.DEFAULT_VIEW_NAME_ATTRIBUTE);
 		Assertion.checkNotNull(defaultViewName);
 		//---
 		return defaultViewName;

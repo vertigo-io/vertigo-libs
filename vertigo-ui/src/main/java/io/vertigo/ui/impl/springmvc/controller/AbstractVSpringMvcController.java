@@ -50,6 +50,8 @@ import io.vertigo.util.StringUtil;
  */
 public abstract class AbstractVSpringMvcController {
 
+	public static final String DEFAULT_VIEW_NAME_ATTRIBUTE = "defaultViewName";
+
 	/** Clé de la collection des contexts dans le KVStoreManager. */
 	public static final String CONTEXT_COLLECTION_NAME = "VViewContext";
 
@@ -118,8 +120,7 @@ public abstract class AbstractVSpringMvcController {
 			//initContext();
 		}
 		viewContext.setCtxId();
-		request.setAttribute("defaultViewName", getDefaultViewName(this));
-
+		request.setAttribute(DEFAULT_VIEW_NAME_ATTRIBUTE, getDefaultViewName(this));
 	}
 
 	private static String getDefaultViewName(final AbstractVSpringMvcController controller) {
