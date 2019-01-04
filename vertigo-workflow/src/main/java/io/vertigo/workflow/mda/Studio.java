@@ -76,6 +76,7 @@ public class Studio {
 							Param.of("targetSubDir", "."),
 							Param.of("generateDtResourcesJS", "true"),
 							Param.of("generateJsDtDefinitions", "true"))
+					.addComponent(MasterDataManager.class, MasterDataManagerImpl.class)
 					.build())
 				.build();
 		// @formatter:on
