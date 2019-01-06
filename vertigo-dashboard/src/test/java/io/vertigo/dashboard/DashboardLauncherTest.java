@@ -102,7 +102,7 @@ public class DashboardLauncherTest extends AbstractTestCaseJU5 {
 	public void server() {
 		final App app = getApp();
 		final DashboardRouter dashboardRouter = new DashboardRouter(app);
-		dashboardRouter.route("");
+		dashboardRouter.route();
 		while (!Thread.interrupted()) {
 			try {
 				Thread.sleep(10 * 1000);
