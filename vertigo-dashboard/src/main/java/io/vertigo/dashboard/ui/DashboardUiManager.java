@@ -18,32 +18,16 @@
  */
 package io.vertigo.dashboard.ui;
 
-import java.util.Optional;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.Component;
-import io.vertigo.lang.Assertion;
 
 public final class DashboardUiManager implements Component, Activeable {
-
-	private final Optional<String> contextNameOpt;
-
-	@Inject
-	public DashboardUiManager(
-			final @Named("contextName") Optional<String> contextNameOpt) {
-		Assertion.checkNotNull(contextNameOpt);
-		//---
-		this.contextNameOpt = contextNameOpt;
-	}
 
 	@Override
 	public void start() {
 		final DashboardRouter dashboardRouter = new DashboardRouter(Home.getApp());
-		dashboardRouter.route(contextNameOpt.orElse(""));
+		dashboardRouter.route();
 	}
 
 	@Override

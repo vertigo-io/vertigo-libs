@@ -18,11 +18,12 @@
  */
 package io.vertigo.orchestra;
 
+import io.vertigo.account.AccountFeatures;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -30,7 +31,7 @@ import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
-import io.vertigo.dynamo.impl.DynamoFeatures;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.orchestra.boot.DataBaseInitializer;
@@ -42,7 +43,6 @@ import io.vertigo.orchestra.webservices.WsExecution;
 import io.vertigo.orchestra.webservices.WsExecutionControl;
 import io.vertigo.orchestra.webservices.data.user.TestUserSession;
 import io.vertigo.orchestra.webservices.data.user.WsTestLogin;
-import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.vega.VegaFeatures;
 
 public final class MyAppConfig {
@@ -85,8 +85,8 @@ public final class MyAppConfig {
 				.addModule(ModuleConfig.builder("databaseInitializer").addComponent(DataBaseInitializer.class).build())
 				//
 				.addModule(new OrchestraFeatures()
-						.withDataBase("NODE_TEST_1", 1, 3, 60)
-						.withMemory(1)
+						.withDataBase("NODE_TEST_1", "1", "3", "60")
+						.withMemory("1")
 						.build())
 				.addModule(ModuleConfig.builder("orchestra-test")
 						//---Services
@@ -97,14 +97,14 @@ public final class MyAppConfig {
 
 	public static void addVegaEmbeded(final AppConfigBuilder appConfigBuilder) {
 		appConfigBuilder
-				.addModule(new PersonaFeatures()
-						.withUserSession(TestUserSession.class)
+				.addModule(new AccountFeatures()
+						.withSecurity(TestUserSession.class.getName())
 						.build())
 				.addModule(new VegaFeatures()
 						.withTokens("tokens")
 						.withSecurity()
-						.withMisc()
-						.withEmbeddedServer(WS_PORT)
+						.withRateLimiting()
+						.withEmbeddedServer(Integer.toString(WS_PORT))
 						.build());
 	}
 

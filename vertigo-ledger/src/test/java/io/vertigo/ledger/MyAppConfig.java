@@ -1,7 +1,7 @@
 package io.vertigo.ledger;
 
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 
 /**

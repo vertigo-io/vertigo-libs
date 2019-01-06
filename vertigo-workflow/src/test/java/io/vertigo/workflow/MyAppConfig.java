@@ -23,15 +23,14 @@ import io.vertigo.account.plugins.account.store.loader.LoaderAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
-import io.vertigo.dynamo.impl.DynamoFeatures;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
-import io.vertigo.persona.impl.security.PersonaFeatures;
 import io.vertigo.rules.impl.RulesFeatures;
 import io.vertigo.rules.plugins.memory.MemoryRuleConstantsStorePlugin;
 import io.vertigo.rules.plugins.memory.MemoryRuleStorePlugin;
@@ -64,7 +63,6 @@ public class MyAppConfig {
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
-				.addModule(new PersonaFeatures().withUserSession(TestUserSession.class).build())
 				.addModule(new CommonsFeatures()
 						.withCache(io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin.class)
 						.withScript()
@@ -82,7 +80,8 @@ public class MyAppConfig {
 						.addDataStorePlugin(SqlDataStorePlugin.class)
 						.build())
 				.addModule(new AccountFeatures()
-						.withAccountStorePlugin(LoaderAccountStorePlugin.class,
+						.withSecurity(TestUserSession.class.getName())
+						.addPlugin(LoaderAccountStorePlugin.class,
 								Param.of("accountLoaderName", "MockIdentities"),
 								Param.of("groupLoaderName", "MockIdentities"))
 						.build())

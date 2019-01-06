@@ -19,8 +19,6 @@
 package io.vertigo.ledger;
 
 import io.vertigo.app.config.Features;
-import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
 import io.vertigo.core.param.Param;
 import io.vertigo.ledger.impl.services.LedgerManagerImpl;
 import io.vertigo.ledger.plugins.ethereum.EthereumLedgerPlugin;
@@ -31,7 +29,7 @@ import io.vertigo.ledger.services.LedgerManager;
  *
  * @author xdurand
  */
-public final class LedgerFeatures extends Features {
+public final class LedgerFeatures extends Features<LedgerFeatures> {
 
 	/**
 	 * Constructor.
@@ -54,7 +52,6 @@ public final class LedgerFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
 				.addComponent(LedgerManager.class, LedgerManagerImpl.class);
 	}
 

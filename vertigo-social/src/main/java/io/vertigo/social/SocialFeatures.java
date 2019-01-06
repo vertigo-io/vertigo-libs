@@ -19,64 +19,75 @@
 package io.vertigo.social;
 
 import io.vertigo.app.config.Features;
+import io.vertigo.app.config.json.Feature;
 import io.vertigo.social.impl.comment.CommentServicesImpl;
 import io.vertigo.social.impl.notification.NotificationServicesImpl;
-import io.vertigo.social.plugins.comment.redis.RedisCommentPlugin;
-import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;
-import io.vertigo.social.plugins.notification.redis.RedisNotificationPlugin;
 import io.vertigo.social.services.comment.CommentServices;
 import io.vertigo.social.services.notification.NotificationServices;
+import io.vertigo.social.webservices.account.AccountWebServices;
+import io.vertigo.social.webservices.notification.NotificationWebServices;
 
 /**
  * Defines the 'comment' extension
  * @author pchretien
  */
-public final class SocialFeatures extends Features {
+public final class SocialFeatures extends Features<SocialFeatures> {
+
+	private boolean commentsEnabled;
+	private boolean notificationsEnabled;
+	private boolean webapiEnabled;
 
 	/**
 	 * cONSTRUCTOR;
 	 */
 	public SocialFeatures() {
-		super("x-comment");
+		super("social");
 	}
 
 	/**
-	 * Defines REDIS as the database to store the notifications
+	 * Activates notifications
 	 * @return the features
 	 */
-	public SocialFeatures withRedisNotifications() {
-		getModuleConfigBuilder()
-				.addComponent(NotificationServices.class, NotificationServicesImpl.class)
-				.addPlugin(RedisNotificationPlugin.class);
-
+	@Feature("notifications")
+	public SocialFeatures withNotifications() {
+		notificationsEnabled = true;
 		return this;
 	}
 
 	/**
-	 * Defines Memory as the database to store the notifications
+	 * Activates comments
 	 * @return the features
 	 */
-	public SocialFeatures withMemoryNotifications() {
-		getModuleConfigBuilder()
-				.addComponent(NotificationServices.class, NotificationServicesImpl.class)
-				.addPlugin(MemoryNotificationPlugin.class);
-
+	@Feature("comments")
+	public SocialFeatures withComments() {
+		commentsEnabled = true;
 		return this;
 	}
 
 	/**
-	 * Defines REDIS as the database to store the comments
+	 * Activates comments
 	 * @return the features
 	 */
-	public SocialFeatures withRedisComments() {
-		getModuleConfigBuilder()
-				.addComponent(CommentServices.class, CommentServicesImpl.class)
-				.addPlugin(RedisCommentPlugin.class);
+	@Feature("webapi")
+	public SocialFeatures withWebApi() {
+		webapiEnabled = true;
 		return this;
 	}
 
 	@Override
 	protected void buildFeatures() {
-		//nothing
+		if (notificationsEnabled) {
+			getModuleConfigBuilder()
+					.addComponent(NotificationServices.class, NotificationServicesImpl.class);
+			if (webapiEnabled) {
+				getModuleConfigBuilder()
+						.addComponent(AccountWebServices.class)
+						.addComponent(NotificationWebServices.class);
+			}
+		}
+		if (commentsEnabled) {
+			getModuleConfigBuilder()
+					.addComponent(CommentServices.class, CommentServicesImpl.class);
+		}
 	}
 }

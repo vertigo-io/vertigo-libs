@@ -31,7 +31,7 @@ import io.vertigo.app.App;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
 import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
@@ -40,7 +40,7 @@ import io.vertigo.dashboard.ui.DashboardRouter;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
-import io.vertigo.dynamo.impl.DynamoFeatures;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.search.elasticsearch.embedded.ESEmbeddedSearchServicesPlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
@@ -74,14 +74,15 @@ public class DashboardLauncherTest extends AbstractTestCaseJU5 {
 						.withStore()
 						.addDataStorePlugin(SqlDataStorePlugin.class,
 								Param.of("sequencePrefix", "SEQ_"))
-						.withSearch(ESEmbeddedSearchServicesPlugin.class,
+						.withSearch()
+						.addPlugin(ESEmbeddedSearchServicesPlugin.class,
 								Param.of("home", "io/vertigo/dashboard/search/indexconfig"),
 								Param.of("config.file", "io/vertigo/dashboard/search/indexconfig/elasticsearch.yml"),
 								Param.of("envIndex", "TU_TEST"),
 								Param.of("rowsPerQuery", "50"))
 						.build())
 				.addModule(new VegaFeatures()
-						.withEmbeddedServer(8080)
+						.withEmbeddedServer(Integer.toString(8080))
 						.withApiPrefix("/api")
 						.build())
 				.addModule(new DashboardFeatures()

@@ -22,19 +22,23 @@ import java.util.Optional;
 
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.account.cache.memory.MemoryAccountCachePlugin;
+import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
 import io.vertigo.account.plugins.account.store.loader.LoaderAccountStorePlugin;
 import io.vertigo.account.plugins.authentication.mock.MockAuthenticationPlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.impl.DynamoFeatures;
-import io.vertigo.persona.impl.security.PersonaFeatures;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.notification.data.TestUserSession;
 import io.vertigo.social.notification.webservices.TestLoginWebServices;
+import io.vertigo.social.plugins.comment.memory.MemoryCommentPlugin;
+import io.vertigo.social.plugins.comment.redis.RedisCommentPlugin;
+import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;
+import io.vertigo.social.plugins.notification.redis.RedisNotificationPlugin;
 import io.vertigo.social.webservices.account.AccountWebServices;
 import io.vertigo.social.webservices.comment.CommentWebServices;
 import io.vertigo.social.webservices.notification.NotificationWebServices;
@@ -53,10 +57,7 @@ public final class MyAppConfig {
 			.beginBoot()
 				.withLocales("fr")
 				.addPlugin( ClassPathResourceResolverPlugin.class)
-			.endBoot()
-			.addModule(new PersonaFeatures()
-					.withUserSession(TestUserSession.class)
-					.build());
+			.endBoot();
 
 			final CommonsFeatures commonsFeatures = new CommonsFeatures();
 			if (redis) {
@@ -71,28 +72,35 @@ public final class MyAppConfig {
 					.build());
 
 			final AccountFeatures accountFeatures = new AccountFeatures()
-					.withAuthentication(MockAuthenticationPlugin.class)
-					.withAccountStorePlugin(LoaderAccountStorePlugin.class,
+					.withSecurity(TestUserSession.class.getName())
+					.withAuthentication()
+					.addPlugin(MockAuthenticationPlugin.class)
+					.addPlugin(LoaderAccountStorePlugin.class,
 							Param.of("accountLoaderName", "MockIdentities"),
 							Param.of("groupLoaderName", "MockIdentities"));
+
+		final SocialFeatures socialFeatures = new SocialFeatures()
+			.withComments()
+			.withNotifications();
 
 		if (redis){
 			return  appConfigBuilder
 			.addModule(accountFeatures
-					.withRedisAccountCachePlugin()
+					.addPlugin(RedisAccountCachePlugin.class)
 					.build())
-			.addModule(new SocialFeatures()
-					.withRedisComments()
-					.withRedisNotifications()
+			.addModule(socialFeatures
+					.addPlugin(RedisNotificationPlugin.class)
+					.addPlugin(RedisCommentPlugin.class)
 					.build());
 		}
 		//else we use memory
 		return  appConfigBuilder
 				.addModule(accountFeatures
-						.withAccountCachePlugin(MemoryAccountCachePlugin.class)
+						.addPlugin(MemoryAccountCachePlugin.class)
 						.build())
-				.addModule(new SocialFeatures()
-						.withMemoryNotifications()
+				.addModule(socialFeatures
+						.addPlugin(MemoryNotificationPlugin.class)
+						.addPlugin(MemoryCommentPlugin.class)
 						.build());
 		// @formatter:on
 	}
@@ -107,7 +115,7 @@ public final class MyAppConfig {
 		return createAppConfigBuilder(true)
 			.addModule(new VegaFeatures()
 				.withSecurity()
-				.withEmbeddedServer(WS_PORT)
+				.withEmbeddedServer(Integer.toString(WS_PORT))
 				.build())
 			.addModule(ModuleConfig.builder("ws-account")
 					.addComponent(AccountWebServices.class)
