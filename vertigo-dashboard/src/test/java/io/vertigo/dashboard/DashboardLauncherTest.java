@@ -40,6 +40,7 @@ import io.vertigo.dashboard.ui.DashboardRouter;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
+import io.vertigo.database.plugins.timeseries.influxdb.InfluxDbTimeSeriesPlugin;
 import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.search.elasticsearch.embedded.ESEmbeddedSearchServicesPlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
@@ -68,7 +69,10 @@ public class DashboardLauncherTest extends AbstractTestCaseJU5 {
 								Param.of("jdbcDriver", Driver.class.getCanonicalName()),
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.withTimeSeriesDataBase()
-						.withInfluxDb("http://analytica.part.klee.lan.net:8086", "analytica", "kleeklee")
+						.addPlugin(InfluxDbTimeSeriesPlugin.class,
+								Param.of("host", "http://analytica.part.klee.lan.net:8086"),
+								Param.of("user", "analytica"),
+								Param.of("password", "kleeklee"))
 						.build())
 				.addModule(new DynamoFeatures()
 						.withStore()
