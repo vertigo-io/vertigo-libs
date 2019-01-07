@@ -31,12 +31,12 @@ import io.vertigo.ledger.services.LedgerAddress;
 public final class FakeLedgerPlugin implements LedgerPlugin {
 	@Override
 	public BigInteger getMyWalletBalance() {
-		return BigInteger.ONE;
+		return BigInteger.ZERO;
 	}
 
 	@Override
 	public BigInteger getWalletBalance(final LedgerAddress ledgerAddress) {
-		return BigInteger.ONE;
+		return BigInteger.ZERO;
 	}
 
 	@Override
