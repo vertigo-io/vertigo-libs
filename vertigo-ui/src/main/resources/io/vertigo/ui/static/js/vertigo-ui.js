@@ -16,7 +16,7 @@ var VUi = {
 				  //Setup Generic Response Messages
 				  if(response.status === 401){
 					  notif.message = 'UnAuthorized, you may login with an authorized account'
-					  //vm.$emit('logout') //Emit Logout Event
+					  this.$root.$emit('logout') //Emit Logout Event
 				  } else if(response.status === 403){
 					  notif.message = 'Forbidden, your havn&quote;t enought rights'					 
 				  } else if(response.status === 404){
