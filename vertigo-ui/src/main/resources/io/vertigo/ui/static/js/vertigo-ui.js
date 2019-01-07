@@ -150,6 +150,9 @@ var VUi = {
 						return (VUi.methods.parseDateTimeAsString(date1, format).getTime() > VUi.methods.parseDateTimeAsString(date2, format).getTime()) ? 1 : -1;
 					}
 				},
+				goTo : function (url) {
+					window.location = url;
+				},
 				openModal : function (modalId, url, params) {
 					if (url) {
 						var finalUrl = url;
