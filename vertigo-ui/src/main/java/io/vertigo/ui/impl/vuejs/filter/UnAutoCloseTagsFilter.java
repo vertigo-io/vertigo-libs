@@ -52,8 +52,8 @@ public final class UnAutoCloseTagsFilter extends AbstractFilter {
 				chain.doFilter(request, wrappedResponse);
 			} finally {
 				//with or without error we escape autoclosed tags
-				final String croppedHtml = proceed(wrappedResponse.getAsString(), tagsPrefixPattern);
-				response.getWriter().print(croppedHtml);
+				final String proceedHtml = proceed(wrappedResponse.getAsString(), tagsPrefixPattern);
+				response.getWriter().print(proceedHtml);
 			}
 		}
 	}

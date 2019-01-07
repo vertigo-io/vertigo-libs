@@ -51,7 +51,7 @@ class UnAutoCloseTagsServletResponseWrapper extends AbstractHttpServletResponseW
 	 * @return contents of the outputStream
 	 */
 	public String getAsString() {
-		return getStream().toString();
+		return getStream() != null ? getStream().toString() : ""; //if stream is null the outputstream wasn't open at all : no result we return "" instead of null which will print "null"
 	}
 
 	/**
