@@ -53,7 +53,7 @@ public class IftttAdapter {
 		Assertion.checkNotNull(proxyHost);
 		Assertion.checkNotNull(proxyPort);
 		Assertion.checkArgument(
-				(proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && proxyPort.isPresent()),
+				(proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()),
 				"les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		// ----
 		if (proxyHost.isPresent()) {

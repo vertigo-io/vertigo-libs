@@ -23,7 +23,7 @@ package io.vertigo.adapters.ifttt;
  * @author dt
  *
  */
-final class MakerEventMetadatas {
+public final class MakerEventMetadatas {
 
 	private String value1;
 	private String value2;
