@@ -24,16 +24,12 @@ import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.DynamoFeatures;
-import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
-import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.orchestra.boot.DataBaseInitializer;
 import io.vertigo.orchestra.services.execution.LocalExecutionProcessInitializer;
 import io.vertigo.orchestra.util.monitoring.MonitoringServices;
@@ -58,12 +54,13 @@ public final class MyAppConfig {
 						.withNodeId("NODE_TEST_1")
 						.build())
 				.addModule(new CommonsFeatures()
-						.withCache(MemoryCachePlugin.class)
+						.withCache()
+						.withMemoryCache()
 						.withScript()
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
-						.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
+						.withC3p0(
 								Param.of("name", "orchestra"),
 								Param.of("dataBaseClass", H2DataBase.class.getName()),
 								Param.of("jdbcDriver", org.h2.Driver.class.getName()),
@@ -72,11 +69,11 @@ public final class MyAppConfig {
 						.build())
 				.addModule(new DynamoFeatures()
 						.withKVStore()
-						.addKVStorePlugin(DelayedMemoryKVStorePlugin.class,
+						.withDelayedMemoryKV(
 								Param.of("collections", "tokens"),
 								Param.of("timeToLiveSeconds", "120"))
 						.withStore()
-						.addDataStorePlugin(SqlDataStorePlugin.class,
+						.withSqlStore(
 								Param.of("dataSpace", "orchestra"),
 								Param.of("connectionName", "orchestra"),
 								Param.of("sequencePrefix", "SEQ_"))
@@ -85,8 +82,8 @@ public final class MyAppConfig {
 				.addModule(ModuleConfig.builder("databaseInitializer").addComponent(DataBaseInitializer.class).build())
 				//
 				.addModule(new OrchestraFeatures()
-						.withDataBase("NODE_TEST_1", "1", "3", "60")
-						.withMemory("1")
+						.withDataBase(Param.of("nodeName", "NODE_TEST_1"), Param.of("daemonPeriodSeconds", "1"), Param.of("workersCount", "3"), Param.of("forecastDurationSeconds", "60"))
+						.withMemory(Param.of("workersCount", "1"))
 						.build())
 				.addModule(ModuleConfig.builder("orchestra-test")
 						//---Services
@@ -98,13 +95,13 @@ public final class MyAppConfig {
 	public static void addVegaEmbeded(final AppConfigBuilder appConfigBuilder) {
 		appConfigBuilder
 				.addModule(new AccountFeatures()
-						.withSecurity(TestUserSession.class.getName())
+						.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
 						.build())
 				.addModule(new VegaFeatures()
-						.withTokens("tokens")
+						.withTokens(Param.of("tokens", "tokens"))
 						.withSecurity()
 						.withRateLimiting()
-						.withEmbeddedServer(Integer.toString(WS_PORT))
+						.withEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)))
 						.build());
 	}
 

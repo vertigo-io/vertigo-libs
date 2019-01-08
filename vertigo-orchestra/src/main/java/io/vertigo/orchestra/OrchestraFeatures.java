@@ -18,13 +18,15 @@
  */
 package io.vertigo.orchestra;
 
-import javax.inject.Named;
+import java.util.stream.Stream;
 
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.orchestra.dao.definition.DefinitionPAO;
 import io.vertigo.orchestra.dao.definition.OActivityDAO;
 import io.vertigo.orchestra.dao.definition.OProcessDAO;
@@ -72,6 +74,16 @@ public final class OrchestraFeatures extends Features<OrchestraFeatures> {
 		super("orchestra");
 	}
 
+	private static Param findParamByName(final String paramName, final Param[] params) {
+		Assertion.checkArgNotEmpty(paramName);
+		//---
+		return Stream.of(params)
+				.filter(param -> paramName.equals(param.getName()))
+				.findFirst()
+				.orElseThrow(() -> new VSystemException("param '{0}' not found in params '{1}' ", paramName, params));
+
+	}
+
 	/**
 	 * Activate Orchestra with Database.
 	 * @param nodeName the name of the node
@@ -81,17 +93,22 @@ public final class OrchestraFeatures extends Features<OrchestraFeatures> {
 	 * @return these features
 	 */
 	@Feature("database")
-	public OrchestraFeatures withDataBase(final @Named("nodeName") String nodeName, @Named("daemonPeriodSeconds") final String daemonPeriodSeconds, final @Named("workersCount") String workersCount, final @Named("forecastDurationSeconds") String forecastDurationSeconds) {
+	public OrchestraFeatures withDataBase(final Param... params) {
+		final Param nodeName = findParamByName("nodeName", params);
+		final Param daemonPeriodSeconds = findParamByName("daemonPeriodSeconds", params);
+		final Param workersCount = findParamByName("workersCount", params);
+		final Param forecastDurationSeconds = findParamByName("forecastDurationSeconds", params);
+
 		getModuleConfigBuilder()
 				.addPlugin(DbProcessDefinitionStorePlugin.class)
 				.addPlugin(DbProcessSchedulerPlugin.class,
-						Param.of("nodeName", nodeName),
-						Param.of("planningPeriodSeconds", daemonPeriodSeconds),
-						Param.of("forecastDurationSeconds", forecastDurationSeconds))
+						nodeName,
+						Param.of("planningPeriodSeconds", daemonPeriodSeconds.getValueAsString()),
+						forecastDurationSeconds)
 				.addPlugin(DbProcessExecutorPlugin.class,
-						Param.of("nodeName", nodeName),
-						Param.of("workersCount", workersCount),
-						Param.of("executionPeriodSeconds", daemonPeriodSeconds))
+						nodeName,
+						workersCount,
+						Param.of("executionPeriodSeconds", daemonPeriodSeconds.getValueAsString()))
 				.addPlugin(DbProcessReportPlugin.class)
 				.addPlugin(DbProcessLoggerPlugin.class)
 				//----DAO
@@ -124,12 +141,13 @@ public final class OrchestraFeatures extends Features<OrchestraFeatures> {
 	 * @return these features
 	 */
 	@Feature("memory")
-	public OrchestraFeatures withMemory(final @Named("workersCount") String workersCount) {
+	public OrchestraFeatures withMemory(final Param... params) {
+		final Param workersCount = findParamByName("workersCount", params);
 		getModuleConfigBuilder()
 				.addPlugin(MemoryProcessDefinitionStorePlugin.class)
 				.addPlugin(MemoryProcessSchedulerPlugin.class)
 				.addPlugin(MemoryProcessExecutorPlugin.class,
-						Param.of("workersCount", workersCount));
+						workersCount);
 
 		return this;
 	}

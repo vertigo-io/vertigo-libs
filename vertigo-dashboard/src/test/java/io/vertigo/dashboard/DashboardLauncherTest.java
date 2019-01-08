@@ -18,8 +18,6 @@
  */
 package io.vertigo.dashboard;
 
-import java.util.Optional;
-
 import org.h2.Driver;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -33,17 +31,12 @@ import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
-import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dashboard.ui.DashboardRouter;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
-import io.vertigo.database.plugins.timeseries.influxdb.InfluxDbTimeSeriesPlugin;
 import io.vertigo.dynamo.DynamoFeatures;
-import io.vertigo.dynamo.plugins.search.elasticsearch.embedded.ESEmbeddedSearchServicesPlugin;
-import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
 import io.vertigo.vega.VegaFeatures;
 
@@ -58,36 +51,36 @@ public class DashboardLauncherTest extends AbstractTestCaseJU5 {
 				.withLocales("fr_FR")
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.withRedisConnector("redis-pic.part.klee.lan.net", 6379, 0, Optional.empty())
+						.withRedisConnector(Param.of("host", "redis-pic.part.klee.lan.net"), Param.of("port", "6379"), Param.of("database", "0"))
 						.addAnalyticsConnectorPlugin(SocketLoggerAnalyticsConnectorPlugin.class)
-						.withCache(MemoryCachePlugin.class)
+						.withCache()
+						.withMemoryCache()
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
-						.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
+						.withC3p0(
 								Param.of("dataBaseClass", H2DataBase.class.getCanonicalName()),
 								Param.of("jdbcDriver", Driver.class.getCanonicalName()),
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.withTimeSeriesDataBase()
-						.addPlugin(InfluxDbTimeSeriesPlugin.class,
+						.withInfluxDb(
 								Param.of("host", "http://analytica.part.klee.lan.net:8086"),
 								Param.of("user", "analytica"),
 								Param.of("password", "kleeklee"))
 						.build())
 				.addModule(new DynamoFeatures()
 						.withStore()
-						.addDataStorePlugin(SqlDataStorePlugin.class,
-								Param.of("sequencePrefix", "SEQ_"))
+						.withSqlStore()
 						.withSearch()
-						.addPlugin(ESEmbeddedSearchServicesPlugin.class,
+						.withESEmbedded(
 								Param.of("home", "io/vertigo/dashboard/search/indexconfig"),
 								Param.of("config.file", "io/vertigo/dashboard/search/indexconfig/elasticsearch.yml"),
 								Param.of("envIndex", "TU_TEST"),
 								Param.of("rowsPerQuery", "50"))
 						.build())
 				.addModule(new VegaFeatures()
-						.withEmbeddedServer(Integer.toString(8080))
-						.withApiPrefix("/api")
+						.withEmbeddedServer(Param.of("port", Integer.toString(8080)))
+						.withApiPrefix(Param.of("apiPrefix", "/api"))
 						.build())
 				.addModule(new DashboardFeatures()
 						.build())

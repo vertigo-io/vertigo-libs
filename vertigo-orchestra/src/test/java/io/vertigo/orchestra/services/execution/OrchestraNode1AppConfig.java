@@ -23,16 +23,12 @@ import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.DynamoFeatures;
-import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
-import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.orchestra.OrchestraFeatures;
 import io.vertigo.orchestra.util.monitoring.MonitoringServices;
 import io.vertigo.orchestra.util.monitoring.MonitoringServicesImpl;
@@ -49,12 +45,13 @@ public final class OrchestraNode1AppConfig {
 						.withNodeId("NODE_TEST_2")
 						.build())
 				.addModule(new CommonsFeatures()
-						.withCache(MemoryCachePlugin.class)
+						.withCache()
+						.withMemoryCache()
 						.withScript()
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
-						.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
+						.withC3p0(
 								Param.of("name", "orchestra"),
 								Param.of("dataBaseClass", H2DataBase.class.getName()),
 								Param.of("jdbcDriver", org.h2.Driver.class.getName()),
@@ -62,18 +59,18 @@ public final class OrchestraNode1AppConfig {
 						.build())
 				.addModule(new DynamoFeatures()
 						.withKVStore()
-						.addKVStorePlugin(DelayedMemoryKVStorePlugin.class,
+						.withDelayedMemoryKV(
 								Param.of("collections", "tokens"),
 								Param.of("timeToLiveSeconds", "120"))
 						.withStore()
-						.addDataStorePlugin(SqlDataStorePlugin.class,
+						.withSqlStore(
 								Param.of("dataSpace", "orchestra"),
 								Param.of("connectionName", "orchestra"),
 								Param.of("sequencePrefix", "SEQ_"))
 						.build())
 				.addModule(new OrchestraFeatures()
-						.withDataBase("NODE_TEST_2", "1", "3", "60")
-						.withMemory("1")
+						.withDataBase(Param.of("nodeName", "NODE_TEST_2"), Param.of("daemonPeriodSeconds", "1"), Param.of("workersCount", "3"), Param.of("forecastDurationSeconds", "60"))
+						.withMemory(Param.of("workersCount", "1"))
 						.build())
 				.addModule(ModuleConfig.builder("orchestra-test-node2")
 						//---Services

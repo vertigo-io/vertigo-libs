@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.rules.impl;
+package io.vertigo.rules;
 
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
@@ -27,6 +27,11 @@ import io.vertigo.rules.dao.RuleDefinitionDAO;
 import io.vertigo.rules.dao.RuleFilterDefinitionDAO;
 import io.vertigo.rules.dao.SelectorDefinitionDAO;
 import io.vertigo.rules.domain.DtDefinitions;
+import io.vertigo.rules.impl.RuleConstantsStorePlugin;
+import io.vertigo.rules.impl.RuleSelectorPlugin;
+import io.vertigo.rules.impl.RuleServicesImpl;
+import io.vertigo.rules.impl.RuleStorePlugin;
+import io.vertigo.rules.impl.RuleValidatorPlugin;
 import io.vertigo.rules.plugins.sql.SQLRuleStorePlugin;
 import io.vertigo.rules.services.RuleServices;
 

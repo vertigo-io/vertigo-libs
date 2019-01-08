@@ -7,7 +7,6 @@ import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -32,7 +31,8 @@ public class Studio {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.withCache(MemoryCachePlugin.class)
+						.withCache()
+						.withMemoryCache()
 						.withScript()
 						.build())
 				.addModule(new DynamoFeatures().build())

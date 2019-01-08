@@ -27,13 +27,10 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
-import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.dynamo.DynamoFeatures;
-import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.rules.data.MockIdentities;
 import io.vertigo.rules.data.MyDummyDtObjectProvider;
 import io.vertigo.rules.data.TestUserSession;
-import io.vertigo.rules.impl.RulesFeatures;
 import io.vertigo.rules.plugins.memory.MemoryRuleConstantsStorePlugin;
 import io.vertigo.rules.plugins.memory.MemoryRuleStorePlugin;
 import io.vertigo.rules.plugins.selector.SimpleRuleSelectorPlugin;
@@ -57,12 +54,13 @@ public class MyAppConfig {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new CommonsFeatures()//
-						.withCache(io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin.class)
+						.withCache()
+						.withMemoryCache()
 						.withScript()
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()//
-						.addSqlConnectionProviderPlugin(C3p0ConnectionProviderPlugin.class,
+						.withC3p0(
 								Param.of("dataBaseClass", PostgreSqlDataBase.class.getName()),
 								Param.of("jdbcDriver", org.postgresql.Driver.class.getName()),
 								Param.of("jdbcUrl",
@@ -70,10 +68,10 @@ public class MyAppConfig {
 						.build())
 				.addModule(new DynamoFeatures()//
 						.withStore()//
-						.addDataStorePlugin(SqlDataStorePlugin.class)
+						.withSqlStore()
 						.build())
 				.addModule(new AccountFeatures()
-						.withSecurity(TestUserSession.class.getName())
+						.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
 						.addPlugin(LoaderAccountStorePlugin.class,
 								Param.of("accountLoaderName", "MockIdentities"),
 								Param.of("groupLoaderName", "MockIdentities"))

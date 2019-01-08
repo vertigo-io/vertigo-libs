@@ -18,10 +18,6 @@
  */
 package io.vertigo.dashboard;
 
-import java.util.Optional;
-
-import javax.inject.Named;
-
 import io.vertigo.app.config.Features;
 import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
@@ -29,6 +25,7 @@ import io.vertigo.dashboard.impl.services.data.DataProviderImpl;
 import io.vertigo.dashboard.services.data.DataProvider;
 import io.vertigo.dashboard.ui.DashboardUiManager;
 import io.vertigo.dashboard.webservices.DashboardDataProviderWebServices;
+import io.vertigo.lang.Assertion;
 
 public class DashboardFeatures extends Features<DashboardFeatures> {
 
@@ -37,10 +34,12 @@ public class DashboardFeatures extends Features<DashboardFeatures> {
 	}
 
 	@Feature("analytics")
-	public DashboardFeatures withAnalytics(final @Named("appName") Optional<String> appNameOpt) {
-		if (appNameOpt.isPresent()) {
+	public DashboardFeatures withAnalytics(final Param... params) {
+		if (params.length > 0) {
+			Assertion.checkState(params.length == 1 && "appName".equals(params[0].getName()), "appName param should be provided ");
+			//---
 			getModuleConfigBuilder()
-					.addComponent(DataProvider.class, DataProviderImpl.class, Param.of("appName", appNameOpt.get()));
+					.addComponent(DataProvider.class, DataProviderImpl.class, params);
 		} else {
 			getModuleConfigBuilder()
 					.addComponent(DataProvider.class, DataProviderImpl.class);

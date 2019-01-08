@@ -19,9 +19,11 @@
 package io.vertigo.ledger;
 
 import io.vertigo.app.config.Features;
+import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.ledger.impl.services.LedgerManagerImpl;
 import io.vertigo.ledger.plugins.ethereum.EthereumLedgerPlugin;
+import io.vertigo.ledger.plugins.fake.FakeLedgerPlugin;
 import io.vertigo.ledger.services.LedgerManager;
 
 /**
@@ -42,9 +44,21 @@ public final class LedgerFeatures extends Features<LedgerFeatures> {
 	 * Add Ethereum BlockChain Ledger
 	 * @return  the feature
 	 */
+	@Feature("ethereum")
 	public LedgerFeatures withEthereumBlockChain(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(EthereumLedgerPlugin.class, params);
+		return this;
+	}
+
+	/**
+	 * Add Ethereum BlockChain Ledger
+	 * @return  the feature
+	 */
+	@Feature("fake")
+	public LedgerFeatures withFakeBlockChain() {
+		getModuleConfigBuilder()
+				.addPlugin(FakeLedgerPlugin.class);
 		return this;
 	}
 

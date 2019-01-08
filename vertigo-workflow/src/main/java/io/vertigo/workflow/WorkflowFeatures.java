@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.workflow.impl;
+package io.vertigo.workflow;
 
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.Features;
+import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
-import io.vertigo.workflow.WorkflowManager;
 import io.vertigo.workflow.dao.instance.WfActivityDAO;
 import io.vertigo.workflow.dao.instance.WfDecisionDAO;
 import io.vertigo.workflow.dao.instance.WfStatusDAO;
@@ -33,6 +33,9 @@ import io.vertigo.workflow.dao.model.WfTransitionDefinitionDAO;
 import io.vertigo.workflow.dao.model.WfWorkflowDefinitionDAO;
 import io.vertigo.workflow.dao.workflow.WorkflowPAO;
 import io.vertigo.workflow.domain.DtDefinitions;
+import io.vertigo.workflow.impl.ItemStorePlugin;
+import io.vertigo.workflow.impl.WorkflowManagerImpl;
+import io.vertigo.workflow.plugins.memory.MemoryWorkflowStorePlugin;
 import io.vertigo.workflow.plugins.sql.SQLWorkflowStorePlugin;
 import io.vertigo.workflow.plugins.validate.RuleWorkflowPredicateAutoValidatePlugin;
 
@@ -41,7 +44,7 @@ import io.vertigo.workflow.plugins.validate.RuleWorkflowPredicateAutoValidatePlu
  *
  * @author xdurand
  */
-public final class WorkflowFeatures extends Features {
+public final class WorkflowFeatures extends Features<WorkflowFeatures> {
 
 	/**
 	 * Constructor.
@@ -57,9 +60,9 @@ public final class WorkflowFeatures extends Features {
 	 * @param workflowPredicateAutoValidatePlugin
 	 * @return these features
 	 */
-	public WorkflowFeatures withWorkflowPredicateAutoValidatePlugin(final Class<? extends WorkflowPredicateAutoValidatePlugin> workflowPredicateAutoValidatePlugin,
-			final Param... params) {
-		getModuleConfigBuilder().addPlugin(workflowPredicateAutoValidatePlugin, params);
+	@Feature("rulePredicateAutoValidatePlugin")
+	public WorkflowFeatures withRulePredicateAutoValidatePlugin() {
+		getModuleConfigBuilder().addPlugin(RuleWorkflowPredicateAutoValidatePlugin.class);
 		return this;
 	}
 
@@ -72,9 +75,9 @@ public final class WorkflowFeatures extends Features {
 	 *            the params
 	 * @return these features
 	 */
-	public WorkflowFeatures withWorkflowStorePlugin(final Class<? extends WorkflowStorePlugin> workflowStorePluginClass,
-			final Param... params) {
-		getModuleConfigBuilder().addPlugin(workflowStorePluginClass, params);
+	@Feature("memoryWorkflowStorePlugin")
+	public WorkflowFeatures withMemoryWorkflowStorePlugin() {
+		getModuleConfigBuilder().addPlugin(MemoryWorkflowStorePlugin.class);
 		return this;
 	}
 
@@ -83,7 +86,9 @@ public final class WorkflowFeatures extends Features {
 	 *
 	 * @return these features
 	 */
-	public WorkflowFeatures withDAOSupportWorkflowStorePlugin() {
+
+	@Feature("dbStorePlugin")
+	public WorkflowFeatures withDbStorePlugin() {
 		getModuleConfigBuilder()
 				.addPlugin(SQLWorkflowStorePlugin.class) //
 				.addPlugin(RuleWorkflowPredicateAutoValidatePlugin.class)

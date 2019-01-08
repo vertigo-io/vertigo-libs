@@ -22,6 +22,10 @@ import io.vertigo.app.config.Features;
 import io.vertigo.app.config.json.Feature;
 import io.vertigo.social.impl.comment.CommentServicesImpl;
 import io.vertigo.social.impl.notification.NotificationServicesImpl;
+import io.vertigo.social.plugins.comment.memory.MemoryCommentPlugin;
+import io.vertigo.social.plugins.comment.redis.RedisCommentPlugin;
+import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;
+import io.vertigo.social.plugins.notification.redis.RedisNotificationPlugin;
 import io.vertigo.social.services.comment.CommentServices;
 import io.vertigo.social.services.notification.NotificationServices;
 import io.vertigo.social.webservices.account.AccountWebServices;
@@ -71,6 +75,30 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 	@Feature("webapi")
 	public SocialFeatures withWebApi() {
 		webapiEnabled = true;
+		return this;
+	}
+
+	@Feature("redisNotifications")
+	public SocialFeatures withRedisNotifications() {
+		getModuleConfigBuilder().addPlugin(RedisNotificationPlugin.class);
+		return this;
+	}
+
+	@Feature("memoryNotifications")
+	public SocialFeatures withMemoryNotifications() {
+		getModuleConfigBuilder().addPlugin(MemoryNotificationPlugin.class);
+		return this;
+	}
+
+	@Feature("redisComments")
+	public SocialFeatures withRedisComments() {
+		getModuleConfigBuilder().addPlugin(RedisCommentPlugin.class);
+		return this;
+	}
+
+	@Feature("memoryComments")
+	public SocialFeatures withMemoryComments() {
+		getModuleConfigBuilder().addPlugin(MemoryCommentPlugin.class);
 		return this;
 	}
 

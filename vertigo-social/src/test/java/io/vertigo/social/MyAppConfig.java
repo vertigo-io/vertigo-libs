@@ -18,8 +18,6 @@
  */
 package io.vertigo.social;
 
-import java.util.Optional;
-
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.account.cache.memory.MemoryAccountCachePlugin;
 import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
@@ -49,8 +47,8 @@ public final class MyAppConfig {
 
 	private static AppConfigBuilder createAppConfigBuilder(final boolean redis) {
 		final String redisHost = "redis-pic.part.klee.lan.net";
-		final int redisPort = 6379;
-		final int redisDatabase = 15;
+		final String redisPort = "6379";
+		final String redisDatabase = "15";
 
 		// @formatter:off
 		final AppConfigBuilder appConfigBuilder =  AppConfig.builder()
@@ -61,7 +59,7 @@ public final class MyAppConfig {
 
 			final CommonsFeatures commonsFeatures = new CommonsFeatures();
 			if (redis) {
-				commonsFeatures.withRedisConnector(redisHost, redisPort, redisDatabase, Optional.empty());
+				commonsFeatures.withRedisConnector(Param.of("host", redisHost), Param.of("port", redisPort), Param.of("database", redisDatabase));
 			}
 
 			appConfigBuilder
@@ -72,7 +70,7 @@ public final class MyAppConfig {
 					.build());
 
 			final AccountFeatures accountFeatures = new AccountFeatures()
-					.withSecurity(TestUserSession.class.getName())
+					.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
 					.withAuthentication()
 					.addPlugin(MockAuthenticationPlugin.class)
 					.addPlugin(LoaderAccountStorePlugin.class,
@@ -115,7 +113,7 @@ public final class MyAppConfig {
 		return createAppConfigBuilder(true)
 			.addModule(new VegaFeatures()
 				.withSecurity()
-				.withEmbeddedServer(Integer.toString(WS_PORT))
+				.withEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)))
 				.build())
 			.addModule(ModuleConfig.builder("ws-account")
 					.addComponent(AccountWebServices.class)
