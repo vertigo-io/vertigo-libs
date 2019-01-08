@@ -13,8 +13,6 @@
 	    th::pagination.sync="|componentStates.${componentId}.pagination|"
 	    th:table-class="${tableClass?:''}"
 	    th:@request="request"
-	    color="primary"
-	    class="bg-white"
 	    th:attr="__${other_attrs}__"
 	  >
 	  	<q-tr slot="body" slot-scope="props" :props="props">

@@ -31,11 +31,14 @@ Vue.directive('scroll-spy', {
         		//We check if nav should be fixed
         		// Add the fixed class to the header when you reach its scroll position. Remove "fixed" when you leave the scroll position
         		if (window.pageYOffset > offset) {
-        			elNav.style.top = elNav.getBoundingClientRect().top+"px";
+        			//elNav.style.top = elNav.getBoundingClientRect().top+"px";
+        			elNav.style.top = "70px";
+        			elNav.style.width = elNav.getBoundingClientRect().width+"px";
         			elNav.classList.add("fixed");
         		} else {
         			elNav.classList.remove("fixed");
         			elNav.style.top = null;
+        			elNav.style.width = null;
         		}
         		
         		//We compute breakpoints
