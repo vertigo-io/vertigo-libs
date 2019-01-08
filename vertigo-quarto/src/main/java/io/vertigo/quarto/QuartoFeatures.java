@@ -21,7 +21,7 @@ import io.vertigo.quarto.services.publisher.PublisherManager;
 
 public class QuartoFeatures extends Features<QuartoFeatures> {
 
-	protected QuartoFeatures(final String name) {
+	public QuartoFeatures() {
 		super("quarto");
 	}
 

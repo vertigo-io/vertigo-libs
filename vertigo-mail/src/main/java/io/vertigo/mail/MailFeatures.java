@@ -8,7 +8,7 @@ import io.vertigo.mail.plugins.javax.JavaxSendMailPlugin;
 
 public class MailFeatures extends Features<MailFeatures> {
 
-	protected MailFeatures(final String name) {
+	public MailFeatures() {
 		super("mail");
 	}
 
