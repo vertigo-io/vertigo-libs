@@ -30,6 +30,7 @@ Vue.component('v-notifications', {
 	    	firstCall : true,
 	        list: [],
 	        hasNew : false,
+	        wasError : false,
 	        count: 0,
 	        timer: ''
 	    }
@@ -41,9 +42,21 @@ Vue.component('v-notifications', {
 	},
 	methods: {
 		fetchNotificationsList: function() {
-	        this.$http.get(this.baseUrl+'x/notifications/api/messages')
+	        this.$http.get(this.baseUrl+'x/notifications/api/messages', { timeout:5*1000, })
 	        .then( function (response) { //Ok
 	        	this.updateNotificationsData(response.body);
+	        	if(this.wasError) {
+	        		clearInterval(this.timer);
+	        		this.timer = setInterval(this.fetchNotificationsList, 5000);
+	        	}
+	        	this.wasError = false;
+			})
+			.catch(function  (response) { //Ko
+	        	if(!this.wasError) {
+	        		clearInterval(this.timer);
+	        		this.timer = setInterval(this.fetchNotificationsList, 60000);
+	        	}
+	        	this.wasError = true;
 			});
 	    },
 	    updateNotificationsData : function (newList) {
