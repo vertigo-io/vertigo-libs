@@ -5,7 +5,6 @@
 	<vu:label-edit label="${label}" th:attr="__${label_attrs}__">
 		<q-input 
 			type="textarea"
-			inverted
 			th:v-model="${'vueData.' + object + '.' + field}" 
 			th:name="${'vContext['+object+']['+ field +']'}"
 			th:attr="__${input_attrs}__"
