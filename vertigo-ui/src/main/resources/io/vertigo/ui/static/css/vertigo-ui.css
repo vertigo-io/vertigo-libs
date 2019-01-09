@@ -1,3 +1,17 @@
+.withFab .q-card-main {
+	position: relative;
+    padding-top: 35px;
+}
+
+.withFab .q-btn-fab,
+.withFab .q-btn-fab-mini {
+	position: absolute;
+	top: 0;
+	right: 16px;
+	transform: translateY(-50%);
+	z-index: 1000
+}
+
 .facets .facetValues .facetValue, .facets .selectedFacets .q-chip {
 	cursor: pointer;
 }
@@ -5,4 +19,25 @@
 .facets .facetValues .facetValue span{
 	width: 100%;
 	height: 100%;
+}
+
+.facets .q-item-highlight, 
+.facets .q-item-link,
+.facets .q-list-highlight>.q-item,
+.facets .q-list-link>.q-item {
+    border-left: 3px solid lightgrey;
+}
+
+.facets .q-item-highlight:hover, 
+.facets .q-item-link:hover,
+.facets .q-list-highlight>.q-item:hover,
+.facets .q-list-link>.q-item:hover {
+    background: hsla(0,0%,94.1%,1) !important;
+    border-left: 3px solid var(--q-color-primary);
+    color : var(--q-color-primary);
+}
+
+.facets .q-list-dense .q-list-header {
+	padding-bottom:5px;
+	min-height: 25px;
 }

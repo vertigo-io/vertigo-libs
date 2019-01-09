@@ -11,8 +11,8 @@ Vue.component('v-facets', {
  +'						<q-checkbox v-if="facet.multiple" v-bind:value="isFacetValueSelected(facet.code, value.code)" :label="facetValueLabel(value.label, value.count)" @change="$emit(\'toogle-facet\', facet.code, value.code, contextKey)" ></q-checkbox>'
  + '	  				<span v-else @click="$emit(\'toogle-facet\', facet.code, value.code, contextKey)" >{{facetValueLabel(value.label, value.count)}}</span>'
  + '	  		</q-item>'
- + '			<span v-if="facet.values.length > maxValues && !isFacetExpanded(facet.code)" @click="expandFacet(facet.code)">Show All</span>'
- + '			<span v-if="facet.values.length > maxValues && isFacetExpanded(facet.code)" @click="reduceFacet(facet.code)">Show Less</span>'
+ + '			<q-btn flat v-if="facet.values.length > maxValues && !isFacetExpanded(facet.code)" @click="expandFacet(facet.code)">Show All</q-btn>'
+ + '			<q-btn flat v-if="facet.values.length > maxValues && isFacetExpanded(facet.code)" @click="reduceFacet(facet.code)">Show Less</q-btn>'
  + '	</q-list>'
  + '</div>'
   ,
