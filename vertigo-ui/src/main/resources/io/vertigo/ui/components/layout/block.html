@@ -1,4 +1,4 @@
-<th:block th:fragment="block(title, subtitle, header_attrs, content_attrs, card_attrs)" 
+<th:block th:fragment="block(title, subtitle, icon, header_attrs, content_attrs, card_attrs)" 
 	th:assert="${title} != null">
 	<div class="q-card q-ma-md bg-white" th:attr="__${card_attrs}__">
 		<div class="q-card-container row no-wrap" th:attr="__${header_attrs}__">
@@ -6,6 +6,7 @@
 				<div class="q-card-title" th:text="${title?:''}" />
 				<div class="q-card-subtitle" th:text="${subtitle?:''}" />
 			</div>
+			<div class="col-auto self-center q-card-title-extra" th:if="${icon != null}" ><q-icon th:name="${icon}"></q-icon></div>
 		</div>
 		<div class="q-card-separator"></div>
 		<div class="q-card-main q-card-container" th:attr="__${content_attrs}__">
