@@ -1,14 +1,14 @@
 <th:block th:fragment="modal(componentId, closeLabel, srcUrl, iframe_attrs, modal_attrs)" 
-	  th:assert="${componentId} != null and ${closeLabel} != null"
+	  th:assert="${componentId} != null"
 	  th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addPrimitive('opened', false)}, objectKey=${model.vContext['componentStates']['__${componentId}__'].addPrimitive('srcUrl', srcUrl?:'')}" >
 	<q-modal th:v-model="|componentStates.${componentId}.opened|"
 			th:attr="__${modal_attrs}__">
-		<q-modal-layout>
+		<q-modal-layout footer-class="row q-layout-footer no-shadow justify-end">
 			<vu:content>
-			<iframe th:v-bind:src="|componentStates.${componentId}.srcUrl|" th:attr="__${iframe_attrs}__"></iframe>
-			<q-toolbar slot="footer">
-			    <q-btn color="primary" th:@click="|componentStates.${componentId}.opened = false|" th:label="${closeLabel}" ></q-btn>
-		    </q-toolbar>
+			<iframe th:v-bind:src="|componentStates.${componentId}.srcUrl|" frameBorder="0"  th:attr="__${iframe_attrs}__"></iframe>
+			<template slot="footer" th:if="${closeLabel} != null">
+			    <q-btn flat th:@click="|componentStates.${componentId}.opened = false|" th:label="${closeLabel}" ></q-btn>
+		    </template>
 		    </vu:content>
 	    </q-modal-layout>
   	</q-modal>
