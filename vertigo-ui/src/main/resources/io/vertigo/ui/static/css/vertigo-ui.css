@@ -1,3 +1,22 @@
+/******** CSS SPECIFIQUE A CERTAINES PAGES *******/
+:root {
+	--q-color-primary-invert: rgba(255, 255, 255, 0.9);
+	--q-color-secondary-invert: rgba(255, 255, 255, 0.9);
+	--q-color-tertiary-invert:	rgba(255, 255, 255, 0.9);
+}
+
+.bg-primary  {
+	color:var(--q-color-primary-invert) !important; 
+}
+
+.bg-secondary  {
+	color:var(--q-color-secondary-invert) !important; 
+}
+
+.bg-tertiary  {
+	color:var(--q-color-tertiary-invert) !important; 
+}
+
 .withFab .q-card-main {
 	position: relative;
     padding-top: 35px;
@@ -11,6 +30,68 @@
 	transform: translateY(-50%);
 	z-index: 1000
 }
+
+/**
+ * Tables
+ */
+
+.q-table-container {
+	background:#fff !important;
+}
+.table-primary thead {
+	background:var(--q-color-primary) !important;
+}
+.table-secondary thead {
+	background:var(--q-color-secondary) !important;
+}
+.table-tertiary thead {
+	background:var(--q-color-tertiary) !important;
+}
+
+.q-table-container th {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 18px; /*same as card-title*/
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 2rem;
+}
+.table-primary th {
+	color:var(--q-color-primary-invert) !important;
+}
+.table-secondary th {
+	color:var(--q-color-secondary-invert) !important;
+}
+.table-tertiary th {
+	color:var(--q-color-tertiary-invert) !important;
+}
+
+.q-table-container th.sortable:hover,
+.q-table-container th.sorted {
+  color: rgba(255,255,255,1);  
+}
+.table-tertiary th.sortable:hover,
+.table-tertiary th.sorted {
+	color: rgba(60, 60, 60, 1);
+}
+
+.table-primary .q-btn {
+	background: var(--q-color-primary);
+	color:var(--q-color-primary-invert);
+}
+
+.table-secondary .q-btn {
+	background: var(--q-color-secondary);
+	color:var(--q-color-secondary-invert);
+}
+.table-tertiary .q-btn {
+	background: var(--q-color-tertiary);
+	color:var(--q-color-tertiary-invert);
+}
+
+
+/**
+ * Facets
+ */
 
 .facets .facetValues .facetValue, .facets .selectedFacets .q-chip {
 	cursor: pointer;
@@ -41,3 +122,5 @@
 	padding-bottom:5px;
 	min-height: 25px;
 }
+
+
