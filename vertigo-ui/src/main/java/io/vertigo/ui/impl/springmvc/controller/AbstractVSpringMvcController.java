@@ -87,6 +87,8 @@ public abstract class AbstractVSpringMvcController {
 	@Inject
 	private ParamManager paramManager;
 
+	private boolean createdContext = true;
+
 	public void prepareContext(final HttpServletRequest request) throws ExpiredViewContextException {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
 		ViewContext viewContext = null;
@@ -98,6 +100,7 @@ public abstract class AbstractVSpringMvcController {
 				ViewContextMap viewContextMap;
 				try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
 					viewContextMap = kvStoreManager.find(CONTEXT_COLLECTION_NAME, ctxId, ViewContextMap.class).orElse(null);
+					createdContext = false;
 				}
 				if (viewContextMap == null) {
 					contextMiss(ctxId);
@@ -287,6 +290,10 @@ public abstract class AbstractVSpringMvcController {
 
 	public boolean isViewContextDirty() {
 		return getViewContext().isDirty();
+	}
+
+	protected boolean isNewContext() {
+		return createdContext;
 	}
 
 }
