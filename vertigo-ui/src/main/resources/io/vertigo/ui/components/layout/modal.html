@@ -10,7 +10,7 @@
 		    </q-toolbar>
 			<iframe th:v-bind:src="|componentStates.${componentId}.srcUrl|" frameBorder="0"  th:attr="__${iframe_attrs}__"></iframe>
 			<template slot="footer" th:if="${closeLabel} != null">
-			    <q-btn flat th:@click="|componentStates.${componentId}.opened = false|" th:label="${closeLabel}" ></q-btn>
+			    <q-btn flat v-close-overlay th:label="${closeLabel}" ></q-btn>
 		    </template>
 		    </vu:content>
 	    </q-modal-layout>
