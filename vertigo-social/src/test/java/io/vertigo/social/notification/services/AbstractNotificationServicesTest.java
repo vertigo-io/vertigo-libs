@@ -41,23 +41,23 @@ public abstract class AbstractNotificationServicesTest extends AbstractTestCaseJ
 	@Inject
 	private NotificationServices notificationServices;
 
-	private UID<Account> accountURI0;
-	private UID<Account> accountURI1;
-	private UID<Account> accountURI2;
+	private UID<Account> accountUID0;
+	private UID<Account> accountUID1;
+	private UID<Account> accountUID2;
 	private UID<AccountGroup> groupURI;
 
 	@Override
 	public void doSetUp() {
 
-		accountURI0 = createAccountURI("0");
-		accountURI1 = createAccountURI("1");
-		accountURI2 = createAccountURI("2");
+		accountUID0 = createAccountUID("0");
+		accountUID1 = createAccountUID("1");
+		accountUID2 = createAccountUID("2");
 		groupURI = UID.of(AccountGroup.class, "100");
 
 		mockIdentities.initData();
 	}
 
-	private static UID<Account> createAccountURI(final String id) {
+	private static UID<Account> createAccountUID(final String id) {
 		return UID.of(Account.class, id);
 	}
 
@@ -66,80 +66,80 @@ public abstract class AbstractNotificationServicesTest extends AbstractTestCaseJ
 
 		for (int i = 0; i < 10; i++) {
 			final Notification notification = Notification.builder()
-					.withSender(accountURI0.urn())
+					.withSender(accountUID0.urn())
 					.withType("Test")
 					.withTitle("news")
 					.withContent("discover this amazing app !!")
 					.withTargetUrl("#keyConcept@2")
 					.build();
-			notificationServices.send(notification, identityManager.getAccountURIs(groupURI));
+			notificationServices.send(notification, identityManager.getAccountUIDs(groupURI));
 		}
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(10, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals(10, notificationServices.getCurrentNotifications(accountURI2).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(10, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(10, notificationServices.getCurrentNotifications(accountUID2).size());
 	}
 
 	@Test
 	public void testNotificationsWithRemove() {
 		final Notification notification = Notification.builder()
-				.withSender(accountURI0.urn())
+				.withSender(accountUID0.urn())
 				.withType("Test")
 				.withTitle("news")
 				.withTargetUrl("#keyConcept@2")
 				.withContent("discover this amazing app !!")
 				.build();
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID2).size());
 
-		notificationServices.send(notification, identityManager.getAccountURIs(groupURI));
+		notificationServices.send(notification, identityManager.getAccountUIDs(groupURI));
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID2).size());
 
-		notificationServices.remove(accountURI1, notificationServices.getCurrentNotifications(accountURI1).get(0).getUuid());
+		notificationServices.remove(accountUID1, notificationServices.getCurrentNotifications(accountUID1).get(0).getUuid());
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID2).size());
 
 	}
 
 	@Test
 	public void testNotificationsWithRemoveFromTargetUrl() {
 		final Notification notification = Notification.builder()
-				.withSender(accountURI0.urn())
+				.withSender(accountUID0.urn())
 				.withType("Test")
 				.withTitle("news")
 				.withTargetUrl("#keyConcept@2")
 				.withContent("discover this amazing app !!")
 				.build();
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID2).size());
 
-		notificationServices.send(notification, identityManager.getAccountURIs(groupURI));
+		notificationServices.send(notification, identityManager.getAccountUIDs(groupURI));
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID2).size());
 
 		notificationServices.removeAll("Test", "#keyConcept@2");
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID2).size());
 
 	}
 
 	@Test
 	public void testNotificationsUpdateUserContent() {
 		final Notification notification = Notification.builder()
-				.withSender(accountURI0.urn())
+				.withSender(accountUID0.urn())
 				.withType("Test")
 				.withTitle("news")
 				.withTargetUrl("#keyConcept@2")
@@ -147,53 +147,53 @@ public abstract class AbstractNotificationServicesTest extends AbstractTestCaseJ
 				.withUserContent("defaultUserContent")
 				.build();
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID2).size());
 
-		notificationServices.send(notification, identityManager.getAccountURIs(groupURI));
+		notificationServices.send(notification, identityManager.getAccountUIDs(groupURI));
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID2).size());
 
-		notificationServices.updateUserContent(accountURI1, notification.getUuid(), "myUserContent1");
+		notificationServices.updateUserContent(accountUID1, notification.getUuid(), "myUserContent1");
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals("myUserContent1", notificationServices.getCurrentNotifications(accountURI1).get(0).getUserContent().get());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
-		Assertions.assertEquals("defaultUserContent", notificationServices.getCurrentNotifications(accountURI2).get(0).getUserContent().get());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals("myUserContent1", notificationServices.getCurrentNotifications(accountUID1).get(0).getUserContent().get());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID2).size());
+		Assertions.assertEquals("defaultUserContent", notificationServices.getCurrentNotifications(accountUID2).get(0).getUserContent().get());
 
-		notificationServices.updateUserContent(accountURI2, notification.getUuid(), "myUserContent2");
+		notificationServices.updateUserContent(accountUID2, notification.getUuid(), "myUserContent2");
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals("myUserContent1", notificationServices.getCurrentNotifications(accountURI1).get(0).getUserContent().get());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
-		Assertions.assertEquals("myUserContent2", notificationServices.getCurrentNotifications(accountURI2).get(0).getUserContent().get());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals("myUserContent1", notificationServices.getCurrentNotifications(accountUID1).get(0).getUserContent().get());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID2).size());
+		Assertions.assertEquals("myUserContent2", notificationServices.getCurrentNotifications(accountUID2).get(0).getUserContent().get());
 
-		notificationServices.updateUserContent(accountURI2, notification.getUuid(), ""); // means no userContent => Optional.empty
+		notificationServices.updateUserContent(accountUID2, notification.getUuid(), ""); // means no userContent => Optional.empty
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals("myUserContent1", notificationServices.getCurrentNotifications(accountURI1).get(0).getUserContent().get());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
-		Assertions.assertEquals(false, notificationServices.getCurrentNotifications(accountURI2).get(0).getUserContent().isPresent());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals("myUserContent1", notificationServices.getCurrentNotifications(accountUID1).get(0).getUserContent().get());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID2).size());
+		Assertions.assertEquals(false, notificationServices.getCurrentNotifications(accountUID2).get(0).getUserContent().isPresent());
 
-		notificationServices.updateUserContent(accountURI2, notification.getUuid(), null); // means no userContent => Optional.empty
+		notificationServices.updateUserContent(accountUID2, notification.getUuid(), null); // means no userContent => Optional.empty
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals("myUserContent1", notificationServices.getCurrentNotifications(accountURI1).get(0).getUserContent().get());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
-		Assertions.assertEquals(false, notificationServices.getCurrentNotifications(accountURI2).get(0).getUserContent().isPresent());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals("myUserContent1", notificationServices.getCurrentNotifications(accountUID1).get(0).getUserContent().get());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID2).size());
+		Assertions.assertEquals(false, notificationServices.getCurrentNotifications(accountUID2).get(0).getUserContent().isPresent());
 	}
 
 	@Test
 	public void testNotificationsWithTTL() {
 		final Notification notification = Notification.builder()
-				.withSender(accountURI0.urn())
+				.withSender(accountUID0.urn())
 				.withType("Test")
 				.withTitle("news")
 				.withTargetUrl("#keyConcept@2")
@@ -201,29 +201,29 @@ public abstract class AbstractNotificationServicesTest extends AbstractTestCaseJ
 				.withContent("discover this amazing app !!")
 				.build();
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID2).size());
 
-		notificationServices.send(notification, identityManager.getAccountURIs(groupURI));
+		notificationServices.send(notification, identityManager.getAccountUIDs(groupURI));
 
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID2).size());
 
 		sleep(3000);
 
 		//not expired yet
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID2).size());
 
 		sleep(3000);
 
 		//expired
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
-		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID2).size());
 
 	}
 

@@ -89,10 +89,10 @@ public final class NotificationWebServicesTest {
 
 	@AfterEach
 	public void purgeNotifications() {
-		final UID<Account> accountURI = UID.of(Account.class, "1");
-		final List<Notification> notifications = notificationServices.getCurrentNotifications(accountURI);
+		final UID<Account> accountUID = UID.of(Account.class, "1");
+		final List<Notification> notifications = notificationServices.getCurrentNotifications(accountUID);
 		for (final Notification notification : notifications) {
-			notificationServices.remove(accountURI, notification.getUuid());
+			notificationServices.remove(accountUID, notification.getUuid());
 		}
 	}
 
@@ -118,8 +118,8 @@ public final class NotificationWebServicesTest {
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		final Set<UID<Account>> accountURIs = identityManager.getAccountURIs(UID.of(AccountGroup.class, "100"));
-		notificationServices.send(notification, accountURIs);
+		final Set<UID<Account>> accountUIDs = identityManager.getAccountUIDs(UID.of(AccountGroup.class, "100"));
+		notificationServices.send(notification, accountUIDs);
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()
@@ -139,8 +139,8 @@ public final class NotificationWebServicesTest {
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		final Set<UID<Account>> accountURIs = identityManager.getAccountURIs(UID.of(AccountGroup.class, "100"));
-		notificationServices.send(notification, accountURIs);
+		final Set<UID<Account>> accountUIDs = identityManager.getAccountUIDs(UID.of(AccountGroup.class, "100"));
+		notificationServices.send(notification, accountUIDs);
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()
@@ -183,9 +183,9 @@ public final class NotificationWebServicesTest {
 				.withTargetUrl("#keyConcept@2")
 				.withContent("Lorem ipsum")
 				.build();
-		final Set<UID<Account>> accountURIs = identityManager.getAccountURIs(UID.of(AccountGroup.class, "100"));
-		notificationServices.send(notification1, accountURIs);
-		notificationServices.send(notification2, accountURIs);
+		final Set<UID<Account>> accountUIDs = identityManager.getAccountUIDs(UID.of(AccountGroup.class, "100"));
+		notificationServices.send(notification1, accountUIDs);
+		notificationServices.send(notification2, accountUIDs);
 
 		RestAssured.given().filter(sessionFilter)
 				.expect()
