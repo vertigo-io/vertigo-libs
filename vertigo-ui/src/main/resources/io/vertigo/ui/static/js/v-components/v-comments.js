@@ -1,7 +1,9 @@
 Vue.component('v-comments', {
 	template : 
-'<q-btn round dense color="primary" textColor="white" :icon="count>0?icon:iconNone" @click="commentDrawer = !commentDrawer" class="on-left" >'
-+'	<q-chip floating color="red" v-if="count>0" >{{count}}</q-chip>'
+'<span>'
++'	<q-btn round size="lg" color="primary" textColor="white" :icon="count>0?icon:iconNone" @click="commentDrawer = !commentDrawer" class="on-left" >'
++'		<q-chip floating color="red" v-if="count>0" >{{count}}</q-chip>'
++'	</q-btn>'
 +'	<q-layout-drawer v-model="commentDrawer" side="right">'
 +'		<q-input type="textarea" v-model="commentTextArea" stack-label="Type your comment here"/>'
 +'		<q-btn label="Publish" icon="send" @click="publishComment"/>'		
@@ -19,7 +21,7 @@ Vue.component('v-comments', {
 +'    		</q-item>'
 +'  	</q-list>'
 +'	</q-layout-drawer>'
-+'</q-btn>'
++'</span>'
 	,
 	props : {
 		concept : { type: String },
@@ -53,7 +55,7 @@ Vue.component('v-comments', {
 	    	};
 	    	newComment.concept = this.concept;
 	    	newComment.id = this.id;
-	        this.$http.post(this.baseUrl+'x/comment/api/comments', newComment)
+	        this.$http.post(this.baseUrl+'x/comment/api/comments?concept='+this.concept+'&id='+this.id, newComment)
 	        .then( function (response) { //Ok
 	        	this.list.unshift(newComment);
 			});
