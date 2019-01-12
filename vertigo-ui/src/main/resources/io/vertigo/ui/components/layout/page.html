@@ -23,6 +23,12 @@
 		  el: '#page',
 		  data: data,
 		  methods: Vue.util.extend(VUi.methods, VUiExtensions.methods ||  {}) 
-		})
+		});
+
+		// fixes wrong components states due to firefix bfcache (back-forward cache)
+		//https://developer.mozilla.org/en-US/docs/Archive/Misc_top_level/Working_with_BFCache
+		window.addEventListener('pageshow', function(event) {
+			demo.$forceUpdate();
+		});
 	</script>
 </th:block>
