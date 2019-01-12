@@ -104,7 +104,7 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 		final List<SelectorDefinition> matchingSelectors = findMatchingSelectors(selectors, ruleContext);
 
 		for (final SelectorDefinition selectorDefinition : matchingSelectors) {
-			final Set<UID<Account>> accounts = identityManager.getAccountURIs(createGroupURI(selectorDefinition.getGroupId()));
+			final Set<UID<Account>> accounts = identityManager.getAccountUIDs(createGroupURI(selectorDefinition.getGroupId()));
 			for (final UID<Account> accountUri : accounts) {
 				final Account account = identityManager.getAccount(accountUri);
 				collected.add(account);
@@ -122,7 +122,7 @@ public final class SimpleRuleSelectorPlugin implements RuleSelectorPlugin {
 
 		for (final SelectorDefinition selectorDefinition : matchingSelectors) {
 			final Set<UID<Account>> accounts = identityManager
-					.getAccountURIs(createGroupURI(selectorDefinition.getGroupId()));
+					.getAccountUIDs(createGroupURI(selectorDefinition.getGroupId()));
 			for (final UID<Account> accountURI : accounts) {
 				final Account account = identityManager.getAccount(accountURI);
 				collected.add(account);
