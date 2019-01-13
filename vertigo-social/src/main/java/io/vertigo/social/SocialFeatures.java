@@ -29,6 +29,7 @@ import io.vertigo.social.plugins.notification.redis.RedisNotificationPlugin;
 import io.vertigo.social.services.comment.CommentServices;
 import io.vertigo.social.services.notification.NotificationServices;
 import io.vertigo.social.webservices.account.AccountWebServices;
+import io.vertigo.social.webservices.comment.CommentWebServices;
 import io.vertigo.social.webservices.notification.NotificationWebServices;
 
 /**
@@ -116,6 +117,10 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 		if (commentsEnabled) {
 			getModuleConfigBuilder()
 					.addComponent(CommentServices.class, CommentServicesImpl.class);
+			if (webapiEnabled) {
+				getModuleConfigBuilder()
+						.addComponent(CommentWebServices.class);
+			}
 		}
 	}
 }
