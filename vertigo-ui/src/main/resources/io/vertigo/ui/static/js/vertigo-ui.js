@@ -56,7 +56,7 @@ var VUi = {
 					});
 					return {field : 'label', list : finalList}
 				},
-				request : function (params) {
+				paginationAndSortHandler : function (params) {
 					var pagination = params.pagination;
 					var filter = params.filter;
 					var oldPagination = componentStates[pagination.componentId].pagination;
@@ -229,14 +229,13 @@ var VUi = {
 					}
 					componentStates[componentId].pagination.rowsPerPage = componentStates[componentId].pagination.rowsPerPage / showMoreCount * (showMoreCount + 1);
 				},
-				
 				uploader_uploadFile : function(componentId) {
 						this.$refs[componentId].upload()
-					},				
+				},				
 				uploader_uploadedFile : function(file, componentId) {
 						componentStates[componentId].fileUris.push(file.xhr.response);
 						file.fileUri = file.xhr.response;
-					},
+				},
 				uploader_removeFile : function(removedFile, componentId) {
 						var component = this.$refs[componentId];
 						var componentFileUris = componentStates[componentId].fileUris;
@@ -254,7 +253,21 @@ var VUi = {
 							this.$q.notify(response.status + ":" +response.statusText+ " Can't remove temporary file");
 						});
 						
-					},
+				},
+				httpPostAjax : function(url, params, handler) {
+					params['CTX'] = vueData.CTX;
+					Vue.http.post(url, params , { emulateJSON: true }).then( function (response ) {
+						if (response.body.CTX) {
+							vueData.CTX = response.body.CTX;
+						}
+						Object.keys(response.body).forEach(function (key) {
+							if ('CTX' != key) {
+								vueData[key] = response.body[key];
+							}
+						});
+						handler(response);
+					});
+				}
 			  }
 	}
 

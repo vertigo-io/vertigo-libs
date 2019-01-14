@@ -12,7 +12,7 @@
 	    th::loading="|componentStates.${componentId}.loading|"
 	    th::pagination.sync="|componentStates.${componentId}.pagination|"
 	    th:table-class="${tableClass?:'table-'+(color?:'primary')}"
-	    th:@request="request"
+	    th:@request="paginationAndSortHandler"
 	    th:attr="__${other_attrs}__"
 	  >
 	  	<q-tr slot="body" slot-scope="props" :props="props">
