@@ -35,15 +35,16 @@ import io.vertigo.social.services.comment.Comment;
  * @author pchretien
  */
 public final class MemoryCommentPlugin implements CommentPlugin {
-	private Map<UUID, Comment> map = new HashMap<>();
-	private Map<UID, List<UUID>> commentsMap = new HashMap<>();
+	private final Map<UUID, Comment> map = new HashMap<>();
+	private final Map<UID, List<UUID>> commentsMap = new HashMap<>();
 
 	/** {@inheritDoc} */
 	@Override
 	public synchronized <S extends KeyConcept> void publish(final Comment comment, final UID<S> uid) {
-		List<UUID> comments = commentsMap.getOrDefault(uid, new ArrayList<>());
+		final List<UUID> comments = commentsMap.getOrDefault(uid, new ArrayList<>());
 		comments.add(comment.getUuid());
 		commentsMap.put(uid, comments);
+		map.put(comment.getUuid(), comment);
 	}
 
 	/** {@inheritDoc} */
