@@ -265,7 +265,9 @@ var VUi = {
 								vueData[key] = response.body[key];
 							}
 						});
-						handler(response);
+						if (handler) {
+							handler(response);
+						}
 					});
 				}
 			  }
