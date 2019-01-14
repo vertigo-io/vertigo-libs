@@ -86,9 +86,10 @@ public final class CommentWebServices implements WebServices {
 	 * @param id KeyConcept id
 	 */
 	@POST("/api/comments")
-	public void publishComment(@ExcludedFields("uuid") final Comment comment, @QueryParam("concept") final String keyConcept, @QueryParam("id") final String id) {
+	public Comment publishComment(@ExcludedFields("uuid") final Comment comment, @QueryParam("concept") final String keyConcept, @QueryParam("id") final String id) {
 		final UID<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
 		commentServices.publish(getLoggedAccountURI(), comment, keyConceptURI);
+		return comment;
 	}
 
 	/**
@@ -97,12 +98,13 @@ public final class CommentWebServices implements WebServices {
 	 * @param comment Comment msg
 	 */
 	@PUT("/api/comments/{uuid}")
-	public void updateComment(@PathParam("uuid") final String uuid, final Comment comment) {
+	public Comment updateComment(@PathParam("uuid") final String uuid, final Comment comment) {
 		Assertion.checkNotNull(uuid);
 		Assertion.checkNotNull(comment);
 		Assertion.checkArgument(uuid.equals(comment.getUuid().toString()), "Comment uuid ({0}) must match WebService route ({1})", comment.getUuid(), uuid);
 		//-----
 		commentServices.update(getLoggedAccountURI(), comment);
+		return comment;
 	}
 
 	//-----

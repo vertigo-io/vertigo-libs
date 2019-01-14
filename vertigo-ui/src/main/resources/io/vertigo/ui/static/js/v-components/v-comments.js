@@ -5,8 +5,8 @@ Vue.component('v-comments', {
 +'		<q-chip floating color="red" v-if="count>0" >{{count}}</q-chip>'
 +'	</q-btn>'
 +'	<q-layout-drawer v-model="commentDrawer" side="right">'
-+'		<q-input type="textarea" v-model="commentTextArea" stack-label="Type your comment here"/>'
-+'		<q-btn label="Publish" icon="send" @click="publishComment"/>'		
++'		<q-input type="textarea" v-model="commentTextArea" stack-label="Type your comment here"></q-input>'
++'		<q-btn class="float-right" color="primary" label="Publish" icon="send" @click="publishComment"></q-btn>'		
 +'		<q-list link style="width:300px">'
 +'			<q-list-header class="q-py-none row items-center justify-between">Comments</q-list-header>'
 +'			<q-item-separator />'
@@ -57,7 +57,7 @@ Vue.component('v-comments', {
 	    	newComment.id = this.id;
 	        this.$http.post(this.baseUrl+'x/comment/api/comments?concept='+this.concept+'&id='+this.id, newComment)
 	        .then( function (response) { //Ok
-	        	this.list.unshift(newComment);
+	        	this.fetchCommentsList();
 			});
 	    }, 
 	    toDelay : function(creationDate) {
