@@ -40,7 +40,7 @@ final class ParameterizedTypeValueHandlerHelper<V> {
 	ParameterizedTypeValueHandlerHelper(final Class<V> supportedClazz, final Function<String, V> converter) {
 		this.supportedClazz = supportedClazz;
 		defaultConverter = converter;
-		supportedParameterizedType.put(supportedClazz, defaultConverter);
+		//supportedParameterizedType.put(supportedClazz, defaultConverter);
 	}
 
 	public void addSupportedParameterizedType(final Class<?> parameterizedType) {
@@ -64,7 +64,10 @@ final class ParameterizedTypeValueHandlerHelper<V> {
 	public <O> O convert(final String requestValue, final MethodParameter parameter) {
 		final Class<O> parameterTypeClazz = (Class<O>) parameter.getParameterType();
 		final Function<String, ?> converter = supportedParameterizedType.get(parameterTypeClazz);
-		return (O) converter.apply(requestValue);
+		if (converter != null) {
+			return (O) converter.apply(requestValue);
+		}
+		return (O) defaultConverter.apply(requestValue);
 	}
 
 	private Class<?> getParameterType(final MethodParameter parameterType) {
