@@ -1,4 +1,4 @@
-<th:block th:fragment="fileupload(url, key, multiple, label_attrs, input_attrs)" 
+<th:block th:fragment="fileupload(url, key, multiple, uploader_attrs)" 
 	th:assert="${key} != null"
 	th:with="myComponentId='uploader'+${key}"
 	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(myComponentId).addList('fileUris')}" >
@@ -10,6 +10,7 @@
 			th::ref="|'${myComponentId}'|"  
 			th:@add="|uploader_uploadFile('${myComponentId}')|"
 			th:@uploaded="|uploader_uploadedFile($event, '${myComponentId}')|"
-			th:@remove:done="|uploader_removeFile($event, '${myComponentId}')|">
+			th:@remove:done="|uploader_removeFile($event, '${myComponentId}')|"
+			 th:attr="__${uploader_attrs}__">
 		</q-uploader>
 </th:block>
