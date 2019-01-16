@@ -22,13 +22,15 @@
     padding-top: 35px;
 }
 
-.withFab .q-btn-fab,
-.withFab .q-btn-fab-mini {
+.withFab .fab-block,
+.withFab .fab-block {
 	position: absolute;
 	top: 0;
 	right: 16px;
 	transform: translateY(-50%);
-	z-index: 1000
+	z-index: 1000;
+	height:3em;
+	width:3em;
 }
 
 /**
