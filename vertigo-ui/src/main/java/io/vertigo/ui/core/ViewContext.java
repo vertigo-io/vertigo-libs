@@ -20,6 +20,7 @@ package io.vertigo.ui.core;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -45,7 +46,6 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.lang.Assertion;
-import io.vertigo.vega.engines.webservice.json.UiListModifiable;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
@@ -121,6 +121,16 @@ public final class ViewContext implements Serializable {
 
 	public ViewContextMap asMap() {
 		return viewContextMap;
+	}
+
+	public void markModifiedKeys(final ViewContextKey... newModifiedKeys) {
+		modifiedKeys.addAll(Arrays.stream(newModifiedKeys)
+				.map(ViewContextKey::get)
+				.collect(Collectors.toSet()));
+	}
+
+	public void markModifiedKeys(final String... newModifiedKeys) {
+		modifiedKeys.addAll(Arrays.asList(newModifiedKeys));
 	}
 
 	public ViewContextMap asUpdatesMap() {
@@ -200,8 +210,8 @@ public final class ViewContext implements Serializable {
 	 * @param key Clé de context
 	 * @return UiListModifiable du context
 	 */
-	public <O extends DtObject> UiListModifiable<O> getUiListModifiable(final ViewContextKey<O> key) {
-		return (UiListModifiable<O>) get(key);
+	public <O extends DtObject> BasicUiListModifiable<O> getUiListModifiable(final ViewContextKey<O> key) {
+		return (BasicUiListModifiable<O>) get(key);
 	}
 
 	/**
@@ -360,7 +370,7 @@ public final class ViewContext implements Serializable {
 	public <O extends DtObject> DtList<O> readDtListModifiable(final ViewContextKey<O> contextKey, final DtObjectValidator<O> validator, final UiMessageStack uiMessageStack) {
 		checkDtListErrors(contextKey, uiMessageStack);
 		// ---
-		final DtList<O> validatedList = ((UiListModifiable) getUiListModifiable(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
+		final DtList<O> validatedList = ((BasicUiListModifiable) getUiListModifiable(contextKey)).mergeAndCheckInput(Collections.singletonList(validator), uiMessageStack);
 		if (uiMessageStack.hasErrors()) {
 			throw new ValidationUserException();
 		}
