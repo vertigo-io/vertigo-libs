@@ -5,15 +5,15 @@
 	--q-color-tertiary-invert:	rgba(255, 255, 255, 0.9);
 }
 
-.bg-primary  {
+.text-primary-inverted  {
 	color:var(--q-color-primary-invert) !important; 
 }
 
-.bg-secondary  {
+.text-secondary-inverted  {
 	color:var(--q-color-secondary-invert) !important; 
 }
 
-.bg-tertiary  {
+.text-tertiary-inverted  {
 	color:var(--q-color-tertiary-invert) !important; 
 }
 
@@ -31,6 +31,14 @@
 	z-index: 1000;
 	height:3em;
 	width:3em;
+}
+
+img.avatar {
+	object-fit: cover;
+}
+
+.q-item-avatar, .q-item-avatar img {
+    object-fit: cover;
 }
 
 /**
