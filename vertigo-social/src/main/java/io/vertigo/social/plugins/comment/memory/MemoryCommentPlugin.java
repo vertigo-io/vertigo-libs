@@ -42,7 +42,7 @@ public final class MemoryCommentPlugin implements CommentPlugin {
 	@Override
 	public synchronized <S extends KeyConcept> void publish(final Comment comment, final UID<S> uid) {
 		final List<UUID> comments = commentsMap.getOrDefault(uid, new ArrayList<>());
-		comments.add(comment.getUuid());
+		comments.add(0, comment.getUuid());
 		commentsMap.put(uid, comments);
 		map.put(comment.getUuid(), comment);
 	}
