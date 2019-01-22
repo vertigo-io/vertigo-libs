@@ -29,7 +29,7 @@ Vue.component('v-map', {
 				geoObject = object[geoField];
 			}
 			var iconFeature = new ol.Feature({
-				geometry : new ol.geom.Point(ol.proj.fromLonLat([ geoObject.lat, geoObject.lon ])),
+				geometry : new ol.geom.Point(ol.proj.fromLonLat([ geoObject.lon, geoObject.lat ])),
 			});
 			
 			iconFeature.setStyle(styleIcon);
