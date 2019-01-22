@@ -1,4 +1,4 @@
-<th:block th:fragment="text-field-edit(object, field, label, label_attrs, input_attrs)" 
+<th:block th:fragment="text-field-edit(object, field, label, suffix, label_attrs, input_attrs)" 
 	vu:alias="text-field" vu:selector="${viewMode=='edit'}"
 	th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}"/>
@@ -6,15 +6,16 @@
 		<q-input 
 			th:v-model="${'vueData.' + object + '.' + field}" 
 			th:name="${'vContext['+object+']['+ field +']'}"
+			th:suffix="${suffix?:''}"
 			th:attr="__${input_attrs}__"
 		>
 		</q-input>
 	</vu:label-edit>
 </th:block>
-<th:block th:fragment="text-field-read(object, field, label, label_attrs, input_attrs)" 
+<th:block th:fragment="text-field-read(object, field, label, suffix, label_attrs, input_attrs)" 
 	vu:alias="text-field" vu:selector="${viewMode=='read'}"
 	th:assert="${object} != null and ${field} != null" >
 	<vu:label-read label=${label} th:attr="__${label_attrs}__" >
-		<span th:text="${model.vContext[__${object}__][__${field}__]}" th:attr="__${input_attrs}__"></span>
+		<span th:text="${model.vContext[__${object}__][__${field}__]}" th:attr="__${input_attrs}__"></span><span th:if="${suffix != null}" th:text="${suffix}"></span>
 	</vu:label-read>
 </th:block>
