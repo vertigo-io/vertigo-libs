@@ -62,9 +62,9 @@ import io.vertigo.util.StringUtil;
 
 public class ThymeleafComponentNamedElementProcessor extends AbstractElementModelProcessor {
 	private static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";
+	private static final String SLOTS_SUFFIX = "slot";
 	private static final String ATTRS_SUFFIX = "attrs";
 	private static final String CONTENT_TAGS = "contentTags";
-	private static final String SLOT_CONTENT_VAR_NAME = ComponentSlotProcessor.SLOT_CONTENT_VAR_NAME;
 
 	private static final int PRECEDENCE = 350;
 
@@ -72,6 +72,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 	private final String componentName;
 	private final Optional<VariableExpression> selectionExpression;
 	private final List<String> parameterNames;
+	private final Set<String> slotNames;
 	private final List<String> placeholderPrefixes;
 	private final Optional<String> unnamedPlaceholderPrefix;
 	private final String frag;
@@ -90,6 +91,11 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 
 		selectionExpression = thymeleafComponent.getSelectionExpression();
 		parameterNames = thymeleafComponent.getParameters();
+
+		slotNames = parameterNames.stream()
+				.filter((key) -> key.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + SLOTS_SUFFIX))
+				.collect(Collectors.toSet());
+
 		placeholderPrefixes = parameterNames.stream()
 				.filter((parameterName) -> parameterName.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + ATTRS_SUFFIX))
 				.map((parameterName) -> parameterName.substring(0, parameterName.length() - ATTRS_SUFFIX.length()))
@@ -113,10 +119,13 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			if (parameterNames.contains(CONTENT_TAGS)) {
 				structureHandler.setLocalVariable(CONTENT_TAGS, tag instanceof IStandaloneElementTag ? Collections.emptyList() : asList(contentModel));
 			}
-			final Map<String, IModel> slotContents = removeAndExtractSlots(contentModel);
-			structureHandler.setLocalVariable(SLOT_CONTENT_VAR_NAME, slotContents);
-			for (final Map.Entry<String, IModel> entry : slotContents.entrySet()) {
-				structureHandler.setLocalVariable(entry.getKey(), entry.getValue());
+			if (!slotNames.isEmpty()) {
+				final Map<String, IModel> slotContents = removeAndExtractSlots(contentModel);
+				for (final Map.Entry<String, IModel> entry : slotContents.entrySet()) {
+					Assertion.checkState(slotNames.contains(entry.getKey()), "Component {0} have no slot {1} (accepted slots : {3})", componentName, entry.getKey(), slotNames);
+					//-----
+					structureHandler.setLocalVariable(entry.getKey(), entry.getValue());
+				}
 			}
 
 			final String fragmentToUse = "~{" + componentName + " :: " + frag + "}";
@@ -182,35 +191,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		}
 		Assertion.checkState(tapDepth == 0, "Can't extract component slots, tags may be missclosed in slot {0}", slotName);
 		return slotContents;
-
 	}
-
-	/*private IModel replaceContentSlotTags(final IModel componentModel, final Map<String, IModel> slotContents) {
-		for (final Map.Entry<String, IModel> entry : slotContents.entrySet()) {
-			replaceContentSlotTag(componentModel, entry.getKey(), entry.getValue());
-		}
-		return componentModel;
-	}
-
-	private IModel replaceContentSlotTag(final IModel componentModel, final String slotContentName, final IModel slotContent) {
-		final int index = findTagIndex("vu:content", "slot", slotContentName, 0, componentModel, IProcessableElementTag.class); //Open or standalone
-		if (index > -1) {
-			final int indexEnd = findTagIndex("vu:content", index, componentModel, ICloseElementTag.class);
-			if (indexEnd > -1) {
-				componentModel.remove(indexEnd);
-			}
-			//We remove old body
-			if (indexEnd > -1) {
-				for (int i = indexEnd - 1; i > index; i--) {
-					componentModel.remove(i);
-				}
-			}
-			//We insert new body after content tag (index+1)
-			componentModel.insertModel(index + 1, slotContent);
-			componentModel.remove(index);
-		}
-		return componentModel;
-	}*/
 
 	private static IModel replaceContentTag(final IModel fragmentModel, final Optional<IModel> contentModel) {
 		final int index = findTagIndex("vu:content", 0, fragmentModel, IProcessableElementTag.class);//Open or standalone
@@ -248,20 +229,6 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		}
 		return -1;
 	}
-
-	/*private static int findTagIndex(final String tagName, final String attrName, final String attrValue, final int from, final IModel model, final Class<? extends IProcessableElementTag> tagClass) {
-		ITemplateEvent event = null;
-		final int size = model.size();
-		for (int i = from; i < size; i++) {
-			event = model.get(i);
-			if (tagClass.isInstance(event)
-					&& ((IElementTag) event).getElementCompleteName().equals(tagName)
-					&& attrValue.equals(((IProcessableElementTag) event).getAttributeValue(attrName))) {
-				return i;
-			}
-		}
-		return -1;
-	}*/
 
 	private static IModel cloneAndCleanModel(final IModel model) {
 		final IModel cleanerModel = model.cloneModel();

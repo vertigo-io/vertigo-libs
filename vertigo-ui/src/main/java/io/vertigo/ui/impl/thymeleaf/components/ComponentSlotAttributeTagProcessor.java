@@ -1,7 +1,5 @@
 package io.vertigo.ui.impl.thymeleaf.components;
 
-import java.util.Map;
-
 import org.thymeleaf.context.ITemplateContext;
 import org.thymeleaf.engine.AttributeName;
 import org.thymeleaf.model.IModel;
@@ -9,12 +7,16 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.model.IStandaloneElementTag;
 import org.thymeleaf.processor.element.AbstractAttributeTagProcessor;
 import org.thymeleaf.processor.element.IElementTagStructureHandler;
+import org.thymeleaf.standard.expression.Fragment;
 import org.thymeleaf.templatemode.TemplateMode;
 
+import io.vertigo.lang.Assertion;
+
 public class ComponentSlotAttributeTagProcessor extends AbstractAttributeTagProcessor {
+	private static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";
+	private static final String SLOTS_SUFFIX = "slot";
 	private static final String ATTR_NAME = "slot";
 	private static final int PRECEDENCE = 400;
-	private static final String SLOT_CONTENT_VAR_NAME = ComponentSlotProcessor.SLOT_CONTENT_VAR_NAME;
 
 	public ComponentSlotAttributeTagProcessor(final String dialectPrefix) {
 		super(
@@ -33,9 +35,15 @@ public class ComponentSlotAttributeTagProcessor extends AbstractAttributeTagProc
 			final ITemplateContext context, final IProcessableElementTag tag,
 			final AttributeName attributeName, final String attributeValue,
 			final IElementTagStructureHandler structureHandler) {
-
-		final Map<String, IModel> slots = (Map<String, IModel>) context.getVariable(SLOT_CONTENT_VAR_NAME);
-		final IModel slotModel = slots.get(attributeValue);
+		Assertion.checkArgument(attributeValue.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + SLOTS_SUFFIX), "{0} isn't a slot. Attribute vu:slot only supports slots, names must ends with '_slot'", attributeValue);
+		//-----
+		final Object slotModelObject = context.getVariable(attributeValue);
+		final IModel slotModel;
+		if (slotModelObject instanceof Fragment) {
+			slotModel = ((Fragment) slotModelObject).getTemplateModel();
+		} else {
+			slotModel = (IModel) slotModelObject;
+		}
 		if (slotModel != null) {
 			if (slotModel.size() == 0) {
 				//if empty slot we remove all tag (open tag, body and close tag)
