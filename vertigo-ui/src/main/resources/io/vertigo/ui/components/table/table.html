@@ -15,6 +15,9 @@
 	    th:@request="paginationAndSortHandler"
 	    th:attr="__${other_attrs}__"
 	  >
+	  	<template slot="top-right" slot-scope="props" vu:slot="top_right_slot"/>
+  		<template slot="top-left" slot-scope="props" vu:slot="top_left_slot"/>
+  
 	  	<q-tr slot="body" slot-scope="props" :props="props">
 	  		<q-td th:if="${mySelectable}" auto-width>
 		       <q-checkbox th:color="${color?:'primary'}" v-model="props.selected" ></q-checkbox>

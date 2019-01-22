@@ -64,6 +64,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 	private static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";
 	private static final String ATTRS_SUFFIX = "attrs";
 	private static final String CONTENT_TAGS = "contentTags";
+	private static final String SLOT_CONTENT_VAR_NAME = ComponentSlotProcessor.SLOT_CONTENT_VAR_NAME;
 
 	private static final int PRECEDENCE = 350;
 
@@ -107,14 +108,23 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			final String param = attributes.get("params");
 
 			final IModel contentModel = cloneAndCleanModel(model);
+			removeContainerTag(contentModel);
 
 			if (parameterNames.contains(CONTENT_TAGS)) {
 				structureHandler.setLocalVariable(CONTENT_TAGS, tag instanceof IStandaloneElementTag ? Collections.emptyList() : asList(contentModel));
 			}
+			final Map<String, IModel> slotContents = removeAndExtractSlots(contentModel);
+			structureHandler.setLocalVariable(SLOT_CONTENT_VAR_NAME, slotContents);
+			for (final Map.Entry<String, IModel> entry : slotContents.entrySet()) {
+				structureHandler.setLocalVariable(entry.getKey(), entry.getValue());
+			}
 
 			final String fragmentToUse = "~{" + componentName + " :: " + frag + "}";
 			final IModel fragmentModel = FragmentHelper.getFragmentModel(context, fragmentToUse + (param == null ? "" : "(" + param + ")"), structureHandler);
-			final IModel replacedContentFragmentModel = replaceContentTag(fragmentModel, tag instanceof IStandaloneElementTag ? Optional.empty() : Optional.ofNullable(contentModel));
+			final IModel clonedFragmentModel = fragmentModel.cloneModel(); //le clone change l'index des éléments
+
+			//final IModel replacedContentSlotModel = replaceContentSlotTags(clonedFragmentModel, slotContents);
+			final IModel replacedContentFragmentModel = replaceContentTag(clonedFragmentModel, tag instanceof IStandaloneElementTag ? Optional.empty() : Optional.ofNullable(contentModel));
 			final IModel replacedAttributeFragmentModel = replaceAllAttributeValues(attributes, context, replacedContentFragmentModel);
 
 			//We replace the whole model
@@ -126,11 +136,86 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 
 	}
 
-	private static IModel replaceContentTag(final IModel model, final Optional<IModel> contentModel) {
-		final IModel fragmentModel = model.cloneModel(); //le clone change l'index des éléments
-		final int index = findContentTagIndex(0, fragmentModel, IElementTag.class);//Open or standalone
+	private Map<String, IModel> removeAndExtractSlots(final IModel contentModel) {
+		final Map<String, IModel> slotContents = new HashMap<>();
+		final IModel buildingModel = contentModel.cloneModel(); //contains each first level tag (and all it's sub-tags)
+		buildingModel.reset();
+		int tapDepth = 0;
+		String slotName = null;
+		final int fullContentSize = contentModel.size();
+		for (int i = 0; i < fullContentSize; i++) {
+			final ITemplateEvent templateEvent = contentModel.get(0); //get always first (because we remove it)
+			if (templateEvent instanceof IOpenElementTag) {
+				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
+					Assertion.checkState(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
+					slotName = ((IProcessableElementTag) templateEvent).getAttributeValue("name");
+				} else if (tapDepth == 0) {
+					break; //slots must be set at first
+				}
+				tapDepth++;
+			} else if (templateEvent instanceof ICloseElementTag) {
+				tapDepth--;
+			} else if (templateEvent instanceof IStandaloneElementTag) {
+				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
+					//we accept empty slot (to clear a component default slot)
+					Assertion.checkState(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
+					slotName = ((IProcessableElementTag) templateEvent).getAttributeValue("name");
+				} else if (tapDepth == 0) {
+					break;
+				}
+			}
+			buildingModel.add(templateEvent); //add first
+			contentModel.remove(0); //remove first : in fact we move slot's tags from content model to building model
+
+			if (tapDepth == 0) {
+				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
+					Assertion.checkNotNull(slotName);
+					//Si on est à la base, on ajout que le model qu'on a préparé, on le close et on reset pour la boucle suivante
+					final IModel firstLevelTagModel = buildingModel.cloneModel();
+					removeContainerTag(firstLevelTagModel); //we remove the slot tag itself
+					slotContents.put(slotName, firstLevelTagModel);
+					buildingModel.reset(); //we prepare next buildingModel
+				} else {
+					break; //slots must be set at first
+				}
+			}
+		}
+		Assertion.checkState(tapDepth == 0, "Can't extract component slots, tags may be missclosed in slot {0}", slotName);
+		return slotContents;
+
+	}
+
+	/*private IModel replaceContentSlotTags(final IModel componentModel, final Map<String, IModel> slotContents) {
+		for (final Map.Entry<String, IModel> entry : slotContents.entrySet()) {
+			replaceContentSlotTag(componentModel, entry.getKey(), entry.getValue());
+		}
+		return componentModel;
+	}
+
+	private IModel replaceContentSlotTag(final IModel componentModel, final String slotContentName, final IModel slotContent) {
+		final int index = findTagIndex("vu:content", "slot", slotContentName, 0, componentModel, IProcessableElementTag.class); //Open or standalone
 		if (index > -1) {
-			final int indexEnd = findContentTagIndex(index, fragmentModel, ICloseElementTag.class);
+			final int indexEnd = findTagIndex("vu:content", index, componentModel, ICloseElementTag.class);
+			if (indexEnd > -1) {
+				componentModel.remove(indexEnd);
+			}
+			//We remove old body
+			if (indexEnd > -1) {
+				for (int i = indexEnd - 1; i > index; i--) {
+					componentModel.remove(i);
+				}
+			}
+			//We insert new body after content tag (index+1)
+			componentModel.insertModel(index + 1, slotContent);
+			componentModel.remove(index);
+		}
+		return componentModel;
+	}*/
+
+	private static IModel replaceContentTag(final IModel fragmentModel, final Optional<IModel> contentModel) {
+		final int index = findTagIndex("vu:content", 0, fragmentModel, IProcessableElementTag.class);//Open or standalone
+		if (index > -1) {
+			final int indexEnd = findTagIndex("vu:content", index, fragmentModel, ICloseElementTag.class);
 			if (indexEnd > -1) {
 				fragmentModel.remove(indexEnd);
 			}
@@ -151,18 +236,32 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		return fragmentModel;
 	}
 
-	private static int findContentTagIndex(final int from, final IModel model, final Class<? extends IElementTag> tagClass) {
+	private static int findTagIndex(final String tagName, final int from, final IModel model, final Class<? extends IElementTag> tagClass) {
 		ITemplateEvent event = null;
 		final int size = model.size();
 		for (int i = from; i < size; i++) {
 			event = model.get(i);
 			if (tagClass.isInstance(event)
-					&& ((IElementTag) event).getElementCompleteName().equals("vu:content")) {
+					&& ((IElementTag) event).getElementCompleteName().equals(tagName)) {
 				return i;
 			}
 		}
 		return -1;
 	}
+
+	/*private static int findTagIndex(final String tagName, final String attrName, final String attrValue, final int from, final IModel model, final Class<? extends IProcessableElementTag> tagClass) {
+		ITemplateEvent event = null;
+		final int size = model.size();
+		for (int i = from; i < size; i++) {
+			event = model.get(i);
+			if (tagClass.isInstance(event)
+					&& ((IElementTag) event).getElementCompleteName().equals(tagName)
+					&& attrValue.equals(((IProcessableElementTag) event).getAttributeValue(attrName))) {
+				return i;
+			}
+		}
+		return -1;
+	}*/
 
 	private static IModel cloneAndCleanModel(final IModel model) {
 		final IModel cleanerModel = model.cloneModel();
@@ -175,12 +274,15 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 				}
 			}
 		}
-		//Remove container tag
-		cleanerModel.remove(0);
-		if (cleanerModel.size() > 1) {
-			cleanerModel.remove(cleanerModel.size() - 1);
-		}
 		return cleanerModel;
+	}
+
+	private void removeContainerTag(final IModel contentModel) {
+		//Remove container tag
+		contentModel.remove(0);
+		if (contentModel.size() > 1) {
+			contentModel.remove(contentModel.size() - 1);
+		}
 	}
 
 	private List<ThymeleafContentComponent> asList(final IModel componentModel) {
