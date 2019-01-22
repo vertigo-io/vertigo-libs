@@ -44,8 +44,6 @@ Vue.component('v-map', {
 			source : vectorSource
 		});
 		
-		view.fit(vectorLayer.getSource().getExtent());
-
 		var osmLayer = new ol.layer.Tile({
 			preload : 4,
 			source : new ol.source.OSM()
@@ -57,5 +55,7 @@ Vue.component('v-map', {
 			loadTilesWhileAnimating : true,
 			view : view
 		});
+		
+		map.getView().fit(vectorLayer.getSource().getExtent(), map.getSize())
 	}
 })
