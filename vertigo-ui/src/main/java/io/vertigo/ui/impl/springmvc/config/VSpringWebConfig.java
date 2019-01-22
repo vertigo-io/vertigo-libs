@@ -181,6 +181,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	@Override
 	public void configureViewResolvers(final ViewResolverRegistry registry) {
 		final ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+		resolver.setCharacterEncoding("UTF-8");
 		resolver.setTemplateEngine(templateEngine());
 		registry.viewResolver(resolver);
 	}
