@@ -1,4 +1,4 @@
-<th:block th:fragment="table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, color, tableClass, top_right_slot, top_left_slot, other_attrs)" 
+<th:block th:fragment="table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, navOnRow, color, tableClass, top_right_slot, top_left_slot, tr_attrs, other_attrs)" 
 	th:with="tableKey=${list}, listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, myRowsPerPage=${rowsPerPage?:10}"
 	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')}, objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')}, objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false }, objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {page: 1 , rowsNumber: __${listSize}__, rowsPerPage : __${myRowsPerPage}__, componentId : '__${componentId}__', listKey : '__${list}__'})}" >
 	<th:block th:if="${sortUrl != null}" th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('sortUrl', '__${sortUrl}__')}" th:remove="all" />
@@ -18,7 +18,7 @@
 	  <template slot="top-left" slot-scope="props" vu:slot="top_left_slot"/>
 	  <template slot="top-right" slot-scope="props" vu:slot="top_right_slot"/>
   
-	  	<q-tr slot="body" slot-scope="props" :props="props">
+	  	<q-tr slot="body" slot-scope="props" :props="props" th:attr="__${tr_attrs}__" >
 	  		<q-td th:if="${mySelectable}" auto-width>
 		       <q-checkbox th:color="${color?:'primary'}" v-model="props.selected" ></q-checkbox>
 		     </q-td>
