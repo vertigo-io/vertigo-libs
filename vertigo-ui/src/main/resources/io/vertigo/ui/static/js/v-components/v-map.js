@@ -49,6 +49,9 @@ Vue.component('v-map', {
 			source : new ol.source.OSM()
 		})
 		var map = new ol.Map({
+			interactions: ol.interaction.defaults({
+	          onFocusOnly: true
+	        }),
 			target : this.$props.id,
 			layers : [ osmLayer, vectorLayer ],
 			// Improve user experience by loading tiles while animating. Will make animations stutter on mobile or slow devices.
@@ -57,5 +60,7 @@ Vue.component('v-map', {
 		});
 		
 		map.getView().fit(vectorLayer.getSource().getExtent(), map.getSize());
+		
+
 	}
 })
