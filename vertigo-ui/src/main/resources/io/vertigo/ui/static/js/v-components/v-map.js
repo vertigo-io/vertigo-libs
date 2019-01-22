@@ -56,6 +56,6 @@ Vue.component('v-map', {
 			view : view
 		});
 		
-		map.getView().fit(vectorLayer.getSource().getExtent(), map.getSize())
+		map.getView().fit(vectorLayer.getSource().getExtent(), map.getSize());
 	}
 })
