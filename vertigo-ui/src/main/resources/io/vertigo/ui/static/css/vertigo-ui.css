@@ -17,6 +17,12 @@
 	color:var(--q-color-tertiary-invert) !important; 
 }
 
+.notifications a.q-item {
+	text-decoration: none;
+	color: var(--q-color-body-color) !important;
+}
+
+
 .withFab .q-card-main {
 	position: relative;
     padding-top: 35px;
