@@ -47,13 +47,14 @@ function showChartJsChart(elem, datas, dataMetrics, dataQuery, dataLabels, dataC
 	$(elem).html("");
 	$(elem).append("<canvas></canvas>");
 	ctx = $(elem).find("canvas");
+	var finalOptions = $.extend(true, {}, chartOptions, additionalOptions);
 	var myBubbleChart = new Chart(ctx,{
 	    type: type,
 	    data: {
 	    	labels : labels,
 			datasets: chartJsDataSets
 		},
-	    options: chartOptions
+	    options: finalOptions
 	});
 }
 

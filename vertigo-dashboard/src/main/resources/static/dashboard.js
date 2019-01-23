@@ -98,9 +98,9 @@ function updateLocationFilterFromSelection(dataFilter) {
 		locationSelection = $.cookie('locationFilter');
 	}
 	if(locationSelection) {
-		dataFilter.location = locationSelection;
+		dataFilter.filters.location = locationSelection;
 	} else {
-		dataFilter.location = "*";
+		dataFilter.filters.location = "*";
 	}
 	
 }
