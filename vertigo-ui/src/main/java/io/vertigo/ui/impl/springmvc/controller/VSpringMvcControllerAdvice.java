@@ -24,10 +24,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.ModelAndView;
 
+import io.vertigo.lang.VUserException;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextMap;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
+import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
 
 @ControllerAdvice(assignableTypes = { AbstractVSpringMvcController.class })
@@ -53,12 +55,28 @@ public final class VSpringMvcControllerAdvice {
 	}
 
 	@ExceptionHandler(ValidationUserException.class)
-	public ModelAndView handleCustomException(final ValidationUserException ex) {
+	public ModelAndView handleValidationUserException(final ValidationUserException ex) {
 		final ModelAndView modelAndView = new ModelAndView();
 		//---
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
 		final UiMessageStack uiMessageStack = UiRequestUtil.getCurrentUiMessageStack();
 		//---
+		//---
+		viewContext.markDirty();
+		modelAndView.addObject("model", viewContext.asMap());
+		modelAndView.addObject("uiMessageStack", uiMessageStack);
+
+		return modelAndView;
+	}
+
+	@ExceptionHandler(VUserException.class)
+	public ModelAndView handleVUserException(final VUserException ex) {
+		final ModelAndView modelAndView = new ModelAndView();
+		//---
+		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
+		final UiMessageStack uiMessageStack = UiRequestUtil.getCurrentUiMessageStack();
+		//---
+		uiMessageStack.addGlobalMessage(Level.ERROR, ex.getMessage());
 		//---
 		viewContext.markDirty();
 		modelAndView.addObject("model", viewContext.asMap());
