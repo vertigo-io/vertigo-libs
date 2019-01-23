@@ -93,7 +93,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		templateResolver.setPrefix("/WEB-INF/views/");
 		templateResolver.setSuffix(".html");
 		// for dev purpose
-		templateResolver.setCacheable(false);
+		templateResolver.setCacheable(!isDevMode());
 		return templateResolver;
 	}
 
@@ -104,7 +104,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		templateResolver.setSuffix(".html");
 		templateResolver.setResolvablePatterns(Collections.singleton("components/*"));
 		// for dev purpose
-		templateResolver.setCacheable(false);
+		templateResolver.setCacheable(!isDevMode());
 		return templateResolver;
 	}
 
@@ -115,7 +115,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		templateResolver.setSuffix(".html");
 		templateResolver.setResolvablePatterns(Collections.singleton("components/*"));
 		// for dev purpose
-		templateResolver.setCacheable(false);
+		templateResolver.setCacheable(!isDevMode());
 		return templateResolver;
 	}
 
@@ -228,6 +228,10 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 				.addResourceLocations("classpath:/io/vertigo/ui/static/")
 				.setCacheControl(CacheControl.maxAge(2, TimeUnit.HOURS).cachePublic());
 
+	}
+
+	protected boolean isDevMode() {
+		return true;
 	}
 
 }
