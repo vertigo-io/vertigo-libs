@@ -87,6 +87,7 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 		Assertion.checkArgNotEmpty(defaultDestPublicAddr);
 		Assertion.checkArgNotEmpty(walletPassword);
 		Assertion.checkArgNotEmpty(walletPath);
+		Assertion.checkNotNull(eventBusManager);
 		//---
 		this.eventBusManager = eventBusManager;
 		//---
@@ -111,7 +112,6 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 				.map(EthereumLedgerPlugin::convertTransactionToLedgerTransaction)
 				.subscribe(ledgerTransaction -> eventBusManager.post(new LedgerTransactionEvent(ledgerTransaction)));
 		LOGGER.info("Getting new messages sent to {}.", myWalletAddress);
-
 	}
 
 	@Override
@@ -145,7 +145,7 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 
 	@Override
 	public void sendData(final String data) {
-		sendData(data, defaultDestPublicAddr, LedgerTransactionPriorityEnum.FAST);
+		sendData(data, defaultDestPublicAddr, LedgerTransactionPriorityEnum.VERYFAST);
 	}
 
 	private void sendData(final String data, final LedgerAddress ledgerAddress, final LedgerTransactionPriorityEnum priority) {

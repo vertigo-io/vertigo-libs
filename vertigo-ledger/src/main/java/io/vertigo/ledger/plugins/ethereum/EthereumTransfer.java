@@ -38,6 +38,8 @@ import io.vertigo.ledger.services.LedgerTransactionPriorityEnum;
 final class EthereumTransfer extends Transfer {
 
 	private static final BigInteger GAS_UNIT_PER_BIT = BigInteger.valueOf(68L);
+	private static final BigDecimal GAS_LIMIT_MARGIN = BigDecimal.valueOf(1.10);
+	
 
 	EthereumTransfer(final Web3j web3j, final TransactionManager transactionManager) {
 		super(web3j, transactionManager);
@@ -69,7 +71,8 @@ final class EthereumTransfer extends Transfer {
 		final int messageLength = message.length();
 		final BigInteger bitSize = BigInteger.valueOf(messageLength % 2 == 0 ? messageLength / 2 : messageLength / 2 + 1);
 		final BigInteger storageCost = GAS_UNIT_PER_BIT.multiply(bitSize);
-		final BigInteger totalCost = GAS_LIMIT.add(storageCost);
+		final BigInteger storageCostWithMargin = (new BigDecimal(storageCost)).multiply(GAS_LIMIT_MARGIN).toBigInteger();
+		final BigInteger totalCost = GAS_LIMIT.add(storageCostWithMargin);
 
 		return send(toAddress, value, unit, gasPrice, totalCost, message);
 	}
