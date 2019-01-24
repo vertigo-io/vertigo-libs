@@ -29,12 +29,11 @@ Vue.directive('scroll-spy', {
         	const scrollContainer = Quasar.utils.scroll.getScrollTarget(document.querySelector(elAs[0].hash))
     		
         	Vue.scrollSpyHandler = function(scroll) {
-        		//We check if nav should be fixed
         		// Add the fixed class to the header when you reach its scroll position. Remove "fixed" when you leave the scroll position
         		if (window.pageYOffset > offset) {
-        			//elNav.style.top = elNav.getBoundingClientRect().top+"px";
         			elNav.style.top = offset+"px";
-        			elNav.style.width = elNav.getBoundingClientRect().width+"px";
+        			//when fixed, we must set a valid width, for that we use parent width
+        			elNav.style.width = elNav.parentElement.getBoundingClientRect().width+"px";
         			elNav.classList.add("fixed");
         		} else {
         			elNav.classList.remove("fixed");
@@ -108,10 +107,12 @@ Vue.directive('scroll-spy', {
     			elAs[i].addEventListener('click', Vue.scrollTo);
     		}		    
         	window.addEventListener('scroll', Vue.scrollSpyHandler)
+        	window.addEventListener('resize', Quasar.utils.throttle(Vue.scrollSpyHandler,50))
         },
-        unbind: function(el) {
+        unbind: function(elNav) {
         	elNav.classList.remove("scroll-spy-nav");
         	window.removeEventListener('scroll')
+        	window.removeEventListener('resize')
         	const elAs = elNav.querySelectorAll('a')
     		for(var i = 0 ; i < elAs.length; i++) {
     			elAs.removeEventListener('click')		    
