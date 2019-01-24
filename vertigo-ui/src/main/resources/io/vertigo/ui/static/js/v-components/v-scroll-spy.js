@@ -23,7 +23,7 @@
 Vue.directive('scroll-spy', {
         bind: function(elNav, args) {
         	const offset = args.value.offset?args.value.offset:0;
-        	const scanner = args.value.scanner?args.value.scanner:offset+80;
+        	const scanner = args.value.scanner?args.value.scanner:offset+30; //scanner is 30px bottom of offset, must be smaller than the smallest first element
         	const elAs = elNav.querySelectorAll('a')
         	elAs[0].classList.add("active") //first active
         	const scrollContainer = Quasar.utils.scroll.getScrollTarget(document.querySelector(elAs[0].hash))
