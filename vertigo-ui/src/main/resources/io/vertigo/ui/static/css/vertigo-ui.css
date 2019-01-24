@@ -22,6 +22,32 @@
 	color: var(--q-color-body-color) !important;
 }
 
+.not-mini .eq-mini { /* can't revert display:none (on IE of course), we must use a concrete selector*/
+	display:none;
+}
+
+.mini {
+	transition: top .3s;
+    z-index:10;
+    position:fixed;
+    top:0;
+    right:0;
+    left:0;
+    width:auto;
+}
+
+.mini.visible {
+	/** may be use to detect mini is visible*/
+}
+
+.mini .ne-mini {
+	display:none;
+}
+
+.mini .eq-mini {
+	/*display: unset; /* can't revert display:none (on IE of course), we must use a concrete selector : .not_mini*/
+}
+
 
 .withFab .q-card-main {
 	position: relative;
