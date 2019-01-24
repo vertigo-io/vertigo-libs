@@ -23,6 +23,7 @@
 Vue.directive('scroll-spy', {
         bind: function(elNav, args) {
         	const offset = args.value.offset?args.value.offset:0;
+        	const scanner = args.value.scanner?args.value.scanner:offset+80;
         	const elAs = elNav.querySelectorAll('a')
         	elAs[0].classList.add("active") //first active
         	const scrollContainer = Quasar.utils.scroll.getScrollTarget(document.querySelector(elAs[0].hash))
@@ -32,7 +33,7 @@ Vue.directive('scroll-spy', {
         		// Add the fixed class to the header when you reach its scroll position. Remove "fixed" when you leave the scroll position
         		if (window.pageYOffset > offset) {
         			//elNav.style.top = elNav.getBoundingClientRect().top+"px";
-        			elNav.style.top = "70px";
+        			elNav.style.top = offset+"px";
         			elNav.style.width = elNav.getBoundingClientRect().width+"px";
         			elNav.classList.add("fixed");
         		} else {
@@ -58,7 +59,7 @@ Vue.directive('scroll-spy', {
         		event.preventDefault();
         		const elScrollId = event.target.hash;
         		const elScroll = document.querySelector(elScrollId)
-                var toScroll = Quasar.utils.scroll.getScrollPosition(scrollContainer)+elScroll.getBoundingClientRect().top-offset
+                var toScroll = Quasar.utils.scroll.getScrollPosition(scrollContainer)+elScroll.getBoundingClientRect().top-scanner
                 
         		var scrollPosition = Quasar.utils.scroll.getScrollPosition(scrollContainer)
         		var scrollBreakpoints = Vue.computeBreakPoints(scrollPosition);
@@ -79,7 +80,7 @@ Vue.directive('scroll-spy', {
         			const elScrollId = elAs[i].hash;
 				    const elScroll = document.querySelector(elScrollId)
 				    if(elScroll) {
-				    	scrollBreakpoints.push(scrollPosition+elScroll.getBoundingClientRect().top-offset);      
+				    	scrollBreakpoints.push(scrollPosition+elScroll.getBoundingClientRect().top-scanner);      
 					} else {
 						console.warn('ScrollSpy element '+elScrollId+' not found')
 					}
@@ -89,12 +90,12 @@ Vue.directive('scroll-spy', {
         		const scrollHeight = Quasar.utils.scroll.getScrollHeight(scrollContainer) /** height of scrollable element */ 
         		const scrollMax = scrollHeight - windowHeight /** Maximum possible scroll */  
         		const lastHeight = Quasar.utils.scroll.getScrollHeight(scrollContainer) - scrollBreakpoints[scrollBreakpoints.length-1]; /** Last element height */
-        		const scrollStart = scrollMax - lastHeight + offset /** Start linear move at this scroll position */
+        		const scrollStart = scrollMax - lastHeight + scanner /** Start linear move at this scroll position */
         		
         		for(var i = 1 ; i < elAs.length; i++) {
         			var prev = scrollBreakpoints[i];
         			if(scrollBreakpoints[i] > scrollStart) {
-        				scrollBreakpoints[i] = scrollStart + ((scrollBreakpoints[i] - scrollStart)/lastHeight) * (scrollMax-scrollStart-offset)
+        				scrollBreakpoints[i] = scrollStart + ((scrollBreakpoints[i] - scrollStart)/lastHeight) * (scrollMax-scrollStart-scanner)
         			}	
         			scrollBreakpoints[i] = Math.round(scrollBreakpoints[i])
         			//console.log(i+'  from: '+prev+ '  to:'+scrollBreakpoints[i] )
