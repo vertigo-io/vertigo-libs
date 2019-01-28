@@ -1,13 +1,13 @@
 Vue.component('v-facets', {
   template: '<div class="facets">'
- + '	<div class="selectedFacets q-pb-md">'
+ + '	<div class="selectedFacets q-pb-md" v-if="isAnyFacetValueSelected()">'
  + '		<div v-for="(selectedFacetValues, selectedFacet) in selectedFacets" :key="selectedFacet">'
  + '			<q-chip class="q-mb-sm" v-for="selectedFacetValue in selectedFacetValues" :key="selectedFacetValue.code"' 
  + '		    	@click="$emit(\'toogle-facet\', selectedFacet, selectedFacetValue, contextKey)" icon-right="cancel">{{facetLabelByCode(selectedFacet)}}: {{facetValueLabelByCode(selectedFacet, selectedFacetValue)}}'
  + '			</q-chip>'
  + '		</div>'
  + '	</div>'
- + '	<q-list v-if="facet.multiple || !isFacetSelected(facet.code)" v-for="facet in facets" :key="facet.code" class="facetValues" dense highlight no-border>'
+ + '	<q-list v-if="facet.multiple || !isFacetSelected(facet.code)" v-for="facet in facets" :key="facet.code" class="facetValues q-py-none" dense highlight no-border >'
  + '		<q-list-header><big>{{facet.label}}</big></q-list-header>'
  + '	  		<q-item v-for="(value, index) in visibleFacets(facet.code, facet.values)" :key="value.code" class="facetValue q-ml-md" @click.native="$emit(\'toogle-facet\', facet.code, value.code, contextKey)">'
  + ' 				<q-item-side v-if="facet.multiple" >'
@@ -49,6 +49,14 @@ Vue.component('v-facets', {
 		  return this.facetByCode(facetCode).values.filter(function (facetValue) {
 			  return facetValue.code === facetValueCode;
 		  })[0].label;
+	  },
+	  isAnyFacetValueSelected : function() {
+		  for(var facetCode in this.selectedFacets) {
+			  if(this.selectedFacets[facetCode].length > 0) {
+				  return true;
+			  }
+		  } 
+		  return false;
 	  },
 	  isFacetValueSelected : function (facetCode, facetValueCode){
 		  return this.selectedFacets[facetCode].includes(facetValueCode);
