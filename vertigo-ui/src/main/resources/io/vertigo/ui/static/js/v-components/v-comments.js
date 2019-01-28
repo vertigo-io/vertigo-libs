@@ -4,7 +4,7 @@ Vue.component('v-comments', {
 +'	<q-btn round size="lg" color="primary" textColor="white" :icon="count>0?icon:iconNone" @click="commentDrawer = !commentDrawer" class="on-left" >'
 +'		<q-chip floating small color="red" v-if="count>0" style="right:-.4em;top:-.4em;">{{count}}</q-chip>'
 +'	</q-btn>'
-+'	<q-layout-drawer :width="600" v-model="commentDrawer" side="right">'
++'	<q-layout-drawer overlay behavior="mobile" :width="600" v-model="commentDrawer" side="right">'
 +'		<q-list >'
 +'			<q-list-header><big>Comments</big></q-list-header>'
 +'			<q-item>'
