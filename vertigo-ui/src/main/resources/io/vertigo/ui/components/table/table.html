@@ -14,7 +14,6 @@
 	    th:table-class="${tableClass?:'table-'+(color?:'secondary')}"
 	    th:@request="paginationAndSortHandler"
 	    th:attr="__${other_attrs}__"
-	    class="q-my-md"
 	  >
 	  <template slot="top-left" slot-scope="props" vu:slot="top_left_slot"/>
 	  <template slot="top-right" slot-scope="props" vu:slot="top_right_slot"/>
