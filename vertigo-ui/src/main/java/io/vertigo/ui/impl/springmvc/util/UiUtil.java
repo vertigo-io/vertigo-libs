@@ -80,6 +80,47 @@ public final class UiUtil implements Serializable {
 	}
 
 	/**
+	 * @param fieldPath Chemin du champ
+	 * @return Domain du champs
+	 */
+	public static String domainName(final String object, final String fieldName, final String overrideValue, final String defaultValue) {
+		if (overrideValue != null) {
+			return overrideValue;
+		} else if (fieldName != null) {
+			return "col_" + getDtField(object + "." + fieldName).getDomain().getName();
+		}
+		return defaultValue;
+	}
+
+	/**
+	 * @param fieldPath Chemin du champ
+	 * @return Domain du champs
+	 */
+	public static String domainAlign(final String object, final String fieldName, final String overrideValue) {
+		if (overrideValue != null) {
+			return overrideValue;
+		} else if (fieldName != null) {
+			final DataType dataType = getDtField(object + "." + fieldName).getDomain().getDataType();
+			switch (dataType) {
+				case Long:
+				case Integer:
+				case Double:
+				case BigDecimal:
+					return "right";
+				case Boolean:
+				case Date:
+				case Instant:
+				case LocalDate:
+				case String:
+				case DataStream:
+				default:
+					return "left";
+			}
+		}
+		return "left";
+	}
+
+	/**
 	 * @param fieldPath Chemin du champ boolean
 	 * @param value Valeur à formater
 	 * @return rendu du champs boolean
