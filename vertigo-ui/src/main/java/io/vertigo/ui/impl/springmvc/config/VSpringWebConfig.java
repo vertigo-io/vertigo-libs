@@ -80,7 +80,7 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 			"table/table", "table/column", //table
 			"collections/collection", "collections/list", "collections/cards", "collections/field-read", // collections
 			"collections/search", "collections/facets", //search
-			"buttons/button-submit", //buttons
+			"buttons/button-submit", "buttons/button-link" //buttons
 	};
 
 	/*
