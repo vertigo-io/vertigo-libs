@@ -193,15 +193,15 @@ img.avatar {
   margin-top: -32px;
 }
 
-.mgutter-x-md > div .mgutter-md, .mgutter-md > div .mgutter-md, .mgutter-md > div.mgutter-md, 
-.mgutter-x-md section > div .mgutter-md, .mgutter-md section > div .mgutter-md,
-.mgutter-x-md form > div .mgutter-md, .mgutter-md form > div .mgutter-md {
-  margin-left: 0px;
+.mgutter-x-md > div.mgutter-md, .mgutter-md > div.mgutter-md, 
+.mgutter-x-md section > div.mgutter-md, .mgutter-md section > div.mgutter-md,
+.mgutter-x-md form > div.mgutter-md, .mgutter-md form > div.mgutter-md {
+ margin-left: 0px;
 }
 
-.mgutter-y-md > div .mgutter-md, .mgutter-md > div .mgutter-md, .mgutter-md > div.mgutter-md,
-.mgutter-y-md section > div .mgutter-md, .mgutter-md section > div .mgutter-md, 
-.mgutter-y-md form > div .mgutter-md, .mgutter-md form > div .mgutter-md {
+.mgutter-y-md > div.mgutter-md, .mgutter-md > div.mgutter-md,
+.mgutter-y-md section > div.mgutter-md, div.mgutter-md section > div.mgutter-md, 
+.mgutter-y-md form > div.mgutter-md, .mgutter-md form > div.mgutter-md {
   margin-top: 0px;
 }
 

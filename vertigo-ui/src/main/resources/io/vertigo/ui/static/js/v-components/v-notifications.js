@@ -8,7 +8,7 @@ Vue.component('v-notifications', {
 +'			<q-item-separator />'
 +'          <q-item v-for="notif in list" :key="notif.uuid" class="q-py-none" tag="a" :href="notif.targetUrl" >'
 +'    			<q-item-side><q-icon :name="toIcon(notif.type)" size="2rem"></q-icon></q-item-side>'
-+'    			<q-item-main :label="notif.title" :sublabel="notif.content" label-lines="1" sublabel-lines="4" >'
++'    			<q-item-main :label="notif.title" :sublabel="notif.content" label-lines="1" sublabel-lines="3" >'
 +'				</q-item-main>'
 +'    			<q-item-side right>'
 +'    				<q-item-tile stamp>{{toDelay(new Date(notif.creationDate))}}</q-item-tile>'

@@ -1,6 +1,6 @@
 <th:block th:fragment="block(title, subtitle, icon, withFab, header_attrs, content_attrs, card_attrs)" 
 	th:assert="${title} != null">
-	<div th:class="${'q-card bg-white ' + ((withFab!=null && withFab)?'withFab':'')}" th:attr="__${card_attrs}__">
+	<div th:class="${'q-card bg-white col-12 ' + ((withFab!=null && withFab)?'withFab':'')}" th:attr="__${card_attrs}__">
 		<div class="q-card-container row no-wrap" th:attr="__${header_attrs}__">
 			<div class="col column">
 				<div class="q-card-title" th:text="${title?:''}" />
