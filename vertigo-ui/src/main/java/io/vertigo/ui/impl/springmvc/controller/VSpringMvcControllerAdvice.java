@@ -18,16 +18,23 @@
  */
 package io.vertigo.ui.impl.springmvc.controller;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
+import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.lang.VUserException;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextMap;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
+import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 import io.vertigo.vega.webservice.validation.UiMessageStack.Level;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
@@ -54,35 +61,71 @@ public final class VSpringMvcControllerAdvice {
 
 	}
 
+	@ResponseBody
+	@ExceptionHandler(SessionException.class)
+	@ResponseStatus(HttpStatus.UNAUTHORIZED)
+	public Object handleSessionException(final SessionException ex, final HttpServletRequest request) throws Throwable {
+		return handleThrowable(ex, request);
+	}
+
+	@ResponseBody
+	@ExceptionHandler(VSecurityException.class)
+	@ResponseStatus(HttpStatus.FORBIDDEN)
+	public Object handleSessionException(final VSecurityException ex, final HttpServletRequest request) throws Throwable {
+		return handleThrowable(ex, request);
+	}
+
+	@ResponseBody
+	@ExceptionHandler(Throwable.class)
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	public Object handleThrowable(final Throwable th, final HttpServletRequest request) throws Throwable {
+		if (isJsonRequest(request)) {
+			final UiMessageStack uiMessageStack = UiRequestUtil.getCurrentUiMessageStack();
+			final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
+			uiMessageStack.addGlobalMessage(Level.ERROR, exceptionMessage);
+			return uiMessageStack;
+		}
+		throw th;
+	}
+
+	@ResponseBody
 	@ExceptionHandler(ValidationUserException.class)
-	public ModelAndView handleValidationUserException(final ValidationUserException ex) {
-		final ModelAndView modelAndView = new ModelAndView();
+	@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+	public Object handleValidationUserException(final ValidationUserException ex, final HttpServletRequest request) {
+		final UiMessageStack uiMessageStack = UiRequestUtil.getCurrentUiMessageStack();
+		ex.flushToUiMessageStack(uiMessageStack);
+		//---
+		return handleVUserException(uiMessageStack, request);
+	}
+
+	@ResponseBody
+	@ExceptionHandler(VUserException.class)
+	@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+	public Object handleVUserException(final VUserException ex, final HttpServletRequest request) {
+		final UiMessageStack uiMessageStack = UiRequestUtil.getCurrentUiMessageStack();
+		uiMessageStack.addGlobalMessage(Level.ERROR, ex.getMessage());
+		//---
+		return handleVUserException(uiMessageStack, request);
+	}
+
+	private Object handleVUserException(final UiMessageStack uiMessageStack, final HttpServletRequest request) {
 		//---
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
-		final UiMessageStack uiMessageStack = UiRequestUtil.getCurrentUiMessageStack();
 		//---
+		if (isJsonRequest(request)) {
+			return uiMessageStack;
+		}
 		//---
+		final ModelAndView modelAndView = new ModelAndView();
 		viewContext.markDirty();
 		modelAndView.addObject("model", viewContext.asMap());
 		modelAndView.addObject("uiMessageStack", uiMessageStack);
-
 		return modelAndView;
 	}
 
-	@ExceptionHandler(VUserException.class)
-	public ModelAndView handleVUserException(final VUserException ex) {
-		final ModelAndView modelAndView = new ModelAndView();
-		//---
-		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
-		final UiMessageStack uiMessageStack = UiRequestUtil.getCurrentUiMessageStack();
-		//---
-		uiMessageStack.addGlobalMessage(Level.ERROR, ex.getMessage());
-		//---
-		viewContext.markDirty();
-		modelAndView.addObject("model", viewContext.asMap());
-		modelAndView.addObject("uiMessageStack", uiMessageStack);
-
-		return modelAndView;
+	private boolean isJsonRequest(final HttpServletRequest request) {
+		final String acceptHeader = request.getHeader("Accept");
+		return acceptHeader != null && acceptHeader.contains("application/json");
 	}
 
 }
