@@ -1,5 +1,5 @@
-<th:block th:fragment="table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, navOnRow, color, tableClass, autoThClass, autoTdClass, top_right_slot, top_left_slot, tr_attrs, other_attrs)" 
-	th:with="tableKey=${list}, listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, myRowsPerPage=${rowsPerPage?:10}, myAutoThClass=${autoThClass?:false}, myAutoTdClass=${autoTdClass?:false}"
+<th:block th:fragment="table(list, componentId, selectable, rowKey, rowsPerPage, sortUrl, navOnRow, color, tableClass, autoColClass, top_right_slot, top_left_slot, actions_slot, tr_attrs, other_attrs)" 
+	th:with="tableKey=${list}, listSize=${model.vContext[__${list}__].size()}, mySelectable=${selectable?:false}, myRowKey=${rowKey?:model.util.getIdField('__${list}__')}, myRowsPerPage=${rowsPerPage?:10}, myAutoColClass=${autoColClass?:false}"
 	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('columns')}, objectKey=${model.vContext['componentStates'][__${componentId}__].addList('selected')}, objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false }, objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {page: 1 , rowsNumber: __${listSize}__, rowsPerPage : __${myRowsPerPage}__, componentId : '__${componentId}__', listKey : '__${list}__'})}" >
 	<th:block th:if="${sortUrl != null}" th:attr="objectKey=${model.vContext['componentStates'][__${componentId}__]['pagination'].put('sortUrl', '__${sortUrl}__')}" th:remove="all" />
 	<q-table
@@ -24,6 +24,9 @@
 			<q-checkbox th:color="${color?:'primary'}" v-model="props.selected" ></q-checkbox>
 		</q-td>
 		<vu:content></vu:content>
+		<vu:column name="action" label="" sortable="false" class="showButtonOnHover" auto-width>
+			<vu:content-slot name="actions_slot" />
+		</vu:column>
 	  </q-tr>
 	</q-table>
 </th:block> 

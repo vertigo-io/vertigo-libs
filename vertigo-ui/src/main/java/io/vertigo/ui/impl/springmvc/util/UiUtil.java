@@ -83,7 +83,31 @@ public final class UiUtil implements Serializable {
 	 * @param fieldPath Chemin du champ
 	 * @return Domain du champs
 	 */
-	public static String domainName(final String object, final String fieldName, final String overrideValue, final String defaultValue) {
+	public static String domainUnit(final String object, final String fieldName, final String overrideValue) {
+		if (overrideValue != null) {
+			return overrideValue;
+		} else if (fieldName != null) {
+			return getDtField(object + "." + fieldName).getDomain().getProperties().getValue(DtProperty.UNIT);
+		}
+		return "";
+	}
+
+	/**
+	 * @param fieldPath Chemin du champ
+	 * @return Domain du champs
+	 */
+	public static Integer domainMaxLength(final String object, final String fieldName) {
+		if (fieldName != null) {
+			return getDtField(object + "." + fieldName).getDomain().getProperties().getValue(DtProperty.MAX_LENGTH);
+		}
+		return null;
+	}
+
+	/**
+	 * @param fieldPath Chemin du champ
+	 * @return Domain du champs
+	 */
+	public static String domainCss(final String object, final String fieldName, final String overrideValue, final String defaultValue) {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
