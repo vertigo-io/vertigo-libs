@@ -29,7 +29,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
@@ -51,7 +53,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	public static final String INPUT_CTX = "INPUT_CTX";
 
 	private static final String PROTECTED_VALUE_TRANSFORMER = "protected";
-	private static final String MAP_VALUE_TRASNFORMER = "map";
+	private static final String MAP_VALUE_TRANSFORMER = "map";
 
 	//Index UiObject et DtObject vers clé de context.
 	private final Map<Serializable, String> reverseUiObjectIndex = new HashMap<>();
@@ -322,9 +324,24 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 						Arrays.asList(PROTECTED_VALUE_TRANSFORMER));
 	}
 
+	public String obtainFkList(final String objectKey, final String objectFieldName) {
+		Assertion.checkState(containsKey(objectKey), "No {0} in context", objectKey);
+		Assertion.checkState(objectFieldName.endsWith("_display"), "Can't accept {0}, only '_display' transformer is accepted", objectKey);
+		//----
+		final String fieldName = objectFieldName.substring(0, objectFieldName.length() - "_display".length());
+		final DtDefinition fkDefinition = getUiObject(objectKey).getDtDefinition().getField(StringUtil.camelToConstCase(fieldName)).getFkDtDefinition();
+		final String uiMdListContextKey = fkDefinition.getClassSimpleName() + "MdList";
+		if (!containsKey(uiMdListContextKey)) {
+			unmodifiable = false; //hem :(
+			put(uiMdListContextKey, new UiMdList<>(new DtListURIForMasterData(fkDefinition, null)));
+			unmodifiable = true;
+		}
+		return uiMdListContextKey;
+	}
+
 	public void addListValueTransformer(final String objectKey, final String objectFieldName, final String listKey, final String listKeyFieldName, final String listDisplayFieldName) {
 		valueTransformers.computeIfAbsent(objectKey, k -> new HashMap<>()).put(objectFieldName,
-				Arrays.asList(MAP_VALUE_TRASNFORMER, listKey, listKeyFieldName, listDisplayFieldName));
+				Arrays.asList(MAP_VALUE_TRANSFORMER, listKey, listKeyFieldName, listDisplayFieldName));
 	}
 
 	public ViewContextMap getFilteredViewContext() {
@@ -362,7 +379,6 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 			return resultMap;
 		}
 		return Collections.emptyMap();
-
 	}
 
 	private Function<Serializable, String> createValueTransformer(final List<String> params) {
@@ -371,7 +387,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 
 		if (PROTECTED_VALUE_TRANSFORMER.equals(transformerType)) {
 			return (value) -> ProtectedValueUtil.generateProtectedValue(value);
-		} else if (MAP_VALUE_TRASNFORMER.equals(transformerType)) {
+		} else if (MAP_VALUE_TRANSFORMER.equals(transformerType)) {
 			Assertion.checkState(params.size() == 3 + 1, "ListValueTransformer requires 3 params, provided params {0}", params);
 			// ---
 			final String listKey = params.get(1);
