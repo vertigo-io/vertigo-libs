@@ -13,8 +13,8 @@ import org.thymeleaf.templatemode.TemplateMode;
 import io.vertigo.lang.Assertion;
 
 public class ComponentSlotAttributeTagProcessor extends AbstractAttributeTagProcessor {
-	private static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";
-	private static final String SLOTS_SUFFIX = "slot";
+	static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";
+	static final String SLOTS_SUFFIX = "slot";
 	private static final String ATTR_NAME = "slot";
 	private static final int PRECEDENCE = 400;
 
@@ -35,7 +35,7 @@ public class ComponentSlotAttributeTagProcessor extends AbstractAttributeTagProc
 			final ITemplateContext context, final IProcessableElementTag tag,
 			final AttributeName attributeName, final String attributeValue,
 			final IElementTagStructureHandler structureHandler) {
-		Assertion.checkArgument(attributeValue.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + SLOTS_SUFFIX), "{0} isn't a slot. Attribute vu:slot only supports slots, names must ends with '_slot'", attributeValue);
+		Assertion.checkArgument(attributeValue.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + SLOTS_SUFFIX), "{0} isn't a slot. Attribute vu:slot supports only slots, names must ends with '_slot'", attributeValue);
 		//-----
 		final Object slotModelObject = context.getVariable(attributeValue);
 		final IModel slotModel;

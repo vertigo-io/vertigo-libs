@@ -291,3 +291,23 @@ img.avatar {
 }
 
 
+.showButtonOnHover:hover > .q-btn {
+  opacity: 1;
+  transition: .5s;
+}
+
+tr:hover .showButtonOnHover > .q-btn {
+  opacity: 1;
+  transition: .5s;
+}
+
+.showButtonOnHover > .q-btn {
+  opacity: 0;
+  transition: .5s;
+}
+
+.q-table .q-btn {
+	text-align:right;
+}
+
+
