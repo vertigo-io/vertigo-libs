@@ -145,6 +145,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	public void start() {
 		handleDeadNodeProcesses();
 		nodId = nodeManager.registerNode(nodeName);
+		handleNodeDeadProcesses(nodId);
 	}
 
 	private void executeProcesses() {
@@ -661,6 +662,13 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			// We wait two heartbeat to be sure that the node is dead
 			final Date maxDate = new Date(now - 2 * executionPeriodSeconds * 1000);
 			executionPAO.handleProcessesOfDeadNodes(maxDate);
+			transaction.commit();
+		}
+	}
+
+	private void handleNodeDeadProcesses(final Long nodeId) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			executionPAO.handleDeadProcessesOfNode(nodeId);
 			transaction.commit();
 		}
 	}

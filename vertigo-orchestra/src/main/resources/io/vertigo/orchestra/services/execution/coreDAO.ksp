@@ -38,6 +38,27 @@ create Task TK_HANDLE_PROCESSES_OF_DEAD_NODES {
 	attribute MAX_DATE	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
 },
 
-
+create Task TK_HANDLE_DEAD_PROCESSES_OF_NODE {
+	storeName : "orchestra"
+    className : "io.vertigo.dynamox.task.TaskEngineProc"
+        request : "
+        	update o_activity_execution 
+        	set EST_CD = 'ABORTED'
+        	where ACE_ID in (
+				select ace.ACE_ID
+				from o_activity_execution ace
+				where ace.EST_CD in ('RUNNING','WAITING','SUBMITTED') and ace.NOD_ID = #NOD_ID#);
+			
+ 			update o_process_execution
+        	set EST_CD = 'ABORTED'
+        	where PRE_ID in (
+				select pre.PRE_ID
+				from o_process_execution pre
+				join o_activity_execution ace on ace.PRE_ID = pre.PRE_ID
+				where ace.EST_CD = 'ABORTED');
+        	
+			"
+	attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
+},
 
 
