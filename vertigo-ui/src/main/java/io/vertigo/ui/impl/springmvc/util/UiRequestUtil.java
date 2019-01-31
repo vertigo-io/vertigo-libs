@@ -26,6 +26,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.ui.core.ViewContext;
+import io.vertigo.ui.impl.springmvc.controller.VSpringMvcUiMessageStack;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
@@ -58,13 +59,21 @@ public final class UiRequestUtil {
 		return viewContext;
 	}
 
-	public static UiMessageStack getCurrentUiMessageStack() {
+	public static UiMessageStack obtainCurrentUiMessageStack() {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-		final UiMessageStack uiMessageStack = (UiMessageStack) attributes.getAttribute("uiMessageStack", RequestAttributes.SCOPE_REQUEST);
+		UiMessageStack uiMessageStack = (UiMessageStack) attributes.getAttribute("uiMessageStack", RequestAttributes.SCOPE_SESSION);
 		//---
-		Assertion.checkNotNull(uiMessageStack);
+		if (uiMessageStack == null) {
+			uiMessageStack = new VSpringMvcUiMessageStack();
+			attributes.setAttribute("uiMessageStack", uiMessageStack, RequestAttributes.SCOPE_SESSION);
+		}
 		//---
 		return uiMessageStack;
+	}
+
+	public static void removeCurrentUiMessageStack() {
+		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
+		attributes.removeAttribute("uiMessageStack", RequestAttributes.SCOPE_SESSION);
 	}
 
 }

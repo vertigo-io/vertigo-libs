@@ -45,14 +45,13 @@ public final class VSpringMvcControllerAdvice {
 	@ModelAttribute
 	public void storeContext(final Model model) {
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
-		final UiMessageStack uiMessageStack = UiRequestUtil.getCurrentUiMessageStack();
+		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 		//---
 		model.addAttribute("model", viewContext.asMap());
 		model.addAttribute("uiMessageStack", uiMessageStack);
 		// here we can retrieve anything and put it into the model or in our context
 		// we can also use argument resolvers to retrieve attributes in our context for convenience (a DtObject or an UiObject can be retrieved as parameters
 		// easily from our vContext since we have access to the modelandviewContainer in a parameterResolver...)
-
 	}
 
 	@ModelAttribute
@@ -80,7 +79,7 @@ public final class VSpringMvcControllerAdvice {
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public Object handleThrowable(final Throwable th, final HttpServletRequest request) throws Throwable {
 		if (isJsonRequest(request)) {
-			final UiMessageStack uiMessageStack = UiRequestUtil.getCurrentUiMessageStack();
+			final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 			final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
 			uiMessageStack.addGlobalMessage(Level.ERROR, exceptionMessage);
 			return uiMessageStack;
@@ -92,7 +91,7 @@ public final class VSpringMvcControllerAdvice {
 	@ExceptionHandler(ValidationUserException.class)
 	@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
 	public Object handleValidationUserException(final ValidationUserException ex, final HttpServletRequest request) {
-		final UiMessageStack uiMessageStack = UiRequestUtil.getCurrentUiMessageStack();
+		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 		ex.flushToUiMessageStack(uiMessageStack);
 		//---
 		return handleVUserException(uiMessageStack, request);
@@ -102,7 +101,7 @@ public final class VSpringMvcControllerAdvice {
 	@ExceptionHandler(VUserException.class)
 	@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
 	public Object handleVUserException(final VUserException ex, final HttpServletRequest request) {
-		final UiMessageStack uiMessageStack = UiRequestUtil.getCurrentUiMessageStack();
+		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 		uiMessageStack.addGlobalMessage(Level.ERROR, ex.getMessage());
 		//---
 		return handleVUserException(uiMessageStack, request);

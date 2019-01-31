@@ -26,6 +26,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
+import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 
 public final class VSpringMvcViewContextInterceptor implements HandlerInterceptor {
 
@@ -62,6 +63,9 @@ public final class VSpringMvcViewContextInterceptor implements HandlerIntercepto
 				final AbstractVSpringMvcController controller = (AbstractVSpringMvcController) handlerMethod.getBean();
 				if (!controller.isViewContextDirty()) {
 					controller.storeContext();
+				}
+				if (response.getStatus() / 100 == 2 || response.getStatus() / 100 == 4) { //we reset uiMessageStack only in case of viewable page 2xx or 4xx. We are sure to keep it on error page 5xx or redirect 3xx.
+					UiRequestUtil.removeCurrentUiMessageStack();
 				}
 			}
 		}

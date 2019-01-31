@@ -40,8 +40,10 @@ import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.core.ViewContextMap;
 import io.vertigo.ui.exception.ExpiredViewContextException;
+import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.ui.impl.springmvc.util.UiUtil;
 import io.vertigo.util.StringUtil;
+import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
  * Super class des Actions SpringMvc.
@@ -110,11 +112,9 @@ public abstract class AbstractVSpringMvcController {
 			}
 			viewContext.setInputCtxId(ctxId);
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
-			attributes.setAttribute("uiMessageStack", new VSpringMvcUiMessageStack(), RequestAttributes.SCOPE_REQUEST);
 		} else {
 			viewContext = new ViewContext(new ViewContextMap());
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
-			attributes.setAttribute("uiMessageStack", new VSpringMvcUiMessageStack(), RequestAttributes.SCOPE_REQUEST);
 			//initContextUrlParameters(request, viewContext);
 			//TODO vérifier que l'action demandée n'attendait pas de context : il va etre recrée vide ce qui n'est pas bon dans certains cas.
 			preInitContext(viewContext);
@@ -280,12 +280,8 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * @return Pile des messages utilisateur.
 	 */
-	public final static VSpringMvcUiMessageStack getUiMessageStack() {
-		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-		final VSpringMvcUiMessageStack uiMessageStack = (VSpringMvcUiMessageStack) attributes.getAttribute("uiMessageStack", RequestAttributes.SCOPE_REQUEST);
-		Assertion.checkNotNull(uiMessageStack);
-		//---
-		return uiMessageStack;
+	public final static UiMessageStack getUiMessageStack() {
+		return UiRequestUtil.obtainCurrentUiMessageStack();
 	}
 
 	public boolean isViewContextDirty() {
