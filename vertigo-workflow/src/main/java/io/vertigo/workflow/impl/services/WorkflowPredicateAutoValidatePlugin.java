@@ -16,41 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.workflow.plugin;
+/**
+ * 
+ */
+package io.vertigo.workflow.impl.services;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-
+import io.vertigo.core.component.Plugin;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.workflow.impl.services.ItemStorePlugin;
+import io.vertigo.workflow.domain.model.WfActivityDefinition;
 
 /**
- *
  * @author xdurand
  *
  */
-public class MemoryItemStorePlugin implements ItemStorePlugin {
+public interface WorkflowPredicateAutoValidatePlugin extends Plugin {
 
-	private final Map<Long, DtObject> inMemoryItemStore = new ConcurrentHashMap<>();
-
-	@Override
-	public void addItem(final Long itemId, final DtObject item) {
-		inMemoryItemStore.put(itemId, item);
-	}
-
-	@Override
-	public DtObject readItem(final Long itemId) {
-		return inMemoryItemStore.get(itemId);
-	}
-
-	@Override
-	public Map<Long, DtObject> readItems(List<Long> itemIds) {
-		return itemIds.stream()
-				.collect(
-						Collectors.toMap(Function.identity(), this::readItem));
-	}
+	/**
+	 * Predicate to determine if the current activityDefinition can be autovalidated for the provided object
+	 * @param activityDefinition the activityDefinition to test
+	 * @param object the object to test
+	 * @return true if the current activity can be auto validated, false otherwise
+	 */
+	boolean canAutoValidateActivity(final WfActivityDefinition activityDefinition, final DtObject object);
 
 }

@@ -18,8 +18,8 @@
  */
 package io.vertigo.ledger;
 
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
-import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.ledger.impl.services.LedgerManagerImpl;
 import io.vertigo.ledger.plugins.ethereum.EthereumLedgerPlugin;
@@ -37,7 +37,7 @@ public final class LedgerFeatures extends Features<LedgerFeatures> {
 	 * Constructor.
 	 */
 	public LedgerFeatures() {
-		super("x-ledger");
+		super("vertigo-ledger");
 	}
 
 	/**

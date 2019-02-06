@@ -19,8 +19,8 @@
 package io.vertigo.workflow;
 
 import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
-import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.workflow.dao.instance.WfActivityDAO;
@@ -33,11 +33,12 @@ import io.vertigo.workflow.dao.model.WfTransitionDefinitionDAO;
 import io.vertigo.workflow.dao.model.WfWorkflowDefinitionDAO;
 import io.vertigo.workflow.dao.workflow.WorkflowPAO;
 import io.vertigo.workflow.domain.DtDefinitions;
-import io.vertigo.workflow.impl.ItemStorePlugin;
-import io.vertigo.workflow.impl.WorkflowManagerImpl;
-import io.vertigo.workflow.plugins.memory.MemoryWorkflowStorePlugin;
-import io.vertigo.workflow.plugins.sql.SQLWorkflowStorePlugin;
+import io.vertigo.workflow.impl.services.ItemStorePlugin;
+import io.vertigo.workflow.impl.services.WorkflowManagerImpl;
+import io.vertigo.workflow.plugins.store.memory.MemoryWorkflowStorePlugin;
+import io.vertigo.workflow.plugins.store.sql.SQLWorkflowStorePlugin;
 import io.vertigo.workflow.plugins.validate.RuleWorkflowPredicateAutoValidatePlugin;
+import io.vertigo.workflow.services.WorkflowManager;
 
 /**
  * Defines the 'workflow' extension
@@ -50,7 +51,7 @@ public final class WorkflowFeatures extends Features<WorkflowFeatures> {
 	 * Constructor.
 	 */
 	public WorkflowFeatures() {
-		super("x-workflow");
+		super("vertigo-workflow");
 	}
 
 	/**

@@ -37,6 +37,20 @@
 			<artifactId>vertigo-vega-api</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
+		
+		<!-- Mail -->
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.0</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.activation</groupId>
+					<artifactId>activation</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- /Mail -->
 
 		<!-- Tests -->
 		<dependency>

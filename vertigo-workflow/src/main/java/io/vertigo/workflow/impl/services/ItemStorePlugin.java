@@ -16,41 +16,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.workflow.plugin;
+package io.vertigo.workflow.impl.services;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
+import io.vertigo.core.component.Plugin;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.workflow.impl.services.ItemStorePlugin;
 
 /**
- *
+ * This class defines the storage of item.
  * @author xdurand
- *
  */
-public class MemoryItemStorePlugin implements ItemStorePlugin {
+public interface ItemStorePlugin extends Plugin {
 
-	private final Map<Long, DtObject> inMemoryItemStore = new ConcurrentHashMap<>();
+	/**
+	 * Track a new item
+	 * /!\ No item will be created. It will only be tracked
+	 * @param itemId
+	 * @param item
+	 */
+	void addItem(Long itemId, DtObject item);
 
-	@Override
-	public void addItem(final Long itemId, final DtObject item) {
-		inMemoryItemStore.put(itemId, item);
-	}
+	/**
+	 * Get an item.
+	 * @param itemId
+	 * @return the DtObject corresponding to the itemId
+	 */
+	DtObject readItem(Long itemId);
 
-	@Override
-	public DtObject readItem(final Long itemId) {
-		return inMemoryItemStore.get(itemId);
-	}
-
-	@Override
-	public Map<Long, DtObject> readItems(List<Long> itemIds) {
-		return itemIds.stream()
-				.collect(
-						Collectors.toMap(Function.identity(), this::readItem));
-	}
+	/**
+	 * Get a list of items
+	 * @param itemIds List of Items Ids.
+	 * @return A dictionary with the itemId as a key the the object as the associated value.
+	 */
+	Map<Long, DtObject> readItems(List<Long> itemIds);
 
 }

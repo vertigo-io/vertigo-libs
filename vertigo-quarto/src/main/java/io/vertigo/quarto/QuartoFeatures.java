@@ -1,7 +1,7 @@
 package io.vertigo.quarto;
 
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
-import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.quarto.impl.services.converter.ConverterManagerImpl;
 import io.vertigo.quarto.impl.services.export.ExportManagerImpl;
@@ -22,7 +22,7 @@ import io.vertigo.quarto.services.publisher.PublisherManager;
 public class QuartoFeatures extends Features<QuartoFeatures> {
 
 	public QuartoFeatures() {
-		super("quarto");
+		super("vertigo-quarto");
 	}
 
 	@Feature("localOpenOfficeConverter")

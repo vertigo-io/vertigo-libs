@@ -47,7 +47,6 @@ import io.vertigo.rules.domain.RuleDefinition;
 import io.vertigo.rules.domain.RuleFilterDefinition;
 import io.vertigo.rules.domain.SelectorDefinition;
 import io.vertigo.workflow.MyAppConfig;
-import io.vertigo.workflow.WorkflowManager;
 import io.vertigo.workflow.data.MockIdentities;
 import io.vertigo.workflow.data.MyDummyDtObject;
 import io.vertigo.workflow.definitions.WfActivityDefinitionBuilder;
@@ -60,7 +59,7 @@ import io.vertigo.workflow.domain.instance.WfStatusEnum;
 import io.vertigo.workflow.domain.instance.WfWorkflow;
 import io.vertigo.workflow.domain.model.WfActivityDefinition;
 import io.vertigo.workflow.domain.model.WfWorkflowDefinition;
-import io.vertigo.workflow.impl.ItemStorePlugin;
+import io.vertigo.workflow.impl.services.ItemStorePlugin;
 
 /**
  * Tests unitaires pour le Workflow Manager

@@ -25,7 +25,7 @@ import io.vertigo.rules.services.RuleConstants;
 import io.vertigo.rules.services.RuleContext;
 import io.vertigo.rules.services.RuleServices;
 import io.vertigo.workflow.domain.model.WfActivityDefinition;
-import io.vertigo.workflow.impl.WorkflowPredicateAutoValidatePlugin;
+import io.vertigo.workflow.impl.services.WorkflowPredicateAutoValidatePlugin;
 
 /**
  *

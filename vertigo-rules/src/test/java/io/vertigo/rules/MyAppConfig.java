@@ -31,10 +31,10 @@ import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.rules.data.MockIdentities;
 import io.vertigo.rules.data.MyDummyDtObjectProvider;
 import io.vertigo.rules.data.TestUserSession;
-import io.vertigo.rules.plugins.memory.MemoryRuleConstantsStorePlugin;
-import io.vertigo.rules.plugins.memory.MemoryRuleStorePlugin;
-import io.vertigo.rules.plugins.selector.SimpleRuleSelectorPlugin;
-import io.vertigo.rules.plugins.validator.SimpleRuleValidatorPlugin;
+import io.vertigo.rules.plugins.selector.simple.SimpleRuleSelectorPlugin;
+import io.vertigo.rules.plugins.store.memory.MemoryRuleConstantsStorePlugin;
+import io.vertigo.rules.plugins.store.memory.MemoryRuleStorePlugin;
+import io.vertigo.rules.plugins.validator.simple.SimpleRuleValidatorPlugin;
 
 /**
  * Config for test

@@ -28,7 +28,6 @@
 	</properties>
 
 	<modules>
-		<module>vertigo-mail</module>
 		<module>vertigo-social</module>
 		<module>vertigo-audit</module>
 		<module>vertigo-rules</module>

@@ -21,8 +21,8 @@ package io.vertigo.orchestra;
 import java.util.stream.Stream;
 
 import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
-import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.lang.Assertion;
@@ -71,7 +71,7 @@ public final class OrchestraFeatures extends Features<OrchestraFeatures> {
 	 * Constructeur de la feature.
 	 */
 	public OrchestraFeatures() {
-		super("orchestra");
+		super("vertigo-orchestra");
 	}
 
 	private static Param findParamByName(final String paramName, final Param[] params) {

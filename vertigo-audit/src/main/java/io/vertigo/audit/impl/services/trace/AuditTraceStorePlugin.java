@@ -16,41 +16,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.workflow.plugin;
+package io.vertigo.audit.impl.services.trace;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.workflow.impl.services.ItemStorePlugin;
+import io.vertigo.audit.services.trace.AuditTrace;
+import io.vertigo.audit.services.trace.AuditTraceCriteria;
+import io.vertigo.core.component.Plugin;
 
 /**
- *
+ * This class defines the storage of audit trails.
  * @author xdurand
- *
  */
-public class MemoryItemStorePlugin implements ItemStorePlugin {
+public interface AuditTraceStorePlugin extends Plugin {
+	/**
+	 * Gets an audit trail.
+	 * @param auditTraceId the audit trail defined by its id.
+	 * @return the
+	 */
+	AuditTrace read(Long auditTraceId);
 
-	private final Map<Long, DtObject> inMemoryItemStore = new ConcurrentHashMap<>();
+	/**
+	 * Saves a new audit trail.
+	 * Attention: The audit MUST NOT have an id.
+	 * @param auditTrace the audit trail to save.
+	 */
+	void create(AuditTrace auditTrace);
 
-	@Override
-	public void addItem(final Long itemId, final DtObject item) {
-		inMemoryItemStore.put(itemId, item);
-	}
-
-	@Override
-	public DtObject readItem(final Long itemId) {
-		return inMemoryItemStore.get(itemId);
-	}
-
-	@Override
-	public Map<Long, DtObject> readItems(List<Long> itemIds) {
-		return itemIds.stream()
-				.collect(
-						Collectors.toMap(Function.identity(), this::readItem));
-	}
+	/**
+	 * Fetchs all Audit Trace mathing the provided criteria
+	 * @param auditTraceCriteria
+	 * @return the matching taces for the provided criteria
+	 */
+	List<AuditTrace> findByCriteria(AuditTraceCriteria auditTraceCriteria);
 
 }

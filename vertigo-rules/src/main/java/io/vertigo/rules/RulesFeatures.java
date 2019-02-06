@@ -27,12 +27,12 @@ import io.vertigo.rules.dao.RuleDefinitionDAO;
 import io.vertigo.rules.dao.RuleFilterDefinitionDAO;
 import io.vertigo.rules.dao.SelectorDefinitionDAO;
 import io.vertigo.rules.domain.DtDefinitions;
-import io.vertigo.rules.impl.RuleConstantsStorePlugin;
-import io.vertigo.rules.impl.RuleSelectorPlugin;
-import io.vertigo.rules.impl.RuleServicesImpl;
-import io.vertigo.rules.impl.RuleStorePlugin;
-import io.vertigo.rules.impl.RuleValidatorPlugin;
-import io.vertigo.rules.plugins.sql.SQLRuleStorePlugin;
+import io.vertigo.rules.impl.services.RuleConstantsStorePlugin;
+import io.vertigo.rules.impl.services.RuleSelectorPlugin;
+import io.vertigo.rules.impl.services.RuleServicesImpl;
+import io.vertigo.rules.impl.services.RuleStorePlugin;
+import io.vertigo.rules.impl.services.RuleValidatorPlugin;
+import io.vertigo.rules.plugins.store.sql.SQLRuleStorePlugin;
 import io.vertigo.rules.services.RuleServices;
 
 /**
@@ -40,13 +40,13 @@ import io.vertigo.rules.services.RuleServices;
  *
  * @author xdurand
  */
-public final class RulesFeatures extends Features {
+public final class RulesFeatures extends Features<RulesFeatures> {
 
 	/**
 	 * Constructor.
 	 */
 	public RulesFeatures() {
-		super("x-rules");
+		super("vertigo-rules");
 	}
 
 	/**

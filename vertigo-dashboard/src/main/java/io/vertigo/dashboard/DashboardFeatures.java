@@ -18,8 +18,8 @@
  */
 package io.vertigo.dashboard;
 
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
-import io.vertigo.app.config.json.Feature;
 import io.vertigo.core.param.Param;
 import io.vertigo.dashboard.impl.services.data.DataProviderImpl;
 import io.vertigo.dashboard.services.data.DataProvider;
@@ -30,7 +30,7 @@ import io.vertigo.lang.Assertion;
 public class DashboardFeatures extends Features<DashboardFeatures> {
 
 	public DashboardFeatures() {
-		super("dashboard");
+		super("vertigo-dashboard");
 	}
 
 	@Feature("analytics")
