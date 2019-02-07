@@ -282,14 +282,23 @@ img.avatar {
 	}
 }
 
-
-.layout-padding.mgutter-md  {
-  margin-left: 0px !important;
+@media (min-width: 992px) {
+	.mgutter-md > .col-lg-2 {
+	  width: calc(16.6667% - 32px);
+	}
+	.mgutter-md > .col-lg-3 {
+	  width: calc(25% - 32px);
+	}
+	.mgutter-md > .col-lg-6 {
+	  width: calc(50% - 32px);
+	}
+	.mgutter-md > .col-lg-9 {
+	  width: calc(75% - 32px);
+	}
+	.mgutter-md > .col-lg-12 {
+	  width: calc(100% - 32px);
+	}
 }
-.layout-padding.mgutter-md {
-  margin-top: 0px !important;
-}
-
 
 .showButtonOnHover:hover > .q-btn {
   opacity: 1;
