@@ -56,8 +56,8 @@ final class VFileUtil {
 	 * @param result WebService result
 	 * @param response Response
 	 */
-	static void sendVFile(final VFile result, final HttpServletResponse response) {
-		sendVFile(result, true, response);
+	static void sendVFile(final VFile result, final boolean attachment, final HttpServletResponse response) {
+		sendVFile(result, attachment, response);
 	}
 
 	private static void sendVFile(final VFile result, final boolean attachment, final HttpServletResponse response) {
@@ -99,6 +99,7 @@ final class VFileUtil {
 		response.setContentLength(length.intValue());
 		response.addHeader("Content-Disposition", encodeFileNameToContentDisposition(vFile.getFileName(), isAttachment));
 		response.addDateHeader("Last-Modified", vFile.getLastModified().toEpochMilli());
+		response.addHeader("Cache-Control", "private");
 		response.setContentType(vFile.getMimeType());
 
 		try (final InputStream input = vFile.createInputStream()) {
