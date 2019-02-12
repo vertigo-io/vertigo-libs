@@ -141,7 +141,7 @@ public final class CommentWebServicesTest {
 		RestAssured.given().filter(sessionFilter)
 				.body(commentToMap(newComment))
 				.expect()
-				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
 				.post("/x/comment/api/comments?concept=" + CONCEPT_KEY_NAME + "&id=" + keyConcept1Uri.getId());
@@ -165,7 +165,7 @@ public final class CommentWebServicesTest {
 		RestAssured.given().filter(sessionFilter)
 				.body(commentToMap(newComment))
 				.expect()
-				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
 				.post("/x/comment/api/comments?concept=" + CONCEPT_KEY_NAME + "&id=" + keyConcept1Uri.getId());
@@ -189,7 +189,7 @@ public final class CommentWebServicesTest {
 		RestAssured.given().filter(sessionFilter)
 				.body(commentToMap(editComment))
 				.expect()
-				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
 				.put("/x/comment/api/comments/" + uuid);
@@ -215,7 +215,7 @@ public final class CommentWebServicesTest {
 		RestAssured.given().filter(sessionFilter)
 				.body(commentToMap(newComment))
 				.expect()
-				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
 				.post("/x/comment/api/comments?concept=" + CONCEPT_KEY_NAME + "&id=" + keyConcept1Uri.getId());
@@ -284,7 +284,7 @@ public final class CommentWebServicesTest {
 	private static Map<String, Object> commentToMap(final Comment comment) {
 		return new MapBuilder<String, Object>()
 				.put("uuid", comment.getUuid())
-				.put("author", comment.getAuthor().urn())
+				.put("author", comment.getAuthor().getId())
 				.put("msg", comment.getMsg())
 				.put("creationDate", convertDate(comment.getCreationDate()))
 				.putNullable("lastModified", convertDate(comment.getLastModified()))
