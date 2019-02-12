@@ -56,8 +56,8 @@ final class VFileUtil {
 	 * @param result WebService result
 	 * @param response Response
 	 */
-	static void sendVFile(final VFile result, final boolean attachment, final HttpServletResponse response) {
-		sendVFile(result, attachment, response);
+	static void sendVFile(final VFile result, final HttpServletResponse response) {
+		sendVFile(result, true, response);
 	}
 
 	private static void sendVFile(final VFile result, final boolean attachment, final HttpServletResponse response) {
