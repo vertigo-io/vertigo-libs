@@ -21,6 +21,7 @@ package io.vertigo.geo;
 import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
 import io.vertigo.geo.impl.services.geocoder.GeoCoderManagerImpl;
+import io.vertigo.geo.plugins.geocoder.ban.BanGeoCoderPlugin;
 import io.vertigo.geo.plugins.geocoder.google.GoogleGeoCoderPlugin;
 import io.vertigo.geo.services.geocoder.GeoCoderManager;
 
@@ -54,6 +55,16 @@ public final class GeoFeatures extends Features<GeoFeatures> {
 	@Feature("googleGeocoder")
 	public GeoFeatures withGoogleGeocoder() {
 		getModuleConfigBuilder().addPlugin(GoogleGeoCoderPlugin.class);
+		return this;
+	}
+
+	/**
+	 * Activates comments
+	 * @return the features
+	 */
+	@Feature("banGeocoder")
+	public GeoFeatures withBanGeocoder() {
+		getModuleConfigBuilder().addPlugin(BanGeoCoderPlugin.class);
 		return this;
 	}
 

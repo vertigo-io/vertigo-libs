@@ -61,7 +61,7 @@ import io.vertigo.lang.Assertion;
  */
 public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	// Début de la requête http
-	private static final String GEOCODE_REQUEST_PREFIX = "http://maps.google.com/maps/api/geocode/xml";
+	private static final String GEOCODE_REQUEST_PREFIX = "https://maps.googleapis.com/maps/api/geocode/xml";
 	// Expression XPath permettant de récupérer la latitude, la longitude et
 	// l'adresse formatée de
 	// l'adresse à géolocaliser
