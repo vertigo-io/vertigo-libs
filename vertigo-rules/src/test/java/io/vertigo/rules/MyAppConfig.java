@@ -19,7 +19,6 @@
 package io.vertigo.rules;
 
 import io.vertigo.account.AccountFeatures;
-import io.vertigo.account.plugins.account.store.loader.LoaderAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
@@ -72,8 +71,7 @@ public class MyAppConfig {
 						.build())
 				.addModule(new AccountFeatures()
 						.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
-						.addPlugin(LoaderAccountStorePlugin.class,
-								Param.of("accountLoaderName", "MockIdentities"),
+						.withLoaderAccount(Param.of("accountLoaderName", "MockIdentities"),
 								Param.of("groupLoaderName", "MockIdentities"))
 						.build())
 				.addModule(ModuleConfig.builder("dummy")
