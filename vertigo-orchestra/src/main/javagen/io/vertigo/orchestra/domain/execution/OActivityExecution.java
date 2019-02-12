@@ -210,7 +210,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Activity")
 	public Long getActId() {
-		return (Long)  actIdAccessor.getId();
+		return (Long) actIdAccessor.getId();
 	}
 
 	/**
@@ -229,7 +229,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getPreId() {
-		return (Long)  preIdAccessor.getId();
+		return (Long) preIdAccessor.getId();
 	}
 
 	/**
@@ -248,7 +248,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Node")
 	public Long getNodId() {
-		return (Long)  nodIdAccessor.getId();
+		return (Long) nodIdAccessor.getId();
 	}
 
 	/**
@@ -267,7 +267,7 @@ public final class OActivityExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "ExecutionState")
 	public String getEstCd() {
-		return (String)  estCdAccessor.getId();
+		return (String) estCdAccessor.getId();
 	}
 
 	/**
@@ -286,24 +286,6 @@ public final class OActivityExecution implements Entity {
 	public VAccessor<io.vertigo.orchestra.domain.definition.OActivity> activity() {
 		return actIdAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.definition.OActivity getActivity() {
-		// we keep the lazyness
-		if (!actIdAccessor.isLoaded()) {
-			actIdAccessor.load();
-		}
-		return actIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: Activity.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OActivity> getActivityUID() {
-		return actIdAccessor.getUID();
-	}
 
  	/**
 	 * Association : ExecutionState.
@@ -311,24 +293,6 @@ public final class OActivityExecution implements Entity {
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> executionState() {
 		return estCdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.referential.OExecutionState getExecutionState() {
-		// we keep the lazyness
-		if (!estCdAccessor.isLoaded()) {
-			estCdAccessor.load();
-		}
-		return estCdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: ExecutionState.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OExecutionState> getExecutionStateUID() {
-		return estCdAccessor.getUID();
 	}
 
  	/**
@@ -338,24 +302,6 @@ public final class OActivityExecution implements Entity {
 	public VAccessor<io.vertigo.orchestra.domain.execution.ONode> node() {
 		return nodIdAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.execution.ONode getNode() {
-		// we keep the lazyness
-		if (!nodIdAccessor.isLoaded()) {
-			nodIdAccessor.load();
-		}
-		return nodIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: Node.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.ONode> getNodeUID() {
-		return nodIdAccessor.getUID();
-	}
 
  	/**
 	 * Association : Processus.
@@ -363,24 +309,6 @@ public final class OActivityExecution implements Entity {
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.execution.OProcessExecution> processusExecution() {
 		return preIdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.execution.OProcessExecution getProcessusExecution() {
-		// we keep the lazyness
-		if (!preIdAccessor.isLoaded()) {
-			preIdAccessor.load();
-		}
-		return preIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: Processus.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.OProcessExecution> getProcessusExecutionUID() {
-		return preIdAccessor.getUID();
 	}
 	
 	/** {@inheritDoc} */

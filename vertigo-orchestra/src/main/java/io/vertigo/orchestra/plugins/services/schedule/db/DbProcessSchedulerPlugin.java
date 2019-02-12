@@ -220,7 +220,8 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	private void initNewProcessesToLaunch(final ProcessExecutor processExecutor) {
 		for (final OProcessPlanification processPlanification : getPlanificationsToTrigger()) {
-			final ProcessDefinition processDefinition = definitionManager.getProcessDefinition(processPlanification.getProcessus().getName());
+			processPlanification.processus().load();
+			final ProcessDefinition processDefinition = definitionManager.getProcessDefinition(processPlanification.processus().get().getName());
 			lockProcess(processDefinition);
 
 			if (canExecute(processDefinition)) {
@@ -336,7 +337,8 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 		// ---
 		for (final OProcessPlanification planification : processPlanificationDAO.getAllLastPastPlanifications(now)) {
 			// We check the process policy of validity
-			final OProcess process = planification.getProcessus();
+			planification.processus().load();
+			final OProcess process = planification.processus().get();
 			final long ageOfPlanification = (now.getTime() - planification.getExpectedTime().getTime()) / (60 * 1000L);// in seconds
 			if (ageOfPlanification < process.getRescuePeriod()) {
 				changeState(planification, SchedulerState.RESCUED);

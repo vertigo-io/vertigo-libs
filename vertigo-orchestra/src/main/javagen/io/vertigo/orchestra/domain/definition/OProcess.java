@@ -280,7 +280,7 @@ public final class OProcess implements Entity {
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "TriggerType")
 	public String getTrtCd() {
-		return (String)  trtCdAccessor.getId();
+		return (String) trtCdAccessor.getId();
 	}
 
 	/**
@@ -299,7 +299,7 @@ public final class OProcess implements Entity {
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "ProcessType")
 	public String getPrtCd() {
-		return (String)  prtCdAccessor.getId();
+		return (String) prtCdAccessor.getId();
 	}
 
 	/**
@@ -318,24 +318,6 @@ public final class OProcess implements Entity {
 	public VAccessor<io.vertigo.orchestra.domain.referential.OProcessType> processType() {
 		return prtCdAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.referential.OProcessType getProcessType() {
-		// we keep the lazyness
-		if (!prtCdAccessor.isLoaded()) {
-			prtCdAccessor.load();
-		}
-		return prtCdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: ProcessType.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OProcessType> getProcessTypeUID() {
-		return prtCdAccessor.getUID();
-	}
 
  	/**
 	 * Association : TriggerType.
@@ -343,24 +325,6 @@ public final class OProcess implements Entity {
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.TriggerType> triggerType() {
 		return trtCdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.referential.TriggerType getTriggerType() {
-		// we keep the lazyness
-		if (!trtCdAccessor.isLoaded()) {
-			trtCdAccessor.load();
-		}
-		return trtCdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: TriggerType.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.TriggerType> getTriggerTypeUID() {
-		return trtCdAccessor.getUID();
 	}
 	
 	/** {@inheritDoc} */

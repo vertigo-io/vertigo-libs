@@ -215,7 +215,7 @@ public final class OProcessExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getProId() {
-		return (Long)  proIdAccessor.getId();
+		return (Long) proIdAccessor.getId();
 	}
 
 	/**
@@ -234,7 +234,7 @@ public final class OProcessExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "ExecutionState")
 	public String getEstCd() {
-		return (String)  estCdAccessor.getId();
+		return (String) estCdAccessor.getId();
 	}
 
 	/**
@@ -253,7 +253,7 @@ public final class OProcessExecution implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "User")
 	public Long getUsrId() {
-		return (Long)  usrIdAccessor.getId();
+		return (Long) usrIdAccessor.getId();
 	}
 
 	/**
@@ -272,24 +272,6 @@ public final class OProcessExecution implements Entity {
 	public VAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> executionState() {
 		return estCdAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.referential.OExecutionState getExecutionState() {
-		// we keep the lazyness
-		if (!estCdAccessor.isLoaded()) {
-			estCdAccessor.load();
-		}
-		return estCdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: ExecutionState.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OExecutionState> getExecutionStateUID() {
-		return estCdAccessor.getUID();
-	}
 
  	/**
 	 * Association : Processus.
@@ -298,24 +280,6 @@ public final class OProcessExecution implements Entity {
 	public VAccessor<io.vertigo.orchestra.domain.definition.OProcess> process() {
 		return proIdAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.definition.OProcess getProcess() {
-		// we keep the lazyness
-		if (!proIdAccessor.isLoaded()) {
-			proIdAccessor.load();
-		}
-		return proIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: Processus.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OProcess> getProcessUID() {
-		return proIdAccessor.getUID();
-	}
 
  	/**
 	 * Association : User.
@@ -323,24 +287,6 @@ public final class OProcessExecution implements Entity {
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.OUser> user() {
 		return usrIdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.referential.OUser getUser() {
-		// we keep the lazyness
-		if (!usrIdAccessor.isLoaded()) {
-			usrIdAccessor.load();
-		}
-		return usrIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: User.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OUser> getUserUID() {
-		return usrIdAccessor.getUID();
 	}
 	
 	/** {@inheritDoc} */

@@ -1,9 +1,9 @@
 package io.vertigo.workflow.domain.model;
 
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
-import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -120,7 +120,7 @@ public final class WfWorkflowDefinition implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", label = "startActivity")
 	public Long getWfadId() {
-		return (Long)  wfadIdAccessor.getId();
+		return (Long) wfadIdAccessor.getId();
 	}
 
 	/**
@@ -139,24 +139,6 @@ public final class WfWorkflowDefinition implements Entity {
 	public VAccessor<io.vertigo.workflow.domain.model.WfActivityDefinition> startActivity() {
 		return wfadIdAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.workflow.domain.model.WfActivityDefinition getStartActivity() {
-		// we keep the lazyness
-		if (!wfadIdAccessor.isLoaded()) {
-			wfadIdAccessor.load();
-		}
-		return wfadIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: startActivity.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfActivityDefinition> getStartActivityUID() {
-		return wfadIdAccessor.getUID();
-	}
 
 	/**
 	 * Association : WfTransitionDefinition.
@@ -164,28 +146,6 @@ public final class WfWorkflowDefinition implements Entity {
 	 */
 	public ListVAccessor<io.vertigo.workflow.domain.model.WfTransitionDefinition> wfTransitionDefinition() {
 		return wfTransitionDefinitionAccessor;
-	}
-	
-	/**
-	 * Association : WfTransitionDefinition.
-	 * @return DtList de io.vertigo.workflow.domain.model.WfTransitionDefinition
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.workflow.domain.model.WfTransitionDefinition> getWfTransitionDefinitionList() {
-		// we keep the lazyness
-		if (!wfTransitionDefinitionAccessor.isLoaded()) {
-			wfTransitionDefinitionAccessor.load();
-		}
-		return wfTransitionDefinitionAccessor.get();
-	}
-
-	/**
-	 * Association UID: WfTransitionDefinition.
-	 * @return UID de l'association
-	 */
-	@Deprecated	
-	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation getWfTransitionDefinitionDtListURI() {
-		return (io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation) wfTransitionDefinitionAccessor.getDtListURI();
 	}
 	
 	/** {@inheritDoc} */

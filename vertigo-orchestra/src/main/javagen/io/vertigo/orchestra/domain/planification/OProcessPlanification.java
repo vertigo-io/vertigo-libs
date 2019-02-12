@@ -135,7 +135,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getProId() {
-		return (Long)  proIdAccessor.getId();
+		return (Long) proIdAccessor.getId();
 	}
 
 	/**
@@ -154,7 +154,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Node")
 	public Long getNodId() {
-		return (Long)  nodIdAccessor.getId();
+		return (Long) nodIdAccessor.getId();
 	}
 
 	/**
@@ -173,7 +173,7 @@ public final class OProcessPlanification implements Entity {
 	 */
 	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "PlanificationState")
 	public String getSstCd() {
-		return (String)  sstCdAccessor.getId();
+		return (String) sstCdAccessor.getId();
 	}
 
 	/**
@@ -192,24 +192,6 @@ public final class OProcessPlanification implements Entity {
 	public VAccessor<io.vertigo.orchestra.domain.execution.ONode> node() {
 		return nodIdAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.execution.ONode getNode() {
-		// we keep the lazyness
-		if (!nodIdAccessor.isLoaded()) {
-			nodIdAccessor.load();
-		}
-		return nodIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: Node.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.ONode> getNodeUID() {
-		return nodIdAccessor.getUID();
-	}
 
  	/**
 	 * Association : Processus.
@@ -218,24 +200,6 @@ public final class OProcessPlanification implements Entity {
 	public VAccessor<io.vertigo.orchestra.domain.definition.OProcess> processus() {
 		return proIdAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.definition.OProcess getProcessus() {
-		// we keep the lazyness
-		if (!proIdAccessor.isLoaded()) {
-			proIdAccessor.load();
-		}
-		return proIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: Processus.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OProcess> getProcessusUID() {
-		return proIdAccessor.getUID();
-	}
 
  	/**
 	 * Association : PlanificationState.
@@ -243,24 +207,6 @@ public final class OProcessPlanification implements Entity {
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.OSchedulerState> planificationState() {
 		return sstCdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.referential.OSchedulerState getPlanificationState() {
-		// we keep the lazyness
-		if (!sstCdAccessor.isLoaded()) {
-			sstCdAccessor.load();
-		}
-		return sstCdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: PlanificationState.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.referential.OSchedulerState> getPlanificationStateUID() {
-		return sstCdAccessor.getUID();
 	}
 	
 	/** {@inheritDoc} */

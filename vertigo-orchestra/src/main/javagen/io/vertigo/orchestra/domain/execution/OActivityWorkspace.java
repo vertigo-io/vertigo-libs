@@ -105,7 +105,7 @@ public final class OActivityWorkspace implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "ActivityExecution")
 	public Long getAceId() {
-		return (Long)  aceIdAccessor.getId();
+		return (Long) aceIdAccessor.getId();
 	}
 
 	/**
@@ -123,24 +123,6 @@ public final class OActivityWorkspace implements Entity {
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.execution.OActivityExecution> activityExecution() {
 		return aceIdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.execution.OActivityExecution getActivityExecution() {
-		// we keep the lazyness
-		if (!aceIdAccessor.isLoaded()) {
-			aceIdAccessor.load();
-		}
-		return aceIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: ActivityExecution.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivityExecutionUID() {
-		return aceIdAccessor.getUID();
 	}
 	
 	/** {@inheritDoc} */

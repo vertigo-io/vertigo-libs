@@ -1,9 +1,9 @@
 package io.vertigo.workflow.domain.instance;
 
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
-import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -115,7 +115,7 @@ public final class WfActivity implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", required = true, label = "WfWorkflow")
 	public Long getWfwId() {
-		return (Long)  wfwIdAccessor.getId();
+		return (Long) wfwIdAccessor.getId();
 	}
 
 	/**
@@ -134,7 +134,7 @@ public final class WfActivity implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", required = true, label = "WfActivityDefinition")
 	public Long getWfadId() {
-		return (Long)  wfadIdAccessor.getId();
+		return (Long) wfadIdAccessor.getId();
 	}
 
 	/**
@@ -153,24 +153,6 @@ public final class WfActivity implements Entity {
 	public VAccessor<io.vertigo.workflow.domain.model.WfActivityDefinition> wfActivityDefinition() {
 		return wfadIdAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.workflow.domain.model.WfActivityDefinition getWfActivityDefinition() {
-		// we keep the lazyness
-		if (!wfadIdAccessor.isLoaded()) {
-			wfadIdAccessor.load();
-		}
-		return wfadIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: WfActivityDefinition.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfActivityDefinition> getWfActivityDefinitionUID() {
-		return wfadIdAccessor.getUID();
-	}
 
 	/**
 	 * Association : WfDecision.
@@ -179,28 +161,6 @@ public final class WfActivity implements Entity {
 	public ListVAccessor<io.vertigo.workflow.domain.instance.WfDecision> wfDecision() {
 		return wfDecisionAccessor;
 	}
-	
-	/**
-	 * Association : WfDecision.
-	 * @return DtList de io.vertigo.workflow.domain.instance.WfDecision
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.workflow.domain.instance.WfDecision> getWfDecisionList() {
-		// we keep the lazyness
-		if (!wfDecisionAccessor.isLoaded()) {
-			wfDecisionAccessor.load();
-		}
-		return wfDecisionAccessor.get();
-	}
-
-	/**
-	 * Association UID: WfDecision.
-	 * @return UID de l'association
-	 */
-	@Deprecated	
-	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation getWfDecisionDtListURI() {
-		return (io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation) wfDecisionAccessor.getDtListURI();
-	}
 
  	/**
 	 * Association : WfWorkflow.
@@ -208,24 +168,6 @@ public final class WfActivity implements Entity {
 	 */
 	public VAccessor<io.vertigo.workflow.domain.instance.WfWorkflow> wfWorkflow() {
 		return wfwIdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.workflow.domain.instance.WfWorkflow getWfWorkflow() {
-		// we keep the lazyness
-		if (!wfwIdAccessor.isLoaded()) {
-			wfwIdAccessor.load();
-		}
-		return wfwIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: WfWorkflow.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.instance.WfWorkflow> getWfWorkflowUID() {
-		return wfwIdAccessor.getUID();
 	}
 	
 	/** {@inheritDoc} */

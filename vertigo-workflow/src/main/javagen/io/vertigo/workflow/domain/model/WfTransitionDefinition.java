@@ -114,7 +114,7 @@ public final class WfTransitionDefinition implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", label = "WfWorkflowDefinition")
 	public Long getWfwdId() {
-		return (Long)  wfwdIdAccessor.getId();
+		return (Long) wfwdIdAccessor.getId();
 	}
 
 	/**
@@ -133,7 +133,7 @@ public final class WfTransitionDefinition implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", required = true, label = "transitionFrom")
 	public Long getWfadIdFrom() {
-		return (Long)  wfadIdFromAccessor.getId();
+		return (Long) wfadIdFromAccessor.getId();
 	}
 
 	/**
@@ -152,7 +152,7 @@ public final class WfTransitionDefinition implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", required = true, label = "transitionTo")
 	public Long getWfadIdTo() {
-		return (Long)  wfadIdToAccessor.getId();
+		return (Long) wfadIdToAccessor.getId();
 	}
 
 	/**
@@ -171,24 +171,6 @@ public final class WfTransitionDefinition implements Entity {
 	public VAccessor<io.vertigo.workflow.domain.model.WfActivityDefinition> transitionFrom() {
 		return wfadIdFromAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.workflow.domain.model.WfActivityDefinition getTransitionFrom() {
-		// we keep the lazyness
-		if (!wfadIdFromAccessor.isLoaded()) {
-			wfadIdFromAccessor.load();
-		}
-		return wfadIdFromAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: transitionFrom.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfActivityDefinition> getTransitionFromUID() {
-		return wfadIdFromAccessor.getUID();
-	}
 
  	/**
 	 * Association : transitionTo.
@@ -196,24 +178,6 @@ public final class WfTransitionDefinition implements Entity {
 	 */
 	public VAccessor<io.vertigo.workflow.domain.model.WfActivityDefinition> transitionTo() {
 		return wfadIdToAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.workflow.domain.model.WfActivityDefinition getTransitionTo() {
-		// we keep the lazyness
-		if (!wfadIdToAccessor.isLoaded()) {
-			wfadIdToAccessor.load();
-		}
-		return wfadIdToAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: transitionTo.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfActivityDefinition> getTransitionToUID() {
-		return wfadIdToAccessor.getUID();
 	}
 
  	/**

@@ -440,15 +440,16 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		final OActivityExecution firstActivityExecution = initActivityExecutionWithActivity(firstActivity, processExecution.getPreId());
 		activityExecutionDAO.save(firstActivityExecution);
 
+		processExecution.process().load();
 		final ActivityExecutionWorkspace initialWorkspace = new ActivityExecutionWorkspace(mapCodec.decode(processExecution
-				.getProcess()
+				.process().get()
 				.getInitialParams()));
 		if (initialParams.isPresent()) {
 			// If Plannification specifies initialParams we take them in addition
 			initialWorkspace.addExternalParams(mapCodec.decode(initialParams.get()));
 		}
 		// We set in the workspace essentials params
-		initialWorkspace.setProcessName(processExecution.getProcess().getName());
+		initialWorkspace.setProcessName(processExecution.process().get().getName());
 		initialWorkspace.setProcessExecutionId(processExecution.getPreId());
 		initialWorkspace.setActivityExecutionId(firstActivityExecution.getAceId());
 		initialWorkspace.setToken(firstActivityExecution.getToken());

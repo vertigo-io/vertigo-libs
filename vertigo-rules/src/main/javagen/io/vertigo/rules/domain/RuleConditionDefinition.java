@@ -124,7 +124,7 @@ public final class RuleConditionDefinition implements Entity {
 	 */
 	@Field(domain = "DO_RULES_ID", type = "FOREIGN_KEY", label = "RuleDefinition")
 	public Long getRudId() {
-		return (Long)  rudIdAccessor.getId();
+		return (Long) rudIdAccessor.getId();
 	}
 
 	/**

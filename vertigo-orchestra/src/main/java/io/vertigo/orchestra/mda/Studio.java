@@ -54,8 +54,7 @@ public class Studio {
 							Param.of("targetSubDir", "."),
 							Param.of("generateDtResources", "false"),
 							Param.of("generateDtDefinitions", "true"),
-							Param.of("generateDtObject", "true"),
-							Param.of("generateJpaAnnotations", "false"))
+							Param.of("generateDtObject", "true"))
 					.addPlugin(TaskGeneratorPlugin.class,
 						Param.of("targetSubDir", "."))
 

@@ -144,7 +144,7 @@ public final class WfDecision implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", label = "WfActivity")
 	public Long getWfaId() {
-		return (Long)  wfaIdAccessor.getId();
+		return (Long) wfaIdAccessor.getId();
 	}
 
 	/**

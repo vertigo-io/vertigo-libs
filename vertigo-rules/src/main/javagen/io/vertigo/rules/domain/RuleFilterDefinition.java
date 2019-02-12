@@ -124,7 +124,7 @@ public final class RuleFilterDefinition implements Entity {
 	 */
 	@Field(domain = "DO_RULES_ID", type = "FOREIGN_KEY", label = "SelectorDefinition")
 	public Long getSelId() {
-		return (Long)  selIdAccessor.getId();
+		return (Long) selIdAccessor.getId();
 	}
 
 	/**

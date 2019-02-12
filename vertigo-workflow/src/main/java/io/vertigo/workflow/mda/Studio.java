@@ -60,8 +60,7 @@ public class Studio {
 							Param.of("targetSubDir", "."),
 							Param.of("generateDtResources", "false"),
 							Param.of("generateDtDefinitions", "true"),
-							Param.of("generateDtObject", "true"),
-							Param.of("generateJpaAnnotations", "false"))
+							Param.of("generateDtObject", "true"))
 					.addPlugin(TaskGeneratorPlugin.class,
 						Param.of("targetSubDir", "."))
 
@@ -76,7 +75,6 @@ public class Studio {
 							Param.of("targetSubDir", "."),
 							Param.of("generateDtResourcesJS", "true"),
 							Param.of("generateJsDtDefinitions", "true"))
-					.addComponent(MasterDataManager.class, MasterDataManagerImpl.class)
 					.build())
 				.build();
 		// @formatter:on

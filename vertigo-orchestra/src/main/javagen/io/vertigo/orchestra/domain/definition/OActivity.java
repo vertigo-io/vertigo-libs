@@ -165,7 +165,7 @@ public final class OActivity implements Entity {
 	 */
 	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getProId() {
-		return (Long)  proIdAccessor.getId();
+		return (Long) proIdAccessor.getId();
 	}
 
 	/**
@@ -183,24 +183,6 @@ public final class OActivity implements Entity {
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.definition.OProcess> process() {
 		return proIdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.definition.OProcess getProcess() {
-		// we keep the lazyness
-		if (!proIdAccessor.isLoaded()) {
-			proIdAccessor.load();
-		}
-		return proIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: Processus.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.orchestra.domain.definition.OProcess> getProcessUID() {
-		return proIdAccessor.getUID();
 	}
 	
 	/** {@inheritDoc} */

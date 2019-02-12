@@ -1,9 +1,9 @@
 package io.vertigo.workflow.domain.model;
 
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.domain.model.EnumVAccessor;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
-import io.vertigo.dynamo.domain.model.EnumVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -120,7 +120,7 @@ public final class WfActivityDefinition implements Entity {
 	 */
 	@Field(domain = "DO_WF_CODE", type = "FOREIGN_KEY", label = "WfMultiplicityDefinition")
 	public String getWfmdCode() {
-		return (String)  wfmdCodeAccessor.getId();
+		return (String) wfmdCodeAccessor.getId();
 	}
 
 	/**
@@ -139,7 +139,7 @@ public final class WfActivityDefinition implements Entity {
 	 */
 	@Field(domain = "DO_WF_ID", type = "FOREIGN_KEY", required = true, label = "WfWorkflowDefinition")
 	public Long getWfwdId() {
-		return (Long)  wfwdIdAccessor.getId();
+		return (Long) wfwdIdAccessor.getId();
 	}
 
 	/**
@@ -158,24 +158,6 @@ public final class WfActivityDefinition implements Entity {
 	public EnumVAccessor<io.vertigo.workflow.domain.model.WfMultiplicityDefinition, io.vertigo.workflow.domain.model.WfMultiplicityDefinitionEnum> wfMultiplicityDefinition() {
 		return wfmdCodeAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.workflow.domain.model.WfMultiplicityDefinition getWfMultiplicityDefinition() {
-		// we keep the lazyness
-		if (!wfmdCodeAccessor.isLoaded()) {
-			wfmdCodeAccessor.load();
-		}
-		return wfmdCodeAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: WfMultiplicityDefinition.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfMultiplicityDefinition> getWfMultiplicityDefinitionUID() {
-		return wfmdCodeAccessor.getUID();
-	}
 
  	/**
 	 * Association : WfWorkflowDefinition.
@@ -183,24 +165,6 @@ public final class WfActivityDefinition implements Entity {
 	 */
 	public VAccessor<io.vertigo.workflow.domain.model.WfWorkflowDefinition> wfWorkflowDefinition() {
 		return wfwdIdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.workflow.domain.model.WfWorkflowDefinition getWfWorkflowDefinition() {
-		// we keep the lazyness
-		if (!wfwdIdAccessor.isLoaded()) {
-			wfwdIdAccessor.load();
-		}
-		return wfwdIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'UID: WfWorkflowDefinition.
-	 * @return UID de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<io.vertigo.workflow.domain.model.WfWorkflowDefinition> getWfWorkflowDefinitionUID() {
-		return wfwdIdAccessor.getUID();
 	}
 	
 	/** {@inheritDoc} */
