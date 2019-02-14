@@ -28,28 +28,59 @@ import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.model.ITemplateEvent;
 import org.thymeleaf.processor.element.AbstractElementModelProcessor;
 import org.thymeleaf.processor.element.IElementModelStructureHandler;
+import org.thymeleaf.standard.expression.Fragment;
 import org.thymeleaf.templatemode.TemplateMode;
 
-public class ComponentSlotProcessor extends AbstractElementModelProcessor {
+import io.vertigo.lang.Assertion;
 
-	public static final String SLOT_CONTENT_VAR_NAME = "slots";
-	private static final String CONTENT_TAG_NAME = "slot";
+public class ContentSlotComponentProcessor extends AbstractElementModelProcessor {
+
+	private static final String CONTENT_TAG_NAME = "content-slot";
 	private static final int PRECEDENCE = 450;
 
 	/**
 	 * Constructor
 	 *
-	 * @param dialectPrefix Dialect prefix (vu)
+	 * @param dialectPrefix Dialect prefix (tc)
 	 */
-	public ComponentSlotProcessor(final String dialectPrefix) {
+	public ContentSlotComponentProcessor(final String dialectPrefix) {
 		super(TemplateMode.HTML, dialectPrefix, CONTENT_TAG_NAME, true, null, false, PRECEDENCE);
+	}
+
+	private void removeCurrentTag(final IModel model) {
+		model.remove(0);
+		if (model.size() > 0) {
+			model.remove(model.size() - 1);
+		}
 	}
 
 	@Override
 	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
 		final Map<String, String> attributes = processAttribute(model);
-		final String name = attributes.get("name");
-		throw new IllegalStateException("Component slot " + name + " wasn't correctly parsed. All slots must be set at start in component body, before the content.");
+		final String attributeValue = attributes.get("name");
+		Assertion.checkArgument(attributeValue.endsWith(SlotAttributeTagProcessor.VARIABLE_PLACEHOLDER_SEPARATOR + SlotAttributeTagProcessor.SLOTS_SUFFIX), "{0} isn't a slot. Tag vu:content-slot supports only slots, names must ends with '_slot'", attributeValue);
+		//-----
+		removeCurrentTag(model);
+		final Object slotModelObject = context.getVariable(attributeValue);
+		final IModel slotModel;
+		if (slotModelObject instanceof Fragment) {
+			slotModel = ((Fragment) slotModelObject).getTemplateModel();
+		} else {
+			slotModel = (IModel) slotModelObject;
+		}
+		if (slotModel != null) {
+			if (slotModel.size() == 0) {
+				//if empty slot we remove all tag (open tag, body and close tag)
+				model.reset();
+			} else {
+				//Else we replace the body by user defined slot
+				model.reset();
+				model.addModel(slotModel);
+			}
+		} else {
+			//if empty slot we remove all tag (open tag, body and close tag)
+		}
+		//-----
 	}
 
 	private Map<String, String> processAttribute(final IModel model) {
@@ -64,5 +95,4 @@ public class ComponentSlotProcessor extends AbstractElementModelProcessor {
 		}
 		return attributes;
 	}
-
 }

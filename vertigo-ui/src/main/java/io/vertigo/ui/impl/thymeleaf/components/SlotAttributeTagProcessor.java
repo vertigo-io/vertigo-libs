@@ -12,13 +12,13 @@ import org.thymeleaf.templatemode.TemplateMode;
 
 import io.vertigo.lang.Assertion;
 
-public class ComponentSlotAttributeTagProcessor extends AbstractAttributeTagProcessor {
+public class SlotAttributeTagProcessor extends AbstractAttributeTagProcessor {
 	static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";
 	static final String SLOTS_SUFFIX = "slot";
 	private static final String ATTR_NAME = "slot";
 	private static final int PRECEDENCE = 400;
 
-	public ComponentSlotAttributeTagProcessor(final String dialectPrefix) {
+	public SlotAttributeTagProcessor(final String dialectPrefix) {
 		super(
 				TemplateMode.HTML, // This processor will apply only to HTML mode
 				dialectPrefix, // Prefix to be applied to name for matching

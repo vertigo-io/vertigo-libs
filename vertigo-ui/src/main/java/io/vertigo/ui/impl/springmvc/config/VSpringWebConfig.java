@@ -57,8 +57,8 @@ import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttributeMethodArgumen
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewContextReturnValueAndArgumentResolver;
 import io.vertigo.ui.impl.springmvc.controller.VSpringMvcControllerAdvice;
 import io.vertigo.ui.impl.thymeleaf.VUiStandardDialect;
-import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponent;
-import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponentParser;
+import io.vertigo.ui.impl.thymeleaf.components.NamedComponentDefinition;
+import io.vertigo.ui.impl.thymeleaf.components.NamedComponentParser;
 import io.vertigo.ui.impl.thymeleaf.components.VuiResourceTemplateResolver;
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 
@@ -148,10 +148,10 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 		return templateEngine;
 	}
 
-	private final Set<ThymeleafComponent> getUiComponents(final VuiResourceTemplateResolver componentResolvers) {
-		final ThymeleafComponentParser parser = new ThymeleafComponentParser("vu", componentResolvers);
+	private final Set<NamedComponentDefinition> getUiComponents(final VuiResourceTemplateResolver componentResolvers) {
+		final NamedComponentParser parser = new NamedComponentParser("vu", componentResolvers);
 
-		final Set<ThymeleafComponent> standardUiComponents = new HashSet<>();
+		final Set<NamedComponentDefinition> standardUiComponents = new HashSet<>();
 		//standard components
 		for (final String componentName : STANDARD_UI_COMPONENTS_NAME) {
 			standardUiComponents.addAll(parser.parseComponent(componentName));

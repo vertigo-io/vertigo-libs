@@ -41,9 +41,9 @@ import org.thymeleaf.templateresource.ITemplateResource;
 
 import io.vertigo.lang.Assertion;
 
-public class ThymeleafComponentParser extends AbstractMarkupHandler {
+public class NamedComponentParser extends AbstractMarkupHandler {
 
-	private static final Logger LOG = LoggerFactory.getLogger(ThymeleafComponentParser.class);
+	private static final Logger LOG = LoggerFactory.getLogger(NamedComponentParser.class);
 
 	protected static final String NAME_ATTRIBUTE = "alias";
 	protected static final String SELECTOR_ATTRIBUTE = "selector";
@@ -56,13 +56,13 @@ public class ThymeleafComponentParser extends AbstractMarkupHandler {
 	private List<Element> elements;
 	private Element currentElement;
 
-	public ThymeleafComponentParser(final String dialectPrefix, final VuiResourceTemplateResolver componentResolver) {
+	public NamedComponentParser(final String dialectPrefix, final VuiResourceTemplateResolver componentResolver) {
 		this.dialectPrefix = dialectPrefix;
 		this.componentResolver = componentResolver;
 	}
 
-	public Set<ThymeleafComponent> parseComponent(final String componentName) {
-		final Set<ThymeleafComponent> components = new HashSet<>();
+	public Set<NamedComponentDefinition> parseComponent(final String componentName) {
+		final Set<NamedComponentDefinition> components = new HashSet<>();
 
 		final ITemplateResource templateResource = componentResolver.resolveResource("components/" + componentName);
 		for (final Element element : parseElements(templateResource)) {
@@ -114,7 +114,7 @@ public class ThymeleafComponentParser extends AbstractMarkupHandler {
 		return elements;
 	}
 
-	private Set<ThymeleafComponent> createComponent(final Element element, final String componentName) {
+	private Set<NamedComponentDefinition> createComponent(final Element element, final String componentName) {
 		final String fragmentAttribute = getDynamicAttributeValue(element, StandardDialect.PREFIX, FRAGMENT_ATTRIBUTE);
 		final Pattern parametersPattern = Pattern.compile("^\\s*([^(]+)\\s*(?:\\((.*)\\))?");
 		final Matcher matcher = parametersPattern.matcher(fragmentAttribute);
@@ -131,12 +131,12 @@ public class ThymeleafComponentParser extends AbstractMarkupHandler {
 
 		final String selector = getDynamicAttributeValue(element, dialectPrefix, SELECTOR_ATTRIBUTE);
 		if (selector != null && !selector.isEmpty()) {
-			final Set<ThymeleafComponent> thymeleafComponents = new HashSet<>();
-			thymeleafComponents.add(new ThymeleafComponent(name, "components/" + componentName + ".html", selector, parameters, frag));
-			thymeleafComponents.add(new ThymeleafComponent(frag, "components/" + componentName + ".html", parameters, frag)); //Fragment always accessible without selector
+			final Set<NamedComponentDefinition> thymeleafComponents = new HashSet<>();
+			thymeleafComponents.add(new NamedComponentDefinition(name, "components/" + componentName + ".html", selector, parameters, frag));
+			thymeleafComponents.add(new NamedComponentDefinition(frag, "components/" + componentName + ".html", parameters, frag)); //Fragment always accessible without selector
 			return thymeleafComponents;
 		} else {
-			return Collections.singleton(new ThymeleafComponent(name, "components/" + componentName + ".html", parameters, frag));
+			return Collections.singleton(new NamedComponentDefinition(name, "components/" + componentName + ".html", parameters, frag));
 		}
 	}
 

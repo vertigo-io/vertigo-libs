@@ -26,7 +26,7 @@ import org.thymeleaf.model.IStandaloneElementTag;
 
 import io.vertigo.lang.Assertion;
 
-public final class ThymeleafContentComponent {
+public final class NamedComponentContentComponent {
 
 	private final IModel innerModel;
 	private final IElementTag firstLevelTag;
@@ -36,7 +36,7 @@ public final class ThymeleafContentComponent {
 	private final boolean openTag;
 	private final boolean closeTag;
 
-	public ThymeleafContentComponent(final IModel innerModel) {
+	public NamedComponentContentComponent(final IModel innerModel) {
 		Assertion.checkNotNull(innerModel);
 		//-----
 		this.innerModel = innerModel;

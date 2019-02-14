@@ -27,14 +27,14 @@ import org.thymeleaf.dialect.AbstractProcessorDialect;
 import org.thymeleaf.processor.IProcessor;
 
 import io.vertigo.lang.Assertion;
-import io.vertigo.ui.impl.thymeleaf.components.ComponentContentSlotProcessor;
-import io.vertigo.ui.impl.thymeleaf.components.ComponentSlotAttributeTagProcessor;
-import io.vertigo.ui.impl.thymeleaf.components.ComponentSlotProcessor;
+import io.vertigo.ui.impl.thymeleaf.components.ContentItemComponentProcessor;
+import io.vertigo.ui.impl.thymeleaf.components.ContentSlotComponentProcessor;
+import io.vertigo.ui.impl.thymeleaf.components.SlotAttributeTagProcessor;
+import io.vertigo.ui.impl.thymeleaf.components.SlotComponentProcessor;
 import io.vertigo.ui.impl.thymeleaf.components.OnceAttributeTagProcessor;
-import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponent;
-import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponentContentItemProcessor;
-import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponentNamedElementProcessor;
-import io.vertigo.ui.impl.thymeleaf.components.ThymeleafComponentParser;
+import io.vertigo.ui.impl.thymeleaf.components.NamedComponentDefinition;
+import io.vertigo.ui.impl.thymeleaf.components.NamedComponentElementProcessor;
+import io.vertigo.ui.impl.thymeleaf.components.NamedComponentParser;
 
 public final class VUiStandardDialect extends AbstractProcessorDialect {
 
@@ -43,10 +43,10 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 	public static final int PROCESSOR_PRECEDENCE = 2000;
 
 	// These variables will be initialized lazily following the model applied in the extended StandardDialect.
-	private final Set<ThymeleafComponent> components;
-	private final List<ThymeleafComponentParser> parsers = new ArrayList<>();
+	private final Set<NamedComponentDefinition> components;
+	private final List<NamedComponentParser> parsers = new ArrayList<>();
 
-	public VUiStandardDialect(final Set<ThymeleafComponent> components) {
+	public VUiStandardDialect(final Set<NamedComponentDefinition> components) {
 		super(NAME, PREFIX, PROCESSOR_PRECEDENCE);
 		Assertion.checkNotNull(components);
 		//---
@@ -61,19 +61,19 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 	private Set<IProcessor> createVUiStandardProcessorsSet(final String dialectPrefix) {
 		final Set<IProcessor> processors = new HashSet<>();
 		processors.add(new OnceAttributeTagProcessor(dialectPrefix));
-		processors.add(new ThymeleafComponentContentItemProcessor(dialectPrefix));
-		processors.add(new ComponentSlotAttributeTagProcessor(dialectPrefix));
-		processors.add(new ComponentSlotProcessor(dialectPrefix));
-		processors.add(new ComponentContentSlotProcessor(dialectPrefix));
+		processors.add(new ContentItemComponentProcessor(dialectPrefix));
+		processors.add(new SlotAttributeTagProcessor(dialectPrefix));
+		processors.add(new SlotComponentProcessor(dialectPrefix));
+		processors.add(new ContentSlotComponentProcessor(dialectPrefix));
 
 		//standard components
-		for (final ThymeleafComponent comp : components) {
-			processors.add(new ThymeleafComponentNamedElementProcessor(dialectPrefix, comp));
+		for (final NamedComponentDefinition comp : components) {
+			processors.add(new NamedComponentElementProcessor(dialectPrefix, comp));
 		}
 
 		//additionalComponents
-		for (final ThymeleafComponent comp : parseComponents()) {
-			processors.add(new ThymeleafComponentNamedElementProcessor(dialectPrefix, comp));
+		for (final NamedComponentDefinition comp : parseComponents()) {
+			processors.add(new NamedComponentElementProcessor(dialectPrefix, comp));
 		}
 
 		return processors;
@@ -84,8 +84,8 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 	 * Get components from parsers
 	 * @return Thymeleaf components
 	 */
-	private Set<ThymeleafComponent> parseComponents() {
-		final Set<ThymeleafComponent> parsedComponents = new HashSet<>();
+	private Set<NamedComponentDefinition> parseComponents() {
+		final Set<NamedComponentDefinition> parsedComponents = new HashSet<>();
 		//TODO autodetect components
 		return parsedComponents;
 	}
@@ -95,7 +95,7 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 	 *
 	 * @param parser Thymeleaf component parser
 	 */
-	public void addParser(final ThymeleafComponentParser parser) {
+	public void addParser(final NamedComponentParser parser) {
 		parsers.add(parser);
 	}
 

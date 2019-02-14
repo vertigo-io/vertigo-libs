@@ -34,7 +34,7 @@ import org.thymeleaf.templatemode.TemplateMode;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 
-public class ThymeleafComponentContentItemProcessor extends AbstractElementModelProcessor {
+public class ContentItemComponentProcessor extends AbstractElementModelProcessor {
 
 	private static final String CONTENT_VAR_NAME = "contentItem";
 	private static final String CONTENT_TAG_NAME = "content-item";
@@ -45,7 +45,7 @@ public class ThymeleafComponentContentItemProcessor extends AbstractElementModel
 	 *
 	 * @param dialectPrefix Dialect prefix (tc)
 	 */
-	public ThymeleafComponentContentItemProcessor(final String dialectPrefix) {
+	public ContentItemComponentProcessor(final String dialectPrefix) {
 		super(TemplateMode.HTML, dialectPrefix, CONTENT_TAG_NAME, true, null, false, PRECEDENCE);
 	}
 
@@ -73,9 +73,9 @@ public class ThymeleafComponentContentItemProcessor extends AbstractElementModel
 			} else {
 				mergedModel = defaultModel; //We use default value (in vu:content tag)
 			}
-		} else if (content instanceof ThymeleafContentComponent) {
+		} else if (content instanceof NamedComponentContentComponent) {
 			//We merge models : ie replace vu:content tag in component fragment by the body of tag in call page
-			mergedModel = ((ThymeleafContentComponent) content).getModel();
+			mergedModel = ((NamedComponentContentComponent) content).getModel();
 		} else {
 			throw new VSystemException("Content variable type not supported ({0})", content.getClass().getName());
 		}

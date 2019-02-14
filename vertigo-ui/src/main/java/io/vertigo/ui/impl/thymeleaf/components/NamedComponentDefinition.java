@@ -27,7 +27,7 @@ import org.thymeleaf.standard.expression.VariableExpression;
 
 import io.vertigo.lang.Assertion;
 
-public final class ThymeleafComponent {
+public final class NamedComponentDefinition {
 
 	private String name;
 	private String fragmentTemplate;
@@ -35,7 +35,7 @@ public final class ThymeleafComponent {
 	private final List<String> parameters;
 	private final String frag;
 
-	public ThymeleafComponent(final String name, final String fragmentTemplate, final String selectionExpression, final Optional<String> parameters, final String frag) {
+	public NamedComponentDefinition(final String name, final String fragmentTemplate, final String selectionExpression, final Optional<String> parameters, final String frag) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkArgNotEmpty(fragmentTemplate);
 		Assertion.checkArgNotEmpty(selectionExpression);
@@ -50,7 +50,7 @@ public final class ThymeleafComponent {
 		this.frag = frag;
 	}
 
-	public ThymeleafComponent(final String name, final String fragmentTemplate, final Optional<String> parameters, final String frag) {
+	public NamedComponentDefinition(final String name, final String fragmentTemplate, final Optional<String> parameters, final String frag) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkArgNotEmpty(fragmentTemplate);
 		Assertion.checkArgNotEmpty(frag);
