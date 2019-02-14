@@ -53,14 +53,17 @@ import org.thymeleaf.standard.expression.Assignation;
 import org.thymeleaf.standard.expression.AssignationSequence;
 import org.thymeleaf.standard.expression.AssignationUtils;
 import org.thymeleaf.standard.expression.IStandardExpression;
+import org.thymeleaf.standard.expression.IStandardExpressionParser;
+import org.thymeleaf.standard.expression.StandardExpressions;
 import org.thymeleaf.standard.expression.VariableExpression;
 import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.util.EvaluationUtils;
 import org.thymeleaf.util.StringUtils;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.StringUtil;
 
-public class ThymeleafComponentNamedElementProcessor extends AbstractElementModelProcessor {
+public class NamedComponentElementProcessor extends AbstractElementModelProcessor {
 	private static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";
 	private static final String SLOTS_SUFFIX = "slot";
 	private static final String ATTRS_SUFFIX = "attrs";
@@ -84,7 +87,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 	 * @param tagName Tag name to search for (e.g. panel)
 	 * @param componentName Fragment to search for
 	 */
-	public ThymeleafComponentNamedElementProcessor(final String dialectPrefix, final ThymeleafComponent thymeleafComponent) {
+	public NamedComponentElementProcessor(final String dialectPrefix, final NamedComponentDefinition thymeleafComponent) {
 		super(TemplateMode.HTML, dialectPrefix, thymeleafComponent.getName(), true, null, false, PRECEDENCE);
 		componentName = thymeleafComponent.getFragmentTemplate();
 		frag = thymeleafComponent.getFrag();
@@ -117,10 +120,10 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			removeContainerTag(contentModel);
 
 			if (parameterNames.contains(CONTENT_TAGS)) {
-				structureHandler.setLocalVariable(CONTENT_TAGS, tag instanceof IStandaloneElementTag ? Collections.emptyList() : asList(contentModel));
+				structureHandler.setLocalVariable(CONTENT_TAGS, tag instanceof IStandaloneElementTag ? Collections.emptyList() : asList(contentModel, context));
 			}
 			if (!slotNames.isEmpty()) {
-				final Map<String, IModel> slotContents = removeAndExtractSlots(contentModel);
+				final Map<String, IModel> slotContents = removeAndExtractSlots(contentModel, context);
 				for (final Map.Entry<String, IModel> entry : slotContents.entrySet()) {
 					Assertion.checkState(slotNames.contains(entry.getKey()), "Component {0} have no slot {1} (accepted slots : {3})", componentName, entry.getKey(), slotNames);
 					//-----
@@ -145,7 +148,7 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 
 	}
 
-	private Map<String, IModel> removeAndExtractSlots(final IModel contentModel) {
+	private Map<String, IModel> removeAndExtractSlots(final IModel contentModel, final ITemplateContext context) {
 		final Map<String, IModel> slotContents = new HashMap<>();
 		final IModel buildingModel = contentModel.cloneModel(); //contains each first level tag (and all it's sub-tags)
 		buildingModel.reset();
@@ -181,8 +184,10 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 					Assertion.checkNotNull(slotName);
 					//Si on est à la base, on ajout que le model qu'on a préparé, on le close et on reset pour la boucle suivante
 					final IModel firstLevelTagModel = buildingModel.cloneModel();
-					removeContainerTag(firstLevelTagModel); //we remove the slot tag itself
-					slotContents.put(slotName, firstLevelTagModel);
+					if (isVisible(context, firstLevelTagModel)) {
+						removeContainerTag(firstLevelTagModel); //we remove the slot tag itself
+						slotContents.put(slotName, firstLevelTagModel);
+					}
 					buildingModel.reset(); //we prepare next buildingModel
 				} else {
 					break; //slots must be set at first
@@ -252,8 +257,8 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 		}
 	}
 
-	private List<ThymeleafContentComponent> asList(final IModel componentModel) {
-		final List<ThymeleafContentComponent> asList = new ArrayList<>();
+	private List<NamedComponentContentComponent> asList(final IModel componentModel, final ITemplateContext context) {
+		final List<NamedComponentContentComponent> asList = new ArrayList<>();
 		final IModel buildingModel = componentModel.cloneModel(); //contains each first level tag (and all it's sub-tags)
 		buildingModel.reset();
 		int tapDepth = 0;
@@ -268,11 +273,29 @@ public class ThymeleafComponentNamedElementProcessor extends AbstractElementMode
 			if (tapDepth == 0) {
 				//Si on est à la base, on ajout que le model qu'on a préparé, on le close et on reset pour la boucle suivante
 				final IModel firstLevelTagModel = buildingModel.cloneModel();
-				asList.add(new ThymeleafContentComponent(firstLevelTagModel));
+				//si on a un tag if, on l'evalue avant d'ajouter le contenu, pour n'avoir que des composants avec un rendu
+				if (isVisible(context, firstLevelTagModel)) {
+					final NamedComponentContentComponent contentComponent = new NamedComponentContentComponent(firstLevelTagModel);
+					asList.add(contentComponent);
+				}
 				buildingModel.reset();
 			}
 		}
 		return asList;
+	}
+
+	private boolean isVisible(final ITemplateContext context, final IModel firstLevelTagModel) {
+		final ITemplateEvent firstLevelTag = firstLevelTagModel.get(0);
+		if (firstLevelTag instanceof IProcessableElementTag) {
+			final IAttribute ifAttribute = ((IProcessableElementTag) firstLevelTag).getAttribute("th:if");
+			if (ifAttribute != null) {
+				final IStandardExpressionParser expressionParser = StandardExpressions.getExpressionParser(context.getConfiguration());
+				final IStandardExpression expression = expressionParser.parseExpression(context, ifAttribute.getValue());
+				final Object value = expression.execute(context);
+				return EvaluationUtils.evaluateAsBoolean(value);
+			}
+		}
+		return true;
 	}
 
 	private static IProcessableElementTag processElementTag(final ITemplateContext context, final IModel model) {
