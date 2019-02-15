@@ -18,7 +18,7 @@
  */
 package io.vertigo.audit.services.trace;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,8 +33,8 @@ import io.vertigo.lang.Builder;
 public final class AuditTraceBuilder implements Builder<AuditTrace> {
 	private final String myCategory;
 	private final String myUser;
-	private Date myBusinessDate;
-	private final Date myExecutionDate;
+	private Instant myBusinessDate;
+	private final Instant myExecutionDate;
 	private final Long myItem;
 	private final String myMessage;
 	private String myContext;
@@ -55,7 +55,7 @@ public final class AuditTraceBuilder implements Builder<AuditTrace> {
 		myUser = user;
 		myMessage = message;
 		myItem = item;
-		myExecutionDate = new Date();
+		myExecutionDate = Instant.now();
 	}
 
 	/**
@@ -63,7 +63,7 @@ public final class AuditTraceBuilder implements Builder<AuditTrace> {
 	 * @param dateBusiness
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceBuilder withDateBusiness(final Date dateBusiness) {
+	public AuditTraceBuilder withDateBusiness(final Instant dateBusiness) {
 		Assertion.checkNotNull(dateBusiness);
 		//---
 		myBusinessDate = dateBusiness;

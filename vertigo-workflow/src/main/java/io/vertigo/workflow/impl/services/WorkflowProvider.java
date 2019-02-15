@@ -39,7 +39,7 @@ public final class WorkflowProvider implements SimpleDefinitionProvider {
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final Domain domainWorkflowId = Domain.builder("DO_WF_ID", DataType.Long).build();
 		final Domain domainWorkflowCode = Domain.builder("DO_WF_CODE", DataType.String).build();
-		final Domain domainWorkflowDate = Domain.builder("DO_WF_DATE", DataType.Date).build();
+		final Domain domainWorkflowDate = Domain.builder("DO_WF_INSTANT", DataType.Instant).build();
 		final Domain domainWorkflowWeakId = Domain.builder("DO_WF_WEAK_ID", DataType.Long).build();
 		final Domain domainWorkflowChoice = Domain.builder("DO_WF_CHOICE", DataType.Long).build();
 		final Domain domainWorkflowUser = Domain.builder("DO_WF_USER", DataType.String).build();

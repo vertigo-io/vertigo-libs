@@ -132,7 +132,6 @@ public final class UiUtil implements Serializable {
 				case BigDecimal:
 					return "right";
 				case Boolean:
-				case Date:
 				case Instant:
 				case LocalDate:
 				case String:

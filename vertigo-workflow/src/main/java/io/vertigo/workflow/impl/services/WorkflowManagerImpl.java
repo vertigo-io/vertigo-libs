@@ -18,8 +18,8 @@
  */
 package io.vertigo.workflow.impl.services;
 
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -104,7 +104,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 		Assertion.checkNotNull(item);
 		// ---
 		final WfWorkflow wfWorkflow = new WfWorkflow();
-		wfWorkflow.setCreationDate(new Date());
+		wfWorkflow.setCreationDate(Instant.now());
 		wfWorkflow.setItemId(item);
 		wfWorkflow.wfStatus().setEnumValue(WfStatusEnum.CRE);
 		wfWorkflow.setWfwdId(wfwdId);
@@ -135,7 +135,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 				.readWorkflowDefinition(wfWorkflow.getWfwdId());
 
 		final WfActivity wfActivityCurrent = new WfActivity();
-		wfActivityCurrent.setCreationDate(new Date());
+		wfActivityCurrent.setCreationDate(Instant.now());
 		wfActivityCurrent.setWfadId(wfWorkflowDefinition.getWfadId());
 		wfActivityCurrent.setWfwId(wfWorkflow.getWfwId());
 		workflowStorePlugin.createActivity(wfActivityCurrent);
@@ -195,7 +195,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 
 	private static WfActivity getNewActivity(final WfActivityDefinition activityDefinition, final WfWorkflow wfWorkflow) {
 		final WfActivity wfActivity = new WfActivity();
-		wfActivity.setCreationDate(new Date());
+		wfActivity.setCreationDate(Instant.now());
 		wfActivity.setWfadId(activityDefinition.getWfadId());
 		wfActivity.setWfwId(wfWorkflow.getWfwId());
 		return wfActivity;
@@ -266,7 +266,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 	private void autoValidateDecision(final WfActivity wfActivityCurrent) {
 		final WfDecision decision = new WfDecision();
 		decision.setUsername(USER_AUTO);
-		decision.setDecisionDate(new Date());
+		decision.setDecisionDate(Instant.now());
 		decision.setWfaId(wfActivityCurrent.getWfaId());
 
 		workflowStorePlugin.createDecision(decision);
@@ -401,7 +401,7 @@ public final class WorkflowManagerImpl implements WorkflowManager {
 				nextActivity = nextActivityOpt.get();
 			}
 			// Creating the next activity to validate.
-			nextActivity.setCreationDate(new Date());
+			nextActivity.setCreationDate(Instant.now());
 			nextActivity.setWfadId(nextActivityDefinition.getWfadId());
 			nextActivity.setWfwId(wfWorkflow.getWfwId());
 			if (nextActivity.getWfaId() == null) {

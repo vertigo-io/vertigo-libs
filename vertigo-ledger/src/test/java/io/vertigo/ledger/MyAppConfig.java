@@ -18,7 +18,7 @@ public class MyAppConfig {
 	 * @return AppConfig for Junit
 	 */
 	public static AppConfig config() {
-		return  AppConfig.builder()
+		return AppConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.endBoot()

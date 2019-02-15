@@ -19,7 +19,6 @@
 package io.vertigo.workflow;
 
 import io.vertigo.account.AccountFeatures;
-import io.vertigo.account.plugins.account.store.loader.LoaderAccountStorePlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
@@ -30,10 +29,6 @@ import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
 import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.rules.RulesFeatures;
-import io.vertigo.rules.plugins.selector.simple.SimpleRuleSelectorPlugin;
-import io.vertigo.rules.plugins.store.memory.MemoryRuleConstantsStorePlugin;
-import io.vertigo.rules.plugins.store.memory.MemoryRuleStorePlugin;
-import io.vertigo.rules.plugins.validator.simple.SimpleRuleValidatorPlugin;
 import io.vertigo.workflow.data.MockIdentities;
 import io.vertigo.workflow.data.MyDummyDtObjectProvider;
 import io.vertigo.workflow.data.TestUserSession;
@@ -63,6 +58,45 @@ public class MyAppConfig {
 						.withMemoryCache()
 						.withScript()
 						.build())
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.build())
+				.addModule(new AccountFeatures()
+						.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
+						.withLoaderAccount(
+								Param.of("accountLoaderName", "MockIdentities"),
+								Param.of("groupLoaderName", "MockIdentities"))
+						.build())
+				.addModule(new RulesFeatures()
+						.withMemoryRuleConstantsStore()
+						.withMemoryRuleStore()
+						.withSimpleRuleSelector()
+						.withSimpleRuleValidator()
+						.build())
+				.addModule(new WorkflowFeatures()
+						.withRulePredicateAutoValidatePlugin()
+						.withMemoryWorkflowStorePlugin()
+						.addPlugin(MemoryItemStorePlugin.class)
+						.build())
+				.addModule(ModuleConfig.builder("dummy")
+						.addDefinitionProvider(MyDummyDtObjectProvider.class)
+						.addComponent(MockIdentities.class)
+						.build());
+
+		return appConfigBuilder.build();
+	}
+
+	public static AppConfig configWithDb() {
+		final AppConfigBuilder appConfigBuilder = AppConfig.builder()
+				.beginBoot()
+				.withLocales("fr")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withCache()
+						.withMemoryCache()
+						.withScript()
+						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
 						.withC3p0(
@@ -77,18 +111,19 @@ public class MyAppConfig {
 						.build())
 				.addModule(new AccountFeatures()
 						.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
-						.addPlugin(LoaderAccountStorePlugin.class,
+						.withLoaderAccount(
 								Param.of("accountLoaderName", "MockIdentities"),
 								Param.of("groupLoaderName", "MockIdentities"))
 						.build())
 				.addModule(new RulesFeatures()
-						.withRuleStorePlugin(MemoryRuleStorePlugin.class)
-						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)
-						.withRuleSelectorPlugin(SimpleRuleSelectorPlugin.class)
-						.withRuleValidatorPlugin(SimpleRuleValidatorPlugin.class).build())
+						.withMemoryRuleConstantsStore()
+						.withSqlRuleStore()
+						.withSimpleRuleSelector()
+						.withSimpleRuleValidator()
+						.build())
 				.addModule(new WorkflowFeatures()
-						.withMemoryWorkflowStorePlugin()
 						.withRulePredicateAutoValidatePlugin()
+						.withDbStorePlugin()
 						.addPlugin(MemoryItemStorePlugin.class)
 						.build())
 				.addModule(ModuleConfig.builder("dummy")

@@ -19,20 +19,20 @@
 package io.vertigo.rules;
 
 import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
-import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.rules.dao.RuleConditionDefinitionDAO;
 import io.vertigo.rules.dao.RuleDefinitionDAO;
 import io.vertigo.rules.dao.RuleFilterDefinitionDAO;
 import io.vertigo.rules.dao.SelectorDefinitionDAO;
 import io.vertigo.rules.domain.DtDefinitions;
-import io.vertigo.rules.impl.services.RuleConstantsStorePlugin;
-import io.vertigo.rules.impl.services.RuleSelectorPlugin;
 import io.vertigo.rules.impl.services.RuleServicesImpl;
-import io.vertigo.rules.impl.services.RuleStorePlugin;
-import io.vertigo.rules.impl.services.RuleValidatorPlugin;
+import io.vertigo.rules.plugins.selector.simple.SimpleRuleSelectorPlugin;
+import io.vertigo.rules.plugins.store.memory.MemoryRuleConstantsStorePlugin;
+import io.vertigo.rules.plugins.store.memory.MemoryRuleStorePlugin;
 import io.vertigo.rules.plugins.store.sql.SQLRuleStorePlugin;
+import io.vertigo.rules.plugins.validator.simple.SimpleRuleValidatorPlugin;
 import io.vertigo.rules.services.RuleServices;
 
 /**
@@ -49,27 +49,8 @@ public final class RulesFeatures extends Features<RulesFeatures> {
 		super("vertigo-rules");
 	}
 
-	/**
-	 * Specifies the ruleStorePlugin.
-	 *
-	 * @param ruleStorePluginClass
-	 *            the type of plugin to use
-	 * @param params
-	 *            the params
-	 * @return these features
-	 */
-	public RulesFeatures withRuleStorePlugin(final Class<? extends RuleStorePlugin> ruleStorePluginClass,
-			final Param... params) {
-		getModuleConfigBuilder().addPlugin(ruleStorePluginClass, params);
-		return this;
-	}
-
-	/**
-	 * Specifies the ruleStorePlugin.
-	 *
-	 * @return these features
-	 */
-	public RulesFeatures withDAOSupportRuleStorePlugin() {
+	@Feature("sqlRuleStore")
+	public RulesFeatures withSqlRuleStore() {
 		getModuleConfigBuilder()
 				.addComponent(RuleConditionDefinitionDAO.class)//
 				.addComponent(RuleDefinitionDAO.class)//
@@ -79,48 +60,27 @@ public final class RulesFeatures extends Features<RulesFeatures> {
 		return this;
 	}
 
-	/**
-	 * Specifies the ruleConstantsStorePlugin.
-	 *
-	 * @param ruleConstantsStorePluginClass
-	 *            the type of plugin to use
-	 * @param params
-	 *            the params
-	 * @return these features
-	 */
-	public RulesFeatures withRuleConstantsStorePlugin(
-			final Class<? extends RuleConstantsStorePlugin> ruleConstantsStorePluginClass, final Param... params) {
-		getModuleConfigBuilder().addPlugin(ruleConstantsStorePluginClass, params);
+	@Feature("memoryRuleStore")
+	public RulesFeatures withMemoryRuleStore() {
+		getModuleConfigBuilder().addPlugin(MemoryRuleStorePlugin.class);
 		return this;
 	}
 
-	/**
-	 * Specifies the ruleSelectorPlugin.
-	 *
-	 * @param ruleSelectorPluginClass
-	 *            the type of plugin to use
-	 * @param params
-	 *            the params
-	 * @return these features
-	 */
-	public RulesFeatures withRuleSelectorPlugin(final Class<? extends RuleSelectorPlugin> ruleSelectorPluginClass,
-			final Param... params) {
-		getModuleConfigBuilder().addPlugin(ruleSelectorPluginClass, params);
+	@Feature("memoryRuleConstantStore")
+	public RulesFeatures withMemoryRuleConstantsStore() {
+		getModuleConfigBuilder().addPlugin(MemoryRuleConstantsStorePlugin.class);
 		return this;
 	}
 
-	/**
-	 * Specifies the ruleValidatorPlugin.
-	 *
-	 * @param ruleValidatorPluginClass
-	 *            the type of plugin to use
-	 * @param params
-	 *            the params
-	 * @return these features
-	 */
-	public RulesFeatures withRuleValidatorPlugin(final Class<? extends RuleValidatorPlugin> ruleValidatorPluginClass,
-			final Param... params) {
-		getModuleConfigBuilder().addPlugin(ruleValidatorPluginClass, params);
+	@Feature("simpleSelector")
+	public RulesFeatures withSimpleRuleSelector() {
+		getModuleConfigBuilder().addPlugin(SimpleRuleSelectorPlugin.class);
+		return this;
+	}
+
+	@Feature("simpleValidator")
+	public RulesFeatures withSimpleRuleValidator() {
+		getModuleConfigBuilder().addPlugin(SimpleRuleValidatorPlugin.class);
 		return this;
 	}
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.orchestra.services.schedule;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Map;
 
 import io.vertigo.orchestra.definitions.ProcessDefinition;
@@ -36,6 +36,6 @@ public interface ProcessScheduler {
 	 * @param planifiedTime la date de planification
 	 * @param initialParams les paramètres initiaux à utiliser
 	 */
-	void scheduleAt(final ProcessDefinition processDefinition, final Date planifiedTime, final Map<String, String> initialParams);
+	void scheduleAt(final ProcessDefinition processDefinition, final Instant planifiedTime, final Map<String, String> initialParams);
 
 }

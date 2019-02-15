@@ -39,7 +39,7 @@ public final class AuditTraceDefinitionProvider implements SimpleDefinitionProvi
 		final Domain domainAuditId = Domain.builder("DO_X_AUDIT_ID", DataType.Long).build();
 		final Domain domainAuditCategory = Domain.builder("DO_X_AUDIT_CATEGORY", DataType.String).build();
 		final Domain domainAuditUser = Domain.builder("DO_X_AUDIT_USER", DataType.String).build();
-		final Domain domainAuditDate = Domain.builder("DO_X_AUDIT_DATE", DataType.Date).build();
+		final Domain domainAuditInstant = Domain.builder("DO_X_AUDIT_INSTANT", DataType.Instant).build();
 		final Domain domainAuditItem = Domain.builder("DO_X_AUDIT_ITEM", DataType.Long).build();
 		final Domain domainAuditMessage = Domain.builder("DO_X_AUDIT_MESSAGE", DataType.String).build();
 		final Domain domainAuditContext = Domain.builder("DO_X_AUDIT_CONTEXT", DataType.String).build();
@@ -50,8 +50,8 @@ public final class AuditTraceDefinitionProvider implements SimpleDefinitionProvi
 				.withDisplayField("CATEGORY")
 				.addDataField("CATEGORY", "category", domainAuditCategory, true, true)
 				.addDataField("USER", "user", domainAuditUser, true, true)
-				.addDataField("DATE_BUSINESS", "dateBusiness", domainAuditDate, false, true)
-				.addDataField("DATE_EXECUTION", "dateExecution", domainAuditDate, true, true)
+				.addDataField("DATE_BUSINESS", "dateBusiness", domainAuditInstant, false, true)
+				.addDataField("DATE_EXECUTION", "dateExecution", domainAuditInstant, true, true)
 				.addDataField("ITEM", "item", domainAuditItem, true, true)
 				.addDataField("MESSAGE", "message", domainAuditMessage, true, true)
 				.addDataField("CONTEXT", "context", domainAuditContext, false, true)
@@ -61,7 +61,7 @@ public final class AuditTraceDefinitionProvider implements SimpleDefinitionProvi
 				.add(domainAuditId)
 				.add(domainAuditCategory)
 				.add(domainAuditUser)
-				.add(domainAuditDate)
+				.add(domainAuditInstant)
 				.add(domainAuditItem)
 				.add(domainAuditContext)
 				.add(auditTraceDtDefinition)

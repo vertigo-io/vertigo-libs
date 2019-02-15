@@ -17,11 +17,11 @@ public final class OProcessExecution implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long preId;
-	private java.util.Date beginTime;
-	private java.util.Date endTime;
+	private java.time.Instant beginTime;
+	private java.time.Instant endTime;
 	private String engine;
 	private Boolean checked;
-	private java.util.Date checkingDate;
+	private java.time.Instant checkingDate;
 	private String checkingComment;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
@@ -97,38 +97,38 @@ public final class OProcessExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de début'.
-	 * @return Date beginTime <b>Obligatoire</b>
+	 * @return Instant beginTime <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Date de début")
-	public java.util.Date getBeginTime() {
+	public java.time.Instant getBeginTime() {
 		return beginTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de début'.
-	 * @param beginTime Date <b>Obligatoire</b>
+	 * @param beginTime Instant <b>Obligatoire</b>
 	 */
-	public void setBeginTime(final java.util.Date beginTime) {
+	public void setBeginTime(final java.time.Instant beginTime) {
 		this.beginTime = beginTime;
 	}
 	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de fin'.
-	 * @return Date endTime
+	 * @return Instant endTime
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Date de fin")
-	public java.util.Date getEndTime() {
+	public java.time.Instant getEndTime() {
 		return endTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de fin'.
-	 * @param endTime Date
+	 * @param endTime Instant
 	 */
-	public void setEndTime(final java.util.Date endTime) {
+	public void setEndTime(final java.time.Instant endTime) {
 		this.endTime = endTime;
 	}
 	
@@ -173,19 +173,19 @@ public final class OProcessExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de prise en charge'.
-	 * @return Date checkingDate
+	 * @return Instant checkingDate
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Date de prise en charge")
-	public java.util.Date getCheckingDate() {
+	public java.time.Instant getCheckingDate() {
 		return checkingDate;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de prise en charge'.
-	 * @param checkingDate Date
+	 * @param checkingDate Instant
 	 */
-	public void setCheckingDate(final java.util.Date checkingDate) {
+	public void setCheckingDate(final java.time.Instant checkingDate) {
 		this.checkingDate = checkingDate;
 	}
 	

@@ -20,7 +20,8 @@ package io.vertigo.quarto.plugins.export.pdfrtf;
 
 import java.awt.Color;
 import java.io.OutputStream;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -153,7 +154,7 @@ public abstract class AbstractExporterIText {
 			final DtField dtField = exportColumn.getDtField();
 			final Object value = dtField.getDataAccessor().getValue(exportSheet.getDtObject());
 			final int horizontalAlignement;
-			if (value instanceof Number || value instanceof Date) {
+			if (value instanceof Number || value instanceof LocalDate || value instanceof Instant) {
 				horizontalAlignement = Element.ALIGN_RIGHT;
 			} else if (value instanceof Boolean) {
 				horizontalAlignement = Element.ALIGN_CENTER;
@@ -209,7 +210,7 @@ public abstract class AbstractExporterIText {
 				final DtField dtField = exportColumn.getDtField();
 				final Object value = dtField.getDataAccessor().getValue(dto);
 				final int horizontalAlignement;
-				if (value instanceof Number || value instanceof Date) {
+				if (value instanceof Number || value instanceof LocalDate || value instanceof Instant) {
 					horizontalAlignement = Element.ALIGN_RIGHT;
 				} else if (value instanceof Boolean) {
 					horizontalAlignement = Element.ALIGN_CENTER;

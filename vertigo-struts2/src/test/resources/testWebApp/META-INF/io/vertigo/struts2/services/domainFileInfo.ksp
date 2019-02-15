@@ -11,7 +11,7 @@ create Domain DO_GED_LABEL {
 }
 
 create Domain DO_GED_DATE {
-	dataType : Date
+	dataType : LocalDate
 	formatter : FMT_DATE
     storeType : "DATE"
 }

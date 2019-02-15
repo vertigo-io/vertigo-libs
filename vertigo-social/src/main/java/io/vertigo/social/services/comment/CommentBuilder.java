@@ -18,7 +18,7 @@
  */
 package io.vertigo.social.services.comment;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 import io.vertigo.account.account.Account;
@@ -37,8 +37,8 @@ public final class CommentBuilder implements Builder<Comment> {
 	private String myMsg;
 	private UID<Account> myAuthor;
 	private String myAuthorDisplayName;
-	private Date myCreationDate;
-	private Date myLastModified;
+	private Instant myCreationInstant;
+	private Instant myLastModified;
 
 	/**
 	 * Constructor for new comment.
@@ -92,11 +92,11 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * @param creationDate create date time
 	 * @return this builder
 	 */
-	public CommentBuilder withCreationDate(final Date creationDate) {
-		Assertion.checkArgument(myCreationDate == null, "creationDate already set");
-		Assertion.checkNotNull(creationDate);
+	public CommentBuilder withCreationDate(final Instant creationInstant) {
+		Assertion.checkArgument(myCreationInstant == null, "creationDate already set");
+		Assertion.checkNotNull(creationInstant);
 		//-----
-		myCreationDate = creationDate;
+		myCreationInstant = creationInstant;
 		return this;
 	}
 
@@ -104,7 +104,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * @param lastModified Last modify date time
 	 * @return this builder
 	 */
-	public CommentBuilder withLastModified(final Date lastModified) {
+	public CommentBuilder withLastModified(final Instant lastModified) {
 		Assertion.checkArgument(myLastModified == null, "lastModified already set");
 		//lastModified is optional
 		//-----
@@ -115,12 +115,12 @@ public final class CommentBuilder implements Builder<Comment> {
 	/** {@inheritDoc} */
 	@Override
 	public Comment build() {
-		if (myCreationDate == null) {
-			myCreationDate = DateUtil.newDateTime();
+		if (myCreationInstant == null) {
+			myCreationInstant = DateUtil.newInstant();
 		}
 		if (myUuid == null) {
 			myUuid = UUID.randomUUID();
 		}
-		return new Comment(myUuid, myAuthor, myAuthorDisplayName, myMsg, myCreationDate, myLastModified);
+		return new Comment(myUuid, myAuthor, myAuthorDisplayName, myMsg, myCreationInstant, myLastModified);
 	}
 }

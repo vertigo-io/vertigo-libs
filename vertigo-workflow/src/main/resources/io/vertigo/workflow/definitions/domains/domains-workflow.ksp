@@ -55,8 +55,8 @@ create Domain DO_WF_LEVEL {
 	storeType : "NUMERIC"
 }
 
-create Domain DO_WF_DATE {
-	dataType : Date
+create Domain DO_WF_INSTANT {
+	dataType : Instant
 	storeType : "DATE"
 }
 

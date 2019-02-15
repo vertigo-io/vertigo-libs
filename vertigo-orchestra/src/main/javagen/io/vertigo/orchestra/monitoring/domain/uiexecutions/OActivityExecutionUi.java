@@ -15,8 +15,8 @@ public final class OActivityExecutionUi implements DtObject {
 
 	private Long aceId;
 	private String label;
-	private java.util.Date beginTime;
-	private java.util.Date endTime;
+	private java.time.Instant beginTime;
+	private java.time.Instant endTime;
 	private Integer executionTime;
 	private String status;
 	private String workspaceIn;
@@ -65,38 +65,38 @@ public final class OActivityExecutionUi implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Démarrage'.
-	 * @return Date beginTime <b>Obligatoire</b>
+	 * @return Instant beginTime <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Démarrage")
-	public java.util.Date getBeginTime() {
+	public java.time.Instant getBeginTime() {
 		return beginTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Démarrage'.
-	 * @param beginTime Date <b>Obligatoire</b>
+	 * @param beginTime Instant <b>Obligatoire</b>
 	 */
-	public void setBeginTime(final java.util.Date beginTime) {
+	public void setBeginTime(final java.time.Instant beginTime) {
 		this.beginTime = beginTime;
 	}
 	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Fin'.
-	 * @return Date endTime <b>Obligatoire</b>
+	 * @return Instant endTime <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Fin")
-	public java.util.Date getEndTime() {
+	public java.time.Instant getEndTime() {
 		return endTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Fin'.
-	 * @param endTime Date <b>Obligatoire</b>
+	 * @param endTime Instant <b>Obligatoire</b>
 	 */
-	public void setEndTime(final java.util.Date endTime) {
+	public void setEndTime(final java.time.Instant endTime) {
 		this.endTime = endTime;
 	}
 	

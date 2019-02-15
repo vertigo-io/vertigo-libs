@@ -18,7 +18,7 @@
  */
 package io.vertigo.orchestra.plugins.services.report.db;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,12 +65,12 @@ public class DbProcessReportPlugin implements ProcessReportPlugin {
 	}
 
 	@Override
-	public List<ExecutionSummary> getSummariesByDate(final Date minDate, final Date maxDate, final Optional<String> status) {
+	public List<ExecutionSummary> getSummariesByDate(final Instant minDate, final Instant maxDate, final Optional<String> status) {
 		return decodeSummaryList(summaryPAO.getExecutionSummariesByDate(minDate, maxDate, status.orElse(null)));
 	}
 
 	@Override
-	public ExecutionSummary getSummaryByDate(final ProcessDefinition processDefinition, final Date minDate, final Date maxDate) {
+	public ExecutionSummary getSummaryByDate(final ProcessDefinition processDefinition, final Instant minDate, final Instant maxDate) {
 		checkProcessDefinition(processDefinition);
 		//---
 		return decodeSummary(summaryPAO.getExecutionSummaryByDateAndName(minDate, maxDate, processDefinition.getName()));

@@ -19,6 +19,7 @@
 package io.vertigo.ui.domain.movies;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
@@ -36,7 +37,7 @@ public final class Movie implements KeyConcept {
 
 	private Long movId;
 	private String title;
-	private java.util.Date released;
+	private LocalDate released;
 	private Integer year;
 	private Integer runtime;
 	private String description;
@@ -95,7 +96,7 @@ public final class Movie implements KeyConcept {
 	 * @return java.util.Date released
 	 */
 	@Field(domain = "DO_DATE", label = "Released")
-	public java.util.Date getReleased() {
+	public LocalDate getReleased() {
 		return released;
 	}
 
@@ -104,7 +105,7 @@ public final class Movie implements KeyConcept {
 	 * Définit la valeur de la propriété 'Released'.
 	 * @param released java.util.Date
 	 */
-	public void setReleased(final java.util.Date released) {
+	public void setReleased(final LocalDate released) {
 		this.released = released;
 	}
 

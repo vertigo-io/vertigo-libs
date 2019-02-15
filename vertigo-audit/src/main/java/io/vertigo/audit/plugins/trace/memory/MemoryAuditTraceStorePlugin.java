@@ -82,15 +82,15 @@ public final class MemoryAuditTraceStorePlugin implements AuditTraceStorePlugin 
 	private static boolean matchExecutionDate(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
 		return auditTrace.getExecutionDate() != null
 				&& auditTraceCriteria.getStartExecutionDate() != null
-				&& auditTraceCriteria.getStartExecutionDate().before(auditTrace.getExecutionDate())
-				&& (auditTraceCriteria.getEndExecutionDate() == null || auditTraceCriteria.getEndExecutionDate().after(auditTrace.getExecutionDate()));
+				&& auditTraceCriteria.getStartExecutionDate().isBefore(auditTrace.getExecutionDate())
+				&& (auditTraceCriteria.getEndExecutionDate() == null || auditTraceCriteria.getEndExecutionDate().isAfter(auditTrace.getExecutionDate()));
 	}
 
 	private static boolean matchBusinessDate(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
 		return auditTrace.getBusinessDate() != null
 				&& auditTraceCriteria.getStartBusinessDate() != null
-				&& auditTraceCriteria.getStartBusinessDate().before(auditTrace.getBusinessDate())
-				&& (auditTraceCriteria.getEndBusinessDate() == null || auditTraceCriteria.getEndBusinessDate().after(auditTrace.getBusinessDate()));
+				&& auditTraceCriteria.getStartBusinessDate().isBefore(auditTrace.getBusinessDate())
+				&& (auditTraceCriteria.getEndBusinessDate() == null || auditTraceCriteria.getEndBusinessDate().isAfter(auditTrace.getBusinessDate()));
 	}
 
 	private static boolean matchUser(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {

@@ -18,7 +18,7 @@
  */
 package io.vertigo.audit.services.trace;
 
-import java.util.Date;
+import java.time.Instant;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -33,19 +33,19 @@ public final class AuditTraceCriteria implements DtObject {
 
 	private final String category;
 	private final String username;
-	private final Date startBusinessDate;
-	private final Date endBusinessDate;
-	private final Date startExecutionDate;
-	private final Date endExecutionDate;
+	private final Instant startBusinessDate;
+	private final Instant endBusinessDate;
+	private final Instant startExecutionDate;
+	private final Instant endExecutionDate;
 	private final Long item;
 
 	AuditTraceCriteria(
 			final String category,
 			final String username,
-			final Date startBusinessDate,
-			final Date endBusinessDate,
-			final Date startExecutionDate,
-			final Date endExecutionDate,
+			final Instant startBusinessDate,
+			final Instant endBusinessDate,
+			final Instant startExecutionDate,
+			final Instant endExecutionDate,
 			final Long item) {
 		this.category = category;
 		this.username = username;
@@ -81,28 +81,28 @@ public final class AuditTraceCriteria implements DtObject {
 	/**
 	 * @return the startBusinessDate
 	 */
-	public Date getStartBusinessDate() {
+	public Instant getStartBusinessDate() {
 		return startBusinessDate;
 	}
 
 	/**
 	 * @return the endBusinessDate
 	 */
-	public Date getEndBusinessDate() {
+	public Instant getEndBusinessDate() {
 		return endBusinessDate;
 	}
 
 	/**
 	 * @return the startExecutionDate
 	 */
-	public Date getStartExecutionDate() {
+	public Instant getStartExecutionDate() {
 		return startExecutionDate;
 	}
 
 	/**
 	 * @return the endExecutionDate
 	 */
-	public Date getEndExecutionDate() {
+	public Instant getEndExecutionDate() {
 		return endExecutionDate;
 	}
 

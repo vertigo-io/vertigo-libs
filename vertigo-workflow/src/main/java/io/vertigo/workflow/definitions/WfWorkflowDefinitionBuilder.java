@@ -18,7 +18,7 @@
  */
 package io.vertigo.workflow.definitions;
 
-import java.util.Date;
+import java.time.Instant;
 
 import io.vertigo.lang.Builder;
 import io.vertigo.workflow.domain.model.WfWorkflowDefinition;
@@ -31,7 +31,7 @@ import io.vertigo.workflow.domain.model.WfWorkflowDefinition;
 public final class WfWorkflowDefinitionBuilder implements Builder<WfWorkflowDefinition> {
 
 	private final String myName;
-	private final Date myDate;
+	private final Instant myInstant;
 	private Long myWfadId;
 
 	/**
@@ -40,7 +40,7 @@ public final class WfWorkflowDefinitionBuilder implements Builder<WfWorkflowDefi
 	 */
 	public WfWorkflowDefinitionBuilder(final String name) {
 		myName = name;
-		myDate = new Date();
+		myInstant = Instant.now();
 	}
 
 	/**
@@ -60,7 +60,7 @@ public final class WfWorkflowDefinitionBuilder implements Builder<WfWorkflowDefi
 	public WfWorkflowDefinition build() {
 		final WfWorkflowDefinition wfTransitionDefinition = new WfWorkflowDefinition();
 		wfTransitionDefinition.setWfadId(myWfadId);
-		wfTransitionDefinition.setDate(myDate);
+		wfTransitionDefinition.setDate(myInstant);
 		wfTransitionDefinition.setName(myName);
 		return wfTransitionDefinition;
 	}

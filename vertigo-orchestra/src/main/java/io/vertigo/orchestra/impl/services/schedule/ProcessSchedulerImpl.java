@@ -18,7 +18,7 @@
  */
 package io.vertigo.orchestra.impl.services.schedule;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +61,7 @@ public final class ProcessSchedulerImpl implements ProcessScheduler {
 
 	/** {@inheritDoc} */
 	@Override
-	public void scheduleAt(final ProcessDefinition processDefinition, final Date planifiedTime, final Map<String, String> initialParams) {
+	public void scheduleAt(final ProcessDefinition processDefinition, final Instant planifiedTime, final Map<String, String> initialParams) {
 		Assertion.checkNotNull(processDefinition);
 		Assertion.checkNotNull(planifiedTime);
 		Assertion.checkNotNull(initialParams);

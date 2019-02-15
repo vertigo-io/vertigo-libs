@@ -18,7 +18,7 @@
  */
 package io.vertigo.social.services.notification;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,7 +35,7 @@ public final class Notification {
 	private final String content;
 	private final int ttlInSeconds;
 	private final String targetUrl;
-	private final Date creationDate;
+	private final Instant creationDate;
 	private final Optional<String> userContent;
 
 	/**
@@ -51,7 +51,7 @@ public final class Notification {
 	 * @param userContent Reader's specific content of this notification (can't be empty)
 	 */
 	Notification(final UUID uuid, final String sender, final String type, final String title, final String content,
-			final int ttlInSeconds, final Date creationDate, final String targetUrl, final Optional<String> userContent) {
+			final int ttlInSeconds, final Instant creationDate, final String targetUrl, final Optional<String> userContent) {
 		Assertion.checkNotNull(uuid);
 		Assertion.checkArgNotEmpty(sender);
 		Assertion.checkArgNotEmpty(type);
@@ -136,7 +136,7 @@ public final class Notification {
 	/**
 	 * @return Creation date
 	 */
-	public Date getCreationDate() {
+	public Instant getCreationDate() {
 		return creationDate;
 	}
 

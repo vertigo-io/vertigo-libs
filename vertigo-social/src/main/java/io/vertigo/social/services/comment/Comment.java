@@ -18,7 +18,7 @@
  */
 package io.vertigo.social.services.comment;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 import io.vertigo.account.account.Account;
@@ -33,10 +33,10 @@ public final class Comment {
 	private final UID<Account> author;
 	private final String authorDisplayName;
 	private final String msg;
-	private final Date creationDate;
-	private final Date lastModified;
+	private final Instant creationDate;
+	private final Instant lastModified;
 
-	Comment(final UUID uuid, final UID<Account> author, final String authorDisplayName, final String msg, final Date creationDate, final Date lastModified) {
+	Comment(final UUID uuid, final UID<Account> author, final String authorDisplayName, final String msg, final Instant creationDate, final Instant lastModified) {
 		Assertion.checkNotNull(uuid);
 		Assertion.checkNotNull(author);
 		Assertion.checkArgNotEmpty(authorDisplayName);
@@ -76,11 +76,11 @@ public final class Comment {
 		return msg;
 	}
 
-	public Date getCreationDate() {
+	public Instant getCreationDate() {
 		return creationDate;
 	}
 
-	public Date getLastModified() {
+	public Instant getLastModified() {
 		return lastModified;
 	}
 

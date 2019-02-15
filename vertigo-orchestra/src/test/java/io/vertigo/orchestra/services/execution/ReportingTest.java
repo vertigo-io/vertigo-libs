@@ -18,8 +18,9 @@
  */
 package io.vertigo.orchestra.services.execution;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.Date;
 
 import javax.inject.Inject;
 
@@ -31,7 +32,6 @@ import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.OrchestraServices;
 import io.vertigo.orchestra.services.report.ActivityExecution;
 import io.vertigo.orchestra.services.report.ExecutionSummary;
-import io.vertigo.util.DateUtil;
 
 /**
  * TODO : Description de la classe.
@@ -61,7 +61,7 @@ public class ReportingTest extends AbstractOrchestraTestCase {
 
 		// We plan right now
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// The task takes 10 secondes to run we wait 12 secondes to check the final states
 		Thread.sleep(1000 * 12);
@@ -76,8 +76,9 @@ public class ReportingTest extends AbstractOrchestraTestCase {
 
 		final ProcessDefinition processDefinition = executeProcess();
 		// -1h +1h
-		final ExecutionSummary executionSummary = processExecutionManager.getReport().getSummaryByDate(processDefinition, new Date(DateUtil.newDateTime().getTime() - 60 * 60 * 1000),
-				new Date(DateUtil.newDateTime().getTime() + 60 * 60 * 1000));
+		final ExecutionSummary executionSummary = processExecutionManager.getReport().getSummaryByDate(processDefinition,
+				Instant.now().minus(1, ChronoUnit.HOURS),
+				Instant.now().plus(1, ChronoUnit.HOURS));
 		Assertions.assertTrue(1 == executionSummary.getSuccessfulCount());
 	}
 

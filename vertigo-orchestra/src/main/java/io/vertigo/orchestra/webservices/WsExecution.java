@@ -18,8 +18,8 @@
  */
 package io.vertigo.orchestra.webservices;
 
+import java.time.Instant;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -150,7 +150,7 @@ public class WsExecution implements WebServices {
 		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
 		final Calendar firstDayOfWeek = getFirstDayOfWeek();
 		return orchestraServices.getReport()
-				.getSummaryByDate(processDefinition, firstDayOfWeek.getTime(), getFirstDayOfNextWeekDate(firstDayOfWeek));
+				.getSummaryByDate(processDefinition, firstDayOfWeek.toInstant(), getFirstDayOfNextWeekDate(firstDayOfWeek));
 	}
 
 	/**
@@ -167,15 +167,15 @@ public class WsExecution implements WebServices {
 		firstDayOfWeek.add(Calendar.DAY_OF_YEAR, weekOffset * WEEK_DAYS);
 		// We make the call with the proper week dates
 		return orchestraServices.getReport()
-				.getSummariesByDate(firstDayOfWeek.getTime(), getFirstDayOfNextWeekDate(firstDayOfWeek), status);
+				.getSummariesByDate(firstDayOfWeek.toInstant(), getFirstDayOfNextWeekDate(firstDayOfWeek), status);
 	}
 
-	private static Date getFirstDayOfNextWeekDate(final Calendar first) {
+	private static Instant getFirstDayOfNextWeekDate(final Calendar first) {
 		// and add seven days to the end date
 		final Calendar last = (Calendar) first.clone();
 		last.add(Calendar.DAY_OF_YEAR, WEEK_DAYS);
 
-		return last.getTime();
+		return last.toInstant();
 	}
 
 	private static Calendar getFirstDayOfWeek() {

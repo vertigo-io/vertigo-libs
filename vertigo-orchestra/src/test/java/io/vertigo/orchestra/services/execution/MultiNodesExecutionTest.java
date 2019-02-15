@@ -19,8 +19,8 @@
 package io.vertigo.orchestra.services.execution;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.execution.engine.TestJob2;
-import io.vertigo.util.DateBuilder;
 
 public class MultiNodesExecutionTest extends ExecutionTest {
 	private static final Logger LOG = LogManager.getLogger(MultiNodesExecutionTest.class);
@@ -87,7 +86,7 @@ public class MultiNodesExecutionTest extends ExecutionTest {
 
 		final Long proId = processDefinition.getId();
 
-		final Date nowPlus10s = new DateBuilder(new Date()).addSeconds(10).toDateTime();
+		final Instant nowPlus10s = Instant.now().plusSeconds(10);
 		for (int i = 0; i < 50; i++) {
 			orchestraServices.getScheduler().scheduleAt(processDefinition, nowPlus10s, Collections.emptyMap());
 		}

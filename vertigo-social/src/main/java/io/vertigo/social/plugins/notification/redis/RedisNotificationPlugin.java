@@ -19,10 +19,8 @@
 package io.vertigo.social.plugins.notification.redis;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -112,14 +110,13 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	}
 
 	private static Map<String, String> toMap(final Notification notification) {
-		final String creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT).format(notification.getCreationDate());
 		return new MapBuilder<String, String>()
 				.put("uuid", notification.getUuid().toString())
 				.put("sender", notification.getSender())
 				.putNullable("type", notification.getType())
 				.put("title", notification.getTitle())
 				.put("content", notification.getContent())
-				.put("creationDate", creationDate)
+				.put("creationDate", notification.getCreationDate().toString())
 				.put("ttlInSeconds", String.valueOf(notification.getTTLInSeconds()))
 				.put("targetUrl", notification.getTargetUrl())
 				.put("userContent", notification.getUserContent().orElse("")) //only used for default value
@@ -127,22 +124,16 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	}
 
 	private static Notification fromMap(final Map<String, String> data, final String userContent) {
-		try {
-			final Date creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT)
-					.parse(data.get("creationDate"));
-			return Notification.builder(UUID.fromString(data.get("uuid")))
-					.withSender(data.get("sender"))
-					.withType(data.get("type"))
-					.withTitle(data.get("title"))
-					.withContent(data.get("content"))
-					.withCreationDate(creationDate)
-					.withTTLInSeconds(Integer.parseInt(data.get("ttlInSeconds")))
-					.withTargetUrl(data.get("targetUrl"))
-					.withUserContent(userContent != null ? userContent : data.get("userContent")) //only used for default value
-					.build();
-		} catch (final ParseException e) {
-			throw WrappedException.wrap(e, "Can't parse notification");
-		}
+		return Notification.builder(UUID.fromString(data.get("uuid")))
+				.withSender(data.get("sender"))
+				.withType(data.get("type"))
+				.withTitle(data.get("title"))
+				.withContent(data.get("content"))
+				.withCreationDate(Instant.parse(data.get("creationDate")))
+				.withTTLInSeconds(Integer.parseInt(data.get("ttlInSeconds")))
+				.withTargetUrl(data.get("targetUrl"))
+				.withUserContent(userContent != null ? userContent : data.get("userContent")) //only used for default value
+				.build();
 	}
 
 	/** {@inheritDoc} */
@@ -299,6 +290,6 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	}
 
 	private static boolean isTooOld(final Notification notification) {
-		return notification.getTTLInSeconds() >= 0 && notification.getCreationDate().getTime() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis();
+		return notification.getTTLInSeconds() >= 0 && notification.getCreationDate().toEpochMilli() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis();
 	}
 }

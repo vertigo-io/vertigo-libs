@@ -18,7 +18,7 @@
  */
 package io.vertigo.audit.services.trace;
 
-import java.util.Date;
+import java.time.Instant;
 
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
@@ -31,10 +31,10 @@ import io.vertigo.lang.Builder;
 public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriteria> {
 	private String myCategory;
 	private String myUsername;
-	private Date myStartBusinessDate;
-	private Date myEndBusinessDate;
-	private Date myStartExecutionDate;
-	private Date myEndExecutionDate;
+	private Instant myStartBusinessDate;
+	private Instant myEndBusinessDate;
+	private Instant myStartExecutionDate;
+	private Instant myEndExecutionDate;
 	private Long myItem;
 
 	/**
@@ -66,7 +66,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	 * @param startBusinessDate
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceCriteriaBuilder withDateBusinessStart(final Date startBusinessDate) {
+	public AuditTraceCriteriaBuilder withDateBusinessStart(final Instant startBusinessDate) {
 		Assertion.checkNotNull(startBusinessDate);
 		//---
 		myStartBusinessDate = startBusinessDate;
@@ -78,7 +78,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	 * @param endBusinessDate
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceCriteriaBuilder withDateBusinessEnd(final Date endBusinessDate) {
+	public AuditTraceCriteriaBuilder withDateBusinessEnd(final Instant endBusinessDate) {
 		Assertion.checkNotNull(endBusinessDate);
 		//---
 		myEndBusinessDate = endBusinessDate;
@@ -90,7 +90,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	 * @param startExecutionDate
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceCriteriaBuilder withDateExecutionStart(final Date startExecutionDate) {
+	public AuditTraceCriteriaBuilder withDateExecutionStart(final Instant startExecutionDate) {
 		Assertion.checkNotNull(startExecutionDate);
 		//---
 		myStartExecutionDate = startExecutionDate;
@@ -102,7 +102,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	 * @param endExecutionDate
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceCriteriaBuilder withDateExecutionEnd(final Date endExecutionDate) {
+	public AuditTraceCriteriaBuilder withDateExecutionEnd(final Instant endExecutionDate) {
 		Assertion.checkNotNull(endExecutionDate);
 		//---
 		myEndExecutionDate = endExecutionDate;

@@ -46,7 +46,7 @@ create Domain DO_O_BOOLEEN {
 
 
 create Domain DO_O_TIMESTAMP {
-	dataType : Date
+	dataType : Instant
 	formatter : FMT_O_DATE_HEURE
 	storeType : "TIMESTAMP"
 },

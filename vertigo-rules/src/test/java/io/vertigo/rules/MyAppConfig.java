@@ -30,10 +30,6 @@ import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.rules.data.MockIdentities;
 import io.vertigo.rules.data.MyDummyDtObjectProvider;
 import io.vertigo.rules.data.TestUserSession;
-import io.vertigo.rules.plugins.selector.simple.SimpleRuleSelectorPlugin;
-import io.vertigo.rules.plugins.store.memory.MemoryRuleConstantsStorePlugin;
-import io.vertigo.rules.plugins.store.memory.MemoryRuleStorePlugin;
-import io.vertigo.rules.plugins.validator.simple.SimpleRuleValidatorPlugin;
 
 /**
  * Config for test
@@ -79,11 +75,11 @@ public class MyAppConfig {
 						.addComponent(MockIdentities.class)
 						.build())
 				.addModule(new RulesFeatures()
-						.withRuleConstantsStorePlugin(MemoryRuleConstantsStorePlugin.class)
-						.withRuleStorePlugin(MemoryRuleStorePlugin.class)
-						//.withDAOSupportRuleStorePlugin()//
-						.withRuleSelectorPlugin(SimpleRuleSelectorPlugin.class)
-						.withRuleValidatorPlugin(SimpleRuleValidatorPlugin.class)
+						.withMemoryRuleConstantsStore()
+						//.withMemoryRuleStore()
+						.withSqlRuleStore()
+						.withSimpleRuleSelector()
+						.withSimpleRuleValidator()
 						.build())
 				.build();
 

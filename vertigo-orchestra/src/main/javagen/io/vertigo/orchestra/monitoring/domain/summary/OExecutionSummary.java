@@ -16,8 +16,8 @@ public final class OExecutionSummary implements DtObject {
 	private Long proId;
 	private String processName;
 	private String processLabel;
-	private java.util.Date lastExecutionTime;
-	private java.util.Date nextExecutionTime;
+	private java.time.Instant lastExecutionTime;
+	private java.time.Instant nextExecutionTime;
 	private Integer errorsCount;
 	private Integer misfiredCount;
 	private Integer successfulCount;
@@ -85,38 +85,38 @@ public final class OExecutionSummary implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Dernière exécution le'.
-	 * @return Date lastExecutionTime
+	 * @return Instant lastExecutionTime
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Dernière exécution le")
-	public java.util.Date getLastExecutionTime() {
+	public java.time.Instant getLastExecutionTime() {
 		return lastExecutionTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Dernière exécution le'.
-	 * @param lastExecutionTime Date
+	 * @param lastExecutionTime Instant
 	 */
-	public void setLastExecutionTime(final java.util.Date lastExecutionTime) {
+	public void setLastExecutionTime(final java.time.Instant lastExecutionTime) {
 		this.lastExecutionTime = lastExecutionTime;
 	}
 	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Prochaine exécution le'.
-	 * @return Date nextExecutionTime
+	 * @return Instant nextExecutionTime
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Prochaine exécution le")
-	public java.util.Date getNextExecutionTime() {
+	public java.time.Instant getNextExecutionTime() {
 		return nextExecutionTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Prochaine exécution le'.
-	 * @param nextExecutionTime Date
+	 * @param nextExecutionTime Instant
 	 */
-	public void setNextExecutionTime(final java.util.Date nextExecutionTime) {
+	public void setNextExecutionTime(final java.time.Instant nextExecutionTime) {
 		this.nextExecutionTime = nextExecutionTime;
 	}
 	

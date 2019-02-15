@@ -55,8 +55,6 @@ public final class EncoderDate {
 			return ""; //Affichage d'une date non renseignée;
 		}
 		switch (dataType) {
-			case Date:
-				return dateToString((Date) objValue);
 			case LocalDate:
 				return localDateToString((LocalDate) objValue);
 			case Instant:
@@ -74,8 +72,6 @@ public final class EncoderDate {
 		}
 		final String sValue = strValue.trim();
 		switch (dataType) {
-			case Date:
-				return applyStringToObject(sValue, EncoderDate::doStringToDate);
 			case LocalDate:
 				return applyStringToObject(sValue, EncoderDate::doStringToLocalDate);
 			case Instant:

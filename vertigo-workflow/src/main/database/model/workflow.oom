@@ -5533,7 +5533,7 @@ LABL 0 Arial,8,N</a:FontList>
 <o:Domain Id="o43">
 <a:ObjectID>CE678B54-B0A0-4D76-B0E1-DA74D7E86EA5</a:ObjectID>
 <a:Name>Date</a:Name>
-<a:Code>DO_WF_DATE</a:Code>
+<a:Code>DO_WF_INSTANT</a:Code>
 <a:CreationDate>1324996354</a:CreationDate>
 <a:Creator>adufranne</a:Creator>
 <a:ModificationDate>1490019302</a:ModificationDate>

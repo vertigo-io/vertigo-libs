@@ -19,8 +19,8 @@
 package io.vertigo.orchestra.plugins.services.execution.db;
 
 import java.lang.reflect.Field;
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -295,7 +295,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 				workspace = getWorkspaceForActivityExecution(activityExecution.getAceId(), true);
 				doChangeExecutionState(activityExecution, ExecutionState.SUBMITTED);
 				// We set the beginning time of the activity
-				activityExecution.setBeginTime(new Date());
+				activityExecution.setBeginTime(Instant.now());
 				transaction.commit();
 			}
 			workers.submit(() -> doRunActivity(activityExecution, workspace));
@@ -418,7 +418,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		// ---
 		final OProcessExecution newProcessExecution = new OProcessExecution();
 		newProcessExecution.setProId(processDefinition.getId());
-		newProcessExecution.setBeginTime(new Date());
+		newProcessExecution.setBeginTime(Instant.now());
 		changeProcessExecutionState(newProcessExecution, ExecutionState.RUNNING);
 		processExecutionDAO.save(newProcessExecution);
 
@@ -465,7 +465,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 		activityExecution.setPreId(preId);
 		activityExecution.setActId(activity.getActId());
-		activityExecution.setCreationTime(new Date());
+		activityExecution.setCreationTime(Instant.now());
 		activityExecution.setEngine(activity.getEngine());
 		changeActivityExecutionState(activityExecution, ExecutionState.WAITING);
 		activityExecution.setToken(ActivityTokenGenerator.getToken());
@@ -501,7 +501,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 				previousWorkspace.setToken(nextActivityExecution.getToken());
 				// ---
 				saveActivityExecutionWorkspace(nextActivityExecution.getAceId(), previousWorkspace, true);
-				nextActivityExecution.setBeginTime(new Date());
+				nextActivityExecution.setBeginTime(Instant.now());
 				nextWorkspace = previousWorkspace;
 				//we close the transaction now
 				transaction.addAfterCompletion(
@@ -604,7 +604,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private void endActivity(final OActivityExecution activityExecution) {
-		activityExecution.setEndTime(new Date());
+		activityExecution.setEndTime(Instant.now());
 		changeActivityExecutionState(activityExecution, ExecutionState.DONE);
 		activityExecutionDAO.save(activityExecution);
 
@@ -624,7 +624,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void endProcessExecution(final Long preId, final ExecutionState executionState) {
 		final OProcessExecution processExecution = processExecutionDAO.get(preId);
-		processExecution.setEndTime(new Date());
+		processExecution.setEndTime(Instant.now());
 		changeProcessExecutionState(processExecution, executionState);
 		processExecutionDAO.save(processExecution);
 
@@ -659,9 +659,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void handleDeadNodeProcesses() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Long now = System.currentTimeMillis();
 			// We wait two heartbeat to be sure that the node is dead
-			final Date maxDate = new Date(now - 2 * executionPeriodSeconds * 1000);
+			final Instant maxDate = Instant.now().minusSeconds(2 * executionPeriodSeconds);
 			executionPAO.handleProcessesOfDeadNodes(maxDate);
 			transaction.commit();
 		}

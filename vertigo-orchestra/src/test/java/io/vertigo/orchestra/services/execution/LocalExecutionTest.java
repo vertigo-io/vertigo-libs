@@ -18,8 +18,8 @@
  */
 package io.vertigo.orchestra.services.execution;
 
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -61,7 +61,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCase {
 
 		// We plan right now
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// The task takes 10 secondes to run we wait 12 secondes to check the final states
 		Thread.sleep(1000 * 1);
@@ -78,7 +78,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCase {
 
 		// We plan right now
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// The task takes 10 secondes to run we wait 12 secondes to check the final states
 		Thread.sleep(1000 * 1);
@@ -95,7 +95,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCase {
 
 		// We plan right now
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// The task takes 1 secondes to run we wait 12 secondes to check the final states
 		Thread.sleep(1000 * 1);
@@ -116,7 +116,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCase {
 
 		// We plan right now
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), planifParams);
+				.scheduleAt(processDefinition, Instant.now(), planifParams);
 
 		// The task takes 1 secondes to run we wait 12 secondes to check the final states
 		Thread.sleep(1000 * 1);

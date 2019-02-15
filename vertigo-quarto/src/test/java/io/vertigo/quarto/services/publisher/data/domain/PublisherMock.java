@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.services.publisher.data.domain;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 
@@ -57,7 +57,7 @@ public final class PublisherMock implements DtObject {
 	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_INTEGER", label = "Test integer")
 	private Integer testInteger;
 	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_DATE", label = "Test date")
-	private Date testDate;
+	private LocalDate testDate;
 	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_DT_PUBLISHER_MOCK_DTC", label = "Test list")
 	private io.vertigo.dynamo.domain.model.DtList<io.vertigo.quarto.services.publisher.data.domain.PublisherMock> dtcTest;
 
@@ -282,7 +282,7 @@ public final class PublisherMock implements DtObject {
 	 * Récupère la valeur de la propriété 'Test date'.
 	 * @return java.util.Date testDate
 	 */
-	public final java.util.Date getTestDate() {
+	public final LocalDate getTestDate() {
 		return testDate;
 	}
 
@@ -291,7 +291,7 @@ public final class PublisherMock implements DtObject {
 	 * Définit la valeur de la propriété 'Test date'.
 	 * @param testDate java.util.Date
 	 */
-	public final void setTestDate(final java.util.Date testDate) {
+	public final void setTestDate(final LocalDate testDate) {
 		this.testDate = testDate;
 	}
 

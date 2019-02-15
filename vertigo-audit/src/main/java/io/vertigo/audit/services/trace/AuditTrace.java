@@ -18,7 +18,7 @@
  */
 package io.vertigo.audit.services.trace;
 
-import java.util.Date;
+import java.time.Instant;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -41,11 +41,11 @@ public final class AuditTrace implements DtObject {
 	@Field(domain = "DO_X_AUDIT_USERNAME", label = "username")
 	private final String username;
 
-	@Field(domain = "DO_X_AUDIT_DATE", label = "businessDate")
-	private final Date businessDate;
+	@Field(domain = "DO_X_AUDIT_INSTANT", label = "businessDate")
+	private final Instant businessDate;
 
-	@Field(domain = "DO_X_AUDIT_DATE", label = "executionDate")
-	private final Date executionDate;
+	@Field(domain = "DO_X_AUDIT_INSTANT", label = "executionDate")
+	private final Instant executionDate;
 
 	@Field(domain = "DO_X_AUDIT_ITEM", label = "item")
 	private final Long item;
@@ -60,8 +60,8 @@ public final class AuditTrace implements DtObject {
 			final Long id,
 			final String category,
 			final String username,
-			final Date businessDate,
-			final Date executionDate,
+			final Instant businessDate,
+			final Instant executionDate,
 			final Long item,
 			final String message,
 			final String context) {
@@ -106,14 +106,14 @@ public final class AuditTrace implements DtObject {
 	/**
 	 * @return the businessDate
 	 */
-	public Date getBusinessDate() {
+	public Instant getBusinessDate() {
 		return businessDate;
 	}
 
 	/**
 	 * @return the executionDate
 	 */
-	public Date getExecutionDate() {
+	public Instant getExecutionDate() {
 		return executionDate;
 	}
 

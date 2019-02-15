@@ -16,7 +16,7 @@ public final class RuleDefinition implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	private java.util.Date creationDate;
+	private java.time.Instant creationDate;
 	private Long itemId;
 	private String label;
 
@@ -63,19 +63,19 @@ public final class RuleDefinition implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'creationDate'.
-	 * @return Date creationDate
+	 * @return Instant creationDate
 	 */
-	@Field(domain = "DO_RULES_DATE", label = "creationDate")
-	public java.util.Date getCreationDate() {
+	@Field(domain = "DO_RULES_INSTANT", label = "creationDate")
+	public java.time.Instant getCreationDate() {
 		return creationDate;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'creationDate'.
-	 * @param creationDate Date
+	 * @param creationDate Instant
 	 */
-	public void setCreationDate(final java.util.Date creationDate) {
+	public void setCreationDate(final java.time.Instant creationDate) {
 		this.creationDate = creationDate;
 	}
 	

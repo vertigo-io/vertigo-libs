@@ -26,7 +26,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.Calendar;
+import java.time.LocalDate;
 
 import javax.inject.Inject;
 
@@ -120,9 +120,7 @@ public class DataBaseInitializer implements ComponentInitializer {
 		final Movie movie = new Movie();
 		movie.setTitle(title);
 		movie.setYear(year);
-		final Calendar calendar = Calendar.getInstance();
-		calendar.set(year, 1, 1, 0, 0, 0);
-		movie.setReleased(calendar.getTime());
+		movie.setReleased(LocalDate.of(year, 2, 1));
 		movie.setRuntime(runtime);
 		movie.setPoster(poster);
 		movie.setDescription(description);

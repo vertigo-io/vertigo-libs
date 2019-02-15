@@ -18,7 +18,7 @@ public final class WfDecision implements Entity {
 	private Long wfeId;
 	private String username;
 	private Integer choice;
-	private java.util.Date decisionDate;
+	private java.time.Instant decisionDate;
 	private String comments;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
@@ -102,19 +102,19 @@ public final class WfDecision implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'decision date'.
-	 * @return Date decisionDate
+	 * @return Instant decisionDate
 	 */
-	@Field(domain = "DO_WF_DATE", label = "decision date")
-	public java.util.Date getDecisionDate() {
+	@Field(domain = "DO_WF_INSTANT", label = "decision date")
+	public java.time.Instant getDecisionDate() {
 		return decisionDate;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'decision date'.
-	 * @param decisionDate Date
+	 * @param decisionDate Instant
 	 */
-	public void setDecisionDate(final java.util.Date decisionDate) {
+	public void setDecisionDate(final java.time.Instant decisionDate) {
 		this.decisionDate = decisionDate;
 	}
 	

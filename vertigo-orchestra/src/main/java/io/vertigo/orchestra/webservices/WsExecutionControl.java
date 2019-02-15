@@ -98,7 +98,7 @@ public class WsExecutionControl implements WebServices {
 		// ---
 		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, DateUtil.newDateTime(), initialParams);
+				.scheduleAt(processDefinition, DateUtil.newInstant(), initialParams);
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class WsExecutionControl implements WebServices {
 		// ---
 		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, DateUtil.newDateTime(), Collections.emptyMap());
+				.scheduleAt(processDefinition, DateUtil.newInstant(), Collections.emptyMap());
 	}
 
 }

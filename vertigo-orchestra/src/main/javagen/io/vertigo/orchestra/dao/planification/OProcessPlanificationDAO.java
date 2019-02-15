@@ -44,10 +44,10 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 
 	/**
 	 * Execute la tache TK_GET_ALL_LAST_PAST_PLANIFICATIONS.
-	 * @param currentDate java.util.Date 
+	 * @param currentDate java.time.Instant 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> processPlanifications
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getAllLastPastPlanifications(final java.util.Date currentDate) {
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getAllLastPastPlanifications(final java.time.Instant currentDate) {
 		final Task task = createTaskBuilder("TK_GET_ALL_LAST_PAST_PLANIFICATIONS")
 				.addValue("CURRENT_DATE", currentDate)
 				.build();

@@ -143,7 +143,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	}
 
 	private static boolean isTooOld(final Notification notification) {
-		return notification.getTTLInSeconds() >= 0 && notification.getCreationDate().getTime() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis();
+		return notification.getTTLInSeconds() >= 0 && notification.getCreationDate().toEpochMilli() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis();
 	}
 
 }

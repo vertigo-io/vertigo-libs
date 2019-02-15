@@ -19,10 +19,8 @@
 package io.vertigo.social.plugins.comment.redis;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -123,32 +121,27 @@ public final class RedisCommentPlugin implements CommentPlugin {
 	}
 
 	private static Map<String, String> toMap(final Comment comment) {
-		final String creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT).format(comment.getCreationDate());
-		final String lastModified = comment.getLastModified() != null ? new SimpleDateFormat(CODEC_DATE_FORMAT).format(comment.getLastModified()) : null;
+		final String lastModified = comment.getLastModified() != null ? comment.getLastModified().toString() : null;
 		return new MapBuilder<String, String>()
 				.put("uuid", comment.getUuid().toString())
 				.put("author", String.valueOf(comment.getAuthor().getId()))
 				.put("msg", comment.getMsg())
-				.put("creationDate", creationDate)
+				.put("creationDate", comment.getCreationDate().toString())
 				.putNullable("lastModified", lastModified)
 				.build();
 	}
 
 	private static Comment fromMap(final Map<String, String> data) {
-		try {
-			final Date creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT).parse(data.get("creationDate"));
-			final Date lastModified = data.get("lastModified") != null ? new SimpleDateFormat(CODEC_DATE_FORMAT).parse(data.get("lastModified")) : null;
+		final Instant creationDate = Instant.parse(data.get("creationDate"));
+		final Instant lastModified = data.get("lastModified") != null ? Instant.parse(data.get("lastModified")) : null;
 
-			return Comment.builder()
-					.withUuid(UUID.fromString(data.get("uuid")))
-					.withAuthor(UID.of(Account.class, data.get("author")))
-					.withCreationDate(creationDate)
-					.withMsg(data.get("msg"))
-					.withLastModified(lastModified)
-					.build();
+		return Comment.builder()
+				.withUuid(UUID.fromString(data.get("uuid")))
+				.withAuthor(UID.of(Account.class, data.get("author")))
+				.withCreationDate(creationDate)
+				.withMsg(data.get("msg"))
+				.withLastModified(lastModified)
+				.build();
 
-		} catch (final ParseException e) {
-			throw WrappedException.wrap(e, "Can't parse comment");
-		}
 	}
 }

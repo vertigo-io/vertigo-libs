@@ -28,16 +28,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.app.config.AppConfig;
@@ -67,7 +68,7 @@ import io.vertigo.workflow.impl.services.ItemStorePlugin;
  * @author xdurand
  *
  */
-public class WorkflowManagerTest extends DbTest {
+public abstract class AbstractWorkflowManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private WorkflowManager workflowManager;
@@ -411,7 +412,7 @@ public class WorkflowManagerTest extends DbTest {
 		decision.setChoice(1);
 		decision.setComments("abc");
 		decision.setUsername("AA");
-		decision.setDecisionDate(new Date());
+		decision.setDecisionDate(Instant.now());
 
 		workflowManager.saveDecisionAndGoToNextActivity(wfWorkflow, WfCodeTransition.DEFAULT.getTransitionName(), decision);
 

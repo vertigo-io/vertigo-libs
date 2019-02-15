@@ -20,8 +20,9 @@ package io.vertigo.audit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -34,7 +35,6 @@ import io.vertigo.audit.services.trace.AuditTrace;
 import io.vertigo.audit.services.trace.AuditTraceBuilder;
 import io.vertigo.audit.services.trace.AuditTraceCriteria;
 import io.vertigo.audit.services.trace.AuditTraceManager;
-import io.vertigo.util.DateBuilder;
 
 /**
  * Junit for audit manager
@@ -73,7 +73,7 @@ public class AuditManagerTest extends AbstractTestCaseJU5 {
 		auditManager.addTrace(auditTrace1);
 
 		final AuditTrace auditTrace2 = new AuditTraceBuilder("CAT3", "USER3", 3L, "My message 3")
-				.withDateBusiness(new Date())
+				.withDateBusiness(Instant.now())
 				.withContext(Arrays.asList("Context 3"))
 				.build();
 
@@ -86,8 +86,8 @@ public class AuditManagerTest extends AbstractTestCaseJU5 {
 		assertThat(auditTraceFetch1).hasSize(1);
 		assertThat(auditTraceFetch1).usingFieldByFieldElementComparator().contains(auditTrace1);
 
-		final Date dateJMinus1 = new DateBuilder(new Date()).addDays(-1).build();
-		final Date dateJPlus1 = new DateBuilder(new Date()).addDays(1).build();
+		final Instant dateJMinus1 = Instant.now().minus(1, ChronoUnit.DAYS);
+		final Instant dateJPlus1 = Instant.now().plus(1, ChronoUnit.DAYS);
 
 		//Criteria Business Date
 		final AuditTraceCriteria auditTraceCriteria2 = AuditTraceCriteria.builder()

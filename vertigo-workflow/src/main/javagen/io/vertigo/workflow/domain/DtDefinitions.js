@@ -9,7 +9,7 @@ module.exports = {
             required: true
         },
         creationDate: {
-            domain: "DO_WF_DATE",
+            domain: "DO_WF_INSTANT",
             required: false
         },
         wfwId: {
@@ -57,7 +57,7 @@ module.exports = {
             required: false
         },
         decisionDate: {
-            domain: "DO_WF_DATE",
+            domain: "DO_WF_INSTANT",
             required: false
         },
         comments: {
@@ -117,7 +117,7 @@ module.exports = {
             required: true
         },
         creationDate: {
-            domain: "DO_WF_DATE",
+            domain: "DO_WF_INSTANT",
             required: false
         },
         itemId: {
@@ -155,7 +155,7 @@ module.exports = {
             required: false
         },
         date: {
-            domain: "DO_WF_DATE",
+            domain: "DO_WF_INSTANT",
             required: false
         },
         wfadId: {

@@ -53,9 +53,9 @@ public final class PlanificationPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TK_CLEAN_PLANIFICATIONS_ON_BOOT.
-	 * @param currentDate java.util.Date 
+	 * @param currentDate java.time.Instant 
 	*/
-	public void cleanPlanificationsOnBoot(final java.util.Date currentDate) {
+	public void cleanPlanificationsOnBoot(final java.time.Instant currentDate) {
 		final Task task = createTaskBuilder("TK_CLEAN_PLANIFICATIONS_ON_BOOT")
 				.addValue("CURRENT_DATE", currentDate)
 				.build();
@@ -64,11 +64,11 @@ public final class PlanificationPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TK_RESERVE_PROCESS_TO_EXECUTE.
-	 * @param lowerLimit java.util.Date 
-	 * @param upperLimit java.util.Date 
+	 * @param lowerLimit java.time.Instant 
+	 * @param upperLimit java.time.Instant 
 	 * @param nodId Long 
 	*/
-	public void reserveProcessToExecute(final java.util.Date lowerLimit, final java.util.Date upperLimit, final Long nodId) {
+	public void reserveProcessToExecute(final java.time.Instant lowerLimit, final java.time.Instant upperLimit, final Long nodId) {
 		final Task task = createTaskBuilder("TK_RESERVE_PROCESS_TO_EXECUTE")
 				.addValue("LOWER_LIMIT", lowerLimit)
 				.addValue("UPPER_LIMIT", upperLimit)

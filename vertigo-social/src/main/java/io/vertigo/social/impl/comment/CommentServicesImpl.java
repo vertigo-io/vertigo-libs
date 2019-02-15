@@ -18,7 +18,7 @@
  */
 package io.vertigo.social.impl.comment;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -54,7 +54,7 @@ public final class CommentServicesImpl implements CommentServices {
 		Assertion.checkNotNull(comment);
 		Assertion.checkNotNull(keyConceptUri);
 		//-----
-		final Date creationDate = DateUtil.newDateTime();
+		final Instant creationDate = DateUtil.newInstant();
 		final Comment savedComment = Comment.builder()
 				.withAuthor(accountURI)
 				.withCreationDate(creationDate)
@@ -86,7 +86,7 @@ public final class CommentServicesImpl implements CommentServices {
 				.withAuthor(accountURI)
 				.withCreationDate(originalComment.getCreationDate())
 				.withMsg(comment.getMsg())
-				.withLastModified(DateUtil.newDateTime())
+				.withLastModified(DateUtil.newInstant())
 				.build();
 		commentsPlugin.update(savedComment);
 	}

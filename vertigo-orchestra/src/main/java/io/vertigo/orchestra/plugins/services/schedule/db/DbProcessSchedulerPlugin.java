@@ -19,9 +19,9 @@
 package io.vertigo.orchestra.plugins.services.schedule.db;
 
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -173,14 +173,14 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	//--------------------------------------------------------------------------------------------------
 
 	private void doScheduleWithCron(final ProcessDefinition processDefinition) {
-		final Optional<Date> nextPlanification = findNextPlanificationTime(processDefinition);
+		final Optional<Instant> nextPlanification = findNextPlanificationTime(processDefinition);
 		if (nextPlanification.isPresent()) {
 			scheduleAt(processDefinition, nextPlanification.get(), processDefinition.getTriggeringStrategy().getInitialParams());
 		}
 	}
 
 	@Override
-	public void scheduleAt(final ProcessDefinition processDefinition, final Date planifiedTime, final Map<String, String> initialParams) {
+	public void scheduleAt(final ProcessDefinition processDefinition, final Instant planifiedTime, final Map<String, String> initialParams) {
 		Assertion.checkNotNull(processDefinition);
 		Assertion.checkNotNull(planifiedTime);
 		Assertion.checkNotNull(initialParams);
@@ -199,7 +199,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	//--- Private
 	//--------------------------------------------------------------------------------------------------
 
-	private void doScheduleAt(final ProcessDefinition processDefinition, final Date planifiedTime, final Map<String, String> initialParams) {
+	private void doScheduleAt(final ProcessDefinition processDefinition, final Instant planifiedTime, final Map<String, String> initialParams) {
 		Assertion.checkNotNull(processDefinition);
 		// ---
 		final OProcessPlanification processPlanification = new OProcessPlanification();
@@ -254,7 +254,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 		final GregorianCalendar upperLimit = new GregorianCalendar(Locale.FRANCE);
 
-		planificationPAO.reserveProcessToExecute(lowerLimit.getTime(), upperLimit.getTime(), nodId);
+		planificationPAO.reserveProcessToExecute(lowerLimit.toInstant(), upperLimit.toInstant(), nodId);
 		return processPlanificationDAO.getProcessToExecute(nodId);
 	}
 
@@ -274,27 +274,26 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 		return processPlanificationDAO.getLastPlanificationByProId(proId);
 	}
 
-	private Optional<Date> findNextPlanificationTime(final ProcessDefinition processDefinition) {
+	private Optional<Instant> findNextPlanificationTime(final ProcessDefinition processDefinition) {
 		final Optional<OProcessPlanification> lastPlanificationOption = getLastPlanificationsByProcess(processDefinition.getId());
 
 		try {
 			final CronExpression cronExpression = new CronExpression(processDefinition.getTriggeringStrategy().getCronExpression().get());
 
 			if (!lastPlanificationOption.isPresent()) {
-				final Date now = new Date();
-				final Date compatibleNow = new Date(now.getTime() + (planningPeriodSeconds / 2 * 1000L));// Normalement ca doit être bon quelque soit la synchronisation entre les deux timers (même fréquence)
+				final Instant compatibleNow = Instant.now().plusMillis(planningPeriodSeconds / 2 * 1000);// Normalement ca doit être bon quelque soit la synchronisation entre les deux timers (même fréquence)
 				return Optional.of(cronExpression.getNextValidTimeAfter(compatibleNow));
 			}
 			final OProcessPlanification lastPlanification = lastPlanificationOption.get();
-			final Date nextPotentialPlainification = cronExpression.getNextValidTimeAfter(lastPlanification.getExpectedTime());
-			if (nextPotentialPlainification.before(new Date(System.currentTimeMillis() + forecastDurationSeconds * 1000L))) {
+			final Instant nextPotentialPlainification = cronExpression.getNextValidTimeAfter(lastPlanification.getExpectedTime());
+			if (nextPotentialPlainification.isBefore(Instant.now().plusSeconds(forecastDurationSeconds))) {
 				return Optional.of(nextPotentialPlainification);
 			}
 		} catch (final ParseException e) {
 			throw WrappedException.wrap(e, "Process' cron expression is not valid, process cannot be planned");
 		}
 
-		return Optional.<Date> empty();
+		return Optional.<Instant> empty();
 
 	}
 
@@ -332,14 +331,14 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	}
 
 	private void doCleanPastPlanification() {
-		final Date now = new Date();
+		final Instant now = Instant.now();
 		planificationPAO.cleanPlanificationsOnBoot(now);
 		// ---
 		for (final OProcessPlanification planification : processPlanificationDAO.getAllLastPastPlanifications(now)) {
 			// We check the process policy of validity
 			planification.processus().load();
 			final OProcess process = planification.processus().get();
-			final long ageOfPlanification = (now.getTime() - planification.getExpectedTime().getTime()) / (60 * 1000L);// in seconds
+			final long ageOfPlanification = (now.toEpochMilli() - planification.getExpectedTime().toEpochMilli()) / (60 * 1000L);// in seconds
 			if (ageOfPlanification < process.getRescuePeriod()) {
 				changeState(planification, SchedulerState.RESCUED);
 			} else {

@@ -21,8 +21,8 @@ package io.vertigo.quarto.services.publisher;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -270,7 +270,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 		reportData.setTestLong(45676L);
 		reportData.setTestDouble(79613D);
 		reportData.setTestInteger(79413);
-		reportData.setTestDate(new Date());
+		reportData.setTestDate(LocalDate.now());
 
 		//		final DtList<DtObject> testList = TestHelper.createDtList(AbstractPublisherMock.DEFINITION_URN);
 		//		for (int i = 0; i < 50; i++) {

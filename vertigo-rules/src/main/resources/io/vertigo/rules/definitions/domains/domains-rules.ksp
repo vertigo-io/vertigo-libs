@@ -79,8 +79,8 @@ create Domain DO_RULES_OPERATOR {
 	indexType : "code"
 }
 
-create Domain DO_RULES_DATE {
-	dataType : Date
+create Domain DO_RULES_INSTANT {
+	dataType : Instant
 	storeType : "DATE"
 }
 

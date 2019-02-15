@@ -17,7 +17,7 @@ public final class ONode implements Entity {
 
 	private Long nodId;
 	private String name;
-	private java.util.Date heartbeat;
+	private java.time.Instant heartbeat;
 
 	/** {@inheritDoc} */
 	@Override
@@ -66,19 +66,19 @@ public final class ONode implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de dernière activité'.
-	 * @return Date heartbeat
+	 * @return Instant heartbeat
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Date de dernière activité")
-	public java.util.Date getHeartbeat() {
+	public java.time.Instant getHeartbeat() {
 		return heartbeat;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de dernière activité'.
-	 * @param heartbeat Date
+	 * @param heartbeat Instant
 	 */
-	public void setHeartbeat(final java.util.Date heartbeat) {
+	public void setHeartbeat(final java.time.Instant heartbeat) {
 		this.heartbeat = heartbeat;
 	}
 	

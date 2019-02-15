@@ -18,8 +18,7 @@
  */
 package io.vertigo.social.comment.webservices;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 
@@ -277,8 +276,8 @@ public final class CommentWebServicesTest {
 		return convertDate(date);
 	}*/
 
-	private static String convertDate(final Date date) {
-		return date == null ? null : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(date);
+	private static String convertDate(final Instant instant) {
+		return instant == null ? null : instant.toString();
 	}
 
 	private static Map<String, Object> commentToMap(final Comment comment) {

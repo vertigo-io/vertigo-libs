@@ -18,7 +18,7 @@ public final class WfWorkflowDefinition implements Entity {
 
 	private Long wfwdId;
 	private String name;
-	private java.util.Date date;
+	private java.time.Instant date;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_WFWD_WFAD",
@@ -97,19 +97,19 @@ public final class WfWorkflowDefinition implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'date'.
-	 * @return Date date
+	 * @return Instant date
 	 */
-	@Field(domain = "DO_WF_DATE", label = "date")
-	public java.util.Date getDate() {
+	@Field(domain = "DO_WF_INSTANT", label = "date")
+	public java.time.Instant getDate() {
 		return date;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'date'.
-	 * @param date Date
+	 * @param date Instant
 	 */
-	public void setDate(final java.util.Date date) {
+	public void setDate(final java.time.Instant date) {
 		this.date = date;
 	}
 	

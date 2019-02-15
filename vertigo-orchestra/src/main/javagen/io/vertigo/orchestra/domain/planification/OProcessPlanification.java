@@ -17,7 +17,7 @@ public final class OProcessPlanification implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long prpId;
-	private java.util.Date expectedTime;
+	private java.time.Instant expectedTime;
 	private String initialParams;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
@@ -93,19 +93,19 @@ public final class OProcessPlanification implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date d'execution prévue'.
-	 * @return Date expectedTime
+	 * @return Instant expectedTime
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Date d'execution prévue")
-	public java.util.Date getExpectedTime() {
+	public java.time.Instant getExpectedTime() {
 		return expectedTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date d'execution prévue'.
-	 * @param expectedTime Date
+	 * @param expectedTime Instant
 	 */
-	public void setExpectedTime(final java.util.Date expectedTime) {
+	public void setExpectedTime(final java.time.Instant expectedTime) {
 		this.expectedTime = expectedTime;
 	}
 	

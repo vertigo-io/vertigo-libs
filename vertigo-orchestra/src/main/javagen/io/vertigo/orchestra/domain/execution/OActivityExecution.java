@@ -17,9 +17,9 @@ public final class OActivityExecution implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long aceId;
-	private java.util.Date creationTime;
-	private java.util.Date beginTime;
-	private java.util.Date endTime;
+	private java.time.Instant creationTime;
+	private java.time.Instant beginTime;
+	private java.time.Instant endTime;
 	private String engine;
 	private String token;
 
@@ -111,57 +111,57 @@ public final class OActivityExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de création'.
-	 * @return Date creationTime <b>Obligatoire</b>
+	 * @return Instant creationTime <b>Obligatoire</b>
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Date de création")
-	public java.util.Date getCreationTime() {
+	public java.time.Instant getCreationTime() {
 		return creationTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de création'.
-	 * @param creationTime Date <b>Obligatoire</b>
+	 * @param creationTime Instant <b>Obligatoire</b>
 	 */
-	public void setCreationTime(final java.util.Date creationTime) {
+	public void setCreationTime(final java.time.Instant creationTime) {
 		this.creationTime = creationTime;
 	}
 	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de début'.
-	 * @return Date beginTime
+	 * @return Instant beginTime
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Date de début")
-	public java.util.Date getBeginTime() {
+	public java.time.Instant getBeginTime() {
 		return beginTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de début'.
-	 * @param beginTime Date
+	 * @param beginTime Instant
 	 */
-	public void setBeginTime(final java.util.Date beginTime) {
+	public void setBeginTime(final java.time.Instant beginTime) {
 		this.beginTime = beginTime;
 	}
 	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de fin'.
-	 * @return Date endTime
+	 * @return Instant endTime
 	 */
 	@Field(domain = "DO_O_TIMESTAMP", label = "Date de fin")
-	public java.util.Date getEndTime() {
+	public java.time.Instant getEndTime() {
 		return endTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de fin'.
-	 * @param endTime Date
+	 * @param endTime Instant
 	 */
-	public void setEndTime(final java.util.Date endTime) {
+	public void setEndTime(final java.time.Instant endTime) {
 		this.endTime = endTime;
 	}
 	

@@ -40,7 +40,7 @@ public final class RuleProvider implements SimpleDefinitionProvider {
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		final Domain domainWorkflowId = Domain.builder("DO_RULES_ID", DataType.Long).build();
 		final Domain domainWorkflowCode = Domain.builder("DO_RULES_CODE", DataType.String).build();
-		final Domain domainWorkflowDate = Domain.builder("DO_RULES_DATE", DataType.Date).build();
+		final Domain domainWorkflowDate = Domain.builder("DO_RULES_DATE", DataType.LocalDate).build();
 		final Domain domainWorkflowWeakId = Domain.builder("DO_RULES_WEAK_ID", DataType.Long).build();
 		final Domain domainWorkflowLabel = Domain.builder("DO_RULES_LABEL", DataType.String).build();
 		final Domain domainWorkflowField = Domain.builder("DO_RULES_FIELD", DataType.String).build();

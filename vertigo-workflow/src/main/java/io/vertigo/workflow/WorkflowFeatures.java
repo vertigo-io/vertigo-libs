@@ -92,7 +92,6 @@ public final class WorkflowFeatures extends Features<WorkflowFeatures> {
 	public WorkflowFeatures withDbStorePlugin() {
 		getModuleConfigBuilder()
 				.addPlugin(SQLWorkflowStorePlugin.class) //
-				.addPlugin(RuleWorkflowPredicateAutoValidatePlugin.class)
 				.addComponent(WfActivityDAO.class) //
 				.addComponent(WfWorkflowDAO.class) //
 				.addComponent(WfStatusDAO.class) //

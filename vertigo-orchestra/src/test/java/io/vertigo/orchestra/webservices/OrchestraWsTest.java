@@ -73,9 +73,9 @@ public class OrchestraWsTest {
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
-		orchestraServices.getScheduler().scheduleAt(processDefinition, DateUtil.newDateTime(), Collections.emptyMap());
+		orchestraServices.getScheduler().scheduleAt(processDefinition, DateUtil.newInstant(), Collections.emptyMap());
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition2);
-		orchestraServices.getScheduler().scheduleAt(processDefinition2, DateUtil.newDateTime(), Collections.emptyMap());
+		orchestraServices.getScheduler().scheduleAt(processDefinition2, DateUtil.newInstant(), Collections.emptyMap());
 
 		RestAssured.registerParser("plain/text", Parser.TEXT);
 		RestAssured.given()

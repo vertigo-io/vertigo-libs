@@ -50,14 +50,14 @@ public class CronExpressionTest {
 		fromCal.add(Calendar.MINUTE, -1);
 		fromCal.add(Calendar.SECOND, +6);// CronExpression precision is limited to one second
 
-		Assertions.assertEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 		expectedCal.add(Calendar.MINUTE, 1);
 		fromCal.add(Calendar.MINUTE, 1);
-		Assertions.assertEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 		expectedCal.add(Calendar.SECOND, 1);
-		Assertions.assertNotEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertNotEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 	}
 
@@ -76,14 +76,14 @@ public class CronExpressionTest {
 		fromCal.setTime(now.getTime());
 		fromCal.add(Calendar.SECOND, -3);
 
-		Assertions.assertEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 		fromCal.add(Calendar.SECOND, 5);
 		expectedCal.add(Calendar.SECOND, 5);
-		Assertions.assertEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 		expectedCal.add(Calendar.SECOND, 1);
-		Assertions.assertNotEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertNotEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 	}
 
@@ -103,10 +103,10 @@ public class CronExpressionTest {
 		final Calendar fromCal = Calendar.getInstance();
 		fromCal.setTime(now.getTime());
 
-		Assertions.assertEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 		expectedCal.add(Calendar.MINUTE, 1);
-		Assertions.assertNotEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertNotEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 	}
 
@@ -126,14 +126,14 @@ public class CronExpressionTest {
 		fromCal.setTime(now.getTime());
 		expectedCal.add(Calendar.MINUTE, 2);
 
-		Assertions.assertEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 		fromCal.add(Calendar.MINUTE, 2);
 		expectedCal.add(Calendar.MINUTE, 2);
-		Assertions.assertEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 		expectedCal.add(Calendar.MINUTE, 1);
-		Assertions.assertNotEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertNotEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 	}
 
@@ -154,10 +154,10 @@ public class CronExpressionTest {
 		final Calendar fromCal = Calendar.getInstance();
 		fromCal.setTime(now.getTime());
 
-		Assertions.assertEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 		expectedCal.add(Calendar.HOUR_OF_DAY, 1);
-		Assertions.assertNotEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertNotEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 	}
 
@@ -179,10 +179,10 @@ public class CronExpressionTest {
 		final Calendar fromCal = Calendar.getInstance();
 		fromCal.setTime(now.getTime());
 
-		Assertions.assertEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 		expectedCal.add(Calendar.DAY_OF_MONTH, 1);
-		Assertions.assertNotEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertNotEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 	}
 
@@ -201,12 +201,12 @@ public class CronExpressionTest {
 		fromCal.set(Calendar.MILLISECOND, 0);
 		fromCal.set(year, 0, 5, 0, 0, 0); // 5 Janvier année n
 
-		Assertions.assertEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 		expectedCal.set(year + 1, 1, 1, 0, 0, 0); // 1er fevrier année n+1
 		fromCal.set(year, 1, 3, 0, 0, 0); // 3 février année n
 
-		Assertions.assertEquals(expectedCal.getTime(), cronExpression.getNextValidTimeAfter(fromCal.getTime()));
+		Assertions.assertEquals(expectedCal.toInstant(), cronExpression.getNextValidTimeAfter(fromCal.toInstant()));
 
 	}
 

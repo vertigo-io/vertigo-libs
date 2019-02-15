@@ -18,8 +18,8 @@
  */
 package io.vertigo.orchestra.plugins.services.schedule.memory;
 
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.TimerTask;
 
 import io.vertigo.lang.Assertion;
@@ -32,7 +32,7 @@ import io.vertigo.orchestra.definitions.ProcessDefinition;
 final class ReschedulerTimerTask extends TimerTask {
 	private final MemoryProcessSchedulerPlugin simpleSchedulerPlugin;
 	private final ProcessDefinition processDefinition;
-	private final Date nextExecutionDate;
+	private final Instant nextExecutionDate;
 
 	/**
 	 * Constructeur.
@@ -41,7 +41,7 @@ final class ReschedulerTimerTask extends TimerTask {
 	 * @param hour Heure du prochaine lancement
 	 * @param minute Minute du prochaine lancement
 	 */
-	ReschedulerTimerTask(final MemoryProcessSchedulerPlugin simpleSchedulerPlugin, final ProcessDefinition processDefinition, final Date nextExecutionDate) {
+	ReschedulerTimerTask(final MemoryProcessSchedulerPlugin simpleSchedulerPlugin, final ProcessDefinition processDefinition, final Instant nextExecutionDate) {
 		Assertion.checkNotNull(simpleSchedulerPlugin);
 		Assertion.checkNotNull(processDefinition);
 		Assertion.checkNotNull(nextExecutionDate);

@@ -2,7 +2,7 @@ package io.vertigo.rules.domain
 
 create DtDefinition DT_RULE_DEFINITION {
 	id ID				{domain : DO_RULES_ID, 		label :"id", 					}
-	field CREATION_DATE {domain : DO_RULES_DATE, 		label :"creationDate", 			required:"false" }
+	field CREATION_DATE {domain : DO_RULES_INSTANT, 		label :"creationDate", 			required:"false" }
 	field ITEM_ID   	{domain : DO_RULES_WEAK_ID, 	label :"itemId", 				required:"false" }
 	field LABEL   		{domain : DO_RULES_LABEL, 	label :"Label", 				required:"false" }
 }
@@ -44,7 +44,7 @@ create DtDefinition DT_RULE_CONDITION_DEFINITION {
 
 create DtDefinition DT_SELECTOR_DEFINITION {
 	id ID				{domain : DO_RULES_ID, 		label :"id", 					}
-	field CREATION_DATE {domain : DO_RULES_DATE, 		label :"creationDate", 			required:"false" }
+	field CREATION_DATE {domain : DO_RULES_INSTANT, 		label :"creationDate", 			required:"false" }
 	field ITEM_ID   	{domain : DO_RULES_WEAK_ID, 	label :"itemId", 				required:"false" }
 	field GROUP_ID   	{domain : DO_RULES_FIELD, 	label :"groupId", 				required:"false" }
 }

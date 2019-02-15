@@ -18,7 +18,7 @@
  */
 package io.vertigo.orchestra.services.report;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +43,7 @@ public interface ProcessReport {
 	 * @param status permet de filtrer sur un état d'execution (par exemple voir les processus qui ont eu une execution en erreur sur la période.
 	 * @return la liste de résumés répondant aux critères
 	 */
-	List<ExecutionSummary> getSummariesByDate(Date minDate, Date maxDate, Optional<String> status);
+	List<ExecutionSummary> getSummariesByDate(Instant minDate, Instant maxDate, Optional<String> status);
 
 	/**
 	 * Retourne le rapport d'execution d'un processus sur une période.
@@ -52,7 +52,7 @@ public interface ProcessReport {
 	 * @param maxDate la date de fin
 	 * @return le résumé
 	 */
-	ExecutionSummary getSummaryByDate(ProcessDefinition processDefinition, Date minDate, Date maxDate);
+	ExecutionSummary getSummaryByDate(ProcessDefinition processDefinition, Instant minDate, Instant maxDate);
 
 	/**
 	 * Retourne une execution de processus.

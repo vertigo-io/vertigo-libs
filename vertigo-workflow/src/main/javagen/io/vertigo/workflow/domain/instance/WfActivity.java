@@ -17,7 +17,7 @@ public final class WfActivity implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long wfaId;
-	private java.util.Date creationDate;
+	private java.time.Instant creationDate;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_WFW_WFA",
@@ -92,19 +92,19 @@ public final class WfActivity implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'creation date'.
-	 * @return Date creationDate
+	 * @return Instant creationDate
 	 */
-	@Field(domain = "DO_WF_DATE", label = "creation date")
-	public java.util.Date getCreationDate() {
+	@Field(domain = "DO_WF_INSTANT", label = "creation date")
+	public java.time.Instant getCreationDate() {
 		return creationDate;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'creation date'.
-	 * @param creationDate Date
+	 * @param creationDate Instant
 	 */
-	public void setCreationDate(final java.util.Date creationDate) {
+	public void setCreationDate(final java.time.Instant creationDate) {
 		this.creationDate = creationDate;
 	}
 	

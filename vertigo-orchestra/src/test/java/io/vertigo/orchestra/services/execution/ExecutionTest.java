@@ -18,8 +18,8 @@
  */
 package io.vertigo.orchestra.services.execution;
 
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -81,7 +81,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 
 		// We plan right now
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// The task takes 10 secondes to run we wait 12 secondes to check the final states
 		Thread.sleep(1000 * 13);
@@ -119,7 +119,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		final OProcessPlanification processPlanification = processPlanifications.get(0);
 
 		// We wait the planif
-		Thread.sleep(Math.max(0, processPlanification.getExpectedTime().getTime() - System.currentTimeMillis()));
+		Thread.sleep(Math.max(0, processPlanification.getExpectedTime().toEpochMilli() - System.currentTimeMillis()));
 
 		// After 20 secondes there is 1 execution done and 1 execution running (for 5 secondes, half execution time)
 		Thread.sleep(1000 * 20);
@@ -165,7 +165,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 
 		// We plan right now
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// Error is after 2 seconds
 		Thread.sleep(1000 * 5);
@@ -190,7 +190,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		final Long proId = processDefinition.getId();
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// After 15 seconds the process is still running
 		Thread.sleep(1000 * 15);
@@ -216,7 +216,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		final Long proId = processDefinition.getId();
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// After 5 seconds the process is still running
 		Thread.sleep(1000 * 5);
@@ -241,7 +241,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		final Long proId = processDefinition.getId();
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// We wait 5 secondes to be sure that execution is running
 		Thread.sleep(1000 * 5);
@@ -272,7 +272,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		planifParams.put("planifParam", "titi");
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), planifParams);
+				.scheduleAt(processDefinition, Instant.now(), planifParams);
 
 		// We check 3 secondes to be sure that execution is running
 		Thread.sleep(1000 * 3);
@@ -299,7 +299,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 
 		//we schedule in 0 seconds
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// After 4 second the process is running
 		Thread.sleep(1000 * 3);
@@ -324,9 +324,9 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		final Long proId = processDefinition.getId();
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// We wait 3 seconds
 		Thread.sleep(1000 * 3);
@@ -351,7 +351,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		final Long proId = processDefinition.getId();
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// We wait 10 seconds until it's finished
 		Thread.sleep(1000 * 10);
@@ -381,9 +381,9 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		final Long proId = processDefinition.getId();
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// We wait 3 seconds
 		Thread.sleep(1000 * 5);
@@ -410,7 +410,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		final Long proId = processDefinition.getId();
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// We wait 10 seconds
 		Thread.sleep(1000 * 10);
