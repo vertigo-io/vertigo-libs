@@ -25,55 +25,76 @@ public class QuartoFeatures extends Features<QuartoFeatures> {
 		super("vertigo-quarto");
 	}
 
-	@Feature("localOpenOfficeConverter")
+	@Feature("converter")
+	public QuartoFeatures withConverter(final Param... params) {
+		getModuleConfigBuilder()
+				.addComponent(ConverterManager.class, ConverterManagerImpl.class);
+		return this;
+	}
+
+	@Feature("converter.localOpenOffice")
 	public QuartoFeatures withLocalOpenOfficeConverter(final Param... params) {
 		getModuleConfigBuilder().addPlugin(OpenOfficeLocalConverterPlugin.class, params);
 		return this;
 	}
 
-	@Feature("remoteOpenOfficeConverter")
+	@Feature("converter.remoteOpenOffice")
 	public QuartoFeatures withRemoteOpenOfficeConverter(final Param... params) {
 		getModuleConfigBuilder().addPlugin(OpenOfficeRemoteConverterPlugin.class, params);
 		return this;
 	}
 
-	@Feature("xDocReportConverter")
+	@Feature("converter.xDocReport")
 	public QuartoFeatures withXDocReportConverter() {
 		getModuleConfigBuilder().addPlugin(XDocReportConverterPlugin.class);
 		return this;
 	}
 
-	@Feature("CSVExporter")
+	@Feature("export")
+	public QuartoFeatures withExport(final Param... params) {
+		getModuleConfigBuilder()
+				.addComponent(ExportManager.class, ExportManagerImpl.class);
+		return this;
+	}
+
+	@Feature("export.csv")
 	public QuartoFeatures withCSVExporter() {
 		getModuleConfigBuilder().addPlugin(CSVExporterPlugin.class);
 		return this;
 	}
 
-	@Feature("PDFExporter")
+	@Feature("export.pdf")
 	public QuartoFeatures withPDFExporter() {
 		getModuleConfigBuilder().addPlugin(PDFExporterPlugin.class);
 		return this;
 	}
 
-	@Feature("RTFExporter")
+	@Feature("export.rtf")
 	public QuartoFeatures withRTFExporter() {
 		getModuleConfigBuilder().addPlugin(RTFExporterPlugin.class);
 		return this;
 	}
 
-	@Feature("XLSExporter")
+	@Feature("export.xls")
 	public QuartoFeatures withXLSExporter() {
 		getModuleConfigBuilder().addPlugin(XLSExporterPlugin.class);
 		return this;
 	}
 
-	@Feature("DOCXPublisher")
+	@Feature("publisher")
+	public QuartoFeatures withPublisher() {
+		getModuleConfigBuilder()
+				.addComponent(PublisherManager.class, PublisherManagerImpl.class);
+		return this;
+	}
+
+	@Feature("publisher.docx")
 	public QuartoFeatures withDOCXPublisher() {
 		getModuleConfigBuilder().addPlugin(DOCXMergerPlugin.class);
 		return this;
 	}
 
-	@Feature("ODTPublisher")
+	@Feature("publisher.odt")
 	public QuartoFeatures withODTPublisher() {
 		getModuleConfigBuilder().addPlugin(OpenOfficeMergerPlugin.class);
 		return this;
@@ -81,10 +102,7 @@ public class QuartoFeatures extends Features<QuartoFeatures> {
 
 	@Override
 	protected void buildFeatures() {
-		getModuleConfigBuilder()
-				.addComponent(ConverterManager.class, ConverterManagerImpl.class)
-				.addComponent(ExportManager.class, ExportManagerImpl.class)
-				.addComponent(PublisherManager.class, PublisherManagerImpl.class);
+		//
 	}
 
 }

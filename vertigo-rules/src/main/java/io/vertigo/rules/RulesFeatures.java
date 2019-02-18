@@ -49,7 +49,7 @@ public final class RulesFeatures extends Features<RulesFeatures> {
 		super("vertigo-rules");
 	}
 
-	@Feature("sqlRuleStore")
+	@Feature("rules.store.sql")
 	public RulesFeatures withSqlRuleStore() {
 		getModuleConfigBuilder()
 				.addComponent(RuleConditionDefinitionDAO.class)//
@@ -60,25 +60,25 @@ public final class RulesFeatures extends Features<RulesFeatures> {
 		return this;
 	}
 
-	@Feature("memoryRuleStore")
+	@Feature("rules.store.memory")
 	public RulesFeatures withMemoryRuleStore() {
 		getModuleConfigBuilder().addPlugin(MemoryRuleStorePlugin.class);
 		return this;
 	}
 
-	@Feature("memoryRuleConstantStore")
+	@Feature("rules.constantStore.memory")
 	public RulesFeatures withMemoryRuleConstantsStore() {
 		getModuleConfigBuilder().addPlugin(MemoryRuleConstantsStorePlugin.class);
 		return this;
 	}
 
-	@Feature("simpleSelector")
+	@Feature("rules.selector.simple")
 	public RulesFeatures withSimpleRuleSelector() {
 		getModuleConfigBuilder().addPlugin(SimpleRuleSelectorPlugin.class);
 		return this;
 	}
 
-	@Feature("simpleValidator")
+	@Feature("rules.validator.simple")
 	public RulesFeatures withSimpleRuleValidator() {
 		getModuleConfigBuilder().addPlugin(SimpleRuleValidatorPlugin.class);
 		return this;

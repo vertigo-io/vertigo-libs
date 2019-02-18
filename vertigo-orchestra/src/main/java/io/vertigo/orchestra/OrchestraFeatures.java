@@ -92,7 +92,7 @@ public final class OrchestraFeatures extends Features<OrchestraFeatures> {
 	 * @param forecastDurationSeconds the time to forecast planifications
 	 * @return these features
 	 */
-	@Feature("database")
+	@Feature("orchestra.database")
 	public OrchestraFeatures withDataBase(final Param... params) {
 		final Param nodeName = findParamByName("nodeName", params);
 		final Param daemonPeriodSeconds = findParamByName("daemonPeriodSeconds", params);
@@ -140,7 +140,7 @@ public final class OrchestraFeatures extends Features<OrchestraFeatures> {
 	 * @param workersCount the number of workers
 	 * @return these features
 	 */
-	@Feature("memory")
+	@Feature("orchestra.memory")
 	public OrchestraFeatures withMemory(final Param... params) {
 		final Param workersCount = findParamByName("workersCount", params);
 		getModuleConfigBuilder()
@@ -156,7 +156,7 @@ public final class OrchestraFeatures extends Features<OrchestraFeatures> {
 	 * Activate Orchestra's REST WebServices.
 	 * @return these features
 	 */
-	@Feature("webapi")
+	@Feature("orchestra.webapi")
 	public OrchestraFeatures withWebApi() {
 		getModuleConfigBuilder()
 				.addComponent(WsDefinition.class)

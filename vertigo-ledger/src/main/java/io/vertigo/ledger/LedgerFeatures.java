@@ -44,7 +44,7 @@ public final class LedgerFeatures extends Features<LedgerFeatures> {
 	 * Add Ethereum BlockChain Ledger
 	 * @return  the feature
 	 */
-	@Feature("ethereum")
+	@Feature("ledger.ethereum")
 	public LedgerFeatures withEthereumBlockChain(final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(EthereumLedgerPlugin.class, params);
@@ -55,7 +55,7 @@ public final class LedgerFeatures extends Features<LedgerFeatures> {
 	 * Add Ethereum BlockChain Ledger
 	 * @return  the feature
 	 */
-	@Feature("fake")
+	@Feature("ledger.fake")
 	public LedgerFeatures withFakeBlockChain() {
 		getModuleConfigBuilder()
 				.addPlugin(FakeLedgerPlugin.class);

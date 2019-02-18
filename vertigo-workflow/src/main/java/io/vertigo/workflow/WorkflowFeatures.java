@@ -61,7 +61,7 @@ public final class WorkflowFeatures extends Features<WorkflowFeatures> {
 	 * @param workflowPredicateAutoValidatePlugin
 	 * @return these features
 	 */
-	@Feature("rulePredicateAutoValidatePlugin")
+	@Feature("workflow.autovalidate.predicate")
 	public WorkflowFeatures withRulePredicateAutoValidatePlugin() {
 		getModuleConfigBuilder().addPlugin(RuleWorkflowPredicateAutoValidatePlugin.class);
 		return this;
@@ -76,7 +76,7 @@ public final class WorkflowFeatures extends Features<WorkflowFeatures> {
 	 *            the params
 	 * @return these features
 	 */
-	@Feature("memoryWorkflowStorePlugin")
+	@Feature("workflow.store.memory")
 	public WorkflowFeatures withMemoryWorkflowStorePlugin() {
 		getModuleConfigBuilder().addPlugin(MemoryWorkflowStorePlugin.class);
 		return this;
@@ -88,7 +88,7 @@ public final class WorkflowFeatures extends Features<WorkflowFeatures> {
 	 * @return these features
 	 */
 
-	@Feature("dbStorePlugin")
+	@Feature("workflow.store.db")
 	public WorkflowFeatures withDbStorePlugin() {
 		getModuleConfigBuilder()
 				.addPlugin(SQLWorkflowStorePlugin.class) //

@@ -32,31 +32,31 @@ public final class StellaFeatures extends Features<StellaFeatures> {
 		return this;
 	}
 
+	@Feature("master.redis")
+	public StellaFeatures withRedisMasterPlugin() {
+		getModuleConfigBuilder().addPlugin(RedisMasterPlugin.class);
+		return this;
+	}
+
+	@Feature("master.rest")
+	public StellaFeatures withRestMasterPlugin(final Param... params) {
+		getModuleConfigBuilder().addPlugin(RestMasterPlugin.class, params);
+		return this;
+	}
+
 	@Feature("worker")
 	public StellaFeatures withWorker() {
 		getModuleConfigBuilder().addComponent(WorkersManager.class, WorkersManagerImpl.class);
 		return this;
 	}
 
-	@Feature("redisMaster")
-	public StellaFeatures withRedisMasterPlugin() {
-		getModuleConfigBuilder().addPlugin(RedisMasterPlugin.class);
-		return this;
-	}
-
-	@Feature("redisWorker")
+	@Feature("worker.redis")
 	public StellaFeatures withRedisWorkerPlugin() {
 		getModuleConfigBuilder().addPlugin(RedisWorkersPlugin.class);
 		return this;
 	}
 
-	@Feature("restMaster")
-	public StellaFeatures withRestMasterPlugin(final Param... params) {
-		getModuleConfigBuilder().addPlugin(RestMasterPlugin.class, params);
-		return this;
-	}
-
-	@Feature("restWorker")
+	@Feature("worker.rest")
 	public StellaFeatures withRestWorkerPlugin(final Param... params) {
 		getModuleConfigBuilder().addPlugin(RestWorkersPlugin.class, params);
 		return this;

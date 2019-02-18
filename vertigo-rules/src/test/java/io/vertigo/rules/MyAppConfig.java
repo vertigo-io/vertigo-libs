@@ -67,6 +67,7 @@ public class MyAppConfig {
 						.build())
 				.addModule(new AccountFeatures()
 						.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
+						.withAccount()
 						.withLoaderAccount(Param.of("accountLoaderName", "MockIdentities"),
 								Param.of("groupLoaderName", "MockIdentities"))
 						.build())

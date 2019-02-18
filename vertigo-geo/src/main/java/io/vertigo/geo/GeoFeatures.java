@@ -52,7 +52,7 @@ public final class GeoFeatures extends Features<GeoFeatures> {
 	 * Activates comments
 	 * @return the features
 	 */
-	@Feature("googleGeocoder")
+	@Feature("geocoding.google")
 	public GeoFeatures withGoogleGeocoder() {
 		getModuleConfigBuilder().addPlugin(GoogleGeoCoderPlugin.class);
 		return this;
@@ -62,7 +62,7 @@ public final class GeoFeatures extends Features<GeoFeatures> {
 	 * Activates comments
 	 * @return the features
 	 */
-	@Feature("banGeocoder")
+	@Feature("geocoding.ban")
 	public GeoFeatures withBanGeocoder() {
 		getModuleConfigBuilder().addPlugin(BanGeoCoderPlugin.class);
 		return this;

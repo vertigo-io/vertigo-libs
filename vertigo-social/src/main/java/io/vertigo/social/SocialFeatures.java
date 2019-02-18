@@ -64,6 +64,18 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 		return this;
 	}
 
+	@Feature("notifications.redis")
+	public SocialFeatures withRedisNotifications() {
+		getModuleConfigBuilder().addPlugin(RedisNotificationPlugin.class);
+		return this;
+	}
+
+	@Feature("notifications.memory")
+	public SocialFeatures withMemoryNotifications() {
+		getModuleConfigBuilder().addPlugin(MemoryNotificationPlugin.class);
+		return this;
+	}
+
 	/**
 	 * Activates comments
 	 * @return the features
@@ -71,6 +83,18 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 	@Feature("comments")
 	public SocialFeatures withComments() {
 		commentsEnabled = true;
+		return this;
+	}
+
+	@Feature("comments.redis")
+	public SocialFeatures withRedisComments() {
+		getModuleConfigBuilder().addPlugin(RedisCommentPlugin.class);
+		return this;
+	}
+
+	@Feature("comments.memory")
+	public SocialFeatures withMemoryComments() {
+		getModuleConfigBuilder().addPlugin(MemoryCommentPlugin.class);
 		return this;
 	}
 
@@ -84,6 +108,15 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 		return this;
 	}
 
+	@Feature("mail.javax")
+	public SocialFeatures withJavaxMail(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(JavaxSendMailPlugin.class, params);
+
+		return this;
+
+	}
+
 	/**
 	 * Activates comments
 	 * @return the features
@@ -92,39 +125,6 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 	public SocialFeatures withWebApi() {
 		webapiEnabled = true;
 		return this;
-	}
-
-	@Feature("redisNotifications")
-	public SocialFeatures withRedisNotifications() {
-		getModuleConfigBuilder().addPlugin(RedisNotificationPlugin.class);
-		return this;
-	}
-
-	@Feature("memoryNotifications")
-	public SocialFeatures withMemoryNotifications() {
-		getModuleConfigBuilder().addPlugin(MemoryNotificationPlugin.class);
-		return this;
-	}
-
-	@Feature("redisComments")
-	public SocialFeatures withRedisComments() {
-		getModuleConfigBuilder().addPlugin(RedisCommentPlugin.class);
-		return this;
-	}
-
-	@Feature("memoryComments")
-	public SocialFeatures withMemoryComments() {
-		getModuleConfigBuilder().addPlugin(MemoryCommentPlugin.class);
-		return this;
-	}
-
-	@Feature("javaxMail")
-	public SocialFeatures withJavaxMail(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(JavaxSendMailPlugin.class, params);
-
-		return this;
-
 	}
 
 	@Override

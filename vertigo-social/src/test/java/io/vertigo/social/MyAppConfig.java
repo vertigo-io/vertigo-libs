@@ -21,8 +21,6 @@ package io.vertigo.social;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.account.cache.memory.MemoryAccountCachePlugin;
 import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
-import io.vertigo.account.plugins.account.store.loader.LoaderAccountStorePlugin;
-import io.vertigo.account.plugins.authentication.mock.MockAuthenticationPlugin;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.AppConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
@@ -50,49 +48,49 @@ public final class MyAppConfig {
 		final String redisPort = "6379";
 		final String redisDatabase = "15";
 
-		// @formatter:off
-		final AppConfigBuilder appConfigBuilder =  AppConfig.builder()
-			.beginBoot()
+		final AppConfigBuilder appConfigBuilder = AppConfig.builder()
+				.beginBoot()
 				.withLocales("fr")
-				.addPlugin( ClassPathResourceResolverPlugin.class)
-			.endBoot();
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot();
 
-			final CommonsFeatures commonsFeatures = new CommonsFeatures();
-			if (redis) {
-				commonsFeatures.withRedisConnector(Param.of("host", redisHost), Param.of("port", redisPort), Param.of("database", redisDatabase));
-			}
+		final CommonsFeatures commonsFeatures = new CommonsFeatures();
+		if (redis) {
+			commonsFeatures.withRedisConnector(Param.of("host", redisHost), Param.of("port", redisPort), Param.of("database", redisDatabase));
+		}
 
-			appConfigBuilder
-			.addModule(commonsFeatures.build())
-			.addModule(new DynamoFeatures().build())
-			.addModule(ModuleConfig.builder("identities")
-					.addComponent(MockIdentities.class)
-					.build());
+		appConfigBuilder
+				.addModule(commonsFeatures.build())
+				.addModule(new DynamoFeatures().build())
+				.addModule(ModuleConfig.builder("identities")
+						.addComponent(MockIdentities.class)
+						.build());
 
-			final AccountFeatures accountFeatures = new AccountFeatures()
-					.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
-					.withAuthentication()
-					.addPlugin(MockAuthenticationPlugin.class)
-					.addPlugin(LoaderAccountStorePlugin.class,
-							Param.of("accountLoaderName", "MockIdentities"),
-							Param.of("groupLoaderName", "MockIdentities"));
+		final AccountFeatures accountFeatures = new AccountFeatures()
+				.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
+				.withAuthentication()
+				.withMockAuthentication()
+				.withAccount()
+				.withLoaderAccount(
+						Param.of("accountLoaderName", "MockIdentities"),
+						Param.of("groupLoaderName", "MockIdentities"));
 
 		final SocialFeatures socialFeatures = new SocialFeatures()
-			.withComments()
-			.withNotifications();
+				.withComments()
+				.withNotifications();
 
-		if (redis){
-			return  appConfigBuilder
-			.addModule(accountFeatures
-					.addPlugin(RedisAccountCachePlugin.class)
-					.build())
-			.addModule(socialFeatures
-					.addPlugin(RedisNotificationPlugin.class)
-					.addPlugin(RedisCommentPlugin.class)
-					.build());
+		if (redis) {
+			return appConfigBuilder
+					.addModule(accountFeatures
+							.addPlugin(RedisAccountCachePlugin.class)
+							.build())
+					.addModule(socialFeatures
+							.addPlugin(RedisNotificationPlugin.class)
+							.addPlugin(RedisCommentPlugin.class)
+							.build());
 		}
 		//else we use memory
-		return  appConfigBuilder
+		return appConfigBuilder
 				.addModule(accountFeatures
 						.addPlugin(MemoryAccountCachePlugin.class)
 						.build())
@@ -100,32 +98,30 @@ public final class MyAppConfig {
 						.addPlugin(MemoryNotificationPlugin.class)
 						.addPlugin(MemoryCommentPlugin.class)
 						.build());
-		// @formatter:on
 	}
 
 	public static AppConfig config(final boolean redis) {
-		// @formatter:off
 		return createAppConfigBuilder(redis).build();
 	}
 
 	public static AppConfig vegaConfig() {
-		// @formatter:off
 		return createAppConfigBuilder(true)
-			.addModule(new VegaFeatures()
-				.withSecurity()
-				.withEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)))
-				.build())
-			.addModule(ModuleConfig.builder("ws-account")
-					.addComponent(AccountWebServices.class)
-					.addComponent(TestLoginWebServices.class)
-					.build())
-			.addModule(ModuleConfig.builder("ws-notifications")
-				.addComponent(NotificationWebServices.class)
-				.build())
-			.addModule(ModuleConfig.builder("ws-comment")
-					.addComponent(CommentWebServices.class)
-					.build())
-			.build();
+				.addModule(new VegaFeatures()
+						.withWebServices()
+						.withWebServicesSecurity()
+						.withWebServicesEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)))
+						.build())
+				.addModule(ModuleConfig.builder("ws-account")
+						.addComponent(AccountWebServices.class)
+						.addComponent(TestLoginWebServices.class)
+						.build())
+				.addModule(ModuleConfig.builder("ws-notifications")
+						.addComponent(NotificationWebServices.class)
+						.build())
+				.addModule(ModuleConfig.builder("ws-comment")
+						.addComponent(CommentWebServices.class)
+						.build())
+				.build();
 		// @formatter:on
 	}
 }

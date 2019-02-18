@@ -98,10 +98,11 @@ public final class MyAppConfig {
 						.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
 						.build())
 				.addModule(new VegaFeatures()
-						.withTokens(Param.of("tokens", "tokens"))
-						.withSecurity()
-						.withRateLimiting()
-						.withEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)))
+						.withWebServices()
+						.withWebServicesTokens(Param.of("tokens", "tokens"))
+						.withWebServicesSecurity()
+						.withWebServicesRateLimiting()
+						.withWebServicesEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)))
 						.build());
 	}
 
