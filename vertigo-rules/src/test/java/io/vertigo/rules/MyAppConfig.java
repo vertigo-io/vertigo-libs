@@ -52,6 +52,7 @@ public class MyAppConfig {
 						.withCache()
 						.withMemoryCache()
 						.withScript()
+						.withJaninoScript()
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()//

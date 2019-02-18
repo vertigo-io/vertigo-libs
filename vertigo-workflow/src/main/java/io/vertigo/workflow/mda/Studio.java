@@ -38,6 +38,7 @@ public class Studio {
 						.withCache()
 						.withMemoryCache()
 						.withScript()
+						.withJaninoScript()
 						.build())
 				.addModule(new DynamoFeatures().build())
 				//----Definitions

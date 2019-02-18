@@ -48,6 +48,7 @@ public final class OrchestraNode1AppConfig {
 						.withCache()
 						.withMemoryCache()
 						.withScript()
+						.withJaninoScript()
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()

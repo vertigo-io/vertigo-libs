@@ -39,6 +39,7 @@ class MyAppConfig {
 				.endBoot()
 				.addModule(new CommonsFeatures()
 						.withScript()
+						.withJaninoScript()
 						.build())
 				.addModule(new DynamoFeatures()
 						.build())
