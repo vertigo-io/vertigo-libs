@@ -21,7 +21,6 @@ package io.vertigo.geo.plugins.geocoder.ban;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -35,13 +34,6 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
 
 import com.google.gson.Gson;
 
@@ -116,23 +108,6 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 			}
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
-		}
-	}
-
-	public static String toString(final Document doc) {
-		try {
-			final StringWriter sw = new StringWriter();
-			final TransformerFactory tf = TransformerFactory.newInstance();
-			final Transformer transformer = tf.newTransformer();
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-
-			transformer.transform(new DOMSource(doc), new StreamResult(sw));
-			return sw.toString();
-		} catch (final Exception ex) {
-			throw new RuntimeException("Error converting to String", ex);
 		}
 	}
 
