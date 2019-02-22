@@ -45,8 +45,8 @@ public final class StellaFeatures extends Features<StellaFeatures> {
 	}
 
 	@Feature("worker")
-	public StellaFeatures withWorker() {
-		getModuleConfigBuilder().addComponent(WorkersManager.class, WorkersManagerImpl.class);
+	public StellaFeatures withWorker(final Param... params) {
+		getModuleConfigBuilder().addComponent(WorkersManager.class, WorkersManagerImpl.class, params);
 		return this;
 	}
 

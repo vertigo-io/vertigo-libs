@@ -23,9 +23,17 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.quarto.QuartoFeatures;
 import io.vertigo.quarto.services.export.data.DtDefinitions.ContinentFields;
 import io.vertigo.quarto.services.export.data.DtDefinitions.CountryFields;
 import io.vertigo.quarto.services.export.data.domain.Continent;
@@ -45,6 +53,35 @@ public final class ExportManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private ExportManager exportManager;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withCache()
+						.withMemoryCache()
+						.build())
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.build())
+				.addModule(new QuartoFeatures()
+						.withExport()
+						.withCSVExporter()
+						.withPDFExporter()
+						.withRTFExporter()
+						.withXLSExporter()
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/quarto/services/export/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.quarto.services.export.data.DtDefinitions")
+								.build())
+						.build())
+				.build();
+	}
 
 	/**
 	 * Test l'export CSV.

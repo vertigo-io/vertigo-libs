@@ -29,11 +29,16 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.param.Param;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.quarto.QuartoFeatures;
 import io.vertigo.quarto.services.converter.ConverterManager;
 import io.vertigo.util.TempFile;
 
@@ -53,6 +58,23 @@ public final class RemoteConverterManagerTest extends AbstractTestCaseJU5 {
 	private FileManager fileManager;
 
 	private VFile resultFile;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(new CommonsFeatures().build())
+				.addModule(new DynamoFeatures().build())
+				.addModule(new QuartoFeatures()
+						.withConverter()
+						.withRemoteOpenOfficeConverter(
+								Param.of("unohost", "ficenrecette.part.klee.lan.net"),
+								Param.of("unoport", "8200"),
+								Param.of("convertTimeoutSeconds", "5"))
+						.build())
+				.build();
+	}
 
 	/** {@inheritDoc} */
 	@Override

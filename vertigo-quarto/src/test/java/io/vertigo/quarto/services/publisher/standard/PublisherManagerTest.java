@@ -24,7 +24,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.DynamoFeatures;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.quarto.impl.services.publisher.PublisherDataUtil;
+import io.vertigo.quarto.impl.services.publisher.PublisherManagerImpl;
+import io.vertigo.quarto.plugins.publisher.odt.OpenOfficeMergerPlugin;
+import io.vertigo.quarto.services.publisher.PublisherManager;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherField;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherNodeDefinition;
@@ -39,6 +49,29 @@ import io.vertigo.quarto.services.publisher.model.PublisherData;
 public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 	/** Logger. */
 	private final Logger log = LogManager.getLogger(getClass());
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder().beginBoot()
+				.withLocales("fr_FR")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withScript()
+						.withJaninoScript()
+						.build())
+				.addModule(new DynamoFeatures()
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addComponent(PublisherManager.class, PublisherManagerImpl.class)
+						.addPlugin(OpenOfficeMergerPlugin.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/quarto/services/publisher/data/execution.kpr")
+								.build())
+						.addDefinitionProvider(TestStandardPublisherDefinitionProvider.class)
+						.build())
+				.build();
+	}
 
 	/**
 	 * Créer une Définition simple avec 1 bool, 1 string.
