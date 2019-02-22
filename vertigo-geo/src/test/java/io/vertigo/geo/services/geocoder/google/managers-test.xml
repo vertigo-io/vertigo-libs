@@ -1,8 +1,0 @@
-<?xml version =	'1.0' encoding = 'ISO-8859-1'?>
-<config>
-	<module name="vertigo-labs">
-	   <component api="GeoCoderManager" class="io.vertigo.geo.impl.services.geocoder.GeoCoderManagerImpl" >
-	        <plugin class="io.vertigo.geo.plugins.geocoder.google.GoogleGeoCoderPlugin" />
-	    </component>
-    </module>
-</config>

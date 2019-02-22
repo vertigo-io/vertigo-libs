@@ -24,6 +24,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.geo.GeoFeatures;
 import io.vertigo.geo.services.geocoder.GeoCoderManager;
 import io.vertigo.geo.services.geocoder.GeoLocation;
 
@@ -33,6 +35,18 @@ import io.vertigo.geo.services.geocoder.GeoLocation;
 public class GoogleGeoCoderManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private GeoCoderManager geoCoderManager;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(new GeoFeatures()
+						.withGeocoding()
+						.withGoogleGeocoder()
+						.build())
+				.build();
+	}
 
 	/**
 	 * Test de géolocalisation d'une chaîne null.

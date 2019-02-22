@@ -38,6 +38,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.resource.ResourceManager;
 
 /**
@@ -79,6 +81,15 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU5 {
 	// test des fonctions concernant les editions
 	//
 	// //////////////////////////////////////////////
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.build();
+	}
 
 	/**
 	 * Extraction puis rechargement d'un DOCX.

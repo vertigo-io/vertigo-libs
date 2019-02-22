@@ -24,10 +24,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.param.Param;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VUserException;
+import io.vertigo.social.SocialFeatures;
 import io.vertigo.social.services.mail.Mail;
 import io.vertigo.social.services.mail.MailManager;
 
@@ -46,6 +51,25 @@ public final class MailManagerTest extends AbstractTestCaseJU5 {
 	private MailManager mailManager;
 	@Inject
 	private FileManager fileManager;
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.withLocales("fr_FR")
+				.endBoot()
+				.addModule(new CommonsFeatures().build())
+				.addModule(new DynamoFeatures().build())
+				.addModule(new SocialFeatures()
+						.withMails()
+						.withJavaxMail(
+								Param.of("storeProtocol", "smtp"),
+								Param.of("host", "localdelivery.klee.lan.net"),
+								Param.of("developmentMode", "true"),
+								Param.of("developmentMailTo", "klee-DevTest@yopmail.com"))
+						.build())
+				.build();
+	}
 
 	/**
 	 * @throws Exception manager null
