@@ -21,7 +21,7 @@ package io.vertigo.ui.controller;
 import java.time.ZoneId;
 import java.util.Locale;
 
-import io.vertigo.persona.security.UserSession;
+import io.vertigo.account.security.UserSession;
 import io.vertigo.ui.domain.users.ApplicationUser;
 
 /**

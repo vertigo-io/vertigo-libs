@@ -20,7 +20,7 @@ package io.vertigo.rules.data;
 
 import java.util.Locale;
 
-import io.vertigo.persona.security.UserSession;
+import io.vertigo.account.security.UserSession;
 
 /**
  * User session for JUnit

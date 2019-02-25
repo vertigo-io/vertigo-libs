@@ -20,9 +20,9 @@ package io.vertigo.ui.services.users;
 
 import javax.inject.Inject;
 
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.lang.VUserException;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.ui.controller.TestUserSession;
 import io.vertigo.ui.domain.users.ApplicationUser;
 

@@ -21,7 +21,7 @@ package io.vertigo.struts2.ui;
 import java.time.ZoneId;
 import java.util.Locale;
 
-import io.vertigo.persona.security.UserSession;
+import io.vertigo.account.security.UserSession;
 import io.vertigo.struts2.domain.users.ApplicationUser;
 
 /**

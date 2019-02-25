@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
-import io.vertigo.persona.security.VSecurityManager;
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.GET;

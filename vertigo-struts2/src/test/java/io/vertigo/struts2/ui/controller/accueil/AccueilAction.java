@@ -28,12 +28,12 @@ import java.util.Date;
 
 import javax.inject.Inject;
 
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.lang.VUserException;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.struts2.core.AbstractActionSupport.AcceptCtxQueryParam;
 import io.vertigo.struts2.core.ContextForm;
 import io.vertigo.struts2.core.ContextList;

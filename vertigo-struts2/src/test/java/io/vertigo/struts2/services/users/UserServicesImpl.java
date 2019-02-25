@@ -20,9 +20,9 @@ package io.vertigo.struts2.services.users;
 
 import javax.inject.Inject;
 
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.lang.VUserException;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.struts2.domain.users.ApplicationUser;
 import io.vertigo.struts2.ui.TestUserSession;
 

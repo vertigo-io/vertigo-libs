@@ -18,8 +18,8 @@
  */
 package io.vertigo.struts2.core;
 
+import io.vertigo.account.security.ResourceNameFactory;
 import io.vertigo.lang.Assertion;
-import io.vertigo.persona.security.ResourceNameFactory;
 import io.vertigo.vega.webservice.model.UiObject;
 
 /**
