@@ -18,11 +18,9 @@
  */
 package io.vertigo.ui.core.encoders;
 
-import java.text.ParsePosition;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.function.Function;
 
 import io.vertigo.app.Home;
@@ -120,28 +118,28 @@ public final class EncoderDate {
 	/*
 	 * Converts a String to a java.util.Date according to a given pattern
 	 */
-	private static Date doStringToDate(final String dateString) {
+	/*private static Date doStringToDate(final String dateString) {
 		Date dateValue;
-
+	
 		//Formateur de date on le crée à chaque fois car l'implémentation de DateFormat est non synchronisé !
 		final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(pattern, getLocaleManager().getCurrentLocale());
 		formatter.setLenient(false);
-
+	
 		final ParsePosition parsePosition = new ParsePosition(0);
 		dateValue = formatter.parse(dateString, parsePosition);
-
+	
 		//si le parsing n'a pas consommé toute la chaine, on refuse la conversion
 		if (parsePosition.getIndex() != dateString.length()) {
 			throw new IllegalStateException("Error parsing " + dateString + " with pattern :" + pattern + "at position " + parsePosition.getIndex());
 		}
 		return dateValue;
 	}
-
+	
 	private static String dateToString(final Date date) {
 		final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(pattern, getLocaleManager().getCurrentLocale());
 		formatter.setLenient(false);
 		return formatter.format(date);
-	}
+	}*/
 
 	private static String localDateToString(final LocalDate localDate) {
 		return DateTimeFormatter.ofPattern(localDatePattern)

@@ -44,7 +44,6 @@ import redis.clients.jedis.Transaction;
  * @author pchretien
  */
 public final class RedisCommentPlugin implements CommentPlugin {
-	private static final String CODEC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	private final RedisConnector redisConnector;
 
 	/**
