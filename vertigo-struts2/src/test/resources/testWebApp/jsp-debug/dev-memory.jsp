@@ -1,5 +1,5 @@
 <%@page contentType="text/html;charset=ISO-8859-1" import="java.io.IOException,java.lang.management.*, java.text.SimpleDateFormat"%>
-<%@page import="java.util.*, org.apache.log4j.Logger"%>
+<%@page import="java.util.*, org.apache.logging.log4j.LogManager, org.apache.logging.log4j.Logger"%>
 <%@page import="java.net.InetAddress, java.net.UnknownHostException,java.text.DecimalFormat, java.text.NumberFormat"%>
 	<%!
 	/**
@@ -9,7 +9,7 @@
   private static final String ACTION_NAME_GC = "GC";
 	
 private void doGC(final JspWriter out) throws IOException {
-		Logger.getLogger(getClass()).info("Execution du garbage collector");
+		LogManager.getLogger(getClass()).info("Execution du garbage collector");
 		final long freeBegin = Runtime.getRuntime().freeMemory();
 		final long begin = System.currentTimeMillis();
 		System.gc();
@@ -47,7 +47,7 @@ private void doGC(final JspWriter out) throws IOException {
 			out.print(e.toString());
 		}
 		out.print(", Log level (root) : ");
-		out.print(Logger.getRootLogger().getLevel());
+		out.print(LogManager.getRootLogger().getLevel());
 	}
 
 	static double memoryUsedPct() {
