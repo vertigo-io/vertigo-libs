@@ -38,7 +38,7 @@ final class ClientNode {
 	private final List<Thread> subThreads = new ArrayList<>();
 	private final int maxLifeTime;
 
-	private final String managersXmlFileName;
+	private final String appConfigClassName;
 
 	/**
 	 * Constructeur.
@@ -50,14 +50,14 @@ final class ClientNode {
 		Assertion.checkArgument(maxLifeTime >= 0 && maxLifeTime < 30000, "MaxLifeTime is in seconde and must be less than 30000 ({0}). Use 0 if you need infinit life.", maxLifeTime);
 		//-----
 		this.maxLifeTime = maxLifeTime;
-		managersXmlFileName = "./managers-node" + nodeId + "-test.xml";
+		appConfigClassName = StellaAppConfigClientNode.class.getName() + nodeId;
 	}
 
 	public void start() throws IOException {
 		final String command = new StringBuilder()
 				.append("java -cp ")
 				.append(properSystemPath(System.getProperty("java.class.path")))
-				.append(" io.vertigo.stella.work.distributed.rest.WorkerNodeStarter " + managersXmlFileName + " " + maxLifeTime)
+				.append(" io.vertigo.stella.work.distributed.rest.WorkerNodeStarter " + appConfigClassName + " " + maxLifeTime)
 				.toString();
 		nodeProcess = Runtime.getRuntime().exec(command);
 		subThreads.add(createOutputFlusher(nodeProcess.getInputStream(), "[ClientNode] ", System.out));

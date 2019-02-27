@@ -29,11 +29,16 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.app.config.AppConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.param.Param;
+import io.vertigo.stella.StellaFeatures;
 import io.vertigo.stella.master.MasterManager;
 import io.vertigo.stella.work.AbstractWorkManagerTest;
 import io.vertigo.stella.work.MyWorkResultHanlder;
 import io.vertigo.stella.work.mock.SlowWork;
 import io.vertigo.stella.work.mock.SlowWorkEngine;
+import io.vertigo.vega.VegaFeatures;
 import spark.Spark;
 
 /**
@@ -56,6 +61,26 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		final ClientNode clientNode = new ClientNode(numClient, 30);//duree de vie 30s max
 		clientNode.start();
 		return clientNode;
+	}
+
+	@Override
+	protected AppConfig buildAppConfig() {
+		return AppConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(new VegaFeatures()
+						.withWebServices()
+						.withWebServicesEmbeddedServer(
+								Param.of("port", "10998"))
+						.build())
+				.addModule(new StellaFeatures()
+						.withMaster()
+						.withRestMasterPlugin(
+								Param.of("timeoutSeconds", "20"))
+						.build())
+				.build();
 	}
 
 	/**

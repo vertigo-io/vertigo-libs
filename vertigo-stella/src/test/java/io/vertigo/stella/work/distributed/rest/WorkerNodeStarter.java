@@ -18,15 +18,13 @@
  */
 package io.vertigo.stella.work.distributed.rest;
 
-import java.util.Properties;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
 
 /**
  * @author npiedeloup
@@ -44,10 +42,9 @@ public class WorkerNodeStarter {
 		//-----
 		final long timeToWait = args.length == 2 ? Long.parseLong(args[1]) * 1000L : 5 * 60 * 1000L;
 
-		final String managersXmlFileName = args[0];
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(WorkerNodeStarter.class, new Properties(), managersXmlFileName)
-				.build();
+		final String appConfigClassName = args[0];
+		final StellaAppConfigClientNode appConfigClientNode = ClassUtil.newInstance(ClassUtil.classForName(appConfigClassName, StellaAppConfigClientNode.class));
+		final AppConfig appConfig = appConfigClientNode.getAppConfig();
 
 		LOG.info("Node starting");
 		run(appConfig, timeToWait);

@@ -9,6 +9,7 @@ import io.vertigo.stella.master.MasterManager;
 import io.vertigo.stella.plugins.work.redis.master.RedisMasterPlugin;
 import io.vertigo.stella.plugins.work.redis.workers.RedisWorkersPlugin;
 import io.vertigo.stella.plugins.work.rest.master.RestMasterPlugin;
+import io.vertigo.stella.plugins.work.rest.master.RestMasterWebService;
 import io.vertigo.stella.plugins.work.rest.workers.RestWorkersPlugin;
 import io.vertigo.stella.workers.WorkersManager;
 
@@ -40,7 +41,9 @@ public final class StellaFeatures extends Features<StellaFeatures> {
 
 	@Feature("master.rest")
 	public StellaFeatures withRestMasterPlugin(final Param... params) {
-		getModuleConfigBuilder().addPlugin(RestMasterPlugin.class, params);
+		getModuleConfigBuilder()
+				.addPlugin(RestMasterPlugin.class, params)
+				.addComponent(RestMasterWebService.class);
 		return this;
 	}
 
