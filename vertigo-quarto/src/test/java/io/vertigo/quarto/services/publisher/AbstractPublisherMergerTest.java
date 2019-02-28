@@ -20,6 +20,7 @@ package io.vertigo.quarto.services.publisher;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -34,8 +35,10 @@ import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.Home;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.impl.services.publisher.PublisherDataUtil;
 import io.vertigo.quarto.services.publisher.data.domain.Address;
@@ -47,6 +50,7 @@ import io.vertigo.quarto.services.publisher.data.domain.Ville;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.services.publisher.model.PublisherData;
 import io.vertigo.quarto.services.publisher.model.PublisherNode;
+import io.vertigo.util.TempFile;
 
 /**
  * Test de l'implémentation standard.
@@ -64,6 +68,8 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 	private PublisherManager publisherManager;
 	@Inject
 	private ResourceManager resourceManager;
+	@Inject
+	private FileManager fileManager;
 
 	/**
 	 * @return Extension du model utilisé
@@ -221,6 +227,24 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 		Assertions.assertNotNull(result);
 	}
 
+	@Test
+	public void testMergerImage() throws IOException {
+		final PublisherMock reportData = createTestPublisher();
+
+		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
+		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
+
+		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelImage." + getExtension());
+		final VFile image = createVFile(fileManager, "/" + DATA_PACKAGE + "logo.jpg", getClass());
+		publisherData.getRootNode().setImage("LOGO", image);
+		//
+		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionImage." + getExtension(), modelFileURL, publisherData);
+		if (KEEP_OUTPUT_FILE) {
+			save(result);
+		}
+		Assertions.assertNotNull(result);
+	}
+
 	//	/**
 	//	 */
 	//	public void testMergerImageJpg() {
@@ -253,7 +277,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 	//		assertTrue(true);
 	//	}
 
-	private static PublisherMock createTestPublisher() {
+	protected static PublisherMock createTestPublisher() {
 		final PublisherMock reportData = new PublisherMock();
 		reportData.setTitre("Mon titre");
 		reportData.setNom("BITUM");
@@ -295,7 +319,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 	//		return reportData;
 	//	}
 
-	private static PublisherData createPublisherData(final String definitionName) {
+	protected static PublisherData createPublisherData(final String definitionName) {
 		final PublisherDataDefinition publisherDataDefinition = Home.getApp().getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
 		Assertions.assertNotNull(publisherDataDefinition);
 
@@ -310,6 +334,26 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 			FileUtil.copy(result.createInputStream(), new File(result.getFileName()));
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
+		}
+	}
+
+	private static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) throws IOException {
+		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
+			Assertion.checkNotNull(in, "fichier non trouvé : {0}", fileName);
+			final String fileExtension = FileUtil.getFileExtension(fileName);
+			final File file = new TempFile("tmp", '.' + fileExtension);
+			FileUtil.copy(in, file);
+
+			final String mimeType;
+			if ("jpg".equalsIgnoreCase(fileExtension)) {
+				mimeType = "image/jpeg";
+			} else if ("png".equalsIgnoreCase(fileExtension)) {
+				mimeType = "image/png";
+			} else {
+				throw new IllegalArgumentException("File type not supported (" + fileExtension + ")");
+			}
+
+			return fileManager.createFile(file.getName(), mimeType, file);
 		}
 	}
 

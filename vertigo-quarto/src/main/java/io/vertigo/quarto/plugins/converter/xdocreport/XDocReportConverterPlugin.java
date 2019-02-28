@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.Type3Font;
 
@@ -37,8 +39,8 @@ import fr.opensagres.xdocreport.converter.IConverter;
 import fr.opensagres.xdocreport.converter.Options;
 import fr.opensagres.xdocreport.converter.XDocConverterException;
 import fr.opensagres.xdocreport.core.document.DocumentKind;
+import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.impl.services.converter.ConverterPlugin;
@@ -51,6 +53,9 @@ import io.vertigo.util.TempFile;
  * @author jgarnier
  */
 public final class XDocReportConverterPlugin implements ConverterPlugin {
+
+	@Inject
+	private FileManager fileManager;
 
 	@Override
 	public VFile convertToFormat(final VFile file, final String targetFormat) {
@@ -67,6 +72,7 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 		final Options options = Options.getFrom(inputFormat).to(ConverterTypeTo.PDF);
 		final IConverter converter = ConverterRegistry.getRegistry().getConverter(options);
 		final SnapshotBuiltinFont snapshotBuiltinFont = new SnapshotBuiltinFont();
+
 		try (InputStream in = file.createInputStream()) {
 			String fileName = file.getFileName();
 			final int lastPeriod = fileName.lastIndexOf('.');
@@ -77,7 +83,7 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 			try (final OutputStream out = new FileOutputStream(resultFile)) {
 				converter.convert(in, out, options);
 			}
-			return new FSFile(resultFile.getName(), ConverterFormat.PDF.getTypeMime(), resultFile.toPath());
+			return fileManager.createFile(resultFile.getName(), ConverterFormat.PDF.getTypeMime(), resultFile.toPath());
 		} catch (final IOException | XDocConverterException e) {
 			throw WrappedException.wrap(e);
 		} finally {

@@ -98,7 +98,7 @@ public final class XDocReportConverterManagerTest extends AbstractTestCaseJU5 {
 		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
 			Assertion.checkNotNull(in, "fichier non trouvé : {0}", fileName);
 			final String fileExtension = FileUtil.getFileExtension(fileName);
-			final File file = new TempFile("tmp", '.' + fileExtension);
+			final File file = new TempFile("tmpTest", '.' + fileExtension);
 			FileUtil.copy(in, file);
 
 			final String mimeType;
@@ -110,7 +110,7 @@ public final class XDocReportConverterManagerTest extends AbstractTestCaseJU5 {
 				throw new IllegalArgumentException("File type not supported (" + fileExtension + ")");
 			}
 
-			return fileManager.createFile(file.getName(), mimeType, file);
+			return fileManager.createFile(file.getName(), mimeType, file.toPath());
 		}
 	}
 }

@@ -30,7 +30,7 @@ public final class PublisherMergerTest extends AbstractPublisherMergerTest {
 
 	/** {@inheritDoc} */
 	@Override
-	protected final String getExtension() {
+	protected String getExtension() {
 		return "odt";
 	}
 
