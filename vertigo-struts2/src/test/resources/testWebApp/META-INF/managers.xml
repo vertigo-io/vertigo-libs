@@ -28,7 +28,7 @@
 		</component>
 		<component api="VTransactionManager" class="io.vertigo.commons.impl.transaction.VTransactionManagerImpl" />
 
-		<component api="VSecurityManager" class="io.vertigo.persona.impl.security.VSecurityManagerImpl">
+		<component api="VSecurityManager" class="io.vertigo.account.impl.security.VSecurityManagerImpl">
 			<param name="userSessionClassName" value="io.vertigo.struts2.ui.TestUserSession" />
 		</component>
 
