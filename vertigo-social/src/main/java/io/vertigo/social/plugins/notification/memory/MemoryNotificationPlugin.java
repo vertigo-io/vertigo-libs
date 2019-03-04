@@ -102,7 +102,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	private List<Notification> obtainNotifications(final UID<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
-		final List<Notification> notifications = notificationsByAccountURI.putIfAbsent(accountURI, new ArrayList<>());
+		final List<Notification> notifications = notificationsByAccountURI.computeIfAbsent(accountURI, (uri) -> new ArrayList<>());
 		cleanTooOldNotifications(notifications);
 		return notifications;
 	}
