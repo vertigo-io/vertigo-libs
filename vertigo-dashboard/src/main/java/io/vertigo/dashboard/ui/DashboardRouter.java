@@ -97,7 +97,7 @@ public final class DashboardRouter {
 			final List<String> modules = Arrays.asList("commons", "dynamo", "vega", "vui");
 			final Map<String, Object> model = new HashMap<>();
 			model.put("modules", modules);
-			model.put("contextName", request.contextPath());
+			model.put("contextName", request.contextPath() != null ? request.contextPath() : "");
 			return render(response, "templates/home.ftl", model);
 		});
 
@@ -105,7 +105,7 @@ public final class DashboardRouter {
 			final String moduleName = request.params(":moduleName");
 			final DashboardModuleControler controler = DIInjector.newInstance(controlerMap.get(moduleName), app.getComponentSpace());
 			final Map<String, Object> model = controler.buildModel(app, moduleName);
-			model.put("contextName", request.contextPath());
+			model.put("contextName", request.contextPath() != null ? request.contextPath() : "");
 			return render(response, "templates/" + moduleName + ".ftl", model);
 		});
 

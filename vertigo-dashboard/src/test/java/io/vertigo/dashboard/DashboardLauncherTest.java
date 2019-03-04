@@ -18,14 +18,21 @@
  */
 package io.vertigo.dashboard;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.h2.Driver;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 
-import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.App;
+import io.restassured.RestAssured;
+import io.restassured.specification.ResponseSpecification;
+import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
@@ -33,18 +40,38 @@ import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dashboard.ui.DashboardRouter;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.database.timeseries.ClusteredMeasure;
+import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
 import io.vertigo.vega.VegaFeatures;
 
 @RunWith(JUnitPlatform.class)
-public class DashboardLauncherTest extends AbstractTestCaseJU5 {
+public class DashboardLauncherTest {
 
-	@Override
-	protected AppConfig buildAppConfig() {
+	private static AutoCloseableApp app;
+
+	static {
+		//RestAsssured init
+		RestAssured.port = 8080;
+	}
+
+	@BeforeAll
+	public static void setUp() {
+		app = new AutoCloseableApp(buildAppConfig());
+	}
+
+	@AfterAll
+	public static void tearDown() {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private static AppConfig buildAppConfig() {
 		return AppConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -84,6 +111,7 @@ public class DashboardLauncherTest extends AbstractTestCaseJU5 {
 						.withWebServicesApiPrefix(Param.of("apiPrefix", "/api"))
 						.build())
 				.addModule(new DashboardFeatures()
+						.withAnalytics(Param.of("appName", "dashboardtest"))
 						.build())
 				.addModule(
 						ModuleConfig.builder("metrics")
@@ -98,9 +126,6 @@ public class DashboardLauncherTest extends AbstractTestCaseJU5 {
 	@Test
 	@Disabled
 	public void server() {
-		final App app = getApp();
-		final DashboardRouter dashboardRouter = new DashboardRouter(app);
-		dashboardRouter.route();
 		while (!Thread.interrupted()) {
 			try {
 				Thread.sleep(10 * 1000);
@@ -108,6 +133,109 @@ public class DashboardLauncherTest extends AbstractTestCaseJU5 {
 				e.printStackTrace();
 			}
 		}
+
+	}
+
+	@Test
+	public void testSimpleSeries() {
+		final Map<String, Object> params = new HashMap<>();
+
+		params.put("measures", Arrays.asList("duration:mean"));
+		params.put("dataFilter", DataFilter.builder("webservices").addFilter("location", "*").build());
+		params.put("timeFilter", TimeFilter.builder("now() - 1w", "now() + 1w").withTimeDim("1h").build());
+
+		RestAssured
+				.given()
+				.body(params)
+				.expect()
+				.statusCode(200)
+				.when()
+				.post("/api/dashboard/data/series");
+	}
+
+	@Test
+	public void testClusteredSeries() {
+		final Map<String, Object> params = new HashMap<>();
+
+		params.put("clusteredMeasure", new ClusteredMeasure("duration:mean", Arrays.asList(500, 200, 100, 50)));
+		params.put("dataFilter", DataFilter.builder("webservices").addFilter("location", "*").build());
+		params.put("timeFilter", TimeFilter.builder("now() - 1w", "now() + 1w").withTimeDim("1h").build());
+
+		RestAssured
+				.given()
+				.body(params)
+				.expect()
+				.statusCode(200)
+				.when()
+				.post("/api/dashboard/data/series/clustered");
+	}
+
+	@Test
+	public void testTabularData() {
+		final Map<String, Object> params = new HashMap<>();
+
+		params.put("measures", Arrays.asList("duration:mean"));
+		params.put("dataFilter", DataFilter.builder("webservices").addFilter("location", "*").build());
+		params.put("timeFilter", TimeFilter.builder("now() - 1w", "now() + 1w").withTimeDim("1h").build());
+		params.put("groupBy", "name");
+
+		RestAssured
+				.given()
+				.body(params)
+				.expect()
+				.statusCode(200)
+				.when()
+				.post("/api/dashboard/data/tabular");
+	}
+
+	@Test
+	public void testTops() {
+		final Map<String, Object> params = new HashMap<>();
+
+		params.put("measures", Arrays.asList("duration:mean"));
+		params.put("dataFilter", DataFilter.builder("webservices").addFilter("location", "*").build());
+		params.put("timeFilter", TimeFilter.builder("now() - 1w", "now() + 1w").withTimeDim("1h").build());
+		params.put("groupBy", "name");
+		params.put("maxRows", 10);
+
+		RestAssured
+				.given()
+				.body(params)
+				.expect()
+				.statusCode(200)
+				.when()
+				.post("/api/dashboard/data/tabular/tops");
+	}
+
+	@Test
+	public void testUiSimple() {
+
+		loggedAndExpect()
+				.when()
+				.get("/dashboard/");
+
+		loggedAndExpect()
+				.when()
+				.get("/dashboard/modules/commons");
+
+		loggedAndExpect()
+				.when()
+				.get("/dashboard/modules/dynamo");
+
+		loggedAndExpect()
+				.when()
+				.get("/dashboard/modules/vega");
+
+		loggedAndExpect()
+				.when()
+				.get("/dashboard/modules/vui");
+	}
+
+	private static ResponseSpecification loggedAndExpect() {
+		return RestAssured.given()
+				.expect()
+				.statusCode(200)
+				.log().ifValidationFails();
 	}
 
 }

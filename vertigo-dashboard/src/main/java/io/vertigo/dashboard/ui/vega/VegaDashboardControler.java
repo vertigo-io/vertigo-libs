@@ -47,13 +47,15 @@ public final class VegaDashboardControler extends AbstractDashboardModuleControl
 		final TimedDatas numOfTechnicalExceptions = getDataProvider().getTimeSeries(Arrays.asList("duration:count"), dataFilterExceptions, timeFilter);
 
 		double count = 0;
-		double meanDuration = 0;
+		final double meanDuration = 0;
 		double exceptionRate = 0;
 		if (!countAndMeanDuration.getTimedDataSeries().isEmpty()) {
 			// we have one and only one result
 			final Map<String, Object> values = countAndMeanDuration.getTimedDataSeries().get(0).getValues();
-			count = (Double) values.get("duration:count");
-			meanDuration = (Double) values.get("duration:mean");
+			final Object meanDurationValue = values.get("duration:count");
+			if (meanDurationValue != null) {
+				count = (Double) meanDurationValue;
+			}
 		}
 		if (count > 0 && !numOfTechnicalExceptions.getTimedDataSeries().isEmpty()) {
 			// we have one and only one result
