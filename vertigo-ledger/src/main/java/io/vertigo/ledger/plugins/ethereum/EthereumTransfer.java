@@ -39,7 +39,6 @@ final class EthereumTransfer extends Transfer {
 
 	private static final BigInteger GAS_UNIT_PER_BIT = BigInteger.valueOf(68L);
 	private static final BigDecimal GAS_LIMIT_MARGIN = BigDecimal.valueOf(1.10);
-	
 
 	EthereumTransfer(final Web3j web3j, final TransactionManager transactionManager) {
 		super(web3j, transactionManager);
@@ -97,7 +96,7 @@ final class EthereumTransfer extends Transfer {
 		final BigDecimal weiValue = Convert.toWei(value, unit);
 		if (!Numeric.isIntegerValue(weiValue)) {
 			throw new UnsupportedOperationException(
-					"Non decimal Wei value provided: " + value + " " + unit.toString()
+					"Non decimal Wei value provided: " + value + " " + unit
 							+ " = " + weiValue + " Wei");
 		}
 

@@ -20,9 +20,9 @@ package io.vertigo.quarto.plugins.publisher.odt;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -96,7 +96,7 @@ final class ODTUtil {
 	 */
 	static File createODT(final ZipFile odtFile, final String contentXml, final String stylesXml, final Map<String, VFile> newImagesMap) throws IOException {
 		final File resultFile = new TempFile(TEMP_FILE_PREFIX, TEMP_FILE_SUFFIX);
-		try (final ZipOutputStream outputFichierOdt = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(resultFile)))) {
+		try (final ZipOutputStream outputFichierOdt = new ZipOutputStream(new BufferedOutputStream(Files.newOutputStream(resultFile.toPath())))) {
 			for (final ZipEntry zipEntry : Collections.list(odtFile.entries())) {
 				final String entryName = zipEntry.getName();
 				if (newImagesMap.containsKey(entryName)) {

@@ -53,7 +53,7 @@ public final class DataProviderImpl implements DataProvider {
 		Assertion.checkNotNull(appNameOpt);
 		Assertion.checkNotNull(timeSeriesDataBaseManager);
 		//---
-		appName = appNameOpt.orElse(Home.getApp().getConfig().getNodeConfig().getAppName());
+		appName = appNameOpt.orElseGet(() -> Home.getApp().getConfig().getNodeConfig().getAppName());
 		this.timeSeriesDataBaseManager = timeSeriesDataBaseManager;
 	}
 

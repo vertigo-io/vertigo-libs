@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -67,7 +68,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	/** Nom du composant. */
 	public static final String HEALTH_COMPONENT_NAME = "Mailer";
 
-	private static final String CHARSET_USED = "ISO-8859-1";
+	private final String charset;
 	private final FileManager fileManager;
 	private final String mailStoreProtocol;
 	private final String mailHost;
@@ -88,6 +89,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	 * @param mailPort port à utiliser (facultatif)
 	 * @param mailLogin Login à utiliser lors de la connexion au serveur mail (facultatif)
 	 * @param mailPassword mot de passe à utiliser lors de la connexion au serveur mail (facultatif)
+	 * @param charsetOpt charset to use, default is ISO-8859-1
 	 */
 	@Inject
 	public JavaxSendMailPlugin(
@@ -98,7 +100,8 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 			@Named("developmentMailTo") final String developmentMailTo,
 			@Named("port") final Optional<Integer> mailPort,
 			@Named("login") final Optional<String> mailLogin,
-			@Named("pwd") final Optional<String> mailPassword) {
+			@Named("pwd") final Optional<String> mailPassword,
+			@Named("charset") final Optional<String> charsetOpt) {
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkArgNotEmpty(mailStoreProtocol);
 		Assertion.checkArgNotEmpty(mailHost);
@@ -120,6 +123,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 		this.mailPort = mailPort;
 		this.mailLogin = mailLogin;
 		this.mailPassword = mailPassword;
+		charset = charsetOpt.orElse(StandardCharsets.ISO_8859_1.name());
 	}
 
 	/** {@inheritDoc} */
@@ -147,7 +151,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 		setToAddress(mail.getToList(), message);
 		setCcAddress(mail.getCcList(), message);
 		if (mail.getSubject() != null) {
-			message.setSubject(MimeUtility.encodeWord(mail.getSubject(), CHARSET_USED, "Q"));
+			message.setSubject(MimeUtility.encodeWord(mail.getSubject(), charset, "Q"));
 		}
 		message.setHeader("X-Mailer", "Java");
 		message.setSentDate(new Date());
@@ -260,23 +264,23 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 		message.setRecipients(type, addresses);
 	}
 
-	private static void setBodyContent(final String textContent, final String htmlContent, final Part bodyPart) throws MessagingException {
+	private void setBodyContent(final String textContent, final String htmlContent, final Part bodyPart) throws MessagingException {
 		Assertion.checkArgument(textContent != null || htmlContent != null, "Le mail n'a pas de contenu, ni en text, ni en html");
 		Assertion.checkNotNull(bodyPart);
 		//-----
 		if (textContent != null && htmlContent != null) {
 			final Multipart multipart = new MimeMultipart("alternative");
 			final BodyPart plainMessageBodyPart = new MimeBodyPart();
-			plainMessageBodyPart.setContent(textContent, "text/plain; charset=" + CHARSET_USED);
+			plainMessageBodyPart.setContent(textContent, "text/plain; charset=" + charset);
 			multipart.addBodyPart(plainMessageBodyPart);
 			final BodyPart htmlMessageBodyPart = new MimeBodyPart();
-			htmlMessageBodyPart.setContent(htmlContent, "text/html; charset=" + CHARSET_USED);
+			htmlMessageBodyPart.setContent(htmlContent, "text/html; charset=" + charset);
 			multipart.addBodyPart(htmlMessageBodyPart);
 			bodyPart.setContent(multipart);
 		} else if (textContent != null) {
 			bodyPart.setText(textContent);
 		} else if (htmlContent != null) {
-			bodyPart.setContent(htmlContent, "text/html; charset=" + CHARSET_USED);
+			bodyPart.setContent(htmlContent, "text/html; charset=" + charset);
 		}
 	}
 

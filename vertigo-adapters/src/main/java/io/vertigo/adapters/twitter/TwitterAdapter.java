@@ -41,7 +41,7 @@ public class TwitterAdapter implements Plugin {
 	public static void sendMessage(final String message) {
 		try {
 			final Status status = TWITTER.updateStatus("Message from TwitterNotificationPlugin:" + message);
-			LOGGER.info("Successfully updated the status to [" + (status != null ? status.getText() : "") + "].");
+			LOGGER.info("Successfully updated the status to [{}].", status != null ? status.getText() : "");
 		} catch (final TwitterException e) {
 			LOGGER.error("Error while sending new status.", e);
 			throw WrappedException.wrap(e);

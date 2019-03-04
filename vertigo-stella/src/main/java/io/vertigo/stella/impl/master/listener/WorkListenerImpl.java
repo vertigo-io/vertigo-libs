@@ -37,19 +37,19 @@ public final class WorkListenerImpl implements WorkListener {
 
 	private static void logWorkStart(final String workName) {
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Execution tache : " + workName);
+			LOGGER.debug("Execution tache :  {}", workName);
 		}
 	}
 
 	private static void logWorkFinish(final String workName, final long elapsedTime, final boolean success) {
 		if (LOGGER_PERFORMANCE.isInfoEnabled()) {
-			LOGGER_PERFORMANCE.info(">> Tache : " + workName + " : time = " + elapsedTime);
+			LOGGER_PERFORMANCE.info(">> Tache : {} : time = {}", workName, elapsedTime);
 		}
 		if (LOGGER.isInfoEnabled()) {
 			if (success) {
-				LOGGER.info("Execution tache : " + workName + " reussie en  ( " + elapsedTime + " ms)");
+				LOGGER.info("Execution tache : {} reussie en  ( {} ms)", workName, elapsedTime);
 			} else {
-				LOGGER.info("Execution tache : " + workName + " interrompue apres ( " + elapsedTime + " ms)");
+				LOGGER.info("Execution tache : {} interrompue apres ( {} ms)", workName, elapsedTime);
 			}
 		}
 	}

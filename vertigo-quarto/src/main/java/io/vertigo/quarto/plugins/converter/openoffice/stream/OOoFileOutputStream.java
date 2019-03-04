@@ -19,8 +19,8 @@
 package io.vertigo.quarto.plugins.converter.openoffice.stream;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 
 import com.sun.star.io.IOException;
 import com.sun.star.io.XOutputStream;
@@ -32,17 +32,17 @@ import io.vertigo.lang.Assertion;
  * @author tchassagnette
  */
 public final class OOoFileOutputStream implements XOutputStream {
-	private final FileOutputStream fileOutputStream;
+	private final OutputStream fileOutputStream;
 
 	/**
 	 * Constructor.
 	 * @param file Fichier
-	 * @throws FileNotFoundException Fichier introuvable
+	 * @throws java.io.IOException
 	 */
-	public OOoFileOutputStream(final File file) throws FileNotFoundException {
+	public OOoFileOutputStream(final File file) throws java.io.IOException {
 		Assertion.checkNotNull(file);
 		//-----
-		fileOutputStream = new FileOutputStream(file);
+		fileOutputStream = Files.newOutputStream(file.toPath());
 	}
 
 	//

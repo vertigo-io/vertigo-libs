@@ -75,7 +75,7 @@ public class DashboardLauncherTest extends AbstractTestCaseJU5 {
 						.withESEmbedded(
 								Param.of("home", "io/vertigo/dashboard/search/indexconfig"),
 								Param.of("config.file", "io/vertigo/dashboard/search/indexconfig/elasticsearch.yml"),
-								Param.of("envIndex", "TU_TEST"),
+								Param.of("envIndex", "TU_TEST_"),
 								Param.of("rowsPerQuery", "50"))
 						.build())
 				.addModule(new VegaFeatures()

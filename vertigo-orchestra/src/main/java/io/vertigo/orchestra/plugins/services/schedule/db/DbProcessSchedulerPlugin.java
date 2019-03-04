@@ -281,7 +281,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 			final CronExpression cronExpression = new CronExpression(processDefinition.getTriggeringStrategy().getCronExpression().get());
 
 			if (!lastPlanificationOption.isPresent()) {
-				final Instant compatibleNow = Instant.now().plusMillis(planningPeriodSeconds / 2 * 1000);// Normalement ca doit être bon quelque soit la synchronisation entre les deux timers (même fréquence)
+				final Instant compatibleNow = Instant.now().plusMillis(planningPeriodSeconds / 2L * 1000);// Normalement ca doit être bon quelque soit la synchronisation entre les deux timers (même fréquence)
 				return Optional.of(cronExpression.getNextValidTimeAfter(compatibleNow));
 			}
 			final OProcessPlanification lastPlanification = lastPlanificationOption.get();
@@ -299,7 +299,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	private List<ProcessDefinition> getAllScheduledProcesses() {
 		return definitionManager.getAllProcessDefinitionsByType(getHandledProcessType()).stream()
-				.filter(processDefinition -> processDefinition.isActive())// We only want actives
+				.filter(ProcessDefinition::isActive)// We only want actives
 				.filter(processDefinition -> processDefinition.getTriggeringStrategy().getCronExpression().isPresent())// We only want the processes to schedule
 				.collect(Collectors.toList());
 	}

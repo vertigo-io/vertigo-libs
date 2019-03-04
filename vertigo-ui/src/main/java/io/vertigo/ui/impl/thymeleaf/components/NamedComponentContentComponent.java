@@ -29,7 +29,6 @@ import io.vertigo.lang.Assertion;
 public final class NamedComponentContentComponent {
 
 	private final IModel innerModel;
-	private final IElementTag firstLevelTag;
 	private final String name;
 	private final boolean elementTag;
 	private final boolean standaloneTag;
@@ -40,7 +39,7 @@ public final class NamedComponentContentComponent {
 		Assertion.checkNotNull(innerModel);
 		//-----
 		this.innerModel = innerModel;
-		firstLevelTag = (IElementTag) innerModel.get(0);
+		final IElementTag firstLevelTag = (IElementTag) innerModel.get(0);
 		name = firstLevelTag.getElementDefinition().getElementName().getElementName();
 		elementTag = firstLevelTag instanceof IElementTag;
 		standaloneTag = firstLevelTag instanceof IStandaloneElementTag;

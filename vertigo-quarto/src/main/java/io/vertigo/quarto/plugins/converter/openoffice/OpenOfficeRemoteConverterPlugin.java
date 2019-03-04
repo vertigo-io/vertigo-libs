@@ -70,7 +70,7 @@ public final class OpenOfficeRemoteConverterPlugin extends AbstractOpenOfficeCon
 		final XOutputStream outputStream = new OOoFileOutputStream(outputFile);
 		try {
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Storing to " + outputFile.getAbsolutePath());
+				LOGGER.debug("Storing to {}", outputFile.getAbsolutePath());
 			}
 			final PropertyValue[] fileProps = getFileProperties(targetFormat, outputStream);
 			xStorable.storeToURL("private:stream", fileProps);
@@ -88,7 +88,7 @@ public final class OpenOfficeRemoteConverterPlugin extends AbstractOpenOfficeCon
 		final ConverterFormat docType = ConverterFormat.valueOf(inputExtensionStr);
 
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Openning document... " + inputUrl);
+			LOGGER.debug("Openning document... {}", inputUrl);
 		}
 		final XInputStream inputStream = new OOoFileInputStream(inputFile);
 		try {

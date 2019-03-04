@@ -105,7 +105,7 @@ final class RestQueueServer {
 			}
 		}
 		if (!deadNodes.isEmpty()) {
-			LOG.warn("Stopped nodes detected : " + deadNodes);
+			LOG.warn("Stopped nodes detected : {}", deadNodes);
 			for (final RunningWorkInfos runningWorkInfos : runningWorkInfosMap.values()) {
 				if (deadNodes.contains(runningWorkInfos.getNodeUID())) {
 					putWorkItem(runningWorkInfos.getWorkItem());
@@ -132,7 +132,7 @@ final class RestQueueServer {
 					final WaitingWorkInfos waitingWorkInfos = it.next();
 					if (waitingWorkInfos.getWaitingAge() > deadWorkTypeTimeoutSec * 1000) {
 						it.remove();
-						LOG.info("waiting timeout (" + waitingWorkInfos.getWorkItem().getId() + ")");
+						LOG.info("waiting timeout ({})", waitingWorkInfos.getWorkItem().getId());
 						resultQueue.add(new WorkResult(waitingWorkInfos.getWorkItem().getId(), null, new IOException(
 								"Timeout workId " + waitingWorkInfos.getWorkItem().getId() + " after " + deadWorkTypeTimeoutSec + "s : No active node for this workType (" + workType + ")")));
 					}
@@ -183,10 +183,10 @@ final class RestQueueServer {
 			final byte[] serializedWorkItem = codecManager.getCompressedSerializationCodec().encode((Serializable) workItem.getWork());
 			final String base64WorkItem = codecManager.getBase64Codec().encode(serializedWorkItem);
 			sendPack = new String[] { workItem.getId(), base64WorkItem };
-			LOG.info("pollWork(" + workType + "," + nodeId + ") : 1 Work");
+			LOG.info("pollWork({},{}) : 1 Work", workType, nodeId);
 		} else {
 			sendPack = new String[] {}; //vide si pas de tache en attente
-			LOG.info("pollWork(" + workType + "," + nodeId + ") : no Work");
+			LOG.info("pollWork({},{}) : no Work", workType, nodeId);
 		}
 		return sendPack;
 	}
@@ -196,7 +196,7 @@ final class RestQueueServer {
 	 * @param workId work id
 	 */
 	void onStart(final String workId) {
-		LOG.info("onStart(" + workId + ")");
+		LOG.info("onStart({})", workId);
 	}
 
 	/**
@@ -206,7 +206,7 @@ final class RestQueueServer {
 	 * @param base64Result result base64 encoded
 	 */
 	void onDone(final boolean success, final String workId, final String base64Result) {
-		LOG.info("onDone " + success + " : (" + workId + ")");
+		LOG.info("onDone {} : ()", success, workId);
 		//-----
 		final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.remove(workId);
 		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", workId);
@@ -260,7 +260,7 @@ final class RestQueueServer {
 	<R, W> void putWorkItem(final WorkItem<R, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		if (!isActiveWorkType(workItem.getWorkEngineClass().getName())) {
-			LOG.warn("No active node for this workType : " + workItem.getWorkEngineClass().getName());
+			LOG.warn("No active node for this workType : {}", workItem.getWorkEngineClass().getName());
 		}
 		try {
 			obtainWorkQueue(workItem.getWorkEngineClass().getName()).put(new WaitingWorkInfos(workItem));

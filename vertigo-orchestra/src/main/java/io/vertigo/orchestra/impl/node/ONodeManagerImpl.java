@@ -51,7 +51,7 @@ public class ONodeManagerImpl implements ONodeManager {
 		Assertion.checkArgNotEmpty(nodeName);
 		// ---
 		final Optional<ONode> existingNode = nodeDAO.getNodeByName(nodeName);
-		final ONode node = existingNode.orElse(new ONode());
+		final ONode node = existingNode.orElseGet(ONode::new);
 		lastHeartBeatTime = Instant.now();
 		node.setHeartbeat(lastHeartBeatTime);
 		if (existingNode.isPresent()) {
@@ -69,7 +69,7 @@ public class ONodeManagerImpl implements ONodeManager {
 		final ONode node = nodeDAO.get(nodId);
 		if (!lastHeartBeatTime.equals(node.getHeartbeat())) {
 			//On ne veut pas d'exception, on ne fait que logger en ERROR
-			LOGGER.error("Two nodes running with same NodeName " + node.getName());
+			LOGGER.error("Two nodes running with same NodeName {}", node.getName());
 		}
 		lastHeartBeatTime = Instant.now();
 		node.setHeartbeat(lastHeartBeatTime);

@@ -71,7 +71,7 @@ public final class AccountWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	public VFile getAccountPhoto(@PathParam("id") final String id) {
 		return identityManager.getPhoto(UID.of(Account.class, id))
-				.orElse(identityManager.getDefaultPhoto());
+				.orElseGet(identityManager::getDefaultPhoto);
 	}
 
 	/**

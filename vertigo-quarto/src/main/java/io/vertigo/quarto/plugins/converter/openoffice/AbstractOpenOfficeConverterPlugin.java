@@ -174,7 +174,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 		final OpenOfficeConnection openOfficeConnection = new SocketOpenOfficeConnection(unoHost, unoPort);
 		try {
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("connecting to OpenOffice.org on  " + unoHost + ":" + unoPort);
+				LOGGER.debug("connecting to OpenOffice.org on {}:{} ", unoHost, unoPort);
 			}
 			openOfficeConnection.connect(); //Attention déjà observé : connection ne s'établissant pas et pas de timeout
 		} catch (final ConnectException connectException) {

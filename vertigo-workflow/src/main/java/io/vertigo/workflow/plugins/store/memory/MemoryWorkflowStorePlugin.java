@@ -128,7 +128,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 
 		final List<WfActivity> wfActivities = findActivitiesByWorkflowId(wfWorkflow);
 
-		final List<Long> wfActivitiesId = wfActivities.stream().map(a -> a.getWfaId()).collect(Collectors.toList());
+		final List<Long> wfActivitiesId = wfActivities.stream().map(WfActivity::getWfaId).collect(Collectors.toList());
 
 		final List<WfDecision> wfDecisions = new ArrayList<>();
 		for (final WfDecision wfDecision : inMemoryDecisionStore.values()) {
@@ -471,7 +471,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.vertigo.x.workflow.WorkflowStore#findAllRulesByWorkflowDefinitionId(
 	 * long)
@@ -490,7 +490,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.vertigo.x.workflow.WorkflowStore#
 	 * findAllConditionsByWorkflowDefinitionId(long)
 	 */
@@ -509,7 +509,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.vertigo.x.workflow.WorkflowStore#
 	 * findAllSelectorsByWorkflowDefinitionId(long)
 	 */
@@ -527,7 +527,7 @@ public final class MemoryWorkflowStorePlugin implements WorkflowStorePlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * io.vertigo.x.workflow.WorkflowStore#findAllFiltersByWorkflowDefinitionId(
 	 * long)

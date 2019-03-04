@@ -24,14 +24,13 @@ import io.vertigo.vega.impl.servlet.filter.AbstractFilter;
  * @author npiedeloup
  */
 public final class UnAutoCloseTagsFilter extends AbstractFilter {
-	private String[] tagsPrefix;
 	private final List<Pattern> tagsPrefixPattern = new ArrayList<>();
 
 	/** {@inheritDoc} */
 	@Override
 	public void doInit() {
 		final FilterConfig filterConfig = getFilterConfig();
-		tagsPrefix = Optional.ofNullable(filterConfig.getInitParameter("tagsPrefix")).orElse("q-*;v-*").split("\\s*;\\s*");
+		final String[] tagsPrefix = Optional.ofNullable(filterConfig.getInitParameter("tagsPrefix")).orElse("q-*;v-*").split("\\s*;\\s*");
 		for (final String tagPrefix : tagsPrefix) {
 			final String preprocessedTagPrefix = tagPrefix.replace("*", "[^>\\s]+");
 			tagsPrefixPattern.add(Pattern.compile("<(" + preprocessedTagPrefix + ")(\\s[^>]*)?/>"));

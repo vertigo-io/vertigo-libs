@@ -67,7 +67,7 @@ public final class OpenOfficeLocalConverterPlugin extends AbstractOpenOfficeConv
 		final PropertyValue[] storeProps = getFileProperties(targetFormat);
 		final XStorable xStorable = UnoRuntime.queryInterface(XStorable.class, xDoc);
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Storing to " + outputUrl);
+			LOGGER.debug("Storing to {}", outputUrl);
 		}
 		xStorable.storeToURL(outputUrl, storeProps);
 	}
@@ -83,7 +83,7 @@ public final class OpenOfficeLocalConverterPlugin extends AbstractOpenOfficeConv
 		final PropertyValue[] loadProps = getFileProperties(inputDocType);
 
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Openning document... " + inputUrl);
+			LOGGER.debug("Openning document... {}", inputUrl);
 		}
 		final XComponent xDoc = openOfficeConnection.getDesktop().loadComponentFromURL(inputUrl, "_blank", 0, loadProps);
 		Assertion.checkNotNull(xDoc, "Le document n''a pas été chargé : {0}", inputUrl);

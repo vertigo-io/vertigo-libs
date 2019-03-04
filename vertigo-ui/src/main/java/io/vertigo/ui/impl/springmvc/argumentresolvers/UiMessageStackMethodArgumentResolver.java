@@ -35,7 +35,7 @@ public final class UiMessageStackMethodArgumentResolver implements HandlerMethod
 	}
 
 	@Override
-	public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) throws Exception {
+	public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
 		return UiRequestUtil.obtainCurrentUiMessageStack();
 	}
 

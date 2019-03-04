@@ -293,7 +293,7 @@ final class XLSExporter {
 			} else if (value instanceof Boolean) {
 				final Boolean bValue = (Boolean) value;
 				//cell.setCellValue(bValue.booleanValue() ? "Oui" : "Non");
-				cell.setCellValue(domain.valueToString(bValue.booleanValue()));
+				cell.setCellValue(domain.valueToString(bValue));
 			} else if (value instanceof Date) {
 				final Date dateValue = (Date) value;
 				// sans ce style "date" les dates apparaîtraient au format

@@ -19,7 +19,8 @@
 package io.vertigo.quarto.impl.services.export;
 
 import java.io.File;
-import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -99,7 +100,7 @@ public final class ExportManagerImpl implements ExportManager {
 		final ExporterPlugin exporterPlugin = getExporterPlugin(export.getFormat());
 
 		final File file = new TempFile("csvGenerated", "." + export.getFormat().name().toLowerCase(Locale.ENGLISH));
-		try (final FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+		try (final OutputStream fileOutputStream = Files.newOutputStream(file.toPath())) {
 			exporterPlugin.exportData(export, fileOutputStream);
 		} catch (final Exception e) {
 			if (!file.delete()) {
@@ -107,7 +108,7 @@ public final class ExportManagerImpl implements ExportManager {
 			}
 			throw e;
 		}
-		return fileManager.createFile(export.getFileName() + "." + export.getFormat().name().toLowerCase(Locale.ENGLISH), export.getFormat().getTypeMime(), file);
+		return fileManager.createFile(export.getFileName() + "." + export.getFormat().name().toLowerCase(Locale.ENGLISH), export.getFormat().getTypeMime(), file.toPath());
 	}
 
 }

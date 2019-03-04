@@ -38,10 +38,6 @@ import io.vertigo.stella.workers.WorkersManager;
 public final class WorkersManagerImpl implements WorkersManager, Activeable {
 	private final List<Thread> dispatcherThreads = new ArrayList<>();
 	private final WorkersCoordinator workersCoordinator;
-	/**
-	 * Types of work, that can be done by this worker
-	 */
-	private final Map<String, Integer> workTypes;
 
 	/**
 	 * Constructeur.
@@ -58,10 +54,10 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 		Assertion.checkArgNotEmpty(workTypes);
 		//-----
 		workersCoordinator = new WorkersCoordinator(workersCount);
-		this.workTypes = WorkDispatcherConfUtil.readWorkTypeConf(workTypes);
+		final Map<String, Integer> workTypesMap = WorkDispatcherConfUtil.readWorkTypeConf(workTypes);
 		//		workListener = new WorkListenerImpl(/*analyticsManager*/);
 		//-----
-		for (final Map.Entry<String, Integer> entry : this.workTypes.entrySet()) {
+		for (final Map.Entry<String, Integer> entry : workTypesMap.entrySet()) {
 			final String workType = entry.getKey();
 			final WorkDispatcher worker = new WorkDispatcher(nodeId, workType, workersCoordinator, workerPlugin);
 			final String workTypeName = workType.substring(workType.lastIndexOf('.') + 1);

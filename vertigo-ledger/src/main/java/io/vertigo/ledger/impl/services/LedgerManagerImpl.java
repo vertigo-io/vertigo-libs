@@ -19,6 +19,7 @@
 package io.vertigo.ledger.impl.services;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 
 import javax.inject.Inject;
 
@@ -35,7 +36,6 @@ public final class LedgerManagerImpl implements LedgerManager {
 
 	private final CodecManager codecManager;
 	private final LedgerPlugin ledgerPlugin;
-	
 
 	@Inject
 	public LedgerManagerImpl(final CodecManager codecManager, final LedgerPlugin ledgerPlugin) {
@@ -46,13 +46,12 @@ public final class LedgerManagerImpl implements LedgerManager {
 		this.ledgerPlugin = ledgerPlugin;
 	}
 
-
 	@Override
 	public String sendData(final String data) {
 		Assertion.checkArgNotEmpty(data);
 		//---
 		//final String hash = codecManager.getHexEncoder().encode(codecManager.getSha256Encoder().encode(data.getBytes()));
-		final String hash = codecManager.getHexEncoder().encode(data.getBytes());
+		final String hash = codecManager.getHexEncoder().encode(data.getBytes(StandardCharsets.UTF_8));
 		LOGGER.info("Sending transaction to the legder... Buffer:{}", hash);
 		ledgerPlugin.sendData(hash);
 		LOGGER.info("Transaction successfully written on the legder.");

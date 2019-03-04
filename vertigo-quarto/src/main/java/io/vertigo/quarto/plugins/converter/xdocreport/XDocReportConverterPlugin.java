@@ -18,10 +18,10 @@
  */
 package io.vertigo.quarto.plugins.converter.xdocreport;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -80,7 +80,7 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 				fileName = fileName.substring(0, lastPeriod);
 			}
 			final TempFile resultFile = new TempFile(fileName, '.' + targetFormat.toLowerCase(Locale.ENGLISH));
-			try (final OutputStream out = new FileOutputStream(resultFile)) {
+			try (final OutputStream out = Files.newOutputStream(resultFile.toPath())) {
 				converter.convert(in, out, options);
 			}
 			return fileManager.createFile(resultFile.getName(), ConverterFormat.PDF.getTypeMime(), resultFile.toPath());

@@ -29,13 +29,13 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.attoparser.AbstractMarkupHandler;
 import org.attoparser.MarkupParser;
 import org.attoparser.ParseException;
 import org.attoparser.config.ParseConfiguration;
 import org.attoparser.dom.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.thymeleaf.standard.StandardDialect;
 import org.thymeleaf.templateresource.ITemplateResource;
 
@@ -43,7 +43,7 @@ import io.vertigo.lang.Assertion;
 
 public class NamedComponentParser extends AbstractMarkupHandler {
 
-	private static final Logger LOG = LoggerFactory.getLogger(NamedComponentParser.class);
+	private static final Logger LOG = LogManager.getLogger(NamedComponentParser.class);
 
 	protected static final String NAME_ATTRIBUTE = "alias";
 	protected static final String SELECTOR_ATTRIBUTE = "selector";

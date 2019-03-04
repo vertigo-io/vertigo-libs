@@ -21,12 +21,12 @@ package io.vertigo.quarto.plugins.publisher.docx;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -240,7 +240,7 @@ final class DOCXUtil {
 	 */
 	public static File createDOCX(final ZipFile docxFile, final Map<String, String> newXmlContents) throws IOException {
 		final File resultFile = new TempFile(TEMP_FILE_PREFIX, TEMP_FILE_SUFFIX);
-		try (final ZipOutputStream outputFichierDOCX = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(resultFile)))) {
+		try (final ZipOutputStream outputFichierDOCX = new ZipOutputStream(new BufferedOutputStream(Files.newOutputStream(resultFile.toPath())))) {
 			for (final ZipEntry zipEntry : Collections.list(docxFile.entries())) {
 				final String entryName = zipEntry.getName();
 				if (newXmlContents.containsKey(entryName)) {

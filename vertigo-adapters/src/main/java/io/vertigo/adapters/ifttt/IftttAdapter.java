@@ -71,9 +71,9 @@ public class IftttAdapter {
 		final Response response = request.post(Entity.<MakerEventMetadatas> entity(event.getEventMetadatas(), MediaType.APPLICATION_JSON));
 
 		if (response.getStatusInfo().getFamily() == Family.SUCCESSFUL) {
-			LOGGER.info("Success! " + response.getStatus());
+			LOGGER.info("Success! {}", response.getStatus());
 		} else {
-			LOGGER.error("Error! " + response.getStatus());
+			LOGGER.error("Error! {}", response.getStatus());
 			throw new VSystemException("Error while sending Ifttt maker event:" + response.getStatus());
 		}
 	}

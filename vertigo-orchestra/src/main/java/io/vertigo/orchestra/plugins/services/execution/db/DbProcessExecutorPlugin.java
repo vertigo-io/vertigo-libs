@@ -558,7 +558,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		// ---
 		lockActivityExecution(aceId);
 		// we need at most one workspace in and one workspace out
-		final OActivityWorkspace activityWorkspace = activityWorkspaceDAO.getActivityWorkspace(aceId, in).orElse(new OActivityWorkspace());
+		final OActivityWorkspace activityWorkspace = activityWorkspaceDAO.getActivityWorkspace(aceId, in).orElseGet(OActivityWorkspace::new);
 		activityWorkspace.setAceId(aceId);
 		activityWorkspace.setIsIn(in);
 		activityWorkspace.setWorkspace(mapCodec.encode(workspace.asMap()));
@@ -635,7 +635,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		Assertion.checkNotNull(activityLogger);
 		// ---
 		// we need at most on log per activityExecution
-		final OActivityLog activityLog = activityLogDAO.getActivityLogByAceId(aceId).orElse(new OActivityLog());
+		final OActivityLog activityLog = activityLogDAO.getActivityLogByAceId(aceId).orElseGet(OActivityLog::new);
 		activityLog.setAceId(aceId);
 		final String log = new StringBuilder(activityLog.getLog() == null ? "" : activityLog.getLog()).append(activityLogger.getLogAsString())//
 				.append("ResultWorkspace : ").append(mapCodec.encode(resultWorkspace.asMap())).append("\n")//
@@ -660,7 +660,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private void handleDeadNodeProcesses() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			// We wait two heartbeat to be sure that the node is dead
-			final Instant maxDate = Instant.now().minusSeconds(2 * executionPeriodSeconds);
+			final Instant maxDate = Instant.now().minusSeconds(2L * executionPeriodSeconds);
 			executionPAO.handleProcessesOfDeadNodes(maxDate);
 			transaction.commit();
 		}
