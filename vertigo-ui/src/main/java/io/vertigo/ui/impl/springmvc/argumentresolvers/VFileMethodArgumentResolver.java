@@ -40,7 +40,11 @@ public class VFileMethodArgumentResolver implements HandlerMethodArgumentResolve
 	}
 
 	@Override
-	public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) throws Exception {
+	public Object resolveArgument(
+			final MethodParameter parameter,
+			final ModelAndViewContainer mavContainer,
+			final NativeWebRequest webRequest,
+			final WebDataBinderFactory binderFactory) throws Exception {
 		final HttpServletRequest request = getRequest(webRequest);
 		final Named requestParam = parameter.getParameterAnnotation(Named.class);
 		Assertion.checkNotNull(requestParam, "File name wasnt't found. Use @RequestParam('myFileRequestParam') in your controller.");
@@ -52,7 +56,7 @@ public class VFileMethodArgumentResolver implements HandlerMethodArgumentResolve
 	 * @param webRequest the web request to create an input message from
 	 * @return the input message
 	 */
-	private HttpServletRequest getRequest(final NativeWebRequest webRequest) {
+	private static HttpServletRequest getRequest(final NativeWebRequest webRequest) {
 		final HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
 		Assert.state(servletRequest != null, "No HttpServletRequest");
 		return servletRequest;

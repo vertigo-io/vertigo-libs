@@ -54,6 +54,7 @@ import org.xml.sax.SAXException;
 import io.vertigo.geo.impl.services.geocoder.GeoCoderPlugin;
 import io.vertigo.geo.services.geocoder.GeoLocation;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 /**
  * @author spoitrenaud
@@ -83,7 +84,8 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 			@Named("proxyPort") final Optional<String> proxyPort) {
 		Assertion.checkNotNull(proxyHost);
 		Assertion.checkNotNull(proxyPort);
-		Assertion.checkArgument((proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()), "les deux paramètres host et port doivent être tous les deux remplis ou vides");
+		Assertion.checkArgument((proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()),
+				"les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		//-----
 		if (proxyHost.isPresent()) {
 			proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.get(), Integer.parseInt(proxyPort.get())));
@@ -102,7 +104,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			return doCreateConnection(url);
 		} catch (final IOException e) {
-			throw new RuntimeException("Erreur de connexion au service (HTTP)", e);
+			throw WrappedException.wrap(e, "Erreur de connexion au service (HTTP)");
 		}
 	}
 
@@ -134,7 +136,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			url = new URL(urlString);
 		} catch (final MalformedURLException e) {
-			throw new RuntimeException("Erreur lors de la creation de l'URL", e);
+			throw WrappedException.wrap(e, "Erreur lors de la creation de l'URL");
 		}
 
 		final HttpURLConnection connection = createConnection(url);
@@ -148,11 +150,11 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 			documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 			return documentBuilderFactory.newDocumentBuilder().parse(geocoderResultInputSource);
 		} catch (final IOException e) {
-			throw new RuntimeException("Erreur de connexion au service", e);
+			throw WrappedException.wrap(e, "Erreur de connexion au service");
 		} catch (final SAXException e) {
-			throw new RuntimeException("Erreur lors de la récupération des résultats de la requête", e);
+			throw WrappedException.wrap(e, "Erreur lors de la récupération des résultats de la requête");
 		} catch (final ParserConfigurationException e) {
-			throw new RuntimeException("Erreur de configuration du parseur XML", e);
+			throw WrappedException.wrap(e, "Erreur de configuration du parseur XML");
 		} finally {
 			connection.disconnect();
 		}
@@ -174,7 +176,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			return (NodeList) xpath.evaluate(xPathString, xml, XPathConstants.NODESET);
 		} catch (final XPathExpressionException ex) {
-			throw new RuntimeException("Erreur lors du Parsing XML", ex);
+			throw WrappedException.wrap(ex, "Erreur lors du Parsing XML");
 		}
 	}
 
@@ -193,7 +195,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			return (Node) xpath.evaluate(xPathString, xml, XPathConstants.NODE);
 		} catch (final XPathExpressionException ex) {
-			throw new RuntimeException("Erreur lors du Parsing XML", ex);
+			throw WrappedException.wrap(ex, "Erreur lors du Parsing XML");
 		}
 	}
 
@@ -210,7 +212,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 			transformer.transform(new DOMSource(doc), new StreamResult(sw));
 			return sw.toString();
 		} catch (final Exception ex) {
-			throw new RuntimeException("Error converting to String", ex);
+			throw WrappedException.wrap(ex, "Error converting to String");
 		}
 	}
 

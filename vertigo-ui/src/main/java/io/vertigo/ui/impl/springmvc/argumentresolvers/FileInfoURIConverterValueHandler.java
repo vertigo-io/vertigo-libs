@@ -59,7 +59,11 @@ public final class FileInfoURIConverterValueHandler extends AbstractMessageConve
 	}
 
 	@Override
-	public void handleReturnValue(final Object returnValue, final MethodParameter returnType, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest) throws Exception {
+	public void handleReturnValue(
+			final Object returnValue,
+			final MethodParameter returnType,
+			final ModelAndViewContainer mavContainer,
+			final NativeWebRequest webRequest) throws Exception {
 		mavContainer.setRequestHandled(true);
 		final ServletServerHttpRequest inputMessage = createInputMessage(webRequest);
 		final ServletServerHttpResponse outputMessage = createOutputMessage(webRequest);
@@ -75,7 +79,11 @@ public final class FileInfoURIConverterValueHandler extends AbstractMessageConve
 	}
 
 	@Override
-	public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) throws Exception {
+	public Object resolveArgument(
+			final MethodParameter parameter,
+			final ModelAndViewContainer mavContainer,
+			final NativeWebRequest webRequest,
+			final WebDataBinderFactory binderFactory) throws Exception {
 		final HttpServletRequest request = getRequest(webRequest);
 		final Named requestParam = parameter.getParameterAnnotation(Named.class);
 		Assertion.checkNotNull(requestParam, "Parameter name wasnt't found. Use @Named('myFileParam') in your controller.");
@@ -93,7 +101,7 @@ public final class FileInfoURIConverterValueHandler extends AbstractMessageConve
 	 * @param webRequest the web request to create an input message from
 	 * @return the input message
 	 */
-	private HttpServletRequest getRequest(final NativeWebRequest webRequest) {
+	private static HttpServletRequest getRequest(final NativeWebRequest webRequest) {
 		final HttpServletRequest servletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
 		Assert.state(servletRequest != null, "No HttpServletRequest");
 		return servletRequest;

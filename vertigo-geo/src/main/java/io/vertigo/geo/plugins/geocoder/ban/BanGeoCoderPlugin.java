@@ -60,7 +60,8 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 			final @Named("proxyPort") Optional<String> proxyPort) {
 		Assertion.checkNotNull(proxyHost);
 		Assertion.checkNotNull(proxyPort);
-		Assertion.checkArgument((proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()), "les deux paramètres host et port doivent être tous les deux remplis ou vides");
+		Assertion.checkArgument((proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()),
+				"les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		//-----
 		if (proxyHost.isPresent()) {
 			proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.get(), Integer.parseInt(proxyPort.get())));
@@ -82,14 +83,14 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			urlString = GEOCODE_REQUEST_PREFIX + "?q=" + URLEncoder.encode(address, StandardCharsets.UTF_8.name()) + "&limit=1";
 		} catch (final UnsupportedEncodingException e) {
-			throw new RuntimeException("Erreur lors de l'encodage de l'adresse", e);
+			throw WrappedException.wrap(e, "Erreur lors de l'encodage de l'adresse");
 		}
 
 		final URL url;
 		try {
 			url = new URL(urlString);
 		} catch (final MalformedURLException e) {
-			throw new RuntimeException("Erreur lors de la creation de l'URL", e);
+			throw WrappedException.wrap(e, "Erreur lors de la creation de l'URL");
 		}
 
 		//-----

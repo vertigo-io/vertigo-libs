@@ -46,7 +46,12 @@ public class VuiResourceTemplateResolver
 
 	@Override
 	protected ITemplateResource computeTemplateResource(
-			final IEngineConfiguration configuration, final String ownerTemplate, final String template, final String resourceName, final String characterEncoding, final Map<String, Object> templateResolutionAttributes) {
+			final IEngineConfiguration configuration,
+			final String ownerTemplate,
+			final String template,
+			final String resourceName,
+			final String characterEncoding,
+			final Map<String, Object> templateResolutionAttributes) {
 		return new SpringResourceTemplateResource(applicationContext, resourceName, characterEncoding);
 	}
 

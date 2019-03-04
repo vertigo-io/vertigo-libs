@@ -64,7 +64,8 @@ public final class VSpringMvcViewContextInterceptor implements HandlerIntercepto
 				if (!controller.isViewContextDirty()) {
 					controller.storeContext();
 				}
-				if (response.getStatus() / 100 == 2 || response.getStatus() / 100 == 4) { //we reset uiMessageStack only in case of viewable page 2xx or 4xx. We are sure to keep it on error page 5xx or redirect 3xx.
+				if (response.getStatus() / 100 == 2 || response.getStatus() / 100 == 4) {
+					//we reset uiMessageStack only in case of viewable page 2xx or 4xx. We are sure to keep it on error page 5xx or redirect 3xx.
 					UiRequestUtil.removeCurrentUiMessageStack();
 				}
 			}

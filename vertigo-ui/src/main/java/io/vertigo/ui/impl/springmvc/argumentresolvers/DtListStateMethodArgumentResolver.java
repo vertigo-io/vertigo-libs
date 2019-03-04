@@ -37,7 +37,11 @@ public final class DtListStateMethodArgumentResolver implements HandlerMethodArg
 	}
 
 	@Override
-	public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) throws Exception {
+	public Object resolveArgument(
+			final MethodParameter parameter,
+			final ModelAndViewContainer mavContainer,
+			final NativeWebRequest webRequest,
+			final WebDataBinderFactory binderFactory) throws Exception {
 		final Map<String, String[]> parametersMap = webRequest.getParameterMap();
 		//---
 		final Integer top = parametersMap.containsKey("top") ? Integer.parseInt(webRequest.getParameter("top")) : null;
@@ -45,7 +49,7 @@ public final class DtListStateMethodArgumentResolver implements HandlerMethodArg
 		final String sortFieldName = parametersMap.containsKey("sortFieldName") ? !StringUtil.isEmpty(webRequest.getParameter("sortFieldName")) ? StringUtil.camelToConstCase(webRequest.getParameter("sortFieldName")) : null : null;
 		final Boolean sortDesc = parametersMap.containsKey("sortDesc") ? Boolean.valueOf(webRequest.getParameter("sortDesc")) : null;
 
-		return  DtListState.of(top, skip, sortFieldName, sortDesc);
+		return DtListState.of(top, skip, sortFieldName, sortDesc);
 	}
 
 }

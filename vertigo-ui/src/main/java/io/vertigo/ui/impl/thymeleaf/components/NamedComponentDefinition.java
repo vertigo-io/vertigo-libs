@@ -39,7 +39,9 @@ public final class NamedComponentDefinition {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkArgNotEmpty(fragmentTemplate);
 		Assertion.checkArgNotEmpty(selectionExpression);
-		Assertion.checkArgument(selectionExpression.startsWith("${") && selectionExpression.endsWith("}"), "Component {0} selector expression must starts with $\\{ and ends with \\} ({1})", name, selectionExpression);
+		Assertion.checkArgument(
+				selectionExpression.startsWith("${") && selectionExpression.endsWith("}"),
+				"Component {0} selector expression must starts with $\\{ and ends with \\} ({1})", name, selectionExpression);
 		Assertion.checkArgNotEmpty(frag);
 		//-----
 		this.name = name;

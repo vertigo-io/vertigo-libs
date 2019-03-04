@@ -47,7 +47,7 @@ public class ContentSlotComponentProcessor extends AbstractElementModelProcessor
 		super(TemplateMode.HTML, dialectPrefix, CONTENT_TAG_NAME, true, null, false, PRECEDENCE);
 	}
 
-	private void removeCurrentTag(final IModel model) {
+	private static void removeCurrentTag(final IModel model) {
 		model.remove(0);
 		if (model.size() > 0) {
 			model.remove(model.size() - 1);
@@ -58,7 +58,9 @@ public class ContentSlotComponentProcessor extends AbstractElementModelProcessor
 	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
 		final Map<String, String> attributes = processAttribute(model);
 		final String attributeValue = attributes.get("name");
-		Assertion.checkArgument(attributeValue.endsWith(SlotAttributeTagProcessor.VARIABLE_PLACEHOLDER_SEPARATOR + SlotAttributeTagProcessor.SLOTS_SUFFIX), "{0} isn't a slot. Tag vu:content-slot supports only slots, names must ends with '_slot'", attributeValue);
+		Assertion.checkArgument(
+				attributeValue.endsWith(SlotAttributeTagProcessor.VARIABLE_PLACEHOLDER_SEPARATOR + SlotAttributeTagProcessor.SLOTS_SUFFIX),
+				"{0} isn't a slot. Tag vu:content-slot supports only slots, names must ends with '_slot'", attributeValue);
 		//-----
 		removeCurrentTag(model);
 		final Object slotModelObject = context.getVariable(attributeValue);
@@ -83,7 +85,7 @@ public class ContentSlotComponentProcessor extends AbstractElementModelProcessor
 		//-----
 	}
 
-	private Map<String, String> processAttribute(final IModel model) {
+	private static Map<String, String> processAttribute(final IModel model) {
 		final ITemplateEvent firstEvent = model.get(0);
 		final Map<String, String> attributes = new HashMap<>();
 		if (firstEvent instanceof IProcessableElementTag) {

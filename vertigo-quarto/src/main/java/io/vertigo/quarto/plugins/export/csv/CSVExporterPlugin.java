@@ -63,6 +63,8 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public boolean accept(final ExportFormat exportFormat) {
-		return ExportFormat.CSV.equals(exportFormat);
+		Assertion.checkNotNull(exportFormat);
+		//---
+		return exportFormat == ExportFormat.CSV;
 	}
 }

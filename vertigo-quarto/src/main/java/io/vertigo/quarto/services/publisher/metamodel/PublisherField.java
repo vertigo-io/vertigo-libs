@@ -50,9 +50,13 @@ public final class PublisherField {
 		Assertion.checkNotNull(fieldType);
 		Assertion.checkArgument(REGEX_FIELD_NAME.matcher(name).matches(), "Le nom du champ {0} doit matcher le pattern {1}", name, REGEX_FIELD_NAME);
 		if (publisherDataNodeDefinition != null) {
-			Assertion.checkArgument(fieldType == PublisherFieldType.Node || fieldType == PublisherFieldType.List, "Le champ {0} n''est pas du bon type ({1}). Les champs de type Data ou List ont besoin d''une nodeDefinition", name, fieldType);
+			Assertion.checkArgument(
+					fieldType == PublisherFieldType.Node || fieldType == PublisherFieldType.List,
+					"Le champ {0} n''est pas du bon type ({1}). Les champs de type Data ou List ont besoin d''une nodeDefinition", name, fieldType);
 		} else {
-			Assertion.checkArgument(fieldType != PublisherFieldType.Node && fieldType != PublisherFieldType.List, "Le champ {0} n''est pas du bon type ({1}). Seul les champs de type Data ou List ont besoin d''une nodeDefinition", name, fieldType);
+			Assertion.checkArgument(
+					fieldType != PublisherFieldType.Node && fieldType != PublisherFieldType.List,
+					"Le champ {0} n''est pas du bon type ({1}). Seul les champs de type Data ou List ont besoin d''une nodeDefinition", name, fieldType);
 		}
 		//-----
 		this.name = name;

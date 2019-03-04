@@ -66,7 +66,7 @@ public final class ContextList<O extends DtObject> {
 	 * @param action Action struts
 	 */
 	public ContextList(final String contextKey, final DtObjectValidator<O> validator, final AbstractActionSupport action) {
-		this(contextKey, new DefaultDtObjectValidator<O>(), Optional.empty(), action);
+		this(contextKey, validator, Optional.empty(), action);
 	}
 
 	/**

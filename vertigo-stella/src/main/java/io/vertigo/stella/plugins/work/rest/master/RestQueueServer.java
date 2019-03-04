@@ -38,7 +38,6 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -72,7 +71,7 @@ final class RestQueueServer {
 	 * @param pullTimeoutSec Timeout (secondes) utilisé lors des long pull
 	 * @param daemonManager Daemons manager
 	 */
-	public RestQueueServer(final int nodeTimeOutSec, final CodecManager codecManager, final int pullTimeoutSec, final DaemonManager daemonManager) {
+	public RestQueueServer(final int nodeTimeOutSec, final CodecManager codecManager, final int pullTimeoutSec) {
 		Assertion.checkNotNull(codecManager);
 		//-----
 		this.nodeTimeOutSec = nodeTimeOutSec;

@@ -267,7 +267,13 @@ final class XLSExporter {
 
 	}
 
-	private static void putValueInCell(final Object value, final HSSFCell cell, final Map<DataType, HSSFCellStyle> rowCellStyle, final int cellIndex, final Map<Integer, Double> maxWidthPerColumn, final Domain domain) {
+	private static void putValueInCell(
+			final Object value,
+			final HSSFCell cell,
+			final Map<DataType, HSSFCellStyle> rowCellStyle,
+			final int cellIndex,
+			final Map<Integer, Double> maxWidthPerColumn,
+			final Domain domain) {
 		String stringValueForColumnWidth;
 		cell.setCellStyle(rowCellStyle.get(domain.getDataType()));
 		if (value != null) {

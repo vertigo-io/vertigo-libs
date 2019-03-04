@@ -60,7 +60,11 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 	}
 
 	@Override
-	public Object resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) throws Exception {
+	public Object resolveArgument(
+			final MethodParameter parameter,
+			final ModelAndViewContainer mavContainer,
+			final NativeWebRequest webRequest,
+			final WebDataBinderFactory binderFactory) throws Exception {
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
 		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 		Assertion.checkNotNull(viewContext);

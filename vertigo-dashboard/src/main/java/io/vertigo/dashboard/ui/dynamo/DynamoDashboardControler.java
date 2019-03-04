@@ -47,12 +47,12 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 	@Override
 	public void doBuildModel(final App app, final Map<String, Object> model) {
 		final List<Metric> metrics = getDataProvider().getMetrics();
-		buildEntityModel(app, model, metrics);
-		buildDomainModel(app, model, metrics);
-		buildTaskModel(app, model);
+		buildEntityModel(model, metrics);
+		buildDomainModel(model, metrics);
+		buildTaskModel(model);
 	}
 
-	private void buildTaskModel(final App app, final Map<String, Object> model) {
+	private void buildTaskModel(final Map<String, Object> model) {
 		final DataFilter dataFilter = DataFilter.builder("tasks").build();
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 1d", "now()").build();
 		final TabularDatas tabularDatas = getDataProvider().getTabularData(Arrays.asList("duration:median", "duration:count"), dataFilter, timeFilter, "name");
@@ -84,7 +84,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 		return null;
 	}
 
-	private static void buildEntityModel(final App app, final Map<String, Object> model, final List<Metric> metrics) {
+	private static void buildEntityModel(final Map<String, Object> model, final List<Metric> metrics) {
 		final Map<String, Double> entityCounts = new HashMap<>();
 
 		metrics
@@ -121,7 +121,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 		model.put("keyConceptCount", keyConceptCount);
 	}
 
-	private static void buildDomainModel(final App app, final Map<String, Object> model, final List<Metric> metrics) {
+	private static void buildDomainModel(final Map<String, Object> model, final List<Metric> metrics) {
 		final Map<String, Double> taskCount = new HashMap<>();
 
 		metrics

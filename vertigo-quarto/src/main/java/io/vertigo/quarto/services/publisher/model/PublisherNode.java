@@ -56,7 +56,7 @@ public final class PublisherNode implements Serializable {
 		this.nodeDefinition = nodeDefinition;
 		//On initialise toutes les champs de type liste à vide.
 		for (final PublisherField field : getNodeDefinition().getFields()) {
-			if (PublisherFieldType.List.equals(field.getFieldType())) {
+			if (field.getFieldType() == PublisherFieldType.List) {
 				dataMap.put(field.getName(), Collections.emptyList());
 			}
 		}

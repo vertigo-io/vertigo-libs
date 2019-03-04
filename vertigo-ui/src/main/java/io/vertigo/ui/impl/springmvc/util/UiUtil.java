@@ -21,8 +21,6 @@ package io.vertigo.ui.impl.springmvc.util;
 import java.io.Serializable;
 import java.util.List;
 
-import org.springframework.ui.Model;
-
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -57,7 +55,7 @@ public final class UiUtil implements Serializable {
 	 * @param uiObject Object du context
 	 * @return Nom de l'object dans le context
 	 */
-	public static String contextKey(final UiObject<?> uiObject, final Model model) {
+	public static String contextKey(final UiObject<?> uiObject) {
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
 		return viewContext.findKey(uiObject);
 	}

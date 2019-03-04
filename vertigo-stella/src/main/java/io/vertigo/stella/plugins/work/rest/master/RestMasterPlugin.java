@@ -22,7 +22,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.master.MasterPlugin;
 import io.vertigo.stella.impl.master.WorkResult;
@@ -47,13 +46,12 @@ public final class RestMasterPlugin implements MasterPlugin, WebServices {
 	 */
 	@Inject
 	public RestMasterPlugin(
-			final DaemonManager daemonManager,
 			@Named("timeoutSeconds") final int timeoutSeconds,
 			final CodecManager codecManager) {
 		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//-----
 		//	this.timeoutSeconds = timeoutSeconds;
-		restQueueServer = new RestQueueServer(20, codecManager, 5, daemonManager);
+		restQueueServer = new RestQueueServer(20, codecManager, 5);
 	}
 
 	/** {@inheritDoc} */

@@ -579,7 +579,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		activityExecutionDAO.save(activityExecution);
 
 		// If it's an error the entire process is in Error
-		if (ExecutionState.ERROR.equals(executionState)) {
+		if (executionState == ExecutionState.ERROR) {
 			endProcessExecution(activityExecution.getPreId(), ExecutionState.ERROR);
 		}
 

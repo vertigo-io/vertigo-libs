@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import javax.inject.Inject;
 
 import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.impl.services.export.ExporterPlugin;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportFormat;
@@ -52,7 +53,9 @@ public final class PDFExporterPlugin implements ExporterPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public boolean accept(final ExportFormat exportFormat) {
-		return ExportFormat.PDF.equals(exportFormat);
+		Assertion.checkNotNull(exportFormat);
+		//---
+		return exportFormat == ExportFormat.PDF;
 	}
 
 }

@@ -215,7 +215,12 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	private Serializable getValueForClient(final String fieldKey, final Function<Serializable, String> valueTransformer) {
 		final boolean hasFormatModifier = fieldKey.endsWith("_fmt");
 		final boolean hasDisplayModifier = fieldKey.endsWith("_display");
-		final String fieldName = hasFormatModifier ? fieldKey.substring(0, fieldKey.length() - "_fmt".length()) : hasDisplayModifier ? fieldKey.substring(0, fieldKey.length() - "_display".length()) : fieldKey;
+		final String fieldName;
+		if (hasFormatModifier) {
+			fieldName = fieldKey.substring(0, fieldKey.length() - "_fmt".length());
+		} else {
+			fieldName = hasDisplayModifier ? fieldKey.substring(0, fieldKey.length() - "_display".length()) : fieldKey;
+		}
 		//--- if error
 		if (hasFormatError(fieldName)) {
 			return getInputValue(fieldName);

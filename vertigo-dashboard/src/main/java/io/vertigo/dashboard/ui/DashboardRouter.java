@@ -18,6 +18,7 @@
  */
 package io.vertigo.dashboard.ui;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
@@ -111,7 +112,7 @@ public final class DashboardRouter {
 
 	}
 
-	private String render(final Response response, final String templateName, final Map<String, Object> model) throws Exception {
+	private String render(final Response response, final String templateName, final Map<String, Object> model) throws TemplateException, IOException {
 		response.status(200);
 		response.type("text/html");
 

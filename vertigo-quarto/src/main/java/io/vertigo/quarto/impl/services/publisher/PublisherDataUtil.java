@@ -138,7 +138,9 @@ public final class PublisherDataUtil {
 					throw new IllegalArgumentException("Type unknown : " + publisherField.getFieldType());
 			}
 		}
-		Assertion.checkState(nbMappedField > 0, "Aucun champ du Dt ne correspond à ceux du PublisherNode, vérifier vos définitions. ({0}:{1}) et ({2}:{3})", "PN", pnDefinition.getFields(), dtDefinition.getName(), dtFieldNames);
+		Assertion.checkState(nbMappedField > 0,
+				"Aucun champ du Dt ne correspond à ceux du PublisherNode, vérifier vos définitions. ({0}:{1}) et ({2}:{3})", "PN",
+				pnDefinition.getFields(), dtDefinition.getName(), dtFieldNames);
 	}
 
 	/**
