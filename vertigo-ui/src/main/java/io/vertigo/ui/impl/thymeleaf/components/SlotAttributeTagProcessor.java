@@ -13,8 +13,8 @@ import org.thymeleaf.templatemode.TemplateMode;
 import io.vertigo.lang.Assertion;
 
 public class SlotAttributeTagProcessor extends AbstractAttributeTagProcessor {
-	static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";
-	static final String SLOTS_SUFFIX = "slot";
+	protected static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";
+	protected static final String SLOTS_SUFFIX = "slot";
 	private static final String ATTR_NAME = "slot";
 	private static final int PRECEDENCE = 400;
 
