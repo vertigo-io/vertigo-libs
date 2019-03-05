@@ -16,13 +16,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui;
+/**
+ *
+ */
+package io.vertigo.ui.data.boot.initializer;
 
-import org.springframework.context.annotation.ComponentScan;
+import javax.inject.Inject;
 
-import io.vertigo.ui.impl.springmvc.config.VSpringWebConfig;
+import io.vertigo.core.component.ComponentInitializer;
+import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.ui.data.services.users.UserResources;
 
-@ComponentScan("io.vertigo.ui.data.controller")
-public class TestVSpringWebConfig extends VSpringWebConfig {
-	// nothing basic config is enough
+/**
+ * Init ressources.
+ * @author npiedeloup
+ */
+public class I18nResourcesInitializer implements ComponentInitializer {
+
+	@Inject
+	private LocaleManager localeManager;
+
+	/** {@inheritDoc} */
+	@Override
+	public void init() {
+		localeManager.add(UserResources.class.getName(), UserResources.values());
+	}
+
 }

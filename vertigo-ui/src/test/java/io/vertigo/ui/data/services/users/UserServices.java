@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui;
+package io.vertigo.ui.data.services.users;
 
-import org.springframework.context.annotation.ComponentScan;
+import io.vertigo.core.component.Component;
+import io.vertigo.ui.data.domain.users.ApplicationUser;
 
-import io.vertigo.ui.impl.springmvc.config.VSpringWebConfig;
+public interface UserServices extends Component {
 
-@ComponentScan("io.vertigo.ui.data.controller")
-public class TestVSpringWebConfig extends VSpringWebConfig {
-	// nothing basic config is enough
+	ApplicationUser loginUser(final String login, final String password);
+
 }

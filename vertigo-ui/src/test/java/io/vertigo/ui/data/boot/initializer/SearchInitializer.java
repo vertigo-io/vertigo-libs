@@ -16,13 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui;
+package io.vertigo.ui.data.boot.initializer;
 
-import org.springframework.context.annotation.ComponentScan;
+import javax.inject.Inject;
 
-import io.vertigo.ui.impl.springmvc.config.VSpringWebConfig;
+import io.vertigo.app.Home;
+import io.vertigo.core.component.ComponentInitializer;
+import io.vertigo.dynamo.search.SearchManager;
+import io.vertigo.ui.data.domain.movies.Movie;
 
-@ComponentScan("io.vertigo.ui.data.controller")
-public class TestVSpringWebConfig extends VSpringWebConfig {
-	// nothing basic config is enough
+/**
+ * Initializer de LocaleManager.
+ * @author dchallas
+ * @version $Id: LocaleManagerInitializer.java,v 1.4 2014/02/07 16:48:27 npiedeloup Exp $
+ */
+public final class SearchInitializer implements ComponentInitializer {
+
+	@Inject
+	private SearchManager searchManager;
+
+	/** {@inheritDoc} */
+	@Override
+	public void init() {
+		Home.getApp().registerPreActivateFunction(() -> searchManager.reindexAll(searchManager.findFirstIndexDefinitionByKeyConcept(Movie.class)));
+	}
 }

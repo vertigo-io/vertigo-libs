@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui;
+package io.vertigo.ui.data.services;
 
-import org.springframework.context.annotation.ComponentScan;
-
-import io.vertigo.ui.impl.springmvc.config.VSpringWebConfig;
-
-@ComponentScan("io.vertigo.ui.data.controller")
-public class TestVSpringWebConfig extends VSpringWebConfig {
-	// nothing basic config is enough
+/**
+ * Service Metier.
+ * @author mlaroche
+ * @version $Id: Service.java 19 mars 2014 11:09:52 mlaroche $
+ */
+public interface Service {
+	//marqueur des services metiers
 }

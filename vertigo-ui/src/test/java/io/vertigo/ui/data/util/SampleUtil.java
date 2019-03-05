@@ -16,13 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui;
+package io.vertigo.ui.data.util;
 
-import org.springframework.context.annotation.ComponentScan;
+/**
+ * Util classes publish easier method or are stateLess.
+ * Check for no duplication.
+ * @author pchretien
+ */
+public final class SampleUtil {
+	private SampleUtil() {
+		//only static methods are allowed
+	}
 
-import io.vertigo.ui.impl.springmvc.config.VSpringWebConfig;
-
-@ComponentScan("io.vertigo.ui.data.controller")
-public class TestVSpringWebConfig extends VSpringWebConfig {
-	// nothing basic config is enough
+	public static String hello() {
+		return "hello";
+	}
 }

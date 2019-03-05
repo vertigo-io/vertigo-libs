@@ -16,13 +16,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui;
+package io.vertigo.ui.data.services.users;
 
-import org.springframework.context.annotation.ComponentScan;
+import io.vertigo.core.locale.MessageKey;
 
-import io.vertigo.ui.impl.springmvc.config.VSpringWebConfig;
+/**
+ * Dictionnaire des ressources.
+ *
+ * @author  npiedeloup
+ */
+public enum UserResources implements MessageKey {
+	/**
+	 * Échec de la connexion : nom d'utilisateur inconnu ou mot de passe incorrect.
+	 */
+	INVALID_CREDENTIALS,
 
-@ComponentScan("io.vertigo.ui.data.controller")
-public class TestVSpringWebConfig extends VSpringWebConfig {
-	// nothing basic config is enough
 }

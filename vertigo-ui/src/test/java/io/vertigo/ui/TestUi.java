@@ -117,4 +117,14 @@ public class TestUi {
 		assertEquals(baseUrl + "/test/", driver.getCurrentUrl());
 	}
 
+	@Test
+	public void testMovies() {
+		driver.get(baseUrl + "/test/movies/");
+	}
+
+	@Test
+	public void testMovieDetail() {
+		driver.get(baseUrl + "/test/movie/1000");
+	}
+
 }

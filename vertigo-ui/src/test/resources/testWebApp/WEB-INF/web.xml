@@ -20,8 +20,7 @@
 		Task/MDM de execution.kpr -->
 	<context-param>
 		<param-name>boot.applicationConfiguration</param-name>
-		<param-value>/testWebApp/META-INF/managers.xml;/testWebApp/META-INF/test-services.xml
-		</param-value>
+		<param-value>/testWebApp/META-INF/test-vui.yaml</param-value>
 	</context-param>
 
 	<filter>

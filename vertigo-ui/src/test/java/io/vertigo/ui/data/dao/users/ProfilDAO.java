@@ -16,13 +16,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ui;
+package io.vertigo.ui.data.dao.users;
 
-import org.springframework.context.annotation.ComponentScan;
+import javax.inject.Inject;
 
-import io.vertigo.ui.impl.springmvc.config.VSpringWebConfig;
+import io.vertigo.dynamo.impl.store.util.DAO;
+import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.dynamo.store.StoreServices;
+import io.vertigo.dynamo.task.TaskManager;
+import io.vertigo.ui.data.domain.users.Profil;
 
-@ComponentScan("io.vertigo.ui.data.controller")
-public class TestVSpringWebConfig extends VSpringWebConfig {
-	// nothing basic config is enough
+/**
+ * DAO : Accès à un object (DTO, DTC).
+ * ProfilDAO
+ */
+public final class ProfilDAO extends DAO<Profil, java.lang.Long> implements StoreServices {
+
+	/**
+	 * Contructeur.
+	 * @param storeManager Manager de persistance
+	 * @param taskManager Manager de Task
+	 */
+	@Inject
+	public ProfilDAO(final StoreManager storeManager, final TaskManager taskManager) {
+		super(Profil.class, storeManager, taskManager);
+	}
+
 }

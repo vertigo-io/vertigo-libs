@@ -161,42 +161,51 @@
 			<scope>test</scope>
 		</dependency>
 		
+		<!-- CollectionsManager/LuceneIndexPlugin -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
-			<version>6.6.1</version> <!-- 6.6.1 compatible with ElasticSearch 5.6.8 -->
+			<version>7.6.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-analyzers-common</artifactId>
-			<version>6.6.1</version> <!-- 6.6.1 compatible with ElasticSearch 5.6.8 -->
+			<version>7.6.0</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.lucene</groupId>
-			<artifactId>lucene-queryparser</artifactId>
-			<version>6.6.1</version> <!-- 6.6.1 compatible with ElasticSearch 5.6.8 -->
-			<scope>test</scope>
-		</dependency>
-		
+
+		<!-- Search -->
 		<dependency>
 			<groupId>org.elasticsearch</groupId>
 			<artifactId>elasticsearch</artifactId>
-			<version>5.6.8</version>
+			<version>6.6.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
 		    <artifactId>transport</artifactId>
-		    <version>5.6.8</version><!-- EsTransportSearchServicesPlugin -->
+		    <version>6.6.0</version>
 		    <scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.elasticsearch.plugin</groupId>
-			<artifactId>transport-netty4-client</artifactId>
-			<version>5.6.8</version>
-			<scope>test</scope>
+	        <groupId>org.codelibs.elasticsearch.module</groupId>
+	        <artifactId>analysis-common</artifactId> 
+	        <version>6.6.0</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+	        <scope>test</scope>
+	    </dependency>
+	   	<dependency>
+		    <groupId>org.codelibs.elasticsearch.module</groupId>
+		    <artifactId>mapper-extras</artifactId>
+		    <version>6.6.0</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+		    <scope>test</scope>
+		</dependency>
+	    
+	    <!-- ES requires 2.11.2 -->
+	    <dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-api</artifactId>
+		    <version>2.11.2</version>
 		</dependency>
 		
 		<dependency>
