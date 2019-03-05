@@ -123,7 +123,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 		this.mailPort = mailPort;
 		this.mailLogin = mailLogin;
 		this.mailPassword = mailPassword;
-		charset = charsetOpt.orElse(StandardCharsets.ISO_8859_1.name());
+		charset = charsetOpt.orElseGet(StandardCharsets.ISO_8859_1::name);
 	}
 
 	/** {@inheritDoc} */

@@ -96,12 +96,12 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		parameterNames = thymeleafComponent.getParameters();
 
 		slotNames = parameterNames.stream()
-				.filter((key) -> key.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + SLOTS_SUFFIX))
+				.filter(key -> key.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + SLOTS_SUFFIX))
 				.collect(Collectors.toSet());
 
 		placeholderPrefixes = parameterNames.stream()
-				.filter((parameterName) -> parameterName.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + ATTRS_SUFFIX))
-				.map((parameterName) -> parameterName.substring(0, parameterName.length() - ATTRS_SUFFIX.length()))
+				.filter(parameterName -> parameterName.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + ATTRS_SUFFIX))
+				.map(parameterName -> parameterName.substring(0, parameterName.length() - ATTRS_SUFFIX.length()))
 				.collect(Collectors.toList());
 		unnamedPlaceholderPrefix = placeholderPrefixes.isEmpty() ? Optional.empty() : Optional.of(placeholderPrefixes.get(placeholderPrefixes.size() - 1));
 	}
@@ -148,7 +148,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 	}
 
-	private Map<String, IModel> removeAndExtractSlots(final IModel contentModel, final ITemplateContext context) {
+	private static Map<String, IModel> removeAndExtractSlots(final IModel contentModel, final ITemplateContext context) {
 		final Map<String, IModel> slotContents = new HashMap<>();
 		final IModel buildingModel = contentModel.cloneModel(); //contains each first level tag (and all it's sub-tags)
 		buildingModel.reset();
@@ -249,7 +249,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		return cleanerModel;
 	}
 
-	private void removeContainerTag(final IModel contentModel) {
+	private static void removeContainerTag(final IModel contentModel) {
 		//Remove container tag
 		contentModel.remove(0);
 		if (contentModel.size() > 1) {
@@ -257,7 +257,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		}
 	}
 
-	private List<NamedComponentContentComponent> asList(final IModel componentModel, final ITemplateContext context) {
+	private static List<NamedComponentContentComponent> asList(final IModel componentModel, final ITemplateContext context) {
 		final List<NamedComponentContentComponent> asList = new ArrayList<>();
 		final IModel buildingModel = componentModel.cloneModel(); //contains each first level tag (and all it's sub-tags)
 		buildingModel.reset();
@@ -284,7 +284,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		return asList;
 	}
 
-	private boolean isVisible(final ITemplateContext context, final IModel firstLevelTagModel) {
+	private static boolean isVisible(final ITemplateContext context, final IModel firstLevelTagModel) {
 		final ITemplateEvent firstLevelTag = firstLevelTagModel.get(0);
 		if (firstLevelTag instanceof IProcessableElementTag) {
 			final IAttribute ifAttribute = ((IProcessableElementTag) firstLevelTag).getAttribute("th:if");
@@ -377,7 +377,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		}
 	}
 
-	private Map<String, String> processAttribute(final IModel model, final ITemplateContext context, final IElementModelStructureHandler structureHandler) {
+	private static Map<String, String> processAttribute(final IModel model, final ITemplateContext context, final IElementModelStructureHandler structureHandler) {
 		final ITemplateEvent firstEvent = model.get(0);
 		final Map<String, String> attributes = new HashMap<>();
 

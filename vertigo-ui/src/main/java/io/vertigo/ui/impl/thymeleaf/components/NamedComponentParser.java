@@ -108,7 +108,7 @@ public class NamedComponentParser extends AbstractMarkupHandler {
 			htmlStandardParser.parse(reader, this);
 
 		} catch (IOException | ParseException e) {
-			LOG.error("Error while parsing elements: {}", e);
+			LOG.error("Error while parsing elements", e);
 		}
 
 		return elements;

@@ -57,15 +57,12 @@ public final class WorkListenerImpl implements WorkListener {
 	/** {@inheritDoc} */
 	@Override
 	public void onStart(final String workName) {
-		//		analyticsManager.getAgent().startProcess(PROCESS_TYPE, workName);
 		logWorkStart(workName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void onFinish(final String workName, final long elapsedTime, final boolean success) {
-		//		analyticsManager.getAgent().setMeasure(ERROR_PCT, success ? 0 : 100);
-		//		analyticsManager.getAgent().stopProcess();
 		logWorkFinish(workName, elapsedTime, success);
 	}
 }

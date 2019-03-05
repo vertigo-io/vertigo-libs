@@ -72,7 +72,7 @@ public class ResourcePathFinder {
 			}
 
 		} catch (final IOException ex) {
-			LOG.error("Could not process resource pattern. {}", ex);
+			LOG.error("Could not process resource pattern", ex);
 		}
 
 		return files;

@@ -115,7 +115,7 @@ public final class ViewAttributeMethodArgumentResolver implements HandlerMethodA
 
 	private static boolean isNotLastDt(final MethodParameter parameter) {
 		return Stream.of(parameter.getMethod().getParameters())
-				.skip(parameter.getParameterIndex() + 1)
+				.skip(parameter.getParameterIndex() + 1L)
 				.anyMatch(remainingParam -> DtObject.class.isAssignableFrom(remainingParam.getType()) || DtList.class.isAssignableFrom(remainingParam.getType()));
 	}
 

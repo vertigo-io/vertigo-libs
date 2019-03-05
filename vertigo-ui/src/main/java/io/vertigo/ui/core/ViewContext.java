@@ -170,11 +170,6 @@ public final class ViewContext implements Serializable {
 		return viewContextMap.findKey(dtObject);
 	}
 
-	//	/** {@inheritDoc} */
-	//	private Serializable put(final String key, final Serializable value) {
-	//		return viewContextMap.put(key, value);
-	//	}
-
 	private Serializable put(final ViewContextKey<?> key, final Serializable value) {
 		modifiedKeys.add(key.get());
 		return viewContextMap.put(key.get(), value);

@@ -214,8 +214,8 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		Assertion.checkArgNotEmpty(keyString);
 		//---
 		// on garde les index en cohérence après un remove
-		reverseUiObjectIndex.values().removeIf((val) -> keyString.equals(val));
-		reverseUiListIndex.values().removeIf((val) -> keyString.equals(val));
+		reverseUiObjectIndex.values().removeIf(val -> keyString.equals(val));
+		reverseUiListIndex.values().removeIf(val -> keyString.equals(val));
 		// on fait le remove
 		return super.remove(key);
 	}
@@ -386,7 +386,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		final String transformerType = params.get(0);
 
 		if (PROTECTED_VALUE_TRANSFORMER.equals(transformerType)) {
-			return (value) -> ProtectedValueUtil.generateProtectedValue(value);
+			return ProtectedValueUtil::generateProtectedValue;
 		} else if (MAP_VALUE_TRANSFORMER.equals(transformerType)) {
 			Assertion.checkState(params.size() == 3 + 1, "ListValueTransformer requires 3 params, provided params {0}", params);
 			// ---
@@ -395,7 +395,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 			final String listDisplayFieldName = params.get(3);
 
 			// if value is null the transformer return null
-			return (value) -> value != null ? ((AbstractUiListUnmodifiable) getUiList(listKey)).getById(listKeyFieldName, value).getString(listDisplayFieldName) : null;
+			return value -> value != null ? ((AbstractUiListUnmodifiable) getUiList(listKey)).getById(listKeyFieldName, value).getString(listDisplayFieldName) : null;
 		}
 		throw new IllegalStateException(StringUtil.format("Unsupported ValueTransformer type {0}", transformerType));
 	}

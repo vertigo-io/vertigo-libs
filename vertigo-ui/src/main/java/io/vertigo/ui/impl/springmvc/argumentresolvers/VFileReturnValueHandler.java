@@ -48,7 +48,7 @@ public class VFileReturnValueHandler implements HandlerMethodReturnValueHandler 
 	 * @param webRequest the web request to create an output message from
 	 * @return the output message
 	 */
-	private HttpServletResponse getResponse(final NativeWebRequest webRequest) {
+	private static HttpServletResponse getResponse(final NativeWebRequest webRequest) {
 		final HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
 		Assert.state(response != null, "No HttpServletResponse");
 		return response;

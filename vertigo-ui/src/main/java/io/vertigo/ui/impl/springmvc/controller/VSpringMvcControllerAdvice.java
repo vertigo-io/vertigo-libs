@@ -43,7 +43,7 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
 public final class VSpringMvcControllerAdvice {
 
 	@ModelAttribute
-	public void storeContext(final Model model) {
+	public static void storeContext(final Model model) {
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
 		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 		//---
@@ -63,21 +63,21 @@ public final class VSpringMvcControllerAdvice {
 	@ResponseBody
 	@ExceptionHandler(SessionException.class)
 	@ResponseStatus(HttpStatus.UNAUTHORIZED)
-	public Object handleSessionException(final SessionException ex, final HttpServletRequest request) throws Throwable {
+	public static Object handleSessionException(final SessionException ex, final HttpServletRequest request) throws Throwable {
 		return handleThrowable(ex, request);
 	}
 
 	@ResponseBody
 	@ExceptionHandler(VSecurityException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN)
-	public Object handleSessionException(final VSecurityException ex, final HttpServletRequest request) throws Throwable {
+	public static Object handleSessionException(final VSecurityException ex, final HttpServletRequest request) throws Throwable {
 		return handleThrowable(ex, request);
 	}
 
 	@ResponseBody
 	@ExceptionHandler(Throwable.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-	public Object handleThrowable(final Throwable th, final HttpServletRequest request) throws Throwable {
+	public static Object handleThrowable(final Throwable th, final HttpServletRequest request) throws Throwable {
 		if (isJsonRequest(request)) {
 			final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 			final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
@@ -90,7 +90,7 @@ public final class VSpringMvcControllerAdvice {
 	@ResponseBody
 	@ExceptionHandler(ValidationUserException.class)
 	@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-	public Object handleValidationUserException(final ValidationUserException ex, final HttpServletRequest request) {
+	public static Object handleValidationUserException(final ValidationUserException ex, final HttpServletRequest request) {
 		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 		ex.flushToUiMessageStack(uiMessageStack);
 		//---
@@ -100,14 +100,14 @@ public final class VSpringMvcControllerAdvice {
 	@ResponseBody
 	@ExceptionHandler(VUserException.class)
 	@ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-	public Object handleVUserException(final VUserException ex, final HttpServletRequest request) {
+	public static Object handleVUserException(final VUserException ex, final HttpServletRequest request) {
 		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 		uiMessageStack.addGlobalMessage(Level.ERROR, ex.getMessage());
 		//---
 		return handleVUserException(uiMessageStack, request);
 	}
 
-	private Object handleVUserException(final UiMessageStack uiMessageStack, final HttpServletRequest request) {
+	private static Object handleVUserException(final UiMessageStack uiMessageStack, final HttpServletRequest request) {
 		//---
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
 		//---
@@ -122,7 +122,7 @@ public final class VSpringMvcControllerAdvice {
 		return modelAndView;
 	}
 
-	private boolean isJsonRequest(final HttpServletRequest request) {
+	private static boolean isJsonRequest(final HttpServletRequest request) {
 		final String acceptHeader = request.getHeader("Accept");
 		return acceptHeader != null && acceptHeader.contains("application/json");
 	}

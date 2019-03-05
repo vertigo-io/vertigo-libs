@@ -35,13 +35,5 @@ import io.vertigo.stella.work.WorkEngine;
  * @author pchretien
  */
 public interface WorkersManager extends Manager {
-	//	/**
-	//	 * Exécution d'un travail de façon synchrone.
-	//	 * @param <W> Type de Work (Travail)
-	//	 * @param <R> Produit d'un work à l'issu de son exécution
-	//	 * @param work Travail à exécuter
-	//	 * @param workEngineProvider WorkEngine provider
-	//	 * @return result
-	//	 */
-	//<W, R> R process(final W work, final Class<? extends WorkEngine<W, R>> workEngineClass);
+	// nothing
 }

@@ -137,24 +137,6 @@ public abstract class AbstractVSpringMvcController {
 		return path + SLASH + simpleName;
 	}
 
-	//	private static String getDefaultViewName(final HttpServletRequest request) {
-	//		String path = request.getRequestURI();
-	//		if (request.getContextPath() != null) {
-	//			//remove the context path if exists
-	//			path = path.substring(request.getContextPath().length());
-	//		}
-	//		if (path.startsWith(SLASH)) {
-	//			path = path.substring(1);
-	//		}
-	//		if (path.endsWith(SLASH)) {
-	//			path = path.substring(0, path.length() - 1);
-	//		} else {
-	//			// we remove the subaction
-	//			path = path.substring(0, path.lastIndexOf(SLASH));
-	//		}
-	//		return path;
-	//	}
-
 	private boolean acceptCtxQueryParam() {
 		return this.getClass().isAnnotationPresent(AcceptCtxQueryParam.class);
 	}
@@ -209,7 +191,7 @@ public abstract class AbstractVSpringMvcController {
 	}
 
 	/** {@inheritDoc} */
-	private final static ViewContext getViewContext() {
+	private static final ViewContext getViewContext() {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
 		final ViewContext viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
 		Assertion.checkNotNull(viewContext);
@@ -220,7 +202,7 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * Passe en mode edition.
 	 */
-	protected final static void toModeEdit() {
+	protected static final void toModeEdit() {
 		//TODO voir pour déléguer cette gestion des modes
 		final ViewContext viewContext = getViewContext();
 		viewContext.publishRef(MODE_CONTEXT_KEY, FormMode.edit);
@@ -232,7 +214,7 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * Passe en mode creation.
 	 */
-	protected final static void toModeCreate() {
+	protected static final void toModeCreate() {
 		//TODO voir pour déléguer cette gestion des modes
 		final ViewContext viewContext = getViewContext();
 		viewContext.publishRef(MODE_CONTEXT_KEY, FormMode.create);
@@ -244,7 +226,7 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * Passe en mode readonly.
 	 */
-	protected final static void toModeReadOnly() {
+	protected static final void toModeReadOnly() {
 		//TODO voir pour déléguer cette gestion des modes
 		final ViewContext viewContext = getViewContext();
 		viewContext.publishRef(MODE_CONTEXT_KEY, FormMode.readOnly);
@@ -256,7 +238,7 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * @return Si on est en mode edition
 	 */
-	protected final static boolean isModeEdit() {
+	protected static final boolean isModeEdit() {
 		final ViewContext viewContext = getViewContext();
 		return FormMode.edit.equals(viewContext.get(MODE_CONTEXT_KEY));
 	}
@@ -264,7 +246,7 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * @return Si on est en mode readOnly
 	 */
-	protected final static boolean isModeRead() {
+	protected static final boolean isModeRead() {
 		final ViewContext viewContext = getViewContext();
 		return FormMode.readOnly.equals(viewContext.get(MODE_CONTEXT_KEY));
 	}
@@ -272,7 +254,7 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * @return Si on est en mode create
 	 */
-	protected final static boolean isModeCreate() {
+	protected static final boolean isModeCreate() {
 		final ViewContext viewContext = getViewContext();
 		return FormMode.create.equals(viewContext.get(MODE_CONTEXT_KEY));
 	}
@@ -280,7 +262,7 @@ public abstract class AbstractVSpringMvcController {
 	/**
 	 * @return Pile des messages utilisateur.
 	 */
-	public final static UiMessageStack getUiMessageStack() {
+	public static final UiMessageStack getUiMessageStack() {
 		return UiRequestUtil.obtainCurrentUiMessageStack();
 	}
 

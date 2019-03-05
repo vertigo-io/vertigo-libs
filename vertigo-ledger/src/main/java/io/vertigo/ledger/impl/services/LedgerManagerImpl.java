@@ -50,7 +50,6 @@ public final class LedgerManagerImpl implements LedgerManager {
 	public String sendData(final String data) {
 		Assertion.checkArgNotEmpty(data);
 		//---
-		//final String hash = codecManager.getHexEncoder().encode(codecManager.getSha256Encoder().encode(data.getBytes()));
 		final String hash = codecManager.getHexEncoder().encode(data.getBytes(StandardCharsets.UTF_8));
 		LOGGER.info("Sending transaction to the legder... Buffer:{}", hash);
 		ledgerPlugin.sendData(hash);

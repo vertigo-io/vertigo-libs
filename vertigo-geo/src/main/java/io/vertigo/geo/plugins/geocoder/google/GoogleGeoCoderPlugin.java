@@ -68,8 +68,6 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	// l'adresse à géolocaliser
 	private static final String XPATH_LATITUDE = "//result//geometry//location//lat";
 	private static final String XPATH_LONGITUDE = "//result//geometry//location//lng";
-	//	private static final String XPATH_FORMATTED_ADDRESS = "//formatted_address";
-	//	private static final String XPATH_ACCURACY = "//result/type";
 	private static final String XPATH_ADDRESSES = "//address_component";
 	private static final String XPATH_STATUS = "//status";
 	private final Proxy proxy;
@@ -235,21 +233,11 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		// 1- Parsing du XML
 		final Node latitudeNode = findNode(geocoderResultDocument, XPATH_LATITUDE);
 		final Node longitudeNode = findNode(geocoderResultDocument, XPATH_LONGITUDE);
-		//final Node formattedAddressNode = findNode(geocoderResultDocument, XPATH_FORMATTED_ADDRESS);
-		//		final Node accuracyNode = findNode(geocoderResultDocument, XPATH_ACCURACY);
 		final NodeList addressNodes = findNodes(geocoderResultDocument, XPATH_ADDRESSES);
 		//-----
 		// 2- Typage des données
-		//		System.out.println(">>address : " + address);
-		//		System.out.println(">>>>>> : " + toString(geocoderResultDocument));
-		//		System.out.println(">>longitudeNode : " + longitudeNode);
 		final Double latitude = Double.valueOf(latitudeNode.getTextContent().trim());
 		final Double longitude = Double.valueOf(longitudeNode.getTextContent().trim());
-
-		//	final String formattedAddress = formattedAddressNode.getTextContent();
-		//		final String accuracy = accuracyNode.getTextContent();
-
-		//	Map<GeoLocation.Level, String> codes = findCodes(addressNodes);
 		//-----
 		// 2- Cas des adresses dites "political"
 		//		<address_component>

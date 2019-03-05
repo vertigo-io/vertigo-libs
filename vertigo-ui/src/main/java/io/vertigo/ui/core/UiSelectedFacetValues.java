@@ -52,7 +52,7 @@ public final class UiSelectedFacetValues extends HashMap<String, List<String>> {
 				.forEach(facetName -> put(facetName, selectedFacetValues
 						.getFacetValues(facetName)
 						.stream()
-						.map(facetValue -> facetValue.getCode())
+						.map(FacetValue::getCode)
 						.collect(Collectors.toList())));
 
 	}

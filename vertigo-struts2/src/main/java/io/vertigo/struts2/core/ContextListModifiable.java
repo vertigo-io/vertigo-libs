@@ -39,10 +39,6 @@ public final class ContextListModifiable<O extends DtObject> {
 	private final String contextKey;
 	private final DtObjectValidator<O> validator;
 
-	//	public static <O extends DtObject> ContextForm<O> create(final String contextKey, final AbstractActionSupport action) {
-	//		return new ContextForm<O>(contextKey, action);
-	//	}
-
 	/**
 	 * Constructeur.
 	 * @param contextKey Clé dans le context

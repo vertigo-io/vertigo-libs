@@ -64,7 +64,7 @@ public final class MemoryCommentPlugin implements CommentPlugin {
 	public synchronized <S extends KeyConcept> List<Comment> getComments(final UID<S> uid) {
 		return commentsMap.getOrDefault(uid, Collections.emptyList())
 				.stream()
-				.map((uuid) -> get(uuid))
+				.map(uuid -> get(uuid))
 				.collect(Collectors.toList());
 	}
 }

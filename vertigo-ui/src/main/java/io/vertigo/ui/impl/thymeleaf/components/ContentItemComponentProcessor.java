@@ -49,7 +49,7 @@ public class ContentItemComponentProcessor extends AbstractElementModelProcessor
 		super(TemplateMode.HTML, dialectPrefix, CONTENT_TAG_NAME, true, null, false, PRECEDENCE);
 	}
 
-	private void removeCurrentTag(final IModel model) {
+	private static void removeCurrentTag(final IModel model) {
 		model.remove(0);
 		if (model.size() > 0) {
 			model.remove(model.size() - 1);
@@ -84,7 +84,7 @@ public class ContentItemComponentProcessor extends AbstractElementModelProcessor
 		structureHandler.setLocalVariable("contentAttrs", attributes);
 	}
 
-	private Map<String, String> processAttribute(final IModel model) {
+	private static Map<String, String> processAttribute(final IModel model) {
 		final ITemplateEvent firstEvent = model.get(0);
 		final Map<String, String> attributes = new HashMap<>();
 		if (firstEvent instanceof IProcessableElementTag) {

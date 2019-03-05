@@ -50,7 +50,6 @@ public final class RestMasterPlugin implements MasterPlugin, WebServices {
 			final CodecManager codecManager) {
 		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//-----
-		//	this.timeoutSeconds = timeoutSeconds;
 		restQueueServer = new RestQueueServer(20, codecManager, 5);
 	}
 

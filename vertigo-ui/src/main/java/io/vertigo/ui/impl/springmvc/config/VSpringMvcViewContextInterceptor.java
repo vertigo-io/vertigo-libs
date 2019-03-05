@@ -50,7 +50,6 @@ public final class VSpringMvcViewContextInterceptor implements HandlerIntercepto
 				if (!controller.isViewContextDirty()) {
 					controller.makeUnmodifiable();
 				}
-				//modelAndView.getModel().put("vContext", controller.getModel());
 			}
 		}
 	}

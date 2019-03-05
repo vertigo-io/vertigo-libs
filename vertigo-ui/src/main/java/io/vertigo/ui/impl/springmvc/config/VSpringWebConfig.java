@@ -69,8 +69,8 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	@Autowired
 	private ApplicationContext applicationContext;
 
-	private final static String COMPONENT_PATH_PREFIX = "io/vertigo/ui/";
-	private final static String[] STANDARD_UI_COMPONENTS_NAME = {
+	private static final String COMPONENT_PATH_PREFIX = "io/vertigo/ui/";
+	private static final String[] STANDARD_UI_COMPONENTS_NAME = {
 			"utils/vue-data", "utils/include-data", //technical components
 			"layout/page", "layout/head", "layout/form", "layout/modal", "layout/block", //layout components
 			"layout/grid", "layout/grid-cell", //grid

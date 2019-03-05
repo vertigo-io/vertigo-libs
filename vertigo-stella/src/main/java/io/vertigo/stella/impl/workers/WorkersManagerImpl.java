@@ -55,7 +55,6 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 		//-----
 		workersCoordinator = new WorkersCoordinator(workersCount);
 		final Map<String, Integer> workTypesMap = WorkDispatcherConfUtil.readWorkTypeConf(workTypes);
-		//		workListener = new WorkListenerImpl(/*analyticsManager*/);
 		//-----
 		for (final Map.Entry<String, Integer> entry : workTypesMap.entrySet()) {
 			final String workType = entry.getKey();

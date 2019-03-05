@@ -52,7 +52,7 @@ public class SlotComponentProcessor extends AbstractElementModelProcessor {
 		throw new IllegalStateException("Component slot " + name + " wasn't correctly parsed. All slots must be set at start in component body, before the content.");
 	}
 
-	private Map<String, String> processAttribute(final IModel model) {
+	private static Map<String, String> processAttribute(final IModel model) {
 		final ITemplateEvent firstEvent = model.get(0);
 		final Map<String, String> attributes = new HashMap<>();
 		if (firstEvent instanceof IProcessableElementTag) {

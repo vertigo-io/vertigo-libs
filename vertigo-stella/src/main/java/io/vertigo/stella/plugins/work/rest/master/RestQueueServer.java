@@ -205,7 +205,7 @@ final class RestQueueServer {
 	 * @param base64Result result base64 encoded
 	 */
 	void onDone(final boolean success, final String workId, final String base64Result) {
-		LOG.info("onDone {} : ()", success, workId);
+		LOG.info("onDone {} : ({})", success, workId);
 		//-----
 		final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.remove(workId);
 		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", workId);

@@ -79,10 +79,9 @@ public final class EncoderDate {
 		}
 	}
 
-	/*
+	/**
 	 *  Cycles through patterns to try and parse given String into a Date | LocalDate | Instant
 	 */
-
 	private static <T> T applyStringToObject(final String dateString, final Function<String, T> fun) throws FormatterException {
 		//StringToDate renvoit null si elle n'a pas réussi à convertir la date
 		T dateValue = null;
@@ -98,7 +97,7 @@ public final class EncoderDate {
 		return dateValue;
 	}
 
-	/*
+	/**
 	 * Converts a String to a LocalDate according to a given pattern
 	 */
 	private static LocalDate doStringToLocalDate(final String dateString) {
@@ -106,7 +105,7 @@ public final class EncoderDate {
 		return LocalDate.parse(dateString, dateTimeFormatter);
 	}
 
-	/*
+	/**
 	 * Converts a String to a Instant according to a given pattern
 	 */
 	private static Instant doStringToInstant(final String dateString) {
@@ -114,32 +113,6 @@ public final class EncoderDate {
 				.withZone(getLocaleManager().getCurrentZoneId())
 				.parse(dateString, Instant::from);
 	}
-
-	/*
-	 * Converts a String to a java.util.Date according to a given pattern
-	 */
-	/*private static Date doStringToDate(final String dateString) {
-		Date dateValue;
-	
-		//Formateur de date on le crée à chaque fois car l'implémentation de DateFormat est non synchronisé !
-		final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(pattern, getLocaleManager().getCurrentLocale());
-		formatter.setLenient(false);
-	
-		final ParsePosition parsePosition = new ParsePosition(0);
-		dateValue = formatter.parse(dateString, parsePosition);
-	
-		//si le parsing n'a pas consommé toute la chaine, on refuse la conversion
-		if (parsePosition.getIndex() != dateString.length()) {
-			throw new IllegalStateException("Error parsing " + dateString + " with pattern :" + pattern + "at position " + parsePosition.getIndex());
-		}
-		return dateValue;
-	}
-	
-	private static String dateToString(final Date date) {
-		final java.text.SimpleDateFormat formatter = new java.text.SimpleDateFormat(pattern, getLocaleManager().getCurrentLocale());
-		formatter.setLenient(false);
-		return formatter.format(date);
-	}*/
 
 	private static String localDateToString(final LocalDate localDate) {
 		return DateTimeFormatter.ofPattern(localDatePattern)
