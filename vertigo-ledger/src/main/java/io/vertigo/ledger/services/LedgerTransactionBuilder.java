@@ -46,7 +46,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param hash the hash to set
 	 */
 	public LedgerTransactionBuilder withHash(final String hash) {
-		this.myHash = hash;
+		myHash = hash;
 		return this;
 	}
 
@@ -54,7 +54,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param nonce the nonce to set
 	 */
 	public LedgerTransactionBuilder withNonce(final BigInteger nonce) {
-		this.myNonce = nonce;
+		myNonce = nonce;
 		return this;
 	}
 
@@ -62,7 +62,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param blockHash the blockHash to set
 	 */
 	public LedgerTransactionBuilder withBlockHash(final String blockHash) {
-		this.myBlockHash = blockHash;
+		myBlockHash = blockHash;
 		return this;
 	}
 
@@ -70,7 +70,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param blockNumber the blockNumber to set
 	 */
 	public LedgerTransactionBuilder withBlockNumber(final BigInteger blockNumber) {
-		this.myBlockNumber = blockNumber;
+		myBlockNumber = blockNumber;
 		return this;
 	}
 
@@ -78,7 +78,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param transactionIndex the transactionIndex to set
 	 */
 	public LedgerTransactionBuilder withTransactionIndex(final BigInteger transactionIndex) {
-		this.myTransactionIndex = transactionIndex;
+		myTransactionIndex = transactionIndex;
 		return this;
 	}
 
@@ -86,7 +86,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param from the from to set
 	 */
 	public LedgerTransactionBuilder withFrom(final String from) {
-		this.myFrom = from;
+		myFrom = from;
 		return this;
 	}
 
@@ -94,7 +94,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param to the to to set
 	 */
 	public LedgerTransactionBuilder withTo(final String to) {
-		this.myTo = to;
+		myTo = to;
 		return this;
 	}
 
@@ -102,7 +102,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param value the value to set
 	 */
 	public LedgerTransactionBuilder withValue(final BigInteger value) {
-		this.myValue = value;
+		myValue = value;
 		return this;
 	}
 
@@ -110,7 +110,7 @@ public final class LedgerTransactionBuilder implements Builder<LedgerTransaction
 	 * @param message the message to set
 	 */
 	public LedgerTransactionBuilder withMessage(final String message) {
-		this.myMessage = message;
+		myMessage = message;
 		return this;
 	}
 

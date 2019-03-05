@@ -28,6 +28,7 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.lang.Assertion;
 
 public class VFileReturnValueHandler implements HandlerMethodReturnValueHandler {
 
@@ -38,6 +39,8 @@ public class VFileReturnValueHandler implements HandlerMethodReturnValueHandler 
 
 	@Override
 	public void handleReturnValue(final Object returnValue, final MethodParameter returnType, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest) throws Exception {
+		Assertion.checkNotNull(mavContainer);
+		//---
 		mavContainer.setRequestHandled(true);
 		final HttpServletResponse response = getResponse(webRequest);
 		VFileUtil.sendVFile((VFile) returnValue, response);

@@ -21,11 +21,10 @@ package io.vertigo.ledger.services;
 
 public final class LedgerCredential {
 
-	private String password;
-	private String walletPath;
+	private final String password;
+	private final String walletPath;
 
 	public LedgerCredential(final String password, final String walletPath) {
-		super();
 		this.password = password;
 		this.walletPath = walletPath;
 	}

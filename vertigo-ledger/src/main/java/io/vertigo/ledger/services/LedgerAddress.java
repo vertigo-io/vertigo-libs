@@ -21,8 +21,8 @@ package io.vertigo.ledger.services;
 
 public final class LedgerAddress {
 
-	private String accountName;
-	private String publicAddress;
+	private final String accountName;
+	private final String publicAddress;
 
 	public LedgerAddress(final String accountName, final String publicAddress) {
 		this.publicAddress = publicAddress;

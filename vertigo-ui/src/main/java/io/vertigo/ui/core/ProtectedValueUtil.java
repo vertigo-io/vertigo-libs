@@ -38,12 +38,11 @@ public final class ProtectedValueUtil {
 		if (unprotectedValue == null) {
 			return null;
 		}
+		//unprotectedValue is not null here
 		final String protectedUrl = "Prot-" + unprotectedValue.hashCode() + "-Prot";
-		if (unprotectedValue != null) {
-			try (VTransactionWritable transactionWritable = getTransactionManager().createCurrentTransaction()) {
-				getKVStoreManager().put(PROTECTED_VALUE_COLLECTION_NAME, protectedUrl, unprotectedValue);
-				transactionWritable.commit();
-			}
+		try (VTransactionWritable transactionWritable = getTransactionManager().createCurrentTransaction()) {
+			getKVStoreManager().put(PROTECTED_VALUE_COLLECTION_NAME, protectedUrl, unprotectedValue);
+			transactionWritable.commit();
 		}
 		return protectedUrl;
 	}

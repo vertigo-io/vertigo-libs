@@ -29,26 +29,26 @@ import io.vertigo.lang.Assertion;
  */
 public final class LedgerTransaction {
 
-	private String hash;
-	private BigInteger nonce;
-	private String blockHash;
-	private BigInteger blockNumber;
-	private BigInteger transactionIndex;
-	private String from;
-	private String to;
-	private BigInteger value;
-	private String message;
+	private final String hash;
+	private final BigInteger nonce;
+	private final String blockHash;
+	private final BigInteger blockNumber;
+	private final BigInteger transactionIndex;
+	private final String from;
+	private final String to;
+	private final BigInteger value;
+	private final String message;
 
 	LedgerTransaction(
-			String hash,
-			BigInteger nonce,
-			String blockHash,
-			BigInteger blockNumber,
-			BigInteger transactionIndex,
-			String from,
-			String to,
-			BigInteger value,
-			String message) {
+			final String hash,
+			final BigInteger nonce,
+			final String blockHash,
+			final BigInteger blockNumber,
+			final BigInteger transactionIndex,
+			final String from,
+			final String to,
+			final BigInteger value,
+			final String message) {
 		Assertion.checkNotNull(hash);
 		Assertion.checkNotNull(nonce);
 		Assertion.checkNotNull(blockHash);
