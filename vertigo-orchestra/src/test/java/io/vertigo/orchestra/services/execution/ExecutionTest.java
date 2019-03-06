@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.inject.Inject;
 
@@ -83,16 +84,26 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		orchestraServices.getScheduler()
 				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// The task takes 10 secondes to run we wait 12 secondes to check the final states
-		Thread.sleep(1000 * 13);
-
-		final DtList<OProcessPlanification> processPlanifications = monitoringServices.getPlanificationsByProId(proId);
-		// --- We check that planification is ok
-		Assertions.assertEquals(1, processPlanifications.size());
-		final OProcessPlanification processPlanification = processPlanifications.get(0);
-		Assertions.assertEquals(SchedulerState.TRIGGERED.name(), processPlanification.getSstCd());
+		// test planif
+		testWithTimeout(() -> checkPlanifications(proId, 0, 1, 0, 0), 2);
 		// We check executions
-		checkExecutions(proId, 0, 0, 1, 0);
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 1, 0), 15);
+
+	}
+
+	private static final void testWithTimeout(final Supplier<Boolean> booleanSupplier, final long timeoutSeconds) throws InterruptedException {
+		testWithTimeoutAndDelay(booleanSupplier, timeoutSeconds, 0);
+	}
+
+	private static final void testWithTimeoutAndDelay(final Supplier<Boolean> booleanSupplier, final long timeoutSeconds, final long delayInSeconds) throws InterruptedException {
+		Thread.sleep(delayInSeconds * 1000);
+		final Instant beginning = Instant.now();
+		boolean isSuccess = false;
+		while (!isSuccess && Instant.now().isBefore(beginning.plusSeconds(timeoutSeconds))) {
+			Thread.sleep(500L);
+			isSuccess = booleanSupplier.get();
+		}
+		Assertions.assertTrue(isSuccess);
 	}
 
 	/**
@@ -112,19 +123,12 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		// We check the save is ok
 		Assertions.assertNotNull(proId);
 
-		Thread.sleep(1000 * 2);
+		testWithTimeout(() -> checkPlanifications(proId, 1, 0, 0, 0), 3);
 		// --- We get the first planification
-		final DtList<OProcessPlanification> processPlanifications = monitoringServices.getPlanificationsByProId(proId);
-		Assertions.assertTrue(processPlanifications.size() >= 1);
-		final OProcessPlanification processPlanification = processPlanifications.get(0);
 
-		// We wait the planif
-		Thread.sleep(Math.max(0, processPlanification.getExpectedTime().toEpochMilli() - System.currentTimeMillis()));
-
-		// After 20 secondes there is 1 execution done and 1 execution running (for 5 secondes, half execution time)
-		Thread.sleep(1000 * 20);
+		// in 30 seconds there is at leats one done and one running
 		// --- We check the counts
-		checkExecutions(proId, 0, 1, 1, 0);
+		testWithTimeout(() -> checkExecutions(proId, 0, 1, 1, 0), 30);
 
 	}
 
@@ -167,11 +171,8 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		orchestraServices.getScheduler()
 				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// Error is after 2 seconds
-		Thread.sleep(1000 * 5);
-		// --- We check the counts
-		// After 5 secondes there is 1 process in error
-		checkExecutions(proId, 0, 0, 0, 1);
+		// After 5 secondes at most there is 1 process in error
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 0, 1), 5);
 	}
 
 	/**
@@ -192,12 +193,10 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		orchestraServices.getScheduler()
 				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// After 15 seconds the process is still running
-		Thread.sleep(1000 * 15);
-		checkExecutions(proId, 0, 1, 0, 0);
-		// After 25 second the process is done
-		Thread.sleep(1000 * 10);
-		checkExecutions(proId, 0, 0, 1, 0);
+		// After 12 seconds the process is still running
+		testWithTimeoutAndDelay(() -> checkExecutions(proId, 0, 1, 0, 0), 3, 12);
+		// After 12 second the process is done
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 1, 0), 12);
 	}
 
 	/**
@@ -219,11 +218,9 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// After 5 seconds the process is still running
-		Thread.sleep(1000 * 5);
-		checkExecutions(proId, 0, 1, 0, 0);
-		// After 15 second the process is in Error
-		Thread.sleep(1000 * 10);
-		checkExecutions(proId, 0, 0, 0, 1);
+		testWithTimeout(() -> checkExecutions(proId, 0, 1, 0, 0), 5);
+		// After 10 second the process is in error
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 0, 1), 15);
 	}
 
 	/**
@@ -244,8 +241,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// We wait 5 secondes to be sure that execution is running
-		Thread.sleep(1000 * 5);
-		checkExecutions(proId, 0, 1, 0, 0); // We are sure that the process is running so we can continue the test safely
+		testWithTimeout(() -> checkExecutions(proId, 0, 1, 0, 0), 5); // We are sure that the process is running so we can continue the test safely
 
 		final OActivityWorkspace activityWorkspace = monitoringServices
 				.getActivityWorkspaceByAceId(monitoringServices.getActivityExecutionsByPreId(monitoringServices.getExecutionsByProId(proId).get(0).getPreId()).get(0).getAceId(), true);
@@ -275,8 +271,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 				.scheduleAt(processDefinition, Instant.now(), planifParams);
 
 		// We check 3 secondes to be sure that execution is running
-		Thread.sleep(1000 * 3);
-		checkExecutions(proId, 0, 1, 0, 0); // We are sure that the process is running so we can continue the test safely
+		testWithTimeout(() -> checkExecutions(proId, 0, 1, 0, 0), 3); // We are sure that the process is running so we can continue the test safely
 
 		final OActivityWorkspace activityWorkspace = monitoringServices
 				.getActivityWorkspaceByAceId(monitoringServices.getActivityExecutionsByPreId(monitoringServices.getExecutionsByProId(proId).get(0).getPreId()).get(0).getAceId(), true);
@@ -301,12 +296,10 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		orchestraServices.getScheduler()
 				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// After 4 second the process is running
-		Thread.sleep(1000 * 3);
-		checkExecutions(proId, 0, 1, 0, 0);
-		// After 5 seconds the process is in error because there is an exception after 3 seconds
-		Thread.sleep(1000 * 4);
-		checkExecutions(proId, 0, 0, 0, 1);
+		// After 3 second at most the process is running
+		testWithTimeout(() -> checkExecutions(proId, 0, 1, 0, 0), 3);
+		// After 5 seconds at most the process is in error because there is an exception after 3 seconds
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 0, 1), 5);
 	}
 
 	/**
@@ -328,10 +321,8 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		orchestraServices.getScheduler()
 				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// We wait 3 seconds
-		Thread.sleep(1000 * 3);
 		// We should have 1 planification triggered and 1 misfired
-		checkPlanifications(proId, 0, 1, 1);
+		testWithTimeout(() -> checkPlanifications(proId, 0, 1, 1, 0), 3);
 		// We should have one execution running
 		checkExecutions(proId, 0, 1, 0, 0);
 	}
@@ -353,10 +344,8 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		orchestraServices.getScheduler()
 				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// We wait 10 seconds until it's finished
-		Thread.sleep(1000 * 10);
-
-		checkExecutions(proId, 0, 0, 1, 0); // We are sure that the process is done so we can continue the test safely
+		// We wait 8 seconds at most until it's finished
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 1, 0), 8); // We are sure that the process is done so we can continue the test safely
 
 		final Optional<OActivityLog> activityLog = monitoringServices
 				.getActivityLogByAceId(monitoringServices.getActivityExecutionsByPreId(monitoringServices.getExecutionsByProId(proId).get(0).getPreId()).get(0).getAceId());
@@ -385,10 +374,8 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		orchestraServices.getScheduler()
 				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// We wait 3 seconds
-		Thread.sleep(1000 * 5);
 		// We should have 2 planifications triggered
-		checkPlanifications(proId, 0, 2, 0);
+		testWithTimeout(() -> checkPlanifications(proId, 0, 2, 0, 0), 5);
 		// We should have two executions running
 		checkExecutions(proId, 0, 2, 0, 0);
 	}
@@ -412,44 +399,14 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		orchestraServices.getScheduler()
 				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// We wait 10 seconds
-		Thread.sleep(1000 * 10);
 		// we have one process_execution done
-		checkExecutions(proId, 0, 0, 1, 0);
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 1, 0), 5);
 		// we have one and only one activity_execution done
 		checkActivityExecutions(proId, 0, 0, 1, 0);
 
 	}
 
-	protected void checkPlanifications(final Long proId, final int waitingCount, final int triggeredCount, final int misfiredCount) {
-		int waitingPlanificationCount = 0;
-		int triggeredPlanificationCount = 0;
-		int misfiredPlanificationCount = 0;
-
-		for (final OProcessPlanification processPlanification : monitoringServices.getPlanificationsByProId(proId)) {
-
-			switch (SchedulerState.valueOf(processPlanification.getSstCd())) {
-				case WAITING:
-					waitingPlanificationCount++;
-					break;
-				case TRIGGERED:
-					triggeredPlanificationCount++;
-					break;
-				case MISFIRED:
-					misfiredPlanificationCount++;
-					break;
-				case RESCUED:
-				default:
-					break;
-			}
-		}
-		// --- We check the counts
-		Assertions.assertEquals(waitingCount, waitingPlanificationCount);
-		Assertions.assertEquals(triggeredCount, triggeredPlanificationCount);
-		Assertions.assertEquals(misfiredCount, misfiredPlanificationCount);
-	}
-
-	protected void checkExecutions(final Long proId, final int waitingCount, final int runningCount, final int doneCount, final int errorCount) {
+	protected boolean checkExecutions(final Long proId, final int waitingCount, final int runningCount, final int doneCount, final int errorCount) {
 		int waitingExecutionCount = 0;
 		int runningExecutionCount = 0;
 		int doneExecutionCount = 0;
@@ -475,6 +432,8 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 					case SUBMITTED:
 					case PENDING:
 					case ABORTED:
+					case RESERVED:
+						break;
 					default:
 						throw new UnsupportedOperationException("Unsupported state :" + activityExecution.getEstCd());
 				}
@@ -485,8 +444,6 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 					break;
 				case RUNNING:
 					runningExecutionCount++;
-					// --- We check that there is one and only one activity RUNNING if the process is Running
-					Assertions.assertEquals(1, countActivitiesRunning);
 					break;
 				case DONE:
 					doneExecutionCount++;
@@ -502,15 +459,48 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 					break;
 				case SUBMITTED:
 				case PENDING:
+				case RESERVED:
+					break;
 				default:
 					throw new UnsupportedOperationException("Unsupported state :" + processExecution.getEstCd());
 			}
 		}
 		// --- We check the counts
-		Assertions.assertEquals(waitingCount, waitingExecutionCount, "waiting ");
-		Assertions.assertEquals(runningCount, runningExecutionCount, "running");
-		Assertions.assertEquals(doneCount, doneExecutionCount, "done");
-		Assertions.assertEquals(errorCount, errorExecutionCount, "error");
+		return waitingCount == waitingExecutionCount &&
+				runningCount == runningExecutionCount &&
+				doneCount == doneExecutionCount &&
+				errorCount == errorExecutionCount;
+	}
+
+	protected boolean checkPlanifications(final Long proId, final int waitingCount, final int triggeredCount, final int misfiredCount, final int rescuedCount) {
+		int waitingPlanificationCount = 0;
+		int triggeredPlanificationCount = 0;
+		int misfiredPlanificationCount = 0;
+		int rescuedPlanificationCount = 0;
+
+		for (final OProcessPlanification processPlanification : monitoringServices.getPlanificationsByProId(proId)) {
+			switch (SchedulerState.valueOf(processPlanification.getSstCd())) {
+				case WAITING:
+					waitingPlanificationCount++;
+					break;
+				case TRIGGERED:
+					triggeredPlanificationCount++;
+					break;
+				case MISFIRED:
+					misfiredPlanificationCount++;
+					break;
+				case RESCUED:
+					rescuedPlanificationCount++;
+					break;
+				default:
+					throw new UnsupportedOperationException("Unsupported state :" + processPlanification.getSstCd());
+			}
+		}
+		// --- We check the counts
+		return waitingCount == waitingPlanificationCount &&
+				triggeredCount == triggeredPlanificationCount &&
+				misfiredCount == misfiredPlanificationCount &&
+				rescuedCount == rescuedPlanificationCount;
 	}
 
 	protected void checkActivityExecutions(final Long proId, final int waitingCount, final int runningCount, final int doneCount, final int errorCount) {

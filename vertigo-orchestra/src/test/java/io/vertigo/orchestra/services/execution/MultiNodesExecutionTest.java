@@ -91,7 +91,7 @@ public class MultiNodesExecutionTest extends ExecutionTest {
 			orchestraServices.getScheduler().scheduleAt(processDefinition, nowPlus10s, Collections.emptyMap());
 		}
 		Thread.sleep(1000);
-		checkPlanifications(proId, 50, 0, 0);
+		checkPlanifications(proId, 50, 0, 0, 0);
 		// After 15 seconds the process is still running
 		for (int i = 0; i < 30; i++) {
 			Thread.sleep(1000);
