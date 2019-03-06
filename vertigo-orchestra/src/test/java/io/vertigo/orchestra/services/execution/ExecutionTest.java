@@ -194,9 +194,9 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// After 12 seconds the process is still running
-		testWithTimeoutAndDelay(() -> checkExecutions(proId, 0, 1, 0, 0), 3, 12);
+		testWithTimeoutAndDelay(() -> checkExecutions(proId, 0, 1, 0, 0), 3, 15);
 		// After 12 second the process is done
-		testWithTimeout(() -> checkExecutions(proId, 0, 0, 1, 0), 12);
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 1, 0), 15);
 	}
 
 	/**
@@ -296,8 +296,8 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		orchestraServices.getScheduler()
 				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// After 3 second at most the process is running
-		testWithTimeout(() -> checkExecutions(proId, 0, 1, 0, 0), 3);
+		// After 5 second at most the process is running
+		testWithTimeout(() -> checkExecutions(proId, 0, 1, 0, 0), 5);
 		// After 5 seconds at most the process is in error because there is an exception after 3 seconds
 		testWithTimeout(() -> checkExecutions(proId, 0, 0, 0, 1), 5);
 	}

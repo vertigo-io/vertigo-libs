@@ -1,8 +1,24 @@
 -- ============================================================
---   SGBD      		  :  sqlserver                     
+--   SGBD      		  :  postgres                     
 -- ============================================================
 
 
+
+
+-- ============================================================
+--   Sequences                                      
+-- ============================================================
+create sequence SEQ_RULE_CONDITION_DEFINITION
+	start with 1000 cache 20; 
+
+create sequence SEQ_RULE_DEFINITION
+	start with 1000 cache 20; 
+
+create sequence SEQ_RULE_FILTER_DEFINITION
+	start with 1000 cache 20; 
+
+create sequence SEQ_SELECTOR_DEFINITION
+	start with 1000 cache 20; 
 
 
 -- ============================================================
@@ -10,12 +26,12 @@
 -- ============================================================
 create table RULE_CONDITION_DEFINITION
 (
-    ID          	 NUMERIC     	identity,
+    ID          	 NUMERIC     	not null,
     FIELD       	 VARCHAR(100)	,
     OPERATOR    	 VARCHAR(120)	,
     EXPRESSION  	 VARCHAR(100)	,
     RUD_ID      	 NUMERIC     	,
-    constraint PK_RULE_CONDITION_DEFINITION primary key nonclustered (ID)
+    constraint PK_RULE_CONDITION_DEFINITION primary key (ID)
 );
 
 comment on column RULE_CONDITION_DEFINITION.ID is
@@ -38,11 +54,11 @@ comment on column RULE_CONDITION_DEFINITION.RUD_ID is
 -- ============================================================
 create table RULE_DEFINITION
 (
-    ID          	 NUMERIC     	identity,
+    ID          	 NUMERIC     	not null,
     CREATION_DATE	 DATE        	,
     ITEM_ID     	 NUMERIC     	,
     LABEL       	 VARCHAR(100)	,
-    constraint PK_RULE_DEFINITION primary key nonclustered (ID)
+    constraint PK_RULE_DEFINITION primary key (ID)
 );
 
 comment on column RULE_DEFINITION.ID is
@@ -62,12 +78,12 @@ comment on column RULE_DEFINITION.LABEL is
 -- ============================================================
 create table RULE_FILTER_DEFINITION
 (
-    ID          	 NUMERIC     	identity,
+    ID          	 NUMERIC     	not null,
     FIELD       	 VARCHAR(100)	,
     OPERATOR    	 VARCHAR(120)	,
     EXPRESSION  	 VARCHAR(100)	,
     SEL_ID      	 NUMERIC     	,
-    constraint PK_RULE_FILTER_DEFINITION primary key nonclustered (ID)
+    constraint PK_RULE_FILTER_DEFINITION primary key (ID)
 );
 
 comment on column RULE_FILTER_DEFINITION.ID is
@@ -90,11 +106,11 @@ comment on column RULE_FILTER_DEFINITION.SEL_ID is
 -- ============================================================
 create table SELECTOR_DEFINITION
 (
-    ID          	 NUMERIC     	identity,
+    ID          	 NUMERIC     	not null,
     CREATION_DATE	 DATE        	,
     ITEM_ID     	 NUMERIC     	,
     GROUP_ID    	 VARCHAR(100)	,
-    constraint PK_SELECTOR_DEFINITION primary key nonclustered (ID)
+    constraint PK_SELECTOR_DEFINITION primary key (ID)
 );
 
 comment on column SELECTOR_DEFINITION.ID is
@@ -108,6 +124,7 @@ comment on column SELECTOR_DEFINITION.ITEM_ID is
 
 comment on column SELECTOR_DEFINITION.GROUP_ID is
 'groupId';
+
 
 
 alter table RULE_CONDITION_DEFINITION

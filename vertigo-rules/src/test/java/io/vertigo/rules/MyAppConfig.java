@@ -18,15 +18,19 @@
  */
 package io.vertigo.rules;
 
+import org.h2.Driver;
+
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.app.config.AppConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
-import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
+import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.dynamo.DynamoFeatures;
+import io.vertigo.rules.boot.DataBaseInitializer;
 import io.vertigo.rules.data.MockIdentities;
 import io.vertigo.rules.data.MyDummyDtObjectProvider;
 import io.vertigo.rules.data.TestUserSession;
@@ -47,6 +51,7 @@ public class MyAppConfig {
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.addPlugin(URLResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new CommonsFeatures()//
 						.withCache()
@@ -57,10 +62,9 @@ public class MyAppConfig {
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()//
 						.withC3p0(
-								Param.of("dataBaseClass", PostgreSqlDataBase.class.getName()),
-								Param.of("jdbcDriver", org.postgresql.Driver.class.getName()),
-								Param.of("jdbcUrl",
-										"jdbc:postgresql://laura.dev.klee.lan.net:5432/dgac_blanche?user=blanche&password=blanche"))
+								Param.of("dataBaseClass", H2DataBase.class.getName()),
+								Param.of("jdbcDriver", Driver.class.getName()),
+								Param.of("jdbcUrl", "jdbc:h2:mem:vertigo-rules"))
 						.build())
 				.addModule(new DynamoFeatures()//
 						.withStore()//
@@ -74,6 +78,7 @@ public class MyAppConfig {
 						.build())
 				.addModule(ModuleConfig.builder("dummy")
 						.addDefinitionProvider(MyDummyDtObjectProvider.class)
+						.addComponent(DataBaseInitializer.class)
 						.addComponent(MockIdentities.class)
 						.build())
 				.addModule(new RulesFeatures()
