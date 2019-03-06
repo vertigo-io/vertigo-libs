@@ -81,7 +81,7 @@ create Domain DO_RULES_OPERATOR {
 
 create Domain DO_RULES_INSTANT {
 	dataType : Instant
-	storeType : "DATE"
+	storeType : "TIMESTAMP"
 }
 
 create Domain DO_RULES_WEAK_ID {

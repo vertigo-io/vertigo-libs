@@ -57,7 +57,7 @@ create Domain DO_WF_LEVEL {
 
 create Domain DO_WF_INSTANT {
 	dataType : Instant
-	storeType : "DATE"
+	storeType : "TIMESTAMP"
 }
 
 create Domain DO_WF_COMMENTS {

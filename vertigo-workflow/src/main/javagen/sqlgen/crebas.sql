@@ -1,8 +1,36 @@
 -- ============================================================
---   SGBD      		  :  sqlserver                     
+--   SGBD      		  :  postgres                     
 -- ============================================================
 
 
+
+
+-- ============================================================
+--   Sequences                                      
+-- ============================================================
+create sequence SEQ_WF_ACTIVITY
+	start with 1000 cache 20; 
+
+create sequence SEQ_WF_ACTIVITY_DEFINITION
+	start with 1000 cache 20; 
+
+create sequence SEQ_WF_DECISION
+	start with 1000 cache 20; 
+
+create sequence SEQ_WF_MULTIPLICITY_DEFINITION
+	start with 1000 cache 20; 
+
+create sequence SEQ_WF_STATUS
+	start with 1000 cache 20; 
+
+create sequence SEQ_WF_TRANSITION_DEFINITION
+	start with 1000 cache 20; 
+
+create sequence SEQ_WF_WORKFLOW
+	start with 1000 cache 20; 
+
+create sequence SEQ_WF_WORKFLOW_DEFINITION
+	start with 1000 cache 20; 
 
 
 -- ============================================================
@@ -10,11 +38,11 @@
 -- ============================================================
 create table WF_ACTIVITY
 (
-    WFA_ID      	 NUMERIC     	identity,
-    CREATION_DATE	 DATE        	,
+    WFA_ID      	 NUMERIC     	not null,
+    CREATION_DATE	 TIMESTAMP   	,
     WFW_ID      	 NUMERIC     	not null,
     WFAD_ID     	 NUMERIC     	not null,
-    constraint PK_WF_ACTIVITY primary key nonclustered (WFA_ID)
+    constraint PK_WF_ACTIVITY primary key (WFA_ID)
 );
 
 comment on column WF_ACTIVITY.WFA_ID is
@@ -34,12 +62,12 @@ comment on column WF_ACTIVITY.WFAD_ID is
 -- ============================================================
 create table WF_ACTIVITY_DEFINITION
 (
-    WFAD_ID     	 NUMERIC     	identity,
+    WFAD_ID     	 NUMERIC     	not null,
     NAME        	 VARCHAR(100)	,
     LEVEL       	 NUMERIC     	,
     WFMD_CODE   	 VARCHAR(100)	,
     WFWD_ID     	 NUMERIC     	not null,
-    constraint PK_WF_ACTIVITY_DEFINITION primary key nonclustered (WFAD_ID)
+    constraint PK_WF_ACTIVITY_DEFINITION primary key (WFAD_ID)
 );
 
 comment on column WF_ACTIVITY_DEFINITION.WFAD_ID is
@@ -62,13 +90,13 @@ comment on column WF_ACTIVITY_DEFINITION.WFWD_ID is
 -- ============================================================
 create table WF_DECISION
 (
-    WFE_ID      	 NUMERIC     	identity,
+    WFE_ID      	 NUMERIC     	not null,
     USERNAME    	 VARCHAR(100)	,
     CHOICE      	 NUMERIC     	,
-    DECISION_DATE	 DATE        	,
+    DECISION_DATE	 TIMESTAMP   	,
     COMMENTS    	 VARCHAR(3000)	,
     WFA_ID      	 NUMERIC     	,
-    constraint PK_WF_DECISION primary key nonclustered (WFE_ID)
+    constraint PK_WF_DECISION primary key (WFE_ID)
 );
 
 comment on column WF_DECISION.WFE_ID is
@@ -96,7 +124,7 @@ create table WF_MULTIPLICITY_DEFINITION
 (
     WFMD_CODE   	 VARCHAR(100)	not null,
     LABEL       	 VARCHAR(100)	,
-    constraint PK_WF_MULTIPLICITY_DEFINITION primary key nonclustered (WFMD_CODE)
+    constraint PK_WF_MULTIPLICITY_DEFINITION primary key (WFMD_CODE)
 );
 
 comment on column WF_MULTIPLICITY_DEFINITION.WFMD_CODE is
@@ -112,7 +140,7 @@ create table WF_STATUS
 (
     WFS_CODE    	 VARCHAR(100)	not null,
     LABEL       	 VARCHAR(100)	,
-    constraint PK_WF_STATUS primary key nonclustered (WFS_CODE)
+    constraint PK_WF_STATUS primary key (WFS_CODE)
 );
 
 comment on column WF_STATUS.WFS_CODE is
@@ -126,12 +154,12 @@ comment on column WF_STATUS.LABEL is
 -- ============================================================
 create table WF_TRANSITION_DEFINITION
 (
-    WFTD_ID     	 NUMERIC     	identity,
+    WFTD_ID     	 NUMERIC     	not null,
     NAME        	 VARCHAR(100)	not null,
     WFWD_ID     	 NUMERIC     	,
     WFAD_ID_FROM	 NUMERIC     	not null,
     WFAD_ID_TO  	 NUMERIC     	not null,
-    constraint PK_WF_TRANSITION_DEFINITION primary key nonclustered (WFTD_ID)
+    constraint PK_WF_TRANSITION_DEFINITION primary key (WFTD_ID)
 );
 
 comment on column WF_TRANSITION_DEFINITION.WFTD_ID is
@@ -154,15 +182,15 @@ comment on column WF_TRANSITION_DEFINITION.WFAD_ID_TO is
 -- ============================================================
 create table WF_WORKFLOW
 (
-    WFW_ID      	 NUMERIC     	identity,
-    CREATION_DATE	 DATE        	,
+    WFW_ID      	 NUMERIC     	not null,
+    CREATION_DATE	 TIMESTAMP   	,
     ITEM_ID     	 NUMERIC     	,
     USERNAME    	 VARCHAR(100)	,
     USER_LOGIC  	 bool        	not null,
     WFWD_ID     	 NUMERIC     	not null,
     WFS_CODE    	 VARCHAR(100)	not null,
     WFA_ID_2    	 NUMERIC     	,
-    constraint PK_WF_WORKFLOW primary key nonclustered (WFW_ID)
+    constraint PK_WF_WORKFLOW primary key (WFW_ID)
 );
 
 comment on column WF_WORKFLOW.WFW_ID is
@@ -194,11 +222,11 @@ comment on column WF_WORKFLOW.WFA_ID_2 is
 -- ============================================================
 create table WF_WORKFLOW_DEFINITION
 (
-    WFWD_ID     	 NUMERIC     	identity,
+    WFWD_ID     	 NUMERIC     	not null,
     NAME        	 VARCHAR(100)	,
-    DATE        	 DATE        	,
+    DATE        	 TIMESTAMP   	,
     WFAD_ID     	 NUMERIC     	,
-    constraint PK_WF_WORKFLOW_DEFINITION primary key nonclustered (WFWD_ID)
+    constraint PK_WF_WORKFLOW_DEFINITION primary key (WFWD_ID)
 );
 
 comment on column WF_WORKFLOW_DEFINITION.WFWD_ID is
@@ -212,6 +240,7 @@ comment on column WF_WORKFLOW_DEFINITION.DATE is
 
 comment on column WF_WORKFLOW_DEFINITION.WFAD_ID is
 'startActivity';
+
 
 
 alter table WF_ACTIVITY

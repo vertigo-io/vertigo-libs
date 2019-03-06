@@ -13,16 +13,8 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
-import io.vertigo.studio.impl.masterdata.MasterDataManagerImpl;
-import io.vertigo.studio.impl.mda.MdaManagerImpl;
-import io.vertigo.studio.masterdata.MasterDataManager;
+import io.vertigo.studio.StudioFeatures;
 import io.vertigo.studio.mda.MdaManager;
-import io.vertigo.studio.plugins.masterdata.json.JsonMasterDataValueProvider;
-import io.vertigo.studio.plugins.mda.domain.java.DomainGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.domain.js.JSGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.domain.sql.SqlGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.file.FileInfoGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.task.TaskGeneratorPlugin;
 
 public class Studio {
 
@@ -49,34 +41,23 @@ public class Studio {
 								.build())
 						.build())
 				// ---StudioFeature
-				.addModule( ModuleConfig.builder("studio")
-					.addComponent(MasterDataManager.class, MasterDataManagerImpl.class)
-						.addPlugin(JsonMasterDataValueProvider.class, Param.of("fileName", "io/vertigo/workflow/mda/masterDataValues.json"))
-					.addComponent(MdaManager.class, MdaManagerImpl.class,
-							Param.of("targetGenDir", "src/main/javagen/"),
-							Param.of("encoding", "UTF-8"),
-							Param.of("projectPackageName", "io.vertigo.workflow"))
-
-					.addPlugin(DomainGeneratorPlugin.class,
-							Param.of("targetSubDir", "."),
-							Param.of("generateDtResources", "false"),
-							Param.of("generateDtDefinitions", "true"),
-							Param.of("generateDtObject", "true"))
-					.addPlugin(TaskGeneratorPlugin.class,
-						Param.of("targetSubDir", "."))
-
-					.addPlugin(FileInfoGeneratorPlugin.class,
-							Param.of("targetSubDir", "."))
-					.addPlugin(SqlGeneratorPlugin.class,
-							Param.of("targetSubDir", "sqlgen"),
-							Param.of("baseCible", "sqlserver"),
-							Param.of("generateDrop", "false"),
-							Param.of("generateMasterData", "true"))
-					.addPlugin(JSGeneratorPlugin.class,
-							Param.of("targetSubDir", "."),
-							Param.of("generateDtResourcesJS", "true"),
-							Param.of("generateJsDtDefinitions", "true"))
-					.build())
+				.addModule(
+						new StudioFeatures()
+						.withMasterData()
+						.withMda(
+								Param.of("projectPackageName", "io.vertigo.workflow"))
+						.withJavaDomainGenerator(
+								Param.of("generateDtResources", "false"))
+						.withTaskGenerator()
+						.withFileGenerator()
+						.withSqlDomainGenerator(
+								Param.of("targetSubDir", "javagen/sqlgen"),
+								Param.of("baseCible", "postgres"),
+								Param.of("generateDrop", "false"),
+								Param.of("generateMasterData", "true"))
+						.withJsonMasterDataValuesProvider(
+								Param.of("fileName", "io/vertigo/workflow/mda/masterDataValues.json"))
+						.build())
 				.build();
 		// @formatter:on
 
