@@ -266,8 +266,9 @@ final class DOCXUtil {
 		final DOMSource domSource = new DOMSource(xmlDocument);
 		final StringWriter writer = new StringWriter();
 		final StreamResult result = new StreamResult(writer);
-		final TransformerFactory tf = TransformerFactory.newInstance();
 		try {
+			final TransformerFactory tf = TransformerFactory.newInstance();
+			tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 			final Transformer transformer = tf.newTransformer();
 			transformer.transform(domSource, result);
 		} catch (final TransformerException e) {

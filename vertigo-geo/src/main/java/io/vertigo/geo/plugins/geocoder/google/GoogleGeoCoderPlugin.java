@@ -201,6 +201,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			final StringWriter sw = new StringWriter();
 			final TransformerFactory tf = TransformerFactory.newInstance();
+			tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 			final Transformer transformer = tf.newTransformer();
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
 			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
