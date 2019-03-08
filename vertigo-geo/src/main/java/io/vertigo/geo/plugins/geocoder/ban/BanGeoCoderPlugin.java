@@ -52,7 +52,7 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 	private static final String GEOCODE_REQUEST_PREFIX = "https://api-adresse.data.gouv.fr/search/";
 	// Expression XPath permettant de récupérer la latitude, la longitude et
 	// l'adresse formatée de
-	private final Proxy proxy;
+	private final Optional<Proxy> proxyOpt;
 
 	@Inject
 	public BanGeoCoderPlugin(
@@ -64,9 +64,9 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 				"les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		//-----
 		if (proxyHost.isPresent()) {
-			proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.get(), Integer.parseInt(proxyPort.get())));
+			proxyOpt = Optional.of(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.get(), Integer.parseInt(proxyPort.get()))));
 		} else {
-			proxy = Proxy.NO_PROXY;
+			proxyOpt = Optional.empty();
 		}
 	}
 
@@ -96,7 +96,7 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 		//-----
 		Assertion.checkNotNull(url);
 		try {
-			final HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
+			final HttpURLConnection connection = proxyOpt.isPresent() ? (HttpURLConnection) url.openConnection(proxyOpt.get()) : (HttpURLConnection) url.openConnection();
 			connection.setConnectTimeout(500); //500 ms timeout
 			connection.setDoOutput(true);
 			// Connexion et récupération des résultats

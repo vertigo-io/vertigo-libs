@@ -20,6 +20,7 @@ package io.vertigo.geo;
 
 import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
+import io.vertigo.core.param.Param;
 import io.vertigo.geo.impl.services.geocoder.GeoCoderManagerImpl;
 import io.vertigo.geo.plugins.geocoder.ban.BanGeoCoderPlugin;
 import io.vertigo.geo.plugins.geocoder.google.GoogleGeoCoderPlugin;
@@ -63,8 +64,8 @@ public final class GeoFeatures extends Features<GeoFeatures> {
 	 * @return the features
 	 */
 	@Feature("geocoding.ban")
-	public GeoFeatures withBanGeocoder() {
-		getModuleConfigBuilder().addPlugin(BanGeoCoderPlugin.class);
+	public GeoFeatures withBanGeocoder(final Param... params) {
+		getModuleConfigBuilder().addPlugin(BanGeoCoderPlugin.class, params);
 		return this;
 	}
 
