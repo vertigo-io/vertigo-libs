@@ -123,7 +123,7 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		// We check the save is ok
 		Assertions.assertNotNull(proId);
 
-		testWithTimeout(() -> checkPlanifications(proId, 1, 0, 0, 0), 3);
+		testWithTimeout(() -> checkPlanifications(proId, 1, 0, 0, 0), 5);
 		// --- We get the first planification
 
 		// in 30 seconds there is at leats one done and one running

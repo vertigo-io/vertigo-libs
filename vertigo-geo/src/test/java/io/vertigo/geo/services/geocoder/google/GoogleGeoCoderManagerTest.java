@@ -21,6 +21,7 @@ package io.vertigo.geo.services.geocoder.google;
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
@@ -32,6 +33,7 @@ import io.vertigo.geo.services.geocoder.GeoLocation;
 /**
  * @author spoitrenaud
  */
+@Disabled
 public class GoogleGeoCoderManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private GeoCoderManager geoCoderManager;
