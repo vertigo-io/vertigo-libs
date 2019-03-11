@@ -12,20 +12,13 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
-import io.vertigo.studio.impl.masterdata.MasterDataManagerImpl;
-import io.vertigo.studio.impl.mda.MdaManagerImpl;
-import io.vertigo.studio.masterdata.MasterDataManager;
+import io.vertigo.studio.StudioFeatures;
 import io.vertigo.studio.mda.MdaManager;
-import io.vertigo.studio.plugins.mda.domain.java.DomainGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.domain.sql.SqlGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.file.FileInfoGeneratorPlugin;
-import io.vertigo.studio.plugins.mda.task.TaskGeneratorPlugin;
 
 public class Studio {
 
 	private static AppConfig buildAppConfig() {
-		// @formatter:off
-		return  AppConfig.builder()
+		return AppConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -38,6 +31,7 @@ public class Studio {
 						.build())
 				.addModule(new DynamoFeatures().build())
 				//----Definitions
+
 				.addModule(ModuleConfig.builder("ressources")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addParam(Param.of("encoding", "UTF-8"))
@@ -45,33 +39,21 @@ public class Studio {
 								.build())
 						.build())
 				// ---StudioFeature
-				.addModule( ModuleConfig.builder("studio")
-					.addComponent(MdaManager.class, MdaManagerImpl.class,
-							Param.of("targetGenDir", "src/main/javagen/"),
-							Param.of("encoding", "UTF-8"),
-							Param.of("projectPackageName", "io.vertigo.orchestra"))
-
-					.addPlugin(DomainGeneratorPlugin.class,
-							Param.of("targetSubDir", "."),
-							Param.of("generateDtResources", "false"),
-							Param.of("generateDtDefinitions", "true"),
-							Param.of("generateDtObject", "true"))
-					.addPlugin(TaskGeneratorPlugin.class,
-						Param.of("targetSubDir", "."))
-
-					.addPlugin(FileInfoGeneratorPlugin.class,
-							Param.of("targetSubDir", "."))
-					.addPlugin(SqlGeneratorPlugin.class,
-							Param.of("targetSubDir", "sqlgen"),
-							Param.of("baseCible", "H2"),
-							Param.of("generateDrop", "false"),
-							Param.of("generateMasterData", "true"))
-
-					.addComponent(MasterDataManager.class, MasterDataManagerImpl.class)
-
-					.build())
+				.addModule(new StudioFeatures()
+						.withMasterData()
+						.withMda(
+								Param.of("projectPackageName", "io.vertigo.orchestra"))
+						.withJavaDomainGenerator(
+								Param.of("generateDtResources", "false"))
+						.withTaskGenerator()
+						.withFileGenerator()
+						.withSqlDomainGenerator(
+								Param.of("targetSubDir", "javagen/sqlgen"),
+								Param.of("baseCible", "H2"),
+								Param.of("generateDrop", "false"),
+								Param.of("generateMasterData", "true"))
+						.build())
 				.build();
-		// @formatter:on
 
 	}
 
