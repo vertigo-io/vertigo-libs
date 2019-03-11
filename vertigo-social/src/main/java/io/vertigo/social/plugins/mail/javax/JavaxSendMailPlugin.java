@@ -177,7 +177,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 		properties.setProperty("mail.store.protocol", mailStoreProtocol);
 		properties.setProperty("mail.host", mailHost);
 		if (mailPort.isPresent()) {
-			properties.put("mail.port", mailPort.get());
+			properties.setProperty("mail.port", mailPort.get().toString());
 		}
 		properties.setProperty("mail.debug", "false");
 		final Session session;
