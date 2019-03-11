@@ -18,9 +18,7 @@
  */
 package io.vertigo.ui.impl.thymeleaf;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.thymeleaf.dialect.AbstractProcessorDialect;
@@ -29,12 +27,11 @@ import org.thymeleaf.processor.IProcessor;
 import io.vertigo.lang.Assertion;
 import io.vertigo.ui.impl.thymeleaf.components.ContentItemComponentProcessor;
 import io.vertigo.ui.impl.thymeleaf.components.ContentSlotComponentProcessor;
-import io.vertigo.ui.impl.thymeleaf.components.SlotAttributeTagProcessor;
-import io.vertigo.ui.impl.thymeleaf.components.SlotComponentProcessor;
-import io.vertigo.ui.impl.thymeleaf.components.OnceAttributeTagProcessor;
 import io.vertigo.ui.impl.thymeleaf.components.NamedComponentDefinition;
 import io.vertigo.ui.impl.thymeleaf.components.NamedComponentElementProcessor;
-import io.vertigo.ui.impl.thymeleaf.components.NamedComponentParser;
+import io.vertigo.ui.impl.thymeleaf.components.OnceAttributeTagProcessor;
+import io.vertigo.ui.impl.thymeleaf.components.SlotAttributeTagProcessor;
+import io.vertigo.ui.impl.thymeleaf.components.SlotComponentProcessor;
 
 public final class VUiStandardDialect extends AbstractProcessorDialect {
 
@@ -44,7 +41,6 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 
 	// These variables will be initialized lazily following the model applied in the extended StandardDialect.
 	private final Set<NamedComponentDefinition> components;
-	private final List<NamedComponentParser> parsers = new ArrayList<>();
 
 	public VUiStandardDialect(final Set<NamedComponentDefinition> components) {
 		super(NAME, PREFIX, PROCESSOR_PRECEDENCE);
@@ -70,33 +66,8 @@ public final class VUiStandardDialect extends AbstractProcessorDialect {
 		for (final NamedComponentDefinition comp : components) {
 			processors.add(new NamedComponentElementProcessor(dialectPrefix, comp));
 		}
-
-		//additionalComponents
-		for (final NamedComponentDefinition comp : parseComponents()) {
-			processors.add(new NamedComponentElementProcessor(dialectPrefix, comp));
-		}
-
 		return processors;
 
-	}
-
-	/**
-	 * Get components from parsers
-	 * @return Thymeleaf components
-	 */
-	private Set<NamedComponentDefinition> parseComponents() {
-		final Set<NamedComponentDefinition> parsedComponents = new HashSet<>();
-		//TODO autodetect components
-		return parsedComponents;
-	}
-
-	/**
-	 * Add parser to the list of parsers
-	 *
-	 * @param parser Thymeleaf component parser
-	 */
-	public void addParser(final NamedComponentParser parser) {
-		parsers.add(parser);
 	}
 
 }
