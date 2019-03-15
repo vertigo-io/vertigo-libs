@@ -37,10 +37,12 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.usermodel.HeaderFooter;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.PrintSetup;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import io.vertigo.core.locale.MessageText;
@@ -87,16 +89,16 @@ final class XLSExporter {
 		final HSSFFont font = workbook.createFont();
 		font.setFontHeightInPoints((short) 10);
 		font.setFontName("Arial");
-		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		font.setBold(true);
 		cellStyle.setFont(font);
-		cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
-		cellStyle.setBorderTop(CellStyle.BORDER_THIN);
-		cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
-		cellStyle.setBorderRight(CellStyle.BORDER_THIN);
-		cellStyle.setVerticalAlignment((short) 3);
-		cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		cellStyle.setFillForegroundColor(HSSFColor.GREY_40_PERCENT.index);
-		cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		cellStyle.setBorderBottom(BorderStyle.THIN);
+		cellStyle.setBorderTop(BorderStyle.THIN);
+		cellStyle.setBorderLeft(BorderStyle.THIN);
+		cellStyle.setBorderRight(BorderStyle.THIN);
+		cellStyle.setVerticalAlignment(VerticalAlignment.JUSTIFY);
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		cellStyle.setFillForegroundColor(HSSFColorPredefined.GREY_40_PERCENT.getIndex());
+		cellStyle.setAlignment(HorizontalAlignment.CENTER);
 		return cellStyle;
 	}
 
@@ -106,13 +108,13 @@ final class XLSExporter {
 		font.setFontHeightInPoints((short) 10);
 		font.setFontName("Arial");
 		cellStyle.setFont(font);
-		cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
-		cellStyle.setBorderTop(CellStyle.BORDER_THIN);
-		cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
-		cellStyle.setBorderRight(CellStyle.BORDER_THIN);
-		cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		cellStyle.setBorderBottom(BorderStyle.THIN);
+		cellStyle.setBorderTop(BorderStyle.THIN);
+		cellStyle.setBorderLeft(BorderStyle.THIN);
+		cellStyle.setBorderRight(BorderStyle.THIN);
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-		cellStyle.setFillForegroundColor(odd ? HSSFColor.WHITE.index : HSSFColor.GREY_25_PERCENT.index);
+		cellStyle.setFillForegroundColor(odd ? HSSFColorPredefined.WHITE.getIndex() : HSSFColorPredefined.GREY_25_PERCENT.getIndex());
 
 		return cellStyle;
 	}
