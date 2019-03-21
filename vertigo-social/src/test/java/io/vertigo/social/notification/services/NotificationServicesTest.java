@@ -43,6 +43,9 @@ import io.vertigo.dynamo.domain.model.URI;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.social.MyAppConfig;
 import io.vertigo.social.data.MockIdentities;
+import io.vertigo.social.impl.notification.NotificationPlugin;
+import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;
+import io.vertigo.social.plugins.notification.redis.RedisNotificationPlugin;
 import io.vertigo.social.services.notification.Notification;
 import io.vertigo.social.services.notification.NotificationServices;
 import redis.clients.jedis.Jedis;
@@ -215,6 +218,43 @@ public class NotificationServicesTest {
 		sleep(3000);
 
 		//expired
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
+
+	}
+
+	@Test
+	public void testNotificationsWithTTLDaemon() {
+		final Notification notification = Notification.builder()
+				.withSender(accountURI0.urn())
+				.withType("Test")
+				.withTitle("news")
+				.withTargetUrl("#keyConcept@2")
+				.withTTLInSeconds(5) //5s
+				.withContent("discover this amazing app !!")
+				.build();
+
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
+
+		notificationServices.send(notification, identityManager.getAccountURIs(groupURI));
+
+		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
+		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI1).size());
+		Assert.assertEquals(1, notificationServices.getCurrentNotifications(accountURI2).size());
+
+		sleep(5000);
+
+		final NotificationPlugin notificationPlugin = Home.getApp().getComponentSpace().resolve("notificationPlugin", NotificationPlugin.class);
+		if (notificationPlugin instanceof RedisNotificationPlugin) {
+			((RedisNotificationPlugin) notificationPlugin).cleanTooOldNotifications();
+		} else if (notificationPlugin instanceof MemoryNotificationPlugin) {
+			((MemoryNotificationPlugin) notificationPlugin).cleanTooOldNotifications();
+		}
+
+		//Daemon expired
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI0).size());
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI1).size());
 		Assert.assertEquals(0, notificationServices.getCurrentNotifications(accountURI2).size());
