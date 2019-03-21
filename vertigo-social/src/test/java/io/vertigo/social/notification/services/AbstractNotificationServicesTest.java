@@ -27,8 +27,12 @@ import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
+import io.vertigo.app.Home;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.social.data.MockIdentities;
+import io.vertigo.social.impl.notification.NotificationPlugin;
+import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;
+import io.vertigo.social.plugins.notification.redis.RedisNotificationPlugin;
 import io.vertigo.social.services.notification.Notification;
 import io.vertigo.social.services.notification.NotificationServices;
 
@@ -221,6 +225,43 @@ public abstract class AbstractNotificationServicesTest extends AbstractTestCaseJ
 		sleep(3000);
 
 		//expired
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID2).size());
+
+	}
+
+	@Test
+	public void testNotificationsWithTTLDaemon() {
+		final Notification notification = Notification.builder()
+				.withSender(accountUID0.urn())
+				.withType("Test")
+				.withTitle("news")
+				.withTargetUrl("#keyConcept@2")
+				.withTTLInSeconds(5) //5s
+				.withContent("discover this amazing app !!")
+				.build();
+
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID2).size());
+
+		notificationServices.send(notification, identityManager.getAccountUIDs(groupURI));
+
+		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID1).size());
+		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID2).size());
+
+		sleep(5000);
+
+		final NotificationPlugin notificationPlugin = Home.getApp().getComponentSpace().resolve("notificationPlugin", NotificationPlugin.class);
+		if (notificationPlugin instanceof RedisNotificationPlugin) {
+			((RedisNotificationPlugin) notificationPlugin).cleanTooOldNotifications();
+		} else if (notificationPlugin instanceof MemoryNotificationPlugin) {
+			((MemoryNotificationPlugin) notificationPlugin).cleanTooOldNotifications();
+		}
+
+		//Daemon expired
 		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID0).size());
 		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID1).size());
 		Assertions.assertEquals(0, notificationServices.getCurrentNotifications(accountUID2).size());
