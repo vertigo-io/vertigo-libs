@@ -102,11 +102,6 @@ public final class Servlet3MultiPartRequest extends JakartaMultiPartRequest {
 		private transient Part part;
 		private final File storeLocation;
 
-		/**
-		 * serialVersionUID.
-		 */
-		private static final long serialVersionUID = -2535633405526276127L;
-
 		public PartFileItem(final Part part, final String saveDir) {
 			super(part.getName(), part.getContentType(), getFilename(part) == null, getFilename(part), -1, new File(saveDir));
 
