@@ -23,15 +23,9 @@ public class Studio {
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
-				.addModule(new CommonsFeatures()
-						.withCache()
-						.withMemoryCache()
-						.withScript()
-						.withJaninoScript()
-						.build())
+				.addModule(new CommonsFeatures().build())
 				.addModule(new DynamoFeatures().build())
 				//----Definitions
-
 				.addModule(ModuleConfig.builder("ressources")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
 								.addParam(Param.of("encoding", "UTF-8"))

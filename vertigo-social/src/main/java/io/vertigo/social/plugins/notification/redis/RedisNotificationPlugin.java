@@ -46,6 +46,9 @@ import redis.clients.jedis.Transaction;
  * @author pchretien
  */
 public final class RedisNotificationPlugin implements NotificationPlugin {
+
+	private static final int REMOVE_PACKET_SIZE = 100;
+	private static final int MAX_REMOVED_ELEMENTS = 1000;
 	private final RedisConnector redisConnector;
 
 	/**
@@ -252,36 +255,47 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	 */
 	@DaemonScheduled(name = "DMN_CLEAN_TOO_OLD_REDIS_NOTIFICATIONS", periodInSeconds = 60)
 	public void cleanTooOldElements() {
-
-		boolean foundOneTooYoung = false;
-		do {
+		int startIndex = -1;
+		final long startTime = System.currentTimeMillis();
+		while (System.currentTimeMillis() - startTime < 10 * 1000) {
 			try (final Jedis jedis = redisConnector.getResource()) {
-				final List<String> uuids = jedis.lrange("notifs:all", -1, 10); //return last (older) 10 uuid (but not sorted)
+				final List<String> uuids = jedis.lrange("notifs:all", startIndex - REMOVE_PACKET_SIZE, startIndex); //return last (older) 100 uuid (but not sorted)
+				if (uuids.isEmpty()) {
+					break;// no more notifs we do nothing and stop now
+				}
+				final List<Notification> notifsToRemove = new ArrayList<>();
 				for (final String uuid : uuids) {
 					final Notification notification = fromMap(jedis.hgetAll("notif:" + uuid), null);
 					if (isTooOld(notification)) {
-						//we search accounts for this notif
-						final List<String> notifiedAccounts = jedis.lrange("accounts:" + uuid, 0, -1);
-						for (final String notifiedAccount : notifiedAccounts) {
-							//we remove this notifs from accounts queue (looking from tail)
-							jedis.lrem(notifiedAccount, -1, uuid);
-						}
-						//we remove list account for this notif
-						jedis.del("accounts:" + uuid);
-						//we remove userContent of this notif
-						jedis.del("userContent:" + uuid);
-						//we remove data of this notif
-						jedis.del("notif:" + uuid);
-						//we remove notif from global index (looking from tail)
-						jedis.lrem("notifs:all", -1, uuid);
-						//we remove uuid from queue by type and targetUrl (looking from tail)
-						jedis.lrem("type:" + notification.getType() + ";target:" + notification.getTargetUrl() + ";uuid", -1, uuid);
-					} else {
-						foundOneTooYoung = true; //we found one too recent, we stop after this loop
+						notifsToRemove.add(notification);
 					}
 				}
+				removeNotifications(notifsToRemove, jedis);
+				startIndex = startIndex - REMOVE_PACKET_SIZE + notifsToRemove.size();
 			}
-		} while (!foundOneTooYoung);
+		}
+	}
+
+	private static void removeNotifications(final List<Notification> notifications, final Jedis jedis) {
+		for (final Notification notification : notifications) {
+			final String uuid = notification.getUuid().toString();
+			//we search accounts for this notif
+			final List<String> notifiedAccounts = jedis.lrange("accounts:" + uuid, 0, -1);
+			for (final String notifiedAccount : notifiedAccounts) {
+				//we remove this notifs from accounts queue (looking from tail)
+				jedis.lrem(notifiedAccount, -1, uuid);
+			}
+			//we remove list account for this notif
+			jedis.del("accounts:" + uuid);
+			//we remove userContent of this notif
+			jedis.del("userContent:" + uuid);
+			//we remove data of this notif
+			jedis.del("notif:" + uuid);
+			//we remove notif from global index (looking from tail)
+			jedis.lrem("notifs:all", -1, uuid);
+			//we remove uuid from queue by type and targetUrl (looking from tail)
+			jedis.lrem("type:" + notification.getType() + ";target:" + notification.getTargetUrl() + ";uuid", -1, uuid);
+		}
 	}
 
 	private static void cleanTooOldNotifications(final List<Notification> notifications) {
