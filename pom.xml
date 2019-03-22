@@ -17,7 +17,7 @@
 	</parent>
 
 	<artifactId>vertigo-extensions</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
+	<version>1.1.3</version>
 	<name>vertigo-extensions</name>
 	<packaging>pom</packaging>
 
