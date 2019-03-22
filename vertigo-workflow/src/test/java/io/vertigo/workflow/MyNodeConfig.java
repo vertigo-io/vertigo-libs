@@ -21,8 +21,8 @@ package io.vertigo.workflow;
 import org.h2.Driver;
 
 import io.vertigo.account.AccountFeatures;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
@@ -44,15 +44,15 @@ import io.vertigo.workflow.plugin.MemoryItemStorePlugin;
  * @author xdurand
  *
  */
-public class MyAppConfig {
+public class MyNodeConfig {
 
 	/**
 	 * Configuration de l'application pour Junit
 	 *
-	 * @return AppConfig for Junit
+	 * @return NodeConfig for Junit
 	 */
-	public static AppConfig config() {
-		final AppConfigBuilder appConfigBuilder = AppConfig.builder()
+	public static NodeConfig config() {
+		final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -89,11 +89,11 @@ public class MyAppConfig {
 						.addComponent(MockIdentities.class)
 						.build());
 
-		return appConfigBuilder.build();
+		return nodeConfigBuilder.build();
 	}
 
-	public static AppConfig configWithDb() {
-		final AppConfigBuilder appConfigBuilder = AppConfig.builder()
+	public static NodeConfig configWithDb() {
+		final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -140,7 +140,7 @@ public class MyAppConfig {
 						.addComponent(MockIdentities.class)
 						.build());
 
-		return appConfigBuilder.build();
+		return nodeConfigBuilder.build();
 	}
 
 }

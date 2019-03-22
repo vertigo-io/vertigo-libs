@@ -50,7 +50,7 @@ public abstract class AbstractDashboardModuleControler implements DashboardModul
 	}
 
 	private void initModuleModel(final App app, final Map<String, Object> model, final String moduleName) {
-		final Set<String> modules = app.getConfig().getModuleConfigs().stream().map(ModuleConfig::getName).collect(Collectors.toSet());
+		final Set<String> modules = app.getNodeConfig().getModuleConfigs().stream().map(ModuleConfig::getName).collect(Collectors.toSet());
 		//---
 		model.put("modules", modules);
 		//---

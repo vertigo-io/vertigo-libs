@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.file.FileManager;
@@ -58,8 +58,8 @@ public final class XDocReportConverterManagerTest extends AbstractTestCaseJU5 {
 	private VFile resultFile;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures().build())

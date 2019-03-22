@@ -18,21 +18,21 @@
  */
 package io.vertigo.audit;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 
 /**
  * Config for test
  * @author xdurand
  *
  */
-public class MyAppConfig {
+public class MyNodeConfig {
 
 	/**
 	 * Configure the app for testing
 	 * @return the application config for testing
 	 */
-	public static AppConfig config() {
-		return AppConfig.builder()
+	public static NodeConfig config() {
+		return NodeConfig.builder()
 				.addModule(new AuditFeatures()
 						.withMemoryTrace()
 						.build())

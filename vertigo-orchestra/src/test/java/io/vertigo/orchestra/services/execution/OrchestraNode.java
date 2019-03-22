@@ -57,7 +57,7 @@ final class OrchestraNode {
 		final String command = new StringBuilder()
 				.append("java -cp ")
 				.append(properSystemPath(System.getProperty("java.class.path")))
-				.append(" io.vertigo.orchestra.services.execution.OrchestraNodeStarter io.vertigo.orchestra.services.execution.OrchestraNode" + nodeId + "AppConfig " + maxLifeTime)
+				.append(" io.vertigo.orchestra.services.execution.OrchestraNodeStarter io.vertigo.orchestra.services.execution.OrchestraNode" + nodeId + "NodeConfig " + maxLifeTime)
 				.toString();
 		nodeProcess = Runtime.getRuntime().exec(command);
 		subThreads.add(createOutputFlusher(nodeProcess.getInputStream(), "[OrchestraNode" + nodeId + "] ", System.out));

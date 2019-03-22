@@ -20,16 +20,16 @@ package io.vertigo.social.notification.services;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.social.MyAppConfig;
+import io.vertigo.social.MyNodeConfig;
 import redis.clients.jedis.Jedis;
 
 public final class RedisNotificationServicesTest extends AbstractNotificationServicesTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config(true);
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config(true);
 	}
 
 	@BeforeEach

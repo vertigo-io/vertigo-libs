@@ -53,7 +53,7 @@ public abstract class AbstractOrchestraTestCase {
 
 	@BeforeAll
 	public static final void setUp() throws Exception {
-		app = new AutoCloseableApp(MyAppConfig.config());
+		app = new AutoCloseableApp(MyNodeConfig.config());
 	}
 
 	@AfterAll

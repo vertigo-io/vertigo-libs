@@ -42,7 +42,7 @@ import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.social.MyAppConfig;
+import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.services.notification.Notification;
 import io.vertigo.social.services.notification.NotificationServices;
@@ -65,7 +65,7 @@ public final class NotificationWebServicesTest {
 	@BeforeAll
 	public static void setUp() {
 		beforeSetUp();
-		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
+		app = new AutoCloseableApp(MyNodeConfig.vegaConfig());
 	}
 
 	@BeforeEach

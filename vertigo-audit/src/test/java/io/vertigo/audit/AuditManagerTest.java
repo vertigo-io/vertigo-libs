@@ -30,7 +30,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.audit.services.trace.AuditTrace;
 import io.vertigo.audit.services.trace.AuditTraceBuilder;
 import io.vertigo.audit.services.trace.AuditTraceCriteria;
@@ -47,8 +47,8 @@ public class AuditManagerTest extends AbstractTestCaseJU5 {
 	private AuditTraceManager auditManager;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config();
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config();
 	}
 
 	/**

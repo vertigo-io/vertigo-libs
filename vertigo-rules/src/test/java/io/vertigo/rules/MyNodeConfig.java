@@ -21,7 +21,7 @@ package io.vertigo.rules;
 import org.h2.Driver;
 
 import io.vertigo.account.AccountFeatures;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
@@ -40,14 +40,14 @@ import io.vertigo.rules.data.TestUserSession;
  * @author xdurand
  *
  */
-public class MyAppConfig {
+public class MyNodeConfig {
 
 	/**
 	 * Configure the app for testing
 	 * @return the application config for testing
 	 */
-	public static AppConfig config() {
-		return AppConfig.builder()
+	public static NodeConfig config() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)

@@ -18,7 +18,7 @@
  */
 package io.vertigo.stella.work.distributed.redis;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.stella.StellaFeatures;
@@ -30,8 +30,8 @@ import io.vertigo.stella.work.AbstractWorkManagerTest;
 public class RedisWorkManagerTest extends AbstractWorkManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder().beginBoot()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder().beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures()
 						.withRedisConnector(

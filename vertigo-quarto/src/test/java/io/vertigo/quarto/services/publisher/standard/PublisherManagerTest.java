@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
@@ -51,8 +51,8 @@ public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 	private final Logger log = LogManager.getLogger(getClass());
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder().beginBoot()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder().beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()

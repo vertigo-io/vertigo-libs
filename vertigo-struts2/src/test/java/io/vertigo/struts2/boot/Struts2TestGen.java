@@ -23,17 +23,17 @@ import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.xml.XMLAppConfigBuilder;
 import io.vertigo.studio.mda.MdaManager;
 
 public final class Struts2TestGen {
 
 	public static void main(final String[] args) {
-		final AppConfig appConfig = new XMLAppConfigBuilder()
+		final NodeConfig nodeConfig = new XMLAppConfigBuilder()
 				.withModules(Struts2TestGen.class, new Properties(), "/managers-mda.xml")
 				.build();
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			app.getComponentSpace().resolve(MdaManager.class)
 					.generate()
 					/* Impression du Rapport d'exécution. */

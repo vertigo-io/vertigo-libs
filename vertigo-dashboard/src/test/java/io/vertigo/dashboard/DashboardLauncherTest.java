@@ -33,9 +33,8 @@ import org.junit.runner.RunWith;
 import io.restassured.RestAssured;
 import io.restassured.specification.ResponseSpecification;
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
 import io.vertigo.core.param.Param;
@@ -61,7 +60,7 @@ public class DashboardLauncherTest {
 
 	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(buildAppConfig());
+		app = new AutoCloseableApp(buildNodeConfig());
 	}
 
 	@AfterAll
@@ -71,8 +70,9 @@ public class DashboardLauncherTest {
 		}
 	}
 
-	private static AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	private static NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.withAppName("dashboardtest")
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.withLocales("fr_FR")
@@ -117,9 +117,6 @@ public class DashboardLauncherTest {
 						ModuleConfig.builder("metrics")
 								.addComponent(DomainMetricsProvider.class)
 								.build())
-				.withNodeConfig(NodeConfig.builder()
-						.withAppName("dashboardtest")
-						.build())
 				.build();
 	}
 

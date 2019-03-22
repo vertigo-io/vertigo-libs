@@ -18,14 +18,14 @@
  */
 package io.vertigo.social.notification.services;
 
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.social.MyAppConfig;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.social.MyNodeConfig;
 
 public final class MemoryNotificationServicesTest extends AbstractNotificationServicesTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config(false);
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config(false);
 	}
 
 }

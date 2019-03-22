@@ -23,10 +23,10 @@ import javax.inject.Inject;
 import org.junit.Assert;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.rules.MyAppConfig;
+import io.vertigo.rules.MyNodeConfig;
 
 /**
  *
@@ -41,8 +41,8 @@ public class DbTest extends AbstractTestCaseJU5 {
 	private VTransactionWritable transaction;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config();
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config();
 	}
 
 	@Override

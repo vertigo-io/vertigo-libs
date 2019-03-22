@@ -41,13 +41,13 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.rules.domain.RuleConditionDefinition;
 import io.vertigo.rules.domain.RuleDefinition;
 import io.vertigo.rules.domain.RuleFilterDefinition;
 import io.vertigo.rules.domain.SelectorDefinition;
-import io.vertigo.workflow.MyAppConfig;
+import io.vertigo.workflow.MyNodeConfig;
 import io.vertigo.workflow.data.MockIdentities;
 import io.vertigo.workflow.data.MyDummyDtObject;
 import io.vertigo.workflow.definitions.WfActivityDefinitionBuilder;
@@ -80,8 +80,8 @@ public abstract class AbstractWorkflowManagerTest extends AbstractTestCaseJU5 {
 	private ItemStorePlugin itemStorePlugin;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config();
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config();
 	}
 
 	private MyDummyDtObject createDummyDtObject(final long itemId) {

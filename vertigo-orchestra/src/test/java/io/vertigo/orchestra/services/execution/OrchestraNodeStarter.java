@@ -22,7 +22,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.services.execution.engine.TestJob2;
 import io.vertigo.util.ClassUtil;
@@ -40,20 +40,20 @@ public class OrchestraNodeStarter {
 	 */
 	public static void main(final String[] args) throws Exception {
 		//
-		Assertion.checkArgument(args.length >= 1 && args.length <= 2, "Usage WorkerNodeStarter <AppConfigClass> <maxLifeTime>");
+		Assertion.checkArgument(args.length >= 1 && args.length <= 2, "Usage WorkerNodeStarter <NodeConfigClass> <maxLifeTime>");
 		//-----
 		final long timeToWait = args.length == 2 ? Long.parseLong(args[1]) * 1000L : 5 * 60 * 1000L;
-		final Class<?> appConfigClass = ClassUtil.classForName(args[0]);
+		final Class<?> nodeConfigClass = ClassUtil.classForName(args[0]);
 
-		final AppConfig appConfig = (AppConfig) appConfigClass.getMethod("config").invoke(appConfigClass);
+		final NodeConfig nodeConfig = (NodeConfig) nodeConfigClass.getMethod("config").invoke(nodeConfigClass);
 
 		LOG.info("Node starting");
-		run(appConfig, timeToWait);
+		run(nodeConfig, timeToWait);
 		LOG.info("Node stop");
 	}
 
-	private static void run(final AppConfig appConfig, final long timeToWait) {
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+	private static void run(final NodeConfig nodeConfig, final long timeToWait) {
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			System.out.println("Node started (timout in " + timeToWait / 1000 + "s)");
 			if (timeToWait > 0) {
 				final long startTime = System.currentTimeMillis();

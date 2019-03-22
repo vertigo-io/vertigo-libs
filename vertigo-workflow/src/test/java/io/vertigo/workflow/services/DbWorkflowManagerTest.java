@@ -4,10 +4,10 @@ import javax.inject.Inject;
 
 import org.junit.Assert;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.workflow.MyAppConfig;
+import io.vertigo.workflow.MyNodeConfig;
 
 public class DbWorkflowManagerTest extends AbstractWorkflowManagerTest {
 
@@ -17,8 +17,8 @@ public class DbWorkflowManagerTest extends AbstractWorkflowManagerTest {
 	private VTransactionWritable transaction;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.configWithDb();
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.configWithDb();
 	}
 
 	@Override

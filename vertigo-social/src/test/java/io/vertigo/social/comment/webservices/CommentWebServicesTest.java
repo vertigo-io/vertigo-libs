@@ -44,7 +44,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.social.MyAppConfig;
+import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.services.comment.Comment;
 import io.vertigo.social.services.comment.CommentServices;
@@ -71,7 +71,7 @@ public final class CommentWebServicesTest {
 	@BeforeAll
 	public static void setUp() {
 		beforeSetUp();
-		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
+		app = new AutoCloseableApp(MyNodeConfig.vegaConfig());
 	}
 
 	@BeforeEach

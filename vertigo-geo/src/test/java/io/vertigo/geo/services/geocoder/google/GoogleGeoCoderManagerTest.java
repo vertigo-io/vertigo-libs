@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.geo.GeoFeatures;
 import io.vertigo.geo.services.geocoder.GeoCoderManager;
 import io.vertigo.geo.services.geocoder.GeoLocation;
@@ -39,8 +39,8 @@ public class GoogleGeoCoderManagerTest extends AbstractTestCaseJU5 {
 	private GeoCoderManager geoCoderManager;
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return AppConfig.builder()
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
 				.addModule(new GeoFeatures()

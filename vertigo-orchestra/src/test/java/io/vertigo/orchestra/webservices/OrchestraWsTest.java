@@ -33,7 +33,7 @@ import io.restassured.filter.session.SessionFilter;
 import io.restassured.parsing.Parser;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
-import io.vertigo.orchestra.MyAppConfig;
+import io.vertigo.orchestra.MyNodeConfig;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.OrchestraServices;
@@ -53,12 +53,12 @@ public class OrchestraWsTest {
 
 	static {
 		//RestAsssured init
-		RestAssured.port = MyAppConfig.WS_PORT;
+		RestAssured.port = MyNodeConfig.WS_PORT;
 	}
 
 	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyAppConfig.configWithVega());
+		app = new AutoCloseableApp(MyNodeConfig.configWithVega());
 
 		final OrchestraDefinitionManager orchestraDefinitionManager = Home.getApp().getComponentSpace().resolve(OrchestraDefinitionManager.class);
 		final OrchestraServices orchestraServices = Home.getApp().getComponentSpace().resolve(OrchestraServices.class);

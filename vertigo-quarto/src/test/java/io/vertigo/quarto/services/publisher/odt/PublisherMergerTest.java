@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.services.publisher.odt;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.quarto.services.publisher.AbstractPublisherMergerTest;
 
 /**
@@ -35,7 +35,7 @@ public final class PublisherMergerTest extends AbstractPublisherMergerTest {
 	}
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config();
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config();
 	}
 }

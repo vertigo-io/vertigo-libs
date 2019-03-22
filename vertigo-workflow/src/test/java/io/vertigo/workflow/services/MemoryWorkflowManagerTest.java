@@ -1,12 +1,12 @@
 package io.vertigo.workflow.services;
 
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.workflow.MyAppConfig;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.workflow.MyNodeConfig;
 
 public class MemoryWorkflowManagerTest extends AbstractWorkflowManagerTest {
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config();
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config();
 	}
 }

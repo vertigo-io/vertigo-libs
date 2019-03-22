@@ -1,15 +1,15 @@
 package io.vertigo.stella.work.distributed.rest;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.stella.StellaFeatures;
 
-public class StellaAppConfigClientNode1 implements StellaAppConfigClientNode {
+public class StellaNodeConfigClientNode1 implements StellaNodeConfigClientNode {
 
 	@Override
-	public AppConfig getAppConfig() {
-		return AppConfig.builder()
+	public NodeConfig getNodeConfig() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures().build())

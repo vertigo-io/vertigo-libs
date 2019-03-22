@@ -3,7 +3,7 @@ package io.vertigo.workflow.mda;
 import javax.inject.Inject;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
@@ -18,9 +18,9 @@ import io.vertigo.studio.mda.MdaManager;
 
 public class Studio {
 
-	private static AppConfig buildAppConfig() {
+	private static NodeConfig buildNodeConfig() {
 		// @formatter:off
-		return  AppConfig.builder()
+		return  NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -67,7 +67,7 @@ public class Studio {
 	private MdaManager mdaManager;
 
 	public static void main(final String[] args) {
-		try (final AutoCloseableApp app = new AutoCloseableApp(buildAppConfig())) {
+		try (final AutoCloseableApp app = new AutoCloseableApp(buildNodeConfig())) {
 			final Studio sample = new Studio();
 			DIInjector.injectMembers(sample, app.getComponentSpace());
 			//-----

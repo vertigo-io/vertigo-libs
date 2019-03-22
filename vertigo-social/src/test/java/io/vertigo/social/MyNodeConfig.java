@@ -21,8 +21,8 @@ package io.vertigo.social;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.account.cache.memory.MemoryAccountCachePlugin;
 import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.AppConfigBuilder;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
@@ -40,15 +40,15 @@ import io.vertigo.social.webservices.comment.CommentWebServices;
 import io.vertigo.social.webservices.notification.NotificationWebServices;
 import io.vertigo.vega.VegaFeatures;
 
-public final class MyAppConfig {
+public final class MyNodeConfig {
 	public static final int WS_PORT = 8088;
 
-	private static AppConfigBuilder createAppConfigBuilder(final boolean redis) {
+	private static NodeConfigBuilder createNodeConfigBuilder(final boolean redis) {
 		final String redisHost = "redis-pic.part.klee.lan.net";
 		final String redisPort = "6379";
 		final String redisDatabase = "15";
 
-		final AppConfigBuilder appConfigBuilder = AppConfig.builder()
+		final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -59,7 +59,7 @@ public final class MyAppConfig {
 			commonsFeatures.withRedisConnector(Param.of("host", redisHost), Param.of("port", redisPort), Param.of("database", redisDatabase));
 		}
 
-		appConfigBuilder
+		nodeConfigBuilder
 				.addModule(commonsFeatures.build())
 				.addModule(new DynamoFeatures().build())
 				.addModule(ModuleConfig.builder("identities")
@@ -80,7 +80,7 @@ public final class MyAppConfig {
 				.withNotifications();
 
 		if (redis) {
-			return appConfigBuilder
+			return nodeConfigBuilder
 					.addModule(accountFeatures
 							.addPlugin(RedisAccountCachePlugin.class)
 							.build())
@@ -90,7 +90,7 @@ public final class MyAppConfig {
 							.build());
 		}
 		//else we use memory
-		return appConfigBuilder
+		return nodeConfigBuilder
 				.addModule(accountFeatures
 						.addPlugin(MemoryAccountCachePlugin.class)
 						.build())
@@ -100,12 +100,12 @@ public final class MyAppConfig {
 						.build());
 	}
 
-	public static AppConfig config(final boolean redis) {
-		return createAppConfigBuilder(redis).build();
+	public static NodeConfig config(final boolean redis) {
+		return createNodeConfigBuilder(redis).build();
 	}
 
-	public static AppConfig vegaConfig() {
-		return createAppConfigBuilder(true)
+	public static NodeConfig vegaConfig() {
+		return createNodeConfigBuilder(true)
 				.addModule(new VegaFeatures()
 						.withWebServices()
 						.withWebServicesSecurity()

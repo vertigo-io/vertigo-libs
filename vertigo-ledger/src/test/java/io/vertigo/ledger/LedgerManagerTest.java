@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.ledger.services.LedgerAddress;
 import io.vertigo.ledger.services.LedgerManager;
@@ -21,8 +21,8 @@ public class LedgerManagerTest extends AbstractTestCaseJU5 {
 
 	// cannot run on pic: wallets are not public !!
 	//	@Override
-	//	protected AppConfig buildAppConfig() {
-	//		return MyAppConfig.config();
+	//	protected NodeConfig buildNodeConfig() {
+	//		return MyNodeConfig.config();
 	//	}
 
 	@Test
@@ -41,9 +41,9 @@ public class LedgerManagerTest extends AbstractTestCaseJU5 {
 	}
 
 	@Override
-	protected AppConfig buildAppConfig() {
+	protected NodeConfig buildNodeConfig() {
 		// dummy config for no false failing test in pic
-		return AppConfig.builder()
+		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures()

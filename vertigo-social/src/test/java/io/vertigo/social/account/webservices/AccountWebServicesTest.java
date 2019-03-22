@@ -30,7 +30,7 @@ import io.restassured.RestAssured;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.social.MyAppConfig;
+import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;
 import redis.clients.jedis.Jedis;
 
@@ -47,12 +47,12 @@ public final class AccountWebServicesTest {
 	private RedisConnector redisConnector;
 
 	static {
-		RestAssured.port = MyAppConfig.WS_PORT;
+		RestAssured.port = MyNodeConfig.WS_PORT;
 	}
 
 	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
+		app = new AutoCloseableApp(MyNodeConfig.vegaConfig());
 	}
 
 	@BeforeEach

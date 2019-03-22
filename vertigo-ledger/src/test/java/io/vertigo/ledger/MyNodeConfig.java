@@ -1,6 +1,6 @@
 package io.vertigo.ledger;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 
@@ -10,15 +10,15 @@ import io.vertigo.core.param.Param;
  * @author xdurand
  *
  */
-public class MyAppConfig {
+public class MyNodeConfig {
 
 	/**
 	 * Configuration de l'application pour Junit
 	 *
-	 * @return AppConfig for Junit
+	 * @return NodeConfig for Junit
 	 */
-	public static AppConfig config() {
-		return AppConfig.builder()
+	public static NodeConfig config() {
+		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr")
 				.endBoot()

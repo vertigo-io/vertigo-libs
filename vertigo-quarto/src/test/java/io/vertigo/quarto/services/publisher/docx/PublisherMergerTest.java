@@ -23,7 +23,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.quarto.services.publisher.AbstractPublisherMergerTest;
 
 /**
@@ -39,8 +39,8 @@ public final class PublisherMergerTest extends AbstractPublisherMergerTest {
 	}
 
 	@Override
-	protected AppConfig buildAppConfig() {
-		return MyAppConfig.config();
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config();
 	}
 
 	@Override

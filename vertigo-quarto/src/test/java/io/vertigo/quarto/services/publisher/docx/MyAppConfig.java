@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.services.publisher.docx;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
@@ -30,10 +30,10 @@ import io.vertigo.quarto.plugins.publisher.docx.DOCXMergerPlugin;
 import io.vertigo.quarto.services.publisher.PublisherManager;
 import io.vertigo.quarto.services.publisher.TestPublisherDefinitionProvider;
 
-class MyAppConfig {
+class MyNodeConfig {
 
-	public static AppConfig config() {
-		return AppConfig.builder().beginBoot()
+	public static NodeConfig config() {
+		return NodeConfig.builder().beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
