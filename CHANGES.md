@@ -35,8 +35,8 @@ Release 1.1.3 - 2019/03/21
 ----------------------
 [Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-112-to-113)
 
-* [Social] Fix #21 clean older notifications with time boxing : 10s every minute 3e588c16
-* [orchestra] Fix process termination on throwable (not only exception) d34956ee fb7870aa
+* [Social] Fix #21 clean older notifications with time boxing : 10s every minute 
+* [orchestra] Fix process termination on throwable (not only exception)
 
 
 Release 1.1.2 - 2018/06/28
