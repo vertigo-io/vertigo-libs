@@ -238,7 +238,7 @@ public abstract class AbstractNotificationServicesTest extends AbstractTestCaseJ
 				.withType("Test")
 				.withTitle("news")
 				.withTargetUrl("#keyConcept@2")
-				.withTTLInSeconds(5) //5s
+				.withTTLInSeconds(4) //4s
 				.withContent("discover this amazing app !!")
 				.build();
 
@@ -252,7 +252,7 @@ public abstract class AbstractNotificationServicesTest extends AbstractTestCaseJ
 		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID1).size());
 		Assertions.assertEquals(1, notificationServices.getCurrentNotifications(accountUID2).size());
 
-		sleep(5000);
+		sleep(4100);
 
 		final NotificationPlugin notificationPlugin = Home.getApp().getComponentSpace().resolve("notificationPlugin", NotificationPlugin.class);
 		if (notificationPlugin instanceof RedisNotificationPlugin) {
