@@ -54,10 +54,10 @@ public final class DashboardRouter {
 	private static final Map<String, Class<? extends DashboardModuleControler>> controlerMap = new HashMap<>();
 
 	static {
-		controlerMap.put("commons", CommonsDashboardControler.class);
-		controlerMap.put("dynamo", DynamoDashboardControler.class);
-		controlerMap.put("vega", VegaDashboardControler.class);
-		controlerMap.put("vui", VUiDashboardControler.class);
+		controlerMap.put("vertigo-commons", CommonsDashboardControler.class);
+		controlerMap.put("vertigo-dynamo", DynamoDashboardControler.class);
+		controlerMap.put("vertigo-vega", VegaDashboardControler.class);
+		controlerMap.put("vertigo-ui", VUiDashboardControler.class);
 	}
 
 	private final App app;
@@ -95,7 +95,7 @@ public final class DashboardRouter {
 		});
 
 		Spark.get("/dashboard/", (request, response) -> {
-			final List<String> modules = Arrays.asList("commons", "dynamo", "vega", "vui");
+			final List<String> modules = Arrays.asList("vertigo-commons", "vertigo-dynamo", "vertigo-vega", "vertugo-ui");
 			final Map<String, Object> model = new HashMap<>();
 			model.put("modules", modules);
 			model.put("contextName", request.contextPath() != null ? request.contextPath() : "");

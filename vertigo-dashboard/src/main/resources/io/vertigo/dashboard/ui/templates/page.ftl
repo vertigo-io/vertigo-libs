@@ -59,22 +59,22 @@
         <nav class="bg-faded sidebar">
           <ul class="nav nav-pills flex-column">
 			<li class="nav-item">
-				<a class="nav-link ${(moduleName?? && (moduleName == 'commons'))?then('active', '')}" href="${contextName}/dashboard/modules/commons" data-toggle="popover" data-placement="right" data-content="Commons">
+				<a class="nav-link ${(moduleName?? && (moduleName == 'commons'))?then('active', '')}" href="${contextName}/dashboard/modules/vertigo-commons" data-toggle="popover" data-placement="right" data-content="Commons">
 					<i class="material-icons">build</i>
 				</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link ${(moduleName?? && (moduleName == 'dynamo'))?then('active', '')}" href="${contextName}/dashboard/modules/dynamo" data-toggle="popover" data-placement="right" data-content="Dynamo">
+				<a class="nav-link ${(moduleName?? && (moduleName == 'dynamo'))?then('active', '')}" href="${contextName}/dashboard/modules/vertigo-dynamo" data-toggle="popover" data-placement="right" data-content="Dynamo">
 					<i class="material-icons" >view_quilt</i>
 				</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link ${(moduleName?? && (moduleName == 'vega'))?then('active', '')}" href="${contextName}/dashboard/modules/vega" data-toggle="popover" data-placement="right" data-content="Vega">
+				<a class="nav-link ${(moduleName?? && (moduleName == 'vega'))?then('active', '')}" href="${contextName}/dashboard/modules/vertigo-vega" data-toggle="popover" data-placement="right" data-content="Vega">
 					<i class="material-icons">import_export</i>
 				</a>
 			</li>
 			<li class="nav-item">
-				<a class="nav-link ${(moduleName?? && (moduleName == 'vui'))?then('active', '')}" href="${contextName}/dashboard/modules/vui" data-toggle="popover" data-placement="right" data-content="VUi">
+				<a class="nav-link ${(moduleName?? && (moduleName == 'vui'))?then('active', '')}" href="${contextName}/dashboard/modules/vertigo-ui" data-toggle="popover" data-placement="right" data-content="VUi">
 					<i class="material-icons">insert_drive_file</i>
 				</a>
 			</li>
