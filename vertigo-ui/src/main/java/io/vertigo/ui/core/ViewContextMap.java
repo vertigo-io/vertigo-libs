@@ -329,7 +329,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		Assertion.checkState(objectFieldName.endsWith("_display"), "Can't accept {0}, only '_display' transformer is accepted", objectKey);
 		//----
 		final String fieldName = objectFieldName.substring(0, objectFieldName.length() - "_display".length());
-		final DtDefinition fkDefinition = getUiObject(objectKey).getDtDefinition().getField(StringUtil.camelToConstCase(fieldName)).getFkDtDefinition();
+		final DtDefinition fkDefinition = getUiObject(objectKey).getDtDefinition().getField(fieldName).getFkDtDefinition();
 		final String uiMdListContextKey = fkDefinition.getClassSimpleName() + "MdList";
 		if (!containsKey(uiMdListContextKey)) {
 			unmodifiable = false; //hem :(

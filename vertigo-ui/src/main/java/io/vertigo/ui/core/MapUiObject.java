@@ -138,7 +138,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	/** {@inheritDoc} */
 	@Override
 	public boolean containsKey(final Object arg0) {
-		return camel2ConstIndex.containsKey(arg0);
+		return fieldIndex.contains(arg0);
 	}
 
 	/** Non implémenté. */
@@ -156,7 +156,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	/** Implémentation : TODO : see if it's ok */
 	@Override
 	public Set<java.util.Map.Entry<String, Serializable>> entrySet() {
-		return camel2ConstIndex.keySet()
+		return fieldIndex
 				.stream()
 				.map(key -> new AbstractMap.SimpleEntry<>(key, get(key)))
 				.collect(Collectors.toSet());
@@ -165,13 +165,13 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
-		return camel2ConstIndex.isEmpty();
+		return fieldIndex.isEmpty();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Set<String> keySet() {
-		return camel2ConstIndex.keySet();
+		return fieldIndex;
 	}
 
 	/** Non implémenté. */
@@ -189,7 +189,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	/** {@inheritDoc} */
 	@Override
 	public int size() {
-		return camel2ConstIndex.size();
+		return fieldIndex.size();
 	}
 
 	/** Non implémenté. */
@@ -201,7 +201,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	public HashMap<String, Serializable> mapForClient(final Set<String> fieldsForClient, final Map<String, Function<Serializable, String>> valueTransformers) {
 		final Set<String> filterSet;
 		if (fieldsForClient.contains("*")) {
-			filterSet = camel2ConstIndex.keySet();
+			filterSet = fieldIndex;
 		} else {
 			filterSet = fieldsForClient;
 		}

@@ -43,7 +43,6 @@ import io.vertigo.ui.data.domain.movies.MovieIndex;
 import io.vertigo.ui.data.services.movies.MovieServices;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.ViewAttribute;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
-import io.vertigo.util.StringUtil;
 
 @Controller
 @RequestMapping("/movies")
@@ -89,7 +88,7 @@ public final class MoviesController extends AbstractVSpringMvcController {
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
 		if (dtListState.getSortFieldName().isPresent()) {
-			sortedList = collectionsManager.sort(unFilteredList, StringUtil.camelToConstCase(dtListState.getSortFieldName().get()), dtListState.isSortDesc().get());
+			sortedList = collectionsManager.sort(unFilteredList, dtListState.getSortFieldName().get(), dtListState.isSortDesc().get());
 		} else {
 			sortedList = unFilteredList;
 		}

@@ -43,7 +43,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.ui.core.UiListUnmodifiable;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.model.UiList;
 
 /**
@@ -71,7 +70,7 @@ public final class ListAutocompleteController extends AbstractVSpringMvcControll
 		final DtList dtList = contextList.mergeAndCheckInput(Collections.EMPTY_LIST, getUiMessageStack());
 		final DtDefinition dtDefinition = dtList.getDefinition();
 		//-----
-		final DtField labelDtField = dtDefinition.getField(StringUtil.camelToConstCase(labelField));
+		final DtField labelDtField = dtDefinition.getField(labelField);
 
 		final Collection<DtField> searchedFields = Collections.singletonList(labelDtField);
 		final DtList results;

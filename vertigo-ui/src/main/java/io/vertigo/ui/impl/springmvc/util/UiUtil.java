@@ -30,7 +30,6 @@ import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.lang.Assertion;
 import io.vertigo.ui.core.AbstractUiListUnmodifiable;
 import io.vertigo.ui.core.ViewContext;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 
@@ -201,7 +200,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static String getDisplayField(final String uiListKey) {
 		final DtDefinition dtDefinition = getUiList(uiListKey).getDtDefinition();
-		return StringUtil.constToLowerCamelCase(dtDefinition.getDisplayField().get().getName());
+		return dtDefinition.getDisplayField().get().getName();
 	}
 
 	/**
@@ -214,7 +213,7 @@ public final class UiUtil implements Serializable {
 			return ((AbstractUiListUnmodifiable) uiList).getIdFieldName();
 		}
 		final DtDefinition dtDefinition = getUiList(uiListKey).getDtDefinition();
-		return StringUtil.constToLowerCamelCase(dtDefinition.getIdField().get().getName());
+		return dtDefinition.getIdField().get().getName();
 	}
 
 	private static UiList getUiList(final String uiListKey) {
@@ -241,7 +240,7 @@ public final class UiUtil implements Serializable {
 		}
 		Assertion.checkNotNull(dtDefinition); //, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
 		Assertion.checkNotNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
-		return dtDefinition.getField(StringUtil.camelToConstCase(fieldName));
+		return dtDefinition.getField(fieldName);
 
 	}
 }
