@@ -46,7 +46,6 @@ import redis.clients.jedis.Transaction;
  * @author pchretien
  */
 public final class RedisNotificationPlugin implements NotificationPlugin {
-
 	private static final long REMOVE_PACKET_SIZE = 100L;
 	private final RedisConnector redisConnector;
 
