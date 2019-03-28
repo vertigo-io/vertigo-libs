@@ -18,6 +18,7 @@ Release 2.0.0 - 2019/03/22
 * [Ui] Add new frontend stack, modern Ui, great UX and DX, server side rendering Ui (SpringMvc, Thymeleaf and vueJs/Quasar web components) 
 * [Orchestra] Add default value for some params
 * [Orchestra] On startup clean planifs of current node
+* [Orchestra] Fix process termination on throwable (not only exception)
 * [All] Rename URI to UDI
 * [All] Add/Complete Manifest class of each modules (Features classes)
 * **[All] Update JUnit4 to JUnit 5**
@@ -36,7 +37,6 @@ Release 1.1.3 - 2019/03/21
 [Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-112-to-113)
 
 * [Social] Fix #21 clean older notifications with time boxing : 10s every minute 
-* [orchestra] Fix process termination on throwable (not only exception)
 
 
 Release 1.1.2 - 2018/06/28
