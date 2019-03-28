@@ -39,7 +39,6 @@ import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.util.ClassUtil;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 
@@ -79,10 +78,10 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 		final Optional<DtField> idFieldOption = getDtDefinition().getIdField();
 		if (idFieldOption.isPresent()) {
-			camelIdFieldName = StringUtil.constToLowerCamelCase(idFieldOption.get().getName());
+			camelIdFieldName = idFieldOption.get().getName();
 		} else {
 			Assertion.checkState(keyFieldNameOpt.isPresent(), "DtDefinition : {0} is not an entity, you must provide a keyFieldName", dtDefinition.getName());
-			camelIdFieldName = StringUtil.constToLowerCamelCase(keyFieldNameOpt.get().name());
+			camelIdFieldName = keyFieldNameOpt.get().name();
 		}
 	}
 
@@ -201,7 +200,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		Assertion.checkState(dtDefinition.getIdField().isPresent(), "The definition : {0} must have an id to retrieve elements by Id", dtDefinition);
 		// ---
 		UiObject<O> uiObject;
-		final DtField dtField = dtDefinition.getField(StringUtil.camelToConstCase(keyFieldName));
+		final DtField dtField = dtDefinition.getField(keyFieldName);
 		Assertion.checkArgument(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
 
 		final Object key = dtField.getDomain().stringToValue(keyValueAsString);
