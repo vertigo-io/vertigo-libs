@@ -30,10 +30,8 @@ Vue.component('v-extensions-store', {
 				{name : "vertigo-ledger", label : "Ledger", description:"Use a blockchain to enforce secure transactions in your app !" , icon : "fas fa-link", color:"#00AC5C", enabled : false },
 				{name : "vertigo-orchestra", label : "Orchestra", description:"Manage jobs and monitor their status with this powerfull control tower.", color:"#FC636B", icon : "fas fa-tasks", enabled : false },
 				{name : "vertigo-quarto", label : "Quarto", description:"Generate slick documents and reports using the Quarto template engine.", color:"#0747A6", icon : "fas fa-file-invoice", enabled : false },
-				{name : "vertigo-rules", label : "Rules", description:"A simple but powerfull engine to enforce rules based on criteria.", color:"#35A8E0", icon : "far fa-check-circle", enabled : false },
 				{name : "vertigo-social", label : "Social", description:"Ensure real time communication and collaboration between your app users.", color:"#FF3366", icon : "far fa-comments", enabled : false },
-				{name : "vertigo-stella", label : "Stella", description:"Enable multi-node task dispatching for your app and assign specific tasks to each node.", color:"#0066FF", icon : "fas fa-network-wired", enabled : false },
-				{name : "vertigo-workflow", label : "Workflow", description:"Use BPM (Business Process Management) in your app using the workflow extension.", color:"#0079BF", icon : "fas fa-code-branch", enabled : false }
+				{name : "vertigo-stella", label : "Stella", description:"Enable multi-node task dispatching for your app and assign specific tasks to each node.", color:"#0066FF", icon : "fas fa-network-wired", enabled : false }
 		];
 		
     	availableExtensions.forEach(function (availableExtension) {
