@@ -2,23 +2,23 @@ package io.vertigo.orchestra.domain.definition
 
 create DtDefinition DT_O_PROCESS{
 	storeName : "orchestra"
-	id PRO_ID					{domain : DO_O_IDENTIFIANT, label :"Id de la definition du processus"}
-	field NAME   				{domain : DO_O_LIBELLE, label :"Nom du processus", required:"false",}
-	field LABEL   				{domain : DO_O_LIBELLE, label :"Libellé du processus", required:"false",},
-	field CRON_EXPRESSION		{domain : DO_O_LIBELLE, label :"Expression récurrence du processus", required:"false",}
-	field INITIAL_PARAMS		{domain : DO_O_JSON_TEXT, label :"Paramètres initiaux sous forme de JSON ", required:"false",}
-	field MULTIEXECUTION   		{domain : DO_O_BOOLEEN, label :"Accepte la multi-execution", required:"false",}
-	field ACTIVE_VERSION  		{domain : DO_O_BOOLEEN, label :"Version active", required:"true",}
-	field ACTIVE   				{domain : DO_O_BOOLEEN, label :"Processus actif", required:"true",}
-	field RESCUE_PERIOD			{domain : DO_O_NOMBRE, label :"Temps de validité d'une planification", required:"true",}
-	field METADATAS				{domain : DO_O_METADATAS, label :"Meta-données du processus", required:"false",}
-  	field NEED_UPDATE  			{domain : DO_O_BOOLEEN, label :"Doit être mise à jour lors du démarrage", required:"true",}
+	id proId					{domain : DO_O_IDENTIFIANT, label :"Id de la definition du processus"}
+	field name   				{domain : DO_O_LIBELLE, label :"Nom du processus", required:"false",}
+	field label   				{domain : DO_O_LIBELLE, label :"Libellé du processus", required:"false",},
+	field cronExpression		{domain : DO_O_LIBELLE, label :"Expression récurrence du processus", required:"false",}
+	field initialParams		{domain : DO_O_JSON_TEXT, label :"Paramètres initiaux sous forme de JSON ", required:"false",}
+	field multiexecution   		{domain : DO_O_BOOLEEN, label :"Accepte la multi-execution", required:"false",}
+	field activeVersion  		{domain : DO_O_BOOLEEN, label :"Version active", required:"true",}
+	field active   				{domain : DO_O_BOOLEEN, label :"Processus actif", required:"true",}
+	field rescuePeriod			{domain : DO_O_NOMBRE, label :"Temps de validité d'une planification", required:"true",}
+	field metadatas				{domain : DO_O_METADATAS, label :"Meta-données du processus", required:"false",}
+  	field needUpdate  			{domain : DO_O_BOOLEEN, label :"Doit être mise à jour lors du démarrage", required:"true",}
 },
 
 
 
 create Association A_PRO_TRT {
-  fkFieldName : "TRT_CD"
+  fkFieldName : "trtCd"
     
  	dtDefinitionA : DT_O_PROCESS
 	dtDefinitionB : DT_TRIGGER_TYPE
@@ -37,7 +37,7 @@ create Association A_PRO_TRT {
 },
 
 create Association A_PRO_PRT {
-  fkFieldName : "PRT_CD"
+  fkFieldName : "prtCd"
     
  	dtDefinitionA : DT_O_PROCESS
 	dtDefinitionB : DT_O_PROCESS_TYPE

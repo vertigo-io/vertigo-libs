@@ -7,11 +7,11 @@ create Task TK_GET_ACTIVE_PROCESS_EXECUTION_BY_PRO_ID {
         	select 
         		pre.*
         	from o_process_execution pre
-        	where pre.PRO_ID = #PRO_ID#
+        	where pre.PRO_ID = #proId#
         	and (pre.EST_CD = 'WAITING' or pre.EST_CD = 'RESERVED' or pre.EST_CD = 'SUBMITTED' or pre.EST_CD = 'RUNNING' or pre.EST_CD = 'PENDING')     	
 			"
-		attribute PRO_ID					{domain : DO_O_IDENTIFIANT 						required:"true" 	inOut :"in"}
-		attribute DTC_PROCESS_EXECUTION	 	{domain : DO_DT_O_PROCESS_EXECUTION_DTC 		required:"true" 	inOut :"out"}
+		attribute proId					{domain : DO_O_IDENTIFIANT 						required:"true" 	inOut :"in"}
+		attribute dtcProcessExecution	 	{domain : DO_DT_O_PROCESS_EXECUTION_DTC 		required:"true" 	inOut :"out"}
 },
 
 create Task TK_GET_LOG_BY_PRE_ID {
@@ -22,11 +22,11 @@ create Task TK_GET_LOG_BY_PRE_ID {
         	acl.*
 			from o_activity_execution ace
 			join o_activity_log acl on acl.ACE_ID = ace.ACE_ID
-			where ace.PRE_ID = #PRE_ID#
+			where ace.PRE_ID = #preId#
 			order by ace.end_time desc limit 1         	
 			"
-		attribute PRE_ID					{domain : DO_O_IDENTIFIANT 				required:"true" 		inOut :"in" }
-		attribute DT_ACTIVITY_LOG	 		{domain : DO_DT_O_ACTIVITY_LOG_DTO 		required:"false" 	inOut :"out"}
+		attribute preId					{domain : DO_O_IDENTIFIANT 				required:"true" 		inOut :"in" }
+		attribute dtActivityLog	 		{domain : DO_DT_O_ACTIVITY_LOG_DTO 		required:"false" 	inOut :"out"}
 },
 
 create Task TK_UPDATE_PROCESS_EXECUTION_TREATMENT {
@@ -34,16 +34,16 @@ create Task TK_UPDATE_PROCESS_EXECUTION_TREATMENT {
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
         	update o_process_execution
-        	set CHECKED = #CHECKED# ,
-        		CHECKING_DATE = #CHECKING_DATE#,
-        		CHECKING_COMMENT = #CHECKING_COMMENT#
-        		where PRE_ID = #PRE_ID#
+        	set CHECKED = #checked# ,
+        		CHECKING_DATE = #checkingDate#,
+        		CHECKING_COMMENT = #checkingComment#
+        		where PRE_ID = #preId#
          	
 			"
-		attribute PRE_ID					{domain : DO_O_IDENTIFIANT 			required:"true" 		inOut :"in" }
-		attribute CHECKED					{domain : DO_O_BOOLEEN 				required:"true" 		inOut :"in" }
-		attribute CHECKING_DATE				{domain : DO_O_TIMESTAMP 			required:"true" 		inOut :"in" }
-		attribute CHECKING_COMMENT			{domain : DO_O_TEXT 				required:"true" 		inOut :"in" }
+		attribute preId					{domain : DO_O_IDENTIFIANT 			required:"true" 		inOut :"in" }
+		attribute checked					{domain : DO_O_BOOLEEN 				required:"true" 		inOut :"in" }
+		attribute checkingDate				{domain : DO_O_TIMESTAMP 			required:"true" 		inOut :"in" }
+		attribute checkingComment			{domain : DO_O_TEXT 				required:"true" 		inOut :"in" }
 },
 
 

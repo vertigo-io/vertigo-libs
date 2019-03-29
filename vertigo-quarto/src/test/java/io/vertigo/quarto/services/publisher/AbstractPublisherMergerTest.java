@@ -97,7 +97,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 
 		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
-		publisherData.getRootNode().setString("COMMENTAIRE", " euro:" + (char) 128 + "\n gt:>\n lt:<\n tab:>\t<\n cr:>\n<\n  amp:&\n dquote:\"\n squote:\'\n");
+		publisherData.getRootNode().setString("commentaire", " euro:" + (char) 128 + "\n gt:>\n lt:<\n tab:>\t<\n cr:>\n<\n  amp:&\n dquote:\"\n squote:\'\n");
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModel." + getExtension());
 		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionSpecialsCharacters." + getExtension(), modelFileURL, publisherData);
@@ -125,7 +125,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 		final PublisherMock reportData = createTestPublisher();
 		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
-		publisherData.getRootNode().setString("TITRE", "NOM");
+		publisherData.getRootNode().setString("titre", "NOM");
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelIfEquals." + getExtension());
 		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionIfEquals." + getExtension(), modelFileURL, publisherData);
 		if (KEEP_OUTPUT_FILE) {
@@ -159,25 +159,25 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 		final PublisherNode pnEnquete = publisherData.getRootNode();
 		PublisherDataUtil.populateData(dtoEnquete, pnEnquete);
 
-		final PublisherNode pnEnqueteur = pnEnquete.createNode("ENQUETEUR");
+		final PublisherNode pnEnqueteur = pnEnquete.createNode("enqueteur");
 		PublisherDataUtil.populateData(dtoEnqueteur, pnEnqueteur);
-		pnEnquete.setNode("ENQUETEUR", pnEnqueteur);
+		pnEnquete.setNode("enqueteur", pnEnqueteur);
 
-		final PublisherNode pnAdresse = pnEnqueteur.createNode("ADRESSE_RATACHEMENT");
+		final PublisherNode pnAdresse = pnEnqueteur.createNode("adresseRatachement");
 		PublisherDataUtil.populateData(dtoAdresse, pnAdresse);
-		pnEnqueteur.setNode("ADRESSE_RATACHEMENT", pnAdresse);
+		pnEnqueteur.setNode("adresseRatachement", pnAdresse);
 
-		final PublisherNode pnVille = pnAdresse.createNode("VILLE");
+		final PublisherNode pnVille = pnAdresse.createNode("ville");
 		PublisherDataUtil.populateData(dtoVille, pnVille);
-		pnAdresse.setNode("VILLE", pnVille);
+		pnAdresse.setNode("ville", pnVille);
 
 		final List<PublisherNode> publisherNodes = new ArrayList<>();
 		for (final MisEnCause dtoMisEnCause : dtcMisEnCause) {
-			final PublisherNode pnMisEnCause = pnEnquete.createNode("MIS_EN_CAUSE");
+			final PublisherNode pnMisEnCause = pnEnquete.createNode("misEnCause");
 			PublisherDataUtil.populateData(dtoMisEnCause, pnMisEnCause);
 			publisherNodes.add(pnMisEnCause);
 		}
-		pnEnquete.setNodes("MIS_EN_CAUSE", publisherNodes);
+		pnEnquete.setNodes("misEnCause", publisherNodes);
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelEnquete." + getExtension());
 		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionEnquete." + getExtension(), modelFileURL, publisherData);
@@ -199,10 +199,10 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 		final PublisherNode pnEnquete = publisherData.getRootNode();
 		PublisherDataUtil.populateData(dtoEnquete, pnEnquete);
 
-		final PublisherNode pnEnqueteur = PublisherDataUtil.populateField(pnEnquete, "ENQUETEUR", dtoEnqueteur);
-		final PublisherNode pnAdresse = PublisherDataUtil.populateField(pnEnqueteur, "ADRESSE_RATACHEMENT", dtoAdresse);
-		PublisherDataUtil.populateField(pnAdresse, "VILLE", dtoVille);
-		PublisherDataUtil.populateField(pnEnquete, "MIS_EN_CAUSE", dtcMisEnCause);
+		final PublisherNode pnEnqueteur = PublisherDataUtil.populateField(pnEnquete, "enqueteur", dtoEnqueteur);
+		final PublisherNode pnAdresse = PublisherDataUtil.populateField(pnEnqueteur, "adresseRatachement", dtoAdresse);
+		PublisherDataUtil.populateField(pnAdresse, "ville", dtoVille);
+		PublisherDataUtil.populateField(pnEnquete, "misEnCause", dtcMisEnCause);
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelEnquete." + getExtension());
 		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionEnquetePerField." + getExtension(), modelFileURL, publisherData);
@@ -236,7 +236,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelImage." + getExtension());
 		final VFile image = createVFile(fileManager, "/" + DATA_PACKAGE + "logo.jpg", getClass());
-		publisherData.getRootNode().setImage("LOGO", image);
+		publisherData.getRootNode().setImage("logo", image);
 		//
 		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionImage." + getExtension(), modelFileURL, publisherData);
 		if (KEEP_OUTPUT_FILE) {

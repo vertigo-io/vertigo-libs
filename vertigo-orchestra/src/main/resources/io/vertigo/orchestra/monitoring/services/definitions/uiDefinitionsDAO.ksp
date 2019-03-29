@@ -15,10 +15,10 @@ create Task TK_GET_PROCESS_BY_NAME {
         			pro.RESCUE_PERIOD as RESCUE_PERIOD,
         			pro.METADATAS as METADATAS
         	from o_process pro   
-        	where pro.NAME = #NAME# and pro.ACTIVE_VERSION is true  	
+        	where pro.NAME = #name# and pro.ACTIVE_VERSION is true  	
 			"
-	attribute NAME	 	{domain : DO_O_LIBELLE		required:"true" 	inOut :"in"}
-	attribute DT_O_PROCESS_UI	 	{domain : DO_DT_O_PROCESS_UI_DTO		required:"true" 	inOut :"out"}
+	attribute name	 	{domain : DO_O_LIBELLE		required:"true" 	inOut :"in"}
+	attribute dtOProcessUi	 	{domain : DO_DT_O_PROCESS_UI_DTO		required:"true" 	inOut :"out"}
 },
 
 create Task TK_SEARCH_PROCESS_BY_LABEL {
@@ -35,9 +35,9 @@ create Task TK_SEARCH_PROCESS_BY_LABEL {
         			pro.RESCUE_PERIOD as RESCUE_PERIOD,
         			pro.METADATAS as METADATAS
         	from o_process pro   
-        	where lower(pro.LABEL) like lower(#SEARCH#)  and pro.ACTIVE_VERSION is true
+        	where lower(pro.LABEL) like lower(#search#)  and pro.ACTIVE_VERSION is true
 			"
-	attribute SEARCH	 	{domain : DO_O_LIBELLE		required:"true" 	inOut :"in"}
-	attribute DTC_O_PROCESS_UI	 	{domain : DO_DT_O_PROCESS_UI_DTC		required:"true" 	inOut :"out"}
+	attribute search	 	{domain : DO_O_LIBELLE		required:"true" 	inOut :"in"}
+	attribute dtcOProcessUi	 	{domain : DO_DT_O_PROCESS_UI_DTC		required:"true" 	inOut :"out"}
 }
 

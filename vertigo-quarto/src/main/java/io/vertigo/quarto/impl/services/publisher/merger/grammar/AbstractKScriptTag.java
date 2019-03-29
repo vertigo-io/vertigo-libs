@@ -43,12 +43,12 @@ abstract class AbstractKScriptTag {
 	/**
 	 * FIELD_PATH_CALL.
 	 */
-	protected static final String FIELD_PATH_CALL = "^([0-9a-zA-Z_]+(?:\\.[0-9a-zA-Z_]+)*)";
+	protected static final String FIELD_PATH_CALL = "^([a-z][0-9a-zA-Z]*(?:\\.[a-z][0-9a-zA-Z]*)*)";
 	/**
 	 * FIELD_PATH_CALL_CONDITIONAL.
 	 * ADU - 20120529 : modification du pattern pour acceptation espaces et accents.
 	 */
-	protected static final String FIELD_PATH_CALL_EQUALS_CONDITION = "^([0-9a-zA-Z_]+(?:\\.[0-9a-zA-Z_]+)*)=(\\&quot;|\")(.*)(\\&quot;|\")";
+	protected static final String FIELD_PATH_CALL_EQUALS_CONDITION = "^([a-z][0-9a-zA-Z]*(?:\\.[a-z][0-9a-zA-Z]*)*)=(\\&quot;|\")(.*)(\\&quot;|\")";
 
 	/**
 	 * Ajouter l'appel de la methode getStringValue sur un fieldPath.

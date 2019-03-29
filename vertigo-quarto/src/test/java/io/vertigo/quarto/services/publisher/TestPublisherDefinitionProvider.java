@@ -32,35 +32,35 @@ public final class TestPublisherDefinitionProvider implements SimpleDefinitionPr
 
 	private static PublisherDataDefinition createTestEnquete() {
 		final PublisherNodeDefinition ville = new PublisherNodeDefinitionBuilder()
-				.addStringField("NOM")
-				.addStringField("CODE_POSTAL")
+				.addStringField("nom")
+				.addStringField("codePostal")
 				.build();
 
 		final PublisherNodeDefinition address = new PublisherNodeDefinitionBuilder()
-				.addStringField("RUE")
-				.addNodeField("VILLE", ville)
+				.addStringField("rue")
+				.addNodeField("ville", ville)
 				.build();
 
 		final PublisherNodeDefinition enqueteur = new PublisherNodeDefinitionBuilder()
-				.addStringField("NOM")
-				.addStringField("PRENOM")
-				.addNodeField("ADRESSE_RATACHEMENT", address)
+				.addStringField("nom")
+				.addStringField("prenom")
+				.addNodeField("adresseRatachement", address)
 				.build();
 
 		final PublisherNodeDefinition misEnCause = new PublisherNodeDefinitionBuilder()
-				.addBooleanField("SI_HOMME")
-				.addStringField("NOM")
-				.addStringField("PRENOM")
-				.addListField("ADRESSES_CONNUES", address)
+				.addBooleanField("siHomme")
+				.addStringField("nom")
+				.addStringField("prenom")
+				.addListField("adressesConnues", address)
 				.build();
 
 		final PublisherNodeDefinition publisherNodeDefinition = new PublisherNodeDefinitionBuilder()
-				.addBooleanField("ENQUETE_TERMINEE")
-				.addStringField("CODE_ENQUETE")
-				.addNodeField("ENQUETEUR", enqueteur)
-				.addListField("MIS_EN_CAUSE", misEnCause)
-				.addStringField("FAIT")
-				.addBooleanField("SI_GRAVE")
+				.addBooleanField("enqueteTerminee")
+				.addStringField("codeEnquete")
+				.addNodeField("enqueteur", enqueteur)
+				.addListField("misEnCause", misEnCause)
+				.addStringField("fait")
+				.addBooleanField("siGrave")
 				.build();
 
 		return new PublisherDataDefinition("PU_ENQUETE", publisherNodeDefinition);
@@ -68,20 +68,20 @@ public final class TestPublisherDefinitionProvider implements SimpleDefinitionPr
 
 	private static PublisherDataDefinition createTestMock() {
 		final PublisherNodeDefinition publisherMockNodeDefinition = new PublisherNodeDefinitionBuilder()
-				.addStringField("TITRE")
-				.addStringField("NOM")
-				.addStringField("PRENOM")
-				.addStringField("ADDRESS")
-				.addStringField("COMMENTAIRE")
-				.addStringField("BOOLEAN_1")
-				.addBooleanField("BOOLEAN_2")
-				.addBooleanField("BOOLEAN_3")
-				.addStringField("TEST_DUMMY")
-				.addStringField("TEST_LONG")
-				.addStringField("TEST_DOUBLE")
-				.addStringField("TEST_INTEGER")
-				.addStringField("TEST_DATE")
-				.addImageField("LOGO")
+				.addStringField("titre")
+				.addStringField("nom")
+				.addStringField("prenom")
+				.addStringField("address")
+				.addStringField("commentaire")
+				.addStringField("boolean1")
+				.addBooleanField("boolean2")
+				.addBooleanField("boolean3")
+				.addStringField("testDummy")
+				.addStringField("testLong")
+				.addStringField("testDouble")
+				.addStringField("testInteger")
+				.addStringField("testDate")
+				.addImageField("logo")
 				.build();
 		return new PublisherDataDefinition("PU_PUBLISHER_MOCK", publisherMockNodeDefinition);
 	}

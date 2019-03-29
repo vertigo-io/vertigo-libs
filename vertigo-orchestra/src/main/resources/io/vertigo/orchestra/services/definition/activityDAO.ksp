@@ -15,14 +15,14 @@ create Task TK_GET_FIRST_ACTIVITY_BY_PROCESS {
                                    min(activity.NUMBER) as NUMBER_MIN
                             from O_ACTIVITY activity
                             
-                            where activity.PRO_ID = #PRO_ID#
+                            where activity.PRO_ID = #proId#
                             group by activity.PRO_ID
                         ) actMin on (act.PRO_ID = actMin.PRO_ID and act.NUMBER = actMin.NUMBER_MIN)
                  where 1=1
         	
 			"
-	attribute PRO_ID	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
-	attribute DT_O_ACTIVITY	 	{domain : DO_DT_O_ACTIVITY_DTO 		required:"true" 	inOut :"out"}
+	attribute proId	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
+	attribute dtOActivity	 	{domain : DO_DT_O_ACTIVITY_DTO 		required:"true" 	inOut :"out"}
 }
 
 
@@ -36,7 +36,7 @@ create Task TK_GET_NEXT_ACTIVITY_BY_ACT_ID {
                             select activity.PRO_ID as PRO_ID,
                                    min(activity.NUMBER) as NUMBER_MIN
                             from O_ACTIVITY activity
-                            join O_ACTIVITY prevActivity on prevActivity.ACT_ID = #ACT_ID#
+                            join O_ACTIVITY prevActivity on prevActivity.ACT_ID = #actId#
                             where activity.NUMBER > prevActivity.NUMBER 
                            
                                 and activity.PRO_ID = prevActivity.PRO_ID
@@ -46,8 +46,8 @@ create Task TK_GET_NEXT_ACTIVITY_BY_ACT_ID {
         	
         	
 			"
-		attribute ACT_ID	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
-		attribute DT_O_ACTIVITY	 	{domain : DO_DT_O_ACTIVITY_DTO		required:"false" 	inOut :"out"}
+		attribute actId	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
+		attribute dtOActivity	 	{domain : DO_DT_O_ACTIVITY_DTO		required:"false" 	inOut :"out"}
 }
 
 
@@ -58,11 +58,11 @@ create Task TK_GET_ACTIVITIES_BY_PRO_ID {
         
         	select act.* 
                 from O_ACTIVITY act 
-                where act.PRO_ID = #PRO_ID#
+                where act.PRO_ID = #proId#
         	
 			"
-	attribute PRO_ID	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
-	attribute DT_O_ACTIVITIES	 	{domain : DO_DT_O_ACTIVITY_DTC 		required:"true" 	inOut :"out"}
+	attribute proId	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
+	attribute dtOActivities	 	{domain : DO_DT_O_ACTIVITY_DTC 		required:"true" 	inOut :"out"}
 }
 
 
@@ -77,5 +77,5 @@ create Task TK_GET_ALL_ACTIVITIES_IN_ACTIVE_PROCESSES {
                 where pro.ACTIVE_VERSION is true
         	
 			"
-	attribute DT_O_ACTIVITIES	 	{domain : DO_DT_O_ACTIVITY_DTC 		required:"true" 	inOut :"out"}
+	attribute dtOActivities	 	{domain : DO_DT_O_ACTIVITY_DTC 		required:"true" 	inOut :"out"}
 }

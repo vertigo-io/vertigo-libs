@@ -80,15 +80,15 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum ApplicationUserFields implements DtFieldName {
 		/** Propriété 'USR_ID'. */
-		USR_ID,
+		usrId,
 		/** Propriété 'Last Name'. */
-		LAST_NAME,
+		lastName,
 		/** Propriété 'First Name'. */
-		FIRST_NAME,
+		firstName,
 		/** Propriété 'email'. */
-		EMAIL,
+		email,
 		/** Propriété 'Profil'. */
-		PRO_ID,
+		proId,
 	}
 
 	/**
@@ -96,13 +96,13 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum CastingFields implements DtFieldName {
 		/** Propriété 'Cast_id'. */
-		CAST_ID,
+		castId,
 		/** Propriété 'Character name'. */
-		CHARACTER_NAME,
+		characterName,
 		/** Propriété 'People'. */
-		PEO_ID,
+		peoId,
 		/** Propriété 'Movie'. */
-		MOV_ID,
+		movId,
 	}
 
 	/**
@@ -110,13 +110,13 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum CommuneFields implements DtFieldName {
 		/** Propriété 'ID INSEE'. */
-		ID_INSEE,
+		idInsee,
 		/** Propriété 'Code postal'. */
-		CODE_POSTAL,
+		codePostal,
 		/** Propriété 'Commune'. */
-		COMMUNE,
+		commune,
 		/** Propriété 'D�partement'. */
-		DEPARTEMENT,
+		departement,
 	}
 
 	/**
@@ -124,7 +124,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum DummyFields implements DtFieldName {
 		/** Propriété 'Id'. */
-		DUMMY_LONG,
+		dummyLong,
 	}
 
 	/**
@@ -132,21 +132,21 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum MovieFields implements DtFieldName {
 		/** Propriété 'MOV_ID'. */
-		MOV_ID,
+		movId,
 		/** Propriété 'TITLE'. */
-		TITLE,
+		title,
 		/** Propriété 'Released'. */
-		RELEASED,
+		released,
 		/** Propriété 'Year'. */
-		YEAR,
+		year,
 		/** Propriété 'Runtime'. */
-		RUNTIME,
+		runtime,
 		/** Propriété 'Description'. */
-		DESCRIPTION,
+		description,
 		/** Propriété 'Poster'. */
-		POSTER,
+		poster,
 		/** Propriété 'rated'. */
-		RATED,
+		rated,
 	}
 
 	/**
@@ -154,9 +154,9 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum MovieDisplayFields implements DtFieldName<MovieDisplay> {
 		/** Propriété 'MOV_ID'. */
-		MOV_ID,
+		movId,
 		/** Propriété 'TITLE'. */
-		TITLE,
+		title,
 
 	}
 
@@ -165,35 +165,35 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum MovieIndexFields implements DtFieldName<MovieIndex> {
 		/** Propriété 'id'. */
-		MOV_ID,
+		movId,
 		/** Propriété 'Title'. */
-		TITLE,
+		title,
 		/** Propriété 'Title'. */
-		TITLE_SORT_ONLY,
+		titleSortOnly,
 		/** Propriété 'Original Title'. */
-		ORIGINAL_TITLE,
+		originalTitle,
 		/** Propriété 'Synopsis'. */
-		SYNOPSIS,
+		synopsis,
 		/** Propriété 'shortSynopsis'. */
-		SHORT_SYNOPSIS,
+		shortSynopsis,
 		/** Propriété 'keywords'. */
-		KEYWORDS,
+		keywords,
 		/** Propriété 'poster'. */
-		POSTER,
+		poster,
 		/** Propriété 'runtime'. */
-		RUNTIME,
+		runtime,
 		/** Propriété 'Movie type'. */
-		MOVIE_TYPE,
+		movieType,
 		/** Propriété 'productionYear'. */
-		PRODUCTION_YEAR,
+		productionYear,
 		/** Propriété 'userRating'. */
-		USER_RATING,
+		userRating,
 		/** Propriété 'presRating'. */
-		PRESS_RATING,
+		pressRating,
 		/** Propriété 'Writers'. */
-		WRITERS,
+		writers,
 		/** Propriété 'Camera'. */
-		CAMERA,
+		camera,
 	}
 
 	/**
@@ -201,15 +201,15 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum PeopleFields implements DtFieldName {
 		/** Propriété 'PEO_ID'. */
-		PEO_ID,
+		peoId,
 		/** Propriété 'Last Name'. */
-		LAST_NAME,
+		lastName,
 		/** Propriété 'First Name'. */
-		FIRST_NAME,
+		firstName,
 		/** Propriété 'Peo Name'. */
-		PEO_NAME,
+		peoName,
 		/** Propriété 'imdbID'. */
-		IMDBID,
+		imdbid,
 	}
 
 	/**
@@ -217,9 +217,9 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum ProfilFields implements DtFieldName {
 		/** Propriété 'PRO_ID'. */
-		PRO_ID,
+		proId,
 		/** Propriété 'Label'. */
-		LABEL,
+		label,
 	}
 
 	/**
@@ -227,9 +227,9 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum SecurityRoleFields implements DtFieldName {
 		/** Propriété 'SRO_CD'. */
-		SRO_CD,
+		sroCd,
 		/** Propriété 'Label'. */
-		LABEL,
+		label,
 	}
 
 	/**
@@ -237,13 +237,13 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum UserAuthentificationFields implements DtFieldName {
 		/** Propriété 'AUTH_ID'. */
-		AUTH_ID,
+		authId,
 		/** Propriété 'Login'. */
-		LOGIN,
+		login,
 		/** Propriété 'Password'. */
-		PASSWORD,
+		password,
 		/** Propriété 'Application user'. */
-		USR_ID,
+		usrId,
 	}
 
 	/** {@inheritDoc} */

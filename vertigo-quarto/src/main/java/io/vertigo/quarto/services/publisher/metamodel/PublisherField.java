@@ -32,7 +32,7 @@ public final class PublisherField {
 	/**
 	 * Expression régulière vérifiée par les noms des champs.
 	 */
-	private static final Pattern REGEX_FIELD_NAME = Pattern.compile("[A-Z][A-Z0-9_]{2,59}");
+	private static final Pattern REGEX_FIELD_NAME = Pattern.compile("[a-z][a-zA-Z0-9]{2,59}");
 
 	private final String name;
 	private final PublisherFieldType fieldType;

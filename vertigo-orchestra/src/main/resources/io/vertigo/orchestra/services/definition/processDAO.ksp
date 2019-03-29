@@ -7,12 +7,12 @@ create Task TK_GET_ACTIVE_PROCESS_BY_NAME {
         	select 
         		pro.*
         	from o_process pro
-        	where pro.NAME = #NAME#
+        	where pro.NAME = #name#
 	        	and pro.ACTIVE_VERSION is true
         	
 			"
-	attribute NAME			 	{domain : DO_O_LIBELLE 				required:"true" 		inOut :"in"}
-	attribute DT_PROCESS	 	{domain : DO_DT_O_PROCESS_DTO 		required:"false" 	inOut :"out"}
+	attribute name			 	{domain : DO_O_LIBELLE 				required:"true" 		inOut :"in"}
+	attribute dtProcess	 	{domain : DO_DT_O_PROCESS_DTO 		required:"false" 	inOut :"out"}
 }
 
 create Task TK_GET_PROCESSES_BY_NAME {
@@ -22,11 +22,11 @@ create Task TK_GET_PROCESSES_BY_NAME {
         	select 
         		count(*)
         	from o_process pro
-        	where pro.NAME = #NAME#
+        	where pro.NAME = #name#
         	
 			"
-	attribute NAME			 	{domain : DO_O_LIBELLE 				required:"true" 		inOut :"in"}
-	attribute NOMBRE			 	{domain : DO_O_NOMBRE				required:"true" 		inOut :"out"}
+	attribute name			 	{domain : DO_O_LIBELLE 				required:"true" 		inOut :"in"}
+	attribute nombre			 	{domain : DO_O_NOMBRE				required:"true" 		inOut :"out"}
 }
 
 
@@ -40,7 +40,7 @@ create Task TK_GET_ALL_ACTIVE_PROCESSES {
         	where pro.ACTIVE_VERSION is true
         	
 			"
-	attribute DTC_PROCESSES	 	{domain : DO_DT_O_PROCESS_DTC 		required:"true" 	inOut :"out"}
+	attribute dtcProcesses	 	{domain : DO_DT_O_PROCESS_DTC 		required:"true" 	inOut :"out"}
 }
 
 
@@ -51,8 +51,8 @@ create Task TK_DISABLE_OLD_PROCESS_DEFINITIONS {
         	update o_process 
         	set ACTIVE_VERSION = false,
         		NEED_UPDATE = false
-        	where NAME = #NAME#
+        	where NAME = #name#
         	
 			"
-	attribute NAME			 	{domain : DO_O_LIBELLE 				required:"true" 		inOut :"in"}
+	attribute name			 	{domain : DO_O_LIBELLE 				required:"true" 		inOut :"in"}
 }

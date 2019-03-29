@@ -141,7 +141,7 @@ public final class Casting implements Entity {
 	 * Retourne l'URI: People.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CAST_PEO", fkFieldName = "PEO_ID", primaryDtDefinitionName = "DT_PEOPLE", primaryIsNavigable = true, primaryRole = "People", primaryLabel = "People", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CASTING", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CAST_PEO", fkFieldName = "peoId", primaryDtDefinitionName = "DT_PEOPLE", primaryIsNavigable = true, primaryRole = "People", primaryLabel = "People", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CASTING", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.ui.data.domain.people.People> getPeopleURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createUID(this, "A_CAST_PEO", io.vertigo.ui.data.domain.people.People.class);
 	}
@@ -166,7 +166,7 @@ public final class Casting implements Entity {
 	 * Retourne l'URI: Movie.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CAST_MOV", fkFieldName = "MOV_ID", primaryDtDefinitionName = "DT_MOVIE", primaryIsNavigable = true, primaryRole = "Movie", primaryLabel = "Movie", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CASTING", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CAST_MOV", fkFieldName = "movId", primaryDtDefinitionName = "DT_MOVIE", primaryIsNavigable = true, primaryRole = "Movie", primaryLabel = "Movie", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CASTING", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.ui.data.domain.movies.Movie> getMovieURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createUID(this, "A_CAST_MOV", io.vertigo.ui.data.domain.movies.Movie.class);
 	}

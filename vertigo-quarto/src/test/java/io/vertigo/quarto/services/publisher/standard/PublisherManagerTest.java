@@ -24,9 +24,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.DynamoFeatures;
@@ -91,25 +91,25 @@ public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 		final PublisherNodeDefinitionBuilder rootDefinitionBuilder = new PublisherNodeDefinitionBuilder();
 
 		try {
-			rootDefinitionBuilder.addStringField("testString");
+			rootDefinitionBuilder.addStringField("TEST_STRING");
 			Assertions.fail();
 		} catch (final IllegalArgumentException a) {
 			// succes
 		}
 		try {
-			rootDefinitionBuilder.addBooleanField("TEST_BOOLEAN.TOTO");
+			rootDefinitionBuilder.addBooleanField("testBoolean.toto");
 			Assertions.fail();
 		} catch (final IllegalArgumentException a) {
 			// succes
 		}
 		try {
-			rootDefinitionBuilder.addImageField("TEST_BOOLEAN@TOTO");
+			rootDefinitionBuilder.addImageField("testBoolean@toto");
 			Assertions.fail();
 		} catch (final IllegalArgumentException a) {
 			// succes
 		}
 		try {
-			rootDefinitionBuilder.addStringField("TEST_BOOLEANAZERTYUIOPQSDFGHJKLMWXCVBN_AZERTYUIOPQSDFGHJKLMWXCVBN");
+			rootDefinitionBuilder.addStringField("testBooleanazertyuiopqsdfghjklmwxcvbnAzertyuiopqsdfghjklmwxcvbn");
 			Assertions.fail();
 		} catch (final IllegalArgumentException a) {
 			// succes
@@ -123,8 +123,8 @@ public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 	public final void testDefinitionFieldDoubleRegister() {
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			final PublisherNodeDefinitionBuilder rootDefinitionBuilder = new PublisherNodeDefinitionBuilder()
-					.addBooleanField("TEST_STRING")
-					.addStringField("TEST_STRING");
+					.addBooleanField("testString")
+					.addStringField("testString");
 			final PublisherNodeDefinition rootDefinition = rootDefinitionBuilder.build();
 			nop(rootDefinition);
 		});
@@ -180,7 +180,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertEquals(ENQUETE_DEF, asString(publisherData.getDefinition()));
 	}
 
-	private static final String ENQUETE_DEF = "=== PU_TEST_ENQUETE =====================================\nBoolean:ENQUETE_TERMINEE\nString:CODE_ENQUETE\nNode:ENQUETEUR\n    String:NOM\n    String:PRENOM\n    Node:ADRESSE_RATACHEMENT\n        String:RUE\n        Node:VILLE\n            String:NOM\n            String:CODE_POSTAL\nList:MIS_EN_CAUSE\n    Boolean:SI_HOMME\n    String:NOM\n    String:PRENOM\n    List:ADRESSES_CONNUES\n        String:RUE\n        Node:VILLE\n            String:NOM\n            String:CODE_POSTAL\nString:FAIT\nBoolean:SI_GRAVE\n------------------------------------------------------------------------------";
+	private static final String ENQUETE_DEF = "=== PU_TEST_ENQUETE =====================================\nBoolean:enqueteTerminee\nString:codeEnquete\nNode:enqueteur\n    String:nom\n    String:prenom\n    Node:adresseRatachement\n        String:rue\n        Node:ville\n            String:nom\n            String:codePostal\nList:misEnCause\n    Boolean:siHomme\n    String:nom\n    String:prenom\n    List:adressesConnues\n        String:rue\n        Node:ville\n            String:nom\n            String:codePostal\nString:fait\nBoolean:siGrave\n------------------------------------------------------------------------------";
 
 	/**
 	 * Génère le Ksp de déclaration de PublisherNodeDefinition à partir d'un ou plusieur DTs.

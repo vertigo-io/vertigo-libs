@@ -66,7 +66,7 @@ public class AccueilAction extends AbstractTestActionSupport {
 	private final ContextRef<String> communeId = new ContextRef<>("communeId", String.class, this);
 	private final ContextMdl<Commune> communeListMdl = new ContextMdl<>("communesMdl", this);
 
-	private final ContextList<MovieDisplay> movieDisplayList = new ContextList<>("moviesDisplay", MovieDisplayFields.MOV_ID, this);
+	private final ContextList<MovieDisplay> movieDisplayList = new ContextList<>("moviesDisplay", MovieDisplayFields.movId, this);
 
 	private final ContextRef<String> currentDate = new ContextRef<>("currentDate", String.class, this);
 

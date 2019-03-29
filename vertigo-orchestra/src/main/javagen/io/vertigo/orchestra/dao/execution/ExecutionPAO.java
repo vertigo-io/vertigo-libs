@@ -1,21 +1,3 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.orchestra.dao.execution;
 
 import javax.inject.Inject;
@@ -64,7 +46,7 @@ public final class ExecutionPAO implements StoreServices {
 	*/
 	public void handleDeadProcessesOfNode(final Long nodId) {
 		final Task task = createTaskBuilder("TK_HANDLE_DEAD_PROCESSES_OF_NODE")
-				.addValue("NOD_ID", nodId)
+				.addValue("nodId", nodId)
 				.build();
 		getTaskManager().execute(task);
 	}
@@ -75,7 +57,7 @@ public final class ExecutionPAO implements StoreServices {
 	*/
 	public void handleProcessesOfDeadNodes(final java.time.Instant maxDate) {
 		final Task task = createTaskBuilder("TK_HANDLE_PROCESSES_OF_DEAD_NODES")
-				.addValue("MAX_DATE", maxDate)
+				.addValue("maxDate", maxDate)
 				.build();
 		getTaskManager().execute(task);
 	}
@@ -87,8 +69,8 @@ public final class ExecutionPAO implements StoreServices {
 	*/
 	public void reserveActivitiesToLaunch(final Long nodId, final Integer maxNumber) {
 		final Task task = createTaskBuilder("TK_RESERVE_ACTIVITIES_TO_LAUNCH")
-				.addValue("NOD_ID", nodId)
-				.addValue("MAX_NUMBER", maxNumber)
+				.addValue("nodId", nodId)
+				.addValue("maxNumber", maxNumber)
 				.build();
 		getTaskManager().execute(task);
 	}
@@ -102,10 +84,10 @@ public final class ExecutionPAO implements StoreServices {
 	*/
 	public void updateProcessExecutionTreatment(final Long preId, final Boolean checked, final java.time.Instant checkingDate, final String checkingComment) {
 		final Task task = createTaskBuilder("TK_UPDATE_PROCESS_EXECUTION_TREATMENT")
-				.addValue("PRE_ID", preId)
-				.addValue("CHECKED", checked)
-				.addValue("CHECKING_DATE", checkingDate)
-				.addValue("CHECKING_COMMENT", checkingComment)
+				.addValue("preId", preId)
+				.addValue("checked", checked)
+				.addValue("checkingDate", checkingDate)
+				.addValue("checkingComment", checkingComment)
 				.build();
 		getTaskManager().execute(task);
 	}

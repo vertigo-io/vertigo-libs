@@ -163,7 +163,7 @@ public final class ApplicationUser implements Entity {
 	 */
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "A_USR_PRO",
-			fkFieldName = "PRO_ID",
+			fkFieldName = "proId",
 			primaryDtDefinitionName = "DT_PROFIL",
 			primaryIsNavigable = true,
 			primaryRole = "Profil",

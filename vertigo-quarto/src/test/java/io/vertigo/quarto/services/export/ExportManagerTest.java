@@ -23,9 +23,9 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -122,7 +122,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU5 {
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")
 				.beginSheet(china, "china")
-				.addField(CountryFields.NAME)
+				.addField(CountryFields.name)
 				.endSheet()
 				.build();
 
@@ -139,7 +139,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU5 {
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")
 				.beginSheet(china, "china")
-				.addField(CountryFields.NAME, MessageText.of("test"))
+				.addField(CountryFields.name, MessageText.of("test"))
 				.endSheet()
 				.build();
 
@@ -160,7 +160,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU5 {
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test4.csv")
 				.beginSheet(germany, "germany")
-				.addField(CountryFields.CON_ID, dtc, ContinentFields.NAME)
+				.addField(CountryFields.conId, dtc, ContinentFields.name)
 				.endSheet()
 				.build();
 
@@ -181,7 +181,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU5 {
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test5.csv")
 				.beginSheet(germany, "country")
-				.addField(CountryFields.ID, dtc, CountryFields.NAME, MessageText.of("test"))
+				.addField(CountryFields.id, dtc, CountryFields.name, MessageText.of("test"))
 				.endSheet()
 				.build();
 
@@ -199,8 +199,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU5 {
 
 		final Export export = new ExportBuilder(ExportFormat.XLS, OUTPUT_PATH + "test.xls")
 				.beginSheet(countries, "countries")
-				.addField(CountryFields.CON_ID, contients, ContinentFields.NAME)
-				.addField(CountryFields.ACTIVE)
+				.addField(CountryFields.conId, contients, ContinentFields.name)
+				.addField(CountryFields.active)
 				.endSheet()
 				.build();
 

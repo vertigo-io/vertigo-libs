@@ -2,16 +2,16 @@ package io.vertigo.orchestra.domain.execution
 
 create DtDefinition DT_O_ACTIVITY_WORKSPACE {
 	storeName : "orchestra"
-	id ACW_ID			{domain : DO_O_IDENTIFIANT, label :"Id de l'execution d'un processus", }
-	field IS_IN  		{domain : DO_O_BOOLEEN, label :"Workspace in/out", required:"true",}
-	field WORKSPACE 	{domain : DO_O_JSON_TEXT, label :"Contenu du workspace", required:"false",}
+	id acwId			{domain : DO_O_IDENTIFIANT, label :"Id de l'execution d'un processus", }
+	field isIn  		{domain : DO_O_BOOLEEN, label :"Workspace in/out", required:"true",}
+	field workspace 	{domain : DO_O_JSON_TEXT, label :"Contenu du workspace", required:"false",}
   
 },
 
 
 
 create Association A_TKW_TKE {
-  fkFieldName : "ACE_ID"
+  fkFieldName : "aceId"
     
  	dtDefinitionA : DT_O_ACTIVITY_WORKSPACE
 	dtDefinitionB : DT_O_ACTIVITY_EXECUTION

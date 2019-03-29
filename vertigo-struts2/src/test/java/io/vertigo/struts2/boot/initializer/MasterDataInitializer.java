@@ -52,7 +52,7 @@ public class MasterDataInitializer implements ComponentInitializer {
 
 	private static final int CACHE_DURATION_LONG = 3600;
 	private static final int CACHE_DURATION_SHORT = 600;
-	private static final String ACTIVE_DATA_CODE = "ACTIF";
+	private static final String ACTIVE_DATA_CODE = "actif";
 	private static final String IS_ACTIVE = "IS_ACTIVE";
 	private static final String ALL_DATA_CODE = null;
 	/**

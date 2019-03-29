@@ -2,13 +2,13 @@ package io.vertigo.orchestra.domain.referential
 
 create DtDefinition DT_TRIGGER_TYPE {
 	storeName : "orchestra"
-	id TRT_CD	{domain : DO_O_CODE_IDENTIFIANT, label :"Code", }
-	field LABEL   	{domain : DO_O_LIBELLE, label :"Libellé", required:"false",}
+	id trtCd	{domain : DO_O_CODE_IDENTIFIANT, label :"Code", }
+	field label   	{domain : DO_O_LIBELLE, label :"Libellé", required:"false",}
   
 }
 
 create DtDefinition DT_O_PROCESS_TYPE {
 	storeName : "orchestra"
-	id PRT_CD	{domain : DO_O_CODE_IDENTIFIANT, label :"Code", }
-	field LABEL   	{domain : DO_O_LIBELLE, label :"Libellé", required:"false",}
+	id prtCd	{domain : DO_O_CODE_IDENTIFIANT, label :"Code", }
+	field label   	{domain : DO_O_LIBELLE, label :"Libellé", required:"false",}
 }

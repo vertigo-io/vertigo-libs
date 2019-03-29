@@ -61,10 +61,10 @@ public final class MoviesController extends AbstractVSpringMvcController {
 	public void initContext(final ViewContext viewContext) {
 		final DtListState dtListState = DtListState.of(200, 0);
 		final DtList<MovieDisplay> sortedList = movieServices.getMoviesDisplay(dtListState);
-		viewContext.publishDtList(MOVIES, MovieDisplayFields.MOV_ID, sortedList);
+		viewContext.publishDtList(MOVIES, MovieDisplayFields.movId, sortedList);
 		viewContext.publishRef(CRITERIA, "");
 		final FacetedQueryResult<MovieIndex, SearchQuery> facetedQueryResult = movieServices.searchMovies("", SelectedFacetValues.empty().build(), dtListState, Optional.empty());
-		viewContext.publishFacetedQueryResult(FCTS, MovieIndexFields.MOV_ID, facetedQueryResult, CRITERIA);
+		viewContext.publishFacetedQueryResult(FCTS, MovieIndexFields.movId, facetedQueryResult, CRITERIA);
 	}
 
 	@PostMapping("/_search")
@@ -74,14 +74,14 @@ public final class MoviesController extends AbstractVSpringMvcController {
 			@ViewAttribute("result") final SelectedFacetValues selectedFacetValues,
 			final DtListState dtListState) {
 		final FacetedQueryResult<MovieIndex, SearchQuery> facetedQueryResult = movieServices.searchMovies(criteria, selectedFacetValues, dtListState, Optional.empty());
-		viewContext.publishFacetedQueryResult(FCTS, MovieIndexFields.MOV_ID, facetedQueryResult, CRITERIA);
+		viewContext.publishFacetedQueryResult(FCTS, MovieIndexFields.movId, facetedQueryResult, CRITERIA);
 		return viewContext;
 	}
 
 	@PostMapping("/_sort")
 	public ViewContext doSort(final ViewContext viewContext, @ViewAttribute("movies") final DtList<MovieDisplay> moviesDisplay, final DtListState dtListState) {
 		final DtList<MovieDisplay> sortedDtList = applySortAndPagination(moviesDisplay, dtListState);
-		viewContext.publishDtList(MOVIES, MovieDisplayFields.MOV_ID, sortedDtList);
+		viewContext.publishDtList(MOVIES, MovieDisplayFields.movId, sortedDtList);
 		return viewContext;
 	}
 

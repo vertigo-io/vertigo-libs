@@ -19,9 +19,9 @@
 package io.vertigo.orchestra;
 
 import io.vertigo.account.AccountFeatures;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.NodeConfigBuilder;
-import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;

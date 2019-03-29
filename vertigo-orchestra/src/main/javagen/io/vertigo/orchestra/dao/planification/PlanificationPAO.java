@@ -1,21 +1,3 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.orchestra.dao.planification;
 
 import javax.inject.Inject;
@@ -64,7 +46,7 @@ public final class PlanificationPAO implements StoreServices {
 	*/
 	public void cleanFuturePlanifications(final String processName) {
 		final Task task = createTaskBuilder("TK_CLEAN_FUTURE_PLANIFICATIONS")
-				.addValue("PROCESS_NAME", processName)
+				.addValue("processName", processName)
 				.build();
 		getTaskManager().execute(task);
 	}
@@ -75,7 +57,7 @@ public final class PlanificationPAO implements StoreServices {
 	*/
 	public void cleanPlanificationsOnBoot(final java.time.Instant currentDate) {
 		final Task task = createTaskBuilder("TK_CLEAN_PLANIFICATIONS_ON_BOOT")
-				.addValue("CURRENT_DATE", currentDate)
+				.addValue("currentDate", currentDate)
 				.build();
 		getTaskManager().execute(task);
 	}
@@ -88,9 +70,9 @@ public final class PlanificationPAO implements StoreServices {
 	*/
 	public void reserveProcessToExecute(final java.time.Instant lowerLimit, final java.time.Instant upperLimit, final Long nodId) {
 		final Task task = createTaskBuilder("TK_RESERVE_PROCESS_TO_EXECUTE")
-				.addValue("LOWER_LIMIT", lowerLimit)
-				.addValue("UPPER_LIMIT", upperLimit)
-				.addValue("NOD_ID", nodId)
+				.addValue("lowerLimit", lowerLimit)
+				.addValue("upperLimit", upperLimit)
+				.addValue("nodId", nodId)
 				.build();
 		getTaskManager().execute(task);
 	}

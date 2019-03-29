@@ -15,7 +15,7 @@ create Task TK_LOAD_MOVIE_INDEX {
 						 DESCRIPTION as SYNOPSIS,
 						 RATED as USER_RATING
 				from MOVIE mov
-				where MOV_ID in (#MOVIE_IDS.ROWNUM#);"
-	attribute MOVIE_IDS {domain : DO_LONGS, required:"true", inOut :"in",} 
-	attribute DTC_INDEX {domain : DO_DT_MOVIE_INDEX_DTC, required:"true", inOut :"out",} 
+				where MOV_ID in (#movieIds.rownum#);"
+	attribute movieIds {domain : DO_LONGS, required:"true", inOut :"in",} 
+	attribute dtcIndex {domain : DO_DT_MOVIE_INDEX_DTC, required:"true", inOut :"out",} 
 }

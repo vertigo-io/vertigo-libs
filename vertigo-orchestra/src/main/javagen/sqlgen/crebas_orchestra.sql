@@ -441,7 +441,6 @@ comment on column TRIGGER_TYPE.LABEL is
 'Libellé';
 
 
-
 alter table O_ACTIVITY_EXECUTION
 	add constraint FK_ACE_ACT_O_ACTIVITY foreign key (ACT_ID)
 	references O_ACTIVITY (ACT_ID);

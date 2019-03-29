@@ -8,11 +8,11 @@ create Task TK_GET_PROCESS_TO_EXECUTE {
         	select prp.*
         	from o_process_planification prp
         	where prp.SST_CD = 'RESERVED'
-        	and prp.NOD_ID = #NOD_ID#
+        	and prp.NOD_ID = #nodId#
         	
 			"
-	attribute DTC_O_PROCESS_PLANIFICATION	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC		required:"true" 	inOut :"out"}
-	attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
+	attribute dtcOProcessPlanification	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC		required:"true" 	inOut :"out"}
+	attribute nodId	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
 }
 
 
@@ -21,13 +21,13 @@ create Task TK_RESERVE_PROCESS_TO_EXECUTE {
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
         	update o_process_planification
-        	set SST_CD = 'RESERVED', NOD_ID = #NOD_ID#
-        	where (SST_CD = 'WAITING' and expected_time >= #LOWER_LIMIT# and expected_time <= #UPPER_LIMIT#) 
+        	set SST_CD = 'RESERVED', NOD_ID = #nodId#
+        	where (SST_CD = 'WAITING' and expected_time >= #lowerLimit# and expected_time <= #upperLimit#) 
         			or (SST_CD = 'RESCUED')
 			"
-	 attribute LOWER_LIMIT	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
-	 attribute UPPER_LIMIT	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
-	 attribute NOD_ID	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
+	 attribute lowerLimit	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
+	 attribute upperLimit	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
+	 attribute nodId	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
 }
 
 create Task TK_GET_LAST_PLANIFICATION_BY_PRO_ID {
@@ -35,12 +35,12 @@ create Task TK_GET_LAST_PLANIFICATION_BY_PRO_ID {
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
         	select prp.* from  o_process_planification prp
-        	where prp.PRO_ID = (select pro.PRO_ID from o_process pro where pro.PRO_ID = #PRO_ID# for update) and prp.SST_CD = 'WAITING'
+        	where prp.PRO_ID = (select pro.PRO_ID from o_process pro where pro.PRO_ID = #proId# for update) and prp.SST_CD = 'WAITING'
         	order by prp.expected_time desc
         	limit 1
 			"
-		attribute PRO_ID	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
-		attribute DT_O_PROCESS_PLANIFICATION	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTO		required:"false" 	inOut :"out"}
+		attribute proId	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
+		attribute dtOProcessPlanification	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTO		required:"false" 	inOut :"out"}
 }
 
 
@@ -49,12 +49,12 @@ create Task TK_GET_ALL_LAST_PAST_PLANIFICATIONS {
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
         	select prp.* from  o_process_planification prp
-			where prp.expected_time < #CURRENT_DATE# and prp.SST_CD = 'WAITING'
+			where prp.expected_time < #currentDate# and prp.SST_CD = 'WAITING'
 			for update
 			
 			"
-		attribute CURRENT_DATE 	{domain : DO_O_TIMESTAMP 			required:"true" 	inOut :"in"}
-		attribute PROCESS_PLANIFICATIONS	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC		required:"true" 	inOut :"out"}
+		attribute currentDate 	{domain : DO_O_TIMESTAMP 			required:"true" 	inOut :"in"}
+		attribute processPlanifications	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC		required:"true" 	inOut :"out"}
 }
 
 
@@ -64,14 +64,14 @@ create Task TK_CLEAN_PLANIFICATIONS_ON_BOOT {
         request : "
         	update o_process_planification set 
 			SST_CD = 'MISFIRED'
-			where SST_CD = 'WAITING' and expected_time < #CURRENT_DATE# and prp_id not in (select prp.PRP_ID from  o_process_planification prp
+			where SST_CD = 'WAITING' and expected_time < #currentDate# and prp_id not in (select prp.PRP_ID from  o_process_planification prp
         	inner join (
 				    select pro_id, max(expected_time) as MaxDate
 				    from o_process_planification
 				    group by pro_id
 				) pp on pp.pro_id = prp.pro_id and pp.MaxDate = prp.expected_time)
 			"
-		attribute CURRENT_DATE 	{domain : DO_O_TIMESTAMP 			required:"true" 	inOut :"in"}
+		attribute currentDate 	{domain : DO_O_TIMESTAMP 			required:"true" 	inOut :"in"}
 }
 
 
@@ -80,9 +80,9 @@ create Task TK_CLEAN_FUTURE_PLANIFICATIONS {
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
         	delete from o_process_planification prp
-        	where prp.PRO_ID in (select pro.PRO_ID from o_process pro where pro.NAME = #PROCESS_NAME#) and prp.SST_CD = 'WAITING' and prp.expected_time > current_timestamp
+        	where prp.PRO_ID in (select pro.PRO_ID from o_process pro where pro.NAME = #processName#) and prp.SST_CD = 'WAITING' and prp.expected_time > current_timestamp
 			"
-	 attribute PROCESS_NAME	 	{domain : DO_O_LIBELLE 		required:"true" 	inOut :"in"}
+	 attribute processName	 	{domain : DO_O_LIBELLE 		required:"true" 	inOut :"in"}
 }
 
 

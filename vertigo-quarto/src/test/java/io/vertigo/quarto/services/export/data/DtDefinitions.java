@@ -38,10 +38,10 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 * Enumération des champs de Famille.
 	 */
 	public enum CountryFields implements DtFieldName {
-		ID, CON_ID, NAME, ACTIVE,
+		id, conId, name, active,
 	}
 
 	public enum ContinentFields implements DtFieldName {
-		ID, NAME,
+		id, name,
 	}
 }
