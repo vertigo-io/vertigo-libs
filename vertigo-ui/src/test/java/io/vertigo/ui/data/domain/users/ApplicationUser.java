@@ -50,7 +50,7 @@ public final class ApplicationUser implements Entity {
 	 * Récupère la valeur de la propriété 'USR_ID'.
 	 * @return Long usrId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "USR_ID")
+	@Field(domain = "DoId", type = "ID", required = true, label = "USR_ID")
 	public Long getUsrId() {
 		return usrId;
 	}
@@ -69,7 +69,7 @@ public final class ApplicationUser implements Entity {
 	 * Récupère la valeur de la propriété 'Last Name'.
 	 * @return String lastName
 	 */
-	@Field(domain = "DO_NAME", label = "Last Name")
+	@Field(domain = "DoName", label = "Last Name")
 	public String getLastName() {
 		return lastName;
 	}
@@ -88,7 +88,7 @@ public final class ApplicationUser implements Entity {
 	 * Récupère la valeur de la propriété 'First Name'.
 	 * @return String firstName
 	 */
-	@Field(domain = "DO_FIRSTNAME", label = "First Name")
+	@Field(domain = "DoFirstname", label = "First Name")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -107,7 +107,7 @@ public final class ApplicationUser implements Entity {
 	 * Récupère la valeur de la propriété 'email'.
 	 * @return String email
 	 */
-	@Field(domain = "DO_EMAIL", label = "email")
+	@Field(domain = "DoEmail", label = "email")
 	public String getEmail() {
 		return email;
 	}
@@ -126,7 +126,7 @@ public final class ApplicationUser implements Entity {
 	 * Récupère la valeur de la propriété 'Profil'.
 	 * @return Long proId
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "Profil")
+	@Field(domain = "DoId", type = "FOREIGN_KEY", label = "Profil")
 	public Long getProId() {
 		return proId;
 	}
@@ -162,20 +162,20 @@ public final class ApplicationUser implements Entity {
 	 * @return URI de l'association
 	 */
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_USR_PRO",
+			name = "AUsrPro",
 			fkFieldName = "proId",
-			primaryDtDefinitionName = "DT_PROFIL",
+			primaryDtDefinitionName = "DtProfil",
 			primaryIsNavigable = true,
 			primaryRole = "Profil",
 			primaryLabel = "Profil",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_APPLICATION_USER",
+			foreignDtDefinitionName = "DtApplicationUser",
 			foreignIsNavigable = false,
 			foreignRole = "ApplicationUser",
 			foreignLabel = "Application user",
 			foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.ui.data.domain.users.Profil> getProfilURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createUID(this, "A_USR_PRO", io.vertigo.ui.data.domain.users.Profil.class);
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createUID(this, "AUsrPro", io.vertigo.ui.data.domain.users.Profil.class);
 	}
 
 	/** {@inheritDoc} */

@@ -48,7 +48,7 @@ import io.vertigo.vega.engines.webservice.json.VegaUiObject;
  */
 public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> implements Map<String, Serializable> {
 	private static final long serialVersionUID = -4639050257543017072L;
-	private static final String DOMAIN_MULTIPLE_IDS = "DO_MULTIPLE_IDS";
+	private static final String DOMAIN_MULTIPLE_IDS = "DoMultipleIds";
 
 	public MapUiObject(final D serverSideDto) {
 		this(serverSideDto, (D) DtObjectUtil.createDtObject(DtObjectUtil.findDtDefinition(serverSideDto)), Collections.emptySet());

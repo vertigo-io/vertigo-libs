@@ -1,6 +1,6 @@
 package io.vertigo.pandora.dao.movies
 
-create Task TK_LOAD_MOVIE_INDEX {
+create Task TkLoadMovieIndex {
 	className : "io.vertigo.dynamox.task.TaskEngineSelect",
 	request : "	select MOV_ID,
 						 TITLE,
@@ -16,6 +16,6 @@ create Task TK_LOAD_MOVIE_INDEX {
 						 RATED as USER_RATING
 				from MOVIE mov
 				where MOV_ID in (#movieIds.rownum#);"
-	attribute movieIds {domain : DO_LONGS, required:"true", inOut :"in",} 
-	attribute dtcIndex {domain : DO_DT_MOVIE_INDEX_DTC, required:"true", inOut :"out",} 
+	attribute movieIds {domain : DoLongs, required:"true", inOut :"in",} 
+	attribute dtcIndex {domain : DoDtMovieIndexDtc, required:"true", inOut :"out",} 
 }
