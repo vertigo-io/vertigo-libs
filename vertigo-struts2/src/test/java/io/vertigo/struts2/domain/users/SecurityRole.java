@@ -46,7 +46,7 @@ public final class SecurityRole implements Entity {
 	 * Récupère la valeur de la propriété 'SRO_CD'.
 	 * @return String sroCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_CODE", type = "ID", required = true, label = "SRO_CD")
+	@Field(domain = "DoCode", type = "ID", required = true, label = "SRO_CD")
 	public String getSroCd() {
 		return sroCd;
 	}
@@ -65,7 +65,7 @@ public final class SecurityRole implements Entity {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label
 	 */
-	@Field(domain = "DO_LABEL", label = "Label")
+	@Field(domain = "DoLabel", label = "Label")
 	public String getLabel() {
 		return label;
 	}

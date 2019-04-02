@@ -50,7 +50,7 @@ public final class Casting implements Entity {
 	 * Récupère la valeur de la propriété 'Cast_id'.
 	 * @return Long castId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "Cast_id")
+	@Field(domain = "DoId", type = "ID", required = true, label = "Cast_id")
 	public Long getCastId() {
 		return castId;
 	}
@@ -69,7 +69,7 @@ public final class Casting implements Entity {
 	 * Récupère la valeur de la propriété 'Character name'.
 	 * @return String characterName
 	 */
-	@Field(domain = "DO_LABEL_LONG", label = "Character name")
+	@Field(domain = "DoLabelLong", label = "Character name")
 	public String getCharacterName() {
 		return characterName;
 	}
@@ -88,7 +88,7 @@ public final class Casting implements Entity {
 	 * Récupère la valeur de la propriété 'People'.
 	 * @return Long peoId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", required = true, label = "People")
+	@Field(domain = "DoId", type = "FOREIGN_KEY", required = true, label = "People")
 	public Long getPeoId() {
 		return peoId;
 	}
@@ -107,7 +107,7 @@ public final class Casting implements Entity {
 	 * Récupère la valeur de la propriété 'Movie'.
 	 * @return Long movId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", required = true, label = "Movie")
+	@Field(domain = "DoId", type = "FOREIGN_KEY", required = true, label = "Movie")
 	public Long getMovId() {
 		return movId;
 	}
@@ -141,9 +141,9 @@ public final class Casting implements Entity {
 	 * Retourne l'URI: People.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CAST_PEO", fkFieldName = "peoId", primaryDtDefinitionName = "DT_PEOPLE", primaryIsNavigable = true, primaryRole = "People", primaryLabel = "People", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CASTING", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "ACastPeo", fkFieldName = "peoId", primaryDtDefinitionName = "DtPeople", primaryIsNavigable = true, primaryRole = "People", primaryLabel = "People", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DtCasting", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.struts2.domain.people.People> getPeopleURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createUID(this, "A_CAST_PEO", io.vertigo.struts2.domain.people.People.class);
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createUID(this, "aCastPeo", io.vertigo.struts2.domain.people.People.class);
 	}
 
 	/**
@@ -166,9 +166,9 @@ public final class Casting implements Entity {
 	 * Retourne l'URI: Movie.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_CAST_MOV", fkFieldName = "movId", primaryDtDefinitionName = "DT_MOVIE", primaryIsNavigable = true, primaryRole = "Movie", primaryLabel = "Movie", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_CASTING", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "ACastMov", fkFieldName = "movId", primaryDtDefinitionName = "DtMovie", primaryIsNavigable = true, primaryRole = "Movie", primaryLabel = "Movie", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DtCasting", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.struts2.domain.movies.Movie> getMovieURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createUID(this, "A_CAST_MOV", io.vertigo.struts2.domain.movies.Movie.class);
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createUID(this, "aCastMov", io.vertigo.struts2.domain.movies.Movie.class);
 	}
 
 	/** {@inheritDoc} */

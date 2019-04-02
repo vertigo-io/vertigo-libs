@@ -49,7 +49,7 @@ public final class Commune implements DtMasterData {
 	 * Récupère la valeur de la propriété 'ID INSEE'.
 	 * @return Long idInsee <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "ID INSEE")
+	@Field(domain = "DoId", type = "ID", required = true, label = "ID INSEE")
 	public Long getIdInsee() {
 		return idInsee;
 	}
@@ -68,7 +68,7 @@ public final class Commune implements DtMasterData {
 	 * Récupère la valeur de la propriété 'Code postal'.
 	 * @return String codePostal <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_CODE_POSTAL", required = true, label = "Code postal")
+	@Field(domain = "DoCodePostal", required = true, label = "Code postal")
 	public String getCodePostal() {
 		return codePostal;
 	}
@@ -87,7 +87,7 @@ public final class Commune implements DtMasterData {
 	 * Récupère la valeur de la propriété 'Commune'.
 	 * @return String commune <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_LABEL", required = true, label = "Commune")
+	@Field(domain = "DoLabel", required = true, label = "Commune")
 	public String getCommune() {
 		return commune;
 	}
@@ -106,7 +106,7 @@ public final class Commune implements DtMasterData {
 	 * Récupère la valeur de la propriété 'Département'.
 	 * @return String departement <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_LABEL", required = true, label = "Département")
+	@Field(domain = "DoLabel", required = true, label = "Département")
 	public String getDepartement() {
 		return departement;
 	}

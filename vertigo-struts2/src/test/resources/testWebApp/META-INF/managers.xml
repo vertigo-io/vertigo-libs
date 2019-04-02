@@ -62,7 +62,7 @@
 			</plugin>
 			<plugin class="io.vertigo.struts2.services.util.StaticStorePlugin">
 				 <param name="values" value="true=Oui;false=Non" />
-				 <param name="dtDefinitionName" value="DT_OUI_NON_CHOICE" />
+				 <param name="dtDefinitionName" value="DtOuiNonChoice" />
 			</plugin>
 			<plugin class="io.vertigo.struts2.services.util.CommuneStorePlugin"/>			
 		</component>

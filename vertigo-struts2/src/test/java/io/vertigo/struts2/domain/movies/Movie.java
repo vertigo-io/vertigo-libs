@@ -56,7 +56,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'MOV_ID'.
 	 * @return Long movId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "MOV_ID")
+	@Field(domain = "DoId", type = "ID", required = true, label = "MOV_ID")
 	public Long getMovId() {
 		return movId;
 	}
@@ -75,7 +75,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'TITLE'.
 	 * @return String title
 	 */
-	@Field(domain = "DO_LABEL_LONG", label = "TITLE")
+	@Field(domain = "DoLabelLong", label = "TITLE")
 	public String getTitle() {
 		return title;
 	}
@@ -94,7 +94,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Released'.
 	 * @return java.util.Date released
 	 */
-	@Field(domain = "DO_DATE", label = "Released")
+	@Field(domain = "DoDate", label = "Released")
 	public LocalDate getReleased() {
 		return released;
 	}
@@ -113,7 +113,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Year'.
 	 * @return Integer year
 	 */
-	@Field(domain = "DO_YEAR", label = "Year")
+	@Field(domain = "DoYear", label = "Year")
 	public Integer getYear() {
 		return year;
 	}
@@ -132,7 +132,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Runtime'.
 	 * @return Integer runtime
 	 */
-	@Field(domain = "DO_DURATION", label = "Runtime")
+	@Field(domain = "DoDuration", label = "Runtime")
 	public Integer getRuntime() {
 		return runtime;
 	}
@@ -151,7 +151,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Description'.
 	 * @return String description
 	 */
-	@Field(domain = "DO_COMMENT", label = "Description")
+	@Field(domain = "DoComment", label = "Description")
 	public String getDescription() {
 		return description;
 	}
@@ -170,7 +170,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Poster'.
 	 * @return String poster
 	 */
-	@Field(domain = "DO_LABEL_LONG", label = "Poster")
+	@Field(domain = "DoLabelLong", label = "Poster")
 	public String getPoster() {
 		return poster;
 	}
@@ -189,7 +189,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'rated'.
 	 * @return String rated
 	 */
-	@Field(domain = "DO_LABEL_LONG", label = "rated")
+	@Field(domain = "DoLabelLong", label = "rated")
 	public String getRated() {
 		return rated;
 	}
@@ -208,7 +208,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'lastModified'.
 	 * @return Instant lastModified
 	 */
-	@Field(domain = "DO_LAST_MODIFIED", label = "lastModified")
+	@Field(domain = "DoLastModified", label = "lastModified")
 	public Instant getLastModified() {
 		return lastModified;
 	}

@@ -38,7 +38,7 @@ public final class Dummy implements DtObject {
 	 * Récupère la valeur de la propriété 'Id'.
 	 * @return Long dummyLong
 	 */
-	@Field(domain = "DO_ID", label = "Id")
+	@Field(domain = "DoId", label = "Id")
 	public Long getDummyLong() {
 		return dummyLong;
 	}

@@ -49,7 +49,7 @@ public final class People implements KeyConcept {
 	 * Récupère la valeur de la propriété 'PEO_ID'.
 	 * @return Long peoId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "PEO_ID")
+	@Field(domain = "DoId", type = "ID", required = true, label = "PEO_ID")
 	public Long getPeoId() {
 		return peoId;
 	}
@@ -68,7 +68,7 @@ public final class People implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Last Name'.
 	 * @return String lastName
 	 */
-	@Field(domain = "DO_NAME", label = "Last Name")
+	@Field(domain = "DoName", label = "Last Name")
 	public String getLastName() {
 		return lastName;
 	}
@@ -87,7 +87,7 @@ public final class People implements KeyConcept {
 	 * Récupère la valeur de la propriété 'First Name'.
 	 * @return String firstName
 	 */
-	@Field(domain = "DO_FIRSTNAME", label = "First Name")
+	@Field(domain = "DoFirstname", label = "First Name")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -106,7 +106,7 @@ public final class People implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Peo Name'.
 	 * @return String peoName
 	 */
-	@Field(domain = "DO_LABEL_LONG", label = "Peo Name")
+	@Field(domain = "DoLabelLong", label = "Peo Name")
 	public String getPeoName() {
 		return peoName;
 	}
@@ -125,7 +125,7 @@ public final class People implements KeyConcept {
 	 * Récupère la valeur de la propriété 'imdbID'.
 	 * @return String imdbid
 	 */
-	@Field(domain = "DO_LABEL", label = "imdbID")
+	@Field(domain = "DoLabel", label = "imdbID")
 	public String getImdbid() {
 		return imdbid;
 	}

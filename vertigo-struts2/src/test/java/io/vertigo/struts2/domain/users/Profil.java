@@ -47,7 +47,7 @@ public final class Profil implements Entity {
 	 * Récupère la valeur de la propriété 'PRO_ID'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "PRO_ID")
+	@Field(domain = "DoId", type = "ID", required = true, label = "PRO_ID")
 	public Long getProId() {
 		return proId;
 	}
@@ -66,7 +66,7 @@ public final class Profil implements Entity {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label
 	 */
-	@Field(domain = "DO_LABEL", label = "Label")
+	@Field(domain = "DoLabel", label = "Label")
 	public String getLabel() {
 		return label;
 	}
@@ -105,9 +105,9 @@ public final class Profil implements Entity {
 	 * Association URI: Security role.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.AssociationNN(name = "ANN_PRO_SRO", tableName = "PRO_SRO", dtDefinitionA = "DT_PROFIL", dtDefinitionB = "DT_SECURITY_ROLE", navigabilityA = false, navigabilityB = true, roleA = "Profil", roleB = "SecurityRole", labelA = "Profil", labelB = "Security role")
+	@io.vertigo.dynamo.domain.stereotype.AssociationNN(name = "AnnProSro", tableName = "PRO_SRO", dtDefinitionA = "DtProfil", dtDefinitionB = "DtSecurityRole", navigabilityA = false, navigabilityB = true, roleA = "Profil", roleB = "SecurityRole", labelA = "Profil", labelB = "Security role")
 	public io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation getSecurityRoleDtListURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createDtListURIForNNAssociation(this, "ANN_PRO_SRO", "SecurityRole");
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createDtListURIForNNAssociation(this, "annProSro", "SecurityRole");
 	}
 
 	/** {@inheritDoc} */
