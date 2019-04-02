@@ -1,20 +1,20 @@
 package io.vertigo.orchestra.domain.definition
 
-create DtDefinition DT_O_ACTIVITY {
+create DtDefinition DtOActivity {
 	storeName : "orchestra"
-	id actId		{domain : DO_O_IDENTIFIANT, label :"Id Activité", 					}
-	field name   	{domain : DO_O_LIBELLE, 	label :"Nom de l'activité", 			required:"false" }
-	field label   	{domain : DO_O_LIBELLE, 	label :"Libellé de l'activité", 		required:"false" }
-	field number   	{domain : DO_O_NOMBRE, 		label :"Numéro de l'activité", 			required:"false" }
-	field milestone {domain : DO_O_BOOLEEN, 	label :"Jalon", 						required:"false" }
-	field engine   	{domain : DO_O_CLASSE, 		label :"Implémentation de l'activité", 	required:"false" }
+	id actId		{domain : DoOIdentifiant, label :"Id Activité", 					}
+	field name   	{domain : DoOLibelle, 	label :"Nom de l'activité", 			required:"false" }
+	field label   	{domain : DoOLibelle, 	label :"Libellé de l'activité", 		required:"false" }
+	field number   	{domain : DoONombre, 		label :"Numéro de l'activité", 			required:"false" }
+	field milestone {domain : DoOBooleen, 	label :"Jalon", 						required:"false" }
+	field engine   	{domain : DoOClasse, 		label :"Implémentation de l'activité", 	required:"false" }
 }
 
-create Association A_ACT_PRO {
+create Association AActPro {
   fkFieldName : "proId"
     
- 	dtDefinitionA : DT_O_ACTIVITY
-	dtDefinitionB : DT_O_PROCESS
+ 	dtDefinitionA : DtOActivity
+	dtDefinitionB : DtOProcess
 			
 	navigabilityA : "false"
 	navigabilityB : "true"

@@ -1,6 +1,6 @@
 package io.vertigo.orchestra.monitoring.dao.summary
 
-create Task TK_GET_EXECUTION_SUMMARIES_BY_DATE {
+create Task TkGetExecutionSummariesByDate {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -78,13 +78,13 @@ create Task TK_GET_EXECUTION_SUMMARIES_BY_DATE {
 			;
         	
 			"
-	attribute dtcExecutionSummary	 	{domain : DO_DT_O_EXECUTION_SUMMARY_DTC 		required:"true" 	inOut :"out"}
-	attribute dateMin	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
-	attribute dateMax	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
-	attribute status	 	{domain : DO_O_CODE_IDENTIFIANT		required:"true" 	inOut :"in"}
+	attribute dtcExecutionSummary	 	{domain : DoDtOExecutionSummaryDtc 		required:"true" 	inOut :"out"}
+	attribute dateMin	 	{domain : DoOTimestamp 		required:"true" 	inOut :"in"}
+	attribute dateMax	 	{domain : DoOTimestamp 		required:"true" 	inOut :"in"}
+	attribute status	 	{domain : DoOCodeIdentifiant		required:"true" 	inOut :"in"}
 },
 
-create Task TK_GET_EXECUTION_SUMMARY_BY_DATE_AND_NAME {
+create Task TkGetExecutionSummaryByDateAndName {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -155,8 +155,8 @@ create Task TK_GET_EXECUTION_SUMMARY_BY_DATE_AND_NAME {
 					) lat_planif on true;
         	
 			"
-	attribute dtExecutionSummary	 	{domain : DO_DT_O_EXECUTION_SUMMARY_DTO 		required:"true" 	inOut :"out"}
-	attribute dateMin	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
-	attribute dateMax	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
-	attribute name	 		{domain : DO_O_LIBELLE 		required:"true" 	inOut :"in"}
+	attribute dtExecutionSummary	 	{domain : DoDtOExecutionSummaryDto 		required:"true" 	inOut :"out"}
+	attribute dateMin	 	{domain : DoOTimestamp 		required:"true" 	inOut :"in"}
+	attribute dateMax	 	{domain : DoOTimestamp 		required:"true" 	inOut :"in"}
+	attribute name	 		{domain : DoOLibelle 		required:"true" 	inOut :"in"}
 },

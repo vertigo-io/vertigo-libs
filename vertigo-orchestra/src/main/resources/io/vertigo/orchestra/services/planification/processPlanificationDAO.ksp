@@ -1,7 +1,7 @@
 package io.vertigo.orchestra.dao.planification
 
 
-create Task TK_GET_PROCESS_TO_EXECUTE {
+create Task TkGetProcessToExecute {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -11,12 +11,12 @@ create Task TK_GET_PROCESS_TO_EXECUTE {
         	and prp.NOD_ID = #nodId#
         	
 			"
-	attribute dtcOProcessPlanification	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC		required:"true" 	inOut :"out"}
-	attribute nodId	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
+	attribute dtcOProcessPlanification	 	{domain : DoDtOProcessPlanificationDtc		required:"true" 	inOut :"out"}
+	attribute nodId	 	{domain : DoOIdentifiant 		required:"true" 	inOut :"in"}
 }
 
 
-create Task TK_RESERVE_PROCESS_TO_EXECUTE {
+create Task TkReserveProcessToExecute {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
@@ -25,12 +25,12 @@ create Task TK_RESERVE_PROCESS_TO_EXECUTE {
         	where (SST_CD = 'WAITING' and expected_time >= #lowerLimit# and expected_time <= #upperLimit#) 
         			or (SST_CD = 'RESCUED')
 			"
-	 attribute lowerLimit	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
-	 attribute upperLimit	 	{domain : DO_O_TIMESTAMP 		required:"true" 	inOut :"in"}
-	 attribute nodId	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
+	 attribute lowerLimit	 	{domain : DoOTimestamp 		required:"true" 	inOut :"in"}
+	 attribute upperLimit	 	{domain : DoOTimestamp 		required:"true" 	inOut :"in"}
+	 attribute nodId	 	{domain : DoOIdentifiant 		required:"true" 	inOut :"in"}
 }
 
-create Task TK_GET_LAST_PLANIFICATION_BY_PRO_ID {
+create Task TkGetLastPlanificationByProId {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -39,12 +39,12 @@ create Task TK_GET_LAST_PLANIFICATION_BY_PRO_ID {
         	order by prp.expected_time desc
         	limit 1
 			"
-		attribute proId	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
-		attribute dtOProcessPlanification	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTO		required:"false" 	inOut :"out"}
+		attribute proId	 	{domain : DoOIdentifiant 		required:"true" 	inOut :"in"}
+		attribute dtOProcessPlanification	 	{domain : DoDtOProcessPlanificationDto		required:"false" 	inOut :"out"}
 }
 
 
-create Task TK_GET_ALL_LAST_PAST_PLANIFICATIONS {
+create Task TkGetAllLastPastPlanifications {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -53,12 +53,12 @@ create Task TK_GET_ALL_LAST_PAST_PLANIFICATIONS {
 			for update
 			
 			"
-		attribute currentDate 	{domain : DO_O_TIMESTAMP 			required:"true" 	inOut :"in"}
-		attribute processPlanifications	 	{domain : DO_DT_O_PROCESS_PLANIFICATION_DTC		required:"true" 	inOut :"out"}
+		attribute currentDate 	{domain : DoOTimestamp 			required:"true" 	inOut :"in"}
+		attribute processPlanifications	 	{domain : DoDtOProcessPlanificationDtc		required:"true" 	inOut :"out"}
 }
 
 
-create Task TK_CLEAN_PLANIFICATIONS_ON_BOOT {
+create Task TkCleanPlanificationsOnBoot {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
@@ -71,18 +71,18 @@ create Task TK_CLEAN_PLANIFICATIONS_ON_BOOT {
 				    group by pro_id
 				) pp on pp.pro_id = prp.pro_id and pp.MaxDate = prp.expected_time)
 			"
-		attribute currentDate 	{domain : DO_O_TIMESTAMP 			required:"true" 	inOut :"in"}
+		attribute currentDate 	{domain : DoOTimestamp 			required:"true" 	inOut :"in"}
 }
 
 
-create Task TK_CLEAN_FUTURE_PLANIFICATIONS {
+create Task TkCleanFuturePlanifications {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
         	delete from o_process_planification prp
         	where prp.PRO_ID in (select pro.PRO_ID from o_process pro where pro.NAME = #processName#) and prp.SST_CD = 'WAITING' and prp.expected_time > current_timestamp
 			"
-	 attribute processName	 	{domain : DO_O_LIBELLE 		required:"true" 	inOut :"in"}
+	 attribute processName	 	{domain : DoOLibelle 		required:"true" 	inOut :"in"}
 }
 
 

@@ -35,7 +35,7 @@ public final class TestStandardPublisherDefinitionProvider implements SimpleDefi
 				.addBooleanField("testBoolean")
 				.addStringField("testString")
 				.build();
-		return new PublisherDataDefinition("PU_TEST", rootNodeDefinition);
+		return new PublisherDataDefinition("PuTest", rootNodeDefinition);
 	}
 
 	private static PublisherDataDefinition createTest2() {
@@ -50,7 +50,7 @@ public final class TestStandardPublisherDefinitionProvider implements SimpleDefi
 				.addStringField("testString")
 				.addNodeField("testData", subDefinition)
 				.build();
-		return new PublisherDataDefinition("PU_TEST_2", publisherNodeDefinition);
+		return new PublisherDataDefinition("PuTest2", publisherNodeDefinition);
 	}
 
 	private static PublisherDataDefinition createTest3() {
@@ -70,7 +70,7 @@ public final class TestStandardPublisherDefinitionProvider implements SimpleDefi
 				.addNodeField("testData", subDefinition1)
 				.addListField("testList", subDefinition3)
 				.build();
-		return new PublisherDataDefinition("PU_TEST_3", publisherNodeDefinition);
+		return new PublisherDataDefinition("PuTest3", publisherNodeDefinition);
 	}
 
 	private static PublisherDataDefinition createTest4() {
@@ -91,7 +91,7 @@ public final class TestStandardPublisherDefinitionProvider implements SimpleDefi
 				.addListField("testList", subDefinition3)
 				.addImageField("testImage")
 				.build();
-		return new PublisherDataDefinition("PU_TEST_4", publisherNodeDefinition);
+		return new PublisherDataDefinition("PuTest4", publisherNodeDefinition);
 
 	}
 
@@ -124,7 +124,7 @@ public final class TestStandardPublisherDefinitionProvider implements SimpleDefi
 				.addNodeField("testData", subDefinition1)
 				.addListField("testList", subDefinition3)
 				.build();
-		return new PublisherDataDefinition("PU_TEST_5", publisherNodeDefinition);
+		return new PublisherDataDefinition("PuTest5", publisherNodeDefinition);
 	}
 
 	private static PublisherDataDefinition createTestEnquete() {
@@ -160,7 +160,7 @@ public final class TestStandardPublisherDefinitionProvider implements SimpleDefi
 				.addBooleanField("siGrave")
 				.build();
 
-		return new PublisherDataDefinition("PU_TEST_ENQUETE", publisherNodeDefinition);
+		return new PublisherDataDefinition("PuTestEnquete", publisherNodeDefinition);
 	}
 
 	@Override

@@ -127,7 +127,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	/**
 	 * Clean notifications every minutes.
 	 */
-	@DaemonScheduled(name = "DMN_CLEAN_TOO_OLD_MEMORY_NOTIFICATIONS", periodInSeconds = 60)
+	@DaemonScheduled(name = "DmnCleanTooOldMemoryNotifications", periodInSeconds = 60)
 	public void cleanTooOldNotifications() {
 		for (final List<Notification> notifications : notificationsByAccountURI.values()) {
 			cleanTooOldNotifications(notifications);

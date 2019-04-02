@@ -27,8 +27,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 
 import io.restassured.RestAssured;
 import io.restassured.specification.ResponseSpecification;
@@ -48,7 +46,6 @@ import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
 import io.vertigo.vega.VegaFeatures;
 
-@RunWith(JUnitPlatform.class)
 public class DashboardLauncherTest {
 
 	private static AutoCloseableApp app;

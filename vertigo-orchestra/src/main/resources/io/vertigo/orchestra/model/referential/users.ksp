@@ -1,14 +1,14 @@
 package io.vertigo.orchestra.domain.referential
 
-create DtDefinition DT_O_USER {
+create DtDefinition DtOUser {
 	storeName : "orchestra"
-	id usrId			{domain : DO_O_IDENTIFIANT, label :"Id", }
-	field firstName   	{domain : DO_O_LIBELLE, label :"Nom", required:"false",}
-	field lastName   	{domain : DO_O_LIBELLE, label :"Prénom", required:"false",}
-	field email   		{domain : DO_O_LIBELLE, label :"Email", required:"false",}
-	field password 		{domain : DO_O_LIBELLE, label :"Mot de passe", required:"false",}
-	field mailAlert		{domain : DO_O_BOOLEEN, label :"Alerté en cas d'erreur", required:"false",}
-	field active		{domain : DO_O_BOOLEEN, label :"Compte Actif", required:"false",}
+	id usrId			{domain : DoOIdentifiant, label :"Id", }
+	field firstName   	{domain : DoOLibelle, label :"Nom", required:"false",}
+	field lastName   	{domain : DoOLibelle, label :"Prénom", required:"false",}
+	field email   		{domain : DoOLibelle, label :"Email", required:"false",}
+	field password 		{domain : DoOLibelle, label :"Mot de passe", required:"false",}
+	field mailAlert		{domain : DoOBooleen, label :"Alerté en cas d'erreur", required:"false",}
+	field active		{domain : DoOBooleen, label :"Compte Actif", required:"false",}
   
 }
 

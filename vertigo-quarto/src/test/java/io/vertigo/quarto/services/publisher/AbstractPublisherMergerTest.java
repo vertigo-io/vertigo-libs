@@ -80,7 +80,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 	public void testMergerSimple() {
 		final PublisherMock reportData = createTestPublisher();
 
-		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
+		final PublisherData publisherData = createPublisherData("PuPublisherMock");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModel." + getExtension());
@@ -95,7 +95,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 	public void testMergerSpecialsCharacters() {
 		final PublisherMock reportData = createTestPublisher();
 
-		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
+		final PublisherData publisherData = createPublisherData("PuPublisherMock");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 		publisherData.getRootNode().setString("commentaire", " euro:" + (char) 128 + "\n gt:>\n lt:<\n tab:>\t<\n cr:>\n<\n  amp:&\n dquote:\"\n squote:\'\n");
 
@@ -111,7 +111,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 	public void testMergerErrorModel() {
 		Assertions.assertThrows(IllegalStateException.class, () -> {
 			final PublisherMock reportData = createTestPublisher();
-			final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
+			final PublisherData publisherData = createPublisherData("PuPublisherMock");
 			PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 			final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelError." + getExtension());
 			final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionError." + getExtension(), modelFileURL, publisherData);
@@ -123,7 +123,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testMergerModelIfEquals() {
 		final PublisherMock reportData = createTestPublisher();
-		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
+		final PublisherData publisherData = createPublisherData("PuPublisherMock");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 		publisherData.getRootNode().setString("titre", "NOM");
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelIfEquals." + getExtension());
@@ -137,7 +137,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testMergerModelIfNotEquals() {
 		final PublisherMock reportData = createTestPublisher();
-		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
+		final PublisherData publisherData = createPublisherData("PuPublisherMock");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelIfEquals." + getExtension());
 		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionIfNotEquals." + getExtension(), modelFileURL, publisherData);
@@ -155,7 +155,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 		final Ville dtoVille = DataHelper.createVille();
 		final DtList<? extends MisEnCause> dtcMisEnCause = DataHelper.createMisEnCauseList();
 
-		final PublisherData publisherData = createPublisherData("PU_ENQUETE");
+		final PublisherData publisherData = createPublisherData("PuEnquete");
 		final PublisherNode pnEnquete = publisherData.getRootNode();
 		PublisherDataUtil.populateData(dtoEnquete, pnEnquete);
 
@@ -195,7 +195,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 		final Ville dtoVille = DataHelper.createVille();
 		final DtList<? extends MisEnCause> dtcMisEnCause = DataHelper.createMisEnCauseList();
 
-		final PublisherData publisherData = createPublisherData("PU_ENQUETE");
+		final PublisherData publisherData = createPublisherData("PuEnquete");
 		final PublisherNode pnEnquete = publisherData.getRootNode();
 		PublisherDataUtil.populateData(dtoEnquete, pnEnquete);
 
@@ -216,7 +216,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 	public void testMergerBlock() {
 		final PublisherMock reportData = createTestPublisher();
 
-		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
+		final PublisherData publisherData = createPublisherData("PuPublisherMock");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModel2." + getExtension());
@@ -231,7 +231,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 	public void testMergerImage() throws IOException {
 		final PublisherMock reportData = createTestPublisher();
 
-		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
+		final PublisherData publisherData = createPublisherData("PuPublisherMock");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelImage." + getExtension());

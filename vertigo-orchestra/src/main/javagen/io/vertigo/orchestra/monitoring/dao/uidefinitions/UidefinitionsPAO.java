@@ -41,12 +41,12 @@ public final class UidefinitionsPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_GET_PROCESS_BY_NAME.
+	 * Execute la tache TkGetProcessByName.
 	 * @param name String 
 	 * @return io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi dtOProcessUi
 	*/
 	public io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi getProcessByName(final String name) {
-		final Task task = createTaskBuilder("TK_GET_PROCESS_BY_NAME")
+		final Task task = createTaskBuilder("TkGetProcessByName")
 				.addValue("name", name)
 				.build();
 		return getTaskManager()
@@ -55,12 +55,12 @@ public final class UidefinitionsPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_SEARCH_PROCESS_BY_LABEL.
+	 * Execute la tache TkSearchProcessByLabel.
 	 * @param search String 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi> dtcOProcessUi
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi> searchProcessByLabel(final String search) {
-		final Task task = createTaskBuilder("TK_SEARCH_PROCESS_BY_LABEL")
+		final Task task = createTaskBuilder("TkSearchProcessByLabel")
 				.addValue("search", search)
 				.build();
 		return getTaskManager()

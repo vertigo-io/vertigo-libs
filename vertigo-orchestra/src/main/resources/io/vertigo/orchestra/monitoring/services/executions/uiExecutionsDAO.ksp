@@ -1,7 +1,7 @@
 package io.vertigo.orchestra.monitoring.dao.uiexecutions
 
 
-create Task TK_GET_EXECUTION_BY_PRE_ID {
+create Task TkGetExecutionByPreId {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -22,12 +22,12 @@ create Task TK_GET_EXECUTION_BY_PRE_ID {
         	from o_process_execution pre   
         	where pre.PRE_ID = #preId#     	
 			"
-	attribute preId	 	{domain : DO_O_IDENTIFIANT		required:"true" 	inOut :"in"}
-	attribute dtOProcessExecutionUi	 	{domain : DO_DT_O_PROCESS_EXECUTION_UI_DTO		required:"true" 	inOut :"out"}
+	attribute preId	 	{domain : DoOIdentifiant		required:"true" 	inOut :"in"}
+	attribute dtOProcessExecutionUi	 	{domain : DoDtOProcessExecutionUiDto		required:"true" 	inOut :"out"}
 }
 
 
-create Task TK_GET_EXECUTIONS_BY_PROCESS_NAME {
+create Task TkGetExecutionsByProcessName {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -47,15 +47,15 @@ create Task TK_GET_EXECUTIONS_BY_PROCESS_NAME {
         	offset #offset#
         	
 			"
-	attribute name	 	{domain : DO_O_LIBELLE		required:"true" 	inOut :"in"}
-	attribute status	{domain : DO_O_CODE_IDENTIFIANT		required:"true" 	inOut :"in"}
-	attribute limit	 	{domain : DO_O_NOMBRE		required:"true" 	inOut :"in"}
-	attribute offset	 	{domain : DO_O_NOMBRE		required:"true" 	inOut :"in"}
-	attribute dtcOProcessExecutionUi	 	{domain : DO_DT_O_PROCESS_EXECUTION_UI_DTC		required:"true" 	inOut :"out"}
+	attribute name	 	{domain : DoOLibelle		required:"true" 	inOut :"in"}
+	attribute status	{domain : DoOCodeIdentifiant		required:"true" 	inOut :"in"}
+	attribute limit	 	{domain : DoONombre		required:"true" 	inOut :"in"}
+	attribute offset	 	{domain : DoONombre		required:"true" 	inOut :"in"}
+	attribute dtcOProcessExecutionUi	 	{domain : DoDtOProcessExecutionUiDtc		required:"true" 	inOut :"out"}
 }
 
 
-create Task TK_GET_ACTIVITIY_BY_ACE_ID {
+create Task TkGetActivitiyByAceId {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -77,11 +77,11 @@ create Task TK_GET_ACTIVITIY_BY_ACE_ID {
         	group by ace.ACE_ID, act.LABEL, ace.BEGIN_TIME, ace.END_TIME, acl.ATTACHMENT, acl.LOG
         	
 			"
-	attribute aceId	 	{domain : DO_O_IDENTIFIANT		required:"true" 	inOut :"in"}
-	attribute dtOActivityExecutionUi	 	{domain : DO_DT_O_ACTIVITY_EXECUTION_UI_DTO		required:"true" 	inOut :"out"}
+	attribute aceId	 	{domain : DoOIdentifiant		required:"true" 	inOut :"in"}
+	attribute dtOActivityExecutionUi	 	{domain : DoDtOActivityExecutionUiDto		required:"true" 	inOut :"out"}
 }
 
-create Task TK_GET_ACTIVITIES_BY_PRE_ID {
+create Task TkGetActivitiesByPreId {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -103,6 +103,6 @@ create Task TK_GET_ACTIVITIES_BY_PRE_ID {
         	group by ace.ACE_ID, act.LABEL, ace.BEGIN_TIME, ace.END_TIME, acl.ATTACHMENT, acl.LOG
         	
 			"
-	attribute preId	 	{domain : DO_O_IDENTIFIANT		required:"true" 	inOut :"in"}
-	attribute dtcOActivityExecutionUi	 	{domain : DO_DT_O_ACTIVITY_EXECUTION_UI_DTC		required:"true" 	inOut :"out"}
+	attribute preId	 	{domain : DoOIdentifiant		required:"true" 	inOut :"in"}
+	attribute dtcOActivityExecutionUi	 	{domain : DoDtOActivityExecutionUiDtc		required:"true" 	inOut :"out"}
 }

@@ -127,7 +127,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition("DMN_O_DB_PROCESS_SCHEDULER_DAEMON", () -> this::scheduleAndInit, planningPeriodSeconds));
+		return Collections.singletonList(new DaemonDefinition("DmnODbProcessSchedulerDaemon", () -> this::scheduleAndInit, planningPeriodSeconds));
 	}
 
 	private void scheduleAndInit() {

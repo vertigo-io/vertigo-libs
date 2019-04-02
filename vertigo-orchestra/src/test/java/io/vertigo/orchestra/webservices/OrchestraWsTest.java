@@ -63,13 +63,13 @@ public class OrchestraWsTest {
 		final OrchestraDefinitionManager orchestraDefinitionManager = Home.getApp().getComponentSpace().resolve(OrchestraDefinitionManager.class);
 		final OrchestraServices orchestraServices = Home.getApp().getComponentSpace().resolve(OrchestraServices.class);
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_BASIC", "TEST BASIC")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", EmptyActivityEngine.class)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestBasic", "TestBasic")
+				.addActivity("dumb activity", "dumb activity", EmptyActivityEngine.class)
 				.build();
 
-		final ProcessDefinition processDefinition2 = ProcessDefinition.builder("TEST_BASIC_2", "TEST BASIC_2")
-				.addActivity("DUMB ACTIVITY_2", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.EmptyActivityEngine.class)
-				.addActivity("DUMB ACTIVITY_3", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
+		final ProcessDefinition processDefinition2 = ProcessDefinition.builder("TestBasic2", "TestBasic2")
+				.addActivity("dumb activity 2", "dumb activity", io.vertigo.orchestra.services.execution.engine.EmptyActivityEngine.class)
+				.addActivity("dumb activity 3", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
@@ -98,17 +98,17 @@ public class OrchestraWsTest {
 				.expect()
 				.log()
 				.all()
-				.body("name", Matchers.equalTo("TEST_BASIC"))
+				.body("name", Matchers.equalTo("TestBasic"))
 				.body("activities", Matchers.hasSize(1))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
-				.get("/orchestra/definitions/TEST_BASIC");
+				.get("/orchestra/definitions/TestBasic");
 	}
 
 	@Test
 	public void testSearchDefinition() {
 		final Map<String, Object> body = new HashMap<>();
-		body.put("criteria", "TEST");
+		body.put("criteria", "Test");
 		//---
 		RestAssured.given()
 				.filter(loggedSessionFilter)

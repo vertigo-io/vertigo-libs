@@ -40,16 +40,16 @@ public class MemoryDefinitionsTest extends AbstractOrchestraTestCase {
 		//Before : 4 //from LocalExecutionProcessInitializer
 		Assertions.assertEquals(4, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("PRO_TEST_BASIC", "TEST BASIC")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestBasic", "TestBasic")
 				.withProcessType(ProcessType.UNSUPERVISED)
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 		//After : 4 + 1
 		Assertions.assertEquals(5, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
 
-		final ProcessDefinition processDefinition2 = orchestraDefinitionManager.getProcessDefinition("PRO_TEST_BASIC");
+		final ProcessDefinition processDefinition2 = orchestraDefinitionManager.getProcessDefinition("ProTestBasic");
 		Assertions.assertEquals(processDefinition.getName(), processDefinition2.getName());
 	}
 

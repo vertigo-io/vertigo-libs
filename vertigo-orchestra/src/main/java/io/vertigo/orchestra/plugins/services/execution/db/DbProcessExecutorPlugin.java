@@ -137,7 +137,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition("DMN_O_DB_PROCESS_EXECUTOR_DAEMON", () -> this::executeProcesses, executionPeriodSeconds));
+		return Collections.singletonList(new DaemonDefinition("DmnODbProcessExecutorDaemon", () -> this::executeProcesses, executionPeriodSeconds));
 	}
 
 	/** {@inheritDoc} */

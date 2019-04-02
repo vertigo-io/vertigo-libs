@@ -1,6 +1,6 @@
 package io.vertigo.orchestra.dao.definition
 
-create Task TK_GET_ACTIVE_PROCESS_BY_NAME {
+create Task TkGetActiveProcessByName {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -11,11 +11,11 @@ create Task TK_GET_ACTIVE_PROCESS_BY_NAME {
 	        	and pro.ACTIVE_VERSION is true
         	
 			"
-	attribute name			 	{domain : DO_O_LIBELLE 				required:"true" 		inOut :"in"}
-	attribute dtProcess	 	{domain : DO_DT_O_PROCESS_DTO 		required:"false" 	inOut :"out"}
+	attribute name			 	{domain : DoOLibelle 				required:"true" 		inOut :"in"}
+	attribute dtProcess	 	{domain : DoDtOProcessDto 		required:"false" 	inOut :"out"}
 }
 
-create Task TK_GET_PROCESSES_BY_NAME {
+create Task TkGetProcessesByName {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -25,12 +25,12 @@ create Task TK_GET_PROCESSES_BY_NAME {
         	where pro.NAME = #name#
         	
 			"
-	attribute name			 	{domain : DO_O_LIBELLE 				required:"true" 		inOut :"in"}
-	attribute nombre			 	{domain : DO_O_NOMBRE				required:"true" 		inOut :"out"}
+	attribute name			 	{domain : DoOLibelle 				required:"true" 		inOut :"in"}
+	attribute nombre			 	{domain : DoONombre				required:"true" 		inOut :"out"}
 }
 
 
-create Task TK_GET_ALL_ACTIVE_PROCESSES {
+create Task TkGetAllActiveProcesses {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -40,11 +40,11 @@ create Task TK_GET_ALL_ACTIVE_PROCESSES {
         	where pro.ACTIVE_VERSION is true
         	
 			"
-	attribute dtcProcesses	 	{domain : DO_DT_O_PROCESS_DTC 		required:"true" 	inOut :"out"}
+	attribute dtcProcesses	 	{domain : DoDtOProcessDtc 		required:"true" 	inOut :"out"}
 }
 
 
-create Task TK_DISABLE_OLD_PROCESS_DEFINITIONS {
+create Task TkDisableOldProcessDefinitions {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
@@ -54,5 +54,5 @@ create Task TK_DISABLE_OLD_PROCESS_DEFINITIONS {
         	where NAME = #name#
         	
 			"
-	attribute name			 	{domain : DO_O_LIBELLE 				required:"true" 		inOut :"in"}
+	attribute name			 	{domain : DoOLibelle 				required:"true" 		inOut :"in"}
 }

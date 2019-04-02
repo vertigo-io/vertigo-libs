@@ -40,7 +40,7 @@ public final class Country implements Entity {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "id of the country")
+	@Field(domain = "DoId", type = "ID", required = true, label = "id of the country")
 	public final Long getId() {
 		return id;
 	}
@@ -50,7 +50,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "DO_ID", required = true, label = "id of the continent")
+	@Field(domain = "DoId", required = true, label = "id of the continent")
 	public final Long getConId() {
 		return conId;
 	}
@@ -60,7 +60,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "DO_STRING", label = "name")
+	@Field(domain = "DoString", label = "name")
 	public final String getName() {
 		return name;
 	}
@@ -70,7 +70,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "DO_BOOLEAN", label = "active")
+	@Field(domain = "DoBoolean", label = "active")
 	public final Boolean getActive() {
 		return active;
 	}

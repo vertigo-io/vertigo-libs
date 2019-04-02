@@ -1,27 +1,27 @@
 package io.vertigo.orchestra.domain.definition
 
-create DtDefinition DT_O_PROCESS{
+create DtDefinition DtOProcess {
 	storeName : "orchestra"
-	id proId					{domain : DO_O_IDENTIFIANT, label :"Id de la definition du processus"}
-	field name   				{domain : DO_O_LIBELLE, label :"Nom du processus", required:"false",}
-	field label   				{domain : DO_O_LIBELLE, label :"Libellé du processus", required:"false",},
-	field cronExpression		{domain : DO_O_LIBELLE, label :"Expression récurrence du processus", required:"false",}
-	field initialParams		{domain : DO_O_JSON_TEXT, label :"Paramètres initiaux sous forme de JSON ", required:"false",}
-	field multiexecution   		{domain : DO_O_BOOLEEN, label :"Accepte la multi-execution", required:"false",}
-	field activeVersion  		{domain : DO_O_BOOLEEN, label :"Version active", required:"true",}
-	field active   				{domain : DO_O_BOOLEEN, label :"Processus actif", required:"true",}
-	field rescuePeriod			{domain : DO_O_NOMBRE, label :"Temps de validité d'une planification", required:"true",}
-	field metadatas				{domain : DO_O_METADATAS, label :"Meta-données du processus", required:"false",}
-  	field needUpdate  			{domain : DO_O_BOOLEEN, label :"Doit être mise à jour lors du démarrage", required:"true",}
+	id proId					{domain : DoOIdentifiant, label :"Id de la definition du processus"}
+	field name   				{domain : DoOLibelle, label :"Nom du processus", required:"false",}
+	field label   				{domain : DoOLibelle, label :"Libellé du processus", required:"false",},
+	field cronExpression		{domain : DoOLibelle, label :"Expression récurrence du processus", required:"false",}
+	field initialParams			{domain : DoOJsonText, label :"Paramètres initiaux sous forme de JSON ", required:"false",}
+	field multiexecution   		{domain : DoOBooleen, label :"Accepte la multi-execution", required:"false",}
+	field activeVersion  		{domain : DoOBooleen, label :"Version active", required:"true",}
+	field active   				{domain : DoOBooleen, label :"Processus actif", required:"true",}
+	field rescuePeriod			{domain : DoONombre, label :"Temps de validité d'une planification", required:"true",}
+	field metadatas				{domain : DoOMetadatas, label :"Meta-données du processus", required:"false",}
+  	field needUpdate  			{domain : DoOBooleen, label :"Doit être mise à jour lors du démarrage", required:"true",}
 },
 
 
 
-create Association A_PRO_TRT {
+create Association AProTrt {
   fkFieldName : "trtCd"
     
- 	dtDefinitionA : DT_O_PROCESS
-	dtDefinitionB : DT_TRIGGER_TYPE
+ 	dtDefinitionA : DtOProcess
+	dtDefinitionB : DtTriggerType
 			
 	navigabilityA : "false"
 	navigabilityB : "true"
@@ -36,11 +36,11 @@ create Association A_PRO_TRT {
 			
 },
 
-create Association A_PRO_PRT {
+create Association AProPrt {
   fkFieldName : "prtCd"
     
- 	dtDefinitionA : DT_O_PROCESS
-	dtDefinitionB : DT_O_PROCESS_TYPE
+ 	dtDefinitionA : DtOProcess
+	dtDefinitionB : DtOProcessType
 			
 	navigabilityA : "false"
 	navigabilityB : "true"

@@ -43,12 +43,12 @@ public final class OProcessDAO extends DAO<OProcess, java.lang.Long> implements 
 	}
 
 	/**
-	 * Execute la tache TK_GET_ACTIVE_PROCESS_BY_NAME.
+	 * Execute la tache TkGetActiveProcessByName.
 	 * @param name String 
 	 * @return Option de io.vertigo.orchestra.domain.definition.OProcess dtProcess
 	*/
 	public Optional<io.vertigo.orchestra.domain.definition.OProcess> getActiveProcessByName(final String name) {
-		final Task task = createTaskBuilder("TK_GET_ACTIVE_PROCESS_BY_NAME")
+		final Task task = createTaskBuilder("TkGetActiveProcessByName")
 				.addValue("name", name)
 				.build();
 		return Optional.ofNullable((io.vertigo.orchestra.domain.definition.OProcess) getTaskManager()
@@ -57,11 +57,11 @@ public final class OProcessDAO extends DAO<OProcess, java.lang.Long> implements 
 	}
 
 	/**
-	 * Execute la tache TK_GET_ALL_ACTIVE_PROCESSES.
+	 * Execute la tache TkGetAllActiveProcesses.
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.definition.OProcess> dtcProcesses
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.definition.OProcess> getAllActiveProcesses() {
-		final Task task = createTaskBuilder("TK_GET_ALL_ACTIVE_PROCESSES")
+		final Task task = createTaskBuilder("TkGetAllActiveProcesses")
 				.build();
 		return getTaskManager()
 				.execute(task)

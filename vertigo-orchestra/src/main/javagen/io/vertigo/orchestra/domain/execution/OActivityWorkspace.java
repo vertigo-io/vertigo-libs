@@ -21,14 +21,14 @@ public final class OActivityWorkspace implements Entity {
 	private String workspace;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_TKW_TKE",
+			name = "ATkwTke",
 			fkFieldName = "aceId",
-			primaryDtDefinitionName = "DT_O_ACTIVITY_EXECUTION",
+			primaryDtDefinitionName = "DtOActivityExecution",
 			primaryIsNavigable = true,
 			primaryRole = "ActivityExecution",
 			primaryLabel = "ActivityExecution",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_O_ACTIVITY_WORKSPACE",
+			foreignDtDefinitionName = "DtOActivityWorkspace",
 			foreignIsNavigable = false,
 			foreignRole = "ActivityWorkspace",
 			foreignLabel = "ActivityWorkspace",
@@ -46,7 +46,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'Id de l'execution d'un processus'.
 	 * @return Long acwId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id de l'execution d'un processus")
+	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id de l'execution d'un processus")
 	public Long getAcwId() {
 		return acwId;
 	}
@@ -65,7 +65,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'Workspace in/out'.
 	 * @return Boolean isIn <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_BOOLEEN", required = true, label = "Workspace in/out")
+	@Field(domain = "DoOBooleen", required = true, label = "Workspace in/out")
 	public Boolean getIsIn() {
 		return isIn;
 	}
@@ -84,7 +84,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'Contenu du workspace'.
 	 * @return String workspace
 	 */
-	@Field(domain = "DO_O_JSON_TEXT", label = "Contenu du workspace")
+	@Field(domain = "DoOJsonText", label = "Contenu du workspace")
 	public String getWorkspace() {
 		return workspace;
 	}
@@ -103,7 +103,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'ActivityExecution'.
 	 * @return Long aceId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "ActivityExecution")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "ActivityExecution")
 	public Long getAceId() {
 		return (Long) aceIdAccessor.getId();
 	}

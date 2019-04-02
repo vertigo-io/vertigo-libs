@@ -32,28 +32,28 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 public final class AuditTrace implements DtObject {
 	private static final long serialVersionUID = 2280022920606418634L;
 
-	@Field(type = "ID", domain = "DO_X_AUDIT_ID", required = true, label = "id")
+	@Field(type = "ID", domain = "DoXAuditId", required = true, label = "id")
 	private Long id;
 
-	@Field(domain = "DO_X_AUDIT_CATEGORY", label = "category")
+	@Field(domain = "DoXAuditCategory", label = "category")
 	private final String category;
 
-	@Field(domain = "DO_X_AUDIT_USERNAME", label = "username")
+	@Field(domain = "DoXAuditUsername", label = "username")
 	private final String username;
 
-	@Field(domain = "DO_X_AUDIT_INSTANT", label = "businessDate")
+	@Field(domain = "DoXAuditInstant", label = "businessDate")
 	private final Instant businessDate;
 
-	@Field(domain = "DO_X_AUDIT_INSTANT", label = "executionDate")
+	@Field(domain = "DoXAuditInstant", label = "executionDate")
 	private final Instant executionDate;
 
-	@Field(domain = "DO_X_AUDIT_ITEM", label = "item")
+	@Field(domain = "DoXAuditItem", label = "item")
 	private final Long item;
 
-	@Field(domain = "DO_X_AUDIT_MESSAGE", label = "message")
+	@Field(domain = "DoXAuditMessage", label = "message")
 	private final String message;
 
-	@Field(domain = "DO_X_AUDIT_CONTEXT", label = "context")
+	@Field(domain = "DoXAuditContext", label = "context")
 	private final String context;
 
 	AuditTrace(

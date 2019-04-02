@@ -1,26 +1,26 @@
 package io.vertigo.quarto.data.domain
 
 
-create Formatter FMT_BOOLEAN_DEFAULT {
+create Formatter FmtBooleanDefault {
 	className : "io.vertigo.dynamox.domain.formatter.FormatterBoolean"
 	args : "Yes; No"
 }
 
-create Formatter FMT_DEFAULT{
+create Formatter FmtDefault{
 	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
 }
 
-create Domain DO_STRING {
+create Domain DoString {
 	dataType : String
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 
-create Domain DO_ID {
+create Domain DoId {
 	dataType : Long
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }
 
-create Domain DO_BOOLEAN {
+create Domain DoBoolean {
 	dataType : Boolean
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 }

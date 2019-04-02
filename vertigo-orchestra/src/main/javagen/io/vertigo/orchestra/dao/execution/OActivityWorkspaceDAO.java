@@ -43,13 +43,13 @@ public final class OActivityWorkspaceDAO extends DAO<OActivityWorkspace, java.la
 	}
 
 	/**
-	 * Execute la tache TK_GET_ACTIVITY_WORKSPACE.
+	 * Execute la tache TkGetActivityWorkspace.
 	 * @param aceId Long 
 	 * @param in Boolean 
 	 * @return Option de io.vertigo.orchestra.domain.execution.OActivityWorkspace dtOActivityWorkspace
 	*/
 	public Optional<io.vertigo.orchestra.domain.execution.OActivityWorkspace> getActivityWorkspace(final Long aceId, final Boolean in) {
-		final Task task = createTaskBuilder("TK_GET_ACTIVITY_WORKSPACE")
+		final Task task = createTaskBuilder("TkGetActivityWorkspace")
 				.addValue("aceId", aceId)
 				.addValue("in", in)
 				.build();

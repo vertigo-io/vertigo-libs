@@ -43,12 +43,12 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache TK_GET_ALL_LAST_PAST_PLANIFICATIONS.
+	 * Execute la tache TkGetAllLastPastPlanifications.
 	 * @param currentDate java.time.Instant 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> processPlanifications
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getAllLastPastPlanifications(final java.time.Instant currentDate) {
-		final Task task = createTaskBuilder("TK_GET_ALL_LAST_PAST_PLANIFICATIONS")
+		final Task task = createTaskBuilder("TkGetAllLastPastPlanifications")
 				.addValue("currentDate", currentDate)
 				.build();
 		return getTaskManager()
@@ -57,12 +57,12 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache TK_GET_LAST_PLANIFICATION_BY_PRO_ID.
+	 * Execute la tache TkGetLastPlanificationByProId.
 	 * @param proId Long 
 	 * @return Option de io.vertigo.orchestra.domain.planification.OProcessPlanification dtOProcessPlanification
 	*/
 	public Optional<io.vertigo.orchestra.domain.planification.OProcessPlanification> getLastPlanificationByProId(final Long proId) {
-		final Task task = createTaskBuilder("TK_GET_LAST_PLANIFICATION_BY_PRO_ID")
+		final Task task = createTaskBuilder("TkGetLastPlanificationByProId")
 				.addValue("proId", proId)
 				.build();
 		return Optional.ofNullable((io.vertigo.orchestra.domain.planification.OProcessPlanification) getTaskManager()
@@ -71,12 +71,12 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache TK_GET_PLANIFICATIONS_BY_PRO_ID.
+	 * Execute la tache TkGetPlanificationsByProId.
 	 * @param proId Long 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> dtcOProcessPlanification
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getPlanificationsByProId(final Long proId) {
-		final Task task = createTaskBuilder("TK_GET_PLANIFICATIONS_BY_PRO_ID")
+		final Task task = createTaskBuilder("TkGetPlanificationsByProId")
 				.addValue("proId", proId)
 				.build();
 		return getTaskManager()
@@ -85,12 +85,12 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache TK_GET_PROCESS_TO_EXECUTE.
+	 * Execute la tache TkGetProcessToExecute.
 	 * @param nodId Long 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> dtcOProcessPlanification
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getProcessToExecute(final Long nodId) {
-		final Task task = createTaskBuilder("TK_GET_PROCESS_TO_EXECUTE")
+		final Task task = createTaskBuilder("TkGetProcessToExecute")
 				.addValue("nodId", nodId)
 				.build();
 		return getTaskManager()

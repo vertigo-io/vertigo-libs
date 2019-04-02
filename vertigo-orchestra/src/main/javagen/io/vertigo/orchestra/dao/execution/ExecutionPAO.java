@@ -41,34 +41,34 @@ public final class ExecutionPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_HANDLE_DEAD_PROCESSES_OF_NODE.
+	 * Execute la tache TkHandleDeadProcessesOfNode.
 	 * @param nodId Long 
 	*/
 	public void handleDeadProcessesOfNode(final Long nodId) {
-		final Task task = createTaskBuilder("TK_HANDLE_DEAD_PROCESSES_OF_NODE")
+		final Task task = createTaskBuilder("TkHandleDeadProcessesOfNode")
 				.addValue("nodId", nodId)
 				.build();
 		getTaskManager().execute(task);
 	}
 
 	/**
-	 * Execute la tache TK_HANDLE_PROCESSES_OF_DEAD_NODES.
+	 * Execute la tache TkHandleProcessesOfDeadNodes.
 	 * @param maxDate java.time.Instant 
 	*/
 	public void handleProcessesOfDeadNodes(final java.time.Instant maxDate) {
-		final Task task = createTaskBuilder("TK_HANDLE_PROCESSES_OF_DEAD_NODES")
+		final Task task = createTaskBuilder("TkHandleProcessesOfDeadNodes")
 				.addValue("maxDate", maxDate)
 				.build();
 		getTaskManager().execute(task);
 	}
 
 	/**
-	 * Execute la tache TK_RESERVE_ACTIVITIES_TO_LAUNCH.
+	 * Execute la tache TkReserveActivitiesToLaunch.
 	 * @param nodId Long 
 	 * @param maxNumber Integer 
 	*/
 	public void reserveActivitiesToLaunch(final Long nodId, final Integer maxNumber) {
-		final Task task = createTaskBuilder("TK_RESERVE_ACTIVITIES_TO_LAUNCH")
+		final Task task = createTaskBuilder("TkReserveActivitiesToLaunch")
 				.addValue("nodId", nodId)
 				.addValue("maxNumber", maxNumber)
 				.build();
@@ -76,14 +76,14 @@ public final class ExecutionPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_UPDATE_PROCESS_EXECUTION_TREATMENT.
+	 * Execute la tache TkUpdateProcessExecutionTreatment.
 	 * @param preId Long 
 	 * @param checked Boolean 
 	 * @param checkingDate java.time.Instant 
 	 * @param checkingComment String 
 	*/
 	public void updateProcessExecutionTreatment(final Long preId, final Boolean checked, final java.time.Instant checkingDate, final String checkingComment) {
-		final Task task = createTaskBuilder("TK_UPDATE_PROCESS_EXECUTION_TREATMENT")
+		final Task task = createTaskBuilder("TkUpdateProcessExecutionTreatment")
 				.addValue("preId", preId)
 				.addValue("checked", checked)
 				.addValue("checkingDate", checkingDate)

@@ -28,13 +28,13 @@ public final class Enquete implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "Terminée?")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoBoolean", label = "Terminée?")
 	private Boolean enqueteTerminee;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Code")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Code")
 	private String codeEnquete;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Sexe")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Sexe")
 	private String fait;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "Sexe")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoBoolean", label = "Sexe")
 	private Boolean siGrave;
 
 	/**

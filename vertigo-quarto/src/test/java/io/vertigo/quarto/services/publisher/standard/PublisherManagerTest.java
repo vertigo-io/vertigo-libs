@@ -78,7 +78,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public final void testDefinitionSimple() {
-		final PublisherData publisherData = createPublisherData("PU_TEST");
+		final PublisherData publisherData = createPublisherData("PuTest");
 		// on teste juste.
 		log.trace(asString(publisherData.getDefinition()));
 	}
@@ -136,7 +136,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public final void testDefinitionWithData() {
 
-		final PublisherData publisherData = createPublisherData("PU_TEST_2");
+		final PublisherData publisherData = createPublisherData("PuTest2");
 		log.trace(asString(publisherData.getDefinition()));
 	}
 
@@ -146,7 +146,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public final void testDefinitionWithDataAndList() {
-		final PublisherData publisherData = createPublisherData("PU_TEST_3");
+		final PublisherData publisherData = createPublisherData("PuTest3");
 		log.trace(asString(publisherData.getDefinition()));
 	}
 
@@ -156,7 +156,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public final void testDefinitionWithDataImageAndList() {
-		final PublisherData publisherData = createPublisherData("PU_TEST_4");
+		final PublisherData publisherData = createPublisherData("PuTest4");
 		log.trace(asString(publisherData.getDefinition()));
 	}
 
@@ -166,7 +166,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public final void testDefinitionWithHierachy() {
-		final PublisherData publisherData = createPublisherData("PU_TEST_5");
+		final PublisherData publisherData = createPublisherData("PuTest5");
 		log.trace(asString(publisherData.getDefinition()));
 	}
 
@@ -175,19 +175,19 @@ public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public final void testDefinitionEnquete() {
-		final PublisherData publisherData = createPublisherData("PU_TEST_ENQUETE");
+		final PublisherData publisherData = createPublisherData("PuTestEnquete");
 		// on test juste.
 		Assertions.assertEquals(ENQUETE_DEF, asString(publisherData.getDefinition()));
 	}
 
-	private static final String ENQUETE_DEF = "=== PU_TEST_ENQUETE =====================================\nBoolean:enqueteTerminee\nString:codeEnquete\nNode:enqueteur\n    String:nom\n    String:prenom\n    Node:adresseRatachement\n        String:rue\n        Node:ville\n            String:nom\n            String:codePostal\nList:misEnCause\n    Boolean:siHomme\n    String:nom\n    String:prenom\n    List:adressesConnues\n        String:rue\n        Node:ville\n            String:nom\n            String:codePostal\nString:fait\nBoolean:siGrave\n------------------------------------------------------------------------------";
+	private static final String ENQUETE_DEF = "=== PuTestEnquete =====================================\nBoolean:enqueteTerminee\nString:codeEnquete\nNode:enqueteur\n    String:nom\n    String:prenom\n    Node:adresseRatachement\n        String:rue\n        Node:ville\n            String:nom\n            String:codePostal\nList:misEnCause\n    Boolean:siHomme\n    String:nom\n    String:prenom\n    List:adressesConnues\n        String:rue\n        Node:ville\n            String:nom\n            String:codePostal\nString:fait\nBoolean:siGrave\n------------------------------------------------------------------------------";
 
 	/**
 	 * Génère le Ksp de déclaration de PublisherNodeDefinition à partir d'un ou plusieur DTs.
 	 */
 	@Test
 	public final void testPublisherNodeGenerator() {
-		log.trace(PublisherDataUtil.generatePublisherNodeDefinitionAsKsp("DT_ENQUETE", "DT_ENQUETEUR"));
+		log.trace(PublisherDataUtil.generatePublisherNodeDefinitionAsKsp("DtEnquete", "DtEnqueteur"));
 	}
 
 	private PublisherData createPublisherData(final String definitionName) {
