@@ -18,9 +18,9 @@
  */
 package io.vertigo.orchestra.services.execution;
 
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.NodeConfigBuilder;
-import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -36,7 +36,7 @@ public final class OrchestraNode1NodeConfig {
 
 	public static NodeConfigBuilder createNodeConfigBuilder() {
 		return NodeConfig.builder()
-				.withNodeId("NODE_TEST_2")
+				.withNodeId("NodeTest2")
 				.beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -68,7 +68,7 @@ public final class OrchestraNode1NodeConfig {
 								Param.of("sequencePrefix", "SEQ_"))
 						.build())
 				.addModule(new OrchestraFeatures()
-						.withDataBase(Param.of("nodeName", "NODE_TEST_2"), Param.of("daemonPeriodSeconds", "1"), Param.of("workersCount", "3"), Param.of("forecastDurationSeconds", "60"))
+						.withDataBase(Param.of("nodeName", "NodeTest2"), Param.of("daemonPeriodSeconds", "1"), Param.of("workersCount", "3"), Param.of("forecastDurationSeconds", "60"))
 						.withMemory(Param.of("workersCount", "1"))
 						.build())
 				.addModule(ModuleConfig.builder("orchestra-test-node2")

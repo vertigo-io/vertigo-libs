@@ -85,7 +85,7 @@ public abstract class AbstractOrchestraTestCase {
 					.build();
 
 			for (final String request : requests) {
-				final TaskDefinition taskDefinition = TaskDefinition.builder("TK_CLEAN")
+				final TaskDefinition taskDefinition = TaskDefinition.builder("TkClean")
 						.withDataSpace("orchestra")
 						.withEngine(TaskEngineProc.class)
 						.withRequest(request)

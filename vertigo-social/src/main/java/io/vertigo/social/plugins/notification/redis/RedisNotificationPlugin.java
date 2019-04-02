@@ -254,7 +254,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	/**
 	 * Scan all notifs every minutes to removed old ones.
 	 */
-	@DaemonScheduled(name = "DMN_CLEAN_TOO_OLD_REDIS_NOTIFICATIONS", periodInSeconds = 60)
+	@DaemonScheduled(name = "DmnCleanTooOldRedisNotifications", periodInSeconds = 60)
 	public void cleanTooOldNotifications() {
 		long startIndex = -1L;
 		final long startTime = System.currentTimeMillis();

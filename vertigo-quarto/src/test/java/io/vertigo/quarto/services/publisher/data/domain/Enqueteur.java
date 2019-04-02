@@ -30,9 +30,9 @@ public final class Enqueteur implements DtObject {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Nom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Nom")
 	private String nom;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Prenom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Prenom")
 	private String prenom;
 
 	/**

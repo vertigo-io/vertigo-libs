@@ -57,7 +57,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCase {
 	public void singleExecution() throws InterruptedException {
 		TestJob.reset();
 
-		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition("PRO_TEST_UNSUPERVISED_MANUAL");
+		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition("ProTestUnsupervisedManual");
 
 		// We plan right now
 		orchestraServices.getScheduler()
@@ -74,7 +74,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCase {
 		TestJob.reset();
 		TestJob2.reset();
 
-		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition("PRO_TEST_UNSUPERVISED_MANUAL_2");
+		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition("ProTestUnsupervisedManual2");
 
 		// We plan right now
 		orchestraServices.getScheduler()
@@ -91,7 +91,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCase {
 	public void testParams() throws InterruptedException {
 		TestJob3.reset();
 
-		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition("PRO_TEST_UNSUPERVISED_MANUAL_3");
+		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition("ProTestUnsupervisedManual3");
 
 		// We plan right now
 		orchestraServices.getScheduler()
@@ -107,7 +107,7 @@ public class LocalExecutionTest extends AbstractOrchestraTestCase {
 	public void testOverrideParamsInPlanif() throws InterruptedException {
 		TestJob3.reset();
 
-		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition("PRO_TEST_UNSUPERVISED_MANUAL_3");
+		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition("ProTestUnsupervisedManual3");
 
 		final Map<String, String> planifParams = new MapBuilder<String, String>()
 				.put(TestJob3.PARAM_KEY_1, "overide")

@@ -42,12 +42,12 @@ public final class OProcessExecutionDAO extends DAO<OProcessExecution, java.lang
 	}
 
 	/**
-	 * Execute la tache TK_GET_ACTIVE_PROCESS_EXECUTION_BY_PRO_ID.
+	 * Execute la tache TkGetActiveProcessExecutionByProId.
 	 * @param proId Long 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OProcessExecution> dtcProcessExecution
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OProcessExecution> getActiveProcessExecutionByProId(final Long proId) {
-		final Task task = createTaskBuilder("TK_GET_ACTIVE_PROCESS_EXECUTION_BY_PRO_ID")
+		final Task task = createTaskBuilder("TkGetActiveProcessExecutionByProId")
 				.addValue("proId", proId)
 				.build();
 		return getTaskManager()
@@ -56,12 +56,12 @@ public final class OProcessExecutionDAO extends DAO<OProcessExecution, java.lang
 	}
 
 	/**
-	 * Execute la tache TK_GET_EXECUTIONS_BY_PRO_ID.
+	 * Execute la tache TkGetExecutionsByProId.
 	 * @param proId Long 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OProcessExecution> dtcOProcessExecution
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OProcessExecution> getExecutionsByProId(final Long proId) {
-		final Task task = createTaskBuilder("TK_GET_EXECUTIONS_BY_PRO_ID")
+		final Task task = createTaskBuilder("TkGetExecutionsByProId")
 				.addValue("proId", proId)
 				.build();
 		return getTaskManager()

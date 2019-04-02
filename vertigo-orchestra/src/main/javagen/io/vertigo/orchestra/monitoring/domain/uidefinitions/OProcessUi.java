@@ -28,7 +28,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Id du processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", required = true, label = "Id du processus")
+	@Field(domain = "DoOIdentifiant", required = true, label = "Id du processus")
 	public Long getProId() {
 		return proId;
 	}
@@ -47,7 +47,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Nom du processus'.
 	 * @return String name
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Nom du processus")
+	@Field(domain = "DoOLibelle", label = "Nom du processus")
 	public String getName() {
 		return name;
 	}
@@ -66,7 +66,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Libellé du processus'.
 	 * @return String label
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Libellé du processus")
+	@Field(domain = "DoOLibelle", label = "Libellé du processus")
 	public String getLabel() {
 		return label;
 	}
@@ -85,7 +85,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Expression récurrence du processus'.
 	 * @return String cronExpression
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Expression récurrence du processus")
+	@Field(domain = "DoOLibelle", label = "Expression récurrence du processus")
 	public String getCronExpression() {
 		return cronExpression;
 	}
@@ -104,7 +104,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
 	 * @return String initialParams
 	 */
-	@Field(domain = "DO_O_JSON_TEXT", label = "Paramètres initiaux sous forme de JSON")
+	@Field(domain = "DoOJsonText", label = "Paramètres initiaux sous forme de JSON")
 	public String getInitialParams() {
 		return initialParams;
 	}
@@ -123,7 +123,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Accepte la multi-execution'.
 	 * @return Boolean multiexecution
 	 */
-	@Field(domain = "DO_O_BOOLEEN", label = "Accepte la multi-execution")
+	@Field(domain = "DoOBooleen", label = "Accepte la multi-execution")
 	public Boolean getMultiexecution() {
 		return multiexecution;
 	}
@@ -142,7 +142,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Processus actif'.
 	 * @return Boolean active <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_BOOLEEN", required = true, label = "Processus actif")
+	@Field(domain = "DoOBooleen", required = true, label = "Processus actif")
 	public Boolean getActive() {
 		return active;
 	}
@@ -161,7 +161,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Temps de validité d'une planification'.
 	 * @return Integer rescuePeriod <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_NOMBRE", required = true, label = "Temps de validité d'une planification")
+	@Field(domain = "DoONombre", required = true, label = "Temps de validité d'une planification")
 	public Integer getRescuePeriod() {
 		return rescuePeriod;
 	}
@@ -180,7 +180,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Métadonnées du processus'.
 	 * @return String metadatas
 	 */
-	@Field(domain = "DO_O_METADATAS", label = "Métadonnées du processus")
+	@Field(domain = "DoOMetadatas", label = "Métadonnées du processus")
 	public String getMetadatas() {
 		return metadatas;
 	}

@@ -29,7 +29,7 @@ public final class OProcessType implements Entity {
 	 * Récupère la valeur de la propriété 'Code'.
 	 * @return String prtCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "ID", required = true, label = "Code")
+	@Field(domain = "DoOCodeIdentifiant", type = "ID", required = true, label = "Code")
 	public String getPrtCd() {
 		return prtCd;
 	}
@@ -48,7 +48,7 @@ public final class OProcessType implements Entity {
 	 * Récupère la valeur de la propriété 'Libellé'.
 	 * @return String label
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Libellé")
+	@Field(domain = "DoOLibelle", label = "Libellé")
 	public String getLabel() {
 		return label;
 	}

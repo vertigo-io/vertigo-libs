@@ -39,7 +39,6 @@ import io.vertigo.lang.Assertion;
 import io.vertigo.social.services.comment.Comment;
 import io.vertigo.social.services.comment.CommentServices;
 import io.vertigo.util.MapBuilder;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.ExcludedFields;
@@ -157,7 +156,7 @@ public final class CommentWebServices implements WebServices {
 	}
 
 	private static UID<KeyConcept> readKeyConceptURI(final String keyConcept, @QueryParam("id") final String id) {
-		final DtDefinition dtDefinition = Home.getApp().getDefinitionSpace().resolve("DT_" + StringUtil.camelToConstCase(keyConcept), DtDefinition.class);
+		final DtDefinition dtDefinition = Home.getApp().getDefinitionSpace().resolve("Dt" + keyConcept, DtDefinition.class);
 		final Object keyConceptId = stringToId(id, dtDefinition);
 		return UID.of(dtDefinition, keyConceptId);
 	}

@@ -21,14 +21,14 @@ public final class OActivityLog implements Entity {
 	private String attachment;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_ACL_ACE",
+			name = "AAclAce",
 			fkFieldName = "aceId",
-			primaryDtDefinitionName = "DT_O_ACTIVITY_EXECUTION",
+			primaryDtDefinitionName = "DtOActivityExecution",
 			primaryIsNavigable = true,
 			primaryRole = "ActivityExecution",
 			primaryLabel = "ActivityExecution",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_O_ACTIVITY_LOG",
+			foreignDtDefinitionName = "DtOActivityLog",
 			foreignIsNavigable = false,
 			foreignRole = "ActivityLog",
 			foreignLabel = "ActivityLog",
@@ -46,7 +46,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'Id du log'.
 	 * @return Long aclId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id du log")
+	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id du log")
 	public Long getAclId() {
 		return aclId;
 	}
@@ -65,7 +65,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'Contenu du log'.
 	 * @return String log
 	 */
-	@Field(domain = "DO_O_TEXT", label = "Contenu du log")
+	@Field(domain = "DoOText", label = "Contenu du log")
 	public String getLog() {
 		return log;
 	}
@@ -84,7 +84,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'Fichier joint'.
 	 * @return String attachment
 	 */
-	@Field(domain = "DO_O_TEXT", label = "Fichier joint")
+	@Field(domain = "DoOText", label = "Fichier joint")
 	public String getAttachment() {
 		return attachment;
 	}
@@ -103,7 +103,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'ActivityExecution'.
 	 * @return Long aceId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "ActivityExecution")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "ActivityExecution")
 	public Long getAceId() {
 		return (Long) aceIdAccessor.getId();
 	}

@@ -38,7 +38,7 @@ public final class Continent implements Entity {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "id of the Continent")
+	@Field(domain = "DoId", type = "ID", required = true, label = "id of the Continent")
 	public final Long getId() {
 		return id;
 	}
@@ -48,7 +48,7 @@ public final class Continent implements Entity {
 		return this;
 	}
 
-	@Field(domain = "DO_STRING", label = "name")
+	@Field(domain = "DoString", label = "name")
 	public final String getName() {
 		return name;
 	}

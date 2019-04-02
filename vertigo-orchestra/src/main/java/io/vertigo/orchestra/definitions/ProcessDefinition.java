@@ -31,7 +31,7 @@ import io.vertigo.orchestra.services.execution.RunnableActivityEngine;
  * Une définition doit être créee par le builder associé.
  * @author mlaroche.
  */
-@DefinitionPrefix("PRO")
+@DefinitionPrefix("Pro")
 public final class ProcessDefinition implements Definition {
 	//TODO : ID doit être immutable!!
 	//---immutables

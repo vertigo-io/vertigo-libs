@@ -29,7 +29,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Id de l'activité'.
 	 * @return Long aceId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", required = true, label = "Id de l'activité")
+	@Field(domain = "DoOIdentifiant", required = true, label = "Id de l'activité")
 	public Long getAceId() {
 		return aceId;
 	}
@@ -48,7 +48,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Libellé'.
 	 * @return String label
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Libellé")
+	@Field(domain = "DoOLibelle", label = "Libellé")
 	public String getLabel() {
 		return label;
 	}
@@ -67,7 +67,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Démarrage'.
 	 * @return Instant beginTime <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Démarrage")
+	@Field(domain = "DoOTimestamp", required = true, label = "Démarrage")
 	public java.time.Instant getBeginTime() {
 		return beginTime;
 	}
@@ -86,7 +86,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Fin'.
 	 * @return Instant endTime <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Fin")
+	@Field(domain = "DoOTimestamp", required = true, label = "Fin")
 	public java.time.Instant getEndTime() {
 		return endTime;
 	}
@@ -105,7 +105,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Durée'.
 	 * @return Integer executionTime
 	 */
-	@Field(domain = "DO_O_NOMBRE", label = "Durée")
+	@Field(domain = "DoONombre", label = "Durée")
 	public Integer getExecutionTime() {
 		return executionTime;
 	}
@@ -124,7 +124,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Statut'.
 	 * @return String status
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", label = "Statut")
+	@Field(domain = "DoOCodeIdentifiant", label = "Statut")
 	public String getStatus() {
 		return status;
 	}
@@ -143,7 +143,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Paramètres entrants'.
 	 * @return String workspaceIn
 	 */
-	@Field(domain = "DO_O_JSON_TEXT", label = "Paramètres entrants")
+	@Field(domain = "DoOJsonText", label = "Paramètres entrants")
 	public String getWorkspaceIn() {
 		return workspaceIn;
 	}
@@ -162,7 +162,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Paramètres sortants'.
 	 * @return String workspaceOut
 	 */
-	@Field(domain = "DO_O_JSON_TEXT", label = "Paramètres sortants")
+	@Field(domain = "DoOJsonText", label = "Paramètres sortants")
 	public String getWorkspaceOut() {
 		return workspaceOut;
 	}
@@ -181,7 +181,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Fichier de log'.
 	 * @return Boolean hasAttachment
 	 */
-	@Field(domain = "DO_O_BOOLEEN", label = "Fichier de log")
+	@Field(domain = "DoOBooleen", label = "Fichier de log")
 	public Boolean getHasAttachment() {
 		return hasAttachment;
 	}
@@ -200,7 +200,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Log technique'.
 	 * @return Boolean hasTechnicalLog
 	 */
-	@Field(domain = "DO_O_BOOLEEN", label = "Log technique")
+	@Field(domain = "DoOBooleen", label = "Log technique")
 	public Boolean getHasTechnicalLog() {
 		return hasTechnicalLog;
 	}

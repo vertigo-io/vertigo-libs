@@ -41,35 +41,35 @@ public final class PlanificationPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_CLEAN_FUTURE_PLANIFICATIONS.
+	 * Execute la tache TkCleanFuturePlanifications.
 	 * @param processName String 
 	*/
 	public void cleanFuturePlanifications(final String processName) {
-		final Task task = createTaskBuilder("TK_CLEAN_FUTURE_PLANIFICATIONS")
+		final Task task = createTaskBuilder("TkCleanFuturePlanifications")
 				.addValue("processName", processName)
 				.build();
 		getTaskManager().execute(task);
 	}
 
 	/**
-	 * Execute la tache TK_CLEAN_PLANIFICATIONS_ON_BOOT.
+	 * Execute la tache TkCleanPlanificationsOnBoot.
 	 * @param currentDate java.time.Instant 
 	*/
 	public void cleanPlanificationsOnBoot(final java.time.Instant currentDate) {
-		final Task task = createTaskBuilder("TK_CLEAN_PLANIFICATIONS_ON_BOOT")
+		final Task task = createTaskBuilder("TkCleanPlanificationsOnBoot")
 				.addValue("currentDate", currentDate)
 				.build();
 		getTaskManager().execute(task);
 	}
 
 	/**
-	 * Execute la tache TK_RESERVE_PROCESS_TO_EXECUTE.
+	 * Execute la tache TkReserveProcessToExecute.
 	 * @param lowerLimit java.time.Instant 
 	 * @param upperLimit java.time.Instant 
 	 * @param nodId Long 
 	*/
 	public void reserveProcessToExecute(final java.time.Instant lowerLimit, final java.time.Instant upperLimit, final Long nodId) {
-		final Task task = createTaskBuilder("TK_RESERVE_PROCESS_TO_EXECUTE")
+		final Task task = createTaskBuilder("TkReserveProcessToExecute")
 				.addValue("lowerLimit", lowerLimit)
 				.addValue("upperLimit", upperLimit)
 				.addValue("nodId", nodId)

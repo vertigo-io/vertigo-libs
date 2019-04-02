@@ -1,48 +1,48 @@
 package io.vertigo.publisher.mock  
 
 /*Pour chargement des données*/
-create DtDefinition DT_VILLE {
-  	field nom 			{domain : DO_STRING      	label : "Nom"      		required : "false"}
-  	field codePostal 	{domain : DO_STRING      	label : "Code postal" 	required : "false"}
+create DtDefinition DtVille {
+  	field nom 			{domain : DoString      	label : "Nom"      		required : "false"}
+  	field codePostal 	{domain : DoString      	label : "Code postal" 	required : "false"}
 }
  
-create DtDefinition DT_ADDRESS {
-  	field rue			{domain : DO_STRING      	label : "Rue"      		required : "false"}
-  	field ville 		{domain : DO_DT_VILLE_DTO   label : "Ville"      	required : "false"}
+create DtDefinition DtAddress {
+  	field rue			{domain : DoString      	label : "Rue"      		required : "false"}
+  	field ville 		{domain : DoDtVilleDto   label : "Ville"      	required : "false"}
 }
  
-create DtDefinition DT_ENQUETEUR {
-  	field nom 			{domain : DO_STRING      	label : "Nom"      		required : "false"}
-  	field prenom 		{domain : DO_STRING      	label : "Prenom"      	required : "false"}
+create DtDefinition DtEnqueteur {
+  	field nom 			{domain : DoString      	label : "Nom"      		required : "false"}
+  	field prenom 		{domain : DoString      	label : "Prenom"      	required : "false"}
 }
  
-create DtDefinition DT_MIS_EN_CAUSE {
-  	field siHomme 			{domain : DO_BOOLEAN      	label : "Sexe"      		required : "false"}
-  	field nom 				{domain : DO_STRING      	label : "Nom"      			required : "false"}
-  	field prenom 			{domain : DO_STRING      	label : "Prenom"      		required : "false"}
-  	field adressesConnues 	{domain : DO_DT_ADDRESS_DTC	label : "Addresses connues"	required : "false"}   
+create DtDefinition DtMisEnCause {
+  	field siHomme 			{domain : DoBoolean      	label : "Sexe"      		required : "false"}
+  	field nom 				{domain : DoString      	label : "Nom"      			required : "false"}
+  	field prenom 			{domain : DoString      	label : "Prenom"      		required : "false"}
+  	field adressesConnues 	{domain : DoDtAddressDtc	label : "Addresses connues"	required : "false"}   
 }
 
-create DtDefinition DT_ENQUETE {
-  	field enqueteTerminee {domain : DO_BOOLEAN      			label : "Terminée?" required : "false"}
-  	field codeEnquete 		{domain : DO_STRING      			label : "Code"      required : "false"}
-  	field fait 				{domain : DO_STRING      			label : "Sexe"      required : "false"}
-  	field siGrave 			{domain : DO_BOOLEAN      			label : "Sexe"      required : "false"}
+create DtDefinition DtEnquete {
+  	field enqueteTerminee {domain : DoBoolean      			label : "Terminée?" required : "false"}
+  	field codeEnquete 		{domain : DoString      			label : "Code"      required : "false"}
+  	field fait 				{domain : DoString      			label : "Sexe"      required : "false"}
+  	field siGrave 			{domain : DoBoolean      			label : "Sexe"      required : "false"}
 }
 
-create DtDefinition DT_PUBLISHER_MOCK {
-	field titre 		{ domain : DO_STRING      				label : "Titre"      						required : "false"}
-	field nom 			{ domain : DO_STRING      				label : "Nom"      							required : "false"}
-	field prenom 		{ domain : DO_STRING      				label : "Prénom"      						required : "false"}
-	field address 		{ domain : DO_STRING      				label : "Adresse {multi ligne}"      		required : "false"}
-	field commentaire 	{ domain : DO_STRING      				label : "Commentaire {multi paragraphe}" 	required : "false"}
-	field boolean1 		{ domain : DO_BOOLEAN     				label : "booleen 1"      					required : "false"}
-	field boolean2 		{ domain : DO_BOOLEAN     				label : "booleen 2"      					required : "false"}
-	field boolean3 		{ domain : DO_BOOLEAN     				label : "booleen 3"      					required : "false"}
-	field testDummy 	{ domain : DO_STRING    				label : "Test champs inutilisé"     		required : "false"}
-	field testLong	 	{ domain : DO_LONG      				label : "Test long"      					required : "false"}
-	field testDouble 	{ domain : DO_DOUBLE      				label : "Test double"      					required : "false"}
-	field testInteger 	{ domain : DO_INTEGER      				label : "Test integer"      				required : "false"}
-	field testDate	 	{ domain : DO_DATE      				label : "Test date"      					required : "false"}
-	field dtcTest 		{ domain : DO_DT_PUBLISHER_MOCK_DTC 	label : "Test list"      					required : "false"}
+create DtDefinition DtPublisherMock {
+	field titre 		{ domain : DoString      				label : "Titre"      						required : "false"}
+	field nom 			{ domain : DoString      				label : "Nom"      							required : "false"}
+	field prenom 		{ domain : DoString      				label : "Prénom"      						required : "false"}
+	field address 		{ domain : DoString      				label : "Adresse {multi ligne}"      		required : "false"}
+	field commentaire 	{ domain : DoString      				label : "Commentaire {multi paragraphe}" 	required : "false"}
+	field boolean1 		{ domain : DoBoolean     				label : "booleen 1"      					required : "false"}
+	field boolean2 		{ domain : DoBoolean     				label : "booleen 2"      					required : "false"}
+	field boolean3 		{ domain : DoBoolean     				label : "booleen 3"      					required : "false"}
+	field testDummy 	{ domain : DoString    				label : "Test champs inutilisé"     		required : "false"}
+	field testLong	 	{ domain : DoLong      				label : "Test long"      					required : "false"}
+	field testDouble 	{ domain : DoDouble      				label : "Test double"      					required : "false"}
+	field testInteger 	{ domain : DoInteger      				label : "Test integer"      				required : "false"}
+	field testDate	 	{ domain : DoDate      				label : "Test date"      					required : "false"}
+	field dtcTest 		{ domain : DoDtPublisherMockDtc 	label : "Test list"      					required : "false"}
 }

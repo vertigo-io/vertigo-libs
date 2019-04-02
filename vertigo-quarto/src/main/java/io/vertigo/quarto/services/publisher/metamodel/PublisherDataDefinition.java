@@ -28,7 +28,7 @@ import io.vertigo.lang.Assertion;
  *
  * @author npiedeloup, pchretien
  */
-@DefinitionPrefix("PU")
+@DefinitionPrefix("Pu")
 public final class PublisherDataDefinition implements Definition {
 	/** Nom de la définition. */
 	private final String name;

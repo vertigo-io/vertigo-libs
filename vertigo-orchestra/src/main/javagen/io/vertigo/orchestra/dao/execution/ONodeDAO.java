@@ -43,12 +43,12 @@ public final class ONodeDAO extends DAO<ONode, java.lang.Long> implements StoreS
 	}
 
 	/**
-	 * Execute la tache TK_GET_NODE_BY_NAME.
+	 * Execute la tache TkGetNodeByName.
 	 * @param nodeName String 
 	 * @return Option de io.vertigo.orchestra.domain.execution.ONode dtoONode
 	*/
 	public Optional<io.vertigo.orchestra.domain.execution.ONode> getNodeByName(final String nodeName) {
-		final Task task = createTaskBuilder("TK_GET_NODE_BY_NAME")
+		final Task task = createTaskBuilder("TkGetNodeByName")
 				.addValue("nodeName", nodeName)
 				.build();
 		return Optional.ofNullable((io.vertigo.orchestra.domain.execution.ONode) getTaskManager()

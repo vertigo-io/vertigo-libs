@@ -28,9 +28,9 @@ public final class Address implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Rue")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Rue")
 	private String rue;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_DT_VILLE_DTO", label = "Ville")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoDtVilleDto", label = "Ville")
 	private io.vertigo.quarto.services.publisher.data.domain.Ville ville;
 
 	/**

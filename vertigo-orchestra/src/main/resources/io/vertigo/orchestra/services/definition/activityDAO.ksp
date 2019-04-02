@@ -3,7 +3,7 @@ package io.vertigo.orchestra.dao.definition
 
 
 
-create Task TK_GET_FIRST_ACTIVITY_BY_PROCESS {
+create Task TkGetFirstActivityByProcess {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -21,12 +21,12 @@ create Task TK_GET_FIRST_ACTIVITY_BY_PROCESS {
                  where 1=1
         	
 			"
-	attribute proId	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
-	attribute dtOActivity	 	{domain : DO_DT_O_ACTIVITY_DTO 		required:"true" 	inOut :"out"}
+	attribute proId	 	{domain : DoOIdentifiant 		required:"true" 	inOut :"in"}
+	attribute dtOActivity	 	{domain : DoDtOActivityDto 		required:"true" 	inOut :"out"}
 }
 
 
-create Task TK_GET_NEXT_ACTIVITY_BY_ACT_ID {
+create Task TkGetNextActivityByActId {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -46,12 +46,12 @@ create Task TK_GET_NEXT_ACTIVITY_BY_ACT_ID {
         	
         	
 			"
-		attribute actId	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
-		attribute dtOActivity	 	{domain : DO_DT_O_ACTIVITY_DTO		required:"false" 	inOut :"out"}
+		attribute actId	 	{domain : DoOIdentifiant 		required:"true" 	inOut :"in"}
+		attribute dtOActivity	 	{domain : DoDtOActivityDto		required:"false" 	inOut :"out"}
 }
 
 
-create Task TK_GET_ACTIVITIES_BY_PRO_ID {
+create Task TkGetActivitiesByProId {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -61,12 +61,12 @@ create Task TK_GET_ACTIVITIES_BY_PRO_ID {
                 where act.PRO_ID = #proId#
         	
 			"
-	attribute proId	 	{domain : DO_O_IDENTIFIANT 		required:"true" 	inOut :"in"}
-	attribute dtOActivities	 	{domain : DO_DT_O_ACTIVITY_DTC 		required:"true" 	inOut :"out"}
+	attribute proId	 	{domain : DoOIdentifiant 		required:"true" 	inOut :"in"}
+	attribute dtOActivities	 	{domain : DoDtOActivityDtc 		required:"true" 	inOut :"out"}
 }
 
 
-create Task TK_GET_ALL_ACTIVITIES_IN_ACTIVE_PROCESSES {
+create Task TkGetAllActivitiesInActiveProcesses {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -77,5 +77,5 @@ create Task TK_GET_ALL_ACTIVITIES_IN_ACTIVE_PROCESSES {
                 where pro.ACTIVE_VERSION is true
         	
 			"
-	attribute dtOActivities	 	{domain : DO_DT_O_ACTIVITY_DTC 		required:"true" 	inOut :"out"}
+	attribute dtOActivities	 	{domain : DoDtOActivityDtc 		required:"true" 	inOut :"out"}
 }

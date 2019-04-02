@@ -27,13 +27,13 @@ import io.vertigo.dynamo.domain.model.DtObject;
 public final class MisEnCause implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "Sexe")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoBoolean", label = "Sexe")
 	private Boolean siHomme;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Nom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Nom")
 	private String nom;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Prenom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Prenom")
 	private String prenom;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_DT_ADDRESS_DTC", label = "Addresses connues")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoDtAddressDtc", label = "Addresses connues")
 	private io.vertigo.dynamo.domain.model.DtList<io.vertigo.quarto.services.publisher.data.domain.Address> adressesConnues;
 
 	/**

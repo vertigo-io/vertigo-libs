@@ -36,15 +36,15 @@ public final class AuditTraceDefinitionProvider implements SimpleDefinitionProvi
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final Domain domainAuditId = Domain.builder("DO_X_AUDIT_ID", DataType.Long).build();
-		final Domain domainAuditCategory = Domain.builder("DO_X_AUDIT_CATEGORY", DataType.String).build();
-		final Domain domainAuditUser = Domain.builder("DO_X_AUDIT_USER", DataType.String).build();
-		final Domain domainAuditInstant = Domain.builder("DO_X_AUDIT_INSTANT", DataType.Instant).build();
-		final Domain domainAuditItem = Domain.builder("DO_X_AUDIT_ITEM", DataType.Long).build();
-		final Domain domainAuditMessage = Domain.builder("DO_X_AUDIT_MESSAGE", DataType.String).build();
-		final Domain domainAuditContext = Domain.builder("DO_X_AUDIT_CONTEXT", DataType.String).build();
+		final Domain domainAuditId = Domain.builder("DoXAuditId", DataType.Long).build();
+		final Domain domainAuditCategory = Domain.builder("DoXAuditCategory", DataType.String).build();
+		final Domain domainAuditUser = Domain.builder("DoXAuditUser", DataType.String).build();
+		final Domain domainAuditInstant = Domain.builder("DoXAuditInstant", DataType.Instant).build();
+		final Domain domainAuditItem = Domain.builder("DoXAuditItem", DataType.Long).build();
+		final Domain domainAuditMessage = Domain.builder("DoXAuditMessage", DataType.String).build();
+		final Domain domainAuditContext = Domain.builder("DoXAuditContext", DataType.String).build();
 
-		final DtDefinition auditTraceDtDefinition = DtDefinition.builder("DT_AUDIT_TRACE")
+		final DtDefinition auditTraceDtDefinition = DtDefinition.builder("DtAuditTrace")
 				.addIdField("id", "id", domainAuditId)
 				.withSortField("category")
 				.withDisplayField("category")

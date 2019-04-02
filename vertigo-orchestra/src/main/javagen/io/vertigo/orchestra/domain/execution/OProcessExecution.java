@@ -25,14 +25,14 @@ public final class OProcessExecution implements Entity {
 	private String checkingComment;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PRE_PRO",
+			name = "APrePro",
 			fkFieldName = "proId",
-			primaryDtDefinitionName = "DT_O_PROCESS",
+			primaryDtDefinitionName = "DtOProcess",
 			primaryIsNavigable = true,
 			primaryRole = "Process",
 			primaryLabel = "Processus",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_O_PROCESS_EXECUTION",
+			foreignDtDefinitionName = "DtOProcessExecution",
 			foreignIsNavigable = false,
 			foreignRole = "ExecutionProcessus",
 			foreignLabel = "ExecutionProcessus",
@@ -40,14 +40,14 @@ public final class OProcessExecution implements Entity {
 	private final VAccessor<io.vertigo.orchestra.domain.definition.OProcess> proIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.definition.OProcess.class, "Process");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PRE_EST",
+			name = "APreEst",
 			fkFieldName = "estCd",
-			primaryDtDefinitionName = "DT_O_EXECUTION_STATE",
+			primaryDtDefinitionName = "DtOExecutionState",
 			primaryIsNavigable = true,
 			primaryRole = "ExecutionState",
 			primaryLabel = "ExecutionState",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_O_PROCESS_EXECUTION",
+			foreignDtDefinitionName = "DtOProcessExecution",
 			foreignIsNavigable = false,
 			foreignRole = "ExecutionProcess",
 			foreignLabel = "ExecutionProcessus",
@@ -55,14 +55,14 @@ public final class OProcessExecution implements Entity {
 	private final VAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> estCdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.referential.OExecutionState.class, "ExecutionState");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PRE_USR",
+			name = "APreUsr",
 			fkFieldName = "usrId",
-			primaryDtDefinitionName = "DT_O_USER",
+			primaryDtDefinitionName = "DtOUser",
 			primaryIsNavigable = true,
 			primaryRole = "User",
 			primaryLabel = "User",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_O_PROCESS_EXECUTION",
+			foreignDtDefinitionName = "DtOProcessExecution",
 			foreignIsNavigable = false,
 			foreignRole = "ExecutionProcess",
 			foreignLabel = "ExecutionProcessus",
@@ -80,7 +80,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Id de l'execution d'un processus'.
 	 * @return Long preId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id de l'execution d'un processus")
+	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id de l'execution d'un processus")
 	public Long getPreId() {
 		return preId;
 	}
@@ -99,7 +99,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de début'.
 	 * @return Instant beginTime <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Date de début")
+	@Field(domain = "DoOTimestamp", required = true, label = "Date de début")
 	public java.time.Instant getBeginTime() {
 		return beginTime;
 	}
@@ -118,7 +118,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de fin'.
 	 * @return Instant endTime
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Date de fin")
+	@Field(domain = "DoOTimestamp", label = "Date de fin")
 	public java.time.Instant getEndTime() {
 		return endTime;
 	}
@@ -137,7 +137,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Implémentation effective de l'execution'.
 	 * @return String engine
 	 */
-	@Field(domain = "DO_O_CLASSE", label = "Implémentation effective de l'execution")
+	@Field(domain = "DoOClasse", label = "Implémentation effective de l'execution")
 	public String getEngine() {
 		return engine;
 	}
@@ -156,7 +156,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Pris en charge'.
 	 * @return Boolean checked
 	 */
-	@Field(domain = "DO_O_BOOLEEN", label = "Pris en charge")
+	@Field(domain = "DoOBooleen", label = "Pris en charge")
 	public Boolean getChecked() {
 		return checked;
 	}
@@ -175,7 +175,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de prise en charge'.
 	 * @return Instant checkingDate
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Date de prise en charge")
+	@Field(domain = "DoOTimestamp", label = "Date de prise en charge")
 	public java.time.Instant getCheckingDate() {
 		return checkingDate;
 	}
@@ -194,7 +194,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Commentaire'.
 	 * @return String checkingComment
 	 */
-	@Field(domain = "DO_O_TEXT", label = "Commentaire")
+	@Field(domain = "DoOText", label = "Commentaire")
 	public String getCheckingComment() {
 		return checkingComment;
 	}
@@ -213,7 +213,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getProId() {
 		return (Long) proIdAccessor.getId();
 	}
@@ -232,7 +232,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'ExecutionState'.
 	 * @return String estCd
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "ExecutionState")
+	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", label = "ExecutionState")
 	public String getEstCd() {
 		return (String) estCdAccessor.getId();
 	}
@@ -251,7 +251,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'User'.
 	 * @return Long usrId
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "User")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", label = "User")
 	public Long getUsrId() {
 		return (Long) usrIdAccessor.getId();
 	}

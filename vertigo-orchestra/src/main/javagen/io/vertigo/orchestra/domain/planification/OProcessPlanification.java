@@ -21,14 +21,14 @@ public final class OProcessPlanification implements Entity {
 	private String initialParams;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PRP_PRO",
+			name = "APrpPro",
 			fkFieldName = "proId",
-			primaryDtDefinitionName = "DT_O_PROCESS",
+			primaryDtDefinitionName = "DtOProcess",
 			primaryIsNavigable = true,
 			primaryRole = "Processus",
 			primaryLabel = "Processus",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_O_PROCESS_PLANIFICATION",
+			foreignDtDefinitionName = "DtOProcessPlanification",
 			foreignIsNavigable = false,
 			foreignRole = "ProcessPlanification",
 			foreignLabel = "PlanificationProcessus",
@@ -36,14 +36,14 @@ public final class OProcessPlanification implements Entity {
 	private final VAccessor<io.vertigo.orchestra.domain.definition.OProcess> proIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.definition.OProcess.class, "Processus");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PRP_NOD",
+			name = "APrpNod",
 			fkFieldName = "nodId",
-			primaryDtDefinitionName = "DT_O_NODE",
+			primaryDtDefinitionName = "DtONode",
 			primaryIsNavigable = true,
 			primaryRole = "Node",
 			primaryLabel = "Node",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_O_PROCESS_PLANIFICATION",
+			foreignDtDefinitionName = "DtOProcessPlanification",
 			foreignIsNavigable = false,
 			foreignRole = "ProcessPlanification",
 			foreignLabel = "PlanificationProcessus",
@@ -51,14 +51,14 @@ public final class OProcessPlanification implements Entity {
 	private final VAccessor<io.vertigo.orchestra.domain.execution.ONode> nodIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.execution.ONode.class, "Node");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PRP_PST",
+			name = "APrpPst",
 			fkFieldName = "sstCd",
-			primaryDtDefinitionName = "DT_O_SCHEDULER_STATE",
+			primaryDtDefinitionName = "DtOSchedulerState",
 			primaryIsNavigable = true,
 			primaryRole = "PlanificationState",
 			primaryLabel = "PlanificationState",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_O_PROCESS_PLANIFICATION",
+			foreignDtDefinitionName = "DtOProcessPlanification",
 			foreignIsNavigable = false,
 			foreignRole = "ProcessPlanification",
 			foreignLabel = "ProcessPlanification",
@@ -76,7 +76,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Id Planification'.
 	 * @return Long prpId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id Planification")
+	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id Planification")
 	public Long getPrpId() {
 		return prpId;
 	}
@@ -95,7 +95,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Date d'execution prévue'.
 	 * @return Instant expectedTime
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Date d'execution prévue")
+	@Field(domain = "DoOTimestamp", label = "Date d'execution prévue")
 	public java.time.Instant getExpectedTime() {
 		return expectedTime;
 	}
@@ -114,7 +114,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
 	 * @return String initialParams
 	 */
-	@Field(domain = "DO_O_JSON_TEXT", label = "Paramètres initiaux sous forme de JSON")
+	@Field(domain = "DoOJsonText", label = "Paramètres initiaux sous forme de JSON")
 	public String getInitialParams() {
 		return initialParams;
 	}
@@ -133,7 +133,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getProId() {
 		return (Long) proIdAccessor.getId();
 	}
@@ -152,7 +152,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Node'.
 	 * @return Long nodId
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Node")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", label = "Node")
 	public Long getNodId() {
 		return (Long) nodIdAccessor.getId();
 	}
@@ -171,7 +171,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'PlanificationState'.
 	 * @return String sstCd
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "PlanificationState")
+	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", label = "PlanificationState")
 	public String getSstCd() {
 		return (String) sstCdAccessor.getId();
 	}

@@ -63,7 +63,7 @@ public final class TestPublisherDefinitionProvider implements SimpleDefinitionPr
 				.addBooleanField("siGrave")
 				.build();
 
-		return new PublisherDataDefinition("PU_ENQUETE", publisherNodeDefinition);
+		return new PublisherDataDefinition("PuEnquete", publisherNodeDefinition);
 	}
 
 	private static PublisherDataDefinition createTestMock() {
@@ -83,7 +83,7 @@ public final class TestPublisherDefinitionProvider implements SimpleDefinitionPr
 				.addStringField("testDate")
 				.addImageField("logo")
 				.build();
-		return new PublisherDataDefinition("PU_PUBLISHER_MOCK", publisherMockNodeDefinition);
+		return new PublisherDataDefinition("PuPublisherMock", publisherMockNodeDefinition);
 	}
 
 	@Override

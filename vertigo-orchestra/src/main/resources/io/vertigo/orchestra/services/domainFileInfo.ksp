@@ -6,6 +6,6 @@ package io.vertigo.orchestra.domain
 /**************************************************************************************************/
 	
 
-create FileInfo FI_ALPHA_FILE_INFO {
+create FileInfo FiAlphaFileInfo {
 	root : "DT_DB_FILE_INFO"
 }

@@ -24,14 +24,14 @@ public final class OActivityExecution implements Entity {
 	private String token;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_ACE_ACT",
+			name = "AAceAct",
 			fkFieldName = "actId",
-			primaryDtDefinitionName = "DT_O_ACTIVITY",
+			primaryDtDefinitionName = "DtOActivity",
 			primaryIsNavigable = true,
 			primaryRole = "Activity",
 			primaryLabel = "Activity",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_O_ACTIVITY_EXECUTION",
+			foreignDtDefinitionName = "DtOActivityExecution",
 			foreignIsNavigable = false,
 			foreignRole = "ExecutionActivity",
 			foreignLabel = "ExecutionActivity",
@@ -39,14 +39,14 @@ public final class OActivityExecution implements Entity {
 	private final VAccessor<io.vertigo.orchestra.domain.definition.OActivity> actIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.definition.OActivity.class, "Activity");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_ACE_PRE",
+			name = "AAcePre",
 			fkFieldName = "preId",
-			primaryDtDefinitionName = "DT_O_PROCESS_EXECUTION",
+			primaryDtDefinitionName = "DtOProcessExecution",
 			primaryIsNavigable = true,
 			primaryRole = "ProcessusExecution",
 			primaryLabel = "Processus",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_O_ACTIVITY_EXECUTION",
+			foreignDtDefinitionName = "DtOActivityExecution",
 			foreignIsNavigable = false,
 			foreignRole = "ExecutionActivity",
 			foreignLabel = "ExecutionActivity",
@@ -54,14 +54,14 @@ public final class OActivityExecution implements Entity {
 	private final VAccessor<io.vertigo.orchestra.domain.execution.OProcessExecution> preIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.execution.OProcessExecution.class, "ProcessusExecution");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_ACE_NOD",
+			name = "AAceNod",
 			fkFieldName = "nodId",
-			primaryDtDefinitionName = "DT_O_NODE",
+			primaryDtDefinitionName = "DtONode",
 			primaryIsNavigable = true,
 			primaryRole = "Node",
 			primaryLabel = "Node",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_O_ACTIVITY_EXECUTION",
+			foreignDtDefinitionName = "DtOActivityExecution",
 			foreignIsNavigable = false,
 			foreignRole = "ExecutionActivity",
 			foreignLabel = "ExecutionActivity",
@@ -69,14 +69,14 @@ public final class OActivityExecution implements Entity {
 	private final VAccessor<io.vertigo.orchestra.domain.execution.ONode> nodIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.execution.ONode.class, "Node");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_ACE_EST",
+			name = "AAceEst",
 			fkFieldName = "estCd",
-			primaryDtDefinitionName = "DT_O_EXECUTION_STATE",
+			primaryDtDefinitionName = "DtOExecutionState",
 			primaryIsNavigable = true,
 			primaryRole = "ExecutionState",
 			primaryLabel = "ExecutionState",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_O_ACTIVITY_EXECUTION",
+			foreignDtDefinitionName = "DtOActivityExecution",
 			foreignIsNavigable = false,
 			foreignRole = "ExecutionActivity",
 			foreignLabel = "ExecutionActivity",
@@ -94,7 +94,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Id de l'execution d'un processus'.
 	 * @return Long aceId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id de l'execution d'un processus")
+	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id de l'execution d'un processus")
 	public Long getAceId() {
 		return aceId;
 	}
@@ -113,7 +113,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de création'.
 	 * @return Instant creationTime <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Date de création")
+	@Field(domain = "DoOTimestamp", required = true, label = "Date de création")
 	public java.time.Instant getCreationTime() {
 		return creationTime;
 	}
@@ -132,7 +132,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de début'.
 	 * @return Instant beginTime
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Date de début")
+	@Field(domain = "DoOTimestamp", label = "Date de début")
 	public java.time.Instant getBeginTime() {
 		return beginTime;
 	}
@@ -151,7 +151,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de fin'.
 	 * @return Instant endTime
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Date de fin")
+	@Field(domain = "DoOTimestamp", label = "Date de fin")
 	public java.time.Instant getEndTime() {
 		return endTime;
 	}
@@ -170,7 +170,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Implémentation effective de l'execution'.
 	 * @return String engine
 	 */
-	@Field(domain = "DO_O_CLASSE", label = "Implémentation effective de l'execution")
+	@Field(domain = "DoOClasse", label = "Implémentation effective de l'execution")
 	public String getEngine() {
 		return engine;
 	}
@@ -189,7 +189,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Token d'identification'.
 	 * @return String token
 	 */
-	@Field(domain = "DO_O_TOKEN", label = "Token d'identification")
+	@Field(domain = "DoOToken", label = "Token d'identification")
 	public String getToken() {
 		return token;
 	}
@@ -208,7 +208,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Activity'.
 	 * @return Long actId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Activity")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "Activity")
 	public Long getActId() {
 		return (Long) actIdAccessor.getId();
 	}
@@ -227,7 +227,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Processus'.
 	 * @return Long preId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getPreId() {
 		return (Long) preIdAccessor.getId();
 	}
@@ -246,7 +246,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Node'.
 	 * @return Long nodId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Node")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "Node")
 	public Long getNodId() {
 		return (Long) nodIdAccessor.getId();
 	}
@@ -265,7 +265,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'ExecutionState'.
 	 * @return String estCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "ExecutionState")
+	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", required = true, label = "ExecutionState")
 	public String getEstCd() {
 		return (String) estCdAccessor.getId();
 	}

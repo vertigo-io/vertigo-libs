@@ -41,23 +41,23 @@ public final class DefinitionPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_DISABLE_OLD_PROCESS_DEFINITIONS.
+	 * Execute la tache TkDisableOldProcessDefinitions.
 	 * @param name String 
 	*/
 	public void disableOldProcessDefinitions(final String name) {
-		final Task task = createTaskBuilder("TK_DISABLE_OLD_PROCESS_DEFINITIONS")
+		final Task task = createTaskBuilder("TkDisableOldProcessDefinitions")
 				.addValue("name", name)
 				.build();
 		getTaskManager().execute(task);
 	}
 
 	/**
-	 * Execute la tache TK_GET_PROCESSES_BY_NAME.
+	 * Execute la tache TkGetProcessesByName.
 	 * @param name String 
 	 * @return Integer nombre
 	*/
 	public Integer getProcessesByName(final String name) {
-		final Task task = createTaskBuilder("TK_GET_PROCESSES_BY_NAME")
+		final Task task = createTaskBuilder("TkGetProcessesByName")
 				.addValue("name", name)
 				.build();
 		return getTaskManager()

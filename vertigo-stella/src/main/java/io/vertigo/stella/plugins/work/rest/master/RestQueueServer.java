@@ -81,7 +81,7 @@ final class RestQueueServer {
 
 		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())
 				.registerDefinition(new DaemonDefinition(
-						"DMN_WORK_QUEUE_TIMEOUT_CHECK",
+						"DmnWorkQueueTimeoutCheck",
 						() -> () -> checkDeadNodesAndWorkItems(),
 						10));
 	}
