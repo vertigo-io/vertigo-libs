@@ -47,7 +47,7 @@ public final class OuiNonChoice implements DtMasterData {
 	 * Récupère la valeur de la propriété 'Valeur'.
 	 * @return Boolean key
 	 */
-	@Field(domain = "DO_OUI_NON", type = "ID", required = true, label = "Valeur")
+	@Field(domain = "DoOuiNon", type = "ID", required = true, label = "Valeur")
 	public Boolean getKey() {
 		return key;
 	}
@@ -66,7 +66,7 @@ public final class OuiNonChoice implements DtMasterData {
 	 * Récupère la valeur de la propriété 'Libell�'.
 	 * @return String libelle <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_LABEL", required = true, label = "Libellé")
+	@Field(domain = "DoLabel", required = true, label = "Libellé")
 	public String getLibelle() {
 		return libelle;
 	}

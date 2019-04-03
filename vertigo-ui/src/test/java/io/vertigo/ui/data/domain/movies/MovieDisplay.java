@@ -39,7 +39,7 @@ public final class MovieDisplay implements DtObject {
 	 * Récupère la valeur de la propriété 'MOV_ID'.
 	 * @return Long movId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", required = true, label = "MOV_ID")
+	@Field(domain = "DoId", required = true, label = "MOV_ID")
 	public Long getMovId() {
 		return movId;
 	}
@@ -66,7 +66,7 @@ public final class MovieDisplay implements DtObject {
 	 * Récupère la valeur de la propriété 'TITLE'.
 	 * @return String title
 	 */
-	@Field(domain = "DO_LABEL_LONG", label = "TITLE")
+	@Field(domain = "DoLabelLong", label = "TITLE")
 	public String getTitle() {
 		return title;
 	}

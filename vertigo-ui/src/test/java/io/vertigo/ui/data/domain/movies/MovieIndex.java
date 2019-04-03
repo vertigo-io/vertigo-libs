@@ -51,7 +51,7 @@ public final class MovieIndex implements DtObject {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long movId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", required = true, label = "id")
+	@Field(domain = "DoId", required = true, label = "id")
 	public Long getMovId() {
 		return movId;
 	}
@@ -70,7 +70,7 @@ public final class MovieIndex implements DtObject {
 	 * Récupère la valeur de la propriété 'Title'.
 	 * @return String title
 	 */
-	@Field(domain = "DO_LABEL", label = "Title")
+	@Field(domain = "DoLabel", label = "Title")
 	public String getTitle() {
 		return title;
 	}
@@ -89,7 +89,7 @@ public final class MovieIndex implements DtObject {
 	 * Récupère la valeur de la propriété 'Title'.
 	 * @return String titleSortOnly
 	 */
-	@Field(domain = "DO_TEXT_NOT_TOKENIZED", persistent = false, label = "Title")
+	@Field(domain = "DoTextNotTokenized", persistent = false, label = "Title")
 	public String getTitleSortOnly() {
 		return titleSortOnly;
 	}
@@ -108,7 +108,7 @@ public final class MovieIndex implements DtObject {
 	 * Récupère la valeur de la propriété 'Original Title'.
 	 * @return String originalTitle
 	 */
-	@Field(domain = "DO_LABEL", label = "Original Title")
+	@Field(domain = "DoLabel", label = "Original Title")
 	public String getOriginalTitle() {
 		return originalTitle;
 	}
@@ -127,7 +127,7 @@ public final class MovieIndex implements DtObject {
 	 * Récupère la valeur de la propriété 'Synopsis'.
 	 * @return String synopsis
 	 */
-	@Field(domain = "DO_TEXT", label = "Synopsis")
+	@Field(domain = "DoText", label = "Synopsis")
 	public String getSynopsis() {
 		return synopsis;
 	}
@@ -146,7 +146,7 @@ public final class MovieIndex implements DtObject {
 	 * Récupère la valeur de la propriété 'shortSynopsis'.
 	 * @return String shortSynopsis
 	 */
-	@Field(domain = "DO_TEXT", label = "shortSynopsis")
+	@Field(domain = "DoText", label = "shortSynopsis")
 	public String getShortSynopsis() {
 		return shortSynopsis;
 	}
@@ -165,7 +165,7 @@ public final class MovieIndex implements DtObject {
 	 * Récupère la valeur de la propriété 'keywords'.
 	 * @return String keywords
 	 */
-	@Field(domain = "DO_LABEL", label = "keywords")
+	@Field(domain = "DoLabel", label = "keywords")
 	public String getKeywords() {
 		return keywords;
 	}
@@ -184,7 +184,7 @@ public final class MovieIndex implements DtObject {
 	 * Récupère la valeur de la propriété 'poster'.
 	 * @return String poster
 	 */
-	@Field(domain = "DO_TEXT_NOT_TOKENIZED", label = "poster")
+	@Field(domain = "DoTextNotTokenized", label = "poster")
 	public String getPoster() {
 		return poster;
 	}
@@ -203,7 +203,7 @@ public final class MovieIndex implements DtObject {
 	 * Récupère la valeur de la propriété 'runtime'.
 	 * @return Integer runtime
 	 */
-	@Field(domain = "DO_DURATION", label = "runtime")
+	@Field(domain = "DoDuration", label = "runtime")
 	public Integer getRuntime() {
 		return runtime;
 	}
@@ -222,7 +222,7 @@ public final class MovieIndex implements DtObject {
 	 * Récupère la valeur de la propriété 'Movie type'.
 	 * @return String movieType
 	 */
-	@Field(domain = "DO_LABEL", label = "Movie type")
+	@Field(domain = "DoLabel", label = "Movie type")
 	public String getMovieType() {
 		return movieType;
 	}
@@ -241,7 +241,7 @@ public final class MovieIndex implements DtObject {
 	 * Récupère la valeur de la propriété 'productionYear'.
 	 * @return Integer productionYear
 	 */
-	@Field(domain = "DO_YEAR", label = "productionYear")
+	@Field(domain = "DoYear", label = "productionYear")
 	public Integer getProductionYear() {
 		return productionYear;
 	}
@@ -260,7 +260,7 @@ public final class MovieIndex implements DtObject {
 	 * Récupère la valeur de la propriété 'userRating'.
 	 * @return Integer userRating
 	 */
-	@Field(domain = "DO_RATING", label = "userRating")
+	@Field(domain = "DoRating", label = "userRating")
 	public Integer getUserRating() {
 		return userRating;
 	}
@@ -279,7 +279,7 @@ public final class MovieIndex implements DtObject {
 	 * Récupère la valeur de la propriété 'presRating'.
 	 * @return Integer pressRating
 	 */
-	@Field(domain = "DO_RATING", label = "presRating")
+	@Field(domain = "DoRating", label = "presRating")
 	public Integer getPressRating() {
 		return pressRating;
 	}
@@ -298,7 +298,7 @@ public final class MovieIndex implements DtObject {
 	 * Récupère la valeur de la propriété 'Camera'.
 	 * @return String camera
 	 */
-	@Field(domain = "DO_MULTI_VALUES", label = "Camera")
+	@Field(domain = "DoMultiValues", label = "Camera")
 	public String getCamera() {
 		return camera;
 	}

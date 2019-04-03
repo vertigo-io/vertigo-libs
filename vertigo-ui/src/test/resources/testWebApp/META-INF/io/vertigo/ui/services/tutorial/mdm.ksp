@@ -1,19 +1,19 @@
 package io.vertigo.demo.services.tutorial
 
-alter DtDefinition DT_COMMUNE  {
+alter DtDefinition DtCommune  {
  	sortField : "idInsee"
  	displayField : "commune"
   	storeName:"inseeCsv"
 }
 
-alter DtDefinition DT_OUI_NON_CHOICE  {
+alter DtDefinition DtOuiNonChoice  {
  	sortField : "libelle"
  	displayField : "libelle"
   	storeName:"staticOuiNon"
 }
 
 
-alter DtDefinition DT_MOVIE {
+alter DtDefinition DtMovie {
  	sortField : "title"
  	displayField : "title"
 }
