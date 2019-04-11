@@ -412,14 +412,12 @@ public class ExecutionTest extends AbstractOrchestraTestCase {
 		for (final OProcessExecution processExecution : monitoringServices.getExecutionsByProId(proId)) {
 			// --- We check the execution state of the process
 			final DtList<OActivityExecution> activityExecutions = monitoringServices.getActivityExecutionsByPreId(processExecution.getPreId());
-			int countActivitiesRunning = 0;
 			int countActivitiesError = 0;
 			for (final OActivityExecution activityExecution : activityExecutions) {
 				switch (ExecutionState.valueOf(activityExecution.getEstCd())) {
 					case WAITING:
 						break;
 					case RUNNING:
-						countActivitiesRunning++;
 						break;
 					case DONE:
 						break;
