@@ -34,7 +34,7 @@ modules:
       - collections.luceneIndex:
       - search.elasticsearchEmbedded:
           home: esconfig
-          envIndex: TU_TEST_
+          envIndex: tuTest
           rowsPerQuery: 50
           config.file: esconfig/elasticsearch.yml
       - kvStore.berkeley:
