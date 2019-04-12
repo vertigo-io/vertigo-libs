@@ -60,7 +60,7 @@
 					   <div class="chart-panel chartjs linechart" 
 					  		data-url="${contextName}/api/dashboard/data/series" 
 					  		data-query-measures='["value:median"]'
-					  		data-query-data-filter='{"measurement":"metric", "filters": {"name":"entityCount", "topic":"${entity.name}" ,"location":"*","topic":"*"}}'
+					  		data-query-data-filter='{"measurement":"metric", "filters": {"name":"entityCount", "feature":"${entity.name}" ,"location":"*","topic":"*"}}'
 					  		data-query-time-filter='{"from" : "now() - 1w", "to" : "now()", "dim" : "6m"}' >
 					  	</div>
 				</@module.lineDetail >
