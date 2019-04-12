@@ -8,7 +8,7 @@
 		      <q-btn flat round dense v-close-overlay icon="keyboard_arrow_left"></q-btn>
 		      <q-toolbar-title th:text="${title}"></q-toolbar-title>
 		    </q-toolbar>
-			<iframe th:v-bind:src="|componentStates.${componentId}.srcUrl|" frameBorder="0"  th:attr="__${iframe_attrs}__"></iframe>
+			<iframe th:v-bind:src="|componentStates.${componentId}.srcUrl|" frameBorder="0"  th:attr="__${iframe_attrs}__" ></iframe>
 			<template slot="footer" th:if="${closeLabel} != null">
 			    <q-btn flat v-close-overlay th:label="${closeLabel}" ></q-btn>
 		    </template>

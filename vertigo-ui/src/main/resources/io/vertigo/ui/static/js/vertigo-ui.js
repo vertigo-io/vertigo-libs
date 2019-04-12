@@ -266,9 +266,9 @@ var VUi = {
 							}
 						});
 						if (handler) {
-							handler(response);
+							handler.bind(this).apply(response);
 						}
-					});
+					}.bind(this));
 				}
 			  }
 	}

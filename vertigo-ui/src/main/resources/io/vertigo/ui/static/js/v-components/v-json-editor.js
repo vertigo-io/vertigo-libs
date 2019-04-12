@@ -19,6 +19,11 @@ Vue.component('v-json-editor', {
 			jsonAsObject : JSON.parse(this.$props.value)
 		}
 	},
+	watch: { 
+      	value: function(newVal, oldVal) {
+      		this.$data.jsonAsObject = JSON.parse(newVal);
+      	}
+	},
 	methods: {
 	    updateJson() {
 	      this.$emit('input', JSON.stringify(this.$data.jsonAsObject));
