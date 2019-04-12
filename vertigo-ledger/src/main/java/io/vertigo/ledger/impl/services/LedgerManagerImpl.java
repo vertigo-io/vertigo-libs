@@ -20,6 +20,7 @@ package io.vertigo.ledger.impl.services;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.inject.Inject;
 
@@ -27,7 +28,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.Tuples;
+import io.vertigo.lang.Tuples.Tuple2;
 import io.vertigo.ledger.services.LedgerAddress;
 import io.vertigo.ledger.services.LedgerManager;
 
@@ -36,6 +40,8 @@ public final class LedgerManagerImpl implements LedgerManager {
 
 	private final CodecManager codecManager;
 	private final LedgerPlugin ledgerPlugin;
+
+	private final ConcurrentLinkedQueue<Tuple2<String, Runnable>> messageQueue = new ConcurrentLinkedQueue<>();
 
 	@Inject
 	public LedgerManagerImpl(final CodecManager codecManager, final LedgerPlugin ledgerPlugin) {
@@ -58,6 +64,26 @@ public final class LedgerManagerImpl implements LedgerManager {
 	}
 
 	@Override
+	public void sendDataAsync(final String data, final Runnable callback) {
+		messageQueue.add(Tuples.of(data, callback));
+	}
+
+	/**
+	 * Daemon to unstack processes to end them
+	 */
+	@DaemonScheduled(name = "DmnLedgerFlushMessages", periodInSeconds = 10)
+	public void pollQueue() {
+		while (!messageQueue.isEmpty()) {
+			final Tuple2<String, Runnable> messageAndCallBack = messageQueue.poll();
+			final String message = messageAndCallBack.getVal1();
+			if (message != null) {
+				sendData(message);
+				messageAndCallBack.getVal2().run();
+			}
+		}
+	}
+
+	@Override
 	public BigInteger getWalletBalance(final LedgerAddress ledgerAddress) {
 		Assertion.checkNotNull(ledgerAddress);
 		//---
@@ -68,4 +94,5 @@ public final class LedgerManagerImpl implements LedgerManager {
 	public BigInteger getMyWalletBalance() {
 		return ledgerPlugin.getMyWalletBalance();
 	}
+
 }

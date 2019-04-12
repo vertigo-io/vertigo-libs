@@ -31,6 +31,12 @@ public interface LedgerManager extends Manager {
 	String sendData(String data);
 
 	/**
+	 * Sends data message on the ledger asynchronously with a callback.
+	 * @param data
+	 */
+	void sendDataAsync(String data, Runnable callback);
+
+	/**
 	 * Gets the current balance of the provided address
 	 * @param ledgerAddress
 	 * @return
