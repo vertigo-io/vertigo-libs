@@ -100,6 +100,7 @@ public final class OrchestraFeatures extends Features<OrchestraFeatures> {
 		final Param forecastDurationSeconds = findParamByName("forecastDurationSeconds", params);
 
 		getModuleConfigBuilder()
+				.addComponent(ONodeManager.class, ONodeManagerImpl.class)
 				.addPlugin(DbProcessDefinitionStorePlugin.class)
 				.addPlugin(DbProcessSchedulerPlugin.class,
 						nodeName,
@@ -171,7 +172,6 @@ public final class OrchestraFeatures extends Features<OrchestraFeatures> {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addComponent(ONodeManager.class, ONodeManagerImpl.class)
 				.addComponent(OrchestraDefinitionManager.class, OrchestraDefinitionManagerImpl.class)
 				.addComponent(OrchestraServices.class, OrchestraServicesImpl.class);
 
