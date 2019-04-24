@@ -38,6 +38,7 @@ import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.data.domain.DtDefinitions.MovieDisplayFields;
 import io.vertigo.ui.data.domain.DtDefinitions.MovieIndexFields;
+import io.vertigo.ui.data.domain.movies.Movie;
 import io.vertigo.ui.data.domain.movies.MovieDisplay;
 import io.vertigo.ui.data.domain.movies.MovieIndex;
 import io.vertigo.ui.data.services.movies.MovieServices;
@@ -59,7 +60,7 @@ public final class MoviesController extends AbstractVSpringMvcController {
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) {
-		final DtListState dtListState = DtListState.of(200, 0);
+		final DtListState dtListState = DtListState.defaultOf(Movie.class);
 		final DtList<MovieDisplay> sortedList = movieServices.getMoviesDisplay(dtListState);
 		viewContext.publishDtList(MOVIES, MovieDisplayFields.movId, sortedList);
 		viewContext.publishRef(CRITERIA, "");
