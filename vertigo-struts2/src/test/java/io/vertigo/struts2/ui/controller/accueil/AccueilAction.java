@@ -91,11 +91,11 @@ public class AccueilAction extends AbstractTestActionSupport {
 	protected void initContext() {
 		movie.publish(new Movie());
 		casting.publish(new Casting());
-		movieList.publish(movieServices.getMovies(DtListState.of(200, 0)));
-		movieListModifiables.publish(movieServices.getMovies(DtListState.of(200, 0)));
+		movieList.publish(movieServices.getMovies(DtListState.defaultOf(Movie.class)));
+		movieListModifiables.publish(movieServices.getMovies(DtListState.defaultOf(Movie.class)));
 		moviesListMdl.publish(Movie.class, null);
 		communeListMdl.publish(Commune.class, null);
-		movieDisplayList.publish(movieServices.getMoviesDisplay(DtListState.of(200, 0)));
+		movieDisplayList.publish(movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)));
 
 		toModeCreate();
 		currentDate.set(new Date().toString());
