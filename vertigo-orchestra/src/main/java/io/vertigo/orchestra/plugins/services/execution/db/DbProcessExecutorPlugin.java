@@ -34,6 +34,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.process.AProcess;
+import io.vertigo.commons.analytics.process.AProcessBuilder;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
@@ -42,7 +45,9 @@ import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
@@ -53,8 +58,10 @@ import io.vertigo.orchestra.dao.execution.OActivityExecutionDAO;
 import io.vertigo.orchestra.dao.execution.OActivityLogDAO;
 import io.vertigo.orchestra.dao.execution.OActivityWorkspaceDAO;
 import io.vertigo.orchestra.dao.execution.OProcessExecutionDAO;
+import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.definitions.ProcessType;
+import io.vertigo.orchestra.domain.DtDefinitions.OActivityExecutionFields;
 import io.vertigo.orchestra.domain.definition.OActivity;
 import io.vertigo.orchestra.domain.execution.OActivityExecution;
 import io.vertigo.orchestra.domain.execution.OActivityLog;
@@ -94,6 +101,10 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private OActivityDAO activityDAO;
 	@Inject
 	private StoreManager storeManager;
+	@Inject
+	private AnalyticsManager analyticsManager;
+	@Inject
+	private OrchestraDefinitionManager orchestraDefinitionManager;
 
 	private final int workersCount;
 	private final String nodeName;
@@ -528,6 +539,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 				endActivityExecutionAndInitNext(activityExecution);
 				break;
 			case ERROR:
+				activityExecution.setEndTime(Instant.now());
 				changeExecutionState(activityExecution, ExecutionState.ERROR);
 				break;
 			case PENDING:
@@ -624,9 +636,12 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void endProcessExecution(final Long preId, final ExecutionState executionState) {
 		final OProcessExecution processExecution = processExecutionDAO.get(preId);
+		processExecution.process().load();
 		processExecution.setEndTime(Instant.now());
 		changeProcessExecutionState(processExecution, executionState);
 		processExecutionDAO.save(processExecution);
+		final DtList<OActivityExecution> activityExecutions = activityExecutionDAO.findAll(Criterions.isEqualTo(OActivityExecutionFields.preId, preId), DtListState.of(100));
+		traceProcessExecution(processExecution, activityExecutions);
 
 	}
 
@@ -681,6 +696,17 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private static void changeProcessExecutionState(final OProcessExecution processExecution, final ExecutionState executionState) {
 		// we need to check if the transistion is valid
 		processExecution.setEstCd(executionState.name());
+	}
+
+	private void traceProcessExecution(final OProcessExecution processExecution, final DtList<OActivityExecution> activityExecutions) {
+		final AProcessBuilder processBuilder = AProcess.builder("jobs", processExecution.process().get().getName(), processExecution.getBeginTime(), processExecution.getEndTime())
+				.setMeasure("success", ExecutionState.DONE.name().equals(processExecution.getEstCd()) ? 100.0 : 0.0)
+				.addTag("nodeName", nodeName)
+				.addTag("status", processExecution.getEstCd());
+		activityExecutions.forEach(activityExecution -> processBuilder.addSubProcess(
+				AProcess.builder("activity", activityExecution.getEngine(), activityExecution.getBeginTime(), activityExecution.getEndTime())
+						.build()));
+		analyticsManager.addProcess(processBuilder.build());
 	}
 
 }
