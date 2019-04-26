@@ -15,7 +15,7 @@ Vue.component('v-comments', {
 +'          <q-item v-for="comment in list" :key="comment.uuid" class="items-start">'
 +'    			<q-item-side :avatar="baseUrl+\'/x/accounts/api/\'+comment.author+\'/photo\'"></q-item-side>'
 +'    			<q-item-main :label="comment.authorDisplayName" :sublabel="comment.msg" label-lines="1" sublabel-lines="4">'    			
-+' 					<q-popup-edit v-model="comment.msg" buttons="true" @save="updateComment(comment)">'
++' 					<q-popup-edit v-if="comment.author==connectedAccount" v-model="comment.msg" buttons="true" @save="updateComment(comment)" label-cancel="Cancel" label-set="Save">'
 +'    					 <q-input type="textarea" v-model="comment.msg" />'
 +'    				</q-popup-edit>'
 +'				</q-item-main>'
