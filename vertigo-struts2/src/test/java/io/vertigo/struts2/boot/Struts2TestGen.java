@@ -24,13 +24,13 @@ import org.apache.logging.log4j.LogManager;
 
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.config.NodeConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.app.config.xml.XmlAppConfigBuilder;
 import io.vertigo.studio.mda.MdaManager;
 
 public final class Struts2TestGen {
 
 	public static void main(final String[] args) {
-		final NodeConfig nodeConfig = new XMLAppConfigBuilder()
+		final NodeConfig nodeConfig = new XmlAppConfigBuilder()
 				.withModules(Struts2TestGen.class, new Properties(), "/managers-mda.xml")
 				.build();
 		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
