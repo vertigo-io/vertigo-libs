@@ -26,7 +26,7 @@ import java.io.InputStreamReader;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractStaticDataStorePlugin;
@@ -53,6 +53,7 @@ public final class CommuneStorePlugin extends AbstractStaticDataStorePlugin {
 		return DEFAULT_CONNECTION_NAME;
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final UID<E> uri) {
 		//La liste est grande, donc configurée pour être chargée par morceau.
@@ -66,26 +67,28 @@ public final class CommuneStorePlugin extends AbstractStaticDataStorePlugin {
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final UID<?> uri) {
 		throw new UnsupportedOperationException();
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
-		throw new UnsupportedOperationException();
+	public int count(final DtDefinition dtDefinition) {
+		return loadAllCommunes().size();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
 		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(uri);
+		Assertion.checkNotNull(dtListState);
 		Assertion.checkArgument(DtDefinitions.Definitions.Commune.name().equals(dtDefinition.getClassSimpleName()), "This store should be use for Commune only, not {0}",
 				dtDefinition.getClassSimpleName());
-		Assertion.checkArgument(uri.getCriteria() == null, "This store could only load all data, not {0}", uri.getCriteria());
+		Assertion.checkArgument(criteria == null, "This store could only load all data, not {0}", criteria);
 		//----
-		return (DtList<D>) loadAllCommunes();
+		return (DtList<E>) loadAllCommunes();
 	}
 
 	private DtList<Commune> loadAllCommunes() {

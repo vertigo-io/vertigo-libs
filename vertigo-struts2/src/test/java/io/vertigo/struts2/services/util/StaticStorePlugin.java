@@ -28,7 +28,7 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -145,20 +145,19 @@ public final class StaticStorePlugin extends AbstractStaticDataStorePlugin imple
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(dtListState);
 		Assertion.checkArgument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
-		throw new UnsupportedOperationException();
+		Assertion.checkArgument(criteria == null, "This store could only load all data, not {0}", criteria);
+		//----
+		return (DtList<E>) dtc;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri) {
-		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(uri);
-		Assertion.checkArgument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
-		Assertion.checkArgument(uri.getCriteria() == null, "This store could only load all data, not {0}", uri.getCriteria());
-		//----
-		return (DtList<E>) dtc;
+	public int count(final DtDefinition dtDefinition) {
+		return dtc.size();
 	}
 
 }

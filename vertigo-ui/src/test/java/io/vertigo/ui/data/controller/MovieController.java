@@ -57,7 +57,7 @@ public class MovieController extends AbstractVSpringMvcController {
 		non.setKey(Boolean.FALSE);
 		viewContext.publishDto(ouiKey, oui);
 		viewContext.publishDto(nonKey, non);
-		viewContext.publishDtList(moviesKey, movieServices.getMovies(DtListState.of(200, 0)));
+		viewContext.publishDtList(moviesKey, movieServices.getMovies(DtListState.defaultOf(Movie.class)));
 	}
 
 	@PostMapping("/_edit")

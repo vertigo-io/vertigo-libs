@@ -25,7 +25,7 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
@@ -77,18 +77,6 @@ public class AbstractStaticMDDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri) {
-		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(uri);
-		Assertion.checkArgument(uri.getCriteria() == null, "This store could only load all data, not {0}", uri.getCriteria());
-		//-----
-		final String methodName = "get" + uri.getDtDefinition().getClassSimpleName() + "MDList";
-		final DtList<E> dtList = (DtList<E>) invokeMethod(methodName, null);
-		return dtList;
-	}
-
-	/** {@inheritDoc} */
-	@Override
 	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForNNAssociation uri) {
 		throw new UnsupportedOperationException();
 	}
@@ -101,8 +89,14 @@ public class AbstractStaticMDDataStorePlugin implements DataStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
-		throw new UnsupportedOperationException();
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
+		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(dtListState);
+		Assertion.checkArgument(criteria == null, "This store could only load all data, not {0}", criteria);
+		//-----
+		final String methodName = "get" + dtDefinition.getClassSimpleName() + "MDList";
+		final DtList<E> dtList = (DtList<E>) invokeMethod(methodName, null);
+		return dtList;
 	}
 
 	/** {@inheritDoc} */

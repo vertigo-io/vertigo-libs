@@ -48,13 +48,13 @@ public class MovieServicesImpl implements MovieServices {
 	@Override
 	@Transactional
 	public DtList<Movie> getMovies(final DtListState dtListState) {
-		return movieDAO.findAll(Criterions.alwaysTrue(), dtListState.getMaxRows().orElse(50));
+		return movieDAO.findAll(Criterions.alwaysTrue(), dtListState);
 	}
 
 	@Override
 	@Transactional
 	public DtList<MovieDisplay> getMoviesDisplay(final DtListState dtListState) {
-		return movieDAO.findAll(Criterions.alwaysTrue(), dtListState.getMaxRows().orElse(50))
+		return movieDAO.findAll(Criterions.alwaysTrue(), dtListState)
 				.stream()
 				.map(movie -> new MovieDisplay(movie.getMovId(), movie.getTitle()))
 				.collect(VCollectors.toDtList(MovieDisplay.class));

@@ -31,6 +31,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.Home;
+import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.lang.Assertion;
@@ -55,6 +56,9 @@ public class MemoryProcessExecutorPlugin implements ProcessExecutorPlugin, Activ
 
 	private final ExecutorService localExecutor;
 	private final MapCodec mapCodec = new MapCodec();
+
+	@Inject
+	private AnalyticsManager analyticsManager;
 
 	/**
 	 * Constructeur de l'executeur simple local.
@@ -93,13 +97,26 @@ public class MemoryProcessExecutorPlugin implements ProcessExecutorPlugin, Activ
 			initialWorkspace.addExternalParams(mapCodec.decode(initialParams.get()));
 		}
 
-		ActivityExecutionWorkspace resultWorkspace = initialWorkspace;
-		for (final ActivityDefinition activityDefinition : processDefinition.getActivities()) {
-			resultWorkspace = executeActivity(activityDefinition, resultWorkspace);
-			if (resultWorkspace.isFailure()) {
-				break;
+		analyticsManager.trace("jobs", processDefinition.getName(), tracer -> {
+			tracer.setMeasure("success", 100.0); // initial value is 100
+			ActivityExecutionWorkspace resultWorkspace = initialWorkspace;
+			for (final ActivityDefinition activityDefinition : processDefinition.getActivities()) {
+				final ActivityExecutionWorkspace workspaceIn = new ActivityExecutionWorkspace(resultWorkspace.asMap());
+				resultWorkspace = analyticsManager.traceWithReturn("activity", processDefinition.getName(), tracerActivity -> {
+					final ActivityExecutionWorkspace result = executeActivity(activityDefinition, workspaceIn);
+					if (result.isFailure()) {
+						tracerActivity.setMeasure("success", 0.0);
+					} else {
+						tracerActivity.setMeasure("success", 100.0);
+					}
+					return result;
+				});
+				if (resultWorkspace.isFailure()) {
+					tracer.setMeasure("success", 0.0);
+					break;
+				}
 			}
-		}
+		});
 
 	}
 
