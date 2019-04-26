@@ -170,7 +170,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 		try {
 			return tagDefinition.getClassTag().newInstance();
 		} catch (final InstantiationException | IllegalAccessException e) {
-			throw WrappedException.wrap(e, "Probleme a l'initialisation du tag personalise : " + tagDefinition.getName());
+			throw WrappedException.wrap(e, "Probleme a l'initialisation du tag personalise : {0}",  tagDefinition.getName());
 		}
 	}
 

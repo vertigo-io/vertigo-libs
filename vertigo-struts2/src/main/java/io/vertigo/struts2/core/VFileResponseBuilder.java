@@ -98,7 +98,7 @@ public final class VFileResponseBuilder {
 	 * @param exception L'exception à gérer
 	 */
 	private static void handleException(final Exception exception) {
-		throw WrappedException.wrap(exception, "Impossible d'envoyer le fichier.<!-- " + exception.getMessage() + "-->");
+		throw WrappedException.wrap(exception, "Impossible d'envoyer le fichier.<!-- {0} -->", exception.getMessage());
 	}
 
 	/**
