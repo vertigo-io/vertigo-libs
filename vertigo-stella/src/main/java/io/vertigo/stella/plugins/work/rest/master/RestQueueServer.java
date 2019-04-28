@@ -35,10 +35,8 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
+import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.stella.impl.master.WorkResult;
@@ -79,14 +77,10 @@ final class RestQueueServer {
 		deadWorkTypeTimeoutSec = 60; //by convention : dead workType timeout after 60s
 		this.codecManager = codecManager;
 
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())
-				.registerDefinition(new DaemonDefinition(
-						"DmnWorkQueueTimeoutCheck",
-						() -> () -> checkDeadNodesAndWorkItems(),
-						10));
 	}
 
-	private void checkDeadNodesAndWorkItems() {
+	@DaemonScheduled(name = "DmnWorkQueueTimeoutCheck", periodInSeconds = 10)
+	public void checkDeadNodesAndWorkItems() {
 		checkDeadNodes();
 		checkDeadWorkItems();
 	}

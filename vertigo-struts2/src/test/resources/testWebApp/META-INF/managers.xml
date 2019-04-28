@@ -16,6 +16,7 @@
 				<resource type="classes" path="io.vertigo.struts2.domain.DtDefinitions" />
 				<resource type="kpr" path="/META-INF/io/vertigo/struts2/execution.kpr" />
 			</provider>
+			<provider class="io.vertigo.struts2.boot.initializer.TestStruts2MasterDataDefinitionProvider" />
 		</definitions>
 	</module>
 	<module name="commons">
@@ -74,7 +75,6 @@
 	<init>
 		<initializer class="io.vertigo.struts2.boot.initializer.LocaleManagerInitializer"/>
 		<initializer class="io.vertigo.struts2.boot.initializer.DataBaseInitializer"/>
-		<initializer class="io.vertigo.struts2.boot.initializer.MasterDataInitializer"/>
 		<initializer class="io.vertigo.struts2.boot.initializer.I18nResourcesInitializer"/>
 	</init>
 

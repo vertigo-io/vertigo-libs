@@ -21,6 +21,7 @@ package io.vertigo.ui.data;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.discovery.ModuleDiscoveryFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.ui.data.boot.initializer.TestVertigoUiMasterDataDefinitionProvider;
 
 public class TestVUiFeatures extends ModuleDiscoveryFeatures<TestVUiFeatures> {
 
@@ -42,6 +43,7 @@ public class TestVUiFeatures extends ModuleDiscoveryFeatures<TestVUiFeatures> {
 						.addDefinitionResource("classes", "io.vertigo.ui.data.domain.DtDefinitions")
 						.addDefinitionResource("kpr", "/META-INF/io/vertigo/ui/execution.kpr")
 						.build())
+				.addDefinitionProvider(TestVertigoUiMasterDataDefinitionProvider.class)
 				.build();
 	}
 
