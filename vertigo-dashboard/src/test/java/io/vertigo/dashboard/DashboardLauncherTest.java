@@ -210,19 +210,19 @@ public class DashboardLauncherTest {
 
 		loggedAndExpect()
 				.when()
-				.get("/dashboard/modules/commons");
+				.get("/dashboard/modules/vertigo-commons");
 
 		loggedAndExpect()
 				.when()
-				.get("/dashboard/modules/dynamo");
+				.get("/dashboard/modules/vertigo-dynamo");
 
 		loggedAndExpect()
 				.when()
-				.get("/dashboard/modules/vega");
+				.get("/dashboard/modules/vertigo-vega");
 
 		loggedAndExpect()
 				.when()
-				.get("/dashboard/modules/vui");
+				.get("/dashboard/modules/vertigo-ui");
 	}
 
 	private static ResponseSpecification loggedAndExpect() {
