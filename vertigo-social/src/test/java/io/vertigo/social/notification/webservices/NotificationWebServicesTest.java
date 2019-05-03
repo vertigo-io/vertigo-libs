@@ -40,7 +40,7 @@ import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.core.component.di.DIInjector;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;

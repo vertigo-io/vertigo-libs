@@ -33,7 +33,6 @@ import javax.inject.Named;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.analytics.process.AProcess;
 import io.vertigo.commons.analytics.process.AProcessBuilder;
@@ -41,7 +40,7 @@ import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.Activeable;
-import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.core.component.di.DIInjector;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
@@ -233,7 +232,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		// We execute the postTreatment of the pending activity when it's released
 		// ---
 		final ActivityEngine activityEngine = DIInjector.newInstance(
-				ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class), Home.getApp().getComponentSpace());
+				ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class));
 
 		try {
 			switch (executionState) {
@@ -351,7 +350,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			changeExecutionState(activityExecution, ExecutionState.RUNNING);
 			// ---
 			final ActivityEngine activityEngine = DIInjector.newInstance(
-					ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class), Home.getApp().getComponentSpace());
+					ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class));
 
 			try {
 
