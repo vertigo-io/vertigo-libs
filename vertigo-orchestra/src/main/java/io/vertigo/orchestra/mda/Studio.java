@@ -25,7 +25,7 @@ import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.component.di.DIInjector;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.DynamoFeatures;

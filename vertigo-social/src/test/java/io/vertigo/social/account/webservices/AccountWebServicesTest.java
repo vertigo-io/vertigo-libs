@@ -29,7 +29,7 @@ import org.junit.jupiter.api.Test;
 import io.restassured.RestAssured;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.core.component.di.DIInjector;
+import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;
 import redis.clients.jedis.Jedis;

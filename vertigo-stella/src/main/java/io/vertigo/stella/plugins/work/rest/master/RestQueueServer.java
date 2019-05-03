@@ -38,7 +38,7 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.core.definition.loader.DefinitionSpaceWritable;
+import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.stella.impl.master.WorkResult;
