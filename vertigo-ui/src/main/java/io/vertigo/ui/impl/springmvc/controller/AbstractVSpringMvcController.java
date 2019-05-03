@@ -126,8 +126,12 @@ public abstract class AbstractVSpringMvcController {
 	private static String getDefaultViewName(final AbstractVSpringMvcController controller) {
 		String path = controller.getClass().getName();
 		path = path.substring(0, path.lastIndexOf('.'));
+		//package is
+		// group.id.project.feature.controllers and we look in feature/...
+		// or group.id.project.controllers and we look in project/
+		Assertion.checkState(path.contains(".controllers"), "Default naming only works if your package contains .controllers, it's not the case for the controller {0}", controller.getClass());
+		path = path.substring(path.lastIndexOf('.', path.indexOf(".controllers") - 1));
 		path = path.replaceAll("\\.controllers?", "");
-		path = path.substring(path.indexOf('.', 4) + 1);
 		path = path.replaceAll("\\.", SLASH);
 		String simpleName = StringUtil.first2LowerCase(controller.getClass().getSimpleName());
 		simpleName = simpleName.replaceAll("Controller", "");
