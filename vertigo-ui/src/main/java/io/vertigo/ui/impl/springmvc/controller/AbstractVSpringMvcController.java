@@ -31,7 +31,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.param.ParamManager;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.ui.core.ComponentStates;
@@ -86,8 +85,6 @@ public abstract class AbstractVSpringMvcController {
 	private KVStoreManager kvStoreManager;
 	@Inject
 	private VTransactionManager transactionManager;
-	@Inject
-	private ParamManager paramManager;
 
 	private boolean createdContext = true;
 
@@ -157,7 +154,6 @@ public abstract class AbstractVSpringMvcController {
 	 * Si surcharger doit rappeler le super.preInitContext();
 	 */
 	protected void preInitContext(final ViewContext viewContext) {
-		viewContext.publishRef(() -> "appVersion", paramManager.getParam("app.version").getValueAsString());
 		viewContext.publishRef(UTIL_CONTEXT_KEY, new UiUtil());
 		viewContext.asMap().put("componentStates", new ComponentStates());
 		toModeReadOnly();
