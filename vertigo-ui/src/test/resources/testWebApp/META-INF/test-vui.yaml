@@ -48,6 +48,5 @@ modules:
 initializers:
   - io.vertigo.ui.data.boot.initializer.LocaleManagerInitializer:
   - io.vertigo.ui.data.boot.initializer.DataBaseInitializer:
-  - io.vertigo.ui.data.boot.initializer.MasterDataInitializer:
   - io.vertigo.ui.data.boot.initializer.I18nResourcesInitializer:
   - io.vertigo.ui.data.boot.initializer.SearchInitializer:

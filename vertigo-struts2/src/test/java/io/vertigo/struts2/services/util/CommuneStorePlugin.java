@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
@@ -86,7 +87,7 @@ public final class CommuneStorePlugin extends AbstractStaticDataStorePlugin {
 		Assertion.checkNotNull(dtListState);
 		Assertion.checkArgument(DtDefinitions.Definitions.Commune.name().equals(dtDefinition.getClassSimpleName()), "This store should be use for Commune only, not {0}",
 				dtDefinition.getClassSimpleName());
-		Assertion.checkArgument(criteria == null, "This store could only load all data, not {0}", criteria);
+		Assertion.checkArgument(criteria == null || criteria.equals(Criterions.alwaysTrue()), "This store could only load all data, not {0}", criteria);
 		//----
 		return (DtList<E>) loadAllCommunes();
 	}

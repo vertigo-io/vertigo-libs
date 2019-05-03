@@ -34,6 +34,7 @@ import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.transaction.VTransactionManager;
@@ -131,6 +132,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	}
 
 	private void scheduleAndInit() {
+		ThreadContext.put("module", "orchestra");
 		try {
 			plannRecurrentProcesses();
 			initToDo(myProcessExecutor);
@@ -140,6 +142,8 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 			if (t instanceof InterruptedException) {
 				throw t;
 			}
+		} finally {
+			ThreadContext.remove("module");
 		}
 
 	}

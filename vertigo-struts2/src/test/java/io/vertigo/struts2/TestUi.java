@@ -219,8 +219,8 @@ public class TestUi {
 		assertEquals("Test select sur ContextList", waitElement(By.xpath("(//form/h1)[3]")).getText());
 		assertTrue(findElement(By.xpath("//form[@id='selectContextList']/table/tbody/tr/th/label")).getText().matches("^Movie\\*$"));
 		final Select select = new Select(findElement(By.xpath("//form[@id='selectContextList']/table/tbody/tr/td/select")));
-		assertEquals("Pulp Fiction, The Good, the Bad and the Ugly, The Godfather, Full metal jacket, Shinning, Misery, L'exorciste", getWebElementsAsString(select.getOptions()));
-		assertEquals("Pulp Fiction", select.getFirstSelectedOption().getText());
+		assertEquals("Full metal jacket, L'exorciste, Misery, Pulp Fiction, Shinning, The Godfather, The Good, the Bad and the Ugly", getWebElementsAsString(select.getOptions()));
+		assertEquals("Full metal jacket", select.getFirstSelectedOption().getText());
 		select.selectByVisibleText("Misery");
 		assertEquals("Misery", select.getFirstSelectedOption().getText());
 		findElement(By.name("action:saveCastingAccueil")).click();

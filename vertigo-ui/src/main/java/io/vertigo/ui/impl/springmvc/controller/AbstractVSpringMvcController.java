@@ -31,7 +31,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.param.ParamManager;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.ui.core.ComponentStates;
@@ -86,8 +85,6 @@ public abstract class AbstractVSpringMvcController {
 	private KVStoreManager kvStoreManager;
 	@Inject
 	private VTransactionManager transactionManager;
-	@Inject
-	private ParamManager paramManager;
 
 	private boolean createdContext = true;
 
@@ -129,8 +126,12 @@ public abstract class AbstractVSpringMvcController {
 	private static String getDefaultViewName(final AbstractVSpringMvcController controller) {
 		String path = controller.getClass().getName();
 		path = path.substring(0, path.lastIndexOf('.'));
+		//package is
+		// group.id.project.feature.controllers and we look in feature/...
+		// or group.id.project.controllers and we look in project/
+		Assertion.checkState(path.contains(".controllers"), "Default naming only works if your package contains .controllers, it's not the case for the controller {0}", controller.getClass());
+		path = path.substring(path.lastIndexOf('.', path.indexOf(".controllers") - 1));
 		path = path.replaceAll("\\.controllers?", "");
-		path = path.substring(path.indexOf('.', 4) + 1);
 		path = path.replaceAll("\\.", SLASH);
 		String simpleName = StringUtil.first2LowerCase(controller.getClass().getSimpleName());
 		simpleName = simpleName.replaceAll("Controller", "");
@@ -157,7 +158,6 @@ public abstract class AbstractVSpringMvcController {
 	 * Si surcharger doit rappeler le super.preInitContext();
 	 */
 	protected void preInitContext(final ViewContext viewContext) {
-		viewContext.publishRef(() -> "appVersion", paramManager.getParam("app.version").getValueAsString());
 		viewContext.publishRef(UTIL_CONTEXT_KEY, new UiUtil());
 		viewContext.asMap().put("componentStates", new ComponentStates());
 		toModeReadOnly();

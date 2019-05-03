@@ -32,6 +32,7 @@ import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.AnalyticsManager;
@@ -58,7 +59,6 @@ import io.vertigo.orchestra.dao.execution.OActivityExecutionDAO;
 import io.vertigo.orchestra.dao.execution.OActivityLogDAO;
 import io.vertigo.orchestra.dao.execution.OActivityWorkspaceDAO;
 import io.vertigo.orchestra.dao.execution.OProcessExecutionDAO;
-import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.definitions.ProcessType;
 import io.vertigo.orchestra.domain.DtDefinitions.OActivityExecutionFields;
@@ -103,8 +103,6 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private StoreManager storeManager;
 	@Inject
 	private AnalyticsManager analyticsManager;
-	@Inject
-	private OrchestraDefinitionManager orchestraDefinitionManager;
 
 	private final int workersCount;
 	private final String nodeName;
@@ -160,6 +158,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private void executeProcesses() {
+		ThreadContext.put("module", "orchestra");
 		try {
 			Assertion.checkNotNull(nodId, "Node not already registered");
 			executeToDo();
@@ -171,6 +170,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			if (t instanceof InterruptedException) {
 				throw t;
 			}
+		} finally {
+			ThreadContext.remove("module");
 		}
 	}
 
@@ -316,6 +317,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void doRunActivity(final OActivityExecution activityExecution, final ActivityExecutionWorkspace workspace) {
 		clearAllThreadLocals();
+		ThreadContext.put("module", "orchestra");
 		ActivityExecutionWorkspace result = null;
 		Throwable throwable = null;
 		try {
@@ -331,6 +333,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			throwable = t;
 		} finally {
 			putResult(activityExecution, result, throwable);
+			ThreadContext.remove("module");
 		}
 	}
 

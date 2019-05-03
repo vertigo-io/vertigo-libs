@@ -94,7 +94,7 @@ final class Worker<R, W> implements Callable<R> {
 		} catch (final Exception e) {
 			workResultHandler.onDone(null, e);
 			logError(e);
-			throw WrappedException.wrap(e, null);
+			throw WrappedException.wrap(e, "error calling {0} with id {1}", workItem.getWorkEngineClass(), workItem.getId());
 		} finally {
 			try {
 				//Vide le threadLocal
