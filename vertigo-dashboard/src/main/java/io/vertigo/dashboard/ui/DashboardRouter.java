@@ -37,7 +37,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import io.vertigo.app.App;
-import io.vertigo.core.component.di.injector.DIInjector;
+import io.vertigo.core.component.di.DIInjector;
 import io.vertigo.dashboard.ui.commons.CommonsDashboardControler;
 import io.vertigo.dashboard.ui.dynamo.DynamoDashboardControler;
 import io.vertigo.dashboard.ui.vega.VegaDashboardControler;
@@ -104,7 +104,7 @@ public final class DashboardRouter {
 
 		Spark.get("/dashboard/modules/:moduleName", (request, response) -> {
 			final String moduleName = request.params(":moduleName");
-			final DashboardModuleControler controler = DIInjector.newInstance(controlerMap.get(moduleName), app.getComponentSpace());
+			final DashboardModuleControler controler = DIInjector.newInstance(controlerMap.get(moduleName));
 			final Map<String, Object> model = controler.buildModel(app, moduleName);
 			model.put("contextName", request.contextPath() != null ? request.contextPath() : "");
 			return render(response, "templates/" + moduleName + ".ftl", model);
