@@ -33,9 +33,9 @@ import org.thymeleaf.standard.expression.IStandardExpressionParser;
 import org.thymeleaf.standard.expression.NoOpToken;
 import org.thymeleaf.standard.expression.StandardExpressions;
 
-public final class FragmentHelper {
+public final class FragmentUtil {
 
-	private FragmentHelper() {
+	private FragmentUtil() {
 		//private constructor for Helper
 	}
 

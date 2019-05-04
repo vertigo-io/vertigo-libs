@@ -132,7 +132,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			}
 
 			final String fragmentToUse = "~{" + componentName + " :: " + frag + "}";
-			final IModel fragmentModel = FragmentHelper.getFragmentModel(context, fragmentToUse + (param == null ? "" : "(" + param + ")"), structureHandler);
+			final IModel fragmentModel = FragmentUtil.getFragmentModel(context, fragmentToUse + (param == null ? "" : "(" + param + ")"), structureHandler);
 			final IModel clonedFragmentModel = fragmentModel.cloneModel(); //le clone change l'index des éléments
 
 			//final IModel replacedContentSlotModel = replaceContentSlotTags(clonedFragmentModel, slotContents);
