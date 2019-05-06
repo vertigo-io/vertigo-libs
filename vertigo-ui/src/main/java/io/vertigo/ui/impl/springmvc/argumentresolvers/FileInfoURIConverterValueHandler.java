@@ -23,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.core.MethodParameter;
@@ -37,6 +36,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.ui.core.ProtectedValueUtil;
@@ -85,7 +85,7 @@ public final class FileInfoURIConverterValueHandler extends AbstractMessageConve
 			final NativeWebRequest webRequest,
 			final WebDataBinderFactory binderFactory) throws Exception {
 		final HttpServletRequest request = getRequest(webRequest);
-		final Named requestParam = parameter.getParameterAnnotation(Named.class);
+		final ParamValue requestParam = parameter.getParameterAnnotation(ParamValue.class);
 		Assertion.checkNotNull(requestParam, "Parameter name wasnt't found. Use @Named('myFileParam') in your controller.");
 		final String fileUriProtected = request.getParameter(requestParam.value());
 

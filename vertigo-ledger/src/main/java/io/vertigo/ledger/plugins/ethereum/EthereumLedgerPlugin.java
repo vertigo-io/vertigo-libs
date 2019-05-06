@@ -24,7 +24,6 @@ import java.math.BigInteger;
 import java.util.concurrent.ExecutionException;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,6 +41,7 @@ import org.web3j.utils.Convert;
 
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
@@ -72,13 +72,13 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 	@Inject
 	public EthereumLedgerPlugin(
 			final EventBusManager eventBusManager,
-			@Named("urlRpcEthNode") final String urlRpcEthNode,
-			@Named("myAccountName") final String myAccountName,
-			@Named("myPublicAddr") final String myPublicAddr,
-			@Named("defaultDestAccountName") final String defaultDestAccountName,
-			@Named("defaultDestPublicAddr") final String defaultDestPublicAddr,
-			@Named("walletPassword") final String walletPassword,
-			@Named("walletPath") final String walletPath) {
+			@ParamValue("urlRpcEthNode") final String urlRpcEthNode,
+			@ParamValue("myAccountName") final String myAccountName,
+			@ParamValue("myPublicAddr") final String myPublicAddr,
+			@ParamValue("defaultDestAccountName") final String defaultDestAccountName,
+			@ParamValue("defaultDestPublicAddr") final String defaultDestPublicAddr,
+			@ParamValue("walletPassword") final String walletPassword,
+			@ParamValue("walletPath") final String walletPath) {
 		Assertion.checkNotNull(eventBusManager);
 		//---
 		Assertion.checkArgNotEmpty(myAccountName);

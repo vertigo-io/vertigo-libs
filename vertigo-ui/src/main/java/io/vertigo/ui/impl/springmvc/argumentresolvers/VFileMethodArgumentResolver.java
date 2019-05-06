@@ -18,7 +18,6 @@
  */
 package io.vertigo.ui.impl.springmvc.argumentresolvers;
 
-import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.core.MethodParameter;
@@ -29,6 +28,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
 
@@ -46,7 +46,7 @@ public class VFileMethodArgumentResolver implements HandlerMethodArgumentResolve
 			final NativeWebRequest webRequest,
 			final WebDataBinderFactory binderFactory) throws Exception {
 		final HttpServletRequest request = getRequest(webRequest);
-		final Named requestParam = parameter.getParameterAnnotation(Named.class);
+		final ParamValue requestParam = parameter.getParameterAnnotation(ParamValue.class);
 		Assertion.checkNotNull(requestParam, "File name wasnt't found. Use @RequestParam('myFileRequestParam') in your controller.");
 		return VFileUtil.readQueryFile(request, requestParam.value());
 	}

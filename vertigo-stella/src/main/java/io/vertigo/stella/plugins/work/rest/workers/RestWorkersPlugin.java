@@ -19,9 +19,9 @@
 package io.vertigo.stella.plugins.work.rest.workers;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.impl.workers.WorkersPlugin;
@@ -46,8 +46,8 @@ public final class RestWorkersPlugin implements WorkersPlugin {
 	 */
 	@Inject
 	public RestWorkersPlugin(
-			@Named("serverUrl") final String serverUrl,
-			@Named("timeoutSeconds") final int timeoutSeconds,
+			@ParamValue("serverUrl") final String serverUrl,
+			@ParamValue("timeoutSeconds") final int timeoutSeconds,
 			final CodecManager codecManager) {
 		Assertion.checkArgNotEmpty(serverUrl);
 		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");

@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,6 +34,7 @@ import com.sun.star.io.XOutputStream;
 import com.sun.star.lang.XComponent;
 import com.sun.star.uno.UnoRuntime;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.plugins.converter.openoffice.stream.OOoFileInputStream;
@@ -57,9 +57,9 @@ public final class OpenOfficeRemoteConverterPlugin extends AbstractOpenOfficeCon
 	@Inject
 	public OpenOfficeRemoteConverterPlugin(
 			final FileManager fileManager,
-			@Named("unohost") final String unoHost,
-			@Named("unoport") final String unoPort,
-			@Named("convertTimeoutSeconds") final Optional<Integer> convertTimeoutSeconds) {
+			@ParamValue("unohost") final String unoHost,
+			@ParamValue("unoport") final String unoPort,
+			@ParamValue("convertTimeoutSeconds") final Optional<Integer> convertTimeoutSeconds) {
 		super(fileManager, unoHost, unoPort, convertTimeoutSeconds.orElse(60));
 	}
 

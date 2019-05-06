@@ -30,7 +30,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,6 +42,7 @@ import io.vertigo.core.component.Activeable;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.store.StoreManager;
@@ -108,9 +108,9 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 			final ONodeManager nodeManager,
 			final VTransactionManager transactionManager,
 			final OrchestraDefinitionManager definitionManager,
-			@Named("nodeName") final String nodeName,
-			@Named("planningPeriodSeconds") final Optional<Integer> planningPeriodSecondsOpt,
-			@Named("forecastDurationSeconds") final Optional<Integer> forecastDurationSecondsOpt) {
+			@ParamValue("nodeName") final String nodeName,
+			@ParamValue("planningPeriodSeconds") final Optional<Integer> planningPeriodSecondsOpt,
+			@ParamValue("forecastDurationSeconds") final Optional<Integer> forecastDurationSecondsOpt) {
 		Assertion.checkNotNull(nodeManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(definitionManager);

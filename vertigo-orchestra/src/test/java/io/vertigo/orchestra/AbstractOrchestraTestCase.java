@@ -27,10 +27,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.component.di.DIInjector;
+import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
@@ -65,7 +64,7 @@ public abstract class AbstractOrchestraTestCase {
 
 	public final void setUpInjection() throws Exception {
 		if (app != null) {
-			DIInjector.injectMembers(this, Home.getApp().getComponentSpace());
+			ComponentSpace.injectMembers(this);
 		}
 	}
 

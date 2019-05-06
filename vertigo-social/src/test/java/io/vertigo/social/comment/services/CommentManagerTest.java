@@ -28,9 +28,8 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.Home;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.core.component.di.DIInjector;
+import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
@@ -58,7 +57,7 @@ public class CommentManagerTest {
 	@BeforeEach
 	public void setUp() {
 		app = new AutoCloseableApp(MyNodeConfig.vegaConfig());
-		DIInjector.injectMembers(this, Home.getApp().getComponentSpace());
+		ComponentSpace.injectMembers(this);
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		}

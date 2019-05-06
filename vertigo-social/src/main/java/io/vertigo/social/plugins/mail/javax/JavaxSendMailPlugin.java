@@ -29,7 +29,6 @@ import java.util.Optional;
 import java.util.Properties;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.mail.BodyPart;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -48,6 +47,7 @@ import javax.mail.internet.MimeUtility;
 import io.vertigo.commons.analytics.health.HealthChecked;
 import io.vertigo.commons.analytics.health.HealthMeasure;
 import io.vertigo.core.locale.MessageKey;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.lang.Assertion;
@@ -94,14 +94,14 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	@Inject
 	public JavaxSendMailPlugin(
 			final FileManager fileManager,
-			@Named("storeProtocol") final String mailStoreProtocol,
-			@Named("host") final String mailHost,
-			@Named("developmentMode") final boolean developmentMode,
-			@Named("developmentMailTo") final String developmentMailTo,
-			@Named("port") final Optional<Integer> mailPort,
-			@Named("login") final Optional<String> mailLogin,
-			@Named("pwd") final Optional<String> mailPassword,
-			@Named("charset") final Optional<String> charsetOpt) {
+			@ParamValue("storeProtocol") final String mailStoreProtocol,
+			@ParamValue("host") final String mailHost,
+			@ParamValue("developmentMode") final boolean developmentMode,
+			@ParamValue("developmentMailTo") final String developmentMailTo,
+			@ParamValue("port") final Optional<Integer> mailPort,
+			@ParamValue("login") final Optional<String> mailLogin,
+			@ParamValue("pwd") final Optional<String> mailPassword,
+			@ParamValue("charset") final Optional<String> charsetOpt) {
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkArgNotEmpty(mailStoreProtocol);
 		Assertion.checkArgNotEmpty(mailHost);

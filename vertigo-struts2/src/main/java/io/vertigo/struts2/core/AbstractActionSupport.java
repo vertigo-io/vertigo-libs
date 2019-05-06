@@ -41,13 +41,12 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.codec.Encoder;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.component.di.DIInjector;
+import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
@@ -106,7 +105,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 * Constructeur.
 	 */
 	protected AbstractActionSupport() {
-		DIInjector.injectMembers(this, Home.getApp().getComponentSpace());
+		ComponentSpace.injectMembers(this);
 		uiMessageStack = new StrutsUiMessageStack(this);
 	}
 

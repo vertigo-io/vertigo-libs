@@ -25,14 +25,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.core.component.Activeable;
-import io.vertigo.core.component.di.DIInjector;
+import io.vertigo.core.component.ComponentSpace;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.definitions.ActivityDefinition;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
@@ -64,7 +64,7 @@ public class MemoryProcessExecutorPlugin implements ProcessExecutorPlugin, Activ
 	 * @param workersCount le nombre de workers du pool
 	 */
 	@Inject
-	public MemoryProcessExecutorPlugin(@Named("workersCount") final Integer workersCount) {
+	public MemoryProcessExecutorPlugin(@ParamValue("workersCount") final Integer workersCount) {
 		Assertion.checkNotNull(workersCount);
 		// ---
 		localExecutor = Executors.newFixedThreadPool(workersCount);
@@ -123,7 +123,7 @@ public class MemoryProcessExecutorPlugin implements ProcessExecutorPlugin, Activ
 		ActivityExecutionWorkspace resultWorkspace = workspaceIn;
 		try {
 			// ---
-			final ActivityEngine activityEngine = DIInjector.newInstance(activityDefinition.getEngineClass());
+			final ActivityEngine activityEngine = ComponentSpace.newInstance(activityDefinition.getEngineClass());
 
 			try {
 

@@ -31,7 +31,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -51,6 +50,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.geo.impl.services.geocoder.GeoCoderPlugin;
 import io.vertigo.geo.services.geocoder.GeoLocation;
 import io.vertigo.lang.Assertion;
@@ -78,8 +78,8 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	//	 */
 	@Inject
 	public GoogleGeoCoderPlugin(
-			final @Named("proxyHost") Optional<String> proxyHost,
-			@Named("proxyPort") final Optional<String> proxyPort) {
+			final @ParamValue("proxyHost") Optional<String> proxyHost,
+			@ParamValue("proxyPort") final Optional<String> proxyPort) {
 		Assertion.checkNotNull(proxyHost);
 		Assertion.checkNotNull(proxyPort);
 		Assertion.checkArgument((proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()),

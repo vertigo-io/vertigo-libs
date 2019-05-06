@@ -25,13 +25,13 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.health.HealthMeasure;
 import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
 import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dashboard.services.data.DataProvider;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
@@ -48,7 +48,7 @@ public final class DataProviderImpl implements DataProvider {
 
 	@Inject
 	public DataProviderImpl(
-			@Named("appName") final Optional<String> appNameOpt,
+			@ParamValue("appName") final Optional<String> appNameOpt,
 			final TimeSeriesDataBaseManager timeSeriesDataBaseManager) {
 		Assertion.checkNotNull(appNameOpt);
 		Assertion.checkNotNull(timeSeriesDataBaseManager);

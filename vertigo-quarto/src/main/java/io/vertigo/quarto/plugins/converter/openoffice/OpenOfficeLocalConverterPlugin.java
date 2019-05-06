@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +33,7 @@ import com.sun.star.lang.XComponent;
 import com.sun.star.ucb.XFileIdentifierConverter;
 import com.sun.star.uno.UnoRuntime;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.lang.Assertion;
 
@@ -53,8 +53,8 @@ public final class OpenOfficeLocalConverterPlugin extends AbstractOpenOfficeConv
 	@Inject
 	public OpenOfficeLocalConverterPlugin(
 			final FileManager fileManager,
-			@Named("unoport") final String unoPort,
-			@Named("convertTimeoutSeconds") final Optional<Integer> convertTimeoutSeconds) {
+			@ParamValue("unoport") final String unoPort,
+			@ParamValue("convertTimeoutSeconds") final Optional<Integer> convertTimeoutSeconds) {
 		super(fileManager, "localhost", unoPort, convertTimeoutSeconds.orElse(60));
 
 	}

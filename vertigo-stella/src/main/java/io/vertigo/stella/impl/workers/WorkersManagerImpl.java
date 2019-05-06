@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.workers.coordinator.WorkersCoordinator;
 import io.vertigo.stella.workers.WorkersManager;
@@ -45,9 +45,9 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 	 */
 	@Inject
 	public WorkersManagerImpl(
-			@Named("nodeId") final String nodeId,
-			final @Named("workersCount") int workersCount,
-			@Named("workTypes") final String workTypes,
+			@ParamValue("nodeId") final String nodeId,
+			final @ParamValue("workersCount") int workersCount,
+			@ParamValue("workTypes") final String workTypes,
 			final WorkersPlugin workerPlugin) {
 		Assertion.checkArgNotEmpty(nodeId);
 		Assertion.checkNotNull(workerPlugin);

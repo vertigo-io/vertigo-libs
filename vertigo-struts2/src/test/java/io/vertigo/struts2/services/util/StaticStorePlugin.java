@@ -19,10 +19,10 @@
 package io.vertigo.struts2.services.util;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -58,7 +58,7 @@ public final class StaticStorePlugin extends AbstractStaticDataStorePlugin imple
 	 * @param dtDefinitionName Definition of element
 	 */
 	@Inject
-	public StaticStorePlugin(@Named("values") final String values, @Named("dtDefinitionName") final String dtDefinitionName) {
+	public StaticStorePlugin(@ParamValue("values") final String values, @ParamValue("dtDefinitionName") final String dtDefinitionName) {
 		super();
 		Assertion.checkNotNull(dtDefinitionName);
 		Assertion.checkArgNotEmpty(values);

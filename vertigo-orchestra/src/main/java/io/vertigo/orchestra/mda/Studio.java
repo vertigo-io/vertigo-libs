@@ -25,7 +25,7 @@ import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.component.di.DIInjector;
+import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.DynamoFeatures;
@@ -75,7 +75,7 @@ public class Studio {
 	public static void main(final String[] args) {
 		try (final AutoCloseableApp app = new AutoCloseableApp(buildNodeConfig())) {
 			final Studio sample = new Studio();
-			DIInjector.injectMembers(sample, app.getComponentSpace());
+			ComponentSpace.injectMembers(sample);
 			//-----
 			sample.cleanGenerate();
 		}

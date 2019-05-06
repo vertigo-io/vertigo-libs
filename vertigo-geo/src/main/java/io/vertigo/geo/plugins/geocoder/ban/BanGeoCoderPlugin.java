@@ -33,10 +33,10 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import com.google.gson.Gson;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.geo.impl.services.geocoder.GeoCoderPlugin;
 import io.vertigo.geo.plugins.geocoder.ban.BanGeoCoderPlugin.BanResponse.GeoJsonFeature;
 import io.vertigo.geo.services.geocoder.GeoLocation;
@@ -56,8 +56,8 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 
 	@Inject
 	public BanGeoCoderPlugin(
-			final @Named("proxyHost") Optional<String> proxyHost,
-			final @Named("proxyPort") Optional<String> proxyPort) {
+			final @ParamValue("proxyHost") Optional<String> proxyHost,
+			final @ParamValue("proxyPort") Optional<String> proxyPort) {
 		Assertion.checkNotNull(proxyHost);
 		Assertion.checkNotNull(proxyPort);
 		Assertion.checkArgument((proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()),

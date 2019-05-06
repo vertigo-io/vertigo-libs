@@ -19,10 +19,10 @@
 package io.vertigo.stella.plugins.work.rest.master;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.daemon.DaemonScheduled;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.master.MasterPlugin;
 import io.vertigo.stella.impl.master.WorkResult;
@@ -47,7 +47,7 @@ public final class RestMasterPlugin implements MasterPlugin, WebServices {
 	 */
 	@Inject
 	public RestMasterPlugin(
-			@Named("timeoutSeconds") final int timeoutSeconds,
+			@ParamValue("timeoutSeconds") final int timeoutSeconds,
 			final CodecManager codecManager) {
 		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//-----

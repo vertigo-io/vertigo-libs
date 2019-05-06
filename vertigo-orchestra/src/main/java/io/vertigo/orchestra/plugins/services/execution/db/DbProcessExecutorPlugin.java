@@ -28,7 +28,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,10 +40,11 @@ import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.Activeable;
-import io.vertigo.core.component.di.DIInjector;
+import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
@@ -125,9 +125,9 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	public DbProcessExecutorPlugin(
 			final ONodeManager nodeManager,
 			final VTransactionManager transactionManager,
-			@Named("nodeName") final String nodeName,
-			@Named("workersCount") final Optional<Integer> workersCountOpt,
-			@Named("executionPeriodSeconds") final Optional<Integer> executionPeriodSecondsOpt) {
+			@ParamValue("nodeName") final String nodeName,
+			@ParamValue("workersCount") final Optional<Integer> workersCountOpt,
+			@ParamValue("executionPeriodSeconds") final Optional<Integer> executionPeriodSecondsOpt) {
 		Assertion.checkNotNull(nodeManager);
 		Assertion.checkNotNull(transactionManager);
 		// ---
@@ -232,7 +232,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 		// We execute the postTreatment of the pending activity when it's released
 		// ---
-		final ActivityEngine activityEngine = DIInjector.newInstance(
+		final ActivityEngine activityEngine = ComponentSpace.newInstance(
 				ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class));
 
 		try {
@@ -352,7 +352,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		try {
 			changeExecutionState(activityExecution, ExecutionState.RUNNING);
 			// ---
-			final ActivityEngine activityEngine = DIInjector.newInstance(
+			final ActivityEngine activityEngine = ComponentSpace.newInstance(
 					ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class));
 
 			try {
