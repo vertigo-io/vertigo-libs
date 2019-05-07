@@ -36,10 +36,10 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor;
 
-import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.lang.Assertion;
 import io.vertigo.ui.core.ProtectedValueUtil;
+import io.vertigo.vega.webservice.stereotype.QueryParam;
 
 public final class FileInfoURIConverterValueHandler extends AbstractMessageConverterMethodProcessor {
 
@@ -85,8 +85,8 @@ public final class FileInfoURIConverterValueHandler extends AbstractMessageConve
 			final NativeWebRequest webRequest,
 			final WebDataBinderFactory binderFactory) throws Exception {
 		final HttpServletRequest request = getRequest(webRequest);
-		final ParamValue requestParam = parameter.getParameterAnnotation(ParamValue.class);
-		Assertion.checkNotNull(requestParam, "Parameter name wasnt't found. Use @Named('myFileParam') in your controller.");
+		final QueryParam requestParam = parameter.getParameterAnnotation(QueryParam.class);
+		Assertion.checkNotNull(requestParam, "Parameter name wasnt't found. Use @QueryParam('myFileParam') in your controller.");
 		final String fileUriProtected = request.getParameter(requestParam.value());
 
 		return parameterizedTypeValueHandlerHelper.convert(fileUriProtected, parameter);
