@@ -29,7 +29,6 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
@@ -38,6 +37,7 @@ import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.services.comment.Comment;
 import io.vertigo.social.services.comment.CommentServices;
+import io.vertigo.util.InjectorUtil;
 import redis.clients.jedis.Jedis;
 
 public class CommentManagerTest {
@@ -57,7 +57,7 @@ public class CommentManagerTest {
 	@BeforeEach
 	public void setUp() {
 		app = new AutoCloseableApp(MyNodeConfig.vegaConfig());
-		ComponentSpace.injectMembers(this);
+		InjectorUtil.injectMembers(this);
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		}

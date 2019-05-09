@@ -40,7 +40,6 @@ import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.Activeable;
-import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
@@ -75,6 +74,7 @@ import io.vertigo.orchestra.services.execution.ActivityEngine;
 import io.vertigo.orchestra.services.execution.ActivityExecutionWorkspace;
 import io.vertigo.orchestra.services.execution.ExecutionState;
 import io.vertigo.util.ClassUtil;
+import io.vertigo.util.InjectorUtil;
 
 /**
  * Executeur des processus orchestra sous la forme d'une séquence linéaire d'activités.
@@ -232,7 +232,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 		// We execute the postTreatment of the pending activity when it's released
 		// ---
-		final ActivityEngine activityEngine = ComponentSpace.newInstance(
+		final ActivityEngine activityEngine = InjectorUtil.newInstance(
 				ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class));
 
 		try {
@@ -352,7 +352,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		try {
 			changeExecutionState(activityExecution, ExecutionState.RUNNING);
 			// ---
-			final ActivityEngine activityEngine = ComponentSpace.newInstance(
+			final ActivityEngine activityEngine = InjectorUtil.newInstance(
 					ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class));
 
 			try {

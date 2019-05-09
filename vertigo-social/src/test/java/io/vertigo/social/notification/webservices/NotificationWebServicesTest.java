@@ -40,12 +40,12 @@ import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.services.notification.Notification;
 import io.vertigo.social.services.notification.NotificationServices;
+import io.vertigo.util.InjectorUtil;
 import redis.clients.jedis.Jedis;
 
 public final class NotificationWebServicesTest {
@@ -70,7 +70,7 @@ public final class NotificationWebServicesTest {
 
 	@BeforeEach
 	public void setUpInstance() {
-		ComponentSpace.injectMembers(this);
+		InjectorUtil.injectMembers(this);
 		//---
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();

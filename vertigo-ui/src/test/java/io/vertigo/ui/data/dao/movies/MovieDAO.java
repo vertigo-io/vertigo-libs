@@ -24,7 +24,6 @@ import javax.inject.Inject;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
@@ -46,6 +45,7 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.lang.Generated;
 import io.vertigo.ui.data.domain.movies.Movie;
 import io.vertigo.ui.data.domain.movies.MovieIndex;
+import io.vertigo.util.InjectorUtil;
 
 /**
  * This class is automatically generated.
@@ -100,7 +100,7 @@ public final class MovieDAO extends DAO<Movie, java.lang.Long> implements StoreS
 	 */
 	public SearchQueryBuilder createSearchQueryBuilderMovie(final String criteria, final SelectedFacetValues selectedFacetValues) {
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryMovie", FacetedQueryDefinition.class);
-		final ListFilterBuilder<String> listFilterBuilder = ComponentSpace.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
+		final ListFilterBuilder<String> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
 		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
 		return SearchQuery.builder(criteriaListFilter).withFacet(facetedQueryDefinition, selectedFacetValues);
 	}
@@ -113,7 +113,7 @@ public final class MovieDAO extends DAO<Movie, java.lang.Long> implements StoreS
 	 */
 	public SearchQueryBuilder createSearchQueryBuilderMovieWithPoster(final String criteria, final SelectedFacetValues selectedFacetValues) {
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryMovieWithPoster", FacetedQueryDefinition.class);
-		final ListFilterBuilder<String> listFilterBuilder = ComponentSpace.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
+		final ListFilterBuilder<String> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
 		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
 		return SearchQuery.builder(criteriaListFilter).withFacet(facetedQueryDefinition, selectedFacetValues);
 	}

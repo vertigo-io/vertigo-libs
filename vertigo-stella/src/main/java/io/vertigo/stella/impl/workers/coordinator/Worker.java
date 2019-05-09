@@ -24,12 +24,12 @@ import java.util.concurrent.Callable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.master.MasterManager;
 import io.vertigo.stella.master.WorkResultHandler;
+import io.vertigo.util.InjectorUtil;
 
 /**
  * Exécution d'un work.
@@ -76,7 +76,7 @@ final class Worker<R, W> implements Callable<R> {
 	private static <W, R> R executeNow(final WorkItem<W, R> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-----
-		return ComponentSpace.newInstance(workItem.getWorkEngineClass())
+		return InjectorUtil.newInstance(workItem.getWorkEngineClass())
 				.process(workItem.getWork());
 	}
 

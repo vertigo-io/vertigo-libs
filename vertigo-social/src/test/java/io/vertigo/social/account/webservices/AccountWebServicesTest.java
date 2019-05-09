@@ -29,9 +29,9 @@ import org.junit.jupiter.api.Test;
 import io.restassured.RestAssured;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;
+import io.vertigo.util.InjectorUtil;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -57,7 +57,7 @@ public final class AccountWebServicesTest {
 
 	@BeforeEach
 	public void setUpInstance() {
-		ComponentSpace.injectMembers(this);
+		InjectorUtil.injectMembers(this);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();

@@ -31,7 +31,6 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.core.component.Activeable;
-import io.vertigo.core.component.ComponentSpace;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.definitions.ActivityDefinition;
@@ -43,6 +42,7 @@ import io.vertigo.orchestra.plugins.services.MapCodec;
 import io.vertigo.orchestra.services.execution.ActivityEngine;
 import io.vertigo.orchestra.services.execution.ActivityExecutionWorkspace;
 import io.vertigo.orchestra.services.execution.ExecutionState;
+import io.vertigo.util.InjectorUtil;
 
 /**
  * Executeur de processus non supervisés.
@@ -123,7 +123,7 @@ public class MemoryProcessExecutorPlugin implements ProcessExecutorPlugin, Activ
 		ActivityExecutionWorkspace resultWorkspace = workspaceIn;
 		try {
 			// ---
-			final ActivityEngine activityEngine = ComponentSpace.newInstance(activityDefinition.getEngineClass());
+			final ActivityEngine activityEngine = InjectorUtil.newInstance(activityDefinition.getEngineClass());
 
 			try {
 
