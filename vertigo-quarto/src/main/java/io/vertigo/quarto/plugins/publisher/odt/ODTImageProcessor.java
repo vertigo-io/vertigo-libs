@@ -39,11 +39,11 @@ import io.vertigo.quarto.services.publisher.model.PublisherData;
  * @author npiedeloup
  */
 final class ODTImageProcessor implements MergerProcessor {
-	private static final String IMAGE_TAG = "(<draw:frame .*draw:name=\")&lt;#image ([A-Z_]+)#&gt;(\".*svg:width=\")([0-9\\.]+)(.*\" svg:height=\")([0-9\\.]+)(.*\".*><draw:image xlink:href=\")(Pictures/[0-9A-F\\.a-z]+)(\".*/></draw:frame>)";
+	private static final String IMAGE_TAG = "(<draw:frame .*draw:name=\")&lt;#image ([a-z][A-Za-z0-9]+)#&gt;(\".*svg:width=\")([0-9\\.]+)(.*\" svg:height=\")([0-9\\.]+)(.*\".*><draw:image xlink:href=\")(Pictures/[0-9A-F\\.a-z]+)(\".*/></draw:frame>)";
 	private static final Pattern IMAGE_PATTERN = Pattern.compile(IMAGE_TAG);
 
 	private static final int DUMMY1_GROUP = 1; //(<draw:frame .*draw:name=\")
-	private static final int IMAGE_CODE_GROUP = 2; //([A-Z_]+)
+	private static final int IMAGE_CODE_GROUP = 2; //([a-z][A-Za-z0-9]+)
 	private static final int DUMMY2_GROUP = 3; //(\".*svg:width=\")
 	private static final int IMAGE_WIDTH_GROUP = 4; //([0-9\\.]+)
 	private static final int DUMMY3_GROUP = 5; //(.*\" svg:height=\")
@@ -62,7 +62,7 @@ final class ODTImageProcessor implements MergerProcessor {
 		final Matcher imageMatcher = IMAGE_PATTERN.matcher(xmlInput);
 		int offset = 0;
 		while (imageMatcher.find(offset)) {
-			final String imageCode = imageMatcher.group(IMAGE_CODE_GROUP); //([A-Z_]+)
+			final String imageCode = imageMatcher.group(IMAGE_CODE_GROUP); //([a-z][A-Za-z0-9]+)
 			final String imageFileName = imageMatcher.group(IMAGE_FILENAME_GROUP);//(Pictures/[0-9A-F\\.a-z]+)
 
 			final VFile imageFileInfo = publisherData.getRootNode().getImage(imageCode);

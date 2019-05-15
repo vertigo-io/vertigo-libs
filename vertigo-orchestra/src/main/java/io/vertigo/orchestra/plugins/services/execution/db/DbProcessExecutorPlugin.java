@@ -305,8 +305,6 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				workspace = getWorkspaceForActivityExecution(activityExecution.getAceId(), true);
 				doChangeExecutionState(activityExecution, ExecutionState.SUBMITTED);
-				// We set the beginning time of the activity
-				activityExecution.setBeginTime(Instant.now());
 				transaction.commit();
 			}
 			workers.submit(() -> doRunActivity(activityExecution, workspace));
@@ -350,6 +348,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		ActivityExecutionWorkspace resultWorkspace = workspace;
 
 		try {
+			// We set the beginning time of the activity
+			activityExecution.setBeginTime(Instant.now());
 			changeExecutionState(activityExecution, ExecutionState.RUNNING);
 			// ---
 			final ActivityEngine activityEngine = InjectorUtil.newInstance(
