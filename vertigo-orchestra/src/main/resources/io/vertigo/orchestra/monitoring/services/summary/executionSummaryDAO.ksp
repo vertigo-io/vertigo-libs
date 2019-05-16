@@ -1,6 +1,6 @@
 package io.vertigo.orchestra.monitoring.dao.summary
 
-create Task TK_GET_EXECUTION_SUMMARIES_BY_DATE {
+create Task TkGetExecutionSummariesByDate {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -46,7 +46,7 @@ create Task TK_GET_EXECUTION_SUMMARIES_BY_DATE {
 							end as ERROR_RANK
 						from o_process pro 
 						join o_process_execution pre on pre.pro_id = pro.pro_id
-						where pre.begin_time between #DATE_MIN# and #DATE_MAX#
+						where pre.begin_time between #dateMin# and #dateMax#
 						
 					) exec
 					group by exec.name, exec.label
@@ -54,7 +54,7 @@ create Task TK_GET_EXECUTION_SUMMARIES_BY_DATE {
 				
 				join ( 	select 	planif.name,
 								min(planif.waitingexpected_time) as NEXT_EXECUTION_TIME,
-								sum(case when planif.SST_CD='MISFIRED' and planif.expected_time between #DATE_MIN# and #DATE_MAX# then 1 else 0 end) as MISFIRED_COUNT
+								sum(case when planif.SST_CD='MISFIRED' and planif.expected_time between #dateMin# and #dateMax# then 1 else 0 end) as MISFIRED_COUNT
 						from (
 							select p2.name,
 								prp.expected_time as expected_time,
@@ -78,13 +78,13 @@ create Task TK_GET_EXECUTION_SUMMARIES_BY_DATE {
 			;
         	
 			"
-	attribute DTC_EXECUTION_SUMMARY	 	{domain : DO_DT_O_EXECUTION_SUMMARY_DTC 		notNull:"true" 	inOut :"out"}
-	attribute DATE_MIN	 	{domain : DO_O_TIMESTAMP 		notNull:"true" 	inOut :"in"}
-	attribute DATE_MAX	 	{domain : DO_O_TIMESTAMP 		notNull:"true" 	inOut :"in"}
-	attribute STATUS	 	{domain : DO_O_CODE_IDENTIFIANT		notNull:"true" 	inOut :"in"}
+	attribute dtcExecutionSummary	 	{domain : DoDtOExecutionSummaryDtc 		required:"true" 	inOut :"out"}
+	attribute dateMin	 	{domain : DoOTimestamp 		required:"true" 	inOut :"in"}
+	attribute dateMax	 	{domain : DoOTimestamp 		required:"true" 	inOut :"in"}
+	attribute status	 	{domain : DoOCodeIdentifiant		required:"true" 	inOut :"in"}
 },
 
-create Task TK_GET_EXECUTION_SUMMARY_BY_DATE_AND_NAME {
+create Task TkGetExecutionSummaryByDateAndName {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -106,7 +106,7 @@ create Task TK_GET_EXECUTION_SUMMARY_BY_DATE_AND_NAME {
 						pro.name as PROCESS_NAME,
 						pro.label as PROCESS_LABEL
 						from o_process pro 
-						where pro.NAME = #NAME#) as from_process
+						where pro.NAME = #name#) as from_process
 				left join lateral (
 					select 
 						sum(exec.SI_SUCCESS) as SUCCESSFUL_COUNT,
@@ -131,7 +131,7 @@ create Task TK_GET_EXECUTION_SUMMARY_BY_DATE_AND_NAME {
 							end as ERROR_RANK
 						from o_process pro 
 						left join o_process_execution pre on pre.pro_id = pro.pro_id
-						where pre.begin_time between #DATE_MIN# and #DATE_MAX# and pro.name = #NAME#
+						where pre.begin_time between #dateMin# and #dateMax# and pro.name = #name#
 						
 					) exec
 					
@@ -141,7 +141,7 @@ create Task TK_GET_EXECUTION_SUMMARY_BY_DATE_AND_NAME {
 				
 				 ( 	select 	
 								min(planif.waitingexpected_time) as NEXT_EXECUTION_TIME,
-								sum(case when planif.SST_CD='MISFIRED' and planif.expected_time between #DATE_MIN# and #DATE_MAX# then 1 else 0 end) as MISFIRED_COUNT
+								sum(case when planif.SST_CD='MISFIRED' and planif.expected_time between #dateMin# and #dateMax# then 1 else 0 end) as MISFIRED_COUNT
 						from (
 							select p2.name,
 								prp.expected_time as expected_time,
@@ -149,14 +149,14 @@ create Task TK_GET_EXECUTION_SUMMARY_BY_DATE_AND_NAME {
 								prp.SST_CD
 							from o_process_planification prp
 							join o_process p2 on p2.pro_id=prp.pro_id
-							where p2.name = #NAME#) as planif 
+							where p2.name = #name#) as planif 
 						where planif.name = from_process.PROCESS_NAME
 						group by planif.name
 					) lat_planif on true;
         	
 			"
-	attribute DT_EXECUTION_SUMMARY	 	{domain : DO_DT_O_EXECUTION_SUMMARY_DTO 		notNull:"true" 	inOut :"out"}
-	attribute DATE_MIN	 	{domain : DO_O_TIMESTAMP 		notNull:"true" 	inOut :"in"}
-	attribute DATE_MAX	 	{domain : DO_O_TIMESTAMP 		notNull:"true" 	inOut :"in"}
-	attribute NAME	 		{domain : DO_O_LIBELLE 		notNull:"true" 	inOut :"in"}
+	attribute dtExecutionSummary	 	{domain : DoDtOExecutionSummaryDto 		required:"true" 	inOut :"out"}
+	attribute dateMin	 	{domain : DoOTimestamp 		required:"true" 	inOut :"in"}
+	attribute dateMax	 	{domain : DoOTimestamp 		required:"true" 	inOut :"in"}
+	attribute name	 		{domain : DoOLibelle 		required:"true" 	inOut :"in"}
 },

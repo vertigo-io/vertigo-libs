@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,6 +31,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.StringUtil;
 import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 
 /**
@@ -58,7 +59,7 @@ public final class StrutsUiObject<D extends DtObject> extends VegaUiObject<D> im
 	public Serializable get(final Object key) {
 		final String keyFieldName = String.class.cast(key);
 		Assertion.checkArgNotEmpty(keyFieldName);
-		Assertion.checkArgument(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
+		Assertion.checkArgument(StringUtil.isLowerCamelCase(keyFieldName), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//-----
 		final DtField dtField = getDtField(keyFieldName);
 		if (isMultiple(dtField)) {
@@ -115,7 +116,7 @@ public final class StrutsUiObject<D extends DtObject> extends VegaUiObject<D> im
 	/** {@inheritDoc} */
 	@Override
 	public boolean containsKey(final Object arg0) {
-		return camel2ConstIndex.containsKey(arg0);
+		return fieldIndex.contains(arg0);
 	}
 
 	/** Non implémenté. */
@@ -139,13 +140,13 @@ public final class StrutsUiObject<D extends DtObject> extends VegaUiObject<D> im
 	/** {@inheritDoc} */
 	@Override
 	public boolean isEmpty() {
-		return camel2ConstIndex.isEmpty();
+		return fieldIndex.isEmpty();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Set<String> keySet() {
-		return camel2ConstIndex.keySet();
+		return fieldIndex;
 	}
 
 	/** Non implémenté. */
@@ -163,7 +164,7 @@ public final class StrutsUiObject<D extends DtObject> extends VegaUiObject<D> im
 	/** {@inheritDoc} */
 	@Override
 	public int size() {
-		return camel2ConstIndex.size();
+		return fieldIndex.size();
 	}
 
 	/** Non implémenté. */

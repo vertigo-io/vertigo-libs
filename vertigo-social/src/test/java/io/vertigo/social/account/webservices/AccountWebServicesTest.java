@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,17 +21,17 @@ package io.vertigo.social.account.webservices;
 import javax.inject.Inject;
 
 import org.apache.http.HttpStatus;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.core.component.di.injector.DIInjector;
-import io.vertigo.social.MyAppConfig;
+import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;
+import io.vertigo.util.InjectorUtil;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -47,17 +47,17 @@ public final class AccountWebServicesTest {
 	private RedisConnector redisConnector;
 
 	static {
-		RestAssured.port = MyAppConfig.WS_PORT;
+		RestAssured.port = MyNodeConfig.WS_PORT;
 	}
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
+		app = new AutoCloseableApp(MyNodeConfig.vegaConfig());
 	}
 
-	@Before
+	@BeforeEach
 	public void setUpInstance() {
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		InjectorUtil.injectMembers(this);
 		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
@@ -65,7 +65,7 @@ public final class AccountWebServicesTest {
 		mockIdentities.initData();
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() {
 		if (app != null) {
 			app.close();

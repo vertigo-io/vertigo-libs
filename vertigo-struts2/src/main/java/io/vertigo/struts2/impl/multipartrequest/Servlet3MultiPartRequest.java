@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,7 +43,7 @@ import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.IOUtils;
 import org.apache.struts2.dispatcher.multipart.JakartaMultiPartRequest;
 
-import io.vertigo.lang.VSystemException;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.util.StringUtil;
 
 /**
@@ -99,13 +99,8 @@ public final class Servlet3MultiPartRequest extends JakartaMultiPartRequest {
 	 */
 	private static final class PartFileItem extends DiskFileItem {
 
-		private final transient Part part;
+		private transient Part part;
 		private final File storeLocation;
-
-		/**
-		 * serialVersionUID.
-		 */
-		private static final long serialVersionUID = -2535633405526276127L;
 
 		public PartFileItem(final Part part, final String saveDir) {
 			super(part.getName(), part.getContentType(), getFilename(part) == null, getFilename(part), -1, new File(saveDir));
@@ -124,7 +119,7 @@ public final class Servlet3MultiPartRequest extends JakartaMultiPartRequest {
 					storeLocation = getTempFile();
 					part.write(storeLocation.getAbsolutePath());
 				} catch (final IOException e) {
-					throw new VSystemException("Impossible de copier sur disque le fichier uploadé", e);
+					throw WrappedException.wrap(e, "Impossible de copier sur disque le fichier uploadé");
 				}
 			}
 
@@ -148,7 +143,7 @@ public final class Servlet3MultiPartRequest extends JakartaMultiPartRequest {
 		}
 
 		@Override
-		public OutputStream getOutputStream() throws IOException {
+		public OutputStream getOutputStream() {
 			// Inutile dans le cas où l'on utilise cette classe de gestion du multipart
 			// utilisé à la base par le FileItemFactory que l'on utilise pas
 			throw new UnsupportedOperationException("Objet en lecture seule");
@@ -164,7 +159,7 @@ public final class Servlet3MultiPartRequest extends JakartaMultiPartRequest {
 			try {
 				return IOUtils.toByteArray(getInputStream());
 			} catch (final IOException e) {
-				throw new VSystemException("Impossible de lire le fichier", e);
+				throw WrappedException.wrap(e, "Impossible de lire le fichier");
 			}
 		}
 
@@ -176,7 +171,7 @@ public final class Servlet3MultiPartRequest extends JakartaMultiPartRequest {
 				}
 				part.delete();
 			} catch (final IOException e) {
-				throw new VSystemException("Impossible de supprimer le fichier", e);
+				throw WrappedException.wrap(e, "Impossible de supprimer le fichier");
 			}
 		}
 
@@ -192,16 +187,14 @@ public final class Servlet3MultiPartRequest extends JakartaMultiPartRequest {
 					paramParser.setLowerCaseNames(true);
 					// Parameter parser can handle null input
 					final Map<String, String> params = paramParser.parse(cd, ';');
-					if (params.containsKey("filename")) {
-						fileName = params.get("filename");
-						if (fileName != null) {
-							fileName = fileName.trim();
-						} else {
-							// Even if there is no value, the parameter is present,
-							// so we return an empty file name rather than no file
-							// name.
-							fileName = "";
-						}
+					fileName = params.get("filename");
+					if (fileName != null) {
+						fileName = fileName.trim();
+					} else {
+						// Even if there is no value, the parameter is present,
+						// so we return an empty file name rather than no file
+						// name.
+						fileName = "";
 					}
 				}
 			}

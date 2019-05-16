@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,14 @@
  */
 package io.vertigo.social.services.notification;
 
-import java.util.Date;
+import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 import io.vertigo.lang.Assertion;
 
 /**
- * @author pchretien
+ * @author pchretien, npiedeloup, btounkara
  */
 public final class Notification {
 	private final UUID uuid;
@@ -34,7 +35,8 @@ public final class Notification {
 	private final String content;
 	private final int ttlInSeconds;
 	private final String targetUrl;
-	private final Date creationDate;
+	private final Instant creationDate;
+	private final Optional<String> userContent;
 
 	/**
 	 * Constructor.
@@ -46,8 +48,10 @@ public final class Notification {
 	 * @param ttlInSeconds TimeToLive in seconds
 	 * @param creationDate Create date
 	 * @param targetUrl Target URL of this notification
+	 * @param userContent Reader's specific content of this notification (can't be empty)
 	 */
-	Notification(final UUID uuid, final String sender, final String type, final String title, final String content, final int ttlInSeconds, final Date creationDate, final String targetUrl) {
+	Notification(final UUID uuid, final String sender, final String type, final String title, final String content,
+			final int ttlInSeconds, final Instant creationDate, final String targetUrl, final Optional<String> userContent) {
 		Assertion.checkNotNull(uuid);
 		Assertion.checkArgNotEmpty(sender);
 		Assertion.checkArgNotEmpty(type);
@@ -56,6 +60,8 @@ public final class Notification {
 		Assertion.checkArgument(ttlInSeconds == -1 || ttlInSeconds > 0, "ttl must be positive or undefined (-1).");
 		Assertion.checkArgNotEmpty(targetUrl);
 		Assertion.checkNotNull(creationDate);
+		Assertion.checkNotNull(userContent);
+		Assertion.when(userContent.isPresent()).check(() -> userContent.get().length() > 0, "userContent can't be empty if set");
 		//-----
 		this.uuid = uuid;
 		this.sender = sender;
@@ -65,6 +71,7 @@ public final class Notification {
 		this.ttlInSeconds = ttlInSeconds;
 		this.creationDate = creationDate;
 		this.targetUrl = targetUrl;
+		this.userContent = userContent;
 	}
 
 	/**
@@ -129,7 +136,7 @@ public final class Notification {
 	/**
 	 * @return Creation date
 	 */
-	public Date getCreationDate() {
+	public Instant getCreationDate() {
 		return creationDate;
 	}
 
@@ -139,4 +146,12 @@ public final class Notification {
 	public String getTargetUrl() {
 		return targetUrl;
 	}
+
+	/**
+	 * @return Specific content linked to reader
+	 */
+	public Optional<String> getUserContent() {
+		return userContent;
+	}
+
 }

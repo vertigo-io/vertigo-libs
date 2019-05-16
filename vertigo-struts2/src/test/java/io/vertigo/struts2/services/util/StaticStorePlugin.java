@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,18 +19,18 @@
 package io.vertigo.struts2.services.util;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractStaticDataStorePlugin;
 import io.vertigo.lang.Assertion;
@@ -58,7 +58,7 @@ public final class StaticStorePlugin extends AbstractStaticDataStorePlugin imple
 	 * @param dtDefinitionName Definition of element
 	 */
 	@Inject
-	public StaticStorePlugin(@Named("values") final String values, @Named("dtDefinitionName") final String dtDefinitionName) {
+	public StaticStorePlugin(@ParamValue("values") final String values, @ParamValue("dtDefinitionName") final String dtDefinitionName) {
 		super();
 		Assertion.checkNotNull(dtDefinitionName);
 		Assertion.checkArgNotEmpty(values);
@@ -131,34 +131,33 @@ public final class StaticStorePlugin extends AbstractStaticDataStorePlugin imple
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final URI<E> uri) {
+	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final UID<E> uri) {
 		Assertion.checkArgument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
+	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final UID<?> uri) {
 		Assertion.checkArgument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
-		Assertion.checkArgument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
-		throw new UnsupportedOperationException();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <E extends Entity> DtList<E> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<E> uri) {
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
 		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(uri);
+		Assertion.checkNotNull(dtListState);
 		Assertion.checkArgument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
-		Assertion.checkArgument(uri.getCriteria() == null, "This store could only load all data, not {0}", uri.getCriteria());
+		Assertion.checkArgument(criteria == null, "This store could only load all data, not {0}", criteria);
 		//----
 		return (DtList<E>) dtc;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public int count(final DtDefinition dtDefinition) {
+		return dtc.size();
 	}
 
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,10 +24,10 @@ import java.util.UUID;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.core.component.Component;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 
 /**
- * @author pchretien
+ * @author pchretien, npiedeloup, btounkara
  */
 public interface NotificationServices extends Component {
 	/**
@@ -35,21 +35,21 @@ public interface NotificationServices extends Component {
 	 * @param notification Notification
 	 * @param accountURIs Destination users
 	 */
-	void send(final Notification notification, final Set<URI<Account>> accountURIs);
+	void send(final Notification notification, final Set<UID<Account>> accountURIs);
 
 	/**
 	 * Retrieves all notifications for one account
 	 * @param accountURI Account
 	 * @return List notifications
 	 */
-	List<Notification> getCurrentNotifications(URI<Account> accountURI);
+	List<Notification> getCurrentNotifications(UID<Account> accountURI);
 
 	/**
 	 * Removes one notification.
 	 * @param accountURI User account
 	 * @param notificationUUID Notification uid
 	 */
-	void remove(URI<Account> accountURI, UUID notificationUUID);
+	void remove(UID<Account> accountURI, UUID notificationUUID);
 
 	/**
 	 * Removes all notifications by type and targetUrl.
@@ -58,4 +58,12 @@ public interface NotificationServices extends Component {
 	 * @param targetUrl Notification's target Url
 	 */
 	void removeAll(String type, String targetUrl);
+
+	/**
+	 * Updates the flag of the notification
+	 * @param accountURI User account
+	 * @param notificationUUID Notification uid
+	 * @param userContent userContent
+	 */
+	void updateUserContent(UID<Account> accountURI, UUID notificationUUID, String userContent);
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,13 +27,13 @@ import io.vertigo.dynamo.domain.model.DtObject;
 public final class MisEnCause implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "Sexe")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoBoolean", label = "Sexe")
 	private Boolean siHomme;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Nom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Nom")
 	private String nom;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Prenom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Prenom")
 	private String prenom;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_DT_ADDRESS_DTC", label = "Addresses connues")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoDtAddressDtc", label = "Addresses connues")
 	private io.vertigo.dynamo.domain.model.DtList<io.vertigo.quarto.services.publisher.data.domain.Address> adressesConnues;
 
 	/**

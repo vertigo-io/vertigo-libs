@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,8 +19,8 @@
 package io.vertigo.orchestra.plugins.services.execution.db;
 
 import java.lang.reflect.Field;
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -28,25 +28,29 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 
-import io.vertigo.app.Home;
+import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.commons.analytics.process.AProcess;
+import io.vertigo.commons.analytics.process.AProcessBuilder;
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.component.Activeable;
-import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.param.ParamValue;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.model.DtListState;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 import io.vertigo.orchestra.dao.definition.OActivityDAO;
 import io.vertigo.orchestra.dao.execution.ExecutionPAO;
 import io.vertigo.orchestra.dao.execution.OActivityExecutionDAO;
@@ -55,6 +59,7 @@ import io.vertigo.orchestra.dao.execution.OActivityWorkspaceDAO;
 import io.vertigo.orchestra.dao.execution.OProcessExecutionDAO;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.definitions.ProcessType;
+import io.vertigo.orchestra.domain.DtDefinitions.OActivityExecutionFields;
 import io.vertigo.orchestra.domain.definition.OActivity;
 import io.vertigo.orchestra.domain.execution.OActivityExecution;
 import io.vertigo.orchestra.domain.execution.OActivityLog;
@@ -69,6 +74,7 @@ import io.vertigo.orchestra.services.execution.ActivityEngine;
 import io.vertigo.orchestra.services.execution.ActivityExecutionWorkspace;
 import io.vertigo.orchestra.services.execution.ExecutionState;
 import io.vertigo.util.ClassUtil;
+import io.vertigo.util.InjectorUtil;
 
 /**
  * Executeur des processus orchestra sous la forme d'une séquence linéaire d'activités.
@@ -94,6 +100,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private OActivityDAO activityDAO;
 	@Inject
 	private StoreManager storeManager;
+	@Inject
+	private AnalyticsManager analyticsManager;
 
 	private final int workersCount;
 	private final String nodeName;
@@ -110,33 +118,34 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	 * Constructeur.
 	 * @param nodeManager le gestionnaire de noeud
 	 * @param transactionManager le gestionnaire de transaction
-	 * @param workersCount le nombre de worker du noeud
-	 * @param executionPeriodSeconds le timer du long-polling
+	 * @param workersCountOpt le nombre de worker du noeud (10 by default)
+	 * @param executionPeriodSecondsOpt le timer du long-polling (30 seconds by default)
 	 */
 	@Inject
 	public DbProcessExecutorPlugin(
 			final ONodeManager nodeManager,
 			final VTransactionManager transactionManager,
-			@Named("nodeName") final String nodeName,
-			@Named("workersCount") final int workersCount,
-			@Named("executionPeriodSeconds") final int executionPeriodSeconds) {
+			@ParamValue("nodeName") final String nodeName,
+			@ParamValue("workersCount") final Optional<Integer> workersCountOpt,
+			@ParamValue("executionPeriodSeconds") final Optional<Integer> executionPeriodSecondsOpt) {
 		Assertion.checkNotNull(nodeManager);
 		Assertion.checkNotNull(transactionManager);
-		// ---
-		Assertion.checkState(workersCount >= 1, "We need at least 1 worker");
 		// ---
 		this.nodeManager = nodeManager;
 		this.transactionManager = transactionManager;
 		this.nodeName = nodeName;
-		this.workersCount = workersCount;
-		this.executionPeriodSeconds = executionPeriodSeconds;
+		workersCount = workersCountOpt.orElse(10);
+		// ---
+		Assertion.checkState(workersCount >= 1, "We need at least 1 worker");
+		// ---
+		executionPeriodSeconds = executionPeriodSecondsOpt.orElse(30);
 		// ---
 		workers = Executors.newFixedThreadPool(workersCount);
 	}
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition("DMN_O_DB_PROCESS_EXECUTOR_DAEMON", () -> this::executeProcesses, executionPeriodSeconds));
+		return Collections.singletonList(new DaemonDefinition("DmnODbProcessExecutorDaemon", () -> this::executeProcesses, executionPeriodSeconds));
 	}
 
 	/** {@inheritDoc} */
@@ -144,17 +153,24 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	public void start() {
 		handleDeadNodeProcesses();
 		nodId = nodeManager.registerNode(nodeName);
+		handleNodeDeadProcesses(nodId);
 	}
 
 	private void executeProcesses() {
+		ThreadContext.put("module", "orchestra");
 		try {
 			Assertion.checkNotNull(nodId, "Node not already registered");
 			executeToDo();
 			nodeManager.updateHeartbeat(nodId);
 			handleDeadNodeProcesses();
-		} catch (final Exception e) {
-			// We log the error and we continue the timer
-			LOGGER.error("Exception launching activities to executes", e);
+		} catch (final Throwable t) {
+			LOGGER.error("Exception launching activities to executes", t);
+			// if it's an interrupted we rethrow it because we are asked to stop by the jvm
+			if (t instanceof InterruptedException) {
+				throw t;
+			}
+		} finally {
+			ThreadContext.remove("module");
 		}
 	}
 
@@ -216,8 +232,8 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 		// We execute the postTreatment of the pending activity when it's released
 		// ---
-		final ActivityEngine activityEngine = DIInjector.newInstance(
-				ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class), Home.getApp().getComponentSpace());
+		final ActivityEngine activityEngine = InjectorUtil.newInstance(
+				ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class));
 
 		try {
 			switch (executionState) {
@@ -289,8 +305,6 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				workspace = getWorkspaceForActivityExecution(activityExecution.getAceId(), true);
 				doChangeExecutionState(activityExecution, ExecutionState.SUBMITTED);
-				// We set the beginning time of the activity
-				activityExecution.setBeginTime(new Date());
 				transaction.commit();
 			}
 			workers.submit(() -> doRunActivity(activityExecution, workspace));
@@ -300,13 +314,23 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void doRunActivity(final OActivityExecution activityExecution, final ActivityExecutionWorkspace workspace) {
 		clearAllThreadLocals();
-		ActivityExecutionWorkspace result;
+		ThreadContext.put("module", "orchestra");
+		ActivityExecutionWorkspace result = null;
+		Throwable throwable = null;
 		try {
 			result = execute(activityExecution, workspace);
-			putResult(activityExecution, result, null);
-		} catch (final Exception e) {
-			LOGGER.info("Error executing activity", e);
-			putResult(activityExecution, null, e.getCause());
+		} catch (final WrappedException e) {
+			LOGGER.error("Error executing activity", e);
+			throwable = e.getCause();
+		} catch (final Throwable t) {
+			LOGGER.error("Error executing activity", t);
+			if (t instanceof InterruptedException) {
+				throw t;
+			}
+			throwable = t;
+		} finally {
+			putResult(activityExecution, result, throwable);
+			ThreadContext.remove("module");
 		}
 	}
 
@@ -324,10 +348,12 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		ActivityExecutionWorkspace resultWorkspace = workspace;
 
 		try {
+			// We set the beginning time of the activity
+			activityExecution.setBeginTime(Instant.now());
 			changeExecutionState(activityExecution, ExecutionState.RUNNING);
 			// ---
-			final ActivityEngine activityEngine = DIInjector.newInstance(
-					ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class), Home.getApp().getComponentSpace());
+			final ActivityEngine activityEngine = InjectorUtil.newInstance(
+					ClassUtil.classForName(activityExecution.getEngine(), ActivityEngine.class));
 
 			try {
 
@@ -405,7 +431,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		// ---
 		final OProcessExecution newProcessExecution = new OProcessExecution();
 		newProcessExecution.setProId(processDefinition.getId());
-		newProcessExecution.setBeginTime(new Date());
+		newProcessExecution.setBeginTime(Instant.now());
 		changeProcessExecutionState(newProcessExecution, ExecutionState.RUNNING);
 		processExecutionDAO.save(newProcessExecution);
 
@@ -427,15 +453,16 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		final OActivityExecution firstActivityExecution = initActivityExecutionWithActivity(firstActivity, processExecution.getPreId());
 		activityExecutionDAO.save(firstActivityExecution);
 
+		processExecution.process().load();
 		final ActivityExecutionWorkspace initialWorkspace = new ActivityExecutionWorkspace(mapCodec.decode(processExecution
-				.getProcess()
+				.process().get()
 				.getInitialParams()));
 		if (initialParams.isPresent()) {
 			// If Plannification specifies initialParams we take them in addition
 			initialWorkspace.addExternalParams(mapCodec.decode(initialParams.get()));
 		}
 		// We set in the workspace essentials params
-		initialWorkspace.setProcessName(processExecution.getProcess().getName());
+		initialWorkspace.setProcessName(processExecution.process().get().getName());
 		initialWorkspace.setProcessExecutionId(processExecution.getPreId());
 		initialWorkspace.setActivityExecutionId(firstActivityExecution.getAceId());
 		initialWorkspace.setToken(firstActivityExecution.getToken());
@@ -451,7 +478,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 		activityExecution.setPreId(preId);
 		activityExecution.setActId(activity.getActId());
-		activityExecution.setCreationTime(new Date());
+		activityExecution.setCreationTime(Instant.now());
 		activityExecution.setEngine(activity.getEngine());
 		changeActivityExecutionState(activityExecution, ExecutionState.WAITING);
 		activityExecution.setToken(ActivityTokenGenerator.getToken());
@@ -487,7 +514,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 				previousWorkspace.setToken(nextActivityExecution.getToken());
 				// ---
 				saveActivityExecutionWorkspace(nextActivityExecution.getAceId(), previousWorkspace, true);
-				nextActivityExecution.setBeginTime(new Date());
+				nextActivityExecution.setBeginTime(Instant.now());
 				nextWorkspace = previousWorkspace;
 				//we close the transaction now
 				transaction.addAfterCompletion(
@@ -514,6 +541,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 				endActivityExecutionAndInitNext(activityExecution);
 				break;
 			case ERROR:
+				activityExecution.setEndTime(Instant.now());
 				changeExecutionState(activityExecution, ExecutionState.ERROR);
 				break;
 			case PENDING:
@@ -544,7 +572,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		// ---
 		lockActivityExecution(aceId);
 		// we need at most one workspace in and one workspace out
-		final OActivityWorkspace activityWorkspace = activityWorkspaceDAO.getActivityWorkspace(aceId, in).orElse(new OActivityWorkspace());
+		final OActivityWorkspace activityWorkspace = activityWorkspaceDAO.getActivityWorkspace(aceId, in).orElseGet(OActivityWorkspace::new);
 		activityWorkspace.setAceId(aceId);
 		activityWorkspace.setIsIn(in);
 		activityWorkspace.setWorkspace(mapCodec.encode(workspace.asMap()));
@@ -554,7 +582,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private void lockActivityExecution(final Long aceId) {
-		final URI<OActivityExecution> activityExecutionURI = DtObjectUtil.createURI(OActivityExecution.class, aceId);
+		final UID<OActivityExecution> activityExecutionURI = UID.of(OActivityExecution.class, aceId);
 		storeManager.getDataStore().readOneForUpdate(activityExecutionURI);
 	}
 
@@ -565,7 +593,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		activityExecutionDAO.save(activityExecution);
 
 		// If it's an error the entire process is in Error
-		if (ExecutionState.ERROR.equals(executionState)) {
+		if (executionState == ExecutionState.ERROR) {
 			endProcessExecution(activityExecution.getPreId(), ExecutionState.ERROR);
 		}
 
@@ -590,7 +618,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	}
 
 	private void endActivity(final OActivityExecution activityExecution) {
-		activityExecution.setEndTime(new Date());
+		activityExecution.setEndTime(Instant.now());
 		changeActivityExecutionState(activityExecution, ExecutionState.DONE);
 		activityExecutionDAO.save(activityExecution);
 
@@ -610,9 +638,12 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void endProcessExecution(final Long preId, final ExecutionState executionState) {
 		final OProcessExecution processExecution = processExecutionDAO.get(preId);
-		processExecution.setEndTime(new Date());
+		processExecution.process().load();
+		processExecution.setEndTime(Instant.now());
 		changeProcessExecutionState(processExecution, executionState);
 		processExecutionDAO.save(processExecution);
+		final DtList<OActivityExecution> activityExecutions = activityExecutionDAO.findAll(Criterions.isEqualTo(OActivityExecutionFields.preId, preId), DtListState.of(100));
+		traceProcessExecution(processExecution, activityExecutions);
 
 	}
 
@@ -621,7 +652,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		Assertion.checkNotNull(activityLogger);
 		// ---
 		// we need at most on log per activityExecution
-		final OActivityLog activityLog = activityLogDAO.getActivityLogByAceId(aceId).orElse(new OActivityLog());
+		final OActivityLog activityLog = activityLogDAO.getActivityLogByAceId(aceId).orElseGet(OActivityLog::new);
 		activityLog.setAceId(aceId);
 		final String log = new StringBuilder(activityLog.getLog() == null ? "" : activityLog.getLog()).append(activityLogger.getLogAsString())//
 				.append("ResultWorkspace : ").append(mapCodec.encode(resultWorkspace.asMap())).append("\n")//
@@ -645,10 +676,16 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void handleDeadNodeProcesses() {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final Long now = System.currentTimeMillis();
 			// We wait two heartbeat to be sure that the node is dead
-			final Date maxDate = new Date(now - 2 * executionPeriodSeconds * 1000);
+			final Instant maxDate = Instant.now().minusSeconds(2L * executionPeriodSeconds);
 			executionPAO.handleProcessesOfDeadNodes(maxDate);
+			transaction.commit();
+		}
+	}
+
+	private void handleNodeDeadProcesses(final Long nodeId) {
+		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			executionPAO.handleDeadProcessesOfNode(nodeId);
 			transaction.commit();
 		}
 	}
@@ -661,6 +698,17 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	private static void changeProcessExecutionState(final OProcessExecution processExecution, final ExecutionState executionState) {
 		// we need to check if the transistion is valid
 		processExecution.setEstCd(executionState.name());
+	}
+
+	private void traceProcessExecution(final OProcessExecution processExecution, final DtList<OActivityExecution> activityExecutions) {
+		final AProcessBuilder processBuilder = AProcess.builder("jobs", processExecution.process().get().getName(), processExecution.getBeginTime(), processExecution.getEndTime())
+				.setMeasure("success", ExecutionState.DONE.name().equals(processExecution.getEstCd()) ? 100.0 : 0.0)
+				.addTag("nodeName", nodeName)
+				.addTag("status", processExecution.getEstCd());
+		activityExecutions.forEach(activityExecution -> processBuilder.addSubProcess(
+				AProcess.builder("activity", activityExecution.getEngine(), activityExecution.getBeginTime(), activityExecution.getEndTime())
+						.build()));
+		analyticsManager.addProcess(processBuilder.build());
 	}
 
 }

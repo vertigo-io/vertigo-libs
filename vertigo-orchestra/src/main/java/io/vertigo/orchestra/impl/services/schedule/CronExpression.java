@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 package io.vertigo.orchestra.impl.services.schedule;
 
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -396,11 +397,11 @@ public final class CronExpression {
 		final Calendar testDateCal = Calendar.getInstance(getTimeZone());
 		testDateCal.setTime(date);
 		testDateCal.set(Calendar.MILLISECOND, 0);
-		final Date originalDate = testDateCal.getTime();
+		final Instant originalDate = testDateCal.toInstant();
 
 		testDateCal.add(Calendar.SECOND, -1);
 
-		final Date timeAfter = getNextValidTimeAfter(testDateCal.getTime());
+		final Instant timeAfter = getNextValidTimeAfter(testDateCal.toInstant());
 
 		return ((timeAfter != null) && (timeAfter.equals(originalDate)));
 	}
@@ -1056,7 +1057,9 @@ public final class CronExpression {
 	//
 	////////////////////////////////////////////////////////////////////////////
 
-	public Date getNextValidTimeAfter(final Date afterTime) {
+	public Instant getNextValidTimeAfter(final Instant afterInstant) {
+
+		final Date afterTime = new Date(afterInstant.toEpochMilli());
 
 		// Computation is based on Gregorian year only.
 		final Calendar cl = new java.util.GregorianCalendar(getTimeZone());
@@ -1064,7 +1067,7 @@ public final class CronExpression {
 		// move ahead one second, since we're computing the time *after* the
 		// given time
 		// CronTrigger does not deal with milliseconds
-		cl.setTime(new Date(afterTime.getTime() + 1000));
+		cl.setTime(new Date(afterInstant.toEpochMilli() + 1000));
 		cl.set(Calendar.MILLISECOND, 0);
 
 		boolean gotOne = false;
@@ -1454,7 +1457,7 @@ public final class CronExpression {
 			gotOne = true;
 		} // while( !done )
 
-		return cl.getTime();
+		return cl.toInstant();
 	}
 
 	/**

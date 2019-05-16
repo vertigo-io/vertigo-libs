@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,8 +33,8 @@ public final class OActivityExecutionUi implements DtObject {
 
 	private Long aceId;
 	private String label;
-	private java.util.Date beginTime;
-	private java.util.Date endTime;
+	private java.time.Instant beginTime;
+	private java.time.Instant endTime;
 	private Integer executionTime;
 	private String status;
 	private String workspaceIn;
@@ -47,7 +47,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Id de l'activité'.
 	 * @return Long aceId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", required = true, label = "Id de l'activité")
+	@Field(domain = "DoOIdentifiant", required = true, label = "Id de l'activité")
 	public Long getAceId() {
 		return aceId;
 	}
@@ -66,7 +66,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Libellé'.
 	 * @return String label
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Libellé")
+	@Field(domain = "DoOLibelle", label = "Libellé")
 	public String getLabel() {
 		return label;
 	}
@@ -82,39 +82,39 @@ public final class OActivityExecutionUi implements DtObject {
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Nom du processus'.
-	 * @return java.util.Date beginTime <b>Obligatoire</b>
+	 * Récupère la valeur de la propriété 'Démarrage'.
+	 * @return Instant beginTime <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Nom du processus")
-	public java.util.Date getBeginTime() {
+	@Field(domain = "DoOTimestamp", required = true, label = "Démarrage")
+	public java.time.Instant getBeginTime() {
 		return beginTime;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Nom du processus'.
-	 * @param beginTime java.util.Date <b>Obligatoire</b>
+	 * Définit la valeur de la propriété 'Démarrage'.
+	 * @param beginTime Instant <b>Obligatoire</b>
 	 */
-	public void setBeginTime(final java.util.Date beginTime) {
+	public void setBeginTime(final java.time.Instant beginTime) {
 		this.beginTime = beginTime;
 	}
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Nom du processus'.
-	 * @return java.util.Date endTime <b>Obligatoire</b>
+	 * Récupère la valeur de la propriété 'Fin'.
+	 * @return Instant endTime <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Nom du processus")
-	public java.util.Date getEndTime() {
+	@Field(domain = "DoOTimestamp", required = true, label = "Fin")
+	public java.time.Instant getEndTime() {
 		return endTime;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Nom du processus'.
-	 * @param endTime java.util.Date <b>Obligatoire</b>
+	 * Définit la valeur de la propriété 'Fin'.
+	 * @param endTime Instant <b>Obligatoire</b>
 	 */
-	public void setEndTime(final java.util.Date endTime) {
+	public void setEndTime(final java.time.Instant endTime) {
 		this.endTime = endTime;
 	}
 	
@@ -123,7 +123,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Durée'.
 	 * @return Integer executionTime
 	 */
-	@Field(domain = "DO_O_NOMBRE", label = "Durée")
+	@Field(domain = "DoONombre", label = "Durée")
 	public Integer getExecutionTime() {
 		return executionTime;
 	}
@@ -142,7 +142,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Statut'.
 	 * @return String status
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", label = "Statut")
+	@Field(domain = "DoOCodeIdentifiant", label = "Statut")
 	public String getStatus() {
 		return status;
 	}
@@ -161,7 +161,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Paramètres entrants'.
 	 * @return String workspaceIn
 	 */
-	@Field(domain = "DO_O_JSON_TEXT", label = "Paramètres entrants")
+	@Field(domain = "DoOJsonText", label = "Paramètres entrants")
 	public String getWorkspaceIn() {
 		return workspaceIn;
 	}
@@ -180,7 +180,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Paramètres sortants'.
 	 * @return String workspaceOut
 	 */
-	@Field(domain = "DO_O_JSON_TEXT", label = "Paramètres sortants")
+	@Field(domain = "DoOJsonText", label = "Paramètres sortants")
 	public String getWorkspaceOut() {
 		return workspaceOut;
 	}
@@ -199,7 +199,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Fichier de log'.
 	 * @return Boolean hasAttachment
 	 */
-	@Field(domain = "DO_O_BOOLEEN", label = "Fichier de log")
+	@Field(domain = "DoOBooleen", label = "Fichier de log")
 	public Boolean getHasAttachment() {
 		return hasAttachment;
 	}
@@ -218,7 +218,7 @@ public final class OActivityExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Log technique'.
 	 * @return Boolean hasTechnicalLog
 	 */
-	@Field(domain = "DO_O_BOOLEEN", label = "Log technique")
+	@Field(domain = "DoOBooleen", label = "Log technique")
 	public Boolean getHasTechnicalLog() {
 		return hasTechnicalLog;
 	}

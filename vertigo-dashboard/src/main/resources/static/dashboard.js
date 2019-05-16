@@ -9,7 +9,7 @@ function showCharts() {
 
 
 function showChart(elem) {
-		var dataUrl = "/dashboard/"+getDataUrl(elem); 
+		var dataUrl = getDataUrl(elem); 
 		
 		var queryMeasures = elem.data("query-measures");
 		var queryClusteredMeasure = elem.data("query-clustered-measure");
@@ -49,16 +49,17 @@ function showChart(elem) {
 		$.post(dataUrl, JSON.stringify(dataQuery) , "json")      
 		.done(
 		  function( datas ) {
-			  if(notEmpty(datas.timedDataSeries)) {
+			  if(notEmpty(datas.timedDataSeries) || notEmpty(datas.tabularDataSeries)) {
+				  var dataValues = datas.timedDataSeries ? datas.timedDataSeries : datas.tabularDataSeries;
 				  var dataMetrics = datas.seriesNames;
 				  if (elem.hasClass ("bignumber")) {
-					  showBigNumber(elem, datas, dataMetrics, dataQuery, dataLabels, dataIcons, dataColors);
+					  showBigNumber(elem, dataValues, dataMetrics, dataQuery, dataLabels, dataIcons, dataColors);
 				  } else if (elem.hasClass ("objective")) {
-					  showObjective(elem, datas, dataMetrics, dataQuery, dataLabels, dataIcons, dataColors);
+					  showObjective(elem, dataValues, dataMetrics, dataQuery, dataLabels, dataIcons, dataColors);
 				  } else if (elem.hasClass ("healthMonitor")) {
-					  showHealthMonitor(elem, datas, dataMetrics, dataQuery, dataLabels, dataIcons, dataColors);
+					  showHealthMonitor(elem, dataValues, dataMetrics, dataQuery, dataLabels, dataIcons, dataColors);
 				  } else if (elem.hasClass ("chartjs")) {
-					  showChartJsChart(elem, datas.timedDataSeries, dataMetrics, dataQuery, dataLabels, dataColors, additionalOptions);
+					  showChartJsChart(elem, dataValues, dataMetrics, dataQuery, dataLabels, dataColors, additionalOptions);
 				  }
 			  }
 		  });
@@ -66,36 +67,42 @@ function showChart(elem) {
 
 
 function updateTimeFilterFromSelection(queryTimeFilter) {
-	var timeSelection = $.cookie("timeFilter");
-	var to = 'now()';
-	var from = null;
-	var dim = null;
-	if(timeSelection === 'last_day') {
-		from = 'now() - 1d'; 
-		dim = '6m';
-	} else if(timeSelection === 'last_3_days') {
-		from = 'now() - 3d';
-		dim = '1h';
-	} else if(timeSelection === 'last_week') {
-		from = 'now() - 1w';
-		dim = '2h';
-	} 
-	if(from){
-		queryTimeFilter.from = from;
+	if ($.cookie) {
+		var timeSelection = $.cookie("timeFilter");
+	
+		var to = 'now()';
+		var from = 'now() - 1d';
+		var dim = '6m';
+		if(timeSelection === 'last_day') {
+			from = 'now() - 1d'; 
+			dim = '6m';
+		} else if(timeSelection === 'last_3_days') {
+			from = 'now() - 3d';
+			dim = '1h';
+		} else if(timeSelection === 'last_week') {
+			from = 'now() - 1w';
+			dim = '2h';
+		} 
+		if(from){
+			queryTimeFilter.from = from;
+		}
+		if(dim){
+			queryTimeFilter.dim = dim;
+		}
+		queryTimeFilter.to = to;
 	}
-	if(dim){
-		queryTimeFilter.dim = dim;
-	}
-	queryTimeFilter.to = to;
 }
 
 function updateLocationFilterFromSelection(dataFilter) {
-	var locationSelection = $.cookie('locationFilter');
+	var locationSelection
+	if ($.cookie) {
+		locationSelection = $.cookie('locationFilter');
 	
-	if(locationSelection) {
-		dataFilter.location = locationSelection;
-	} else {
-		dataFilter.location = "*";
+		if(locationSelection) {
+			dataFilter.filters.location = locationSelection;
+		} else {
+			dataFilter.filters.location = "*";
+		}
 	}
 	
 }
@@ -117,7 +124,7 @@ function showTables() {
 	$('div.datatable').each(function () {
 		var elem = $(this);
 		//--- query
-		var dataUrl = "/dashboard/"+getDataUrl(elem); 
+		var dataUrl = getDataUrl(elem); 
 		var queryMeasures = elem.data("query-measures");
 		var queryDataFilter = elem.data("query-data-filter");
 		var queryTimeFilter = elem.data("query-time-filter");

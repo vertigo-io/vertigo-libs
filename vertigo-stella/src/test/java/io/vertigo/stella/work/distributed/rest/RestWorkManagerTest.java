@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,14 +26,19 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.param.Param;
+import io.vertigo.stella.StellaFeatures;
 import io.vertigo.stella.master.MasterManager;
 import io.vertigo.stella.work.AbstractWorkManagerTest;
 import io.vertigo.stella.work.MyWorkResultHanlder;
 import io.vertigo.stella.work.mock.SlowWork;
 import io.vertigo.stella.work.mock.SlowWorkEngine;
+import io.vertigo.vega.VegaFeatures;
 import spark.Spark;
 
 /**
@@ -56,6 +61,26 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		final ClientNode clientNode = new ClientNode(numClient, 30);//duree de vie 30s max
 		clientNode.start();
 		return clientNode;
+	}
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(new VegaFeatures()
+						.withWebServices()
+						.withWebServicesEmbeddedServer(
+								Param.of("port", "10998"))
+						.build())
+				.addModule(new StellaFeatures()
+						.withMaster()
+						.withRestMasterPlugin(
+								Param.of("timeoutSeconds", "20"))
+						.build())
+				.build();
 	}
 
 	/**
@@ -97,8 +122,8 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		for (int i = 0; i < 20; i++) {
 			masterManager.schedule(slowWork, SlowWorkEngine.class, workResultHanlder);
 		}
-		final boolean firstsFinished = workResultHanlder.waitFinish(5, 5 * 1000);
-		Assert.assertTrue("First 5 works should finished before 5s, to test deadnode failover", firstsFinished);
+		final boolean firstsFinished = workResultHanlder.waitFinish(5, 6 * 1000);
+		Assertions.assertTrue(firstsFinished, "First 5 works should finished before 6s, to test deadnode failover");
 		//On stop le client1 avec des jobs en cours. Ils doivent être redispatchés après détection des noeuds morts
 		clientNode1.stop();
 		LOG.info("Stop ClientNode 1 : " + workResultHanlder.toString());
@@ -108,8 +133,8 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 		try {
 			final boolean finished = workResultHanlder.waitFinish(20, 35 * 1000); //Le timeout des nodes est configuré à 20s
 			LOG.info(workResultHanlder);
-			Assert.assertEquals(null, workResultHanlder.getLastThrowable());
-			Assert.assertTrue(finished);
+			Assertions.assertEquals(null, workResultHanlder.getLastThrowable());
+			Assertions.assertTrue(finished);
 		} finally {
 			clientNode2.stop();
 		}

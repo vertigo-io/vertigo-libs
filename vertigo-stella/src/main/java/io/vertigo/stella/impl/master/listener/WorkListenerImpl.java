@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,19 +37,19 @@ public final class WorkListenerImpl implements WorkListener {
 
 	private static void logWorkStart(final String workName) {
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Execution tache : " + workName);
+			LOGGER.debug("Execution tache :  {}", workName);
 		}
 	}
 
 	private static void logWorkFinish(final String workName, final long elapsedTime, final boolean success) {
 		if (LOGGER_PERFORMANCE.isInfoEnabled()) {
-			LOGGER_PERFORMANCE.info(">> Tache : " + workName + " : time = " + elapsedTime);
+			LOGGER_PERFORMANCE.info(">> Tache : {} : time = {}", workName, elapsedTime);
 		}
 		if (LOGGER.isInfoEnabled()) {
 			if (success) {
-				LOGGER.info("Execution tache : " + workName + " reussie en  ( " + elapsedTime + " ms)");
+				LOGGER.info("Execution tache : {} reussie en  ( {} ms)", workName, elapsedTime);
 			} else {
-				LOGGER.info("Execution tache : " + workName + " interrompue apres ( " + elapsedTime + " ms)");
+				LOGGER.info("Execution tache : {} interrompue apres ( {} ms)", workName, elapsedTime);
 			}
 		}
 	}
@@ -57,15 +57,12 @@ public final class WorkListenerImpl implements WorkListener {
 	/** {@inheritDoc} */
 	@Override
 	public void onStart(final String workName) {
-		//		analyticsManager.getAgent().startProcess(PROCESS_TYPE, workName);
 		logWorkStart(workName);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void onFinish(final String workName, final long elapsedTime, final boolean success) {
-		//		analyticsManager.getAgent().setMeasure(ERROR_PCT, success ? 0 : 100);
-		//		analyticsManager.getAgent().stopProcess();
 		logWorkFinish(workName, elapsedTime, success);
 	}
 }

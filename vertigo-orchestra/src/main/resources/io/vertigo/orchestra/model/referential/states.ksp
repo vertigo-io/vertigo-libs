@@ -1,15 +1,15 @@
 package io.vertigo.orchestra.domain.referential
 
-create DtDefinition DT_O_EXECUTION_STATE {
+create DtDefinition DtOExecutionState {
 	storeName : "orchestra"
-	key EST_CD	{domain : DO_O_CODE_IDENTIFIANT, label :"Code", notNull:"true",}
-	field LABEL   	{domain : DO_O_LIBELLE, label :"Libellé", notNull:"false",}
+	id estCd	{domain : DoOCodeIdentifiant, label :"Code", }
+	field label   	{domain : DoOLibelle, label :"Libellé", required:"false",}
   
 }
 
-create DtDefinition DT_O_SCHEDULER_STATE {
+create DtDefinition DtOSchedulerState {
 	storeName : "orchestra"
-	key SST_CD	{domain : DO_O_CODE_IDENTIFIANT, label :"Code", notNull:"true",}
-	field LABEL   	{domain : DO_O_LIBELLE, label :"Libellé", notNull:"false",}
+	id sstCd	{domain : DoOCodeIdentifiant, label :"Code", }
+	field label   	{domain : DoOLibelle, label :"Libellé", required:"false",}
   
 }

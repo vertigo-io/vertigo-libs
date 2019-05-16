@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,11 +18,11 @@
  */
 package io.vertigo.social.services.comment;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 import io.vertigo.account.account.Account;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 
 /**
@@ -30,13 +30,13 @@ import io.vertigo.lang.Assertion;
  */
 public final class Comment {
 	private final UUID uuid;
-	private final URI<Account> author;
+	private final UID<Account> author;
 	private final String authorDisplayName;
 	private final String msg;
-	private final Date creationDate;
-	private final Date lastModified;
+	private final Instant creationDate;
+	private final Instant lastModified;
 
-	Comment(final UUID uuid, final URI<Account> author, final String authorDisplayName, final String msg, final Date creationDate, final Date lastModified) {
+	Comment(final UUID uuid, final UID<Account> author, final String authorDisplayName, final String msg, final Instant creationDate, final Instant lastModified) {
 		Assertion.checkNotNull(uuid);
 		Assertion.checkNotNull(author);
 		Assertion.checkArgNotEmpty(authorDisplayName);
@@ -64,7 +64,7 @@ public final class Comment {
 		return uuid;
 	}
 
-	public URI<Account> getAuthor() {
+	public UID<Account> getAuthor() {
 		return author;
 	}
 
@@ -76,11 +76,11 @@ public final class Comment {
 		return msg;
 	}
 
-	public Date getCreationDate() {
+	public Instant getCreationDate() {
 		return creationDate;
 	}
 
-	public Date getLastModified() {
+	public Instant getLastModified() {
 		return lastModified;
 	}
 

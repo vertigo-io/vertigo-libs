@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,28 +20,46 @@ package io.vertigo.geo.services.geocoder.google;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.geo.GeoFeatures;
 import io.vertigo.geo.services.geocoder.GeoCoderManager;
 import io.vertigo.geo.services.geocoder.GeoLocation;
 
 /**
  * @author spoitrenaud
  */
-public class GoogleGeoCoderManagerTest extends AbstractTestCaseJU4 {
+@Disabled
+public class GoogleGeoCoderManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private GeoCoderManager geoCoderManager;
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(new GeoFeatures()
+						.withGeocoding()
+						.withGoogleGeocoder()
+						.build())
+				.build();
+	}
 
 	/**
 	 * Test de géolocalisation d'une chaîne null.
 	 */
-	@Test(expected = NullPointerException.class)
+	@Test
 	public final void testNull() {
-		// On vérifie que la géolocalisation d'une addresse n'existant pas retourne une liste vide
-		final GeoLocation geoLocation = geoCoderManager.findLocation(null);
-		Assert.assertTrue(geoLocation.isUndefined());
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			// On vérifie que la géolocalisation d'une addresse n'existant pas retourne une liste vide
+			final GeoLocation geoLocation = geoCoderManager.findLocation(null);
+			Assertions.assertTrue(geoLocation.isUndefined());
+		});
 	}
 
 	/**
@@ -51,7 +69,7 @@ public class GoogleGeoCoderManagerTest extends AbstractTestCaseJU4 {
 		// On vérifie que la géolocalisation d'une addresse n'existant pas
 		// retourne une liste vide
 		final GeoLocation geoLocation = geoCoderManager.findLocation("");
-		Assert.assertTrue(geoLocation.isUndefined());
+		Assertions.assertTrue(geoLocation.isUndefined());
 	}
 
 	/**
@@ -64,10 +82,10 @@ public class GoogleGeoCoderManagerTest extends AbstractTestCaseJU4 {
 		final String address = "étain,55400,Meuse,Lorraine,FRANCE";
 		final GeoLocation geoLocation = geoCoderManager.findLocation(address);
 		AssertNear(geoLocation, 49.213506, 5.63623222988, 2);
-		Assert.assertEquals("étain", geoLocation.getLocality().toLowerCase());
-		Assert.assertEquals("meuse", geoLocation.getLevel2().toLowerCase());
-		Assert.assertEquals("grand est", geoLocation.getLevel1().toLowerCase());
-		Assert.assertEquals("FR", geoLocation.getCountryCode());
+		Assertions.assertEquals("étain", geoLocation.getLocality().toLowerCase());
+		Assertions.assertEquals("meuse", geoLocation.getLevel2().toLowerCase());
+		Assertions.assertEquals("grand est", geoLocation.getLevel1().toLowerCase());
+		Assertions.assertEquals("FR", geoLocation.getCountryCode());
 	}
 
 	/**
@@ -87,7 +105,7 @@ public class GoogleGeoCoderManagerTest extends AbstractTestCaseJU4 {
 	public final void testOneResult2() {
 		final GeoLocation geoLocation = geoCoderManager.findLocation("4 rue du VIEux lavoir, 91190 Saint-aubin, france");
 		AssertNear(geoLocation, 48.713709, 2.138841, 0.1);
-		Assert.assertEquals("essonne", geoLocation.getLevel2().toLowerCase());
+		Assertions.assertEquals("essonne", geoLocation.getLevel2().toLowerCase());
 	}
 
 	/**
@@ -99,7 +117,7 @@ public class GoogleGeoCoderManagerTest extends AbstractTestCaseJU4 {
 		final GeoLocation roma = new GeoLocation(41.9000, 12.4833);
 
 		final double distance = geoCoderManager.distanceKm(paris, roma);
-		Assert.assertTrue(Math.abs(distance - 1105.76) < 1);
+		Assertions.assertTrue(Math.abs(distance - 1105.76) < 1);
 	}
 
 	//-------------------------------------------------------------------------
@@ -117,8 +135,8 @@ public class GoogleGeoCoderManagerTest extends AbstractTestCaseJU4 {
 	}
 
 	private void AssertNear(final GeoLocation geoLocation, final double latitude, final double longitude, final double distanceMaxKm) {
-		Assert.assertTrue(!geoLocation.isUndefined());
-		Assert.assertTrue(near(geoLocation, latitude, longitude, distanceMaxKm));
+		Assertions.assertTrue(!geoLocation.isUndefined());
+		Assertions.assertTrue(near(geoLocation, latitude, longitude, distanceMaxKm));
 	}
 
 	/**

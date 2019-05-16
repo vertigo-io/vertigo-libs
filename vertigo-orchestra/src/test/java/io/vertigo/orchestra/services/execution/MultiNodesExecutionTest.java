@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,18 +19,17 @@
 package io.vertigo.orchestra.services.execution;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.execution.engine.TestJob2;
-import io.vertigo.util.DateBuilder;
 
 public class MultiNodesExecutionTest extends ExecutionTest {
 	private static final Logger LOG = LogManager.getLogger(MultiNodesExecutionTest.class);
@@ -48,7 +47,7 @@ public class MultiNodesExecutionTest extends ExecutionTest {
 	 * Initialisation du test pour implé spécifique.
 	 * @throws Exception Erreur
 	 */
-	@BeforeClass
+	@BeforeAll
 	public static void setUpOrchestraNode() throws Exception {
 		//pour éviter le mécanisme d'attente du client lorsque le serveur est absend, on démarre le serveur puis le client
 		orchestraNode1 = startOrchestraNode(1);
@@ -59,7 +58,7 @@ public class MultiNodesExecutionTest extends ExecutionTest {
 	 * Finalisation du test pour implé spécifique.
 	 * @throws Exception Erreur
 	 */
-	@AfterClass
+	@AfterAll
 	public static void tearDownOrchestraNode() throws Exception {
 		if (orchestraNode1 != null) {
 			LOG.info("Stopping OrchestraNode1...");
@@ -76,10 +75,10 @@ public class MultiNodesExecutionTest extends ExecutionTest {
 	@Test
 	public void massExecution() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST 3 ACTIVITIES", "TEST 3 ACTIVITIES")
-				.addActivity("100MS ACTIVITY", "100MS ACTIVITY", io.vertigo.orchestra.services.execution.engine.TestJob2.class)
-				.addActivity("100MS ACTIVITY", "100MS ACTIVITY", io.vertigo.orchestra.services.execution.engine.TestJob2.class)
-				.addActivity("100MS ACTIVITY", "100MS ACTIVITY", io.vertigo.orchestra.services.execution.engine.TestJob2.class)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("Test3Activities", "Test3Activities")
+				.addActivity("100msActivity", "100MS ACTIVITY", io.vertigo.orchestra.services.execution.engine.TestJob2.class)
+				.addActivity("100msActivity", "100MS ACTIVITY", io.vertigo.orchestra.services.execution.engine.TestJob2.class)
+				.addActivity("100msActivity", "100MS ACTIVITY", io.vertigo.orchestra.services.execution.engine.TestJob2.class)
 				.withMultiExecution()
 				.build();
 
@@ -87,12 +86,12 @@ public class MultiNodesExecutionTest extends ExecutionTest {
 
 		final Long proId = processDefinition.getId();
 
-		final Date nowPlus10s = new DateBuilder(new Date()).addSeconds(10).toDateTime();
+		final Instant nowPlus10s = Instant.now().plusSeconds(10);
 		for (int i = 0; i < 50; i++) {
 			orchestraServices.getScheduler().scheduleAt(processDefinition, nowPlus10s, Collections.emptyMap());
 		}
 		Thread.sleep(1000);
-		checkPlanifications(proId, 50, 0, 0);
+		checkPlanifications(proId, 50, 0, 0, 0);
 		// After 15 seconds the process is still running
 		for (int i = 0; i < 30; i++) {
 			Thread.sleep(1000);

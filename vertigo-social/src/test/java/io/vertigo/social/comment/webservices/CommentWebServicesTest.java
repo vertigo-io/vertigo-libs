@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,7 @@
  */
 package io.vertigo.social.comment.webservices;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,10 +26,10 @@ import javax.inject.Inject;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.filter.session.SessionFilter;
@@ -40,15 +39,15 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.social.MyAppConfig;
+import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.services.comment.Comment;
 import io.vertigo.social.services.comment.CommentServices;
+import io.vertigo.util.InjectorUtil;
 import io.vertigo.util.MapBuilder;
 import redis.clients.jedis.Jedis;
 
@@ -58,9 +57,9 @@ public final class CommentWebServicesTest {
 	private static AutoCloseableApp app;
 
 	private static String CONCEPT_KEY_NAME;
-	private static URI<Account> account1Uri;
-	private static URI<KeyConcept> keyConcept1Uri;
-	private static URI<KeyConcept> keyConcept2Uri;
+	private static UID<Account> account1Uri;
+	private static UID<KeyConcept> keyConcept1Uri;
+	private static UID<KeyConcept> keyConcept2Uri;
 
 	@Inject
 	private RedisConnector redisConnector;
@@ -69,15 +68,15 @@ public final class CommentWebServicesTest {
 	@Inject
 	private MockIdentities mockIdentities;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() {
 		beforeSetUp();
-		app = new AutoCloseableApp(MyAppConfig.vegaConfig());
+		app = new AutoCloseableApp(MyNodeConfig.vegaConfig());
 	}
 
-	@Before
+	@BeforeEach
 	public void setUpInstance() {
-		DIInjector.injectMembers(this, app.getComponentSpace());
+		InjectorUtil.injectMembers(this);
 		try (final Jedis jedis = redisConnector.getResource()) {
 			jedis.flushAll();
 		}
@@ -86,14 +85,14 @@ public final class CommentWebServicesTest {
 
 		//on triche un peu, car AcountGroup n'est pas un KeyConcept
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(AccountGroup.class);
-		keyConcept1Uri = new URI<>(dtDefinition, "10");
-		keyConcept2Uri = new URI<>(dtDefinition, "20");
+		keyConcept1Uri = UID.of(dtDefinition, "10");
+		keyConcept2Uri = UID.of(dtDefinition, "20");
 		CONCEPT_KEY_NAME = dtDefinition.getClassSimpleName();
 
 		preTestLogin();
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() {
 		if (app != null) {
 			app.close();
@@ -141,7 +140,7 @@ public final class CommentWebServicesTest {
 		RestAssured.given().filter(sessionFilter)
 				.body(commentToMap(newComment))
 				.expect()
-				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
 				.post("/x/comment/api/comments?concept=" + CONCEPT_KEY_NAME + "&id=" + keyConcept1Uri.getId());
@@ -165,7 +164,7 @@ public final class CommentWebServicesTest {
 		RestAssured.given().filter(sessionFilter)
 				.body(commentToMap(newComment))
 				.expect()
-				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
 				.post("/x/comment/api/comments?concept=" + CONCEPT_KEY_NAME + "&id=" + keyConcept1Uri.getId());
@@ -189,7 +188,7 @@ public final class CommentWebServicesTest {
 		RestAssured.given().filter(sessionFilter)
 				.body(commentToMap(editComment))
 				.expect()
-				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
 				.put("/x/comment/api/comments/" + uuid);
@@ -215,7 +214,7 @@ public final class CommentWebServicesTest {
 		RestAssured.given().filter(sessionFilter)
 				.body(commentToMap(newComment))
 				.expect()
-				.statusCode(HttpStatus.SC_NO_CONTENT)
+				.statusCode(HttpStatus.SC_OK)
 				.log().ifError()
 				.when()
 				.post("/x/comment/api/comments?concept=" + CONCEPT_KEY_NAME + "&id=" + keyConcept1Uri.getId());
@@ -277,14 +276,14 @@ public final class CommentWebServicesTest {
 		return convertDate(date);
 	}*/
 
-	private static String convertDate(final Date date) {
-		return date == null ? null : new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").format(date);
+	private static String convertDate(final Instant instant) {
+		return instant == null ? null : instant.toString();
 	}
 
 	private static Map<String, Object> commentToMap(final Comment comment) {
 		return new MapBuilder<String, Object>()
 				.put("uuid", comment.getUuid())
-				.put("author", comment.getAuthor().urn())
+				.put("author", comment.getAuthor().getId())
 				.put("msg", comment.getMsg())
 				.put("creationDate", convertDate(comment.getCreationDate()))
 				.putNullable("lastModified", convertDate(comment.getLastModified()))

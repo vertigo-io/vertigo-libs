@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -94,10 +94,10 @@ final class RestQueueClient {
 					final String uuid = result[0];
 					final byte[] serializedResult = codecManager.getBase64Codec().decode(result[1]);
 					final Object work = codecManager.getCompressedSerializationCodec().decode(serializedResult);
-					LOG.info("pollWork(" + workType + ") : 1 Work");
+					LOG.info("pollWork({}) : 1 Work", workType);
 					return new WorkItem(uuid, work, ClassUtil.classForName(workType));
 				}
-				LOG.info("pollWork(" + workType + ") : no Work");
+				LOG.info("pollWork({}) : no Work", workType);
 				//pas de travaux : inutil d'attendre le poll attend déjà 1s coté serveur
 			} catch (final ProcessingException c) {
 				LOG.warn("[pollWork] Erreur de connexion au serveur " + serverUrl + "/pollWork/" + workType + " (" + c.getMessage() + ")", c);
@@ -134,7 +134,7 @@ final class RestQueueClient {
 			final Response response = remoteWebResource.request(MediaType.TEXT_PLAIN).post(Entity.text(""));
 			checkResponseStatus(response);
 		} catch (final Exception c) {
-			LOG.warn("[onStart] Erreur de connexion au serveur " + remoteWebResource.getUri() + " (" + c.getMessage() + ")");
+			LOG.warn("[onStart] Erreur de connexion au serveur {} ({})", remoteWebResource.getUri(), c.getMessage());
 		}
 	}
 
@@ -163,7 +163,7 @@ final class RestQueueClient {
 			final Response response = remoteWebResource.request().post(Entity.text(jsonResult));
 			checkResponseStatus(response);
 		} catch (final Exception c) {
-			LOG.warn("[" + address + "] Erreur de connexion au serveur " + remoteWebResource.getUri() + " (" + c.getMessage() + ")");
+			LOG.warn("[{}] Erreur de connexion au serveur {} ({})", address, remoteWebResource.getUri(), c.getMessage());
 		}
 	}
 

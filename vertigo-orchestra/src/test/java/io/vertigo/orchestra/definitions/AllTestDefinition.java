@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,9 +18,9 @@
  */
 package io.vertigo.orchestra.definitions;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * TODO : Description de la classe.
@@ -28,11 +28,12 @@ import org.junit.runners.Suite.SuiteClasses;
  * @author mlaroche.
  * @version $Id$
  */
-@RunWith(Suite.class)
-@SuiteClasses(value = {
-		MemoryDefinitionsTest.class,
-		DbDefinitionsTest.class
-})
+@RunWith(JUnitPlatform.class)
+@SelectClasses(
+		value = {
+				MemoryDefinitionsTest.class,
+				DbDefinitionsTest.class
+		})
 public class AllTestDefinition {
 	// Les annotations sont suffisantes.
 }

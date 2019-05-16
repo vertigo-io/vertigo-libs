@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,13 @@
  */
 package io.vertigo.stella.work.distributed.rest;
 
-import java.util.Properties;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.app.config.xml.XMLAppConfigBuilder;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.lang.Assertion;
+import io.vertigo.util.ClassUtil;
 
 /**
  * @author npiedeloup
@@ -44,18 +42,17 @@ public class WorkerNodeStarter {
 		//-----
 		final long timeToWait = args.length == 2 ? Long.parseLong(args[1]) * 1000L : 5 * 60 * 1000L;
 
-		final String managersXmlFileName = args[0];
-		final AppConfig appConfig = new XMLAppConfigBuilder()
-				.withModules(WorkerNodeStarter.class, new Properties(), managersXmlFileName)
-				.build();
+		final String nodeConfigClassName = args[0];
+		final StellaNodeConfigClientNode nodeConfigClientNode = ClassUtil.newInstance(ClassUtil.classForName(nodeConfigClassName, StellaNodeConfigClientNode.class));
+		final NodeConfig nodeConfig = nodeConfigClientNode.getNodeConfig();
 
 		LOG.info("Node starting");
-		run(appConfig, timeToWait);
+		run(nodeConfig, timeToWait);
 		LOG.info("Node stop");
 	}
 
-	private static void run(final AppConfig appConfig, final long timeToWait) {
-		try (AutoCloseableApp app = new AutoCloseableApp(appConfig)) {
+	private static void run(final NodeConfig nodeConfig, final long timeToWait) {
+		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			System.out.println("Node started (timout in " + timeToWait / 1000 + "s)");
 			if (timeToWait > 0) {
 				Thread.sleep(timeToWait);

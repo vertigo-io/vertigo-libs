@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.orchestra.domain.planification;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -35,18 +35,18 @@ public final class OProcessPlanification implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long prpId;
-	private java.util.Date expectedTime;
+	private java.time.Instant expectedTime;
 	private String initialParams;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PRP_PRO",
-			fkFieldName = "PRO_ID",
-			primaryDtDefinitionName = "DT_O_PROCESS",
+			name = "APrpPro",
+			fkFieldName = "proId",
+			primaryDtDefinitionName = "DtOProcess",
 			primaryIsNavigable = true,
 			primaryRole = "Processus",
 			primaryLabel = "Processus",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_O_PROCESS_PLANIFICATION",
+			foreignDtDefinitionName = "DtOProcessPlanification",
 			foreignIsNavigable = false,
 			foreignRole = "ProcessPlanification",
 			foreignLabel = "PlanificationProcessus",
@@ -54,14 +54,14 @@ public final class OProcessPlanification implements Entity {
 	private final VAccessor<io.vertigo.orchestra.domain.definition.OProcess> proIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.definition.OProcess.class, "Processus");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PRP_NOD",
-			fkFieldName = "NOD_ID",
-			primaryDtDefinitionName = "DT_O_NODE",
+			name = "APrpNod",
+			fkFieldName = "nodId",
+			primaryDtDefinitionName = "DtONode",
 			primaryIsNavigable = true,
 			primaryRole = "Node",
 			primaryLabel = "Node",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_O_PROCESS_PLANIFICATION",
+			foreignDtDefinitionName = "DtOProcessPlanification",
 			foreignIsNavigable = false,
 			foreignRole = "ProcessPlanification",
 			foreignLabel = "PlanificationProcessus",
@@ -69,14 +69,14 @@ public final class OProcessPlanification implements Entity {
 	private final VAccessor<io.vertigo.orchestra.domain.execution.ONode> nodIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.execution.ONode.class, "Node");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PRP_PST",
-			fkFieldName = "SST_CD",
-			primaryDtDefinitionName = "DT_O_SCHEDULER_STATE",
+			name = "APrpPst",
+			fkFieldName = "sstCd",
+			primaryDtDefinitionName = "DtOSchedulerState",
 			primaryIsNavigable = true,
 			primaryRole = "PlanificationState",
 			primaryLabel = "PlanificationState",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_O_PROCESS_PLANIFICATION",
+			foreignDtDefinitionName = "DtOProcessPlanification",
 			foreignIsNavigable = false,
 			foreignRole = "ProcessPlanification",
 			foreignLabel = "ProcessPlanification",
@@ -85,8 +85,8 @@ public final class OProcessPlanification implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<OProcessPlanification> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<OProcessPlanification> getUID() {
+		return UID.of(this);
 	}
 	
 	/**
@@ -94,7 +94,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Id Planification'.
 	 * @return Long prpId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id Planification")
+	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id Planification")
 	public Long getPrpId() {
 		return prpId;
 	}
@@ -111,19 +111,19 @@ public final class OProcessPlanification implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date d'execution prévue'.
-	 * @return java.util.Date expectedTime
+	 * @return Instant expectedTime
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Date d'execution prévue")
-	public java.util.Date getExpectedTime() {
+	@Field(domain = "DoOTimestamp", label = "Date d'execution prévue")
+	public java.time.Instant getExpectedTime() {
 		return expectedTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date d'execution prévue'.
-	 * @param expectedTime java.util.Date
+	 * @param expectedTime Instant
 	 */
-	public void setExpectedTime(final java.util.Date expectedTime) {
+	public void setExpectedTime(final java.time.Instant expectedTime) {
 		this.expectedTime = expectedTime;
 	}
 	
@@ -132,7 +132,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
 	 * @return String initialParams
 	 */
-	@Field(domain = "DO_O_JSON_TEXT", label = "Paramètres initiaux sous forme de JSON")
+	@Field(domain = "DoOJsonText", label = "Paramètres initiaux sous forme de JSON")
 	public String getInitialParams() {
 		return initialParams;
 	}
@@ -151,9 +151,9 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getProId() {
-		return (Long)  proIdAccessor.getId();
+		return (Long) proIdAccessor.getId();
 	}
 
 	/**
@@ -170,9 +170,9 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Node'.
 	 * @return Long nodId
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "Node")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", label = "Node")
 	public Long getNodId() {
-		return (Long)  nodIdAccessor.getId();
+		return (Long) nodIdAccessor.getId();
 	}
 
 	/**
@@ -189,9 +189,9 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'PlanificationState'.
 	 * @return String sstCd
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "PlanificationState")
+	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", label = "PlanificationState")
 	public String getSstCd() {
-		return (String)  sstCdAccessor.getId();
+		return (String) sstCdAccessor.getId();
 	}
 
 	/**
@@ -210,24 +210,6 @@ public final class OProcessPlanification implements Entity {
 	public VAccessor<io.vertigo.orchestra.domain.execution.ONode> node() {
 		return nodIdAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.execution.ONode getNode() {
-		// we keep the lazyness
-		if (!nodIdAccessor.isLoaded()) {
-			nodIdAccessor.load();
-		}
-		return nodIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'URI: Node.
-	 * @return URI de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.execution.ONode> getNodeURI() {
-		return nodIdAccessor.getURI();
-	}
 
  	/**
 	 * Association : Processus.
@@ -236,24 +218,6 @@ public final class OProcessPlanification implements Entity {
 	public VAccessor<io.vertigo.orchestra.domain.definition.OProcess> processus() {
 		return proIdAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.definition.OProcess getProcessus() {
-		// we keep the lazyness
-		if (!proIdAccessor.isLoaded()) {
-			proIdAccessor.load();
-		}
-		return proIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'URI: Processus.
-	 * @return URI de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.definition.OProcess> getProcessusURI() {
-		return proIdAccessor.getURI();
-	}
 
  	/**
 	 * Association : PlanificationState.
@@ -261,24 +225,6 @@ public final class OProcessPlanification implements Entity {
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.OSchedulerState> planificationState() {
 		return sstCdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.referential.OSchedulerState getPlanificationState() {
-		// we keep the lazyness
-		if (!sstCdAccessor.isLoaded()) {
-			sstCdAccessor.load();
-		}
-		return sstCdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'URI: PlanificationState.
-	 * @return URI de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.OSchedulerState> getPlanificationStateURI() {
-		return sstCdAccessor.getURI();
 	}
 	
 	/** {@inheritDoc} */

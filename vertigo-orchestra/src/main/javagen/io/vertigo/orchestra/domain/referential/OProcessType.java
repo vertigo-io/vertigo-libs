@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.orchestra.domain.referential;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Generated;
@@ -38,8 +38,8 @@ public final class OProcessType implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<OProcessType> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<OProcessType> getUID() {
+		return UID.of(this);
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public final class OProcessType implements Entity {
 	 * Récupère la valeur de la propriété 'Code'.
 	 * @return String prtCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "ID", required = true, label = "Code")
+	@Field(domain = "DoOCodeIdentifiant", type = "ID", required = true, label = "Code")
 	public String getPrtCd() {
 		return prtCd;
 	}
@@ -66,7 +66,7 @@ public final class OProcessType implements Entity {
 	 * Récupère la valeur de la propriété 'Libellé'.
 	 * @return String label
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Libellé")
+	@Field(domain = "DoOLibelle", label = "Libellé")
 	public String getLabel() {
 		return label;
 	}

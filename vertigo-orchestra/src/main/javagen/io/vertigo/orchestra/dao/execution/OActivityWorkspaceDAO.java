@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,15 +61,15 @@ public final class OActivityWorkspaceDAO extends DAO<OActivityWorkspace, java.la
 	}
 
 	/**
-	 * Execute la tache TK_GET_ACTIVITY_WORKSPACE.
+	 * Execute la tache TkGetActivityWorkspace.
 	 * @param aceId Long 
 	 * @param in Boolean 
 	 * @return Option de io.vertigo.orchestra.domain.execution.OActivityWorkspace dtOActivityWorkspace
 	*/
 	public Optional<io.vertigo.orchestra.domain.execution.OActivityWorkspace> getActivityWorkspace(final Long aceId, final Boolean in) {
-		final Task task = createTaskBuilder("TK_GET_ACTIVITY_WORKSPACE")
-				.addValue("ACE_ID", aceId)
-				.addValue("IN", in)
+		final Task task = createTaskBuilder("TkGetActivityWorkspace")
+				.addValue("aceId", aceId)
+				.addValue("in", in)
 				.build();
 		return Optional.ofNullable((io.vertigo.orchestra.domain.execution.OActivityWorkspace) getTaskManager()
 				.execute(task)

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,8 +34,6 @@ public final class GeoLocation {
 	private final Double latitude;
 	private final Double longitude;
 
-	//	private final String accuracy;
-
 	/**
 	 * Constructeur public
 	 * Notamment utilisé pour la désérialisation.
@@ -43,11 +41,10 @@ public final class GeoLocation {
 	public GeoLocation() {
 		latitude = null;
 		longitude = null;
-		//		accuracy = null;
-		this.countryCode = null;
-		this.level1 = null;
-		this.level2 = null;
-		this.locality = null;
+		countryCode = null;
+		level1 = null;
+		level2 = null;
+		locality = null;
 	}
 
 	public GeoLocation(final double latitude, final double longitude) {
@@ -55,12 +52,10 @@ public final class GeoLocation {
 	}
 
 	public GeoLocation(final double latitude, final double longitude, final String countryCode, final String level1, final String level2, final String locality) {
-		//	Assertion.notEmpty(accuracy);
 		Assertion.checkNotNull(latitude);
 		Assertion.checkNotNull(longitude);
 		Assertion.checkArgument((!Double.isNaN(latitude) && !Double.isNaN(longitude)), "UNDEFINDED or defined");
 		//-----
-		//		this.accuracy = accuracy;
 		this.latitude = Double.isNaN(latitude) ? null : latitude;
 		this.longitude = Double.isNaN(longitude) ? null : longitude;
 		this.countryCode = countryCode;

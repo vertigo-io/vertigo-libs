@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -53,7 +53,7 @@ public class IftttAdapter {
 		Assertion.checkNotNull(proxyHost);
 		Assertion.checkNotNull(proxyPort);
 		Assertion.checkArgument(
-				(proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && proxyPort.isPresent()),
+				(proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()),
 				"les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		// ----
 		if (proxyHost.isPresent()) {
@@ -71,9 +71,9 @@ public class IftttAdapter {
 		final Response response = request.post(Entity.<MakerEventMetadatas> entity(event.getEventMetadatas(), MediaType.APPLICATION_JSON));
 
 		if (response.getStatusInfo().getFamily() == Family.SUCCESSFUL) {
-			LOGGER.info("Success! " + response.getStatus());
+			LOGGER.info("Success! {}", response.getStatus());
 		} else {
-			LOGGER.error("Error! " + response.getStatus());
+			LOGGER.error("Error! {}", response.getStatus());
 			throw new VSystemException("Error while sending Ifttt maker event:" + response.getStatus());
 		}
 	}

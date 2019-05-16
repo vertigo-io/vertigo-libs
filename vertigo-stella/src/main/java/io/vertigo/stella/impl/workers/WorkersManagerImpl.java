@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.workers.coordinator.WorkersCoordinator;
 import io.vertigo.stella.workers.WorkersManager;
@@ -38,10 +38,6 @@ import io.vertigo.stella.workers.WorkersManager;
 public final class WorkersManagerImpl implements WorkersManager, Activeable {
 	private final List<Thread> dispatcherThreads = new ArrayList<>();
 	private final WorkersCoordinator workersCoordinator;
-	/**
-	 * Types of work, that can be done by this worker
-	 */
-	private final Map<String, Integer> workTypes;
 
 	/**
 	 * Constructeur.
@@ -49,19 +45,18 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 	 */
 	@Inject
 	public WorkersManagerImpl(
-			@Named("nodeId") final String nodeId,
-			final @Named("workersCount") int workersCount,
-			@Named("workTypes") final String workTypes,
+			@ParamValue("nodeId") final String nodeId,
+			final @ParamValue("workersCount") int workersCount,
+			@ParamValue("workTypes") final String workTypes,
 			final WorkersPlugin workerPlugin) {
 		Assertion.checkArgNotEmpty(nodeId);
 		Assertion.checkNotNull(workerPlugin);
 		Assertion.checkArgNotEmpty(workTypes);
 		//-----
 		workersCoordinator = new WorkersCoordinator(workersCount);
-		this.workTypes = WorkDispatcherConfUtil.readWorkTypeConf(workTypes);
-		//		workListener = new WorkListenerImpl(/*analyticsManager*/);
+		final Map<String, Integer> workTypesMap = WorkDispatcherConfUtil.readWorkTypeConf(workTypes);
 		//-----
-		for (final Map.Entry<String, Integer> entry : this.workTypes.entrySet()) {
+		for (final Map.Entry<String, Integer> entry : workTypesMap.entrySet()) {
 			final String workType = entry.getKey();
 			final WorkDispatcher worker = new WorkDispatcher(nodeId, workType, workersCoordinator, workerPlugin);
 			final String workTypeName = workType.substring(workType.lastIndexOf('.') + 1);

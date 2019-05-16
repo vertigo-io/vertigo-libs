@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -38,7 +38,7 @@ final class ClientNode {
 	private final List<Thread> subThreads = new ArrayList<>();
 	private final int maxLifeTime;
 
-	private final String managersXmlFileName;
+	private final String nodeConfigClassName;
 
 	/**
 	 * Constructeur.
@@ -50,14 +50,14 @@ final class ClientNode {
 		Assertion.checkArgument(maxLifeTime >= 0 && maxLifeTime < 30000, "MaxLifeTime is in seconde and must be less than 30000 ({0}). Use 0 if you need infinit life.", maxLifeTime);
 		//-----
 		this.maxLifeTime = maxLifeTime;
-		managersXmlFileName = "./managers-node" + nodeId + "-test.xml";
+		nodeConfigClassName = StellaNodeConfigClientNode.class.getName() + nodeId;
 	}
 
 	public void start() throws IOException {
 		final String command = new StringBuilder()
 				.append("java -cp ")
 				.append(properSystemPath(System.getProperty("java.class.path")))
-				.append(" io.vertigo.stella.work.distributed.rest.WorkerNodeStarter " + managersXmlFileName + " " + maxLifeTime)
+				.append(" io.vertigo.stella.work.distributed.rest.WorkerNodeStarter " + nodeConfigClassName + " " + maxLifeTime)
 				.toString();
 		nodeProcess = Runtime.getRuntime().exec(command);
 		subThreads.add(createOutputFlusher(nodeProcess.getInputStream(), "[ClientNode] ", System.out));

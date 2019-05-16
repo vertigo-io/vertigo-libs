@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,6 @@ import io.vertigo.app.App;
 import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.dashboard.services.data.DataProvider;
-import io.vertigo.lang.Assertion;
 
 public abstract class AbstractDashboardModuleControler implements DashboardModuleControler {
 
@@ -51,8 +50,7 @@ public abstract class AbstractDashboardModuleControler implements DashboardModul
 	}
 
 	private void initModuleModel(final App app, final Map<String, Object> model, final String moduleName) {
-		final Set<String> modules = app.getConfig().getModuleConfigs().stream().map(ModuleConfig::getName).collect(Collectors.toSet());
-		Assertion.checkState(modules.contains(moduleName), "no module with name '{0}' found in the app", moduleName);
+		final Set<String> modules = app.getNodeConfig().getModuleConfigs().stream().map(ModuleConfig::getName).collect(Collectors.toSet());
 		//---
 		model.put("modules", modules);
 		//---

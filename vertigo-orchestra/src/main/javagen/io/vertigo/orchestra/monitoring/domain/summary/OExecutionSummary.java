@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,8 +34,8 @@ public final class OExecutionSummary implements DtObject {
 	private Long proId;
 	private String processName;
 	private String processLabel;
-	private java.util.Date lastExecutionTime;
-	private java.util.Date nextExecutionTime;
+	private java.time.Instant lastExecutionTime;
+	private java.time.Instant nextExecutionTime;
 	private Integer errorsCount;
 	private Integer misfiredCount;
 	private Integer successfulCount;
@@ -48,7 +48,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Id du processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", required = true, label = "Id du processus")
+	@Field(domain = "DoOIdentifiant", required = true, label = "Id du processus")
 	public Long getProId() {
 		return proId;
 	}
@@ -67,7 +67,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Nom du processus'.
 	 * @return String processName <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_LIBELLE", required = true, label = "Nom du processus")
+	@Field(domain = "DoOLibelle", required = true, label = "Nom du processus")
 	public String getProcessName() {
 		return processName;
 	}
@@ -86,7 +86,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Libellé du processus'.
 	 * @return String processLabel <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_LIBELLE", required = true, label = "Libellé du processus")
+	@Field(domain = "DoOLibelle", required = true, label = "Libellé du processus")
 	public String getProcessLabel() {
 		return processLabel;
 	}
@@ -103,38 +103,38 @@ public final class OExecutionSummary implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Dernière exécution le'.
-	 * @return java.util.Date lastExecutionTime
+	 * @return Instant lastExecutionTime
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Dernière exécution le")
-	public java.util.Date getLastExecutionTime() {
+	@Field(domain = "DoOTimestamp", label = "Dernière exécution le")
+	public java.time.Instant getLastExecutionTime() {
 		return lastExecutionTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Dernière exécution le'.
-	 * @param lastExecutionTime java.util.Date
+	 * @param lastExecutionTime Instant
 	 */
-	public void setLastExecutionTime(final java.util.Date lastExecutionTime) {
+	public void setLastExecutionTime(final java.time.Instant lastExecutionTime) {
 		this.lastExecutionTime = lastExecutionTime;
 	}
 	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Prochaine exécution le'.
-	 * @return java.util.Date nextExecutionTime
+	 * @return Instant nextExecutionTime
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Prochaine exécution le")
-	public java.util.Date getNextExecutionTime() {
+	@Field(domain = "DoOTimestamp", label = "Prochaine exécution le")
+	public java.time.Instant getNextExecutionTime() {
 		return nextExecutionTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Prochaine exécution le'.
-	 * @param nextExecutionTime java.util.Date
+	 * @param nextExecutionTime Instant
 	 */
-	public void setNextExecutionTime(final java.util.Date nextExecutionTime) {
+	public void setNextExecutionTime(final java.time.Instant nextExecutionTime) {
 		this.nextExecutionTime = nextExecutionTime;
 	}
 	
@@ -143,7 +143,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Nombre en erreur'.
 	 * @return Integer errorsCount
 	 */
-	@Field(domain = "DO_O_NOMBRE", label = "Nombre en erreur")
+	@Field(domain = "DoONombre", label = "Nombre en erreur")
 	public Integer getErrorsCount() {
 		return errorsCount;
 	}
@@ -162,7 +162,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Nombre non executés'.
 	 * @return Integer misfiredCount
 	 */
-	@Field(domain = "DO_O_NOMBRE", label = "Nombre non executés")
+	@Field(domain = "DoONombre", label = "Nombre non executés")
 	public Integer getMisfiredCount() {
 		return misfiredCount;
 	}
@@ -181,7 +181,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Nombre en succès'.
 	 * @return Integer successfulCount
 	 */
-	@Field(domain = "DO_O_NOMBRE", label = "Nombre en succès")
+	@Field(domain = "DoONombre", label = "Nombre en succès")
 	public Integer getSuccessfulCount() {
 		return successfulCount;
 	}
@@ -200,7 +200,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Nombre en cours'.
 	 * @return Integer runningCount
 	 */
-	@Field(domain = "DO_O_NOMBRE", label = "Nombre en cours")
+	@Field(domain = "DoONombre", label = "Nombre en cours")
 	public Integer getRunningCount() {
 		return runningCount;
 	}
@@ -219,7 +219,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Durée moyenne d'exécution'.
 	 * @return Integer averageExecutionTime
 	 */
-	@Field(domain = "DO_O_NOMBRE", label = "Durée moyenne d'exécution")
+	@Field(domain = "DoONombre", label = "Durée moyenne d'exécution")
 	public Integer getAverageExecutionTime() {
 		return averageExecutionTime;
 	}
@@ -238,7 +238,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Santé du processus'.
 	 * @return String health <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", required = true, label = "Santé du processus")
+	@Field(domain = "DoOCodeIdentifiant", required = true, label = "Santé du processus")
 	public String getHealth() {
 		return health;
 	}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,10 +24,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.commons.daemon.DaemonScheduled;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.social.impl.notification.NotificationEvent;
 import io.vertigo.social.impl.notification.NotificationPlugin;
@@ -37,7 +38,7 @@ import io.vertigo.social.services.notification.Notification;
  * @author pchretien
  */
 public final class MemoryNotificationPlugin implements NotificationPlugin {
-	private final Map<URI<Account>, List<Notification>> notificationsByAccountURI = new ConcurrentHashMap<>();
+	private final Map<UID<Account>, List<Notification>> notificationsByAccountURI = new ConcurrentHashMap<>();
 
 	/** {@inheritDoc} */
 	@Override
@@ -47,7 +48,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 		//0 - Remplir la pile des événements
 
 		//1 - Dépiler les événemnts en asynchrone FIFO
-		for (final URI<Account> accountURI : notificationEvent.getToAccountURIs()) {
+		for (final UID<Account> accountURI : notificationEvent.getToAccountURIs()) {
 			obtainNotifications(accountURI).add(0, notificationEvent.getNotification());
 		}
 
@@ -56,7 +57,38 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<Notification> getCurrentNotifications(final URI<Account> userProfileURI) {
+	public void updateUserContent(final UID<Account> accountURI, final UUID notificationUUID, final String userContent) {
+		Assertion.checkNotNull(accountURI);
+		Assertion.checkNotNull(notificationUUID);
+		//-----
+		//on recopie la notification et on ajoute la modif
+		final List<Notification> newNotifications = getCurrentNotifications(accountURI)
+				.stream()
+				.map(notification -> (notification.getUuid().equals(notificationUUID)) ?
+				//on remplace la notif
+						updateNotification(notification, userContent)
+						: notification)
+				.collect(Collectors.toList());
+		//on remplace la liste
+		notificationsByAccountURI.put(accountURI, newNotifications);
+	}
+
+	private static Notification updateNotification(final Notification notification, final String userContent) {
+		return Notification.builder(notification.getUuid())
+				.withSender(notification.getSender())
+				.withType(notification.getType())
+				.withTitle(notification.getTitle())
+				.withContent(notification.getContent())
+				.withCreationDate(notification.getCreationDate())
+				.withTTLInSeconds(notification.getTTLInSeconds())
+				.withTargetUrl(notification.getTargetUrl())
+				.withUserContent(userContent != null ? userContent : notification.getUserContent().orElse("")) //only used for default value
+				.build();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<Notification> getCurrentNotifications(final UID<Account> userProfileURI) {
 		Assertion.checkNotNull(userProfileURI);
 		//-----
 		final List<Notification> notifications = notificationsByAccountURI.get(userProfileURI);
@@ -67,21 +99,17 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 		return notifications;
 	}
 
-	private List<Notification> obtainNotifications(final URI<Account> accountURI) {
+	private List<Notification> obtainNotifications(final UID<Account> accountURI) {
 		Assertion.checkNotNull(accountURI);
 		//-----
-		List<Notification> notifications = notificationsByAccountURI.get(accountURI);
-		if (notifications == null) {
-			notifications = new ArrayList<>();
-			notificationsByAccountURI.put(accountURI, notifications);
-		}
+		final List<Notification> notifications = notificationsByAccountURI.computeIfAbsent(accountURI, uri -> new ArrayList<>());
 		cleanTooOldNotifications(notifications);
 		return notifications;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final URI<Account> accountURI, final UUID notificationUUID) {
+	public void remove(final UID<Account> accountURI, final UUID notificationUUID) {
 		final List<Notification> notifications = notificationsByAccountURI.get(accountURI);
 		if (notifications != null) {
 			notifications.removeIf(notification -> notification.getUuid().equals(notificationUUID));
@@ -96,7 +124,10 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 		}
 	}
 
-	@DaemonScheduled(name = "DMN_CLEAN_TOO_OLD_MEMORY_NOTIFICATIONS", periodInSeconds = 1000)
+	/**
+	 * Clean notifications every minutes.
+	 */
+	@DaemonScheduled(name = "DmnCleanTooOldMemoryNotifications", periodInSeconds = 60)
 	public void cleanTooOldNotifications() {
 		for (final List<Notification> notifications : notificationsByAccountURI.values()) {
 			cleanTooOldNotifications(notifications);
@@ -108,6 +139,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	}
 
 	private static boolean isTooOld(final Notification notification) {
-		return notification.getTTLInSeconds() >= 0 && notification.getCreationDate().getTime() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis();
+		return notification.getTTLInSeconds() >= 0 && notification.getCreationDate().toEpochMilli() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis();
 	}
+
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,12 +21,12 @@ package io.vertigo.quarto.plugins.publisher.docx;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -240,7 +240,7 @@ final class DOCXUtil {
 	 */
 	public static File createDOCX(final ZipFile docxFile, final Map<String, String> newXmlContents) throws IOException {
 		final File resultFile = new TempFile(TEMP_FILE_PREFIX, TEMP_FILE_SUFFIX);
-		try (final ZipOutputStream outputFichierDOCX = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(resultFile)))) {
+		try (final ZipOutputStream outputFichierDOCX = new ZipOutputStream(new BufferedOutputStream(Files.newOutputStream(resultFile.toPath())))) {
 			for (final ZipEntry zipEntry : Collections.list(docxFile.entries())) {
 				final String entryName = zipEntry.getName();
 				if (newXmlContents.containsKey(entryName)) {
@@ -266,8 +266,9 @@ final class DOCXUtil {
 		final DOMSource domSource = new DOMSource(xmlDocument);
 		final StringWriter writer = new StringWriter();
 		final StreamResult result = new StreamResult(writer);
-		final TransformerFactory tf = TransformerFactory.newInstance();
 		try {
+			final TransformerFactory tf = TransformerFactory.newInstance();
+			tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 			final Transformer transformer = tf.newTransformer();
 			transformer.transform(domSource, result);
 		} catch (final TransformerException e) {

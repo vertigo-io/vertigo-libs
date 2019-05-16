@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -57,7 +57,7 @@ final class OrchestraNode {
 		final String command = new StringBuilder()
 				.append("java -cp ")
 				.append(properSystemPath(System.getProperty("java.class.path")))
-				.append(" io.vertigo.orchestra.services.execution.OrchestraNodeStarter io.vertigo.orchestra.services.execution.OrchestraNode" + nodeId + "AppConfig " + maxLifeTime)
+				.append(" io.vertigo.orchestra.services.execution.OrchestraNodeStarter io.vertigo.orchestra.services.execution.OrchestraNode" + nodeId + "NodeConfig " + maxLifeTime)
 				.toString();
 		nodeProcess = Runtime.getRuntime().exec(command);
 		subThreads.add(createOutputFlusher(nodeProcess.getInputStream(), "[OrchestraNode" + nodeId + "] ", System.out));

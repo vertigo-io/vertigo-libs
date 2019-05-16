@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,13 +31,15 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.resource.ResourceManager;
 
 /**
@@ -45,7 +47,7 @@ import io.vertigo.core.resource.ResourceManager;
  *
  * @author adufranne
  */
-public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
+public final class DOCXProcessorTest extends AbstractTestCaseJU5 {
 
 	/**
 	 * Fichier de test.
@@ -80,6 +82,15 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 	//
 	// //////////////////////////////////////////////
 
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.build();
+	}
+
 	/**
 	 * Extraction puis rechargement d'un DOCX.
 	 * Permet de tester l'accès aux fichiers dans le docx.
@@ -96,14 +107,14 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 			docxFile = new ZipFile(new File(modelFileURL.toURI()));
 			files = DOCXUtil.extractDOCXContents(docxFile); // méthode testée.
 		} catch (final IOException e) {
-			Assert.fail("impossible de lire le modèle " + TEST_FILE);
+			Assertions.fail("impossible de lire le modèle " + TEST_FILE);
 			throw e;
 		}
 
 		try {
 			DOCXUtil.createDOCX(docxFile, files);
 		} catch (final IOException e) {
-			Assert.fail("impossible de réécrire le fichier " + TEST_FILE);
+			Assertions.fail("impossible de réécrire le fichier " + TEST_FILE);
 		}
 
 	}
@@ -121,7 +132,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 		final Document xmlDoc = DOCXUtil.loadDOM(DOCXTest.factorMultipleTags(getDOCX(content)));
 		final NodeList nodeList = (NodeList) DOCXUtil.loadXPath().evaluate("//w:r[w:instrText]", xmlDoc, XPathConstants.NODESET);
 		for (int i = 0; i < nodeList.getLength(); i++) {
-			Assert.assertEquals(results[i], nodeList.item(i).getLastChild().getTextContent());
+			Assertions.assertEquals(results[i], nodeList.item(i).getLastChild().getTextContent());
 		}
 	}
 
@@ -140,7 +151,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 		final Document xmlDoc = DOCXUtil.loadDOM(DOCXTest.cleanNotBESTags(getDOCX(content)));
 		final NodeList nodeList = (NodeList) DOCXUtil.loadXPath().evaluate("//w:r[w:instrText]", xmlDoc, XPathConstants.NODESET);
 		for (int i = 0; i < nodeList.getLength(); i++) {
-			Assert.assertEquals(results[i], nodeList.item(i).getLastChild().getTextContent());
+			Assertions.assertEquals(results[i], nodeList.item(i).getLastChild().getTextContent());
 		}
 	}
 
@@ -153,8 +164,8 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 		final String[] prefixToText = { "wpc", "mc", "o", "r", "m", "v", "wp14", "wp", "w10", "w", "w14", "wpg", "wpi", "wne", "wps" };
 
 		for (final String prefix : prefixToText) {
-			Assert.assertNotNull("Unknowned prefix:" + prefix, namespace.getNamespaceURI(prefix));
-			Assert.assertEquals("Invalid URI for prefix:" + prefix, prefix, namespace.getPrefix(namespace.getNamespaceURI(prefix)));
+			Assertions.assertNotNull("Unknowned prefix:" + prefix, namespace.getNamespaceURI(prefix));
+			Assertions.assertEquals(prefix, namespace.getPrefix(namespace.getNamespaceURI(prefix)), "Invalid URI for prefix:" + prefix);
 		}
 	}
 
@@ -185,7 +196,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 		String content;
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			content = nodeList.item(i).getLastChild().getTextContent();
-			Assert.assertEquals("Checking node " + i, expected[i], content);
+			Assertions.assertEquals(expected[i], content, "Checking node " + i);
 		}
 	}
 
@@ -213,7 +224,7 @@ public final class DOCXProcessorTest extends AbstractTestCaseJU4 {
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			node = nodeList.item(i);
 			content = node.getLastChild().getTextContent();
-			Assert.assertEquals(results[i], content);
+			Assertions.assertEquals(results[i], content);
 		}
 		// vérifier l'intégrité du docx.
 		DOCXUtil.renderXML(xmlDoc);

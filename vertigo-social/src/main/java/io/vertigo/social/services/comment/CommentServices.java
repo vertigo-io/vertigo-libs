@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,7 @@ import java.util.List;
 import io.vertigo.account.account.Account;
 import io.vertigo.core.component.Component;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 
 /**
  * @author pchretien
@@ -32,23 +32,23 @@ public interface CommentServices extends Component {
 
 	/**
 	 * Gets a list of sorted comments published on this keyConcept.
-	 * @param keyConceptUri the URI of the keyConcept
+	 * @param keyConceptUID the UID of the keyConcept
 	 * @return the list of sorted comments
 	 */
-	List<Comment> getComments(URI<? extends KeyConcept> keyConceptUri);
+	List<Comment> getComments(UID<? extends KeyConcept> keyConceptUID);
 
 	/**
 	 * Publishes a comment on a key concept.
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @param comment  the comment
-	 * @param keyConceptUri the URI of the keyConcept
+	 * @param keyConceptUID the UID of the keyConcept
 	 */
-	void publish(final URI<Account> accountURI, Comment comment, URI<? extends KeyConcept> keyConceptUri);
+	void publish(final UID<Account> accountUID, Comment comment, UID<? extends KeyConcept> keyConceptUID);
 
 	/**
 	 * Updates a comment.
-	 * @param accountURI the account defined by its URI
+	 * @param accountUID the account defined by its UID
 	 * @param comment the updated comment
 	 */
-	void update(final URI<Account> accountURI, Comment comment);
+	void update(final UID<Account> accountUID, Comment comment);
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -51,9 +50,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.geo.impl.services.geocoder.GeoCoderPlugin;
 import io.vertigo.geo.services.geocoder.GeoLocation;
 import io.vertigo.lang.Assertion;
+import io.vertigo.lang.WrappedException;
 
 /**
  * @author spoitrenaud
@@ -61,14 +62,12 @@ import io.vertigo.lang.Assertion;
  */
 public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	// Début de la requête http
-	private static final String GEOCODE_REQUEST_PREFIX = "http://maps.google.com/maps/api/geocode/xml";
+	private static final String GEOCODE_REQUEST_PREFIX = "https://maps.googleapis.com/maps/api/geocode/xml";
 	// Expression XPath permettant de récupérer la latitude, la longitude et
 	// l'adresse formatée de
 	// l'adresse à géolocaliser
 	private static final String XPATH_LATITUDE = "//result//geometry//location//lat";
 	private static final String XPATH_LONGITUDE = "//result//geometry//location//lng";
-	//	private static final String XPATH_FORMATTED_ADDRESS = "//formatted_address";
-	//	private static final String XPATH_ACCURACY = "//result/type";
 	private static final String XPATH_ADDRESSES = "//address_component";
 	private static final String XPATH_STATUS = "//status";
 	private final Proxy proxy;
@@ -79,11 +78,12 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	//	 */
 	@Inject
 	public GoogleGeoCoderPlugin(
-			final @Named("proxyHost") Optional<String> proxyHost,
-			@Named("proxyPort") final Optional<String> proxyPort) {
+			final @ParamValue("proxyHost") Optional<String> proxyHost,
+			@ParamValue("proxyPort") final Optional<String> proxyPort) {
 		Assertion.checkNotNull(proxyHost);
 		Assertion.checkNotNull(proxyPort);
-		Assertion.checkArgument((proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()), "les deux paramètres host et port doivent être tous les deux remplis ou vides");
+		Assertion.checkArgument((proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()),
+				"les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		//-----
 		if (proxyHost.isPresent()) {
 			proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.get(), Integer.parseInt(proxyPort.get())));
@@ -102,7 +102,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			return doCreateConnection(url);
 		} catch (final IOException e) {
-			throw new RuntimeException("Erreur de connexion au service (HTTP)", e);
+			throw WrappedException.wrap(e, "Erreur de connexion au service (HTTP)");
 		}
 	}
 
@@ -134,7 +134,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			url = new URL(urlString);
 		} catch (final MalformedURLException e) {
-			throw new RuntimeException("Erreur lors de la creation de l'URL", e);
+			throw WrappedException.wrap(e, "Erreur lors de la creation de l'URL");
 		}
 
 		final HttpURLConnection connection = createConnection(url);
@@ -148,11 +148,11 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 			documentBuilderFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 			return documentBuilderFactory.newDocumentBuilder().parse(geocoderResultInputSource);
 		} catch (final IOException e) {
-			throw new RuntimeException("Erreur de connexion au service", e);
+			throw WrappedException.wrap(e, "Erreur de connexion au service");
 		} catch (final SAXException e) {
-			throw new RuntimeException("Erreur lors de la récupération des résultats de la requête", e);
+			throw WrappedException.wrap(e, "Erreur lors de la récupération des résultats de la requête");
 		} catch (final ParserConfigurationException e) {
-			throw new RuntimeException("Erreur de configuration du parseur XML", e);
+			throw WrappedException.wrap(e, "Erreur de configuration du parseur XML");
 		} finally {
 			connection.disconnect();
 		}
@@ -174,7 +174,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			return (NodeList) xpath.evaluate(xPathString, xml, XPathConstants.NODESET);
 		} catch (final XPathExpressionException ex) {
-			throw new RuntimeException("Erreur lors du Parsing XML", ex);
+			throw WrappedException.wrap(ex, "Erreur lors du Parsing XML");
 		}
 	}
 
@@ -193,7 +193,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			return (Node) xpath.evaluate(xPathString, xml, XPathConstants.NODE);
 		} catch (final XPathExpressionException ex) {
-			throw new RuntimeException("Erreur lors du Parsing XML", ex);
+			throw WrappedException.wrap(ex, "Erreur lors du Parsing XML");
 		}
 	}
 
@@ -201,6 +201,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		try {
 			final StringWriter sw = new StringWriter();
 			final TransformerFactory tf = TransformerFactory.newInstance();
+			tf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 			final Transformer transformer = tf.newTransformer();
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
 			transformer.setOutputProperty(OutputKeys.METHOD, "xml");
@@ -210,7 +211,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 			transformer.transform(new DOMSource(doc), new StreamResult(sw));
 			return sw.toString();
 		} catch (final Exception ex) {
-			throw new RuntimeException("Error converting to String", ex);
+			throw WrappedException.wrap(ex, "Error converting to String");
 		}
 	}
 
@@ -233,21 +234,11 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		// 1- Parsing du XML
 		final Node latitudeNode = findNode(geocoderResultDocument, XPATH_LATITUDE);
 		final Node longitudeNode = findNode(geocoderResultDocument, XPATH_LONGITUDE);
-		//final Node formattedAddressNode = findNode(geocoderResultDocument, XPATH_FORMATTED_ADDRESS);
-		//		final Node accuracyNode = findNode(geocoderResultDocument, XPATH_ACCURACY);
 		final NodeList addressNodes = findNodes(geocoderResultDocument, XPATH_ADDRESSES);
 		//-----
 		// 2- Typage des données
-		//		System.out.println(">>address : " + address);
-		//		System.out.println(">>>>>> : " + toString(geocoderResultDocument));
-		//		System.out.println(">>longitudeNode : " + longitudeNode);
 		final Double latitude = Double.valueOf(latitudeNode.getTextContent().trim());
 		final Double longitude = Double.valueOf(longitudeNode.getTextContent().trim());
-
-		//	final String formattedAddress = formattedAddressNode.getTextContent();
-		//		final String accuracy = accuracyNode.getTextContent();
-
-		//	Map<GeoLocation.Level, String> codes = findCodes(addressNodes);
 		//-----
 		// 2- Cas des adresses dites "political"
 		//		<address_component>

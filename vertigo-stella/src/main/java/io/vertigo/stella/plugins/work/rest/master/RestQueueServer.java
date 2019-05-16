@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -35,11 +35,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.commons.daemon.DaemonManager;
-import io.vertigo.core.definition.DefinitionSpaceWritable;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.stella.impl.master.WorkResult;
@@ -72,7 +68,7 @@ final class RestQueueServer {
 	 * @param pullTimeoutSec Timeout (secondes) utilisé lors des long pull
 	 * @param daemonManager Daemons manager
 	 */
-	public RestQueueServer(final int nodeTimeOutSec, final CodecManager codecManager, final int pullTimeoutSec, final DaemonManager daemonManager) {
+	public RestQueueServer(final int nodeTimeOutSec, final CodecManager codecManager, final int pullTimeoutSec) {
 		Assertion.checkNotNull(codecManager);
 		//-----
 		this.nodeTimeOutSec = nodeTimeOutSec;
@@ -80,16 +76,6 @@ final class RestQueueServer {
 		deadWorkTypeTimeoutSec = 60; //by convention : dead workType timeout after 60s
 		this.codecManager = codecManager;
 
-		((DefinitionSpaceWritable) Home.getApp().getDefinitionSpace())
-				.registerDefinition(new DaemonDefinition(
-						"DMN_WORK_QUEUE_TIMEOUT_CHECK",
-						() -> () -> checkDeadNodesAndWorkItems(),
-						10));
-	}
-
-	private void checkDeadNodesAndWorkItems() {
-		checkDeadNodes();
-		checkDeadWorkItems();
 	}
 
 	/**
@@ -105,7 +91,7 @@ final class RestQueueServer {
 			}
 		}
 		if (!deadNodes.isEmpty()) {
-			LOG.warn("Stopped nodes detected : " + deadNodes);
+			LOG.warn("Stopped nodes detected : {}", deadNodes);
 			for (final RunningWorkInfos runningWorkInfos : runningWorkInfosMap.values()) {
 				if (deadNodes.contains(runningWorkInfos.getNodeUID())) {
 					putWorkItem(runningWorkInfos.getWorkItem());
@@ -132,7 +118,7 @@ final class RestQueueServer {
 					final WaitingWorkInfos waitingWorkInfos = it.next();
 					if (waitingWorkInfos.getWaitingAge() > deadWorkTypeTimeoutSec * 1000) {
 						it.remove();
-						LOG.info("waiting timeout (" + waitingWorkInfos.getWorkItem().getId() + ")");
+						LOG.info("waiting timeout ({})", waitingWorkInfos.getWorkItem().getId());
 						resultQueue.add(new WorkResult(waitingWorkInfos.getWorkItem().getId(), null, new IOException(
 								"Timeout workId " + waitingWorkInfos.getWorkItem().getId() + " after " + deadWorkTypeTimeoutSec + "s : No active node for this workType (" + workType + ")")));
 					}
@@ -183,10 +169,10 @@ final class RestQueueServer {
 			final byte[] serializedWorkItem = codecManager.getCompressedSerializationCodec().encode((Serializable) workItem.getWork());
 			final String base64WorkItem = codecManager.getBase64Codec().encode(serializedWorkItem);
 			sendPack = new String[] { workItem.getId(), base64WorkItem };
-			LOG.info("pollWork(" + workType + "," + nodeId + ") : 1 Work");
+			LOG.info("pollWork({},{}) : 1 Work", workType, nodeId);
 		} else {
 			sendPack = new String[] {}; //vide si pas de tache en attente
-			LOG.info("pollWork(" + workType + "," + nodeId + ") : no Work");
+			LOG.info("pollWork({},{}) : no Work", workType, nodeId);
 		}
 		return sendPack;
 	}
@@ -196,7 +182,7 @@ final class RestQueueServer {
 	 * @param workId work id
 	 */
 	void onStart(final String workId) {
-		LOG.info("onStart(" + workId + ")");
+		LOG.info("onStart({})", workId);
 	}
 
 	/**
@@ -206,7 +192,7 @@ final class RestQueueServer {
 	 * @param base64Result result base64 encoded
 	 */
 	void onDone(final boolean success, final String workId, final String base64Result) {
-		LOG.info("onDone " + success + " : (" + workId + ")");
+		LOG.info("onDone {} : ({})", success, workId);
 		//-----
 		final RunningWorkInfos runningWorkInfos = runningWorkInfosMap.remove(workId);
 		Assertion.checkNotNull(runningWorkInfos, "Ce travail ({0}) n''est pas connu, ou n''est plus en cours.", workId);
@@ -260,7 +246,7 @@ final class RestQueueServer {
 	<R, W> void putWorkItem(final WorkItem<R, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		if (!isActiveWorkType(workItem.getWorkEngineClass().getName())) {
-			LOG.warn("No active node for this workType : " + workItem.getWorkEngineClass().getName());
+			LOG.warn("No active node for this workType : {}", workItem.getWorkEngineClass().getName());
 		}
 		try {
 			obtainWorkQueue(workItem.getWorkEngineClass().getName()).put(new WaitingWorkInfos(workItem));

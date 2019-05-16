@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.orchestra.domain.definition;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -47,14 +47,14 @@ public final class OProcess implements Entity {
 	private Boolean needUpdate;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PRO_TRT",
-			fkFieldName = "TRT_CD",
-			primaryDtDefinitionName = "DT_TRIGGER_TYPE",
+			name = "AProTrt",
+			fkFieldName = "trtCd",
+			primaryDtDefinitionName = "DtTriggerType",
 			primaryIsNavigable = true,
 			primaryRole = "TriggerType",
 			primaryLabel = "TriggerType",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_O_PROCESS",
+			foreignDtDefinitionName = "DtOProcess",
 			foreignIsNavigable = false,
 			foreignRole = "Process",
 			foreignLabel = "Process",
@@ -62,14 +62,14 @@ public final class OProcess implements Entity {
 	private final VAccessor<io.vertigo.orchestra.domain.referential.TriggerType> trtCdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.referential.TriggerType.class, "TriggerType");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PRO_PRT",
-			fkFieldName = "PRT_CD",
-			primaryDtDefinitionName = "DT_O_PROCESS_TYPE",
+			name = "AProPrt",
+			fkFieldName = "prtCd",
+			primaryDtDefinitionName = "DtOProcessType",
 			primaryIsNavigable = true,
 			primaryRole = "ProcessType",
 			primaryLabel = "ProcessType",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_O_PROCESS",
+			foreignDtDefinitionName = "DtOProcess",
 			foreignIsNavigable = false,
 			foreignRole = "Process",
 			foreignLabel = "Process",
@@ -78,8 +78,8 @@ public final class OProcess implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<OProcess> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<OProcess> getUID() {
+		return UID.of(this);
 	}
 	
 	/**
@@ -87,7 +87,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Id de la definition du processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id de la definition du processus")
+	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id de la definition du processus")
 	public Long getProId() {
 		return proId;
 	}
@@ -106,7 +106,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Nom du processus'.
 	 * @return String name
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Nom du processus")
+	@Field(domain = "DoOLibelle", label = "Nom du processus")
 	public String getName() {
 		return name;
 	}
@@ -125,7 +125,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Libellé du processus'.
 	 * @return String label
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Libellé du processus")
+	@Field(domain = "DoOLibelle", label = "Libellé du processus")
 	public String getLabel() {
 		return label;
 	}
@@ -144,7 +144,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Expression récurrence du processus'.
 	 * @return String cronExpression
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Expression récurrence du processus")
+	@Field(domain = "DoOLibelle", label = "Expression récurrence du processus")
 	public String getCronExpression() {
 		return cronExpression;
 	}
@@ -163,7 +163,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
 	 * @return String initialParams
 	 */
-	@Field(domain = "DO_O_JSON_TEXT", label = "Paramètres initiaux sous forme de JSON")
+	@Field(domain = "DoOJsonText", label = "Paramètres initiaux sous forme de JSON")
 	public String getInitialParams() {
 		return initialParams;
 	}
@@ -182,7 +182,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Accepte la multi-execution'.
 	 * @return Boolean multiexecution
 	 */
-	@Field(domain = "DO_O_BOOLEEN", label = "Accepte la multi-execution")
+	@Field(domain = "DoOBooleen", label = "Accepte la multi-execution")
 	public Boolean getMultiexecution() {
 		return multiexecution;
 	}
@@ -201,7 +201,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Version active'.
 	 * @return Boolean activeVersion <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_BOOLEEN", required = true, label = "Version active")
+	@Field(domain = "DoOBooleen", required = true, label = "Version active")
 	public Boolean getActiveVersion() {
 		return activeVersion;
 	}
@@ -220,7 +220,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Processus actif'.
 	 * @return Boolean active <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_BOOLEEN", required = true, label = "Processus actif")
+	@Field(domain = "DoOBooleen", required = true, label = "Processus actif")
 	public Boolean getActive() {
 		return active;
 	}
@@ -239,7 +239,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Temps de validité d'une planification'.
 	 * @return Integer rescuePeriod <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_NOMBRE", required = true, label = "Temps de validité d'une planification")
+	@Field(domain = "DoONombre", required = true, label = "Temps de validité d'une planification")
 	public Integer getRescuePeriod() {
 		return rescuePeriod;
 	}
@@ -258,7 +258,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Meta-données du processus'.
 	 * @return String metadatas
 	 */
-	@Field(domain = "DO_O_METADATAS", label = "Meta-données du processus")
+	@Field(domain = "DoOMetadatas", label = "Meta-données du processus")
 	public String getMetadatas() {
 		return metadatas;
 	}
@@ -277,7 +277,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Doit être mise à jour lors du démarrage'.
 	 * @return Boolean needUpdate <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_BOOLEEN", required = true, label = "Doit être mise à jour lors du démarrage")
+	@Field(domain = "DoOBooleen", required = true, label = "Doit être mise à jour lors du démarrage")
 	public Boolean getNeedUpdate() {
 		return needUpdate;
 	}
@@ -296,9 +296,9 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'TriggerType'.
 	 * @return String trtCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "TriggerType")
+	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", required = true, label = "TriggerType")
 	public String getTrtCd() {
-		return (String)  trtCdAccessor.getId();
+		return (String) trtCdAccessor.getId();
 	}
 
 	/**
@@ -315,9 +315,9 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'ProcessType'.
 	 * @return String prtCd
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "ProcessType")
+	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", label = "ProcessType")
 	public String getPrtCd() {
-		return (String)  prtCdAccessor.getId();
+		return (String) prtCdAccessor.getId();
 	}
 
 	/**
@@ -336,24 +336,6 @@ public final class OProcess implements Entity {
 	public VAccessor<io.vertigo.orchestra.domain.referential.OProcessType> processType() {
 		return prtCdAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.referential.OProcessType getProcessType() {
-		// we keep the lazyness
-		if (!prtCdAccessor.isLoaded()) {
-			prtCdAccessor.load();
-		}
-		return prtCdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'URI: ProcessType.
-	 * @return URI de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.OProcessType> getProcessTypeURI() {
-		return prtCdAccessor.getURI();
-	}
 
  	/**
 	 * Association : TriggerType.
@@ -361,24 +343,6 @@ public final class OProcess implements Entity {
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.TriggerType> triggerType() {
 		return trtCdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.referential.TriggerType getTriggerType() {
-		// we keep the lazyness
-		if (!trtCdAccessor.isLoaded()) {
-			trtCdAccessor.load();
-		}
-		return trtCdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'URI: TriggerType.
-	 * @return URI de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.TriggerType> getTriggerTypeURI() {
-		return trtCdAccessor.getURI();
 	}
 	
 	/** {@inheritDoc} */

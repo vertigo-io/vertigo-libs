@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,14 @@
  */
 package io.vertigo.dashboard.ui;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,11 +37,11 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import io.vertigo.app.App;
-import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.dashboard.ui.commons.CommonsDashboardControler;
 import io.vertigo.dashboard.ui.dynamo.DynamoDashboardControler;
 import io.vertigo.dashboard.ui.vega.VegaDashboardControler;
+import io.vertigo.dashboard.ui.vui.VUiDashboardControler;
+import io.vertigo.util.InjectorUtil;
 import spark.Response;
 import spark.Spark;
 import spark.utils.GzipUtils;
@@ -53,9 +54,10 @@ public final class DashboardRouter {
 	private static final Map<String, Class<? extends DashboardModuleControler>> controlerMap = new HashMap<>();
 
 	static {
-		controlerMap.put("commons", CommonsDashboardControler.class);
-		controlerMap.put("dynamo", DynamoDashboardControler.class);
-		controlerMap.put("vega", VegaDashboardControler.class);
+		controlerMap.put("vertigo-commons", CommonsDashboardControler.class);
+		controlerMap.put("vertigo-dynamo", DynamoDashboardControler.class);
+		controlerMap.put("vertigo-vega", VegaDashboardControler.class);
+		controlerMap.put("vertigo-ui", VUiDashboardControler.class);
 	}
 
 	private final App app;
@@ -92,24 +94,25 @@ public final class DashboardRouter {
 			return "";
 		});
 
-		Spark.get("/dashboard", (request, response) -> {
-			final Set<String> modules = app.getConfig().getModuleConfigs().stream().map(ModuleConfig::getName).collect(Collectors.toSet());
+		Spark.get("/dashboard/", (request, response) -> {
+			final List<String> modules = Arrays.asList("vertigo-commons", "vertigo-dynamo", "vertigo-vega", "vertugo-ui");
 			final Map<String, Object> model = new HashMap<>();
 			model.put("modules", modules);
+			model.put("contextName", request.contextPath() != null ? request.contextPath() : "");
 			return render(response, "templates/home.ftl", model);
 		});
 
 		Spark.get("/dashboard/modules/:moduleName", (request, response) -> {
 			final String moduleName = request.params(":moduleName");
-			final DashboardModuleControler controler = DIInjector.newInstance(controlerMap.get(moduleName), app.getComponentSpace());
+			final DashboardModuleControler controler = InjectorUtil.newInstance(controlerMap.get(moduleName));
 			final Map<String, Object> model = controler.buildModel(app, moduleName);
-
+			model.put("contextName", request.contextPath() != null ? request.contextPath() : "");
 			return render(response, "templates/" + moduleName + ".ftl", model);
 		});
 
 	}
 
-	private String render(final Response response, final String templateName, final Map<String, Object> model) throws Exception {
+	private String render(final Response response, final String templateName, final Map<String, Object> model) throws TemplateException, IOException {
 		response.status(200);
 		response.type("text/html");
 

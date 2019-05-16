@@ -1,36 +1,36 @@
 package io.vertigo.orchestra.dao.definition
 
-create Task TK_GET_ACTIVE_PROCESS_BY_NAME {
+create Task TkGetActiveProcessByName {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
         	select 
         		pro.*
         	from o_process pro
-        	where pro.NAME = #NAME#
+        	where pro.NAME = #name#
 	        	and pro.ACTIVE_VERSION is true
         	
 			"
-	attribute NAME			 	{domain : DO_O_LIBELLE 				notNull:"true" 		inOut :"in"}
-	attribute DT_PROCESS	 	{domain : DO_DT_O_PROCESS_DTO 		notNull:"false" 	inOut :"out"}
+	attribute name			 	{domain : DoOLibelle 				required:"true" 		inOut :"in"}
+	attribute dtProcess	 	{domain : DoDtOProcessDto 		required:"false" 	inOut :"out"}
 }
 
-create Task TK_GET_PROCESSES_BY_NAME {
+create Task TkGetProcessesByName {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
         	select 
         		count(*)
         	from o_process pro
-        	where pro.NAME = #NAME#
+        	where pro.NAME = #name#
         	
 			"
-	attribute NAME			 	{domain : DO_O_LIBELLE 				notNull:"true" 		inOut :"in"}
-	attribute NOMBRE			 	{domain : DO_O_NOMBRE				notNull:"true" 		inOut :"out"}
+	attribute name			 	{domain : DoOLibelle 				required:"true" 		inOut :"in"}
+	attribute nombre			 	{domain : DoONombre				required:"true" 		inOut :"out"}
 }
 
 
-create Task TK_GET_ALL_ACTIVE_PROCESSES {
+create Task TkGetAllActiveProcesses {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineSelect"
         request : "
@@ -40,19 +40,19 @@ create Task TK_GET_ALL_ACTIVE_PROCESSES {
         	where pro.ACTIVE_VERSION is true
         	
 			"
-	attribute DTC_PROCESSES	 	{domain : DO_DT_O_PROCESS_DTC 		notNull:"true" 	inOut :"out"}
+	attribute dtcProcesses	 	{domain : DoDtOProcessDtc 		required:"true" 	inOut :"out"}
 }
 
 
-create Task TK_DISABLE_OLD_PROCESS_DEFINITIONS {
+create Task TkDisableOldProcessDefinitions {
 	storeName : "orchestra"
     className : "io.vertigo.dynamox.task.TaskEngineProc"
         request : "
         	update o_process 
         	set ACTIVE_VERSION = false,
         		NEED_UPDATE = false
-        	where NAME = #NAME#
+        	where NAME = #name#
         	
 			"
-	attribute NAME			 	{domain : DO_O_LIBELLE 				notNull:"true" 		inOut :"in"}
+	attribute name			 	{domain : DoOLibelle 				required:"true" 		inOut :"in"}
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,10 +37,12 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.usermodel.HeaderFooter;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
+import org.apache.poi.ss.usermodel.BorderStyle;
+import org.apache.poi.ss.usermodel.FillPatternType;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.PrintSetup;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import io.vertigo.core.locale.MessageText;
@@ -87,16 +89,16 @@ final class XLSExporter {
 		final HSSFFont font = workbook.createFont();
 		font.setFontHeightInPoints((short) 10);
 		font.setFontName("Arial");
-		font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		font.setBold(true);
 		cellStyle.setFont(font);
-		cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
-		cellStyle.setBorderTop(CellStyle.BORDER_THIN);
-		cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
-		cellStyle.setBorderRight(CellStyle.BORDER_THIN);
-		cellStyle.setVerticalAlignment((short) 3);
-		cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
-		cellStyle.setFillForegroundColor(HSSFColor.GREY_40_PERCENT.index);
-		cellStyle.setAlignment(CellStyle.ALIGN_CENTER);
+		cellStyle.setBorderBottom(BorderStyle.THIN);
+		cellStyle.setBorderTop(BorderStyle.THIN);
+		cellStyle.setBorderLeft(BorderStyle.THIN);
+		cellStyle.setBorderRight(BorderStyle.THIN);
+		cellStyle.setVerticalAlignment(VerticalAlignment.JUSTIFY);
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+		cellStyle.setFillForegroundColor(HSSFColorPredefined.GREY_40_PERCENT.getIndex());
+		cellStyle.setAlignment(HorizontalAlignment.CENTER);
 		return cellStyle;
 	}
 
@@ -106,13 +108,13 @@ final class XLSExporter {
 		font.setFontHeightInPoints((short) 10);
 		font.setFontName("Arial");
 		cellStyle.setFont(font);
-		cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
-		cellStyle.setBorderTop(CellStyle.BORDER_THIN);
-		cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
-		cellStyle.setBorderRight(CellStyle.BORDER_THIN);
-		cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+		cellStyle.setBorderBottom(BorderStyle.THIN);
+		cellStyle.setBorderTop(BorderStyle.THIN);
+		cellStyle.setBorderLeft(BorderStyle.THIN);
+		cellStyle.setBorderRight(BorderStyle.THIN);
+		cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
-		cellStyle.setFillForegroundColor(odd ? HSSFColor.WHITE.index : HSSFColor.GREY_25_PERCENT.index);
+		cellStyle.setFillForegroundColor(odd ? HSSFColorPredefined.WHITE.getIndex() : HSSFColorPredefined.GREY_25_PERCENT.getIndex());
 
 		return cellStyle;
 	}
@@ -198,8 +200,6 @@ final class XLSExporter {
 		final HSSFCellStyle evenDateCellStyle = createRowCellStyle(workbook, true);
 		oddDateCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy" /* "m/d/yy h:mm" */));
 		evenDateCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy" /* "m/d/yy h:mm" */));
-		oddHssfStyleCache.put(DataType.Date, oddDateCellStyle);
-		evenHssfStyleCache.put(DataType.Date, evenDateCellStyle);
 		oddHssfStyleCache.put(DataType.LocalDate, oddDateCellStyle);
 		evenHssfStyleCache.put(DataType.LocalDate, evenDateCellStyle);
 
@@ -269,7 +269,13 @@ final class XLSExporter {
 
 	}
 
-	private static void putValueInCell(final Object value, final HSSFCell cell, final Map<DataType, HSSFCellStyle> rowCellStyle, final int cellIndex, final Map<Integer, Double> maxWidthPerColumn, final Domain domain) {
+	private static void putValueInCell(
+			final Object value,
+			final HSSFCell cell,
+			final Map<DataType, HSSFCellStyle> rowCellStyle,
+			final int cellIndex,
+			final Map<Integer, Double> maxWidthPerColumn,
+			final Domain domain) {
 		String stringValueForColumnWidth;
 		cell.setCellStyle(rowCellStyle.get(domain.getDataType()));
 		if (value != null) {
@@ -295,7 +301,7 @@ final class XLSExporter {
 			} else if (value instanceof Boolean) {
 				final Boolean bValue = (Boolean) value;
 				//cell.setCellValue(bValue.booleanValue() ? "Oui" : "Non");
-				cell.setCellValue(domain.valueToString(bValue.booleanValue()));
+				cell.setCellValue(domain.valueToString(bValue));
 			} else if (value instanceof Date) {
 				final Date dateValue = (Date) value;
 				// sans ce style "date" les dates apparaîtraient au format

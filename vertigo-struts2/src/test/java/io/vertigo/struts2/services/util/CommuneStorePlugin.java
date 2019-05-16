@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,11 +24,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import io.vertigo.dynamo.criteria.Criteria;
+import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListURIForCriteria;
+import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractStaticDataStorePlugin;
 import io.vertigo.lang.Assertion;
 import io.vertigo.struts2.domain.DtDefinitions;
@@ -53,12 +54,13 @@ public final class CommuneStorePlugin extends AbstractStaticDataStorePlugin {
 		return DEFAULT_CONNECTION_NAME;
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final URI<E> uri) {
+	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final UID<E> uri) {
 		//La liste est grande, donc configurée pour être chargée par morceau.
 		//Mais cette implé de POC, ne le fait pas et utilise la liste complète
 		for (final Commune commune : loadAllCommunes()) {
-			if (uri.equals(commune.getURI())) {
+			if (uri.equals(commune.getUID())) {
 				return (E) commune;
 			}
 		}
@@ -66,26 +68,28 @@ public final class CommuneStorePlugin extends AbstractStaticDataStorePlugin {
 
 	}
 
+	/** {@inheritDoc} */
 	@Override
-	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final URI<?> uri) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final Integer maxRows) {
+	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final UID<?> uri) {
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public <D extends Entity> DtList<D> findAll(final DtDefinition dtDefinition, final DtListURIForCriteria<D> uri) {
+	public int count(final DtDefinition dtDefinition) {
+		return loadAllCommunes().size();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <E extends Entity> DtList<E> findByCriteria(final DtDefinition dtDefinition, final Criteria<E> criteria, final DtListState dtListState) {
 		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(uri);
+		Assertion.checkNotNull(dtListState);
 		Assertion.checkArgument(DtDefinitions.Definitions.Commune.name().equals(dtDefinition.getClassSimpleName()), "This store should be use for Commune only, not {0}",
 				dtDefinition.getClassSimpleName());
-		Assertion.checkArgument(uri.getCriteria() == null, "This store could only load all data, not {0}", uri.getCriteria());
+		Assertion.checkArgument(criteria == null || criteria.equals(Criterions.alwaysTrue()), "This store could only load all data, not {0}", criteria);
 		//----
-		return (DtList<D>) loadAllCommunes();
+		return (DtList<E>) loadAllCommunes();
 	}
 
 	private DtList<Commune> loadAllCommunes() {

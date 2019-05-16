@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,13 +18,13 @@
  */
 package io.vertigo.social.services.comment;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.UUID;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.app.Home;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Builder;
 import io.vertigo.util.DateUtil;
@@ -35,10 +35,10 @@ import io.vertigo.util.DateUtil;
 public final class CommentBuilder implements Builder<Comment> {
 	private UUID myUuid;
 	private String myMsg;
-	private URI<Account> myAuthor;
+	private UID<Account> myAuthor;
 	private String myAuthorDisplayName;
-	private Date myCreationDate;
-	private Date myLastModified;
+	private Instant myCreationInstant;
+	private Instant myLastModified;
 
 	/**
 	 * Constructor for new comment.
@@ -55,7 +55,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * @param author Author account
 	 * @return this builder
 	 */
-	public CommentBuilder withAuthor(final URI<Account> author) {
+	public CommentBuilder withAuthor(final UID<Account> author) {
 		Assertion.checkArgument(myAuthor == null, "author already set");
 		Assertion.checkNotNull(author);
 		//-----
@@ -92,11 +92,11 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * @param creationDate create date time
 	 * @return this builder
 	 */
-	public CommentBuilder withCreationDate(final Date creationDate) {
-		Assertion.checkArgument(myCreationDate == null, "creationDate already set");
-		Assertion.checkNotNull(creationDate);
+	public CommentBuilder withCreationDate(final Instant creationInstant) {
+		Assertion.checkArgument(myCreationInstant == null, "creationDate already set");
+		Assertion.checkNotNull(creationInstant);
 		//-----
-		myCreationDate = creationDate;
+		myCreationInstant = creationInstant;
 		return this;
 	}
 
@@ -104,7 +104,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * @param lastModified Last modify date time
 	 * @return this builder
 	 */
-	public CommentBuilder withLastModified(final Date lastModified) {
+	public CommentBuilder withLastModified(final Instant lastModified) {
 		Assertion.checkArgument(myLastModified == null, "lastModified already set");
 		//lastModified is optional
 		//-----
@@ -115,12 +115,12 @@ public final class CommentBuilder implements Builder<Comment> {
 	/** {@inheritDoc} */
 	@Override
 	public Comment build() {
-		if (myCreationDate == null) {
-			myCreationDate = DateUtil.newDateTime();
+		if (myCreationInstant == null) {
+			myCreationInstant = DateUtil.newInstant();
 		}
 		if (myUuid == null) {
 			myUuid = UUID.randomUUID();
 		}
-		return new Comment(myUuid, myAuthor, myAuthorDisplayName, myMsg, myCreationDate, myLastModified);
+		return new Comment(myUuid, myAuthor, myAuthorDisplayName, myMsg, myCreationInstant, myLastModified);
 	}
 }

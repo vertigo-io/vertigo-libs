@@ -1,0 +1,15 @@
+<th:block th:fragment="collection(list, componentId, showMore, showMoreLabel, rowsPerPage, selectable, sortUrl)" 
+	th:assert="${list} != null and ${componentId} != null"
+	th:with="collectionKey=${list}, listSize=${model.vContext[__${list}__].size()}, myRowsPerPage=${rowsPerPage?:15}, showMoreEnabled=${showMore?:false}"
+	th:attr="objectKey=${model.vContext['componentStates'].addComponentState(componentId).addList('selected')}, objectKey=${model.vContext['componentStates'][__${componentId}__][loading] = false }, objectKey=${model.vContext['componentStates'][__${componentId}__].addObject('pagination', {page: 1 , rowsNumber: __${listSize}__, rowsPerPage: __${myRowsPerPage}__, componentId : '__${componentId}__', listKey : '__${list}__', sortUrl : '__${sortUrl}__'})}" 
+>
+	<vu:content />
+	<div class="row justify-center"><q-btn flat th:if="${showMoreEnabled}" color="primary" class="q-my-md"
+	th:v-if="|componentStates.${componentId}.pagination.rowsNumber > componentStates.${componentId}.pagination.rowsPerPage|" 
+	th:label="${showMoreLabel}" th:@click="|showMore('${componentId}')|"></q-btn></div>
+	<q-pagination 
+		th:if="${!showMoreEnabled}" 
+		th:v-model="|componentStates.${componentId}.pagination.page|" 
+		th::max="|Math.ceil(componentStates.${componentId}.pagination.rowsNumber / componentStates.${componentId}.pagination.rowsPerPage)|" 
+		th:attr="__${pagination_attrs}__"></q-pagination>
+</th:block > 

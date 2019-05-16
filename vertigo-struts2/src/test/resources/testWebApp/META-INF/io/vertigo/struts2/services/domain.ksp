@@ -5,154 +5,154 @@ package io.vertigo.demo.services
 
 /**** Domaines utilisés dans le modèle objet ****/
 
-create Domain DO_ACTIF {
+create Domain DoActif {
 	dataType : Boolean
-	formatter : FMT_ACTIF_INACTIF 
+	formatter : FmtActifInactif 
 	storeType : "BOOLEAN"
 }
 
-create Domain DO_OUI_NON {
+create Domain DoOuiNon {
 	dataType : Boolean
-	formatter : FMT_OUI_NON
+	formatter : FmtOuiNon
 	storeType : "BOOLEAN"
 }
 
-create Domain DO_CODE {
+create Domain DoCode {
 	dataType : String
-	formatter : FMT_UPPERCASE
-	constraint : [CK_MAX_LENGTH_30]
+	formatter : FmtUppercase
+	constraint : [CkMaxLength30]
     storeType : "VARCHAR(30)"
 }
 
-create Domain DO_CODE_POSTAL {
+create Domain DoCodePostal {
 	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_CODE_POSTAL]
+	formatter : FmtDefault
+	constraint : [CkCodePostal]
     storeType : "VARCHAR(5)"
 }
 
-create Domain DO_DATE {
-	dataType : Date
-	formatter : FMT_DATE
+create Domain DoDate {
+	dataType : LocalDate
+	formatter : FmtDate
 	storeType : "DATE"
 }
 
-create Domain DO_LAST_MODIFIED {
+create Domain DoLastModified {
 	dataType : Instant
-	formatter : FMT_DATE_TIME
+	formatter : FmtDateTime
 	storeType : "DATE"
 }
 
-create Domain DO_YEAR {
+create Domain DoYear {
 	dataType : Integer
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 	storeType : "NUMERIC"
 }
 
-create Domain DO_DURATION {
+create Domain DoDuration {
 	dataType : Integer
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 	storeType : "NUMERIC"
 }
 
-create Domain DO_EMAIL {
+create Domain DoEmail {
 	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_EMAIL]
+	formatter : FmtDefault
+	constraint : [CkEmail]
 	storeType : "VARCHAR(255)"
 }
 
-create Domain DO_ID {
+create Domain DoId {
 	dataType : Long
-	formatter : FMT_ID
+	formatter : FmtId
 	storeType : "BIGINT"
 }
 
-create Domain DO_LABEL {
+create Domain DoLabel {
 	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_100]
+	formatter : FmtDefault
+	constraint : [CkMaxLength100]
 	storeType : "VARCHAR(100)"
 }
 
-create Domain DO_LABEL_LONG {
+create Domain DoLabelLong {
 	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_250]
+	formatter : FmtDefault
+	constraint : [CkMaxLength250]
 	storeType : "VARCHAR(250)"
 }
 
-create Domain DO_LOGIN {
+create Domain DoLogin {
 	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_30]
+	formatter : FmtDefault
+	constraint : [CkMaxLength30]
 	storeType : "VARCHAR(30)"
 }
 
-create Domain DO_MONTANT {
+create Domain DoMontant {
 	dataType : BigDecimal
-	formatter : FMT_MONTANT
+	formatter : FmtMontant
 	unit : "€"
 	storeType: "NUMERIC(12,2)"
 }
 
-create Domain DO_QUANTITE {
+create Domain DoQuantite {
 	dataType : Long
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 	storeType : "BIGINT"
 }
 
-create Domain DO_POIDS  {
+create Domain DoPoids  {
 	dataType : BigDecimal
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 	storeType: "NUMERIC(4,1)"
 }
 
-create Domain DO_ORDRE {
+create Domain DoOrdre {
 	dataType : Long
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 	storeType : "BIGINT"
 }
 
-create Domain DO_TAUX  {
+create Domain DoTaux  {
 	dataType : BigDecimal
-	formatter : FMT_TAUX
-	constraint : [CK_MIN_VALUE_0, CK_MAX_VALUE_100]
+	formatter : FmtTaux
+	constraint : [CkMinValue0, CkMaxValue100]
 	storeType: "NUMERIC(5,2)"
 }
 
-create Domain DO_COMMENT {
+create Domain DoComment {
 	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_4000]
+	formatter : FmtDefault
+	constraint : [CkMaxLength4000]
     storeType : "TEXT"
 }
 
-create Domain DO_TELEPHONE {
+create Domain DoTelephone {
 	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_TELEPHONE]
+	formatter : FmtDefault
+	constraint : [CkTelephone]
 	storeType : "VARCHAR(20)"
 }
 
-create Domain DO_NAME {
+create Domain DoName {
 	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_50]
+	formatter : FmtDefault
+	constraint : [CkMaxLength50]
 	storeType : "VARCHAR(50)"
 }
 
-create Domain DO_FIRSTNAME {
+create Domain DoFirstname {
 	dataType : String
-	formatter : FMT_DEFAULT
-	constraint : [CK_MAX_LENGTH_50]
+	formatter : FmtDefault
+	constraint : [CkMaxLength50]
 	storeType : "VARCHAR(50)"
 }
 
 
-create Domain DO_PASSWORD {
+create Domain DoPassword {
 	dataType : String
-	formatter : FMT_DEFAULT
+	formatter : FmtDefault
 	storeType : "VARCHAR(250)"
 }
 
@@ -161,43 +161,43 @@ create Domain DO_PASSWORD {
 /**************************************************************************************************/
 /* 											Gestion des formatters 								  */
 /**************************************************************************************************/
-create Formatter FMT_MONTANT {
+create Formatter FmtMontant {
     className : "io.vertigo.dynamox.domain.formatter.FormatterNumber"
     args : "#,##0.00"
 }
 
-create Formatter FMT_DEFAULT {
+create Formatter FmtDefault {
 	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
 }
 
 
-create Formatter FMT_ID {
+create Formatter FmtId {
     className : "io.vertigo.dynamox.domain.formatter.FormatterNumber"
     args : "###0"
 }
 
-create Formatter FMT_UPPERCASE {
+create Formatter FmtUppercase {
 	className : "io.vertigo.dynamox.domain.formatter.FormatterString"
 	args : "UPPER"
 }
 
-create Formatter FMT_DATE {
+create Formatter FmtDate {
      className :"io.vertigo.dynamox.domain.formatter.FormatterDate"
      args : "dd/MM/yyyy"
 }
 
-create Formatter FMT_DATE_TIME {
+create Formatter FmtDateTime {
      className :"io.vertigo.dynamox.domain.formatter.FormatterDate"
      args : "dd/MM/yyyy HH:mm;dd/MM/yy HH:mm"
 }
 
-create Formatter FMT_OUI_NON {
+create Formatter FmtOuiNon {
       className :"io.vertigo.dynamox.domain.formatter.FormatterBoolean"
       /*args : "<img src:'../static/images/icon/select_on.gif' alt:'oui'/>;<img src:'../static/images/icon/select_off.gif' alt:'non'/>"*/
       args : "Oui;Non"
 }
 
-create Formatter FMT_ACTIF_INACTIF {
+create Formatter FmtActifInactif {
       className :"io.vertigo.dynamox.domain.formatter.FormatterBoolean"
       /*args : "<img src:'../static/images/icon/select_on.gif' alt:'actif'/>;<img src:'../static/images/icon/select_off.gif' alt:'inactif'/>"*/
       args : "Actif;Inactif"
@@ -208,7 +208,7 @@ create Formatter FMT_ACTIF_INACTIF {
 Formatage avec deux chiffres maximum après la virgule.
 Pas d'affichage de 0 après virgule si pas nécessaire {ex: 100 sera affiché sous la forme 100 et 100.00}
 */
-create Formatter FMT_TAUX {
+create Formatter FmtTaux {
 	 className :"io.vertigo.dynamox.domain.formatter.FormatterNumber"
      args : "#.##"
 }
@@ -219,48 +219,48 @@ create Formatter FMT_TAUX {
 /* 											Gestion des contraintes 							  */
 /**************************************************************************************************/
 
-create Constraint CK_URN {
+create Constraint CkUrn {
 	className : "io.vertigo.dynamox.domain.constraint.ConstraintRegex"
 	args : "[A-Z0-9_]{3,40}([$][A-Z0-9_]{3,40})?"
 }
 
 
-create Constraint CK_MAX_LENGTH_30 {
+create Constraint CkMaxLength30 {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
 	args :"30"
 }
 
-create Constraint CK_MAX_LENGTH_40 {
+create Constraint CkMaxLength40 {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
 	args :"40"
 }
 
-create Constraint CK_MAX_LENGTH_50 {
+create Constraint CkMaxLength50 {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
 	args :"50"
 }
 
-create Constraint CK_MAX_LENGTH_100 {
+create Constraint CkMaxLength100 {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
 	args :"100"
 }
 
-create Constraint CK_MAX_LENGTH_250 {
+create Constraint CkMaxLength250 {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
 	args :"250"
 }
 
-create Constraint CK_MAX_LENGTH_4000 {
+create Constraint CkMaxLength4000 {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
 	args :"4000"
 }
 
-create Constraint CK_MIN_VALUE_0 {
+create Constraint CkMinValue0 {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintNumberMinimum"
 	args :"0"
 }
 
-create Constraint CK_MAX_VALUE_100 {
+create Constraint CkMaxValue100 {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintNumberMaximum"
 	args :"100"
 }
@@ -268,13 +268,13 @@ create Constraint CK_MAX_VALUE_100 {
 /*
 Prise en compte uniquement des codes postaux fran�ais.
 */
-create Constraint CK_CODE_POSTAL  {
+create Constraint CkCodePostal  {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex"
 	args : "^[0-9]{5}$"
 }
 
 
-create Constraint CK_EMAIL {
+create Constraint CkEmail {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex"
 	args : "^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*\.[a-zA-Z0-9-]{2,3}$"
 	msg : "L'email n'est pas valide"
@@ -284,7 +284,7 @@ create Constraint CK_EMAIL {
 Prise en compte des num�ros de t�l�phones fran�ais sans le pr�fixe international.
 Prise en compte des num�ros de t�l�phones fixes {num�ros commen�ant par 01, 02, 03, 04, 05, 08 ou 09} et protables {num�ros commen�ant par 06 ou 07}.
 */
-create Constraint CK_TELEPHONE {
+create Constraint CkTelephone {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex"
 	args : "^0[0-9]{9}$"
 }

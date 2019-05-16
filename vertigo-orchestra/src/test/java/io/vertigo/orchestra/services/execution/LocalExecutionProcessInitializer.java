@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,26 +37,26 @@ public class LocalExecutionProcessInitializer implements ComponentInitializer {
 	@Override
 	public void init() {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_MANUAL", TestJob.class)
+		final ProcessDefinition processDefinition = ProcessDefinition.legacyBuilder("ProTestUnsupervisedManual", TestJob.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 
-		final ProcessDefinition processDefinition2 = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_MANUAL_2", TestJob.class)
-				.addActivity("SECOND", "second", TestJob2.class)
+		final ProcessDefinition processDefinition2 = ProcessDefinition.legacyBuilder("ProTestUnsupervisedManual2", TestJob.class)
+				.addActivity("Second", "second", TestJob2.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition2);
 
-		final ProcessDefinition processDefinition3 = ProcessDefinition.builder("PRO_TEST_UNSUPERVISED_MANUAL_3", "PRO_TEST_UNSUPERVISED_MANUAL_3")
-				.addActivity("FIRST", "FIRST", TestJob3.class)
+		final ProcessDefinition processDefinition3 = ProcessDefinition.builder("ProTestUnsupervisedManual3", "ProTestUnsupervisedManual3")
+				.addActivity("first", "first", TestJob3.class)
 				.withProcessType(ProcessType.UNSUPERVISED)
 				.addInitialParam(TestJob3.PARAM_KEY_1, "value1")
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition3);
 
-		final ProcessDefinition processDefinition4 = ProcessDefinition.legacyBuilder("PRO_TEST_UNSUPERVISED_RECURRENT", TestJobScheduled.class)
+		final ProcessDefinition processDefinition4 = ProcessDefinition.legacyBuilder("ProTestUnsupervisedRecurrent", TestJobScheduled.class)
 				.withCronExpression("*/5 * * * * ?")
 				.build();
 

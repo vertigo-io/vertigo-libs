@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,7 +34,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.lang.VUserException;
 import io.vertigo.struts2.core.AbstractActionSupport;
 import io.vertigo.struts2.core.ContextRef;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.model.UiList;
 
 /**
@@ -76,14 +75,14 @@ public final class ListAutocompleteAction extends AbstractActionSupport {
 		//-----
 		final DtField idField;
 		if (listKeyRef.exists()) {
-			idField = dtDefinition.getField(StringUtil.camelToConstCase(listKeyRef.get()));
+			idField = dtDefinition.getField(listKeyRef.get());
 		} else {
 			idField = dtDefinition.getIdField().get();
 		}
 		//-----
 		final DtField labelField;
 		if (listValueRef.exists()) {
-			labelField = dtDefinition.getField(StringUtil.camelToConstCase(listValueRef.get()));
+			labelField = dtDefinition.getField(listValueRef.get());
 		} else {
 			labelField = dtDefinition.getDisplayField().get();
 		}

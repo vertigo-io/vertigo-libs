@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,10 +22,10 @@ import java.util.function.Function;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.stella.master.MasterManager;
 import io.vertigo.stella.master.WorkResultHandler;
 import io.vertigo.stella.work.mock.DivideWork;
@@ -38,8 +38,8 @@ import io.vertigo.stella.work.mock.ThreadLocalWorkEngine;
 /**
  * @author pchretien
  */
-public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
-	private final long warmupTime = 4000; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
+public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU5 {
+	private final long warmupTime = 5000; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
 	private static final int WORKER_COUNT = 5; //Doit correspondre au workerCount déclaré dans managers.xlm
 
 	@Inject
@@ -52,7 +52,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 	public void testProcess() {
 		final DivideWork work = new DivideWork(10, 5);
 		final long div = workManager.process(work, DivideWorkEngine.class).join();
-		Assert.assertEquals(10L / 5L, div);
+		Assertions.assertEquals(10L / 5L, div);
 	}
 
 	@Test
@@ -66,7 +66,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 				.andThen(square)
 				.andThen(square)
 				.apply("aa");
-		Assert.assertEquals(2 * 2 * 2 * 2L, result);
+		Assertions.assertEquals(2 * 2 * 2 * 2L, result);
 	}
 
 	public static final class LengthWorkEngine implements WorkEngine<String, Long> {
@@ -85,18 +85,22 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		}
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testProcessWithNull() {
-		final DivideWork work = null;
-		final long div = workManager.process(work, DivideWorkEngine.class).join();
-		nop(div);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final DivideWork work = null;
+			final long div = workManager.process(work, DivideWorkEngine.class).join();
+			nop(div);
+		});
 	}
 
-	@Test(expected = ArithmeticException.class)
+	@Test
 	public void testProcessWithError() {
-		final DivideWork work = new DivideWork(10, 0);
-		final long div = workManager.process(work, DivideWorkEngine.class).join();
-		nop(div);
+		Assertions.assertThrows(ArithmeticException.class, () -> {
+			final DivideWork work = new DivideWork(10, 0);
+			final long div = workManager.process(work, DivideWorkEngine.class).join();
+			nop(div);
+		});
 	}
 
 	//=========================================================================
@@ -114,16 +118,18 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		workManager.schedule(work, DivideWorkEngine.class, workResultHanlder);
 		//---
 		final boolean finished = workResultHanlder.waitFinish(2, warmupTime);
-		Assert.assertTrue("Can't finished in time : " + workResultHanlder, finished);
-		Assert.assertEquals(2, workResultHanlder.getLastResult().intValue());
-		Assert.assertEquals(null, workResultHanlder.getLastThrowable());
+		Assertions.assertTrue(finished, "Can't finished in time : " + workResultHanlder);
+		Assertions.assertEquals(2, workResultHanlder.getLastResult().intValue());
+		Assertions.assertEquals(null, workResultHanlder.getLastThrowable());
 	}
 
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void testScheduleWithNull() {
-		final DivideWork work = null;
-		final MyWorkResultHanlder<Long> workResultHanlder = new MyWorkResultHanlder<>();
-		workManager.schedule(work, DivideWorkEngine.class, workResultHanlder);
+		Assertions.assertThrows(NullPointerException.class, () -> {
+			final DivideWork work = null;
+			final MyWorkResultHanlder<Long> workResultHanlder = new MyWorkResultHanlder<>();
+			workManager.schedule(work, DivideWorkEngine.class, workResultHanlder);
+		});
 	}
 
 	/**
@@ -139,9 +145,9 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		//On vérifie plusieurs  choses
 		// -que l'erreur remontée est bien une ArithmeticException
 		//- que l'exception est contenue dans le handler
-		Assert.assertTrue("Can't finished in time : " + workResultHanlder, finished);
-		Assert.assertEquals(null, workResultHanlder.getLastResult());
-		Assert.assertEquals(ArithmeticException.class, workResultHanlder.getLastThrowable().getClass());
+		Assertions.assertTrue(finished, "Can't finished in time : " + workResultHanlder);
+		Assertions.assertEquals(null, workResultHanlder.getLastResult());
+		Assertions.assertEquals(ArithmeticException.class, workResultHanlder.getLastThrowable().getClass());
 	}
 
 	/**
@@ -156,7 +162,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		final boolean finished = workResultHanlder.waitFinish(1, workTime - 1000);
 		//-----
 		//We are expecting a time out if we are waiting less than execution's time.
-		Assert.assertFalse(finished);
+		Assertions.assertFalse(finished);
 	}
 
 	//=========================================================================
@@ -178,7 +184,7 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 
 		//On estime que la durée max n'excéde pas le workTime + 1000ms
 		//-----
-		Assert.assertTrue("Can't finished in time : " + workResultHanlder, finished);
+		Assertions.assertTrue(finished, "Can't finished in time : " + workResultHanlder);
 
 	}
 
@@ -196,12 +202,12 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 		final MyWorkResultHanlder<Boolean> workResultHanlder = new MyWorkResultHanlder<>();
 		createWorkItems(workToCreate, workTime, workResultHanlder);
 		final long timeout = Math.round(10 * 1.2 * workTime + warmupTime); //*1.2 because some lag on our PIC
-		Assert.assertTrue("Schedule de " + workToCreate + " work trop long : " + (System.currentTimeMillis() - start) + "ms", System.currentTimeMillis() - start < timeout);
+		Assertions.assertTrue(System.currentTimeMillis() - start < timeout, "Schedule de " + workToCreate + " work trop long : " + (System.currentTimeMillis() - start) + "ms");
 
 		final boolean finished = workResultHanlder.waitFinish(workToCreate, timeout);
 		//On estime que la durée max n'excéde pas le workTime + 1000ms
 		//-----
-		Assert.assertTrue("Les " + workToCreate + " works n'ont pas terminés dans les temps, le timeout à " + timeout + "ms s'est déclenché: " + workResultHanlder, finished);
+		Assertions.assertTrue(finished, "Les " + workToCreate + " works n'ont pas terminés dans les temps, le timeout à " + timeout + "ms s'est déclenché: " + workResultHanlder);
 
 	}
 
@@ -217,8 +223,8 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 
 		final boolean finished = workResultHanlder.waitFinish(workToCreate, workTime * workToCreate);
 		//-----
-		Assert.assertTrue("Les works n'ont pas terminés dans les temps, le timeout à " + workTime * workToCreate + "ms s'est déclenché", finished);
-		Assert.assertEquals("ThreadLocal conservé entre deux exécutions ", Integer.valueOf(1), workResultHanlder.getLastResult());
+		Assertions.assertTrue(finished, "Les works n'ont pas terminés dans les temps, le timeout à " + workTime * workToCreate + "ms s'est déclenché");
+		Assertions.assertEquals(Integer.valueOf(1), workResultHanlder.getLastResult(), "ThreadLocal conservé entre deux exécutions ");
 	}
 
 	/**
@@ -233,8 +239,8 @@ public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU4 {
 
 		final boolean finished = workResultHanlder.waitFinish(workToCreate, 50 * workTime * workToCreate);
 		//-----
-		Assert.assertTrue("Les works n'ont pas terminés dans les temps, le timeout à " + workTime * workToCreate + "ms s'est déclanché", finished);
-		Assert.assertEquals("ThreadLocal conservé entre deux exécutions ", Integer.valueOf(1), workResultHanlder.getLastResult());
+		Assertions.assertTrue(finished, "Les works n'ont pas terminés dans les temps, le timeout à " + workTime * workToCreate + "ms s'est déclanché");
+		Assertions.assertEquals(Integer.valueOf(1), workResultHanlder.getLastResult(), "ThreadLocal conservé entre deux exécutions ");
 	}
 
 	private void createWorkItems(final int workToCreate, final int workTime, final WorkResultHandler<Boolean> workResultHanlder) {

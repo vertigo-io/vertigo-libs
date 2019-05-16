@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -26,14 +26,19 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.param.Param;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
+import io.vertigo.quarto.QuartoFeatures;
 import io.vertigo.quarto.services.converter.ConverterManager;
 import io.vertigo.util.TempFile;
 
@@ -42,7 +47,7 @@ import io.vertigo.util.TempFile;
  *
  * @author npiedeloup
  */
-public final class RemoteConverterManagerTest extends AbstractTestCaseJU4 {
+public final class RemoteConverterManagerTest extends AbstractTestCaseJU5 {
 	/** Logger. */
 	private final Logger log = LogManager.getLogger(getClass());
 
@@ -53,6 +58,23 @@ public final class RemoteConverterManagerTest extends AbstractTestCaseJU4 {
 	private FileManager fileManager;
 
 	private VFile resultFile;
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.endBoot()
+				.addModule(new CommonsFeatures().build())
+				.addModule(new DynamoFeatures().build())
+				.addModule(new QuartoFeatures()
+						.withConverter()
+						.withRemoteOpenOfficeConverter(
+								Param.of("unohost", "ficenrecette.part.klee.lan.net"),
+								Param.of("unoport", "8200"),
+								Param.of("convertTimeoutSeconds", "5"))
+						.build())
+				.build();
+	}
 
 	/** {@inheritDoc} */
 	@Override

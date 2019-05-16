@@ -1,17 +1,17 @@
 package io.vertigo.orchestra.monitoring.domain.summary
 
-create DtDefinition DT_O_EXECUTION_SUMMARY {
-	field PRO_ID   					{domain : DO_O_IDENTIFIANT, label :"Id du processus", notNull:"true",},
-	field PROCESS_NAME   			{domain : DO_O_LIBELLE, label :"Nom du processus", notNull:"true",},
-	field PROCESS_LABEL   			{domain : DO_O_LIBELLE, label :"Libellé du processus", notNull:"true",},
-	field LAST_EXECUTION_TIME   	{domain : DO_O_TIMESTAMP, label :"Dernière exécution le", notNull:"false",},
-	field NEXT_EXECUTION_TIME   	{domain : DO_O_TIMESTAMP, label :"Prochaine exécution le", notNull:"false",},
-	field ERRORS_COUNT   			{domain : DO_O_NOMBRE, label :"Nombre en erreur", notNull:"false",},
-	field MISFIRED_COUNT   			{domain : DO_O_NOMBRE, label :"Nombre non executés", notNull:"false",},
-	field SUCCESSFUL_COUNT   		{domain : DO_O_NOMBRE, label :"Nombre en succès", notNull:"false",},
-	field RUNNING_COUNT   			{domain : DO_O_NOMBRE, label :"Nombre en cours", notNull:"false",},
-	field AVERAGE_EXECUTION_TIME   	{domain : DO_O_NOMBRE, label :"Durée moyenne d'exécution", notNull:"false",},
-	field HEALTH   					{domain : DO_O_CODE_IDENTIFIANT, label :"Santé du processus", notNull:"true",},
+create DtDefinition DtOExecutionSummary {
+	field proId   					{domain : DoOIdentifiant, label :"Id du processus", required:"true",},
+	field processName   			{domain : DoOLibelle, label :"Nom du processus", required:"true",},
+	field processLabel   			{domain : DoOLibelle, label :"Libellé du processus", required:"true",},
+	field lastExecutionTime		   	{domain : DoOTimestamp, label :"Dernière exécution le", required:"false",},
+	field nextExecutionTime 	  	{domain : DoOTimestamp, label :"Prochaine exécution le", required:"false",},
+	field errorsCount   			{domain : DoONombre, label :"Nombre en erreur", required:"false",},
+	field misfiredCount   			{domain : DoONombre, label :"Nombre non executés", required:"false",},
+	field successfulCount   		{domain : DoONombre, label :"Nombre en succès", required:"false",},
+	field runningCount   			{domain : DoONombre, label :"Nombre en cours", required:"false",},
+	field averageExecutionTime   	{domain : DoONombre, label :"Durée moyenne d'exécution", required:"false",},
+	field health   					{domain : DoOCodeIdentifiant, label :"Santé du processus", required:"true",},
   
 },
 

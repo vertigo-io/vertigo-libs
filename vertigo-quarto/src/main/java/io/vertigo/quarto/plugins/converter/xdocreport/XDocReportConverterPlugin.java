@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,15 +18,17 @@
  */
 package io.vertigo.quarto.plugins.converter.xdocreport;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 import com.lowagie.text.pdf.PdfName;
 import com.lowagie.text.pdf.Type3Font;
@@ -37,8 +39,8 @@ import fr.opensagres.xdocreport.converter.IConverter;
 import fr.opensagres.xdocreport.converter.Options;
 import fr.opensagres.xdocreport.converter.XDocConverterException;
 import fr.opensagres.xdocreport.core.document.DocumentKind;
+import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.impl.services.converter.ConverterPlugin;
@@ -51,6 +53,9 @@ import io.vertigo.util.TempFile;
  * @author jgarnier
  */
 public final class XDocReportConverterPlugin implements ConverterPlugin {
+
+	@Inject
+	private FileManager fileManager;
 
 	@Override
 	public VFile convertToFormat(final VFile file, final String targetFormat) {
@@ -67,6 +72,7 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 		final Options options = Options.getFrom(inputFormat).to(ConverterTypeTo.PDF);
 		final IConverter converter = ConverterRegistry.getRegistry().getConverter(options);
 		final SnapshotBuiltinFont snapshotBuiltinFont = new SnapshotBuiltinFont();
+
 		try (InputStream in = file.createInputStream()) {
 			String fileName = file.getFileName();
 			final int lastPeriod = fileName.lastIndexOf('.');
@@ -74,10 +80,10 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 				fileName = fileName.substring(0, lastPeriod);
 			}
 			final TempFile resultFile = new TempFile(fileName, '.' + targetFormat.toLowerCase(Locale.ENGLISH));
-			try (final OutputStream out = new FileOutputStream(resultFile)) {
+			try (final OutputStream out = Files.newOutputStream(resultFile.toPath())) {
 				converter.convert(in, out, options);
 			}
-			return new FSFile(resultFile.getName(), ConverterFormat.PDF.getTypeMime(), resultFile);
+			return fileManager.createFile(resultFile.getName(), ConverterFormat.PDF.getTypeMime(), resultFile.toPath());
 		} catch (final IOException | XDocConverterException e) {
 			throw WrappedException.wrap(e);
 		} finally {

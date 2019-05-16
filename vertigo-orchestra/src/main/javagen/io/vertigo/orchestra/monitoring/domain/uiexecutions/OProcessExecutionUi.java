@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,12 +32,12 @@ public final class OProcessExecutionUi implements DtObject {
 	private static final long serialVersionUID = 1L;
 
 	private Long preId;
-	private java.util.Date beginTime;
-	private java.util.Date endTime;
+	private java.time.Instant beginTime;
+	private java.time.Instant endTime;
 	private Integer executionTime;
 	private String status;
 	private Boolean checked;
-	private java.util.Date checkingDate;
+	private java.time.Instant checkingDate;
 	private String checkingComment;
 	private Boolean hasAttachment;
 	
@@ -46,7 +46,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Id de l'activité'.
 	 * @return Long preId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", required = true, label = "Id de l'activité")
+	@Field(domain = "DoOIdentifiant", required = true, label = "Id de l'activité")
 	public Long getPreId() {
 		return preId;
 	}
@@ -62,39 +62,39 @@ public final class OProcessExecutionUi implements DtObject {
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Nom du processus'.
-	 * @return java.util.Date beginTime <b>Obligatoire</b>
+	 * Récupère la valeur de la propriété 'Démarrage'.
+	 * @return Instant beginTime <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Nom du processus")
-	public java.util.Date getBeginTime() {
+	@Field(domain = "DoOTimestamp", required = true, label = "Démarrage")
+	public java.time.Instant getBeginTime() {
 		return beginTime;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Nom du processus'.
-	 * @param beginTime java.util.Date <b>Obligatoire</b>
+	 * Définit la valeur de la propriété 'Démarrage'.
+	 * @param beginTime Instant <b>Obligatoire</b>
 	 */
-	public void setBeginTime(final java.util.Date beginTime) {
+	public void setBeginTime(final java.time.Instant beginTime) {
 		this.beginTime = beginTime;
 	}
 	
 	/**
 	 * Champ : DATA.
-	 * Récupère la valeur de la propriété 'Nom du processus'.
-	 * @return java.util.Date endTime <b>Obligatoire</b>
+	 * Récupère la valeur de la propriété 'Fin'.
+	 * @return Instant endTime <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Nom du processus")
-	public java.util.Date getEndTime() {
+	@Field(domain = "DoOTimestamp", required = true, label = "Fin")
+	public java.time.Instant getEndTime() {
 		return endTime;
 	}
 
 	/**
 	 * Champ : DATA.
-	 * Définit la valeur de la propriété 'Nom du processus'.
-	 * @param endTime java.util.Date <b>Obligatoire</b>
+	 * Définit la valeur de la propriété 'Fin'.
+	 * @param endTime Instant <b>Obligatoire</b>
 	 */
-	public void setEndTime(final java.util.Date endTime) {
+	public void setEndTime(final java.time.Instant endTime) {
 		this.endTime = endTime;
 	}
 	
@@ -103,7 +103,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Durée'.
 	 * @return Integer executionTime
 	 */
-	@Field(domain = "DO_O_NOMBRE", label = "Durée")
+	@Field(domain = "DoONombre", label = "Durée")
 	public Integer getExecutionTime() {
 		return executionTime;
 	}
@@ -122,7 +122,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Statut'.
 	 * @return String status
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", label = "Statut")
+	@Field(domain = "DoOCodeIdentifiant", label = "Statut")
 	public String getStatus() {
 		return status;
 	}
@@ -141,7 +141,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Pris en charge'.
 	 * @return Boolean checked
 	 */
-	@Field(domain = "DO_O_BOOLEEN", label = "Pris en charge")
+	@Field(domain = "DoOBooleen", label = "Pris en charge")
 	public Boolean getChecked() {
 		return checked;
 	}
@@ -158,19 +158,19 @@ public final class OProcessExecutionUi implements DtObject {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de prise en charge'.
-	 * @return java.util.Date checkingDate
+	 * @return Instant checkingDate
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Date de prise en charge")
-	public java.util.Date getCheckingDate() {
+	@Field(domain = "DoOTimestamp", label = "Date de prise en charge")
+	public java.time.Instant getCheckingDate() {
 		return checkingDate;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de prise en charge'.
-	 * @param checkingDate java.util.Date
+	 * @param checkingDate Instant
 	 */
-	public void setCheckingDate(final java.util.Date checkingDate) {
+	public void setCheckingDate(final java.time.Instant checkingDate) {
 		this.checkingDate = checkingDate;
 	}
 	
@@ -179,7 +179,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Commentaire'.
 	 * @return String checkingComment
 	 */
-	@Field(domain = "DO_O_TEXT", label = "Commentaire")
+	@Field(domain = "DoOText", label = "Commentaire")
 	public String getCheckingComment() {
 		return checkingComment;
 	}
@@ -198,7 +198,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Fichier de log'.
 	 * @return Boolean hasAttachment
 	 */
-	@Field(domain = "DO_O_BOOLEEN", label = "Fichier de log")
+	@Field(domain = "DoOBooleen", label = "Fichier de log")
 	public Boolean getHasAttachment() {
 		return hasAttachment;
 	}

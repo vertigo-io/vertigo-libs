@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,10 +22,10 @@ import java.util.Arrays;
 import java.util.Map;
 
 import io.vertigo.app.App;
-import io.vertigo.dashboard.services.data.DataFilter;
-import io.vertigo.dashboard.services.data.TimeFilter;
-import io.vertigo.dashboard.services.data.TimedDatas;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
+import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.TimeFilter;
+import io.vertigo.database.timeseries.TimedDatas;
 import io.vertigo.lang.VUserException;
 
 public final class VegaDashboardControler extends AbstractDashboardModuleControler {
@@ -47,13 +47,15 @@ public final class VegaDashboardControler extends AbstractDashboardModuleControl
 		final TimedDatas numOfTechnicalExceptions = getDataProvider().getTimeSeries(Arrays.asList("duration:count"), dataFilterExceptions, timeFilter);
 
 		double count = 0;
-		double meanDuration = 0;
+		final double meanDuration = 0;
 		double exceptionRate = 0;
 		if (!countAndMeanDuration.getTimedDataSeries().isEmpty()) {
 			// we have one and only one result
 			final Map<String, Object> values = countAndMeanDuration.getTimedDataSeries().get(0).getValues();
-			count = (Double) values.get("duration:count");
-			meanDuration = (Double) values.get("duration:mean");
+			final Object meanDurationValue = values.get("duration:count");
+			if (meanDurationValue != null) {
+				count = (Double) meanDurationValue;
+			}
 		}
 		if (count > 0 && !numOfTechnicalExceptions.getTimedDataSeries().isEmpty()) {
 			// we have one and only one result

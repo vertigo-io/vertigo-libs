@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,24 +59,24 @@ public final class DefinitionPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_DISABLE_OLD_PROCESS_DEFINITIONS.
+	 * Execute la tache TkDisableOldProcessDefinitions.
 	 * @param name String 
 	*/
 	public void disableOldProcessDefinitions(final String name) {
-		final Task task = createTaskBuilder("TK_DISABLE_OLD_PROCESS_DEFINITIONS")
-				.addValue("NAME", name)
+		final Task task = createTaskBuilder("TkDisableOldProcessDefinitions")
+				.addValue("name", name)
 				.build();
 		getTaskManager().execute(task);
 	}
 
 	/**
-	 * Execute la tache TK_GET_PROCESSES_BY_NAME.
+	 * Execute la tache TkGetProcessesByName.
 	 * @param name String 
 	 * @return Integer nombre
 	*/
 	public Integer getProcessesByName(final String name) {
-		final Task task = createTaskBuilder("TK_GET_PROCESSES_BY_NAME")
-				.addValue("NAME", name)
+		final Task task = createTaskBuilder("TkGetProcessesByName")
+				.addValue("name", name)
 				.build();
 		return getTaskManager()
 				.execute(task)

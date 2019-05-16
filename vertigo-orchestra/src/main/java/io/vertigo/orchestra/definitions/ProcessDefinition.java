@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,7 @@ import io.vertigo.orchestra.services.execution.RunnableActivityEngine;
  * Une définition doit être créee par le builder associé.
  * @author mlaroche.
  */
-@DefinitionPrefix("PRO")
+@DefinitionPrefix("Pro")
 public final class ProcessDefinition implements Definition {
 	//TODO : ID doit être immutable!!
 	//---immutables

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,14 +29,14 @@ import java.util.stream.Collectors;
 import io.vertigo.app.App;
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.dashboard.services.data.DataFilter;
-import io.vertigo.dashboard.services.data.TimeFilter;
-import io.vertigo.dashboard.services.data.TimedDataSerie;
-import io.vertigo.dashboard.services.data.TimedDatas;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
 import io.vertigo.dashboard.ui.dynamo.model.DomainModel;
 import io.vertigo.dashboard.ui.dynamo.model.EntityModel;
 import io.vertigo.dashboard.ui.dynamo.model.TaskModel;
+import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.TabularDataSerie;
+import io.vertigo.database.timeseries.TabularDatas;
+import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
@@ -47,15 +47,15 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 	@Override
 	public void doBuildModel(final App app, final Map<String, Object> model) {
 		final List<Metric> metrics = getDataProvider().getMetrics();
-		buildEntityModel(app, model, metrics);
-		buildDomainModel(app, model, metrics);
-		buildTaskModel(app, model);
+		buildEntityModel(model, metrics);
+		buildDomainModel(model, metrics);
+		buildTaskModel(model);
 	}
 
-	private void buildTaskModel(final App app, final Map<String, Object> model) {
+	private void buildTaskModel(final Map<String, Object> model) {
 		final DataFilter dataFilter = DataFilter.builder("tasks").build();
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 1d", "now()").build();
-		final TimedDatas tabularDatas = getDataProvider().getTabularData(Arrays.asList("duration:median", "duration:count"), dataFilter, timeFilter, false, "name");
+		final TabularDatas tabularDatas = getDataProvider().getTabularData(Arrays.asList("duration:median", "duration:count"), dataFilter, timeFilter, "name");
 
 		final List<TaskModel> tasks = Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)
 				.stream()
@@ -69,22 +69,22 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 
 	}
 
-	private static Double getValue(final TimedDatas tabularDatas, final String serieName, final String measureName) {
-		final Optional<TimedDataSerie> timedDataSerieOpt = tabularDatas.getTimedDataSeries()
+	private static Double getValue(final TabularDatas tabularDatas, final String serieName, final String measureName) {
+		final Optional<TabularDataSerie> tabularDataSerieOpt = tabularDatas.getTabularDataSeries()
 				.stream()
 				.filter(timedDataSerie -> timedDataSerie.getValues().containsKey("name") && measureName.equals(timedDataSerie.getValues().get("name")))
 				.findAny();
 
-		if (timedDataSerieOpt.isPresent()) {
-			final TimedDataSerie timedDataSerie = timedDataSerieOpt.get();
-			if (timedDataSerie.getValues().containsKey(serieName)) {
-				return (Double) timedDataSerie.getValues().get(serieName);
+		if (tabularDataSerieOpt.isPresent()) {
+			final TabularDataSerie tabularDataSerie = tabularDataSerieOpt.get();
+			if (tabularDataSerie.getValues().containsKey(serieName)) {
+				return (Double) tabularDataSerie.getValues().get(serieName);
 			}
 		}
 		return null;
 	}
 
-	private static void buildEntityModel(final App app, final Map<String, Object> model, final List<Metric> metrics) {
+	private static void buildEntityModel(final Map<String, Object> model, final List<Metric> metrics) {
 		final Map<String, Double> entityCounts = new HashMap<>();
 
 		metrics
@@ -121,7 +121,7 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 		model.put("keyConceptCount", keyConceptCount);
 	}
 
-	private static void buildDomainModel(final App app, final Map<String, Object> model, final List<Metric> metrics) {
+	private static void buildDomainModel(final Map<String, Object> model, final List<Metric> metrics) {
 		final Map<String, Double> taskCount = new HashMap<>();
 
 		metrics

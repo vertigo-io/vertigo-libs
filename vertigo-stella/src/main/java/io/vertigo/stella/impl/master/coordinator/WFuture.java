@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -51,7 +51,6 @@ final class WFuture<R> implements Future<R>, WorkResultHandler<R> {
 	@Override
 	public void onDone(final R result, final Throwable error) {
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
-		//-----
 		//-----
 		if (done.compareAndSet(false, true)) {
 			myResult = result;
@@ -125,14 +124,4 @@ final class WFuture<R> implements Future<R>, WorkResultHandler<R> {
 		throw new ExecutionException(myError);
 	}
 
-	//	public static void rethrow(final ExecutionException e) throws IOException {
-	//		final Throwable cause = e.getCause();
-	//		if (cause instanceof IOException)
-	//			throw (IOException) cause;
-	//		if (cause instanceof Error)
-	//			throw (Error) cause;
-	//		if (cause instanceof RuntimeException)
-	//			throw (RuntimeException) cause;
-	//		throw new RuntimeException(cause);
-	//	}
 }

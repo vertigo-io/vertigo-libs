@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,10 @@
 package io.vertigo.struts2.domain.movies;
 
 import java.time.Instant;
+import java.time.LocalDate;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -36,7 +37,7 @@ public final class Movie implements KeyConcept {
 
 	private Long movId;
 	private String title;
-	private java.util.Date released;
+	private LocalDate released;
 	private Integer year;
 	private Integer runtime;
 	private String description;
@@ -46,8 +47,8 @@ public final class Movie implements KeyConcept {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<Movie> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<Movie> getUID() {
+		return UID.of(this);
 	}
 
 	/**
@@ -55,7 +56,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'MOV_ID'.
 	 * @return Long movId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "MOV_ID")
+	@Field(domain = "DoId", type = "ID", required = true, label = "MOV_ID")
 	public Long getMovId() {
 		return movId;
 	}
@@ -74,7 +75,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'TITLE'.
 	 * @return String title
 	 */
-	@Field(domain = "DO_LABEL_LONG", label = "TITLE")
+	@Field(domain = "DoLabelLong", label = "TITLE")
 	public String getTitle() {
 		return title;
 	}
@@ -93,8 +94,8 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Released'.
 	 * @return java.util.Date released
 	 */
-	@Field(domain = "DO_DATE", label = "Released")
-	public java.util.Date getReleased() {
+	@Field(domain = "DoDate", label = "Released")
+	public LocalDate getReleased() {
 		return released;
 	}
 
@@ -103,7 +104,7 @@ public final class Movie implements KeyConcept {
 	 * Définit la valeur de la propriété 'Released'.
 	 * @param released java.util.Date
 	 */
-	public void setReleased(final java.util.Date released) {
+	public void setReleased(final LocalDate released) {
 		this.released = released;
 	}
 
@@ -112,7 +113,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Year'.
 	 * @return Integer year
 	 */
-	@Field(domain = "DO_YEAR", label = "Year")
+	@Field(domain = "DoYear", label = "Year")
 	public Integer getYear() {
 		return year;
 	}
@@ -131,7 +132,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Runtime'.
 	 * @return Integer runtime
 	 */
-	@Field(domain = "DO_DURATION", label = "Runtime")
+	@Field(domain = "DoDuration", label = "Runtime")
 	public Integer getRuntime() {
 		return runtime;
 	}
@@ -150,7 +151,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Description'.
 	 * @return String description
 	 */
-	@Field(domain = "DO_COMMENT", label = "Description")
+	@Field(domain = "DoComment", label = "Description")
 	public String getDescription() {
 		return description;
 	}
@@ -169,7 +170,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Poster'.
 	 * @return String poster
 	 */
-	@Field(domain = "DO_LABEL_LONG", label = "Poster")
+	@Field(domain = "DoLabelLong", label = "Poster")
 	public String getPoster() {
 		return poster;
 	}
@@ -188,7 +189,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'rated'.
 	 * @return String rated
 	 */
-	@Field(domain = "DO_LABEL_LONG", label = "rated")
+	@Field(domain = "DoLabelLong", label = "rated")
 	public String getRated() {
 		return rated;
 	}
@@ -207,7 +208,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'lastModified'.
 	 * @return Instant lastModified
 	 */
-	@Field(domain = "DO_LAST_MODIFIED", label = "lastModified")
+	@Field(domain = "DoLastModified", label = "lastModified")
 	public Instant getLastModified() {
 		return lastModified;
 	}

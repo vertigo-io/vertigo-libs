@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
  */
 package io.vertigo.orchestra.impl.node;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -44,15 +44,15 @@ public class ONodeManagerImpl implements ONodeManager {
 	@Inject
 	private ONodeDAO nodeDAO;
 
-	private Date lastHeartBeatTime;
+	private Instant lastHeartBeatTime;
 
 	@Override
 	public Long registerNode(final String nodeName) {
 		Assertion.checkArgNotEmpty(nodeName);
 		// ---
 		final Optional<ONode> existingNode = nodeDAO.getNodeByName(nodeName);
-		final ONode node = existingNode.orElse(new ONode());
-		lastHeartBeatTime = new Date();
+		final ONode node = existingNode.orElseGet(ONode::new);
+		lastHeartBeatTime = Instant.now();
 		node.setHeartbeat(lastHeartBeatTime);
 		if (existingNode.isPresent()) {
 			nodeDAO.update(node);
@@ -69,9 +69,9 @@ public class ONodeManagerImpl implements ONodeManager {
 		final ONode node = nodeDAO.get(nodId);
 		if (!lastHeartBeatTime.equals(node.getHeartbeat())) {
 			//On ne veut pas d'exception, on ne fait que logger en ERROR
-			LOGGER.error("Two nodes running with same NodeName " + node.getName());
+			LOGGER.error("Two nodes running with same NodeName {}", node.getName());
 		}
-		lastHeartBeatTime = new Date();
+		lastHeartBeatTime = Instant.now();
 		node.setHeartbeat(lastHeartBeatTime);
 		nodeDAO.update(node);
 

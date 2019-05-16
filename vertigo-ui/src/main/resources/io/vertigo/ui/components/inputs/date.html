@@ -1,0 +1,17 @@
+<th:block th:fragment="date-edit(object, field, label, label_attrs, input_attrs)" vu:alias="date" vu:selector="${viewMode=='edit'}"
+	  th:assert="${object} != null and ${field} != null">
+	<vu:include-data object="${object}" field="${field}"/>
+	<vu:label-edit object="${object}" field="${field}" label="${label}" th:attr="__${label_attrs}__">
+		<q-datetime 
+			th:v-bind:value="|parseDate('${object}', '${field}', 'DD/MM/YYYY')|" 
+			th:@change="|function (newValue) { formatDate('${object}','${field}', newValue, 'DD/MM/YYYY') }|" 
+			type="date" format-model="date" format="DD/MM/YYYY"
+			th:attr="__${input_attrs}__" >
+		</q-datetime>
+	</vu:label-edit>
+	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
+</th:block> 
+
+<th:block th:fragment="date-read(object, field, label, label_attrs, input_attrs)" vu:alias="date" vu:selector="${viewMode=='read'}" >
+	<vu:text-field-read object="${object}" field="${field}" label="${label}" />
+</th:block>

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.orchestra.domain.execution;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -39,14 +39,14 @@ public final class OActivityWorkspace implements Entity {
 	private String workspace;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_TKW_TKE",
-			fkFieldName = "ACE_ID",
-			primaryDtDefinitionName = "DT_O_ACTIVITY_EXECUTION",
+			name = "ATkwTke",
+			fkFieldName = "aceId",
+			primaryDtDefinitionName = "DtOActivityExecution",
 			primaryIsNavigable = true,
 			primaryRole = "ActivityExecution",
 			primaryLabel = "ActivityExecution",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_O_ACTIVITY_WORKSPACE",
+			foreignDtDefinitionName = "DtOActivityWorkspace",
 			foreignIsNavigable = false,
 			foreignRole = "ActivityWorkspace",
 			foreignLabel = "ActivityWorkspace",
@@ -55,8 +55,8 @@ public final class OActivityWorkspace implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<OActivityWorkspace> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<OActivityWorkspace> getUID() {
+		return UID.of(this);
 	}
 	
 	/**
@@ -64,7 +64,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'Id de l'execution d'un processus'.
 	 * @return Long acwId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id de l'execution d'un processus")
+	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id de l'execution d'un processus")
 	public Long getAcwId() {
 		return acwId;
 	}
@@ -83,7 +83,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'Workspace in/out'.
 	 * @return Boolean isIn <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_BOOLEEN", required = true, label = "Workspace in/out")
+	@Field(domain = "DoOBooleen", required = true, label = "Workspace in/out")
 	public Boolean getIsIn() {
 		return isIn;
 	}
@@ -102,7 +102,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'Contenu du workspace'.
 	 * @return String workspace
 	 */
-	@Field(domain = "DO_O_JSON_TEXT", label = "Contenu du workspace")
+	@Field(domain = "DoOJsonText", label = "Contenu du workspace")
 	public String getWorkspace() {
 		return workspace;
 	}
@@ -121,9 +121,9 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'ActivityExecution'.
 	 * @return Long aceId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "ActivityExecution")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "ActivityExecution")
 	public Long getAceId() {
-		return (Long)  aceIdAccessor.getId();
+		return (Long) aceIdAccessor.getId();
 	}
 
 	/**
@@ -141,24 +141,6 @@ public final class OActivityWorkspace implements Entity {
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.execution.OActivityExecution> activityExecution() {
 		return aceIdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.execution.OActivityExecution getActivityExecution() {
-		// we keep the lazyness
-		if (!aceIdAccessor.isLoaded()) {
-			aceIdAccessor.load();
-		}
-		return aceIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'URI: ActivityExecution.
-	 * @return URI de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivityExecutionURI() {
-		return aceIdAccessor.getURI();
 	}
 	
 	/** {@inheritDoc} */

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,6 +34,7 @@ import com.sun.star.io.XOutputStream;
 import com.sun.star.lang.XComponent;
 import com.sun.star.uno.UnoRuntime;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.plugins.converter.openoffice.stream.OOoFileInputStream;
@@ -57,9 +57,9 @@ public final class OpenOfficeRemoteConverterPlugin extends AbstractOpenOfficeCon
 	@Inject
 	public OpenOfficeRemoteConverterPlugin(
 			final FileManager fileManager,
-			@Named("unohost") final String unoHost,
-			@Named("unoport") final String unoPort,
-			@Named("convertTimeoutSeconds") final Optional<Integer> convertTimeoutSeconds) {
+			@ParamValue("unohost") final String unoHost,
+			@ParamValue("unoport") final String unoPort,
+			@ParamValue("convertTimeoutSeconds") final Optional<Integer> convertTimeoutSeconds) {
 		super(fileManager, unoHost, unoPort, convertTimeoutSeconds.orElse(60));
 	}
 
@@ -70,7 +70,7 @@ public final class OpenOfficeRemoteConverterPlugin extends AbstractOpenOfficeCon
 		final XOutputStream outputStream = new OOoFileOutputStream(outputFile);
 		try {
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("Storing to " + outputFile.getAbsolutePath());
+				LOGGER.debug("Storing to {}", outputFile.getAbsolutePath());
 			}
 			final PropertyValue[] fileProps = getFileProperties(targetFormat, outputStream);
 			xStorable.storeToURL("private:stream", fileProps);
@@ -88,7 +88,7 @@ public final class OpenOfficeRemoteConverterPlugin extends AbstractOpenOfficeCon
 		final ConverterFormat docType = ConverterFormat.valueOf(inputExtensionStr);
 
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Openning document... " + inputUrl);
+			LOGGER.debug("Openning document... {}", inputUrl);
 		}
 		final XInputStream inputStream = new OOoFileInputStream(inputFile);
 		try {

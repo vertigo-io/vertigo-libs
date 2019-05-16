@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -75,8 +75,9 @@ public final class UiListUnmodifiable<O extends DtObject> extends AbstractUiList
 	 * @param uiMessageStack Pile des messages qui sera mise à jour
 	 */
 	@Override
-	public void checkFormat(final UiMessageStack uiMessageStack) {
+	public boolean checkFormat(final UiMessageStack uiMessageStack) {
 		// nothing for unmodifiable (we don't use the data in the buffers)
+		return true;
 	}
 
 	/** {@inheritDoc} */

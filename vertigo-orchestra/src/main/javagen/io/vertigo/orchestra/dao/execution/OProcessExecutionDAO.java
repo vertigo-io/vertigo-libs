@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,13 +60,13 @@ public final class OProcessExecutionDAO extends DAO<OProcessExecution, java.lang
 	}
 
 	/**
-	 * Execute la tache TK_GET_ACTIVE_PROCESS_EXECUTION_BY_PRO_ID.
+	 * Execute la tache TkGetActiveProcessExecutionByProId.
 	 * @param proId Long 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OProcessExecution> dtcProcessExecution
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OProcessExecution> getActiveProcessExecutionByProId(final Long proId) {
-		final Task task = createTaskBuilder("TK_GET_ACTIVE_PROCESS_EXECUTION_BY_PRO_ID")
-				.addValue("PRO_ID", proId)
+		final Task task = createTaskBuilder("TkGetActiveProcessExecutionByProId")
+				.addValue("proId", proId)
 				.build();
 		return getTaskManager()
 				.execute(task)
@@ -74,13 +74,13 @@ public final class OProcessExecutionDAO extends DAO<OProcessExecution, java.lang
 	}
 
 	/**
-	 * Execute la tache TK_GET_EXECUTIONS_BY_PRO_ID.
+	 * Execute la tache TkGetExecutionsByProId.
 	 * @param proId Long 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OProcessExecution> dtcOProcessExecution
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OProcessExecution> getExecutionsByProId(final Long proId) {
-		final Task task = createTaskBuilder("TK_GET_EXECUTIONS_BY_PRO_ID")
-				.addValue("PRO_ID", proId)
+		final Task task = createTaskBuilder("TkGetExecutionsByProId")
+				.addValue("proId", proId)
 				.build();
 		return getTaskManager()
 				.execute(task)

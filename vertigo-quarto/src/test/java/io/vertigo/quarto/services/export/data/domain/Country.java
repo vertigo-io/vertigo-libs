@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.quarto.services.export.data.domain;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -36,11 +36,11 @@ public final class Country implements Entity {
 	private Boolean active;
 
 	@Override
-	public URI getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID getUID() {
+		return UID.of(this);
 	}
 
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "id of the country")
+	@Field(domain = "DoId", type = "ID", required = true, label = "id of the country")
 	public final Long getId() {
 		return id;
 	}
@@ -50,7 +50,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "DO_ID", required = true, label = "id of the continent")
+	@Field(domain = "DoId", required = true, label = "id of the continent")
 	public final Long getConId() {
 		return conId;
 	}
@@ -60,7 +60,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "DO_STRING", label = "name")
+	@Field(domain = "DoString", label = "name")
 	public final String getName() {
 		return name;
 	}
@@ -70,7 +70,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "DO_BOOLEAN", label = "active")
+	@Field(domain = "DoBoolean", label = "active")
 	public final Boolean getActive() {
 		return active;
 	}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -32,7 +32,7 @@ public final class PublisherField {
 	/**
 	 * Expression régulière vérifiée par les noms des champs.
 	 */
-	private static final Pattern REGEX_FIELD_NAME = Pattern.compile("[A-Z][A-Z0-9_]{2,59}");
+	private static final Pattern REGEX_FIELD_NAME = Pattern.compile("[a-z][a-zA-Z0-9]{2,59}");
 
 	private final String name;
 	private final PublisherFieldType fieldType;
@@ -50,9 +50,13 @@ public final class PublisherField {
 		Assertion.checkNotNull(fieldType);
 		Assertion.checkArgument(REGEX_FIELD_NAME.matcher(name).matches(), "Le nom du champ {0} doit matcher le pattern {1}", name, REGEX_FIELD_NAME);
 		if (publisherDataNodeDefinition != null) {
-			Assertion.checkArgument(fieldType == PublisherFieldType.Node || fieldType == PublisherFieldType.List, "Le champ {0} n''est pas du bon type ({1}). Les champs de type Data ou List ont besoin d''une nodeDefinition", name, fieldType);
+			Assertion.checkArgument(
+					fieldType == PublisherFieldType.Node || fieldType == PublisherFieldType.List,
+					"Le champ {0} n''est pas du bon type ({1}). Les champs de type Data ou List ont besoin d''une nodeDefinition", name, fieldType);
 		} else {
-			Assertion.checkArgument(fieldType != PublisherFieldType.Node && fieldType != PublisherFieldType.List, "Le champ {0} n''est pas du bon type ({1}). Seul les champs de type Data ou List ont besoin d''une nodeDefinition", name, fieldType);
+			Assertion.checkArgument(
+					fieldType != PublisherFieldType.Node && fieldType != PublisherFieldType.List,
+					"Le champ {0} n''est pas du bon type ({1}). Seul les champs de type Data ou List ont besoin d''une nodeDefinition", name, fieldType);
 		}
 		//-----
 		this.name = name;

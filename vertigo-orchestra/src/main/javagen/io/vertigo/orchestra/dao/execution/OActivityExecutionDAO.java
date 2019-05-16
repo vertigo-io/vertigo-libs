@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -60,13 +60,13 @@ public final class OActivityExecutionDAO extends DAO<OActivityExecution, java.la
 	}
 
 	/**
-	 * Execute la tache TK_GET_ACTIVITIES_TO_LAUNCH.
+	 * Execute la tache TkGetActivitiesToLaunch.
 	 * @param nodId Long 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> dtcActivityExecution
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivitiesToLaunch(final Long nodId) {
-		final Task task = createTaskBuilder("TK_GET_ACTIVITIES_TO_LAUNCH")
-				.addValue("NOD_ID", nodId)
+		final Task task = createTaskBuilder("TkGetActivitiesToLaunch")
+				.addValue("nodId", nodId)
 				.build();
 		return getTaskManager()
 				.execute(task)
@@ -74,29 +74,29 @@ public final class OActivityExecutionDAO extends DAO<OActivityExecution, java.la
 	}
 
 	/**
-	 * Execute la tache TK_GET_ACTIVITY_EXECUTIONS_BY_PRE_ID.
-	 * @param preId Long 
-	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> dtcOActivityExecution
-	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivityExecutionsByPreId(final Long preId) {
-		final Task task = createTaskBuilder("TK_GET_ACTIVITY_EXECUTIONS_BY_PRE_ID")
-				.addValue("PRE_ID", preId)
-				.build();
-		return getTaskManager()
-				.execute(task)
-				.getResult();
-	}
-
-	/**
-	 * Execute la tache TK_GET_ACTIVITY_EXECUTION_BY_TOKEN.
+	 * Execute la tache TkGetActivityExecutionByToken.
 	 * @param aceId Long 
 	 * @param token String 
 	 * @return io.vertigo.orchestra.domain.execution.OActivityExecution dtActivityExecution
 	*/
 	public io.vertigo.orchestra.domain.execution.OActivityExecution getActivityExecutionByToken(final Long aceId, final String token) {
-		final Task task = createTaskBuilder("TK_GET_ACTIVITY_EXECUTION_BY_TOKEN")
-				.addValue("ACE_ID", aceId)
-				.addValue("TOKEN", token)
+		final Task task = createTaskBuilder("TkGetActivityExecutionByToken")
+				.addValue("aceId", aceId)
+				.addValue("token", token)
+				.build();
+		return getTaskManager()
+				.execute(task)
+				.getResult();
+	}
+
+	/**
+	 * Execute la tache TkGetActivityExecutionsByPreId.
+	 * @param preId Long 
+	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> dtcOActivityExecution
+	*/
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivityExecutionsByPreId(final Long preId) {
+		final Task task = createTaskBuilder("TkGetActivityExecutionsByPreId")
+				.addValue("preId", preId)
 				.build();
 		return getTaskManager()
 				.execute(task)

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,38 +59,38 @@ public final class PlanificationPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_CLEAN_FUTURE_PLANIFICATIONS.
+	 * Execute la tache TkCleanFuturePlanifications.
 	 * @param processName String 
 	*/
 	public void cleanFuturePlanifications(final String processName) {
-		final Task task = createTaskBuilder("TK_CLEAN_FUTURE_PLANIFICATIONS")
-				.addValue("PROCESS_NAME", processName)
+		final Task task = createTaskBuilder("TkCleanFuturePlanifications")
+				.addValue("processName", processName)
 				.build();
 		getTaskManager().execute(task);
 	}
 
 	/**
-	 * Execute la tache TK_CLEAN_PLANIFICATIONS_ON_BOOT.
-	 * @param currentDate java.util.Date 
+	 * Execute la tache TkCleanPlanificationsOnBoot.
+	 * @param currentDate java.time.Instant 
 	*/
-	public void cleanPlanificationsOnBoot(final java.util.Date currentDate) {
-		final Task task = createTaskBuilder("TK_CLEAN_PLANIFICATIONS_ON_BOOT")
-				.addValue("CURRENT_DATE", currentDate)
+	public void cleanPlanificationsOnBoot(final java.time.Instant currentDate) {
+		final Task task = createTaskBuilder("TkCleanPlanificationsOnBoot")
+				.addValue("currentDate", currentDate)
 				.build();
 		getTaskManager().execute(task);
 	}
 
 	/**
-	 * Execute la tache TK_RESERVE_PROCESS_TO_EXECUTE.
-	 * @param lowerLimit java.util.Date 
-	 * @param upperLimit java.util.Date 
+	 * Execute la tache TkReserveProcessToExecute.
+	 * @param lowerLimit java.time.Instant 
+	 * @param upperLimit java.time.Instant 
 	 * @param nodId Long 
 	*/
-	public void reserveProcessToExecute(final java.util.Date lowerLimit, final java.util.Date upperLimit, final Long nodId) {
-		final Task task = createTaskBuilder("TK_RESERVE_PROCESS_TO_EXECUTE")
-				.addValue("LOWER_LIMIT", lowerLimit)
-				.addValue("UPPER_LIMIT", upperLimit)
-				.addValue("NOD_ID", nodId)
+	public void reserveProcessToExecute(final java.time.Instant lowerLimit, final java.time.Instant upperLimit, final Long nodId) {
+		final Task task = createTaskBuilder("TkReserveProcessToExecute")
+				.addValue("lowerLimit", lowerLimit)
+				.addValue("upperLimit", upperLimit)
+				.addValue("nodId", nodId)
 				.build();
 		getTaskManager().execute(task);
 	}

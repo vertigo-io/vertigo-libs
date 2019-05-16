@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,13 +61,13 @@ public final class OActivityLogDAO extends DAO<OActivityLog, java.lang.Long> imp
 	}
 
 	/**
-	 * Execute la tache TK_GET_ACTIVITY_LOG_BY_ACE_ID.
+	 * Execute la tache TkGetActivityLogByAceId.
 	 * @param aceId Long 
 	 * @return Option de io.vertigo.orchestra.domain.execution.OActivityLog dtcOActivityLog
 	*/
 	public Optional<io.vertigo.orchestra.domain.execution.OActivityLog> getActivityLogByAceId(final Long aceId) {
-		final Task task = createTaskBuilder("TK_GET_ACTIVITY_LOG_BY_ACE_ID")
-				.addValue("ACE_ID", aceId)
+		final Task task = createTaskBuilder("TkGetActivityLogByAceId")
+				.addValue("aceId", aceId)
 				.build();
 		return Optional.ofNullable((io.vertigo.orchestra.domain.execution.OActivityLog) getTaskManager()
 				.execute(task)
@@ -75,13 +75,13 @@ public final class OActivityLogDAO extends DAO<OActivityLog, java.lang.Long> imp
 	}
 
 	/**
-	 * Execute la tache TK_GET_LOG_BY_PRE_ID.
+	 * Execute la tache TkGetLogByPreId.
 	 * @param preId Long 
 	 * @return Option de io.vertigo.orchestra.domain.execution.OActivityLog dtActivityLog
 	*/
 	public Optional<io.vertigo.orchestra.domain.execution.OActivityLog> getLogByPreId(final Long preId) {
-		final Task task = createTaskBuilder("TK_GET_LOG_BY_PRE_ID")
-				.addValue("PRE_ID", preId)
+		final Task task = createTaskBuilder("TkGetLogByPreId")
+				.addValue("preId", preId)
 				.build();
 		return Optional.ofNullable((io.vertigo.orchestra.domain.execution.OActivityLog) getTaskManager()
 				.execute(task)

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,9 @@
  */
 package io.vertigo.orchestra.impl.services.execution;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,7 +35,7 @@ import io.vertigo.lang.Assertion;
 public final class ActivityLogger {
 	private final Logger loggerActivity;
 	private final StringBuilder log = new StringBuilder();
-	private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+	private final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyyMMdd HH:mm:ss").withZone(ZoneId.systemDefault());
 
 	/**
 	 * Constructeur.
@@ -54,7 +55,7 @@ public final class ActivityLogger {
 	public void info(final String message) {
 
 		// We log in Orchestra
-		log.append(dateFormat.format(new Date())).append(" [Info] ").append(message).append('\n');
+		log.append(dateFormat.format(Instant.now())).append(" [Info] ").append(message).append('\n');
 		// We log in Log4j
 		loggerActivity.info(message);
 	}
@@ -65,7 +66,7 @@ public final class ActivityLogger {
 	 */
 	public void warn(final String message) {
 		// We log in Orchestra
-		log.append(dateFormat.format(new Date())).append(" [Warn] ").append(message).append('\n');
+		log.append(dateFormat.format(Instant.now())).append(" [Warn] ").append(message).append('\n');
 		// We log in Log4j
 		loggerActivity.warn(message);
 	}
@@ -76,7 +77,7 @@ public final class ActivityLogger {
 	 */
 	public void error(final String message) {
 		// We log in Orchestra
-		log.append(dateFormat.format(new Date())).append(" [Error] ").append(message).append('\n');
+		log.append(dateFormat.format(Instant.now())).append(" [Error] ").append(message).append('\n');
 		// We log in Log4j
 		loggerActivity.error(message);
 	}

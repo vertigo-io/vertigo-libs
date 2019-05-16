@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -24,16 +24,16 @@ import java.util.Map;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.filter.session.SessionFilter;
 import io.restassured.parsing.Parser;
 import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.app.Home;
-import io.vertigo.orchestra.MyAppConfig;
+import io.vertigo.orchestra.MyNodeConfig;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.OrchestraServices;
@@ -53,29 +53,29 @@ public class OrchestraWsTest {
 
 	static {
 		//RestAsssured init
-		RestAssured.port = MyAppConfig.WS_PORT;
+		RestAssured.port = MyNodeConfig.WS_PORT;
 	}
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() {
-		app = new AutoCloseableApp(MyAppConfig.configWithVega());
+		app = new AutoCloseableApp(MyNodeConfig.configWithVega());
 
 		final OrchestraDefinitionManager orchestraDefinitionManager = Home.getApp().getComponentSpace().resolve(OrchestraDefinitionManager.class);
 		final OrchestraServices orchestraServices = Home.getApp().getComponentSpace().resolve(OrchestraServices.class);
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST_BASIC", "TEST BASIC")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", EmptyActivityEngine.class)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestBasic", "TestBasic")
+				.addActivity("dumb activity", "dumb activity", EmptyActivityEngine.class)
 				.build();
 
-		final ProcessDefinition processDefinition2 = ProcessDefinition.builder("TEST_BASIC_2", "TEST BASIC_2")
-				.addActivity("DUMB ACTIVITY_2", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.EmptyActivityEngine.class)
-				.addActivity("DUMB ACTIVITY_3", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
+		final ProcessDefinition processDefinition2 = ProcessDefinition.builder("TestBasic2", "TestBasic2")
+				.addActivity("dumb activity 2", "dumb activity", io.vertigo.orchestra.services.execution.engine.EmptyActivityEngine.class)
+				.addActivity("dumb activity 3", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
-		orchestraServices.getScheduler().scheduleAt(processDefinition, DateUtil.newDateTime(), Collections.emptyMap());
+		orchestraServices.getScheduler().scheduleAt(processDefinition, DateUtil.newInstant(), Collections.emptyMap());
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition2);
-		orchestraServices.getScheduler().scheduleAt(processDefinition2, DateUtil.newDateTime(), Collections.emptyMap());
+		orchestraServices.getScheduler().scheduleAt(processDefinition2, DateUtil.newInstant(), Collections.emptyMap());
 
 		RestAssured.registerParser("plain/text", Parser.TEXT);
 		RestAssured.given()
@@ -84,7 +84,7 @@ public class OrchestraWsTest {
 
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() {
 		if (app != null) {
 			app.close();
@@ -98,17 +98,17 @@ public class OrchestraWsTest {
 				.expect()
 				.log()
 				.all()
-				.body("name", Matchers.equalTo("TEST_BASIC"))
+				.body("name", Matchers.equalTo("TestBasic"))
 				.body("activities", Matchers.hasSize(1))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
-				.get("/orchestra/definitions/TEST_BASIC");
+				.get("/orchestra/definitions/TestBasic");
 	}
 
 	@Test
 	public void testSearchDefinition() {
 		final Map<String, Object> body = new HashMap<>();
-		body.put("criteria", "TEST");
+		body.put("criteria", "Test");
 		//---
 		RestAssured.given()
 				.filter(loggedSessionFilter)

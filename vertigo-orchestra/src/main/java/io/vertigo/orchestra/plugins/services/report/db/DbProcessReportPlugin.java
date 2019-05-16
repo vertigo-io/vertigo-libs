@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
  */
 package io.vertigo.orchestra.plugins.services.report.db;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,7 +54,7 @@ public class DbProcessReportPlugin implements ProcessReportPlugin {
 
 	private static void checkProcessDefinition(final ProcessDefinition processDefinition) {
 		Assertion.checkNotNull(processDefinition);
-		Assertion.checkState(ProcessType.SUPERVISED.equals(processDefinition.getProcessType()), "Only supervised process can retrieve executions. Process {0} isn't", processDefinition.getName());
+		Assertion.checkState(processDefinition.getProcessType() == ProcessType.SUPERVISED, "Only supervised process can retrieve executions. Process {0} isn't", processDefinition.getName());
 	}
 
 	@Override
@@ -65,12 +65,12 @@ public class DbProcessReportPlugin implements ProcessReportPlugin {
 	}
 
 	@Override
-	public List<ExecutionSummary> getSummariesByDate(final Date minDate, final Date maxDate, final Optional<String> status) {
+	public List<ExecutionSummary> getSummariesByDate(final Instant minDate, final Instant maxDate, final Optional<String> status) {
 		return decodeSummaryList(summaryPAO.getExecutionSummariesByDate(minDate, maxDate, status.orElse(null)));
 	}
 
 	@Override
-	public ExecutionSummary getSummaryByDate(final ProcessDefinition processDefinition, final Date minDate, final Date maxDate) {
+	public ExecutionSummary getSummaryByDate(final ProcessDefinition processDefinition, final Instant minDate, final Instant maxDate) {
 		checkProcessDefinition(processDefinition);
 		//---
 		return decodeSummary(summaryPAO.getExecutionSummaryByDateAndName(minDate, maxDate, processDefinition.getName()));

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -43,12 +43,12 @@ abstract class AbstractKScriptTag {
 	/**
 	 * FIELD_PATH_CALL.
 	 */
-	protected static final String FIELD_PATH_CALL = "^([0-9a-zA-Z_]+(?:\\.[0-9a-zA-Z_]+)*)";
+	protected static final String FIELD_PATH_CALL = "^([a-z][0-9a-zA-Z]*(?:\\.[a-z][0-9a-zA-Z]*)*)";
 	/**
 	 * FIELD_PATH_CALL_CONDITIONAL.
 	 * ADU - 20120529 : modification du pattern pour acceptation espaces et accents.
 	 */
-	protected static final String FIELD_PATH_CALL_EQUALS_CONDITION = "^([0-9a-zA-Z_]+(?:\\.[0-9a-zA-Z_]+)*)=(\\&quot;|\")(.*)(\\&quot;|\")";
+	protected static final String FIELD_PATH_CALL_EQUALS_CONDITION = "^([a-z][0-9a-zA-Z]*(?:\\.[a-z][0-9a-zA-Z]*)*)=(\\&quot;|\")(.*)(\\&quot;|\")";
 
 	/**
 	 * Ajouter l'appel de la methode getStringValue sur un fieldPath.
