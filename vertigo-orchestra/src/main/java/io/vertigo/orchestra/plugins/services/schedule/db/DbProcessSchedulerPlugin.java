@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,9 +19,9 @@
 package io.vertigo.orchestra.plugins.services.schedule.db;
 
 import java.text.ParseException;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
@@ -30,10 +30,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
 
 import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.transaction.VTransactionManager;
@@ -42,9 +42,9 @@ import io.vertigo.core.component.Activeable;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
@@ -84,8 +84,8 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	private final String nodeName;
 	private Long nodId;
-	private final int planningPeriodSeconds;
-	private final int forecastDurationSeconds;
+	private final Integer planningPeriodSeconds;
+	private final Integer forecastDurationSeconds;
 	private final ONodeManager nodeManager;
 	private ProcessExecutor myProcessExecutor;
 
@@ -100,44 +100,50 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	 * @param transactionManager vertigo transaction manager
 	 * @param definitionManager orchestra definitions manager
 	 * @param nodeName le nom du noeud
-	 * @param planningPeriodSeconds le timer de planfication
-	 * @param forecastDurationSeconds la durée de prévision des planifications
+	 * @param planningPeriodSecondsOpt le timer de planfication (30 seconds by default)
+	 * @param forecastDurationSecondsOpt la durée de prévision des planifications (3600 seconds by default)
 	 */
 	@Inject
 	public DbProcessSchedulerPlugin(
 			final ONodeManager nodeManager,
 			final VTransactionManager transactionManager,
 			final OrchestraDefinitionManager definitionManager,
-			@Named("nodeName") final String nodeName,
-			@Named("planningPeriodSeconds") final int planningPeriodSeconds,
-			@Named("forecastDurationSeconds") final int forecastDurationSeconds) {
+			@ParamValue("nodeName") final String nodeName,
+			@ParamValue("planningPeriodSeconds") final Optional<Integer> planningPeriodSecondsOpt,
+			@ParamValue("forecastDurationSeconds") final Optional<Integer> forecastDurationSecondsOpt) {
 		Assertion.checkNotNull(nodeManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(definitionManager);
 		Assertion.checkArgNotEmpty(nodeName);
-		Assertion.checkNotNull(planningPeriodSeconds);
-		Assertion.checkNotNull(forecastDurationSeconds);
+		Assertion.checkNotNull(planningPeriodSecondsOpt);
+		Assertion.checkNotNull(forecastDurationSecondsOpt);
 		//-----
 		this.nodeManager = nodeManager;
 		this.transactionManager = transactionManager;
 		this.definitionManager = definitionManager;
-		this.planningPeriodSeconds = planningPeriodSeconds;
-		this.forecastDurationSeconds = forecastDurationSeconds;
+		planningPeriodSeconds = planningPeriodSecondsOpt.orElse(30);
+		forecastDurationSeconds = forecastDurationSecondsOpt.orElse(3600);
 		this.nodeName = nodeName;
 	}
 
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return Collections.singletonList(new DaemonDefinition("DMN_O_DB_PROCESS_SCHEDULER_DAEMON", () -> this::scheduleAndInit, planningPeriodSeconds));
+		return Collections.singletonList(new DaemonDefinition("DmnODbProcessSchedulerDaemon", () -> this::scheduleAndInit, planningPeriodSeconds));
 	}
 
 	private void scheduleAndInit() {
+		ThreadContext.put("module", "orchestra");
 		try {
 			plannRecurrentProcesses();
 			initToDo(myProcessExecutor);
-		} catch (final Exception e) {
-			// We log the error and we continue the timer
-			LOGGER.error("Exception planning recurrent processes", e);
+		} catch (final Throwable t) {
+			LOGGER.error("Exception planning recurrent processes", t);
+			// if it's an interrupted we rethrow it because we are asked to stop by the jvm
+			if (t instanceof InterruptedException) {
+				throw t;
+			}
+		} finally {
+			ThreadContext.remove("module");
 		}
 
 	}
@@ -171,14 +177,14 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	//--------------------------------------------------------------------------------------------------
 
 	private void doScheduleWithCron(final ProcessDefinition processDefinition) {
-		final Optional<Date> nextPlanification = findNextPlanificationTime(processDefinition);
+		final Optional<Instant> nextPlanification = findNextPlanificationTime(processDefinition);
 		if (nextPlanification.isPresent()) {
 			scheduleAt(processDefinition, nextPlanification.get(), processDefinition.getTriggeringStrategy().getInitialParams());
 		}
 	}
 
 	@Override
-	public void scheduleAt(final ProcessDefinition processDefinition, final Date planifiedTime, final Map<String, String> initialParams) {
+	public void scheduleAt(final ProcessDefinition processDefinition, final Instant planifiedTime, final Map<String, String> initialParams) {
 		Assertion.checkNotNull(processDefinition);
 		Assertion.checkNotNull(planifiedTime);
 		Assertion.checkNotNull(initialParams);
@@ -197,7 +203,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	//--- Private
 	//--------------------------------------------------------------------------------------------------
 
-	private void doScheduleAt(final ProcessDefinition processDefinition, final Date planifiedTime, final Map<String, String> initialParams) {
+	private void doScheduleAt(final ProcessDefinition processDefinition, final Instant planifiedTime, final Map<String, String> initialParams) {
 		Assertion.checkNotNull(processDefinition);
 		// ---
 		final OProcessPlanification processPlanification = new OProcessPlanification();
@@ -218,7 +224,8 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	private void initNewProcessesToLaunch(final ProcessExecutor processExecutor) {
 		for (final OProcessPlanification processPlanification : getPlanificationsToTrigger()) {
-			final ProcessDefinition processDefinition = definitionManager.getProcessDefinition(processPlanification.getProcessus().getName());
+			processPlanification.processus().load();
+			final ProcessDefinition processDefinition = definitionManager.getProcessDefinition(processPlanification.processus().get().getName());
 			lockProcess(processDefinition);
 
 			if (canExecute(processDefinition)) {
@@ -231,7 +238,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	}
 
 	private void lockProcess(final ProcessDefinition processDefinition) {
-		final URI<OProcess> processURI = DtObjectUtil.createURI(OProcess.class, processDefinition.getId());
+		final UID<OProcess> processURI = UID.of(OProcess.class, processDefinition.getId());
 		storeManager.getDataStore().readOneForUpdate(processURI);
 	}
 
@@ -251,7 +258,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 		final GregorianCalendar upperLimit = new GregorianCalendar(Locale.FRANCE);
 
-		planificationPAO.reserveProcessToExecute(lowerLimit.getTime(), upperLimit.getTime(), nodId);
+		planificationPAO.reserveProcessToExecute(lowerLimit.toInstant(), upperLimit.toInstant(), nodId);
 		return processPlanificationDAO.getProcessToExecute(nodId);
 	}
 
@@ -271,33 +278,32 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 		return processPlanificationDAO.getLastPlanificationByProId(proId);
 	}
 
-	private Optional<Date> findNextPlanificationTime(final ProcessDefinition processDefinition) {
+	private Optional<Instant> findNextPlanificationTime(final ProcessDefinition processDefinition) {
 		final Optional<OProcessPlanification> lastPlanificationOption = getLastPlanificationsByProcess(processDefinition.getId());
 
 		try {
 			final CronExpression cronExpression = new CronExpression(processDefinition.getTriggeringStrategy().getCronExpression().get());
 
 			if (!lastPlanificationOption.isPresent()) {
-				final Date now = new Date();
-				final Date compatibleNow = new Date(now.getTime() + (planningPeriodSeconds / 2 * 1000L));// Normalement ca doit être bon quelque soit la synchronisation entre les deux timers (même fréquence)
+				final Instant compatibleNow = Instant.now().plusMillis(planningPeriodSeconds / 2L * 1000);// Normalement ca doit être bon quelque soit la synchronisation entre les deux timers (même fréquence)
 				return Optional.of(cronExpression.getNextValidTimeAfter(compatibleNow));
 			}
 			final OProcessPlanification lastPlanification = lastPlanificationOption.get();
-			final Date nextPotentialPlainification = cronExpression.getNextValidTimeAfter(lastPlanification.getExpectedTime());
-			if (nextPotentialPlainification.before(new Date(System.currentTimeMillis() + forecastDurationSeconds * 1000L))) {
+			final Instant nextPotentialPlainification = cronExpression.getNextValidTimeAfter(lastPlanification.getExpectedTime());
+			if (nextPotentialPlainification.isBefore(Instant.now().plusSeconds(forecastDurationSeconds))) {
 				return Optional.of(nextPotentialPlainification);
 			}
 		} catch (final ParseException e) {
 			throw WrappedException.wrap(e, "Process' cron expression is not valid, process cannot be planned");
 		}
 
-		return Optional.<Date> empty();
+		return Optional.<Instant> empty();
 
 	}
 
 	private List<ProcessDefinition> getAllScheduledProcesses() {
 		return definitionManager.getAllProcessDefinitionsByType(getHandledProcessType()).stream()
-				.filter(processDefinition -> processDefinition.isActive())// We only want actives
+				.filter(ProcessDefinition::isActive)// We only want actives
 				.filter(processDefinition -> processDefinition.getTriggeringStrategy().getCronExpression().isPresent())// We only want the processes to schedule
 				.collect(Collectors.toList());
 	}
@@ -329,13 +335,14 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	}
 
 	private void doCleanPastPlanification() {
-		final Date now = new Date();
+		final Instant now = Instant.now();
 		planificationPAO.cleanPlanificationsOnBoot(now);
 		// ---
 		for (final OProcessPlanification planification : processPlanificationDAO.getAllLastPastPlanifications(now)) {
 			// We check the process policy of validity
-			final OProcess process = planification.getProcessus();
-			final long ageOfPlanification = (now.getTime() - planification.getExpectedTime().getTime()) / (60 * 1000L);// in seconds
+			planification.processus().load();
+			final OProcess process = planification.processus().get();
+			final long ageOfPlanification = (now.toEpochMilli() - planification.getExpectedTime().toEpochMilli()) / (60 * 1000L);// in seconds
 			if (ageOfPlanification < process.getRescuePeriod()) {
 				changeState(planification, SchedulerState.RESCUED);
 			} else {

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,15 +25,16 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import io.vertigo.account.account.Account;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.social.services.notification.Notification;
 import io.vertigo.social.services.notification.NotificationServices;
 
 /**
- * @author pchretien
+ * @author pchretien, npiedeloup, btounkara
  */
 public final class NotificationServicesImpl implements NotificationServices {
+
 	private final NotificationPlugin notificationsPlugin;
 
 	/**
@@ -42,28 +43,28 @@ public final class NotificationServicesImpl implements NotificationServices {
 	@Inject
 	public NotificationServicesImpl(final NotificationPlugin notificationsPlugin) {
 		Assertion.checkNotNull(notificationsPlugin);
-		//-----
+		// -----
 		this.notificationsPlugin = notificationsPlugin;
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void send(final Notification notification, final Set<URI<Account>> accountURIs) {
+	public void send(final Notification notification, final Set<UID<Account>> accountURIs) {
 		final NotificationEvent notificationEvent = new NotificationEvent(notification, accountURIs);
 		notificationsPlugin.send(notificationEvent);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public List<Notification> getCurrentNotifications(final URI<Account> userProfileURI) {
+	public List<Notification> getCurrentNotifications(final UID<Account> userProfileURI) {
 		Assertion.checkNotNull(userProfileURI);
-		//-----
+		// -----
 		return notificationsPlugin.getCurrentNotifications(userProfileURI);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final URI<Account> accountURI, final UUID notificationUUID) {
+	public void remove(final UID<Account> accountURI, final UUID notificationUUID) {
 		notificationsPlugin.remove(accountURI, notificationUUID);
 	}
 
@@ -71,5 +72,10 @@ public final class NotificationServicesImpl implements NotificationServices {
 	@Override
 	public void removeAll(final String type, final String targetUrl) {
 		notificationsPlugin.removeAll(type, targetUrl);
+	}
+
+	@Override
+	public void updateUserContent(final UID<Account> accountURI, final UUID notificationUUID, final String userContent) {
+		notificationsPlugin.updateUserContent(accountURI, notificationUUID, userContent);
 	}
 }

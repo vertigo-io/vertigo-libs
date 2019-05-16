@@ -1,5 +1,5 @@
 <%@page contentType="text/html;charset=ISO-8859-1" import="java.io.IOException,java.lang.management.*, java.text.SimpleDateFormat"%>
-<%@page import="java.util.*, org.apache.log4j.Logger"%>
+<%@page import="java.util.*"%>
 
 <%!
    private String normalize(String value)

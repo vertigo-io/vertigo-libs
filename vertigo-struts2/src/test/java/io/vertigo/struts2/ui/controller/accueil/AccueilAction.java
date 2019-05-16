@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,18 +18,22 @@
  */
 package io.vertigo.struts2.ui.controller.accueil;
 
-import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.util.Date;
 
 import javax.inject.Inject;
 
+import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
 import io.vertigo.lang.VUserException;
-import io.vertigo.persona.security.VSecurityManager;
 import io.vertigo.struts2.core.AbstractActionSupport.AcceptCtxQueryParam;
 import io.vertigo.struts2.core.ContextForm;
 import io.vertigo.struts2.core.ContextList;
@@ -62,7 +66,7 @@ public class AccueilAction extends AbstractTestActionSupport {
 	private final ContextRef<String> communeId = new ContextRef<>("communeId", String.class, this);
 	private final ContextMdl<Commune> communeListMdl = new ContextMdl<>("communesMdl", this);
 
-	private final ContextList<MovieDisplay> movieDisplayList = new ContextList<>("moviesDisplay", MovieDisplayFields.MOV_ID, this);
+	private final ContextList<MovieDisplay> movieDisplayList = new ContextList<>("moviesDisplay", MovieDisplayFields.movId, this);
 
 	private final ContextRef<String> currentDate = new ContextRef<>("currentDate", String.class, this);
 
@@ -87,11 +91,11 @@ public class AccueilAction extends AbstractTestActionSupport {
 	protected void initContext() {
 		movie.publish(new Movie());
 		casting.publish(new Casting());
-		movieList.publish(movieServices.getMovies(new DtListState(200, 0, null, null)));
-		movieListModifiables.publish(movieServices.getMovies(new DtListState(200, 0, null, null)));
+		movieList.publish(movieServices.getMovies(DtListState.defaultOf(Movie.class)));
+		movieListModifiables.publish(movieServices.getMovies(DtListState.defaultOf(Movie.class)));
 		moviesListMdl.publish(Movie.class, null);
 		communeListMdl.publish(Commune.class, null);
-		movieDisplayList.publish(movieServices.getMoviesDisplay(new DtListState(200, 0, null, null)));
+		movieDisplayList.publish(movieServices.getMoviesDisplay(DtListState.defaultOf(Movie.class)));
 
 		toModeCreate();
 		currentDate.set(new Date().toString());
@@ -160,11 +164,13 @@ public class AccueilAction extends AbstractTestActionSupport {
 	/**
 	 * Exporte l'annuaire utilisateur.
 	 * @return redirection struts
+	 * @throws IOException
+	 * @throws URISyntaxException
 	 */
 	@GET
-	public String downloadFile() {
-		final String fullPath = getClass().getResource("/data/insee.csv").getFile();
-		final File localFile = new File(fullPath);
+	public String downloadFile() throws IOException, URISyntaxException {
+		final URI fullPath = getClass().getResource("/data/insee.csv").toURI();
+		final Path localFile = Paths.get(fullPath);
 		final VFile vFile = new FSFile("insee.csv", "text/csv", localFile);
 		return createVFileResponseBuilder().send(vFile);
 	}

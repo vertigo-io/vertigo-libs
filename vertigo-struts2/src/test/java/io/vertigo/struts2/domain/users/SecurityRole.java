@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.struts2.domain.users;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -37,8 +37,8 @@ public final class SecurityRole implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<SecurityRole> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<SecurityRole> getUID() {
+		return UID.of(this);
 	}
 
 	/**
@@ -46,7 +46,7 @@ public final class SecurityRole implements Entity {
 	 * Récupère la valeur de la propriété 'SRO_CD'.
 	 * @return String sroCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_CODE", type = "ID", required = true, label = "SRO_CD")
+	@Field(domain = "DoCode", type = "ID", required = true, label = "SRO_CD")
 	public String getSroCd() {
 		return sroCd;
 	}
@@ -65,7 +65,7 @@ public final class SecurityRole implements Entity {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label
 	 */
-	@Field(domain = "DO_LABEL", label = "Label")
+	@Field(domain = "DoLabel", label = "Label")
 	public String getLabel() {
 		return label;
 	}

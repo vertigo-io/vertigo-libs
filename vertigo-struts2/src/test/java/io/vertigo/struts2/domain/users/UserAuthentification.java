@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.struts2.domain.users;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -40,8 +40,8 @@ public final class UserAuthentification implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<UserAuthentification> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<UserAuthentification> getUID() {
+		return UID.of(this);
 	}
 
 	/**
@@ -49,7 +49,7 @@ public final class UserAuthentification implements Entity {
 	 * Récupère la valeur de la propriété 'AUTH_ID'.
 	 * @return Long authId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "AUTH_ID")
+	@Field(domain = "DoId", type = "ID", required = true, label = "AUTH_ID")
 	public Long getAuthId() {
 		return authId;
 	}
@@ -68,7 +68,7 @@ public final class UserAuthentification implements Entity {
 	 * Récupère la valeur de la propriété 'Login'.
 	 * @return String login
 	 */
-	@Field(domain = "DO_LOGIN", label = "Login")
+	@Field(domain = "DoLogin", label = "Login")
 	public String getLogin() {
 		return login;
 	}
@@ -87,7 +87,7 @@ public final class UserAuthentification implements Entity {
 	 * Récupère la valeur de la propriété 'Password'.
 	 * @return String password
 	 */
-	@Field(domain = "DO_PASSWORD", label = "Password")
+	@Field(domain = "DoPassword", label = "Password")
 	public String getPassword() {
 		return password;
 	}
@@ -106,7 +106,7 @@ public final class UserAuthentification implements Entity {
 	 * Récupère la valeur de la propriété 'Application user'.
 	 * @return Long usrId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", required = true, label = "Application user")
+	@Field(domain = "DoId", type = "FOREIGN_KEY", required = true, label = "Application user")
 	public Long getUsrId() {
 		return usrId;
 	}
@@ -125,12 +125,12 @@ public final class UserAuthentification implements Entity {
 	 * @return io.vertigo.struts2.domain.users.ApplicationUser
 	 */
 	public io.vertigo.struts2.domain.users.ApplicationUser getApplicationUser() {
-		final io.vertigo.dynamo.domain.model.URI<io.vertigo.struts2.domain.users.ApplicationUser> fkURI = getApplicationUserURI();
+		final io.vertigo.dynamo.domain.model.UID<io.vertigo.struts2.domain.users.ApplicationUser> fkURI = getApplicationUserURI();
 		if (fkURI == null) {
 			return null;
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (applicationUser == null || !fkURI.equals(applicationUser.getURI())) {
+		if (applicationUser == null || !fkURI.equals(applicationUser.getUID())) {
 			applicationUser = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
 		}
 		return applicationUser;
@@ -140,9 +140,9 @@ public final class UserAuthentification implements Entity {
 	 * Retourne l'URI: Application user.
 	 * @return URI de l'association
 	 */
-	@io.vertigo.dynamo.domain.stereotype.Association(name = "A_AUTH_USR", fkFieldName = "USR_ID", primaryDtDefinitionName = "DT_APPLICATION_USER", primaryIsNavigable = true, primaryRole = "ApplicationUser", primaryLabel = "Application user", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DT_USER_AUTHENTIFICATION", foreignIsNavigable = false, foreignRole = "UserAuthentification", foreignLabel = "User authentification", foreignMultiplicity = "0..*")
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.struts2.domain.users.ApplicationUser> getApplicationUserURI() {
-		return io.vertigo.dynamo.domain.util.DtObjectUtil.createURI(this, "A_AUTH_USR", io.vertigo.struts2.domain.users.ApplicationUser.class);
+	@io.vertigo.dynamo.domain.stereotype.Association(name = "AAuthUsr", fkFieldName = "usrId", primaryDtDefinitionName = "DtApplicationUser", primaryIsNavigable = true, primaryRole = "ApplicationUser", primaryLabel = "Application user", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DtUserAuthentification", foreignIsNavigable = false, foreignRole = "UserAuthentification", foreignLabel = "User authentification", foreignMultiplicity = "0..*")
+	public io.vertigo.dynamo.domain.model.UID<io.vertigo.struts2.domain.users.ApplicationUser> getApplicationUserURI() {
+		return io.vertigo.dynamo.domain.util.DtObjectUtil.createUID(this, "aAuthUsr", io.vertigo.struts2.domain.users.ApplicationUser.class);
 	}
 
 	/** {@inheritDoc} */

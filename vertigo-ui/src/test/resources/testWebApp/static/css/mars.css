@@ -1,0 +1,133 @@
+/******** CSS SPECIFIQUE A CERTAINES PAGES *******/
+
+nav a {
+	text-decoration: none;
+	
+}
+
+.q-item-side {
+	text-align: center;	
+}
+
+a.q-item {
+	color: #737373;	
+}
+
+/* --------------------------- PAGE LOGIN ------------------------------ */
+
+/*  Cadre à taille fixe et centré contenant les éléments du login */
+.pageLogin .cadre-login{
+          background-image: url('../img/gestim/login/bg_login_gestim.jpg');
+          background-repeat: no-repeat;
+      background-position: center; 
+      height : 640px;
+      width: 960px;
+      margin-left: auto;
+      margin-right: auto;
+      position : relative;
+}
+/* Placement du titre principal */
+.pageLogin h1 {
+        font-size : 80px;
+        position: absolute;
+        right: 246px;
+        top: 30px;
+    color: #FAFAFA;
+}
+/* Placement du titre secondaire */
+.pageLogin h2 {
+        position: absolute;
+        right: 120px;
+        top: 134px;
+    color: #FAFAFA;
+}
+/* Formulaire avec le cadre placé en bas à droite */
+.pageLogin form {
+        width: 100%;
+        max-width: 500px;
+        position: absolute;
+        right: 10px;
+        bottom: 156px;
+    background-color: #FAFAFA;
+    padding : 8px;
+    background : linear-gradient(to bottom, #fdfdfd,#dff0fa);
+}
+/* Réduction du padding de base des colonnes pour que tout rentre dans le cadre*/
+.pageLogin form .form-group {
+        padding-right: 10px;
+        padding-left : 10px;
+}
+/* Ajout de l'image à droite de "identifiant" et "mot de passe" */
+.pageLogin form .login-field label {
+        background-image: url('../img/gestim/login/login_col_entete.png');
+        background-repeat: no-repeat;
+        background-position: bottom right; 
+        width: 100%;
+}
+/* Image devant la ligne login/pass */
+.pageLogin form .login-lig-entete {
+        background-image: url('../img/gestim/login/login_lig_entete.png');
+        background-repeat: no-repeat;
+        background-size: 32px 42px;
+        background-position: bottom right; 
+        height : 60px;
+}
+/* Ressere le bouton de confirmation de login pour qu'il reste dans le cadre */
+.pageLogin form .login-btn {
+        padding-left : 0px;
+}
+/* Message de blocage, positionné en bas a droite du cadre de login */
+.pageLogin .message-blocage {
+        position: absolute;
+        bottom: 84px;
+        right: 0;
+        width: 480px;
+        color: #003584;
+}
+/* Message de déconnexion ou d'erreur de saisie, positionné au dessus de la mire de la login */
+.pageLogin .messages {
+        position: absolute;
+        right: 10px;
+        bottom: 235px;
+        width: 500px;
+}
+
+/* --------------------- PAGE VERROUILLAGE / DEVERROUILLAGE PREVISIONS  ---------------------- */
+th#th-cocher-decocher{
+        white-space: initial;
+}
+div#div-cocher-decocher {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: baseline;
+}
+
+/*-------------------------------------------  MESSAGES PAGE D'ACCUEIL */
+
+.accueil .message {
+        width: 100%;
+        align-items: center; /* centrage v*/
+        justify-content: center; /* Centrage horizontal */
+        margin-bottom: 10px;
+        border-radius: 4px;
+        overflow: hidden;
+        padding : 5px;
+}
+
+.accueil .message-dsnj {
+        border: 1px solid #094791;
+        background-color: rgba(207, 160, 233, 0.4);
+}
+.accueil .message-dsnj-esn {
+        border: 1px solid #094791;
+        background-color: rgba(254, 248, 108, 0.4);
+}
+.accueil .message-dsnj-csn {
+        border: 1px solid #094791;
+        background-color: rgba(196, 196, 196, 0.4);
+}
+.accueil .message-esn-csn {
+        border: 1px solid #094791;
+        background-color: rgba(144, 238, 144, 0.4);
+}

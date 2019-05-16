@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,42 +59,53 @@ public final class ExecutionPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_HANDLE_PROCESSES_OF_DEAD_NODES.
-	 * @param maxDate java.util.Date 
+	 * Execute la tache TkHandleDeadProcessesOfNode.
+	 * @param nodId Long 
 	*/
-	public void handleProcessesOfDeadNodes(final java.util.Date maxDate) {
-		final Task task = createTaskBuilder("TK_HANDLE_PROCESSES_OF_DEAD_NODES")
-				.addValue("MAX_DATE", maxDate)
+	public void handleDeadProcessesOfNode(final Long nodId) {
+		final Task task = createTaskBuilder("TkHandleDeadProcessesOfNode")
+				.addValue("nodId", nodId)
 				.build();
 		getTaskManager().execute(task);
 	}
 
 	/**
-	 * Execute la tache TK_RESERVE_ACTIVITIES_TO_LAUNCH.
+	 * Execute la tache TkHandleProcessesOfDeadNodes.
+	 * @param maxDate java.time.Instant 
+	*/
+	public void handleProcessesOfDeadNodes(final java.time.Instant maxDate) {
+		final Task task = createTaskBuilder("TkHandleProcessesOfDeadNodes")
+				.addValue("maxDate", maxDate)
+				.build();
+		getTaskManager().execute(task);
+	}
+
+	/**
+	 * Execute la tache TkReserveActivitiesToLaunch.
 	 * @param nodId Long 
 	 * @param maxNumber Integer 
 	*/
 	public void reserveActivitiesToLaunch(final Long nodId, final Integer maxNumber) {
-		final Task task = createTaskBuilder("TK_RESERVE_ACTIVITIES_TO_LAUNCH")
-				.addValue("NOD_ID", nodId)
-				.addValue("MAX_NUMBER", maxNumber)
+		final Task task = createTaskBuilder("TkReserveActivitiesToLaunch")
+				.addValue("nodId", nodId)
+				.addValue("maxNumber", maxNumber)
 				.build();
 		getTaskManager().execute(task);
 	}
 
 	/**
-	 * Execute la tache TK_UPDATE_PROCESS_EXECUTION_TREATMENT.
+	 * Execute la tache TkUpdateProcessExecutionTreatment.
 	 * @param preId Long 
 	 * @param checked Boolean 
-	 * @param checkingDate java.util.Date 
+	 * @param checkingDate java.time.Instant 
 	 * @param checkingComment String 
 	*/
-	public void updateProcessExecutionTreatment(final Long preId, final Boolean checked, final java.util.Date checkingDate, final String checkingComment) {
-		final Task task = createTaskBuilder("TK_UPDATE_PROCESS_EXECUTION_TREATMENT")
-				.addValue("PRE_ID", preId)
-				.addValue("CHECKED", checked)
-				.addValue("CHECKING_DATE", checkingDate)
-				.addValue("CHECKING_COMMENT", checkingComment)
+	public void updateProcessExecutionTreatment(final Long preId, final Boolean checked, final java.time.Instant checkingDate, final String checkingComment) {
+		final Task task = createTaskBuilder("TkUpdateProcessExecutionTreatment")
+				.addValue("preId", preId)
+				.addValue("checked", checked)
+				.addValue("checkingDate", checkingDate)
+				.addValue("checkingComment", checkingComment)
 				.build();
 		getTaskManager().execute(task);
 	}

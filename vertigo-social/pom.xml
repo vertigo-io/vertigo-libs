@@ -37,6 +37,20 @@
 			<artifactId>vertigo-vega-api</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
+		
+		<!-- Mail -->
+		<dependency>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.2</version>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.activation</groupId>
+					<artifactId>activation</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!-- /Mail -->
 
 		<!-- Tests -->
 		<dependency>
@@ -74,7 +88,7 @@
 		<dependency>
 			<groupId>io.rest-assured</groupId>
 			<artifactId>rest-assured</artifactId>
-			<version>3.0.7</version>
+			<version>3.3.0</version>
 			<scope>test</scope>
 		</dependency>
 

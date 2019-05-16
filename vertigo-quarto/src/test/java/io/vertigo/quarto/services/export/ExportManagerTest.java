@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,12 +20,20 @@ package io.vertigo.quarto.services.export;
 
 import javax.inject.Inject;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU4;
+import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.app.config.NodeConfig;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.quarto.QuartoFeatures;
 import io.vertigo.quarto.services.export.data.DtDefinitions.ContinentFields;
 import io.vertigo.quarto.services.export.data.DtDefinitions.CountryFields;
 import io.vertigo.quarto.services.export.data.domain.Continent;
@@ -39,12 +47,41 @@ import io.vertigo.quarto.services.export.model.ExportFormat;
  *
  * @author dchallas
  */
-public final class ExportManagerTest extends AbstractTestCaseJU4 {
+public final class ExportManagerTest extends AbstractTestCaseJU5 {
 	// Répertoire de test
 	private static String OUTPUT_PATH = "c:/tmp/";
 
 	@Inject
 	private ExportManager exportManager;
+
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return NodeConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new CommonsFeatures()
+						.withCache()
+						.withMemoryCache()
+						.build())
+				.addModule(new DynamoFeatures()
+						.withStore()
+						.build())
+				.addModule(new QuartoFeatures()
+						.withExport()
+						.withCSVExporter()
+						.withPDFExporter()
+						.withRTFExporter()
+						.withXLSExporter()
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/quarto/services/export/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.quarto.services.export.data.DtDefinitions")
+								.build())
+						.build())
+				.build();
+	}
 
 	/**
 	 * Test l'export CSV.
@@ -85,7 +122,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")
 				.beginSheet(china, "china")
-				.addField(CountryFields.NAME)
+				.addField(CountryFields.name)
 				.endSheet()
 				.build();
 
@@ -102,7 +139,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test3.csv")
 				.beginSheet(china, "china")
-				.addField(CountryFields.NAME, MessageText.of("test"))
+				.addField(CountryFields.name, MessageText.of("test"))
 				.endSheet()
 				.build();
 
@@ -123,7 +160,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test4.csv")
 				.beginSheet(germany, "germany")
-				.addField(CountryFields.CON_ID, dtc, ContinentFields.NAME)
+				.addField(CountryFields.conId, dtc, ContinentFields.name)
 				.endSheet()
 				.build();
 
@@ -144,7 +181,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 
 		final Export export = new ExportBuilder(ExportFormat.CSV, OUTPUT_PATH + "test5.csv")
 				.beginSheet(germany, "country")
-				.addField(CountryFields.ID, dtc, CountryFields.NAME, MessageText.of("test"))
+				.addField(CountryFields.id, dtc, CountryFields.name, MessageText.of("test"))
 				.endSheet()
 				.build();
 
@@ -162,8 +199,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU4 {
 
 		final Export export = new ExportBuilder(ExportFormat.XLS, OUTPUT_PATH + "test.xls")
 				.beginSheet(countries, "countries")
-				.addField(CountryFields.CON_ID, contients, ContinentFields.NAME)
-				.addField(CountryFields.ACTIVE)
+				.addField(CountryFields.conId, contients, ContinentFields.name)
+				.addField(CountryFields.active)
 				.endSheet()
 				.build();
 

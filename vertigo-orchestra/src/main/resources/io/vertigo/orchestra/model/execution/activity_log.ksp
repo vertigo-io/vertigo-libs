@@ -1,20 +1,20 @@
 package io.vertigo.orchestra.domain.execution
 
-create DtDefinition DT_O_ACTIVITY_LOG {
+create DtDefinition DtOActivityLog {
 	storeName : "orchestra"
-	key ACL_ID			{domain : DO_O_IDENTIFIANT, label :"Id du log", notNull:"true",}
-	field LOG 			{domain : DO_O_TEXT, label :"Contenu du log", notNull:"false",}
-	field ATTACHMENT 		{domain : DO_O_TEXT, label :"Fichier joint", notNull:"false",}
+	id aclId			{domain : DoOIdentifiant, label :"Id du log", }
+	field log 			{domain : DoOText, label :"Contenu du log", required:"false",}
+	field attachment 		{domain : DoOText, label :"Fichier joint", required:"false",}
   
 },
 
 
 
-create Association A_ACL_ACE {
-  fkFieldName : "ACE_ID"
+create Association AAclAce {
+  fkFieldName : "aceId"
     
- 	dtDefinitionA : DT_O_ACTIVITY_LOG
-	dtDefinitionB : DT_O_ACTIVITY_EXECUTION
+ 	dtDefinitionA : DtOActivityLog
+	dtDefinitionB : DtOActivityExecution
 			
 	navigabilityA : "false"
 	navigabilityB : "true"

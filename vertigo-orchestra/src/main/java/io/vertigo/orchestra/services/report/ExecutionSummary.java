@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.orchestra.services.report;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 import io.vertigo.lang.Assertion;
 
@@ -31,8 +31,8 @@ public final class ExecutionSummary implements Serializable {
 	private final Long proId;
 	private final String processName;
 	private final String processLabel;
-	private final java.util.Date lastExecutionTime;
-	private final java.util.Date nextExecutionTime;
+	private final Instant lastExecutionTime;
+	private final Instant nextExecutionTime;
 	private final Integer errorsCount;
 	private final Integer misfiredCount;
 	private final Integer successfulCount;
@@ -58,8 +58,8 @@ public final class ExecutionSummary implements Serializable {
 			final Long proId,
 			final String processName,
 			final String processLabel,
-			final Date lastExecutionTime,
-			final Date nextExecutionTime,
+			final Instant lastExecutionTime,
+			final Instant nextExecutionTime,
 			final Integer errorsCount,
 			final Integer misfiredCount,
 			final Integer successfulCount,
@@ -94,11 +94,11 @@ public final class ExecutionSummary implements Serializable {
 		return processLabel;
 	}
 
-	public java.util.Date getLastExecutionTime() {
+	public Instant getLastExecutionTime() {
 		return lastExecutionTime;
 	}
 
-	public java.util.Date getNextExecutionTime() {
+	public Instant getNextExecutionTime() {
 		return nextExecutionTime;
 	}
 

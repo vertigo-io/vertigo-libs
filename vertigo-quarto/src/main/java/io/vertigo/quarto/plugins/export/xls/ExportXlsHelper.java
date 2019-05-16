@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -94,11 +94,11 @@ public final class ExportXlsHelper<R extends DtObject> {
 
 		for (final DtField dtField : getExportColumnList(dtcToExport, collectionColumnNameList)) {
 			if (specificLabelMap == null) {
-				exportSheetBuilder.addField(() -> dtField.getName());
+				exportSheetBuilder.addField(dtField::getName);
 			} else {
 				// TODO final String label = specificLabelMap.get(field.getName());
 				// TODO exportListParameters.addExportField(field, label);
-				exportSheetBuilder.addField(() -> dtField.getName(), null);
+				exportSheetBuilder.addField(dtField::getName, null);
 			}
 		}
 		exportSheetBuilder.endSheet();
@@ -120,7 +120,7 @@ public final class ExportXlsHelper<R extends DtObject> {
 
 		// TODO set tabname exportObjectParameters.setMetaData(PublisherMetaData.TITLE, tabName);
 		for (final DtField dtField : getExportCriterionFields(criterion, criterionExcludedColumnNames)) {
-			exportSheetBuilder.addField(() -> dtField.getName());
+			exportSheetBuilder.addField(dtField::getName);
 		}
 
 		exportSheetBuilder.endSheet();
@@ -165,7 +165,7 @@ public final class ExportXlsHelper<R extends DtObject> {
 	private static void addFieldToExcludedExportColumnNameList(final DtDefinition definition, final List<String> criterionExcludedColumnNameList) {
 		if (definition.getIdField().isPresent()) {
 			final DtField keyField = definition.getIdField().get();
-			if ("DO_IDENTIFIER".equals(keyField.getDomain().getName())) {
+			if ("DoIdentifier".equals(keyField.getDomain().getName())) {
 				criterionExcludedColumnNameList.add(keyField.getName());
 			}
 		}

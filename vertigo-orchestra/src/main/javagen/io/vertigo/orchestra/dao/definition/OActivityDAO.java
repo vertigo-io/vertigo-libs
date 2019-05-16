@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,13 +61,13 @@ public final class OActivityDAO extends DAO<OActivity, java.lang.Long> implement
 	}
 
 	/**
-	 * Execute la tache TK_GET_ACTIVITIES_BY_PRO_ID.
+	 * Execute la tache TkGetActivitiesByProId.
 	 * @param proId Long 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.definition.OActivity> dtOActivities
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.definition.OActivity> getActivitiesByProId(final Long proId) {
-		final Task task = createTaskBuilder("TK_GET_ACTIVITIES_BY_PRO_ID")
-				.addValue("PRO_ID", proId)
+		final Task task = createTaskBuilder("TkGetActivitiesByProId")
+				.addValue("proId", proId)
 				.build();
 		return getTaskManager()
 				.execute(task)
@@ -75,11 +75,11 @@ public final class OActivityDAO extends DAO<OActivity, java.lang.Long> implement
 	}
 
 	/**
-	 * Execute la tache TK_GET_ALL_ACTIVITIES_IN_ACTIVE_PROCESSES.
+	 * Execute la tache TkGetAllActivitiesInActiveProcesses.
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.definition.OActivity> dtOActivities
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.definition.OActivity> getAllActivitiesInActiveProcesses() {
-		final Task task = createTaskBuilder("TK_GET_ALL_ACTIVITIES_IN_ACTIVE_PROCESSES")
+		final Task task = createTaskBuilder("TkGetAllActivitiesInActiveProcesses")
 				.build();
 		return getTaskManager()
 				.execute(task)
@@ -87,13 +87,13 @@ public final class OActivityDAO extends DAO<OActivity, java.lang.Long> implement
 	}
 
 	/**
-	 * Execute la tache TK_GET_FIRST_ACTIVITY_BY_PROCESS.
+	 * Execute la tache TkGetFirstActivityByProcess.
 	 * @param proId Long 
 	 * @return io.vertigo.orchestra.domain.definition.OActivity dtOActivity
 	*/
 	public io.vertigo.orchestra.domain.definition.OActivity getFirstActivityByProcess(final Long proId) {
-		final Task task = createTaskBuilder("TK_GET_FIRST_ACTIVITY_BY_PROCESS")
-				.addValue("PRO_ID", proId)
+		final Task task = createTaskBuilder("TkGetFirstActivityByProcess")
+				.addValue("proId", proId)
 				.build();
 		return getTaskManager()
 				.execute(task)
@@ -101,13 +101,13 @@ public final class OActivityDAO extends DAO<OActivity, java.lang.Long> implement
 	}
 
 	/**
-	 * Execute la tache TK_GET_NEXT_ACTIVITY_BY_ACT_ID.
+	 * Execute la tache TkGetNextActivityByActId.
 	 * @param actId Long 
 	 * @return Option de io.vertigo.orchestra.domain.definition.OActivity dtOActivity
 	*/
 	public Optional<io.vertigo.orchestra.domain.definition.OActivity> getNextActivityByActId(final Long actId) {
-		final Task task = createTaskBuilder("TK_GET_NEXT_ACTIVITY_BY_ACT_ID")
-				.addValue("ACT_ID", actId)
+		final Task task = createTaskBuilder("TkGetNextActivityByActId")
+				.addValue("actId", actId)
 				.build();
 		return Optional.ofNullable((io.vertigo.orchestra.domain.definition.OActivity) getTaskManager()
 				.execute(task)

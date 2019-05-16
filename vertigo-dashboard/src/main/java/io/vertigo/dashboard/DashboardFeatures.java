@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,46 +18,40 @@
  */
 package io.vertigo.dashboard;
 
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.dashboard.impl.services.data.DataProviderImpl;
-import io.vertigo.dashboard.plugins.data.influxdb.InfluxDbDataProviderPlugin;
 import io.vertigo.dashboard.services.data.DataProvider;
+import io.vertigo.dashboard.ui.DashboardUiManager;
 import io.vertigo.dashboard.webservices.DashboardDataProviderWebServices;
+import io.vertigo.lang.Assertion;
 
-public class DashboardFeatures extends Features {
-
-	private String myAppName;
+public class DashboardFeatures extends Features<DashboardFeatures> {
 
 	public DashboardFeatures() {
-		super("dashboard");
+		super("vertigo-dashboard");
 	}
 
-	public DashboardFeatures withAppName(final String appName) {
-		myAppName = appName;
-		return this;
-	}
-
-	public DashboardFeatures withInfluxDb(final String host, final String user, final String password) {
-		getModuleConfigBuilder()
-				.addPlugin(InfluxDbDataProviderPlugin.class,
-						Param.of("host", host),
-						Param.of("user", user),
-						Param.of("password", password));
+	@Feature("analytics")
+	public DashboardFeatures withAnalytics(final Param... params) {
+		if (params.length > 0) {
+			Assertion.checkState(params.length == 1 && "appName".equals(params[0].getName()), "appName param should be provided ");
+			//---
+			getModuleConfigBuilder()
+					.addComponent(DataProvider.class, DataProviderImpl.class, params);
+		} else {
+			getModuleConfigBuilder()
+					.addComponent(DataProvider.class, DataProviderImpl.class);
+		}
+		getModuleConfigBuilder().addComponent(DashboardDataProviderWebServices.class);
 		return this;
 	}
 
 	@Override
 	protected void buildFeatures() {
-		if (myAppName != null) {
-			getModuleConfigBuilder()
-					.addComponent(DataProvider.class, DataProviderImpl.class, Param.of("appName", myAppName));
-		} else {
-			getModuleConfigBuilder()
-					.addComponent(DataProvider.class, DataProviderImpl.class);
-		}
 		getModuleConfigBuilder()
-				.addComponent(DashboardDataProviderWebServices.class);
+				.addComponent(DashboardUiManager.class);
 
 	}
 

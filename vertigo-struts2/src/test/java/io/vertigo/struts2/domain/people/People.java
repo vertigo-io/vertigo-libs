@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.struts2.domain.people;
 
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -40,8 +40,8 @@ public final class People implements KeyConcept {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<People> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<People> getUID() {
+		return UID.of(this);
 	}
 
 	/**
@@ -49,7 +49,7 @@ public final class People implements KeyConcept {
 	 * Récupère la valeur de la propriété 'PEO_ID'.
 	 * @return Long peoId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", type = "ID", required = true, label = "PEO_ID")
+	@Field(domain = "DoId", type = "ID", required = true, label = "PEO_ID")
 	public Long getPeoId() {
 		return peoId;
 	}
@@ -68,7 +68,7 @@ public final class People implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Last Name'.
 	 * @return String lastName
 	 */
-	@Field(domain = "DO_NAME", label = "Last Name")
+	@Field(domain = "DoName", label = "Last Name")
 	public String getLastName() {
 		return lastName;
 	}
@@ -87,7 +87,7 @@ public final class People implements KeyConcept {
 	 * Récupère la valeur de la propriété 'First Name'.
 	 * @return String firstName
 	 */
-	@Field(domain = "DO_FIRSTNAME", label = "First Name")
+	@Field(domain = "DoFirstname", label = "First Name")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -106,7 +106,7 @@ public final class People implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Peo Name'.
 	 * @return String peoName
 	 */
-	@Field(domain = "DO_LABEL_LONG", label = "Peo Name")
+	@Field(domain = "DoLabelLong", label = "Peo Name")
 	public String getPeoName() {
 		return peoName;
 	}
@@ -125,7 +125,7 @@ public final class People implements KeyConcept {
 	 * Récupère la valeur de la propriété 'imdbID'.
 	 * @return String imdbid
 	 */
-	@Field(domain = "DO_LABEL", label = "imdbID")
+	@Field(domain = "DoLabel", label = "imdbID")
 	public String getImdbid() {
 		return imdbid;
 	}

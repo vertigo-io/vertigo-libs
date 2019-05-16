@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -90,307 +90,307 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	 */
 	public enum OActivityFields implements DtFieldName<io.vertigo.orchestra.domain.definition.OActivity> {
 		/** Propriété 'Id Activité'. */
-		ACT_ID,
+		actId,
 		/** Propriété 'Nom de l'activité'. */
-		NAME,
+		name,
 		/** Propriété 'Libellé de l'activité'. */
-		LABEL,
+		label,
 		/** Propriété 'Numéro de l'activité'. */
-		NUMBER,
+		number,
 		/** Propriété 'Jalon'. */
-		MILESTONE,
+		milestone,
 		/** Propriété 'Implémentation de l'activité'. */
-		ENGINE,
+		engine,
 		/** Propriété 'Processus'. */
-		PRO_ID	}
+		proId	}
 
 	/**
 	 * Enumération des champs de OActivityExecution.
 	 */
 	public enum OActivityExecutionFields implements DtFieldName<io.vertigo.orchestra.domain.execution.OActivityExecution> {
 		/** Propriété 'Id de l'execution d'un processus'. */
-		ACE_ID,
+		aceId,
 		/** Propriété 'Date de création'. */
-		CREATION_TIME,
+		creationTime,
 		/** Propriété 'Date de début'. */
-		BEGIN_TIME,
+		beginTime,
 		/** Propriété 'Date de fin'. */
-		END_TIME,
+		endTime,
 		/** Propriété 'Implémentation effective de l'execution'. */
-		ENGINE,
+		engine,
 		/** Propriété 'Token d'identification'. */
-		TOKEN,
+		token,
 		/** Propriété 'Activity'. */
-		ACT_ID,
+		actId,
 		/** Propriété 'Processus'. */
-		PRE_ID,
+		preId,
 		/** Propriété 'Node'. */
-		NOD_ID,
+		nodId,
 		/** Propriété 'ExecutionState'. */
-		EST_CD	}
+		estCd	}
 
 	/**
 	 * Enumération des champs de OActivityExecutionUi.
 	 */
 	public enum OActivityExecutionUiFields implements DtFieldName<io.vertigo.orchestra.monitoring.domain.uiexecutions.OActivityExecutionUi> {
 		/** Propriété 'Id de l'activité'. */
-		ACE_ID,
+		aceId,
 		/** Propriété 'Libellé'. */
-		LABEL,
-		/** Propriété 'Nom du processus'. */
-		BEGIN_TIME,
-		/** Propriété 'Nom du processus'. */
-		END_TIME,
+		label,
+		/** Propriété 'Démarrage'. */
+		beginTime,
+		/** Propriété 'Fin'. */
+		endTime,
 		/** Propriété 'Durée'. */
-		EXECUTION_TIME,
+		executionTime,
 		/** Propriété 'Statut'. */
-		STATUS,
+		status,
 		/** Propriété 'Paramètres entrants'. */
-		WORKSPACE_IN,
+		workspaceIn,
 		/** Propriété 'Paramètres sortants'. */
-		WORKSPACE_OUT,
+		workspaceOut,
 		/** Propriété 'Fichier de log'. */
-		HAS_ATTACHMENT,
+		hasAttachment,
 		/** Propriété 'Log technique'. */
-		HAS_TECHNICAL_LOG	}
+		hasTechnicalLog	}
 
 	/**
 	 * Enumération des champs de OActivityLog.
 	 */
 	public enum OActivityLogFields implements DtFieldName<io.vertigo.orchestra.domain.execution.OActivityLog> {
 		/** Propriété 'Id du log'. */
-		ACL_ID,
+		aclId,
 		/** Propriété 'Contenu du log'. */
-		LOG,
+		log,
 		/** Propriété 'Fichier joint'. */
-		ATTACHMENT,
+		attachment,
 		/** Propriété 'ActivityExecution'. */
-		ACE_ID	}
+		aceId	}
 
 	/**
 	 * Enumération des champs de OActivityWorkspace.
 	 */
 	public enum OActivityWorkspaceFields implements DtFieldName<io.vertigo.orchestra.domain.execution.OActivityWorkspace> {
 		/** Propriété 'Id de l'execution d'un processus'. */
-		ACW_ID,
+		acwId,
 		/** Propriété 'Workspace in/out'. */
-		IS_IN,
+		isIn,
 		/** Propriété 'Contenu du workspace'. */
-		WORKSPACE,
+		workspace,
 		/** Propriété 'ActivityExecution'. */
-		ACE_ID	}
+		aceId	}
 
 	/**
 	 * Enumération des champs de OExecutionState.
 	 */
 	public enum OExecutionStateFields implements DtFieldName<io.vertigo.orchestra.domain.referential.OExecutionState> {
 		/** Propriété 'Code'. */
-		EST_CD,
+		estCd,
 		/** Propriété 'Libellé'. */
-		LABEL	}
+		label	}
 
 	/**
 	 * Enumération des champs de OExecutionSummary.
 	 */
 	public enum OExecutionSummaryFields implements DtFieldName<io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary> {
 		/** Propriété 'Id du processus'. */
-		PRO_ID,
+		proId,
 		/** Propriété 'Nom du processus'. */
-		PROCESS_NAME,
+		processName,
 		/** Propriété 'Libellé du processus'. */
-		PROCESS_LABEL,
+		processLabel,
 		/** Propriété 'Dernière exécution le'. */
-		LAST_EXECUTION_TIME,
+		lastExecutionTime,
 		/** Propriété 'Prochaine exécution le'. */
-		NEXT_EXECUTION_TIME,
+		nextExecutionTime,
 		/** Propriété 'Nombre en erreur'. */
-		ERRORS_COUNT,
+		errorsCount,
 		/** Propriété 'Nombre non executés'. */
-		MISFIRED_COUNT,
+		misfiredCount,
 		/** Propriété 'Nombre en succès'. */
-		SUCCESSFUL_COUNT,
+		successfulCount,
 		/** Propriété 'Nombre en cours'. */
-		RUNNING_COUNT,
+		runningCount,
 		/** Propriété 'Durée moyenne d'exécution'. */
-		AVERAGE_EXECUTION_TIME,
+		averageExecutionTime,
 		/** Propriété 'Santé du processus'. */
-		HEALTH	}
+		health	}
 
 	/**
 	 * Enumération des champs de ONode.
 	 */
 	public enum ONodeFields implements DtFieldName<io.vertigo.orchestra.domain.execution.ONode> {
 		/** Propriété 'Id du noeud'. */
-		NOD_ID,
+		nodId,
 		/** Propriété 'Nom du noeud'. */
-		NAME,
+		name,
 		/** Propriété 'Date de dernière activité'. */
-		HEARTBEAT	}
+		heartbeat	}
 
 	/**
 	 * Enumération des champs de OProcess.
 	 */
 	public enum OProcessFields implements DtFieldName<io.vertigo.orchestra.domain.definition.OProcess> {
 		/** Propriété 'Id de la definition du processus'. */
-		PRO_ID,
+		proId,
 		/** Propriété 'Nom du processus'. */
-		NAME,
+		name,
 		/** Propriété 'Libellé du processus'. */
-		LABEL,
+		label,
 		/** Propriété 'Expression récurrence du processus'. */
-		CRON_EXPRESSION,
+		cronExpression,
 		/** Propriété 'Paramètres initiaux sous forme de JSON'. */
-		INITIAL_PARAMS,
+		initialParams,
 		/** Propriété 'Accepte la multi-execution'. */
-		MULTIEXECUTION,
+		multiexecution,
 		/** Propriété 'Version active'. */
-		ACTIVE_VERSION,
+		activeVersion,
 		/** Propriété 'Processus actif'. */
-		ACTIVE,
+		active,
 		/** Propriété 'Temps de validité d'une planification'. */
-		RESCUE_PERIOD,
+		rescuePeriod,
 		/** Propriété 'Meta-données du processus'. */
-		METADATAS,
+		metadatas,
 		/** Propriété 'Doit être mise à jour lors du démarrage'. */
-		NEED_UPDATE,
+		needUpdate,
 		/** Propriété 'TriggerType'. */
-		TRT_CD,
+		trtCd,
 		/** Propriété 'ProcessType'. */
-		PRT_CD	}
+		prtCd	}
 
 	/**
 	 * Enumération des champs de OProcessExecution.
 	 */
 	public enum OProcessExecutionFields implements DtFieldName<io.vertigo.orchestra.domain.execution.OProcessExecution> {
 		/** Propriété 'Id de l'execution d'un processus'. */
-		PRE_ID,
+		preId,
 		/** Propriété 'Date de début'. */
-		BEGIN_TIME,
+		beginTime,
 		/** Propriété 'Date de fin'. */
-		END_TIME,
+		endTime,
 		/** Propriété 'Implémentation effective de l'execution'. */
-		ENGINE,
+		engine,
 		/** Propriété 'Pris en charge'. */
-		CHECKED,
+		checked,
 		/** Propriété 'Date de prise en charge'. */
-		CHECKING_DATE,
+		checkingDate,
 		/** Propriété 'Commentaire'. */
-		CHECKING_COMMENT,
+		checkingComment,
 		/** Propriété 'Processus'. */
-		PRO_ID,
+		proId,
 		/** Propriété 'ExecutionState'. */
-		EST_CD,
+		estCd,
 		/** Propriété 'User'. */
-		USR_ID	}
+		usrId	}
 
 	/**
 	 * Enumération des champs de OProcessExecutionUi.
 	 */
 	public enum OProcessExecutionUiFields implements DtFieldName<io.vertigo.orchestra.monitoring.domain.uiexecutions.OProcessExecutionUi> {
 		/** Propriété 'Id de l'activité'. */
-		PRE_ID,
-		/** Propriété 'Nom du processus'. */
-		BEGIN_TIME,
-		/** Propriété 'Nom du processus'. */
-		END_TIME,
+		preId,
+		/** Propriété 'Démarrage'. */
+		beginTime,
+		/** Propriété 'Fin'. */
+		endTime,
 		/** Propriété 'Durée'. */
-		EXECUTION_TIME,
+		executionTime,
 		/** Propriété 'Statut'. */
-		STATUS,
+		status,
 		/** Propriété 'Pris en charge'. */
-		CHECKED,
+		checked,
 		/** Propriété 'Date de prise en charge'. */
-		CHECKING_DATE,
+		checkingDate,
 		/** Propriété 'Commentaire'. */
-		CHECKING_COMMENT,
+		checkingComment,
 		/** Propriété 'Fichier de log'. */
-		HAS_ATTACHMENT	}
+		hasAttachment	}
 
 	/**
 	 * Enumération des champs de OProcessPlanification.
 	 */
 	public enum OProcessPlanificationFields implements DtFieldName<io.vertigo.orchestra.domain.planification.OProcessPlanification> {
 		/** Propriété 'Id Planification'. */
-		PRP_ID,
+		prpId,
 		/** Propriété 'Date d'execution prévue'. */
-		EXPECTED_TIME,
+		expectedTime,
 		/** Propriété 'Paramètres initiaux sous forme de JSON'. */
-		INITIAL_PARAMS,
+		initialParams,
 		/** Propriété 'Processus'. */
-		PRO_ID,
+		proId,
 		/** Propriété 'Node'. */
-		NOD_ID,
+		nodId,
 		/** Propriété 'PlanificationState'. */
-		SST_CD	}
+		sstCd	}
 
 	/**
 	 * Enumération des champs de OProcessType.
 	 */
 	public enum OProcessTypeFields implements DtFieldName<io.vertigo.orchestra.domain.referential.OProcessType> {
 		/** Propriété 'Code'. */
-		PRT_CD,
+		prtCd,
 		/** Propriété 'Libellé'. */
-		LABEL	}
+		label	}
 
 	/**
 	 * Enumération des champs de OProcessUi.
 	 */
 	public enum OProcessUiFields implements DtFieldName<io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi> {
 		/** Propriété 'Id du processus'. */
-		PRO_ID,
+		proId,
 		/** Propriété 'Nom du processus'. */
-		NAME,
+		name,
 		/** Propriété 'Libellé du processus'. */
-		LABEL,
+		label,
 		/** Propriété 'Expression récurrence du processus'. */
-		CRON_EXPRESSION,
+		cronExpression,
 		/** Propriété 'Paramètres initiaux sous forme de JSON'. */
-		INITIAL_PARAMS,
+		initialParams,
 		/** Propriété 'Accepte la multi-execution'. */
-		MULTIEXECUTION,
+		multiexecution,
 		/** Propriété 'Processus actif'. */
-		ACTIVE,
+		active,
 		/** Propriété 'Temps de validité d'une planification'. */
-		RESCUE_PERIOD,
+		rescuePeriod,
 		/** Propriété 'Métadonnées du processus'. */
-		METADATAS	}
+		metadatas	}
 
 	/**
 	 * Enumération des champs de OSchedulerState.
 	 */
 	public enum OSchedulerStateFields implements DtFieldName<io.vertigo.orchestra.domain.referential.OSchedulerState> {
 		/** Propriété 'Code'. */
-		SST_CD,
+		sstCd,
 		/** Propriété 'Libellé'. */
-		LABEL	}
+		label	}
 
 	/**
 	 * Enumération des champs de OUser.
 	 */
 	public enum OUserFields implements DtFieldName<io.vertigo.orchestra.domain.referential.OUser> {
 		/** Propriété 'Id'. */
-		USR_ID,
+		usrId,
 		/** Propriété 'Nom'. */
-		FIRST_NAME,
+		firstName,
 		/** Propriété 'Prénom'. */
-		LAST_NAME,
+		lastName,
 		/** Propriété 'Email'. */
-		EMAIL,
+		email,
 		/** Propriété 'Mot de passe'. */
-		PASSWORD,
+		password,
 		/** Propriété 'Alerté en cas d'erreur'. */
-		MAIL_ALERT,
+		mailAlert,
 		/** Propriété 'Compte Actif'. */
-		ACTIVE	}
+		active	}
 
 	/**
 	 * Enumération des champs de TriggerType.
 	 */
 	public enum TriggerTypeFields implements DtFieldName<io.vertigo.orchestra.domain.referential.TriggerType> {
 		/** Propriété 'Code'. */
-		TRT_CD,
+		trtCd,
 		/** Propriété 'Libellé'. */
-		LABEL	}
+		label	}
 
 	/** {@inheritDoc} */
 	@Override

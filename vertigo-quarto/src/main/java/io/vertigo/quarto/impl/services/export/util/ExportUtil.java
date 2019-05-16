@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -51,13 +51,20 @@ public final class ExportUtil {
 	 * ou l'élément issu de la liste de REF si il y a une dénormalisation à
 	 * faire.
 	 * @param storeManager Store Manager
-	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement (utilisé pour les champs issus d'association avec une liste de ref)
-	 * @param denormCache  Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement (utilisé en cas de dénorm spécifique)
+	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement
+	 *  (utilisé pour les champs issus d'association avec une liste de ref)
+	 * @param denormCache  Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement
+	 *  (utilisé en cas de dénorm spécifique)
 	 * @param dto Objet métier
 	 * @param exportColumn Information de la colonne a exporter.
 	 * @return Valeur d'affichage de la colonne de l'objet métier
 	 */
-	public static String getText(final StoreManager storeManager, final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
+	public static String getText(
+			final StoreManager storeManager,
+			final Map<DtField, Map<Object, String>> referenceCache,
+			final Map<DtField, Map<Object, String>> denormCache,
+			final DtObject dto,
+			final ExportField exportColumn) {
 		return (String) getValue(storeManager, true, referenceCache, denormCache, dto, exportColumn);
 	}
 
@@ -65,17 +72,30 @@ public final class ExportUtil {
 	 * Retourne la valeur d'un champs du DTO, ou l'élément issu de la liste de REF si il y a une dénormalisation à faire.
 	 *
 	 * @param storeManager Store Manager
-	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement (utilisé pour les champs issus d'association avec une liste de ref)
-	 * @param denormCache Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement (utilisé en cas de dénorm spécifique)
+	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement
+	 *  (utilisé pour les champs issus d'association avec une liste de ref)
+	 * @param denormCache Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement
+	 *  (utilisé en cas de dénorm spécifique)
 	 * @param dto Objet métier
 	 * @param exportColumn Information de la colonne a exporter.
 	 * @return Valeur typée de la colonne de l'objet métier
 	 */
-	public static Object getValue(final StoreManager storeManager, final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
+	public static Object getValue(
+			final StoreManager storeManager,
+			final Map<DtField, Map<Object, String>> referenceCache,
+			final Map<DtField, Map<Object, String>> denormCache,
+			final DtObject dto,
+			final ExportField exportColumn) {
 		return getValue(storeManager, false, referenceCache, denormCache, dto, exportColumn);
 	}
 
-	private static Object getValue(final StoreManager storeManager, final boolean forceStringValue, final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
+	private static Object getValue(
+			final StoreManager storeManager,
+			final boolean forceStringValue,
+			final Map<DtField, Map<Object, String>> referenceCache,
+			final Map<DtField, Map<Object, String>> denormCache,
+			final DtObject dto,
+			final ExportField exportColumn) {
 		final DtField dtField = exportColumn.getDtField();
 		Object value;
 		try {
@@ -108,7 +128,9 @@ public final class ExportUtil {
 		return value;
 	}
 
-	private static Map<Object, String> createReferentielIndex(final StoreManager storeManager, final DtField dtField) {
+	private static Map<Object, String> createReferentielIndex(
+			final StoreManager storeManager,
+			final DtField dtField) {
 		// TODO ceci est un copier/coller de KSelectionListBean (qui resemble plus à un helper des MasterData qu'a un bean)
 		// La collection n'est pas précisé alors on va la chercher dans le repository du référentiel
 		final DtListURIForMasterData mdlUri = storeManager.getMasterDataConfig().getDtListURIForMasterData(dtField.getFkDtDefinition());
@@ -118,7 +140,10 @@ public final class ExportUtil {
 		return createDenormIndex(valueList, dtFieldKey, dtFieldDisplay);
 	}
 
-	private static Map<Object, String> createDenormIndex(final DtList<?> valueList, final DtField keyField, final DtField displayField) {
+	private static Map<Object, String> createDenormIndex(
+			final DtList<?> valueList,
+			final DtField keyField,
+			final DtField displayField) {
 		final Map<Object, String> denormIndex = new HashMap<>(valueList.size());
 		for (final DtObject dto : valueList) {
 			final String svalue = displayField.getDomain().valueToString(displayField.getDataAccessor().getValue(dto));

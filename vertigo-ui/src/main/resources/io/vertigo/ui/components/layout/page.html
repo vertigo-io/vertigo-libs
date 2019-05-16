@@ -1,0 +1,35 @@
+<th:block th:fragment="page(content)">
+		
+	<vu:content/>
+	
+	<script>
+	  window.quasarConfig = {
+	    loadingBar: { 'skip-hijack' : true } // disable quasar's ajaxbar
+	  }
+	</script>
+	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar-framework@0.17.19/dist/umd/quasar.mat.umd.min.js}"></script>
+	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar-framework@0.17.19/dist/umd/i18n.fr.umd.min.js}"></script>
+	<vu:vue-data/>
+	<script th:src="@{/vertigo-ui/static/js/vertigo-ui.js}"></script>
+	<script>
+		Quasar.i18n.set(Quasar.i18n.fr)
+		var data = {
+				  vueData : vueData,
+				  componentStates : componentStates,
+				  uiMessageStack: uiMessageStack,
+				  dataX : VUiExtensions.dataX
+			  };
+		
+		var VUiPage = new Vue({
+		  el: '#page',
+		  data: data,
+		  methods: Vue.util.extend(VUi.methods, VUiExtensions.methods ||  {}) 
+		});
+
+		// fixes wrong components states due to firefox bfcache (back-forward cache)
+		//https://developer.mozilla.org/en-US/docs/Archive/Misc_top_level/Working_with_BFCache
+		window.addEventListener('pageshow', function(event) {
+			VUiPage.$forceUpdate();
+		});
+	</script>
+</th:block>

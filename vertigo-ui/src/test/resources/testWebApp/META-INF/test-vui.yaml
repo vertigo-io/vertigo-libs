@@ -1,0 +1,52 @@
+---
+boot:
+  params:
+    locales: fr_FR
+  plugins:
+    - io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin: {}
+    - io.vertigo.vega.plugins.webservice.servlet.ServletResourceResolverPlugin: {}
+    - io.vertigo.core.plugins.param.xml.XmlParamPlugin:
+        url : ${boot.configXmlInterne}
+    - io.vertigo.vega.plugins.webservice.servlet.WebAppContextParamPlugin: {}
+modules:
+  io.vertigo.commons.CommonsFeatures:
+    features:
+      - script:
+      - cache:
+    featuresConfig:
+      - script.janino:
+      - cache.memory:
+  io.vertigo.database.DatabaseFeatures:
+    features:
+      - sql:
+    featuresConfig:
+      - sql.c3p0:
+          dataBaseClass: io.vertigo.database.impl.sql.vendor.h2.H2DataBase
+          jdbcDriver: org.h2.Driver
+          jdbcUrl: jdbc:h2:mem:test
+  io.vertigo.dynamo.DynamoFeatures:
+    features:
+      - store:
+      - kvStore:
+      - search:
+    featuresConfig:
+      - store.data.sql:
+      - collections.luceneIndex:
+      - search.elasticsearchEmbedded:
+          home: esconfig
+          envIndex: tuTest
+          rowsPerQuery: 50
+          config.file: esconfig/elasticsearch.yml
+      - kvStore.berkeley:
+          collections: VViewContext;TTL=43200
+          dbFilePath: ${java.io.tmpdir}/vertigo/TestVViewContext
+  io.vertigo.account.AccountFeatures:
+    features:
+      - security:
+          userSessionClassName: io.vertigo.ui.data.controller.TestUserSession
+  io.vertigo.ui.data.TestVUiFeatures:
+initializers:
+  - io.vertigo.ui.data.boot.initializer.LocaleManagerInitializer:
+  - io.vertigo.ui.data.boot.initializer.DataBaseInitializer:
+  - io.vertigo.ui.data.boot.initializer.I18nResourcesInitializer:
+  - io.vertigo.ui.data.boot.initializer.SearchInitializer:

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,13 +59,13 @@ public final class UiexecutionsPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_GET_ACTIVITIES_BY_PRE_ID.
+	 * Execute la tache TkGetActivitiesByPreId.
 	 * @param preId Long 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.uiexecutions.OActivityExecutionUi> dtcOActivityExecutionUi
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.uiexecutions.OActivityExecutionUi> getActivitiesByPreId(final Long preId) {
-		final Task task = createTaskBuilder("TK_GET_ACTIVITIES_BY_PRE_ID")
-				.addValue("PRE_ID", preId)
+		final Task task = createTaskBuilder("TkGetActivitiesByPreId")
+				.addValue("preId", preId)
 				.build();
 		return getTaskManager()
 				.execute(task)
@@ -73,13 +73,13 @@ public final class UiexecutionsPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_GET_ACTIVITIY_BY_ACE_ID.
+	 * Execute la tache TkGetActivitiyByAceId.
 	 * @param aceId Long 
 	 * @return io.vertigo.orchestra.monitoring.domain.uiexecutions.OActivityExecutionUi dtOActivityExecutionUi
 	*/
 	public io.vertigo.orchestra.monitoring.domain.uiexecutions.OActivityExecutionUi getActivitiyByAceId(final Long aceId) {
-		final Task task = createTaskBuilder("TK_GET_ACTIVITIY_BY_ACE_ID")
-				.addValue("ACE_ID", aceId)
+		final Task task = createTaskBuilder("TkGetActivitiyByAceId")
+				.addValue("aceId", aceId)
 				.build();
 		return getTaskManager()
 				.execute(task)
@@ -87,7 +87,21 @@ public final class UiexecutionsPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_GET_EXECUTIONS_BY_PROCESS_NAME.
+	 * Execute la tache TkGetExecutionByPreId.
+	 * @param preId Long 
+	 * @return io.vertigo.orchestra.monitoring.domain.uiexecutions.OProcessExecutionUi dtOProcessExecutionUi
+	*/
+	public io.vertigo.orchestra.monitoring.domain.uiexecutions.OProcessExecutionUi getExecutionByPreId(final Long preId) {
+		final Task task = createTaskBuilder("TkGetExecutionByPreId")
+				.addValue("preId", preId)
+				.build();
+		return getTaskManager()
+				.execute(task)
+				.getResult();
+	}
+
+	/**
+	 * Execute la tache TkGetExecutionsByProcessName.
 	 * @param name String 
 	 * @param status String 
 	 * @param limit Integer 
@@ -95,25 +109,11 @@ public final class UiexecutionsPAO implements StoreServices {
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.uiexecutions.OProcessExecutionUi> dtcOProcessExecutionUi
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.uiexecutions.OProcessExecutionUi> getExecutionsByProcessName(final String name, final String status, final Integer limit, final Integer offset) {
-		final Task task = createTaskBuilder("TK_GET_EXECUTIONS_BY_PROCESS_NAME")
-				.addValue("NAME", name)
-				.addValue("STATUS", status)
-				.addValue("LIMIT", limit)
-				.addValue("OFFSET", offset)
-				.build();
-		return getTaskManager()
-				.execute(task)
-				.getResult();
-	}
-
-	/**
-	 * Execute la tache TK_GET_EXECUTION_BY_PRE_ID.
-	 * @param preId Long 
-	 * @return io.vertigo.orchestra.monitoring.domain.uiexecutions.OProcessExecutionUi dtOProcessExecutionUi
-	*/
-	public io.vertigo.orchestra.monitoring.domain.uiexecutions.OProcessExecutionUi getExecutionByPreId(final Long preId) {
-		final Task task = createTaskBuilder("TK_GET_EXECUTION_BY_PRE_ID")
-				.addValue("PRE_ID", preId)
+		final Task task = createTaskBuilder("TkGetExecutionsByProcessName")
+				.addValue("name", name)
+				.addValue("status", status)
+				.addValue("limit", limit)
+				.addValue("offset", offset)
 				.build();
 		return getTaskManager()
 				.execute(task)

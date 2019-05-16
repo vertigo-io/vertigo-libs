@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -39,7 +39,7 @@ public final class MovieDisplay implements DtObject {
 	 * Récupère la valeur de la propriété 'MOV_ID'.
 	 * @return Long movId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_ID", required = true, label = "MOV_ID")
+	@Field(domain = "DoId", required = true, label = "MOV_ID")
 	public Long getMovId() {
 		return movId;
 	}
@@ -66,7 +66,7 @@ public final class MovieDisplay implements DtObject {
 	 * Récupère la valeur de la propriété 'TITLE'.
 	 * @return String title
 	 */
-	@Field(domain = "DO_LABEL_LONG", label = "TITLE")
+	@Field(domain = "DoLabelLong", label = "TITLE")
 	public String getTitle() {
 		return title;
 	}

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,8 @@
  */
 package io.vertigo.social.services.notification;
 
-import java.util.Date;
+import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 import io.vertigo.lang.Assertion;
@@ -33,10 +34,11 @@ public final class NotificationBuilder implements Builder<Notification> {
 	private String myTitle;
 	private String myContent;
 	private String mySender;
-	private Date myCreationDate;
+	private Instant myCreationInstant;
 	private int myTtlInSeconds = -1;
 	private String myTargetUrl;
 	private final UUID uuid;
+	private String myUserContent;
 
 	/**
 	 * Constructor.
@@ -80,14 +82,14 @@ public final class NotificationBuilder implements Builder<Notification> {
 	}
 
 	/**
-	 * @param creationDate Creation date
+	 * @param creationInstant Creation date
 	 * @return this builder
 	 */
-	public NotificationBuilder withCreationDate(final Date creationDate) {
-		Assertion.checkArgument(myCreationDate == null, "creationDate already set");
-		Assertion.checkNotNull(creationDate);
+	public NotificationBuilder withCreationDate(final Instant creationInstant) {
+		Assertion.checkArgument(myCreationInstant == null, "creationDate already set");
+		Assertion.checkNotNull(creationInstant);
 		//-----
-		myCreationDate = creationDate;
+		myCreationInstant = creationInstant;
 		return this;
 	}
 
@@ -138,12 +140,25 @@ public final class NotificationBuilder implements Builder<Notification> {
 		return this;
 	}
 
+	/**
+	 * @param userContent Notification's userContent ("" and null are translated to Optional.empty)
+	 * @return this builder
+	 */
+	public NotificationBuilder withUserContent(final String userContent) {
+		Assertion.checkArgument(myUserContent == null, "userContent already set");
+		Assertion.checkNotNull(userContent);
+		//-----
+		myUserContent = ("".equals(userContent) ? null : userContent);// "" translated to Optional.empty
+		return this;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public Notification build() {
-		if (myCreationDate == null) {
-			myCreationDate = DateUtil.newDateTime();
+		if (myCreationInstant == null) {
+			myCreationInstant = DateUtil.newInstant();
 		}
-		return new Notification(uuid, mySender, myType, myTitle, myContent, myTtlInSeconds, myCreationDate, myTargetUrl);
+
+		return new Notification(uuid, mySender, myType, myTitle, myContent, myTtlInSeconds, myCreationInstant, myTargetUrl, Optional.ofNullable(myUserContent));
 	}
 }

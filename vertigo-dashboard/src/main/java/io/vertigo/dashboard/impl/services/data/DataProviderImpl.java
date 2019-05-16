@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,6 @@
  */
 package io.vertigo.dashboard.impl.services.data;
 
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -26,34 +25,36 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.app.Home;
 import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.analytics.health.HealthMeasure;
 import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
 import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.dashboard.services.data.ClusteredMeasure;
-import io.vertigo.dashboard.services.data.DataFilter;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dashboard.services.data.DataProvider;
-import io.vertigo.dashboard.services.data.TimeFilter;
-import io.vertigo.dashboard.services.data.TimedDatas;
+import io.vertigo.database.timeseries.ClusteredMeasure;
+import io.vertigo.database.timeseries.DataFilter;
+import io.vertigo.database.timeseries.TabularDatas;
+import io.vertigo.database.timeseries.TimeFilter;
+import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
+import io.vertigo.database.timeseries.TimedDatas;
 import io.vertigo.lang.Assertion;
 
 public final class DataProviderImpl implements DataProvider {
 
-	private final DataProviderPlugin dataProviderPlugin;
+	private final TimeSeriesDataBaseManager timeSeriesDataBaseManager;
 	private final String appName;
 
 	@Inject
 	public DataProviderImpl(
-			@Named("appName") final Optional<String> appNameOpt,
-			final DataProviderPlugin dataProviderPlugin) {
+			@ParamValue("appName") final Optional<String> appNameOpt,
+			final TimeSeriesDataBaseManager timeSeriesDataBaseManager) {
 		Assertion.checkNotNull(appNameOpt);
-		Assertion.checkNotNull(dataProviderPlugin);
+		Assertion.checkNotNull(timeSeriesDataBaseManager);
 		//---
-		appName = appNameOpt.orElse(Home.getApp().getConfig().getNodeConfig().getAppName());
-		this.dataProviderPlugin = dataProviderPlugin;
+		appName = appNameOpt.orElseGet(() -> Home.getApp().getNodeConfig().getAppName());
+		this.timeSeriesDataBaseManager = timeSeriesDataBaseManager;
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public final class DataProviderImpl implements DataProvider {
 		Assertion.checkNotNull(dataFilter);
 		Assertion.checkNotNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
-		return dataProviderPlugin.getTimeSeries(appName, measures, dataFilter, timeFilter);
+		return timeSeriesDataBaseManager.getTimeSeries(appName, measures, dataFilter, timeFilter);
 
 	}
 
@@ -79,22 +80,27 @@ public final class DataProviderImpl implements DataProvider {
 		//we use the natural order
 		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
 		//---
-		return dataProviderPlugin.getClusteredTimeSeries(appName, clusteredMeasure, dataFilter, timeFilter);
+		return timeSeriesDataBaseManager.getClusteredTimeSeries(appName, clusteredMeasure, dataFilter, timeFilter);
 	}
 
 	@Override
-	public TimedDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean keepTime, final String... groupBy) {
-		return dataProviderPlugin.getTabularData(appName, measures, dataFilter, timeFilter, keepTime, groupBy);
+	public TimedDatas getTabularTimedData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+		return timeSeriesDataBaseManager.getTabularTimedData(appName, measures, dataFilter, timeFilter, groupBy);
 	}
 
 	@Override
-	public TimedDatas getTops(final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
-		return dataProviderPlugin.getTops(appName, measure, dataFilter, timeFilter, groupBy, maxRows);
+	public TabularDatas getTabularData(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
+		return timeSeriesDataBaseManager.getTabularData(appName, measures, dataFilter, timeFilter, groupBy);
+	}
+
+	@Override
+	public TabularDatas getTops(final String measure, final DataFilter dataFilter, final TimeFilter timeFilter, final String groupBy, final int maxRows) {
+		return timeSeriesDataBaseManager.getTops(appName, measure, dataFilter, timeFilter, groupBy, maxRows);
 	}
 
 	@Override
 	public List<String> getTagValues(final String measurement, final String tag) {
-		return dataProviderPlugin.getTagValues(appName, measurement, tag);
+		return timeSeriesDataBaseManager.getTagValues(appName, measurement, tag);
 	}
 
 	@Override
@@ -104,7 +110,7 @@ public final class DataProviderImpl implements DataProvider {
 		final DataFilter dataFilter = DataFilter.builder("healthcheck").build();
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
 
-		return getTabularData(measures, dataFilter, timeFilter, true, "name", "feature")
+		return getTabularTimedData(measures, dataFilter, timeFilter, "name", "feature")
 				.getTimedDataSeries()
 				.stream()
 				.map(timedDataSerie -> new HealthCheck(
@@ -112,7 +118,7 @@ public final class DataProviderImpl implements DataProvider {
 						(String) timedDataSerie.getValues().get("checker:last"),
 						(String) timedDataSerie.getValues().get("module:last"),
 						(String) timedDataSerie.getValues().get("feature:last"),
-						Instant.ofEpochMilli(timedDataSerie.getTime()),
+						timedDataSerie.getTime(),
 						buildHealthMeasure(
 								(Double) timedDataSerie.getValues().get("status:last"),
 								(String) timedDataSerie.getValues().get("message:last"))))
@@ -147,14 +153,14 @@ public final class DataProviderImpl implements DataProvider {
 		final DataFilter dataFilter = DataFilter.builder("metric").build();
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
 
-		return getTabularData(measures, dataFilter, timeFilter, true, "name", "feature")
+		return getTabularTimedData(measures, dataFilter, timeFilter, "name", "feature")
 				.getTimedDataSeries()
 				.stream()
 				.filter(timedDataSerie -> timedDataSerie.getValues().get("value:last") != null)
 				.map(timedDataSerie -> Metric.builder()
 						.withName((String) timedDataSerie.getValues().get("name:last"))
 						.withFeature((String) timedDataSerie.getValues().get("feature:last"))
-						.withMeasureInstant(Instant.ofEpochMilli(timedDataSerie.getTime()))
+						.withMeasureInstant(timedDataSerie.getTime())
 						.withValue((Double) timedDataSerie.getValues().get("value:last"))
 						.withSuccess()
 						.build())

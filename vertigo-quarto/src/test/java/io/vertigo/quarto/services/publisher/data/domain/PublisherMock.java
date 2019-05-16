@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.services.publisher.data.domain;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import io.vertigo.dynamo.domain.model.DtObject;
 
@@ -32,33 +32,33 @@ public final class PublisherMock implements DtObject {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Titre")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Titre")
 	private String titre;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Nom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Nom")
 	private String nom;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Prénom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Prénom")
 	private String prenom;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Adresse (multi ligne)")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Adresse (multi ligne)")
 	private String address;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Commentaire (multi paragraphe)")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Commentaire (multi paragraphe)")
 	private String commentaire;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "booleen 1")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoBoolean", label = "booleen 1")
 	private Boolean boolean1;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "booleen 2")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoBoolean", label = "booleen 2")
 	private Boolean boolean2;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_BOOLEAN", label = "booleen 3")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoBoolean", label = "booleen 3")
 	private Boolean boolean3;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_STRING", label = "Test champs inutilisé")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Test champs inutilisé")
 	private String testDummy;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_LONG", label = "Test long")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoLong", label = "Test long")
 	private Long testLong;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_DOUBLE", label = "Test double")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoDouble", label = "Test double")
 	private Double testDouble;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_INTEGER", label = "Test integer")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoInteger", label = "Test integer")
 	private Integer testInteger;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_DATE", label = "Test date")
-	private Date testDate;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DO_DT_PUBLISHER_MOCK_DTC", label = "Test list")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoDate", label = "Test date")
+	private LocalDate testDate;
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoDtPublisherMockDtc", label = "Test list")
 	private io.vertigo.dynamo.domain.model.DtList<io.vertigo.quarto.services.publisher.data.domain.PublisherMock> dtcTest;
 
 	/**
@@ -282,7 +282,7 @@ public final class PublisherMock implements DtObject {
 	 * Récupère la valeur de la propriété 'Test date'.
 	 * @return java.util.Date testDate
 	 */
-	public final java.util.Date getTestDate() {
+	public final LocalDate getTestDate() {
 		return testDate;
 	}
 
@@ -291,7 +291,7 @@ public final class PublisherMock implements DtObject {
 	 * Définit la valeur de la propriété 'Test date'.
 	 * @param testDate java.util.Date
 	 */
-	public final void setTestDate(final java.util.Date testDate) {
+	public final void setTestDate(final LocalDate testDate) {
 		this.testDate = testDate;
 	}
 

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,29 +20,25 @@ package io.vertigo.quarto.services.publisher;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.App;
-import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.app.Home;
-import io.vertigo.app.config.AppConfig;
-import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.impl.services.publisher.PublisherDataUtil;
 import io.vertigo.quarto.services.publisher.data.domain.Address;
@@ -54,13 +50,14 @@ import io.vertigo.quarto.services.publisher.data.domain.Ville;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.services.publisher.model.PublisherData;
 import io.vertigo.quarto.services.publisher.model.PublisherNode;
+import io.vertigo.util.TempFile;
 
 /**
  * Test de l'implémentation standard.
  *
  * @author npiedeloup
  */
-public abstract class AbstractPublisherMergerTest {
+public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 	private static final boolean KEEP_OUTPUT_FILE = false;
 	//Répertoire de test
 	private static String OUTPUT_PATH = "c:/tmp/";
@@ -71,40 +68,8 @@ public abstract class AbstractPublisherMergerTest {
 	private PublisherManager publisherManager;
 	@Inject
 	private ResourceManager resourceManager;
-
-	private AutoCloseableApp app;
-
-	/**
-	 * Set up de l'environnement de test.
-	 *
-	 * @throws Exception exception
-	 */
-	@BeforeEach
-	@Before
-	public final void setUp() throws Exception {
-		app = new AutoCloseableApp(getAppConfig());
-		// On injecte les comosants sur la classe de test.
-		DIInjector.injectMembers(this, app.getComponentSpace());
-	}
-
-	protected final App getApp() {
-		return app;
-	}
-
-	/**
-	 * Tear down de l'environnement de test.
-	 *
-	 * @throws Exception Exception
-	 */
-	@AfterEach
-	@After
-	public final void tearDown() throws Exception {
-		if (app != null) {
-			app.close();
-		}
-	}
-
-	protected abstract AppConfig getAppConfig();
+	@Inject
+	private FileManager fileManager;
 
 	/**
 	 * @return Extension du model utilisé
@@ -115,7 +80,7 @@ public abstract class AbstractPublisherMergerTest {
 	public void testMergerSimple() {
 		final PublisherMock reportData = createTestPublisher();
 
-		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
+		final PublisherData publisherData = createPublisherData("PuPublisherMock");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModel." + getExtension());
@@ -123,61 +88,63 @@ public abstract class AbstractPublisherMergerTest {
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 	}
 
 	@Test
 	public void testMergerSpecialsCharacters() {
 		final PublisherMock reportData = createTestPublisher();
 
-		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
+		final PublisherData publisherData = createPublisherData("PuPublisherMock");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
-		publisherData.getRootNode().setString("COMMENTAIRE", " euro:" + (char) 128 + "\n gt:>\n lt:<\n tab:>\t<\n cr:>\n<\n  amp:&\n dquote:\"\n squote:\'\n");
+		publisherData.getRootNode().setString("commentaire", " euro:" + (char) 128 + "\n gt:>\n lt:<\n tab:>\t<\n cr:>\n<\n  amp:&\n dquote:\"\n squote:\'\n");
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModel." + getExtension());
 		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionSpecialsCharacters." + getExtension(), modelFileURL, publisherData);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testMergerErrorModel() {
-		final PublisherMock reportData = createTestPublisher();
-		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
-		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
-		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelError." + getExtension());
-		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionError." + getExtension(), modelFileURL, publisherData);
-		nop(result);
-		Assert.fail("La fusion ne doit pas être possible quand le modèle contient une erreur");
+		Assertions.assertThrows(IllegalStateException.class, () -> {
+			final PublisherMock reportData = createTestPublisher();
+			final PublisherData publisherData = createPublisherData("PuPublisherMock");
+			PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
+			final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelError." + getExtension());
+			final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionError." + getExtension(), modelFileURL, publisherData);
+			nop(result);
+			Assertions.fail("La fusion ne doit pas être possible quand le modèle contient une erreur");
+		});
 	}
 
 	@Test
 	public void testMergerModelIfEquals() {
 		final PublisherMock reportData = createTestPublisher();
-		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
+		final PublisherData publisherData = createPublisherData("PuPublisherMock");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
-		publisherData.getRootNode().setString("TITRE", "NOM");
+		publisherData.getRootNode().setString("titre", "NOM");
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelIfEquals." + getExtension());
 		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionIfEquals." + getExtension(), modelFileURL, publisherData);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 	}
 
 	@Test
 	public void testMergerModelIfNotEquals() {
 		final PublisherMock reportData = createTestPublisher();
-		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
+		final PublisherData publisherData = createPublisherData("PuPublisherMock");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelIfEquals." + getExtension());
 		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionIfNotEquals." + getExtension(), modelFileURL, publisherData);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 	}
 
 	@Test
@@ -188,36 +155,36 @@ public abstract class AbstractPublisherMergerTest {
 		final Ville dtoVille = DataHelper.createVille();
 		final DtList<? extends MisEnCause> dtcMisEnCause = DataHelper.createMisEnCauseList();
 
-		final PublisherData publisherData = createPublisherData("PU_ENQUETE");
+		final PublisherData publisherData = createPublisherData("PuEnquete");
 		final PublisherNode pnEnquete = publisherData.getRootNode();
 		PublisherDataUtil.populateData(dtoEnquete, pnEnquete);
 
-		final PublisherNode pnEnqueteur = pnEnquete.createNode("ENQUETEUR");
+		final PublisherNode pnEnqueteur = pnEnquete.createNode("enqueteur");
 		PublisherDataUtil.populateData(dtoEnqueteur, pnEnqueteur);
-		pnEnquete.setNode("ENQUETEUR", pnEnqueteur);
+		pnEnquete.setNode("enqueteur", pnEnqueteur);
 
-		final PublisherNode pnAdresse = pnEnqueteur.createNode("ADRESSE_RATACHEMENT");
+		final PublisherNode pnAdresse = pnEnqueteur.createNode("adresseRatachement");
 		PublisherDataUtil.populateData(dtoAdresse, pnAdresse);
-		pnEnqueteur.setNode("ADRESSE_RATACHEMENT", pnAdresse);
+		pnEnqueteur.setNode("adresseRatachement", pnAdresse);
 
-		final PublisherNode pnVille = pnAdresse.createNode("VILLE");
+		final PublisherNode pnVille = pnAdresse.createNode("ville");
 		PublisherDataUtil.populateData(dtoVille, pnVille);
-		pnAdresse.setNode("VILLE", pnVille);
+		pnAdresse.setNode("ville", pnVille);
 
 		final List<PublisherNode> publisherNodes = new ArrayList<>();
 		for (final MisEnCause dtoMisEnCause : dtcMisEnCause) {
-			final PublisherNode pnMisEnCause = pnEnquete.createNode("MIS_EN_CAUSE");
+			final PublisherNode pnMisEnCause = pnEnquete.createNode("misEnCause");
 			PublisherDataUtil.populateData(dtoMisEnCause, pnMisEnCause);
 			publisherNodes.add(pnMisEnCause);
 		}
-		pnEnquete.setNodes("MIS_EN_CAUSE", publisherNodes);
+		pnEnquete.setNodes("misEnCause", publisherNodes);
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelEnquete." + getExtension());
 		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionEnquete." + getExtension(), modelFileURL, publisherData);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 	}
 
 	@Test
@@ -228,28 +195,28 @@ public abstract class AbstractPublisherMergerTest {
 		final Ville dtoVille = DataHelper.createVille();
 		final DtList<? extends MisEnCause> dtcMisEnCause = DataHelper.createMisEnCauseList();
 
-		final PublisherData publisherData = createPublisherData("PU_ENQUETE");
+		final PublisherData publisherData = createPublisherData("PuEnquete");
 		final PublisherNode pnEnquete = publisherData.getRootNode();
 		PublisherDataUtil.populateData(dtoEnquete, pnEnquete);
 
-		final PublisherNode pnEnqueteur = PublisherDataUtil.populateField(pnEnquete, "ENQUETEUR", dtoEnqueteur);
-		final PublisherNode pnAdresse = PublisherDataUtil.populateField(pnEnqueteur, "ADRESSE_RATACHEMENT", dtoAdresse);
-		PublisherDataUtil.populateField(pnAdresse, "VILLE", dtoVille);
-		PublisherDataUtil.populateField(pnEnquete, "MIS_EN_CAUSE", dtcMisEnCause);
+		final PublisherNode pnEnqueteur = PublisherDataUtil.populateField(pnEnquete, "enqueteur", dtoEnqueteur);
+		final PublisherNode pnAdresse = PublisherDataUtil.populateField(pnEnqueteur, "adresseRatachement", dtoAdresse);
+		PublisherDataUtil.populateField(pnAdresse, "ville", dtoVille);
+		PublisherDataUtil.populateField(pnEnquete, "misEnCause", dtcMisEnCause);
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelEnquete." + getExtension());
 		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionEnquetePerField." + getExtension(), modelFileURL, publisherData);
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
 	}
 
 	@Test
 	public void testMergerBlock() {
 		final PublisherMock reportData = createTestPublisher();
 
-		final PublisherData publisherData = createPublisherData("PU_PUBLISHER_MOCK");
+		final PublisherData publisherData = createPublisherData("PuPublisherMock");
 		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
 
 		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModel2." + getExtension());
@@ -257,7 +224,25 @@ public abstract class AbstractPublisherMergerTest {
 		if (KEEP_OUTPUT_FILE) {
 			save(result);
 		}
-		Assert.assertNotNull(result);
+		Assertions.assertNotNull(result);
+	}
+
+	@Test
+	public void testMergerImage() throws IOException {
+		final PublisherMock reportData = createTestPublisher();
+
+		final PublisherData publisherData = createPublisherData("PuPublisherMock");
+		PublisherDataUtil.populateData(reportData, publisherData.getRootNode());
+
+		final URL modelFileURL = resourceManager.resolve(DATA_PACKAGE + "ExempleModelImage." + getExtension());
+		final VFile image = createVFile(fileManager, "/" + DATA_PACKAGE + "logo.jpg", getClass());
+		publisherData.getRootNode().setImage("logo", image);
+		//
+		final VFile result = publisherManager.publish(OUTPUT_PATH + "testFusionImage." + getExtension(), modelFileURL, publisherData);
+		if (KEEP_OUTPUT_FILE) {
+			save(result);
+		}
+		Assertions.assertNotNull(result);
 	}
 
 	//	/**
@@ -292,7 +277,7 @@ public abstract class AbstractPublisherMergerTest {
 	//		assertTrue(true);
 	//	}
 
-	private static PublisherMock createTestPublisher() {
+	protected static PublisherMock createTestPublisher() {
 		final PublisherMock reportData = new PublisherMock();
 		reportData.setTitre("Mon titre");
 		reportData.setNom("BITUM");
@@ -309,7 +294,7 @@ public abstract class AbstractPublisherMergerTest {
 		reportData.setTestLong(45676L);
 		reportData.setTestDouble(79613D);
 		reportData.setTestInteger(79413);
-		reportData.setTestDate(new Date());
+		reportData.setTestDate(LocalDate.now());
 
 		//		final DtList<DtObject> testList = TestHelper.createDtList(AbstractPublisherMock.DEFINITION_URN);
 		//		for (int i = 0; i < 50; i++) {
@@ -334,12 +319,12 @@ public abstract class AbstractPublisherMergerTest {
 	//		return reportData;
 	//	}
 
-	private static PublisherData createPublisherData(final String definitionName) {
+	protected static PublisherData createPublisherData(final String definitionName) {
 		final PublisherDataDefinition publisherDataDefinition = Home.getApp().getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
-		Assert.assertNotNull(publisherDataDefinition);
+		Assertions.assertNotNull(publisherDataDefinition);
 
 		final PublisherData publisherData = new PublisherData(publisherDataDefinition);
-		Assert.assertNotNull(publisherData);
+		Assertions.assertNotNull(publisherData);
 
 		return publisherData;
 	}
@@ -352,7 +337,24 @@ public abstract class AbstractPublisherMergerTest {
 		}
 	}
 
-	private static final void nop(final Object o) {
-		// rien
+	private static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) throws IOException {
+		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
+			Assertion.checkNotNull(in, "fichier non trouvé : {0}", fileName);
+			final String fileExtension = FileUtil.getFileExtension(fileName);
+			final File file = new TempFile("tmp", '.' + fileExtension);
+			FileUtil.copy(in, file);
+
+			final String mimeType;
+			if ("jpg".equalsIgnoreCase(fileExtension)) {
+				mimeType = "image/jpeg";
+			} else if ("png".equalsIgnoreCase(fileExtension)) {
+				mimeType = "image/png";
+			} else {
+				throw new IllegalArgumentException("File type not supported (" + fileExtension + ")");
+			}
+
+			return fileManager.createFile(file.getName(), mimeType, file);
+		}
 	}
+
 }

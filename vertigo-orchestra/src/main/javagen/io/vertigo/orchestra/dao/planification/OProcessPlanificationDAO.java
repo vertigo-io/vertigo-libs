@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,13 +61,13 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache TK_GET_ALL_LAST_PAST_PLANIFICATIONS.
-	 * @param currentDate java.util.Date 
+	 * Execute la tache TkGetAllLastPastPlanifications.
+	 * @param currentDate java.time.Instant 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> processPlanifications
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getAllLastPastPlanifications(final java.util.Date currentDate) {
-		final Task task = createTaskBuilder("TK_GET_ALL_LAST_PAST_PLANIFICATIONS")
-				.addValue("CURRENT_DATE", currentDate)
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getAllLastPastPlanifications(final java.time.Instant currentDate) {
+		final Task task = createTaskBuilder("TkGetAllLastPastPlanifications")
+				.addValue("currentDate", currentDate)
 				.build();
 		return getTaskManager()
 				.execute(task)
@@ -75,13 +75,13 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache TK_GET_LAST_PLANIFICATION_BY_PRO_ID.
+	 * Execute la tache TkGetLastPlanificationByProId.
 	 * @param proId Long 
 	 * @return Option de io.vertigo.orchestra.domain.planification.OProcessPlanification dtOProcessPlanification
 	*/
 	public Optional<io.vertigo.orchestra.domain.planification.OProcessPlanification> getLastPlanificationByProId(final Long proId) {
-		final Task task = createTaskBuilder("TK_GET_LAST_PLANIFICATION_BY_PRO_ID")
-				.addValue("PRO_ID", proId)
+		final Task task = createTaskBuilder("TkGetLastPlanificationByProId")
+				.addValue("proId", proId)
 				.build();
 		return Optional.ofNullable((io.vertigo.orchestra.domain.planification.OProcessPlanification) getTaskManager()
 				.execute(task)
@@ -89,13 +89,13 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache TK_GET_PLANIFICATIONS_BY_PRO_ID.
+	 * Execute la tache TkGetPlanificationsByProId.
 	 * @param proId Long 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> dtcOProcessPlanification
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getPlanificationsByProId(final Long proId) {
-		final Task task = createTaskBuilder("TK_GET_PLANIFICATIONS_BY_PRO_ID")
-				.addValue("PRO_ID", proId)
+		final Task task = createTaskBuilder("TkGetPlanificationsByProId")
+				.addValue("proId", proId)
 				.build();
 		return getTaskManager()
 				.execute(task)
@@ -103,13 +103,13 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache TK_GET_PROCESS_TO_EXECUTE.
+	 * Execute la tache TkGetProcessToExecute.
 	 * @param nodId Long 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> dtcOProcessPlanification
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getProcessToExecute(final Long nodId) {
-		final Task task = createTaskBuilder("TK_GET_PROCESS_TO_EXECUTE")
-				.addValue("NOD_ID", nodId)
+		final Task task = createTaskBuilder("TkGetProcessToExecute")
+				.addValue("nodId", nodId)
 				.build();
 		return getTaskManager()
 				.execute(task)

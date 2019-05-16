@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,8 @@
  */
 package io.vertigo.struts2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,11 +37,11 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
@@ -86,7 +86,7 @@ public class TestUi {
 	private static Server server;
 	private static WebDriver driver;
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() throws Exception {
 		startServer();
 		driver = new JBrowserDriver(Settings.builder()
@@ -125,13 +125,13 @@ public class TestUi {
 		return scratchDir;
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void tearDown() throws Exception {
 		if (server != null) {
 			server.stop();
 		}
 		if (driver != null) {
-			//driver.close();
+			//driver.close(); //plante en NPE sinon
 		}
 	}
 
@@ -219,8 +219,8 @@ public class TestUi {
 		assertEquals("Test select sur ContextList", waitElement(By.xpath("(//form/h1)[3]")).getText());
 		assertTrue(findElement(By.xpath("//form[@id='selectContextList']/table/tbody/tr/th/label")).getText().matches("^Movie\\*$"));
 		final Select select = new Select(findElement(By.xpath("//form[@id='selectContextList']/table/tbody/tr/td/select")));
-		assertEquals("Pulp Fiction, The Good, the Bad and the Ugly, The Godfather, Full metal jacket, Shinning, Misery, L'exorciste", getWebElementsAsString(select.getOptions()));
-		assertEquals("Pulp Fiction", select.getFirstSelectedOption().getText());
+		assertEquals("Full metal jacket, L'exorciste, Misery, Pulp Fiction, Shinning, The Godfather, The Good, the Bad and the Ugly", getWebElementsAsString(select.getOptions()));
+		assertEquals("Full metal jacket", select.getFirstSelectedOption().getText());
 		select.selectByVisibleText("Misery");
 		assertEquals("Misery", select.getFirstSelectedOption().getText());
 		findElement(By.name("action:saveCastingAccueil")).click();
@@ -364,7 +364,7 @@ public class TestUi {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testPostAjaxForm() throws InterruptedException {
 		testLogin();
 
@@ -379,7 +379,7 @@ public class TestUi {
 		assertEquals("Test 3", findElement(By.id("saveAjax_movie_title")).getAttribute("value"));
 		assertEquals("2 025", findElement(By.id("saveAjax_movie_year")).getAttribute("value"));
 		final String newDate = waitElement(By.cssSelector("#saveAjax > span")).getText();
-		Assert.assertNotEquals(oldDate, newDate);
+		Assertions.assertNotEquals(oldDate, newDate);
 	}
 
 	@Test
@@ -394,7 +394,7 @@ public class TestUi {
 		assertEquals("12/10/2009 15:03", findElement(By.id("saveInstant_movie_lastModified")).getAttribute("value"));
 		final String newDate = waitElement(By.cssSelector("#saveInstant > span")).getText();
 
-		Assert.assertEquals("currentZoneId Europe/Paris\nlastModified 2009-10-12T13:03:00Z", newDate);
+		Assertions.assertEquals("currentZoneId Europe/Paris\nlastModified 2009-10-12T13:03:00Z", newDate);
 	}
 
 	private String getWebElementsAsString(final List<WebElement> webElements) {

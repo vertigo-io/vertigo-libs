@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +25,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -160,8 +159,7 @@ public final class StrutsUiMessageStack implements UiMessageStack {
 		if (level == Level.ERROR) {
 			actionSupport.addFieldError(contextKey + "." + fieldName, message);
 		} else {
-			final String constFieldName = StringUtil.camelToConstCase(fieldName);
-			final DtField dtField = dtDefinition.getField(constFieldName);
+			final DtField dtField = dtDefinition.getField(fieldName);
 			actionSupport.addActionMessage(getLevelPrefixMarker(level) + FIELD_LABEL_PREFIX + dtField.getLabel().getDisplay() + FIELD_LABEL_SUFFIX + message);
 		}
 

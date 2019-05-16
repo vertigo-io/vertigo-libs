@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,13 +61,13 @@ public final class OProcessDAO extends DAO<OProcess, java.lang.Long> implements 
 	}
 
 	/**
-	 * Execute la tache TK_GET_ACTIVE_PROCESS_BY_NAME.
+	 * Execute la tache TkGetActiveProcessByName.
 	 * @param name String 
 	 * @return Option de io.vertigo.orchestra.domain.definition.OProcess dtProcess
 	*/
 	public Optional<io.vertigo.orchestra.domain.definition.OProcess> getActiveProcessByName(final String name) {
-		final Task task = createTaskBuilder("TK_GET_ACTIVE_PROCESS_BY_NAME")
-				.addValue("NAME", name)
+		final Task task = createTaskBuilder("TkGetActiveProcessByName")
+				.addValue("name", name)
 				.build();
 		return Optional.ofNullable((io.vertigo.orchestra.domain.definition.OProcess) getTaskManager()
 				.execute(task)
@@ -75,11 +75,11 @@ public final class OProcessDAO extends DAO<OProcess, java.lang.Long> implements 
 	}
 
 	/**
-	 * Execute la tache TK_GET_ALL_ACTIVE_PROCESSES.
+	 * Execute la tache TkGetAllActiveProcesses.
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.definition.OProcess> dtcProcesses
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.definition.OProcess> getAllActiveProcesses() {
-		final Task task = createTaskBuilder("TK_GET_ALL_ACTIVE_PROCESSES")
+		final Task task = createTaskBuilder("TkGetAllActiveProcesses")
 				.build();
 		return getTaskManager()
 				.execute(task)

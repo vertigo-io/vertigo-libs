@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -34,12 +34,11 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.social.services.comment.Comment;
 import io.vertigo.social.services.comment.CommentServices;
 import io.vertigo.util.MapBuilder;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.ExcludedFields;
@@ -75,7 +74,7 @@ public final class CommentWebServices implements WebServices {
 	 */
 	@GET("/api/comments")
 	public List<Comment> getComments(@QueryParam("concept") final String keyConcept, @QueryParam("id") final String id) {
-		final URI<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
+		final UID<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
 		return commentServices.getComments(keyConceptURI);
 	}
 
@@ -86,9 +85,10 @@ public final class CommentWebServices implements WebServices {
 	 * @param id KeyConcept id
 	 */
 	@POST("/api/comments")
-	public void publishComment(@ExcludedFields("uuid") final Comment comment, @QueryParam("concept") final String keyConcept, @QueryParam("id") final String id) {
-		final URI<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
+	public Comment publishComment(@ExcludedFields("uuid") final Comment comment, @QueryParam("concept") final String keyConcept, @QueryParam("id") final String id) {
+		final UID<KeyConcept> keyConceptURI = readKeyConceptURI(keyConcept, id);
 		commentServices.publish(getLoggedAccountURI(), comment, keyConceptURI);
+		return comment;
 	}
 
 	/**
@@ -97,12 +97,13 @@ public final class CommentWebServices implements WebServices {
 	 * @param comment Comment msg
 	 */
 	@PUT("/api/comments/{uuid}")
-	public void updateComment(@PathParam("uuid") final String uuid, final Comment comment) {
+	public Comment updateComment(@PathParam("uuid") final String uuid, final Comment comment) {
 		Assertion.checkNotNull(uuid);
 		Assertion.checkNotNull(comment);
 		Assertion.checkArgument(uuid.equals(comment.getUuid().toString()), "Comment uuid ({0}) must match WebService route ({1})", comment.getUuid(), uuid);
 		//-----
 		commentServices.update(getLoggedAccountURI(), comment);
+		return comment;
 	}
 
 	//-----
@@ -154,10 +155,10 @@ public final class CommentWebServices implements WebServices {
 				+ "\n This extension manage the comment center.";
 	}
 
-	private static URI<KeyConcept> readKeyConceptURI(final String keyConcept, @QueryParam("id") final String id) {
-		final DtDefinition dtDefinition = Home.getApp().getDefinitionSpace().resolve("DT_" + StringUtil.camelToConstCase(keyConcept), DtDefinition.class);
+	private static UID<KeyConcept> readKeyConceptURI(final String keyConcept, @QueryParam("id") final String id) {
+		final DtDefinition dtDefinition = Home.getApp().getDefinitionSpace().resolve("Dt" + keyConcept, DtDefinition.class);
 		final Object keyConceptId = stringToId(id, dtDefinition);
-		return new URI<>(dtDefinition, keyConceptId);
+		return UID.of(dtDefinition, keyConceptId);
 	}
 
 	private static Object stringToId(final String id, final DtDefinition dtDefinition) {
@@ -175,10 +176,10 @@ public final class CommentWebServices implements WebServices {
 		throw new IllegalArgumentException("the id of the keyConcept " + dtDefinition.getLocalName() + " must be String, Long or Integer");
 	}
 
-	private URI<Account> getLoggedAccountURI() {
+	private UID<Account> getLoggedAccountURI() {
 		return authenticationManager.getLoggedAccount()
 				.orElseThrow(() -> new VSecurityException(MessageText.of("No account logged in")))
-				.getURI();
+				.getUID();
 	}
 
 }

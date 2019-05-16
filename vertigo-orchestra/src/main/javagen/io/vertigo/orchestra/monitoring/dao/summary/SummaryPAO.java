@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,17 +59,17 @@ public final class SummaryPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_GET_EXECUTION_SUMMARIES_BY_DATE.
-	 * @param dateMin java.util.Date 
-	 * @param dateMax java.util.Date 
+	 * Execute la tache TkGetExecutionSummariesByDate.
+	 * @param dateMin java.time.Instant 
+	 * @param dateMax java.time.Instant 
 	 * @param status String 
 	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary> dtcExecutionSummary
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary> getExecutionSummariesByDate(final java.util.Date dateMin, final java.util.Date dateMax, final String status) {
-		final Task task = createTaskBuilder("TK_GET_EXECUTION_SUMMARIES_BY_DATE")
-				.addValue("DATE_MIN", dateMin)
-				.addValue("DATE_MAX", dateMax)
-				.addValue("STATUS", status)
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary> getExecutionSummariesByDate(final java.time.Instant dateMin, final java.time.Instant dateMax, final String status) {
+		final Task task = createTaskBuilder("TkGetExecutionSummariesByDate")
+				.addValue("dateMin", dateMin)
+				.addValue("dateMax", dateMax)
+				.addValue("status", status)
 				.build();
 		return getTaskManager()
 				.execute(task)
@@ -77,17 +77,17 @@ public final class SummaryPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_GET_EXECUTION_SUMMARY_BY_DATE_AND_NAME.
-	 * @param dateMin java.util.Date 
-	 * @param dateMax java.util.Date 
+	 * Execute la tache TkGetExecutionSummaryByDateAndName.
+	 * @param dateMin java.time.Instant 
+	 * @param dateMax java.time.Instant 
 	 * @param name String 
 	 * @return io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary dtExecutionSummary
 	*/
-	public io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary getExecutionSummaryByDateAndName(final java.util.Date dateMin, final java.util.Date dateMax, final String name) {
-		final Task task = createTaskBuilder("TK_GET_EXECUTION_SUMMARY_BY_DATE_AND_NAME")
-				.addValue("DATE_MIN", dateMin)
-				.addValue("DATE_MAX", dateMax)
-				.addValue("NAME", name)
+	public io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary getExecutionSummaryByDateAndName(final java.time.Instant dateMin, final java.time.Instant dateMax, final String name) {
+		final Task task = createTaskBuilder("TkGetExecutionSummaryByDateAndName")
+				.addValue("dateMin", dateMin)
+				.addValue("dateMax", dateMax)
+				.addValue("name", name)
 				.build();
 		return getTaskManager()
 				.execute(task)

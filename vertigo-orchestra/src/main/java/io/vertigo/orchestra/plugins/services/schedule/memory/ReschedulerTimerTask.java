@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,8 +18,8 @@
  */
 package io.vertigo.orchestra.plugins.services.schedule.memory;
 
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.TimerTask;
 
 import io.vertigo.lang.Assertion;
@@ -32,7 +32,7 @@ import io.vertigo.orchestra.definitions.ProcessDefinition;
 final class ReschedulerTimerTask extends TimerTask {
 	private final MemoryProcessSchedulerPlugin simpleSchedulerPlugin;
 	private final ProcessDefinition processDefinition;
-	private final Date nextExecutionDate;
+	private final Instant nextExecutionDate;
 
 	/**
 	 * Constructeur.
@@ -41,7 +41,7 @@ final class ReschedulerTimerTask extends TimerTask {
 	 * @param hour Heure du prochaine lancement
 	 * @param minute Minute du prochaine lancement
 	 */
-	ReschedulerTimerTask(final MemoryProcessSchedulerPlugin simpleSchedulerPlugin, final ProcessDefinition processDefinition, final Date nextExecutionDate) {
+	ReschedulerTimerTask(final MemoryProcessSchedulerPlugin simpleSchedulerPlugin, final ProcessDefinition processDefinition, final Instant nextExecutionDate) {
 		Assertion.checkNotNull(simpleSchedulerPlugin);
 		Assertion.checkNotNull(processDefinition);
 		Assertion.checkNotNull(nextExecutionDate);

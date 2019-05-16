@@ -1,5 +1,5 @@
 -- ============================================================
---   SGBD      		  :  PostgreSql                     
+--   SGBD      		  :  H2                     
 -- ============================================================
 
 
@@ -20,8 +20,6 @@ create sequence SEQ_O_ACTIVITY_LOG
 create sequence SEQ_O_ACTIVITY_WORKSPACE
 	start with 1000 cache 20; 
 
-create sequence SEQ_O_EXECUTION_STATE
-	start with 1000 cache 20; 
 
 create sequence SEQ_O_NODE
 	start with 1000 cache 20; 
@@ -35,17 +33,11 @@ create sequence SEQ_O_PROCESS_EXECUTION
 create sequence SEQ_O_PROCESS_PLANIFICATION
 	start with 1000 cache 20; 
 
-create sequence SEQ_O_PROCESS_TYPE
-	start with 1000 cache 20; 
 
-create sequence SEQ_O_SCHEDULER_STATE
-	start with 1000 cache 20; 
 
 create sequence SEQ_O_USER
 	start with 1000 cache 20; 
 
-create sequence SEQ_TRIGGER_TYPE
-	start with 1000 cache 20; 
 
 
 -- ============================================================
@@ -439,7 +431,6 @@ comment on column TRIGGER_TYPE.TRT_CD is
 
 comment on column TRIGGER_TYPE.LABEL is
 'Libellé';
-
 
 
 alter table O_ACTIVITY_EXECUTION

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.orchestra.domain.execution;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -35,22 +35,22 @@ public final class OProcessExecution implements Entity {
 	private static final long serialVersionUID = 1L;
 
 	private Long preId;
-	private java.util.Date beginTime;
-	private java.util.Date endTime;
+	private java.time.Instant beginTime;
+	private java.time.Instant endTime;
 	private String engine;
 	private Boolean checked;
-	private java.util.Date checkingDate;
+	private java.time.Instant checkingDate;
 	private String checkingComment;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PRE_PRO",
-			fkFieldName = "PRO_ID",
-			primaryDtDefinitionName = "DT_O_PROCESS",
+			name = "APrePro",
+			fkFieldName = "proId",
+			primaryDtDefinitionName = "DtOProcess",
 			primaryIsNavigable = true,
 			primaryRole = "Process",
 			primaryLabel = "Processus",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_O_PROCESS_EXECUTION",
+			foreignDtDefinitionName = "DtOProcessExecution",
 			foreignIsNavigable = false,
 			foreignRole = "ExecutionProcessus",
 			foreignLabel = "ExecutionProcessus",
@@ -58,14 +58,14 @@ public final class OProcessExecution implements Entity {
 	private final VAccessor<io.vertigo.orchestra.domain.definition.OProcess> proIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.definition.OProcess.class, "Process");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PRE_EST",
-			fkFieldName = "EST_CD",
-			primaryDtDefinitionName = "DT_O_EXECUTION_STATE",
+			name = "APreEst",
+			fkFieldName = "estCd",
+			primaryDtDefinitionName = "DtOExecutionState",
 			primaryIsNavigable = true,
 			primaryRole = "ExecutionState",
 			primaryLabel = "ExecutionState",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_O_PROCESS_EXECUTION",
+			foreignDtDefinitionName = "DtOProcessExecution",
 			foreignIsNavigable = false,
 			foreignRole = "ExecutionProcess",
 			foreignLabel = "ExecutionProcessus",
@@ -73,14 +73,14 @@ public final class OProcessExecution implements Entity {
 	private final VAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> estCdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.referential.OExecutionState.class, "ExecutionState");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_PRE_USR",
-			fkFieldName = "USR_ID",
-			primaryDtDefinitionName = "DT_O_USER",
+			name = "APreUsr",
+			fkFieldName = "usrId",
+			primaryDtDefinitionName = "DtOUser",
 			primaryIsNavigable = true,
 			primaryRole = "User",
 			primaryLabel = "User",
 			primaryMultiplicity = "0..1",
-			foreignDtDefinitionName = "DT_O_PROCESS_EXECUTION",
+			foreignDtDefinitionName = "DtOProcessExecution",
 			foreignIsNavigable = false,
 			foreignRole = "ExecutionProcess",
 			foreignLabel = "ExecutionProcessus",
@@ -89,8 +89,8 @@ public final class OProcessExecution implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<OProcessExecution> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<OProcessExecution> getUID() {
+		return UID.of(this);
 	}
 	
 	/**
@@ -98,7 +98,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Id de l'execution d'un processus'.
 	 * @return Long preId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id de l'execution d'un processus")
+	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id de l'execution d'un processus")
 	public Long getPreId() {
 		return preId;
 	}
@@ -115,38 +115,38 @@ public final class OProcessExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de début'.
-	 * @return java.util.Date beginTime <b>Obligatoire</b>
+	 * @return Instant beginTime <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", required = true, label = "Date de début")
-	public java.util.Date getBeginTime() {
+	@Field(domain = "DoOTimestamp", required = true, label = "Date de début")
+	public java.time.Instant getBeginTime() {
 		return beginTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de début'.
-	 * @param beginTime java.util.Date <b>Obligatoire</b>
+	 * @param beginTime Instant <b>Obligatoire</b>
 	 */
-	public void setBeginTime(final java.util.Date beginTime) {
+	public void setBeginTime(final java.time.Instant beginTime) {
 		this.beginTime = beginTime;
 	}
 	
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de fin'.
-	 * @return java.util.Date endTime
+	 * @return Instant endTime
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Date de fin")
-	public java.util.Date getEndTime() {
+	@Field(domain = "DoOTimestamp", label = "Date de fin")
+	public java.time.Instant getEndTime() {
 		return endTime;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de fin'.
-	 * @param endTime java.util.Date
+	 * @param endTime Instant
 	 */
-	public void setEndTime(final java.util.Date endTime) {
+	public void setEndTime(final java.time.Instant endTime) {
 		this.endTime = endTime;
 	}
 	
@@ -155,7 +155,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Implémentation effective de l'execution'.
 	 * @return String engine
 	 */
-	@Field(domain = "DO_O_CLASSE", label = "Implémentation effective de l'execution")
+	@Field(domain = "DoOClasse", label = "Implémentation effective de l'execution")
 	public String getEngine() {
 		return engine;
 	}
@@ -174,7 +174,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Pris en charge'.
 	 * @return Boolean checked
 	 */
-	@Field(domain = "DO_O_BOOLEEN", label = "Pris en charge")
+	@Field(domain = "DoOBooleen", label = "Pris en charge")
 	public Boolean getChecked() {
 		return checked;
 	}
@@ -191,19 +191,19 @@ public final class OProcessExecution implements Entity {
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Date de prise en charge'.
-	 * @return java.util.Date checkingDate
+	 * @return Instant checkingDate
 	 */
-	@Field(domain = "DO_O_TIMESTAMP", label = "Date de prise en charge")
-	public java.util.Date getCheckingDate() {
+	@Field(domain = "DoOTimestamp", label = "Date de prise en charge")
+	public java.time.Instant getCheckingDate() {
 		return checkingDate;
 	}
 
 	/**
 	 * Champ : DATA.
 	 * Définit la valeur de la propriété 'Date de prise en charge'.
-	 * @param checkingDate java.util.Date
+	 * @param checkingDate Instant
 	 */
-	public void setCheckingDate(final java.util.Date checkingDate) {
+	public void setCheckingDate(final java.time.Instant checkingDate) {
 		this.checkingDate = checkingDate;
 	}
 	
@@ -212,7 +212,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Commentaire'.
 	 * @return String checkingComment
 	 */
-	@Field(domain = "DO_O_TEXT", label = "Commentaire")
+	@Field(domain = "DoOText", label = "Commentaire")
 	public String getCheckingComment() {
 		return checkingComment;
 	}
@@ -231,9 +231,9 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getProId() {
-		return (Long)  proIdAccessor.getId();
+		return (Long) proIdAccessor.getId();
 	}
 
 	/**
@@ -250,9 +250,9 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'ExecutionState'.
 	 * @return String estCd
 	 */
-	@Field(domain = "DO_O_CODE_IDENTIFIANT", type = "FOREIGN_KEY", label = "ExecutionState")
+	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", label = "ExecutionState")
 	public String getEstCd() {
-		return (String)  estCdAccessor.getId();
+		return (String) estCdAccessor.getId();
 	}
 
 	/**
@@ -269,9 +269,9 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'User'.
 	 * @return Long usrId
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", label = "User")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", label = "User")
 	public Long getUsrId() {
-		return (Long)  usrIdAccessor.getId();
+		return (Long) usrIdAccessor.getId();
 	}
 
 	/**
@@ -290,24 +290,6 @@ public final class OProcessExecution implements Entity {
 	public VAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> executionState() {
 		return estCdAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.referential.OExecutionState getExecutionState() {
-		// we keep the lazyness
-		if (!estCdAccessor.isLoaded()) {
-			estCdAccessor.load();
-		}
-		return estCdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'URI: ExecutionState.
-	 * @return URI de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.OExecutionState> getExecutionStateURI() {
-		return estCdAccessor.getURI();
-	}
 
  	/**
 	 * Association : Processus.
@@ -316,24 +298,6 @@ public final class OProcessExecution implements Entity {
 	public VAccessor<io.vertigo.orchestra.domain.definition.OProcess> process() {
 		return proIdAccessor;
 	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.definition.OProcess getProcess() {
-		// we keep the lazyness
-		if (!proIdAccessor.isLoaded()) {
-			proIdAccessor.load();
-		}
-		return proIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'URI: Processus.
-	 * @return URI de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.definition.OProcess> getProcessURI() {
-		return proIdAccessor.getURI();
-	}
 
  	/**
 	 * Association : User.
@@ -341,24 +305,6 @@ public final class OProcessExecution implements Entity {
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.referential.OUser> user() {
 		return usrIdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.referential.OUser getUser() {
-		// we keep the lazyness
-		if (!usrIdAccessor.isLoaded()) {
-			usrIdAccessor.load();
-		}
-		return usrIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'URI: User.
-	 * @return URI de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.referential.OUser> getUserURI() {
-		return usrIdAccessor.getURI();
 	}
 	
 	/** {@inheritDoc} */

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -121,7 +121,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 			final Future<File> targetFileFuture = executors.submit(convertTask);
 			targetFile = targetFileFuture.get(convertTimeoutSeconds, TimeUnit.SECONDS);
 		} catch (final Exception e) {
-			throw WrappedException.wrap(e, "Erreur de conversion du document au format " + targetFormat.name() + " (" + e.getClass().getSimpleName() + ")");
+			throw WrappedException.wrap(e, "Erreur de conversion du document au format {0} ({1})", targetFormat.name(), e.getClass().getSimpleName());
 		}
 		return fileManager.createFile(targetFile);
 	}
@@ -174,7 +174,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 		final OpenOfficeConnection openOfficeConnection = new SocketOpenOfficeConnection(unoHost, unoPort);
 		try {
 			if (LOGGER.isDebugEnabled()) {
-				LOGGER.debug("connecting to OpenOffice.org on  " + unoHost + ":" + unoPort);
+				LOGGER.debug("connecting to OpenOffice.org on {}:{} ", unoHost, unoPort);
 			}
 			openOfficeConnection.connect(); //Attention déjà observé : connection ne s'établissant pas et pas de timeout
 		} catch (final ConnectException connectException) {

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -61,13 +61,13 @@ public final class ONodeDAO extends DAO<ONode, java.lang.Long> implements StoreS
 	}
 
 	/**
-	 * Execute la tache TK_GET_NODE_BY_NAME.
+	 * Execute la tache TkGetNodeByName.
 	 * @param nodeName String 
 	 * @return Option de io.vertigo.orchestra.domain.execution.ONode dtoONode
 	*/
 	public Optional<io.vertigo.orchestra.domain.execution.ONode> getNodeByName(final String nodeName) {
-		final Task task = createTaskBuilder("TK_GET_NODE_BY_NAME")
-				.addValue("NODE_NAME", nodeName)
+		final Task task = createTaskBuilder("TkGetNodeByName")
+				.addValue("nodeName", nodeName)
 				.build();
 		return Optional.ofNullable((io.vertigo.orchestra.domain.execution.ONode) getTaskManager()
 				.execute(task)

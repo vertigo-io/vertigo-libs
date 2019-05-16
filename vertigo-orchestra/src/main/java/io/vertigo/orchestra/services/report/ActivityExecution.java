@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.orchestra.services.report;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.Instant;
 
 import io.vertigo.lang.Assertion;
 
@@ -35,8 +35,8 @@ public final class ActivityExecution implements Serializable {
 
 	private final Long aceId;
 	private final String label;
-	private final Date beginTime;
-	private final Date endTime;
+	private final Instant beginTime;
+	private final Instant endTime;
 	private final Integer executionTime;
 	private final String status;
 	private final String workspaceIn;
@@ -60,8 +60,8 @@ public final class ActivityExecution implements Serializable {
 	public ActivityExecution(
 			final Long aceId,
 			final String label,
-			final Date beginTime,
-			final Date endTime,
+			final Instant beginTime,
+			final Instant endTime,
 			final Integer executionTime,
 			final String status,
 			final String workspaceIn,
@@ -90,11 +90,11 @@ public final class ActivityExecution implements Serializable {
 		return label;
 	}
 
-	public Date getBeginTime() {
+	public Instant getBeginTime() {
 		return beginTime;
 	}
 
-	public Date getEndTime() {
+	public Instant getEndTime() {
 		return endTime;
 	}
 

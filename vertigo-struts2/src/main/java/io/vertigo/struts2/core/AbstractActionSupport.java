@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -41,19 +41,18 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.opensymphony.xwork2.ModelDriven;
 import com.opensymphony.xwork2.Preparable;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.codec.Codec;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.codec.Encoder;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.component.di.injector.DIInjector;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.VSystemException;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.struts2.exception.ExpiredContextException;
+import io.vertigo.util.InjectorUtil;
 
 /**
  * Super class des Actions struts.
@@ -106,7 +105,7 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 	 * Constructeur.
 	 */
 	protected AbstractActionSupport() {
-		DIInjector.injectMembers(this, Home.getApp().getComponentSpace());
+		InjectorUtil.injectMembers(this);
 		uiMessageStack = new StrutsUiMessageStack(this);
 	}
 
@@ -124,10 +123,8 @@ public abstract class AbstractActionSupport extends ActionSupport implements Mod
 				contextMiss(null);
 			} else {
 				try (VTransactionWritable transactionWritable = transactionManager.createCurrentTransaction()) {
-					context = kvStoreManager.find(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(ctxId, request), KActionContext.class).get();
-					transactionWritable.commit();
+					context = kvStoreManager.find(CONTEXT_COLLECTION_NAME, obtainStoredCtxId(ctxId, request), KActionContext.class).orElse(null);
 				}
-
 				if (context == null) {
 					contextMiss(ctxId);
 				}

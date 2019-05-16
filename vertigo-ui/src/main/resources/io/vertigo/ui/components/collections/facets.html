@@ -1,0 +1,8 @@
+<th:block th:fragment="facets(resultKey)"
+		th:assert="${resultKey} != null">
+	<vu:include-data-primitive th:key="|${resultKey}_facets|"/>
+	<vu:include-data-primitive th:key="|${resultKey}_totalcount|"/>
+	<vu:include-data-primitive th:key="|${resultKey}_selectedFacets|"/>
+	<vu:include-data-primitive th:key="|${resultKey}_criteriaContextKey|"/>
+	<v-facets th:v-bind:facets="|vueData.${resultKey}_facets|" th:v-bind:selected-facets="|vueData.${resultKey}_selectedFacets|" th:context-key="${resultKey}" @toogle-facet="toogleFacet"></v-facets>
+</th:block> 

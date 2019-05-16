@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,20 +18,20 @@
  */
 package io.vertigo.orchestra.services.execution;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
-import java.util.Date;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
+import org.junit.jupiter.api.Assertions;
 
-import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
+import io.vertigo.orchestra.AbstractOrchestraTestCase;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.OrchestraServices;
 import io.vertigo.orchestra.services.report.ActivityExecution;
 import io.vertigo.orchestra.services.report.ExecutionSummary;
-import io.vertigo.util.DateUtil;
 
 /**
  * TODO : Description de la classe.
@@ -39,7 +39,7 @@ import io.vertigo.util.DateUtil;
  * @author mlaroche.
  * @version $Id$
  */
-public class ReportingTest extends AbstractOrchestraTestCaseJU4 {
+public class ReportingTest extends AbstractOrchestraTestCase {
 
 	@Inject
 	private OrchestraServices orchestraServices;
@@ -57,11 +57,11 @@ public class ReportingTest extends AbstractOrchestraTestCaseJU4 {
 
 		final Long proId = processDefinition.getId();
 		// We check the save is ok
-		Assert.assertNotNull(proId);
+		Assertions.assertNotNull(proId);
 
 		// We plan right now
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// The task takes 10 secondes to run we wait 12 secondes to check the final states
 		Thread.sleep(1000 * 12);
@@ -76,9 +76,10 @@ public class ReportingTest extends AbstractOrchestraTestCaseJU4 {
 
 		final ProcessDefinition processDefinition = executeProcess();
 		// -1h +1h
-		final ExecutionSummary executionSummary = processExecutionManager.getReport().getSummaryByDate(processDefinition, new Date(DateUtil.newDateTime().getTime() - 60 * 60 * 1000),
-				new Date(DateUtil.newDateTime().getTime() + 60 * 60 * 1000));
-		Assert.assertTrue(1 == executionSummary.getSuccessfulCount());
+		final ExecutionSummary executionSummary = processExecutionManager.getReport().getSummaryByDate(processDefinition,
+				Instant.now().minus(1, ChronoUnit.HOURS),
+				Instant.now().plus(1, ChronoUnit.HOURS));
+		Assertions.assertTrue(1 == executionSummary.getSuccessfulCount());
 	}
 
 	/**
@@ -90,7 +91,7 @@ public class ReportingTest extends AbstractOrchestraTestCaseJU4 {
 		// ---
 		final ActivityExecution activityExecution = processExecutionManager.getReport()
 				.getActivityExecutionsByProcessExecution(processExecutionManager.getReport().getProcessExecutions(processDefinition, "", 10, 0).get(0).getPreId()).get(0);
-		Assert.assertTrue(processExecutionManager.getLogger().getActivityLogFile(activityExecution.getAceId()).isPresent());
+		Assertions.assertTrue(processExecutionManager.getLogger().getActivityLogFile(activityExecution.getAceId()).isPresent());
 	}
 
 }

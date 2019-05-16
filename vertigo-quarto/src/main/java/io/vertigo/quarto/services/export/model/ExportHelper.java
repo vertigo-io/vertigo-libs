@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,29 +48,46 @@ public final class ExportHelper {
 
 	/**
 	 * Retourne le text d'un champs du DTO en utilisant le formateur du domaine, ou l'élément issu de la liste de REF si il y a une dénormalisation à faire.
-	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement (utilisé pour les champs issus d'association avec une liste de ref)
-	 * @param denormCache Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement (utilisé en cas de dénorm spécifique)
+	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement
+	 *  (utilisé pour les champs issus d'association avec une liste de ref)
+	 * @param denormCache Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement
+	 *  (utilisé en cas de dénorm spécifique)
 	 * @param dto Objet métier
 	 * @param exportColumn Information de la colonne a exporter.
 	 * @return Valeur d'affichage de la colonne de l'objet métier
 	 */
-	public String getText(final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
+	public String getText(
+			final Map<DtField, Map<Object, String>> referenceCache,
+			final Map<DtField, Map<Object, String>> denormCache,
+			final DtObject dto,
+			final ExportField exportColumn) {
 		return (String) getValue(true, referenceCache, denormCache, dto, exportColumn);
 	}
 
 	/**
 	 * Retourne la valeur d'un champs du DTO, ou l'élément issu de la liste de REF si il y a une dénormalisation à faire.
-	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement (utilisé pour les champs issus d'association avec une liste de ref)
-	 * @param denormCache Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement (utilisé en cas de dénorm spécifique)
+	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement
+	 * (utilisé pour les champs issus d'association avec une liste de ref)
+	 * @param denormCache Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement
+	 *  (utilisé en cas de dénorm spécifique)
 	 * @param dto Objet métier
 	 * @param exportColumn Information de la colonne a exporter.
 	 * @return Valeur typée de la colonne de l'objet métier
 	 */
-	public Object getValue(final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
+	public Object getValue(
+			final Map<DtField, Map<Object, String>> referenceCache,
+			final Map<DtField, Map<Object, String>> denormCache,
+			final DtObject dto,
+			final ExportField exportColumn) {
 		return getValue(false, referenceCache, denormCache, dto, exportColumn);
 	}
 
-	private Object getValue(final boolean forceStringValue, final Map<DtField, Map<Object, String>> referenceCache, final Map<DtField, Map<Object, String>> denormCache, final DtObject dto, final ExportField exportColumn) {
+	private Object getValue(
+			final boolean forceStringValue,
+			final Map<DtField, Map<Object, String>> referenceCache,
+			final Map<DtField, Map<Object, String>> denormCache,
+			final DtObject dto,
+			final ExportField exportColumn) {
 		final DtField dtField = exportColumn.getDtField();
 		Object value;
 		if (dtField.getType() == DtField.FieldType.FOREIGN_KEY && storeManager.getMasterDataConfig().containsMasterData(dtField.getFkDtDefinition())) {

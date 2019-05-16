@@ -10,7 +10,7 @@ function completeDataTableQuery(dataColumns, dataQuery) {
 function showDataTable(elem, datas, dataColumns) {
 	elem.html("");
 	elem.parent().addClass("p-0");
-	var dataTableDatas = toDataTableDatas(datas.timedDataSeries, dataColumns);
+	var dataTableDatas = toDataTableDatas(datas.tabularDataSeries, dataColumns);
 	var table = $('<table cellspacing="0"/>').appendTo(elem);
 	var columns = $.map(dataColumns , function(column, index){ 
 		var renderer;
@@ -65,13 +65,15 @@ var timeRendererSeconds = function ( data, type, row ) {
 /** Conversion de données servers List<date, Map<NomMetric, value>> en données DataTable.*/
 function toDataTableDatas(datas, metrics) {
 	var newDatas = new Array();
-	for(var i = 0; i < datas.length; i++) {
-		var serie = new Object();
-		
-		for(var j = 0; j < metrics.length; j++) {
-			serie[metrics[j].data] = datas[i].values[metrics[j].data];
+	if (datas) {
+		for(var i = 0; i < datas.length; i++) {
+			var serie = new Object();
+			
+			for(var j = 0; j < metrics.length; j++) {
+				serie[metrics[j].data] = datas[i].values[metrics[j].data];
+			}
+			newDatas.push(serie);
 		}
-		newDatas.push(serie);
 	}
 	return newDatas;
 }

@@ -1,10 +1,65 @@
 Version history
 ===============
 
-Running 2.0.0-SNAPSHOT
+Running 2.1.0-SNAPSHOT
 ----------------------
 
 more to come :)
+
+Release 2.0.0 - 2019/03/22
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-113-to-200)
+
+* [Social] Add userContent on notification : can be used for favorite or pin (per user features)
+* [Social] Move MailManager from vertigo-mail to Vertigo-Social
+* [Social] Fix comments memory plugin
+* [Social] Fix comment sorting of memory plugin
+* [Social] Updated Comment WS api : return Comment, when create or update
+* [Ui] Add new frontend stack, modern Ui, great UX and DX, server side rendering Ui (SpringMvc, Thymeleaf and vueJs/Quasar web components) 
+* [Orchestra] Add default value for some params
+* [Orchestra] On startup clean planifs of current node
+* [Orchestra] Fix process termination on throwable (not only exception)
+* [All] Rename URI to UDI
+* [All] Add/Complete Manifest class of each modules (Features classes)
+* **[All] Update JUnit4 to JUnit 5**
+* [Ledger] Add new module to easily use blockchain's trust
+* [Dashboard] Refactored to easily produce dashboard : timeseries database and awesome charts :)
+* [Struts2] Update lib version
+* [Struts2] Change some use of io.File to noi.Path
+* [Geo] Add Ban (etatlab) plugin for free geoCodage api (france only) 
+* [Rules] Some refactoring
+* [Workflow] Some refactoring, use PostgreSQL by default
+* [Adapater] Some fix on IftttAdapter
+
+
+Release 1.1.3 - 2019/03/21
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-112-to-113)
+
+* [Social] Fix #21 clean older notifications with time boxing : 10s every minute 
+
+
+Release 1.1.2 - 2018/06/28
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-111-to-112)
+
+Use this version for a java9+ project.
+
+
+Release 1.1.1 - 2018/04/27
+----------------------
+[Migration help](https://github.com/KleeGroup/vertigo/wiki/Vertigo-Migration-Guide#from-110-to-111)
+
+* [quarto] fix creation of final doc (medias etc...) (docx)
+* [quarto] fix new paragraphs on line breaks (docx)
+* [orchestra] fix params in memoryImpl
+* [dashboard] some minor additions (bêta)
+* [struts2] Added multiple file upload support
+* [struts2] Alternative Struts2 multipart request parser for servlet 3
+* [struts2] Added hash on sessionId to secure them
+* [struts2] added remove in KActionContext
+* [struts2] UiUtil now handle all types of UiList
+* [all] update dependencies : org.apache.struts/struts2-core : 2.5.14.1 -> 2.5.16, org.apache.strutsstruts2-spring-plugin : 2.5.14.1 -> 2.5.16, org.eclipse.jetty/all : 9.4.7.v20170914 -> 9.4.9.v20180320, com.machinepublishers/jbrowserdriver : 0.17.9 -> 0.17.11
 
 Release 1.1.0 - 2017/12/07
 ----------------------

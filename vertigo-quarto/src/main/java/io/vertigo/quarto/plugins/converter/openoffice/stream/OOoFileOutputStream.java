@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,8 +19,8 @@
 package io.vertigo.quarto.plugins.converter.openoffice.stream;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 
 import com.sun.star.io.IOException;
 import com.sun.star.io.XOutputStream;
@@ -32,17 +32,17 @@ import io.vertigo.lang.Assertion;
  * @author tchassagnette
  */
 public final class OOoFileOutputStream implements XOutputStream {
-	private final FileOutputStream fileOutputStream;
+	private final OutputStream fileOutputStream;
 
 	/**
 	 * Constructor.
 	 * @param file Fichier
-	 * @throws FileNotFoundException Fichier introuvable
+	 * @throws java.io.IOException
 	 */
-	public OOoFileOutputStream(final File file) throws FileNotFoundException {
+	public OOoFileOutputStream(final File file) throws java.io.IOException {
 		Assertion.checkNotNull(file);
 		//-----
-		fileOutputStream = new FileOutputStream(file);
+		fileOutputStream = Files.newOutputStream(file.toPath());
 	}
 
 	//

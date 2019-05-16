@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,14 @@
  */
 package io.vertigo.social.impl.comment;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.List;
 
 import javax.inject.Inject;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.social.services.comment.Comment;
 import io.vertigo.social.services.comment.CommentServices;
@@ -50,11 +50,11 @@ public final class CommentServicesImpl implements CommentServices {
 
 	/** {@inheritDoc} */
 	@Override
-	public void publish(final URI<Account> accountURI, final Comment comment, final URI<? extends KeyConcept> keyConceptUri) {
+	public void publish(final UID<Account> accountURI, final Comment comment, final UID<? extends KeyConcept> keyConceptUri) {
 		Assertion.checkNotNull(comment);
 		Assertion.checkNotNull(keyConceptUri);
 		//-----
-		final Date creationDate = DateUtil.newDateTime();
+		final Instant creationDate = DateUtil.newInstant();
 		final Comment savedComment = Comment.builder()
 				.withAuthor(accountURI)
 				.withCreationDate(creationDate)
@@ -66,7 +66,7 @@ public final class CommentServicesImpl implements CommentServices {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<Comment> getComments(final URI<? extends KeyConcept> keyConceptUri) {
+	public List<Comment> getComments(final UID<? extends KeyConcept> keyConceptUri) {
 		Assertion.checkNotNull(keyConceptUri);
 		//-----
 		return commentsPlugin.getComments(keyConceptUri);
@@ -74,7 +74,7 @@ public final class CommentServicesImpl implements CommentServices {
 
 	/** {@inheritDoc} */
 	@Override
-	public void update(final URI<Account> accountURI, final Comment comment) {
+	public void update(final UID<Account> accountURI, final Comment comment) {
 		Assertion.checkNotNull(comment);
 		//-----
 		final Comment originalComment = commentsPlugin.get(comment.getUuid());
@@ -86,7 +86,7 @@ public final class CommentServicesImpl implements CommentServices {
 				.withAuthor(accountURI)
 				.withCreationDate(originalComment.getCreationDate())
 				.withMsg(comment.getMsg())
-				.withLastModified(DateUtil.newDateTime())
+				.withLastModified(DateUtil.newInstant())
 				.build();
 		commentsPlugin.update(savedComment);
 	}

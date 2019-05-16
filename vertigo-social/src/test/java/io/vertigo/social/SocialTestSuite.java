@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,14 +18,15 @@
  */
 package io.vertigo.social;
 
+import org.junit.platform.runner.JUnitPlatform;
+import org.junit.platform.suite.api.SelectClasses;
 import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 import io.vertigo.social.account.webservices.AccountWebServicesTest;
 import io.vertigo.social.comment.services.CommentManagerTest;
 import io.vertigo.social.comment.webservices.CommentWebServicesTest;
-import io.vertigo.social.notification.services.NotificationServicesTest;
+import io.vertigo.social.notification.services.MemoryNotificationServicesTest;
+import io.vertigo.social.notification.services.RedisNotificationServicesTest;
 import io.vertigo.social.notification.webservices.NotificationWebServicesTest;
 
 /**
@@ -33,15 +34,16 @@ import io.vertigo.social.notification.webservices.NotificationWebServicesTest;
  *
  * @author npiedeloup
  */
-@RunWith(Suite.class)
-@SuiteClasses({
+@RunWith(JUnitPlatform.class)
+@SelectClasses({
 		//--account
 		AccountWebServicesTest.class,
 		//--comment
 		CommentManagerTest.class,
 		CommentWebServicesTest.class,
 		//--notifications
-		NotificationServicesTest.class,
+		RedisNotificationServicesTest.class,
+		MemoryNotificationServicesTest.class,
 		NotificationWebServicesTest.class })
 public final class SocialTestSuite {
 	//

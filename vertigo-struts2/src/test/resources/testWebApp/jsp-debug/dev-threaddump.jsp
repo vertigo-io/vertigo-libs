@@ -1,5 +1,5 @@
 <%@page contentType="text/html;charset=ISO-8859-1" import="java.io.IOException,java.lang.management.*,java.text.SimpleDateFormat"%>
-<%@page import="java.util.*, org.apache.log4j.Logger"%>
+<%@page import="java.util.*, org.apache.logging.log4j.LogManager"%>
 	<%!
 	private static long lastThreadDumpTime = System.currentTimeMillis();
 	private static Map<Long, Long> lastCpuTimeByThreadId = new HashMap<>();
@@ -56,7 +56,7 @@
 		//on rend dans la page
 		out.println(sb.toString());
 		//et dans le log
-		Logger.getLogger(getClass()).info(sb.toString());
+		LogManager.getLogger(getClass()).info(sb.toString());
 		//------------------------------------------------------------------------
 	}
 

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,8 @@
 package io.vertigo.social.plugins.comment.redis;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -31,10 +29,8 @@ import javax.inject.Inject;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.URI;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.social.impl.comment.CommentPlugin;
@@ -48,7 +44,6 @@ import redis.clients.jedis.Transaction;
  * @author pchretien
  */
 public final class RedisCommentPlugin implements CommentPlugin {
-	private static final String CODEC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	private final RedisConnector redisConnector;
 
 	/**
@@ -63,7 +58,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends KeyConcept> void publish(final Comment comment, final URI<S> keyConceptUri) {
+	public <S extends KeyConcept> void publish(final Comment comment, final UID<S> keyConceptUri) {
 		try (final Jedis jedis = redisConnector.getResource()) {
 			try (final Transaction tx = jedis.multi()) {
 				tx.hmset("comment:" + comment.getUuid(), toMap(comment));
@@ -100,7 +95,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public <S extends KeyConcept> List<Comment> getComments(final URI<S> keyConceptUri) {
+	public <S extends KeyConcept> List<Comment> getComments(final UID<S> keyConceptUri) {
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final List<String> uuids = jedis.lrange("comments:" + keyConceptUri.urn(), 0, -1);
@@ -125,33 +120,27 @@ public final class RedisCommentPlugin implements CommentPlugin {
 	}
 
 	private static Map<String, String> toMap(final Comment comment) {
-		final String creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT).format(comment.getCreationDate());
-		final String lastModified = comment.getLastModified() != null ? new SimpleDateFormat(CODEC_DATE_FORMAT).format(comment.getLastModified()) : null;
+		final String lastModified = comment.getLastModified() != null ? comment.getLastModified().toString() : null;
 		return new MapBuilder<String, String>()
 				.put("uuid", comment.getUuid().toString())
 				.put("author", String.valueOf(comment.getAuthor().getId()))
 				.put("msg", comment.getMsg())
-				.put("creationDate", creationDate)
+				.put("creationDate", comment.getCreationDate().toString())
 				.putNullable("lastModified", lastModified)
 				.build();
 	}
 
 	private static Comment fromMap(final Map<String, String> data) {
-		try {
-			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(Account.class);
-			final Date creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT).parse(data.get("creationDate"));
-			final Date lastModified = data.get("lastModified") != null ? new SimpleDateFormat(CODEC_DATE_FORMAT).parse(data.get("lastModified")) : null;
+		final Instant creationDate = Instant.parse(data.get("creationDate"));
+		final Instant lastModified = data.get("lastModified") != null ? Instant.parse(data.get("lastModified")) : null;
 
-			return Comment.builder()
-					.withUuid(UUID.fromString(data.get("uuid")))
-					.withAuthor(new URI<Account>(dtDefinition, data.get("author")))
-					.withCreationDate(creationDate)
-					.withMsg(data.get("msg"))
-					.withLastModified(lastModified)
-					.build();
+		return Comment.builder()
+				.withUuid(UUID.fromString(data.get("uuid")))
+				.withAuthor(UID.of(Account.class, data.get("author")))
+				.withCreationDate(creationDate)
+				.withMsg(data.get("msg"))
+				.withLastModified(lastModified)
+				.build();
 
-		} catch (final ParseException e) {
-			throw WrappedException.wrap(e, "Can't parse comment");
-		}
 	}
 }

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,8 @@
 package io.vertigo.social.plugins.notification.redis;
 
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -33,7 +31,7 @@ import io.vertigo.account.account.Account;
 import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.social.impl.notification.NotificationEvent;
@@ -48,7 +46,6 @@ import redis.clients.jedis.Transaction;
  * @author pchretien
  */
 public final class RedisNotificationPlugin implements NotificationPlugin {
-	private static final String CODEC_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
 	private static final long REMOVE_PACKET_SIZE = 100L;
 	private final RedisConnector redisConnector;
 
@@ -68,12 +65,15 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void send(final NotificationEvent notificationEvent) {
+		Assertion.checkNotNull(notificationEvent);
+		//-----
 		//1 notif is store 5 times :
 		// - data in map with key= notif:$uuid (with expiration)
 		// - uuid in queue with key= notifs:all (for purge)
 		// - uuid in queue with key= notifs:$accountId
 		// - uuid in queue with key= type:$type;target:$target;uuid
 		// - notifs:$accountId in queue with key= accounts:$uuid
+		// - userContent value per accountId:$accountId in map with key= userContent:$uuid
 
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final Notification notification = notificationEvent.getNotification();
@@ -91,7 +91,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				tx.lrem("notifs:all", 0, uuid);
 				tx.lpush("notifs:all", uuid);
 
-				for (final URI<Account> accountURI : notificationEvent.getToAccountURIs()) {
+				for (final UID<Account> accountURI : notificationEvent.getToAccountURIs()) {
 					final String notifiedAccount = "notifs:" + accountURI.getId();
 					//On publie la notif (the last wins)
 					tx.lrem(notifiedAccount, 0, uuid);
@@ -110,55 +110,56 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	}
 
 	private static Map<String, String> toMap(final Notification notification) {
-		final String creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT).format(notification.getCreationDate());
 		return new MapBuilder<String, String>()
 				.put("uuid", notification.getUuid().toString())
 				.put("sender", notification.getSender())
 				.putNullable("type", notification.getType())
 				.put("title", notification.getTitle())
 				.put("content", notification.getContent())
-				.put("creationDate", creationDate)
+				.put("creationDate", notification.getCreationDate().toString())
 				.put("ttlInSeconds", String.valueOf(notification.getTTLInSeconds()))
 				.put("targetUrl", notification.getTargetUrl())
+				.put("userContent", notification.getUserContent().orElse("")) //only used for default value
 				.build();
 	}
 
-	private static Notification fromMap(final Map<String, String> data) {
-		try {
-			final Date creationDate = new SimpleDateFormat(CODEC_DATE_FORMAT)
-					.parse(data.get("creationDate"));
-			return Notification.builder(UUID.fromString(data.get("uuid")))
-					.withSender(data.get("sender"))
-					.withType(data.get("type"))
-					.withTitle(data.get("title"))
-					.withContent(data.get("content"))
-					.withCreationDate(creationDate)
-					.withTTLInSeconds(Integer.parseInt(data.get("ttlInSeconds")))
-					.withTargetUrl(data.get("targetUrl"))
-					.build();
-		} catch (final ParseException e) {
-			throw WrappedException.wrap(e, "Can't parse notification");
-		}
+	private static Notification fromMap(final Map<String, String> data, final String userContent) {
+		return Notification.builder(UUID.fromString(data.get("uuid")))
+				.withSender(data.get("sender"))
+				.withType(data.get("type"))
+				.withTitle(data.get("title"))
+				.withContent(data.get("content"))
+				.withCreationDate(Instant.parse(data.get("creationDate")))
+				.withTTLInSeconds(Integer.parseInt(data.get("ttlInSeconds")))
+				.withTargetUrl(data.get("targetUrl"))
+				.withUserContent(userContent != null ? userContent : data.get("userContent")) //only used for default value
+				.build();
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public List<Notification> getCurrentNotifications(final URI<Account> accountURI) {
+	public List<Notification> getCurrentNotifications(final UID<Account> accountURI) {
+		Assertion.checkNotNull(accountURI);
+		//-----
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
+		final List<Response<String>> responsesUserContent = new ArrayList<>();
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final List<String> uuids = jedis.lrange("notifs:" + accountURI.getId(), 0, -1);
 			final Transaction tx = jedis.multi();
 			for (final String uuid : uuids) {
 				responses.add(tx.hgetAll("notif:" + uuid));
+				responsesUserContent.add(tx.hget("userContent:" + uuid, "accountURI:" + accountURI.getId()));
 			}
 			tx.exec();
 		}
 		//----- we are using tx to avoid roundtrips
 		final List<Notification> notifications = new ArrayList<>();
-		for (final Response<Map<String, String>> response : responses) {
+		for (int i = 0; i < responses.size(); i++) {
+			final Response<Map<String, String>> response = responses.get(i);
 			final Map<String, String> data = response.get();
 			if (!data.isEmpty()) {
-				notifications.add(fromMap(data));
+				final String userContent = responsesUserContent.get(i).get();
+				notifications.add(fromMap(data, userContent));
 			}
 		}
 		cleanTooOldNotifications(notifications);
@@ -167,13 +168,37 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 
 	/** {@inheritDoc} */
 	@Override
-	public void remove(final URI<Account> accountURI, final UUID notificationUUID) {
+	public void updateUserContent(final UID<Account> accountURI, final UUID notificationUUID, final String userContent) {
+		Assertion.checkNotNull(accountURI);
+		Assertion.checkNotNull(notificationUUID);
+		//-----
+		try (final Jedis jedis = redisConnector.getResource()) {
+			final String uuid = notificationUUID.toString();
+			final String updatedAccount = "accountURI:" + accountURI.getId();
+
+			try (final Transaction tx = jedis.multi()) {
+				//we store the data of this notification
+				tx.hset("userContent:" + uuid, updatedAccount, userContent != null ? userContent : "");
+				tx.exec();
+			} catch (final IOException ex) {
+				throw WrappedException.wrap(ex);
+			}
+		}
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void remove(final UID<Account> accountURI, final UUID notificationUUID) {
+		Assertion.checkNotNull(accountURI);
+		Assertion.checkNotNull(notificationUUID);
+		//-----
 		try (final Jedis jedis = redisConnector.getResource()) {
 			final String notifiedAccount = "notifs:" + accountURI.getId();
 			final String uuid = notificationUUID.toString();
 			//we remove notif from account stack and account from notif stack
 			jedis.lrem(notifiedAccount, -1, uuid);
 			jedis.lrem("accounts:" + uuid, -1, notifiedAccount);
+			jedis.hdel("userContent:" + uuid, "accountURI:" + accountURI.getId());
 
 			final List<String> notifiedAccounts = jedis.lrange("accounts:" + uuid, 0, -1);
 			if (notifiedAccounts.isEmpty()) { //if no more account ref this notif we remove it
@@ -183,9 +208,12 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				//we remove uuid from queue by type and targetUrl
 				final Map<String, String> notifMap = jedis.hgetAll("notif:" + uuid);
 				if (!notifMap.isEmpty()) {
-					final Notification notification = fromMap(notifMap);
+					final Notification notification = fromMap(notifMap, null);
 					jedis.lrem("type:" + notification.getType() + ";target:" + notification.getTargetUrl() + ";uuid", -1, uuid);
 				}
+
+				//we remove userContent of this notif
+				jedis.del("userContent:" + uuid);
 
 				//we remove data of this notif
 				jedis.del("notif:" + uuid);
@@ -210,6 +238,8 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 				}
 				//we remove list account for this notif
 				jedis.del("accounts:" + uuid);
+				//we remove userContent of this notif
+				jedis.del("userContent:" + uuid);
 				//we remove data of this notif
 				jedis.del("notif:" + uuid);
 
@@ -221,7 +251,10 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 		}
 	}
 
-	@DaemonScheduled(name = "DMN_CLEAN_TOO_OLD_REDIS_NOTIFICATIONS", periodInSeconds = 60 * 1000)
+	/**
+	 * Scan all notifs every minutes to removed old ones.
+	 */
+	@DaemonScheduled(name = "DmnCleanTooOldRedisNotifications", periodInSeconds = 60)
 	public void cleanTooOldNotifications() {
 		long startIndex = -1L;
 		final long startTime = System.currentTimeMillis();
@@ -235,7 +268,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 					final Map<String, String> notificationMap = jedis.hgetAll("notif:" + uuid);
 					final Notification notification;
 					if (!notificationMap.isEmpty()) {
-						notification = fromMap(notificationMap);
+						notification = fromMap(notificationMap, null);
 						if (isTooOld(notification)) {
 							removeNotification(uuid, notification, jedis);
 							startIndex++;
@@ -276,6 +309,6 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	}
 
 	private static boolean isTooOld(final Notification notification) {
-		return notification.getTTLInSeconds() >= 0 && notification.getCreationDate().getTime() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis();
+		return notification.getTTLInSeconds() >= 0 && notification.getCreationDate().toEpochMilli() + notification.getTTLInSeconds() * 1000 < System.currentTimeMillis();
 	}
 }

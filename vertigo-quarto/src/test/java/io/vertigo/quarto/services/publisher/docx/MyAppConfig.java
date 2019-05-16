@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,27 +18,28 @@
  */
 package io.vertigo.quarto.services.publisher.docx;
 
-import io.vertigo.app.config.AppConfig;
+import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.DefinitionProviderConfig;
 import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.commons.impl.CommonsFeatures;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.impl.DynamoFeatures;
+import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.quarto.impl.services.publisher.PublisherManagerImpl;
 import io.vertigo.quarto.plugins.publisher.docx.DOCXMergerPlugin;
 import io.vertigo.quarto.services.publisher.PublisherManager;
 import io.vertigo.quarto.services.publisher.TestPublisherDefinitionProvider;
 
-class MyAppConfig {
+class MyNodeConfig {
 
-	public static AppConfig config() {
-		return AppConfig.builder().beginBoot()
+	public static NodeConfig config() {
+		return NodeConfig.builder().beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new CommonsFeatures()
 						.withScript()
+						.withJaninoScript()
 						.build())
 				.addModule(new DynamoFeatures()
 						.build())

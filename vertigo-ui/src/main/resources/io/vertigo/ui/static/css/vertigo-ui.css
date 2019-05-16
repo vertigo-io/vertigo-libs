@@ -1,0 +1,322 @@
+/******** CSS SPECIFIQUE A CERTAINES PAGES *******/
+:root {
+	--q-color-primary-invert: rgba(255, 255, 255, 0.9);
+	--q-color-secondary-invert: rgba(255, 255, 255, 0.9);
+	--q-color-tertiary-invert:	rgba(255, 255, 255, 0.9);
+}
+
+.text-primary-inverted  {
+	color:var(--q-color-primary-invert) !important; 
+}
+
+.text-secondary-inverted  {
+	color:var(--q-color-secondary-invert) !important; 
+}
+
+.text-tertiary-inverted  {
+	color:var(--q-color-tertiary-invert) !important; 
+}
+
+.notifications a.q-item {
+	text-decoration: none;
+	color: var(--q-color-body-color) !important;
+}
+
+.not-mini .eq-mini { /* can't revert display:none (on IE of course), we must use a concrete selector*/
+	display:none;
+}
+
+.mini {
+	transition: top .3s;
+    z-index:10;
+    position:fixed;
+    top:0;
+    right:0;
+    left:0;
+    width:auto;
+}
+
+.mini.visible {
+	/** may be use to detect mini is visible*/
+}
+
+.mini .ne-mini {
+	display:none;
+}
+
+.mini .eq-mini {
+	/*display: unset; /* can't revert display:none (on IE of course), we must use a concrete selector : .not_mini*/
+}
+
+
+.withFab .q-card-main {
+	position: relative;
+    padding-top: 35px;
+}
+
+.withFab .fab-block,
+.withFab .fab-block {
+	position: absolute;
+	top: 0;
+	right: 16px;
+	transform: translateY(-50%);
+	z-index: 1000;
+	height:3em;
+	width:3em;
+}
+
+img.avatar {
+	object-fit: cover;
+}
+
+.q-item-avatar, .q-item-avatar img {
+    object-fit: cover;
+}
+
+/**
+ * Tables
+ */
+
+.q-table-container {
+	background:#fff !important;
+}
+.table-primary thead {
+	background:var(--q-color-primary) !important;
+}
+.table-secondary thead {
+	background:var(--q-color-secondary) !important;
+}
+.table-tertiary thead {
+	background:var(--q-color-tertiary) !important;
+}
+
+.q-table-container th {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 18px; /*same as card-title*/
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 2rem;
+}
+.table-primary th {
+	color:var(--q-color-primary-invert) !important;
+}
+.table-secondary th {
+	color:var(--q-color-secondary-invert) !important;
+}
+.table-tertiary th {
+	color:var(--q-color-tertiary-invert) !important;
+}
+
+.q-table-container th.sortable:hover,
+.q-table-container th.sorted {
+  color: rgba(255,255,255,1);  
+}
+.table-tertiary th.sortable:hover,
+.table-tertiary th.sorted {
+	color: rgba(60, 60, 60, 1);
+}
+
+.table-primary .q-btn {
+	background: var(--q-color-primary);
+	color:var(--q-color-primary-invert);
+}
+
+.table-secondary .q-btn {
+	background: var(--q-color-secondary);
+	color:var(--q-color-secondary-invert);
+}
+.table-tertiary .q-btn {
+	background: var(--q-color-tertiary);
+	color:var(--q-color-tertiary-invert);
+}
+
+
+/**
+ * Facets
+ */
+
+.facets .facetValues .facetValue, .facets .selectedFacets .q-chip {
+	cursor: pointer;
+}
+
+.facets .facetValues .facetValue span{
+	width: 100%;
+	height: 100%;
+}
+
+.facets .q-item-highlight, 
+.facets .q-item-link,
+.facets .q-list-highlight>.q-item,
+.facets .q-list-link>.q-item {
+    border-left: 3px solid lightgrey;
+}
+
+.facets .q-item-highlight:hover, 
+.facets .q-item-link:hover,
+.facets .q-list-highlight>.q-item:hover,
+.facets .q-list-link>.q-item:hover {
+    background: hsla(0,0%,94.1%,1) !important;
+    border-left: 3px solid var(--q-color-primary);
+    color : var(--q-color-primary);
+}
+
+.facets .q-list-dense .q-list-header {
+	padding-bottom:5px;
+	min-height: 25px;
+}
+
+.facets .q-chip {
+	font-size: 1rem;
+}
+
+
+/** Test mgutter */
+
+.mgutter-x-md > div, .mgutter-md > div,
+.mgutter-x-md section > div, .mgutter-md section > div,
+.mgutter-x-md form > div, .mgutter-md form > div {
+  margin-left: 32px;
+}
+.mgutter-y-md > div, .mgutter-md > div,
+.mgutter-y-md section > div, .mgutter-md section > div,
+.mgutter-y-md form > div, .mgutter-md form > div {
+  margin-top: 32px;
+}
+
+.mgutter-x-md, .mgutter-md,
+.mgutter-x-md > div > section, .mgutter-md > div > section  {
+  margin-left: -32px;
+}
+
+.mgutter-y-md, .mgutter-md,
+.mgutter-y-md > div > section, .mgutter-md > div > section {
+  margin-top: -32px;
+}
+
+.mgutter-x-md > div.mgutter-md, .mgutter-md > div.mgutter-md, 
+.mgutter-x-md section > div.mgutter-md, .mgutter-md section > div.mgutter-md,
+.mgutter-x-md form > div.mgutter-md, .mgutter-md form > div.mgutter-md {
+ margin-left: 0px;
+}
+
+.mgutter-y-md > div.mgutter-md, .mgutter-md > div.mgutter-md,
+.mgutter-y-md section > div.mgutter-md, div.mgutter-md section > div.mgutter-md, 
+.mgutter-y-md form > div.mgutter-md, .mgutter-md form > div.mgutter-md {
+  margin-top: 0px;
+}
+
+.col-break {
+	margin:0 !important;
+	width:100%;
+}
+
+.mgutter-md > .col-2 {
+  width: calc(16.6667% - 32px);
+}
+.mgutter-md > .col-3 {
+  width: calc(25% - 32px);
+}
+.mgutter-md > .col-6 {
+  width: calc(50% - 32px);
+}
+.mgutter-md > .col-9 {
+  width: calc(75% - 32px);
+}
+.mgutter-md > .col-12 {
+  width: calc(100% - 32px);
+}
+.mgutter-md > .col {
+  width: calc(100% - 32px);
+}
+	
+@media (min-width: 0px) {
+	.mgutter-md > .col-xs-2 {
+	  width: calc(16.6667% - 32px);
+	}
+	.mgutter-md > .col-xs-3 {
+	  width: calc(25% - 32px);
+	}
+	.mgutter-md > .col-xs-6 {
+	  width: calc(50% - 32px);
+	}
+	.mgutter-md > .col-xs-9 {
+	  width: calc(75% - 32px);
+	}
+	.mgutter-md > .col-xs-12 {
+	  width: calc(100% - 32px);
+	}
+}
+@media (min-width: 576px) {
+	.mgutter-md > .col-sm-2 {
+	  width: calc(16.6667% - 32px);
+	}
+	.mgutter-md > .col-sm-3 {
+	  width: calc(25% - 32px);
+	}
+	.mgutter-md > .col-sm-6 {
+	  width: calc(50% - 32px);
+	}
+	.mgutter-md > .col-sm-9 {
+	  width: calc(75% - 32px);
+	}
+	.mgutter-md > .col-sm-12 {
+	  width: calc(100% - 32px);
+	}
+}
+
+@media (min-width: 768px) {
+	.mgutter-md > .col-md-2 {
+	  width: calc(16.6667% - 32px);
+	}
+	.mgutter-md > .col-md-3 {
+	  width: calc(25% - 32px);
+	}
+	.mgutter-md > .col-md-6 {
+	  width: calc(50% - 32px);
+	}
+	.mgutter-md > .col-md-9 {
+	  width: calc(75% - 32px);
+	}
+	.mgutter-md > .col-md-12 {
+	  width: calc(100% - 32px);
+	}
+}
+
+@media (min-width: 992px) {
+	.mgutter-md > .col-lg-2 {
+	  width: calc(16.6667% - 32px);
+	}
+	.mgutter-md > .col-lg-3 {
+	  width: calc(25% - 32px);
+	}
+	.mgutter-md > .col-lg-6 {
+	  width: calc(50% - 32px);
+	}
+	.mgutter-md > .col-lg-9 {
+	  width: calc(75% - 32px);
+	}
+	.mgutter-md > .col-lg-12 {
+	  width: calc(100% - 32px);
+	}
+}
+
+.showButtonOnHover:hover > .q-btn {
+  opacity: 1;
+  transition: .5s;
+}
+
+tr:hover .showButtonOnHover > .q-btn {
+  opacity: 1;
+  transition: .5s;
+}
+
+.showButtonOnHover > .q-btn {
+  opacity: 0;
+  transition: .5s;
+}
+
+.q-table .q-btn {
+	text-align:right;
+}
+
+

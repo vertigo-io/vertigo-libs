@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,7 +21,7 @@ package io.vertigo.social.impl.notification;
 import java.util.Set;
 
 import io.vertigo.account.account.Account;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.social.services.notification.Notification;
 
@@ -30,14 +30,14 @@ import io.vertigo.social.services.notification.Notification;
  */
 public final class NotificationEvent {
 	private final Notification notification;
-	private final Set<URI<Account>> accountURIs;
+	private final Set<UID<Account>> accountURIs;
 
 	/**
 	 * Constructor.
 	 * @param notification Notification
 	 * @param accountURIs To accounts uri
 	 */
-	NotificationEvent(final Notification notification, final Set<URI<Account>> accountURIs) {
+	NotificationEvent(final Notification notification, final Set<UID<Account>> accountURIs) {
 		Assertion.checkNotNull(notification);
 		Assertion.checkNotNull(accountURIs);
 		//-----
@@ -55,7 +55,7 @@ public final class NotificationEvent {
 	/**
 	 * @return To accounts uri
 	 */
-	public Set<URI<Account>> getToAccountURIs() {
+	public Set<UID<Account>> getToAccountURIs() {
 		return accountURIs;
 	}
 }

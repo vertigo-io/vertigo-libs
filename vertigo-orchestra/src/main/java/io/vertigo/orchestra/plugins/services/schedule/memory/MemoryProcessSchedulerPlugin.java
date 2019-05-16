@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,9 @@
 package io.vertigo.orchestra.plugins.services.schedule.memory;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -84,32 +86,32 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 	}
 
 	private void scheduleWithCron(final ProcessDefinition processDefinition) {
-		scheduleAtRecurrent(processDefinition, DateUtil.newDateTime(), Collections.emptyMap());
+		scheduleAtRecurrent(processDefinition, DateUtil.newInstant(), Collections.emptyMap());
 
 	}
 
-	void scheduleAtRecurrent(final ProcessDefinition processDefinition, final Date planifiedTime, final Map<String, String> initialParams) {
+	void scheduleAtRecurrent(final ProcessDefinition processDefinition, final Instant planifiedTime, final Map<String, String> initialParams) {
 		//a chaque exécution il est nécessaire de reprogrammer l'execution.
-		final Date nextExecutionDate = getNextExecutionDateFrom(processDefinition, planifiedTime);
+		final Instant nextExecutionDate = getNextExecutionDateFrom(processDefinition, planifiedTime);
 		scheduleAt(processDefinition, nextExecutionDate, Collections.emptyMap());
 
 		//a chaque exécution il est nécessaire de reprogrammer l'execution.
-		final Date nextReschedulerDate = new Date(nextExecutionDate.getTime() + 1 * 1000); //on reprogramme à l'heure dite + 1seconde (comme on est sur le m^me timer elle passera après
-		final TimerTask task = createRescheduledTimerTask(processDefinition, nextExecutionDate);
-		timerPool.getTimer(processDefinition.getName()).schedule(task, nextReschedulerDate);
+		final Instant nextReschedulerDate = nextExecutionDate.plusSeconds(1); //on reprogramme à l'heure dite + 1seconde (comme on est sur le m^me timer elle passera après
+		final TimerTask task = createRescheduledTimerTask(processDefinition, nextReschedulerDate);
+		timerPool.getTimer(processDefinition.getName()).schedule(task, new Date(nextReschedulerDate.toEpochMilli()));
 		log("Tache de reprogrammation du Job ", processDefinition, nextReschedulerDate);
 
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public void scheduleAt(final ProcessDefinition processDefinition, final Date planifiedTime, final Map<String, String> initialParams) {
+	public void scheduleAt(final ProcessDefinition processDefinition, final Instant planifiedTime, final Map<String, String> initialParams) {
 		Assertion.checkNotNull(processDefinition);
 		Assertion.checkNotNull(planifiedTime);
 		Assertion.checkNotNull(initialParams);
 		//---
 		final TimerTask task = createTimerTask(processDefinition, initialParams);
-		timerPool.getTimer(processDefinition.getName()).schedule(task, planifiedTime);
+		timerPool.getTimer(processDefinition.getName()).schedule(task, new Date(planifiedTime.toEpochMilli()));
 		log("Job ", processDefinition, planifiedTime);
 
 	}
@@ -119,7 +121,7 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 		return ProcessType.UNSUPERVISED;
 	}
 
-	private static Date getNextExecutionDateFrom(final ProcessDefinition processDefinition, final Date fromDate) {
+	private static Instant getNextExecutionDateFrom(final ProcessDefinition processDefinition, final Instant fromDate) {
 		try {
 			final CronExpression cronExpression = new CronExpression(processDefinition.getTriggeringStrategy().getCronExpression().get());
 			return Optional.of(cronExpression.getNextValidTimeAfter(fromDate))
@@ -133,13 +135,13 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 		return new BasicTimerTask(processDefinition, additionalParams, myProcessExecutor);
 	}
 
-	private TimerTask createRescheduledTimerTask(final ProcessDefinition processDefinition, final Date nextExecutionDate) {
+	private TimerTask createRescheduledTimerTask(final ProcessDefinition processDefinition, final Instant nextExecutionDate) {
 		return new ReschedulerTimerTask(this, processDefinition, nextExecutionDate);
 	}
 
-	private static void log(final String info, final ProcessDefinition processDefinition, final Date date) {
-		final SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.FRANCE);
-		getLogger(processDefinition.getName()).info(info + processDefinition.getName() + " programmé pour " + dateFormat.format(date));
+	private static void log(final String info, final ProcessDefinition processDefinition, final Instant date) {
+		final String instantAsString = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss").withLocale(Locale.FRANCE).withZone(ZoneOffset.UTC).format(date);
+		getLogger(processDefinition.getName()).info(info + processDefinition.getName() + " programmé pour " + instantAsString);
 	}
 
 	private static Logger getLogger(final String jobName) {

@@ -1,0 +1,30 @@
+<th:block th:fragment="head(title)" >
+		<meta charset="utf8">
+		<vu:head-meta/>
+		<vu:content/>
+		<title th:text="${title}"></title>		
+	</head>
+</th:block>
+
+<th:block th:fragment="head-meta" >
+		<link th:href="@{/vertigo-ui/static/3rdParty/fonts.googleapis.com/css/family=Roboto/100,300,400,500,700,900/Material+Icons.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/use.fontawesome.com/releases/v5.7.1/css/all.min.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/ionicons@4.5.5/dist/css/ionicons.min.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/@mdi/font@3.4.93/css/materialdesignicons.min.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/animate.css@3.7.0/animate.min.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar-framework@0.17.19/dist/umd/quasar.mat.min.css}" rel="stylesheet" type="text/css"/>
+		<link th:href="@{/vertigo-ui/static/css/vertigo-ui.css}" rel="stylesheet" type="text/css"/>
+		
+		<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar-framework@0.17.19/dist/umd/quasar.ie.polyfills.umd.min.js}"></script>
+		<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue@2.5.22/dist/vue.min.js}"> </script>
+		<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/vue-resource@1.5.1/dist/vue-resource.min.js}"></script>
+		<style type="text/css">
+		[v-cloak] {
+		  display: none;
+		}
+		#view-flexbox{margin-top:30px;max-width:95vw}#view-flexbox .column>div>div,#view-flexbox .flex>div>div,#view-flexbox .row>div>div{padding:10px;border-radius:3px;background:hsla(31,15%,50%,.1);text-align:center}#view-flexbox.with-border .column,#view-flexbox.with-border .flex,#view-flexbox.with-border .row{border:2px solid teal}#view-flexbox.with-border .column>div,#view-flexbox.with-border .flex>div,#view-flexbox.with-border .row>div{border:1px dashed orange}
+		</style>
+		<script>
+			var VUiExtensions = { dataX : {}, methods : {} };
+		</script>
+</th:block>

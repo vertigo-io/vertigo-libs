@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,17 +20,17 @@ package io.vertigo.orchestra.definitions;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
+import io.vertigo.orchestra.AbstractOrchestraTestCase;
 
 /**
  * TODO : Description de la classe.
  *
  * @author mlaroche.
  */
-public class MemoryDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
+public class MemoryDefinitionsTest extends AbstractOrchestraTestCase {
 
 	@Inject
 	private OrchestraDefinitionManager orchestraDefinitionManager;
@@ -38,19 +38,19 @@ public class MemoryDefinitionsTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void testRegister() {
 		//Before : 4 //from LocalExecutionProcessInitializer
-		Assert.assertEquals(4, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
+		Assertions.assertEquals(4, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("PRO_TEST_BASIC", "TEST BASIC")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("ProTestBasic", "TestBasic")
 				.withProcessType(ProcessType.UNSUPERVISED)
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 		//After : 4 + 1
-		Assert.assertEquals(5, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
+		Assertions.assertEquals(5, orchestraDefinitionManager.getAllProcessDefinitionsByType(ProcessType.UNSUPERVISED).size());
 
-		final ProcessDefinition processDefinition2 = orchestraDefinitionManager.getProcessDefinition("PRO_TEST_BASIC");
-		Assert.assertEquals(processDefinition.getName(), processDefinition2.getName());
+		final ProcessDefinition processDefinition2 = orchestraDefinitionManager.getProcessDefinition("ProTestBasic");
+		Assertions.assertEquals(processDefinition.getName(), processDefinition2.getName());
 	}
 
 }

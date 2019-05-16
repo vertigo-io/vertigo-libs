@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 package io.vertigo.orchestra.domain.definition;
 
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -42,14 +42,14 @@ public final class OActivity implements Entity {
 	private String engine;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
-			name = "A_ACT_PRO",
-			fkFieldName = "PRO_ID",
-			primaryDtDefinitionName = "DT_O_PROCESS",
+			name = "AActPro",
+			fkFieldName = "proId",
+			primaryDtDefinitionName = "DtOProcess",
 			primaryIsNavigable = true,
 			primaryRole = "Process",
 			primaryLabel = "Processus",
 			primaryMultiplicity = "1..1",
-			foreignDtDefinitionName = "DT_O_ACTIVITY",
+			foreignDtDefinitionName = "DtOActivity",
 			foreignIsNavigable = false,
 			foreignRole = "Activity",
 			foreignLabel = "Activity",
@@ -58,8 +58,8 @@ public final class OActivity implements Entity {
 
 	/** {@inheritDoc} */
 	@Override
-	public URI<OActivity> getURI() {
-		return DtObjectUtil.createURI(this);
+	public UID<OActivity> getUID() {
+		return UID.of(this);
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Id Activité'.
 	 * @return Long actId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "ID", required = true, label = "Id Activité")
+	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id Activité")
 	public Long getActId() {
 		return actId;
 	}
@@ -86,7 +86,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Nom de l'activité'.
 	 * @return String name
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Nom de l'activité")
+	@Field(domain = "DoOLibelle", label = "Nom de l'activité")
 	public String getName() {
 		return name;
 	}
@@ -105,7 +105,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Libellé de l'activité'.
 	 * @return String label
 	 */
-	@Field(domain = "DO_O_LIBELLE", label = "Libellé de l'activité")
+	@Field(domain = "DoOLibelle", label = "Libellé de l'activité")
 	public String getLabel() {
 		return label;
 	}
@@ -124,7 +124,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Numéro de l'activité'.
 	 * @return Integer number
 	 */
-	@Field(domain = "DO_O_NOMBRE", label = "Numéro de l'activité")
+	@Field(domain = "DoONombre", label = "Numéro de l'activité")
 	public Integer getNumber() {
 		return number;
 	}
@@ -143,7 +143,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Jalon'.
 	 * @return Boolean milestone
 	 */
-	@Field(domain = "DO_O_BOOLEEN", label = "Jalon")
+	@Field(domain = "DoOBooleen", label = "Jalon")
 	public Boolean getMilestone() {
 		return milestone;
 	}
@@ -162,7 +162,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Implémentation de l'activité'.
 	 * @return String engine
 	 */
-	@Field(domain = "DO_O_CLASSE", label = "Implémentation de l'activité")
+	@Field(domain = "DoOClasse", label = "Implémentation de l'activité")
 	public String getEngine() {
 		return engine;
 	}
@@ -181,9 +181,9 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DO_O_IDENTIFIANT", type = "FOREIGN_KEY", required = true, label = "Processus")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "Processus")
 	public Long getProId() {
-		return (Long)  proIdAccessor.getId();
+		return (Long) proIdAccessor.getId();
 	}
 
 	/**
@@ -201,24 +201,6 @@ public final class OActivity implements Entity {
 	 */
 	public VAccessor<io.vertigo.orchestra.domain.definition.OProcess> process() {
 		return proIdAccessor;
-	}
-	
-	@Deprecated
-	public io.vertigo.orchestra.domain.definition.OProcess getProcess() {
-		// we keep the lazyness
-		if (!proIdAccessor.isLoaded()) {
-			proIdAccessor.load();
-		}
-		return proIdAccessor.get();
-	}
-
-	/**
-	 * Retourne l'URI: Processus.
-	 * @return URI de l'association
-	 */
-	@Deprecated
-	public io.vertigo.dynamo.domain.model.URI<io.vertigo.orchestra.domain.definition.OProcess> getProcessURI() {
-		return proIdAccessor.getURI();
 	}
 	
 	/** {@inheritDoc} */

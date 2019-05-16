@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,19 +18,20 @@
  */
 package io.vertigo.orchestra.services.execution;
 
+import java.time.Instant;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import javax.inject.Inject;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.orchestra.AbstractOrchestraTestCaseJU4;
+import io.vertigo.orchestra.AbstractOrchestraTestCase;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.domain.execution.OActivityExecution;
@@ -48,7 +49,7 @@ import io.vertigo.orchestra.util.monitoring.MonitoringServices;
  * @author mlaroche.
  * @version $Id$
  */
-public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
+public class ExecutionTest extends AbstractOrchestraTestCase {
 
 	@Inject
 	protected OrchestraDefinitionManager orchestraDefinitionManager;
@@ -69,30 +70,40 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void singleExecution() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST MANUEL", "TEST MANUEL")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestManuel", "TestManuel")
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 
 		final Long proId = processDefinition.getId();
 		// We check the save is ok
-		Assert.assertNotNull(proId);
+		Assertions.assertNotNull(proId);
 
 		// We plan right now
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// The task takes 10 secondes to run we wait 12 secondes to check the final states
-		Thread.sleep(1000 * 13);
-
-		final DtList<OProcessPlanification> processPlanifications = monitoringServices.getPlanificationsByProId(proId);
-		// --- We check that planification is ok
-		Assert.assertEquals(1, processPlanifications.size());
-		final OProcessPlanification processPlanification = processPlanifications.get(0);
-		Assert.assertEquals(SchedulerState.TRIGGERED.name(), processPlanification.getSstCd());
+		// test planif
+		testWithTimeout(() -> checkPlanifications(proId, 0, 1, 0, 0), 2);
 		// We check executions
-		checkExecutions(proId, 0, 0, 1, 0);
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 1, 0), 15);
+
+	}
+
+	private static final void testWithTimeout(final Supplier<Boolean> booleanSupplier, final long timeoutSeconds) throws InterruptedException {
+		testWithTimeoutAndDelay(booleanSupplier, timeoutSeconds, 0);
+	}
+
+	private static final void testWithTimeoutAndDelay(final Supplier<Boolean> booleanSupplier, final long timeoutSeconds, final long delayInSeconds) throws InterruptedException {
+		Thread.sleep(delayInSeconds * 1000);
+		final Instant beginning = Instant.now();
+		boolean isSuccess = false;
+		while (!isSuccess && Instant.now().isBefore(beginning.plusSeconds(timeoutSeconds))) {
+			Thread.sleep(500L);
+			isSuccess = booleanSupplier.get();
+		}
+		Assertions.assertTrue(isSuccess);
 	}
 
 	/**
@@ -101,30 +112,20 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void recurrentExecution() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST SCHEDULED", "TEST SCHEDULED")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestScheduled", "TestScheduled")
 				.withCronExpression("*/15 * * * * ?")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 
 		final Long proId = processDefinition.getId();
 		// We check the save is ok
-		Assert.assertNotNull(proId);
+		Assertions.assertNotNull(proId);
 
-		Thread.sleep(1000 * 2);
-		// --- We get the first planification
-		final DtList<OProcessPlanification> processPlanifications = monitoringServices.getPlanificationsByProId(proId);
-		Assert.assertTrue(processPlanifications.size() >= 1);
-		final OProcessPlanification processPlanification = processPlanifications.get(0);
-
-		// We wait the planif
-		Thread.sleep(Math.max(0, processPlanification.getExpectedTime().getTime() - System.currentTimeMillis()));
-
-		// After 20 secondes there is 1 execution done and 1 execution running (for 5 secondes, half execution time)
-		Thread.sleep(1000 * 20);
+		// in 35 seconds there is at leats one done and one running
 		// --- We check the counts
-		checkExecutions(proId, 0, 1, 1, 0);
+		testWithTimeout(() -> checkExecutions(proId, 0, 1, 1, 0), 35);
 
 	}
 
@@ -138,7 +139,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	//				.withRecurrence()
 	//				.withMultiExecution()
 	//				.withCron("*/4 * * * * ?")
-	//				.addTask("DUMB ACTIVITY", "io.vertigo.orchestra.execution.engine.DumbActivityEngine", false)
+	//				.addTask("dumb activity", "io.vertigo.orchestra.execution.engine.DumbActivityEngine", false)
 	//				.build();
 	//
 	//		orchestraDefinitionManager.createDefinition(processDefinition);
@@ -153,25 +154,22 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void executionError() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST ERROR", "TEST ERROR")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestError", "TestError")
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 
 		final Long proId = processDefinition.getId();
 		// We check the save is ok
-		Assert.assertNotNull(proId);
+		Assertions.assertNotNull(proId);
 
 		// We plan right now
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// Error is after 2 seconds
-		Thread.sleep(1000 * 5);
-		// --- We check the counts
-		// After 5 secondes there is 1 process in error
-		checkExecutions(proId, 0, 0, 0, 1);
+		// After 5 secondes at most there is 1 process in error
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 0, 1), 6);
 	}
 
 	/**
@@ -180,9 +178,9 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void twoActivities() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST 2 ACTIVITIES", "TEST 2 ACTIVITIES")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("Test2Activities", "Test2Activities")
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
@@ -190,14 +188,12 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		final Long proId = processDefinition.getId();
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// After 15 seconds the process is still running
-		Thread.sleep(1000 * 15);
-		checkExecutions(proId, 0, 1, 0, 0);
-		// After 25 second the process is done
-		Thread.sleep(1000 * 10);
-		checkExecutions(proId, 0, 0, 1, 0);
+		// After 12 seconds the process is still running
+		testWithTimeoutAndDelay(() -> checkExecutions(proId, 0, 1, 0, 0), 3, 15);
+		// After 12 second the process is done
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 1, 0), 15);
 	}
 
 	/**
@@ -206,9 +202,9 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void twoActivitiesWithError() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST 2 ACTIVITIES ERROR", "TEST 2 ACTIVITIES ERROR")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("Test2ActivitiesError", "Test2ActivitiesError")
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbErrorActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
@@ -216,14 +212,12 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		final Long proId = processDefinition.getId();
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// After 5 seconds the process is still running
-		Thread.sleep(1000 * 5);
-		checkExecutions(proId, 0, 1, 0, 0);
-		// After 15 second the process is in Error
-		Thread.sleep(1000 * 10);
-		checkExecutions(proId, 0, 0, 0, 1);
+		testWithTimeout(() -> checkExecutions(proId, 0, 1, 0, 0), 5);
+		// After 10 second the process is in error
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 0, 1), 15);
 	}
 
 	/**
@@ -231,9 +225,9 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	 */
 	@Test
 	public void testWithInitialParams() throws InterruptedException {
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST INITIAL PARAMS", "TEST INITIAL PARAMS")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestInitialParams", "TestInitialParams")
 				.addInitialParam("filePath", "toto/titi")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
@@ -241,15 +235,14 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		final Long proId = processDefinition.getId();
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
 		// We wait 5 secondes to be sure that execution is running
-		Thread.sleep(1000 * 5);
-		checkExecutions(proId, 0, 1, 0, 0); // We are sure that the process is running so we can continue the test safely
+		testWithTimeout(() -> checkExecutions(proId, 0, 1, 0, 0), 5); // We are sure that the process is running so we can continue the test safely
 
 		final OActivityWorkspace activityWorkspace = monitoringServices
 				.getActivityWorkspaceByAceId(monitoringServices.getActivityExecutionsByPreId(monitoringServices.getExecutionsByProId(proId).get(0).getPreId()).get(0).getAceId(), true);
-		Assert.assertTrue(activityWorkspace.getWorkspace().contains("filePath"));
+		Assertions.assertTrue(activityWorkspace.getWorkspace().contains("filePath"));
 
 	}
 
@@ -258,9 +251,9 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	 */
 	@Test
 	public void testWithInitialParamsInPlanification() throws InterruptedException {
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST INITIALPARAMS PLANIF", "TEST INITIALPARAMS PLANIF")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestInitialParamsPlanif", "TestInitialParamsPlanif")
 				.addInitialParam("filePath", "toto/titi")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
@@ -272,15 +265,14 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		planifParams.put("planifParam", "titi");
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), planifParams);
+				.scheduleAt(processDefinition, Instant.now(), planifParams);
 
 		// We check 3 secondes to be sure that execution is running
-		Thread.sleep(1000 * 3);
-		checkExecutions(proId, 0, 1, 0, 0); // We are sure that the process is running so we can continue the test safely
+		testWithTimeout(() -> checkExecutions(proId, 0, 1, 0, 0), 3); // We are sure that the process is running so we can continue the test safely
 
 		final OActivityWorkspace activityWorkspace = monitoringServices
 				.getActivityWorkspaceByAceId(monitoringServices.getActivityExecutionsByPreId(monitoringServices.getExecutionsByProId(proId).get(0).getPreId()).get(0).getAceId(), true);
-		Assert.assertTrue(activityWorkspace.getWorkspace().contains("tata/tutu"));
+		Assertions.assertTrue(activityWorkspace.getWorkspace().contains("tata/tutu"));
 	}
 
 	/**
@@ -289,8 +281,8 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void testException() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST EXCEPTION", "TEST EXCEPTION")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbExceptionActivityEngine.class)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestException", "TestException")
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbExceptionActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
@@ -299,14 +291,12 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 		//we schedule in 0 seconds
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// After 4 second the process is running
-		Thread.sleep(1000 * 3);
-		checkExecutions(proId, 0, 1, 0, 0);
-		// After 5 seconds the process is in error because there is an exception after 3 seconds
-		Thread.sleep(1000 * 4);
-		checkExecutions(proId, 0, 0, 0, 1);
+		// After 5 second at most the process is running
+		testWithTimeout(() -> checkExecutions(proId, 0, 1, 0, 0), 5);
+		// After 5 seconds at most the process is in error because there is an exception after 3 seconds
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 0, 1), 5);
 	}
 
 	/**
@@ -315,8 +305,8 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void testMonoExecutionMisfire() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST MULTI MISFIRE", "TEST MULTI MISFIRE")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestMultiMisfire", "TestMultiMisfire")
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
@@ -324,14 +314,12 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		final Long proId = processDefinition.getId();
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// We wait 3 seconds
-		Thread.sleep(1000 * 3);
 		// We should have 1 planification triggered and 1 misfired
-		checkPlanifications(proId, 0, 1, 1);
+		testWithTimeout(() -> checkPlanifications(proId, 0, 1, 1, 0), 3);
 		// We should have one execution running
 		checkExecutions(proId, 0, 1, 0, 0);
 	}
@@ -342,8 +330,8 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void testLog() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST LOG", "TEST LOG")
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbLoggedActivityEngine.class)
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestLog", "TestLog")
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbLoggedActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
@@ -351,17 +339,15 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		final Long proId = processDefinition.getId();
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// We wait 10 seconds until it's finished
-		Thread.sleep(1000 * 10);
-
-		checkExecutions(proId, 0, 0, 1, 0); // We are sure that the process is done so we can continue the test safely
+		// We wait 8 seconds at most until it's finished
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 1, 0), 8); // We are sure that the process is done so we can continue the test safely
 
 		final Optional<OActivityLog> activityLog = monitoringServices
 				.getActivityLogByAceId(monitoringServices.getActivityExecutionsByPreId(monitoringServices.getExecutionsByProId(proId).get(0).getPreId()).get(0).getAceId());
-		Assert.assertTrue(activityLog.isPresent());
-		Assert.assertEquals("/testPath", activityLog.get().getAttachment());
+		Assertions.assertTrue(activityLog.isPresent());
+		Assertions.assertEquals("/testPath", activityLog.get().getAttachment());
 
 	}
 
@@ -373,7 +359,7 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 
 		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST MULTI", "TEST MULTI")
 				.withMultiExecution()
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
@@ -381,14 +367,12 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		final Long proId = processDefinition.getId();
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// We wait 3 seconds
-		Thread.sleep(1000 * 5);
 		// We should have 2 planifications triggered
-		checkPlanifications(proId, 0, 2, 0);
+		testWithTimeout(() -> checkPlanifications(proId, 0, 2, 0, 0), 5);
 		// We should have two executions running
 		checkExecutions(proId, 0, 2, 0, 0);
 	}
@@ -399,10 +383,10 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 	@Test
 	public void testFinishedExecution() throws InterruptedException {
 
-		final ProcessDefinition processDefinition = ProcessDefinition.builder("TEST MULTI", "TEST MULTI")
+		final ProcessDefinition processDefinition = ProcessDefinition.builder("TestMulti", "TestMulti")
 				.withMultiExecution()
-				.addActivity("DUMB ACTIVITY FINISHED", "DUMB ACTIVITY FINISHED", io.vertigo.orchestra.services.execution.engine.DumbFinishedActivityEngine.class)
-				.addActivity("DUMB ACTIVITY", "DUMB ACTIVITY", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
+				.addActivity("dumb activity finished", "dumb activity finished", io.vertigo.orchestra.services.execution.engine.DumbFinishedActivityEngine.class)
+				.addActivity("dumb activity", "dumb activity", io.vertigo.orchestra.services.execution.engine.DumbActivityEngine.class)
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
@@ -410,24 +394,86 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 		final Long proId = processDefinition.getId();
 
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, new Date(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 
-		// We wait 10 seconds
-		Thread.sleep(1000 * 10);
 		// we have one process_execution done
-		checkExecutions(proId, 0, 0, 1, 0);
+		testWithTimeout(() -> checkExecutions(proId, 0, 0, 1, 0), 5);
 		// we have one and only one activity_execution done
 		checkActivityExecutions(proId, 0, 0, 1, 0);
 
 	}
 
-	protected void checkPlanifications(final Long proId, final int waitingCount, final int triggeredCount, final int misfiredCount) {
+	protected boolean checkExecutions(final Long proId, final int waitingCount, final int runningCount, final int doneCount, final int errorCount) {
+		int waitingExecutionCount = 0;
+		int runningExecutionCount = 0;
+		int doneExecutionCount = 0;
+		int errorExecutionCount = 0;
+
+		for (final OProcessExecution processExecution : monitoringServices.getExecutionsByProId(proId)) {
+			// --- We check the execution state of the process
+			final DtList<OActivityExecution> activityExecutions = monitoringServices.getActivityExecutionsByPreId(processExecution.getPreId());
+			int countActivitiesError = 0;
+			for (final OActivityExecution activityExecution : activityExecutions) {
+				switch (ExecutionState.valueOf(activityExecution.getEstCd())) {
+					case WAITING:
+						break;
+					case RUNNING:
+						break;
+					case DONE:
+						break;
+					case ERROR:
+						countActivitiesError++;
+						break;
+					case SUBMITTED:
+					case PENDING:
+					case ABORTED:
+					case RESERVED:
+						break;
+					default:
+						throw new UnsupportedOperationException("Unsupported state :" + activityExecution.getEstCd());
+				}
+			}
+			switch (ExecutionState.valueOf(processExecution.getEstCd())) {
+				case WAITING:
+					waitingExecutionCount++;
+					break;
+				case RUNNING:
+					runningExecutionCount++;
+					break;
+				case DONE:
+					doneExecutionCount++;
+					// --- We check that all activities are done if a process is done
+					for (final OActivityExecution activityExecution : activityExecutions) {
+						Assertions.assertEquals(ExecutionState.DONE.name(), activityExecution.getEstCd());
+					}
+					break;
+				case ERROR:
+					errorExecutionCount++;
+					// --- We check that there is one and only one activity is ERROR
+					Assertions.assertEquals(1, countActivitiesError);
+					break;
+				case SUBMITTED:
+				case PENDING:
+				case RESERVED:
+					break;
+				default:
+					throw new UnsupportedOperationException("Unsupported state :" + processExecution.getEstCd());
+			}
+		}
+		// --- We check the counts
+		return waitingCount == waitingExecutionCount &&
+				runningCount == runningExecutionCount &&
+				doneCount == doneExecutionCount &&
+				errorCount == errorExecutionCount;
+	}
+
+	protected boolean checkPlanifications(final Long proId, final int waitingCount, final int triggeredCount, final int misfiredCount, final int rescuedCount) {
 		int waitingPlanificationCount = 0;
 		int triggeredPlanificationCount = 0;
 		int misfiredPlanificationCount = 0;
+		int rescuedPlanificationCount = 0;
 
 		for (final OProcessPlanification processPlanification : monitoringServices.getPlanificationsByProId(proId)) {
-
 			switch (SchedulerState.valueOf(processPlanification.getSstCd())) {
 				case WAITING:
 					waitingPlanificationCount++;
@@ -439,78 +485,17 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 					misfiredPlanificationCount++;
 					break;
 				case RESCUED:
-				default:
+					rescuedPlanificationCount++;
 					break;
+				default:
+					throw new UnsupportedOperationException("Unsupported state :" + processPlanification.getSstCd());
 			}
 		}
 		// --- We check the counts
-		Assert.assertEquals(waitingCount, waitingPlanificationCount);
-		Assert.assertEquals(triggeredCount, triggeredPlanificationCount);
-		Assert.assertEquals(misfiredCount, misfiredPlanificationCount);
-	}
-
-	protected void checkExecutions(final Long proId, final int waitingCount, final int runningCount, final int doneCount, final int errorCount) {
-		int waitingExecutionCount = 0;
-		int runningExecutionCount = 0;
-		int doneExecutionCount = 0;
-		int errorExecutionCount = 0;
-
-		for (final OProcessExecution processExecution : monitoringServices.getExecutionsByProId(proId)) {
-			// --- We check the execution state of the process
-			final DtList<OActivityExecution> activityExecutions = monitoringServices.getActivityExecutionsByPreId(processExecution.getPreId());
-			int countActivitiesRunning = 0;
-			int countActivitiesError = 0;
-			for (final OActivityExecution activityExecution : activityExecutions) {
-				switch (ExecutionState.valueOf(activityExecution.getEstCd())) {
-					case WAITING:
-						break;
-					case RUNNING:
-						countActivitiesRunning++;
-						break;
-					case DONE:
-						break;
-					case ERROR:
-						countActivitiesError++;
-						break;
-					case SUBMITTED:
-					case PENDING:
-					case ABORTED:
-					default:
-						throw new UnsupportedOperationException("Unsupported state :" + activityExecution.getEstCd());
-				}
-			}
-			switch (ExecutionState.valueOf(processExecution.getEstCd())) {
-				case WAITING:
-					waitingExecutionCount++;
-					break;
-				case RUNNING:
-					runningExecutionCount++;
-					// --- We check that there is one and only one activity RUNNING if the process is Running
-					Assert.assertEquals(1, countActivitiesRunning);
-					break;
-				case DONE:
-					doneExecutionCount++;
-					// --- We check that all activities are done if a process is done
-					for (final OActivityExecution activityExecution : activityExecutions) {
-						Assert.assertEquals(ExecutionState.DONE.name(), activityExecution.getEstCd());
-					}
-					break;
-				case ERROR:
-					errorExecutionCount++;
-					// --- We check that there is one and only one activity is ERROR
-					Assert.assertEquals(1, countActivitiesError);
-					break;
-				case SUBMITTED:
-				case PENDING:
-				default:
-					throw new UnsupportedOperationException("Unsupported state :" + processExecution.getEstCd());
-			}
-		}
-		// --- We check the counts
-		Assert.assertEquals("waiting ", waitingCount, waitingExecutionCount);
-		Assert.assertEquals("running", runningCount, runningExecutionCount);
-		Assert.assertEquals("done", doneCount, doneExecutionCount);
-		Assert.assertEquals("error", errorCount, errorExecutionCount);
+		return waitingCount == waitingPlanificationCount &&
+				triggeredCount == triggeredPlanificationCount &&
+				misfiredCount == misfiredPlanificationCount &&
+				rescuedCount == rescuedPlanificationCount;
 	}
 
 	protected void checkActivityExecutions(final Long proId, final int waitingCount, final int runningCount, final int doneCount, final int errorCount) {
@@ -544,10 +529,10 @@ public class ExecutionTest extends AbstractOrchestraTestCaseJU4 {
 				}
 			}
 			// --- We check the counts
-			Assert.assertEquals("waiting ", waitingCount, waitingExecutionCount);
-			Assert.assertEquals("running", runningCount, runningExecutionCount);
-			Assert.assertEquals("done", doneCount, doneExecutionCount);
-			Assert.assertEquals("error", errorCount, errorExecutionCount);
+			Assertions.assertEquals(waitingCount, waitingExecutionCount, "waiting ");
+			Assertions.assertEquals(runningCount, runningExecutionCount, "running");
+			Assertions.assertEquals(doneCount, doneExecutionCount, "done");
+			Assertions.assertEquals(errorCount, errorExecutionCount, "error");
 
 		}
 

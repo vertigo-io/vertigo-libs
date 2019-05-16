@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,10 +19,10 @@
 package io.vertigo.stella.plugins.work.rest.master;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.commons.daemon.DaemonScheduled;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.master.MasterPlugin;
 import io.vertigo.stella.impl.master.WorkResult;
@@ -47,13 +47,17 @@ public final class RestMasterPlugin implements MasterPlugin, WebServices {
 	 */
 	@Inject
 	public RestMasterPlugin(
-			final DaemonManager daemonManager,
-			@Named("timeoutSeconds") final int timeoutSeconds,
+			@ParamValue("timeoutSeconds") final int timeoutSeconds,
 			final CodecManager codecManager) {
 		Assertion.checkArgument(timeoutSeconds < 10000, "Le timeout s'exprime en seconde.");
 		//-----
-		//	this.timeoutSeconds = timeoutSeconds;
-		restQueueServer = new RestQueueServer(20, codecManager, 5, daemonManager);
+		restQueueServer = new RestQueueServer(20, codecManager, 5);
+	}
+
+	@DaemonScheduled(name = "DmnWorkQueueTimeoutCheck", periodInSeconds = 10)
+	public void checkDeadNodesAndWorkItems() {
+		restQueueServer.checkDeadNodes();
+		restQueueServer.checkDeadWorkItems();
 	}
 
 	/** {@inheritDoc} */

@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,10 +18,15 @@
  */
 package io.vertigo.orchestra;
 
+import java.util.stream.Stream;
+
 import io.vertigo.app.config.DefinitionProviderConfig;
+import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.lang.Assertion;
+import io.vertigo.lang.VSystemException;
 import io.vertigo.orchestra.dao.definition.DefinitionPAO;
 import io.vertigo.orchestra.dao.definition.OActivityDAO;
 import io.vertigo.orchestra.dao.definition.OProcessDAO;
@@ -60,13 +65,23 @@ import io.vertigo.orchestra.webservices.WsInfos;
  * Defines extension orchestra.
  * @author pchretien
  */
-public final class OrchestraFeatures extends Features {
+public final class OrchestraFeatures extends Features<OrchestraFeatures> {
 
 	/**
 	 * Constructeur de la feature.
 	 */
 	public OrchestraFeatures() {
-		super("orchestra");
+		super("vertigo-orchestra");
+	}
+
+	private static Param findParamByName(final String paramName, final Param[] params) {
+		Assertion.checkArgNotEmpty(paramName);
+		//---
+		return Stream.of(params)
+				.filter(param -> paramName.equals(param.getName()))
+				.findFirst()
+				.orElseThrow(() -> new VSystemException("param '{0}' not found in params '{1}' ", paramName, params));
+
 	}
 
 	/**
@@ -77,17 +92,24 @@ public final class OrchestraFeatures extends Features {
 	 * @param forecastDurationSeconds the time to forecast planifications
 	 * @return these features
 	 */
-	public OrchestraFeatures withDataBase(final String nodeName, final int daemonPeriodSeconds, final int workersCount, final int forecastDurationSeconds) {
+	@Feature("orchestra.database")
+	public OrchestraFeatures withDataBase(final Param... params) {
+		final Param nodeName = findParamByName("nodeName", params);
+		final Param daemonPeriodSeconds = findParamByName("daemonPeriodSeconds", params);
+		final Param workersCount = findParamByName("workersCount", params);
+		final Param forecastDurationSeconds = findParamByName("forecastDurationSeconds", params);
+
 		getModuleConfigBuilder()
+				.addComponent(ONodeManager.class, ONodeManagerImpl.class)
 				.addPlugin(DbProcessDefinitionStorePlugin.class)
 				.addPlugin(DbProcessSchedulerPlugin.class,
-						Param.of("nodeName", nodeName),
-						Param.of("planningPeriodSeconds", String.valueOf(daemonPeriodSeconds)),
-						Param.of("forecastDurationSeconds", String.valueOf(forecastDurationSeconds)))
+						nodeName,
+						Param.of("planningPeriodSeconds", daemonPeriodSeconds.getValueAsString()),
+						forecastDurationSeconds)
 				.addPlugin(DbProcessExecutorPlugin.class,
-						Param.of("nodeName", nodeName),
-						Param.of("workersCount", String.valueOf(workersCount)),
-						Param.of("executionPeriodSeconds", String.valueOf(daemonPeriodSeconds)))
+						nodeName,
+						workersCount,
+						Param.of("executionPeriodSeconds", daemonPeriodSeconds.getValueAsString()))
 				.addPlugin(DbProcessReportPlugin.class)
 				.addPlugin(DbProcessLoggerPlugin.class)
 				//----DAO
@@ -119,12 +141,14 @@ public final class OrchestraFeatures extends Features {
 	 * @param workersCount the number of workers
 	 * @return these features
 	 */
-	public OrchestraFeatures withMemory(final int workersCount) {
+	@Feature("orchestra.memory")
+	public OrchestraFeatures withMemory(final Param... params) {
+		final Param workersCount = findParamByName("workersCount", params);
 		getModuleConfigBuilder()
 				.addPlugin(MemoryProcessDefinitionStorePlugin.class)
 				.addPlugin(MemoryProcessSchedulerPlugin.class)
 				.addPlugin(MemoryProcessExecutorPlugin.class,
-						Param.of("workersCount", String.valueOf(workersCount)));
+						workersCount);
 
 		return this;
 	}
@@ -133,6 +157,7 @@ public final class OrchestraFeatures extends Features {
 	 * Activate Orchestra's REST WebServices.
 	 * @return these features
 	 */
+	@Feature("orchestra.webapi")
 	public OrchestraFeatures withWebApi() {
 		getModuleConfigBuilder()
 				.addComponent(WsDefinition.class)
@@ -147,7 +172,6 @@ public final class OrchestraFeatures extends Features {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addComponent(ONodeManager.class, ONodeManagerImpl.class)
 				.addComponent(OrchestraDefinitionManager.class, OrchestraDefinitionManagerImpl.class)
 				.addComponent(OrchestraServices.class, OrchestraServicesImpl.class);
 

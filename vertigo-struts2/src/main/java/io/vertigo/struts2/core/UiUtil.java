@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -29,7 +29,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 
@@ -108,7 +107,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static String getDisplayField(final UiList<?> uiList) {
 		final DtDefinition dtDefinition = uiList.getDtDefinition();
-		return StringUtil.constToLowerCamelCase(dtDefinition.getDisplayField().get().getName());
+		return dtDefinition.getDisplayField().get().getName();
 	}
 
 	/**
@@ -117,7 +116,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static String getIdField(final UiList<?> uiList) {
 		final DtDefinition dtDefinition = uiList.getDtDefinition();
-		return StringUtil.constToLowerCamelCase(dtDefinition.getIdField().get().getName());
+		return dtDefinition.getIdField().get().getName();
 	}
 
 	private static DtField getDtField(final String fieldPath) {
@@ -139,7 +138,7 @@ public final class UiUtil implements Serializable {
 		}
 		Assertion.checkNotNull(dtDefinition); //, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
 		Assertion.checkNotNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
-		return dtDefinition.getField(StringUtil.camelToConstCase(fieldName));
+		return dtDefinition.getField(fieldName);
 
 	}
 }

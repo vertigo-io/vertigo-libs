@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,7 +20,7 @@ package io.vertigo.struts2.dao.people;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.domain.model.URI;
+import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
@@ -50,7 +50,7 @@ public final class PeopleDAO extends DAO<People, java.lang.Long> implements Stor
 	 * @param uri URI du keyConcept modifié
 	 * @return KeyConcept à modifier
 	 */
-	public People readOneForUpdate(final URI<People> uri) {
+	public People readOneForUpdate(final UID<People> uri) {
 		return dataStore.readOneForUpdate(uri);
 	}
 
@@ -62,7 +62,7 @@ public final class PeopleDAO extends DAO<People, java.lang.Long> implements Stor
 	 * @return KeyConcept à modifier
 	 */
 	public People readOneForUpdate(final java.lang.Long id) {
-		return readOneForUpdate(createDtObjectURI(id));
+		return readOneForUpdate(createDtObjectUID(id));
 	}
 
 }

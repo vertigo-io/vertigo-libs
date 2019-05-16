@@ -1,7 +1,7 @@
 /**
  * vertigo - simple java starter
  *
- * Copyright (C) 2013-2019, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+ * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,7 +23,6 @@ import java.util.Locale;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -34,6 +33,7 @@ import com.sun.star.lang.XComponent;
 import com.sun.star.ucb.XFileIdentifierConverter;
 import com.sun.star.uno.UnoRuntime;
 
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.lang.Assertion;
 
@@ -53,8 +53,8 @@ public final class OpenOfficeLocalConverterPlugin extends AbstractOpenOfficeConv
 	@Inject
 	public OpenOfficeLocalConverterPlugin(
 			final FileManager fileManager,
-			@Named("unoport") final String unoPort,
-			@Named("convertTimeoutSeconds") final Optional<Integer> convertTimeoutSeconds) {
+			@ParamValue("unoport") final String unoPort,
+			@ParamValue("convertTimeoutSeconds") final Optional<Integer> convertTimeoutSeconds) {
 		super(fileManager, "localhost", unoPort, convertTimeoutSeconds.orElse(60));
 
 	}
@@ -67,7 +67,7 @@ public final class OpenOfficeLocalConverterPlugin extends AbstractOpenOfficeConv
 		final PropertyValue[] storeProps = getFileProperties(targetFormat);
 		final XStorable xStorable = UnoRuntime.queryInterface(XStorable.class, xDoc);
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Storing to " + outputUrl);
+			LOGGER.debug("Storing to {}", outputUrl);
 		}
 		xStorable.storeToURL(outputUrl, storeProps);
 	}
@@ -83,7 +83,7 @@ public final class OpenOfficeLocalConverterPlugin extends AbstractOpenOfficeConv
 		final PropertyValue[] loadProps = getFileProperties(inputDocType);
 
 		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug("Openning document... " + inputUrl);
+			LOGGER.debug("Openning document... {}", inputUrl);
 		}
 		final XComponent xDoc = openOfficeConnection.getDesktop().loadComponentFromURL(inputUrl, "_blank", 0, loadProps);
 		Assertion.checkNotNull(xDoc, "Le document n''a pas été chargé : {0}", inputUrl);
