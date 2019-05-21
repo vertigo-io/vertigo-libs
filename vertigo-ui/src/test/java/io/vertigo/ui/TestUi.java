@@ -18,8 +18,6 @@
  */
 package io.vertigo.ui;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -33,6 +31,7 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppClassLoader;
 import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.WebDriver;
@@ -114,7 +113,7 @@ public class TestUi {
 	@Test
 	public void testLoadLoginPage() {
 		driver.get(baseUrl + "/test/");
-		assertEquals(baseUrl + "/test/", driver.getCurrentUrl());
+		Assertions.assertEquals(baseUrl + "/test/", driver.getCurrentUrl());
 	}
 
 	@Test
