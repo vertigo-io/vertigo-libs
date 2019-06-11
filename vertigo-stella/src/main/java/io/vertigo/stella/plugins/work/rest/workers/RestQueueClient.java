@@ -78,9 +78,9 @@ final class RestQueueClient {
 		try {
 			try {
 				final String jsonResult;
-				lockByWorkType.putIfAbsent(workType, new Object());
+				final Object lockWorkType = lockByWorkType.putIfAbsent(workType, new Object());
 				//Cette tache est synchronized sur le workType, pour éviter de surcharger le serveur en demandes multiple
-				synchronized (lockByWorkType.get(workType)) {
+				synchronized (lockWorkType) {
 					checkInterrupted(); //must be check because Thread.interrupt() doesn't freed the synchronized lock
 
 					final WebTarget remoteWebResource = prepareTarget(serverUrl + "/pollWork/" + workType + "?nodeUID=" + nodeId);
