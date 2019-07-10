@@ -27,11 +27,11 @@ import io.vertigo.quarto.services.publisher.model.PublisherNode;
 import io.vertigo.util.StringUtil;
 
 /**
- * Classe abstraite représentant un KScriptTag.
+ * Classe abstraite représentant un ScriptTag.
  *
  * @author pchretien, npiedeloup
  */
-abstract class AbstractKScriptTag {
+abstract class AbstractScriptTag {
 	/**
 	 * JSP start bloc.
 	 */
