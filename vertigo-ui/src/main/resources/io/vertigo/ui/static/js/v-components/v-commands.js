@@ -128,24 +128,6 @@ Vue.component('v-commands', {
 			}
 			
 		},
-		clearParam: function(index){
-			var newParams = this.$data.commandParamsValues.slice();
-			newParams[index] = {};
-			this.$data.commandParamsValues = newParams;
-		},
-		wrapSingleValue: function (stringValue) {
-			if(stringValue) {
-				return [stringValue];
-			} else {
-				return [];
-			}
-		},
-		isReadonly : function(paramValues, index) {
-			if(paramValues[index].value){
-				return true;
-			}
-			return false;
-		},
 		backIfNeeded: function (index, isFirst) {
 			if (isFirst && !this.$data.commandParamsValues[0].value) {
 				this.back();
