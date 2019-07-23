@@ -106,7 +106,7 @@ Vue.component('v-commands', {
 			// otherwise nothing particular
 		},
 		autocompleteParam : function(param, terms, done) {
-			this.$http.get(this.baseUrl+'api/vertigo/commands/params/autocomplete', {params : {terms: terms, entityClass: param.paramType.actualTypeArguments[0]}})
+			this.$http.get(this.baseUrl+'api/vertigo/commands/params/_autocomplete', {params : {terms: terms, entityClass: param.paramType.actualTypeArguments[0]}})
 				.then( function (response) {
 					done(response.body.map(function(element) {
 						return {
