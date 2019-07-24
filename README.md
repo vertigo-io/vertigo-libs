@@ -1,7 +1,7 @@
 # vertigo-extensions
 =================
 
-Vertigo extensions are **ready to use** mini-appplications that provide **high value services** on a given topic.
+Vertigo extensions are mini-appplications that provide **high value services** on a given topic.
 Use them to enhance your applications!
 
 Each extension can be used :
@@ -9,45 +9,54 @@ Each extension can be used :
  - as a standalone app for microservices architectures
 
 
-## vertigo-social
+## vertigo-social [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-yes-green.svg)]()
 ### Add collaboration features to help your users
 
-* __comment__ : a simple way to add comments and metadata to business objects
+* __comment__ :  a simple way to add comments and metadata to business objects
 * __notification__ : a standalone way to push notification to users
 
-## vertigo-orchestra
+## vertigo-orchestra [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-yes-green.svg)]()
 ### Manage, execute and monitor background operations and communications.
 For more details see [here](/vertigo-orchestra/)
 
-## vertigo-stella : 
-* __node__ : node of worker for distributed operations
-* __work__ : process, shedule or distribute your tasks
-
-## vertigo-quarto
+## vertigo-quarto [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-yes-green.svg)]()
 ### Publishing managment.
 
 * __converter__ : obviously, converts your documents from one format to another
 * __publisher__ : lightweight publishing tool. Produces documents from user defined templates and application data. Templates are really easy to modify because they are just ODT or DOCX with tags.
 * __export__ : exports collections and object to usefull files formats (built-in: CSV, PDF, RTF, XLS)
 
-## vertigo-rules
-* Simple rule engine. Can be used in a standalone use case or integrated with the workflow module.
-
-## vertigo-workflow
-* Simple workflow module to handle linear workflows. A rule system can be used to dynamically skip activities.
-
-## vertigo-struts2
+## vertigo-struts2 [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-yes-green.svg)]()
 ### Bridge to use vertigo for Struts2 applications.
 
-## vertigo-mail
+## vertigo-ui [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-yes-green.svg)]()
+### Bridge to use vertigo for SpringMVC/Thymeleaf applications, use VueJS & Quazar for UI.
+
+## vertigo-mail [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-yes-green.svg)]()
 A simple mailer for your app
 
-## vertigo-audit
+## vertigo-stella : [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-no-red.svg)]()
+* __node__ : node of worker for distributed operations
+* __work__ : process, shedule or distribute your tasks
 
-## vertigo-adapters
+## vertigo-dashboard [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-no-red.svg)]()
+Create dashboard for analytics. Using Timeseries database.
+
+## vertigo-ledger [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-no-red.svg)]()
+POC api for using blockchain data proof.
+
+## vertigo-rules [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-no-red.svg)]()
+* Simple rule engine. Can be used in a standalone use case or integrated with the workflow module.
+
+## vertigo-workflow [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-no-red.svg)]()
+* Simple workflow module to handle linear workflows. A rule system can be used to dynamically skip activities.
+
+## vertigo-audit [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-no-red.svg)]()
+
+## vertigo-adapters [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-no-red.svg)]()
 Standalone adapters to easily use third party services (Twitter, IFTTT, etc...) with your vertigo app
 
-## vertigo-geo
+## vertigo-geo [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-no-red.svg)]()
 
 -----
 #License
