@@ -39,10 +39,10 @@ A simple mailer for your app
 * __node__ : node of worker for distributed operations
 * __work__ : process, shedule or distribute your tasks
 
-## vertigo-dashboard [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-no-red.svg)]()
+## vertigo-dashboard [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-yes-green.svg)]()
 Create dashboard for analytics. Using Timeseries database.
 
-## vertigo-ledger [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-no-red.svg)]()
+## vertigo-ledger [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-yes-green.svg)]()
 POC api for using blockchain data proof.
 
 ## vertigo-rules [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-no-red.svg)]()
