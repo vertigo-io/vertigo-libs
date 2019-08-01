@@ -88,7 +88,6 @@ public abstract class AbstractVSpringMvcController {
 
 	public void prepareContext(final HttpServletRequest request) throws ExpiredViewContextException {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
-		attributes.setAttribute("createdContext", true, RequestAttributes.SCOPE_REQUEST);
 		ViewContext viewContext = null;
 		final String ctxId = request.getParameter(ViewContext.CTX.get());
 		if ("POST".equals(request.getMethod()) || ctxId != null && acceptCtxQueryParam()) {
