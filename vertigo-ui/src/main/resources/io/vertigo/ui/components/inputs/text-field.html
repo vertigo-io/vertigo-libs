@@ -1,13 +1,20 @@
 <th:block th:fragment="text-field-edit(object, field, label, suffix, label_attrs, input_attrs)" 
 	vu:alias="text-field" vu:selector="${viewMode=='edit'}"
+	th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
 	th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}"/>
-	<vu:label-edit label=${label} th:attr="__${label_attrs}__">
 		<q-input 
 			th:v-model="${'vueData.' + object + '.' + field}" 
 			th:name="${'vContext['+object+']['+ field +']'}"
 			th:suffix="${model.util.domainUnit(object, field, suffix)}"
 			th:maxlength="${model.util.domainMaxLength(object, field)}"
+			th::label-width="${overridedLabelWidth?:3}"
+			th:label="${myLabel}"
+			th::error="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__')}"
+			th:error-label="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__') ? uiMessageStack.objectFieldErrors[__${object}__][__${field}__] : ''}"
+			th::warning="${uiMessageStack.hasFieldWarnings('__${object}__', '__${field}__')}"
+			orientation="vertical"
+			stack-label
 			th:attr="__${input_attrs}__"
 		>
 		</q-input>

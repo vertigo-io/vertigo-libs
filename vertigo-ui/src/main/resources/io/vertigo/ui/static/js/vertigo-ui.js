@@ -50,12 +50,6 @@ var VUi = {
 						return { value: object[valueField], label: object[labelField].toString()} // a label is always a string
 					});
 				},
-				transformListForStaticSelection: function (list, valueField, labelField) {
-					var finalList =  this.$data.vueData[list].map(function (object) {
-						return { value: object[valueField], label: object[labelField].toString()} // a label is always a string
-					});
-					return {field : 'label', list : finalList}
-				},
 				paginationAndSortHandler : function (params) {
 					var pagination = params.pagination;
 					var filter = params.filter;
@@ -93,16 +87,22 @@ var VUi = {
 				selectedFunction : function (object, field, item, keyboard) {
 					this.$data.vueData[object][field] = item.value;
 				},
-				searchAutocomplete : function (list, valueField, labelField, url, terms, done) {
+				searchAutocomplete : function (list, valueField, labelField, componentId, url, terms, update, abort) {
+					if (terms.length < 2) {
+				        abort();
+				        return
+				    }
 					this.$http.post(url, {terms: terms, list : list , valueField : valueField,labelField : labelField, CTX: this.$data.vueData.CTX}, { emulateJSON: true }).then( function (response ) {
 						var finalList =  response.body.map(function (object) {
 							return { value: object[valueField], label: object[labelField].toString()} // a label is always a string
 						});
-						done(finalList);
+						update(function() {
+							this.componentStates[componentId].options = finalList;
+						});
 					}, 
 					function (response) {
 						this.$q.notify(response.status + ":" +response.statusText);
-						done([]);
+						update([]);
 					});
 					
 				},

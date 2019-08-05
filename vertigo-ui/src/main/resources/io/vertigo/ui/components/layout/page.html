@@ -7,12 +7,12 @@
 	    loadingBar: { 'skip-hijack' : true } // disable quasar's ajaxbar
 	  }
 	</script>
-	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar-framework@0.17.19/dist/umd/quasar.mat.umd.min.js}"></script>
-	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar-framework@0.17.19/dist/umd/i18n.fr.umd.min.js}"></script>
+	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.0.3/dist/quasar.umd.min.js}"></script>
+	<script th:src="@{/vertigo-ui/static/3rdParty/cdn.jsdelivr.net/npm/quasar@1.0.3/dist/fr.umd.min.js}"></script>
 	<vu:vue-data/>
 	<script th:src="@{/vertigo-ui/static/js/vertigo-ui.js}"></script>
 	<script>
-		Quasar.i18n.set(Quasar.i18n.fr)
+		Quasar.lang.set(Quasar.lang.fr)
 		var data = {
 				  vueData : vueData,
 				  componentStates : componentStates,

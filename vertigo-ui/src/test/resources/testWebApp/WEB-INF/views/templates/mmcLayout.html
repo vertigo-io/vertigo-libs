@@ -73,7 +73,7 @@
 				</q-toolbar>
   			</q-layout-footer>
   			
-  			<q-layout-drawer
+  			<q-drawer
 		      side="left"
 		      :overlay="!componentStates.navDrawer.miniState"
 		      v-model="componentStates.navDrawer.showLeft"
@@ -84,7 +84,7 @@
 			  >
 		      
 		      <div slot="mini" style="height:100%">
-		      	 <q-list link style="height:100%">
+		      	 <q-list style="height:100%">
 			      <nav>
 			        <q-item tag="a" th:href="@{#}">
 			          <q-item-side icon="fas fa-globe-asia"></q-item-side>
@@ -111,7 +111,7 @@
 			        </q-list>
 		      </div>
 		      
-		      <q-list link style="height:100%">
+		      <q-list style="height:100%">
 		      <nav class="text-no-wrap">
 		        <q-item tag="a" th:href="@{#}">
 		          <q-item-side icon="fas fa-globe-asia "></q-item-side>
@@ -143,13 +143,13 @@
 		        </q-item>
 		        </nav>
 		        </q-list>
-		    </q-layout-drawer>
+		    </q-drawer>
 		    
-		    <q-layout-drawer side="right" show-if-above>
+		    <q-drawer side="right" show-if-above>
 		    
 		     	<section layout:fragment="content-nav"></section>
 		     	
-		    </q-layout-drawer>
+		    </q-drawer>
   			
 			<q-page-container class="row justify-center">
 			 	<q-page class="layout-padding col-12">
