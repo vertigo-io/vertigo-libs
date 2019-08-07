@@ -10,7 +10,7 @@
 			th::label-width="${overridedLabelWidth?:3}"
 			th:label="${myLabel}"
 			th::error="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__')}"
-			th:error-label="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__') ? uiMessageStack.objectFieldErrors[__${object}__][__${field}__] : ''}"
+			th:error-message="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__') ? uiMessageStack.objectFieldErrors[__${object}__][__${field}__] : ''}"
 			th::warning="${uiMessageStack.hasFieldWarnings('__${object}__', '__${field}__')}"
 			orientation="vertical"
 			stack-label
@@ -28,9 +28,6 @@
 			th:v-model="${'vueData.' + object + '.' + field}" 
 			th:name="${'vContext['+object+']['+ field +']'}"
 			th:label="${myLabel}"
-			th::error="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__')}"
-			th:error-label="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__') ? uiMessageStack.objectFieldErrors[__${object}__][__${field}__] : ''}"
-			th::warning="${uiMessageStack.hasFieldWarnings('__${object}__', '__${field}__')}"
 			orientation="vertical"
 			stack-label
 			th:attr="__${input_attrs}__"

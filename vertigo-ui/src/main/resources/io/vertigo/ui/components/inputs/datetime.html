@@ -1,18 +1,35 @@
-<th:block th:fragment="datetime-edit(object, field, label, label_attrs, input_attrs)" vu:alias="datetime" vu:selector="${viewMode=='edit'}"
+<th:block th:fragment="datetime-edit(object, field, label, componentId, date_attrs, time_attrs, input_attrs)" vu:alias="datetime" vu:selector="${viewMode=='edit'}"
+		th:with="myLabel=${label?:model.util.label(object + '.' + field)}, myComponentId=${componentId != null ? componentId : 'datetime' + '_' + object + '_' + field}"
 	  th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}"/>
-	<vu:label-edit object="${object}" field="${field}" label="${label}" th:attr="__${label_attrs}__">
-		<q-datetime 
-			th:v-bind:value="|parseDateTime('${object}', '${field}', 'DD/MM/YYYY HH:mm')|" 
-			th:@change="|function (newValue) { formatDateTime('${object}','${field}', newValue, 'DD/MM/YYYY HH:mm') }|" 
-			type="datetime" format-model="date" format="DD/MM/YYYY HH:mm"
-			th:attr="__${input_attrs}__"
-			>
-		</q-datetime>
-	</vu:label-edit>
+	<q-input 
+		th:v-bind:value="|decodeDatetime('${object}', '${field}', 'DD/MM/YYYY HH:mm')|" 
+		th:@change="|function (event) { encodeDatetime('${object}','${field}', event.target.value, 'DD/MM/YYYY HH:mm') }|" 
+		th:label="${myLabel}"
+		th::error="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__')}"
+		th:error-message="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__') ? uiMessageStack.objectFieldErrors[__${object}__][__${field}__] : ''}"
+		th::warning="${uiMessageStack.hasFieldWarnings('__${object}__', '__${field}__')}"
+		th:attr="__${input_attrs}__" >
+		<q-popup-proxy th:attr="ref=${myComponentId + '_date'}"  :breakpoint="600"   transition-show="scale" transition-hide="scale" >
+              <q-date 
+              	th:v-model="|vueData.${object}.${field}|" 
+               	th:@input="|function (value, reason, detail) {  if ('day' === reason) {$refs.${myComponentId + '_date'}.hide(); $refs.${myComponentId + '_time'}.show();}}|"
+              	landscape 
+                mask="DD/MM/YYYY HH:mm"
+                th:attr="__${date_attrs}__"></q-date> 
+        </q-popup-proxy>
+        <q-popup-proxy  :target="false" th:attr="ref=${myComponentId + '_time'}"  :breakpoint="600" transition-show="scale" transition-hide="scale" >
+               <q-time 
+               		th:v-model="|vueData.${object}.${field}|"
+               		landscape
+                	mask="DD/MM/YYYY HH:mm"
+                  	format24h
+                  	th:attr="__${time_attrs}__" ></q-time>
+        </q-popup-proxy>
+    </q-input>
 	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
 </th:block> 
 
-<th:block th:fragment="datetime-read(object, field, label, label_attrs, input_attrs)" vu:alias="datetime" vu:selector="${viewMode=='read'}" >
+<th:block th:fragment="datetime-read(object, field, label, date_attrs, input_attrs)" vu:alias="datetime" vu:selector="${viewMode=='read'}" >
 	<vu:text-field-read object="${object}" field="${field}" label="${label}" />
 </th:block>
