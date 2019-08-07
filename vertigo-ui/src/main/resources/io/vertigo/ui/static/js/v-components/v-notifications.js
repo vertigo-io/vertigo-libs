@@ -1,7 +1,7 @@
 Vue.component('v-notifications', {
 	template : 
 '<q-btn round dense :color="hasNew?\'primary\':\'white\'" :textColor="hasNew?\'white\':\'primary\'" :icon="count>0?icon:iconNone" class="on-left" >'
-+'	<q-chip floating color="red" v-if="count>0" >{{count}}</q-chip>'
++'	<q-badge color="red" text-color="white" floating v-if="count>0" >{{count}}</q-badge>'
 +'	<q-menu class="notifications">'
 +'		<q-list style="width:300px">'
 +'          <q-item v-for="notif in list" :key="notif.uuid" class="q-py-none" tag="a" :href="notif.targetUrl" >'
