@@ -223,16 +223,19 @@ var VUi = {
 				uploader_uploadFile : function(componentId) {
 						this.$refs[componentId].upload()
 				},				
-				uploader_uploadedFile : function(file, componentId) {
+				uploader_uploadedFiles : function(uploadInfo, componentId) {
+					uploadInfo.files.forEach(function(file) {
 						componentStates[componentId].fileUris.push(file.xhr.response);
 						file.fileUri = file.xhr.response;
+					});
 				},
-				uploader_removeFile : function(removedFile, componentId) {
+				uploader_removeFiles : function(removedFiles, componentId) {
+					removedFiles.forEach(function(removedFile) {
 						var component = this.$refs[componentId];
 						var componentFileUris = componentStates[componentId].fileUris;
 						var indexOfFileUri = componentFileUris.indexOf(removedFile.fileUri);
 						var xhrParams = {};
-						xhrParams[component.name] = removedFile.fileUri;
+						xhrParams[component.fieldName] = removedFile.fileUri;
 						this.$http.delete(component.url, {params : xhrParams, credentials:component.withCredentials})
 						.then( function (response) { //Ok
 							if (component.multiple) {
@@ -243,7 +246,7 @@ var VUi = {
 						}, function(response) { //Ko
 							this.$q.notify(response.status + ":" +response.statusText+ " Can't remove temporary file");
 						});
-						
+					}.bind(this));
 				},
 				httpPostAjax : function(url, params, handler) {
 					params['CTX'] = vueData.CTX;
