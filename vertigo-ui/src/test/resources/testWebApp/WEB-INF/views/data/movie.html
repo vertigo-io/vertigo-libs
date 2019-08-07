@@ -15,7 +15,7 @@
 <body>
 	<div layout:fragment="content">
 			<div style="width:100%">
-				<v-map id="map" marker-color="#027BE3" :list="[{lat : 2.239230, lon: 48.773744 },{lat : 2.280263, lon: 48.827317 },{lat : -4.570026, lon: 48.357621 }]"></v-map>
+				<v-map style="width:100%; height: 600px;" id="map" marker-color="#027BE3" :list="[{location : {lon : 2.239230, lat: 48.773744}, label:'titi' }, {location : {lon : 2.280263, lat: 48.827317}, label:'toto' },{location : {lon : -4.570026, lat: 48.357621}, label:'tata' }]" field="location" name-field="label"></v-map>
 			</div>
 			<vu:form>
 				<vu:grid cols="3">
