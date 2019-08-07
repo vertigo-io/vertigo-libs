@@ -354,8 +354,14 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		return attributeValue;
 	}
 
-	private static String encodeAttributeName(final String attributeName) {
-		if (attributeName.matches("^[^'a-zA-Z].*")) {
+	private static String encodeAttributeName(final String attributeName, final Object attributeValue) {
+		if (!attributeName.startsWith(":") && !attributeName.startsWith("'")
+				&& (attributeValue == null
+						|| attributeValue instanceof String
+								&& ((String) attributeValue).equalsIgnoreCase("true") //boolean
+								&& ((String) attributeValue).equalsIgnoreCase("false"))) {
+			return "':" + attributeName + "'";
+		} else if (attributeName.matches("^[^'a-zA-Z].*")) {
 			return "'" + attributeName + "'";
 		}
 		return attributeName;
@@ -403,7 +409,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		for (final String placeholderPrefix : placeholderPrefixes) {
 			if (prefixedVariableName.startsWith(placeholderPrefix)) {
 				final String attributeName = prefixedVariableName.substring(placeholderPrefix.length());
-				addPlaceholderVariable(placeholders, placeholderPrefix, encodeAttributeName(attributeName), encodeAttributeValue(value));
+				addPlaceholderVariable(placeholders, placeholderPrefix, encodeAttributeName(attributeName, value), encodeAttributeValue(value));
 			}
 		}
 	}
@@ -414,7 +420,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			previousPlaceholderValues = new HashMap<>();
 			placeholders.put(placeholderPrefix + ATTRS_SUFFIX, previousPlaceholderValues);
 		}
-		previousPlaceholderValues.put(encodeAttributeName(attributeName), encodeAttributeValue(value));
+		previousPlaceholderValues.put(encodeAttributeName(attributeName, value), encodeAttributeValue(value));
 	}
 
 	private boolean isPlaceholder(final String prefixedVariableName) {
