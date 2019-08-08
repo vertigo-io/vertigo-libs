@@ -93,15 +93,13 @@ img.avatar {
 	background:var(--q-color-accent) !important;
 }
 
-/*
-.q-table-container th {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 18px; /same as card-title/
+.q-table__container th {
+  font-size: 18px; /*same as card-title*/
   font-weight: 400;
   letter-spacing: normal;
   line-height: 2rem;
 }
-*/
+
 .table-primary th {
 	color:var(--q-color-primary-invert) !important;
 }
