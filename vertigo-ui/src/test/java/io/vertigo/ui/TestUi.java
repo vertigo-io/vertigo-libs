@@ -74,7 +74,7 @@ public class TestUi {
 		server = new Server(port);
 		final WebAppContext context = new WebAppContext(TestUi.class.getClassLoader().getResource("testWebApp/").getFile(), "/test");
 		System.setProperty("org.apache.jasper.compiler.disablejsr199", "false");
-		//context.setAttribute("jacoco.exclClassLoaders", "*");
+		context.setAttribute("jacoco.exclClassLoaders", "*");
 
 		context.setAttribute("javax.servlet.context.tempdir", getScratchDir());
 		context.setAttribute("org.eclipse.jetty.containerInitializers", springInitializers());
@@ -88,7 +88,7 @@ public class TestUi {
 
 	private static File getScratchDir() throws IOException {
 		final File tempDir = new File(System.getProperty("java.io.tmpdir"));
-		final File scratchDir = new File(tempDir.toString(), "embedded-jetty-jsp");
+		final File scratchDir = new File(tempDir.toString(), "embedded-jetty-html");
 
 		if (!scratchDir.exists()) {
 			if (!scratchDir.mkdirs()) {
@@ -111,19 +111,22 @@ public class TestUi {
 	}
 
 	@Test
-	public void testLoadLoginPage() {
+	public void testLoadLoginPage() throws InterruptedException {
 		driver.get(baseUrl + "/test/");
 		Assertions.assertEquals(baseUrl + "/test/", driver.getCurrentUrl());
+		Thread.sleep(5000);
 	}
 
 	@Test
-	public void testMovies() {
+	public void testMovies() throws InterruptedException {
 		driver.get(baseUrl + "/test/movies/");
+		Thread.sleep(5000);
 	}
 
 	@Test
-	public void testMovieDetail() {
+	public void testMovieDetail() throws InterruptedException {
 		driver.get(baseUrl + "/test/movie/1000");
+		Thread.sleep(5000);
 	}
 
 }
