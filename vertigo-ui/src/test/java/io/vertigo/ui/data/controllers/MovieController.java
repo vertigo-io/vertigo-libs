@@ -21,9 +21,9 @@ package io.vertigo.ui.data.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import io.vertigo.dynamo.domain.model.DtListState;
@@ -47,8 +47,8 @@ public class MovieController extends AbstractVSpringMvcController {
 	@Autowired
 	private MovieServices movieServices;
 
-	@GetMapping("/")
-	public void initContext(final ViewContext viewContext, @RequestParam("movId") final Long movId) {
+	@GetMapping("/{movId}")
+	public void initContext(final ViewContext viewContext, @PathVariable("movId") final Long movId) {
 		final Movie movie = movieServices.get(movId);
 		viewContext.publishDto(movieKey, movie);
 		final OuiNonChoice oui = new OuiNonChoice();

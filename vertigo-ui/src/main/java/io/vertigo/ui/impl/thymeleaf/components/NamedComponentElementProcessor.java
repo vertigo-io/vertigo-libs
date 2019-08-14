@@ -28,19 +28,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.thymeleaf.context.IEngineContext;
 import org.thymeleaf.context.ITemplateContext;
-import org.thymeleaf.engine.AttributeNames;
 import org.thymeleaf.exceptions.TemplateProcessingException;
 import org.thymeleaf.model.IAttribute;
 import org.thymeleaf.model.ICloseElementTag;
 import org.thymeleaf.model.IElementTag;
 import org.thymeleaf.model.IModel;
-import org.thymeleaf.model.IModelFactory;
 import org.thymeleaf.model.IOpenElementTag;
 import org.thymeleaf.model.IProcessableElementTag;
 import org.thymeleaf.model.IStandaloneElementTag;
@@ -137,11 +133,10 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 			//final IModel replacedContentSlotModel = replaceContentSlotTags(clonedFragmentModel, slotContents);
 			final IModel replacedContentFragmentModel = replaceContentTag(clonedFragmentModel, tag instanceof IStandaloneElementTag ? Optional.empty() : Optional.ofNullable(contentModel));
-			final IModel replacedAttributeFragmentModel = replaceAllAttributeValues(attributes, context, replacedContentFragmentModel);
 
 			//We replace the whole model
 			model.reset();
-			model.addModel(replacedAttributeFragmentModel);
+			model.addModel(replacedContentFragmentModel);
 
 			processVariables(attributes, context, structureHandler, excludeAttributes);
 		} // else nothing
@@ -434,73 +429,6 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 	private static boolean isDynamicAttribute(final String attribute, final String prefix) {
 		return attribute.startsWith(prefix + ":") || attribute.startsWith("data-" + prefix + "-");
-	}
-
-	private IModel replaceAllAttributeValues(final Map<String, String> attributes, final ITemplateContext context, final IModel model) {
-		final Map<String, String> replaceAttributes = findAllAttributesStartsWith(attributes, super.getDialectPrefix(), "repl-", true);
-
-		if (replaceAttributes.isEmpty()) {
-			return model;
-		}
-		final IModel clonedModel = model.cloneModel();
-		final int size = model.size();
-		for (int i = 0; i < size; i++) {
-			final ITemplateEvent replacedEvent = replaceAttributeValue(context, clonedModel.get(i), replaceAttributes);
-			if (replacedEvent != null) {
-				clonedModel.replace(i, replacedEvent);
-			}
-		}
-		return clonedModel;
-	}
-
-	private static ITemplateEvent replaceAttributeValue(final ITemplateContext context, final ITemplateEvent model, final Map<String, String> replaceValueMap) {
-		IProcessableElementTag firstEvent = null;
-		if (!replaceValueMap.isEmpty() && model instanceof IProcessableElementTag) {
-			final IModelFactory modelFactory = context.getModelFactory();
-
-			firstEvent = (IProcessableElementTag) model;
-			for (final Map.Entry<String, String> entry : firstEvent.getAttributeMap().entrySet()) {
-				final String oldAttrValue = entry.getValue();
-				final String replacePart = getReplaceAttributePart(oldAttrValue);
-				if (replacePart != null && replaceValueMap.containsKey(replacePart)) {
-					final String newStringValue = oldAttrValue.replace("?[" + replacePart + "]", replaceValueMap.get(replacePart));
-					firstEvent = modelFactory.replaceAttribute(firstEvent,
-							AttributeNames.forTextName(entry.getKey()),
-							entry.getKey(), newStringValue);
-				}
-			}
-		}
-		return firstEvent;
-	}
-
-	private static Map<String, String> findAllAttributesStartsWith(final Map<String, String> attributes, final String prefix, final String attributeName, final boolean removeStart) {
-		final Map<String, String> matchingAttributes = new HashMap<>();
-		for (final Map.Entry<String, String> entry : attributes.entrySet()) {
-			String key = entry.getKey();
-			final String value = entry.getValue();
-			if (key.startsWith(prefix + ":" + attributeName)
-					|| key.startsWith("data-" + prefix + "-" + attributeName)) {
-				if (removeStart) {
-					key = key.replaceAll("^" + prefix + ":" + attributeName,
-							"");
-					key = key.replaceAll(
-							"^data-" + prefix + "-" + attributeName, "");
-				}
-				matchingAttributes.put(key, value);
-			}
-		}
-		return matchingAttributes;
-	}
-
-	private static String getReplaceAttributePart(final String attributeValue) {
-		final Pattern pattern = Pattern.compile(".*\\?\\[([\\w|\\d|.|\\-|_]*)\\].*");
-		final Matcher matcher = pattern.matcher(attributeValue);
-		while (matcher.find()) {
-			if (matcher.group(1) != null && !matcher.group(1).isEmpty()) {
-				return matcher.group(1);
-			}
-		}
-		return null;
 	}
 
 	private void processWith(

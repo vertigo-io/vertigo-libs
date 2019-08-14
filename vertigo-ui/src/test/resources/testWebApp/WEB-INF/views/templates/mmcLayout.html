@@ -27,7 +27,7 @@
 						<q-btn flat round dense class="lt-lg"
 						th:with="showLeft=${model.vContext['componentStates'].addComponentState('navDrawer').addPrimitive('showLeft', true)}, mini=${model.vContext['componentStates']['navDrawer'].addPrimitive('mini', false)}"
 						@click="componentStates.navDrawer.showLeft = !componentStates.navDrawer.showLeft" icon="menu" aria-label="Toggle menu on left side"></q-btn>
-						<div class="gt-md"><img th:src="@{/static/img/logo MMC white v0.1.png}" height="40px"/></div>
+						<div class="gt-md">Demo</div>
 						<q-toolbar-title class="gt-md">
 								Command Center 
 								<span slot="subtitle">Observe, Orient, Decide and Act</span>
@@ -92,12 +92,6 @@
 			 		<section class="col content-body"  layout:fragment="content"></section>
 				</q-page>
 			</q-page-container>
-			
-			
-			<q-page-sticky position="bottom-left" :offset="[18,0]" class="poweredBy">
-				<div>Powered by</div>
-			    <img th:src="@{/static/img/logo-digital-factory-P3-petit.png}"  /> 
-			</q-page-sticky>
 		</q-layout>
 		
 	</vu:page>

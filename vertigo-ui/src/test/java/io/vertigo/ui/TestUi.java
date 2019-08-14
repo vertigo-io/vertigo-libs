@@ -18,6 +18,8 @@
  */
 package io.vertigo.ui;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -34,7 +36,10 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.springframework.web.SpringServletContainerInitializer;
 
 import com.machinepublishers.jbrowserdriver.JBrowserDriver;
@@ -114,7 +119,6 @@ public class TestUi {
 	public void testLoadLoginPage() throws InterruptedException {
 		driver.get(baseUrl + "/test/");
 		Assertions.assertEquals(baseUrl + "/test/", driver.getCurrentUrl());
-		Thread.sleep(5000);
 	}
 
 	@Test
@@ -129,4 +133,69 @@ public class TestUi {
 		Thread.sleep(5000);
 	}
 
+	@Test
+	public void testDemo() throws InterruptedException {
+		driver.get(baseUrl + "/test/componentsDemo/");
+		Thread.sleep(5000);
+	}
+
+	@Test
+	public void testPostSimpleForm() throws InterruptedException {
+		driver.get(baseUrl + "/test/componentsDemo/");
+
+		assertEquals("Movie Information", waitElement(By.className("text-h6")).getText());
+		findElement(By.name("vContext[movie][title]")).clear();
+		findElement(By.name("vContext[movie][title]")).sendKeys("Test 1");
+		findElement(By.name("vContext[movie][year]")).clear();
+		findElement(By.name("vContext[movie][year]")).sendKeys("2020");
+		findElement(By.id("saveAction")).click();
+
+		assertEquals("Test 1", findElement(By.name("vContext[movie][title]")).getAttribute("value"));
+		assertEquals("2020", findElement(By.name("vContext[movie][year]")).getAttribute("value"));
+	}
+
+	/* May be use in nexts tests
+	private String getWebElementsAsString(final List<WebElement> webElements) {
+		return webElements.stream()
+				.map(WebElement::getText)
+				.collect(Collectors.joining(", "));
+	}
+	*/
+	private WebElement waitElement(final By byElement) throws InterruptedException {
+		return waitElement(byElement, 1000);
+	}
+
+	private WebElement waitElement(final By byElement, final long timeout) throws InterruptedException {
+		final long start = System.currentTimeMillis();
+		do {
+			try {
+				if (isElementPresent(byElement)) {
+					return driver.findElement(byElement);
+				}
+			} catch (final Exception e) {
+				//do nothing
+			}
+			Thread.sleep(100);
+		} while (System.currentTimeMillis() - start < timeout);
+		System.out.println(driver.getPageSource());
+		throw new AssertionError("Element non trouvé en " + timeout + "ms : " + byElement.toString());
+	}
+
+	private static boolean isElementPresent(final By by) {
+		try {
+			driver.findElement(by);
+			return true;
+		} catch (final org.openqa.selenium.NoSuchElementException e) {
+			return false;
+		}
+	}
+
+	private static WebElement findElement(final By by) {
+		try {
+			return driver.findElement(by);
+		} catch (final org.openqa.selenium.NoSuchElementException e) {
+			System.out.println(driver.getPageSource());
+			throw new NoSuchElementException(by.toString(), e);
+		}
+	}
 }
