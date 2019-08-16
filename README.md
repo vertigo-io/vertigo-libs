@@ -30,7 +30,7 @@ For more details see [here](/vertigo-orchestra/)
 ### Bridge to use vertigo for Struts2 applications.
 
 ## vertigo-ui [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-yes-green.svg)]()
-### Bridge to use vertigo for SpringMVC/Thymeleaf applications, use VueJS & Quazar for UI.
+### Bridge to use vertigo for SpringMVC/Thymeleaf applications, use VueJS & Quasar for UI.
 
 ## vertigo-mail [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-yes-green.svg)]()
 A simple mailer for your app
