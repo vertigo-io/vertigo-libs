@@ -53,8 +53,8 @@ import io.vertigo.vega.webservice.validation.ValidationUserException;
 @RequestMapping("/componentsDemo")
 public class ComponentsDemoController extends AbstractVSpringMvcController {
 
-	private final ViewContextKey<Movie> movie = ViewContextKey.of("movie");
-	private final ViewContextKey<Casting> casting = ViewContextKey.of("casting");
+	private final ViewContextKey<Movie> movieKey = ViewContextKey.of("movie");
+	private final ViewContextKey<Casting> castingKey = ViewContextKey.of("casting");
 	private final ViewContextKey<Movie> movieList = ViewContextKey.of("movies");
 	private final ViewContextKey<Movie> movieListModifiables = ViewContextKey.of("moviesModifiable");
 	private final ViewContextKey<Movie> moviesListMdl = ViewContextKey.of("moviesMdl");
@@ -81,8 +81,8 @@ public class ComponentsDemoController extends AbstractVSpringMvcController {
 
 	@GetMapping("/")
 	public void initContext(final ViewContext viewContext) {
-		viewContext.publishDto(movie, new Movie());
-		viewContext.publishDto(casting, new Casting());
+		viewContext.publishDto(movieKey, new Movie());
+		viewContext.publishDto(castingKey, new Casting());
 		viewContext.publishDtList(movieList, movieServices.getMovies(DtListState.defaultOf(Movie.class)));
 		viewContext.publishDtListModifiable(movieListModifiables, movieServices.getMovies(DtListState.defaultOf(Movie.class)));
 		viewContext.publishMdl(moviesListMdl, Movie.class, null);

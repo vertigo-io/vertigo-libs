@@ -116,7 +116,7 @@ public class TestUi {
 	}
 
 	@Test
-	public void testLoadLoginPage() throws InterruptedException {
+	public void testLoadLoginPage() {
 		driver.get(baseUrl + "/test/");
 		Assertions.assertEquals(baseUrl + "/test/", driver.getCurrentUrl());
 	}
