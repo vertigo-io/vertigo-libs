@@ -23,6 +23,7 @@
 Vue.directive('scroll-spy', {
         bind: function(elNav, args) {
         	const offset = args.value.offset?args.value.offset:0;
+        	const padding = args.value.padding?args.value.padding:24;
         	const scanner = args.value.scanner?args.value.scanner:offset+30; //scanner is 30px bottom of offset, must be smaller than the smallest first element
         	const elAs = elNav.querySelectorAll('a')
         	elAs[0].classList.add("active") //first active
@@ -31,7 +32,7 @@ Vue.directive('scroll-spy', {
         	Vue.scrollSpyHandler = function(scroll) {
         		// Add the fixed class to the header when you reach its scroll position. Remove "fixed" when you leave the scroll position
         		if (window.pageYOffset > offset) {
-        			elNav.style.top = offset+"px";
+        			elNav.style.top = offset+padding+"px";
         			//when fixed, we must set a valid width, for that we use parent width
         			elNav.style.width = elNav.parentElement.getBoundingClientRect().width+"px";
         			elNav.classList.add("fixed");
