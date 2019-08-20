@@ -28,7 +28,7 @@
 
 .mini {
 	transition: top .3s;
-    z-index:10;
+    z-index:20; /* better foreground big header */
     position:fixed;
     top:0;
     right:0;
