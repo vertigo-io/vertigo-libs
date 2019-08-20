@@ -148,18 +148,11 @@ img.avatar {
 	height: 100%;
 }
 
-.facets .q-item-highlight, 
-.facets .q-item-link,
-.facets .q-list-highlight>.q-item,
-.facets .q-list-link>.q-item {
+.facets .q-item--clickable {
     border-left: 3px solid lightgrey;
 }
 
-.facets .q-item-highlight:hover, 
-.facets .q-item-link:hover,
-.facets .q-list-highlight>.q-item:hover,
-.facets .q-list-link>.q-item:hover {
-    background: hsla(0,0%,94.1%,1) !important;
+.facets .q-item--clickable:hover {
     border-left: 3px solid var(--q-color-primary);
     color : var(--q-color-primary);
 }

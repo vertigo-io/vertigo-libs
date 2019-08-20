@@ -9,7 +9,7 @@ Vue.component('v-facets', {
  + '	</div>'
  + '	<q-list v-if="facet.multiple || !isFacetSelected(facet.code)" v-for="facet in facets" :key="facet.code" class="facetValues q-py-none" dense >'
  + '		<q-item-label header><big>{{facet.label}}</big></q-item-label>'
- + '	  		<q-item v-for="(value, index) in visibleFacets(facet.code, facet.values)" :key="value.code" class="facetValue q-ml-md" @click.native="$emit(\'toogle-facet\', facet.code, value.code, contextKey)">'
+ + '	  		<q-item v-for="(value, index) in visibleFacets(facet.code, facet.values)" :key="value.code" class="facetValue q-ml-md" clickable @click.native="$emit(\'toogle-facet\', facet.code, value.code, contextKey)">'
  + ' 				<q-item-section avatar v-if="facet.multiple" >'
  + ' 					<q-checkbox v-bind:value="isFacetValueSelected(facet.code, value.code)" :label="facetValueLabel(value.label, value.count)" @change="$emit(\'toogle-facet\', facet.code, value.code, contextKey)" ></q-checkbox>'
  + ' 				</q-item-section>'
