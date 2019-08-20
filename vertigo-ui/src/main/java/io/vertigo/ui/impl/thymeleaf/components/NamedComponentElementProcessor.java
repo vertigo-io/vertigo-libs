@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -382,12 +383,6 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		final ITemplateEvent firstEvent = model.get(0);
 		final Map<String, String> attributes = new HashMap<>();
 
-		final Map<String, String> contentAttrs = (Map<String, String>) context.getVariable("contentAttrs");
-		if (contentAttrs != null && !contentAttrs.isEmpty()) {
-			structureHandler.removeLocalVariable("contentAttrs");
-			attributes.putAll(contentAttrs);
-		}
-
 		if (firstEvent instanceof IProcessableElementTag) {
 			final IProcessableElementTag processableElementTag = (IProcessableElementTag) firstEvent;
 			for (final IAttribute attribute : processableElementTag.getAllAttributes()) {
@@ -397,7 +392,22 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				}
 			}
 		}
+		final Map<String, String> contentAttrs = (Map<String, String>) context.getVariable("contentAttrs");
+		if (contentAttrs != null && !contentAttrs.isEmpty()) {
+			structureHandler.removeLocalVariable("contentAttrs");
+			for (final Entry<String, String> attribute : contentAttrs.entrySet()) {
+				if (shouldConcat(attribute.getKey())) {
+					attributes.compute(attribute.getKey(), (k, v) -> (v == null ? "" : v + " ") + attribute.getValue());
+				} else {
+					attributes.put(attribute.getKey(), attribute.getValue());
+				}
+			}
+		}
 		return attributes;
+	}
+
+	private static boolean shouldConcat(final String key) {
+		return "class".equals(key); //TODO : found the great rule
 	}
 
 	private void addPlaceholderVariable(final Map<String, Map<String, Object>> placeholders, final String prefixedVariableName, final Object value) {
