@@ -15,8 +15,8 @@ Vue.component('v-facets', {
  + ' 				</q-item-section>'
  + '	  			<q-item-section v-else >{{value.label}}</q-item-section> <q-item-section side>{{value.count}}</q-item-section>'
  + '	  		</q-item>'
- + '			<q-btn flat v-if="facet.values.length > maxValues && !isFacetExpanded(facet.code)" @click="expandFacet(facet.code)">Show All</q-btn>'
- + '			<q-btn flat v-if="facet.values.length > maxValues && isFacetExpanded(facet.code)" @click="reduceFacet(facet.code)">Show Less</q-btn>'
+ + '			<q-btn flat v-if="facet.values.length > maxValues && !isFacetExpanded(facet.code)" @click="expandFacet(facet.code)">{{$q.lang.vui.facets.showAll}}</q-btn>'
+ + '			<q-btn flat v-if="facet.values.length > maxValues && isFacetExpanded(facet.code)" @click="reduceFacet(facet.code)">{{$q.lang.vui.facets.showLess}}</q-btn>'
  + '	</q-list>'
  + '</div>'
   ,

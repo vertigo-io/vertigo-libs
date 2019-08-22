@@ -103,15 +103,15 @@ Vue.component('v-notifications', {
 	    toDelay : function(creationDate) {
 	    	let diff = Quasar.utils.date.getDateDiff(Date.now(),creationDate, 'days');
 	    	if(diff>0)
-	    		return diff+' days';
+	    		return diff+' '+ this.$q.lang.vui.notifications.days;
 	    	diff = Quasar.utils.date.getDateDiff(Date.now(),creationDate, 'hours');
 	    	if(diff>0)
-	    		return diff+' hours';
+	    		return diff+' '+ this.$q.lang.vui.notifications.hours;
 	    	diff = Quasar.utils.date.getDateDiff(Date.now(),creationDate, 'minutes');
 	    	if(diff>0)
-	    		return diff+' min';
+	    		return diff+' ' +this.$q.lang.vui.notifications.minutes;
 	    	diff = Quasar.utils.date.getDateDiff(Date.now(),creationDate, 'seconds');
-	    	return diff+' s';	    	
+	    	return diff+' '+this.$q.lang.vui.notifications.seconds;	    	
 	    }
 	    
 

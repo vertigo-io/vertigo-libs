@@ -7,7 +7,7 @@ Vue.component('v-extensions-store', {
 +'				<q-icon :name="extension.icon" size="40px" :style="getIconStyle(extension.color)"></q-icon>'
 +'			</q-item-section>'
 +'			<q-item-section>'
-+'				<div class="row col items-center"><div class="q-subheading text-bold">{{extension.label}}</div><div class="col"></div><div><q-toggle disabled readonly color="positive" v-model="extension.enabled"></q-toggle></div></div>'
++'				<div class="row col items-center"><div class="q-subheading text-bold">{{extension.label}}</div><div class="col"></div><div><q-toggle disable readonly color="positive" v-model="extension.enabled"></q-toggle></div></div>'
 +'				<div class="row col q-body-2 text-justify">{{extension.description}}</div>'
 +'			</q-item-section>'
 +'		</q-item>'
