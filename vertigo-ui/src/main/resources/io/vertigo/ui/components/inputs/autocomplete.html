@@ -14,7 +14,7 @@
 		th:error-message="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__') ? uiMessageStack.objectFieldErrors[__${object}__][__${field}__] : ''}"
 		th::warning="${uiMessageStack.hasFieldWarnings('__${object}__', '__${field}__')}"
 		orientation="vertical"
-		hide-dropdown-icon
+		dropdown-icon="search"
 		stack-label
         use-input 
         fill-input
@@ -26,7 +26,6 @@
         th:@filter="|function (val, update, abort) { searchAutocomplete('${list}', '${myValueField}', '${myLabelField}', '${myComponentId}', '@{/autocomplete/_searchFullText}', val, update, abort)}|"
         th:attr="__${input_attrs}__"
      >
-     	<template v-slot:append><q-icon name="search" /></template>
      </q-select>
 	<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|vueData.${object}.${field}|" />
 </th:block> 

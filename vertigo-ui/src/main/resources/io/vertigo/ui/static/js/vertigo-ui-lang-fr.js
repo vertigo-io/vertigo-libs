@@ -14,13 +14,18 @@ Quasar.lang.fr.vui = {
 			"restartMessage" : "Redémarrage de la conversation"
 		},
 		"facets" : {
-			"showAll" : "Show All",
-			"showLess" : "Show Less"
+			"showAll" : "Voir plus",
+			"showLess" : "Voir moins"
 		},
 		"notifications" : {
 			"days" : "jours",
 			"hours" : "heures",
 			"minutes" : "min",
 			"seconds" : "s"
+		},
+		"commands" : {
+			"globalPlaceholder" : "Taper / pour afficher les commandes disponibles",
+			"executeCommand" : "Appuyer sur entrée pour executer la commande",
+			"linkLabel" : "Voir les détails"
 		}
 	};
