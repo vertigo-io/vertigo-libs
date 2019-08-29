@@ -1,6 +1,6 @@
 <th:block th:fragment="text-field-edit(object, field, label, suffix, label_attrs, input_attrs)" 
 	vu:alias="text-field" vu:selector="${viewMode=='edit'}"
-	th:with="myLabel=${label?:model.util.label(object + '.' + field)}"
+	th:with="myLabel=${label?:model.util.label(object + '.' + field)}, required=${model.util.required(object + '.' + field)}"
 	th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}"/>
 		<q-input 
@@ -10,6 +10,9 @@
 			th:maxlength="${model.util.domainMaxLength(object, field)}"
 			th::label-width="${overridedLabelWidth?:3}"
 			th:label="${myLabel}"
+			th:classappend="${required}?'v-field__required'"
+			th::rules="${required}?'[value => !!value || \'Field is required\']'"
+			th::lazy-rules="${required}?'true'"	
 			th::error="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__')}"
 			th:error-message="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__') ? uiMessageStack.objectFieldErrors[__${object}__][__${field}__] : ''}"
 			th::warning="${uiMessageStack.hasFieldWarnings('__${object}__', '__${field}__')}"

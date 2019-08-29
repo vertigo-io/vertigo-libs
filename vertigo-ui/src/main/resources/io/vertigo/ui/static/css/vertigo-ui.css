@@ -17,6 +17,11 @@
 	color:var(--q-color-accent-invert) !important; 
 }
 
+.v-field__required .q-field__label::after {
+  content: " *";
+  color: var(--q-color-negative);
+} 
+
 .notifications a.q-item {
 	text-decoration: none;
 	color: var(--q-color-body-color) !important;
