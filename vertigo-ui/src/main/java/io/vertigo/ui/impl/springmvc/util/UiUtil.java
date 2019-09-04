@@ -234,6 +234,8 @@ public final class UiUtil implements Serializable {
 			return "es";
 		} else if (currentLocaleTag.startsWith("it")) {
 			return "it";
+		} else if ("en".equals(currentLocaleTag)) {
+			return "en-us"; //we need to make a choice...
 		} else {
 			return currentLocaleTag.toLowerCase();
 		}

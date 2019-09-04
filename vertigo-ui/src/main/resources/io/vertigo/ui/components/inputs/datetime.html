@@ -6,9 +6,8 @@
 		th:v-bind:value="|decodeDatetime('${object}', '${field}', '${myFormat}')|" 
 		th:@change="|function (event) { encodeDatetime('${object}','${field}', event.target.value, '${myFormat}') }|" 
 		th:label="${myLabel}"
-		th::error="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__')}"
-		th:error-message="${uiMessageStack.hasFieldErrors('__${object}__', '__${field}__') ? uiMessageStack.objectFieldErrors[__${object}__][__${field}__] : ''}"
-		th::warning="${uiMessageStack.hasFieldWarnings('__${object}__', '__${field}__')}"
+		th::error="|hasFieldsError('${object}', '${field}')|"
+		th::error-message="|getErrorMessage('${object}', '${field}')|"
 		th:attr="__${input_attrs}__" >
 		<template v-slot:prepend>
 			<q-icon name="event" class="cursor-pointer">

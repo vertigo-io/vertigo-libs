@@ -25,7 +25,10 @@ var VUi = {
 					  notif.message = 'API Route Method Not Allowed'
 				  } else if(response.status === 422){
 				     //Validation Message
-					  notif.message = 'Data validation errors'
+					 notif.message = '';
+					 Object.keys(response.body).forEach(function (key) {
+						this.$data.uiMessageStack[key] = response.body[key];
+					 }.bind(this));
 				  } else if(response.status >= 500){
 					  notif.message = 'Server Error'
 				  }
@@ -193,22 +196,12 @@ var VUi = {
 						params['sortFieldName'] = collectionPagination.sortBy;
 						params['sortDesc'] = collectionPagination.descending;
 					}
-					
-					this.$http.post(searchUrl, params, { emulateJSON: true }).then( function (response ) {
-						if (response.body.CTX) {
-							this.$data.vueData.CTX = response.body.CTX;
-						}
-						Object.keys(response.body).forEach(function (key) {
-							if ('CTX' != key) {
-								vueData[key] = response.body[key];
-							}
-						});
+					this.httpPostAjax(searchUrl, params, function (response ) {
 						if (componentStates[collectionComponentId].pagination) {
 							var collectionPagination = componentStates[collectionComponentId].pagination;
 							collectionPagination.page = 1 // reset page
-							collectionPagination.rowsNumber = response.body[contextKey+'_list'].length
+							collectionPagination.rowsNumber = response.body.model[contextKey+'_list'].length
 						}
-						
 					});
 				}, 400),
 				showMore : function (componentId) {
@@ -250,21 +243,60 @@ var VUi = {
 				},
 				httpPostAjax : function(url, params, handler) {
 					params['CTX'] = vueData.CTX;
-					Vue.http.post(url, params , { emulateJSON: true }).then( function (response ) {
-						if (response.body.CTX) {
-							vueData.CTX = response.body.CTX;
+					this.$http.post(url, params , { emulateJSON: true }).then( function (response ) {
+						if (response.body.model.CTX) {
+							//vueData.CTX = response.body.model.CTX;
 						}
-						Object.keys(response.body).forEach(function (key) {
+						Object.keys(response.body.model).forEach(function (key) {
 							if ('CTX' != key) {
-								vueData[key] = response.body[key];
+								vueData[key] = response.body.model[key];
 							}
 						});
+						Object.keys(response.body.uiMessageStack).forEach(function (key) {
+							uiMessageStack[key] = response.body.uiMessageStack[key];
+						});
 						if (handler) {
-							handler.bind(this).apply(response);
+							handler(response);
 						}
 					}.bind(this));
+				},
+				hasFieldsError: function (object, field) {
+					var fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
+					return fieldsErrors.hasOwnProperty(object) && fieldsErrors[object].hasOwnProperty(field) && fieldsErrors[object][field].length > 0;
+				},
+				getErrorMessage: function (object, field) {
+					var fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
+					if (fieldsErrors.hasOwnProperty(object) && fieldsErrors[object].hasOwnProperty(field)) {
+						return fieldsErrors[object][field].toString(); 
+					} else { 
+						return '';
+					}
+				},
+				prepareParamsFromVueData: function (...keys) {
+					var params = {};
+					for (var i = 0; i < keys.length; i++) {
+						var contextKey = keys[i];
+						var vueDataValue = this.$data.vueData[contextKey];
+						if (vueDataValue !== null && typeof vueDataValue === 'object' && Array.isArray(vueDataValue) === false) {
+							// object
+							Object.keys(vueDataValue).forEach(function (propertyKey) {
+								if (Array.isArray(vueDataValue[propertyKey])) {
+									vueDataValue[propertyKey].forEach(function (value, index) {
+										params['vContext['+contextKey+']['+propertyKey+']['+index+']'] = vueDataValue[propertyKey][index];
+									});
+								} else {
+									params['vContext['+contextKey+']['+propertyKey+']'] = vueDataValue[propertyKey];
+								}
+							});
+						} else {
+							//primitive
+							params['vContext['+contextKey+']'] = vueDataValue;
+						}
+					}
+					return params;
+					
 				}
-			  }
+		}
 	}
 
 Vue.http.interceptors.push(function(request) {
