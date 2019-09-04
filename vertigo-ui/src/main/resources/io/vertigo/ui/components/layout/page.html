@@ -13,7 +13,7 @@
 	<script th:src="@{/vertigo-ui/static/js/vertigo-ui.js}"></script>
 	<script th:src="@{/vertigo-ui/static/js/vertigo-ui-lang-__${model.util.getCurrentLocalePrefixForQuasar()}__.js}"></script>
 	<script>
-		Quasar.lang.set(Quasar.lang.[[${model.util.getCurrentLocalePrefixForQuasar()}]])
+		Quasar.lang.set(Quasar.lang.[[${model.util.getCurrentLocaleForQuasar()}]])
 		var data = {
 				  vueData : vueData,
 				  componentStates : componentStates,
