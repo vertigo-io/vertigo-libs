@@ -272,7 +272,7 @@ var VUi = {
 						return '';
 					}
 				},
-				prepareParamsFromVueData: function (...keys) {
+				vueDataParams: function (...keys) {
 					var params = {};
 					for (var i = 0; i < keys.length; i++) {
 						var contextKey = keys[i];
