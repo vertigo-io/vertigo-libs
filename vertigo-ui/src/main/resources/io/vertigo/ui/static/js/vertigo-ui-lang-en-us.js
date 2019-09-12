@@ -27,5 +27,8 @@ Quasar.lang.enUs.vui = {
 			"globalPlaceholder" : "Type / to show all available commands",
 			"executeCommand" : "Press Enter to execute command",
 			"linkLabel" : "Show details"
+		},
+		"handles" : {
+			"placeholder" : "Enter a handle : format is type/code"
 		}
 	};

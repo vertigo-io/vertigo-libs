@@ -22,18 +22,22 @@ import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.social.impl.comment.CommentServicesImpl;
+import io.vertigo.social.impl.handle.HandleServicesImpl;
 import io.vertigo.social.impl.mail.MailManagerImpl;
 import io.vertigo.social.impl.notification.NotificationServicesImpl;
 import io.vertigo.social.plugins.comment.memory.MemoryCommentPlugin;
 import io.vertigo.social.plugins.comment.redis.RedisCommentPlugin;
+import io.vertigo.social.plugins.handle.redis.RedisHandlePlugin;
 import io.vertigo.social.plugins.mail.javax.JavaxSendMailPlugin;
 import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;
 import io.vertigo.social.plugins.notification.redis.RedisNotificationPlugin;
 import io.vertigo.social.services.comment.CommentServices;
+import io.vertigo.social.services.handle.HandleServices;
 import io.vertigo.social.services.mail.MailManager;
 import io.vertigo.social.services.notification.NotificationServices;
 import io.vertigo.social.webservices.account.AccountWebServices;
 import io.vertigo.social.webservices.comment.CommentWebServices;
+import io.vertigo.social.webservices.handle.HandleWebServices;
 import io.vertigo.social.webservices.notification.NotificationWebServices;
 
 /**
@@ -44,6 +48,7 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 
 	private boolean commentsEnabled;
 	private boolean notificationsEnabled;
+	private boolean handlesEnabled;
 	private boolean webapiEnabled;
 	private boolean mailEnabled;
 
@@ -118,6 +123,22 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 	}
 
 	/**
+	 * Activates handles
+	 * @return the features
+	 */
+	@Feature("handles")
+	public SocialFeatures withHandles() {
+		handlesEnabled = true;
+		return this;
+	}
+
+	@Feature("handles.redis")
+	public SocialFeatures withRedisHandles() {
+		getModuleConfigBuilder().addPlugin(RedisHandlePlugin.class);
+		return this;
+	}
+
+	/**
 	 * Activates comments
 	 * @return the features
 	 */
@@ -144,6 +165,14 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 			if (webapiEnabled) {
 				getModuleConfigBuilder()
 						.addComponent(CommentWebServices.class);
+			}
+		}
+		if (handlesEnabled) {
+			getModuleConfigBuilder()
+					.addComponent(HandleServices.class, HandleServicesImpl.class);
+			if (webapiEnabled) {
+				getModuleConfigBuilder()
+						.addComponent(HandleWebServices.class);
 			}
 		}
 		if (mailEnabled) {

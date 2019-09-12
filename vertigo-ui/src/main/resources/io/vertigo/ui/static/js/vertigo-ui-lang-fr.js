@@ -27,5 +27,8 @@ Quasar.lang.fr.vui = {
 			"globalPlaceholder" : "Taper / pour afficher les commandes disponibles",
 			"executeCommand" : "Appuyer sur entrée pour executer la commande",
 			"linkLabel" : "Voir les détails"
+		},
+		"handles" : {
+			"placeholder" : "Entrer un handle de la forme type/code"
 		}
 	};
