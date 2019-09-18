@@ -37,7 +37,10 @@ public class MemoryHandlePlugin implements HandlePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public List<Handle> search(final String prefix) {
-		return handlesPerUid.values().stream().filter(handle -> handle.getCode().startsWith(prefix)).collect(Collectors.toList());
+		return handlesPerUid.values().stream()
+				.filter(handle -> handle.getCode().startsWith(prefix))
+				.limit(10)
+				.collect(Collectors.toList());
 	}
 
 	/** {@inheritDoc} */
