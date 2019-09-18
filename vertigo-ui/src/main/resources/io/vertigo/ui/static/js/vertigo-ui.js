@@ -213,8 +213,11 @@ var VUi = {
 					}
 					componentStates[componentId].pagination.rowsPerPage = componentStates[componentId].pagination.rowsPerPage / showMoreCount * (showMoreCount + 1);
 				},
-				uploader_uploadFile : function(componentId) {
-						this.$refs[componentId].upload()
+				uploader_addedFile : function(isMultiple, componentId) {
+					if (!isMultiple) {
+						this.$refs[componentId].removeUploadedFiles();
+						componentStates[componentId].fileUris = [];
+					}
 				},				
 				uploader_uploadedFiles : function(uploadInfo, componentId) {
 					uploadInfo.files.forEach(function(file) {

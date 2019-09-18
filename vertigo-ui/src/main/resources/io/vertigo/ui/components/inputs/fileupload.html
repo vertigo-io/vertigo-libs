@@ -6,10 +6,10 @@
 		<q-uploader th:url="${url}"
 			field-name="file"
 			auto-upload
-			auto-expand 			
+			auto-expand
 			th::multiple="${multiple}"
-			th::ref="|'${myComponentId}'|"  
-			th:@add="|uploader_uploadFile('${myComponentId}')|"
+			th::ref="|'${myComponentId}'|"
+			th:@added="|uploader_addedFile(${multiple}, '${myComponentId}')|"
 			th:@uploaded="|uploader_uploadedFiles($event, '${myComponentId}')|"
 			th:@removed="|uploader_removeFiles($event, '${myComponentId}')|"
 			 th:attr="__${uploader_attrs}__">
