@@ -28,8 +28,10 @@
 				<q-checkbox th:color="${color?:'primary'}" v-model="props.selected" ></q-checkbox>
 			</q-td>
 			<vu:content></vu:content>
-			<vu:column name="action" label="" sortable="false" class="showButtonOnHover" auto-width>
-				<vu:content-slot name="actions_slot" />
+			<vu:column name="action" label="" sortable="false" >
+				<div class="row self-center justify-end col showButtonOnHover">						
+					<vu:content-slot name="actions_slot" />
+				</div>
 			</vu:column>
 		  </q-tr>
 		</q-table>
