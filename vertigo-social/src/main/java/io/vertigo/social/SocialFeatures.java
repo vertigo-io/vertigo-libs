@@ -27,6 +27,7 @@ import io.vertigo.social.impl.mail.MailManagerImpl;
 import io.vertigo.social.impl.notification.NotificationServicesImpl;
 import io.vertigo.social.plugins.comment.memory.MemoryCommentPlugin;
 import io.vertigo.social.plugins.comment.redis.RedisCommentPlugin;
+import io.vertigo.social.plugins.handle.memory.MemoryHandlePlugin;
 import io.vertigo.social.plugins.handle.redis.RedisHandlePlugin;
 import io.vertigo.social.plugins.mail.javax.JavaxSendMailPlugin;
 import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;
@@ -135,6 +136,12 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 	@Feature("handles.redis")
 	public SocialFeatures withRedisHandles() {
 		getModuleConfigBuilder().addPlugin(RedisHandlePlugin.class);
+		return this;
+	}
+
+	@Feature("handles.memory")
+	public SocialFeatures withMemoryHandles() {
+		getModuleConfigBuilder().addPlugin(MemoryHandlePlugin.class);
 		return this;
 	}
 
