@@ -248,7 +248,7 @@ var VUi = {
 					params['CTX'] = vueData.CTX;
 					this.$http.post(url, params , { emulateJSON: true }).then( function (response ) {
 						if (response.body.model.CTX) {
-							//vueData.CTX = response.body.model.CTX;
+							vueData.CTX = response.body.model.CTX;
 						}
 						Object.keys(response.body.model).forEach(function (key) {
 							if ('CTX' != key) {
