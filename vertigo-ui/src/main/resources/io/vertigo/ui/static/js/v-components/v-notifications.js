@@ -57,7 +57,7 @@ Vue.component('v-notifications', {
 	    },
 	    updateNotificationsData : function (newList) {
 	    	// Tri par ordre décroissant de date de création
-	    	const sortedList = newList.sort((a,b) => b.creationDate - a.creationDate);
+	    	const sortedList = newList.sort(function(a,b) {return  b.creationDate - a.creationDate});
 	    	var newElements = [];	    	
 	    	// Traverse both arrays simultaneously.
 	    	var lastOldElement = this.list[0];
@@ -116,7 +116,7 @@ Vue.component('v-notifications', {
 	    
 
 	},
-	beforeDestroy() {
+	beforeDestroy : function() {
 	  clearInterval(this.timer)
 	}
 })
