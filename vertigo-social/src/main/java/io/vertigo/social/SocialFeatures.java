@@ -30,6 +30,8 @@ import io.vertigo.social.plugins.comment.redis.RedisCommentPlugin;
 import io.vertigo.social.plugins.handle.memory.MemoryHandlePlugin;
 import io.vertigo.social.plugins.handle.redis.RedisHandlePlugin;
 import io.vertigo.social.plugins.mail.javax.JavaxSendMailPlugin;
+import io.vertigo.social.plugins.mail.javax.JndiMailSessionConnector;
+import io.vertigo.social.plugins.mail.javax.NativeMailSessionConnector;
 import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;
 import io.vertigo.social.plugins.notification.redis.RedisNotificationPlugin;
 import io.vertigo.social.services.comment.CommentServices;
@@ -121,6 +123,22 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 
 		return this;
 
+	}
+
+	@Feature("mail.javax.native")
+	public SocialFeatures withNativeMailConnector(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(NativeMailSessionConnector.class, params);
+
+		return this;
+	}
+
+	@Feature("mail.javax.jndi")
+	public SocialFeatures withJndiMailConnector(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(JndiMailSessionConnector.class, params);
+
+		return this;
 	}
 
 	/**
