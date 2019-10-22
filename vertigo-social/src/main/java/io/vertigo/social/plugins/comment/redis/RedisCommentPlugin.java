@@ -28,7 +28,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import io.vertigo.account.account.Account;
-import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
