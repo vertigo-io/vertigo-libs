@@ -65,8 +65,8 @@ var VUi = {
 								pagination.page = 1 //reset pagination
 								this.$http.post(pagination.sortUrl, { sortFieldName : pagination.sortBy, sortDesc : pagination.descending, CTX: this.$data.vueData.CTX}, { emulateJSON: true })
 								.then( function (response ) {
-									vueData[pagination.listKey] = response.body[pagination.listKey];
-									this.$data.vueData.CTX = response.body['CTX'];
+									vueData[pagination.listKey] = response.body.model[pagination.listKey];
+									this.$data.vueData.CTX = response.body.model['CTX'];
 								});
 							} else {
 								//do locally
@@ -196,13 +196,14 @@ var VUi = {
 						params['sortFieldName'] = collectionPagination.sortBy;
 						params['sortDesc'] = collectionPagination.descending;
 					}
-					this.httpPostAjax(searchUrl, params, function (response ) {
-						if (componentStates[collectionComponentId].pagination) {
-							var collectionPagination = componentStates[collectionComponentId].pagination;
-							collectionPagination.page = 1 // reset page
-							collectionPagination.rowsNumber = response.body.model[contextKey+'_list'].length
-						}
-					});
+					this.httpPostAjax(searchUrl, params, {  
+						onSuccess : function (response ) {
+							if (componentStates[collectionComponentId].pagination) {
+								var collectionPagination = componentStates[collectionComponentId].pagination;
+								collectionPagination.page = 1 // reset page
+								collectionPagination.rowsNumber = response.body.model[contextKey+'_list'].length
+							}
+						}});
 				}, 400),
 				showMore : function (componentId) {
 					var showMoreCount = componentStates[componentId].pagination.showMoreCount;
@@ -244,7 +245,7 @@ var VUi = {
 						});
 					}.bind(this));
 				},
-				httpPostAjax : function(url, params, handler) {
+				httpPostAjax : function(url, params, options) {
 					params['CTX'] = vueData.CTX;
 					this.$http.post(url, params , { emulateJSON: true }).then( function (response ) {
 						if (response.body.model.CTX) {
@@ -258,10 +259,15 @@ var VUi = {
 						Object.keys(response.body.uiMessageStack).forEach(function (key) {
 							uiMessageStack[key] = response.body.uiMessageStack[key];
 						});
-						if (handler) {
-							handler(response);
+						if (options && options.onSuccess) {
+							options.onSuccess(response);
 						}
-					}.bind(this));
+					}.bind(this)).catch(function (response) {
+						if (options && options.onError) {
+							options.onError(error);
+						}
+					})
+					;
 				},
 				hasFieldsError: function (object, field) {
 					var fieldsErrors = this.$data.uiMessageStack.objectFieldErrors;
