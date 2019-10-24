@@ -21,11 +21,10 @@ package io.vertigo.social;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.account.cache.memory.MemoryAccountCachePlugin;
 import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
-import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.app.config.NodeConfig;
 import io.vertigo.app.config.NodeConfigBuilder;
+import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.DynamoFeatures;
@@ -55,14 +54,13 @@ public final class MyNodeConfig {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot();
 
+		final CommonsFeatures commonsFeatures = new CommonsFeatures();
 		if (redis) {
-			nodeConfigBuilder.addModule(new RedisFeatures()
-					.withJedis(Param.of("host", redisHost), Param.of("port", redisPort), Param.of("database", redisDatabase))
-					.build());
+			commonsFeatures.withRedisConnector(Param.of("host", redisHost), Param.of("port", redisPort), Param.of("database", redisDatabase));
 		}
 
 		nodeConfigBuilder
-				.addModule(new CommonsFeatures().build())
+				.addModule(commonsFeatures.build())
 				.addModule(new DynamoFeatures().build())
 				.addModule(ModuleConfig.builder("identities")
 						.addComponent(MockIdentities.class)

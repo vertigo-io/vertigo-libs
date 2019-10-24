@@ -75,6 +75,7 @@ public class DashboardLauncherTest {
 				.withLocales("fr_FR")
 				.endBoot()
 				.addModule(new CommonsFeatures()
+						.withRedisConnector(Param.of("host", "redis-pic.part.klee.lan.net"), Param.of("port", "6379"), Param.of("database", "0"))
 						.addAnalyticsConnectorPlugin(SocketLoggerAnalyticsConnectorPlugin.class)
 						.withCache()
 						.withMemoryCache()

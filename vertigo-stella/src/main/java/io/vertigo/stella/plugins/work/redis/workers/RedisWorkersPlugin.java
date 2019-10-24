@@ -21,7 +21,7 @@ package io.vertigo.stella.plugins.work.redis.workers;
 import javax.inject.Inject;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.connectors.redis.RedisConnector;
+import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.impl.workers.WorkersPlugin;
