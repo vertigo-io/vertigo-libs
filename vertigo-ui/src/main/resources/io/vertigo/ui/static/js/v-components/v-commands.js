@@ -9,7 +9,7 @@ Vue.component('v-commands', {
 		<div v-else class="row col-12 justify-between bg-white round-borders overflow-hidden shadow-2 text-black" v-on:keyup.enter.native="executeCommand">
 			<div class="bg-grey-4 text-center vertical-middle text-bold q-px-md" style="line-height: 40px;">{{selectedCommand.commandName}}</div>
 			<div v-if="!isExecuted" class="row col items-center q-py-xs">
-				<template v-if="selectedCommand.commandParams.length > 0" v-for="(param, index) in selectedCommand.commandParams" >
+				<template v-if="selectedCommand.commandParams && selectedCommand.commandParams.length > 0" v-for="(param, index) in selectedCommand.commandParams" >
 					<template v-if="param.paramType.rawType === 'io.vertigo.commons.command.GenericUID'">
 						<q-select class="col q-px-xs" use-chips bg-color="white" dense borderless use-input input-debounce="300" :value="getParamValue(index)" :options="paramsAutocompleteOptions[index]" :autofocus="index === 0" dropdown-icon="search" 
 							  v-on:keydown.delete.native="function(event) {backIfNeeded(event, index === 0)}" v-on:keyup.esc.native="function(event) {backIfNeeded(event, index === 0)}"   
@@ -22,7 +22,7 @@ Vue.component('v-commands', {
 					</template>
 					<q-separator vertical></q-separator>
 				</template>
-				<div class="col" v-if="selectedCommand.commandParams.length === 0" @keyup.enter="executeCommand">{{$q.lang.vui.commands.executeCommand}}</div>
+				<div class="col" v-else>{{$q.lang.vui.commands.executeCommand}}</div>
 				<q-btn @click="executeCommand" flat icon="play_arrow" size="sm" round></q-btn>
 			</div>
 			<div v-else class="row col items-center" >
@@ -82,12 +82,17 @@ Vue.component('v-commands', {
 		},
 		chooseCommand: function (command, commitCommand) {
 			this.$data.selectedCommand = command;
-			this.$data.commandParamsValues = this.$data.selectedCommand.commandParams.map(function(param)  {
-				// we prepare params
-				return {
-					value:""
-				};	
-			});
+			if (this.$data.selectedCommand.commandParams) {
+				// if we have params
+				this.$data.commandParamsValues = this.$data.selectedCommand.commandParams.map(function(param)  {
+					// we prepare params
+					return {
+						value:""
+					};	
+				});
+			} else {
+				this.$data.commandParamsValues = [];
+			}
 			this.$data.isCommandCommited = commitCommand;
 		},
 		commitCommand : function(keyEvent) {
