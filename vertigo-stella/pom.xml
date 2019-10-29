@@ -52,6 +52,12 @@
 			<version>2.29.1</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
+		<dependency>
+		    <groupId>org.glassfish.jersey.inject</groupId>
+		    <artifactId>jersey-hk2</artifactId>
+		    <version>2.29.1</version>
+			<optional>true</optional> <!-- REST DistributedWork impl -->
+		</dependency>
 
 		<!-- tests -->
 		<dependency>
