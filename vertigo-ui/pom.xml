@@ -28,19 +28,14 @@
 			<version>${vertigo.version}</version>
 		</dependency>		
 		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-studio</artifactId>
+			<version>${vertigo.version}</version>
+		</dependency>	
+		<dependency>
          <groupId>javax.servlet</groupId>
          <artifactId>javax.servlet-api</artifactId>
          <version>4.0.1</version>
-		</dependency>
-		<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-api</artifactId> <!-- Mandatory to declared deps to log4j-api AND log4j-core, to avoid overrided version by another sub dependencies -->
-		    <version>2.12.1</version> 
-		</dependency>
-		<dependency>
-		    <groupId>org.apache.logging.log4j</groupId>
-		    <artifactId>log4j-core</artifactId>
-		    <version>2.12.1</version>
 		</dependency>
 		
 		<!-- SpringMVC -->
@@ -103,12 +98,6 @@
 			<artifactId>jetty-annotations</artifactId>
 			<version>9.4.21.v20190926</version>
 			<scope>test</scope>
-		</dependency>
-		
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-studio</artifactId>
-			<version>${vertigo.version}</version>
 		</dependency>
 		
 		<dependency>
