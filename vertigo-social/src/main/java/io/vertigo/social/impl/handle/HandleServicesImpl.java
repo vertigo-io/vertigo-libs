@@ -140,7 +140,7 @@ public final class HandleServicesImpl implements HandleServices, Activeable {
 		final DataAccessor dataAccessor = dtDefinition.getHandleField().get().getDataAccessor();
 		return new Handle(entity.getUID(),
 				StringUtil.first2LowerCase(dtDefinition.getLocalName()) + "/" +
-						dataAccessor.getValue(entity).toString());
+						dataAccessor.getValue(entity));
 	}
 
 	@Override
