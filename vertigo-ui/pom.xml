@@ -140,6 +140,12 @@
 			<artifactId>elasticsearch</artifactId>
 			<version>7.4.1</version>
 			<scope>test</scope> <!-- EsTransportSearchServicesPlugin -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-api</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>
