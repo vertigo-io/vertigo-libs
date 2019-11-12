@@ -18,6 +18,8 @@ Each extension can be used :
 
 * __comment__ :  a simple way to add comments and metadata to business objects
 * __notification__ : a standalone way to push notification to users
+* __mail__ : a simple api to send mails
+* __handle__ : *WIP*
 
 ## vertigo-orchestra [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-yes-green.svg)]()
 ### Manage, execute and monitor background operations and communications.
@@ -35,9 +37,6 @@ For more details see [here](/vertigo-orchestra/)
 
 ## vertigo-ui [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-yes-green.svg)]()
 ### Bridge to use vertigo for SpringMVC/Thymeleaf applications, use [VueJS](https://vuejs.org) & [Quasar](https://quasar.dev) for UI.
-
-## vertigo-mail [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-yes-green.svg)]()
-A simple mailer for your app
 
 ## vertigo-stella : [![Ready to use?](https://img.shields.io/badge/Ready%20to%20use%3F-no-red.svg)]()
 * __node__ : node of worker for distributed operations
@@ -64,7 +63,7 @@ Standalone adapters to easily use third party services (Twitter, IFTTT, etc...) 
 
 -----
 #License
-                Copyright (C) 2017, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
+                Copyright (C) 2017-2019, Vertigo.io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
                 KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
                 
                 Licensed under the Apache License, Version 2.0 (the "License");
