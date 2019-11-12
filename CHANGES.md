@@ -14,7 +14,7 @@ more to come :)
 * [ui] fix autocomplete
 * [struts2] Fix : Cleaning memory when republishing in context
 * [struts2] Renamed AppServletContextListener2 to AppServletContextList
-* __[ui] quasar update from 0.17 to 1.2__ 
+* __[ui] quasar update from 0.17 to 1.4.1__ 
 * [ui] Changed NamedComponent to support mono boolean attribute (like 'flat') in placeholders
 * [ui] fix DefaultViewName can be disabled (if needed)
 * [ui] Merge pull request #25 from nothingismagick/patch-1
