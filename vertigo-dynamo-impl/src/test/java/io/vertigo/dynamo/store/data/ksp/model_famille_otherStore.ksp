@@ -1,0 +1,5 @@
+package io.vertigo.dynamo.store.data.domain
+
+alter DtDefinition DtFamille {
+	storeName : "otherStore"
+}
