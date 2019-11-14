@@ -35,7 +35,6 @@ import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
-import io.vertigo.core.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
@@ -72,11 +71,11 @@ public class DashboardLauncherTest {
 				.withAppName("dashboardtest")
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.withSocketLoggerAnalyticsConnector()
 				.withLocales("fr_FR")
 				.endBoot()
 				.addModule(new CommonsFeatures()
 						.withRedisConnector(Param.of("host", "redis-pic.part.klee.lan.net"), Param.of("port", "6379"), Param.of("database", "0"))
-						.addAnalyticsConnectorPlugin(SocketLoggerAnalyticsConnectorPlugin.class)
 						.withCache()
 						.withMemoryCache()
 						.build())
