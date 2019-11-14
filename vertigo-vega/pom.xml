@@ -4,7 +4,7 @@
 
 	<parent>
 		<groupId>io.vertigo</groupId>
-		<artifactId>vertigo</artifactId>
+		<artifactId>vertigo-extensions</artifactId>
 		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 
