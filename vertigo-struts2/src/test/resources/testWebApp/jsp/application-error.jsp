@@ -46,7 +46,7 @@
             t = e.getCause();
             if (t == null && (e instanceof ServletException)) t = ((ServletException) e).getRootCause();
             if (t == null && (e instanceof java.sql.SQLException)) t = ((java.sql.SQLException) e).getNextException();
-            if (t == null && (e instanceof io.vertigo.lang.WrappedException)) t = ((io.vertigo.lang.WrappedException) e).getCause();
+            if (t == null && (e instanceof io.vertigo.core.lang.WrappedException)) t = ((io.vertigo.core.lang.WrappedException) e).getCause();
             e = t;
         }
         Collections.reverse(list);
