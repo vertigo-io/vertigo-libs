@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.analytics.metric.Metric;
-import io.vertigo.commons.analytics.metric.MetricBuilder;
-import io.vertigo.commons.analytics.metric.Metrics;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.analytics.metric.Metric;
+import io.vertigo.core.analytics.metric.MetricBuilder;
+import io.vertigo.core.analytics.metric.Metrics;
 import io.vertigo.core.component.Component;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.dynamo.domain.metamodel.Domain;

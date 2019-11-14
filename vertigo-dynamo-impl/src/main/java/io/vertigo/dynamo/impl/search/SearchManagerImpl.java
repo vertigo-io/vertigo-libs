@@ -35,8 +35,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.eventbus.EventBusSubscribed;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.dynamo.collections.ListFilter;

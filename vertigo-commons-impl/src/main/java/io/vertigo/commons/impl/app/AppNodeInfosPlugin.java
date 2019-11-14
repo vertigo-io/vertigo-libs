@@ -21,8 +21,8 @@ package io.vertigo.commons.impl.app;
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.commons.analytics.health.HealthCheck;
 import io.vertigo.commons.app.Node;
+import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.component.Plugin;
 
 /**

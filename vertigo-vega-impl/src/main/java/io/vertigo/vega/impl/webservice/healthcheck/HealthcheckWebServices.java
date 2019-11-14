@@ -22,8 +22,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.GET;

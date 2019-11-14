@@ -27,10 +27,10 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.analytics.health.HealthCheck;
-import io.vertigo.commons.analytics.health.HealthMeasure;
-import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
-import io.vertigo.commons.analytics.metric.Metric;
+import io.vertigo.core.analytics.health.HealthCheck;
+import io.vertigo.core.analytics.health.HealthMeasure;
+import io.vertigo.core.analytics.health.HealthMeasureBuilder;
+import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dashboard.services.data.DataProvider;
 import io.vertigo.database.timeseries.ClusteredMeasure;

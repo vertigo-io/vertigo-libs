@@ -6,8 +6,8 @@ import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.orchestra.domain.referential.OSchedulerState;
 import io.vertigo.lang.Generated;
+import io.vertigo.orchestra.domain.referential.OSchedulerState;
 
 /**
  * This class is automatically generated.

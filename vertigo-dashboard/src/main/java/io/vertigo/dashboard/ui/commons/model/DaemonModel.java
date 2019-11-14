@@ -18,8 +18,8 @@
  */
 package io.vertigo.dashboard.ui.commons.model;
 
-import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.commons.daemon.DaemonStat;
+import io.vertigo.core.daemon.DaemonDefinition;
+import io.vertigo.core.daemon.DaemonStat;
 import io.vertigo.lang.Assertion;
 
 public final class DaemonModel {

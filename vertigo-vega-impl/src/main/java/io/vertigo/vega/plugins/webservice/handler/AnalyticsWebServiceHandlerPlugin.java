@@ -20,7 +20,7 @@ package io.vertigo.vega.plugins.webservice.handler;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;

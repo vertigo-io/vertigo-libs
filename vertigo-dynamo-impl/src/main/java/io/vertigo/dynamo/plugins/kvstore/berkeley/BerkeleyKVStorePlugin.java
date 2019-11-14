@@ -36,9 +36,9 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;

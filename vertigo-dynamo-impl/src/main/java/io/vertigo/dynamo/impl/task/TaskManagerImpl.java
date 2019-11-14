@@ -20,7 +20,7 @@ package io.vertigo.dynamo.impl.task;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskEngine;

@@ -30,8 +30,8 @@ import com.google.gson.JsonParser;
 
 import io.vertigo.app.Home;
 import io.vertigo.app.config.NodeConfig;
-import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.health.HealthCheck;
+import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.health.HealthCheck;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.lang.Assertion;

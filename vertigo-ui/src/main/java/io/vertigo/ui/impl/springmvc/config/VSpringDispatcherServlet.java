@@ -29,7 +29,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerExecutionChain;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.lang.WrappedException;
 
 public class VSpringDispatcherServlet extends DispatcherServlet {

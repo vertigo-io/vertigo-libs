@@ -21,7 +21,7 @@ package io.vertigo.stella.plugins.work.rest.master;
 import javax.inject.Inject;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.daemon.DaemonScheduled;
+import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.master.MasterPlugin;

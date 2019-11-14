@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import io.vertigo.account.account.Account;
-import io.vertigo.commons.daemon.DaemonScheduled;
+import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.lang.Assertion;
 import io.vertigo.social.impl.notification.NotificationEvent;

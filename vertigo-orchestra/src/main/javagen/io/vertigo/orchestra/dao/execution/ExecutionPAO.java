@@ -3,11 +3,11 @@ package io.vertigo.orchestra.dao.execution;
 import javax.inject.Inject;
 
 import io.vertigo.app.Home;
+import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Generated;
 

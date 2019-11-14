@@ -22,9 +22,9 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.analytics.health.HealthChecked;
-import io.vertigo.commons.analytics.health.HealthMeasure;
-import io.vertigo.commons.analytics.health.HealthMeasureBuilder;
+import io.vertigo.core.analytics.health.HealthChecked;
+import io.vertigo.core.analytics.health.HealthMeasure;
+import io.vertigo.core.analytics.health.HealthMeasureBuilder;
 import io.vertigo.core.component.Activeable;
 import io.vertigo.core.component.Component;
 import io.vertigo.core.param.ParamValue;

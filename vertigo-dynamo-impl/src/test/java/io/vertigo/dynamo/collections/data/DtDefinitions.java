@@ -21,8 +21,8 @@ package io.vertigo.dynamo.collections.data;
 import java.util.Arrays;
 import java.util.Iterator;
 
-import io.vertigo.dynamo.collections.data.domain.SmartItem;
 import io.vertigo.dynamo.collections.data.domain.SmartCar;
+import io.vertigo.dynamo.collections.data.domain.SmartItem;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 
 public final class DtDefinitions implements Iterable<Class<?>> {

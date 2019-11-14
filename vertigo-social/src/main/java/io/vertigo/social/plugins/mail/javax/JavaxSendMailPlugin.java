@@ -42,8 +42,8 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
-import io.vertigo.commons.analytics.health.HealthChecked;
-import io.vertigo.commons.analytics.health.HealthMeasure;
+import io.vertigo.core.analytics.health.HealthChecked;
+import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.locale.MessageKey;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.FileManager;

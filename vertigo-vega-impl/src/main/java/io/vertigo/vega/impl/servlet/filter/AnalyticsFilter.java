@@ -27,7 +27,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import io.vertigo.app.Home;
-import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.lang.WrappedException;
 
 /**

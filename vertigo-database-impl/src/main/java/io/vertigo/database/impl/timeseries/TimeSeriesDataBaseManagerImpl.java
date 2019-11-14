@@ -26,7 +26,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.Measure;

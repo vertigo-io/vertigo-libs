@@ -20,15 +20,11 @@ package io.vertigo.commons;
 
 import io.vertigo.app.config.Feature;
 import io.vertigo.app.config.Features;
-import io.vertigo.commons.analytics.AnalyticsManager;
 import io.vertigo.commons.app.AppManager;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.command.CommandManager;
-import io.vertigo.commons.daemon.DaemonManager;
 import io.vertigo.commons.eventbus.EventBusManager;
-import io.vertigo.commons.impl.analytics.AnalyticsConnectorPlugin;
-import io.vertigo.commons.impl.analytics.AnalyticsManagerImpl;
 import io.vertigo.commons.impl.app.AppManagerImpl;
 import io.vertigo.commons.impl.app.AppNodeInfosPlugin;
 import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
@@ -36,13 +32,10 @@ import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.impl.command.CommandManagerImpl;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.commons.impl.daemon.DaemonManagerImpl;
 import io.vertigo.commons.impl.eventbus.EventBusManagerImpl;
 import io.vertigo.commons.impl.script.ScriptManagerImpl;
 import io.vertigo.commons.impl.transaction.VTransactionAspect;
 import io.vertigo.commons.impl.transaction.VTransactionManagerImpl;
-import io.vertigo.commons.plugins.analytics.log.SmartLoggerAnalyticsConnectorPlugin;
-import io.vertigo.commons.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
 import io.vertigo.commons.plugins.app.infos.http.HttpAppNodeInfosPlugin;
 import io.vertigo.commons.plugins.app.registry.db.DbAppNodeRegistryPlugin;
 import io.vertigo.commons.plugins.app.registry.redis.RedisAppNodeRegistryPlugin;
@@ -52,7 +45,14 @@ import io.vertigo.commons.plugins.cache.redis.RedisCachePlugin;
 import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.daemon.DaemonManager;
+import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
+import io.vertigo.core.impl.analytics.AnalyticsManagerImpl;
+import io.vertigo.core.impl.daemon.DaemonManagerImpl;
 import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.analytics.log.SmartLoggerAnalyticsConnectorPlugin;
+import io.vertigo.core.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
 
 /**
  * Defines commons module.

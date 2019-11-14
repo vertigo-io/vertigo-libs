@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.process.ProcessAnalyticsTracer;
+import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.database.impl.sql.mapper.SqlMapper;
 import io.vertigo.database.sql.SqlDataBaseManager;

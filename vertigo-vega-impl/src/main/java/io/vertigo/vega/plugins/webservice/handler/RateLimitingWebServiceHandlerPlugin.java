@@ -29,8 +29,8 @@ import javax.inject.Inject;
 
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.commons.daemon.DaemonDefinition;
-import io.vertigo.commons.daemon.DaemonManager;
+import io.vertigo.core.daemon.DaemonDefinition;
+import io.vertigo.core.daemon.DaemonManager;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;

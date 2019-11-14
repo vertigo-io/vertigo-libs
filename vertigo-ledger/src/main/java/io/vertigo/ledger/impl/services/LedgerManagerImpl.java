@@ -28,7 +28,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.daemon.DaemonScheduled;
+import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.lang.Assertion;
 import io.vertigo.lang.Tuple;
 import io.vertigo.ledger.services.LedgerAddress;

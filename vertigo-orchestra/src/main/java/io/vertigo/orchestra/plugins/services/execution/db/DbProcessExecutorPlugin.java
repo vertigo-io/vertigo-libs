@@ -33,13 +33,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 
-import io.vertigo.commons.analytics.AnalyticsManager;
-import io.vertigo.commons.analytics.process.AProcess;
-import io.vertigo.commons.analytics.process.AProcessBuilder;
-import io.vertigo.commons.daemon.DaemonDefinition;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.analytics.process.AProcess;
+import io.vertigo.core.analytics.process.AProcessBuilder;
 import io.vertigo.core.component.Activeable;
+import io.vertigo.core.daemon.DaemonDefinition;
 import io.vertigo.core.definition.Definition;
 import io.vertigo.core.definition.DefinitionSpace;
 import io.vertigo.core.definition.SimpleDefinitionProvider;

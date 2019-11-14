@@ -32,7 +32,7 @@ import java.util.Optional;
 import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Inject;
 
-import io.vertigo.commons.daemon.DaemonScheduled;
+import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;

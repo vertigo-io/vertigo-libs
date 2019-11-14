@@ -46,9 +46,9 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.commons.daemon.DaemonScheduled;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.FileManager;
