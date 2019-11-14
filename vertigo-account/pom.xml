@@ -3,39 +3,53 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>io.vertigo</groupId>
-		<artifactId>vertigo-extensions</artifactId>
+		<artifactId>vertigo</artifactId>
 		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>vertigo-audit</artifactId>
+	<artifactId>vertigo-account</artifactId>
 	<packaging>jar</packaging>
-	<name>vertigo-audit</name>
+	<name>vertigo-account</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
-			<version>${vertigo.version}</version>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-commons</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-dynamo</artifactId>
-			<version>${vertigo.version}</version>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- Tests -->
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
-			<version>${vertigo.version}</version>
+			<version>${project.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
+		
 		<dependency>
-			<groupId>org.assertj</groupId>
-			<artifactId>assertj-core</artifactId>
-			<version>3.14.0</version>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.200</version>
 			<scope>test</scope>
+		</dependency>
+		
+		<!-- Connections Pool -->
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.5.4</version>
+			<optional>true</optional><!-- C3p0DataSourceProviderPlugin -->
 		</dependency>
 	</dependencies>
 

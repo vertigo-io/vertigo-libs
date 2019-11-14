@@ -19,12 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-api</artifactId>
-			<version>${vertigo.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-impl</artifactId>
+			<artifactId>vertigo-dynamo</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
 		<!-- -->
@@ -33,12 +28,6 @@
 			<artifactId>vertigo-core</artifactId>
 			<version>${vertigo.version}</version>
 			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons-impl</artifactId>
-			<version>${vertigo.version}</version>
 			<scope>test</scope>
 		</dependency>
 

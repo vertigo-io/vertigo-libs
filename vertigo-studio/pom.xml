@@ -21,48 +21,26 @@
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-api</artifactId>
+			<artifactId>vertigo-dynamo</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-vega</artifactId> <!-- Impl for ClassPathWebServiceLoaderPlugin -->
 			<version>${project.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-impl</artifactId> <!-- For reporting ExplainPlan and Performance -->
+			<artifactId>vertigo-account</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-account-impl</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		
 
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-core</artifactId>
 			<version>${project.version}</version>
 			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons-impl</artifactId>
-			<version>${project.version}</version>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-vega-api</artifactId> <!-- Impl for ClassPathWebServiceLoaderPlugin -->
-			<version>${project.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-vega-impl</artifactId> <!-- Impl for ClassPathWebServiceLoaderPlugin -->
-			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 

@@ -14,14 +14,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-impl</artifactId>
+			<artifactId>vertigo-dynamo</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
 		<!--  tests -->
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-impl</artifactId>
+			<artifactId>vertigo-dynamo</artifactId>
 			<version>${project.version}</version>
 			<type>test-jar</type>
 			<scope>test</scope>
@@ -31,13 +31,6 @@
 			<artifactId>vertigo-core</artifactId>
 			<version>${project.version}</version>
 			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons-impl</artifactId>
-			<version>${project.version}</version>
 			<scope>test</scope>
 		</dependency>
 

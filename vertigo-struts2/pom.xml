@@ -28,29 +28,16 @@
 			<artifactId>vertigo-core</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-api</artifactId>
-			<version>${vertigo.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-vega-impl</artifactId>
-			<version>${vertigo.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-commons-impl</artifactId><!-- for ResourceResolverPlugin -->
-			<version>${vertigo.version}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo-impl</artifactId> <!-- for io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl and 
+			<artifactId>vertigo-dynamo</artifactId><!-- for io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl and 
 				io.vertigo.dynamox.domain.formatter.Resources -->
+			<version>${vertigo.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-vega</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
 
