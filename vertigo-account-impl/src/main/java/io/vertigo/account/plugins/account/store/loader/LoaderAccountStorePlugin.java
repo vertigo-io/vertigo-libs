@@ -26,12 +26,12 @@ import javax.inject.Inject;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountStorePlugin;
-import io.vertigo.app.Home;
-import io.vertigo.core.component.Activeable;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
 
 /**
  * Specific account store, use to redirect loading to a applicative component.

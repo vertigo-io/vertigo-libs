@@ -20,9 +20,9 @@ package io.vertigo.vega.impl.webservice.servlet;
 
 import java.util.Properties;
 
-import io.vertigo.app.config.LogConfig;
-import io.vertigo.app.config.NodeConfig;
-import io.vertigo.app.config.xml.XmlAppConfigBuilder;
+import io.vertigo.core.node.config.LogConfig;
+import io.vertigo.core.node.config.NodeConfig;
+import io.vertigo.core.node.config.xml.XmlAppConfigBuilder;
 
 /**
  * @author npiedeloup

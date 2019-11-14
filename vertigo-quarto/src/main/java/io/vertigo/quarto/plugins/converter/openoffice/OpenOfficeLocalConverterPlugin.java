@@ -33,9 +33,9 @@ import com.sun.star.lang.XComponent;
 import com.sun.star.ucb.XFileIdentifierConverter;
 import com.sun.star.uno.UnoRuntime;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.lang.Assertion;
 
 /**
  * Conversion des fichiers à partir de OpenOffice.

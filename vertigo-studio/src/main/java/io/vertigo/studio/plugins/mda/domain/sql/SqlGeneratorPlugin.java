@@ -31,13 +31,15 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.MapBuilder;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
-import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.masterdata.MasterDataManager;
 import io.vertigo.studio.masterdata.MasterDataValues;
@@ -51,8 +53,6 @@ import io.vertigo.studio.plugins.mda.domain.sql.model.SqlMasterDataDefinitionMod
 import io.vertigo.studio.plugins.mda.domain.sql.model.SqlMethodModel;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.studio.plugins.mda.util.MdaUtil;
-import io.vertigo.util.MapBuilder;
-import io.vertigo.util.StringUtil;
 
 /**
  * Generate crebas.sql.

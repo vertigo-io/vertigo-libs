@@ -24,8 +24,9 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import io.vertigo.account.impl.identityprovider.IdentityProviderPlugin;
-import io.vertigo.app.Home;
-import io.vertigo.core.component.Activeable;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
@@ -38,7 +39,6 @@ import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.lang.Assertion;
 
 /**
  * Source of identity.

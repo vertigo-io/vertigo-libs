@@ -22,7 +22,7 @@ import java.time.Instant;
 import java.util.Collections;
 import java.util.TimerTask;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 
 /**

@@ -31,12 +31,12 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.component.ComponentInitializer;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.component.ComponentInitializer;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
-import io.vertigo.lang.WrappedException;
 import io.vertigo.struts2.dao.movies.MovieDAO;
 import io.vertigo.struts2.domain.movies.Movie;
 

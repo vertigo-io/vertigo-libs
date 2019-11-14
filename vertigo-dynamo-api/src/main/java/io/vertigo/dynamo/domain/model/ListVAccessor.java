@@ -21,8 +21,10 @@ package io.vertigo.dynamo.domain.model;
 import java.io.Serializable;
 import java.util.stream.Stream;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
@@ -31,8 +33,6 @@ import io.vertigo.dynamo.domain.metamodel.association.DtListURIForAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
 import io.vertigo.dynamo.store.datastore.DataStore;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
 
 /**
  * This class is a way to access to a list of entities managed by a relationship.
@@ -81,7 +81,7 @@ public final class ListVAccessor<E extends Entity> implements Serializable {
 	}
 
 	private static DataStore getDataStore() {
-		return io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class)
+		return io.vertigo.core.node.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class)
 				.getDataStore();
 	}
 

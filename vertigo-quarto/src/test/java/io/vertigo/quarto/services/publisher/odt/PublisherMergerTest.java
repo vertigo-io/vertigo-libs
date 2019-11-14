@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.services.publisher.odt;
 
-import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.quarto.services.publisher.AbstractPublisherMergerTest;
 
 /**

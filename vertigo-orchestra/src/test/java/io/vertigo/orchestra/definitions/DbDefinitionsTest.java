@@ -27,8 +27,8 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.orchestra.AbstractOrchestraTestCase;
-import io.vertigo.util.MapBuilder;
 
 /**
  * TODO : Description de la classe.

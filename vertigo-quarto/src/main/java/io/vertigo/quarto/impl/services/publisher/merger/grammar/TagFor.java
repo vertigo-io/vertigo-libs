@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.impl.services.publisher.merger.grammar;
 
-import io.vertigo.lang.VSystemException;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.quarto.impl.services.publisher.merger.script.ScriptContext;
 import io.vertigo.quarto.impl.services.publisher.merger.script.ScriptTag;
 import io.vertigo.quarto.impl.services.publisher.merger.script.ScriptTagContent;

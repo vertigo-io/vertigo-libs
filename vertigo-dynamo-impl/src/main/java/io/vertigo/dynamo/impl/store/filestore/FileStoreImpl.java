@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.impl.store.filestore;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.FileInfoURI;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.store.filestore.FileStore;
-import io.vertigo.lang.Assertion;
 
 /**
  * Implementation of FileStore.

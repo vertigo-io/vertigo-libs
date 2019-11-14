@@ -25,9 +25,9 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
-import io.vertigo.lang.Assertion;
 
 /**
  * Méthode Freemarker 'sql'.

@@ -22,7 +22,7 @@ import java.util.List;
 
 import io.vertigo.audit.services.trace.AuditTrace;
 import io.vertigo.audit.services.trace.AuditTraceCriteria;
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 
 /**
  * This class defines the storage of audit trails.

@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.masterdata;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * This class handle masterdatas (essentially values) for studio

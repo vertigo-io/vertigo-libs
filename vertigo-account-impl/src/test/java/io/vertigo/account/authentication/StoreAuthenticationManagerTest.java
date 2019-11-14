@@ -22,10 +22,10 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
 import io.vertigo.account.authentication.MyNodeConfig.AuthentPlugin;
-import io.vertigo.app.Home;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.config.NodeConfig;
 
 /**
  * Implementation standard de la gestion centralisee des droits d'acces.

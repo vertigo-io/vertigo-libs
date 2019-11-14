@@ -18,9 +18,9 @@
  */
 package io.vertigo.studio.mda;
 
-import io.vertigo.app.config.NodeConfig;
-import io.vertigo.app.config.LogConfig;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.node.config.LogConfig;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.local.LocalResourceResolverPlugin;

@@ -21,9 +21,9 @@ package io.vertigo.dynamo.search.metamodel;
 import java.util.Collections;
 import java.util.List;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.lang.Assertion;
 
 /**
  * Chunk of keyConcept uris.

@@ -21,7 +21,7 @@ package io.vertigo.commons.impl.codec.compressedserialization;
 import java.io.Serializable;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Implémentation standard ThreadSafe gérant les mécanismes permettant de

@@ -21,7 +21,7 @@ package io.vertigo.studio.plugins.mda.task.test;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-import io.vertigo.lang.VUserException;
+import io.vertigo.core.lang.VUserException;
 
 /**
  * Vérifieur d'objets d'accès aux données.

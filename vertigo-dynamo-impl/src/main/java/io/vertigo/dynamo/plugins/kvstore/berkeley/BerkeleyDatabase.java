@@ -41,9 +41,9 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionResourceId;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.lang.WrappedException;
 
 /**
  * Objet d'accès en lecture/écriture à la base Berkeley.

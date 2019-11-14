@@ -20,8 +20,9 @@ package io.vertigo.struts2.services.util;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.component.Activeable;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -33,7 +34,6 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractStaticDataStorePlugin;
-import io.vertigo.lang.Assertion;
 
 /**
  * MasterDataStore for the static lists.

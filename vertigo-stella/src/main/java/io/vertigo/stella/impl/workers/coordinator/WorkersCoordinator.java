@@ -24,7 +24,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.stella.impl.work.Coordinator;
 import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.master.WorkResultHandler;

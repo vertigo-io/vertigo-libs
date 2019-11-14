@@ -21,10 +21,10 @@ package io.vertigo.dynamo.collections;
 import java.util.Collection;
 import java.util.function.UnaryOperator;
 
+import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Builder;
 
 /**
  * Processor that can be composed of filters or sorters and be applied on a list. *

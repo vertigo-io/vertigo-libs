@@ -21,12 +21,12 @@ package io.vertigo.dynamo.impl.task;
 import javax.inject.Inject;
 
 import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamo.task.model.TaskResult;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.InjectorUtil;
 
 /**
  * @author pchretien

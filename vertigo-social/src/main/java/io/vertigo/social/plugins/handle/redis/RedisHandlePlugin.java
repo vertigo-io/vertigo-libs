@@ -7,11 +7,11 @@ import java.util.Map;
 import javax.inject.Inject;
 
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.lang.Assertion;
 import io.vertigo.social.impl.handle.HandlePlugin;
 import io.vertigo.social.services.handle.Handle;
-import io.vertigo.util.MapBuilder;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.ScanParams;
 import redis.clients.jedis.ScanResult;

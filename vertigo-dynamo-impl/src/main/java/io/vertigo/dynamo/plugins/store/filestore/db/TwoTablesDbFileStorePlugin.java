@@ -23,7 +23,9 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataStream;
+import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -39,8 +41,6 @@ import io.vertigo.dynamo.file.model.FileInfo;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.DataStream;
 
 /**
  * Permet de gérer le CRUD sur un fichier stocké sur deux tables (Méta données / Données).

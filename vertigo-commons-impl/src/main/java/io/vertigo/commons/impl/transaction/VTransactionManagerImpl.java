@@ -23,7 +23,7 @@ import io.vertigo.commons.impl.transaction.listener.VTransactionListenerImpl;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Implémentation standard du gestionnaire de transactions.

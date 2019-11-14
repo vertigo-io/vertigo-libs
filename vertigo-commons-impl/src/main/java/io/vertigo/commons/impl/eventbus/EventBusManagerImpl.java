@@ -24,20 +24,20 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.eventbus.Event;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.eventbus.EventBusSubscribed;
 import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
-import io.vertigo.core.component.Activeable;
-import io.vertigo.core.component.AopPlugin;
-import io.vertigo.core.component.Component;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
-import io.vertigo.util.StringUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.core.util.ClassUtil;
+import io.vertigo.core.util.StringUtil;
 
 /**
  * @author pchretien, npiedeloup

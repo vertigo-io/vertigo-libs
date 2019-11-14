@@ -28,10 +28,10 @@ import javax.inject.Inject;
 
 import com.google.gson.Gson;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 import io.vertigo.studio.impl.masterdata.MasterDataValueProviderPlugin;
 import io.vertigo.studio.masterdata.MasterDataValues;
 

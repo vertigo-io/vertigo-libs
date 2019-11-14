@@ -20,7 +20,7 @@ package io.vertigo.ledger.services;
 
 import java.math.BigInteger;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  *

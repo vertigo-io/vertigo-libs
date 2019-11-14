@@ -21,9 +21,9 @@ package io.vertigo.vega.plugins.webservice.servlet;
 import java.util.Map;
 import java.util.Optional;
 
+import io.vertigo.core.impl.param.ParamPlugin;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.Param;
-import io.vertigo.core.param.ParamPlugin;
-import io.vertigo.lang.Assertion;
 
 /**
  * Plugin d'accès à la configuration de la WebApp.

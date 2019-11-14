@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageKey;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -35,7 +36,6 @@ import io.vertigo.dynamo.collections.metamodel.FacetDefinition.FacetOrder;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Assertion;
 
 /**
  * Search faceted result merger.

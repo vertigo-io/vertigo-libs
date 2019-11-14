@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.store.data.domain.famille;
 
+import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.ListVAccessor;
@@ -25,7 +26,6 @@ import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.data.domain.car.Car;
-import io.vertigo.lang.Generated;
 
 /**
  * This class is automatically generated.

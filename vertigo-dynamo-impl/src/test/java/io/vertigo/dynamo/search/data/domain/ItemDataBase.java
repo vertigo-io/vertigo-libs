@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
-import io.vertigo.util.ListBuilder;
+import io.vertigo.core.util.ListBuilder;
 
 /**
  * database of items.

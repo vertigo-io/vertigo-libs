@@ -20,7 +20,7 @@ package io.vertigo.dynamox.search.dsl.model;
 
 import java.util.List;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Block queries definition.

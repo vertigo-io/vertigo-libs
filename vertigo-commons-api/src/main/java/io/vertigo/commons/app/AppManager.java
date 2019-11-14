@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.vertigo.core.analytics.health.HealthCheck;
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * Node Manager.

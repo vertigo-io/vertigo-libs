@@ -18,8 +18,8 @@
  */
 package io.vertigo.studio.plugins.mda.search.model;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.lang.Assertion;
 
 /**
  * Model used by FreeMarker.

@@ -26,13 +26,13 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.commons.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.commons.transaction.VTransactionResource;
 import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.dynamo.domain.model.UID;
 
 public abstract class AbstractAccountManagerTest extends AbstractTestCaseJU5 {

@@ -25,7 +25,7 @@ import java.io.Serializable;
 
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
+import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.dynamo.criteria.data.movies.Movie2;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 

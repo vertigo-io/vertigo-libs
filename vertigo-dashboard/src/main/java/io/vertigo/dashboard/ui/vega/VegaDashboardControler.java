@@ -21,12 +21,12 @@ package io.vertigo.dashboard.ui.vega;
 import java.util.Arrays;
 import java.util.Map;
 
-import io.vertigo.app.App;
+import io.vertigo.core.lang.VUserException;
+import io.vertigo.core.node.App;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
 import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.database.timeseries.TimedDatas;
-import io.vertigo.lang.VUserException;
 
 public final class VegaDashboardControler extends AbstractDashboardModuleControler {
 

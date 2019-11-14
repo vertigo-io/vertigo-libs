@@ -28,9 +28,9 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
 
 /**

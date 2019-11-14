@@ -28,9 +28,9 @@ import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.HandlerExecutionChain;
 
-import io.vertigo.app.Home;
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.Home;
 
 public class VSpringDispatcherServlet extends DispatcherServlet {
 

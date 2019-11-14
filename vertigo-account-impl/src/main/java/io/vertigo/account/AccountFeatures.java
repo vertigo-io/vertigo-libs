@@ -42,8 +42,8 @@ import io.vertigo.account.plugins.identityprovider.ldap.LdapIdentityProviderPlug
 import io.vertigo.account.plugins.identityprovider.store.StoreIdentityProviderPlugin;
 import io.vertigo.account.plugins.identityprovider.text.TextIdentityProviderPlugin;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.app.config.Feature;
-import io.vertigo.app.config.Features;
+import io.vertigo.core.node.config.Feature;
+import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
 
 /**

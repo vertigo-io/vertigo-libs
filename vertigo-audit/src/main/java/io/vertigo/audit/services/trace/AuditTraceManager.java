@@ -20,7 +20,7 @@ package io.vertigo.audit.services.trace;
 
 import java.util.List;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * @author xdurand

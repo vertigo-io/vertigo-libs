@@ -25,7 +25,7 @@ import io.vertigo.commons.codec.Encoder;
 import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.quarto.impl.services.publisher.merger.grammar.TagEncodedField;
 import io.vertigo.quarto.services.publisher.model.PublisherData;
 import io.vertigo.quarto.services.publisher.model.PublisherNode;

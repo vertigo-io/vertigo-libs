@@ -28,10 +28,10 @@ import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression.Value
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleFixedValue;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression.BoolOperator;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  *

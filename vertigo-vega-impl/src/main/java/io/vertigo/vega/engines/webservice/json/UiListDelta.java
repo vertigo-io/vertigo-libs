@@ -22,9 +22,9 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;

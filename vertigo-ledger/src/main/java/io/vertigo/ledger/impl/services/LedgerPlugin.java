@@ -20,7 +20,7 @@ package io.vertigo.ledger.impl.services;
 
 import java.math.BigInteger;
 
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 import io.vertigo.ledger.services.LedgerAddress;
 
 /**

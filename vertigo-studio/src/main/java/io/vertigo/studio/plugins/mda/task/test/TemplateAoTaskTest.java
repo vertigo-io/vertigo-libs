@@ -18,8 +18,8 @@
  */
 package io.vertigo.studio.plugins.mda.task.test;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 
 /**

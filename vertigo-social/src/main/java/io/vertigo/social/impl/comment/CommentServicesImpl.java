@@ -24,12 +24,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.vertigo.account.account.Account;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.DateUtil;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.lang.Assertion;
 import io.vertigo.social.services.comment.Comment;
 import io.vertigo.social.services.comment.CommentServices;
-import io.vertigo.util.DateUtil;
 
 /**
  * @author pchretien

@@ -18,7 +18,7 @@
  */
 package io.vertigo.database.impl.sql.vendor.oracle;
 
-import io.vertigo.util.StringUtil;
+import io.vertigo.core.util.StringUtil;
 
 final class Oracle11Dialect extends OracleDialect {
 

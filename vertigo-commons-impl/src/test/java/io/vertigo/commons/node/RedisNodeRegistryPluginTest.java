@@ -18,9 +18,9 @@
  */
 package io.vertigo.commons.node;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.app.registry.redis.RedisAppNodeRegistryPlugin;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 
 public class RedisNodeRegistryPluginTest extends AbstractNodeManagerTest {

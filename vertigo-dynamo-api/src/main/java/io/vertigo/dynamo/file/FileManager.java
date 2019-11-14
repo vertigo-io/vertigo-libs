@@ -25,7 +25,7 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Date;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 

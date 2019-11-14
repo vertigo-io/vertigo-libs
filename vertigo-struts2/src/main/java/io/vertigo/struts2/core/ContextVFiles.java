@@ -23,11 +23,11 @@ import java.io.IOException;
 
 import org.apache.struts2.dispatcher.multipart.UploadedFile;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VUserException;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.FSFile;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VUserException;
-import io.vertigo.lang.WrappedException;
 
 /**
  * Liste des couples (clé, object) enregistrés.

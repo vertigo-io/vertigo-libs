@@ -19,7 +19,7 @@
 package io.vertigo.account.authentication;
 
 import io.vertigo.account.authentication.MyNodeConfig.AuthentPlugin;
-import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.node.config.NodeConfig;
 
 /**
  * Implementation standard de la gestion centralisee des droits d'acces.

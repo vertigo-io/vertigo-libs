@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.impl.masterdata;
 
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 import io.vertigo.studio.masterdata.MasterDataValues;
 
 /**

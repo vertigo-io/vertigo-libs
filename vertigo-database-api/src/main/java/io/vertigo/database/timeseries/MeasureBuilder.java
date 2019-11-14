@@ -22,8 +22,8 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.TreeMap;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 
 /**
  * Builder for a new Point.

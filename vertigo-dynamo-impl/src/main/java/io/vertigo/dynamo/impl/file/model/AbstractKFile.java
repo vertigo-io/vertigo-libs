@@ -20,8 +20,8 @@ package io.vertigo.dynamo.impl.file.model;
 
 import java.time.Instant;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
 
 /**
  * Class générique de définition d'un fichier.

@@ -22,15 +22,16 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.core.component.Activeable;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
@@ -48,7 +49,6 @@ import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.dynamo.store.datastore.MasterDataDefinition;
 import io.vertigo.dynamo.store.filestore.FileStore;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.lang.Assertion;
 
 /**
 * Implémentation standard du gestionnaire des données et des accès aux données.

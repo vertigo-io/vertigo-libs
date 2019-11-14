@@ -25,15 +25,15 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.component.Activeable;
-import io.vertigo.core.component.AopPlugin;
-import io.vertigo.core.component.ComponentSpace;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ListBuilder;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.ComponentSpace;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.vega.plugins.webservice.handler.AccessTokenWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.CorsAllowerWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.ExceptionWebServiceHandlerPlugin;

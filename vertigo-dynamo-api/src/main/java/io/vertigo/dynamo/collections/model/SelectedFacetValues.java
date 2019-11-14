@@ -25,9 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
 
 /**
  * Selection de Facette.

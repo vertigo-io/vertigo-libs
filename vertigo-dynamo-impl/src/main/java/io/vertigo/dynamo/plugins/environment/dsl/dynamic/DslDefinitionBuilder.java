@@ -25,10 +25,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityField;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
 
 /**
  * Interface de création des définitions.

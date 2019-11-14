@@ -31,9 +31,11 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.GsonBuilder;
 
 import io.vertigo.commons.transaction.Transactional;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.util.ClassUtil;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
 import io.vertigo.orchestra.dao.definition.DefinitionPAO;
 import io.vertigo.orchestra.dao.definition.OActivityDAO;
 import io.vertigo.orchestra.dao.definition.OProcessDAO;
@@ -47,8 +49,6 @@ import io.vertigo.orchestra.domain.definition.OProcess;
 import io.vertigo.orchestra.impl.definitions.ProcessDefinitionStorePlugin;
 import io.vertigo.orchestra.plugins.services.MapCodec;
 import io.vertigo.orchestra.services.execution.ActivityEngine;
-import io.vertigo.util.ClassUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * Plugin de gestion des définitions en base de données.

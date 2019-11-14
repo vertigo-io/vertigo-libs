@@ -21,7 +21,7 @@ package io.vertigo.account.authentication;
 import java.util.Optional;
 
 import io.vertigo.account.account.Account;
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * Authentication.

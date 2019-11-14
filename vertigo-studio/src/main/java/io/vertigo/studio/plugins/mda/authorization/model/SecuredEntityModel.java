@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 public class SecuredEntityModel {
 

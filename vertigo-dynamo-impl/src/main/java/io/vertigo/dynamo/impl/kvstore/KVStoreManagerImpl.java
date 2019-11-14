@@ -24,9 +24,9 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.MapBuilder;
 
 /**
 * Standard implementation of the Key-Value DataBase.

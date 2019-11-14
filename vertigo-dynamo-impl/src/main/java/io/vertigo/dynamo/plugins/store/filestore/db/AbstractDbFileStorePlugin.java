@@ -22,7 +22,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
 
-import io.vertigo.app.Home;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataStream;
+import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -35,8 +37,6 @@ import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.DataStream;
 
 /**
  * Permet de gérer les accès atomiques à n'importe quel type de stockage SQL/

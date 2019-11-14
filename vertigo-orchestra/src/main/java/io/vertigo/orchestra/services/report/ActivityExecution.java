@@ -21,7 +21,7 @@ package io.vertigo.orchestra.services.report;
 import java.io.Serializable;
 import java.time.Instant;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Representation of an activityExecution

@@ -23,7 +23,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.Date;
 
-import io.vertigo.lang.DataStream;
+import io.vertigo.core.lang.DataStream;
 
 /**
  * Movie.

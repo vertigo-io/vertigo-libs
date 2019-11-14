@@ -22,7 +22,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.studio.masterdata.MasterDataManager;
 import io.vertigo.studio.masterdata.MasterDataValues;
 

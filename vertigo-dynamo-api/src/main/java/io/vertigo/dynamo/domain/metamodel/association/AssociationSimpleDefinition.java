@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
-import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.DefinitionPrefix;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * This class defines a simple association : 1-1 or 1-n.

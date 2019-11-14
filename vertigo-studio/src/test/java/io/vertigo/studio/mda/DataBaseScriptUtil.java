@@ -26,12 +26,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.SQLException;
 
-import io.vertigo.app.App;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.App;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
-import io.vertigo.lang.WrappedException;
 
 /**
  * SQL Script executor.

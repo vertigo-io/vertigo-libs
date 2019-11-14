@@ -25,7 +25,7 @@ import java.util.Optional;
 
 import org.thymeleaf.standard.expression.VariableExpression;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 public final class NamedComponentDefinition {
 

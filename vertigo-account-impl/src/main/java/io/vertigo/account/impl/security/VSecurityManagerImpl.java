@@ -26,12 +26,12 @@ import javax.inject.Inject;
 
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.core.component.Activeable;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.LocaleProvider;
+import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
+import io.vertigo.core.util.ClassUtil;
 
 /**
  * Implementation standard de la gestion centralisee de la UserSession.

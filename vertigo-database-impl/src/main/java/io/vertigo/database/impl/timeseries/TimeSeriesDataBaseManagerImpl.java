@@ -27,6 +27,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import io.vertigo.core.analytics.AnalyticsManager;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.Measure;
@@ -34,7 +35,6 @@ import io.vertigo.database.timeseries.TabularDatas;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.database.timeseries.TimeSeriesDataBaseManager;
 import io.vertigo.database.timeseries.TimedDatas;
-import io.vertigo.lang.Assertion;
 
 /**
  * @author mlaroche

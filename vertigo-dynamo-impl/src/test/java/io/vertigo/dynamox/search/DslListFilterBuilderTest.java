@@ -26,9 +26,9 @@ import java.time.ZoneOffset;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.core.util.DateUtil;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
-import io.vertigo.util.DateUtil;
 
 /**
  * @author  npiedeloup

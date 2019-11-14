@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
-import io.vertigo.core.definition.DefinitionUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
+import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.lang.Assertion;
 
 /**
  * This class defines a task and its attributes.

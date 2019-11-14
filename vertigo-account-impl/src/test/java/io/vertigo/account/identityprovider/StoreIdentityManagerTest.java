@@ -24,10 +24,10 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.identityprovider.MyNodeConfig.IdpPlugin;
-import io.vertigo.app.Home;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.config.NodeConfig;
 
 public final class StoreIdentityManagerTest extends AbstractIdentityProviderManagerTest {
 	private VTransactionWritable tx;

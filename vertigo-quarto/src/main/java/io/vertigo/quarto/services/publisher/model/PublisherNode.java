@@ -25,12 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherField;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherFieldType;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherNodeDefinition;
-import io.vertigo.util.StringUtil;
 
 /**
  * Conteneur de données utilisé par Publisher au sein d'un PublisherData.

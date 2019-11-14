@@ -18,7 +18,7 @@
  */
 package io.vertigo.stella.impl.master;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * @author pchretien

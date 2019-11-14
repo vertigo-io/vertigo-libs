@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -31,7 +32,6 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.plugins.store.datastore.AbstractStaticDataStorePlugin;
-import io.vertigo.lang.Assertion;
 import io.vertigo.struts2.domain.DtDefinitions;
 import io.vertigo.struts2.domain.reference.Commune;
 

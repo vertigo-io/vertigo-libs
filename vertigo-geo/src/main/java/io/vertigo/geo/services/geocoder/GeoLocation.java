@@ -18,7 +18,7 @@
  */
 package io.vertigo.geo.services.geocoder;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Objet permettant de définir un emplacement par ses coordonnées.

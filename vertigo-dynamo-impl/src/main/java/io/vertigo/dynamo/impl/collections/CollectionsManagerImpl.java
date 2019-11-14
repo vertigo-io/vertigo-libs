@@ -27,7 +27,8 @@ import java.util.function.Predicate;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.collections.IndexDtListFunctionBuilder;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -44,7 +45,6 @@ import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.impl.collections.facet.model.FacetFactory;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilter;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.lang.Assertion;
 
 /**
  * Implémentation du gestionnaire de la manipulation des collections.

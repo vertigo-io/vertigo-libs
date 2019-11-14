@@ -19,7 +19,7 @@
 package io.vertigo.ledger.services;
 
 import io.vertigo.commons.eventbus.Event;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * This class defines the event that is emitted when a transaction is written in the ledger and send to myPublicAddress.

@@ -92,11 +92,11 @@ public final class Profil implements Entity {
 			return new io.vertigo.dynamo.domain.model.DtList<>(io.vertigo.ui.data.domain.users.SecurityRole.class);
 		}
 		final io.vertigo.dynamo.domain.model.DtListURI fkDtListURI = getSecurityRoleDtListURI();
-		io.vertigo.lang.Assertion.checkNotNull(fkDtListURI);
+		io.vertigo.core.lang.Assertion.checkNotNull(fkDtListURI);
 		//---------------------------------------------------------------------
 		//On est toujours dans un mode lazy.
 		if (securityRole == null) {
-			securityRole = io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().findAll(fkDtListURI);
+			securityRole = io.vertigo.core.node.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().findAll(fkDtListURI);
 		}
 		return securityRole;
 	}

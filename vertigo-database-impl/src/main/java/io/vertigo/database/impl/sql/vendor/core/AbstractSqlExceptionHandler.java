@@ -23,14 +23,14 @@ import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VUserException;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.MessageKey;
 import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.database.impl.sql.Resources;
 import io.vertigo.database.sql.vendor.SqlExceptionHandler;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VUserException;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.StringUtil;
 
 /**
  * Handler abstrait des exceptions SQL qui peuvent survenir dans un service.

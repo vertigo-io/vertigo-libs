@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import io.vertigo.audit.services.trace.AuditTrace;
 import io.vertigo.audit.services.trace.AuditTraceCriteria;
 import io.vertigo.audit.services.trace.AuditTraceManager;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * @author xdurand

@@ -1,5 +1,6 @@
 package ${dtDefinition.packageName};
 
+import io.vertigo.core.lang.Generated;
 import ${dtDefinition.stereotypePackageName};
 <#if dtDefinition.containsEnumAccessor()>
 import io.vertigo.dynamo.domain.model.EnumVAccessor;
@@ -15,7 +16,6 @@ import io.vertigo.dynamo.domain.model.VAccessor;
 </#if>	
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.lang.Generated;
 
 /**
  * This class is automatically generated.

@@ -26,9 +26,9 @@ import javax.inject.Inject;
 
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
-import io.vertigo.lang.Assertion;
 import io.vertigo.vega.token.TokenManager;
 
 /**

@@ -21,7 +21,7 @@ package io.vertigo.account.impl.authentication;
 import java.util.Optional;
 
 import io.vertigo.account.authentication.AuthenticationToken;
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 
 /**
  * Plugin use for authentification.

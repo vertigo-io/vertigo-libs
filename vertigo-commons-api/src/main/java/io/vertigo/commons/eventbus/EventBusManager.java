@@ -20,7 +20,7 @@ package io.vertigo.commons.eventbus;
 
 import java.util.function.Consumer;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * Inter-components events manager.

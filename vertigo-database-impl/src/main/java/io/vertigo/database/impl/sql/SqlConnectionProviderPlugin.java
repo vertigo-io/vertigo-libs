@@ -18,11 +18,11 @@
  */
 package io.vertigo.database.impl.sql;
 
-import io.vertigo.app.Home;
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthMeasureBuilder;
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.Plugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;

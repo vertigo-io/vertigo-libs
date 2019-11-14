@@ -28,9 +28,9 @@ import com.opensymphony.xwork2.Result;
 import com.opensymphony.xwork2.UnknownHandler;
 import com.opensymphony.xwork2.config.entities.ActionConfig;
 
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.struts2.impl.MethodUtil;
 import io.vertigo.struts2.impl.servlet.RequestContainerWrapper;
-import io.vertigo.util.StringUtil;
 
 /**
  * Gestion du passage de paramètres aux Actions.

@@ -31,14 +31,14 @@ import org.junit.jupiter.api.Test;
 import io.restassured.RestAssured;
 import io.restassured.filter.session.SessionFilter;
 import io.restassured.parsing.Parser;
-import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.Home;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.util.DateUtil;
 import io.vertigo.orchestra.MyNodeConfig;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.OrchestraServices;
 import io.vertigo.orchestra.services.execution.engine.EmptyActivityEngine;
-import io.vertigo.util.DateUtil;
 
 /**
  * Test des WS Orchestra

@@ -26,10 +26,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
 import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
 

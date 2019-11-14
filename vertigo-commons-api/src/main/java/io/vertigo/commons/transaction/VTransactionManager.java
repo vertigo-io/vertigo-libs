@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.transaction;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * Gestionnaire de transactions.

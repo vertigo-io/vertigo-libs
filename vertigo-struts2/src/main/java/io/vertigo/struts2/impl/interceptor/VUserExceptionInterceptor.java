@@ -22,7 +22,7 @@ import com.opensymphony.xwork2.Action;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 
-import io.vertigo.lang.VUserException;
+import io.vertigo.core.lang.VUserException;
 import io.vertigo.struts2.core.AbstractActionSupport;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
 

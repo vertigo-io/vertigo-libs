@@ -22,9 +22,9 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-import io.vertigo.util.DateUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
+import io.vertigo.core.util.DateUtil;
 
 /**
  * @author pchretien

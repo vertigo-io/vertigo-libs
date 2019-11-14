@@ -23,7 +23,7 @@ import java.io.Serializable;
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthMeasureBuilder;
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 
 /**
  * Plugin de gestion de cache.

@@ -20,7 +20,7 @@ package io.vertigo.commons.command;
 
 import java.util.List;
 
-import io.vertigo.core.component.Component;
+import io.vertigo.core.node.component.Component;
 
 public interface CommandManager extends Component {
 

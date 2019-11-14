@@ -22,7 +22,7 @@ import io.vertigo.commons.command.Command;
 import io.vertigo.commons.command.CommandResponse;
 import io.vertigo.commons.command.CommandResponseStatus;
 import io.vertigo.commons.command.GenericUID;
-import io.vertigo.core.component.Component;
+import io.vertigo.core.node.component.Component;
 
 public class TestCommand implements Component {
 

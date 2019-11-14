@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.store;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;

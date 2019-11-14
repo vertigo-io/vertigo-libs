@@ -18,8 +18,8 @@
  */
 package io.vertigo.stella;
 
-import io.vertigo.app.config.Feature;
-import io.vertigo.app.config.Features;
+import io.vertigo.core.node.config.Feature;
+import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.stella.impl.master.MasterManagerImpl;
 import io.vertigo.stella.impl.workers.WorkersManagerImpl;

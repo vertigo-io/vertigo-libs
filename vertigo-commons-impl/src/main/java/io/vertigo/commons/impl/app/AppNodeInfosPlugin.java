@@ -23,7 +23,7 @@ import java.util.Map;
 
 import io.vertigo.commons.app.Node;
 import io.vertigo.core.analytics.health.HealthCheck;
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 
 /**
  * Plugin for retrieving infos about a node.

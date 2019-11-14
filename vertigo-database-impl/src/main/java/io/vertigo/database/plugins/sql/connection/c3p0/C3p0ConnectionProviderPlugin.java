@@ -26,15 +26,15 @@ import javax.inject.Inject;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-import io.vertigo.core.component.Activeable;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.database.plugins.sql.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.vendor.SqlDataBase;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.ClassUtil;
 
 /**
  * If there is no datasource, you have to use a simple connection provider.

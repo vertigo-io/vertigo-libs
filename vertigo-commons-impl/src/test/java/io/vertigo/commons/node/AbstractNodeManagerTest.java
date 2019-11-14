@@ -25,13 +25,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.Home;
-import io.vertigo.app.config.NodeConfig;
-import io.vertigo.app.config.NodeConfigBuilder;
 import io.vertigo.commons.app.AppManager;
 import io.vertigo.commons.app.Node;
-import io.vertigo.app.config.ModuleConfig;
+import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.config.ModuleConfig;
+import io.vertigo.core.node.config.NodeConfig;
+import io.vertigo.core.node.config.NodeConfigBuilder;
 
 public abstract class AbstractNodeManagerTest extends AbstractTestCaseJU5 {
 

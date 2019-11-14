@@ -44,8 +44,8 @@ import io.restassured.parsing.Parser;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
-import io.vertigo.util.ListBuilder;
-import io.vertigo.util.MapBuilder;
+import io.vertigo.core.util.ListBuilder;
+import io.vertigo.core.util.MapBuilder;
 
 abstract class AbstractWebServiceManagerTest {
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";

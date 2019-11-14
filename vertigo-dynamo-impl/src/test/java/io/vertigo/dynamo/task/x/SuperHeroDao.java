@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.commons.transaction.Transactional;
-import io.vertigo.core.component.Component;
+import io.vertigo.core.node.component.Component;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.task.data.domain.SuperHero;
 import io.vertigo.dynamo.task.proxy.TaskAnnotation;

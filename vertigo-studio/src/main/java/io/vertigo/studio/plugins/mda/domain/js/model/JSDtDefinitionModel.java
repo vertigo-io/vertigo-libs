@@ -21,9 +21,9 @@ package io.vertigo.studio.plugins.mda.domain.js.model;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
-import io.vertigo.lang.Assertion;
 
 /**
  * Model used by FreeMarker.

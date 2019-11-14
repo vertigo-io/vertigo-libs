@@ -22,9 +22,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.util.VCollectors;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Base de données des voitures.

@@ -22,8 +22,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import io.vertigo.commons.transaction.VTransactionResource;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.database.sql.vendor.SqlDataBase;
-import io.vertigo.lang.Assertion;
 
 /**
  * Connexion à une base de données JDBC.

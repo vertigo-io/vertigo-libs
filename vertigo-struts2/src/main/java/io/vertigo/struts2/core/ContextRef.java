@@ -21,7 +21,7 @@ package io.vertigo.struts2.core;
 import java.io.File;
 import java.io.Serializable;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Liste des couples (clé, object) enregistrés.

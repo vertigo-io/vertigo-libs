@@ -33,6 +33,8 @@ import javax.inject.Inject;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.process.ProcessAnalyticsTracer;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.database.impl.sql.mapper.SqlMapper;
 import io.vertigo.database.sql.SqlDataBaseManager;
@@ -42,8 +44,6 @@ import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.database.sql.vendor.SqlMapping;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuple;
 
 /**
 * Implémentation standard du gestionnaire des données et des accès aux données.

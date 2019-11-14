@@ -22,7 +22,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * A Node in a vertigo app.

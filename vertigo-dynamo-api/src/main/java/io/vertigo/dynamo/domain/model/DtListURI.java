@@ -21,9 +21,9 @@ package io.vertigo.dynamo.domain.model;
 import java.io.Serializable;
 import java.util.regex.Pattern;
 
-import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.lang.Assertion;
 
 /**
  * URI d'une DTC.

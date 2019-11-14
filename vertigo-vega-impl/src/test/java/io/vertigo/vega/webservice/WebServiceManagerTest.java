@@ -22,7 +22,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
 import io.restassured.RestAssured;
-import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
 
 public final class WebServiceManagerTest extends AbstractWebServiceManagerTest {

@@ -18,11 +18,11 @@
  */
 package io.vertigo.commons.cache.memory;
 
-import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.cache.AbstractCacheManagerTest;
 import io.vertigo.commons.cache.TestCacheDefinitionProvider;
+import io.vertigo.core.node.config.ModuleConfig;
+import io.vertigo.core.node.config.NodeConfig;
 
 /**
  * MemoryCache Manager test class

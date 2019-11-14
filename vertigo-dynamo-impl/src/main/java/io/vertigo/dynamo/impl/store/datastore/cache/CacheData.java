@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.impl.store.datastore.cache;
 
 import io.vertigo.commons.cache.CacheManager;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURI;
@@ -26,7 +27,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.lang.Assertion;
 
 /**
  * Gestion des données mises en cache.

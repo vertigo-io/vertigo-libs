@@ -27,7 +27,7 @@ import java.nio.file.Files;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Utilitaire de gestion des fichiers et flux associés.

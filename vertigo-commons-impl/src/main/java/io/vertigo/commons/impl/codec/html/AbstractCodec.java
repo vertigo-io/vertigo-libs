@@ -23,8 +23,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 
 /**
  * Encodeur/décodeur.

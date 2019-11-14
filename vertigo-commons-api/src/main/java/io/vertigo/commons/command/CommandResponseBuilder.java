@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.command;
 
-import io.vertigo.lang.Builder;
+import io.vertigo.core.lang.Builder;
 
 public final class CommandResponseBuilder<P> implements Builder<CommandResponse<P>> {
 

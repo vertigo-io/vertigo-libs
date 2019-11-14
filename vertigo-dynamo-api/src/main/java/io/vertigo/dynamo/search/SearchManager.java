@@ -22,7 +22,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;

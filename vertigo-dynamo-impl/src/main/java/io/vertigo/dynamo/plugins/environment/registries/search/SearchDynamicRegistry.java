@@ -25,10 +25,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.DefinitionSupplier;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.DefinitionSupplier;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition.FacetOrder;
@@ -44,8 +46,6 @@ import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DynamicRegistry;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
 
 /**
  * @author pchretien

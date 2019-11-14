@@ -28,11 +28,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.commons.transaction.VTransactionAfterCompletionFunction;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Tuple;
+import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuple;
-import io.vertigo.lang.VSystemException;
-import io.vertigo.lang.WrappedException;
 
 /**
  * Handling saving file to disk.

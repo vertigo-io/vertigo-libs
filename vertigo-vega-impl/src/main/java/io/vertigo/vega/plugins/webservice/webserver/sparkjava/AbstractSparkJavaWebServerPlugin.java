@@ -21,9 +21,9 @@ package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 import java.util.Collection;
 import java.util.Optional;
 
-import io.vertigo.core.component.Activeable;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.component.Activeable;
 import io.vertigo.vega.impl.webservice.WebServerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;

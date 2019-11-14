@@ -23,11 +23,11 @@ import java.util.UUID;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountManager;
-import io.vertigo.app.Home;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.util.DateUtil;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-import io.vertigo.util.DateUtil;
 
 /**
  * @author pchretien

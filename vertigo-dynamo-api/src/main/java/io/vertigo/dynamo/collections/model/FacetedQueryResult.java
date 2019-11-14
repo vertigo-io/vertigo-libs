@@ -24,12 +24,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Assertion;
 
 /**
  * Résultat de la recherche.

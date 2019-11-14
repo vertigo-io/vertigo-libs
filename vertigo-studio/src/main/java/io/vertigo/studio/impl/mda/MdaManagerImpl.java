@@ -24,8 +24,8 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.lang.Assertion;
 import io.vertigo.studio.mda.MdaManager;
 import io.vertigo.studio.mda.MdaResult;
 import io.vertigo.studio.mda.MdaResultBuilder;

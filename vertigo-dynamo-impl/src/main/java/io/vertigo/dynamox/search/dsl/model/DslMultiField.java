@@ -21,7 +21,7 @@ package io.vertigo.dynamox.search.dsl.model;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Multi fields definition.

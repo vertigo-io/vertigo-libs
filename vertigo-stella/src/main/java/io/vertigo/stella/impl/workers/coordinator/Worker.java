@@ -24,12 +24,12 @@ import java.util.concurrent.Callable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.master.MasterManager;
 import io.vertigo.stella.master.WorkResultHandler;
-import io.vertigo.util.InjectorUtil;
 
 /**
  * Exécution d'un work.

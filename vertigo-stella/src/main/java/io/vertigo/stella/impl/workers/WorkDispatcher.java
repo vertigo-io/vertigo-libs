@@ -21,7 +21,7 @@ package io.vertigo.stella.impl.workers;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.impl.workers.coordinator.WorkersCoordinator;
 import io.vertigo.stella.master.WorkResultHandler;

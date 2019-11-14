@@ -20,15 +20,15 @@ package io.vertigo.account.impl.account;
 
 import java.util.List;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.dynamox.domain.formatter.FormatterString;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Provides all the definitions used in the 'account' module.

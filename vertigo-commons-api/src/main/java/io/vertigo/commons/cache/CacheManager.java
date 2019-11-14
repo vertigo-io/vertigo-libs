@@ -20,7 +20,7 @@ package io.vertigo.commons.cache;
 
 import java.io.Serializable;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * Manager des caches.

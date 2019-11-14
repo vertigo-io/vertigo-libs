@@ -20,11 +20,11 @@ package io.vertigo.dynamo.store.data;
 
 import java.util.Iterator;
 
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.data.domain.car.MotorType;
 import io.vertigo.dynamo.store.data.domain.famille.Famille;
 import io.vertigo.dynamo.store.data.domain.fileinfo.VxFileInfo;
-import io.vertigo.util.ListBuilder;
 
 public final class DtDefinitions implements Iterable<Class<?>> {
 

@@ -22,10 +22,10 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.function.Predicate;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuple;
 
 /**
  * A criteria to filter a list.

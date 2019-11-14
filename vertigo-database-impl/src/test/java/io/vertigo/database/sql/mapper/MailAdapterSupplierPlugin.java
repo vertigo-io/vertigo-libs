@@ -20,9 +20,9 @@ package io.vertigo.database.sql.mapper;
 
 import java.util.List;
 
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.database.impl.sql.SqlAdapterSupplierPlugin;
 import io.vertigo.database.sql.data.Mail;
-import io.vertigo.util.ListBuilder;
 
 public final class MailAdapterSupplierPlugin implements SqlAdapterSupplierPlugin {
 

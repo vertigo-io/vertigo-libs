@@ -50,11 +50,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.geo.impl.services.geocoder.GeoCoderPlugin;
 import io.vertigo.geo.services.geocoder.GeoLocation;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 
 /**
  * @author spoitrenaud

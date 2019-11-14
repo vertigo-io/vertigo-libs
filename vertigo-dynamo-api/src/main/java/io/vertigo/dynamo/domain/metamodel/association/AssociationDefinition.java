@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
 
 /**
  * Décrit une association entre deux objets (A et B)

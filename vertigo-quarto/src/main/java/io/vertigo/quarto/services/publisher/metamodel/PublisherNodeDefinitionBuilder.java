@@ -21,7 +21,7 @@ package io.vertigo.quarto.services.publisher.metamodel;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.lang.Builder;
+import io.vertigo.core.lang.Builder;
 
 /**
  * Builder de la définition d'un modèle de noeud d'édition.

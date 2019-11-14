@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 

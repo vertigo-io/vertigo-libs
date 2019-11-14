@@ -18,7 +18,7 @@
  */
 package io.vertigo.account.authorization.metamodel.rulemodel;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Single Expression Definition.

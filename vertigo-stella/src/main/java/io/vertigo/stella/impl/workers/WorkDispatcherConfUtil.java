@@ -21,7 +21,7 @@ package io.vertigo.stella.impl.workers;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Util to read workType conf.

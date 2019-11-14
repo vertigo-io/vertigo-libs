@@ -23,8 +23,8 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.Transaction;
 
 import io.vertigo.commons.transaction.VTransactionResource;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 
 /**
  * Manages a connection to a berkeley database.

@@ -20,8 +20,8 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr.definition;
 
 import java.util.List;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
-import io.vertigo.lang.Assertion;
 
 /**
  * Une entrée de type définition est définie (XOR)

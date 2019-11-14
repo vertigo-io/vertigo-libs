@@ -19,7 +19,7 @@
 package io.vertigo.commons.peg;
 
 import io.vertigo.commons.peg.PegRule.Dummy;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Enlève les blancs et les commentaires

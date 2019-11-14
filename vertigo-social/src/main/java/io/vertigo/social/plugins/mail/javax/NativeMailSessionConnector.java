@@ -25,9 +25,9 @@ import javax.inject.Inject;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
+import io.vertigo.core.util.StringUtil;
 
 /**
  * Plugin de gestion des mails, pour l'implémentation du jdk.

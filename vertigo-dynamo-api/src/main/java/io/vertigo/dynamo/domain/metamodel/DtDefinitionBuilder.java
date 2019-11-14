@@ -22,14 +22,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.core.definition.DefinitionReference;
-import io.vertigo.core.definition.DefinitionUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 import io.vertigo.core.locale.MessageKey;
 import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionUtil;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-import io.vertigo.util.StringUtil;
 
 /**
  * This class must be used to build a DtDefinition.

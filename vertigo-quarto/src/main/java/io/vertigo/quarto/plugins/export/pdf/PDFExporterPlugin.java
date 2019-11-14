@@ -22,8 +22,8 @@ import java.io.OutputStream;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.impl.services.export.ExporterPlugin;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportFormat;

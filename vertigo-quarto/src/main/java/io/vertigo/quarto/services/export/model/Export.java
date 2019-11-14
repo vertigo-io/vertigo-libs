@@ -21,7 +21,7 @@ package io.vertigo.quarto.services.export.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Données à exporter.

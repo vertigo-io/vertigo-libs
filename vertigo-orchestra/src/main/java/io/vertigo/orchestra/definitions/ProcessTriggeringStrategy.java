@@ -21,7 +21,7 @@ package io.vertigo.orchestra.definitions;
 import java.util.Map;
 import java.util.Optional;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Strategy for trigerring the process.

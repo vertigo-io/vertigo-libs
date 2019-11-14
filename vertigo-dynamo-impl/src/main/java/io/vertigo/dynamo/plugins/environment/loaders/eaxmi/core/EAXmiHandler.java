@@ -26,8 +26,8 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
-import io.vertigo.lang.Assertion;
 
 /**
  * Handler de lecture du fichier XMI généré par Enterprise Architect.

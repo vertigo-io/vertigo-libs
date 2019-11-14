@@ -37,13 +37,13 @@ import com.sleepycat.je.EnvironmentConfig;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.core.component.Activeable;
 import io.vertigo.core.daemon.DaemonScheduled;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.file.util.FileUtil;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Implémentation d'un store BerkeleyDB.

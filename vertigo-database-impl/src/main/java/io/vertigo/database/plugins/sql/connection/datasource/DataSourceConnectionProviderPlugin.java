@@ -25,14 +25,14 @@ import javax.inject.Inject;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.database.plugins.sql.connection.AbstractSqlConnectionProviderPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.vendor.SqlDataBase;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.ClassUtil;
 
 /**
  * ConnectionProvider permettant la connexion à une datasource Java.

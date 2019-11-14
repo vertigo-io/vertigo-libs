@@ -20,10 +20,10 @@ package io.vertigo.dynamo.store.datastore;
 
 import java.util.function.Predicate;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
-import io.vertigo.lang.Assertion;
 
 @DefinitionPrefix("Md")
 public class MasterDataDefinition implements Definition {

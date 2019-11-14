@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda.task.test;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Objet utilisé par FreeMarker.

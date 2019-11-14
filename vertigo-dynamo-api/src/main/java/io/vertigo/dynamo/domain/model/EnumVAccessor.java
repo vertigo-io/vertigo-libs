@@ -20,9 +20,9 @@ package io.vertigo.dynamo.domain.model;
 
 import java.util.stream.Stream;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
 
 /**
  *

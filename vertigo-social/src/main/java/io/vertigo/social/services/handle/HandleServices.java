@@ -2,7 +2,7 @@ package io.vertigo.social.services.handle;
 
 import java.util.List;
 
-import io.vertigo.core.component.Component;
+import io.vertigo.core.node.component.Component;
 import io.vertigo.dynamo.domain.model.UID;
 
 public interface HandleServices extends Component {

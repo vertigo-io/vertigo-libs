@@ -28,11 +28,11 @@ import javax.activation.FileTypeMap;
 import javax.inject.Inject;
 
 import io.vertigo.commons.transaction.Transactional;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
 import io.vertigo.orchestra.dao.execution.OActivityLogDAO;
 import io.vertigo.orchestra.domain.execution.OActivityLog;
 import io.vertigo.orchestra.impl.services.ProcessLoggerPlugin;

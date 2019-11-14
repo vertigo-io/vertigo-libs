@@ -25,11 +25,11 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.rules.DslKspRule;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.StringUtil;
 
 /**
  * Parser d'un fichier KSP.

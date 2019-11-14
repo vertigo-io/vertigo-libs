@@ -18,8 +18,8 @@
  */
 package io.vertigo.stella.work.distributed.redis;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.stella.StellaFeatures;
 import io.vertigo.stella.work.AbstractWorkManagerTest;

@@ -32,11 +32,11 @@ import javax.servlet.ServletContext;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.plugins.webservice.servlet.ServletResourceResolverPlugin;
 import io.vertigo.vega.plugins.webservice.servlet.WebAppContextParamPlugin;
 

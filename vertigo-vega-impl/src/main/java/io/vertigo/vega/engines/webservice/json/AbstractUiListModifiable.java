@@ -28,12 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;

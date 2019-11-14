@@ -30,12 +30,13 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
@@ -45,7 +46,6 @@ import io.vertigo.studio.plugins.mda.task.model.PAOModel;
 import io.vertigo.studio.plugins.mda.task.model.TaskAttributeModel;
 import io.vertigo.studio.plugins.mda.task.model.TaskDefinitionModel;
 import io.vertigo.studio.plugins.mda.util.MdaUtil;
-import io.vertigo.util.MapBuilder;
 
 /**
  * Génération des objets relatifs au module Task.

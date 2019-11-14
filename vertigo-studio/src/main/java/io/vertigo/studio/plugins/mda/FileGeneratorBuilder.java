@@ -21,8 +21,8 @@ package io.vertigo.studio.plugins.mda;
 import java.io.File;
 import java.util.Map;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 
 /**
  * This class provides a way to create a FileFenerator.

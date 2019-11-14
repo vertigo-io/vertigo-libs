@@ -33,9 +33,9 @@ import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslPropertyEntry;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * règle de déclaration d'une affectation de propriété.

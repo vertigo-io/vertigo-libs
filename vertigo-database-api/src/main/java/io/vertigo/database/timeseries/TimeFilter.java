@@ -20,7 +20,7 @@ package io.vertigo.database.timeseries;
 
 import java.io.Serializable;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * @author mlaroche

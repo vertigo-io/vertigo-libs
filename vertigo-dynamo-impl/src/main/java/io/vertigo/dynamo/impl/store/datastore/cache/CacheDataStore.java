@@ -22,9 +22,10 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
@@ -43,7 +44,6 @@ import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 import io.vertigo.dynamo.impl.store.datastore.logical.LogicalDataStoreConfig;
 import io.vertigo.dynamo.store.StoreEvent;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.lang.Assertion;
 
 /**
  * Gestion des données mises en cache.

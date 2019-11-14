@@ -43,8 +43,8 @@ import com.google.gson.reflect.TypeToken;
 import io.vertigo.commons.app.Node;
 import io.vertigo.commons.impl.app.AppNodeInfosPlugin;
 import io.vertigo.core.analytics.health.HealthCheck;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 
 /**
  * Plugin to retrieve infos of a node with the http protocol (Rest Webservices)

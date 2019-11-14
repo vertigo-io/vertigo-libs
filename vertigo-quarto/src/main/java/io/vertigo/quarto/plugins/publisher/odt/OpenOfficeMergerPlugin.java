@@ -29,7 +29,7 @@ import java.util.zip.ZipFile;
 import javax.inject.Inject;
 
 import io.vertigo.commons.script.ScriptManager;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.quarto.impl.services.publisher.MergerPlugin;
 import io.vertigo.quarto.impl.services.publisher.merger.grammar.ScriptGrammarUtil;
 import io.vertigo.quarto.impl.services.publisher.merger.processor.GrammarEvaluatorProcessor;

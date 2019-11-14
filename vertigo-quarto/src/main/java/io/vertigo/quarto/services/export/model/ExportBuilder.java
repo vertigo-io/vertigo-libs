@@ -21,10 +21,10 @@ package io.vertigo.quarto.services.export.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
 import io.vertigo.quarto.services.export.model.Export.Orientation;
 
 /**

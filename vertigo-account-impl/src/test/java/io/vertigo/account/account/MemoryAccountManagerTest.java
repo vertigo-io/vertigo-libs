@@ -23,8 +23,8 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.node.config.NodeConfig;
 
 public final class MemoryAccountManagerTest extends AbstractAccountManagerTest {
 

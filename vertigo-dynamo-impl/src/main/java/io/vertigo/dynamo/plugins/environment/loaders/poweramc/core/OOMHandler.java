@@ -23,8 +23,8 @@ import java.util.Map;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
-import io.vertigo.lang.Assertion;
 
 /**
  * Handler SAX, permettant de parser le OOM.

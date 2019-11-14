@@ -21,13 +21,13 @@ package io.vertigo.dynamo.domain.metamodel;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
-import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
+import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
 
 /**
  * A domain exists to enrich the primitive datatypes, giving them super powers.

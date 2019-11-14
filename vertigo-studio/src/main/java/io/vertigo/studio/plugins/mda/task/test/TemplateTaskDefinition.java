@@ -21,10 +21,10 @@ package io.vertigo.studio.plugins.mda.task.test;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.vertigo.core.definition.DefinitionUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.DefinitionUtil;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Génération des classes/méthodes des taches de type DAO.

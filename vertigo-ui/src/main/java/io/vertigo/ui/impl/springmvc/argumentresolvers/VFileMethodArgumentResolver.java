@@ -28,8 +28,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
 
 public class VFileMethodArgumentResolver implements HandlerMethodArgumentResolver {

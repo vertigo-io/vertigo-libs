@@ -23,12 +23,12 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.JsonExclude;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.JsonExclude;
-import io.vertigo.util.StringUtil;
 
 /**
  * Gestion des formatages de nombres.

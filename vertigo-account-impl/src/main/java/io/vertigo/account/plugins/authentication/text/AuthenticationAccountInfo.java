@@ -19,7 +19,7 @@
 package io.vertigo.account.plugins.authentication.text;
 
 import io.vertigo.account.authentication.AuthenticationToken;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 final class AuthenticationAccountInfo {
 	private final String accountKey;

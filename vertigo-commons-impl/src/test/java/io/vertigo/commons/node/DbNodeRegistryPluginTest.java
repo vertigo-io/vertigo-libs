@@ -20,9 +20,9 @@ package io.vertigo.commons.node;
 
 import org.h2.Driver;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.app.registry.db.DbAppNodeRegistryPlugin;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 
 public class DbNodeRegistryPluginTest extends AbstractNodeManagerTest {

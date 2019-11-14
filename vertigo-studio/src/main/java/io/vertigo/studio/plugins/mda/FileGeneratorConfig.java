@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.plugins.mda;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Configuration du generateur de fichiers.

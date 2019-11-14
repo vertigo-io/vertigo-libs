@@ -20,9 +20,9 @@ package io.vertigo.studio.plugins.mda.domain.ts.model;
 
 import java.util.Map;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.lang.Assertion;
 
 /**
  * Model TS des materdata.

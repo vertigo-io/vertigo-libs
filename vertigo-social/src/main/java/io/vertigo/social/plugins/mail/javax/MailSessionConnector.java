@@ -20,7 +20,7 @@ package io.vertigo.social.plugins.mail.javax;
 
 import javax.mail.Session;
 
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 
 /**
  * Create javax mail session plugin.

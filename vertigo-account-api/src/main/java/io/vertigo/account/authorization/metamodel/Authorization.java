@@ -27,10 +27,10 @@ import java.util.Optional;
 import java.util.Set;
 
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.lang.Assertion;
 
 /**
  * Une authorization est un droit sur une fonction de l'application.

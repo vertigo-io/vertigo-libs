@@ -27,8 +27,8 @@ import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.script.parser.ScriptSeparator;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
-import io.vertigo.lang.Assertion;
 
 /**
  * Simule le mécanisme JSP sur un fichier texte quelconque.

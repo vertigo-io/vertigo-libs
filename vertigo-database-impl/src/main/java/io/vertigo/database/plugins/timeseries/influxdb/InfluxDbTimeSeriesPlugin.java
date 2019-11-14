@@ -43,7 +43,9 @@ import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 import org.influxdb.dto.QueryResult.Series;
 
-import io.vertigo.core.component.Activeable;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Tuple;
+import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesPlugin;
@@ -55,8 +57,6 @@ import io.vertigo.database.timeseries.TabularDatas;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.database.timeseries.TimedDataSerie;
 import io.vertigo.database.timeseries.TimedDatas;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Tuple;
 
 /**
  * @author mlaroche

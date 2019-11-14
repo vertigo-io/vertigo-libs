@@ -18,7 +18,7 @@
  */
 package io.vertigo.database.sql.statement;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * this class concerns the param of a sql statement.

@@ -18,11 +18,11 @@
  */
 package io.vertigo.studio.plugins.mda.domain.java.model;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
-import io.vertigo.lang.Assertion;
 
 /**
  * Objet utilisé par FreeMarker.

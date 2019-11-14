@@ -25,16 +25,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.kvstore.AbstractKVStoreManagerTest;
 import io.vertigo.dynamo.kvstore.data.Flower;
-import io.vertigo.lang.VSystemException;
-import io.vertigo.util.ListBuilder;
 
 /**
  * @author pchretien

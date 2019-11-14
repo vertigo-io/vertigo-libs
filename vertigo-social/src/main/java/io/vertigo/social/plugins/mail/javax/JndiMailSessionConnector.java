@@ -23,9 +23,9 @@ import javax.mail.Session;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 
 /**
  * Plugin d'accès au serveur mail, utilisant une resource Jndi.

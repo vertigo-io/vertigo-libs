@@ -25,8 +25,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.Attributes;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
-import io.vertigo.lang.Assertion;
 
 /**
  * Objets de l'arbre Xmi.

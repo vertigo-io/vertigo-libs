@@ -22,8 +22,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 
 /**
  * Builder for an audit trace

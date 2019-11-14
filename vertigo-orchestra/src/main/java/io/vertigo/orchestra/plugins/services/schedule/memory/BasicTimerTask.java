@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TimerTask;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.plugins.services.MapCodec;
 import io.vertigo.orchestra.services.execution.ProcessExecutor;

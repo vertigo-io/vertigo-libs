@@ -23,9 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
-import io.vertigo.lang.Assertion;
 
 /**
  * This class defines how the dataSpaces are mapped to the physical stores.

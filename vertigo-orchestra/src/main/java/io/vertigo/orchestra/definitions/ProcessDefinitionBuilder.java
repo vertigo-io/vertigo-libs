@@ -22,11 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
+import io.vertigo.core.util.ListBuilder;
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.orchestra.services.execution.ActivityEngine;
-import io.vertigo.util.ListBuilder;
-import io.vertigo.util.MapBuilder;
 
 /**
  * Builder d'une définition de processus Orchestra.

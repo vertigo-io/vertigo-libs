@@ -23,10 +23,10 @@ import java.util.List;
 import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateSequenceModel;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
-import io.vertigo.lang.Assertion;
 
 /**
  * Permet de construire les lignes décritants l'annotation.

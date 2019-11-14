@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.peg;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * A  terminal rule succeeds if the first character of the input string matches that terminal.

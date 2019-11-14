@@ -18,8 +18,8 @@
  */
 package io.vertigo.social;
 
-import io.vertigo.app.config.Feature;
-import io.vertigo.app.config.Features;
+import io.vertigo.core.node.config.Feature;
+import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.social.impl.comment.CommentServicesImpl;
 import io.vertigo.social.impl.handle.HandleServicesImpl;

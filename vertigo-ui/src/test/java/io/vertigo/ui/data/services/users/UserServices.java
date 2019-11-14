@@ -18,7 +18,7 @@
  */
 package io.vertigo.ui.data.services.users;
 
-import io.vertigo.core.component.Component;
+import io.vertigo.core.node.component.Component;
 import io.vertigo.ui.data.domain.users.ApplicationUser;
 
 public interface UserServices extends Component {

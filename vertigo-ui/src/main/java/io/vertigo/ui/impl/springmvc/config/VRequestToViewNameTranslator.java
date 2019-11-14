@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.web.servlet.RequestToViewNameTranslator;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.ui.impl.springmvc.controller.AbstractVSpringMvcController;
 
 public class VRequestToViewNameTranslator implements RequestToViewNameTranslator {

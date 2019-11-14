@@ -20,9 +20,9 @@ package io.vertigo.commons.eventbus;
 
 import java.util.function.Consumer;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
 
 /**
  * This defintion defines a subscripter in the eventbus pattern.

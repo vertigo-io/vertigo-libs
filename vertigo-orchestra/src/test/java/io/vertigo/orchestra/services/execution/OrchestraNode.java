@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * @author npiedeloup

@@ -20,16 +20,16 @@ package io.vertigo.studio.data.tasktest;
 
 import javax.inject.Inject;
 
-import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.App;
-import io.vertigo.app.Home;
-import io.vertigo.app.config.DefinitionProviderConfig;
-import io.vertigo.app.config.LogConfig;
-import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.App;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.config.DefinitionProviderConfig;
+import io.vertigo.core.node.config.LogConfig;
+import io.vertigo.core.node.config.ModuleConfig;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.local.LocalResourceResolverPlugin;

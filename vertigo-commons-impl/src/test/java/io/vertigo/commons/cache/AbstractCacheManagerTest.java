@@ -30,8 +30,8 @@ import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.lang.Assertion;
 
 /**
  *

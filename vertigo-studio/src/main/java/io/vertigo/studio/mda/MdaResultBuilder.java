@@ -23,7 +23,7 @@ import java.io.File;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.lang.Builder;
+import io.vertigo.core.lang.Builder;
 
 /**
  * Résultat de la génération.

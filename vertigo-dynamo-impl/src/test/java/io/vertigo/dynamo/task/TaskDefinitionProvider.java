@@ -26,12 +26,12 @@ import static io.vertigo.dynamo.task.TaskEngineMock2.ATTR_IN_INTEGERS;
 
 import java.util.List;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.util.ListBuilder;
 
 public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
 	public static String TK_MULTIPLICATION = "TkMultiplication";

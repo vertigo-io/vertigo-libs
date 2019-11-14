@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
-import io.vertigo.util.StringUtil;
 
 /**
  * Objet utilisé par FreeMarker.

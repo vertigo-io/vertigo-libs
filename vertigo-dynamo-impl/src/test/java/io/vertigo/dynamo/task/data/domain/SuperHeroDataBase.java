@@ -20,13 +20,13 @@ package io.vertigo.dynamo.task.data.domain;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamox.task.TaskEngineProc;
-import io.vertigo.lang.Assertion;
 
 public final class SuperHeroDataBase {
 	private final VTransactionManager transactionManager;

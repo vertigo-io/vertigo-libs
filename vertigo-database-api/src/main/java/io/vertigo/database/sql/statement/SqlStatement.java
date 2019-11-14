@@ -21,7 +21,7 @@ package io.vertigo.database.sql.statement;
 import java.util.Collections;
 import java.util.List;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * SqlStatement.

@@ -41,11 +41,11 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import io.vertigo.commons.app.Node;
 import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
-import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.JsonExclude;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.JsonExclude;
-import io.vertigo.lang.WrappedException;
 
 /**
  * Db implementation for multi node management

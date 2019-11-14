@@ -22,8 +22,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import io.vertigo.commons.codec.Encoder;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 
 /**
  * Implémentation des hachages.

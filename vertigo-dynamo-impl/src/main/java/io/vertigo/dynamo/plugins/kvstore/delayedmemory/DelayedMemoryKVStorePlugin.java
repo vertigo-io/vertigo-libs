@@ -36,12 +36,12 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.core.daemon.Daemon;
 import io.vertigo.core.daemon.DaemonDefinition;
 import io.vertigo.core.daemon.DaemonManager;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.impl.kvstore.KVStorePlugin;
-import io.vertigo.lang.Assertion;
 
 /**
  * Memory implementation of UiSecurityTokenCachePlugin.

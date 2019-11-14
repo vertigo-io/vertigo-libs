@@ -20,8 +20,8 @@ package io.vertigo.audit.services.trace;
 
 import java.time.Instant;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 
 /**
  * Fluent Builder for a audit trace

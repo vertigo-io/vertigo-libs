@@ -23,8 +23,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.database.sql.mapper.SqlAdapter;
-import io.vertigo.lang.Assertion;
 
 public final class SqlMapper {
 	private static final SqlAdapter<Object, Object> IDENTITY = new SqlAdapter<Object, Object>() {

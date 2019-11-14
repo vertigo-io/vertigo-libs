@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.search.SearchManager;
@@ -32,7 +33,6 @@ import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamox.search.AbstractSearchLoader;
-import io.vertigo.lang.Assertion;
 
 public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Item> {
 	private static final int SEARCH_CHUNK_SIZE = 5;

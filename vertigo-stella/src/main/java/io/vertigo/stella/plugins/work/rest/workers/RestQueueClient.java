@@ -40,10 +40,10 @@ import org.glassfish.jersey.message.GZipEncoder;
 import com.google.gson.Gson;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.stella.impl.work.WorkItem;
-import io.vertigo.util.ClassUtil;
 
 /**
  * api de distributedWorkQueueManager en REST avec jersey.

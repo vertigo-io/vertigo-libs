@@ -28,7 +28,7 @@ import org.thymeleaf.processor.element.IElementTagStructureHandler;
 import org.thymeleaf.standard.expression.Fragment;
 import org.thymeleaf.templatemode.TemplateMode;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 public class SlotAttributeTagProcessor extends AbstractAttributeTagProcessor {
 	protected static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";

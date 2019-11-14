@@ -25,13 +25,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.UnaryOperator;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.IndexPlugin;
-import io.vertigo.lang.Assertion;
 
 /**
  * List Function powered with index engine.

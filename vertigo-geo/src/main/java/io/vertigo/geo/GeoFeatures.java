@@ -18,8 +18,8 @@
  */
 package io.vertigo.geo;
 
-import io.vertigo.app.config.Feature;
-import io.vertigo.app.config.Features;
+import io.vertigo.core.node.config.Feature;
+import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.geo.impl.services.geocoder.GeoCoderManagerImpl;
 import io.vertigo.geo.plugins.geocoder.ban.BanGeoCoderPlugin;

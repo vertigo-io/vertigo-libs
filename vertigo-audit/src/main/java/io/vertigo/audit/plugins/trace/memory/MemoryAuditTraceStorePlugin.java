@@ -26,9 +26,9 @@ import java.util.concurrent.atomic.AtomicLong;
 import io.vertigo.audit.impl.services.trace.AuditTraceStorePlugin;
 import io.vertigo.audit.services.trace.AuditTrace;
 import io.vertigo.audit.services.trace.AuditTraceCriteria;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ListBuilder;
-import io.vertigo.util.StringUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.ListBuilder;
+import io.vertigo.core.util.StringUtil;
 
 /**
  *

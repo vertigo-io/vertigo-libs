@@ -20,9 +20,9 @@ package io.vertigo.geo.impl.services.geocoder;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.geo.services.geocoder.GeoCoderManager;
 import io.vertigo.geo.services.geocoder.GeoLocation;
-import io.vertigo.lang.Assertion;
 
 /**
  * @author spoitrenaud

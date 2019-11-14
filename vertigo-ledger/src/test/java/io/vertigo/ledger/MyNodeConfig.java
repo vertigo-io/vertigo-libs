@@ -18,8 +18,8 @@
  */
 package io.vertigo.ledger;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 
 /**

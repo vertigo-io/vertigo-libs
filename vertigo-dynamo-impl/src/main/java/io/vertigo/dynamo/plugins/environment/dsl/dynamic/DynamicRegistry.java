@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.environment.dsl.dynamic;
 import java.util.Collections;
 import java.util.List;
 
-import io.vertigo.core.definition.DefinitionSupplier;
+import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 
 /**

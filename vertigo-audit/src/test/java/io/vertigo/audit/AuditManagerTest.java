@@ -29,12 +29,12 @@ import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.audit.services.trace.AuditTrace;
 import io.vertigo.audit.services.trace.AuditTraceBuilder;
 import io.vertigo.audit.services.trace.AuditTraceCriteria;
 import io.vertigo.audit.services.trace.AuditTraceManager;
+import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.config.NodeConfig;
 
 /**
  * Junit for audit manager

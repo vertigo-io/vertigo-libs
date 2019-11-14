@@ -20,7 +20,7 @@ package io.vertigo.ui.core;
 
 import java.io.PrintWriter;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Builder d'envoi de contenu Ajax.

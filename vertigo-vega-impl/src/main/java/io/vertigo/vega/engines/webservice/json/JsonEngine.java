@@ -23,7 +23,7 @@ import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Set;
 
-import io.vertigo.core.component.Component;
+import io.vertigo.core.node.component.Component;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.vega.webservice.model.UiObject;
 

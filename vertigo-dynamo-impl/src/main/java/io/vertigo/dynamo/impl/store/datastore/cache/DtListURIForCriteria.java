@@ -20,6 +20,7 @@ package io.vertigo.dynamo.impl.store.datastore.cache;
 
 import java.io.Serializable;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -29,7 +30,6 @@ import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.lang.Assertion;
 
 /**
  * Implementation d'une liste filtré par un Criteria.

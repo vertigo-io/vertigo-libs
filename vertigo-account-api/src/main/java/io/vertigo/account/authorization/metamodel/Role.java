@@ -20,9 +20,9 @@ package io.vertigo.account.authorization.metamodel;
 
 import java.util.List;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
 
 /**
  * Role is a coherent group of more atomic authorizations.

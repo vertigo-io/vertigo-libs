@@ -26,15 +26,15 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
-import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.util.InjectorUtil;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamox.task.TaskEngineProc;
-import io.vertigo.util.InjectorUtil;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Test Junit de Vertigo Orchestra.

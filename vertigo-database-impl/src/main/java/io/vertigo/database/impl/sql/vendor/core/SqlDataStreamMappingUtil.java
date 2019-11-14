@@ -28,9 +28,9 @@ import java.nio.file.Files;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.DataStream;
-import io.vertigo.util.TempFile;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataStream;
+import io.vertigo.core.util.TempFile;
 
 /**
  * Gestion native des blobs.

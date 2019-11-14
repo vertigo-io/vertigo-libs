@@ -21,7 +21,7 @@ package io.vertigo.studio.plugins.mda.authorization.model;
 import java.util.Optional;
 
 import io.vertigo.account.authorization.metamodel.Authorization;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 public class AuthorizationModel {
 

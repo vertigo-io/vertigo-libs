@@ -24,9 +24,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.SortedMap;
 
-import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
-import io.vertigo.lang.Assertion;
 
 /**
  * Facette.

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
@@ -31,7 +32,6 @@ import io.vertigo.dynamo.domain.stereotype.Association;
 import io.vertigo.dynamo.domain.stereotype.AssociationNN;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Gestion centralisée des annotations sur les objets générés.

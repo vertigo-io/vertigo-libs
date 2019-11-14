@@ -20,8 +20,8 @@ package io.vertigo.social.impl.mail;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.lang.Assertion;
 import io.vertigo.social.services.mail.Mail;
 import io.vertigo.social.services.mail.MailManager;
 

@@ -23,8 +23,8 @@ import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 
-import io.vertigo.core.component.Activeable;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.component.Activeable;
 import io.vertigo.stella.impl.master.coordinator.MasterCoordinator;
 import io.vertigo.stella.impl.master.listener.WorkListener;
 import io.vertigo.stella.impl.master.listener.WorkListenerImpl;

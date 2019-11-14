@@ -18,8 +18,8 @@
  */
 package io.vertigo.dynamo.collections.metamodel;
 
+import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.lang.Builder;
 
 /**
  * Project specific builder from Criteria to ListFilter.

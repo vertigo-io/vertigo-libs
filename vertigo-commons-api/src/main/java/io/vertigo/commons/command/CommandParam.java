@@ -20,7 +20,7 @@ package io.vertigo.commons.command;
 
 import java.lang.reflect.Type;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 public final class CommandParam {
 

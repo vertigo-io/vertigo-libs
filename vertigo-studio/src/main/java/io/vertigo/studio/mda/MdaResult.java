@@ -20,7 +20,7 @@ package io.vertigo.studio.mda;
 
 import java.io.PrintStream;
 
-import io.vertigo.util.StringUtil;
+import io.vertigo.core.util.StringUtil;
 
 /**
  * Résultat de la génération.

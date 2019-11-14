@@ -21,7 +21,7 @@ package io.vertigo.vega.webservice.data.ws;
 import java.time.LocalDate;
 
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.util.DateUtil;
+import io.vertigo.core.util.DateUtil;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Contact;
 import io.vertigo.vega.webservice.stereotype.POST;

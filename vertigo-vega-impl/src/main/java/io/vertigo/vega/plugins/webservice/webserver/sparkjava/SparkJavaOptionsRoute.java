@@ -21,7 +21,7 @@ package io.vertigo.vega.plugins.webservice.webserver.sparkjava;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.util.ClassUtil;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;

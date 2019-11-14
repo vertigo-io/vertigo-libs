@@ -18,7 +18,7 @@
  */
 package io.vertigo.orchestra.impl.services.execution;
 
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 import io.vertigo.orchestra.definitions.ProcessType;
 import io.vertigo.orchestra.services.execution.ProcessExecutor;
 

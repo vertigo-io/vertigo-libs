@@ -21,7 +21,7 @@ package io.vertigo.database.timeseries;
 import java.io.Serializable;
 import java.util.Map;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /*
  * Tabular metriques

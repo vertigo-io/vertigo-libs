@@ -23,8 +23,8 @@ package io.vertigo.struts2.boot.initializer;
 
 import javax.inject.Inject;
 
-import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.node.component.ComponentInitializer;
 import io.vertigo.struts2.services.users.UserResources;
 
 /**

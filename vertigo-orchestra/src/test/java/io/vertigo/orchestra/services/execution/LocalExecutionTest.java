@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.orchestra.AbstractOrchestraTestCase;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
@@ -35,7 +36,6 @@ import io.vertigo.orchestra.services.execution.engine.TestJob;
 import io.vertigo.orchestra.services.execution.engine.TestJob2;
 import io.vertigo.orchestra.services.execution.engine.TestJob3;
 import io.vertigo.orchestra.services.execution.engine.TestJobScheduled;
-import io.vertigo.util.MapBuilder;
 
 /**
  * TODO : Description de la classe.

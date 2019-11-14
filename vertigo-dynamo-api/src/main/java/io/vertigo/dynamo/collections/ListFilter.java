@@ -20,7 +20,7 @@ package io.vertigo.dynamo.collections;
 
 import java.io.Serializable;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Filtre de liste.

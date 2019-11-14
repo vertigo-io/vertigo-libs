@@ -22,11 +22,11 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Optional;
 
-import io.vertigo.core.component.Container;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.node.component.Container;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
-import io.vertigo.util.ClassUtil;
+import io.vertigo.core.util.ClassUtil;
 
 /**
  * Gestion du passage de paramètres aux Actions.

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.commons.app.Node;
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 
 /**
  * Plugin for storing and querying the node topology of an App.

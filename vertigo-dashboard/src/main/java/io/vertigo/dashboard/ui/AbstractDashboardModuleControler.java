@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.App;
-import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.core.analytics.health.HealthCheck;
+import io.vertigo.core.node.App;
+import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.dashboard.services.data.DataProvider;
 
 public abstract class AbstractDashboardModuleControler implements DashboardModuleControler {

@@ -27,8 +27,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
 
 public class VFileReturnValueHandler implements HandlerMethodReturnValueHandler {
 

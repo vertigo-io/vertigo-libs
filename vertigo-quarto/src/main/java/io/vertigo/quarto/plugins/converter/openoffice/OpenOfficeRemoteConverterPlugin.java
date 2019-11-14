@@ -34,9 +34,9 @@ import com.sun.star.io.XOutputStream;
 import com.sun.star.lang.XComponent;
 import com.sun.star.uno.UnoRuntime;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.plugins.converter.openoffice.stream.OOoFileInputStream;
 import io.vertigo.quarto.plugins.converter.openoffice.stream.OOoFileOutputStream;
 

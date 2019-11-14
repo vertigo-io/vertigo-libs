@@ -21,8 +21,8 @@ package io.vertigo.vega.plugins.webservice.handler;
 import javax.inject.Inject;
 
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;

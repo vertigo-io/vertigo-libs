@@ -24,14 +24,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
 
 /**
  * Classe de bouchon pour mettre des données fictives dans les requêtes.

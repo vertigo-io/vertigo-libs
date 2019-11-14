@@ -31,8 +31,9 @@ import org.springframework.web.context.request.RequestContextHolder;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
-import io.vertigo.lang.Assertion;
 import io.vertigo.ui.core.ComponentStates;
 import io.vertigo.ui.core.FormMode;
 import io.vertigo.ui.core.ViewContext;
@@ -41,7 +42,6 @@ import io.vertigo.ui.core.ViewContextMap;
 import io.vertigo.ui.exception.ExpiredViewContextException;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.ui.impl.springmvc.util.UiUtil;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**

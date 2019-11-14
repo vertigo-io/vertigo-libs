@@ -29,7 +29,8 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.app.Home;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -39,7 +40,6 @@ import io.vertigo.dynamo.search.metamodel.SearchChunk;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.metamodel.SearchLoader;
 import io.vertigo.dynamo.search.model.SearchIndex;
-import io.vertigo.lang.Assertion;
 
 final class ReindexTask implements Runnable {
 	private static final Logger LOGGER = LogManager.getLogger(ReindexTask.class);

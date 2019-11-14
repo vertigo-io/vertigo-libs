@@ -20,7 +20,7 @@ package io.vertigo.dashboard.ui;
 
 import java.util.Map;
 
-import io.vertigo.app.App;
+import io.vertigo.core.node.App;
 
 public interface DashboardModuleControler {
 

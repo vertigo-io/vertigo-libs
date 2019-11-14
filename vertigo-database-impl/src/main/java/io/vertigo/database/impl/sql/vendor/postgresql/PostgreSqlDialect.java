@@ -21,9 +21,9 @@ package io.vertigo.database.impl.sql.vendor.postgresql;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.database.sql.vendor.SqlDialect;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 final class PostgreSqlDialect implements SqlDialect {
 

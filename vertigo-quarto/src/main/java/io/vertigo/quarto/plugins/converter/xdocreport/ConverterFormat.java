@@ -20,7 +20,7 @@ package io.vertigo.quarto.plugins.converter.xdocreport;
 
 import java.util.Locale;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Formats d'entrée et sortie supportés par le lpugin XDocReport.

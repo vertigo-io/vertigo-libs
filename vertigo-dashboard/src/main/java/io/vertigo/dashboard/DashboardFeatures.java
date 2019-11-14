@@ -18,14 +18,14 @@
  */
 package io.vertigo.dashboard;
 
-import io.vertigo.app.config.Feature;
-import io.vertigo.app.config.Features;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.config.Feature;
+import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.dashboard.impl.services.data.DataProviderImpl;
 import io.vertigo.dashboard.services.data.DataProvider;
 import io.vertigo.dashboard.ui.DashboardUiManager;
 import io.vertigo.dashboard.webservices.DashboardDataProviderWebServices;
-import io.vertigo.lang.Assertion;
 
 public class DashboardFeatures extends Features<DashboardFeatures> {
 

@@ -21,8 +21,8 @@ package io.vertigo.dynamo.domain.metamodel;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 
 /**
  * Gestion de la flexibilité structurelle du modèle.

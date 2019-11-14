@@ -21,7 +21,7 @@ package io.vertigo.dynamo.plugins.kvstore.delayedmemory;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Delayed key of SecurityToken.

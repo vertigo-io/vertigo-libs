@@ -20,11 +20,11 @@ package io.vertigo.account.authorization.metamodel;
 
 import java.util.List;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.lang.Assertion;
 
 /**
  * Une SecuredEntity est une entité sécurisé.

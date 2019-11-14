@@ -24,7 +24,7 @@ import java.util.Set;
 import org.thymeleaf.dialect.AbstractProcessorDialect;
 import org.thymeleaf.processor.IProcessor;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.ui.impl.thymeleaf.components.ContentItemComponentProcessor;
 import io.vertigo.ui.impl.thymeleaf.components.ContentSlotComponentProcessor;
 import io.vertigo.ui.impl.thymeleaf.components.NamedComponentDefinition;

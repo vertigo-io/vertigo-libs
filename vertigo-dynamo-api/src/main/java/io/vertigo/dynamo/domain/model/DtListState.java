@@ -20,11 +20,11 @@ package io.vertigo.dynamo.domain.model;
 
 import java.util.Optional;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.lang.Assertion;
 
 /**
  * DtList state : sorting and paging informations

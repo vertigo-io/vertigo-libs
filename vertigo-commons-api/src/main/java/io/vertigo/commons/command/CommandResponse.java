@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.command;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 public final class CommandResponse<P> {
 

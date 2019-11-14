@@ -20,7 +20,7 @@ package io.vertigo.studio.plugins.mda.util;
 
 import java.io.File;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.studio.mda.MdaResultBuilder;
 
 public class MdaUtil {

@@ -36,9 +36,9 @@ import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 
-import io.vertigo.lang.DataStream;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.ListBuilder;
+import io.vertigo.core.lang.DataStream;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.util.ListBuilder;
 
 public final class Movies {
 	public static final String TITLE_MOVIE_1 = "citizen kane"; //1 May 1941, ?

@@ -20,7 +20,7 @@ package io.vertigo.studio.plugins.mda.task.test;
 
 import java.util.List;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Objet utilisé par FreeMarker.

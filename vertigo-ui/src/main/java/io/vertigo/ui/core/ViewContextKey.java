@@ -20,7 +20,7 @@ package io.vertigo.ui.core;
 
 import java.io.Serializable;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Clés type des entrées dans le ViewContext.

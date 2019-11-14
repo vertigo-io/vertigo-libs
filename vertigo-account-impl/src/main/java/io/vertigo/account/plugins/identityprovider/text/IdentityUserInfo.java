@@ -18,8 +18,8 @@
  */
 package io.vertigo.account.plugins.identityprovider.text;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.lang.Assertion;
 
 final class IdentityUserInfo {
 

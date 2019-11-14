@@ -21,18 +21,18 @@ package io.vertigo.ui.impl.springmvc.util;
 import java.io.Serializable;
 import java.util.List;
 
-import io.vertigo.app.Home;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
-import io.vertigo.lang.Assertion;
 import io.vertigo.ui.core.AbstractUiListUnmodifiable;
 import io.vertigo.ui.core.ViewContext;
-import io.vertigo.util.StringUtil;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 

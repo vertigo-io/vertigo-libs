@@ -44,6 +44,8 @@ import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -55,8 +57,6 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
 
 //vérifier
 /**

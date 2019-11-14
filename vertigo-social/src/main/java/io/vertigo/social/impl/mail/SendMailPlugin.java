@@ -18,7 +18,7 @@
  */
 package io.vertigo.social.impl.mail;
 
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 import io.vertigo.social.services.mail.Mail;
 
 /**

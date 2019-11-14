@@ -23,11 +23,11 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
-import io.vertigo.app.Home;
+import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.Home;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.impl.notification.NotificationPlugin;

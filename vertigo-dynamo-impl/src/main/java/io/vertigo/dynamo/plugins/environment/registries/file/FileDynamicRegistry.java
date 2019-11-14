@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.file;
 
-import io.vertigo.core.definition.DefinitionSupplier;
+import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;

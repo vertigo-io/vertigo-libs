@@ -18,7 +18,7 @@
  */
 package io.vertigo.orchestra.definitions;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.orchestra.services.execution.ActivityEngine;
 
 /**

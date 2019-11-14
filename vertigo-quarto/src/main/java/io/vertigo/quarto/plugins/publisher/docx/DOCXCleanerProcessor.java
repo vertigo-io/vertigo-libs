@@ -31,7 +31,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.quarto.impl.services.publisher.merger.processor.MergerProcessor;
 import io.vertigo.quarto.services.publisher.model.PublisherData;
 

@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.task.metamodel;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.StringUtil;
 
 /**
  * Attribut d'une tache.

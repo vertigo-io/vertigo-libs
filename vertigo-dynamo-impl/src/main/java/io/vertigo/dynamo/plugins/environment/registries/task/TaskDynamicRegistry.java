@@ -18,8 +18,10 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.definition.DefinitionSupplier;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.definition.DefinitionSupplier;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
@@ -29,8 +31,6 @@ import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
 
 /**
  * @author pchretien

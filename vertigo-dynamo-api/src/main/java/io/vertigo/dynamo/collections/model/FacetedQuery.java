@@ -20,9 +20,9 @@ package io.vertigo.dynamo.collections.model;
 
 import java.io.Serializable;
 
-import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
-import io.vertigo.lang.Assertion;
 
 /**
  * Requete de filtrage par facettes.

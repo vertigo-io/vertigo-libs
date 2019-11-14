@@ -23,7 +23,7 @@ import java.util.Stack;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.util.StringUtil;
+import io.vertigo.core.util.StringUtil;
 
 /**
  * Classe de nettoyage d'une arborescence XML.

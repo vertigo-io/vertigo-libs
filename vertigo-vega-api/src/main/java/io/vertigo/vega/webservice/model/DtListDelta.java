@@ -20,9 +20,9 @@ package io.vertigo.vega.webservice.model;
 
 import java.io.Serializable;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.lang.Assertion;
 
 /**
  * Delta operations on List.

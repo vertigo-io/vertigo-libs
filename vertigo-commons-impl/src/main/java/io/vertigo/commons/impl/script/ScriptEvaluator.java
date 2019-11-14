@@ -22,7 +22,7 @@ import java.util.List;
 
 import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.commons.script.SeparatorType;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Evaluation d'un script

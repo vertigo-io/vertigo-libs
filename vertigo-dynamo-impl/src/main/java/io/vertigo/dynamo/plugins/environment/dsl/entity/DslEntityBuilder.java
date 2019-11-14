@@ -21,9 +21,9 @@ package io.vertigo.dynamo.plugins.environment.dsl.entity;
 import java.util.HashSet;
 import java.util.Set;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityField.Cardinality;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
 
 /**
  * This class provides a common way to build an entity.

@@ -18,8 +18,8 @@
  */
 package io.vertigo.studio.tools;
 
-import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.studio.mda.MdaManager;
 
 /**

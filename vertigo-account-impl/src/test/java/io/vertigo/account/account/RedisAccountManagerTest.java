@@ -24,9 +24,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.node.config.NodeConfig;
 import redis.clients.jedis.Jedis;
 
 public final class RedisAccountManagerTest extends AbstractAccountManagerTest {

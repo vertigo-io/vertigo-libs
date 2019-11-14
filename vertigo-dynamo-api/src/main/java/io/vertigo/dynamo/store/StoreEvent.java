@@ -19,8 +19,8 @@
 package io.vertigo.dynamo.store;
 
 import io.vertigo.commons.eventbus.Event;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.lang.Assertion;
 
 /**
  * This class defines the event that is emitted when the store deals with an object identified by an uri.

@@ -21,9 +21,9 @@ package io.vertigo.commons.cache;
 import java.util.Arrays;
 import java.util.List;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 
 /**
  * Initialisation du manager des caches.

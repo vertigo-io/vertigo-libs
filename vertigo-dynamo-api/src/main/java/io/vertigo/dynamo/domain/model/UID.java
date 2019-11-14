@@ -21,12 +21,12 @@ package io.vertigo.dynamo.domain.model;
 import java.io.Serializable;
 import java.util.regex.Pattern;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Représente l'identifiant ABSOLU d'une ressource.

@@ -25,9 +25,6 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.ModuleConfig;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.eventbus.data.BlueColorEvent;
 import io.vertigo.commons.eventbus.data.DummyEvent;
@@ -35,6 +32,9 @@ import io.vertigo.commons.eventbus.data.MySubscriber;
 import io.vertigo.commons.eventbus.data.RedColorEvent;
 import io.vertigo.commons.eventbus.data.WhiteColorEvent;
 import io.vertigo.commons.eventbus.data.aspects.FlipAspect;
+import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.config.ModuleConfig;
+import io.vertigo.core.node.config.NodeConfig;
 
 /**
  * @author pchretien

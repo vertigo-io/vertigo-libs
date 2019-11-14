@@ -20,7 +20,7 @@ package io.vertigo.quarto.impl.services.publisher.merger.processor;
 
 import java.util.Queue;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.quarto.services.publisher.model.PublisherData;
 
 /**

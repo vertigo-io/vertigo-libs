@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.peg;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Une règle peut être vue comme

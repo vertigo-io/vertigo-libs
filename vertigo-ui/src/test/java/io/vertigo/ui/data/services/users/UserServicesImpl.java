@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.commons.transaction.Transactional;
-import io.vertigo.lang.VUserException;
+import io.vertigo.core.lang.VUserException;
 import io.vertigo.ui.data.controllers.TestUserSession;
 import io.vertigo.ui.data.domain.users.ApplicationUser;
 

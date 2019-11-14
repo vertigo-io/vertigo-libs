@@ -20,8 +20,10 @@ package io.vertigo.dynamo.domain.util;
 
 import java.util.stream.Collectors;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.definition.DefinitionUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.definition.DefinitionUtil;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
@@ -32,8 +34,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
 
 /**
  * The DtObjectUtil class is a set of utils about the DtObject.

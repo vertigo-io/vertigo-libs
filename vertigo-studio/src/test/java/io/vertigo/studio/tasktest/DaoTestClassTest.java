@@ -26,7 +26,7 @@ import java.util.Date;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.lang.DataStream;
+import io.vertigo.core.lang.DataStream;
 import io.vertigo.studio.data.domain.Contact;
 import io.vertigo.studio.data.tasktest.DaoTestClass;
 

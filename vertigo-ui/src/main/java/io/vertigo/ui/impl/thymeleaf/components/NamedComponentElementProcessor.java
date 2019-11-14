@@ -57,8 +57,8 @@ import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.util.EvaluationUtils;
 import org.thymeleaf.util.StringUtils;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 
 public class NamedComponentElementProcessor extends AbstractElementModelProcessor {
 	private static final String VARIABLE_PLACEHOLDER_SEPARATOR = "_";

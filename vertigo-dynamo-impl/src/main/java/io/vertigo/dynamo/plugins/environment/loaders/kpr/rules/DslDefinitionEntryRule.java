@@ -30,8 +30,8 @@ import io.vertigo.commons.peg.AbstractRule;
 import io.vertigo.commons.peg.PegChoice;
 import io.vertigo.commons.peg.PegRule;
 import io.vertigo.commons.peg.PegRules;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.definition.DslDefinitionEntry;
-import io.vertigo.lang.Assertion;
 
 /**
  * Règle de déclaration d'une champ référenéant une listes de clés.

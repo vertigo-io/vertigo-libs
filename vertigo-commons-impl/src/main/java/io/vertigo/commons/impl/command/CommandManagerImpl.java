@@ -25,20 +25,20 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.command.Command;
 import io.vertigo.commons.command.CommandDefinition;
 import io.vertigo.commons.command.CommandManager;
 import io.vertigo.commons.command.CommandParam;
 import io.vertigo.commons.command.CommandResponse;
 import io.vertigo.commons.command.GenericUID;
-import io.vertigo.core.component.AopPlugin;
-import io.vertigo.core.component.Component;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
-import io.vertigo.util.ClassUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.AopPlugin;
+import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.core.util.ClassUtil;
 
 public final class CommandManagerImpl implements CommandManager, SimpleDefinitionProvider {
 

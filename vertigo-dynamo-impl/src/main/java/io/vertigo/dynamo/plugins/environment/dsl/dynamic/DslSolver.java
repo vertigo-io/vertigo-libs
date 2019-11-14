@@ -23,10 +23,10 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityField;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
 
 /**
  * Solver permet de résoudre les références.

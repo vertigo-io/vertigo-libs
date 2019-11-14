@@ -32,6 +32,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.util.BeanUtil;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
 import io.vertigo.dynamox.search.dsl.model.DslBlockQuery;
@@ -46,11 +51,6 @@ import io.vertigo.dynamox.search.dsl.model.DslTermQuery;
 import io.vertigo.dynamox.search.dsl.model.DslTermQuery.EscapeMode;
 import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
 import io.vertigo.dynamox.search.dsl.rules.DslParserUtil;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.BeanUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * Default builder from Criteria to ListFilter with a query pattern with DSL.

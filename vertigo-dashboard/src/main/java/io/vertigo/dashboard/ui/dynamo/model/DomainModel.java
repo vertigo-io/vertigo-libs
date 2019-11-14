@@ -18,8 +18,8 @@
  */
 package io.vertigo.dashboard.ui.dynamo.model;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.lang.Assertion;
 
 public class DomainModel {
 	private final Domain domainDefinition;

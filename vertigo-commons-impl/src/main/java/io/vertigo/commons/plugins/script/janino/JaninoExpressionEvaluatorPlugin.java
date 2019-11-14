@@ -26,8 +26,8 @@ import org.codehaus.janino.ScriptEvaluator;
 
 import io.vertigo.commons.impl.script.ExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ExpressionParameter;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 
 /**
  * Evaluate an expression using Janino.

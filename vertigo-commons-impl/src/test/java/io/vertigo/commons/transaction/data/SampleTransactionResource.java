@@ -19,7 +19,7 @@
 package io.vertigo.commons.transaction.data;
 
 import io.vertigo.commons.transaction.VTransactionResource;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  *

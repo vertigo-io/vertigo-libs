@@ -42,8 +42,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.lang.VUserException;
+import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
@@ -62,7 +63,6 @@ import io.vertigo.dynamo.search.data.domain.ItemSearchLoader;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.lang.VUserException;
 
 /**
  * @author  npiedeloup

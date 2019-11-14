@@ -21,7 +21,7 @@ package io.vertigo.dynamo.collections;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;

@@ -21,9 +21,9 @@ package io.vertigo.dynamo.domain.metamodel;
 import java.util.Collections;
 import java.util.List;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.domain.metamodel.Domain.Scope;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
 
 /**
  * This class must be used to build a Domain.

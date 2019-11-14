@@ -27,6 +27,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.DateUtil;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -34,9 +37,6 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.DateUtil;
-import io.vertigo.util.StringUtil;
 
 final class Criterion<E extends Entity> extends Criteria<E> {
 	private static final long serialVersionUID = -7797854063455062775L;

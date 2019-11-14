@@ -21,10 +21,10 @@ package io.vertigo.quarto.impl.services.publisher.merger.grammar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.quarto.services.publisher.model.PublisherNode;
-import io.vertigo.util.StringUtil;
 
 /**
  * Classe abstraite représentant un ScriptTag.

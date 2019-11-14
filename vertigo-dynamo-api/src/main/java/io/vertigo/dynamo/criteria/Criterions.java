@@ -21,10 +21,10 @@ package io.vertigo.dynamo.criteria;
 import java.io.Serializable;
 import java.util.function.Predicate;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.lang.Assertion;
 
 /**
  *

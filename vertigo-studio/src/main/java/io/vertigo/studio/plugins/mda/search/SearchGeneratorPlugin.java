@@ -26,13 +26,15 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.MapBuilder;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
-import io.vertigo.lang.Assertion;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
@@ -40,8 +42,6 @@ import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.search.model.FacetedQueryDefinitionModel;
 import io.vertigo.studio.plugins.mda.search.model.SearchDtDefinitionModel;
 import io.vertigo.studio.plugins.mda.util.MdaUtil;
-import io.vertigo.util.MapBuilder;
-import io.vertigo.util.StringUtil;
 
 /**
  * Génération des objets relatifs au module Task.

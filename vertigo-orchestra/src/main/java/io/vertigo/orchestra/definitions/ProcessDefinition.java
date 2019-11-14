@@ -21,9 +21,9 @@ package io.vertigo.orchestra.definitions;
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.orchestra.services.execution.RunnableActivityEngine;
 
 /**

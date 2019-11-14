@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.Map;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /*
  * Couple(date, metriques)

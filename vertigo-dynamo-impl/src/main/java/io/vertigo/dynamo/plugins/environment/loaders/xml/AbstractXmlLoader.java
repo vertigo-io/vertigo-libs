@@ -30,8 +30,11 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.helpers.DefaultHandler;
 
-import io.vertigo.core.definition.DefinitionUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
@@ -41,9 +44,6 @@ import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.loaders.Loader;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.StringUtil;
 
 /**
  * Parser d'un fichier powerAMC/OOM ou EA/XMI.

@@ -21,7 +21,7 @@ package io.vertigo.quarto.services.publisher.metamodel;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Définition de la structure d'un champ d'un noeud du modèle d'édition.

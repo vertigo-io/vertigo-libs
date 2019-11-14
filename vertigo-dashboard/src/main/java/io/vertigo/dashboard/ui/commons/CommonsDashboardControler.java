@@ -24,8 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.vertigo.app.App;
-import io.vertigo.app.Home;
 import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
 import io.vertigo.core.analytics.AnalyticsManager;
@@ -34,6 +32,8 @@ import io.vertigo.core.analytics.health.HealthStatus;
 import io.vertigo.core.daemon.DaemonDefinition;
 import io.vertigo.core.daemon.DaemonManager;
 import io.vertigo.core.daemon.DaemonStat;
+import io.vertigo.core.node.App;
+import io.vertigo.core.node.Home;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
 import io.vertigo.dashboard.ui.commons.model.CacheModel;
 import io.vertigo.dashboard.ui.commons.model.DaemonModel;

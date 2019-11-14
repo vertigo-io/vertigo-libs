@@ -26,8 +26,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.util.StringUtil;
 
 public final class DtListStateMethodArgumentResolver implements HandlerMethodArgumentResolver {
 

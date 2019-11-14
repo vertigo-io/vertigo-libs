@@ -18,8 +18,8 @@
  */
 package io.vertigo.studio.plugins.mda.domain.js.model;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.lang.Assertion;
 
 /**
  * Model used to define a DtField.

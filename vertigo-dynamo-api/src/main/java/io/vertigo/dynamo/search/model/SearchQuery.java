@@ -21,12 +21,12 @@ package io.vertigo.dynamo.search.model;
 import java.io.Serializable;
 import java.util.Optional;
 
-import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
 import io.vertigo.dynamo.collections.model.FacetedQuery;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.lang.Assertion;
 
 /**
  * Critères de recherche.

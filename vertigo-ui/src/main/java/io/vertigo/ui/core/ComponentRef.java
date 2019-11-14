@@ -20,8 +20,8 @@ package io.vertigo.ui.core;
 
 import java.io.Serializable;
 
-import io.vertigo.app.Home;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
 
 /**
  * Référence vers un composant.

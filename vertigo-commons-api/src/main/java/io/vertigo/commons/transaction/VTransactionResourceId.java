@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.transaction;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Identification des ressources participant à la transaction.

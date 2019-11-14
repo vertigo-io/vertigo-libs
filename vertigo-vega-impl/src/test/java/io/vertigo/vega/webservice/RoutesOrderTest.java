@@ -35,7 +35,7 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
-import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
 
 public final class RoutesOrderTest {

@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.orchestra.impl.services.execution.ProcessExecutorImpl;
 import io.vertigo.orchestra.impl.services.execution.ProcessExecutorPlugin;
 import io.vertigo.orchestra.impl.services.schedule.ProcessSchedulerImpl;

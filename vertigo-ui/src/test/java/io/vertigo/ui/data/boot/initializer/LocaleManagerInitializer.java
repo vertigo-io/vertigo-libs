@@ -20,8 +20,8 @@ package io.vertigo.ui.data.boot.initializer;
 
 import javax.inject.Inject;
 
-import io.vertigo.core.component.ComponentInitializer;
 import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.node.component.ComponentInitializer;
 
 /**
  * Initializer de LocaleManager.

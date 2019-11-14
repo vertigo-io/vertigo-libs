@@ -24,8 +24,8 @@ import javax.inject.Inject;
 
 import io.vertigo.account.authorization.annotations.Secured;
 import io.vertigo.account.authorization.annotations.SecuredOperation;
+import io.vertigo.core.lang.VUserException;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.lang.VUserException;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Address;
 import io.vertigo.vega.webservice.data.domain.Contact;

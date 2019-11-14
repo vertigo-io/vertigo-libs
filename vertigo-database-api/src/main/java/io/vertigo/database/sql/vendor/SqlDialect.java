@@ -20,7 +20,7 @@ package io.vertigo.database.sql.vendor;
 
 import java.util.List;
 
-import io.vertigo.util.StringUtil;
+import io.vertigo.core.util.StringUtil;
 
 /**
  * The database dialect.

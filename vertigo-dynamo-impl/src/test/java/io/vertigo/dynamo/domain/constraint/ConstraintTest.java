@@ -23,8 +23,8 @@ import java.math.BigDecimal;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.dynamox.domain.constraint.ConstraintBigDecimal;
 import io.vertigo.dynamox.domain.constraint.ConstraintBigDecimalLength;
 import io.vertigo.dynamox.domain.constraint.ConstraintDoubleLength;

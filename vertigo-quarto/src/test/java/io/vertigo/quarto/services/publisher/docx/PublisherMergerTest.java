@@ -23,7 +23,7 @@ import java.io.IOException;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.quarto.services.publisher.AbstractPublisherMergerTest;
 
 /**

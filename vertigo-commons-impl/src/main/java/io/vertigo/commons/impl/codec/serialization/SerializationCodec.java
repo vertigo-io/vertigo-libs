@@ -27,8 +27,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 
 /**
  * Implémentation standard threadSafe des mécanismes permettant de sérialiser/ dé-sérialiser un objet.

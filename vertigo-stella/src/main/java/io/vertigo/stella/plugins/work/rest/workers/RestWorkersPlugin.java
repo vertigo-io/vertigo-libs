@@ -21,8 +21,8 @@ package io.vertigo.stella.plugins.work.rest.workers;
 import javax.inject.Inject;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.lang.Assertion;
 import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.impl.workers.WorkersPlugin;
 

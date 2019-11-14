@@ -24,8 +24,8 @@ package io.vertigo.account.authorization.metamodel;
 import java.util.Collections;
 import java.util.List;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.lang.Assertion;
 
 /**
  * Secured data dimension.

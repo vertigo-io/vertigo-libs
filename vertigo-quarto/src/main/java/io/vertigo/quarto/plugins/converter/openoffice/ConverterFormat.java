@@ -20,7 +20,7 @@ package io.vertigo.quarto.plugins.converter.openoffice;
 
 import java.util.Locale;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Formats de sortie supportés par Open Office.

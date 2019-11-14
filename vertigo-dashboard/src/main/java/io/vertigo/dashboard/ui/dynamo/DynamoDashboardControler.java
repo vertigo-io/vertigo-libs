@@ -26,9 +26,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import io.vertigo.app.App;
-import io.vertigo.app.Home;
 import io.vertigo.core.analytics.metric.Metric;
+import io.vertigo.core.node.App;
+import io.vertigo.core.node.Home;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
 import io.vertigo.dashboard.ui.dynamo.model.DomainModel;
 import io.vertigo.dashboard.ui.dynamo.model.EntityModel;

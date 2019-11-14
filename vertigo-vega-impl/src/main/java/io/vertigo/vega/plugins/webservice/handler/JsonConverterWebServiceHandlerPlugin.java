@@ -29,8 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.JsonSyntaxException;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.InjectorUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.converter.DefaultJsonConverter;

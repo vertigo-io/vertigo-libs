@@ -4,9 +4,11 @@ import java.util.Arrays;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.core.component.Component;
+import io.vertigo.core.lang.Generated;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.Component;
+import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
@@ -18,8 +20,6 @@ import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search.model.SearchQueryBuilder;
-import io.vertigo.lang.Generated;
-import io.vertigo.util.InjectorUtil;
 <#if indexDtDefinition.classCanonicalName != dtDefinition.classCanonicalName >
 import ${indexDtDefinition.classCanonicalName};
 </#if>

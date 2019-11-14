@@ -34,11 +34,13 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.eventbus.EventBusSubscribed;
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.core.component.Activeable;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.locale.LocaleManager;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.Activeable;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -53,8 +55,6 @@ import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.store.StoreEvent;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
 
 /**
  * Implémentation standard du gestionnaire des indexes de recherche.

@@ -2,7 +2,7 @@ package io.vertigo.social.impl.handle;
 
 import java.util.List;
 
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.social.services.handle.Handle;
 

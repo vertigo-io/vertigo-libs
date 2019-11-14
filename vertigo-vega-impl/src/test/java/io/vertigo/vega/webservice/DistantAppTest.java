@@ -28,10 +28,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.app.AppManager;
 import io.vertigo.commons.app.Node;
-import io.vertigo.util.InjectorUtil;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.vega.webservice.data.MyNodeConfig;
 
 public final class DistantAppTest {

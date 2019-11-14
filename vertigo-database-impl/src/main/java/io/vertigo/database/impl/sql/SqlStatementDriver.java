@@ -33,16 +33,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.util.BeanUtil;
+import io.vertigo.core.util.ClassUtil;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.database.impl.sql.mapper.SqlMapper;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 import io.vertigo.database.sql.vendor.SqlMapping;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.BeanUtil;
-import io.vertigo.util.ClassUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * This class handles the real communication with the database, it is used to

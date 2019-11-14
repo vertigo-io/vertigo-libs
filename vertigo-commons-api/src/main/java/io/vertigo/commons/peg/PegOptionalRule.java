@@ -20,7 +20,7 @@ package io.vertigo.commons.peg;
 
 import java.util.Optional;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * An optional rule.

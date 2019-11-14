@@ -18,9 +18,9 @@
  */
 package io.vertigo.database.plugins.sql.connection;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.database.impl.sql.SqlConnectionProviderPlugin;
 import io.vertigo.database.sql.vendor.SqlDataBase;
-import io.vertigo.lang.Assertion;
 
 /**
  * Classe de base des fournisseurs de connexions dynamo.

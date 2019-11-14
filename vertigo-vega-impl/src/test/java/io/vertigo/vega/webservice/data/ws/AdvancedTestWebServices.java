@@ -31,7 +31,9 @@ import java.util.function.Predicate;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.util.DateUtil;
 import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.criteria.CriterionLimit;
 import io.vertigo.dynamo.criteria.Criterions;
@@ -45,8 +47,6 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.VUserException;
-import io.vertigo.util.DateUtil;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Contact;

@@ -23,7 +23,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.definitions.ProcessType;
 import io.vertigo.orchestra.services.execution.ProcessExecutor;

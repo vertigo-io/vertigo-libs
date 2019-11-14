@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.impl.services.publisher.merger.script;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
 
 /**
  * Stocke le contenu d'un tag de la grammaire ODT

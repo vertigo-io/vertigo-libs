@@ -31,9 +31,9 @@ import javax.servlet.ServletContextListener;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.app.AutoCloseableApp;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.param.Param;
-import io.vertigo.lang.WrappedException;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartCleaner;
 import io.vertigo.vega.impl.webservice.filter.JettyMultipartConfig;
 import io.vertigo.vega.plugins.webservice.servlet.ServletResourceResolverPlugin;

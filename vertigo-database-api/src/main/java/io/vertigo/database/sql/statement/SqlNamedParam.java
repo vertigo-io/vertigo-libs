@@ -18,8 +18,8 @@
  */
 package io.vertigo.database.sql.statement;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 
 /**
  * Paramètres créés par l'analyseur et utilisés par le Handler.

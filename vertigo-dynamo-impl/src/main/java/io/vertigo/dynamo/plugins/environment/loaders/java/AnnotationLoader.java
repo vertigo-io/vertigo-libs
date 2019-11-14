@@ -44,7 +44,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.vertigo.core.definition.DefinitionUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.DefinitionUtil;
+import io.vertigo.core.util.ClassUtil;
+import io.vertigo.core.util.Selector;
+import io.vertigo.core.util.StringUtil;
+import io.vertigo.core.util.Selector.ClassConditions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
@@ -61,11 +66,6 @@ import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository
 import io.vertigo.dynamo.plugins.environment.loaders.Loader;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
-import io.vertigo.util.Selector;
-import io.vertigo.util.Selector.ClassConditions;
-import io.vertigo.util.StringUtil;
 
 /**
  * Lecture des annotations présentes sur les objets métier.

@@ -31,15 +31,16 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.Home;
+import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.Home;
 import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.util.TempFile;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 import io.vertigo.quarto.impl.services.publisher.PublisherDataUtil;
 import io.vertigo.quarto.services.publisher.data.domain.Address;
 import io.vertigo.quarto.services.publisher.data.domain.Enquete;
@@ -50,7 +51,6 @@ import io.vertigo.quarto.services.publisher.data.domain.Ville;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.services.publisher.model.PublisherData;
 import io.vertigo.quarto.services.publisher.model.PublisherNode;
-import io.vertigo.util.TempFile;
 
 /**
  * Test de l'implémentation standard.

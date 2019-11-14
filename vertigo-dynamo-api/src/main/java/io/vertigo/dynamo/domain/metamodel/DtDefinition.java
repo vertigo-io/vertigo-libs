@@ -26,11 +26,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
-import io.vertigo.core.definition.DefinitionReference;
-import io.vertigo.core.definition.DefinitionUtil;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
+import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionUtil;
 
 /**
  * The DtDefinition class defines the definition of data.

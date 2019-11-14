@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.dsl.entity;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Field of an entity.

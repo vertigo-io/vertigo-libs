@@ -33,10 +33,12 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -63,8 +65,6 @@ import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Test de l'implémentation standard.

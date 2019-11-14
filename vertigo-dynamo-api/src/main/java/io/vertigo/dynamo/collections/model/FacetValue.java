@@ -20,9 +20,9 @@ package io.vertigo.dynamo.collections.model;
 
 import java.io.Serializable;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.lang.Assertion;
 
 /**
  * Valeur de facette relatif à une définition.

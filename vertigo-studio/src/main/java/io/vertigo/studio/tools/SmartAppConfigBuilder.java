@@ -23,11 +23,11 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
-import io.vertigo.app.config.NodeConfig;
-import io.vertigo.app.config.xml.XmlAppConfigBuilder;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.config.NodeConfig;
+import io.vertigo.core.node.config.xml.XmlAppConfigBuilder;
 
 /**
  * Génération des fichiers Java et SQL à patrir de fichiers template freemarker.

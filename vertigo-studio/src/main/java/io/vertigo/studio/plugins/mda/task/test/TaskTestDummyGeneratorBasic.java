@@ -25,14 +25,14 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import io.vertigo.core.lang.DataStream;
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.lang.DataStream;
-import io.vertigo.lang.VSystemException;
 
 /**
  * Basic dummy values generator. (One possible value for each type)

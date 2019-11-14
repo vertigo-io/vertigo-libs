@@ -22,8 +22,10 @@ import java.util.Arrays;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.lang.Generated;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
@@ -42,10 +44,8 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.lang.Generated;
 import io.vertigo.ui.data.domain.movies.Movie;
 import io.vertigo.ui.data.domain.movies.MovieIndex;
-import io.vertigo.util.InjectorUtil;
 
 /**
  * This class is automatically generated.

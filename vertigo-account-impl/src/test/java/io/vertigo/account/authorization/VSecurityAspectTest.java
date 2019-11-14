@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
 import io.vertigo.account.authorization.SecurityNames.GlobalAuthorizations;
 import io.vertigo.account.authorization.SecurityNames.RecordAuthorizations;
 import io.vertigo.account.authorization.metamodel.Authorization;
@@ -34,8 +33,9 @@ import io.vertigo.account.authorization.model.Record;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.app.config.NodeConfig;
-import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.config.NodeConfig;
+import io.vertigo.core.node.definition.DefinitionSpace;
 
 /**
  * @author pchretien

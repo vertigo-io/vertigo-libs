@@ -6,8 +6,9 @@ import javax.inject.Inject;
 <#if dao.options >
 import java.util.Optional;
 </#if>
+import io.vertigo.core.lang.Generated;
 <#if !dao.taskDefinitions.empty >
-import io.vertigo.app.Home;
+import io.vertigo.core.node.Home;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
@@ -20,7 +21,6 @@ import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import ${dao.dtClassCanonicalName};
-import io.vertigo.lang.Generated;
 
 /**
  * This class is automatically generated.

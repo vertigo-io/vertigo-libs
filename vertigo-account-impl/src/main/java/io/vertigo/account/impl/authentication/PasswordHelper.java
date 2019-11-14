@@ -27,10 +27,10 @@ import java.security.spec.KeySpec;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.Home;
 
 /**
  * Utility class used for password managment.

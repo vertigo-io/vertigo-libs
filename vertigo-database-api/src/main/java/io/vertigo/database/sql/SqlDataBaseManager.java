@@ -22,12 +22,12 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.OptionalInt;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.lang.Tuple;
+import io.vertigo.core.node.component.Manager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
-import io.vertigo.lang.Tuple;
 
 /**
  * Manages connections to database.

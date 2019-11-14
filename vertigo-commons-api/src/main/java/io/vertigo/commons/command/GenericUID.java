@@ -21,8 +21,8 @@ package io.vertigo.commons.command;
 import java.io.Serializable;
 import java.util.regex.Pattern;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 
 /**
  * Représente l'identifiant ABSOLU d'une ressource.

@@ -28,12 +28,12 @@ import javax.inject.Inject;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.lang.Assertion;
 import io.vertigo.social.impl.comment.CommentPlugin;
 import io.vertigo.social.services.comment.Comment;
-import io.vertigo.util.MapBuilder;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;

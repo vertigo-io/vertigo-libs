@@ -18,8 +18,6 @@
  */
 package io.vertigo.commons;
 
-import io.vertigo.app.config.Feature;
-import io.vertigo.app.config.Features;
 import io.vertigo.commons.app.AppManager;
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
@@ -45,11 +43,9 @@ import io.vertigo.commons.plugins.cache.redis.RedisCachePlugin;
 import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.core.daemon.DaemonManager;
 import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
-import io.vertigo.core.impl.analytics.AnalyticsManagerImpl;
-import io.vertigo.core.impl.daemon.DaemonManagerImpl;
+import io.vertigo.core.node.config.Feature;
+import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.analytics.log.SmartLoggerAnalyticsConnectorPlugin;
 import io.vertigo.core.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
@@ -242,9 +238,7 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addComponent(AnalyticsManager.class, AnalyticsManagerImpl.class)
 				.addComponent(CodecManager.class, CodecManagerImpl.class)
-				.addComponent(DaemonManager.class, DaemonManagerImpl.class)
 				.addComponent(EventBusManager.class, EventBusManagerImpl.class)
 				.addComponent(AppManager.class, AppManagerImpl.class)
 				.addComponent(VTransactionManager.class, VTransactionManagerImpl.class)

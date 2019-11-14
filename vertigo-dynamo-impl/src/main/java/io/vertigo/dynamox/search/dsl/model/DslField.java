@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamox.search.dsl.model;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Single field definition.

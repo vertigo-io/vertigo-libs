@@ -28,13 +28,13 @@ import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression.Value
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleFixedValue;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression.BoolOperator;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.lang.Assertion;
 
 /**
  * Translate a security rule into a criteria to be used in SQL queries and as a Java predicate.

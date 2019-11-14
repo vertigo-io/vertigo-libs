@@ -20,11 +20,11 @@ package io.vertigo.dynamo.search.data.domain;
 
 import java.time.Instant;
 
+import io.vertigo.core.lang.VSystemException;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.lang.VSystemException;
 
 public final class Item implements KeyConcept {
 	/** SerialVersionUID. */

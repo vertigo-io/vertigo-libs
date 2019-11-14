@@ -36,13 +36,13 @@ import com.google.gson.GsonBuilder;
 
 import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.authorization.metamodel.SecuredEntity;
-import io.vertigo.app.config.DefinitionResourceConfig;
-import io.vertigo.core.definition.DefinitionProvider;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.DefinitionSupplier;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.config.DefinitionResourceConfig;
+import io.vertigo.core.node.definition.DefinitionProvider;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 
 /**
  * Loader du fichier de configuration de la sécurité avancée.

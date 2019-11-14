@@ -18,7 +18,7 @@
  */
 package io.vertigo.studio.mda;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * This class generates files in any text format.

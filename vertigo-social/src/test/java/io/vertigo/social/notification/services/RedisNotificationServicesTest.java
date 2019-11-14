@@ -20,8 +20,8 @@ package io.vertigo.social.notification.services;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.social.MyNodeConfig;
 import redis.clients.jedis.Jedis;
 

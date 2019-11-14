@@ -19,7 +19,7 @@
 package io.vertigo.account.plugins.account.store.text;
 
 import io.vertigo.account.account.Account;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 final class AccountInfo {
 

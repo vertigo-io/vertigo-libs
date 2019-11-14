@@ -29,8 +29,8 @@ import io.vertigo.commons.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.commons.transaction.VTransactionResource;
 import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 
 /**
  * Implémentation standard d'une transaction Dynamo.

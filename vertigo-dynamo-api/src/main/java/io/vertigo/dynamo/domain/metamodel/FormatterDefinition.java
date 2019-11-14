@@ -20,10 +20,10 @@ package io.vertigo.dynamo.domain.metamodel;
 
 import java.lang.reflect.Constructor;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
+import io.vertigo.core.util.ClassUtil;
 
 /**
  * Par nature un formatter est une ressource partagée et non modifiable.

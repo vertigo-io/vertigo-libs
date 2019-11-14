@@ -23,9 +23,9 @@ import java.util.function.BinaryOperator;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.lang.Assertion;
 
 final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 	private static final long serialVersionUID = 8301054336845536973L;

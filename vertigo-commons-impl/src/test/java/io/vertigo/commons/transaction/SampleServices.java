@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Assertions;
 import io.vertigo.commons.transaction.data.SampleDataBase;
 import io.vertigo.commons.transaction.data.SampleDataBaseConnection;
 import io.vertigo.commons.transaction.data.SampleTransactionResource;
-import io.vertigo.core.component.Component;
+import io.vertigo.core.node.component.Component;
 
 public class SampleServices implements Component {
 	private static int count;

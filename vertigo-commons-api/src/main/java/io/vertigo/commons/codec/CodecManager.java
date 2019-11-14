@@ -20,7 +20,7 @@ package io.vertigo.commons.codec;
 
 import java.io.Serializable;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * Gestion centralisée des mécanismes de codage/décodage.

@@ -24,8 +24,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.geo.GeoFeatures;
 import io.vertigo.geo.services.geocoder.GeoCoderManager;
 import io.vertigo.geo.services.geocoder.GeoLocation;

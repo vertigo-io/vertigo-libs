@@ -1,7 +1,7 @@
 package io.vertigo.social.services.handle;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.lang.Assertion;
 
 public final class Handle {
 

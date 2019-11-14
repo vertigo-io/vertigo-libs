@@ -24,10 +24,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import io.vertigo.app.Home;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.node.Home;
 
 /**
  * Formatteur multi-lingue.

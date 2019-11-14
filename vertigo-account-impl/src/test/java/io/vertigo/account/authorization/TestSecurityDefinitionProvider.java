@@ -22,10 +22,10 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.account.authorization.metamodel.Role;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
-import io.vertigo.util.ListBuilder;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.core.util.ListBuilder;
 
 public final class TestSecurityDefinitionProvider implements SimpleDefinitionProvider {
 

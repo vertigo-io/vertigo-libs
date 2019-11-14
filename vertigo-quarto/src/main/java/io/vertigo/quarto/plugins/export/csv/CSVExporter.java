@@ -28,11 +28,11 @@ import java.util.Map;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.codec.Encoder;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.impl.services.export.util.ExportUtil;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportField;

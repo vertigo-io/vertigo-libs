@@ -19,7 +19,7 @@
 package io.vertigo.account.identityprovider;
 
 import io.vertigo.account.identityprovider.MyNodeConfig.IdpPlugin;
-import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.node.config.NodeConfig;
 
 public final class TextIdentityManagerTest extends AbstractIdentityProviderManagerTest {
 

@@ -22,10 +22,10 @@ import java.io.Serializable;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil.FilterPattern;
-import io.vertigo.lang.Assertion;
 
 /**
  * Filtre de DtList prenant en entrée un String qui doit respecter certains patterns.

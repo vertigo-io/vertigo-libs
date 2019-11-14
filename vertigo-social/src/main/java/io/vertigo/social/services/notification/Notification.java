@@ -22,7 +22,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * @author pchretien, npiedeloup, btounkara

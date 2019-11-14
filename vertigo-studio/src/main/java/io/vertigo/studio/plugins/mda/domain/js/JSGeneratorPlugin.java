@@ -26,8 +26,9 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
@@ -35,7 +36,6 @@ import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.domain.js.model.JSDtDefinitionModel;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.studio.plugins.mda.util.MdaUtil;
-import io.vertigo.util.MapBuilder;
 
 /**
  * Génération des objets relatifs au module Domain.

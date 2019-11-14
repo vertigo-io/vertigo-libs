@@ -24,10 +24,10 @@ import java.lang.reflect.Method;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.account.authorization.VSecurityException;
-import io.vertigo.app.Home;
+import io.vertigo.core.lang.VUserException;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.lang.VUserException;
-import io.vertigo.util.ClassUtil;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.exception.SessionException;

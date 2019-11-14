@@ -18,7 +18,7 @@
  */
 package io.vertigo.geo.impl.services.geocoder;
 
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 import io.vertigo.geo.services.geocoder.GeoLocation;
 
 /**

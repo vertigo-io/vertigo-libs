@@ -22,11 +22,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
 import io.vertigo.dynamo.store.datastore.MasterDataDefinition;
-import io.vertigo.lang.Assertion;
 
 /**
  * Configuration des listes de référence.

@@ -22,7 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 import io.vertigo.quarto.services.publisher.PublisherFormat;
 import io.vertigo.quarto.services.publisher.model.PublisherData;
 

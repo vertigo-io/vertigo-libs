@@ -43,8 +43,8 @@ import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.IOUtils;
 import org.apache.struts2.dispatcher.multipart.JakartaMultiPartRequest;
 
-import io.vertigo.lang.WrappedException;
-import io.vertigo.util.StringUtil;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.util.StringUtil;
 
 /**
  * Gestion du multipart dans le cas ou sa gestion est déléguée au moteur de Servlet dans la norme Servlet 3.

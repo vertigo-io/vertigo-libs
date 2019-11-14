@@ -18,7 +18,7 @@
  */
 package io.vertigo.audit;
 
-import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.node.config.NodeConfig;
 
 /**
  * Config for test

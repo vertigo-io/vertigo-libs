@@ -24,7 +24,7 @@ import java.util.List;
 import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.commons.script.parser.ScriptParserHandler;
 import io.vertigo.commons.script.parser.ScriptSeparator;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Simule le mécanisme JSP sur un fichier texte quelconque.

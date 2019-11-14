@@ -19,7 +19,7 @@
 package io.vertigo.account.impl.authentication;
 
 import io.vertigo.account.authentication.AuthenticationToken;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * @author npiedeloup

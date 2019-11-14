@@ -55,11 +55,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
-import io.vertigo.util.ListBuilder;
 
 /**
  * @author pchretien

@@ -18,8 +18,8 @@
  */
 package io.vertigo.database.timeseries;
 
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 
 /**
  * @author mlaroche

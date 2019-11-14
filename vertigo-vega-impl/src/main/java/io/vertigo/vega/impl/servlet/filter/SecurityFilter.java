@@ -32,7 +32,7 @@ import javax.servlet.http.HttpSession;
 
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.app.Home;
+import io.vertigo.core.node.Home;
 import io.vertigo.vega.webservice.exception.SessionException;
 
 /**

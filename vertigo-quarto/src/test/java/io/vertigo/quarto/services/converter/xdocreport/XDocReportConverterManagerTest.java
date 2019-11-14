@@ -28,17 +28,17 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.AbstractTestCaseJU5;
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.config.NodeConfig;
+import io.vertigo.core.util.TempFile;
 import io.vertigo.dynamo.DynamoFeatures;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.QuartoFeatures;
 import io.vertigo.quarto.services.converter.ConverterManager;
-import io.vertigo.util.TempFile;
 
 /**
  * Test de l'implémentation avec la librairie XDocReport.

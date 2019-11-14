@@ -39,7 +39,7 @@ import org.attoparser.dom.Element;
 import org.thymeleaf.standard.StandardDialect;
 import org.thymeleaf.templateresource.ITemplateResource;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 public class NamedComponentParser extends AbstractMarkupHandler {
 

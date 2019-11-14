@@ -25,12 +25,14 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.config.DefinitionResourceConfig;
-import io.vertigo.core.definition.DefinitionProvider;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.DefinitionSupplier;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.config.DefinitionResourceConfig;
+import io.vertigo.core.node.definition.DefinitionProvider;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DynamicRegistry;
@@ -40,8 +42,6 @@ import io.vertigo.dynamo.plugins.environment.loaders.java.AnnotationLoader;
 import io.vertigo.dynamo.plugins.environment.loaders.kpr.KprLoader;
 import io.vertigo.dynamo.plugins.environment.loaders.poweramc.core.OOMLoader;
 import io.vertigo.dynamo.plugins.environment.registries.DynamoDynamicRegistry;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.MapBuilder;
 
 /**
 

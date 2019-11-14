@@ -18,10 +18,10 @@
  */
 package io.vertigo.studio.plugins.mda.domain.sql.model;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.lang.Assertion;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
-import io.vertigo.util.StringUtil;
 
 /**
  * Model used to define a DtField.

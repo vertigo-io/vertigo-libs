@@ -18,11 +18,11 @@
  */
 package io.vertigo.dynamo.task.model;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
-import io.vertigo.util.MapBuilder;
 
 /**
  * Builder to build a task.

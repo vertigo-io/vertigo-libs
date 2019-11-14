@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Builder;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.Builder;
 
 /**
  * Builder of taskDefinition.

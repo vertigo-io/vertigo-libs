@@ -20,9 +20,9 @@ package io.vertigo.dynamo.criteria.data.movies;
 
 import java.util.List;
 
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.util.VCollectors;
-import io.vertigo.util.ListBuilder;
 
 /**
  *

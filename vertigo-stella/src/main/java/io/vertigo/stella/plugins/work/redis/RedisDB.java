@@ -24,13 +24,13 @@ import java.util.Map;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.ClassUtil;
+import io.vertigo.core.util.DateUtil;
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.stella.impl.master.WorkResult;
 import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.work.WorkEngine;
-import io.vertigo.util.ClassUtil;
-import io.vertigo.util.DateUtil;
-import io.vertigo.util.MapBuilder;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 

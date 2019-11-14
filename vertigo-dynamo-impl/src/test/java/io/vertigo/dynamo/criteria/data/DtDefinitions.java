@@ -20,8 +20,8 @@ package io.vertigo.dynamo.criteria.data;
 
 import java.util.Iterator;
 
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.criteria.data.movies.Movie2;
-import io.vertigo.util.ListBuilder;
 
 public final class DtDefinitions implements Iterable<Class<?>> {
 

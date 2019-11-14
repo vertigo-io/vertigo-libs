@@ -18,7 +18,7 @@
  */
 package io.vertigo.dynamo.domain.metamodel.association;
 
-import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.model.UID;
 
 /**

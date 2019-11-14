@@ -18,10 +18,10 @@
  */
 package io.vertigo.account.account;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.lang.Assertion;
 
 /**
  * This class defines the account of a user/organization/system.

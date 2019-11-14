@@ -25,8 +25,8 @@ import java.util.Optional;
 
 import javax.servlet.ServletContext;
 
-import io.vertigo.core.resource.ResourceResolverPlugin;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.impl.resource.ResourceResolverPlugin;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Résolution des URL liées à la servlet.

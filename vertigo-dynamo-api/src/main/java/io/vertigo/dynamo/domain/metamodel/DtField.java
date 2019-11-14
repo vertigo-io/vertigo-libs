@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.JsonExclude;
-import io.vertigo.util.StringUtil;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.util.StringUtil;
 
 /**
  * This class defines the structure of a field.

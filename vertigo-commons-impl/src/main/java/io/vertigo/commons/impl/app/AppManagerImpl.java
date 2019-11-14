@@ -30,17 +30,17 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.App;
-import io.vertigo.app.Home;
-import io.vertigo.app.config.ModuleConfig;
 import io.vertigo.commons.app.AppManager;
 import io.vertigo.commons.app.Node;
 import io.vertigo.commons.plugins.app.registry.single.SingleAppNodeRegistryPlugin;
 import io.vertigo.core.analytics.health.HealthCheck;
-import io.vertigo.core.component.Activeable;
 import io.vertigo.core.daemon.DaemonScheduled;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VSystemException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.node.App;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.node.config.ModuleConfig;
 
 /**
  * Implementation of the NodeManager.

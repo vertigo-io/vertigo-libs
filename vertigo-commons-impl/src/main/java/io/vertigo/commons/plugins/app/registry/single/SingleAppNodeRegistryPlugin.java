@@ -22,10 +22,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.app.Node;
 import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
 
 /**
  * Memory implementation for a single node app.

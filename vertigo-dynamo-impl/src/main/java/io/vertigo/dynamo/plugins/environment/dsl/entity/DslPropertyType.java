@@ -20,7 +20,7 @@ package io.vertigo.dynamo.plugins.environment.dsl.entity;
 
 import java.util.Locale;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * @author  pchretien

@@ -18,7 +18,7 @@
  */
 package io.vertigo.social.services.mail;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * Gestionnaire centralisé des mails.

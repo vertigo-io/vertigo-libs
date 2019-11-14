@@ -22,8 +22,10 @@ import java.util.List;
 
 import org.junit.jupiter.api.Disabled;
 
-import io.vertigo.app.config.NodeConfig;
-import io.vertigo.core.definition.DefinitionSpace;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.config.NodeConfig;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.database.impl.sql.vendor.oracle.OracleDataBase;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.store.data.domain.car.Car;
@@ -33,8 +35,6 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamox.task.TaskEngineProc;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Test of sql storage in Oracle DB.

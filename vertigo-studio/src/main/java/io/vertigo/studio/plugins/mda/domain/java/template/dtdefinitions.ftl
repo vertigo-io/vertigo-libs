@@ -3,8 +3,8 @@ package ${packageName};
 import java.util.Arrays;
 import java.util.Iterator;
 
+import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
-import io.vertigo.lang.Generated;
 
 /**
  * This class is automatically generated.

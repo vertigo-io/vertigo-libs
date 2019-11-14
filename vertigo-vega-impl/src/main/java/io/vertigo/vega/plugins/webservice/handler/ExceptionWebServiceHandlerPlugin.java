@@ -27,9 +27,9 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.JsonSyntaxException;
 
 import io.vertigo.account.authorization.VSecurityException;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VUserException;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VUserException;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.exception.SessionException;

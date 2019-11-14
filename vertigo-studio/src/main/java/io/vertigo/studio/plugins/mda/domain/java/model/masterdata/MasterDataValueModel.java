@@ -20,8 +20,8 @@ package io.vertigo.studio.plugins.mda.domain.java.model.masterdata;
 
 import java.util.Map;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.lang.Assertion;
 
 /**
  * Model Sql des materdata.

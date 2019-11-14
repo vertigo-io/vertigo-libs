@@ -20,7 +20,7 @@ package io.vertigo.dynamox.search.dsl.model;
 
 import java.util.Optional;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Term query definition.

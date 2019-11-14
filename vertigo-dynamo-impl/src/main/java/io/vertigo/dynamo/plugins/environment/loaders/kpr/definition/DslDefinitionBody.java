@@ -20,7 +20,7 @@ package io.vertigo.dynamo.plugins.environment.loaders.kpr.definition;
 
 import java.util.List;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Model of Definition from KSP.

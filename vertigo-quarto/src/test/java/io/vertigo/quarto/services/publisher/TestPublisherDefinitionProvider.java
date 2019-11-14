@@ -20,13 +20,13 @@ package io.vertigo.quarto.services.publisher;
 
 import java.util.List;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionSpace;
-import io.vertigo.core.definition.SimpleDefinitionProvider;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherNodeDefinition;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherNodeDefinitionBuilder;
-import io.vertigo.util.ListBuilder;
 
 public final class TestPublisherDefinitionProvider implements SimpleDefinitionProvider {
 

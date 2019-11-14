@@ -20,7 +20,7 @@ package io.vertigo.dashboard.ui.vui;
 
 import java.util.Map;
 
-import io.vertigo.app.App;
+import io.vertigo.core.node.App;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
 
 public final class VUiDashboardControler extends AbstractDashboardModuleControler {

@@ -18,10 +18,10 @@
  */
 package io.vertigo.studio.plugins.mda.domain.sql.model;
 
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Objet utilisé par FreeMarker.

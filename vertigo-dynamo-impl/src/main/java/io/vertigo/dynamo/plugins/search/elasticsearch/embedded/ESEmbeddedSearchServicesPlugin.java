@@ -43,11 +43,11 @@ import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.transport.Netty4Plugin;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
 
 //Vérifier
 /**

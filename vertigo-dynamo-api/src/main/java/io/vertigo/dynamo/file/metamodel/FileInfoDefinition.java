@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.file.metamodel;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
-import io.vertigo.core.definition.DefinitionUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
+import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.dynamo.file.model.FileInfo;
-import io.vertigo.lang.Assertion;
 
 /**
  * Définition d'un FileInfo.

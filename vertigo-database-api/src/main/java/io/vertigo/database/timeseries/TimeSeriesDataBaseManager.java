@@ -20,7 +20,7 @@ package io.vertigo.database.timeseries;
 
 import java.util.List;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * Manages connections to a time series database.

@@ -18,7 +18,7 @@
  */
 package io.vertigo.stella.work;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.stella.master.WorkResultHandler;
 
 /**

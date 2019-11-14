@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 import io.vertigo.account.account.Account;
-import io.vertigo.core.component.Plugin;
+import io.vertigo.core.node.component.Plugin;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.social.services.notification.Notification;
 

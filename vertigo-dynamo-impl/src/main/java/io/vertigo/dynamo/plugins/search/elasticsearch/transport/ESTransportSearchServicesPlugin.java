@@ -30,10 +30,10 @@ import org.elasticsearch.common.transport.TransportAddress;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.dynamo.plugins.search.elasticsearch.AbstractESSearchServicesPlugin;
-import io.vertigo.lang.Assertion;
 
 /**
  * Gestion de la connexion au serveur elasticSearch en mode HTTP. Utilisation du client Transport simple, sans

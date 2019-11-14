@@ -22,10 +22,10 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.account.SqlUtil;
-import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.util.ListBuilder;
 
 final class CreateTestDataBase {
 

@@ -18,7 +18,7 @@
  */
 package io.vertigo.vega.plugins.webservice.handler.converter;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import spark.Response;
 

@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.search.model;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
-import io.vertigo.lang.Assertion;
 
 /**
  * Objet d'échange avec l'index.

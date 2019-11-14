@@ -18,8 +18,8 @@
  */
 package io.vertigo.commons.node;
 
-import io.vertigo.app.config.NodeConfig;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.core.node.config.NodeConfig;
 
 public class SingleNodeRegistryPluginTest extends AbstractNodeManagerTest {
 

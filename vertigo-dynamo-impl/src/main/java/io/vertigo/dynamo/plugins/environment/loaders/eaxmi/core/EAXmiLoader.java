@@ -30,14 +30,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.helpers.DefaultHandler;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.AbstractXmlLoader;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAssociation;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlAttribute;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlClass;
 import io.vertigo.dynamo.plugins.environment.loaders.xml.XmlId;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.StringUtil;
 
 /**
  * Loader de fichier XMI version Enterprise Architect.

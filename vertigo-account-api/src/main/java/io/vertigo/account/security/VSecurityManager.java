@@ -20,7 +20,7 @@ package io.vertigo.account.security;
 
 import java.util.Optional;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * Gestion centralisee des droits d'acces.

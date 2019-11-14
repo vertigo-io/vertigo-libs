@@ -20,6 +20,7 @@ package io.vertigo.dynamo.environment.java.data;
 
 import java.util.Iterator;
 
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.environment.java.data.domain.Attachment;
 import io.vertigo.dynamo.environment.java.data.domain.City;
 import io.vertigo.dynamo.environment.java.data.domain.CityFragment;
@@ -27,7 +28,6 @@ import io.vertigo.dynamo.environment.java.data.domain.Command;
 import io.vertigo.dynamo.environment.java.data.domain.CommandCriteria;
 import io.vertigo.dynamo.environment.java.data.domain.CommandType;
 import io.vertigo.dynamo.environment.java.data.domain.CommandValidation;
-import io.vertigo.util.ListBuilder;
 
 /**
  * Attention cette classe est générée automatiquement !

@@ -30,7 +30,7 @@ import com.lowagie.text.pdf.PdfPageEventHelper;
 import com.lowagie.text.pdf.PdfTemplate;
 import com.lowagie.text.pdf.PdfWriter;
 
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.WrappedException;
 
 /**
  * Advanced page number x/y events.

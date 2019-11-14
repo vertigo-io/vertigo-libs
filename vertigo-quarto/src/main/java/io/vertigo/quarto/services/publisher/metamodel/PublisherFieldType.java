@@ -20,8 +20,8 @@ package io.vertigo.quarto.services.publisher.metamodel;
 
 import java.util.List;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
 import io.vertigo.quarto.services.publisher.model.PublisherNode;
 
 /**

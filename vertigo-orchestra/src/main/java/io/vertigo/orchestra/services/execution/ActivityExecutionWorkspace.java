@@ -21,7 +21,7 @@ package io.vertigo.orchestra.services.execution;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * ActivityExecutionWorkspace.

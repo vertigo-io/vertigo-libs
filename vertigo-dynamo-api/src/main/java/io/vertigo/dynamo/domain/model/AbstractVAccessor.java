@@ -20,11 +20,11 @@ package io.vertigo.dynamo.domain.model;
 
 import java.io.Serializable;
 
-import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.datastore.DataStore;
-import io.vertigo.lang.Assertion;
 
 /**
  * This class is a way to access an entity defined by a relationship.
@@ -70,7 +70,7 @@ public abstract class AbstractVAccessor<E extends Entity> implements Serializabl
 	}
 
 	private static DataStore getDataStore() {
-		return io.vertigo.app.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class)
+		return io.vertigo.core.node.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class)
 				.getDataStore();
 	}
 

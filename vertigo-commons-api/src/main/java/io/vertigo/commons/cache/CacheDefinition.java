@@ -37,9 +37,9 @@
  */
 package io.vertigo.commons.cache;
 
-import io.vertigo.core.definition.Definition;
-import io.vertigo.core.definition.DefinitionPrefix;
-import io.vertigo.core.definition.DefinitionUtil;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionPrefix;
+import io.vertigo.core.node.definition.DefinitionUtil;
 
 /**
  * The cache definition defines the configuration of a cache.

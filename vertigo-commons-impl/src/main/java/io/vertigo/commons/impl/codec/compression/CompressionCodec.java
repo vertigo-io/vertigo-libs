@@ -24,8 +24,8 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
 import io.vertigo.commons.codec.Codec;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.WrappedException;
 
 /**
  * Implémentation standard ThreadSafe gérant les mécanismes permettant de compresser/décompresser un format binaire (byte[]) en un binaire.

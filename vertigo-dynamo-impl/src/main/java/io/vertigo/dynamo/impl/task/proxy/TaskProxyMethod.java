@@ -22,8 +22,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Optional;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.component.proxy.ProxyMethod;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.proxy.ProxyMethod;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
@@ -33,7 +34,6 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamo.task.proxy.TaskInput;
 import io.vertigo.dynamo.task.proxy.TaskOutput;
-import io.vertigo.lang.Assertion;
 
 public final class TaskProxyMethod implements ProxyMethod {
 

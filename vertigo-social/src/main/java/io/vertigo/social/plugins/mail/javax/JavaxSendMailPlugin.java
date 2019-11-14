@@ -44,13 +44,13 @@ import javax.mail.internet.MimeUtility;
 
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.VUserException;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.locale.MessageKey;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.lang.Assertion;
-import io.vertigo.lang.VUserException;
-import io.vertigo.lang.WrappedException;
 import io.vertigo.social.impl.mail.Resources;
 import io.vertigo.social.impl.mail.SendMailPlugin;
 import io.vertigo.social.services.mail.Mail;

@@ -32,9 +32,9 @@ import java.util.stream.Collectors;
 import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.account.authorization.metamodel.Role;
-import io.vertigo.core.definition.DefinitionReference;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.lang.Assertion;
 
 /**
  * This class list User's Authorizations.

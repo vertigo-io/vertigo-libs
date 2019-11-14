@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import io.vertigo.core.component.Activeable;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.component.Activeable;
 import io.vertigo.dynamo.store.StoreServices;
-import io.vertigo.lang.Assertion;
 
 public class ContactDao implements Activeable, StoreServices {
 	private final Map<Long, Contact> contacts = new HashMap<>();

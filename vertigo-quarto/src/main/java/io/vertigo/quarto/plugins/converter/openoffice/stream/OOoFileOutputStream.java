@@ -25,7 +25,7 @@ import java.nio.file.Files;
 import com.sun.star.io.IOException;
 import com.sun.star.io.XOutputStream;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Implémentation d'une OutpuStream spécifique pour les appels distants de OpenOffice.

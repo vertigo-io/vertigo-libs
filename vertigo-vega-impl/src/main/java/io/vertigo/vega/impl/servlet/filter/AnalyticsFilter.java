@@ -26,9 +26,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
-import io.vertigo.app.Home;
 import io.vertigo.core.analytics.AnalyticsManager;
-import io.vertigo.lang.WrappedException;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.Home;
 
 /**
  * Filtre analytics des requetes HTTP. *

@@ -21,10 +21,10 @@ package io.vertigo.stella.work.distributed.rest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.app.AutoCloseableApp;
-import io.vertigo.app.config.NodeConfig;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ClassUtil;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.config.NodeConfig;
+import io.vertigo.core.util.ClassUtil;
 
 /**
  * @author npiedeloup

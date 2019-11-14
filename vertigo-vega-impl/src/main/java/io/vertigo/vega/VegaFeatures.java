@@ -18,13 +18,13 @@
  */
 package io.vertigo.vega;
 
-import io.vertigo.app.config.Feature;
-import io.vertigo.app.config.Features;
-import io.vertigo.app.config.PluginConfig;
-import io.vertigo.app.config.PluginConfigBuilder;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.config.Feature;
+import io.vertigo.core.node.config.Features;
+import io.vertigo.core.node.config.PluginConfig;
+import io.vertigo.core.node.config.PluginConfigBuilder;
 import io.vertigo.core.param.Param;
-import io.vertigo.lang.Assertion;
-import io.vertigo.util.ListBuilder;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.impl.token.TokenManagerImpl;

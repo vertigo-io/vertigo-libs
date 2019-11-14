@@ -18,8 +18,8 @@
  */
 package io.vertigo.database;
 
-import io.vertigo.app.config.Feature;
-import io.vertigo.app.config.Features;
+import io.vertigo.core.node.config.Feature;
+import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.database.impl.sql.SqlDataBaseManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;

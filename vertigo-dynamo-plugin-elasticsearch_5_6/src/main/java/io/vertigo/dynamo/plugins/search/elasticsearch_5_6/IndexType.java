@@ -21,9 +21,9 @@ package io.vertigo.dynamo.plugins.search.elasticsearch_5_6;
 import java.util.Locale;
 import java.util.Optional;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
-import io.vertigo.lang.Assertion;
 
 final class IndexType {
 	private static final String INDEX_TYPE_ERROR_MSG = "indexType ({0}) should respect this usage : indexType : "

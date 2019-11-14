@@ -20,7 +20,7 @@ package io.vertigo.ledger.services;
 
 import java.math.BigInteger;
 
-import io.vertigo.core.component.Manager;
+import io.vertigo.core.node.component.Manager;
 
 public interface LedgerManager extends Manager {
 	/**

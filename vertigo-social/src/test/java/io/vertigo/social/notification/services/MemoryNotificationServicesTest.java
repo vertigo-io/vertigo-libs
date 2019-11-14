@@ -18,7 +18,7 @@
  */
 package io.vertigo.social.notification.services;
 
-import io.vertigo.app.config.NodeConfig;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.social.MyNodeConfig;
 
 public final class MemoryNotificationServicesTest extends AbstractNotificationServicesTest {

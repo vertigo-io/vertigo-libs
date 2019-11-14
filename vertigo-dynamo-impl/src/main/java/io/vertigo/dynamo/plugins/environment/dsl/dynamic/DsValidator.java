@@ -21,10 +21,10 @@ package io.vertigo.dynamo.plugins.environment.dsl.dynamic;
 import java.util.HashSet;
 import java.util.Set;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityField;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityField.Cardinality;
-import io.vertigo.lang.Assertion;
 
 /**
  *

@@ -32,7 +32,7 @@ public final class VxFileInfo implements Entity {
 	private Long length;
 	private java.time.Instant lastModified;
 	private String filePath;
-	private io.vertigo.lang.DataStream fileData;
+	private io.vertigo.core.lang.DataStream fileData;
 
 	/** {@inheritDoc} */
 	@Override
@@ -160,7 +160,7 @@ public final class VxFileInfo implements Entity {
 	 * @return io.vertigo.lang.DataStream fileData
 	 */
 	@Field(domain = "DoStream", label = "data")
-	public io.vertigo.lang.DataStream getFileData() {
+	public io.vertigo.core.lang.DataStream getFileData() {
 		return fileData;
 	}
 
@@ -169,7 +169,7 @@ public final class VxFileInfo implements Entity {
 	 * Définit la valeur de la propriété 'data'.
 	 * @param fileData io.vertigo.lang.DataStream
 	 */
-	public void setFileData(final io.vertigo.lang.DataStream fileData) {
+	public void setFileData(final io.vertigo.core.lang.DataStream fileData) {
 		this.fileData = fileData;
 	}
 

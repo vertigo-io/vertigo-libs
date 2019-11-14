@@ -20,9 +20,9 @@ package io.vertigo.ui.core;
 
 import java.io.Serializable;
 
-import io.vertigo.app.Home;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.node.Home;
 import io.vertigo.dynamo.kvstore.KVStoreManager;
 
 /**

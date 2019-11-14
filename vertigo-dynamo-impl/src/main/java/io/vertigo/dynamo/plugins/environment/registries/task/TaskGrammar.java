@@ -28,10 +28,10 @@ import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.S
 
 import java.util.List;
 
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.plugins.environment.registries.domain.DomainGrammar;
-import io.vertigo.util.ListBuilder;
 
 /**
  * @author pchretien

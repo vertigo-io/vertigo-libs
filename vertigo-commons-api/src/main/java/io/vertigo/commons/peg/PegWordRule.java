@@ -18,7 +18,7 @@
  */
 package io.vertigo.commons.peg;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * Règle a état permettant de récupérer un mot.

@@ -21,7 +21,7 @@ package io.vertigo.commons.peg;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.lang.Assertion;
 
 /**
  * The manyRule.

@@ -18,9 +18,9 @@
  */
 package io.vertigo.dashboard.ui;
 
-import io.vertigo.app.Home;
-import io.vertigo.core.component.Activeable;
-import io.vertigo.core.component.Component;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.node.component.Component;
 
 public final class DashboardUiManager implements Component, Activeable {
 

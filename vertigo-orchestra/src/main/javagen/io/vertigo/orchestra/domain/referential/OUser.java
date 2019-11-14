@@ -1,10 +1,10 @@
 package io.vertigo.orchestra.domain.referential;
 
+import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.lang.Generated;
 
 /**
  * This class is automatically generated.

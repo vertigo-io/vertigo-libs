@@ -30,6 +30,7 @@ import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.commons.transaction.VTransaction;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionResourceId;
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
@@ -38,7 +39,6 @@ import io.vertigo.database.sql.statement.SqlStatementBuilder;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.model.TaskEngine;
-import io.vertigo.lang.Assertion;
 
 /**
  * Fournit des méthodes de haut niveau pour les services de type SQL.<br>

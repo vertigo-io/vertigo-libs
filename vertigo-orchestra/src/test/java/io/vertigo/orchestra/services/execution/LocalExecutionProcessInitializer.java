@@ -20,7 +20,7 @@ package io.vertigo.orchestra.services.execution;
 
 import javax.inject.Inject;
 
-import io.vertigo.core.component.ComponentInitializer;
+import io.vertigo.core.node.component.ComponentInitializer;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.definitions.ProcessType;

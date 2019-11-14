@@ -20,7 +20,7 @@ package io.vertigo.vega.webservice.data.ws;
 
 import javax.inject.Inject;
 
-import io.vertigo.lang.VUserException;
+import io.vertigo.core.lang.VUserException;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Contact;
 import io.vertigo.vega.webservice.data.domain.ContactDao;

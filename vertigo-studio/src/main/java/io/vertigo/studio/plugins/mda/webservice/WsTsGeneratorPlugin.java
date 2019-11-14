@@ -30,9 +30,10 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import io.vertigo.app.Home;
+import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.lang.Assertion;
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
@@ -40,7 +41,6 @@ import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 import io.vertigo.studio.plugins.mda.util.MdaUtil;
 import io.vertigo.studio.plugins.mda.webservice.model.WebServiceDefinitionModelTs;
 import io.vertigo.studio.plugins.mda.webservice.model.WebServiceInitializerModelTs;
-import io.vertigo.util.MapBuilder;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 
 /**

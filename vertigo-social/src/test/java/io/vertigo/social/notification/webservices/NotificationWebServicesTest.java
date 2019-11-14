@@ -38,14 +38,14 @@ import io.restassured.parsing.Parser;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
-import io.vertigo.app.AutoCloseableApp;
 import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.services.notification.Notification;
 import io.vertigo.social.services.notification.NotificationServices;
-import io.vertigo.util.InjectorUtil;
 import redis.clients.jedis.Jedis;
 
 public final class NotificationWebServicesTest {
