@@ -22,6 +22,7 @@ import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.account.cache.memory.MemoryAccountCachePlugin;
 import io.vertigo.account.plugins.account.cache.redis.RedisAccountCachePlugin;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.config.NodeConfigBuilder;
@@ -56,7 +57,12 @@ public final class MyNodeConfig {
 
 		final CommonsFeatures commonsFeatures = new CommonsFeatures();
 		if (redis) {
-			commonsFeatures.withRedisConnector(Param.of("host", redisHost), Param.of("port", redisPort), Param.of("database", redisDatabase));
+			nodeConfigBuilder.addModule(new RedisFeatures()
+					.withJedis(
+							Param.of("host", redisHost),
+							Param.of("port", redisPort),
+							Param.of("database", redisDatabase))
+					.build());
 		}
 
 		nodeConfigBuilder

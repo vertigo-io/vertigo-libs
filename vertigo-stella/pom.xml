@@ -52,6 +52,14 @@
 		    <version>2.29.1</version>
 			<optional>true</optional> <!-- REST DistributedWork impl -->
 		</dependency>
+		
+		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-redis-connector</artifactId>
+			<version>${vertigo.version}</version>
+			<optional>true</optional> <!-- Redis DistributedWork impl -->
+		</dependency>
 
 		<!-- tests -->
 		<dependency>

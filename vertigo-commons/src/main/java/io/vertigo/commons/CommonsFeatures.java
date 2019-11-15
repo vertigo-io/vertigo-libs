@@ -29,7 +29,6 @@ import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
 import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.impl.command.CommandManagerImpl;
-import io.vertigo.commons.impl.connectors.redis.RedisConnector;
 import io.vertigo.commons.impl.eventbus.EventBusManagerImpl;
 import io.vertigo.commons.impl.script.ScriptManagerImpl;
 import io.vertigo.commons.impl.transaction.VTransactionAspect;
@@ -43,12 +42,9 @@ import io.vertigo.commons.plugins.cache.redis.RedisCachePlugin;
 import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.core.impl.analytics.AnalyticsConnectorPlugin;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.core.plugins.analytics.log.SmartLoggerAnalyticsConnectorPlugin;
-import io.vertigo.core.plugins.analytics.log.SocketLoggerAnalyticsConnectorPlugin;
 
 /**
  * Defines commons module.
@@ -131,38 +127,6 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 		return this;
 	}
 
-	/**
-	 * Adds a REDIS connector.
-	 * @param host the REDIS host
-	 * @param port the REDIS port
-	 * @param passwordOpt the REDIS password
-	 * @param database the index of the REDIS database
-	 * @return these features
-	 */
-	@Feature("redis")
-	public CommonsFeatures withRedisConnector(final Param... params) {
-		getModuleConfigBuilder()
-				.addComponent(RedisConnector.class, params);
-		return this;
-
-	}
-
-	@Feature("analytics.socketLoggerConnector")
-	public CommonsFeatures withSocketLoggerAnalyticsConnector(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(SocketLoggerAnalyticsConnectorPlugin.class, params);
-		return this;
-
-	}
-
-	@Feature("analytics.smartLoggerConnector")
-	public CommonsFeatures withSmartLoggerAnalyticsConnector(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(SmartLoggerAnalyticsConnectorPlugin.class, params);
-		return this;
-
-	}
-
 	@Feature("app.dbRegistry")
 	public CommonsFeatures withDbAppNodeRegistryPlugin(final Param... params) {
 		getModuleConfigBuilder()
@@ -217,19 +181,6 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	public CommonsFeatures withNodeInfosPlugin(final Class<? extends AppNodeInfosPlugin> nodeInfosPluginClass, final Param... params) {
 		getModuleConfigBuilder()
 				.addPlugin(nodeInfosPluginClass, params);
-		return this;
-
-	}
-
-	/**
-	 * Adds a AnalyticsConnectorPlugin
-	 * @param analyticsConnectorPluginClass the plugin to use
-	 * @param params the params
-	 * @return these features
-	 */
-	public CommonsFeatures addAnalyticsConnectorPlugin(final Class<? extends AnalyticsConnectorPlugin> analyticsConnectorPluginClass, final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(analyticsConnectorPluginClass, params);
 		return this;
 
 	}

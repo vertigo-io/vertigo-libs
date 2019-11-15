@@ -29,7 +29,7 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.impl.account.AccountCachePlugin;
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.dynamo.domain.model.UID;

@@ -27,7 +27,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
-import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.social.MyNodeConfig;

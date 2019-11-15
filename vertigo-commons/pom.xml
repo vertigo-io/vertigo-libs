@@ -51,11 +51,11 @@
 
 		<!--redis -->
 		<dependency>
-			<groupId>redis.clients</groupId>
-			<artifactId>jedis</artifactId>
-			<version>3.1.0</version>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-redis-connector</artifactId>
+			<version>${vertigo.version}</version>
+			<optional>true</optional> <!-- pour RedisCache -->
 		</dependency>
-
 
 		<!-- tests -->
 		<dependency>

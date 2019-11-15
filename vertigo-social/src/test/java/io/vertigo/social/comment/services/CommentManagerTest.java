@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
-import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;

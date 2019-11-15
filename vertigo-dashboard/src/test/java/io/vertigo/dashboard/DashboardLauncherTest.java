@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import io.restassured.RestAssured;
 import io.restassured.specification.ResponseSpecification;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -74,8 +75,13 @@ public class DashboardLauncherTest {
 				.withSocketLoggerAnalyticsConnector()
 				.withLocales("fr_FR")
 				.endBoot()
+				.addModule(new RedisFeatures()
+						.withJedis(
+								Param.of("host", "redis-pic.part.klee.lan.net"),
+								Param.of("port", "6379"),
+								Param.of("database", "0"))
+						.build())
 				.addModule(new CommonsFeatures()
-						.withRedisConnector(Param.of("host", "redis-pic.part.klee.lan.net"), Param.of("port", "6379"), Param.of("database", "0"))
 						.withCache()
 						.withMemoryCache()
 						.build())

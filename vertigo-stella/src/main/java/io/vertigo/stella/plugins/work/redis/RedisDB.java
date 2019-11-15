@@ -23,7 +23,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.DateUtil;

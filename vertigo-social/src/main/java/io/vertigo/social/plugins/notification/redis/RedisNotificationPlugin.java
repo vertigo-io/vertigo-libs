@@ -27,7 +27,7 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import io.vertigo.account.account.Account;
-import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.daemon.DaemonManager;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;

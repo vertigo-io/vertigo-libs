@@ -6,7 +6,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.dynamo.domain.model.UID;

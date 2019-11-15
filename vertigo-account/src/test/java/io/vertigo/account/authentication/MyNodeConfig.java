@@ -22,9 +22,11 @@ import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.authentication.model.DtDefinitions;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
+import io.vertigo.core.node.config.NodeConfigBuilder;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
@@ -43,11 +45,20 @@ public final class MyNodeConfig {
 	}
 
 	public static NodeConfig config(final AuthentPlugin authentPlugin, final boolean redis) {
-		final CommonsFeatures commonsFeatures = new CommonsFeatures()
-				.withScript()
-				.withJaninoScript()
-				.withCache()
-				.withMemoryCache();
+		final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder()
+				.beginBoot()
+				.withLocales("fr")
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.endBoot();
+
+		if (redis) {
+			nodeConfigBuilder.addModule(new RedisFeatures()
+					.withJedis(
+							Param.of("host", REDIS_HOST),
+							Param.of("port", Integer.toString(REDIS_PORT)),
+							Param.of("database", Integer.toString(REDIS_DATABASE)))
+					.build());
+		}
 
 		final DatabaseFeatures databaseFeatures = new DatabaseFeatures();
 		final DynamoFeatures dynamoFeatures = new DynamoFeatures();
@@ -57,8 +68,6 @@ public final class MyNodeConfig {
 				.withAuthentication();
 
 		if (redis) {
-			commonsFeatures
-					.withRedisConnector(Param.of("host", REDIS_HOST), Param.of("port", Integer.toString(REDIS_PORT)), Param.of("database", Integer.toString(REDIS_DATABASE)));
 			accountFeatures
 					.withRedisAccountCache();
 		}
@@ -95,12 +104,13 @@ public final class MyNodeConfig {
 			accountFeatures.withMockAuthentication();
 		}
 
-		return NodeConfig.builder()
-				.beginBoot()
-				.withLocales("fr")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot()
-				.addModule(commonsFeatures.build())
+		return nodeConfigBuilder
+				.addModule(new CommonsFeatures()
+						.withScript()
+						.withJaninoScript()
+						.withCache()
+						.withMemoryCache()
+						.build())
 				.addModule(databaseFeatures.build())
 				.addModule(dynamoFeatures.build())
 				.addModule(accountFeatures.build())

@@ -37,7 +37,7 @@ import io.restassured.parsing.Parser;
 import io.restassured.response.Response;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
-import io.vertigo.commons.impl.connectors.redis.RedisConnector;
+import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.core.util.MapBuilder;
