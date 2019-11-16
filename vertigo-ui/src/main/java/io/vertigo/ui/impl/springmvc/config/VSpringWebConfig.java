@@ -45,8 +45,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 
-import io.vertigo.core.node.Home;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.connectors.spring.EnableVertigoSpringBridge;
 import io.vertigo.ui.controllers.ListAutocompleteController;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.DtListStateMethodArgumentResolver;
 import io.vertigo.ui.impl.springmvc.argumentresolvers.FileInfoURIConverterValueHandler;
@@ -63,6 +62,7 @@ import io.vertigo.ui.impl.thymeleaf.components.VuiResourceTemplateResolver;
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 
 @Configuration
+@EnableVertigoSpringBridge
 @EnableWebMvc
 public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAware {
 
@@ -207,9 +207,9 @@ public class VSpringWebConfig implements WebMvcConfigurer, ApplicationContextAwa
 	@Override
 	public void setApplicationContext(final ApplicationContext applicationContext) throws BeansException {
 		if (applicationContext instanceof ConfigurableApplicationContext) {
-			Home.getApp().getComponentSpace().keySet()
-					.stream()
-					.forEach(key -> ((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton(key, Home.getApp().getComponentSpace().resolve(key, Component.class)));
+			//Home.getApp().getComponentSpace().keySet()
+			//		.stream()
+			//		.forEach(key -> ((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton(key, Home.getApp().getComponentSpace().resolve(key, Component.class)));
 
 			final VSpringMvcControllerAdvice controllerAdvice = ((ConfigurableApplicationContext) applicationContext).getBeanFactory().createBean(VSpringMvcControllerAdvice.class);
 			((ConfigurableApplicationContext) applicationContext).getBeanFactory().registerSingleton("viewContextControllerAdvice", controllerAdvice);

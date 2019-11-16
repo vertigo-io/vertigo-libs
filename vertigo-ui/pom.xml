@@ -33,6 +33,11 @@
 			<version>${vertigo.version}</version>
 		</dependency>	
 		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-spring-connector</artifactId>
+			<version>${vertigo.version}</version>
+		</dependency>	
+		<dependency>
          <groupId>javax.servlet</groupId>
          <artifactId>javax.servlet-api</artifactId>
          <version>4.0.1</version>
