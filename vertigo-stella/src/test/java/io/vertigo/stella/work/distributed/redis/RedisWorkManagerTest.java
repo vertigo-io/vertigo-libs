@@ -18,6 +18,7 @@
  */
 package io.vertigo.stella.work.distributed.redis;
 
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
@@ -39,6 +40,7 @@ public class RedisWorkManagerTest extends AbstractWorkManagerTest {
 								Param.of("port", "6379"),
 								Param.of("database", "15"))
 						.build())
+				.addModule(new CommonsFeatures().build())
 				.addModule(new StellaFeatures()
 						.withMaster()
 						.withWorker(
