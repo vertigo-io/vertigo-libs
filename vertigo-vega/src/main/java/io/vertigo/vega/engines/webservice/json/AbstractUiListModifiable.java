@@ -119,9 +119,10 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 
 	private String findContextKey(final UiObject<D> uiObject) {
 		Assertion.checkNotNull(uiObject);
-		Assertion.checkState(bufferUiObjects.contains(uiObject), "UiObjet {0} not found in UiList with key {1}", uiObject, inputKey);
+		final int index = indexOfUiObject(uiObject);
+		Assertion.checkState(index >= 0, "UiObjet {0} not found in UiList with key {1}", uiObject, inputKey);
 		// ---
-		return inputKey + ".get(" + indexOf(uiObject) + ")";
+		return inputKey + ".get(" + index + ")";
 	}
 
 	/**
