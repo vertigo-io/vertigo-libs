@@ -40,8 +40,7 @@ import io.vertigo.core.lang.WrappedException;
 final class VTransactionImpl implements VTransactionWritable {
 
 	private enum State {
-		ALIVE,
-		CLOSED;
+		ALIVE, CLOSED;
 
 		/**
 		 * A transaction is alive or closed.
@@ -288,8 +287,8 @@ final class VTransactionImpl implements VTransactionWritable {
 		for (final VTransactionAfterCompletionFunction function : afterCompletionFunctions) {
 			try {
 				function.afterCompletion(commitSucceeded);
-			} catch (final Throwable th) {
-				transactionListener.logAfterCommitError(th);
+			} catch (final Exception e) {
+				transactionListener.logAfterCommitError(e);
 				//we don't rethrow this exception, main resource was finished, we should continue to proceed afterCompletion functions
 			}
 		}
