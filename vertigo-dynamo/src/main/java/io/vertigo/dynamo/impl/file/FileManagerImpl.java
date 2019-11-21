@@ -60,7 +60,7 @@ public final class FileManagerImpl implements FileManager {
 	@Inject
 	public FileManagerImpl(@ParamValue("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
-		final File documentRootFile = new File(TempFile.VERTIGO_TMP_DIR_PATH);
+		final File documentRootFile = TempFile.VERTIGO_TMP_DIR_PATH.toFile();
 		Assertion.checkState(documentRootFile.exists(), "Vertigo temp dir doesn't exists ({0})", TempFile.VERTIGO_TMP_DIR_PATH);
 		Assertion.checkState(documentRootFile.canRead(), "Vertigo temp dir can't be read ({0})", TempFile.VERTIGO_TMP_DIR_PATH);
 		Assertion.checkState(documentRootFile.canWrite(), "Vertigo temp dir can't be write ({0})", TempFile.VERTIGO_TMP_DIR_PATH);
@@ -199,12 +199,15 @@ public final class FileManagerImpl implements FileManager {
 	 */
 	@DaemonScheduled(name = "DmnPurgeTempFile", periodInSeconds = 5 * 60)
 	public void deleteOldFiles() {
-		final File documentRootFile = new File(TempFile.VERTIGO_TMP_DIR_PATH);
+		final Path documentRootFile = TempFile.VERTIGO_TMP_DIR_PATH;
 		final long maxTime = System.currentTimeMillis() - purgeDelayMinutesOpt.orElse(60) * 60L * 1000L;
-		doDeleteOldFiles(documentRootFile, maxTime);
+		if (Files.exists(documentRootFile)) {
+			doDeleteOldFiles(documentRootFile.toFile(), maxTime);
+		}
 	}
 
 	private static void doDeleteOldFiles(final File documentRootFile, final long maxTime) {
+
 		for (final File subFiles : documentRootFile.listFiles()) {
 			if (subFiles.isDirectory() && subFiles.canRead()) { //canRead pour les pbs de droits
 				doDeleteOldFiles(subFiles, maxTime);
