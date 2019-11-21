@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.plugins.store.filestore.fs;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -80,7 +79,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 
 	private final FileManager fileManager;
 	private final String name;
-	private final String documentRoot;
+	private final Path documentRoot;
 	private final VTransactionManager transactionManager;
 	private final Optional<Integer> purgeDelayMinutesOpt;
 
@@ -108,7 +107,9 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		this.name = name.orElse(DEFAULT_STORE_NAME);
 		this.fileManager = fileManager;
 		this.transactionManager = transactionManager;
-		documentRoot = FileUtil.translatePath(path);
+		documentRoot = Paths.get(FileUtil.translatePath(path));
+		Assertion.checkArgument(Files.isDirectory(documentRoot), "documentRoot ({0}) must be an directory", documentRoot.toAbsolutePath().toString());
+
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
 	}
 
@@ -118,11 +119,8 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	@DaemonScheduled(name = "DmnPurgeFileStoreDaemon", periodInSeconds = 5 * 60)
 	public void deleteOldFiles() {
 		if (purgeDelayMinutesOpt.isPresent()) {
-			final Path documentRootFile = Paths.get(documentRoot);
-			Assertion.checkArgument(Files.isDirectory(documentRootFile), "documentRoot ({0}) must be an directory", documentRoot);
-			//-----
 			final long maxTime = System.currentTimeMillis() - purgeDelayMinutesOpt.get() * 60L * 1000L;
-			doDeleteOldFiles(documentRootFile, maxTime);
+			doDeleteOldFiles(documentRoot, maxTime);
 		}
 	}
 
@@ -137,8 +135,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	public FileInfo read(final FileInfoURI uri) {
 		/* read metadata*/
 		try {
-			final String metadataUri = obtainFullMetaDataFilePath(uri);
-			final Path metadataPath = Paths.get(metadataUri);
+			final Path metadataPath = obtainFullMetaDataFilePath(uri);
 			final List<String> infos = Files.readAllLines(metadataPath, Charset.forName(METADATA_CHARSET));
 			// récupération des infos
 			final String fileName = infos.get(0);
@@ -146,7 +143,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			final Instant lastModified = Instant.from(DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN).withZone(ZoneOffset.UTC).parse(infos.get(2)));
 			final Long length = Long.valueOf(infos.get(3));
 
-			final InputStreamBuilder inputStreamBuilder = new FileInputStreamBuilder(new File(obtainFullFilePath(uri)));
+			final InputStreamBuilder inputStreamBuilder = new PathInputStreamBuilder(obtainFullFilePath(uri));
 			final VFile vFile = fileManager.createFile(fileName, mimeType, lastModified, length, inputStreamBuilder);
 
 			// retourne le fileinfo avec le fichier et son URI
@@ -172,28 +169,28 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	private void saveFile(final String metaData, final FileInfo fileInfo) {
 		FileActionSave fileActionSave;
 		try (final InputStream inputStream = fileInfo.getVFile().createInputStream()) {
-			fileActionSave = new FileActionSave(inputStream, obtainFullFilePath(fileInfo.getURI()));
+			fileActionSave = new FileActionSave(inputStream, obtainFullFilePath(fileInfo.getURI()).toString());
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Can't read uploaded file.");
 		}
 		try (final InputStream inputStream = new ByteArrayInputStream(metaData.getBytes(METADATA_CHARSET))) {
-			fileActionSave.add(inputStream, obtainFullMetaDataFilePath(fileInfo.getURI()));
+			fileActionSave.add(inputStream, obtainFullMetaDataFilePath(fileInfo.getURI()).toString());
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Can't read metadata file.");
 		}
 		getCurrentTransaction().addAfterCompletion(fileActionSave);
 	}
 
-	private String obtainFullFilePath(final FileInfoURI uri) {
+	private Path obtainFullFilePath(final FileInfoURI uri) {
 		final String uriAsString = String.class.cast(uri.getKey());
 		final String uriAsPath = URI_AS_PATH_PATTERN.matcher(uriAsString).replaceFirst("$1/$2/$3/");
-		return documentRoot + uriAsPath;
+		return documentRoot.resolve(uriAsPath);
 	}
 
-	private String obtainFullMetaDataFilePath(final FileInfoURI uri) {
+	private Path obtainFullMetaDataFilePath(final FileInfoURI uri) {
 		final String uriAsString = String.class.cast(uri.getKey());
 		final String uriAsPath = URI_AS_PATH_PATTERN.matcher(uriAsString).replaceFirst("$1/$2/$3/");
-		return documentRoot + uriAsPath + METADATA_SUFFIX;
+		return documentRoot.resolve(uriAsPath + METADATA_SUFFIX);
 	}
 
 	/** {@inheritDoc} */
@@ -246,21 +243,21 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	@Override
 	public void delete(final FileInfoURI uri) {
 		//-----suppression du fichier
-		getCurrentTransaction().addAfterCompletion(new FileActionDelete(obtainFullFilePath(uri)));
-		getCurrentTransaction().addAfterCompletion(new FileActionDelete(obtainFullMetaDataFilePath(uri)));
+		getCurrentTransaction().addAfterCompletion(new FileActionDelete(obtainFullFilePath(uri).toString()));
+		getCurrentTransaction().addAfterCompletion(new FileActionDelete(obtainFullMetaDataFilePath(uri).toString()));
 	}
 
-	private static final class FileInputStreamBuilder implements InputStreamBuilder {
-		private final File file;
+	private static final class PathInputStreamBuilder implements InputStreamBuilder {
+		private final Path path;
 
-		FileInputStreamBuilder(final File file) {
-			this.file = file;
+		PathInputStreamBuilder(final Path path) {
+			this.path = path;
 		}
 
 		/** {@inheritDoc} */
 		@Override
 		public InputStream createInputStream() throws IOException {
-			return Files.newInputStream(file.toPath());
+			return Files.newInputStream(path);
 		}
 	}
 
@@ -276,12 +273,17 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 				if (Files.isDirectory(subFile) && Files.isReadable(subFile)) { //canRead pour les pbs de droits
 					doDeleteOldFiles(subFile, maxTime);
 				} else {
+					boolean shouldDelete = false;
 					try {
-						if (Files.getLastModifiedTime(subFile).toMillis() <= maxTime) {
+						shouldDelete = Files.getLastModifiedTime(subFile).toMillis() <= maxTime;
+						if (shouldDelete) {
 							Files.delete(subFile);
 						}
 					} catch (final IOException e) {
 						managedIOException(processIOExceptions, e);
+						if (shouldDelete) {
+							subFile.toFile().deleteOnExit();
+						}
 					}
 				}
 			});

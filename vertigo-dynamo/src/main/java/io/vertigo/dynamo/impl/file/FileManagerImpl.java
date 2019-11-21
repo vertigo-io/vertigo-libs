@@ -26,11 +26,17 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Inject;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
@@ -50,6 +56,7 @@ import io.vertigo.dynamo.impl.file.model.StreamFile;
 * @author pchretien
 */
 public final class FileManagerImpl implements FileManager {
+	private static final Logger LOG = LogManager.getLogger(FileManagerImpl.class);
 
 	private final Optional<Integer> purgeDelayMinutesOpt;
 
@@ -202,24 +209,42 @@ public final class FileManagerImpl implements FileManager {
 		final Path documentRootFile = TempFile.VERTIGO_TMP_DIR_PATH;
 		final long maxTime = System.currentTimeMillis() - purgeDelayMinutesOpt.orElse(60) * 60L * 1000L;
 		if (Files.exists(documentRootFile)) {
-			doDeleteOldFiles(documentRootFile.toFile(), maxTime);
+			doDeleteOldFiles(documentRootFile, maxTime);
 		}
 	}
 
-	private static void doDeleteOldFiles(final File documentRootFile, final long maxTime) {
-
-		for (final File subFiles : documentRootFile.listFiles()) {
-			if (subFiles.isDirectory() && subFiles.canRead()) { //canRead pour les pbs de droits
-				doDeleteOldFiles(subFiles, maxTime);
-			} else if (subFiles.lastModified() < maxTime) {
-				final boolean succeeded = subFiles.delete();
-				if (!succeeded) {
-					subFiles.deleteOnExit();
+	private static void doDeleteOldFiles(final Path documentRootFile, final long maxTime) {
+		final List<RuntimeException> processIOExceptions = new ArrayList<>();
+		try (Stream<Path> fileStream = Files.list(documentRootFile)) {
+			fileStream.forEach(subFile -> {
+				if (Files.isDirectory(subFile) && Files.isReadable(subFile)) { //canRead pour les pbs de droits
+					doDeleteOldFiles(subFile, maxTime);
+				} else {
+					boolean shouldDelete = false;
+					try {
+						shouldDelete = Files.getLastModifiedTime(subFile).toMillis() <= maxTime;
+						if (shouldDelete) {
+							Files.delete(subFile);
+						}
+					} catch (final IOException e) {
+						managedIOException(processIOExceptions, e);
+						if (shouldDelete) {
+							subFile.toFile().deleteOnExit();
+						}
+					}
 				}
-			} else {
-				//keep this file
-			}
+			});
+		} catch (final IOException e) {
+			managedIOException(processIOExceptions, e);
 		}
+		if (!processIOExceptions.isEmpty()) {
+			throw processIOExceptions.get(0); //We throw the first exception (for daemon health stats), and log the others
+		}
+	}
+
+	private static void managedIOException(final List<RuntimeException> processIOExceptions, final IOException causeException) {
+		processIOExceptions.add(WrappedException.wrap(causeException));
+		LOG.error("doDeleteOldFiles error", causeException);
 	}
 
 }
