@@ -22,6 +22,7 @@ import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.identityprovider.model.DtDefinitions;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.connectors.ldap.LdapFeatures;
 import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
@@ -84,12 +85,14 @@ public final class MyNodeConfig {
 						Param.of("groupFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<accountIds>.*)$"));
 
 		if (idpPlugin == IdpPlugin.ldap) {
+			nodeConfigBuilder.addModule(new LdapFeatures().withLdap(
+					Param.of("host", "docker-vertigo.part.klee.lan.net"),
+					Param.of("port", "389"),
+					Param.of("readerLogin", "cn=admin,dc=vertigo,dc=io"),
+					Param.of("readerPassword", "v3rt1g0")).build());
+
 			accountFeatures.withLdapIdentityProvider(
-					Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
-					Param.of("ldapServerPort", "389"),
 					Param.of("ldapAccountBaseDn", "dc=vertigo,dc=io"),
-					Param.of("ldapReaderLogin", "cn=admin,dc=vertigo,dc=io"),
-					Param.of("ldapReaderPassword", "v3rt1g0"),
 					Param.of("ldapUserAuthAttribute", "cn"),
 					Param.of("userIdentityEntity", "DtUser"),
 					Param.of("ldapUserAttributeMapping", "usrId:cn, fullName:description, photo:jpegPhoto"));

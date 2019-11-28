@@ -22,6 +22,7 @@ import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.authentication.model.DtDefinitions;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.connectors.ldap.LdapFeatures;
 import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
@@ -79,10 +80,13 @@ public final class MyNodeConfig {
 						Param.of("groupFilePattern", "^(?<id>[^;]+);(?<displayName>[^;]+);(?<accountIds>.*)$"));
 
 		if (authentPlugin == AuthentPlugin.ldap) {
+			nodeConfigBuilder.addModule(new LdapFeatures().withLdap(
+					Param.of("host", "docker-vertigo.part.klee.lan.net"),
+					Param.of("port", "389"),
+					Param.of("readerLogin", "cn=admin,dc=vertigo,dc=io"),
+					Param.of("readerPassword", "v3rt1g0")).build());
 			accountFeatures.withLdapAuthentication(
-					Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"),
-					Param.of("ldapServerHost", "docker-vertigo.part.klee.lan.net"),
-					Param.of("ldapServerPort", "389"));
+					Param.of("userLoginTemplate", "cn={0},dc=vertigo,dc=io"));
 		} else if (authentPlugin == AuthentPlugin.text) {
 			accountFeatures.withTextAuthentication(Param.of("filePath", "io/vertigo/account/data/userAccounts.txt"));
 		} else if (authentPlugin == AuthentPlugin.store) {

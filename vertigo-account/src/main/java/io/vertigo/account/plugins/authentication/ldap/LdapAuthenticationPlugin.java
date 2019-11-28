@@ -18,14 +18,10 @@
  */
 package io.vertigo.account.plugins.authentication.ldap;
 
-import java.util.Hashtable;
 import java.util.Optional;
 
 import javax.inject.Inject;
-import javax.naming.CommunicationException;
-import javax.naming.Context;
 import javax.naming.NamingException;
-import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 
 import org.apache.logging.log4j.LogManager;
@@ -34,6 +30,8 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.account.authentication.AuthenticationToken;
 import io.vertigo.account.impl.authentication.AuthenticationPlugin;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
+import io.vertigo.connectors.ldap.EsapiLdapEncoder;
+import io.vertigo.connectors.ldap.LdapConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
@@ -45,14 +43,10 @@ import io.vertigo.core.param.ParamValue;
 public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 	private static final Logger LOGGER = LogManager.getLogger(LdapAuthenticationPlugin.class);
 
-	private static final String DEFAULT_CONTEXT_FACTORY_CLASS_NAME = "com.sun.jndi.ldap.LdapCtxFactory";
-	private static final String SIMPLE_AUTHENTICATION_MECHANISM_NAME = "simple";
-	private static final String DEFAULT_REFERRAL = "follow";
-
 	private static final String USERDN_SUBSTITUTION_TOKEN = "{0}";
 	private String userLoginPrefix;
 	private String userLoginSuffix;
-	private final String ldapServer;
+	private final LdapConnector ldapConnector;
 
 	/**
 	 * Constructor.
@@ -63,10 +57,10 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 	@Inject
 	public LdapAuthenticationPlugin(
 			@ParamValue("userLoginTemplate") final String userLoginTemplate,
-			@ParamValue("ldapServerHost") final String ldapServerHost,
-			@ParamValue("ldapServerPort") final String ldapServerPort) {
+			final LdapConnector ldapConnector) {
+		Assertion.checkNotNull(ldapConnector);
 		parseUserLoginTemplate(userLoginTemplate);
-		ldapServer = ldapServerHost + ":" + ldapServerPort;
+		this.ldapConnector = ldapConnector;
 	}
 
 	/** {@inheritDoc} */
@@ -84,7 +78,7 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 		LdapContext ldapContext = null;
 		try {
 			final String userProtectedDn = userLoginPrefix + protectLdap(usernamePasswordToken.getPrincipal()) + userLoginSuffix;
-			ldapContext = createLdapContext(userProtectedDn, usernamePasswordToken.getPassword());
+			ldapContext = ldapConnector.createLdapContext(userProtectedDn, usernamePasswordToken.getPassword());
 			if (LOGGER.isDebugEnabled()) {
 				LOGGER.debug("Ouverture de connexion LDAP  '{}'", ldapContext);
 			}
@@ -118,27 +112,6 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 
 		userLoginPrefix = prefix;
 		userLoginSuffix = suffix;
-	}
-
-	private LdapContext createLdapContext(final String userProtectedPrincipal, final String credentials) throws NamingException {
-		final Hashtable<String, String> env = new Hashtable<>();
-		env.put(Context.INITIAL_CONTEXT_FACTORY, DEFAULT_CONTEXT_FACTORY_CLASS_NAME);
-		env.put(Context.REFERRAL, DEFAULT_REFERRAL);
-
-		env.put(Context.SECURITY_AUTHENTICATION, SIMPLE_AUTHENTICATION_MECHANISM_NAME);
-		final String url = "ldap://" + ldapServer;
-		env.put(Context.PROVIDER_URL, url);
-		if (credentials != null) {
-			env.put(Context.SECURITY_PRINCIPAL, userProtectedPrincipal);
-			env.put(Context.SECURITY_CREDENTIALS, credentials);
-		} else {
-			env.put(Context.SECURITY_AUTHENTICATION, "none");
-		}
-		try {
-			return new InitialLdapContext(env, null);
-		} catch (final CommunicationException e) {
-			throw WrappedException.wrap(e, "Can't connect to LDAP : {0} ", ldapServer);
-		}
 	}
 
 	private static String protectLdap(final String principal) {

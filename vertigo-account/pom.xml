@@ -33,6 +33,13 @@
 			<version>${vertigo.version}</version>
 			<optional>true</optional> <!-- pour RedisAccountCache -->
 		</dependency>
+		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-ldap-connector</artifactId>
+			<version>${vertigo.version}</version>
+			<optional>true</optional> <!-- pour LdapAuthenticationPlugin -->
+		</dependency>
 
 		<!-- Tests -->
 		<dependency>

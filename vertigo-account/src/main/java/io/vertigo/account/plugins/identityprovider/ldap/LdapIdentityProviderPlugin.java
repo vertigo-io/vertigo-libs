@@ -24,22 +24,18 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.naming.CommunicationException;
-import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapContext;
 
 import org.apache.logging.log4j.LogManager;
@@ -48,6 +44,8 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.account.impl.account.AccountMapperHelper;
 import io.vertigo.account.impl.identityprovider.IdentityProviderPlugin;
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.connectors.ldap.EsapiLdapEncoder;
+import io.vertigo.connectors.ldap.LdapConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Home;
@@ -73,15 +71,10 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 
 	private static final Logger LOGGER = LogManager.getLogger(LdapIdentityProviderPlugin.class);
 
-	private static final String DEFAULT_CONTEXT_FACTORY_CLASS_NAME = "com.sun.jndi.ldap.LdapCtxFactory";
-	private static final String SIMPLE_AUTHENTICATION_MECHANISM_NAME = "simple";
-	private static final String DEFAULT_REFERRAL = "follow";
-
+	private final LdapConnector ldapConnector;
 	private final CodecManager codecManager;
-	private final String ldapServer;
+
 	private final String ldapAccountBaseDn;
-	private final String ldapReaderLogin;
-	private final String ldapReaderPassword;
 
 	private final String ldapUserAuthAttribute;
 
@@ -103,32 +96,23 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	 */
 	@Inject
 	public LdapIdentityProviderPlugin(
-			@ParamValue("ldapServerHost") final String ldapServerHost,
-			@ParamValue("ldapServerPort") final String ldapServerPort,
 			@ParamValue("ldapAccountBaseDn") final String ldapAccountBaseDn,
-			@ParamValue("ldapReaderLogin") final String ldapReaderLogin,
-			@ParamValue("ldapReaderPassword") final String ldapReaderPassword,
 			@ParamValue("ldapUserAuthAttribute") final String ldapUserAuthAttribute,
 			@ParamValue("userIdentityEntity") final String userIdentityEntity,
 			@ParamValue("ldapUserAttributeMapping") final String ldapUserAttributeMappingStr,
-			final CodecManager codecManager) {
-		Assertion.checkArgNotEmpty(ldapServerHost);
-		Assertion.checkArgNotEmpty(ldapServerPort);
+			final CodecManager codecManager,
+			final LdapConnector ldapConnector) {
 		Assertion.checkArgNotEmpty(ldapAccountBaseDn);
-		Assertion.checkArgNotEmpty(ldapReaderLogin);
-		Assertion.checkNotNull(ldapReaderPassword);
 		Assertion.checkArgNotEmpty(ldapUserAuthAttribute);
 		Assertion.checkArgNotEmpty(userIdentityEntity);
 		Assertion.checkArgNotEmpty(ldapUserAttributeMappingStr);
 		Assertion.checkNotNull(codecManager);
-		ldapServer = ldapServerHost + ":" + ldapServerPort;
 		this.ldapAccountBaseDn = ldapAccountBaseDn;
-		this.ldapReaderLogin = ldapReaderLogin;
-		this.ldapReaderPassword = ldapReaderPassword;
 		this.ldapUserAuthAttribute = ldapUserAuthAttribute;
 		this.userIdentityEntity = userIdentityEntity;
 		this.ldapUserAttributeMappingStr = ldapUserAttributeMappingStr;
 		this.codecManager = codecManager;
+		this.ldapConnector = ldapConnector;
 	}
 
 	/** {@inheritDoc} */
@@ -149,7 +133,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E getUserByAuthToken(final String userAuthToken) {
-		final LdapContext ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
+		final LdapContext ldapContext = ldapConnector.obtainLdapContext();
 		try {
 			return (E) getUserByAuthToken(userAuthToken, ldapContext);
 		} finally {
@@ -166,7 +150,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> List<E> getAllUsers() {
-		final LdapContext ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
+		final LdapContext ldapContext = ldapConnector.obtainLdapContext();
 		try {
 			return searchUser("(" + ldapUserAuthAttribute + "=*)", MAX_ROWS, ldapContext);
 		} finally {
@@ -177,7 +161,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> Optional<VFile> getPhoto(final UID<E> accountURI) {
-		final LdapContext ldapContext = createLdapContext(ldapReaderLogin, ldapReaderPassword);
+		final LdapContext ldapContext = ldapConnector.obtainLdapContext();
 		try {
 			final String displayName = "photo-" + accountURI.getId() + ".jpg";
 			final String photoAttributeName = mapperHelper.getReservedSourceAttribute(PHOTO_RESERVED_FIELD);
@@ -263,29 +247,6 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 
 	private static VFile byteArrayToVFile(final String displayName, final byte[] photo) {
 		return new StreamFile(displayName, LDAP_PHOTO_MIME_TYPE, Instant.now(), photo.length, () -> new ByteArrayInputStream(photo));
-	}
-
-	private LdapContext createLdapContext(final String principal, final String credentials) {
-		final Hashtable<String, String> env = new Hashtable<>();
-		env.put(Context.INITIAL_CONTEXT_FACTORY, DEFAULT_CONTEXT_FACTORY_CLASS_NAME);
-		env.put(Context.REFERRAL, DEFAULT_REFERRAL);
-
-		env.put(Context.SECURITY_AUTHENTICATION, SIMPLE_AUTHENTICATION_MECHANISM_NAME);
-		final String url = "ldap://" + ldapServer;
-		env.put(Context.PROVIDER_URL, url);
-		if (credentials != null) {
-			env.put(Context.SECURITY_PRINCIPAL, principal);
-			env.put(Context.SECURITY_CREDENTIALS, credentials);
-		} else {
-			env.put(Context.SECURITY_AUTHENTICATION, "none");
-		}
-		try {
-			return new InitialLdapContext(env, null);
-		} catch (final CommunicationException e) {
-			throw WrappedException.wrap(e, "Can't connect to LDAP : {0} ", ldapServer);
-		} catch (final NamingException e) {
-			throw WrappedException.wrap(e, "Can't connect user : {0} ", principal);
-		}
 	}
 
 	private static String protectLdap(final String principal) {
