@@ -73,8 +73,8 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 	}
 
 	@Feature("notifications.redis")
-	public SocialFeatures withRedisNotifications() {
-		getModuleConfigBuilder().addPlugin(RedisNotificationPlugin.class);
+	public SocialFeatures withRedisNotifications(final Param... params) {
+		getModuleConfigBuilder().addPlugin(RedisNotificationPlugin.class, params);
 		return this;
 	}
 
@@ -95,8 +95,8 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 	}
 
 	@Feature("comments.redis")
-	public SocialFeatures withRedisComments() {
-		getModuleConfigBuilder().addPlugin(RedisCommentPlugin.class);
+	public SocialFeatures withRedisComments(final Param... params) {
+		getModuleConfigBuilder().addPlugin(RedisCommentPlugin.class, params);
 		return this;
 	}
 
@@ -152,8 +152,8 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 	}
 
 	@Feature("handles.redis")
-	public SocialFeatures withRedisHandles() {
-		getModuleConfigBuilder().addPlugin(RedisHandlePlugin.class);
+	public SocialFeatures withRedisHandles(final Param... params) {
+		getModuleConfigBuilder().addPlugin(RedisHandlePlugin.class, params);
 		return this;
 	}
 

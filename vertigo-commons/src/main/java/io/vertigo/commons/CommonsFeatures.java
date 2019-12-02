@@ -99,9 +99,9 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	 * @return these features
 	 */
 	@Feature("cache.redis")
-	public CommonsFeatures withRedisCache() {
+	public CommonsFeatures withRedisCache(final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(RedisCachePlugin.class);
+				.addPlugin(RedisCachePlugin.class, params);
 		return this;
 	}
 
