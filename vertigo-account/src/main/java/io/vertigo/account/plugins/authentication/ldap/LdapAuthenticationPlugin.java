@@ -18,6 +18,7 @@
  */
 package io.vertigo.account.plugins.authentication.ldap;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -57,10 +58,14 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 	@Inject
 	public LdapAuthenticationPlugin(
 			@ParamValue("userLoginTemplate") final String userLoginTemplate,
-			final LdapConnector ldapConnector) {
-		Assertion.checkNotNull(ldapConnector);
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
+			final List<LdapConnector> ldapConnectors) {
+		Assertion.checkNotNull(ldapConnectors);
 		parseUserLoginTemplate(userLoginTemplate);
-		this.ldapConnector = ldapConnector;
+		final String connectorName = connectorNameOpt.orElse("main");
+		ldapConnector = ldapConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst().get();
 	}
 
 	/** {@inheritDoc} */

@@ -100,8 +100,9 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 			@ParamValue("ldapUserAuthAttribute") final String ldapUserAuthAttribute,
 			@ParamValue("userIdentityEntity") final String userIdentityEntity,
 			@ParamValue("ldapUserAttributeMapping") final String ldapUserAttributeMappingStr,
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final CodecManager codecManager,
-			final LdapConnector ldapConnector) {
+			final List<LdapConnector> ldapConnectors) {
 		Assertion.checkArgNotEmpty(ldapAccountBaseDn);
 		Assertion.checkArgNotEmpty(ldapUserAuthAttribute);
 		Assertion.checkArgNotEmpty(userIdentityEntity);
@@ -112,7 +113,10 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		this.userIdentityEntity = userIdentityEntity;
 		this.ldapUserAttributeMappingStr = ldapUserAttributeMappingStr;
 		this.codecManager = codecManager;
-		this.ldapConnector = ldapConnector;
+		final String connectorName = connectorNameOpt.orElse("main");
+		ldapConnector = ldapConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst().get();
 	}
 
 	/** {@inheritDoc} */
