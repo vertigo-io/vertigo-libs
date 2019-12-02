@@ -3,11 +3,13 @@ package io.vertigo.social.plugins.handle.redis;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.social.impl.handle.HandlePlugin;
@@ -21,10 +23,16 @@ public class RedisHandlePlugin implements HandlePlugin {
 	private final RedisConnector redisConnector;
 
 	@Inject
-	public RedisHandlePlugin(final RedisConnector redisConnector) {
-		Assertion.checkNotNull(redisConnector);
+	public RedisHandlePlugin(
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
+			final List<RedisConnector> redisConnectors) {
+		Assertion.checkNotNull(connectorNameOpt);
+		Assertion.checkNotNull(redisConnectors);
 		//---
-		this.redisConnector = redisConnector;
+		final String connectorName = connectorNameOpt.orElse("main");
+		redisConnector = redisConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst().get();
 	}
 
 	@Override

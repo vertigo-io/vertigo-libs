@@ -18,11 +18,15 @@
  */
 package io.vertigo.stella.plugins.work.redis.workers;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.inject.Inject;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.stella.impl.work.WorkItem;
 import io.vertigo.stella.impl.workers.WorkersPlugin;
 import io.vertigo.stella.plugins.work.redis.RedisDB;
@@ -44,11 +48,16 @@ public final class RedisWorkersPlugin implements WorkersPlugin {
 	 */
 	@Inject
 	public RedisWorkersPlugin(
-			final CodecManager codecManager,
-			final RedisConnector redisConnector) {
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
+			final List<RedisConnector> redisConnectors,
+			final CodecManager codecManager) {
 		Assertion.checkNotNull(codecManager);
-		Assertion.checkNotNull(redisConnector);
+		Assertion.checkNotNull(redisConnectors);
 		//-----
+		final String connectorName = connectorNameOpt.orElse("main");
+		final RedisConnector redisConnector = redisConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst().get();
 		redisDB = new RedisDB(codecManager, redisConnector);
 	}
 

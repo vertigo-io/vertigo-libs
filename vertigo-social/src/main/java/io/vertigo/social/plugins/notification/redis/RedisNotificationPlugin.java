@@ -22,15 +22,16 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.inject.Inject;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.connectors.redis.RedisConnector;
-import io.vertigo.core.daemon.DaemonManager;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.social.impl.notification.NotificationEvent;
@@ -53,11 +54,16 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	 * @param daemonManager Daemon Manager
 	 */
 	@Inject
-	public RedisNotificationPlugin(final RedisConnector redisConnector, final DaemonManager daemonManager) {
-		Assertion.checkNotNull(redisConnector);
-		Assertion.checkNotNull(daemonManager);
+	public RedisNotificationPlugin(
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
+			final List<RedisConnector> redisConnectors) {
+		Assertion.checkNotNull(connectorNameOpt);
+		Assertion.checkNotNull(redisConnectors);
 		//-----
-		this.redisConnector = redisConnector;
+		final String connectorName = connectorNameOpt.orElse("main");
+		redisConnector = redisConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst().get();
 	}
 
 	/** {@inheritDoc} */

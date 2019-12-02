@@ -19,6 +19,7 @@
 package io.vertigo.account.plugins.account.cache.redis;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -31,6 +32,7 @@ import io.vertigo.account.impl.account.AccountCachePlugin;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.file.model.VFile;
@@ -56,15 +58,23 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	private final PhotoCodec photoCodec;
 
 	/**
-	 * @param redisConnector Connector Redis
+	 * @param redisConnectors Connector Redis
 	 * @param codecManager Codec manager
 	 */
 	@Inject
-	public RedisAccountCachePlugin(final RedisConnector redisConnector, final CodecManager codecManager) {
-		Assertion.checkNotNull(redisConnector);
+	public RedisAccountCachePlugin(
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
+			final List<RedisConnector> redisConnectors,
+			final CodecManager codecManager) {
+		Assertion.checkNotNull(connectorNameOpt);
+		Assertion.checkNotNull(redisConnectors);
 		Assertion.checkNotNull(codecManager);
 		//-----
-		this.redisConnector = redisConnector;
+
+		final String connectorName = connectorNameOpt.orElse("main");
+		redisConnector = redisConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst().get();
 		photoCodec = new PhotoCodec(codecManager);
 	}
 

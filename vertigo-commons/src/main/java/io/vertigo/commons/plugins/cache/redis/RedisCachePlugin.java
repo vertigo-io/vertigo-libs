@@ -19,6 +19,8 @@
 package io.vertigo.commons.plugins.cache.redis;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -28,6 +30,7 @@ import io.vertigo.commons.impl.cache.CachePlugin;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
+import io.vertigo.core.param.ParamValue;
 import redis.clients.jedis.Jedis;
 
 /**
@@ -50,13 +53,18 @@ public class RedisCachePlugin implements CachePlugin {
 	 */
 	@Inject
 	public RedisCachePlugin(
-			final CodecManager codecManager,
-			final RedisConnector redisConnector) {
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
+			final List<RedisConnector> redisConnectors,
+			final CodecManager codecManager) {
+		Assertion.checkNotNull(connectorNameOpt);
+		Assertion.checkNotNull(redisConnectors);
 		Assertion.checkNotNull(codecManager);
-		Assertion.checkNotNull(redisConnector);
 		//-----
 		this.codecManager = codecManager;
-		this.redisConnector = redisConnector;
+		final String connectorName = connectorNameOpt.orElse("main");
+		redisConnector = redisConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst().get();
 	}
 
 	/** {@inheritDoc} */

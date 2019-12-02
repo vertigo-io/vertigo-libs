@@ -39,6 +39,7 @@ import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.param.ParamValue;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Transaction;
 
@@ -59,10 +60,15 @@ public final class RedisAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 	 * @param redisConnector the redisConnector
 	 */
 	@Inject
-	public RedisAppNodeRegistryPlugin(final RedisConnector redisConnector) {
-		Assertion.checkNotNull(redisConnector);
+	public RedisAppNodeRegistryPlugin(
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
+			final List<RedisConnector> redisConnectors) {
+		Assertion.checkNotNull(redisConnectors);
 		//---
-		this.redisConnector = redisConnector;
+		final String connectorName = connectorNameOpt.orElse("main");
+		redisConnector = redisConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst().get();
 		gson = createGson();
 	}
 
