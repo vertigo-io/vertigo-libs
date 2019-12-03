@@ -32,6 +32,7 @@
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-elasticsearch-connector</artifactId>
 			<version>${project.version}</version>
+			<optional>true</optional>
 		</dependency>
 
 		<!-- tests -->
