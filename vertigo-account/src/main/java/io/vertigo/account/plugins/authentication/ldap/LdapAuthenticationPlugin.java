@@ -61,11 +61,14 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<LdapConnector> ldapConnectors) {
 		Assertion.checkNotNull(ldapConnectors);
+		Assertion.checkArgument(!ldapConnectors.isEmpty(), "At least one LdapConnector espected");
+		//----
 		parseUserLoginTemplate(userLoginTemplate);
 		final String connectorName = connectorNameOpt.orElse("main");
 		ldapConnector = ldapConnectors.stream()
 				.filter(connector -> connectorName.equals(connector.getName()))
-				.findFirst().get();
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("Can't found LdapConnector named '" + connectorName + "' in " + ldapConnectors));
 	}
 
 	/** {@inheritDoc} */

@@ -108,6 +108,9 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		Assertion.checkArgNotEmpty(userIdentityEntity);
 		Assertion.checkArgNotEmpty(ldapUserAttributeMappingStr);
 		Assertion.checkNotNull(codecManager);
+		Assertion.checkNotNull(ldapConnectors);
+		Assertion.checkArgument(!ldapConnectors.isEmpty(), "At least one LdapConnector espected");
+		//-----
 		this.ldapAccountBaseDn = ldapAccountBaseDn;
 		this.ldapUserAuthAttribute = ldapUserAuthAttribute;
 		this.userIdentityEntity = userIdentityEntity;
@@ -116,7 +119,8 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		final String connectorName = connectorNameOpt.orElse("main");
 		ldapConnector = ldapConnectors.stream()
 				.filter(connector -> connectorName.equals(connector.getName()))
-				.findFirst().get();
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("Can't found LdapConnector named '" + connectorName + "' in " + ldapConnectors));
 	}
 
 	/** {@inheritDoc} */
