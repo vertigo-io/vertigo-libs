@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import io.restassured.RestAssured;
 import io.restassured.specification.ResponseSpecification;
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.connectors.elasticsearch.ElasticSearchFeatures;
 import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.config.ModuleConfig;
@@ -85,6 +86,9 @@ public class DashboardLauncherTest {
 						.withCache()
 						.withMemoryCache()
 						.build())
+				.addModule(new ElasticSearchFeatures()
+						.withEmbedded(Param.of("home", "io/vertigo/dashboard/search/indexconfig"))
+						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
 						.withC3p0(
@@ -101,8 +105,7 @@ public class DashboardLauncherTest {
 						.withStore()
 						.withSqlStore()
 						.withSearch()
-						.withESEmbedded(
-								Param.of("home", "io/vertigo/dashboard/search/indexconfig"),
+						.withES(
 								Param.of("config.file", "io/vertigo/dashboard/search/indexconfig/elasticsearch.yml"),
 								Param.of("envIndex", "TU_TEST_"),
 								Param.of("rowsPerQuery", "50"))

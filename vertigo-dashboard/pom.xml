@@ -32,6 +32,12 @@
 			<artifactId>vertigo-redis-connector</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-elasticsearch-connector</artifactId>
+			<version>${project.version}</version>
+			<optional>true</optional>
+		</dependency>
 		
 		<!-- -->
 		<dependency>
