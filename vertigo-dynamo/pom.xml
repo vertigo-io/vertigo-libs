@@ -27,6 +27,12 @@
 			<artifactId>vertigo-database</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-elasticsearch-connector</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<!-- tests -->
 		<dependency>
@@ -73,38 +79,6 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- Search -->
-		<dependency>
-			<groupId>org.elasticsearch</groupId>
-			<artifactId>elasticsearch</artifactId>
-			<version>7.4.1</version>
-			<optional>true</optional> <!-- EsTransportSearchServicesPlugin -->
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-api</artifactId>
-				</exclusion>
-			</exclusions>			
-		</dependency>
-		<dependency>
-		    <groupId>org.elasticsearch.client</groupId>
-		    <artifactId>transport</artifactId>
-		    <version>7.4.1</version>
-		    <optional>true</optional> <!-- EsTransportSearchServicesPlugin -->
-		</dependency>
-		<dependency>
-	        <groupId>org.codelibs.elasticsearch.module</groupId>
-	        <artifactId>analysis-common</artifactId> 
-	        <version>7.4.1</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
-	        <optional>true</optional>
-	    </dependency>
-	   	<dependency>
-		    <groupId>org.codelibs.elasticsearch.module</groupId>
-		    <artifactId>mapper-extras</artifactId>
-		    <version>7.4.1</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
-	        <optional>true</optional>
-		</dependency>
-	    
 		<!-- Connections Pool -->
 		<dependency>
 			<groupId>com.mchange</groupId>
@@ -114,7 +88,24 @@
 		</dependency>
 
 		<!-- Dépendances à des librairies spécifiques au module -->
-
+		<dependency>
+		    <groupId>org.elasticsearch.client</groupId>
+		    <artifactId>transport</artifactId>
+		    <version>7.4.1</version>
+		    <scope>test</scope> <!-- EsTransportSearchServicesPlugin -->
+		</dependency>
+		<dependency>
+	        <groupId>org.codelibs.elasticsearch.module</groupId>
+	        <artifactId>analysis-common</artifactId> 
+	        <version>7.4.1</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+	        <scope>test</scope>
+	    </dependency>
+	   	<dependency>
+		    <groupId>org.codelibs.elasticsearch.module</groupId>
+		    <artifactId>mapper-extras</artifactId>
+		    <version>7.4.1</version> <!-- required by ESEmbeddedSearchServicesPlugin -->
+	        <scope>test</scope>
+		</dependency>
 
 
 		<!-- <dependency> <groupId>org.apache.commons</groupId> <artifactId>commons-compress</artifactId> <version>1.5</version> 

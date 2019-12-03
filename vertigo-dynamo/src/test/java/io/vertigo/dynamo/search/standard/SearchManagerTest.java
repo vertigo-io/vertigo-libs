@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.search.standard;
 
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.connectors.elasticsearch.ElasticSearchFeatures;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -51,10 +52,12 @@ public class SearchManagerTest extends AbstractSearchManagerTest {
 				.endBoot()
 				.addModule(new CommonsFeatures()
 						.build())
+				.addModule(new ElasticSearchFeatures()
+						.withEmbedded(Param.of("home", "io/vertigo/dynamo/search/indexconfig"))
+						.build())
 				.addModule(new DynamoFeatures()
 						.withSearch()
-						.withESEmbedded(
-								Param.of("home", "io/vertigo/dynamo/search/indexconfig"),
+						.withES(
 								Param.of("config.file", "io/vertigo/dynamo/search/indexconfig/elasticsearch.yml"),
 								Param.of("envIndex", "TuTest"),
 								Param.of("rowsPerQuery", "50"))

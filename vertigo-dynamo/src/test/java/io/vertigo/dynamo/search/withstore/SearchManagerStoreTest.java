@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.connectors.elasticsearch.ElasticSearchFeatures;
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
@@ -90,6 +91,9 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 						.withMemoryCache()
 						.withJaninoScript()
 						.build())
+				.addModule(new ElasticSearchFeatures()
+						.withEmbedded(Param.of("home", "io/vertigo/dynamo/search/indexconfig"))
+						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
 						.withC3p0(
@@ -101,8 +105,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 						.withStore()
 						.withSearch()
 						.withSqlStore()
-						.withESEmbedded(
-								Param.of("home", "io/vertigo/dynamo/search/indexconfig"),
+						.withES(
 								Param.of("config.file", "io/vertigo/dynamo/search/indexconfig/elasticsearch.yml"),
 								Param.of("envIndex", "TuTest"),
 								Param.of("rowsPerQuery", "50"))

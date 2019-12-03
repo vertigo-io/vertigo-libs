@@ -25,7 +25,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
+
+import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,6 +48,7 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
 import io.vertigo.commons.codec.CodecManager;
+import io.vertigo.connectors.elasticsearch.ElasticSearchConnector;
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthMeasureBuilder;
@@ -52,6 +56,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.collections.ListFilter;
@@ -72,15 +77,16 @@ import io.vertigo.dynamo.search.model.SearchQuery;
  * Gestion de la connexion au serveur Solr de manière transactionnel.
  * @author dchallas, npiedeloup
  */
-public abstract class AbstractESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
+public final class ClientESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
 	private static final int DEFAULT_SCALING_FACTOR = 1000;
 	private static final String DEFAULT_DATE_FORMAT = "dd/MM/yyyy||strict_date_optional_time||epoch_second";
 	private static final int OPTIMIZE_MAX_NUM_SEGMENT = 32;
 	/** field suffix for keyword fields added by this plugin. */
 	public static final String SUFFIX_SORT_FIELD = ".keyword";
 
-	private static final Logger LOGGER = LogManager.getLogger(AbstractESSearchServicesPlugin.class);
+	private static final Logger LOGGER = LogManager.getLogger(ClientESSearchServicesPlugin.class);
 	private final ESDocumentCodec elasticDocumentCodec;
+	private final ElasticSearchConnector elasticSearchConnector;
 
 	private Client esClient;
 	private final DtListState defaultListState;
@@ -100,15 +106,20 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	 * @param configFile Fichier de configuration des indexs
 	 * @param resourceManager Manager des resources
 	 */
-	protected AbstractESSearchServicesPlugin(
-			final String indexNameOrPrefix,
-			final boolean indexNameIsPrefix,
-			final int defaultMaxRows,
-			final String configFile,
+	@Inject
+	public ClientESSearchServicesPlugin(
+			@ParamValue("envIndex") final String envIndex,
+			@ParamValue("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
+			@ParamValue("rowsPerQuery") final int defaultMaxRows,
+			@ParamValue("config.file") final String configFile,
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
+			final List<ElasticSearchConnector> elasticSearchConnectors,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
-		Assertion.checkArgNotEmpty(indexNameOrPrefix);
+		Assertion.checkArgNotEmpty(envIndex);
 		Assertion.checkNotNull(codecManager);
+		Assertion.checkNotNull(elasticSearchConnectors);
+		Assertion.checkArgument(!elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
 		//Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
 		//Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
 		//-----
@@ -116,16 +127,20 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		defaultListState = DtListState.of(defaultMaxRows);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
-		this.indexNameOrPrefix = indexNameOrPrefix;
-		this.indexNameIsPrefix = indexNameIsPrefix;
+		indexNameOrPrefix = envIndex;
+		indexNameIsPrefix = envIndexIsPrefix.orElse(true);
 		configFileUrl = resourceManager.resolve(configFile);
+		final String connectorName = connectorNameOpt.orElse("main");
+		elasticSearchConnector = elasticSearchConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst().orElseThrow(() -> new IllegalArgumentException("Can't found ElasticSearchConnector named '" + connectorName + "' in " + elasticSearchConnectors));
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final void start() {
+	public void start() {
 		//Init ElasticSearch Client
-		esClient = createClient();
+		esClient = elasticSearchConnector.getClient();
 		indexSettingsValid = true;
 		//must wait yellow status to be sure prepareExists works fine (instead of returning false on a already exist index)
 		waitForYellowStatus();
@@ -140,6 +155,12 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		}
 
 		waitForYellowStatus();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public void stop() {
+		// nothing
 	}
 
 	private boolean hasSortableNormalizer(final String myIndexName) {
@@ -221,25 +242,9 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		}
 	}
 
-	/**
-	 * @return ElasticSearch client.
-	 */
-	protected abstract Client createClient();
-
-	/**
-	 * Close created client.
-	 */
-	protected abstract void closeClient();
-
 	/** {@inheritDoc} */
 	@Override
-	public final void stop() {
-		closeClient();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
+	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
 		Assertion.checkNotNull(indexCollection);
 		//-----
 		final ESStatement<S, I> statement = createElasticStatement(indexDefinition);
@@ -248,7 +253,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	/** {@inheritDoc} */
 	@Override
-	public final <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
+	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
 		//On vérifie la cohérence des données SO et SOD.
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(index);
@@ -260,7 +265,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	/** {@inheritDoc} */
 	@Override
-	public final <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final UID<S> uri) {
+	public <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final UID<S> uri) {
 		Assertion.checkNotNull(uri);
 		Assertion.checkNotNull(indexDefinition);
 		//-----
@@ -270,7 +275,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	/** {@inheritDoc} */
 	@Override
-	public final <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
+	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
 		Assertion.checkNotNull(searchQuery);
 		//-----
 		final ESStatement<KeyConcept, R> statement = createElasticStatement(indexDefinition);
@@ -280,7 +285,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	/** {@inheritDoc} */
 	@Override
-	public final long count(final SearchIndexDefinition indexDefinition) {
+	public long count(final SearchIndexDefinition indexDefinition) {
 		Assertion.checkNotNull(indexDefinition);
 		//-----
 		return createElasticStatement(indexDefinition).count();
@@ -288,7 +293,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 
 	/** {@inheritDoc} */
 	@Override
-	public final void remove(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
+	public void remove(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkNotNull(listFilter);
 		//-----
