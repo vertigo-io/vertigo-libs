@@ -16,6 +16,10 @@ modules:
     featuresConfig:
       - script.janino:
       - cache.memory:
+  io.vertigo.connectors.elasticsearch.ElasticSearchFeatures:
+    features:
+      - embedded:
+          home: esconfig
   io.vertigo.database.DatabaseFeatures:
     features:
       - sql:
@@ -32,8 +36,7 @@ modules:
     featuresConfig:
       - store.data.sql:
       - collections.luceneIndex:
-      - search.elasticsearchEmbedded:
-          home: esconfig
+      - search.elasticsearch:          
           envIndex: tuTest
           rowsPerQuery: 50
           config.file: esconfig/elasticsearch.yml
