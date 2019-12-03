@@ -21,7 +21,10 @@ package io.vertigo.quarto.plugins.export.xls;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -302,12 +305,17 @@ final class XLSExporter {
 				final Boolean bValue = (Boolean) value;
 				//cell.setCellValue(bValue.booleanValue() ? "Oui" : "Non");
 				cell.setCellValue(domain.valueToString(bValue));
-			} else if (value instanceof Date) {
-				final Date dateValue = (Date) value;
+			} else if (value instanceof LocalDate) {
+				final LocalDate dateValue = (LocalDate) value;
 				// sans ce style "date" les dates apparaîtraient au format
 				// "nombre"
 				cell.setCellValue(dateValue);
 				stringValueForColumnWidth = "DD/MM/YYYY";
+				// ceci ne sert que pour déterminer la taille de la cellule, on a pas besoin de la vrai valeur
+			} else if (value instanceof Instant) {
+				final Instant instantValue = (Instant) value;
+				cell.setCellValue(LocalDateTime.ofInstant(instantValue, ZoneId.of("UTC")));
+				stringValueForColumnWidth = "DD/MM/YYYY HH:mm";
 				// ceci ne sert que pour déterminer la taille de la cellule, on a pas besoin de la vrai valeur
 			} else {
 				throw new UnsupportedOperationException("Type " + domain.getDataType() + " not supported by this Excel exporter");

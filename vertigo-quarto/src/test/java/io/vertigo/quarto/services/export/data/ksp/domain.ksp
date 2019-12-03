@@ -24,3 +24,13 @@ create Domain DoBoolean {
 	dataType : Boolean
 	formatter : FmtDefault
 }
+
+create Domain DoLocalDate {
+	dataType : LocalDate
+	formatter : FmtDefault
+}
+
+create Domain DoInstant {
+	dataType : Instant
+	formatter : FmtDefault
+}

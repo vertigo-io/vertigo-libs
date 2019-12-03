@@ -18,6 +18,9 @@
  */
 package io.vertigo.quarto.services.export.data.domain;
 
+import java.time.Instant;
+import java.time.LocalDate;
+
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -34,6 +37,8 @@ public final class Country implements Entity {
 	private Long conId;
 	private String name;
 	private Boolean active;
+	private LocalDate localDate;
+	private Instant instant;
 
 	@Override
 	public UID getUID() {
@@ -77,6 +82,26 @@ public final class Country implements Entity {
 
 	public Country setActive(final boolean active) {
 		this.active = active;
+		return this;
+	}
+
+	@Field(domain = "DoLocalDate", label = "local date")
+	public final LocalDate getLocalDate() {
+		return localDate;
+	}
+
+	public Country setLocalDate(final LocalDate localDate) {
+		this.localDate = localDate;
+		return this;
+	}
+
+	@Field(domain = "DoInstant", label = "instant")
+	public final Instant getInstant() {
+		return instant;
+	}
+
+	public Country setInstant(final Instant instant) {
+		this.instant = instant;
 		return this;
 	}
 

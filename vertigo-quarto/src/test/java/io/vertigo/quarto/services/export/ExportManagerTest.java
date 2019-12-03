@@ -18,6 +18,10 @@
  */
 package io.vertigo.quarto.services.export;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
@@ -201,6 +205,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU5 {
 				.beginSheet(countries, "countries")
 				.addField(CountryFields.conId, contients, ContinentFields.name)
 				.addField(CountryFields.active)
+				.addField(CountryFields.localDate)
+				.addField(CountryFields.instant)
 				.endSheet()
 				.build();
 
@@ -259,10 +265,10 @@ public final class ExportManagerTest extends AbstractTestCaseJU5 {
 	}
 
 	private static DtList<Country> buildCountries() {
-		final Country france = new Country().setId(1L).setConId(10L).setName("France").setActive(true);
-		final Country usa = new Country().setId(2L).setConId(20L).setName("usa").setActive(true);
-		final Country unknownCountry = new Country().setId(3L).setConId(30L).setActive(false); //no name
-		final Country japan = new Country().setId(4L).setConId(40L).setName("japan").setActive(true);
+		final Country france = new Country().setId(1L).setConId(10L).setName("France").setActive(true).setLocalDate(LocalDate.of(2018, 10, 15)).setInstant(Instant.now());
+		final Country usa = new Country().setId(2L).setConId(20L).setName("usa").setActive(true).setLocalDate(LocalDate.of(2017, 9, 14)).setInstant(Instant.now().minus(2, ChronoUnit.MINUTES));
+		final Country unknownCountry = new Country().setId(3L).setConId(30L).setActive(false).setLocalDate(LocalDate.of(2016, 8, 13)).setInstant(Instant.now().minus(4, ChronoUnit.MINUTES)); //no name
+		final Country japan = new Country().setId(4L).setConId(40L).setName("japan").setActive(true).setLocalDate(LocalDate.of(2015, 7, 12)).setInstant(Instant.now().minus(6, ChronoUnit.MINUTES));
 
 		final DtList<Country> dtc = new DtList<>(Country.class);
 		// les index sont données par ordre alpha > null à la fin >
