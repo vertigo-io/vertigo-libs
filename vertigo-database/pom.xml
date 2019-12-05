@@ -22,12 +22,11 @@
 			<artifactId>vertigo-commons</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
 		<dependency>
-			<groupId>org.influxdb</groupId>
-			<artifactId>influxdb-java</artifactId>
-			<version>2.15</version>
-			<optional>true</optional>  <!-- InfluxDbTimeSeriesPlugin -->
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-influxdb-connector</artifactId>
+			<version>${project.version}</version>
+			<optional>true</optional>
 		</dependency>
 
 		<!-- tests -->

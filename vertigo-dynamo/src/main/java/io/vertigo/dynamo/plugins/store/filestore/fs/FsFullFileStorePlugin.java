@@ -108,7 +108,9 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		this.fileManager = fileManager;
 		this.transactionManager = transactionManager;
 		documentRoot = Paths.get(FileUtil.translatePath(path));
-		Assertion.checkArgument(Files.isDirectory(documentRoot), "documentRoot ({0}) must be an directory", documentRoot.toAbsolutePath().toString());
+		Assertion
+				.when(Files.exists(documentRoot))
+				.check(() -> Files.isDirectory(documentRoot), "documentRoot ({0}) must be a directory", documentRoot.toAbsolutePath().toString());
 
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
 	}

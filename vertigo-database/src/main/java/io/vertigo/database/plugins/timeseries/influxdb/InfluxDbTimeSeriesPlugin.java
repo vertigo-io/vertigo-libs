@@ -37,12 +37,12 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 
 import org.influxdb.InfluxDB;
-import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 import org.influxdb.dto.QueryResult.Series;
 
+import io.vertigo.connectors.influxdb.InfluxDbConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.component.Activeable;
@@ -69,15 +69,19 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	@Inject
 	public InfluxDbTimeSeriesPlugin(
-			@ParamValue("host") final String host,
-			@ParamValue("user") final String user,
-			@ParamValue("password") final String password,
-			@ParamValue("dbNames") final Optional<String> dbNamesOpt) {
-		Assertion.checkArgNotEmpty(host);
-		Assertion.checkArgNotEmpty(user);
-		Assertion.checkArgNotEmpty(password);
+			@ParamValue("dbNames") final Optional<String> dbNamesOpt,
+			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
+			final List<InfluxDbConnector> influxdbConnectors) {
+		Assertion.checkNotNull(dbNamesOpt);
+		Assertion.checkNotNull(connectorNameOpt);
+		Assertion.checkNotNull(influxdbConnectors);
 		//---
-		influxDB = InfluxDBFactory.connect(host, user, password);
+		final String connectorName = connectorNameOpt.orElse("main");
+		final InfluxDbConnector influxdbConnector = influxdbConnectors.stream()
+				.filter(connector -> connectorName.equals(connector.getName()))
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException("Can't found LdapConnector named '" + connectorName + "' in " + influxdbConnectors));
+		influxDB = influxdbConnector.getInfluxdb();
 		influxDB.enableBatch();
 		if (dbNamesOpt.isPresent()) {
 			dbNames = Arrays.asList(dbNamesOpt.get().split(";"));

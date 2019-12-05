@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.connectors.influxdb.InfluxDbFeatures;
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
@@ -130,15 +131,15 @@ public final class TimeSeriesDataBaseTest extends AbstractTestCaseJU5 {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.addPlugin(URLResourceResolverPlugin.class)
 				.endBoot()
+				.addModule(new InfluxDbFeatures().withInfluxDb(
+						Param.of("host", "http://analytica.part.klee.lan.net:8086"),
+						Param.of("user", "analytica"),
+						Param.of("password", "kleeklee")).build())
 				.addModule(new CommonsFeatures()
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withTimeSeriesDataBase()
-						.addPlugin(InfluxDbTimeSeriesPlugin.class,
-								Param.of("host", "http://analytica.part.klee.lan.net:8086"),
-								Param.of("user", "analytica"),
-								Param.of("password", "kleeklee"),
-								Param.of("dbNames", "vertigo-test"))
+						.addPlugin(InfluxDbTimeSeriesPlugin.class, Param.of("dbNames", "vertigo-test"))
 						.build())
 				.build();
 	}

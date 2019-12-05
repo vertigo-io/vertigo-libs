@@ -32,6 +32,7 @@ import io.restassured.RestAssured;
 import io.restassured.specification.ResponseSpecification;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.elasticsearch.ElasticSearchFeatures;
+import io.vertigo.connectors.influxdb.InfluxDbFeatures;
 import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.config.ModuleConfig;
@@ -82,6 +83,12 @@ public class DashboardLauncherTest {
 								Param.of("port", "6379"),
 								Param.of("database", "0"))
 						.build())
+				.addModule(new InfluxDbFeatures()
+						.withInfluxDb(
+								Param.of("host", "http://analytica.part.klee.lan.net:8086"),
+								Param.of("user", "analytica"),
+								Param.of("password", "kleeklee"))
+						.build())
 				.addModule(new CommonsFeatures()
 						.withCache()
 						.withMemoryCache()
@@ -96,10 +103,7 @@ public class DashboardLauncherTest {
 								Param.of("jdbcDriver", Driver.class.getCanonicalName()),
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.withTimeSeriesDataBase()
-						.withInfluxDb(
-								Param.of("host", "http://analytica.part.klee.lan.net:8086"),
-								Param.of("user", "analytica"),
-								Param.of("password", "kleeklee"))
+						.withInfluxDb()
 						.build())
 				.addModule(new DynamoFeatures()
 						.withStore()
