@@ -70,16 +70,10 @@
 
 		<!-- Search -->
 		<dependency>
-			<groupId>org.elasticsearch</groupId>
-			<artifactId>elasticsearch</artifactId>
-			<version>7.4.1</version>
-			<scope>test</scope><!-- EsTransportSearchServicesPlugin -->
-			<exclusions>
-				<exclusion>
-					<groupId>org.apache.logging.log4j</groupId>
-					<artifactId>log4j-api</artifactId>
-				</exclusion>
-			</exclusions>
+		    <groupId>org.elasticsearch.client</groupId>
+		    <artifactId>elasticsearch-rest-high-level-client</artifactId>
+		    <version>7.4.1</version>
+		    <scope>test</scope> <!-- REstHighLevelElasticSearchConnector -->
 		</dependency>
 		<dependency>
 		    <groupId>org.elasticsearch.client</groupId>

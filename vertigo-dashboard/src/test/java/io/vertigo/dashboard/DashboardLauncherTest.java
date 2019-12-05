@@ -94,7 +94,8 @@ public class DashboardLauncherTest {
 						.withMemoryCache()
 						.build())
 				.addModule(new ElasticSearchFeatures()
-						.withEmbedded(Param.of("home", "io/vertigo/dashboard/search/indexconfig"))
+						.withEmbeddedServer(Param.of("home", "io/vertigo/dashboard/search/indexconfig"))
+						.withRestHL(Param.of("servers.names", "localhost:9200"))
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
@@ -109,7 +110,7 @@ public class DashboardLauncherTest {
 						.withStore()
 						.withSqlStore()
 						.withSearch()
-						.withES(
+						.withESHL(
 								Param.of("config.file", "io/vertigo/dashboard/search/indexconfig/elasticsearch.yml"),
 								Param.of("envIndex", "TU_TEST_"),
 								Param.of("rowsPerQuery", "50"))
