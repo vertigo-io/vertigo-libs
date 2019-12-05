@@ -63,7 +63,7 @@ import io.vertigo.dynamo.search.model.SearchQuery;
  * @author pchretien, npiedeloup
  * @param <I> Type de l'objet représentant l'index
  */
-final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<FacetedQueryResult<I, SearchQuery>> {
+public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<FacetedQueryResult<I, SearchQuery>> {
 
 	private static final String TOPHITS_SUBAGGREAGTION_NAME = "top";
 
@@ -81,7 +81,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 	 * @param queryResponse ES Query response
 	 * @param searchQuery Search query
 	 */
-	ESFacetedQueryResultBuilder(
+	public ESFacetedQueryResultBuilder(
 			final ESDocumentCodec esDocumentCodec,
 			final SearchIndexDefinition indexDefinition,
 			final SearchResponse queryResponse,

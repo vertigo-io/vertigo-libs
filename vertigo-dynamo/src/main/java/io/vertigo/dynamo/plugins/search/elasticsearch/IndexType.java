@@ -25,7 +25,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 
-final class IndexType {
+public final class IndexType {
 	private static final String INDEX_TYPE_ERROR_MSG = "indexType ({0}) should respect this usage : indexType : "
 			+ "\"myAnalyzer\\{:myDataType\\}\\{:stored|notStored\\}\\{:sortable|notSortable\\}\\{:facetable|notFacetable\\}\"";
 	private static final String INDEX_STORED = "stored";
@@ -97,7 +97,7 @@ final class IndexType {
 	// par convention l'indexType du domain => l'analyzer de l'index
 	// L'indexType peut-être compléter pour préciser le type si différente de string avec le séparateur :
 
-	static IndexType readIndexType(final Domain domain) {
+	public static IndexType readIndexType(final Domain domain) {
 		final String indexType = domain.getProperties().getValue(DtProperty.INDEX_TYPE);
 		if (indexType == null) {
 			return new IndexType(null, domain);

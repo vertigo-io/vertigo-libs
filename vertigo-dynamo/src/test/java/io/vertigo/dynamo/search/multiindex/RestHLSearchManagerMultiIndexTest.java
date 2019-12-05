@@ -40,7 +40,7 @@ import io.vertigo.dynamo.search.model.SearchQuery;
 /**
  * @author  npiedeloup
  */
-public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
+public class RestHLSearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 	//Index
 	private static final String IDX_DYNA_ITEM = "IdxDynaItem";
 	private static final String IDX_ITEM = "IdxItem";
@@ -53,7 +53,7 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-		return MyNodeConfig.config(false, false);
+		return MyNodeConfig.config(true, false);
 	}
 
 	/**{@inheritDoc}*/

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.search.elasticsearch;
+package io.vertigo.dynamo.plugins.search.elasticsearch.rest;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,9 +24,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.Client;
+import org.elasticsearch.client.RestHighLevelClient;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -38,6 +38,7 @@ import org.elasticsearch.search.aggregations.bucket.filter.FiltersAggregator.Key
 import org.elasticsearch.search.aggregations.bucket.range.DateRangeAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.range.RangeAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.TopHitsAggregationBuilder;
+import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.fetch.subphase.highlight.HighlightBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -54,6 +55,8 @@ import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.impl.collections.functions.filter.DtListPatternFilterUtil;
+import io.vertigo.dynamo.plugins.search.elasticsearch.ESDocumentCodec;
+import io.vertigo.dynamo.plugins.search.elasticsearch.IndexType;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
 
@@ -62,7 +65,7 @@ import io.vertigo.dynamo.search.model.SearchQuery;
  * ElasticSearch request builder from searchManager api.
  * @author pchretien, npiedeloup
  */
-final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
+final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 
 	private static final int TERM_AGGREGATION_SIZE = 50; //max 50 facets values per facet
 	private static final int TOPHITS_SUBAGGREGATION_MAXSIZE = 100; //max 100 documents per cluster when clusterization is used
@@ -71,7 +74,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	private static final String DATE_PATTERN = "dd/MM/yyyy";
 	private static final Pattern RANGE_PATTERN = Pattern.compile("([a-z][a-zA-Z0-9]*):([\\[\\{])(.*) TO (.*)([\\}\\]])");
 
-	private final SearchRequestBuilder searchRequestBuilder;
+	private final SearchRequest searchRequest;
+	private final SearchSourceBuilder searchSourceBuilder;
 	private SearchIndexDefinition myIndexDefinition;
 	private SearchQuery mySearchQuery;
 	private DtListState myListState;
@@ -83,16 +87,17 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	 * @param typeName type name (dtIndex type)
 	 * @param esClient ElasticSearch client
 	 */
-	ESSearchRequestBuilder(final String indexName, final String typeName, final Client esClient) {
+	ESSearchRequestBuilder(final String indexName, final String typeName, final RestHighLevelClient esClient) {
 		Assertion.checkArgNotEmpty(indexName);
 		Assertion.checkArgNotEmpty(typeName);
 		Assertion.checkNotNull(esClient);
 		//-----
-		searchRequestBuilder = esClient.prepareSearch()
-				.setIndices(indexName)
-				.setTypes(typeName)
-				.setSearchType(SearchType.QUERY_THEN_FETCH)
-				.setFetchSource(ESDocumentCodec.FULL_RESULT, null);
+		searchSourceBuilder = new SearchSourceBuilder()
+				.fetchSource(new String[] { ESDocumentCodec.FULL_RESULT }, null);
+
+		searchRequest = new SearchRequest(indexName)
+				.searchType(SearchType.QUERY_THEN_FETCH)
+				.source(searchSourceBuilder);
 	}
 
 	/**
@@ -140,7 +145,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 	/** {@inheritDoc} */
 	@Override
-	public SearchRequestBuilder build() {
+	public SearchRequest build() {
 		Assertion.checkNotNull(myIndexDefinition, "You must set IndexDefinition");
 		Assertion.checkNotNull(mySearchQuery, "You must set SearchQuery");
 		Assertion.checkNotNull(myListState, "You must set ListState");
@@ -150,17 +155,17 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 						"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE);
 		//-----
 		appendListState();
-		appendSearchQuery(mySearchQuery, searchRequestBuilder, useHighlight);
-		appendFacetDefinition(mySearchQuery, searchRequestBuilder, myIndexDefinition, myListState, useHighlight);
-		return searchRequestBuilder;
+		appendSearchQuery(mySearchQuery, searchSourceBuilder, useHighlight);
+		appendFacetDefinition(mySearchQuery, searchSourceBuilder, myIndexDefinition, myListState, useHighlight);
+		return searchRequest;
 	}
 
 	private void appendListState() {
-		searchRequestBuilder.setFrom(myListState.getSkipRows())
+		searchSourceBuilder.from(myListState.getSkipRows())
 				//If we send a clustering query, we don't retrieve result with hits response but with buckets
-				.setSize(mySearchQuery.isClusteringFacet() ? 0 : myListState.getMaxRows().orElse(myDefaultMaxRows));
+				.size(mySearchQuery.isClusteringFacet() ? 0 : myListState.getMaxRows().orElse(myDefaultMaxRows));
 		if (myListState.getSortFieldName().isPresent()) {
-			searchRequestBuilder.addSort(getFieldSortBuilder(myIndexDefinition, myListState));
+			searchSourceBuilder.sort(getFieldSortBuilder(myIndexDefinition, myListState));
 		}
 	}
 
@@ -176,7 +181,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 				.order(myListState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
 	}
 
-	private static void appendSearchQuery(final SearchQuery searchQuery, final SearchRequestBuilder searchRequestBuilder, final boolean useHighlight) {
+	private static void appendSearchQuery(final SearchQuery searchQuery, final SearchSourceBuilder searchRequestBuilder, final boolean useHighlight) {
 		final BoolQueryBuilder filterBoolQueryBuilder = QueryBuilders.boolQuery();
 		final BoolQueryBuilder postFilterBoolQueryBuilder = QueryBuilders.boolQuery();
 
@@ -196,8 +201,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			requestQueryBuilder = filterBoolQueryBuilder;
 		}
 		searchRequestBuilder
-				.setQuery(requestQueryBuilder)
-				.setPostFilter(postFilterBoolQueryBuilder);
+				.query(requestQueryBuilder)
+				.postFilter(postFilterBoolQueryBuilder);
 
 		if (useHighlight) {
 			//.setHighlighterFilter(true) //We don't highlight the security filter
@@ -251,7 +256,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 	private static void appendFacetDefinition(
 			final SearchQuery searchQuery,
-			final SearchRequestBuilder searchRequestBuilder,
+			final SearchSourceBuilder searchRequestBuilder,
 			final SearchIndexDefinition myIndexDefinition,
 			final DtListState myListState,
 			final boolean useHighlight) {
@@ -276,7 +281,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 			aggregationBuilder.subAggregation(topHitsBuilder);
 			//We fetch source, because it's our only source to create result list
-			searchRequestBuilder.addAggregation(aggregationBuilder);
+			searchRequestBuilder.aggregation(aggregationBuilder);
 		}
 		//Puis les facettes liées à la query, si présent
 		if (searchQuery.getFacetedQuery().isPresent()) {
@@ -297,9 +302,9 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 				if (aggsFilterBoolQueryBuilder.hasClauses()) {
 					final AggregationBuilder filterAggregationBuilder = AggregationBuilders.filter(facetDefinition.getName() + "Filter", aggsFilterBoolQueryBuilder);
 					filterAggregationBuilder.subAggregation(aggregationBuilder);
-					searchRequestBuilder.addAggregation(filterAggregationBuilder);
+					searchRequestBuilder.aggregation(filterAggregationBuilder);
 				} else {
-					searchRequestBuilder.addAggregation(aggregationBuilder);
+					searchRequestBuilder.aggregation(aggregationBuilder);
 				}
 			}
 		}

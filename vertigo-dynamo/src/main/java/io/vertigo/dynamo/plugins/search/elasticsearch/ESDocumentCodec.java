@@ -46,10 +46,10 @@ import io.vertigo.dynamo.search.model.SearchIndex;
  * L'objet lu ne contient pas les données indexées non stockées !
  * @author pchretien, npiedeloup
  */
-final class ESDocumentCodec {
+public final class ESDocumentCodec {
 	/** FieldName containing Full result object. */
-	protected static final String FULL_RESULT = "fullResult";
-	protected static final String DOC_ID = "docId";
+	public static final String FULL_RESULT = "fullResult";
+	public static final String DOC_ID = "docId";
 
 	//-----
 	private final CodecManager codecManager;
@@ -58,7 +58,7 @@ final class ESDocumentCodec {
 	 * Constructor.
 	 * @param codecManager Manager des codecs
 	 */
-	ESDocumentCodec(final CodecManager codecManager) {
+	public ESDocumentCodec(final CodecManager codecManager) {
 		Assertion.checkNotNull(codecManager);
 		//-----
 		this.codecManager = codecManager;
@@ -87,7 +87,7 @@ final class ESDocumentCodec {
 	 * @param searchHit Resultat ElasticSearch
 	 * @return Objet logique de recherche
 	 */
-	<S extends KeyConcept, I extends DtObject> SearchIndex<S, I> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
+	public <S extends KeyConcept, I extends DtObject> SearchIndex<S, I> searchHit2Index(final SearchIndexDefinition indexDefinition, final SearchHit searchHit) {
 		/* On lit du document les données persistantes. */
 		/* 1. UID */
 		final String urn = searchHit.getId();
@@ -112,7 +112,7 @@ final class ESDocumentCodec {
 	 * @return Document SOLR
 	 * @throws IOException Json exception
 	 */
-	<S extends KeyConcept, I extends DtObject> XContentBuilder index2XContentBuilder(final SearchIndex<S, I> index) throws IOException {
+	public <S extends KeyConcept, I extends DtObject> XContentBuilder index2XContentBuilder(final SearchIndex<S, I> index) throws IOException {
 		Assertion.checkNotNull(index);
 		//-----
 

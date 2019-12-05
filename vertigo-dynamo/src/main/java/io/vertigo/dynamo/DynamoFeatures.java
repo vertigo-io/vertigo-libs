@@ -34,7 +34,6 @@ import io.vertigo.dynamo.kvstore.KVStoreManager;
 import io.vertigo.dynamo.plugins.collections.lucene.LuceneIndexPlugin;
 import io.vertigo.dynamo.plugins.kvstore.berkeley.BerkeleyKVStorePlugin;
 import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
-import io.vertigo.dynamo.plugins.search.elasticsearch.ClientESSearchServicesPlugin;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin;
 import io.vertigo.dynamo.plugins.store.filestore.fs.FsFileStorePlugin;
@@ -108,10 +107,17 @@ public final class DynamoFeatures extends Features<DynamoFeatures> {
 		return this;
 	}
 
-	@Feature("search.elasticsearch")
-	public DynamoFeatures withES(final Param... params) {
+	@Feature("search.elasticsearch.client")
+	public DynamoFeatures withESClient(final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(ClientESSearchServicesPlugin.class, params);
+				.addPlugin(io.vertigo.dynamo.plugins.search.elasticsearch.client.ClientESSearchServicesPlugin.class, params);
+		return this;
+	}
+
+	@Feature("search.elasticsearch.restHL")
+	public DynamoFeatures withESHL(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(io.vertigo.dynamo.plugins.search.elasticsearch.rest.RestHLClientESSearchServicesPlugin.class, params);
 		return this;
 	}
 

@@ -18,17 +18,9 @@
  */
 package io.vertigo.dynamo.search.dynamic;
 
-import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.connectors.elasticsearch.ElasticSearchFeatures;
-import io.vertigo.core.node.config.DefinitionProviderConfig;
-import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.core.param.Param;
-import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.DynamoFeatures;
-import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
 import io.vertigo.dynamo.search.AbstractSearchManagerTest;
-import io.vertigo.dynamo.search.data.domain.ItemSearchLoader;
+import io.vertigo.dynamo.search.MyNodeConfig;
 
 /**
  * @author  npiedeloup
@@ -46,30 +38,6 @@ public class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-		return NodeConfig.builder()
-				.beginBoot()
-				.withLocales("fr_FR")
-				.addPlugin(ClassPathResourceResolverPlugin.class)
-				.endBoot()
-				.addModule(new CommonsFeatures()
-						.build())
-				.addModule(new ElasticSearchFeatures()
-						.withEmbedded(Param.of("home", "io/vertigo/dynamo/search/indexconfig"))
-						.build())
-				.addModule(new DynamoFeatures()
-						.withSearch()
-						.withES(
-								Param.of("config.file", "io/vertigo/dynamo/search/indexconfig/elasticsearch.yml"),
-								Param.of("envIndex", "TuTest"),
-								Param.of("rowsPerQuery", "50"))
-						.build())
-				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/dynamo/search/data/execution.kpr")
-								.addDefinitionResource("classes", "io.vertigo.dynamo.search.data.DtDefinitions")
-								.build())
-						.addComponent(ItemSearchLoader.class)
-						.build())
-				.build();
+		return MyNodeConfig.config(false, false);
 	}
 }

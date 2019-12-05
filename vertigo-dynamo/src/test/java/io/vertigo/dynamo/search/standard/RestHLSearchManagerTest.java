@@ -23,9 +23,9 @@ import io.vertigo.dynamo.search.AbstractSearchManagerTest;
 import io.vertigo.dynamo.search.MyNodeConfig;
 
 /**
- * @author npiedeloup
+ * @author  npiedeloup
  */
-public class SearchManagerTest extends AbstractSearchManagerTest {
+public class RestHLSearchManagerTest extends AbstractSearchManagerTest {
 	//Index
 	private static final String IDX_ITEM = "IdxItem";
 
@@ -37,7 +37,7 @@ public class SearchManagerTest extends AbstractSearchManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-		return MyNodeConfig.config(false, false);
+		return MyNodeConfig.config(true, false);
 	}
 
 }

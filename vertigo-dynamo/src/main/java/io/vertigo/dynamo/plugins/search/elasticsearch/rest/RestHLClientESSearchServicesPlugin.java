@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.search.elasticsearch;
+package io.vertigo.dynamo.plugins.search.elasticsearch.rest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,6 +25,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 
@@ -32,23 +34,27 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.ElasticsearchException;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthAction;
-import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequestBuilder;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.elasticsearch.action.admin.indices.forcemerge.ForceMergeRequest;
+import org.elasticsearch.action.admin.indices.settings.get.GetSettingsRequest;
+import org.elasticsearch.action.admin.indices.settings.get.GetSettingsResponse;
 import org.elasticsearch.action.support.master.AcknowledgedResponse;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.client.IndicesAdminClient;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.indices.CreateIndexRequest;
+import org.elasticsearch.client.indices.GetIndexRequest;
+import org.elasticsearch.client.indices.GetMappingsRequest;
+import org.elasticsearch.client.indices.GetMappingsResponse;
+import org.elasticsearch.client.indices.PutMappingRequest;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
-import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 
-import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
-
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.connectors.elasticsearch.ElasticSearchConnector;
+import io.vertigo.connectors.elasticsearch.RestHighLevelElasticSearchConnector;
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthMeasureBuilder;
@@ -69,6 +75,8 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.impl.search.SearchServicesPlugin;
+import io.vertigo.dynamo.plugins.search.elasticsearch.ESDocumentCodec;
+import io.vertigo.dynamo.plugins.search.elasticsearch.IndexType;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
@@ -77,18 +85,18 @@ import io.vertigo.dynamo.search.model.SearchQuery;
  * Gestion de la connexion au serveur Solr de manière transactionnel.
  * @author dchallas, npiedeloup
  */
-public final class ClientESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
+public final class RestHLClientESSearchServicesPlugin implements SearchServicesPlugin, Activeable {
 	private static final int DEFAULT_SCALING_FACTOR = 1000;
 	private static final String DEFAULT_DATE_FORMAT = "dd/MM/yyyy||strict_date_optional_time||epoch_second";
 	private static final int OPTIMIZE_MAX_NUM_SEGMENT = 32;
 	/** field suffix for keyword fields added by this plugin. */
 	public static final String SUFFIX_SORT_FIELD = ".keyword";
 
-	private static final Logger LOGGER = LogManager.getLogger(ClientESSearchServicesPlugin.class);
+	private static final Logger LOGGER = LogManager.getLogger(RestHLClientESSearchServicesPlugin.class);
 	private final ESDocumentCodec elasticDocumentCodec;
-	private final ElasticSearchConnector elasticSearchConnector;
+	private final RestHighLevelElasticSearchConnector elasticSearchConnector;
 
-	private Client esClient;
+	private RestHighLevelClient esClient;
 	private final DtListState defaultListState;
 	private final int defaultMaxRows;
 	private final String indexNameOrPrefix;
@@ -107,13 +115,13 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	 * @param resourceManager Manager des resources
 	 */
 	@Inject
-	public ClientESSearchServicesPlugin(
+	public RestHLClientESSearchServicesPlugin(
 			@ParamValue("envIndex") final String envIndex,
 			@ParamValue("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
 			@ParamValue("rowsPerQuery") final int defaultMaxRows,
 			@ParamValue("config.file") final String configFile,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
-			final List<ElasticSearchConnector> elasticSearchConnectors,
+			final List<RestHighLevelElasticSearchConnector> elasticSearchConnectors,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(envIndex);
@@ -147,14 +155,17 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		//Init typeMapping IndexDefinition <-> Conf ElasticSearch
 		for (final SearchIndexDefinition indexDefinition : Home.getApp().getDefinitionSpace().getAll(SearchIndexDefinition.class)) {
 			final String myIndexName = obtainIndexName(indexDefinition);
-			createIndex(myIndexName);
-
-			updateTypeMapping(indexDefinition, hasSortableNormalizer(myIndexName));
-			logMappings(myIndexName);
-			types.add(indexDefinition.getName());
+			try {
+				createIndex(myIndexName);
+				updateTypeMapping(indexDefinition, hasSortableNormalizer(myIndexName));
+				logMappings(myIndexName);
+				types.add(indexDefinition.getName());
+			} catch (final IOException e) {
+				throw WrappedException.wrap(e, "Error on index {0}", myIndexName);
+			}
 		}
-
 		waitForYellowStatus();
+
 	}
 
 	/** {@inheritDoc} */
@@ -165,15 +176,12 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 
 	private boolean hasSortableNormalizer(final String myIndexName) {
 		try {
-			final Settings currentSettings = esClient.admin()
-					.indices()
-					.prepareGetIndex()
-					.addIndices(myIndexName)
-					.get()
-					.getSettings()
-					.get(myIndexName);
+			final GetSettingsRequest request = new GetSettingsRequest().indices(myIndexName);
+			final GetSettingsResponse getIndexResponse = esClient.indices().getSettings(request, RequestOptions.DEFAULT);
+
+			final Settings currentSettings = getIndexResponse.getIndexToSettings().get(myIndexName);
 			return !currentSettings.getAsSettings("index.analysis.normalizer.sortable").isEmpty();
-		} catch (final ElasticsearchException e) {
+		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error on index {0}", myIndexName);
 		}
 	}
@@ -182,37 +190,32 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		return StringUtil.camelToConstCase(indexNameIsPrefix ? indexNameOrPrefix + indexDefinition.getName() : indexNameOrPrefix).toLowerCase(Locale.ROOT);
 	}
 
-	private void createIndex(final String myIndexName) {
-		try {
-			if (!esClient.admin().indices().prepareExists(myIndexName).get().isExists()) {
-				if (configFileUrl == null) {
-					esClient.admin().indices().prepareCreate(myIndexName).get();
-				} else {
-					try (InputStream is = configFileUrl.openStream()) {
-						final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is, false).build();
-						esClient.admin().indices().prepareCreate(myIndexName).setSettings(settings).get();
-					}
-				}
-			} else if (configFileUrl != null) {
-				// If we use local config file, we check config against ES server
+	private void createIndex(final String myIndexName) throws IOException {
+		final GetIndexRequest getIndexRequest = new GetIndexRequest(myIndexName);
+		if (!esClient.indices().exists(getIndexRequest, RequestOptions.DEFAULT)) {
+			final CreateIndexRequest createIndexRequest = new CreateIndexRequest(myIndexName);
+			if (configFileUrl != null) {
 				try (InputStream is = configFileUrl.openStream()) {
 					final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is, false).build();
-					indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(myIndexName, settings);
+					createIndexRequest.settings(settings);
 				}
 			}
-		} catch (final ElasticsearchException | IOException e) {
-			throw WrappedException.wrap(e, "Error on index {0}", myIndexName);
+			final AcknowledgedResponse createIndexResponse = esClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
+			Assertion.checkArgument(createIndexResponse.isAcknowledged(), "Can't create index settings of {0}", myIndexName);
+		} else if (configFileUrl != null) {
+			// If we use local config file, we check config against ES server
+			try (InputStream is = configFileUrl.openStream()) {
+				final Settings settings = Settings.builder().loadFromStream(configFileUrl.getFile(), is, false).build();
+				indexSettingsValid = indexSettingsValid && !isIndexSettingsDirty(myIndexName, settings);
+			}
 		}
 	}
 
-	private boolean isIndexSettingsDirty(final String myIndexName, final Settings settings) {
-		final Settings currentSettings = esClient.admin()
-				.indices()
-				.prepareGetIndex()
-				.addIndices(myIndexName)
-				.get()
-				.getSettings()
-				.get(myIndexName);
+	private boolean isIndexSettingsDirty(final String myIndexName, final Settings settings) throws IOException {
+		final GetSettingsRequest request = new GetSettingsRequest().indices(myIndexName);
+		final GetSettingsResponse getIndexResponse = esClient.indices().getSettings(request, RequestOptions.DEFAULT);
+		final Settings currentSettings = getIndexResponse.getIndexToSettings().get(myIndexName);
+
 		boolean indexSettingsDirty = false;
 		final Set<String> settingsNames = settings.keySet();
 		for (final String settingsName : settingsNames) {
@@ -231,14 +234,14 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		return indexSettingsDirty;
 	}
 
-	private void logMappings(final String myIndexName) {
-		final IndicesAdminClient indicesAdmin = esClient.admin().indices();
-		final ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexMappings = indicesAdmin.prepareGetMappings(myIndexName).get().getMappings();
-		for (final ObjectObjectCursor<String, ImmutableOpenMap<String, MappingMetaData>> indexMapping : indexMappings) {
-			LOGGER.info("Index {} CurrentMapping:", indexMapping.key);
-			for (final ObjectObjectCursor<String, MappingMetaData> dtoMapping : indexMapping.value) {
-				LOGGER.info(" {} -> {}", dtoMapping.key, dtoMapping.value.source());
-			}
+	private void logMappings(final String myIndexName) throws IOException {
+		final GetMappingsRequest request = new GetMappingsRequest().indices(myIndexName);
+		final GetMappingsResponse getMappingsResponse = esClient.indices().getMapping(request, RequestOptions.DEFAULT);
+
+		final Map<String, MappingMetaData> indexMappings = getMappingsResponse.mappings();
+		LOGGER.info("Index {} CurrentMapping:", myIndexName);
+		for (final Entry<String, MappingMetaData> dtoMapping : indexMappings.entrySet()) {
+			LOGGER.info(" {} -> {}", dtoMapping.getKey(), dtoMapping.getValue().source());
 		}
 	}
 
@@ -333,8 +336,9 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	/**
 	 * Update template definition of this type.
 	 * @param indexDefinition Index concerné
+	 * @throws IOException
 	 */
-	private void updateTypeMapping(final SearchIndexDefinition indexDefinition, final boolean sortableNormalizer) {
+	private void updateTypeMapping(final SearchIndexDefinition indexDefinition, final boolean sortableNormalizer) throws IOException {
 		Assertion.checkNotNull(indexDefinition);
 		//-----
 		try (final XContentBuilder typeMapping = XContentFactory.jsonBuilder()) {
@@ -375,15 +379,12 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 			}
 			typeMapping.endObject().endObject(); //end properties
 
-			final AcknowledgedResponse putMappingResponse = esClient.admin()
-					.indices()
-					.preparePutMapping(obtainIndexName(indexDefinition))
-					.setType(indexDefinition.getName())
-					.setSource(typeMapping)
-					.get();
+			final PutMappingRequest putMappingRequest = new PutMappingRequest(obtainIndexName(indexDefinition));
+			putMappingRequest.source(typeMapping);
+			//le Type est deprecated setType(indexDefinition.getName())
+
+			final AcknowledgedResponse putMappingResponse = esClient.indices().putMapping(putMappingRequest, RequestOptions.DEFAULT);
 			putMappingResponse.isAcknowledged();
-		} catch (final IOException e) {
-			throw WrappedException.wrap(e, "Serveur ElasticSearch indisponible");
 		}
 	}
 
@@ -414,17 +415,30 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	}
 
 	private void markToOptimize(final String myIndexName) {
-		esClient.admin()
-				.indices()
-				.prepareForceMerge(myIndexName)
-				.setFlush(true)
-				.setMaxNumSegments(OPTIMIZE_MAX_NUM_SEGMENT)//32 files : empirique
-				.execute()
-				.actionGet();
+		final ForceMergeRequest request = new ForceMergeRequest(myIndexName)
+				.maxNumSegments(OPTIMIZE_MAX_NUM_SEGMENT)//32 files : empirique
+				.flush(true);
+		esClient.indices().forcemergeAsync(request, RequestOptions.DEFAULT, null);
+		/*try {
+			final ForceMergeResponse forceMergeResponse = esClient.indices().forcemerge(request, RequestOptions.DEFAULT);
+			Assertion.checkArgument(forceMergeResponse.getStatus() == RestStatus.OK, "Can't forceMerge on {0}", myIndexName);
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error on index {0}", myIndexName);
+		}*/
 	}
 
 	private void waitForYellowStatus() {
-		esClient.admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+		try {
+			final ClusterHealthRequest request = new ClusterHealthRequest();
+			request.timeout(TimeValue.timeValueSeconds(30));
+			request.waitForYellowStatus();
+
+			final ClusterHealthResponse response = esClient.cluster().health(request, RequestOptions.DEFAULT);
+			//-----
+			Assertion.checkArgument(!response.isTimedOut(), "ElasticSearch cluster waiting yellow status Timedout");
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error on waitForYellowStatus");
+		}
 	}
 
 	@HealthChecked(name = "clusterHealth", feature = "search")
@@ -432,10 +446,8 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		final HealthMeasureBuilder healthMeasureBuilder = HealthMeasure.builder();
 		try {
 			final ClusterHealthResponse clusterHealthResponse = esClient
-					.admin()
 					.cluster()
-					.health(new ClusterHealthRequestBuilder(esClient, ClusterHealthAction.INSTANCE).request())
-					.get();
+					.health(new ClusterHealthRequest(), RequestOptions.DEFAULT);
 			switch (clusterHealthResponse.getStatus()) {
 				case GREEN:
 					healthMeasureBuilder.withGreenStatus();

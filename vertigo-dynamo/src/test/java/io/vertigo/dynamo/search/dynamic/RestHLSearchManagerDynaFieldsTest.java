@@ -16,28 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.search.standard;
+package io.vertigo.dynamo.search.dynamic;
 
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.dynamo.search.AbstractSearchManagerTest;
 import io.vertigo.dynamo.search.MyNodeConfig;
 
 /**
- * @author npiedeloup
+ * @author  npiedeloup
  */
-public class SearchManagerTest extends AbstractSearchManagerTest {
+public class RestHLSearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
 	//Index
-	private static final String IDX_ITEM = "IdxItem";
+	private static final String IDX_DYNA_ITEM = "IdxDynaItem";
 
 	/**{@inheritDoc}*/
 	@Override
 	protected void doSetUp() {
-		init(IDX_ITEM);
+		//attention : la première utilisation de l'index fige la définition des types
+		init(IDX_DYNA_ITEM);
 	}
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-		return MyNodeConfig.config(false, false);
+		return MyNodeConfig.config(true, false);
 	}
-
 }

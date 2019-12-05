@@ -16,25 +16,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.plugins.search.elasticsearch;
+package io.vertigo.dynamo.plugins.search.elasticsearch.rest;
 
 import java.io.IOException;
 import java.util.Collection;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.ElasticsearchStatusException;
+import org.elasticsearch.action.DocWriteResponse;
+import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.delete.DeleteRequest;
+import org.elasticsearch.action.delete.DeleteResponse;
+import org.elasticsearch.action.index.IndexRequest;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchPhaseExecutionException;
-import org.elasticsearch.action.search.SearchRequestBuilder;
+import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
-import org.elasticsearch.client.Client;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.client.core.CountRequest;
+import org.elasticsearch.client.core.CountResponse;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
-import org.elasticsearch.index.reindex.DeleteByQueryAction;
-import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
+import org.elasticsearch.index.reindex.DeleteByQueryRequest;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
@@ -47,6 +55,8 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.impl.search.SearchResource;
+import io.vertigo.dynamo.plugins.search.elasticsearch.ESDocumentCodec;
+import io.vertigo.dynamo.plugins.search.elasticsearch.ESFacetedQueryResultBuilder;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
@@ -68,7 +78,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 
 	private final String indexName;
 	private final String typeName;
-	private final Client esClient;
+	private final RestHighLevelClient esClient;
 	private final ESDocumentCodec esDocumentCodec;
 
 	/**
@@ -78,7 +88,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * @param typeName Type name in Index
 	 * @param esClient Client ElasticSearch.
 	 */
-	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final String typeName, final Client esClient) {
+	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final String typeName, final RestHighLevelClient esClient) {
 		Assertion.checkArgNotEmpty(indexName);
 		Assertion.checkArgNotEmpty(typeName);
 		Assertion.checkNotNull(esDocumentCodec);
@@ -96,17 +106,18 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void putAll(final Collection<SearchIndex<K, I>> indexCollection) {
 		//Injection spécifique au moteur d'indexation.
 		try {
-			final BulkRequestBuilder bulkRequest = esClient.prepareBulk().setRefreshPolicy(BULK_REFRESH);
+			final BulkRequest bulkRequest = new BulkRequest()
+					.setRefreshPolicy(BULK_REFRESH);
+
 			for (final SearchIndex<K, I> index : indexCollection) {
 				try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
-					bulkRequest.add(esClient.prepareIndex()
-							.setIndex(indexName)
-							.setType(typeName)
-							.setId(index.getUID().urn())
-							.setSource(xContentBuilder));
+					final IndexRequest indexRequest = new IndexRequest(indexName)
+							.id(index.getUID().urn())
+							.source(xContentBuilder);
+					bulkRequest.add(indexRequest);
 				}
 			}
-			final BulkResponse bulkResponse = bulkRequest.execute().actionGet();
+			final BulkResponse bulkResponse = esClient.bulk(bulkRequest, RequestOptions.DEFAULT);
 			if (bulkResponse.hasFailures()) {
 				throw new VSystemException("Can't putAll {0} into {1} index.\nCause by {2}", typeName, indexName, bulkResponse.buildFailureMessage());
 			}
@@ -125,13 +136,14 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void put(final SearchIndex<K, I> index) {
 		//Injection spécifique au moteur d'indexation.
 		try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
-			esClient.prepareIndex().setRefreshPolicy(DEFAULT_REFRESH)
-					.setIndex(indexName)
-					.setType(typeName)
-					.setId(index.getUID().urn())
-					.setSource(xContentBuilder)
-					.execute() //execute asynchrone
-					.actionGet(); //get wait exec
+			final IndexRequest indexRequest = new IndexRequest(indexName)
+					.id(index.getUID().urn())
+					.source(xContentBuilder)
+					.setRefreshPolicy(DEFAULT_REFRESH);
+			final IndexResponse indexeResponse = esClient.index(indexRequest, RequestOptions.DEFAULT);
+			//-----
+			Assertion.checkArgument(indexeResponse.getResult() == DocWriteResponse.Result.CREATED
+					|| indexeResponse.getResult() == DocWriteResponse.Result.UPDATED, "Can't put on {0}", indexName);
 		} catch (final IOException e) {
 			handleIOException(e);
 		}
@@ -146,19 +158,17 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		//-----
 		try {
 			final QueryBuilder queryBuilder = ESSearchRequestBuilder.translateToQueryBuilder(query);
-			final DeleteByQueryRequestBuilder deleteByQueryAction = new DeleteByQueryRequestBuilder(esClient, DeleteByQueryAction.INSTANCE)
-					.filter(queryBuilder);
-			deleteByQueryAction
-					.source()
-					.setIndices(indexName)
-					.setTypes(typeName);
-			final BulkByScrollResponse response = deleteByQueryAction.get();
+			final DeleteByQueryRequest request = new DeleteByQueryRequest(indexName)
+					.setQuery(queryBuilder);
+			final BulkByScrollResponse response = esClient.deleteByQuery(request, RequestOptions.DEFAULT);
 			final long deleted = response.getDeleted();
 			LOGGER.debug("Removed {} elements", deleted);
 		} catch (final SearchPhaseExecutionException e) {
 			final VUserException vue = new VUserException(SearchResource.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
 			vue.initCause(e);
 			throw vue;
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error in remove() on {0}", indexName);
 		}
 	}
 
@@ -169,12 +179,16 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	void remove(final UID uid) {
 		Assertion.checkNotNull(uid);
 		//-----
-		esClient.prepareDelete().setRefreshPolicy(DEFAULT_REFRESH)
-				.setIndex(indexName)
-				.setType(typeName)
-				.setId(uid.urn())
-				.execute()
-				.actionGet();
+		try {
+			final DeleteRequest request = new DeleteRequest(indexName, uid.urn()) //index, doc_id
+					.setRefreshPolicy(DEFAULT_REFRESH);
+			final DeleteResponse deleteResponse = esClient.delete(request, RequestOptions.DEFAULT);
+			//----
+			Assertion.checkArgument(deleteResponse.getResult() == DocWriteResponse.Result.DELETED,
+					"Can't remove on {0}", indexName);
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error in remove() on {0}", indexName);
+		}
 	}
 
 	/**
@@ -187,20 +201,26 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	FacetedQueryResult<I, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
 		Assertion.checkNotNull(searchQuery);
 		//-----
-		final SearchRequestBuilder searchRequestBuilder = new ESSearchRequestBuilder(indexName, typeName, esClient)
+		final SearchRequest searchRequest = new ESSearchRequestBuilder(indexName, typeName, esClient)
 				.withSearchIndexDefinition(indexDefinition)
 				.withSearchQuery(searchQuery)
 				.withListState(listState, defaultMaxRows)
 				.build();
-		LOGGER.info("loadList {}", searchRequestBuilder);
+		LOGGER.info("loadList {}", searchRequest);
 		try {
-			final SearchResponse queryResponse = searchRequestBuilder.execute().actionGet();
-			return new ESFacetedQueryResultBuilder(esDocumentCodec, indexDefinition, queryResponse, searchQuery)
+			final SearchResponse searchResponse = esClient.search(searchRequest, RequestOptions.DEFAULT);
+			return new ESFacetedQueryResultBuilder(esDocumentCodec, indexDefinition, searchResponse, searchQuery)
 					.build();
-		} catch (final SearchPhaseExecutionException e) {
-			final VUserException vue = new VUserException(SearchResource.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
-			vue.initCause(e);
-			throw vue;
+		} catch (final ElasticsearchStatusException e) {
+			if (e.getMessage().contains("type=search_phase_execution_exception")) {
+				final VUserException vue = new VUserException(SearchResource.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
+				vue.initCause(e);
+				throw vue;
+			} else {
+				throw WrappedException.wrap(e, "Error in loadList() on {0}", indexName);
+			}
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error in loadList() on {0}", indexName);
 		}
 	}
 
@@ -208,11 +228,12 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * @return Nombre de document indexés
 	 */
 	public long count() {
-		final SearchResponse response = esClient.prepareSearch(indexName)
-				.setTypes(typeName)
-				.setSize(0) //on cherche juste à compter
-				.execute()
-				.actionGet();
-		return response.getHits().getTotalHits().value;
+		try {
+			final CountRequest countRequest = new CountRequest(indexName);
+			final CountResponse countResponse = esClient.count(countRequest, RequestOptions.DEFAULT);
+			return countResponse.getCount();
+		} catch (final IOException e) {
+			throw WrappedException.wrap(e, "Error in count() on {0}", indexName);
+		}
 	}
 }

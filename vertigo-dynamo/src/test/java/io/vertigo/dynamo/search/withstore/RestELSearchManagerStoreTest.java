@@ -52,7 +52,7 @@ import io.vertigo.dynamo.store.StoreManager;
  *
  * @author npiedeloup
  */
-public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
+public class RestELSearchManagerStoreTest extends AbstractTestCaseJU5 {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
@@ -70,7 +70,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-		return MyNodeConfig.config(false, true);
+		return MyNodeConfig.config(true, true);
 	}
 
 	@Override
