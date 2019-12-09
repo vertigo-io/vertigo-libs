@@ -39,6 +39,7 @@ public final class DOCXValueEncoder implements Encoder<String, String> {
 		StringUtil.replace(result, "<", "&lt;");
 		StringUtil.replace(result, ">", "&gt;");
 		StringUtil.replace(result, "\t", "<w:tab/>");
+		StringUtil.replace(result, "\n", "<w:br/>");
 		StringUtil.replace(result, String.valueOf((char) 128), String.valueOf((char) 8364));
 
 		//on remet les &#xxxx; non encodé
