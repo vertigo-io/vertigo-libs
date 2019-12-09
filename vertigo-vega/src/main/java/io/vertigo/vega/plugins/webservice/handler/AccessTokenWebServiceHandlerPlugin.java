@@ -38,6 +38,10 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class AccessTokenWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
+
+	/** Stack index of the handler for sorting at startup**/
+	public static final int STACK_INDEX = 90;
+
 	private static final Serializable TOKEN_DATA = new UniqueToken();
 	/** Access Token header name. */
 	private static final String HEADER_ACCESS_TOKEN = "x-access-token";
@@ -94,5 +98,10 @@ public final class AccessTokenWebServiceHandlerPlugin implements WebServiceHandl
 		public UniqueToken() {
 			//empty
 		}
+	}
+
+	@Override
+	public int getStackIndex() {
+		return STACK_INDEX;
 	}
 }

@@ -42,6 +42,9 @@ import spark.Response;
  */
 public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
+	/** Stack index of the handler for sorting at startup**/
+	public static final int STACK_INDEX = 20;
+
 	private static final String REQUEST_HEADER_ORIGIN = "Origin";
 
 	private static final String DEFAULT_ALLOW_ORIGIN_CORS_FILTER = "*";
@@ -121,5 +124,10 @@ public final class CorsAllowerWebServiceHandlerPlugin implements WebServiceHandl
 		return Arrays.stream(param.split(","))
 				.map(String::trim)
 				.collect(Collectors.toSet());
+	}
+
+	@Override
+	public int getStackIndex() {
+		return STACK_INDEX;
 	}
 }

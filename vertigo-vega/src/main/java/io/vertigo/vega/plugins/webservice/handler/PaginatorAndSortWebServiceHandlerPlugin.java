@@ -41,6 +41,9 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class PaginatorAndSortWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
+
+	/** Stack index of the handler for sorting at startup**/
+	public static final int STACK_INDEX = 90;
 	public static final String LIST_SERVER_TOKEN = "listServerToken";
 
 	private static final int DEFAULT_RESULT_PER_PAGE = 20;
@@ -159,5 +162,10 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 					.collect(VCollectors.toDtList(sortedList.getDefinition()));
 		}
 		return sortedList;
+	}
+
+	@Override
+	public int getStackIndex() {
+		return STACK_INDEX;
 	}
 }

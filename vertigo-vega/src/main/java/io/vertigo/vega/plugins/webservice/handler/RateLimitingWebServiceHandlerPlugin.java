@@ -48,6 +48,10 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHandlerPlugin, SimpleDefinitionProvider {
+
+	/** Stack index of the handler for sorting at startup**/
+	public static final int STACK_INDEX = 100;
+
 	private static final long DEFAULT_LIMIT_VALUE = 150; //the rate limit ceiling value
 	private static final int DEFAULT_WINDOW_SECONDS = 5 * 60; //the time windows use to limit calls rate
 	private static final String RATE_LIMIT_LIMIT = "X-Rate-Limit-Limit"; //the rate limit ceiling for that given request
@@ -139,6 +143,11 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 	void resetRateLimitWindow() {
 		hitsCounter.clear();
 		lastRateLimitResetTime = System.currentTimeMillis();
+	}
+
+	@Override
+	public int getStackIndex() {
+		return STACK_INDEX;
 	}
 
 }

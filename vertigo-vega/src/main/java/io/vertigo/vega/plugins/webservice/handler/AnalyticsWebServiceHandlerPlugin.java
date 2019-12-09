@@ -35,6 +35,9 @@ import spark.Response;
  */
 public final class AnalyticsWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
+	/** Stack index of the handler for sorting at startup**/
+	public static final int STACK_INDEX = 30;
+
 	private final AnalyticsManager analyticsManager;
 
 	/**
@@ -70,5 +73,10 @@ public final class AnalyticsWebServiceHandlerPlugin implements WebServiceHandler
 						throw WrappedException.wrap(e);
 					}
 				});
+	}
+
+	@Override
+	public int getStackIndex() {
+		return STACK_INDEX;
 	}
 }

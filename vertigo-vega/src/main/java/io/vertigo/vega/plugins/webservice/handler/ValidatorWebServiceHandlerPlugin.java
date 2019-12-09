@@ -48,6 +48,9 @@ import spark.Response;
  */
 public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
+	/** Stack index of the handler for sorting at startup**/
+	public static final int STACK_INDEX = 110;
+
 	/** {@inheritDoc} */
 	@Override
 	public boolean accept(final WebServiceDefinition webServiceDefinition) {
@@ -144,5 +147,10 @@ public final class ValidatorWebServiceHandlerPlugin implements WebServiceHandler
 			contextKeyMap.put(element.getInputKey(), dto);
 		}
 		return dtList;
+	}
+
+	@Override
+	public int getStackIndex() {
+		return STACK_INDEX;
 	}
 }

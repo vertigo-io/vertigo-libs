@@ -52,6 +52,10 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
+
+	/** Stack index of the handler for sorting at startup**/
+	public static final int STACK_INDEX = 80;
+
 	private static final MessageText SERVER_SIDE_MANDATORY = MessageText.of("ServerSideToken mandatory");
 	private final TokenManager tokenManager;
 
@@ -178,5 +182,10 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		final String tokenId = tokenManager.put(Serializable.class.cast(savedObject));
 		overridedReturnValue.put(JsonEngine.SERVER_SIDE_TOKEN_FIELDNAME, tokenId);
 		return Serializable.class.cast(overridedReturnValue);
+	}
+
+	@Override
+	public int getStackIndex() {
+		return STACK_INDEX;
 	}
 }

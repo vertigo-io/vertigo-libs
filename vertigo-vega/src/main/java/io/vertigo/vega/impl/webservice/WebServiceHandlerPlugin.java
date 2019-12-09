@@ -20,6 +20,7 @@ package io.vertigo.vega.impl.webservice;
 
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
+import io.vertigo.vega.plugins.webservice.handler.RestfulServiceWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.WebServiceCallContext;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
@@ -53,5 +54,15 @@ public interface WebServiceHandlerPlugin extends Plugin {
 			final Response response,
 			final WebServiceCallContext webServiceCallContext,
 			final HandlerChain chain) throws SessionException;
+
+	/**
+	 * Return an index to compute the order of the handlers stack.
+	 * Please check the index of the provided handlers by vertigo and choose the index for yours accordingly.
+	 * Vertigo's handlers start à 10 and leave a space of 10 between each.
+	 * The last handler must be {@link RestfulServiceWebServiceHandlerPlugin} which has the index 120.
+	 * Therefore the provided index must be between 0 and 119
+	 * @return the index (between 0 and 119)
+	 */
+	int getStackIndex();
 
 }

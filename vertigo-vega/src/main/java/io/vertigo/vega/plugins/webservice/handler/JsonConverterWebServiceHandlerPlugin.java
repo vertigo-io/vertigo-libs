@@ -65,6 +65,9 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
+
+	public static final int STACK_INDEX = 40;
+
 	private static final Class<? extends JsonConverter>[] JSON_CONVERTER_CLASSES = new Class[] {
 			ImplicitJsonConverter.class, PrimitiveJsonConverter.class,
 			DtListJsonConverter.class, DtObjectJsonConverter.class, DtListDeltaJsonConverter.class,
@@ -200,5 +203,10 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 		final String json = jsonWriterToApply.toJson(result, response, routeContext.getWebServiceDefinition());
 		Assertion.checkNotNull(json, "Can't convert result to json");
 		return json;
+	}
+
+	@Override
+	public int getStackIndex() {
+		return STACK_INDEX;
 	}
 }

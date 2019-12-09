@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
@@ -95,7 +96,10 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 				STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
 		Assertion.checkNotNull(webServerPlugin);
 		//-----
-		final List<WebServiceHandlerPlugin> sortedWebServiceHandlerPlugins = sortWebServiceHandlerPlugins(restHandlerPlugins);
+		final List<WebServiceHandlerPlugin> sortedWebServiceHandlerPlugins = restHandlerPlugins
+				.stream()
+				.sorted(Comparator.comparingInt(WebServiceHandlerPlugin::getStackIndex))
+				.collect(Collectors.toList());
 		//-----
 		Assertion.checkArgument(sortedWebServiceHandlerPlugins.get(sortedWebServiceHandlerPlugins.size() - 1) instanceof RestfulServiceWebServiceHandlerPlugin,
 				"WebServiceHandlerPlugins must end with a RestfulServiceHandler in order to dispatch request to WebService, check your WebServiceHandlerPlugins in RestManagerImpl.\n{0}",

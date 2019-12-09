@@ -31,6 +31,9 @@ import spark.Session;
  */
 public final class SessionInvalidateWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
+	/** Stack index of the handler for sorting at startup**/
+	public static final int STACK_INDEX = 50;
+
 	/** {@inheritDoc} */
 	@Override
 	public boolean accept(final WebServiceDefinition webServiceDefinition) {
@@ -48,6 +51,11 @@ public final class SessionInvalidateWebServiceHandlerPlugin implements WebServic
 				session.invalidate();
 			}
 		}
+	}
+
+	@Override
+	public int getStackIndex() {
+		return STACK_INDEX;
 	}
 
 }

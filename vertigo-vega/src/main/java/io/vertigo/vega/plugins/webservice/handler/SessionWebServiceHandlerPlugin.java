@@ -37,6 +37,10 @@ import spark.Session;
  * @author npiedeloup
  */
 public final class SessionWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
+
+	/** Stack index of the handler for sorting at startup**/
+	public static final int STACK_INDEX = 60;
+
 	/**
 	 * UserSession attributeName in HttpSession.
 	 */
@@ -105,5 +109,10 @@ public final class SessionWebServiceHandlerPlugin implements WebServiceHandlerPl
 			session.attribute(USER_SESSION, user);
 		}
 		return user;
+	}
+
+	@Override
+	public int getStackIndex() {
+		return STACK_INDEX;
 	}
 }

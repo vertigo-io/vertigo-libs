@@ -72,7 +72,9 @@ public final class MyNodeConfig {
 				.withWebServices()
 				.withWebServicesTokens(Param.of("tokens", "tokens"))
 				.withWebServicesSecurity()
-				.withWebServicesRateLimiting();
+				.withWebServicesRateLimiting()
+				.withWebServicesSwagger()
+				.withWebServicesCatalog();
 		if (isEmbedded) {
 			vegaFeatures.withWebServicesEmbeddedServer(Param.of("port", Integer.toString(WS_PORT)));
 		}

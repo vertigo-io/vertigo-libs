@@ -46,6 +46,9 @@ import spark.Response;
  */
 public final class ExceptionWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
+	/** Stack index of the handler for sorting at startup**/
+	public static final int STACK_INDEX = 10;
+
 	private static final int SC_UNPROCESSABLE_ENTITY = 422; //server understands the content syntaxe but not semanticly
 	private static final int SC_TOO_MANY_REQUEST = 429; //RFC 6585 : TooManyRequest in time window
 	private static final Logger LOGGER = LogManager.getLogger(ExceptionWebServiceHandlerPlugin.class);
@@ -116,5 +119,10 @@ public final class ExceptionWebServiceHandlerPlugin implements WebServiceHandler
 		response.status(statusCode);
 		response.type("application/json;charset=UTF-8");
 		return jsonWriterEngine.toJsonError(e);
+	}
+
+	@Override
+	public int getStackIndex() {
+		return STACK_INDEX;
 	}
 }

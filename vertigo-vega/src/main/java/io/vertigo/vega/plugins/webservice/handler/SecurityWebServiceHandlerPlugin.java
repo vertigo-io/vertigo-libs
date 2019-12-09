@@ -39,6 +39,10 @@ import spark.Response;
  * @author npiedeloup
  */
 public final class SecurityWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
+
+	/** Stack index of the handler for sorting at startup**/
+	public static final int STACK_INDEX = 70;
+
 	private final VSecurityManager securityManager;
 
 	/**
@@ -67,5 +71,10 @@ public final class SecurityWebServiceHandlerPlugin implements WebServiceHandlerP
 			throw new VSecurityException(MessageText.of("User unauthentified"));
 		}
 		return chain.handle(request, response, routeContext);
+	}
+
+	@Override
+	public int getStackIndex() {
+		return STACK_INDEX;
 	}
 }

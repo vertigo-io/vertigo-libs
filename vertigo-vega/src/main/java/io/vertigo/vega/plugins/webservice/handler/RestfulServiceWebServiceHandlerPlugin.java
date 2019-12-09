@@ -43,6 +43,9 @@ import spark.Response;
  */
 public final class RestfulServiceWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
+	/** Stack index of the handler for sorting at startup**/
+	public static final int STACK_INDEX = 120;
+
 	/** {@inheritDoc} */
 	@Override
 	public boolean accept(final WebServiceDefinition webServiceDefinition) {
@@ -103,5 +106,10 @@ public final class RestfulServiceWebServiceHandlerPlugin implements WebServiceHa
 				.stream()
 				.map(webServiceParam -> routeContext.getParamValue(webServiceParam))
 				.toArray();
+	}
+
+	@Override
+	public int getStackIndex() {
+		return STACK_INDEX;
 	}
 }
