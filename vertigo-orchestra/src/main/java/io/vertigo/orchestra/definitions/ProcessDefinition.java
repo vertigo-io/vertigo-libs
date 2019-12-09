@@ -96,7 +96,7 @@ public final class ProcessDefinition implements Definition {
 		return new ProcessDefinitionBuilder(processName, processName)
 				.withProcessType(ProcessType.UNSUPERVISED)
 				.withMultiExecution()
-				.addActivity("MAIN", "Main", engineClass);
+				.addActivity("main", "Main", engineClass);
 
 	}
 
