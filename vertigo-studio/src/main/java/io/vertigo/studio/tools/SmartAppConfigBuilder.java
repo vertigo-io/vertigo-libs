@@ -27,7 +27,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.core.node.config.xml.XmlAppConfigBuilder;
+import io.vertigo.core.node.config.yaml.YamlAppConfigBuilder;
 
 /**
  * Génération des fichiers Java et SQL à patrir de fichiers template freemarker.
@@ -50,13 +50,13 @@ public final class SmartAppConfigBuilder implements Builder<NodeConfig> {
 
 	private static NodeConfig buildNodeConfig(final Properties conf) {
 		// Initialisation de l'état de l'application
-		final XmlAppConfigBuilder nodeConfigBuilder = new XmlAppConfigBuilder();
+		final YamlAppConfigBuilder nodeConfigBuilder = new YamlAppConfigBuilder(conf);
 		if (conf.containsKey("boot.applicationConfiguration")) {
 			final String xmlModulesFileNames = conf.getProperty("boot.applicationConfiguration");
-			final String[] xmlFileNamesSplit = xmlModulesFileNames.split(";");
+			final String[] yamlFileNamesSplit = xmlModulesFileNames.split(";");
 			conf.remove("boot.applicationConfiguration");
 			//-----
-			nodeConfigBuilder.withModules(SmartAppConfigBuilder.class, conf, xmlFileNamesSplit);
+			nodeConfigBuilder.withFiles(SmartAppConfigBuilder.class, yamlFileNamesSplit);
 		}
 
 		return nodeConfigBuilder

@@ -8,7 +8,7 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
 	<listener>
-		<listener-class>io.vertigo.vega.impl.webservice.servlet.AppServletContextListenerXml</listener-class>
+		<listener-class>io.vertigo.vega.impl.webservice.servlet.AppServletContextListener</listener-class>
 	</listener>
 	
 	<!-- Paramètrage des variables du managers.xml -->
@@ -22,7 +22,7 @@
 		Task/MDM de execution.kpr -->
 	<context-param>
 		<param-name>boot.applicationConfiguration</param-name>
-		<param-value>/testWebApp/META-INF/managers.xml;/testWebApp/META-INF/test-services.xml</param-value>
+		<param-value>/testWebApp/META-INF/configuration.yaml</param-value>
 	</context-param>
 	
 	<filter>

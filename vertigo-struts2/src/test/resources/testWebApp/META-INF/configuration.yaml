@@ -1,0 +1,50 @@
+---
+boot:
+  params:
+    locales: fr_FR
+  plugins:
+    - io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin: {}
+    - io.vertigo.vega.plugins.webservice.servlet.ServletResourceResolverPlugin: {}
+    - io.vertigo.core.plugins.param.xml.XmlParamPlugin:
+        url : ${boot.configXmlInterne}
+    - io.vertigo.vega.plugins.webservice.servlet.WebAppContextParamPlugin: {}
+modules:
+  io.vertigo.commons.CommonsFeatures:
+    features:
+      - script:
+      - cache:
+    featuresConfig:
+      - script.janino:
+      - cache.memory:
+  io.vertigo.database.DatabaseFeatures:
+    features:
+      - sql:
+    featuresConfig:
+      - sql.c3p0:
+          dataBaseClass: io.vertigo.database.impl.sql.vendor.h2.H2DataBase
+          jdbcDriver: org.h2.Driver
+          jdbcUrl: jdbc:h2:mem:test
+  io.vertigo.dynamo.DynamoFeatures:
+    features:
+      - store:
+      - kvStore:
+    featuresConfig:
+      - store.data.sql:
+      - collections.luceneIndex:
+      - kvStore.berkeley:
+          collections: VActionContext;TTL=43200
+          dbFilePath: ${java.io.tmpdir}/vertigo/TestVActionContext
+    plugins:
+      - io.vertigo.struts2.services.util.StaticStorePlugin:
+          values: "true=Oui;false=Non"
+          dtDefinitionName: DtOuiNonChoice
+      - io.vertigo.struts2.services.util.CommuneStorePlugin: {}
+  io.vertigo.account.AccountFeatures:
+    features:
+      - security:
+          userSessionClassName: io.vertigo.struts2.ui.TestUserSession
+  io.vertigo.struts2.TestStrus2Features: {}
+initializers:
+  - io.vertigo.struts2.boot.initializer.LocaleManagerInitializer:
+  - io.vertigo.struts2.boot.initializer.DataBaseInitializer:
+  - io.vertigo.struts2.boot.initializer.I18nResourcesInitializer:

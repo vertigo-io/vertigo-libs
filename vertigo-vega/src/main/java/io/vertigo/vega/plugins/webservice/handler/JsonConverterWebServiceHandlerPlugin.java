@@ -66,6 +66,7 @@ import spark.Response;
  */
 public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHandlerPlugin {
 
+	/** Stack index of the handler for sorting at startup**/
 	public static final int STACK_INDEX = 40;
 
 	private static final Class<? extends JsonConverter>[] JSON_CONVERTER_CLASSES = new Class[] {

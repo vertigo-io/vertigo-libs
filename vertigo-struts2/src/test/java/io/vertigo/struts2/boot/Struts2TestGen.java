@@ -18,21 +18,47 @@
  */
 package io.vertigo.struts2.boot;
 
-import java.util.Properties;
-
 import org.apache.logging.log4j.LogManager;
 
 import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.config.DefinitionProviderConfig;
+import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.core.node.config.xml.XmlAppConfigBuilder;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
+import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.studio.StudioFeatures;
 import io.vertigo.studio.mda.MdaManager;
 
 public final class Struts2TestGen {
 
 	public static void main(final String[] args) {
-		final NodeConfig nodeConfig = new XmlAppConfigBuilder()
-				.withModules(Struts2TestGen.class, new Properties(), "/managers-mda.xml")
+
+		final NodeConfig nodeConfig = NodeConfig.builder()
+				.beginBoot()
+				.addPlugin(ClassPathResourceResolverPlugin.class)
+				.addPlugin(URLResourceResolverPlugin.class)
+				.endBoot()
+				.addModule(new StudioFeatures()
+						.withMasterData()
+						.withMda(
+								Param.of("targetGenDir", "src/test/resources/"),
+								Param.of("encoding", "UTF-8"),
+								Param.of("projectPackageName", "lollipop"))
+						.withSqlDomainGenerator(
+								Param.of("targetSubDir", "sqlgen"),
+								Param.of("baseCible", "H2"),
+								Param.of("generateDrop", "false"))
+						.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("classes", "io.vertigo.struts2.domain.DtDefinitions")
+								.addDefinitionResource("kpr", "./testWebApp/META-INF/io/vertigo/struts2/execution.kpr")
+								.build())
+						.build())
 				.build();
+
 		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			app.getComponentSpace().resolve(MdaManager.class)
 					.generate()

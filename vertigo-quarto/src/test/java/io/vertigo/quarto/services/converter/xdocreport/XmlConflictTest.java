@@ -21,6 +21,7 @@ package io.vertigo.quarto.services.converter.xdocreport;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.URL;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Test;
@@ -28,20 +29,22 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.component.data.BioManager;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.core.node.config.xml.XmlAppConfigBuilder;
+import io.vertigo.core.node.config.yaml.YamlAppConfigBuilder;
+import io.vertigo.core.plugins.param.xml.XmlParamPlugin;
+import io.vertigo.core.util.XmlUtil;
 
 public final class XmlConflictTest {
+
 	@Test
 	public void HomeTest() {
 
-		final NodeConfig nodeConfig = new XmlAppConfigBuilder()
-				.withModules(getClass(), new Properties(), "../data/bio.xml")
-				.build();
+		final URL xsd = XmlParamPlugin.class.getResource("vertigo-config_1_0.xsd");
+		XmlUtil.validateXmlByXsd(this.getClass().getResource("../data/basic-app-config.xml"), xsd);
 
-		testBioManager(nodeConfig);
+		testBioManager(new YamlAppConfigBuilder(new Properties()).withFiles(this.getClass(), "../data/bio.yaml").build());
 	}
 
-	private void testBioManager(final NodeConfig nodeConfig) {
+	private static void testBioManager(final NodeConfig nodeConfig) {
 		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			assertEquals(app, app);
 			assertTrue(app.getComponentSpace().contains("bioManager"));

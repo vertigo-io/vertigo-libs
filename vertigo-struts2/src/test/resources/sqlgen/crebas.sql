@@ -14,13 +14,7 @@ create sequence SEQ_APPLICATION_USER
 create sequence SEQ_CASTING
 	start with 1000 cache 20; 
 
-create sequence SEQ_COMMUNE
-	start with 1000 cache 20; 
-
 create sequence SEQ_MOVIE
-	start with 1000 cache 20; 
-
-create sequence SEQ_OUI_NON_CHOICE
 	start with 1000 cache 20; 
 
 create sequence SEQ_PEOPLE
@@ -29,8 +23,6 @@ create sequence SEQ_PEOPLE
 create sequence SEQ_PROFIL
 	start with 1000 cache 20; 
 
-create sequence SEQ_SECURITY_ROLE
-	start with 1000 cache 20; 
 
 create sequence SEQ_USER_AUTHENTIFICATION
 	start with 1000 cache 20; 
@@ -89,43 +81,19 @@ comment on column CASTING.PEO_ID is
 'People';
 
 -- ============================================================
---   Table : COMMUNE                                        
--- ============================================================
-create table COMMUNE
-(
-    ID_INSEE    	 BIGINT      	not null,
-    CODE_POSTAL 	 VARCHAR(5)  	not null,
-    COMMUNE     	 VARCHAR(100)	not null,
-    DEPARTEMENT 	 VARCHAR(100)	not null,
-    constraint PK_COMMUNE primary key (ID_INSEE)
-);
-
-comment on column COMMUNE.ID_INSEE is
-'ID INSEE';
-
-comment on column COMMUNE.CODE_POSTAL is
-'Code postal';
-
-comment on column COMMUNE.COMMUNE is
-'Commune';
-
-comment on column COMMUNE.DEPARTEMENT is
-'Département';
-
--- ============================================================
 --   Table : MOVIE                                        
 -- ============================================================
 create table MOVIE
 (
     MOV_ID      	 BIGINT      	not null,
     DESCRIPTION 	 TEXT        	,
+    LAST_MODIFIED	 DATE        	,
     POSTER      	 VARCHAR(250)	,
     RATED       	 VARCHAR(250)	,
     RELEASED    	 DATE        	,
     RUNTIME     	 NUMERIC     	,
     TITLE       	 VARCHAR(250)	,
     YEAR        	 NUMERIC     	,
-    LAST_MODIFIED  	 DATE     		,
     constraint PK_MOVIE primary key (MOV_ID)
 );
 
@@ -134,6 +102,9 @@ comment on column MOVIE.MOV_ID is
 
 comment on column MOVIE.DESCRIPTION is
 'Description';
+
+comment on column MOVIE.LAST_MODIFIED is
+'lastModified';
 
 comment on column MOVIE.POSTER is
 'Poster';
@@ -152,22 +123,6 @@ comment on column MOVIE.TITLE is
 
 comment on column MOVIE.YEAR is
 'Year';
-
--- ============================================================
---   Table : OUI_NON_CHOICE                                        
--- ============================================================
-create table OUI_NON_CHOICE
-(
-    KEY         	 BOOLEAN     	not null,
-    LIBELLE     	 VARCHAR(100)	not null,
-    constraint PK_OUI_NON_CHOICE primary key (KEY)
-);
-
-comment on column OUI_NON_CHOICE.KEY is
-'Valeur';
-
-comment on column OUI_NON_CHOICE.LIBELLE is
-'Libellé';
 
 -- ============================================================
 --   Table : PEOPLE                                        
@@ -252,7 +207,6 @@ comment on column USER_AUTHENTIFICATION.PASSWORD is
 
 comment on column USER_AUTHENTIFICATION.USR_ID is
 'Application user';
-
 
 
 alter table USER_AUTHENTIFICATION

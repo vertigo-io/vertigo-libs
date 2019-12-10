@@ -45,7 +45,7 @@ public final class SqlAssociationNNModel {
 	 * @return Association name
 	 */
 	public String getName() {
-		return associationDefinition.getName();
+		return StringUtil.camelToConstCase(associationDefinition.getName());
 	}
 
 	/**
