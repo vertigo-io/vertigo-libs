@@ -74,16 +74,6 @@ public final class MyNodeConfig {
 						.withScript()
 						.withMemoryCache()
 						.withJaninoScript()
-						.build())
-				.addModule(elasticSearchFeatures.build())
-				.addModule(dynamoFeatures.build())
-				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/dynamo/search/data/execution.kpr")
-								.addDefinitionResource("classes", "io.vertigo.dynamo.search.data.DtDefinitions")
-								.build())
-						.addComponent(ItemSearchLoader.class)
-						.addDefinitionProvider(StoreCacheDefinitionProvider.class)
 						.build());
 		if (withDb) {
 			nodeConfigBuilder.addModule(new DatabaseFeatures()
@@ -94,6 +84,16 @@ public final class MyNodeConfig {
 							Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 					.build());
 		}
+		nodeConfigBuilder.addModule(elasticSearchFeatures.build())
+				.addModule(dynamoFeatures.build())
+				.addModule(ModuleConfig.builder("myApp")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/search/data/execution.kpr")
+								.addDefinitionResource("classes", "io.vertigo.dynamo.search.data.DtDefinitions")
+								.build())
+						.addComponent(withDb ? io.vertigo.dynamo.search.withstore.ItemSearchLoader.class : ItemSearchLoader.class)
+						.addDefinitionProvider(StoreCacheDefinitionProvider.class)
+						.build());
 		return nodeConfigBuilder.build();
 	}
 }
