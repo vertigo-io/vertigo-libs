@@ -18,8 +18,11 @@ modules:
       - cache.memory:
   io.vertigo.connectors.elasticsearch.ElasticSearchFeatures:
     features:
-      - embedded:
+      - embeddedServer:
           home: esconfig
+      - transport:
+          servers.names: localhost:9300
+          cluster.name: vertigo-elasticsearch-embedded
   io.vertigo.database.DatabaseFeatures:
     features:
       - sql:
@@ -36,7 +39,7 @@ modules:
     featuresConfig:
       - store.data.sql:
       - collections.luceneIndex:
-      - search.elasticsearch:          
+      - search.elasticsearch.client:          
           envIndex: tuTest
           rowsPerQuery: 50
           config.file: esconfig/elasticsearch.yml
