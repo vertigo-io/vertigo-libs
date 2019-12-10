@@ -158,17 +158,7 @@ public final class SqlVendorMapping implements SqlMapping {
 		final Object value;
 
 		if (String.class.isAssignableFrom(dataType)) {
-			if (resultSet.getMetaData().getColumnType(col) == Types.CLOB) {
-				final Clob clob = resultSet.getClob(col);
-				if (clob != null) {
-					final Long len = clob.length();
-					value = clob.getSubString(1L, len.intValue());
-				} else {
-					value = null;
-				}
-			} else {
-				value = resultSet.getString(col);
-			}
+			value = getStringValueForResultSet(resultSet, col);
 		} else if (Integer.class.isAssignableFrom(dataType)) {
 			final int vi = resultSet.getInt(col);
 			value = resultSet.wasNull() ? null : vi;
@@ -176,14 +166,7 @@ public final class SqlVendorMapping implements SqlMapping {
 			final long vl = resultSet.getLong(col);
 			value = resultSet.wasNull() ? null : vl;
 		} else if (Boolean.class.isAssignableFrom(dataType)) {
-			if (booleanAsBit) {
-				final int vb = resultSet.getInt(col);
-				value = resultSet.wasNull() ? null : vb != 0 ? Boolean.TRUE : Boolean.FALSE;
-			} else {
-				//Boolean as Boolean
-				final boolean vb = resultSet.getBoolean(col);
-				value = resultSet.wasNull() ? null : vb;
-			}
+			value = getBooleanValueForResultSet(resultSet, col);
 		} else if (Double.class.isAssignableFrom(dataType)) {
 			final double vd = resultSet.getDouble(col);
 			value = resultSet.wasNull() ? null : vd;
@@ -204,5 +187,31 @@ public final class SqlVendorMapping implements SqlMapping {
 			throw new IllegalArgumentException(TYPE_UNSUPPORTED + dataType);
 		}
 		return dataType.cast(value);
+	}
+
+	private String getStringValueForResultSet(final ResultSet resultSet, final int col) throws SQLException {
+		final String value;
+		if (resultSet.getMetaData().getColumnType(col) == Types.CLOB) {
+			final Clob clob = resultSet.getClob(col);
+			if (clob != null) {
+				final Long len = clob.length();
+				value = clob.getSubString(1L, len.intValue());
+			} else {
+				value = null;
+			}
+		} else {
+			value = resultSet.getString(col);
+		}
+		return value;
+	}
+
+	private Boolean getBooleanValueForResultSet(final ResultSet resultSet, final int col) throws SQLException {
+		if (booleanAsBit) {
+			final int vb = resultSet.getInt(col);
+			return resultSet.wasNull() ? null : vb != 0 ? Boolean.TRUE : Boolean.FALSE;
+		}
+		//Boolean as Boolean
+		final boolean vb = resultSet.getBoolean(col);
+		return resultSet.wasNull() ? null : vb;
 	}
 }
