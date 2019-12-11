@@ -2,7 +2,7 @@ package ${packageName};
 
 import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.authorization.metamodel.AuthorizationName;
-import io.vertigo.app.Home;
+import io.vertigo.core.node.Home;
 
 /**
  * Warning. This class is generated automatically !

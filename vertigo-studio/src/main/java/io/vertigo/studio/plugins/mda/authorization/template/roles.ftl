@@ -1,6 +1,6 @@
 package ${packageName};
 
-import io.vertigo.app.Home;
+import io.vertigo.core.node.Home;
 import io.vertigo.account.authorization.metamodel.Role;
 
 

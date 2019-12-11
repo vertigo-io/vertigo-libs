@@ -6,7 +6,7 @@ import io.vertigo.account.authorization.metamodel.Authorization;
 import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.account.authorization.metamodel.OperationName;
 <#if securedentities?size != 0 >
-import io.vertigo.app.Home;
+import io.vertigo.core.node.Home;
 </#if>
 <#list securedentities as securedEntity>
 import ${securedEntity.classCanonicalName};
