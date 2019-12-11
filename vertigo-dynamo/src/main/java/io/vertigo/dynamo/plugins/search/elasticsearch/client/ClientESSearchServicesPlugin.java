@@ -379,7 +379,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 			}
 			typeMapping.endObject().endObject(); //end properties
 
-			LOGGER.info("set index mapping of {0} as {1}", myIndexName, typeMapping);
+			LOGGER.info("set index mapping of {} as {}", myIndexName, typeMapping);
 			final AcknowledgedResponse putMappingResponse = esClient.admin()
 					.indices()
 					.preparePutMapping(myIndexName)

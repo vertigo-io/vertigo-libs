@@ -385,7 +385,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 			putMappingRequest.source(typeMapping);
 			//le Type est deprecated setType(indexDefinition.getName())
 
-			LOGGER.info("set index mapping of {0} as {1}", myIndexName, typeMapping);
+			LOGGER.info("set index mapping of {} as {}", myIndexName, typeMapping);
 			final AcknowledgedResponse putMappingResponse = esClient.indices().putMapping(putMappingRequest, RequestOptions.DEFAULT);
 			Assertion.checkArgument(putMappingResponse.isAcknowledged(), "Can't put index mapping of {0}", myIndexName);
 		}
