@@ -520,7 +520,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 				transaction.addAfterCompletion(
 						succeeded -> {
 							if (succeeded) {
-								doRunActivity(nextActivityExecution, nextWorkspace);
+								workers.submit(() -> doRunActivity(nextActivityExecution, nextWorkspace));
 							}
 						});
 
