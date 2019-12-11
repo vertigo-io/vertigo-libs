@@ -341,6 +341,8 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	private void updateTypeMapping(final SearchIndexDefinition indexDefinition, final boolean sortableNormalizer) throws IOException {
 		Assertion.checkNotNull(indexDefinition);
 		//-----
+		final String myIndexName = obtainIndexName(indexDefinition);
+
 		try (final XContentBuilder typeMapping = XContentFactory.jsonBuilder()) {
 			typeMapping.startObject()
 					.startObject("properties")
@@ -379,12 +381,13 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 			}
 			typeMapping.endObject().endObject(); //end properties
 
-			final PutMappingRequest putMappingRequest = new PutMappingRequest(obtainIndexName(indexDefinition));
+			final PutMappingRequest putMappingRequest = new PutMappingRequest(myIndexName);
 			putMappingRequest.source(typeMapping);
 			//le Type est deprecated setType(indexDefinition.getName())
 
+			LOGGER.info("set index mapping of {0} as {1}", myIndexName, typeMapping);
 			final AcknowledgedResponse putMappingResponse = esClient.indices().putMapping(putMappingRequest, RequestOptions.DEFAULT);
-			putMappingResponse.isAcknowledged();
+			Assertion.checkArgument(putMappingResponse.isAcknowledged(), "Can't put index mapping of {0}", myIndexName);
 		}
 	}
 

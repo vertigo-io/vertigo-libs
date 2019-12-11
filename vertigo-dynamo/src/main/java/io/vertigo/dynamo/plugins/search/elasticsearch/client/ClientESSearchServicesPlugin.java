@@ -339,6 +339,8 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	private void updateTypeMapping(final SearchIndexDefinition indexDefinition, final boolean sortableNormalizer) {
 		Assertion.checkNotNull(indexDefinition);
 		//-----
+		final String myIndexName = obtainIndexName(indexDefinition);
+
 		try (final XContentBuilder typeMapping = XContentFactory.jsonBuilder()) {
 			typeMapping.startObject()
 					.startObject("properties")
@@ -377,13 +379,14 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 			}
 			typeMapping.endObject().endObject(); //end properties
 
+			LOGGER.info("set index mapping of {0} as {1}", myIndexName, typeMapping);
 			final AcknowledgedResponse putMappingResponse = esClient.admin()
 					.indices()
-					.preparePutMapping(obtainIndexName(indexDefinition))
+					.preparePutMapping(myIndexName)
 					.setType(indexDefinition.getName())
 					.setSource(typeMapping)
 					.get();
-			putMappingResponse.isAcknowledged();
+			Assertion.checkArgument(putMappingResponse.isAcknowledged(), "Can't put index mapping of {0}", myIndexName);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Serveur ElasticSearch indisponible");
 		}
