@@ -130,23 +130,6 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 		// nothing
 	}
 
-	private static List<WebServiceHandlerPlugin> sortWebServiceHandlerPlugins(final List<WebServiceHandlerPlugin> restHandlerPlugins) {
-		final List<WebServiceHandlerPlugin> sortedWebServiceHandlerPlugins = new ArrayList<>();
-		WebServiceHandlerPlugin restfulServiceWebServiceHandlerPlugin = null;
-		for (final WebServiceHandlerPlugin restHandlerPlugin : restHandlerPlugins) {
-			if (restHandlerPlugin instanceof RestfulServiceWebServiceHandlerPlugin) {
-				restfulServiceWebServiceHandlerPlugin = restHandlerPlugin;
-			} else {
-				sortedWebServiceHandlerPlugins.add(restHandlerPlugin);
-			}
-		}
-		//Rule : RestfulServiceWebServiceHandlerPlugin is at the end
-		if (restfulServiceWebServiceHandlerPlugin != null) {
-			sortedWebServiceHandlerPlugins.add(restfulServiceWebServiceHandlerPlugin);
-		}
-		return sortedWebServiceHandlerPlugins;
-	}
-
 	/**
 	 * Scan WebServices as WebServiceDefinitions on all the components.
 	 * @param componentSpace ComponentSpace
