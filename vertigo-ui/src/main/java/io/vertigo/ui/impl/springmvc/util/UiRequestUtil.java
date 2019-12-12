@@ -20,6 +20,7 @@ package io.vertigo.ui.impl.springmvc.util;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.web.context.request.RequestAttributes;
@@ -91,5 +92,10 @@ public final class UiRequestUtil {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
 		final O value = valueClass.cast(attributes.getAttribute(name, RequestAttributes.SCOPE_REQUEST));
 		return Optional.ofNullable(value);
+	}
+
+	public static boolean isJsonRequest(final HttpServletRequest request) {
+		final String acceptHeader = request.getHeader("Accept");
+		return acceptHeader != null && acceptHeader.contains("application/json");
 	}
 }

@@ -78,7 +78,7 @@ public final class VSpringMvcControllerAdvice {
 	@ExceptionHandler(Throwable.class)
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	public static Object handleThrowable(final Throwable th, final HttpServletRequest request) throws Throwable {
-		if (isJsonRequest(request)) {
+		if (UiRequestUtil.isJsonRequest(request)) {
 			final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 			final String exceptionMessage = th.getMessage() != null ? th.getMessage() : th.getClass().getSimpleName();
 			uiMessageStack.addGlobalMessage(Level.ERROR, exceptionMessage);
@@ -111,7 +111,7 @@ public final class VSpringMvcControllerAdvice {
 		//---
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
 		//---
-		if (isJsonRequest(request)) {
+		if (UiRequestUtil.isJsonRequest(request)) {
 			return uiMessageStack;
 		}
 		//---
@@ -120,11 +120,6 @@ public final class VSpringMvcControllerAdvice {
 		modelAndView.addObject("model", viewContext.asMap());
 		modelAndView.addObject("uiMessageStack", uiMessageStack);
 		return modelAndView;
-	}
-
-	private static boolean isJsonRequest(final HttpServletRequest request) {
-		final String acceptHeader = request.getHeader("Accept");
-		return acceptHeader != null && acceptHeader.contains("application/json");
 	}
 
 }
