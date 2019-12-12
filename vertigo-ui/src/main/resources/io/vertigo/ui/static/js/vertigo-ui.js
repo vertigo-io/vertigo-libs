@@ -289,12 +289,15 @@ var VUi = {
 						if (vueDataValue !== null && typeof vueDataValue === 'object' && Array.isArray(vueDataValue) === false) {
 							// object
 							Object.keys(vueDataValue).forEach(function (propertyKey) {
-								if (Array.isArray(vueDataValue[propertyKey])) {
-									vueDataValue[propertyKey].forEach(function (value, index) {
-										params['vContext['+contextKey+']['+propertyKey+']['+index+']'] = vueDataValue[propertyKey][index];
-									});
-								} else {
-									params['vContext['+contextKey+']['+propertyKey+']'] = vueDataValue[propertyKey];
+								if(!propertyKey.startsWith("_")) {
+									// _ properties are private and don't belong to the serialized entity
+									if (Array.isArray(vueDataValue[propertyKey])) {
+										vueDataValue[propertyKey].forEach(function (value, index) {
+											params['vContext['+contextKey+']['+propertyKey+']['+index+']'] = vueDataValue[propertyKey][index];
+										});
+									} else {
+										params['vContext['+contextKey+']['+propertyKey+']'] = vueDataValue[propertyKey];
+									}
 								}
 							});
 						} else {
