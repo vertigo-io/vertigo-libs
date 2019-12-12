@@ -84,12 +84,10 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 
 	/**
 	 * @param indexName Index name (env name)
-	 * @param typeName type name (dtIndex type)
 	 * @param esClient ElasticSearch client
 	 */
-	ESSearchRequestBuilder(final String indexName, final String typeName, final RestHighLevelClient esClient) {
+	ESSearchRequestBuilder(final String indexName, final RestHighLevelClient esClient) {
 		Assertion.checkArgNotEmpty(indexName);
-		Assertion.checkArgNotEmpty(typeName);
 		Assertion.checkNotNull(esClient);
 		//-----
 		searchSourceBuilder = new SearchSourceBuilder()

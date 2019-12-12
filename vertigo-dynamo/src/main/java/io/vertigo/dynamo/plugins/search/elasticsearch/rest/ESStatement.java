@@ -77,7 +77,6 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	private static final Logger LOGGER = LogManager.getLogger(ESStatement.class);
 
 	private final String indexName;
-	private final String typeName;
 	private final RestHighLevelClient esClient;
 	private final ESDocumentCodec esDocumentCodec;
 
@@ -85,17 +84,14 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * Constructor.
 	 * @param esDocumentCodec Codec de traduction (bi-directionnelle) des objets métiers en document
 	 * @param indexName Index name
-	 * @param typeName Type name in Index
 	 * @param esClient Client ElasticSearch.
 	 */
-	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final String typeName, final RestHighLevelClient esClient) {
+	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final RestHighLevelClient esClient) {
 		Assertion.checkArgNotEmpty(indexName);
-		Assertion.checkArgNotEmpty(typeName);
 		Assertion.checkNotNull(esDocumentCodec);
 		Assertion.checkNotNull(esClient);
 		//-----
 		this.indexName = indexName;
-		this.typeName = typeName;
 		this.esClient = esClient;
 		this.esDocumentCodec = esDocumentCodec;
 	}
@@ -119,7 +115,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 			}
 			final BulkResponse bulkResponse = esClient.bulk(bulkRequest, RequestOptions.DEFAULT);
 			if (bulkResponse.hasFailures()) {
-				throw new VSystemException("Can't putAll {0} into {1} index.\nCause by {2}", typeName, indexName, bulkResponse.buildFailureMessage());
+				throw new VSystemException("Can't putAll into {1} index.\nCause by {2}", indexName, bulkResponse.buildFailureMessage());
 			}
 		} catch (final IOException e) {
 			handleIOException(e);
@@ -201,7 +197,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	FacetedQueryResult<I, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
 		Assertion.checkNotNull(searchQuery);
 		//-----
-		final SearchRequest searchRequest = new ESSearchRequestBuilder(indexName, typeName, esClient)
+		final SearchRequest searchRequest = new ESSearchRequestBuilder(indexName, esClient)
 				.withSearchIndexDefinition(indexDefinition)
 				.withSearchQuery(searchQuery)
 				.withListState(listState, defaultMaxRows)

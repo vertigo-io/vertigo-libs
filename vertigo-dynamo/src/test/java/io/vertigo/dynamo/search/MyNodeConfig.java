@@ -52,7 +52,7 @@ public final class MyNodeConfig {
 
 			dynamoFeatures.withESHL(
 					Param.of("config.file", "io/vertigo/dynamo/search/indexconfig/elasticsearch.yml"),
-					Param.of("envIndex", "TuTest"),
+					Param.of("envIndexPrefix", "TuTest"),
 					Param.of("rowsPerQuery", "50"));
 		} else {
 			elasticSearchFeatures.withTransport(
@@ -61,7 +61,7 @@ public final class MyNodeConfig {
 
 			dynamoFeatures.withESClient(
 					Param.of("config.file", "io/vertigo/dynamo/search/indexconfig/elasticsearch.yml"),
-					Param.of("envIndex", "TuTest"),
+					Param.of("envIndexPrefix", "TuTest"),
 					Param.of("rowsPerQuery", "50"));
 		}
 		final NodeConfigBuilder nodeConfigBuilder = NodeConfig.builder()

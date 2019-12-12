@@ -40,6 +40,7 @@ import org.elasticsearch.action.support.master.AcknowledgedResponse;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.IndicesAdminClient;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
+import org.elasticsearch.common.Strings;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -93,15 +94,14 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	private Client esClient;
 	private final DtListState defaultListState;
 	private final int defaultMaxRows;
-	private final String indexNameOrPrefix;
-	private final boolean indexNameIsPrefix;
+	private final String envIndexPrefix;
 	private final Set<String> types = new HashSet<>();
 	private final URL configFileUrl;
 	private boolean indexSettingsValid;
 
 	/**
 	 * Constructor.
-	 * @param indexNameOrPrefix ES index name
+	 * @param envIndexPrefix ES index name
 	 * @param indexNameIsPrefix indexName use as prefix
 	 * @param defaultMaxRows Nombre de lignes
 	 * @param codecManager Manager de codec
@@ -110,15 +110,14 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	 */
 	@Inject
 	public ClientESSearchServicesPlugin(
-			@ParamValue("envIndex") final String envIndex,
-			@ParamValue("envIndexIsPrefix") final Optional<Boolean> envIndexIsPrefix,
+			@ParamValue("envIndexPrefix") final String envIndexPrefix,
 			@ParamValue("rowsPerQuery") final int defaultMaxRows,
 			@ParamValue("config.file") final String configFile,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<ElasticSearchConnector> elasticSearchConnectors,
 			final CodecManager codecManager,
 			final ResourceManager resourceManager) {
-		Assertion.checkArgNotEmpty(envIndex);
+		Assertion.checkArgNotEmpty(envIndexPrefix);
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkNotNull(elasticSearchConnectors);
 		Assertion.checkArgument(!elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
@@ -129,8 +128,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		defaultListState = DtListState.of(defaultMaxRows);
 		elasticDocumentCodec = new ESDocumentCodec(codecManager);
 		//------
-		indexNameOrPrefix = envIndex;
-		indexNameIsPrefix = envIndexIsPrefix.orElse(true);
+		this.envIndexPrefix = envIndexPrefix;
 		configFileUrl = resourceManager.resolve(configFile);
 		final String connectorName = connectorNameOpt.orElse("main");
 		elasticSearchConnector = elasticSearchConnectors.stream()
@@ -181,7 +179,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	}
 
 	private String obtainIndexName(final SearchIndexDefinition indexDefinition) {
-		return StringUtil.camelToConstCase(indexNameIsPrefix ? indexNameOrPrefix + indexDefinition.getName() : indexNameOrPrefix).toLowerCase(Locale.ROOT);
+		return StringUtil.camelToConstCase(envIndexPrefix + indexDefinition.getName()).toLowerCase(Locale.ROOT);
 	}
 
 	private void createIndex(final String myIndexName) {
@@ -309,7 +307,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkArgument(types.contains(indexDefinition.getName()), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
-		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName(), esClient);
+		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), esClient);
 	}
 
 	private static String obtainPkIndexDataType(final Domain domain) {
@@ -379,12 +377,12 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 			}
 			typeMapping.endObject().endObject(); //end properties
 
-			LOGGER.info("set index mapping of {} as {}", myIndexName, typeMapping);
+			LOGGER.info("set index mapping of {} as {}", myIndexName, Strings.toString(typeMapping));
 			final AcknowledgedResponse putMappingResponse = esClient.admin()
 					.indices()
 					.preparePutMapping(myIndexName)
-					.setType(indexDefinition.getName())
-					.setSource(typeMapping)
+					.setType("_doc")
+					.setSource(typeMapping.prettyPrint())
 					.get();
 			Assertion.checkArgument(putMappingResponse.isAcknowledged(), "Can't put index mapping of {0}", myIndexName);
 		} catch (final IOException e) {

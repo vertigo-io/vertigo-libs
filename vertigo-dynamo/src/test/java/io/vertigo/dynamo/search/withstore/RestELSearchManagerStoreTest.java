@@ -356,7 +356,7 @@ public class RestELSearchManagerStoreTest extends AbstractTestCaseJU5 {
 
 	private static void waitIndexation() {
 		try {
-			Thread.sleep(1000 + 1500); //wait index was done
+			Thread.sleep(1500); //wait index was done
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt(); //si interrupt on relance
 		}

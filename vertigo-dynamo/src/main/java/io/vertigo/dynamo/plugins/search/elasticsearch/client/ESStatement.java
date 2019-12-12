@@ -69,7 +69,6 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	private static final Logger LOGGER = LogManager.getLogger(ESStatement.class);
 
 	private final String indexName;
-	private final String typeName;
 	private final Client esClient;
 	private final ESDocumentCodec esDocumentCodec;
 
@@ -77,17 +76,14 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * Constructor.
 	 * @param esDocumentCodec Codec de traduction (bi-directionnelle) des objets métiers en document
 	 * @param indexName Index name
-	 * @param typeName Type name in Index
 	 * @param esClient Client ElasticSearch.
 	 */
-	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final String typeName, final Client esClient) {
+	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final Client esClient) {
 		Assertion.checkArgNotEmpty(indexName);
-		Assertion.checkArgNotEmpty(typeName);
 		Assertion.checkNotNull(esDocumentCodec);
 		Assertion.checkNotNull(esClient);
 		//-----
 		this.indexName = indexName;
-		this.typeName = typeName;
 		this.esClient = esClient;
 		this.esDocumentCodec = esDocumentCodec;
 	}
@@ -103,14 +99,13 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 				try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
 					bulkRequest.add(esClient.prepareIndex()
 							.setIndex(indexName)
-							.setType(typeName)
 							.setId(index.getUID().urn())
 							.setSource(xContentBuilder));
 				}
 			}
 			final BulkResponse bulkResponse = bulkRequest.execute().actionGet();
 			if (bulkResponse.hasFailures()) {
-				throw new VSystemException("Can't putAll {0} into {1} index.\nCause by {2}", typeName, indexName, bulkResponse.buildFailureMessage());
+				throw new VSystemException("Can't putAll into {1} index.\nCause by {2}", indexName, bulkResponse.buildFailureMessage());
 			}
 		} catch (final IOException e) {
 			handleIOException(e);
@@ -129,7 +124,6 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		try (final XContentBuilder xContentBuilder = esDocumentCodec.index2XContentBuilder(index)) {
 			esClient.prepareIndex().setRefreshPolicy(DEFAULT_REFRESH)
 					.setIndex(indexName)
-					.setType(typeName)
 					.setId(index.getUID().urn())
 					.setSource(xContentBuilder)
 					.execute() //execute asynchrone
@@ -152,8 +146,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 					.filter(queryBuilder);
 			deleteByQueryAction
 					.source()
-					.setIndices(indexName)
-					.setTypes(typeName);
+					.setIndices(indexName);
 			final BulkByScrollResponse response = deleteByQueryAction.get();
 			final long deleted = response.getDeleted();
 			LOGGER.debug("Removed {} elements", deleted);
@@ -173,7 +166,6 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		//-----
 		esClient.prepareDelete().setRefreshPolicy(DEFAULT_REFRESH)
 				.setIndex(indexName)
-				.setType(typeName)
 				.setId(uid.urn())
 				.execute()
 				.actionGet();
@@ -189,7 +181,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	FacetedQueryResult<I, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
 		Assertion.checkNotNull(searchQuery);
 		//-----
-		final SearchRequestBuilder searchRequestBuilder = new ESSearchRequestBuilder(indexName, typeName, esClient)
+		final SearchRequestBuilder searchRequestBuilder = new ESSearchRequestBuilder(indexName, esClient)
 				.withSearchIndexDefinition(indexDefinition)
 				.withSearchQuery(searchQuery)
 				.withListState(listState, defaultMaxRows)
@@ -211,7 +203,6 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 */
 	public long count() {
 		final SearchResponse response = esClient.prepareSearch(indexName)
-				.setTypes(typeName)
 				.setSize(0) //on cherche juste à compter
 				.execute()
 				.actionGet();

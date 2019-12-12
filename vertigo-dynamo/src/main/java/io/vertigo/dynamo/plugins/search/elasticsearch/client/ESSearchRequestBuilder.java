@@ -82,17 +82,14 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 	/**
 	 * @param indexName Index name (env name)
-	 * @param typeName type name (dtIndex type)
 	 * @param esClient ElasticSearch client
 	 */
-	ESSearchRequestBuilder(final String indexName, final String typeName, final Client esClient) {
+	ESSearchRequestBuilder(final String indexName, final Client esClient) {
 		Assertion.checkArgNotEmpty(indexName);
-		Assertion.checkArgNotEmpty(typeName);
 		Assertion.checkNotNull(esClient);
 		//-----
 		searchRequestBuilder = esClient.prepareSearch()
 				.setIndices(indexName)
-				.setTypes(typeName)
 				.setSearchType(SearchType.QUERY_THEN_FETCH)
 				.setFetchSource(ESDocumentCodec.FULL_RESULT, null);
 	}
