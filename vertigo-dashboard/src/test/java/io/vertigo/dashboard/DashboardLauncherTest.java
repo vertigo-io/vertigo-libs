@@ -112,7 +112,7 @@ public class DashboardLauncherTest {
 						.withSearch()
 						.withESHL(
 								Param.of("config.file", "io/vertigo/dashboard/search/indexconfig/elasticsearch.yml"),
-								Param.of("envIndex", "TU_TEST_"),
+								Param.of("envIndexPrefix", "tuTest"),
 								Param.of("rowsPerQuery", "50"))
 						.build())
 				.addModule(new VegaFeatures()
