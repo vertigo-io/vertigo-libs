@@ -201,6 +201,31 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertEquals(itemDataBase.size(), size);
 	}
 
+	@Test
+	public void testIndexTwice() throws InterruptedException, ExecutionException, TimeoutException {
+		index(true);
+		long size = searchManager.count(itemIndexDefinition);
+		Assertions.assertEquals(itemDataBase.size(), size);
+
+		//On supprime tout
+		doRemove("*:*");
+		remove("*:*");
+		size = searchManager.count(itemIndexDefinition);
+		Assertions.assertEquals(0L, size);
+
+		//on reindex
+		doIndex(false);
+		index(false);
+		size = searchManager.count(itemIndexDefinition);
+		Assertions.assertEquals(itemDataBase.size(), size);
+
+		doIndex(true);
+		index(true);
+
+		size = searchManager.count(itemIndexDefinition);
+		Assertions.assertEquals(itemDataBase.size(), size);
+	}
+
 	/**
 	 * Test de requétage de l'index.
 	 * La création s'effectue dans une seule transaction.
