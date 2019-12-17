@@ -202,7 +202,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	}
 
 	@Test
-	public void testIndexTwice() throws InterruptedException, ExecutionException, TimeoutException {
+	public void testIndexTwice() {
 		index(true);
 		long size = searchManager.count(itemIndexDefinition);
 		Assertions.assertEquals(itemDataBase.size(), size);
