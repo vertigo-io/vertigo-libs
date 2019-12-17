@@ -107,13 +107,8 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 			final SearchIndex<Item, Item> index2 = SearchIndex.createIndex(itemDynIndexDefinition, item.getUID(), item);
 			searchManager.put(itemDynIndexDefinition, index2);
 		}
-		waitIndexation();
-
-		final long size = query("*:*", itemIndexDefinition);
-		Assertions.assertEquals(itemDataBase.size(), size);
-
-		final long sizeDyn = query("*:*", itemDynIndexDefinition);
-		Assertions.assertEquals(itemDataBase.size(), sizeDyn);
+		waitAndExpectIndexation(itemDataBase.size(), itemIndexDefinition);
+		waitAndExpectIndexation(itemDataBase.size(), itemDynIndexDefinition);
 	}
 
 	/**
@@ -128,13 +123,9 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 		final ListFilter removeQuery = ListFilter.of("*:*");
 		searchManager.removeAll(itemIndexDefinition, removeQuery);
 		searchManager.removeAll(itemDynIndexDefinition, removeQuery);
-		waitIndexation();
 
-		final long size = query("*:*", itemIndexDefinition);
-		Assertions.assertEquals(0, size);
-
-		final long sizeDyn = query("*:*", itemDynIndexDefinition);
-		Assertions.assertEquals(0, sizeDyn);
+		waitAndExpectIndexation(0, itemIndexDefinition);
+		waitAndExpectIndexation(0, itemDynIndexDefinition);
 	}
 
 	private long query(final String query, final SearchIndexDefinition indexDefinition) {
@@ -145,11 +136,23 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 		return result.getCount();
 	}
 
-	private static void waitIndexation() {
+	private void waitAndExpectIndexation(final long expectedCount, final SearchIndexDefinition indexDefinition) {
+		final long time = System.currentTimeMillis();
+		long size = -1;
 		try {
-			Thread.sleep(2000); //wait index was done
+			do {
+				Thread.sleep(100); //wait index was done
+
+				size = query("*:*", indexDefinition);
+				if (size == expectedCount) {
+					break; //si le nombre est atteint on sort.
+				}
+
+			} while (System.currentTimeMillis() - time < 5000);//timeout 5s
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt(); //si interrupt on relance
 		}
+		Assertions.assertEquals(expectedCount, size);
 	}
+
 }

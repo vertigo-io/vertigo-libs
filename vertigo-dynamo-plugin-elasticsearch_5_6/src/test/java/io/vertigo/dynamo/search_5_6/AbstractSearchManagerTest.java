@@ -150,6 +150,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testClean() {
 		clean(itemIndexDefinition);
+		waitAndExpectIndexation(0);
 	}
 
 	/**
@@ -158,8 +159,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testIndex() {
-		index(false);
-		index(true);
+		doIndex(false);
+		doIndex(true);
+		waitAndExpectIndexation(itemDataBase.size());
 	}
 
 	/**
@@ -187,7 +189,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertEquals(itemDataBase.size(), size);
 
 		//On supprime tout
-		remove("*:*");
+		doRemove("*:*");
+		waitAndExpectIndexation(0);
 		size = searchManager.count(itemIndexDefinition);
 		Assertions.assertEquals(0L, size);
 
@@ -196,7 +199,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 				.get(10, TimeUnit.SECONDS);
 		//on attend 5s + le temps de reindexation
 		Assertions.assertEquals(itemDataBase.size(), size);
-		waitIndexation();
+		waitAndExpectIndexation(itemDataBase.size());
 
 		size = searchManager.count(itemIndexDefinition);
 		Assertions.assertEquals(itemDataBase.size(), size);
@@ -220,8 +223,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testIndexAllQuery() {
 		index(true);
-		final long size = query("*:*");
-		Assertions.assertEquals(itemDataBase.size(), size);
 	}
 
 	/**
@@ -231,11 +232,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testQuery() {
 		index(false);
-		long size;
-		size = query("*:*");
-		Assertions.assertEquals(itemDataBase.size(), size);
 
-		size = query("manufacturer:Peugeot"); //Les constructeur sont des mots clés donc sensible à la casse
+		long size = query("manufacturer:Peugeot"); //Les constructeur sont des mots clés donc sensible à la casse
 		Assertions.assertEquals(itemDataBase.getItemsByManufacturer("peugeot").size(), (int) size);
 
 		size = query("manufacturer:peugeot"); //Les constructeur sont des mots clés donc sensible à la casse
@@ -273,11 +271,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testCopyFieldsQuery() {
 		index(false);
-		long size;
-		size = query("*:*");
-		Assertions.assertEquals(itemDataBase.size(), size);
 
-		size = query("_all:(+peugeot +diesel)");
+		long size = query("_all:(+peugeot +diesel)");
 		Assertions.assertEquals(3L, size);
 
 		size = query("allText:(+peugeot +diesel)");
@@ -300,6 +295,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testBadSyntaxQuery() {
 		index(false);
+
 		long size;
 		size = query("_all:(error or)");
 		Assertions.assertEquals(0L, size);
@@ -376,6 +372,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testSortedQuery() {
 		index(false);
+
 		Item firstItem;
 
 		firstItem = doQueryAndGetFirst("*:*", "manufacturer", false);
@@ -409,8 +406,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testSortByOptionalFieldQuery() {
 		index(false);
-		Item firstItem;
 
+		Item firstItem;
 		firstItem = doQueryAndGetFirst("*:*", "optionalNumber", false);
 		Assertions.assertEquals("Audi", firstItem.getManufacturer());
 
@@ -439,6 +436,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testPaginatedQuery() {
 		index(false);
+
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*")).build();
 		final DtList<Item> dtListFull = doQuery(searchQuery, null).getDtList();
 		final DtList<Item> dtList1 = doQuery(searchQuery, DtListState.of(4)).getDtList();
@@ -465,6 +463,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testFacetQueryByRange() {
 		index(false);
+
 		final FacetedQueryResult<Item, SearchQuery> result = facetQuery("*:*");
 		testFacetResultByRange(result);
 	}
@@ -476,12 +475,11 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testEmptyIndexQuery() {
 		//On supprime tout
-		remove("*:*");
-		long size = searchManager.count(itemIndexDefinition);
-		Assertions.assertEquals(0L, size);
+		doRemove("*:*");
+		waitAndExpectIndexation(0);
 
-		size = query("*:*");
-		Assertions.assertEquals(0, size);
+		final long size = searchManager.count(itemIndexDefinition);
+		Assertions.assertEquals(0L, size);
 	}
 
 	private void testFacetResultByRange(final FacetedQueryResult<Item, ?> result) {
@@ -516,6 +514,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testFacetQueryByTerm() {
 		index(false);
+
 		final FacetedQueryResult<Item, SearchQuery> result = facetQuery("*:*");
 		testFacetResultByTerm(result);
 	}
@@ -523,6 +522,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testFacetOptionalFieldByTerm() {
 		index(false);
+
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacet(itemFacetOptionalQueryDefinition, EMPTY_SELECTED_FACET_VALUES)
 				.build();
@@ -607,6 +607,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testSecurityQuery() {
 		index(false);
+
 		long size;
 		size = query("*:*", "+year:[ 2005 TO * ]");
 		Assertions.assertEquals(itemDataBase.size() - itemDataBase.before(2005), size);
@@ -622,7 +623,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 
 		size = query("description:siège", "+year:[2005 TO *]");//La description est un text insenssible à la casse
 		Assertions.assertEquals(2L, size);
-
 	}
 
 	private static Facet getFacetByName(final FacetedQueryResult<Item, ?> result, final String facetName) {
@@ -640,12 +640,10 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testRemove() {
 		index(false);
-		final long size = query("*:*");
-		Assertions.assertEquals(itemDataBase.size(), size);
+
 		//On en supprime 2
-		remove(2);
-		final long resize = query("*:*");
-		Assertions.assertEquals(itemDataBase.size() - 2, resize);
+		doRemove(2);
+		waitAndExpectIndexation(itemDataBase.size() - 2);
 	}
 
 	/**
@@ -655,14 +653,12 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testRemoveByQuery() {
 		index(false);
-		final long size = query("*:*");
-		Assertions.assertEquals(itemDataBase.size(), size);
+
 		//on compte les Peugeots
 		final int nbPeugeot = itemDataBase.getItemsByManufacturer("Peugeot").size();
 		//On supprime toute les Peugeots
-		remove("manufacturer:Peugeot");
-		final long resize = query("*:*");
-		Assertions.assertEquals(itemDataBase.size() - nbPeugeot, resize);
+		doRemove("manufacturer:Peugeot");
+		waitAndExpectIndexation(itemDataBase.size() - nbPeugeot);
 	}
 
 	/**
@@ -672,12 +668,9 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testRemoveAll() {
 		index(false);
-		final long size = query("*:*");
-		Assertions.assertEquals(itemDataBase.size(), size);
 		//On supprime tout
-		remove("*:*");
-		final long resize = query("*:*");
-		Assertions.assertEquals(0L, resize);
+		doRemove("*:*");
+		waitAndExpectIndexation(0L);
 	}
 
 	/**
@@ -700,6 +693,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testFilterFacetListByRange() {
 		index(true);
+
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacet(itemFacetQueryDefinition, EMPTY_SELECTED_FACET_VALUES)
 				.build();
@@ -749,6 +743,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testFacetListByTerm() {
 		index(true);
+
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacet(itemFacetQueryDefinition, EMPTY_SELECTED_FACET_VALUES)
 				.build();
@@ -763,6 +758,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testFilterFacetListByTerm() {
 		index(true);
+
 		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of("*:*"))
 				.withFacet(itemFacetQueryDefinition, EMPTY_SELECTED_FACET_VALUES)
 				.build();
@@ -783,6 +779,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testFilterFacetListByTwoTerms() {
 		index(true);
+
 		final List<Item> peugeotItems = itemDataBase.getItemsByManufacturer("peugeot");
 		final long peugeotContainsCuirCount = ItemDataBase.containsDescription(peugeotItems, "cuir");
 
@@ -1154,18 +1151,17 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 
 	private void index(final boolean all) {
 		doIndex(all);
-		waitIndexation();
+		waitAndExpectIndexation(itemDataBase.size());
 	}
 
-	private void remove(final int count) {
+	/*private void remove(final int count) {
 		doRemove(count);
-		waitIndexation();
-	}
+		waitAndExpectIndexation(itemDataBase.size()-count);
+	}*/
 
-	private void remove(final String query) {
+	/*private void remove(final String query) {
 		doRemove(query);
-		waitIndexation();
-	}
+	}*/
 
 	private void doIndex(final boolean all) {
 		if (all) {
@@ -1240,11 +1236,34 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		return UID.of(Item.class, id);
 	}
 
-	private static void waitIndexation() {
+	private void waitAndExpectIndexation(final long expectedCount) {
+		waitAndExpectIndexation(expectedCount, "*:*");
+	}
+
+	private void waitAndExpectIndexation(final long expectedCount, final String queryStr) {
+		final long time = System.currentTimeMillis();
+		long size = -1;
+		try {
+			do {
+				Thread.sleep(250); //wait index was done
+
+				size = query(queryStr);
+				if (size == expectedCount) {
+					break; //si le nombre est atteint on sort.
+				}
+
+			} while (System.currentTimeMillis() - time < 5000);//timeout 5s
+		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt(); //si interrupt on relance
+		}
+		Assertions.assertEquals(expectedCount, size);
+	}
+
+	/*private static void waitIndexation() {
 		try {
 			Thread.sleep(1500); //wait index was done
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt(); //si interrupt on relance
 		}
-	}
+	}*/
 }

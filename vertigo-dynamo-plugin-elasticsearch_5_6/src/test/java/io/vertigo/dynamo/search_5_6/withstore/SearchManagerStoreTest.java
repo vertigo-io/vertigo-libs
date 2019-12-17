@@ -138,7 +138,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 			}
 			transaction.commit();
 		}
-		waitIndexation();
+		waitAndExpectIndexation(itemDataBase.size());
 	}
 
 	/** {@inheritDoc} */
@@ -179,8 +179,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 			storeManager.getDataStore().create(item);
 			transaction.commit();
 		}
-		waitIndexation();
-		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
+		waitAndExpectIndexation(initialDbItemSize + 1);
 		Assertions.assertEquals(1, query("description:légende"));
 	}
 
@@ -197,9 +196,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 			storeManager.getDataStore().delete(createURI(10001L));
 			transaction.commit();
 		}
-		waitIndexation();
+		waitAndExpectIndexation(initialDbItemSize - 1);
 		Assertions.assertEquals(0, query("id:10001"));
-		Assertions.assertEquals(initialDbItemSize - 1, query("*:*"));
 	}
 
 	/**
@@ -216,8 +214,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 			transaction.commit();
 		}
 
-		waitIndexation();
-		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
+		waitAndExpectIndexation(initialDbItemSize + 1);
 		Assertions.assertEquals(1, query("description:légende"));
 
 		item.setDescription("Vendue");
@@ -225,10 +222,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 			storeManager.getDataStore().update(item);
 			transaction.commit();
 		}
-
-		waitIndexation();
-		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assertions.assertEquals(0, query("description:légende"));
+		waitAndExpectIndexation(0, "description:légende");
+		waitAndExpectIndexation(initialDbItemSize + 1);
 		Assertions.assertEquals(1, query("description:vendue"));
 	}
 
@@ -246,8 +241,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 			transaction.commit();
 		}
 
-		waitIndexation();
-		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
+		waitAndExpectIndexation(initialDbItemSize + 1);
 		Assertions.assertEquals(1, query("description:légende"));
 
 		item.setDescription("Vendue");
@@ -259,9 +253,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 			transaction.commit();
 		}
 
-		waitIndexation();
-		Assertions.assertEquals(initialDbItemSize + 1, query("*:*"));
-		Assertions.assertEquals(0, query("description:légende"));
+		waitAndExpectIndexation(0, "description:légende");
+		waitAndExpectIndexation(initialDbItemSize + 1);
 		Assertions.assertEquals(1, query("description:vendue"));
 	}
 
@@ -273,8 +266,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 	public void testRemoveAll() {
 		//On supprime tout
 		remove("*:*");
-		final long resize = query("*:*");
-		Assertions.assertEquals(0L, resize);
+		waitAndExpectIndexation(0);
 	}
 
 	/**
@@ -285,14 +277,12 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 	public void testReIndexAll() {
 		testIndexAllQuery();
 		remove("*:*");
-		long resize = query("*:*");
-		Assertions.assertEquals(0L, resize);
+		waitAndExpectIndexation(0);
 
 		doReindexAll();
 		waitIndexation();
 
-		resize = query("*:*");
-		Assertions.assertEquals(initialDbItemSize, resize);
+		waitAndExpectIndexation(initialDbItemSize);
 	}
 
 	/**
@@ -303,8 +293,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testReIndexAllAfterDirectDelete() throws SQLException {
 		testIndexAllQuery();
-		long resize = query("*:*");
-		Assertions.assertEquals(initialDbItemSize, resize);
+		waitAndExpectIndexation(initialDbItemSize);
 
 		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
 			execCallableStatement(connectionCloseable.getConnection(), "delete from item where id = 10001");
@@ -314,10 +303,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 			Assertions.assertEquals(initialDbItemSize - 1, storeManager.getDataStore().count(itemIndexDefinition.getKeyConceptDtDefinition()));
 		}
 		doReindexAll();
-		waitIndexation();
-
-		resize = query("*:*");
-		Assertions.assertEquals(initialDbItemSize - 1, resize);
+		waitAndExpectIndexation(initialDbItemSize - 1);
 	}
 
 	/**
@@ -328,8 +314,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testReIndexAllAfterDirectDeleteAll() throws SQLException {
 		testIndexAllQuery();
-		long resize = query("*:*");
-		Assertions.assertEquals(initialDbItemSize, resize);
+		waitAndExpectIndexation(initialDbItemSize);
 
 		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
 			execCallableStatement(connectionCloseable.getConnection(), "delete from item ");
@@ -341,8 +326,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 		doReindexAll();
 		waitIndexation();
 
-		resize = query("*:*");
-		Assertions.assertEquals(0, resize);
+		waitAndExpectIndexation(0);
 	}
 
 	private static Item createNewItem() {
@@ -402,6 +386,29 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt(); //si interrupt on relance
 		}
+	}
+
+	private void waitAndExpectIndexation(final long expectedCount) {
+		waitAndExpectIndexation(expectedCount, "*:*");
+	}
+
+	private void waitAndExpectIndexation(final long expectedCount, final String queryStr) {
+		final long time = System.currentTimeMillis();
+		long size = -1;
+		try {
+			do {
+				Thread.sleep(100); //wait index was done
+
+				size = query(queryStr);
+				if (size == expectedCount) {
+					break; //si le nombre est atteint on sort.
+				}
+
+			} while (System.currentTimeMillis() - time < 5000);//timeout 5s
+		} catch (final InterruptedException e) {
+			Thread.currentThread().interrupt(); //si interrupt on relance
+		}
+		Assertions.assertEquals(expectedCount, size);
 	}
 
 	private class SqlConnectionCloseable implements AutoCloseable {
