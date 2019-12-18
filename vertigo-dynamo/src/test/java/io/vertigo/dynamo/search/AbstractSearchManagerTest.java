@@ -40,6 +40,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
@@ -142,6 +143,11 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		searchManager.removeAll(indexDefinition, removeQuery);
 	}
 
+	@BeforeEach
+	public void clean() {
+		removeAll();
+	}
+
 	/**
 	 * Test de création nettoyage de l'index.
 	 * La création s'effectue dans une seule transaction.
@@ -149,6 +155,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testClean() {
 		clean(itemIndexDefinition);
+		waitAndExpectIndexation(0);
 	}
 
 	/**
@@ -186,7 +193,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertEquals(itemDataBase.size(), size);
 
 		//On supprime tout
-		remove("*:*");
+		removeAll();
 		size = searchManager.count(itemIndexDefinition);
 		Assertions.assertEquals(0L, size);
 
@@ -195,7 +202,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 				.get(10, TimeUnit.SECONDS);
 		//on attend 5s + le temps de reindexation
 		Assertions.assertEquals(itemDataBase.size(), size);
-		waitIndexation();
+		waitAndExpectIndexation(itemDataBase.size());
 
 		size = searchManager.count(itemIndexDefinition);
 		Assertions.assertEquals(itemDataBase.size(), size);
@@ -209,7 +216,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 
 		//On supprime tout
 		doRemove("*:*");
-		remove("*:*");
+		removeAll();
 		size = searchManager.count(itemIndexDefinition);
 		Assertions.assertEquals(0L, size);
 
@@ -533,7 +540,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testEmptyIndexQuery() {
 		//On supprime tout
-		remove("*:*");
+		removeAll();
 		long size = searchManager.count(itemIndexDefinition);
 		Assertions.assertEquals(0L, size);
 
@@ -700,9 +707,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		final long size = query("*:*");
 		Assertions.assertEquals(itemDataBase.size(), size);
 		//On en supprime 2
-		remove(2);
-		final long resize = query("*:*");
-		Assertions.assertEquals(itemDataBase.size() - 2, resize);
+		doRemove(2);
+		waitAndExpectIndexation(itemDataBase.size() - 2);
 	}
 
 	/**
@@ -717,9 +723,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		//on compte les Peugeots
 		final int nbPeugeot = itemDataBase.getItemsByManufacturer("Peugeot").size();
 		//On supprime toute les Peugeots
-		remove("manufacturer:Peugeot");
-		final long resize = query("*:*");
-		Assertions.assertEquals(itemDataBase.size() - nbPeugeot, resize);
+		doRemove("manufacturer:Peugeot");
+		waitAndExpectIndexation(itemDataBase.size() - nbPeugeot);
 	}
 
 	/**
@@ -732,7 +737,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		final long size = query("*:*");
 		Assertions.assertEquals(itemDataBase.size(), size);
 		//On supprime tout
-		remove("*:*");
+		removeAll();
 		final long resize = query("*:*");
 		Assertions.assertEquals(0L, resize);
 	}
@@ -1211,17 +1216,12 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 
 	private void index(final boolean all) {
 		doIndex(all);
-		waitIndexation();
+		waitAndExpectIndexation(itemDataBase.size());
 	}
 
-	private void remove(final int count) {
-		doRemove(count);
-		waitIndexation();
-	}
-
-	private void remove(final String query) {
-		doRemove(query);
-		waitIndexation();
+	private void removeAll() {
+		doRemove("*:*");
+		waitAndExpectIndexation(0);
 	}
 
 	private void doIndex(final boolean all) {
@@ -1297,11 +1297,26 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		return UID.of(Item.class, id);
 	}
 
-	private static void waitIndexation() {
+	private void waitAndExpectIndexation(final long expectedCount) {
+		waitAndExpectIndexation(expectedCount, "*:*");
+	}
+
+	private void waitAndExpectIndexation(final long expectedCount, final String queryStr) {
+		final long time = System.currentTimeMillis();
+		long size = -1;
 		try {
-			Thread.sleep(1500); //wait index was done
+			do {
+				Thread.sleep(250); //wait index was done
+
+				size = query(queryStr);
+				if (size == expectedCount) {
+					break; //si le nombre est atteint on sort.
+				}
+
+			} while (System.currentTimeMillis() - time < 5000);//timeout 5s
 		} catch (final InterruptedException e) {
 			Thread.currentThread().interrupt(); //si interrupt on relance
 		}
+		Assertions.assertEquals(expectedCount, size);
 	}
 }
