@@ -20,9 +20,11 @@ package io.vertigo.dynamo.impl.task.proxy;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.proxy.ProxyMethod;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -50,8 +52,14 @@ public final class TaskProxyMethod implements ProxyMethod {
 		return !void.class.equals(method.getReturnType());
 	}
 
-	private static boolean isOutOptional(final Method method) {
-		return Optional.class.isAssignableFrom(method.getReturnType());
+	private static Cardinality getCardinality(final Class type) {
+		if (Optional.class.isAssignableFrom(type)) {
+			return Cardinality.OPTIONAL_OR_NULLABLE;
+		} else if (List.class.isAssignableFrom(type)) {
+			return Cardinality.MANY;
+		} else {
+			return Cardinality.ONE;
+		}
 	}
 
 	private static Domain findOutDomain(final Method method) {
@@ -85,28 +93,18 @@ public final class TaskProxyMethod implements ProxyMethod {
 
 		if (hasOut(method)) {
 			final Domain outDomain = findOutDomain(method);
-			if (isOutOptional(method)) {
-				taskDefinitionBuilder.withOutOptional("out", outDomain);
-
-			} else {
-				taskDefinitionBuilder.withOutRequired("out", outDomain);
-			}
+			final Cardinality outCardinality = getCardinality(method.getReturnType());
+			taskDefinitionBuilder.withOutAttribute("out", outDomain, outCardinality);
 		}
 		for (final Parameter parameter : method.getParameters()) {
 			final TaskInput taskAttributeAnnotation = parameter.getAnnotation(TaskInput.class);
+			final Cardinality inAttributeCardinality = getCardinality(parameter.getType());
 
 			//test if the parameter is an optional type
-			final boolean optional = Optional.class.isAssignableFrom(parameter.getType());
-
-			if (optional) {
-				taskDefinitionBuilder.addInOptional(
-						taskAttributeAnnotation.name(),
-						resolveDomain(taskAttributeAnnotation.domain()));
-			} else {
-				taskDefinitionBuilder.addInRequired(
-						taskAttributeAnnotation.name(),
-						resolveDomain(taskAttributeAnnotation.domain()));
-			}
+			taskDefinitionBuilder.addInAttribute(
+					taskAttributeAnnotation.name(),
+					resolveDomain(taskAttributeAnnotation.domain()),
+					inAttributeCardinality);
 		}
 
 		return taskDefinitionBuilder.build();

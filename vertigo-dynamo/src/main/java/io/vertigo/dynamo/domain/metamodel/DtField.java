@@ -211,6 +211,17 @@ public final class DtField {
 	}
 
 	/**
+	 * @return if the domain is a list of objects
+	 */
+	public boolean isMultiple() {
+		return getDomain().isMultiple();
+	}
+
+	public boolean isDtList() {
+		return getDomain().getScope().isDataObject() && isMultiple();
+	}
+
+	/**
 	 *  @return DtDefinition de la ForeignKey (caractère obligatoire lié au type)
 	 */
 	//Todo changer le nom

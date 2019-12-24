@@ -42,7 +42,7 @@ public final class PlanificationPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkCleanFuturePlanifications.
-	 * @param processName String 
+	 * @param processName String
 	*/
 	public void cleanFuturePlanifications(final String processName) {
 		final Task task = createTaskBuilder("TkCleanFuturePlanifications")
@@ -53,7 +53,7 @@ public final class PlanificationPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkCleanPlanificationsOnBoot.
-	 * @param currentDate Instant 
+	 * @param currentDate Instant
 	*/
 	public void cleanPlanificationsOnBoot(final java.time.Instant currentDate) {
 		final Task task = createTaskBuilder("TkCleanPlanificationsOnBoot")
@@ -64,9 +64,9 @@ public final class PlanificationPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkReserveProcessToExecute.
-	 * @param lowerLimit Instant 
-	 * @param upperLimit Instant 
-	 * @param nodId Long 
+	 * @param lowerLimit Instant
+	 * @param upperLimit Instant
+	 * @param nodId Long
 	*/
 	public void reserveProcessToExecute(final java.time.Instant lowerLimit, final java.time.Instant upperLimit, final Long nodId) {
 		final Task task = createTaskBuilder("TkReserveProcessToExecute")

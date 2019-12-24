@@ -96,7 +96,7 @@ final class WhereInPreProcessor {
 			final String inputParamName = matcher.group(DTC_INPUTNAME_GROUP);
 			final boolean isNotIn = matcher.group(OPTIONNAL_NOT_GROUP) != null; //null if not found
 			final TaskAttribute attribute = obtainInTaskAttribute(inputParamName);
-			Assertion.checkState(attribute.getDomain().isMultiple(), "Attribute {0} can't be use in WherInPreProcessor. Check it was declared as IN and is DtList type.", inputParamName);
+			Assertion.checkState(attribute.getCardinality().hasMany(), "Attribute {0} can't be use in WherInPreProcessor. Check it was declared as IN and is DtList type.", inputParamName);
 
 			//-----
 			final List<?> listObject = (List<?>) inTaskAttributes.get(attribute);

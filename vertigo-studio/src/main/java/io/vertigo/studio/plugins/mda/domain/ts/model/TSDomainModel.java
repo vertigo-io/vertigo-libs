@@ -80,7 +80,7 @@ public final class TSDomainModel {
 	 * @param  domain DtDomain
 	 * @return String
 	 */
-	private static String buildTypescriptType(final Domain domain, final boolean withArray) {
+	private static String buildTypescriptType(final Domain domain, final boolean multiple) {
 		if (domain.getScope().isPrimitive()) {
 			final DataType dataType = domain.getDataType();
 			if (dataType.isNumber()) {
@@ -90,6 +90,6 @@ public final class TSDomainModel {
 			}
 			return "string";
 		}
-		return domain.getJavaClass().getSimpleName() + ((domain.isMultiple() && withArray) ? "[]" : "");
+		return domain.getJavaClass().getSimpleName() + ((multiple) ? "[]" : "");
 	}
 }

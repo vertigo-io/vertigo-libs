@@ -21,6 +21,7 @@ package io.vertigo.studio.plugins.mda.task.test;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
@@ -38,7 +39,7 @@ public final class TemplateTaskAttribute {
 		Assertion.checkNotNull(taskAttribute);
 		//-----
 		this.taskAttribute = taskAttribute;
-		value = create(this.taskAttribute.getDomain(), this.taskAttribute.isRequired());
+		value = create(this.taskAttribute.getDomain(), this.taskAttribute.getCardinality());
 	}
 
 	/**
@@ -52,7 +53,7 @@ public final class TemplateTaskAttribute {
 	 * @return Type de la donnée en string
 	 */
 	public String getDataType() {
-		return String.valueOf(DomainUtil.buildJavaType(taskAttribute.getDomain()));
+		return String.valueOf(DomainUtil.buildJavaType(taskAttribute.getDomain(), taskAttribute.getCardinality().hasMany()));
 	}
 
 	/**
@@ -69,9 +70,9 @@ public final class TemplateTaskAttribute {
 		return taskAttribute.getDomain();
 	}
 
-	private static String create(final Domain domain, final boolean isRequired) {
+	private static String create(final Domain domain, final Cardinality cardinality) {
 		final String dumFunction;
-		if (domain.isMultiple()) {
+		if (cardinality.hasMany()) {
 			if (domain.getScope().isDataObject()) {
 				dumFunction = "dumDtList";
 			} else {
@@ -84,7 +85,7 @@ public final class TemplateTaskAttribute {
 		final String javaClassName = domain.getScope().isDataObject() ? domain.getDtDefinition().getClassCanonicalName() : domain.getJavaClass().getCanonicalName();
 		//---
 		final String rawExpression = "dum()." + dumFunction + "(" + javaClassName + ".class)";
-		final String expression = isRequired ? rawExpression : Optional.class.getCanonicalName() + ".ofNullable(" + rawExpression + ")";
+		final String expression = cardinality.isOptionalOrNullable() ? Optional.class.getCanonicalName() + ".ofNullable(" + rawExpression + ")" : rawExpression;
 		return expression;
 	}
 }

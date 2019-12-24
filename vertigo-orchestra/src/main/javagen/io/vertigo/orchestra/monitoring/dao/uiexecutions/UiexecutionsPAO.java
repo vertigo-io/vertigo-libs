@@ -42,7 +42,7 @@ public final class UiexecutionsPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkGetActivitiesByPreId.
-	 * @param preId Long 
+	 * @param preId Long
 	 * @return DtList de OActivityExecutionUi dtcOActivityExecutionUi
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.uiexecutions.OActivityExecutionUi> getActivitiesByPreId(final Long preId) {
@@ -56,7 +56,7 @@ public final class UiexecutionsPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkGetActivitiyByAceId.
-	 * @param aceId Long 
+	 * @param aceId Long
 	 * @return OActivityExecutionUi dtOActivityExecutionUi
 	*/
 	public io.vertigo.orchestra.monitoring.domain.uiexecutions.OActivityExecutionUi getActivitiyByAceId(final Long aceId) {
@@ -70,7 +70,7 @@ public final class UiexecutionsPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkGetExecutionByPreId.
-	 * @param preId Long 
+	 * @param preId Long
 	 * @return OProcessExecutionUi dtOProcessExecutionUi
 	*/
 	public io.vertigo.orchestra.monitoring.domain.uiexecutions.OProcessExecutionUi getExecutionByPreId(final Long preId) {
@@ -84,10 +84,10 @@ public final class UiexecutionsPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkGetExecutionsByProcessName.
-	 * @param name String 
-	 * @param status String 
-	 * @param limit Integer 
-	 * @param offset Integer 
+	 * @param name String
+	 * @param status String
+	 * @param limit Integer
+	 * @param offset Integer
 	 * @return DtList de OProcessExecutionUi dtcOProcessExecutionUi
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.uiexecutions.OProcessExecutionUi> getExecutionsByProcessName(final String name, final String status, final Integer limit, final Integer offset) {

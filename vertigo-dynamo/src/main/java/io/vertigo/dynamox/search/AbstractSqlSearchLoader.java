@@ -28,6 +28,7 @@ import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
@@ -94,8 +95,8 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 					.withEngine(TaskEngineSelect.class)
 					.withDataSpace(dtDefinition.getDataSpace())
 					.withRequest(request)
-					.addInRequired(idFieldName, idField.getDomain())
-					.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dtc", Domain.class))
+					.addInAttribute(idFieldName, idField.getDomain(), Cardinality.ONE)
+					.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dtc", Domain.class), Cardinality.MANY)
 					.build();
 
 			final Task task = Task.builder(taskDefinition)

@@ -27,6 +27,7 @@ import javax.inject.Inject;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.dynamo.domain.metamodel.Domain;
@@ -101,7 +102,7 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(sql)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withOutRequired("dtc", doItems)
+				.withOutAttribute("dtc", doItems, Cardinality.MANY)
 				.build();
 	}
 }

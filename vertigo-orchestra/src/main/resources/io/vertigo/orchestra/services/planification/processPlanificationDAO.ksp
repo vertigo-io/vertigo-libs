@@ -11,8 +11,8 @@ create Task TkGetProcessToExecute {
         	and prp.NOD_ID = #nodId#
         	
 			"
-	attribute dtcOProcessPlanification	 	{domain : DoDtOProcessPlanificationDtc		required:"true" 	inOut :"out"}
-	attribute nodId	 	{domain : DoOIdentifiant 		required:"true" 	inOut :"in"}
+	attribute dtcOProcessPlanification	 	{domain : DoDtOProcessPlanificationDtc		cardinality: "*" 	inOut :"out"}
+	attribute nodId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
 }
 
 
@@ -25,9 +25,9 @@ create Task TkReserveProcessToExecute {
         	where (SST_CD = 'WAITING' and expected_time >= #lowerLimit# and expected_time <= #upperLimit#) 
         			or (SST_CD = 'RESCUED')
 			"
-	 attribute lowerLimit	 	{domain : DoOTimestamp 		required:"true" 	inOut :"in"}
-	 attribute upperLimit	 	{domain : DoOTimestamp 		required:"true" 	inOut :"in"}
-	 attribute nodId	 	{domain : DoOIdentifiant 		required:"true" 	inOut :"in"}
+	 attribute lowerLimit	 	{domain : DoOTimestamp 		cardinality: "1" 	inOut :"in"}
+	 attribute upperLimit	 	{domain : DoOTimestamp 		cardinality: "1" 	inOut :"in"}
+	 attribute nodId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
 }
 
 create Task TkGetLastPlanificationByProId {
@@ -39,8 +39,8 @@ create Task TkGetLastPlanificationByProId {
         	order by prp.expected_time desc
         	limit 1
 			"
-		attribute proId	 	{domain : DoOIdentifiant 		required:"true" 	inOut :"in"}
-		attribute dtOProcessPlanification	 	{domain : DoDtOProcessPlanificationDto		required:"false" 	inOut :"out"}
+		attribute proId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
+		attribute dtOProcessPlanification	 	{domain : DoDtOProcessPlanificationDto		cardinality: "?" 	inOut :"out"}
 }
 
 
@@ -53,8 +53,8 @@ create Task TkGetAllLastPastPlanifications {
 			for update
 			
 			"
-		attribute currentDate 	{domain : DoOTimestamp 			required:"true" 	inOut :"in"}
-		attribute processPlanifications	 	{domain : DoDtOProcessPlanificationDtc		required:"true" 	inOut :"out"}
+		attribute currentDate 	{domain : DoOTimestamp 			cardinality: "1" 	inOut :"in"}
+		attribute processPlanifications	 	{domain : DoDtOProcessPlanificationDtc		cardinality: "*" 	inOut :"out"}
 }
 
 
@@ -71,7 +71,7 @@ create Task TkCleanPlanificationsOnBoot {
 				    group by pro_id
 				) pp on pp.pro_id = prp.pro_id and pp.MaxDate = prp.expected_time)
 			"
-		attribute currentDate 	{domain : DoOTimestamp 			required:"true" 	inOut :"in"}
+		attribute currentDate 	{domain : DoOTimestamp 			cardinality: "1" 	inOut :"in"}
 }
 
 
@@ -82,7 +82,7 @@ create Task TkCleanFuturePlanifications {
         	delete from o_process_planification prp
         	where prp.PRO_ID in (select pro.PRO_ID from o_process pro where pro.NAME = #processName#) and prp.SST_CD = 'WAITING' and prp.expected_time > current_timestamp
 			"
-	 attribute processName	 	{domain : DoOLibelle 		required:"true" 	inOut :"in"}
+	 attribute processName	 	{domain : DoOLibelle 		cardinality: "1" 	inOut :"in"}
 }
 
 

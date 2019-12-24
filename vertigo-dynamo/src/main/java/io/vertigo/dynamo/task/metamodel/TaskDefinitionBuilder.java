@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.model.TaskEngine;
@@ -110,38 +111,17 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 *
 	 * @param attributeName the name of the attribute
 	 * @param domain the domain of the attribute
-	 * @param required if attribute is required
+	 * @param cardinality cadinality (one, optional, many)
 	 * @return this builder
 	 */
-	private TaskDefinitionBuilder addInAttribute(final String attributeName, final Domain domain, final boolean required) {
+	public TaskDefinitionBuilder addInAttribute(final String attributeName, final Domain domain, final Cardinality cardinality) {
 		Assertion.checkNotNull(attributeName);
 		Assertion.checkNotNull(domain);
+		Assertion.checkNotNull(cardinality);
 		//-----
-		final TaskAttribute taskAttribute = new TaskAttribute(attributeName, domain, required);
+		final TaskAttribute taskAttribute = new TaskAttribute(attributeName, domain, cardinality);
 		myInTaskAttributes.add(taskAttribute);
 		return this;
-	}
-
-	/**
-	 * Adds a required input attribute.
-	 *
-	 * @param attributeName the name of the attribute
-	 * @param domain the domain of the attribute
-	 * @return this builder
-	 */
-	public TaskDefinitionBuilder addInRequired(final String attributeName, final Domain domain) {
-		return addInAttribute(attributeName, domain, true);
-	}
-
-	/**
-	 * Adds an optional input attribute.
-	 *
-	 * @param attributeName the name of the attribute
-	 * @param domain the domain of the attribute
-	 * @return this builder
-	 */
-	public TaskDefinitionBuilder addInOptional(final String attributeName, final Domain domain) {
-		return addInAttribute(attributeName, domain, false);
 	}
 
 	/**
@@ -149,35 +129,13 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 *
 	 * @param attributeName the name of the attribute
 	 * @param domain the domain of the attribute
-	 * @param required if attribute is required
+	 * @param cardinality cadinality (one, optional, many)
 	 * @return this builder
 	 */
-	private TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final boolean required) {
+	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final Cardinality cardinality) {
 		//-----
-		myOutTaskAttribute = new TaskAttribute(attributeName, domain, required);
+		myOutTaskAttribute = new TaskAttribute(attributeName, domain, cardinality);
 		return this;
-	}
-
-	/**
-	 * Adds a required output attribute.
-	 *
-	 * @param attributeName the name of the attribute
-	 * @param domain the domain of the attribute
-	 * @return this builder
-	 */
-	public TaskDefinitionBuilder withOutRequired(final String attributeName, final Domain domain) {
-		return withOutAttribute(attributeName, domain, true);
-	}
-
-	/**
-	 * Adds an optional output attribute.
-	 *
-	 * @param attributeName the name of the attribute
-	 * @param domain the domain of the attribute
-	 * @return this builder
-	 */
-	public TaskDefinitionBuilder withOutOptional(final String attributeName, final Domain domain) {
-		return withOutAttribute(attributeName, domain, false);
 	}
 
 	/** {@inheritDoc} */

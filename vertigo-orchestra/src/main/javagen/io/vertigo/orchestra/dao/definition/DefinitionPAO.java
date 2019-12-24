@@ -42,7 +42,7 @@ public final class DefinitionPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkDisableOldProcessDefinitions.
-	 * @param name String 
+	 * @param name String
 	*/
 	public void disableOldProcessDefinitions(final String name) {
 		final Task task = createTaskBuilder("TkDisableOldProcessDefinitions")
@@ -53,7 +53,7 @@ public final class DefinitionPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkGetProcessesByName.
-	 * @param name String 
+	 * @param name String
 	 * @return Integer nombre
 	*/
 	public Integer getProcessesByName(final String name) {

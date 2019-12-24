@@ -82,14 +82,14 @@ public final class DtFieldModel {
 	 * @return Type java du champ
 	 */
 	public String getJavaType() {
-		return DomainUtil.buildJavaType(dtField.getDomain());
+		return DomainUtil.buildJavaType(dtField.getDomain(), dtField.isMultiple());
 	}
 
 	/**
 	 * @return Type java du champ
 	 */
 	public String getJavaTypeLabel() {
-		return DomainUtil.buildJavaTypeLabel(dtField.getDomain());
+		return DomainUtil.buildJavaTypeLabel(dtField.getDomain(), dtField.isMultiple());
 	}
 
 	/**

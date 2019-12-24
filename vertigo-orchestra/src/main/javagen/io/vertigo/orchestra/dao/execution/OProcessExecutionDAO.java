@@ -43,7 +43,7 @@ public final class OProcessExecutionDAO extends DAO<OProcessExecution, java.lang
 
 	/**
 	 * Execute la tache TkGetActiveProcessExecutionByProId.
-	 * @param proId Long 
+	 * @param proId Long
 	 * @return DtList de OProcessExecution dtcProcessExecution
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OProcessExecution> getActiveProcessExecutionByProId(final Long proId) {
@@ -57,7 +57,7 @@ public final class OProcessExecutionDAO extends DAO<OProcessExecution, java.lang
 
 	/**
 	 * Execute la tache TkGetExecutionsByProId.
-	 * @param proId Long 
+	 * @param proId Long
 	 * @return DtList de OProcessExecution dtcOProcessExecution
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OProcessExecution> getExecutionsByProId(final Long proId) {

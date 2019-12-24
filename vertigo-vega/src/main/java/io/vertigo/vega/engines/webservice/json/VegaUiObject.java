@@ -268,8 +268,9 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 			return inputBuffer.get(fieldName);
 		}
 		final Object value = doGetTypedValue(fieldName);
-		final Domain domain = getDtField(fieldName).getDomain();
-		if (domain.getScope().isPrimitive() && !domain.isMultiple()) {
+		final DtField dtField = getDtField(fieldName);
+		final Domain domain = dtField.getDomain();
+		if (domain.getScope().isPrimitive() && !dtField.isMultiple()) {
 			return domain.valueToString(value);// encodeValue
 		}
 		return null; // only non multiple primitives are supported (from user input)

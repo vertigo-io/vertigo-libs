@@ -44,7 +44,7 @@ public final class OProcessDAO extends DAO<OProcess, java.lang.Long> implements 
 
 	/**
 	 * Execute la tache TkGetActiveProcessByName.
-	 * @param name String 
+	 * @param name String
 	 * @return Option de OProcess dtProcess
 	*/
 	public Optional<io.vertigo.orchestra.domain.definition.OProcess> getActiveProcessByName(final String name) {

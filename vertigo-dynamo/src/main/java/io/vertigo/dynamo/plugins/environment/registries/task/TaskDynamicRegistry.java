@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.core.util.ClassUtil;
@@ -76,19 +77,11 @@ public final class TaskDynamicRegistry implements DynamicRegistry {
 			final String domainName = xtaskAttribute.getDefinitionLinkName("domain");
 			final Domain domain = Home.getApp().getDefinitionSpace().resolve(domainName, Domain.class);
 			//-----
-			final boolean required = (Boolean) xtaskAttribute.getPropertyValue(KspProperty.REQUIRED);
+			final Cardinality cardinality = Cardinality.fromString((String) xtaskAttribute.getPropertyValue(KspProperty.CARDINALITY));
 			if (isInValue((String) xtaskAttribute.getPropertyValue(KspProperty.IN_OUT))) {
-				if (required) {
-					taskDefinitionBuilder.addInRequired(attributeName, domain);
-				} else {
-					taskDefinitionBuilder.addInOptional(attributeName, domain);
-				}
+				taskDefinitionBuilder.addInAttribute(attributeName, domain, cardinality);
 			} else {
-				if (required) {
-					taskDefinitionBuilder.withOutRequired(attributeName, domain);
-				} else {
-					taskDefinitionBuilder.withOutOptional(attributeName, domain);
-				}
+				taskDefinitionBuilder.withOutAttribute(attributeName, domain, cardinality);
 			}
 		}
 		return taskDefinitionBuilder.build();

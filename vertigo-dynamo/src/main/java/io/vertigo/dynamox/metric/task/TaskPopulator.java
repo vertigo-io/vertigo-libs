@@ -70,7 +70,7 @@ final class TaskPopulator {
 		switch (attribute.getDomain().getScope()) {
 			case PRIMITIVE:
 				final Object item = getDefaultPrimitiveValue(attribute);
-				if (attribute.getDomain().isMultiple()) {
+				if (attribute.getCardinality().hasMany()) {
 					final List list = new ArrayList();
 					list.add(item);
 					value = list;
@@ -79,7 +79,7 @@ final class TaskPopulator {
 				}
 				break;
 			case DATA_OBJECT:
-				if (attribute.getDomain().isMultiple()) {
+				if (attribute.getCardinality().hasMany()) {
 					value = new DtList(attribute.getDomain().getDtDefinition());
 				} else {
 					value = DtObjectUtil.createDtObject(attribute.getDomain().getDtDefinition());
@@ -87,7 +87,7 @@ final class TaskPopulator {
 				break;
 			case VALUE_OBJECT:
 				final Object valueObject = ClassUtil.newInstance(attribute.getDomain().getJavaClass());
-				if (attribute.getDomain().isMultiple()) {
+				if (attribute.getCardinality().hasMany()) {
 					final List list = new ArrayList();
 					list.add(valueObject);
 					value = list;

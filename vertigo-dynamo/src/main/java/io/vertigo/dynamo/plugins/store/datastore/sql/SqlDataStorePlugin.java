@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Home;
@@ -188,8 +189,8 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInRequired(idFieldName, idField.getDomain())
-				.withOutOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + uri.getDefinition().getName() + "Dto", Domain.class))
+				.addInAttribute(idFieldName, idField.getDomain(), Cardinality.ONE)
+				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + uri.getDefinition().getName() + "Dto", Domain.class), Cardinality.OPTIONAL_OR_NULLABLE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
@@ -237,8 +238,8 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInRequired(fkFieldName, fkField.getDomain())
-				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dtc", Domain.class))
+				.addInAttribute(fkFieldName, fkField.getDomain(), Cardinality.ONE)
+				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dtc", Domain.class), Cardinality.MANY)
 				.build();
 
 		final UID uid = dtcUri.getSource();
@@ -286,11 +287,11 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		final CriteriaCtx ctx = tuple.getVal2();
 		//IN, Optional
 		for (final String attributeName : ctx.getAttributeNames()) {
-			taskDefinitionBuilder.addInOptional(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getDomain());
+			taskDefinitionBuilder.addInAttribute(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getDomain(), Cardinality.OPTIONAL_OR_NULLABLE);
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
-				.withOutRequired("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dtc", Domain.class))
+				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dtc", Domain.class), Cardinality.MANY)
 				.build();
 
 		final TaskBuilder taskBuilder = Task.builder(taskDefinition);
@@ -387,8 +388,8 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(getTaskEngineClass(insert))
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInRequired("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dto", Domain.class))
-				.withOutRequired(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain)
+				.addInAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dto", Domain.class), Cardinality.ONE)
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, Cardinality.ONE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
@@ -438,8 +439,8 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineProc.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInRequired(idFieldName, idField.getDomain())
-				.withOutRequired(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain)
+				.addInAttribute(idFieldName, idField.getDomain(), Cardinality.ONE)
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, Cardinality.ONE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
@@ -474,7 +475,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.withOutRequired("count", countDomain)
+				.withOutAttribute("count", countDomain, Cardinality.ONE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
@@ -503,8 +504,8 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInRequired(idFieldName, idField.getDomain())
-				.withOutOptional("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + uri.getDefinition().getName() + "Dto", Domain.class))
+				.addInAttribute(idFieldName, idField.getDomain(), Cardinality.ONE)
+				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + uri.getDefinition().getName() + "Dto", Domain.class), Cardinality.OPTIONAL_OR_NULLABLE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)

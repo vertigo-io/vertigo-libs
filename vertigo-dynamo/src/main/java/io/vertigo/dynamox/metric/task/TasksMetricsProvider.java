@@ -148,7 +148,7 @@ public final class TasksMetricsProvider implements Component {
 
 	private static boolean hasNotNullOutParams(final TaskDefinition taskDefinition) {
 		return taskDefinition.getOutAttributeOption().isPresent()
-				&& taskDefinition.getOutAttributeOption().get().isRequired();
+				&& taskDefinition.getOutAttributeOption().get().getCardinality().hasOne();
 	}
 
 }

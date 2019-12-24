@@ -90,11 +90,11 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 			final SqlConnection connection) throws SQLException {
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 		final List<?> result;
-		final Integer limit = outAttribute.getDomain().isMultiple() ? null : 1;
+		final Integer limit = outAttribute.getCardinality().hasMany() ? null : 1;
 		result = getDataBaseManager().executeQuery(sqlStatement, outAttribute.getDomain().getJavaClass(), limit, connection);
 		switch (outAttribute.getDomain().getScope()) {
 			case DATA_OBJECT:
-				if (outAttribute.getDomain().isMultiple()) {
+				if (outAttribute.getCardinality().hasMany()) {
 					final DtList<?> dtList = result
 							.stream()
 							.map(DtObject.class::cast)
@@ -107,7 +107,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 				break;
 			case PRIMITIVE:
 			case VALUE_OBJECT:
-				if (outAttribute.getDomain().isMultiple()) {
+				if (outAttribute.getCardinality().hasMany()) {
 					setResult(result);
 				} else {
 					Assertion.checkState(result.size() <= 1, "Limit exceeded");

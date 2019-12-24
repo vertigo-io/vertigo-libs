@@ -43,7 +43,7 @@ public final class OActivityExecutionDAO extends DAO<OActivityExecution, java.la
 
 	/**
 	 * Execute la tache TkGetActivitiesToLaunch.
-	 * @param nodId Long 
+	 * @param nodId Long
 	 * @return DtList de OActivityExecution dtcActivityExecution
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivitiesToLaunch(final Long nodId) {
@@ -57,8 +57,8 @@ public final class OActivityExecutionDAO extends DAO<OActivityExecution, java.la
 
 	/**
 	 * Execute la tache TkGetActivityExecutionByToken.
-	 * @param aceId Long 
-	 * @param token String 
+	 * @param aceId Long
+	 * @param token String
 	 * @return OActivityExecution dtActivityExecution
 	*/
 	public io.vertigo.orchestra.domain.execution.OActivityExecution getActivityExecutionByToken(final Long aceId, final String token) {
@@ -73,7 +73,7 @@ public final class OActivityExecutionDAO extends DAO<OActivityExecution, java.la
 
 	/**
 	 * Execute la tache TkGetActivityExecutionsByPreId.
-	 * @param preId Long 
+	 * @param preId Long
 	 * @return DtList de OActivityExecution dtcOActivityExecution
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivityExecutionsByPreId(final Long preId) {

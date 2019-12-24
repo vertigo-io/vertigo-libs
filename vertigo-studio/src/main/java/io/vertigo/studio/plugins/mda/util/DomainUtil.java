@@ -52,7 +52,7 @@ public final class DomainUtil {
 	 * @param domain DtDomain
 	 * @return String
 	 */
-	public static String buildJavaType(final Domain domain) {
+	public static String buildJavaType(final Domain domain, final boolean multiple) {
 		final String className;
 		switch (domain.getScope()) {
 			case PRIMITIVE:
@@ -74,7 +74,7 @@ public final class DomainUtil {
 			default:
 				throw new IllegalStateException();
 		}
-		if (domain.isMultiple()) {
+		if (multiple) {
 			return domain.getTargetJavaClass().getName() + '<' + className + '>';
 		}
 		return className;
@@ -86,7 +86,7 @@ public final class DomainUtil {
 	 * @param domain DtDomain
 	 * @return String
 	 */
-	public static String buildJavaTypeLabel(final Domain domain) {
+	public static String buildJavaTypeLabel(final Domain domain, final boolean multiple) {
 		final String classLabel;
 		switch (domain.getScope()) {
 			case PRIMITIVE:
@@ -101,7 +101,7 @@ public final class DomainUtil {
 			default:
 				throw new IllegalStateException();
 		}
-		if (domain.isMultiple()) {
+		if (multiple) {
 			return domain.getTargetJavaClass().getSimpleName() + " de " + classLabel;
 		}
 		return classLabel;

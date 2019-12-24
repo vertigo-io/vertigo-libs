@@ -30,6 +30,7 @@ import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -120,7 +121,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInRequired(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class))
+				.addInAttribute(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class), Cardinality.MANY)
 				.withRequest(request)
 				.build();
 
@@ -150,8 +151,8 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInRequired(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class))
-				.addInRequired(OTHER_PARAM_IN, getApp().getDefinitionSpace().resolve(DO_STRING, Domain.class))
+				.addInAttribute(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class), Cardinality.MANY)
+				.addInAttribute(OTHER_PARAM_IN, getApp().getDefinitionSpace().resolve(DO_STRING, Domain.class), Cardinality.ONE)
 				.withRequest(request)
 				.build();
 
@@ -181,7 +182,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInRequired(SUPER_HERO_ID_LIST_IN, getApp().getDefinitionSpace().resolve(DO_LONGS, Domain.class))
+				.addInAttribute(SUPER_HERO_ID_LIST_IN, getApp().getDefinitionSpace().resolve(DO_LONGS, Domain.class), Cardinality.MANY)
 				.withRequest(request)
 				.build();
 
@@ -204,7 +205,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkSelectHeroes")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from SUPER_HERO")
-				.withOutRequired(DTC_SUPER_HERO_OUT, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class))
+				.withOutAttribute(DTC_SUPER_HERO_OUT, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class), Cardinality.MANY)
 				.build();
 		final Task task = Task.builder(taskDefinition).build();
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {

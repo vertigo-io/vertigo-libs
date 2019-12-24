@@ -23,6 +23,7 @@ import java.util.List;
 import org.junit.jupiter.api.Disabled;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.util.ListBuilder;
@@ -101,7 +102,7 @@ public final class OracleSqlStoreManagerTest extends AbstractSqlStoreManagerTest
 				.withEngine(TaskEngineProc.class)
 				.withRequest("insert into CAR (ID, FAM_ID,MAKE, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MOTOR_TYPE) values "
 						+ "(SEQ_CAR.nextval, #dtoCar.famId#, #dtoCar.make#, #dtoCar.model#, #dtoCar.description#, #dtoCar.year#, #dtoCar.kilo#, #dtoCar.price#, #dtoCar.motorType#)")
-				.addInRequired("dtoCar", doCar)
+				.addInAttribute("dtoCar", doCar, Cardinality.ONE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)

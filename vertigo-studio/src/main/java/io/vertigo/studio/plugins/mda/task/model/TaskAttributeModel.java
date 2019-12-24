@@ -55,21 +55,21 @@ public final class TaskAttributeModel {
 	 * @return Type de la donnée en string
 	 */
 	public String getDataType() {
-		return String.valueOf(DomainUtil.buildJavaType(taskAttribute.getDomain()));
+		return String.valueOf(DomainUtil.buildJavaType(taskAttribute.getDomain(), taskAttribute.getCardinality().hasMany()));
 	}
 
 	/**
 	 * @return Type java du champ
 	 */
 	public String getJavaTypeLabel() {
-		return DomainUtil.buildJavaTypeLabel(taskAttribute.getDomain());
+		return DomainUtil.buildJavaTypeLabel(taskAttribute.getDomain(), taskAttribute.getCardinality().hasMany());
 	}
 
 	/**
 	 * @return Si l'attribut est obligatoire.
 	 */
-	public boolean isRequired() {
-		return taskAttribute.isRequired();
+	public boolean isOptionalOrNullable() {
+		return taskAttribute.getCardinality().isOptionalOrNullable();
 	}
 
 	/**

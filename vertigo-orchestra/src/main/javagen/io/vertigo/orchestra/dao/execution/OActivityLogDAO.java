@@ -44,7 +44,7 @@ public final class OActivityLogDAO extends DAO<OActivityLog, java.lang.Long> imp
 
 	/**
 	 * Execute la tache TkGetActivityLogByAceId.
-	 * @param aceId Long 
+	 * @param aceId Long
 	 * @return Option de OActivityLog dtcOActivityLog
 	*/
 	public Optional<io.vertigo.orchestra.domain.execution.OActivityLog> getActivityLogByAceId(final Long aceId) {
@@ -58,7 +58,7 @@ public final class OActivityLogDAO extends DAO<OActivityLog, java.lang.Long> imp
 
 	/**
 	 * Execute la tache TkGetLogByPreId.
-	 * @param preId Long 
+	 * @param preId Long
 	 * @return Option de OActivityLog dtActivityLog
 	*/
 	public Optional<io.vertigo.orchestra.domain.execution.OActivityLog> getLogByPreId(final Long preId) {

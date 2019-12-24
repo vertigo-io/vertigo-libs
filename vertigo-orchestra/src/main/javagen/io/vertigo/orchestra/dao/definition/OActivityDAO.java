@@ -44,7 +44,7 @@ public final class OActivityDAO extends DAO<OActivity, java.lang.Long> implement
 
 	/**
 	 * Execute la tache TkGetActivitiesByProId.
-	 * @param proId Long 
+	 * @param proId Long
 	 * @return DtList de OActivity dtOActivities
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.definition.OActivity> getActivitiesByProId(final Long proId) {
@@ -70,7 +70,7 @@ public final class OActivityDAO extends DAO<OActivity, java.lang.Long> implement
 
 	/**
 	 * Execute la tache TkGetFirstActivityByProcess.
-	 * @param proId Long 
+	 * @param proId Long
 	 * @return OActivity dtOActivity
 	*/
 	public io.vertigo.orchestra.domain.definition.OActivity getFirstActivityByProcess(final Long proId) {
@@ -84,7 +84,7 @@ public final class OActivityDAO extends DAO<OActivity, java.lang.Long> implement
 
 	/**
 	 * Execute la tache TkGetNextActivityByActId.
-	 * @param actId Long 
+	 * @param actId Long
 	 * @return Option de OActivity dtOActivity
 	*/
 	public Optional<io.vertigo.orchestra.domain.definition.OActivity> getNextActivityByActId(final Long actId) {

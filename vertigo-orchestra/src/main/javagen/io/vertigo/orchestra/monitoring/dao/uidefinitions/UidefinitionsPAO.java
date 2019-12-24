@@ -42,7 +42,7 @@ public final class UidefinitionsPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkGetProcessByName.
-	 * @param name String 
+	 * @param name String
 	 * @return OProcessUi dtOProcessUi
 	*/
 	public io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi getProcessByName(final String name) {
@@ -56,7 +56,7 @@ public final class UidefinitionsPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkSearchProcessByLabel.
-	 * @param search String 
+	 * @param search String
 	 * @return DtList de OProcessUi dtcOProcessUi
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi> searchProcessByLabel(final String search) {

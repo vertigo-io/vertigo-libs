@@ -44,7 +44,7 @@ public final class ONodeDAO extends DAO<ONode, java.lang.Long> implements StoreS
 
 	/**
 	 * Execute la tache TkGetNodeByName.
-	 * @param nodeName String 
+	 * @param nodeName String
 	 * @return Option de ONode dtoONode
 	*/
 	public Optional<io.vertigo.orchestra.domain.execution.ONode> getNodeByName(final String nodeName) {

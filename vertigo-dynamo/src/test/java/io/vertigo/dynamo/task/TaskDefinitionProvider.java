@@ -26,6 +26,7 @@ import static io.vertigo.dynamo.task.TaskEngineMock2.ATTR_IN_INTEGERS;
 
 import java.util.List;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
@@ -61,10 +62,10 @@ public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
 				.withEngine(TaskEngineMock.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineMock.class.getPackage().getName())
-				.addInRequired(ATTR_IN_INT_1, doInteger)
-				.addInRequired(ATTR_IN_INT_2, doInteger)
-				.addInRequired(ATTR_IN_INT_3, doInteger)
-				.withOutRequired(ATTR_OUT, doInteger)
+				.addInAttribute(ATTR_IN_INT_1, doInteger, Cardinality.ONE)
+				.addInAttribute(ATTR_IN_INT_2, doInteger, Cardinality.ONE)
+				.addInAttribute(ATTR_IN_INT_3, doInteger, Cardinality.ONE)
+				.withOutAttribute(ATTR_OUT, doInteger, Cardinality.ONE)
 				.build();
 	}
 
@@ -79,8 +80,8 @@ public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
 				.withEngine(TaskEngineMock2.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineMock.class.getPackage().getName())
-				.addInRequired(ATTR_IN_INTEGERS, doIntegers)
-				.withOutRequired(ATTR_OUT, doInteger)
+				.addInAttribute(ATTR_IN_INTEGERS, doIntegers, Cardinality.ONE)
+				.withOutAttribute(ATTR_OUT, doInteger, Cardinality.ONE)
 				.build();
 	}
 }

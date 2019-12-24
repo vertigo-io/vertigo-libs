@@ -64,6 +64,11 @@ public final class KspProperty {
 	public static final String REQUIRED = "REQUIRED";
 
 	/**
+	 * Propriété standard : cardinality (optional, one, many)
+	 */
+	public static final String CARDINALITY = "CARDINALITY";
+
+	/**
 	 * Propriété liée au dataStore : La donnée est-elle gérée en mode write par le dataSore.
 	 */
 	public static final String PERSISTENT = "PERSISTENT";

@@ -74,7 +74,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 	protected void setNamedParameters(final SqlStatementBuilder sqlStatementBuilder) {
 		final List<TaskAttribute> potentialBatchAttributes = getTaskDefinition().getInAttributes()
 				.stream()
-				.filter(inAttribute -> inAttribute.getDomain().isMultiple())// multiple
+				.filter(inAttribute -> inAttribute.getCardinality().hasMany())// multiple
 				.collect(Collectors.toList());
 
 		Assertion.checkState(potentialBatchAttributes.size() == 1, "For batch a single List param is required");
@@ -82,7 +82,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 
 		final List<TaskAttribute> otherAttributes = getTaskDefinition().getInAttributes()
 				.stream()
-				.filter(inAttribute -> !inAttribute.getDomain().isMultiple())// not multiple
+				.filter(inAttribute -> !inAttribute.getCardinality().hasMany())// not multiple
 				.collect(Collectors.toList());
 		//---
 		final List<?> list = getValue(listAttribute.getName());

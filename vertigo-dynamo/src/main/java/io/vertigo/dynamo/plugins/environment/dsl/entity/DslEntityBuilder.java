@@ -23,7 +23,7 @@ import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityField.Cardinality;
+import io.vertigo.core.lang.Cardinality;
 
 /**
  * This class provides a common way to build an entity.
@@ -81,7 +81,7 @@ public final class DslEntityBuilder implements Builder<DslEntity> {
 	 * @return this builder
 	 */
 	public DslEntityBuilder addOptionalField(final String fieldName, final DslEntityFieldType type) {
-		return addField(fieldName, type, Cardinality.OPTIONAL);
+		return addField(fieldName, type, Cardinality.OPTIONAL_OR_NULLABLE);
 	}
 
 	/**

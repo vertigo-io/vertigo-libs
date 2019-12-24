@@ -15,8 +15,8 @@ create Task TkGetPlanificationsByProId {
         	where prp.PRO_ID = #proId#
         	
 			"
-	attribute proId	 	{domain : DoOIdentifiant 		required:"true" 	inOut :"in"}
-	attribute dtcOProcessPlanification	 	{domain : DoDtOProcessPlanificationDtc		required:"true" 	inOut :"out"}
+	attribute proId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
+	attribute dtcOProcessPlanification	 	{domain : DoDtOProcessPlanificationDtc		cardinality: "*" 	inOut :"out"}
 }
 
 
@@ -30,8 +30,8 @@ create Task TkGetExecutionsByProId {
         	order by pre.begin_time desc
         	
 			"
-	attribute proId	 	{domain : DoOIdentifiant 		required:"true" 	inOut :"in"}
-	attribute dtcOProcessExecution	 	{domain : DoDtOProcessExecutionDtc		required:"true" 	inOut :"out"}
+	attribute proId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
+	attribute dtcOProcessExecution	 	{domain : DoDtOProcessExecutionDtc		cardinality: "*" 	inOut :"out"}
 }
 
 
@@ -45,8 +45,8 @@ create Task TkGetActivityExecutionsByPreId {
         	where ace.PRE_ID = #preId#
         	
 			"
-	attribute preId	 	{domain : DoOIdentifiant 		required:"true" 	inOut :"in"}
-	attribute dtcOActivityExecution	 	{domain : DoDtOActivityExecutionDtc		required:"true" 	inOut :"out"}
+	attribute preId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
+	attribute dtcOActivityExecution	 	{domain : DoDtOActivityExecutionDtc		cardinality: "*" 	inOut :"out"}
 }
 
 
@@ -59,8 +59,8 @@ create Task TkGetActivityLogByAceId {
         	where acl.ACE_ID = #aceId#
         	
 			"
-	attribute aceId	 	{domain : DoOIdentifiant 		required:"true" 	inOut :"in"}
-	attribute dtcOActivityLog	 	{domain : DoDtOActivityLogDto		required:"false" 	inOut :"out"}
+	attribute aceId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
+	attribute dtcOActivityLog	 	{domain : DoDtOActivityLogDto		cardinality: "?" 	inOut :"out"}
 }
 
 

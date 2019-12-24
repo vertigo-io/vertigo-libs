@@ -30,6 +30,7 @@ import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -480,10 +481,10 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU5 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInRequired("param1", doInteger)
-				.addInOptional("param2", doInteger)
-				.addInOptional("param3", doInteger)
-				.withOutRequired("dtc", doSuperHeroes)
+				.addInAttribute("param1", doInteger, Cardinality.OPTIONAL_OR_NULLABLE)
+				.addInAttribute("param2", doInteger, Cardinality.OPTIONAL_OR_NULLABLE)
+				.addInAttribute("param3", doInteger, Cardinality.OPTIONAL_OR_NULLABLE)
+				.withOutAttribute("dtc", doSuperHeroes, Cardinality.MANY)
 				.build();
 	}
 
@@ -495,8 +496,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU5 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInRequired(DTO_SUPER_HERO, doSupeHero)
-				.withOutRequired("dtc", doSupeHeroes)
+				.addInAttribute(DTO_SUPER_HERO, doSupeHero, Cardinality.ONE)
+				.withOutAttribute("dtc", doSupeHeroes, Cardinality.MANY)
 				.build();
 	}
 
@@ -507,8 +508,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU5 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInRequired(DTC_SUPER_HERO_IN, doSupeHeroes)
-				.withOutRequired("dtc", doSupeHeroes)
+				.addInAttribute(DTC_SUPER_HERO_IN, doSupeHeroes, Cardinality.MANY)
+				.withOutAttribute("dtc", doSupeHeroes, Cardinality.MANY)
 				.build();
 	}
 
@@ -520,8 +521,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU5 {
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInRequired(SUPER_HERO_ID_LIST, doLongs)
-				.withOutRequired("dtc", doSupeHeroes)
+				.addInAttribute(SUPER_HERO_ID_LIST, doLongs, Cardinality.MANY)
+				.withOutAttribute("dtc", doSupeHeroes, Cardinality.MANY)
 				.build();
 	}
 

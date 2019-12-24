@@ -72,7 +72,7 @@ public final class SqlDtFieldModel {
 	 * @return Type java du champ
 	 */
 	public String getJavaType() {
-		return DomainUtil.buildJavaType(dtField.getDomain());
+		return DomainUtil.buildJavaType(dtField.getDomain(), dtField.isMultiple());
 	}
 
 	/**

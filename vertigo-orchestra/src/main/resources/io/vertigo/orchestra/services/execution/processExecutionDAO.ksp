@@ -10,8 +10,8 @@ create Task TkGetActiveProcessExecutionByProId {
         	where pre.PRO_ID = #proId#
         	and (pre.EST_CD = 'WAITING' or pre.EST_CD = 'RESERVED' or pre.EST_CD = 'SUBMITTED' or pre.EST_CD = 'RUNNING' or pre.EST_CD = 'PENDING')     	
 			"
-		attribute proId					{domain : DoOIdentifiant 						required:"true" 	inOut :"in"}
-		attribute dtcProcessExecution	 	{domain : DoDtOProcessExecutionDtc 		required:"true" 	inOut :"out"}
+		attribute proId					{domain : DoOIdentifiant 						cardinality: "1" 	inOut :"in"}
+		attribute dtcProcessExecution	 	{domain : DoDtOProcessExecutionDtc 		cardinality: "*" 	inOut :"out"}
 },
 
 create Task TkGetLogByPreId {
@@ -25,8 +25,8 @@ create Task TkGetLogByPreId {
 			where ace.PRE_ID = #preId#
 			order by ace.end_time desc limit 1         	
 			"
-		attribute preId					{domain : DoOIdentifiant 				required:"true" 		inOut :"in" }
-		attribute dtActivityLog	 		{domain : DoDtOActivityLogDto 		required:"false" 	inOut :"out"}
+		attribute preId					{domain : DoOIdentifiant 				cardinality: "1" 		inOut :"in" }
+		attribute dtActivityLog	 		{domain : DoDtOActivityLogDto 		cardinality: "?" 	inOut :"out"}
 },
 
 create Task TkUpdateProcessExecutionTreatment {
@@ -40,10 +40,10 @@ create Task TkUpdateProcessExecutionTreatment {
         		where PRE_ID = #preId#
          	
 			"
-		attribute preId					{domain : DoOIdentifiant 			required:"true" 		inOut :"in" }
-		attribute checked					{domain : DoOBooleen 				required:"true" 		inOut :"in" }
-		attribute checkingDate				{domain : DoOTimestamp 			required:"true" 		inOut :"in" }
-		attribute checkingComment			{domain : DoOText 				required:"true" 		inOut :"in" }
+		attribute preId					{domain : DoOIdentifiant 			cardinality: "1" 		inOut :"in" }
+		attribute checked					{domain : DoOBooleen 			cardinality: "1" 		inOut :"in" }
+		attribute checkingDate				{domain : DoOTimestamp 			cardinality: "1" 		inOut :"in" }
+		attribute checkingComment			{domain : DoOText 				cardinality: "1" 		inOut :"in" }
 },
 
 

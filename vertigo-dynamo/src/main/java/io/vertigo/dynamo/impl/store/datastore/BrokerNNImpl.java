@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -203,12 +204,12 @@ final class BrokerNNImpl implements BrokerNN {
 				.withEngine(TaskEngineProc.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInRequired(sourceFieldName, sourceField.getDomain());
+				.addInAttribute(sourceFieldName, sourceField.getDomain(), Cardinality.ONE);
 		if (targetField != null) {
-			taskDefinitionBuilder.addInRequired(targetField.getName(), targetField.getDomain());
+			taskDefinitionBuilder.addInAttribute(targetField.getName(), targetField.getDomain(), Cardinality.ONE);
 		}
 		//OUT, obligatoire
-		final TaskDefinition taskDefinition = taskDefinitionBuilder.withOutRequired(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain)
+		final TaskDefinition taskDefinition = taskDefinitionBuilder.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, Cardinality.ONE)
 				.build();
 
 		/* Création de la tache. */

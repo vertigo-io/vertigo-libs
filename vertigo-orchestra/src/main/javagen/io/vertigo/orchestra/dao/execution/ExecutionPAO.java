@@ -42,7 +42,7 @@ public final class ExecutionPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkHandleDeadProcessesOfNode.
-	 * @param nodId Long 
+	 * @param nodId Long
 	*/
 	public void handleDeadProcessesOfNode(final Long nodId) {
 		final Task task = createTaskBuilder("TkHandleDeadProcessesOfNode")
@@ -53,7 +53,7 @@ public final class ExecutionPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkHandleProcessesOfDeadNodes.
-	 * @param maxDate Instant 
+	 * @param maxDate Instant
 	*/
 	public void handleProcessesOfDeadNodes(final java.time.Instant maxDate) {
 		final Task task = createTaskBuilder("TkHandleProcessesOfDeadNodes")
@@ -64,8 +64,8 @@ public final class ExecutionPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkReserveActivitiesToLaunch.
-	 * @param nodId Long 
-	 * @param maxNumber Integer 
+	 * @param nodId Long
+	 * @param maxNumber Integer
 	*/
 	public void reserveActivitiesToLaunch(final Long nodId, final Integer maxNumber) {
 		final Task task = createTaskBuilder("TkReserveActivitiesToLaunch")
@@ -77,10 +77,10 @@ public final class ExecutionPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkUpdateProcessExecutionTreatment.
-	 * @param preId Long 
-	 * @param checked Boolean 
-	 * @param checkingDate Instant 
-	 * @param checkingComment String 
+	 * @param preId Long
+	 * @param checked Boolean
+	 * @param checkingDate Instant
+	 * @param checkingComment String
 	*/
 	public void updateProcessExecutionTreatment(final Long preId, final Boolean checked, final java.time.Instant checkingDate, final String checkingComment) {
 		final Task task = createTaskBuilder("TkUpdateProcessExecutionTreatment")

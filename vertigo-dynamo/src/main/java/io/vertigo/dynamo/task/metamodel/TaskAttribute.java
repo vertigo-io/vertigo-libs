@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.task.metamodel;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
@@ -43,8 +44,8 @@ public final class TaskAttribute {
 
 	private final Domain domain;
 
-	/** if the attribute is required. */
-	private final boolean required;
+	/** if the attribute cardinality. */
+	private final Cardinality cardinality;
 
 	/**
 	 * Constructor.
@@ -53,15 +54,15 @@ public final class TaskAttribute {
 	 * @param domain the domain of the attribute
 	 * @param required if the attribute is required
 	 */
-	TaskAttribute(final String attributeName, final Domain domain, final boolean required) {
+	TaskAttribute(final String attributeName, final Domain domain, final Cardinality cardinality) {
 		Assertion.checkNotNull(attributeName);
+		Assertion.checkNotNull(cardinality);
 		Assertion.checkArgument(StringUtil.isLowerCamelCase(attributeName), "the name of the attribute {0} must be in lowerCamelCase", attributeName);
 		Assertion.checkNotNull(domain);
-		Assertion.when(!required).check(() -> !domain.isDtList(), "A list in never optional. Check attribute '{0}'", attributeName);
 		//-----
 		name = attributeName;
 		this.domain = domain;
-		this.required = required;
+		this.cardinality = cardinality;
 	}
 
 	/**
@@ -72,25 +73,23 @@ public final class TaskAttribute {
 	}
 
 	/**
-	 * Returns if the attribute is required in input or in output.
-	 *
-	 * @return if the attributre is required
-	 */
-	public boolean isRequired() {
-		return required;
-	}
-
-	/**
 	 * @return Domain the domain
 	 */
 	public Domain getDomain() {
 		return domain;
 	}
 
+	/**
+	 * @return if the attribute cardinality
+	 */
+	public Cardinality getCardinality() {
+		return cardinality;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "{ name : " + name + ", domain :" + domain + ", required :" + required + "]";
+		return "{ name : " + name + ", domain :" + domain + ", cardinality :" + cardinality + "]";
 	}
 
 	/**
@@ -99,7 +98,7 @@ public final class TaskAttribute {
 	 * @param value Valeur (Object primitif ou DtObject ou bien DtList)
 	 */
 	public void checkAttribute(final Object value) {
-		if (isRequired()) {
+		if (cardinality.hasOne()) {
 			Assertion.checkNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", getName());
 		}
 		try {

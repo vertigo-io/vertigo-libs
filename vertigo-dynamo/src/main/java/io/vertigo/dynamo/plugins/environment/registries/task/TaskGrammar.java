@@ -18,12 +18,11 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.task;
 
+import static io.vertigo.dynamo.plugins.environment.KspProperty.CARDINALITY;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.IN_OUT;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUEST;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUIRED;
-import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.Boolean;
 import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.String;
 
 import java.util.List;
@@ -45,7 +44,7 @@ final class TaskGrammar implements DslGrammar {
 
 	static {
 		final DslEntity taskAttributeDefinitionEntity = DslEntity.builder("Attribute")
-				.addRequiredField(REQUIRED, Boolean)
+				.addRequiredField(CARDINALITY, String)
 				.addRequiredField(IN_OUT, String)
 				.addRequiredField("domain", DomainGrammar.DOMAIN_ENTITY.getLink())
 				.build();

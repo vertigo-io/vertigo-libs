@@ -307,7 +307,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 
 	private static Type getFieldType(final DtField dtField) {
 		final Class<?> dtClass = dtField.getDomain().getJavaClass();
-		if (dtField.getDomain().isMultiple()) {
+		if (dtField.isMultiple()) {
 			return new CustomParameterizedType(dtField.getDomain().getTargetJavaClass(), dtClass);
 		}
 		return dtClass;

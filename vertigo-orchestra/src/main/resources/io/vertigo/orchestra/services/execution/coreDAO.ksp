@@ -9,8 +9,8 @@ create Task TkGetNodeByName {
         	from o_node nod
         	where nod.NAME = #nodeName#
 			"
-	attribute dtoONode	 	{domain : DoDtONodeDto 		required:"false" 	inOut :"out"}
-	attribute nodeName	 	{domain : DoOLibelle 		required:"true" 	inOut :"in"}
+	attribute dtoONode	 	{domain : DoDtONodeDto 		cardinality: "?" 	inOut :"out"}
+	attribute nodeName	 	{domain : DoOLibelle 		cardinality: "1" 	inOut :"in"}
 },
 
 
@@ -35,7 +35,7 @@ create Task TkHandleProcessesOfDeadNodes {
 				where ace.EST_CD = 'ABORTED');
         	
 			"
-	attribute maxDate	 	{domain : DoOTimestamp 		required:"true" 	inOut :"in"}
+	attribute maxDate	 	{domain : DoOTimestamp 		cardinality: "1" 	inOut :"in"}
 },
 
 create Task TkHandleDeadProcessesOfNode {
@@ -58,7 +58,7 @@ create Task TkHandleDeadProcessesOfNode {
 				where ace.EST_CD = 'ABORTED');
         	
 			"
-	attribute nodId	 	{domain : DoOIdentifiant 		required:"true" 	inOut :"in"}
+	attribute nodId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
 },
 
 

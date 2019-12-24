@@ -42,9 +42,9 @@ public final class SummaryPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkGetExecutionSummariesByDate.
-	 * @param dateMin Instant 
-	 * @param dateMax Instant 
-	 * @param status String 
+	 * @param dateMin Instant
+	 * @param dateMax Instant
+	 * @param status String
 	 * @return DtList de OExecutionSummary dtcExecutionSummary
 	*/
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary> getExecutionSummariesByDate(final java.time.Instant dateMin, final java.time.Instant dateMax, final String status) {
@@ -60,9 +60,9 @@ public final class SummaryPAO implements StoreServices {
 
 	/**
 	 * Execute la tache TkGetExecutionSummaryByDateAndName.
-	 * @param dateMin Instant 
-	 * @param dateMax Instant 
-	 * @param name String 
+	 * @param dateMin Instant
+	 * @param dateMax Instant
+	 * @param name String
 	 * @return OExecutionSummary dtExecutionSummary
 	*/
 	public io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary getExecutionSummaryByDateAndName(final java.time.Instant dateMin, final java.time.Instant dateMax, final String name) {

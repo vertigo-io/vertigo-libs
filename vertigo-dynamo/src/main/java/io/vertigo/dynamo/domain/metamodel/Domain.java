@@ -361,7 +361,4 @@ public final class Domain implements Definition {
 		return getFormatter().stringToValue(strValue, dataType);
 	}
 
-	public boolean isDtList() {
-		return getScope().isDataObject() && isMultiple();
-	}
 }

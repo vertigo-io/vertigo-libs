@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.environment.dsl.entity;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 
 /**
  * Field of an entity.
@@ -26,16 +27,6 @@ import io.vertigo.core.lang.Assertion;
  * @author pchretien
  */
 public final class DslEntityField {
-
-	/** Cardinalities of associations. */
-	public enum Cardinality {
-		/* 0  or 1*/
-		OPTIONAL,
-		/* 1 */
-		ONE,
-		/* 0..n */
-		MANY
-	}
 
 	private final String name;
 	private final Cardinality cardinality;

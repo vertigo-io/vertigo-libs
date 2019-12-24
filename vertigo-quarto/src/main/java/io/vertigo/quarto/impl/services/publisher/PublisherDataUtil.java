@@ -191,7 +191,7 @@ public final class PublisherDataUtil {
 				sb.append("\t\tbooleanField[").append(fieldName).append(")] = new DataField ();\n");
 			} else if (dtField.getDomain().getScope().isDataObject()) {
 				sb.append("\t\tdataField[").append(fieldName).append(")] = new NodeField (type = PN_").append(dtField.getDomain().getDtDefinition().getLocalName()).append(";);\n");
-			} else if (dtField.getDomain().isDtList()) {
+			} else if (dtField.isDtList()) {
 				sb.append("\t\tlistField[").append(fieldName).append(")] = new NodeField (type = PN_").append(dtField.getDomain().getDtDefinition().getLocalName()).append(";);\n");
 			} else { //aussi si FieldType.FOREIGN_KEY == dtField.getType()
 				sb.append("\t\tstringField[").append(fieldName).append(")] = new DataField ();\n");

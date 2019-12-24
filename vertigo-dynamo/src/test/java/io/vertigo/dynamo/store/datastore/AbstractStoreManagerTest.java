@@ -37,6 +37,7 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.TestUtil;
@@ -231,7 +232,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkCountCars")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select count(*) from CAR")
-				.withOutRequired("count", Domain.builder("DoCount", DataType.Long).build())
+				.withOutAttribute("count", Domain.builder("DoCount", DataType.Long).build(), Cardinality.ONE)
 				.build();
 
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
@@ -254,7 +255,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 				.withEngine(TaskEngineProc.class)
 				.withRequest("insert into CAR (ID, FAM_ID,MANUFACTURER, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MTY_CD) values "
 						+ "(NEXT VALUE FOR SEQ_CAR, #dtoCar.famId#, #dtoCar.manufacturer#, #dtoCar.model#, #dtoCar.description#, #dtoCar.year#, #dtoCar.kilo#, #dtoCar.price#, #dtoCar.mtyCd#)")
-				.addInRequired("dtoCar", doCar)
+				.addInAttribute("dtoCar", doCar, Cardinality.ONE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
@@ -272,7 +273,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkLoadAllCars")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR")
-				.withOutRequired("dtc", doCarList)
+				.withOutAttribute("dtc", doCarList, Cardinality.MANY)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)

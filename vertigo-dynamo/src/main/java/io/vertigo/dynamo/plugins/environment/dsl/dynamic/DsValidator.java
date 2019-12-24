@@ -24,7 +24,6 @@ import java.util.Set;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityField;
-import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntityField.Cardinality;
 
 /**
  *
@@ -95,7 +94,7 @@ final class DsValidator {
 		for (final String propertyName : entityPropertyNames) {
 			final DslEntityField entityField = dslEntity.getField(propertyName);
 
-			if ((entityField.getCardinality() == Cardinality.ONE)
+			if ((entityField.getCardinality().hasOne())
 					&& (!propertyNames.contains(propertyName) || dslDefinition.getPropertyValue(propertyName) == null)) {
 				// Si la propriété obligatoire n'est pas renseignée alors erreur
 				// Ou si la propriété obligatoire est renseignée mais qu'elle
