@@ -19,6 +19,7 @@
 package io.vertigo.account.account;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -29,7 +30,7 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 public final class AccountGroup implements Entity {
 	private static final long serialVersionUID = -4463291583101516140L;
 
-	@Field(type = "ID", domain = "DoXAccountId", required = true, label = "id")
+	@Field(type = "ID", domain = "DoXAccountId", cardinality = Cardinality.ONE, label = "id")
 	private final String id;
 
 	@Field(domain = "DoXAccountName", label = "displayName")

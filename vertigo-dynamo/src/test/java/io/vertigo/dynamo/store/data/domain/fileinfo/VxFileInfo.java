@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.store.data.domain.fileinfo;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -45,7 +46,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Identifiant'.
 	 * @return Long filId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", required = true, label = "Identifiant")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "Identifiant")
 	public Long getFilId() {
 		return filId;
 	}
@@ -64,7 +65,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Nom'.
 	 * @return String fileName <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoString", required = true, label = "Nom")
+	@Field(domain = "DoString", cardinality = Cardinality.ONE, label = "Nom")
 	public String getFileName() {
 		return fileName;
 	}
@@ -83,7 +84,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Type mime'.
 	 * @return String mimeType <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoString", required = true, label = "Type mime")
+	@Field(domain = "DoString", cardinality = Cardinality.ONE, label = "Type mime")
 	public String getMimeType() {
 		return mimeType;
 	}
@@ -102,7 +103,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Taille'.
 	 * @return Long length <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoLong", required = true, label = "Taille")
+	@Field(domain = "DoLong", cardinality = Cardinality.ONE, label = "Taille")
 	public Long getLength() {
 		return length;
 	}
@@ -121,7 +122,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Date de derniÃ¨re modification'.
 	 * @return java.time.Instant lastModified <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoInstant", required = true, label = "Date de derniÃ¨re modification")
+	@Field(domain = "DoInstant", cardinality = Cardinality.ONE, label = "Date de derniÃ¨re modification")
 	public java.time.Instant getLastModified() {
 		return lastModified;
 	}
@@ -140,7 +141,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'filePath'.
 	 * @return String filePath
 	 */
-	@Field(domain = "DoString", required = false, label = "File Path")
+	@Field(domain = "DoString", cardinality = Cardinality.OPTIONAL_OR_NULLABLE, label = "File Path")
 	public String getFilePath() {
 		return filePath;
 	}

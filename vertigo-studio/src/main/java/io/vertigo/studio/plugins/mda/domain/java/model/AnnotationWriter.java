@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -112,11 +113,12 @@ class AnnotationWriter {
 			// "DATA" est la valeur par défaut de type dans l'annotation Field
 			buffer.append("type = \"").append(dtField.getType()).append("\", ");
 		}
-		// La propriété Not null est obligatoirement renseignée
-		if (dtField.isRequired()) {
-			// false est la valeur par défaut de notNull dans l'annotation Field
-			buffer.append("required = true, ");
-		}
+		// The cardinality is always here
+		buffer.append("cardinality = ")
+				.append(Cardinality.class.getCanonicalName())
+				.append('.')
+				.append(dtField.getCardinality().name())
+				.append(", ");
 		if (!dtField.isPersistent()) {
 			// On ne précise la persistance que si elle n'est pas gérée
 			buffer.append("persistent = false, ");

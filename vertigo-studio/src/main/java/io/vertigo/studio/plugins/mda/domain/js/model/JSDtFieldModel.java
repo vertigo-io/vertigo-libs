@@ -58,6 +58,6 @@ public final class JSDtFieldModel {
 	 * @return Si la propriété est requise
 	 */
 	public boolean isRequired() {
-		return dtField.isRequired();
+		return dtField.getCardinality().hasOne();
 	}
 }

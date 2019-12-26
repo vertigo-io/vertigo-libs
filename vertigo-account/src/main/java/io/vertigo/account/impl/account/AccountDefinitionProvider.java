@@ -20,6 +20,7 @@ package io.vertigo.account.impl.account;
 
 import java.util.List;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
@@ -52,16 +53,16 @@ public final class AccountDefinitionProvider implements SimpleDefinitionProvider
 
 		final DtDefinition accountDtDefinition = DtDefinition.builder("DtAccount")
 				.addIdField(ID, "id", domainAccountId)
-				.addDataField(DISPLAY_NAME, "displayName", domainAccountName, false, true)
-				.addDataField(EMAIL, "email", domainAccountEmail, false, true)
-				.addDataField(PHOTO, "photo", domainAccountPhoto, false, true)
+				.addDataField(DISPLAY_NAME, "displayName", domainAccountName, Cardinality.OPTIONAL_OR_NULLABLE, true)
+				.addDataField(EMAIL, "email", domainAccountEmail, Cardinality.OPTIONAL_OR_NULLABLE, true)
+				.addDataField(PHOTO, "photo", domainAccountPhoto, Cardinality.OPTIONAL_OR_NULLABLE, true)
 				.withSortField(DISPLAY_NAME)
 				.withDisplayField(DISPLAY_NAME)
 				.build();
 
 		final DtDefinition accountGroupDtDefinition = DtDefinition.builder("DtAccountGroup")
 				.addIdField(ID, "id", domainAccountId)
-				.addDataField(DISPLAY_NAME, "displayName", domainAccountName, false, true)
+				.addDataField(DISPLAY_NAME, "displayName", domainAccountName, Cardinality.OPTIONAL_OR_NULLABLE, true)
 				.withSortField(DISPLAY_NAME)
 				.withDisplayField(DISPLAY_NAME)
 				.build();

@@ -18,6 +18,7 @@
  */
 package io.vertigo.vega.webservice.data.domain;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.model.UID;
@@ -26,7 +27,7 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 public final class Address implements Entity {
 	private static final long serialVersionUID = 8922834274442256496L;
 
-	@Field(domain = "DoId", type = "ID", required = true, label = "address Id")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "address Id")
 	private Long adrId;
 	@Field(domain = "DoTexte50", label = "street1")
 	private String street1;

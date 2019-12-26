@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.environment.multi.data.domain;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -27,7 +28,7 @@ public final class Item implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "DoLong", type = "ID", required = true, label = "id")
+	@Field(domain = "DoLong", type = "ID", cardinality = Cardinality.ONE, label = "id")
 	private Long id;
 
 	@Field(domain = "DoString", label = "label")

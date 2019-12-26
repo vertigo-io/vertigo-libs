@@ -192,7 +192,7 @@ public final class UiUtil implements Serializable {
 		Assertion.checkArgument(fieldPath.indexOf('.') != 0, "FieldPath shouldn't starts with . ({0})", fieldPath);
 		//-----
 		if (fieldPath.indexOf('.') > 0) { //Le champs est porté par un Object
-			return getDtField(fieldPath).isRequired();
+			return getDtField(fieldPath).getCardinality().hasOne();
 		}
 		return false; //on ne sait pas dire, mais on ne force pas à obligatoire
 	}

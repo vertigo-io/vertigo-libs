@@ -60,8 +60,8 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 	private static final String SUPER_HERO_ID_LIST_IN = "superHeroIdListIn";
 	private static final String DTC_SUPER_HERO_OUT = "dtcSuperHeroOut";
 	private static final String OTHER_PARAM_IN = "otherParam";
-	private static final String DO_DT_SUPER_HERO_DTC = "DoDtSuperHeroDtc";
-	private static final String DO_LONGS = "DoLongs";
+	private static final String DO_DT_SUPER_HERO = "DoDtSuperHero";
+	private static final String DO_ID = "DoId";
 	private static final String DO_STRING = "DoString";
 
 	@Inject
@@ -121,7 +121,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInAttribute(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class), Cardinality.MANY)
+				.addInAttribute(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO, Domain.class), Cardinality.MANY)
 				.withRequest(request)
 				.build();
 
@@ -151,7 +151,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInAttribute(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class), Cardinality.MANY)
+				.addInAttribute(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO, Domain.class), Cardinality.MANY)
 				.addInAttribute(OTHER_PARAM_IN, getApp().getDefinitionSpace().resolve(DO_STRING, Domain.class), Cardinality.ONE)
 				.withRequest(request)
 				.build();
@@ -182,7 +182,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInAttribute(SUPER_HERO_ID_LIST_IN, getApp().getDefinitionSpace().resolve(DO_LONGS, Domain.class), Cardinality.MANY)
+				.addInAttribute(SUPER_HERO_ID_LIST_IN, getApp().getDefinitionSpace().resolve(DO_ID, Domain.class), Cardinality.MANY)
 				.withRequest(request)
 				.build();
 
@@ -205,7 +205,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkSelectHeroes")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from SUPER_HERO")
-				.withOutAttribute(DTC_SUPER_HERO_OUT, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class), Cardinality.MANY)
+				.withOutAttribute(DTC_SUPER_HERO_OUT, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO, Domain.class), Cardinality.MANY)
 				.build();
 		final Task task = Task.builder(taskDefinition).build();
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {

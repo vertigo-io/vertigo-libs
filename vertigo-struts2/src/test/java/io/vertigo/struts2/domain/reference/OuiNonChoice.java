@@ -18,6 +18,7 @@
  */
 package io.vertigo.struts2.domain.reference;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.DtMasterData;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -47,7 +48,7 @@ public final class OuiNonChoice implements DtMasterData {
 	 * Récupère la valeur de la propriété 'Valeur'.
 	 * @return Boolean key
 	 */
-	@Field(domain = "DoOuiNon", type = "ID", required = true, label = "Valeur")
+	@Field(domain = "DoOuiNon", type = "ID", cardinality = Cardinality.ONE, label = "Valeur")
 	public Boolean getKey() {
 		return key;
 	}
@@ -66,7 +67,7 @@ public final class OuiNonChoice implements DtMasterData {
 	 * Récupère la valeur de la propriété 'Libell�'.
 	 * @return String libelle <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoLabel", required = true, label = "Libellé")
+	@Field(domain = "DoLabel", cardinality = Cardinality.ONE, label = "Libellé")
 	public String getLibelle() {
 		return libelle;
 	}

@@ -3,10 +3,10 @@ package io.vertigo.demo.domain
 create DtDefinition DtKxFileInfo {
 	 id filId 				{domain : DoGedUri, label : "Identifiant", }
 
-	 field fileName 		{domain : DoGedDate, label : "Nom", required : "true"}
-	 field mimeType 		{domain : DoGedDate, label : "Type mime", required : "true"}
-	 field length 			{domain : DoGedSize, label : "Taille", required : "true"}
-	 field lastModified 	{domain : DoGedDate, label : "Date de derni�re modification", required : "true"}
-	 field fileData 		{domain : DoGedLabel, label : "data", required : "false", persistent:" true"} /*persistent si en BDD, false si en FS*/
+	 field fileName 		{domain : DoGedDate, label : "Nom", cardinality:"1"}
+	 field mimeType 		{domain : DoGedDate, label : "Type mime", cardinality:"1"}
+	 field length 			{domain : DoGedSize, label : "Taille", cardinality:"1"}
+	 field lastModified 	{domain : DoGedDate, label : "Date de derni�re modification", cardinality:"1"}
+	 field fileData 		{domain : DoGedLabel, label : "data", cardinality:"?", persistent:" true"} /*persistent si en BDD, false si en FS*/
 
 }

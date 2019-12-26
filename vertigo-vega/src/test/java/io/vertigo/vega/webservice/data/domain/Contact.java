@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
@@ -31,12 +32,12 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 public final class Contact implements KeyConcept {
 	private static final long serialVersionUID = 2074906343392206381L;
 
-	@Field(domain = "DoId", type = "ID", required = true, label = "Contact Id")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "Contact Id")
 	private Long conId;
 	@Field(domain = "DoCode", label = "Honorific title")
 	private String honorificCode;
 	//mandatory
-	@Field(domain = "DoTexte50", required = true, label = "Name")
+	@Field(domain = "DoTexte50", cardinality = Cardinality.ONE, label = "Name")
 	private String name;
 	@Field(domain = "DoTexte50", label = "Firstname")
 	private String firstName;

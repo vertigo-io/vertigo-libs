@@ -12,7 +12,7 @@ create Task TkGetActiveProcessByName {
         	
 			"
 	attribute name			 	{domain : DoOLibelle 				cardinality: "1"		inOut :"in"}
-	attribute dtProcess	 	{domain : DoDtOProcessDto 		cardinality: "?" 	inOut :"out"}
+	attribute dtProcess	 	{domain : DoDtOProcess 		cardinality: "?" 	inOut :"out"}
 }
 
 create Task TkGetProcessesByName {
@@ -40,7 +40,7 @@ create Task TkGetAllActiveProcesses {
         	where pro.ACTIVE_VERSION is true
         	
 			"
-	attribute dtcProcesses	 	{domain : DoDtOProcessDtc 		cardinality: "*" 	inOut :"out"}
+	attribute dtcProcesses	 	{domain : DoDtOProcess 		cardinality: "*" 	inOut :"out"}
 }
 
 

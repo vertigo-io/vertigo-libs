@@ -94,7 +94,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Id de l'execution d'un processus'.
 	 * @return Long aceId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id de l'execution d'un processus")
+	@Field(domain = "DoOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id de l'execution d'un processus")
 	public Long getAceId() {
 		return aceId;
 	}
@@ -113,7 +113,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de création'.
 	 * @return Instant creationTime <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOTimestamp", required = true, label = "Date de création")
+	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Date de création")
 	public java.time.Instant getCreationTime() {
 		return creationTime;
 	}
@@ -132,7 +132,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de début'.
 	 * @return Instant beginTime
 	 */
-	@Field(domain = "DoOTimestamp", label = "Date de début")
+	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Date de début")
 	public java.time.Instant getBeginTime() {
 		return beginTime;
 	}
@@ -151,7 +151,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de fin'.
 	 * @return Instant endTime
 	 */
-	@Field(domain = "DoOTimestamp", label = "Date de fin")
+	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Date de fin")
 	public java.time.Instant getEndTime() {
 		return endTime;
 	}
@@ -170,7 +170,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Implémentation effective de l'execution'.
 	 * @return String engine
 	 */
-	@Field(domain = "DoOClasse", label = "Implémentation effective de l'execution")
+	@Field(domain = "DoOClasse", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Implémentation effective de l'execution")
 	public String getEngine() {
 		return engine;
 	}
@@ -189,7 +189,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Token d'identification'.
 	 * @return String token
 	 */
-	@Field(domain = "DoOToken", label = "Token d'identification")
+	@Field(domain = "DoOToken", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Token d'identification")
 	public String getToken() {
 		return token;
 	}
@@ -208,7 +208,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Activity'.
 	 * @return Long actId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "Activity")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Activity")
 	public Long getActId() {
 		return (Long) actIdAccessor.getId();
 	}
@@ -227,7 +227,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Processus'.
 	 * @return Long preId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "Processus")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Processus")
 	public Long getPreId() {
 		return (Long) preIdAccessor.getId();
 	}
@@ -246,7 +246,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Node'.
 	 * @return Long nodId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "Node")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Node")
 	public Long getNodId() {
 		return (Long) nodIdAccessor.getId();
 	}
@@ -265,7 +265,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'ExecutionState'.
 	 * @return String estCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", required = true, label = "ExecutionState")
+	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "ExecutionState")
 	public String getEstCd() {
 		return (String) estCdAccessor.getId();
 	}

@@ -72,7 +72,7 @@ public final class SqlDtFieldModel {
 	 * @return Type java du champ
 	 */
 	public String getJavaType() {
-		return DomainUtil.buildJavaType(dtField.getDomain(), dtField.isMultiple());
+		return DomainUtil.buildJavaType(dtField);
 	}
 
 	/**
@@ -86,7 +86,7 @@ public final class SqlDtFieldModel {
 	 * @return Si la propriété est requise
 	 */
 	public boolean isRequired() {
-		return dtField.isRequired();
+		return dtField.getCardinality().hasOne();
 	}
 
 	public boolean isPersistent() {

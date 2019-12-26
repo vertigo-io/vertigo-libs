@@ -18,6 +18,7 @@
  */
 package io.vertigo.struts2.domain.users;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -49,7 +50,7 @@ public final class UserAuthentification implements Entity {
 	 * Récupère la valeur de la propriété 'AUTH_ID'.
 	 * @return Long authId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", required = true, label = "AUTH_ID")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "AUTH_ID")
 	public Long getAuthId() {
 		return authId;
 	}
@@ -106,7 +107,7 @@ public final class UserAuthentification implements Entity {
 	 * Récupère la valeur de la propriété 'Application user'.
 	 * @return Long usrId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "FOREIGN_KEY", required = true, label = "Application user")
+	@Field(domain = "DoId", type = "FOREIGN_KEY", cardinality = Cardinality.ONE, label = "Application user")
 	public Long getUsrId() {
 		return usrId;
 	}

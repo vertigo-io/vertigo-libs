@@ -28,12 +28,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.core.node.definition.DefinitionUtil;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.ComputedExpression;
 import io.vertigo.dynamo.domain.metamodel.ConstraintDefinition;
@@ -126,16 +126,13 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		final String domainName = xdomain.getName();
 		final List<String> constraintNames = xdomain.getDefinitionLinkNames("constraint");
 		final String type = xdomain.getDefinitionLinkName("dataType");
-		final Boolean multiple = (Boolean) xdomain.getPropertyValue(KspProperty.MULTIPLE);
 		final Properties properties = extractProperties(xdomain);
 		final DomainBuilder domainBuilder;
 		if ("DtObject".equals(type)) {
-			domainBuilder = Domain.builder(domainName, properties.getValue(DtProperty.TYPE), false);
-		} else if ("DtList".equals(type)) {
-			domainBuilder = Domain.builder(domainName, properties.getValue(DtProperty.TYPE), true);
+			domainBuilder = Domain.builder(domainName, properties.getValue(DtProperty.TYPE));
 		} else {
 			final DataType dataType = DataType.valueOf(type);
-			domainBuilder = Domain.builder(domainName, dataType, multiple == null ? false : multiple);
+			domainBuilder = Domain.builder(domainName, dataType);
 			//only primitive can have a formatter
 			final boolean hasFormatter = !xdomain.getDefinitionLinkNames("formatter").isEmpty();
 			if (hasFormatter) {
@@ -173,8 +170,8 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 			final DtField aliasDtField = from.getField(alias.getName());
 
 			//--- REQUIRED
-			final Boolean overiddenRequired = (Boolean) alias.getPropertyValue(KspProperty.REQUIRED);
-			final boolean required = overiddenRequired != null ? overiddenRequired : aliasDtField.isRequired();
+			final Cardinality overiddenCardinality = Cardinality.fromSymbol((String) alias.getPropertyValue(KspProperty.CARDINALITY));
+			final Cardinality cardinality = overiddenCardinality != null ? overiddenCardinality : aliasDtField.getCardinality();
 
 			//--- LABEL
 			final String overiddenLabel = (String) alias.getPropertyValue(KspProperty.LABEL);
@@ -184,7 +181,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 					aliasDtField.getName(),
 					label,
 					aliasDtField.getDomain(),
-					required,
+					cardinality,
 					aliasDtField.isPersistent());
 		}
 
@@ -207,7 +204,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 					idField.getName(),
 					idField.getLabel().getDisplay(),
 					idField.getDomain(),
-					true,
+					Cardinality.ONE,
 					from.getName());
 		}
 
@@ -304,8 +301,8 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.LABEL), "Label est une propriété obligatoire");
 			final String label = (String) field.getPropertyValue(KspProperty.LABEL);
 			//--
-			final boolean notNull = (Boolean) field.getPropertyValue(KspProperty.REQUIRED);
-			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.REQUIRED), "Not null est une propriété obligatoire.");
+			final Cardinality cardinality = Cardinality.fromSymbol((String) field.getPropertyValue(KspProperty.CARDINALITY));
+			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.CARDINALITY), "cardinality is a required property.");
 			//--
 			final Boolean tmpPersistent = (Boolean) field.getPropertyValue(KspProperty.PERSISTENT);
 			//Si PERSISTENT est non renseigné on suppose que le champ est à priori persistant .
@@ -313,7 +310,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 			//--
 			final String fieldName = field.getName();
 			//-----
-			dtDefinitionBuilder.addDataField(fieldName, label, domain, notNull, persistent);
+			dtDefinitionBuilder.addDataField(fieldName, label, domain, cardinality, persistent);
 		}
 	}
 
@@ -332,13 +329,16 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 			//--
 			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.LABEL), "Label est une propriété obligatoire");
 			final String label = (String) field.getPropertyValue(KspProperty.LABEL);
+			//--
+			final Cardinality cardinality = Cardinality.fromSymbol((String) field.getPropertyValue(KspProperty.CARDINALITY));
+			Assertion.checkArgument(field.getPropertyNames().contains(KspProperty.CARDINALITY), "cardinality is a required property.");
 			//---
 			final String expression = (String) field.getPropertyValue(KspProperty.EXPRESSION);
 			final ComputedExpression computedExpression = new ComputedExpression(expression);
 			//--
 			final String fieldName = field.getName();
 
-			dtDefinitionBuilder.addComputedField(fieldName, label, domain, computedExpression);
+			dtDefinitionBuilder.addComputedField(fieldName, label, domain, cardinality, computedExpression);
 		}
 	}
 
@@ -445,8 +445,9 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		LOGGER.trace("{} : ajout d'une FK [{}] sur la table '{}'", xassociation.getName(), fkFieldName, foreignAssociationNode.getDtDefinition().getName());
 
 		final String label = primaryAssociationNode.getLabel();
+		final Cardinality fieldCardinality = primaryAssociationNode.isNotNull() ? Cardinality.ONE : Cardinality.OPTIONAL_OR_NULLABLE;
 		dtDefinitionBuilders.get(foreignAssociationNode.getDtDefinition().getName())
-				.addForeignKey(fkFieldName, label, fkDefinition.getIdField().get().getDomain(), primaryAssociationNode.isNotNull(), fkDefinition.getName());
+				.addForeignKey(fkFieldName, label, fkDefinition.getIdField().get().getDomain(), fieldCardinality, fkDefinition.getName());
 		//On estime qu'une FK n'est ni une colonne de tri ni un champ d'affichage
 
 		return associationSimpleDefinition;
@@ -474,25 +475,22 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 	public List<DslDefinition> onNewDefinition(final DslDefinition dslDefinition) {
 		if (DomainGrammar.DT_DEFINITION_ENTITY.equals(dslDefinition.getEntity())
 				|| DomainGrammar.FRAGMENT_ENTITY.equals(dslDefinition.getEntity())) {
-			//Dans le cas des DT on ajoute les domaines
-			return new ListBuilder<DslDefinition>()
-					.add(createDTODomain(dslDefinition.getName(), dslDefinition.getPackageName()))
-					.add(createDTCDomain(dslDefinition.getName(), dslDefinition.getPackageName()))
-					.build();
+			//Dans le cas des DT on ajoute le domain
+			return Collections.singletonList(createDtDomain(dslDefinition.getName(), dslDefinition.getPackageName()));
 		}
 		return Collections.emptyList();
 	}
 
 	/*
-	 * Construction des deux domaines relatif à un DT : DO_DT_XXX_DTO et DO_DT_XXX_DTC
+	 * Construction du domaine relatif à un DT : DoDtXxxXX
 	 */
-	private static DslDefinition createDTODomain(final String definitionName, final String packageName) {
+	private static DslDefinition createDtDomain(final String definitionName, final String packageName) {
 		//C'est le constructeur de DtDomainStandard qui vérifie la cohérence des données passées.
 		//Notamment la validité de la liste des contraintes et la nullité du formatter
 
 		final DslEntity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
 
-		return DslDefinition.builder(DOMAIN_PREFIX + definitionName + "Dto", metaDefinitionDomain)
+		return DslDefinition.builder(DOMAIN_PREFIX + definitionName, metaDefinitionDomain)
 				.withPackageName(packageName)
 				.addDefinitionLink("dataType", "DtObject")
 				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
@@ -500,19 +498,4 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 				.build();
 	}
 
-	private static DslDefinition createDTCDomain(final String definitionName, final String packageName) {
-		//C'est le constructeur de DtDomainStandard qui vérifie la cohérence des données passées.
-		//Notamment la validité de la liste des contraintes et la nullité du formatter
-
-		final DslEntity metaDefinitionDomain = DomainGrammar.DOMAIN_ENTITY;
-
-		//On fait la même chose avec DTC
-
-		return DslDefinition.builder(DOMAIN_PREFIX + definitionName + "Dtc", metaDefinitionDomain)
-				.withPackageName(packageName)
-				.addDefinitionLink("dataType", "DtList")
-				//On dit que le domaine possède une prop définissant le type comme étant le nom du DT
-				.addPropertyValue(KspProperty.TYPE, definitionName)
-				.build();
-	}
 }

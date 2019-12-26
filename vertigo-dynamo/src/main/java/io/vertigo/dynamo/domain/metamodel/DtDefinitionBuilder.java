@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.locale.MessageKey;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.definition.DefinitionReference;
@@ -130,7 +131,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			final String fieldName,
 			final String label,
 			final Domain domain,
-			final boolean required,
+			final Cardinality cardinality,
 			final String fkDtDefinitionName) {
 		//Pour l'instant on ne gère pas les chamsp computed dynamiques
 		final boolean persistent = true;
@@ -139,7 +140,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				DtField.FieldType.FOREIGN_KEY,
 				domain,
 				label,
-				required,
+				cardinality,
 				persistent,
 				fkDtDefinitionName,
 				null);
@@ -161,6 +162,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			final String fieldName,
 			final String label,
 			final Domain domain,
+			final Cardinality cardinality,
 			final ComputedExpression computedExpression) {
 		final boolean persistent = false;
 		final DtField dtField = createField(
@@ -168,7 +170,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				DtField.FieldType.COMPUTED,
 				domain,
 				label,
-				false,
+				cardinality,
 				persistent,
 				null,
 				computedExpression);
@@ -190,7 +192,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			final String fieldName,
 			final String label,
 			final Domain domain,
-			final boolean required,
+			final Cardinality cardinality,
 			final boolean persistent) {
 		//the field is dynamic if and only if the dtDefinition is dynamic
 		final DtField dtField = createField(
@@ -198,7 +200,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				DtField.FieldType.DATA,
 				domain,
 				label,
-				required,
+				cardinality,
 				persistent,
 				null,
 				null);
@@ -222,7 +224,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 		Assertion.checkArgument(myIdField == null, "only one ID per Entity is permitted, error on {0}", myPackageName);
 		//---
 		//le champ ID est tjrs required
-		final boolean required = true;
+		final Cardinality cardinality = Cardinality.ONE;
 		//le champ ID est persistant SSI la définition est persitante.
 		final boolean persistent = true;
 		//le champ  est dynamic SSI la définition est dynamique
@@ -231,7 +233,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				DtField.FieldType.ID,
 				domain,
 				label,
-				required,
+				cardinality,
 				persistent,
 				null,
 				null);
@@ -245,7 +247,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			final DtField.FieldType type,
 			final Domain domain,
 			final String strLabel,
-			final boolean required,
+			final Cardinality cardinality,
 			final boolean persistent,
 			final String fkDtDefinitionName,
 			final ComputedExpression computedExpression) {
@@ -266,7 +268,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				type,
 				domain,
 				labelMsg,
-				required,
+				cardinality,
 				persistent,
 				fkDtDefinitionName,
 				computedExpression);

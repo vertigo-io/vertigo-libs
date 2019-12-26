@@ -18,6 +18,7 @@
  */
 package io.vertigo.struts2.domain.users;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -50,7 +51,7 @@ public final class ApplicationUser implements Entity {
 	 * Récupère la valeur de la propriété 'USR_ID'.
 	 * @return Long usrId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", required = true, label = "USR_ID")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "USR_ID")
 	public Long getUsrId() {
 		return usrId;
 	}

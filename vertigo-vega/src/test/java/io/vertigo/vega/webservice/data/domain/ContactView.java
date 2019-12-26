@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -33,7 +34,7 @@ public final class ContactView implements DtObject {
 	@Field(domain = "DoCode", label = "Honorific title")
 	private String honorificCode;
 	//mandatory
-	@Field(domain = "DoTexte50", required = true, label = "Name")
+	@Field(domain = "DoTexte50", cardinality = Cardinality.ONE, label = "Name")
 	private String name;
 	@Field(domain = "DoTexte50", label = "Firstname")
 	private String firstName;
@@ -41,7 +42,7 @@ public final class ContactView implements DtObject {
 	private LocalDate birthday;
 	@Field(domain = "DoEmail", label = "Email")
 	private String email;
-	@Field(domain = "DoDtAddressDtc", label = "Addresses connues", persistent = false)
+	@Field(domain = "DoDtAddress", label = "Addresses connues", cardinality = Cardinality.MANY, persistent = false)
 	private DtList<Address> addresses;
 
 	private List<String> tels;

@@ -77,7 +77,7 @@ public final class TaskDynamicRegistry implements DynamicRegistry {
 			final String domainName = xtaskAttribute.getDefinitionLinkName("domain");
 			final Domain domain = Home.getApp().getDefinitionSpace().resolve(domainName, Domain.class);
 			//-----
-			final Cardinality cardinality = Cardinality.fromString((String) xtaskAttribute.getPropertyValue(KspProperty.CARDINALITY));
+			final Cardinality cardinality = Cardinality.fromSymbol((String) xtaskAttribute.getPropertyValue(KspProperty.CARDINALITY));
 			if (isInValue((String) xtaskAttribute.getPropertyValue(KspProperty.IN_OUT))) {
 				taskDefinitionBuilder.addInAttribute(attributeName, domain, cardinality);
 			} else {

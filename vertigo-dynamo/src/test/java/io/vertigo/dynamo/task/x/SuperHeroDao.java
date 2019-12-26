@@ -45,7 +45,7 @@ public interface SuperHeroDao extends Component {
 			request = "<%if (name !=null) {%>select * from super_hero where name = #name# <%} else {%>"
 					+ "select * from super_hero <%}%>",
 			taskEngineClass = TaskEngineSelect.class)
-	@TaskOutput(domain = "DoDtSuperHeroDtc")
+	@TaskOutput(domain = "DoDtSuperHero")
 	DtList<SuperHero> findAll(
 			@TaskInput(name = "name", domain = "DoString") Optional<String> nameOpt);
 
@@ -61,7 +61,7 @@ public interface SuperHeroDao extends Component {
 			name = "TkLoadSuperHeroNames",
 			request = "select distinct name from super_hero ",
 			taskEngineClass = TaskEngineSelect.class)
-	@TaskOutput(domain = "DoStrings")
+	@TaskOutput(domain = "DoString")
 	List<String> names();
 
 	@TaskAnnotation(

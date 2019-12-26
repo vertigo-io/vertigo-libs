@@ -25,12 +25,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Home;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 
 /**
  * Helper.
@@ -48,11 +52,57 @@ public final class DomainUtil {
 
 	/**
 	 * Construite le type java (sous forme de chaine de caractère) correspondant
-	 * à un Domaine.
-	 * @param domain DtDomain
+	 * à un champ.
+	 * @param dtField the field
 	 * @return String
 	 */
-	public static String buildJavaType(final Domain domain, final boolean multiple) {
+	public static String buildJavaType(final DtField dtField) {
+		return buildJavaType(dtField.getDomain(), dtField.getCardinality(), getManyTargetJavaClass(dtField.getDomain()));
+	}
+
+	/**
+	 * Construite le type java (sous forme de chaine de caractère) correspondant
+	 * à un attribut de tache.
+	 * @param taskAttribute the attribute
+	 * @return String
+	 */
+	public static String buildJavaType(final TaskAttribute taskAttribute) {
+		return buildJavaType(taskAttribute.getDomain(), taskAttribute.getCardinality(), getManyTargetJavaClass(taskAttribute.getDomain()));
+	}
+
+	/**
+	 * Construite le label du type java (sous forme de chaine de caractère) correspondant
+	 * à un DtField.
+	 * @param dtField DtField
+	 * @return String
+	 */
+	public static String buildJavaTypeLabel(final DtField dtField) {
+		return buildJavaTypeLabel(dtField.getDomain(), dtField.getCardinality(), getManyTargetJavaClass(dtField.getDomain()));
+	}
+
+	/**
+	 * Construite le label du type java (sous forme de chaine de caractère) correspondant
+	 * à un attribut de tache.
+	 * @param taskAttribute the attribute
+	 * @return String
+	 */
+	public static String buildJavaTypeLabel(final TaskAttribute taskAttribute) {
+		return buildJavaTypeLabel(taskAttribute.getDomain(), taskAttribute.getCardinality(), getManyTargetJavaClass(taskAttribute.getDomain()));
+	}
+
+	private static Class getManyTargetJavaClass(final Domain domain) {
+		switch (domain.getScope()) {
+			case DATA_OBJECT:
+				return DtList.class;
+			case PRIMITIVE:
+			case VALUE_OBJECT:
+				return List.class;
+			default:
+				throw new IllegalStateException();
+		}
+	}
+
+	private static String buildJavaType(final Domain domain, final Cardinality cardinality, final Class manyTargetClass) {
 		final String className;
 		switch (domain.getScope()) {
 			case PRIMITIVE:
@@ -74,19 +124,13 @@ public final class DomainUtil {
 			default:
 				throw new IllegalStateException();
 		}
-		if (multiple) {
-			return domain.getTargetJavaClass().getName() + '<' + className + '>';
+		if (cardinality.hasMany()) {
+			return manyTargetClass.getName() + '<' + className + '>';
 		}
 		return className;
 	}
 
-	/**
-	 * Construite le label du type java (sous forme de chaine de caractère) correspondant
-	 * à un Domaine.
-	 * @param domain DtDomain
-	 * @return String
-	 */
-	public static String buildJavaTypeLabel(final Domain domain, final boolean multiple) {
+	public static String buildJavaTypeLabel(final Domain domain, final Cardinality cardinality, final Class manyTargetClass) {
 		final String classLabel;
 		switch (domain.getScope()) {
 			case PRIMITIVE:
@@ -101,8 +145,8 @@ public final class DomainUtil {
 			default:
 				throw new IllegalStateException();
 		}
-		if (multiple) {
-			return domain.getTargetJavaClass().getSimpleName() + " de " + classLabel;
+		if (cardinality.hasMany()) {
+			return manyTargetClass.getSimpleName() + " de " + classLabel;
 		}
 		return classLabel;
 	}

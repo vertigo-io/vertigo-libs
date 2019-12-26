@@ -11,7 +11,7 @@ create Task TkGetActivitiesToLaunch {
         	and ace.NOD_ID = #nodId#
         	
 			"
-	attribute dtcActivityExecution	 	{domain : DoDtOActivityExecutionDtc 		cardinality: "*" 	inOut :"out"}
+	attribute dtcActivityExecution	 	{domain : DoDtOActivityExecution 		cardinality: "*" 	inOut :"out"}
 	attribute nodId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
 },
 
@@ -27,7 +27,7 @@ create Task TkGetActivityExecutionByToken {
         	and ace.TOKEN = #token#
         	
 			"
-	attribute dtActivityExecution	 	{domain : DoDtOActivityExecutionDto 		cardinality: "1" 	inOut :"out"}
+	attribute dtActivityExecution	 	{domain : DoDtOActivityExecution 		cardinality: "1" 	inOut :"out"}
 	attribute aceId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
 	attribute token	 	{domain : DoOToken 		cardinality: "1" 	inOut :"in"}
 },
@@ -66,6 +66,6 @@ create Task TkGetActivityWorkspace {
 			
 		attribute aceId	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
 		attribute in	 	{domain : DoOBooleen 			cardinality: "1" 	inOut :"in"}
-		attribute dtOActivityWorkspace	 	{domain : DoDtOActivityWorkspaceDto 		cardinality: "?" 	inOut :"out"}
+		attribute dtOActivityWorkspace	 	{domain : DoDtOActivityWorkspace 		cardinality: "?" 	inOut :"out"}
 }
 

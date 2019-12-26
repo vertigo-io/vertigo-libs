@@ -31,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 import org.xml.sax.helpers.DefaultHandler;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.resource.ResourceManager;
@@ -137,11 +138,11 @@ public abstract class AbstractXmlLoader implements Loader {
 
 	private static DslDefinition toDynamicDefinition(final XmlAttribute attribute) {
 		final DslEntity dtFieldEntity = DomainGrammar.DT_DATA_FIELD_ENTITY;
-
+		final Cardinality fieldCardinality = attribute.isNotNull() ? Cardinality.ONE : Cardinality.OPTIONAL_OR_NULLABLE;
 		return DslDefinition.builder(attribute.getCode(), dtFieldEntity)
 				.addPropertyValue(KspProperty.LABEL, attribute.getLabel())
 				.addPropertyValue(KspProperty.PERSISTENT, attribute.isPersistent())
-				.addPropertyValue(KspProperty.REQUIRED, attribute.isNotNull())
+				.addPropertyValue(KspProperty.CARDINALITY, fieldCardinality.toSymbol())
 				.addDefinitionLink("domain", attribute.getDomain())
 				.build();
 	}

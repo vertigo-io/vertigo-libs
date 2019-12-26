@@ -106,7 +106,7 @@ public final class UID<E extends Entity> implements Serializable {
 	/**
 	 * Builds an UID for an entity defined by
 	 * - an object
-	
+
 	 * @param entity the entity
 	 * @param <E> the entity type
 	 * @return the entity UID
@@ -122,7 +122,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 * Builds an UID for an entity defined by
 	 * - a class
 	 * - an id
-	
+
 	 * @param entityClass the entity class
 	 * @param id the entity id
 	 * @param <E> the entity type

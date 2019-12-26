@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.environment.java.data.domain;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
@@ -62,7 +63,7 @@ public final class Attachment implements Entity {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long attId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", required = true, label = "id")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id")
 	public Long getAttId() {
 		return attId;
 	}
@@ -81,7 +82,7 @@ public final class Attachment implements Entity {
 	 * Récupère la valeur de la propriété 'Url'.
 	 * @return String url <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoKeyword", required = true, label = "Url")
+	@Field(domain = "DoKeyword", cardinality = Cardinality.ONE, label = "Url")
 	public String getUrl() {
 		return url;
 	}

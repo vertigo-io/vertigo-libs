@@ -18,6 +18,7 @@
  */
 package io.vertigo.ui.data.domain.movies;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -39,7 +40,7 @@ public final class MovieDisplay implements DtObject {
 	 * Récupère la valeur de la propriété 'MOV_ID'.
 	 * @return Long movId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", required = true, label = "MOV_ID")
+	@Field(domain = "DoId", cardinality = Cardinality.ONE, label = "MOV_ID")
 	public Long getMovId() {
 		return movId;
 	}

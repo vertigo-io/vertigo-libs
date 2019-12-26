@@ -27,7 +27,6 @@ import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.dynamo.domain.model.DtList;
 
 /**
  * A domain exists to enrich the primitive datatypes, giving them super powers.
@@ -78,7 +77,6 @@ public final class Domain implements Definition {
 
 	private final String name;
 	private final Scope scope;
-	private final boolean multiple;
 	private final DataType dataType;
 
 	private final Class valueObjectClass;
@@ -108,7 +106,6 @@ public final class Domain implements Definition {
 	Domain(
 			final String name,
 			final Scope scope,
-			final boolean multiple,
 			final DataType dataType,
 			final String dtDefinitionName,
 			final Class valueObjectClass,
@@ -132,7 +129,6 @@ public final class Domain implements Definition {
 		//-----
 		this.name = name;
 		this.scope = scope;
-		this.multiple = multiple;
 		//--- Primitive
 		this.dataType = dataType;
 		//---data-object
@@ -151,21 +147,10 @@ public final class Domain implements Definition {
 	 * Static method factory for DomainBuilder
 	 * @param name the name of the domain
 	 * @param dataType the dataType managed by the domain
-	 * @param multiple if the domain is a list
-	 * @return DomainBuilder
-	 */
-	public static DomainBuilder builder(final String name, final DataType dataType, final boolean multiple) {
-		return new DomainBuilder(name, dataType, multiple);
-	}
-
-	/**
-	 * Static method factory for DomainBuilder
-	 * @param name the name of the domain
-	 * @param dataType the dataType managed by the domain
 	 * @return DomainBuilder
 	 */
 	public static DomainBuilder builder(final String name, final DataType dataType) {
-		return new DomainBuilder(name, dataType, false);
+		return new DomainBuilder(name, dataType);
 	}
 
 	/**
@@ -175,8 +160,8 @@ public final class Domain implements Definition {
 	 * @param multiple if the domain is a list
 	 * @return DomainBuilder
 	 */
-	public static DomainBuilder builder(final String name, final String dtDefinitionName, final boolean multiple) {
-		return new DomainBuilder(name, dtDefinitionName, multiple);
+	public static DomainBuilder builder(final String name, final String dtDefinitionName) {
+		return new DomainBuilder(name, dtDefinitionName);
 	}
 
 	private static List<DefinitionReference<ConstraintDefinition>> buildConstraintDefinitionRefs(final List<ConstraintDefinition> constraintDefinitions) {
@@ -197,13 +182,6 @@ public final class Domain implements Definition {
 			propertiesBuilder.addValue(constraintDefinition.getProperty(), constraintDefinition.getPropertyValue());
 		}
 		return propertiesBuilder.build();
-	}
-
-	/**
-	 * @return if the domain is a list of objects
-	 */
-	public boolean isMultiple() {
-		return multiple;
 	}
 
 	/**
@@ -242,14 +220,7 @@ public final class Domain implements Definition {
 	 */
 	public void checkValue(final Object value) {
 		if (getScope().isPrimitive()) {
-			if (isMultiple()) {
-				if (!(value instanceof List)) {
-					throw new ClassCastException("Value " + value + " must be a list");
-				}
-				List.class.cast(value).forEach(element -> dataType.checkValue(element));
-			} else {
-				dataType.checkValue(value);
-			}
+			dataType.checkValue(value);
 		}
 	}
 
@@ -319,22 +290,6 @@ public final class Domain implements Definition {
 			default:
 				throw new IllegalStateException();
 		}
-	}
-
-	public Class getTargetJavaClass() {
-		if (isMultiple()) {
-			switch (scope) {
-				case PRIMITIVE:
-					return List.class;
-				case DATA_OBJECT:
-					return DtList.class;
-				case VALUE_OBJECT:
-					return List.class;
-				default:
-					throw new IllegalStateException();
-			}
-		}
-		return getJavaClass();
 	}
 
 	/** {@inheritDoc} */

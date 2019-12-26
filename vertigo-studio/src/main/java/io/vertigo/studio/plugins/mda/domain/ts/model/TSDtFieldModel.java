@@ -49,7 +49,7 @@ public final class TSDtFieldModel {
 	 * @return Type javascript du champ with cardinality
 	 */
 	public String getTypescriptType() {
-		return buildTypescriptType(dtField.getDomain(), dtField.isMultiple(), true);
+		return buildTypescriptType(dtField.getDomain(), dtField.getCardinality().hasMany());
 	}
 
 	/**
@@ -77,14 +77,14 @@ public final class TSDtFieldModel {
 	 * @return Simple TS type
 	 */
 	public String getDomainTypeName() {
-		return buildTypescriptType(dtField.getDomain(), dtField.isMultiple(), false);
+		return buildTypescriptType(dtField.getDomain(), false);
 	}
 
 	/**
 	 * @return Si la propriÃ©tÃ© est requise
 	 */
 	public boolean isRequired() {
-		return dtField.isRequired();
+		return dtField.getCardinality().hasOne();
 	}
 
 	/**
@@ -105,7 +105,7 @@ public final class TSDtFieldModel {
 	 * @return True si le type est une liste.
 	 */
 	public boolean isListOfObject() {
-		return dtField.isMultiple() && (dtField.getDomain().getScope().isDataObject() || dtField.getDomain().getScope().isValueObject());
+		return dtField.getCardinality().hasMany() && (dtField.getDomain().getScope().isDataObject() || dtField.getDomain().getScope().isValueObject());
 	}
 
 	/**
@@ -113,7 +113,7 @@ public final class TSDtFieldModel {
 	 * @param  domain DtDomain
 	 * @return String
 	 */
-	private static String buildTypescriptType(final Domain domain, final boolean multiple, final boolean withArray) {
+	private static String buildTypescriptType(final Domain domain, final boolean withArray) {
 		final String typescriptType;
 		if (domain.getScope().isPrimitive()) {
 			final DataType dataType = domain.getDataType();
@@ -127,6 +127,6 @@ public final class TSDtFieldModel {
 		} else {
 			typescriptType = domain.getJavaClass().getSimpleName();
 		}
-		return typescriptType + (multiple && withArray ? "[]" : "");
+		return typescriptType + (withArray ? "[]" : "");
 	}
 }

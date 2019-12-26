@@ -234,7 +234,17 @@ public class DAO<E extends Entity, P> {
 		final Criteria<E> criteria = Criterions.isEqualTo(dtFieldName, value);
 		// Verification de la valeur est du type du champ
 		final DtDefinition dtDefinition = getDtDefinition();
-		dtDefinition.getField(dtFieldName.name()).getDomain().checkValue(value);
+		final DtField dtField = dtDefinition.getField(dtFieldName.name());
+		if (dtField.getCardinality().hasMany()) {
+			if (!(value instanceof List)) {
+				throw new ClassCastException("Value " + value + " must be a list");
+			}
+			for (final Object element : List.class.cast(value)) {
+				dtField.getDomain().checkValue(element);
+			}
+		} else {
+			dtField.getDomain().checkValue(value);
+		}
 		return dataStore.find(dtDefinition, criteria, dtListState);
 	}
 

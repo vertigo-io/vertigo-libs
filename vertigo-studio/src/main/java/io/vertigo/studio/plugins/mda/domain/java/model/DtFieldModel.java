@@ -82,14 +82,14 @@ public final class DtFieldModel {
 	 * @return Type java du champ
 	 */
 	public String getJavaType() {
-		return DomainUtil.buildJavaType(dtField.getDomain(), dtField.isMultiple());
+		return DomainUtil.buildJavaType(dtField);
 	}
 
 	/**
 	 * @return Type java du champ
 	 */
 	public String getJavaTypeLabel() {
-		return DomainUtil.buildJavaTypeLabel(dtField.getDomain(), dtField.isMultiple());
+		return DomainUtil.buildJavaTypeLabel(dtField);
 	}
 
 	/**
@@ -103,7 +103,7 @@ public final class DtFieldModel {
 	 * @return Si la propriété est requise
 	 */
 	public boolean isRequired() {
-		return dtField.isRequired();
+		return dtField.getCardinality().hasOne();
 	}
 
 	/**

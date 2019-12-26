@@ -2,47 +2,47 @@ package io.vertigo.publisher.mock
 
 /*Pour chargement des données*/
 create DtDefinition DtVille {
-  	field nom 			{domain : DoString      	label : "Nom"      		required : "false"}
-  	field codePostal 	{domain : DoString      	label : "Code postal" 	required : "false"}
+  	field nom 			{domain : DoString      	label : "Nom"      		cardinality:"?"}
+  	field codePostal 	{domain : DoString      	label : "Code postal" 	cardinality:"?"}
 }
  
 create DtDefinition DtAddress {
-  	field rue			{domain : DoString      	label : "Rue"      		required : "false"}
-  	field ville 		{domain : DoDtVilleDto   label : "Ville"      	required : "false"}
+  	field rue			{domain : DoString      	label : "Rue"      		cardinality:"?"}
+  	field ville 		{domain : DoDtVille   label : "Ville"      	cardinality:"?"}
 }
  
 create DtDefinition DtEnqueteur {
-  	field nom 			{domain : DoString      	label : "Nom"      		required : "false"}
-  	field prenom 		{domain : DoString      	label : "Prenom"      	required : "false"}
+  	field nom 			{domain : DoString      	label : "Nom"      		cardinality:"?"}
+  	field prenom 		{domain : DoString      	label : "Prenom"      	cardinality:"?"}
 }
  
 create DtDefinition DtMisEnCause {
-  	field siHomme 			{domain : DoBoolean      	label : "Sexe"      		required : "false"}
-  	field nom 				{domain : DoString      	label : "Nom"      			required : "false"}
-  	field prenom 			{domain : DoString      	label : "Prenom"      		required : "false"}
-  	field adressesConnues 	{domain : DoDtAddressDtc	label : "Addresses connues"	required : "false"}   
+  	field siHomme 			{domain : DoBoolean      	label : "Sexe"      		cardinality:"?"}
+  	field nom 				{domain : DoString      	label : "Nom"      			cardinality:"?"}
+  	field prenom 			{domain : DoString      	label : "Prenom"      		cardinality:"?"}
+  	field adressesConnues 	{domain : DoDtAddress	label : "Addresses connues"	cardinality:"*"}   
 }
 
 create DtDefinition DtEnquete {
-  	field enqueteTerminee {domain : DoBoolean      			label : "Terminée?" required : "false"}
-  	field codeEnquete 		{domain : DoString      			label : "Code"      required : "false"}
-  	field fait 				{domain : DoString      			label : "Sexe"      required : "false"}
-  	field siGrave 			{domain : DoBoolean      			label : "Sexe"      required : "false"}
+  	field enqueteTerminee {domain : DoBoolean      			label : "Terminée?" cardinality:"?"}
+  	field codeEnquete 		{domain : DoString      			label : "Code"      cardinality:"?"}
+  	field fait 				{domain : DoString      			label : "Sexe"      cardinality:"?"}
+  	field siGrave 			{domain : DoBoolean      			label : "Sexe"      cardinality:"?"}
 }
 
 create DtDefinition DtPublisherMock {
-	field titre 		{ domain : DoString      				label : "Titre"      						required : "false"}
-	field nom 			{ domain : DoString      				label : "Nom"      							required : "false"}
-	field prenom 		{ domain : DoString      				label : "Prénom"      						required : "false"}
-	field address 		{ domain : DoString      				label : "Adresse {multi ligne}"      		required : "false"}
-	field commentaire 	{ domain : DoString      				label : "Commentaire {multi paragraphe}" 	required : "false"}
-	field boolean1 		{ domain : DoBoolean     				label : "booleen 1"      					required : "false"}
-	field boolean2 		{ domain : DoBoolean     				label : "booleen 2"      					required : "false"}
-	field boolean3 		{ domain : DoBoolean     				label : "booleen 3"      					required : "false"}
-	field testDummy 	{ domain : DoString    				label : "Test champs inutilisé"     		required : "false"}
-	field testLong	 	{ domain : DoLong      				label : "Test long"      					required : "false"}
-	field testDouble 	{ domain : DoDouble      				label : "Test double"      					required : "false"}
-	field testInteger 	{ domain : DoInteger      				label : "Test integer"      				required : "false"}
-	field testDate	 	{ domain : DoDate      				label : "Test date"      					required : "false"}
-	field dtcTest 		{ domain : DoDtPublisherMockDtc 	label : "Test list"      					required : "false"}
+	field titre 		{ domain : DoString      				label : "Titre"      						cardinality:"?"}
+	field nom 			{ domain : DoString      				label : "Nom"      							cardinality:"?"}
+	field prenom 		{ domain : DoString      				label : "Prénom"      						cardinality:"?"}
+	field address 		{ domain : DoString      				label : "Adresse {multi ligne}"      		cardinality:"?"}
+	field commentaire 	{ domain : DoString      				label : "Commentaire {multi paragraphe}" 	cardinality:"?"}
+	field boolean1 		{ domain : DoBoolean     				label : "booleen 1"      					cardinality:"?"}
+	field boolean2 		{ domain : DoBoolean     				label : "booleen 2"      					cardinality:"?"}
+	field boolean3 		{ domain : DoBoolean     				label : "booleen 3"      					cardinality:"?"}
+	field testDummy 	{ domain : DoString    				label : "Test champs inutilisé"     		cardinality:"?"}
+	field testLong	 	{ domain : DoLong      				label : "Test long"      					cardinality:"?"}
+	field testDouble 	{ domain : DoDouble      				label : "Test double"      					cardinality:"?"}
+	field testInteger 	{ domain : DoInteger      				label : "Test integer"      				cardinality:"?"}
+	field testDate	 	{ domain : DoDate      				label : "Test date"      					cardinality:"?"}
+	field dtcTest 		{ domain : DoDtPublisherMock 	label : "Test list"      					cardinality:"*"}
 }

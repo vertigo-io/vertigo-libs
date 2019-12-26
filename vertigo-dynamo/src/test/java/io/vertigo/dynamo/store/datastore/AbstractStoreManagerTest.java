@@ -249,7 +249,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doCar = definitionSpace.resolve("DoDtCarDto", Domain.class);
+		final Domain doCar = definitionSpace.resolve("DoDtCar", Domain.class);
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkInsertCar")
 				.withEngine(TaskEngineProc.class)
@@ -268,7 +268,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 
 	protected final DtList<Car> nativeLoadCarList() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doCarList = definitionSpace.resolve("DoDtCarDtc", Domain.class);
+		final Domain doCarList = definitionSpace.resolve("DoDtCar", Domain.class);
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkLoadAllCars")
 				.withEngine(TaskEngineSelect.class)

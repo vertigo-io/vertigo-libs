@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.store.data.domain.car;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.DtStaticMasterData;
 import io.vertigo.dynamo.domain.model.UID;
@@ -46,7 +47,7 @@ public final class MotorType implements DtStaticMasterData {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return String mtyCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoString", type = "ID", required = true, label = "id")
+	@Field(domain = "DoString", type = "ID", cardinality = Cardinality.ONE, label = "id")
 	public String getMtyCd() {
 		return mtyCd;
 	}
@@ -65,7 +66,7 @@ public final class MotorType implements DtStaticMasterData {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoFullText", required = true, label = "Label")
+	@Field(domain = "DoFullText", cardinality = Cardinality.ONE, label = "Label")
 	public String getLabel() {
 		return label;
 	}

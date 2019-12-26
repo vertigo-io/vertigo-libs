@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.store.data.domain.car;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.EnumVAccessor;
@@ -99,7 +100,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'identifiant de la voiture'.
 	 * @return Long id <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", required = true, label = "identifiant de la voiture")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
 	public Long getId() {
 		return id;
 	}
@@ -118,7 +119,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Constructeur'.
 	 * @return String manufacturer <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoKeyword", required = true, label = "Constructeur")
+	@Field(domain = "DoKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
 	public String getManufacturer() {
 		return manufacturer;
 	}
@@ -137,7 +138,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'ModÃ¨le'.
 	 * @return String model <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoFullText", required = true, label = "ModÃ¨le")
+	@Field(domain = "DoFullText", cardinality = Cardinality.ONE, label = "ModÃ¨le")
 	public String getModel() {
 		return model;
 	}
@@ -156,7 +157,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Descriptif'.
 	 * @return String description <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoFullText", required = true, label = "Descriptif")
+	@Field(domain = "DoFullText", cardinality = Cardinality.ONE, label = "Descriptif")
 	public String getDescription() {
 		return description;
 	}
@@ -175,7 +176,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'AnnÃ©e'.
 	 * @return Integer year <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoInteger", required = true, label = "AnnÃ©e")
+	@Field(domain = "DoInteger", cardinality = Cardinality.ONE, label = "AnnÃ©e")
 	public Integer getYear() {
 		return year;
 	}
@@ -194,7 +195,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'KilomÃ©trage'.
 	 * @return Integer kilo <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoInteger", required = true, label = "KilomÃ©trage")
+	@Field(domain = "DoInteger", cardinality = Cardinality.ONE, label = "KilomÃ©trage")
 	public Integer getKilo() {
 		return kilo;
 	}
@@ -213,7 +214,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Prix'.
 	 * @return Integer price <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoInteger", required = true, label = "Prix")
+	@Field(domain = "DoInteger", cardinality = Cardinality.ONE, label = "Prix")
 	public Integer getPrice() {
 		return price;
 	}
@@ -232,7 +233,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Consommation'.
 	 * @return BigDecimal consommation <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoConso", required = true, label = "Consommation")
+	@Field(domain = "DoConso", cardinality = Cardinality.ONE, label = "Consommation")
 	public java.math.BigDecimal getConsommation() {
 		return consommation;
 	}
@@ -270,7 +271,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Famille'.
 	 * @return Long famId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "FOREIGN_KEY", required = true, label = "Famille")
+	@Field(domain = "DoId", type = "FOREIGN_KEY", cardinality = Cardinality.ONE, label = "Famille")
 	public Long getFamId() {
 		return (Long) famIdAccessor.getId();
 	}

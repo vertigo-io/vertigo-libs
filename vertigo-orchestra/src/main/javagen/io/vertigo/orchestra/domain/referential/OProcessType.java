@@ -29,7 +29,7 @@ public final class OProcessType implements Entity {
 	 * Récupère la valeur de la propriété 'Code'.
 	 * @return String prtCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOCodeIdentifiant", type = "ID", required = true, label = "Code")
+	@Field(domain = "DoOCodeIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Code")
 	public String getPrtCd() {
 		return prtCd;
 	}
@@ -48,7 +48,7 @@ public final class OProcessType implements Entity {
 	 * Récupère la valeur de la propriété 'Libellé'.
 	 * @return String label
 	 */
-	@Field(domain = "DoOLibelle", label = "Libellé")
+	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Libellé")
 	public String getLabel() {
 		return label;
 	}

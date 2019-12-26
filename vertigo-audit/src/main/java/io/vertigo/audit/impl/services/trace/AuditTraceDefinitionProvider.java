@@ -20,6 +20,7 @@ package io.vertigo.audit.impl.services.trace;
 
 import java.util.List;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
@@ -48,13 +49,13 @@ public final class AuditTraceDefinitionProvider implements SimpleDefinitionProvi
 				.addIdField("id", "id", domainAuditId)
 				.withSortField("category")
 				.withDisplayField("category")
-				.addDataField("category", "category", domainAuditCategory, true, true)
-				.addDataField("user", "user", domainAuditUser, true, true)
-				.addDataField("dateBusiness", "dateBusiness", domainAuditInstant, false, true)
-				.addDataField("dateExecution", "dateExecution", domainAuditInstant, true, true)
-				.addDataField("item", "item", domainAuditItem, true, true)
-				.addDataField("message", "message", domainAuditMessage, true, true)
-				.addDataField("context", "context", domainAuditContext, false, true)
+				.addDataField("category", "category", domainAuditCategory, Cardinality.ONE, true)
+				.addDataField("user", "user", domainAuditUser, Cardinality.ONE, true)
+				.addDataField("dateBusiness", "dateBusiness", domainAuditInstant, Cardinality.OPTIONAL_OR_NULLABLE, true)
+				.addDataField("dateExecution", "dateExecution", domainAuditInstant, Cardinality.ONE, true)
+				.addDataField("item", "item", domainAuditItem, Cardinality.ONE, true)
+				.addDataField("message", "message", domainAuditMessage, Cardinality.ONE, true)
+				.addDataField("context", "context", domainAuditContext, Cardinality.OPTIONAL_OR_NULLABLE, true)
 				.build();
 
 		return new ListBuilder<Definition>()

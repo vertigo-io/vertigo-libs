@@ -8,13 +8,13 @@ create DtDefinition DtCommand {
 create DtDefinition DtCommandType {
 		stereotype : "StaticMasterData",
 		id ctyId 			{ domain: DoId,	label:"id"}
-		field label  		{ domain: DoFullText, 		label:"Label",		required : "true"}		
+		field label  		{ domain: DoFullText, 		label:"Label",		cardinality:"1"}		
 }
 
 create DtDefinition DtCity {
 		id citId 			{ domain: DoId,	label:"id"}
-		field label  		{ domain: DoFullText, 		label:"Label",		required : "true"}	
-		field postalCode	{ domain: DoKeyword, 		label:"Postal code",required : "true"}			
+		field label  		{ domain: DoFullText, 		label:"Label",		cardinality:"1"}	
+		field postalCode	{ domain: DoKeyword, 		label:"Postal code",cardinality:"1"}			
 }
 
 alter  DtDefinition DtCity {
@@ -23,12 +23,12 @@ alter  DtDefinition DtCity {
 
 create DtDefinition DtAttachment {
 		id 		attId 		{ domain: DoId,	label:"id" }
-		field 	url  		{ domain: DoKeyword, 		label:"Url",		required : "true"}	
+		field 	url  		{ domain: DoKeyword, 		label:"Url",		cardinality:"1"}	
 }
 
 create DtDefinition DtCommandValidation {
 		id cvaId 			{ domain: DoId,	label:"id"}
-		field signerName	{ domain: DoFullText, 		label:"Signer name",required : "true"}	
+		field signerName	{ domain: DoFullText, 		label:"Signer name",cardinality:"1"}	
 }
 
 

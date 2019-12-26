@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.collections.data.domain;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -27,13 +28,13 @@ public final class SmartCar implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "DoId", type = "ID", required = true, label = "identifiant de la voiture")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
 	private Long id;
-	@Field(domain = "DoKeyword", required = true, label = "Constructeur")
+	@Field(domain = "DoKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
 	private String manufacturer;
-	@Field(domain = "DoInteger", required = true, label = "Année")
+	@Field(domain = "DoInteger", cardinality = Cardinality.ONE, label = "Année")
 	private Integer year;
-	@Field(domain = "DoText", required = true, label = "Descriptif")
+	@Field(domain = "DoText", cardinality = Cardinality.ONE, label = "Descriptif")
 	private String description;
 
 	/** {@inheritDoc} */

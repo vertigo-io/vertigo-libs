@@ -112,6 +112,6 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 	public void testAnalyze() {
 		final List<Metric> metrics = analyticsManager.getMetrics();
 		//---
-		Assertions.assertEquals(36, metrics.size());
+		Assertions.assertEquals(28, metrics.size());
 	}
 }

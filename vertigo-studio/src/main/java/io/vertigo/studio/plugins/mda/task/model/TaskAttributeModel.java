@@ -55,14 +55,14 @@ public final class TaskAttributeModel {
 	 * @return Type de la donnée en string
 	 */
 	public String getDataType() {
-		return String.valueOf(DomainUtil.buildJavaType(taskAttribute.getDomain(), taskAttribute.getCardinality().hasMany()));
+		return String.valueOf(DomainUtil.buildJavaType(taskAttribute));
 	}
 
 	/**
 	 * @return Type java du champ
 	 */
 	public String getJavaTypeLabel() {
-		return DomainUtil.buildJavaTypeLabel(taskAttribute.getDomain(), taskAttribute.getCardinality().hasMany());
+		return DomainUtil.buildJavaTypeLabel(taskAttribute);
 	}
 
 	/**

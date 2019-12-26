@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.util.List;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.BeanUtil;
 import io.vertigo.dynamo.domain.model.DtObject;
@@ -48,7 +50,16 @@ public final class DataAccessor {
 	 */
 	public void setValue(final DtObject dto, final Object value) {
 		//On vérifie le type java de l'objet.
-		dtField.getDomain().checkValue(value);
+		if (dtField.getCardinality().hasMany()) {
+			if (!(value instanceof List)) {
+				throw new ClassCastException("Value " + value + " must be a list");
+			}
+			for (final Object element : List.class.cast(value)) {
+				dtField.getDomain().checkValue(element);
+			}
+		} else {
+			dtField.getDomain().checkValue(value);
+		}
 		//-----
 		BeanUtil.setValue(dto, dtField.getName(), value);
 	}

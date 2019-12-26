@@ -116,7 +116,7 @@ public class TaskTestDummyGeneratorBasic implements TaskTestDummyGenerator {
 					final Domain domain = dtField.getDomain();
 					final Class javaClass = domain.getJavaClass();
 					final Object value;
-					if (dtField.isMultiple()) {
+					if (dtField.getCardinality().hasMany()) {
 						if (dtField.getDomain().getScope().isDataObject()) {
 							value = dumDtList(javaClass);
 						} else {

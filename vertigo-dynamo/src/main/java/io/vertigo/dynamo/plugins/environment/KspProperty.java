@@ -46,22 +46,11 @@ public final class KspProperty {
 	//----Domain
 	//==============================
 	public static final String FRAGMENT_OF = "FRAGMENT_OF";
-	/**
-	 * If the domain is multiple or single.
-	 * for data-object   : DtLis<Car>
-	 * for primitives    : List<Integer>
-	 * for value-objects : List<Point>
-	 */
-	public static final String MULTIPLE = "MULTIPLE";
 
 	/**
 	 * Propriété standard : libellé du champ, valeur String.
 	 */
 	public static final String LABEL = "LABEL";
-	/**
-	 * Propriété standard : champ obligatoire, valeur Boolean.
-	 */
-	public static final String REQUIRED = "REQUIRED";
 
 	/**
 	 * Propriété standard : cardinality (optional, one, many)

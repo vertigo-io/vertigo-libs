@@ -18,12 +18,15 @@
  */
 package io.vertigo.dynamo.task.metamodel;
 
+import java.util.List;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.model.DtList;
 
 /**
  * Attribut d'une tache.
@@ -102,10 +105,40 @@ public final class TaskAttribute {
 			Assertion.checkNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", getName());
 		}
 		try {
-			getDomain().checkConstraints(value);
+			if (cardinality.hasMany()) {
+				if (!(value instanceof List)) {
+					throw new ClassCastException("Value " + value + " must be a list");
+				}
+				for (final Object element : List.class.cast(value)) {
+					getDomain().checkConstraints(element);
+				}
+			} else {
+				getDomain().checkConstraints(value);
+			}
 		} catch (final ConstraintException e) {
 			//On retransforme en Runtime pour conserver une API sur les getters et setters.
 			throw WrappedException.wrap(e);
 		}
+	}
+
+	/**
+	 * Returns the class that holds the value of the field.
+	 * If cardinality is many it's either a list or a dtList, if not then it's the base type of the domain.
+	 * @return the data accessor.
+	 */
+	public Class getTargetJavaClass() {
+		if (cardinality.hasMany()) {
+			switch (domain.getScope()) {
+				case PRIMITIVE:
+					return List.class;
+				case DATA_OBJECT:
+					return DtList.class;
+				case VALUE_OBJECT:
+					return List.class;
+				default:
+					throw new IllegalStateException();
+			}
+		}
+		return domain.getJavaClass();
 	}
 }

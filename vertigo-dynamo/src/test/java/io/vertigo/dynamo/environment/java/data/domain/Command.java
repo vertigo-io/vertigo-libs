@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.environment.java.data.domain;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.EnumVAccessor;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -93,7 +94,7 @@ public final class Command implements KeyConcept {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long cmdId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", required = true, label = "id")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id")
 	public Long getCmdId() {
 		return cmdId;
 	}

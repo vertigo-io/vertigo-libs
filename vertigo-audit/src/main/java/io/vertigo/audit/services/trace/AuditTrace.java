@@ -20,6 +20,7 @@ package io.vertigo.audit.services.trace;
 
 import java.time.Instant;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -32,7 +33,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 public final class AuditTrace implements DtObject {
 	private static final long serialVersionUID = 2280022920606418634L;
 
-	@Field(type = "ID", domain = "DoXAuditId", required = true, label = "id")
+	@Field(type = "ID", domain = "DoXAuditId", cardinality = Cardinality.ONE, label = "id")
 	private Long id;
 
 	@Field(domain = "DoXAuditCategory", label = "category")

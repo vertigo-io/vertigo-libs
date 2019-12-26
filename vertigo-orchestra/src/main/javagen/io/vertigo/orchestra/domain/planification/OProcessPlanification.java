@@ -76,7 +76,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Id Planification'.
 	 * @return Long prpId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id Planification")
+	@Field(domain = "DoOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id Planification")
 	public Long getPrpId() {
 		return prpId;
 	}
@@ -95,7 +95,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Date d'execution prévue'.
 	 * @return Instant expectedTime
 	 */
-	@Field(domain = "DoOTimestamp", label = "Date d'execution prévue")
+	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Date d'execution prévue")
 	public java.time.Instant getExpectedTime() {
 		return expectedTime;
 	}
@@ -114,7 +114,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
 	 * @return String initialParams
 	 */
-	@Field(domain = "DoOJsonText", label = "Paramètres initiaux sous forme de JSON")
+	@Field(domain = "DoOJsonText", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Paramètres initiaux sous forme de JSON")
 	public String getInitialParams() {
 		return initialParams;
 	}
@@ -133,7 +133,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "Processus")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Processus")
 	public Long getProId() {
 		return (Long) proIdAccessor.getId();
 	}
@@ -152,7 +152,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Node'.
 	 * @return Long nodId
 	 */
-	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", label = "Node")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Node")
 	public Long getNodId() {
 		return (Long) nodIdAccessor.getId();
 	}
@@ -171,7 +171,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'PlanificationState'.
 	 * @return String sstCd
 	 */
-	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", label = "PlanificationState")
+	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "PlanificationState")
 	public String getSstCd() {
 		return (String) sstCdAccessor.getId();
 	}

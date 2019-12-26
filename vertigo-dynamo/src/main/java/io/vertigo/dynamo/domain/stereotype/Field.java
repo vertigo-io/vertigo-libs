@@ -24,6 +24,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import io.vertigo.core.lang.Cardinality;
+
 /**
  * @author pchretien
  */
@@ -42,9 +44,9 @@ public @interface Field {
 	String domain();
 
 	/**
-	 * Si le champ est non null.
+	 * Field's cardinality
 	 */
-	boolean required() default false;
+	Cardinality cardinality() default Cardinality.OPTIONAL_OR_NULLABLE;
 
 	/**
 	 * Libellé du champ.

@@ -32,7 +32,6 @@ import io.vertigo.dynamo.domain.metamodel.Domain.Scope;
 public final class DomainBuilder implements Builder<Domain> {
 	private final String myName;
 	private final Domain.Scope myScope;
-	private final boolean myMultiple;
 
 	private final DataType myDataType;
 	private final String myDtDefinitionName;
@@ -52,13 +51,12 @@ public final class DomainBuilder implements Builder<Domain> {
 	 * @param name the name of the domain
 	 * @param dataType the dataType of the domain
 	 */
-	DomainBuilder(final String name, final DataType dataType, final boolean multiple) {
+	DomainBuilder(final String name, final DataType dataType) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dataType);
 		//---
 		myName = name;
 		myScope = Domain.Scope.PRIMITIVE;
-		myMultiple = multiple;
 
 		myDataType = dataType;
 		myDtDefinitionName = null;
@@ -70,13 +68,12 @@ public final class DomainBuilder implements Builder<Domain> {
 	 * @param name the name of the domain
 	 * @param dtDefinitionName the data-object definition of the domain
 	 */
-	DomainBuilder(final String name, final String dtDefinitionName, final boolean multiple) {
+	DomainBuilder(final String name, final String dtDefinitionName) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dtDefinitionName);
 		//---
 		myName = name;
 		myScope = Scope.DATA_OBJECT;
-		myMultiple = multiple;
 
 		myDataType = null;
 		myDtDefinitionName = dtDefinitionName;
@@ -88,13 +85,12 @@ public final class DomainBuilder implements Builder<Domain> {
 	 * @param name the name of the domain
 	 * @param valueObjectClass the value-object class of the domain
 	 */
-	DomainBuilder(final String name, final Class valueObjectClass, final boolean multiple) {
+	DomainBuilder(final String name, final Class valueObjectClass) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(valueObjectClass);
 		//---
 		myName = name;
 		myScope = Domain.Scope.VALUE_OBJECT;
-		myMultiple = multiple;
 
 		myDataType = null;
 		myDtDefinitionName = null;
@@ -139,7 +135,6 @@ public final class DomainBuilder implements Builder<Domain> {
 		return new Domain(
 				myName,
 				myScope,
-				myMultiple,
 				myDataType,
 				myDtDefinitionName,
 				myValueObjectClass,

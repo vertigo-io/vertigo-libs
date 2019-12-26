@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.task.data.domain;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -30,7 +31,7 @@ public final class SuperHero implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "DoId", type = "ID", required = true, label = "superHero ID")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "superHero ID")
 	private Long id;
 
 	@Field(domain = "DoString", label = "name")

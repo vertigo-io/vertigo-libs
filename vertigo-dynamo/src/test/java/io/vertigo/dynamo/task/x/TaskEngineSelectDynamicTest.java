@@ -58,9 +58,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU5 {
 	private static final String DTC_SUPER_HERO_IN = "dtcSuperHeroIn";
 	private static final String SUPER_HERO_ID_LIST = "superHeroIdList";
 	private static final String DO_INTEGER = "DoInteger";
-	private static final String DO_LONGS = "DoLongs";
-	private static final String DO_DT_SUPER_HERO_DTO = "DoDtSuperHeroDto";
-	private static final String DO_DT_SUPER_HERO_DTC = "DoDtSuperHeroDtc";
+	private static final String DO_ID = "DoId";
+	private static final String DO_DT_SUPER_HERO = "DoDtSuperHero";
 	private static final String DTO_SUPER_HERO = "dtoSuperHero";
 	@Inject
 	private TaskManager taskManager;
@@ -475,7 +474,7 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU5 {
 
 	private TaskDefinition registerTaskWithNullableIn(final String taskDefinitionName, final String params) {
 		final Domain doInteger = getApp().getDefinitionSpace().resolve(DO_INTEGER, Domain.class);
-		final Domain doSuperHeroes = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
+		final Domain doSuperHeroes = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO, Domain.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
@@ -489,20 +488,19 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU5 {
 	}
 
 	private TaskDefinition registerTaskObject(final String taskDefinitionName, final String params) {
-		final Domain doSupeHeroes = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
-		final Domain doSupeHero = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTO, Domain.class);
+		final Domain doSupeHero = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO, Domain.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
 				.addInAttribute(DTO_SUPER_HERO, doSupeHero, Cardinality.ONE)
-				.withOutAttribute("dtc", doSupeHeroes, Cardinality.MANY)
+				.withOutAttribute("dtc", doSupeHero, Cardinality.MANY)
 				.build();
 	}
 
 	private TaskDefinition registerTaskList(final String taskDefinitionName, final String params) {
-		final Domain doSupeHeroes = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
+		final Domain doSupeHeroes = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO, Domain.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
@@ -514,8 +512,8 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU5 {
 	}
 
 	private TaskDefinition registerTaskListPrimitive(final String taskDefinitionName, final String params) {
-		final Domain doLongs = getApp().getDefinitionSpace().resolve(DO_LONGS, Domain.class);
-		final Domain doSupeHeroes = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO_DTC, Domain.class);
+		final Domain doLongs = getApp().getDefinitionSpace().resolve(DO_ID, Domain.class);
+		final Domain doSupeHeroes = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO, Domain.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)

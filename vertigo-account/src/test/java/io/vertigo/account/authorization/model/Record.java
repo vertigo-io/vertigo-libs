@@ -18,6 +18,7 @@
  */
 package io.vertigo.account.authorization.model;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -49,7 +50,7 @@ public final class Record implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DoId", type = "ID", required = true, label = "Id")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "Id")
 	public final Long getDosId() {
 		return dosId;
 	}
@@ -85,7 +86,7 @@ public final class Record implements KeyConcept {
 		this.comId = comId;
 	}
 
-	@Field(domain = "DoId", required = true, label = "Type dossier")
+	@Field(domain = "DoId", cardinality = Cardinality.ONE, label = "Type dossier")
 	public final Long getTypId() {
 		return typId;
 	}
@@ -94,7 +95,7 @@ public final class Record implements KeyConcept {
 		this.typId = typId;
 	}
 
-	@Field(domain = "DoLabel", required = true, label = "Title")
+	@Field(domain = "DoLabel", cardinality = Cardinality.ONE, label = "Title")
 	public final String getTitle() {
 		return title;
 	}
@@ -103,7 +104,7 @@ public final class Record implements KeyConcept {
 		this.title = title;
 	}
 
-	@Field(domain = "DoMontant", required = true, label = "Amount")
+	@Field(domain = "DoMontant", cardinality = Cardinality.ONE, label = "Amount")
 	public final Double getAmount() {
 		return amount;
 	}
@@ -112,7 +113,7 @@ public final class Record implements KeyConcept {
 		this.amount = amount;
 	}
 
-	@Field(domain = "DoId", required = true, label = "Créateur")
+	@Field(domain = "DoId", cardinality = Cardinality.ONE, label = "Créateur")
 	public final Long getUtiIdOwner() {
 		return utiIdOwner;
 	}
@@ -121,7 +122,7 @@ public final class Record implements KeyConcept {
 		this.utiIdOwner = utiIdOwner;
 	}
 
-	@Field(domain = "DoCode", required = true, label = "Etat dossier")
+	@Field(domain = "DoCode", cardinality = Cardinality.ONE, label = "Etat dossier")
 	public final String getEtaCd() {
 		return etaCd;
 	}

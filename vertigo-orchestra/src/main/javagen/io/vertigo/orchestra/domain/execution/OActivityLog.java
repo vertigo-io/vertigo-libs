@@ -46,7 +46,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'Id du log'.
 	 * @return Long aclId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id du log")
+	@Field(domain = "DoOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id du log")
 	public Long getAclId() {
 		return aclId;
 	}
@@ -65,7 +65,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'Contenu du log'.
 	 * @return String log
 	 */
-	@Field(domain = "DoOText", label = "Contenu du log")
+	@Field(domain = "DoOText", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Contenu du log")
 	public String getLog() {
 		return log;
 	}
@@ -84,7 +84,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'Fichier joint'.
 	 * @return String attachment
 	 */
-	@Field(domain = "DoOText", label = "Fichier joint")
+	@Field(domain = "DoOText", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Fichier joint")
 	public String getAttachment() {
 		return attachment;
 	}
@@ -103,7 +103,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'ActivityExecution'.
 	 * @return Long aceId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "ActivityExecution")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "ActivityExecution")
 	public Long getAceId() {
 		return (Long) aceIdAccessor.getId();
 	}

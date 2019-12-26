@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.plugins.environment.loaders.java;
 
+import static io.vertigo.dynamo.plugins.environment.KspProperty.CARDINALITY;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.FK_FIELD_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL;
@@ -28,7 +29,6 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.PERSISTENT;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUIRED;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.STEREOTYPE;
@@ -48,8 +48,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.Selector;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.core.util.Selector.ClassConditions;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
@@ -329,7 +329,7 @@ public final class AnnotationLoader implements Loader {
 				final DslDefinition dataField = DslDefinition.builder(fieldName, DomainGrammar.DT_DATA_FIELD_ENTITY)
 						.addDefinitionLink("domain", field.domain())
 						.addPropertyValue(LABEL, field.label())
-						.addPropertyValue(REQUIRED, field.required())
+						.addPropertyValue(CARDINALITY, field.cardinality().toSymbol())
 						.addPropertyValue(PERSISTENT, field.persistent())
 						.build();
 				dtDefinition.addChildDefinition(DomainGrammar.DATA_FIELD, dataField);
@@ -338,6 +338,7 @@ public final class AnnotationLoader implements Loader {
 				final DslDefinition computedField = DslDefinition.builder(fieldName, DomainGrammar.DT_COMPUTED_FIELD_ENTITY)
 						.addDefinitionLink("domain", field.domain())
 						.addPropertyValue(LABEL, field.label())
+						.addPropertyValue(CARDINALITY, field.cardinality().toSymbol())
 						//.addPropertyValue(EXPRESSION, null) no expression on annotation
 						.build();
 				//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé

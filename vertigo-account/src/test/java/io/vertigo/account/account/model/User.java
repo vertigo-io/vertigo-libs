@@ -18,6 +18,7 @@
  */
 package io.vertigo.account.account.model;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
@@ -44,7 +45,7 @@ public final class User implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DoCode", type = "ID", required = true, label = "Id")
+	@Field(domain = "DoCode", type = "ID", cardinality = Cardinality.ONE, label = "Id")
 	public String getUsrId() {
 		return usrId;
 	}
@@ -53,7 +54,7 @@ public final class User implements KeyConcept {
 		this.usrId = usrId;
 	}
 
-	@Field(domain = "DoLabel", required = true, label = "FullName")
+	@Field(domain = "DoLabel", cardinality = Cardinality.ONE, label = "FullName")
 	public String getFullName() {
 		return fullName;
 	}
@@ -62,7 +63,7 @@ public final class User implements KeyConcept {
 		this.fullName = fullName;
 	}
 
-	@Field(domain = "DoLabel", required = true, label = "Email")
+	@Field(domain = "DoLabel", cardinality = Cardinality.ONE, label = "Email")
 	public String getEmail() {
 		return email;
 	}

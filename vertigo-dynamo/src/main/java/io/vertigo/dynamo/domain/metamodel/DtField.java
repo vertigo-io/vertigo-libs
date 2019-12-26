@@ -18,12 +18,16 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
+import java.util.List;
+
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.dynamo.domain.model.DtList;
 
 /**
  * This class defines the structure of a field.
@@ -82,7 +86,7 @@ public final class DtField {
 
 	private final String name;
 	private final FieldType type;
-	private final boolean required;
+	private final Cardinality cardinality;
 	private final DefinitionReference<Domain> domainRef;
 	private final MessageText label;
 	private final boolean persistent;
@@ -118,7 +122,7 @@ public final class DtField {
 			final FieldType type,
 			final Domain domain,
 			final MessageText label,
-			final boolean required,
+			final Cardinality cardinality,
 			final boolean persistent,
 			final String fkDtDefinitionName,
 			final ComputedExpression computedExpression) {
@@ -126,11 +130,12 @@ public final class DtField {
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(domain);
 		Assertion.checkNotNull(type);
+		Assertion.checkNotNull(cardinality);
 		//-----
 		this.id = id;
 		domainRef = new DefinitionReference<>(domain);
 		this.type = type;
-		this.required = required;
+		this.cardinality = cardinality;
 		//-----
 		Assertion.checkNotNull(fieldName);
 		Assertion.checkArgument(fieldName.length() <= FIELD_NAME_MAX_LENGTH, "the name of the field {0} has a limit size of {1}", fieldName, FIELD_NAME_MAX_LENGTH);
@@ -175,10 +180,10 @@ public final class DtField {
 	}
 
 	/**
-	 * @return if the field is required
+	 * @return the cardinality of the field (one, optional, many)
 	 */
-	public boolean isRequired() {
-		return required;
+	public Cardinality getCardinality() {
+		return cardinality;
 	}
 
 	/**
@@ -210,15 +215,8 @@ public final class DtField {
 		return persistent;
 	}
 
-	/**
-	 * @return if the domain is a list of objects
-	 */
-	public boolean isMultiple() {
-		return getDomain().isMultiple();
-	}
-
 	public boolean isDtList() {
-		return getDomain().getScope().isDataObject() && isMultiple();
+		return getDomain().getScope().isDataObject() && cardinality.hasMany();
 	}
 
 	/**
@@ -247,5 +245,27 @@ public final class DtField {
 	 */
 	public DataAccessor getDataAccessor() {
 		return dataAccessor;
+	}
+
+	/**
+	 * Returns the class that holds the value of the field.
+	 * If cardinality is many it's either a list or a dtList, if not then it's the base type of the domain.
+	 * @return the data accessor.
+	 */
+	public Class getTargetJavaClass() {
+		final Domain domain = getDomain();
+		if (cardinality.hasMany()) {
+			switch (domain.getScope()) {
+				case PRIMITIVE:
+					return List.class;
+				case DATA_OBJECT:
+					return DtList.class;
+				case VALUE_OBJECT:
+					return List.class;
+				default:
+					throw new IllegalStateException();
+			}
+		}
+		return domain.getJavaClass();
 	}
 }

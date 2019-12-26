@@ -295,7 +295,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			final Type fieldType = getFieldType(dtField);
 			final Map<String, Object> fieldSchema = createSchemaObject(fieldType); //not Nullable
 			fieldSchema.put("title", dtField.getLabel().getDisplay());
-			if (dtField.isRequired()) {
+			if (dtField.getCardinality().hasOne()) {
 				required.add(fieldName);
 			}
 			//could add enum on field to specify all values authorized
@@ -307,8 +307,8 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 
 	private static Type getFieldType(final DtField dtField) {
 		final Class<?> dtClass = dtField.getDomain().getJavaClass();
-		if (dtField.isMultiple()) {
-			return new CustomParameterizedType(dtField.getDomain().getTargetJavaClass(), dtClass);
+		if (dtField.getCardinality().hasMany()) {
+			return new CustomParameterizedType(dtField.getTargetJavaClass(), dtClass);
 		}
 		return dtClass;
 	}

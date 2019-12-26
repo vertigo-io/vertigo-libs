@@ -2,7 +2,7 @@ package io.vertigo.dynamo.search.data.domain
 
 alter DtDefinition DtContact {
 	stereotype : "KeyConcept"
-	computed allText {domain : DoTexte50, label:"all"
+	computed allText {domain : DoTexte50, label:"all" cardinality:"1"
         expression:"return \"\";"
   } 
 }

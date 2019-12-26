@@ -53,7 +53,7 @@ public final class TemplateTaskAttribute {
 	 * @return Type de la donnée en string
 	 */
 	public String getDataType() {
-		return String.valueOf(DomainUtil.buildJavaType(taskAttribute.getDomain(), taskAttribute.getCardinality().hasMany()));
+		return String.valueOf(DomainUtil.buildJavaType(taskAttribute));
 	}
 
 	/**

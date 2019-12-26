@@ -11,7 +11,7 @@ create Task TkGetProcessToExecute {
         	and prp.NOD_ID = #nodId#
         	
 			"
-	attribute dtcOProcessPlanification	 	{domain : DoDtOProcessPlanificationDtc		cardinality: "*" 	inOut :"out"}
+	attribute dtcOProcessPlanification	 	{domain : DoDtOProcessPlanification		cardinality: "*" 	inOut :"out"}
 	attribute nodId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
 }
 
@@ -40,7 +40,7 @@ create Task TkGetLastPlanificationByProId {
         	limit 1
 			"
 		attribute proId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
-		attribute dtOProcessPlanification	 	{domain : DoDtOProcessPlanificationDto		cardinality: "?" 	inOut :"out"}
+		attribute dtOProcessPlanification	 	{domain : DoDtOProcessPlanification		cardinality: "?" 	inOut :"out"}
 }
 
 
@@ -54,7 +54,7 @@ create Task TkGetAllLastPastPlanifications {
 			
 			"
 		attribute currentDate 	{domain : DoOTimestamp 			cardinality: "1" 	inOut :"in"}
-		attribute processPlanifications	 	{domain : DoDtOProcessPlanificationDtc		cardinality: "*" 	inOut :"out"}
+		attribute processPlanifications	 	{domain : DoDtOProcessPlanification		cardinality: "*" 	inOut :"out"}
 }
 
 

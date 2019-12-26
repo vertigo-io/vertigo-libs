@@ -30,7 +30,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Id du processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", required = true, label = "Id du processus")
+	@Field(domain = "DoOIdentifiant", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id du processus")
 	public Long getProId() {
 		return proId;
 	}
@@ -49,7 +49,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Nom du processus'.
 	 * @return String processName <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOLibelle", required = true, label = "Nom du processus")
+	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Nom du processus")
 	public String getProcessName() {
 		return processName;
 	}
@@ -68,7 +68,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Libellé du processus'.
 	 * @return String processLabel <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOLibelle", required = true, label = "Libellé du processus")
+	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Libellé du processus")
 	public String getProcessLabel() {
 		return processLabel;
 	}
@@ -87,7 +87,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Dernière exécution le'.
 	 * @return Instant lastExecutionTime
 	 */
-	@Field(domain = "DoOTimestamp", label = "Dernière exécution le")
+	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Dernière exécution le")
 	public java.time.Instant getLastExecutionTime() {
 		return lastExecutionTime;
 	}
@@ -106,7 +106,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Prochaine exécution le'.
 	 * @return Instant nextExecutionTime
 	 */
-	@Field(domain = "DoOTimestamp", label = "Prochaine exécution le")
+	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Prochaine exécution le")
 	public java.time.Instant getNextExecutionTime() {
 		return nextExecutionTime;
 	}
@@ -125,7 +125,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Nombre en erreur'.
 	 * @return Integer errorsCount
 	 */
-	@Field(domain = "DoONombre", label = "Nombre en erreur")
+	@Field(domain = "DoONombre", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Nombre en erreur")
 	public Integer getErrorsCount() {
 		return errorsCount;
 	}
@@ -144,7 +144,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Nombre non executés'.
 	 * @return Integer misfiredCount
 	 */
-	@Field(domain = "DoONombre", label = "Nombre non executés")
+	@Field(domain = "DoONombre", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Nombre non executés")
 	public Integer getMisfiredCount() {
 		return misfiredCount;
 	}
@@ -163,7 +163,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Nombre en succès'.
 	 * @return Integer successfulCount
 	 */
-	@Field(domain = "DoONombre", label = "Nombre en succès")
+	@Field(domain = "DoONombre", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Nombre en succès")
 	public Integer getSuccessfulCount() {
 		return successfulCount;
 	}
@@ -182,7 +182,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Nombre en cours'.
 	 * @return Integer runningCount
 	 */
-	@Field(domain = "DoONombre", label = "Nombre en cours")
+	@Field(domain = "DoONombre", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Nombre en cours")
 	public Integer getRunningCount() {
 		return runningCount;
 	}
@@ -201,7 +201,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Durée moyenne d'exécution'.
 	 * @return Integer averageExecutionTime
 	 */
-	@Field(domain = "DoONombre", label = "Durée moyenne d'exécution")
+	@Field(domain = "DoONombre", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Durée moyenne d'exécution")
 	public Integer getAverageExecutionTime() {
 		return averageExecutionTime;
 	}
@@ -220,7 +220,7 @@ public final class OExecutionSummary implements DtObject {
 	 * Récupère la valeur de la propriété 'Santé du processus'.
 	 * @return String health <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOCodeIdentifiant", required = true, label = "Santé du processus")
+	@Field(domain = "DoOCodeIdentifiant", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Santé du processus")
 	public String getHealth() {
 		return health;
 	}

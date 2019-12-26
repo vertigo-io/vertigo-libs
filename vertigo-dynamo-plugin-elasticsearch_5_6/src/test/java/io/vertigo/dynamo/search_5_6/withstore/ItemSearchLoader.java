@@ -92,7 +92,7 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 	}
 
 	private TaskDefinition getTaskDefinition(final SearchChunk<Item> searchChunk) {
-		final Domain doItems = definitionSpace.resolve("DoDtItemDtc", Domain.class);
+		final Domain doItems = definitionSpace.resolve("DoDtItem", Domain.class);
 		final String sql = searchChunk.getAllUIDs()
 				.stream()
 				.map(uri -> uri.getId().toString())

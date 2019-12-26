@@ -18,6 +18,7 @@
  */
 package io.vertigo.struts2.domain.users;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -46,7 +47,7 @@ public final class SecurityRole implements Entity {
 	 * Récupère la valeur de la propriété 'SRO_CD'.
 	 * @return String sroCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoCode", type = "ID", required = true, label = "SRO_CD")
+	@Field(domain = "DoCode", type = "ID", cardinality = Cardinality.ONE, label = "SRO_CD")
 	public String getSroCd() {
 		return sroCd;
 	}

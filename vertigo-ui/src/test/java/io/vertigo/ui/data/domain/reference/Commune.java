@@ -18,6 +18,7 @@
  */
 package io.vertigo.ui.data.domain.reference;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.DtMasterData;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -49,7 +50,7 @@ public final class Commune implements DtMasterData {
 	 * Récupère la valeur de la propriété 'ID INSEE'.
 	 * @return Long idInsee <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", required = true, label = "ID INSEE")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "ID INSEE")
 	public Long getIdInsee() {
 		return idInsee;
 	}
@@ -68,7 +69,7 @@ public final class Commune implements DtMasterData {
 	 * Récupère la valeur de la propriété 'Code postal'.
 	 * @return String codePostal <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoCodePostal", required = true, label = "Code postal")
+	@Field(domain = "DoCodePostal", cardinality = Cardinality.ONE, label = "Code postal")
 	public String getCodePostal() {
 		return codePostal;
 	}
@@ -87,7 +88,7 @@ public final class Commune implements DtMasterData {
 	 * Récupère la valeur de la propriété 'Commune'.
 	 * @return String commune <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoLabel", required = true, label = "Commune")
+	@Field(domain = "DoLabel", cardinality = Cardinality.ONE, label = "Commune")
 	public String getCommune() {
 		return commune;
 	}
@@ -106,7 +107,7 @@ public final class Commune implements DtMasterData {
 	 * Récupère la valeur de la propriété 'Département'.
 	 * @return String departement <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoLabel", required = true, label = "Département")
+	@Field(domain = "DoLabel", cardinality = Cardinality.ONE, label = "Département")
 	public String getDepartement() {
 		return departement;
 	}

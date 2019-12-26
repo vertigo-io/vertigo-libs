@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.environment.java.data.domain;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -48,7 +49,7 @@ public final class CityFragment implements Fragment<City> {
 	 * Récupère la valeur de la propriété 'CIT ID'.
 	 * @return Long citId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoIdentity", type = "FOREIGN_KEY", required = true, label = "CIT ID")
+	@Field(domain = "DoIdentity", type = "FOREIGN_KEY", cardinality = Cardinality.ONE, label = "CIT ID")
 	public Long getCitId() {
 		return citId;
 	}
@@ -67,7 +68,7 @@ public final class CityFragment implements Fragment<City> {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoFullText", required = true, label = "Label")
+	@Field(domain = "DoFullText", cardinality = Cardinality.ONE, label = "Label")
 	public String getLabel() {
 		return label;
 	}
@@ -86,7 +87,7 @@ public final class CityFragment implements Fragment<City> {
 	 * Récupère la valeur de la propriété 'Postal code'.
 	 * @return String postalCode <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoKeyword", required = true, label = "Postal code")
+	@Field(domain = "DoKeyword", cardinality = Cardinality.ONE, label = "Postal code")
 	public String getPostalCode() {
 		return postalCode;
 	}

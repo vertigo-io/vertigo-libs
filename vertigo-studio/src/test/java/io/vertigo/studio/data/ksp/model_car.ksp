@@ -2,19 +2,19 @@ package io.vertigo.studio.domain.car
 
 create DtDefinition DtCar {
 		id  id  			{ domain: DoId,			label:"identifiant de la voiture" }
-		field manufacturer  { domain: DoKeyword, 	label:"Constructeur",  				required : "true"}
-		field model   		{ domain: DoFullText, 	label:"Modèle",  					required : "true"}
-		field description   { domain: DoFullText, 	label:"Descriptif"  				required : "true"}
-		field year   		{ domain: DoInteger, 	label:"Année",  					required : "true"}
-		field kilo   		{ domain: DoInteger, 	label:"Kilométrage",  				required : "true"}
-		field price   		{ domain: DoInteger, 	label:"Prix",  						required : "true"}
-		field consommation	{ domain: DoConso, 	    label:"Consommation",  				required : "true"}
+		field manufacturer  { domain: DoKeyword, 	label:"Constructeur",  				cardinality: "1"}
+		field model   		{ domain: DoFullText, 	label:"Modèle",  					cardinality: "1"}
+		field description   { domain: DoFullText, 	label:"Descriptif"  				cardinality: "1"}
+		field year   		{ domain: DoInteger, 	label:"Année",  					cardinality: "1"}
+		field kilo   		{ domain: DoInteger, 	label:"Kilométrage",  				cardinality: "1"}
+		field price   		{ domain: DoInteger, 	label:"Prix",  						cardinality: "1"}
+		field consommation	{ domain: DoConso, 	    label:"Consommation",  				cardinality: "1"}
 }
 
 create DtDefinition DtMotorType {
 		stereotype : "StaticMasterData",
 		id mtyCd 			{ domain: DoString,			label:"id"}
-		field label  		{ domain: DoFullText, 		label:"Label",		required : "true"}		
+		field label  		{ domain: DoFullText, 		label:"Label",		cardinality: "1"}		
 }
 
 create Association AMtyCar {
@@ -38,6 +38,6 @@ create Association AMtyCar {
 create Task TkListCars {
 	className : "io.vertigo.studio.data.domain.CarEngine"
 	request : "hello"
-    attribute dtoCarIn 	{domain:DoDtCarDto, required:"true", inOut :"in"}
-    attribute dtoCarOut 	{domain:DoDtCarDto, required:"true", inOut :"out"}
+    attribute dtoCarIn 	{domain:DoDtCar, cardinality:"1", inOut :"in"}
+    attribute dtoCarOut 	{domain:DoDtCar, cardinality:"1", inOut :"out"}
 }

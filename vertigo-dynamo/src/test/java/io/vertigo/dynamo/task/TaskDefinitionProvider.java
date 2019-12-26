@@ -73,14 +73,14 @@ public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
 			final DefinitionSpace definitionSpace,
 			final String taskDefinitionName,
 			final String params) {
-		final Domain doIntegers = definitionSpace.resolve("DoIntegers", Domain.class);
+		final Domain doIntegers = definitionSpace.resolve("DoInteger", Domain.class);
 		final Domain doInteger = definitionSpace.resolve("DoInteger", Domain.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineMock2.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineMock.class.getPackage().getName())
-				.addInAttribute(ATTR_IN_INTEGERS, doIntegers, Cardinality.ONE)
+				.addInAttribute(ATTR_IN_INTEGERS, doIntegers, Cardinality.MANY)
 				.withOutAttribute(ATTR_OUT, doInteger, Cardinality.ONE)
 				.build();
 	}

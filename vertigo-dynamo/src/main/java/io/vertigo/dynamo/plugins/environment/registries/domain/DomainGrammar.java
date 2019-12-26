@@ -19,6 +19,7 @@
 package io.vertigo.dynamo.plugins.environment.registries.domain;
 
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ARGS;
+import static io.vertigo.dynamo.plugins.environment.KspProperty.CARDINALITY;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.CLASS_NAME;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DATA_SPACE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.DISPLAY_FIELD;
@@ -32,13 +33,11 @@ import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.LABEL_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MAX_LENGTH;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MSG;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLE;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.MULTIPLICITY_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.NAVIGABILITY_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.PERSISTENT;
-import static io.vertigo.dynamo.plugins.environment.KspProperty.REQUIRED;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_A;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.ROLE_B;
 import static io.vertigo.dynamo.plugins.environment.KspProperty.SORT_FIELD;
@@ -120,7 +119,6 @@ public final class DomainGrammar implements DslGrammar {
 		DOMAIN_ENTITY = DslEntity.builder("Domain")
 				.addOptionalField(MAX_LENGTH, Integer)
 				.addOptionalField(TYPE, String)
-				.addOptionalField(MULTIPLE, Boolean)
 				.addOptionalField(UNIT, String)
 				.addOptionalField(INDEX_TYPE, String)
 				.addOptionalField(STORE_TYPE, String)
@@ -136,13 +134,14 @@ public final class DomainGrammar implements DslGrammar {
 
 		DT_DATA_FIELD_ENTITY = DslEntity.builder("DataField")
 				.addRequiredField(LABEL, String)
-				.addRequiredField(REQUIRED, Boolean)
+				.addRequiredField(CARDINALITY, String)
 				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
 				.addOptionalField(PERSISTENT, Boolean)
 				.build();
 
 		DT_COMPUTED_FIELD_ENTITY = DslEntity.builder("ComputedField")
 				.addRequiredField(LABEL, String)
+				.addRequiredField(CARDINALITY, String)
 				.addRequiredField("domain", DOMAIN_ENTITY.getLink())
 				.addOptionalField(EXPRESSION, String)
 				.build();
@@ -161,7 +160,7 @@ public final class DomainGrammar implements DslGrammar {
 
 		final DslEntity fieldAliasEntity = DslEntity.builder("fieldAlias")
 				.addOptionalField(LABEL, String)
-				.addOptionalField(REQUIRED, Boolean)
+				.addOptionalField(CARDINALITY, Boolean)
 				.build();
 
 		FRAGMENT_ENTITY = DslEntity.builder("Fragment")

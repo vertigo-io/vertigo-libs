@@ -17,12 +17,6 @@ create Domain DoMultipleIds {
     storeType : "TEXT"
 }
 
-create Domain DoLongs {
-	dataType : Long
-	formatter : FmtDefault
-	multiple : "true"
-}
-
 create Domain DoMultiValues {
 	dataType : String
 	formatter : FmtDefault

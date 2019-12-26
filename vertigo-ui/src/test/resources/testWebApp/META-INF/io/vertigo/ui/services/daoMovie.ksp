@@ -16,6 +16,6 @@ create Task TkLoadMovieIndex {
 						 RATED as USER_RATING
 				from MOVIE mov
 				where MOV_ID in (#movieIds.rownum#);"
-	attribute movieIds {domain : DoLongs, required:"true", inOut :"in",} 
-	attribute dtcIndex {domain : DoDtMovieIndexDtc, required:"true", inOut :"out",} 
+	attribute movieIds {domain : DoId, cardinality:"*", inOut :"in",} 
+	attribute dtcIndex {domain : DoDtMovieIndex, cardinality:"*", inOut :"out",} 
 }

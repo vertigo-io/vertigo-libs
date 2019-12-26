@@ -18,6 +18,7 @@
  */
 package io.vertigo.quarto.services.export.data.domain;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -38,7 +39,7 @@ public final class Continent implements Entity {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DoId", type = "ID", required = true, label = "id of the Continent")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id of the Continent")
 	public final Long getId() {
 		return id;
 	}

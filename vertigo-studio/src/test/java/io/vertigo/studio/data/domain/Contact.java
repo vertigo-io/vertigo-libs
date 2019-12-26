@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -30,12 +31,12 @@ import io.vertigo.dynamo.domain.stereotype.Field;
 public final class Contact implements Entity {
 	private static final long serialVersionUID = 2074906343392206381L;
 
-	@Field(domain = "DoLong", type = "ID", required = true, label = "Contact Id")
+	@Field(domain = "DoLong", type = "ID", cardinality = Cardinality.ONE, label = "Contact Id")
 	private Long conId;
 	@Field(domain = "DoString", label = "Honorific title")
 	private String honorificCode;
 	//mandatory
-	@Field(domain = "DoString", required = true, label = "Name")
+	@Field(domain = "DoString", cardinality = Cardinality.ONE, label = "Name")
 	private String name;
 	@Field(domain = "DoString", label = "Firstname")
 	private String firstName;

@@ -18,6 +18,7 @@
  */
 package io.vertigo.account.authentication.model;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -41,7 +42,7 @@ public final class UserCredential implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DoCode", type = "ID", required = true, label = "Id")
+	@Field(domain = "DoCode", type = "ID", cardinality = Cardinality.ONE, label = "Id")
 	public String getUcrId() {
 		return ucrId;
 	}
@@ -50,7 +51,7 @@ public final class UserCredential implements KeyConcept {
 		this.ucrId = ucrId;
 	}
 
-	@Field(domain = "DoLabel", required = true, label = "login")
+	@Field(domain = "DoLabel", cardinality = Cardinality.ONE, label = "login")
 	public String getLogin() {
 		return login;
 	}
@@ -59,7 +60,7 @@ public final class UserCredential implements KeyConcept {
 		this.login = login;
 	}
 
-	@Field(domain = "DoLabel", required = true, label = "password")
+	@Field(domain = "DoLabel", cardinality = Cardinality.ONE, label = "password")
 	public String getPassword() {
 		return password;
 	}
@@ -68,7 +69,7 @@ public final class UserCredential implements KeyConcept {
 		this.password = password;
 	}
 
-	@Field(domain = "DoLabel", required = true, label = "mail")
+	@Field(domain = "DoLabel", cardinality = Cardinality.ONE, label = "mail")
 	public String getMail() {
 		return mail;
 	}

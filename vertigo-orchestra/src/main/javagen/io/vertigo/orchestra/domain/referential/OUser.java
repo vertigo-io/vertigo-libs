@@ -34,7 +34,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Id'.
 	 * @return Long usrId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id")
+	@Field(domain = "DoOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id")
 	public Long getUsrId() {
 		return usrId;
 	}
@@ -53,7 +53,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Nom'.
 	 * @return String firstName
 	 */
-	@Field(domain = "DoOLibelle", label = "Nom")
+	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Nom")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -72,7 +72,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Prénom'.
 	 * @return String lastName
 	 */
-	@Field(domain = "DoOLibelle", label = "Prénom")
+	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Prénom")
 	public String getLastName() {
 		return lastName;
 	}
@@ -91,7 +91,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Email'.
 	 * @return String email
 	 */
-	@Field(domain = "DoOLibelle", label = "Email")
+	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Email")
 	public String getEmail() {
 		return email;
 	}
@@ -110,7 +110,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Mot de passe'.
 	 * @return String password
 	 */
-	@Field(domain = "DoOLibelle", label = "Mot de passe")
+	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Mot de passe")
 	public String getPassword() {
 		return password;
 	}
@@ -129,7 +129,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Alerté en cas d'erreur'.
 	 * @return Boolean mailAlert
 	 */
-	@Field(domain = "DoOBooleen", label = "Alerté en cas d'erreur")
+	@Field(domain = "DoOBooleen", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Alerté en cas d'erreur")
 	public Boolean getMailAlert() {
 		return mailAlert;
 	}
@@ -148,7 +148,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Compte Actif'.
 	 * @return Boolean active
 	 */
-	@Field(domain = "DoOBooleen", label = "Compte Actif")
+	@Field(domain = "DoOBooleen", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Compte Actif")
 	public Boolean getActive() {
 		return active;
 	}

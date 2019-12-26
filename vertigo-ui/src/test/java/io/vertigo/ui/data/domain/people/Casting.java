@@ -18,6 +18,7 @@
  */
 package io.vertigo.ui.data.domain.people;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -50,7 +51,7 @@ public final class Casting implements Entity {
 	 * Récupère la valeur de la propriété 'Cast_id'.
 	 * @return Long castId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", required = true, label = "Cast_id")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "Cast_id")
 	public Long getCastId() {
 		return castId;
 	}
@@ -88,7 +89,7 @@ public final class Casting implements Entity {
 	 * Récupère la valeur de la propriété 'People'.
 	 * @return Long peoId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "FOREIGN_KEY", required = true, label = "People")
+	@Field(domain = "DoId", type = "FOREIGN_KEY", cardinality = Cardinality.ONE, label = "People")
 	public Long getPeoId() {
 		return peoId;
 	}
@@ -107,7 +108,7 @@ public final class Casting implements Entity {
 	 * Récupère la valeur de la propriété 'Movie'.
 	 * @return Long movId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "FOREIGN_KEY", required = true, label = "Movie")
+	@Field(domain = "DoId", type = "FOREIGN_KEY", cardinality = Cardinality.ONE, label = "Movie")
 	public Long getMovId() {
 		return movId;
 	}

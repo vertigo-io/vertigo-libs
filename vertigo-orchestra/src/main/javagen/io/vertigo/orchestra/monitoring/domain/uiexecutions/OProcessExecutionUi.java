@@ -28,7 +28,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Id de l'activité'.
 	 * @return Long preId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", required = true, label = "Id de l'activité")
+	@Field(domain = "DoOIdentifiant", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id de l'activité")
 	public Long getPreId() {
 		return preId;
 	}
@@ -47,7 +47,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Démarrage'.
 	 * @return Instant beginTime <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOTimestamp", required = true, label = "Démarrage")
+	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Démarrage")
 	public java.time.Instant getBeginTime() {
 		return beginTime;
 	}
@@ -66,7 +66,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Fin'.
 	 * @return Instant endTime <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOTimestamp", required = true, label = "Fin")
+	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Fin")
 	public java.time.Instant getEndTime() {
 		return endTime;
 	}
@@ -85,7 +85,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Durée'.
 	 * @return Integer executionTime
 	 */
-	@Field(domain = "DoONombre", label = "Durée")
+	@Field(domain = "DoONombre", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Durée")
 	public Integer getExecutionTime() {
 		return executionTime;
 	}
@@ -104,7 +104,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Statut'.
 	 * @return String status
 	 */
-	@Field(domain = "DoOCodeIdentifiant", label = "Statut")
+	@Field(domain = "DoOCodeIdentifiant", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Statut")
 	public String getStatus() {
 		return status;
 	}
@@ -123,7 +123,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Pris en charge'.
 	 * @return Boolean checked
 	 */
-	@Field(domain = "DoOBooleen", label = "Pris en charge")
+	@Field(domain = "DoOBooleen", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Pris en charge")
 	public Boolean getChecked() {
 		return checked;
 	}
@@ -142,7 +142,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Date de prise en charge'.
 	 * @return Instant checkingDate
 	 */
-	@Field(domain = "DoOTimestamp", label = "Date de prise en charge")
+	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Date de prise en charge")
 	public java.time.Instant getCheckingDate() {
 		return checkingDate;
 	}
@@ -161,7 +161,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Commentaire'.
 	 * @return String checkingComment
 	 */
-	@Field(domain = "DoOText", label = "Commentaire")
+	@Field(domain = "DoOText", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Commentaire")
 	public String getCheckingComment() {
 		return checkingComment;
 	}
@@ -180,7 +180,7 @@ public final class OProcessExecutionUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Fichier de log'.
 	 * @return Boolean hasAttachment
 	 */
-	@Field(domain = "DoOBooleen", label = "Fichier de log")
+	@Field(domain = "DoOBooleen", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Fichier de log")
 	public Boolean getHasAttachment() {
 		return hasAttachment;
 	}

@@ -16,7 +16,7 @@ create Task TkGetPlanificationsByProId {
         	
 			"
 	attribute proId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
-	attribute dtcOProcessPlanification	 	{domain : DoDtOProcessPlanificationDtc		cardinality: "*" 	inOut :"out"}
+	attribute dtcOProcessPlanification	 	{domain : DoDtOProcessPlanification		cardinality: "*" 	inOut :"out"}
 }
 
 
@@ -31,7 +31,7 @@ create Task TkGetExecutionsByProId {
         	
 			"
 	attribute proId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
-	attribute dtcOProcessExecution	 	{domain : DoDtOProcessExecutionDtc		cardinality: "*" 	inOut :"out"}
+	attribute dtcOProcessExecution	 	{domain : DoDtOProcessExecution		cardinality: "*" 	inOut :"out"}
 }
 
 
@@ -46,7 +46,7 @@ create Task TkGetActivityExecutionsByPreId {
         	
 			"
 	attribute preId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
-	attribute dtcOActivityExecution	 	{domain : DoDtOActivityExecutionDtc		cardinality: "*" 	inOut :"out"}
+	attribute dtcOActivityExecution	 	{domain : DoDtOActivityExecution		cardinality: "*" 	inOut :"out"}
 }
 
 
@@ -60,7 +60,7 @@ create Task TkGetActivityLogByAceId {
         	
 			"
 	attribute aceId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
-	attribute dtcOActivityLog	 	{domain : DoDtOActivityLogDto		cardinality: "?" 	inOut :"out"}
+	attribute dtcOActivityLog	 	{domain : DoDtOActivityLog		cardinality: "?" 	inOut :"out"}
 }
 
 

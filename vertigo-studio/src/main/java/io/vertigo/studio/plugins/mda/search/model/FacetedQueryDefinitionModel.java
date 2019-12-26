@@ -19,11 +19,9 @@
 package io.vertigo.studio.plugins.mda.search.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.studio.plugins.mda.util.DomainUtil;
 
 /**
  * Génération des classes/méthodes des taches de type DAO.
@@ -69,7 +67,7 @@ public final class FacetedQueryDefinitionModel {
 	private String obtainCriteriaClassCanonicalName() {
 		final Domain domain = facetedQueryDefinition.getCriteriaDomain();
 		//---
-		return DomainUtil.buildJavaType(domain, Cardinality.ONE.hasMany());
+		return domain.getJavaClass().getCanonicalName();
 	}
 
 }

@@ -21,6 +21,7 @@ package io.vertigo.struts2.domain.movies;
 import java.time.Instant;
 import java.time.LocalDate;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -56,7 +57,7 @@ public final class Movie implements KeyConcept {
 	 * Récupère la valeur de la propriété 'MOV_ID'.
 	 * @return Long movId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", required = true, label = "MOV_ID")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "MOV_ID")
 	public Long getMovId() {
 		return movId;
 	}

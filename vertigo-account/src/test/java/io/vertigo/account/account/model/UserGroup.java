@@ -18,6 +18,7 @@
  */
 package io.vertigo.account.account.model;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -40,7 +41,7 @@ public final class UserGroup implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DoCode", type = "ID", required = true, label = "Id")
+	@Field(domain = "DoCode", type = "ID", cardinality = Cardinality.ONE, label = "Id")
 	public String getGrpId() {
 		return grpId;
 	}
@@ -49,7 +50,7 @@ public final class UserGroup implements KeyConcept {
 		this.grpId = grpId;
 	}
 
-	@Field(domain = "DoLabel", required = true, label = "Name")
+	@Field(domain = "DoLabel", cardinality = Cardinality.ONE, label = "Name")
 	public String getName() {
 		return name;
 	}
@@ -58,7 +59,7 @@ public final class UserGroup implements KeyConcept {
 		this.name = name;
 	}
 
-	@Field(domain = "DoLabel", required = true, label = "comment")
+	@Field(domain = "DoLabel", cardinality = Cardinality.ONE, label = "comment")
 	public String getComment() {
 		return comment;
 	}

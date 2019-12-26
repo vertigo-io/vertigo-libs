@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.store.data.domain.famille;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
 import io.vertigo.dynamo.domain.model.Entity;
@@ -82,7 +83,7 @@ public final class Famille implements Entity {
 	 * Récupère la valeur de la propriété 'identifiant de la famille'.
 	 * @return Long famId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", required = true, label = "identifiant de la famille")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la famille")
 	public Long getFamId() {
 		return famId;
 	}

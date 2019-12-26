@@ -69,7 +69,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Id de la definition du processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id de la definition du processus")
+	@Field(domain = "DoOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id de la definition du processus")
 	public Long getProId() {
 		return proId;
 	}
@@ -88,7 +88,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Nom du processus'.
 	 * @return String name
 	 */
-	@Field(domain = "DoOLibelle", label = "Nom du processus")
+	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Nom du processus")
 	public String getName() {
 		return name;
 	}
@@ -107,7 +107,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Libellé du processus'.
 	 * @return String label
 	 */
-	@Field(domain = "DoOLibelle", label = "Libellé du processus")
+	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Libellé du processus")
 	public String getLabel() {
 		return label;
 	}
@@ -126,7 +126,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Expression récurrence du processus'.
 	 * @return String cronExpression
 	 */
-	@Field(domain = "DoOLibelle", label = "Expression récurrence du processus")
+	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Expression récurrence du processus")
 	public String getCronExpression() {
 		return cronExpression;
 	}
@@ -145,7 +145,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
 	 * @return String initialParams
 	 */
-	@Field(domain = "DoOJsonText", label = "Paramètres initiaux sous forme de JSON")
+	@Field(domain = "DoOJsonText", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Paramètres initiaux sous forme de JSON")
 	public String getInitialParams() {
 		return initialParams;
 	}
@@ -164,7 +164,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Accepte la multi-execution'.
 	 * @return Boolean multiexecution
 	 */
-	@Field(domain = "DoOBooleen", label = "Accepte la multi-execution")
+	@Field(domain = "DoOBooleen", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Accepte la multi-execution")
 	public Boolean getMultiexecution() {
 		return multiexecution;
 	}
@@ -183,7 +183,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Version active'.
 	 * @return Boolean activeVersion <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOBooleen", required = true, label = "Version active")
+	@Field(domain = "DoOBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Version active")
 	public Boolean getActiveVersion() {
 		return activeVersion;
 	}
@@ -202,7 +202,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Processus actif'.
 	 * @return Boolean active <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOBooleen", required = true, label = "Processus actif")
+	@Field(domain = "DoOBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Processus actif")
 	public Boolean getActive() {
 		return active;
 	}
@@ -221,7 +221,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Temps de validité d'une planification'.
 	 * @return Integer rescuePeriod <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoONombre", required = true, label = "Temps de validité d'une planification")
+	@Field(domain = "DoONombre", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Temps de validité d'une planification")
 	public Integer getRescuePeriod() {
 		return rescuePeriod;
 	}
@@ -240,7 +240,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Meta-données du processus'.
 	 * @return String metadatas
 	 */
-	@Field(domain = "DoOMetadatas", label = "Meta-données du processus")
+	@Field(domain = "DoOMetadatas", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Meta-données du processus")
 	public String getMetadatas() {
 		return metadatas;
 	}
@@ -259,7 +259,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Doit être mise à jour lors du démarrage'.
 	 * @return Boolean needUpdate <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOBooleen", required = true, label = "Doit être mise à jour lors du démarrage")
+	@Field(domain = "DoOBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Doit être mise à jour lors du démarrage")
 	public Boolean getNeedUpdate() {
 		return needUpdate;
 	}
@@ -278,7 +278,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'TriggerType'.
 	 * @return String trtCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", required = true, label = "TriggerType")
+	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "TriggerType")
 	public String getTrtCd() {
 		return (String) trtCdAccessor.getId();
 	}
@@ -297,7 +297,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'ProcessType'.
 	 * @return String prtCd
 	 */
-	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", label = "ProcessType")
+	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "ProcessType")
 	public String getPrtCd() {
 		return (String) prtCdAccessor.getId();
 	}

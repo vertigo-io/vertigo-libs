@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.environment.java.data.domain;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.DtMasterData;
 import io.vertigo.dynamo.domain.model.UID;
@@ -47,7 +48,7 @@ public final class City implements DtMasterData {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long citId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", required = true, label = "id")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id")
 	public Long getCitId() {
 		return citId;
 	}
@@ -66,7 +67,7 @@ public final class City implements DtMasterData {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoFullText", required = true, label = "Label")
+	@Field(domain = "DoFullText", cardinality = Cardinality.ONE, label = "Label")
 	public String getLabel() {
 		return label;
 	}
@@ -85,7 +86,7 @@ public final class City implements DtMasterData {
 	 * Récupère la valeur de la propriété 'Postal code'.
 	 * @return String postalCode <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoKeyword", required = true, label = "Postal code")
+	@Field(domain = "DoKeyword", cardinality = Cardinality.ONE, label = "Postal code")
 	public String getPostalCode() {
 		return postalCode;
 	}

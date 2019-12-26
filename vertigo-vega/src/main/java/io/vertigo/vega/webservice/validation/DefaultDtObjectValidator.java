@@ -18,6 +18,8 @@
  */
 package io.vertigo.vega.webservice.validation;
 
+import java.util.List;
+
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -35,13 +37,22 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 	protected void checkMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
 		final Object value = dtField.getDataAccessor().getValue(dtObject);
 		//pas d'assertion notNull, car le champs n'est pas forcément obligatoire
-		if (value == null && dtField.isRequired()) {
+		if (value == null && dtField.getCardinality().hasOne()) {
 			dtObjectErrors.addError(dtField.getName(), MessageText.of("Le champ doit être renseigné"));
 		} else {
 			try {
 				// Le typage est OK
 				// Si non null, on vérifie la validité de la valeur par rapport au champ/domaine.
-				dtField.getDomain().checkConstraints(value);
+				if (dtField.getCardinality().hasMany()) {
+					if (!(value instanceof List)) {
+						throw new ClassCastException("Value " + value + " must be a list");
+					}
+					for (final Object element : List.class.cast(value)) {
+						dtField.getDomain().checkConstraints(element);
+					}
+				} else {
+					dtField.getDomain().checkConstraints(value);
+				}
 			} catch (final ConstraintException e) {
 				// Erreur lors du check de la valeur,
 				// la valeur est toutefois correctement typée.

@@ -16,11 +16,11 @@ create Domain DoString {
 
 create DtDefinition DtTestEntity {
 	id 		id			{domain : DoId			label :"Id"}
-	field 	label   	{domain : DoString	 	label :"label"	required:"false" }
+	field 	label   	{domain : DoString	 	label :"label"	cardinality:"?" }
 }
 
 create DtDefinition DtTestVobject {
-	field label   	{domain : DoString, 	label :"label", required:"false" }
+	field label   	{domain : DoString, 	label :"label", cardinality:"?" }
 }
 
 create Association AVobEnt {

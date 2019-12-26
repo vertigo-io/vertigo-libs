@@ -25,12 +25,6 @@ create Domain DoInteger {
 	formatter : FmtDefault
 }
 
-create Domain DoIntegers {
-	dataType : Integer
-	multiple : "true"
-	formatter : FmtDefault
-}
-
 create Domain DoDate {
 	dataType : LocalDate
 	formatter : FmtDefault

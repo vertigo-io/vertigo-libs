@@ -9,7 +9,7 @@ create Task TkGetNodeByName {
         	from o_node nod
         	where nod.NAME = #nodeName#
 			"
-	attribute dtoONode	 	{domain : DoDtONodeDto 		cardinality: "?" 	inOut :"out"}
+	attribute dtoONode	 	{domain : DoDtONode 		cardinality: "?" 	inOut :"out"}
 	attribute nodeName	 	{domain : DoOLibelle 		cardinality: "1" 	inOut :"in"}
 },
 

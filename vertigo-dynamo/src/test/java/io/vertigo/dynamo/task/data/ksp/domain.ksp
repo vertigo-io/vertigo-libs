@@ -9,12 +9,6 @@ create Domain DoString {
 	formatter : FmtDefault
 }
 
-create Domain DoStrings {
-	dataType : String
-	multiple : "true"
-	formatter : FmtDefault
-}
-
 create Domain DoId {
 	dataType : Long
 	formatter : FmtDefault
@@ -27,14 +21,3 @@ create Domain DoInteger {
 	formatter : FmtDefault
 }
 
-create Domain DoIntegers {
-	dataType : Integer
-	multiple : "true"
-	formatter : FmtDefault
-}
-
-create Domain DoLongs {
-	dataType : Long
-	multiple : "true"
-	formatter : FmtDefault
-}

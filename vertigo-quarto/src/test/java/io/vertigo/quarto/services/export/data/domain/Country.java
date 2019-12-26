@@ -21,6 +21,7 @@ package io.vertigo.quarto.services.export.data.domain;
 import java.time.Instant;
 import java.time.LocalDate;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -45,7 +46,7 @@ public final class Country implements Entity {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DoId", type = "ID", required = true, label = "id of the country")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id of the country")
 	public final Long getId() {
 		return id;
 	}
@@ -55,7 +56,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "DoId", required = true, label = "id of the continent")
+	@Field(domain = "DoId", cardinality = Cardinality.ONE, label = "id of the continent")
 	public final Long getConId() {
 		return conId;
 	}

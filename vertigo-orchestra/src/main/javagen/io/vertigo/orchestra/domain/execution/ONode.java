@@ -30,7 +30,7 @@ public final class ONode implements Entity {
 	 * Récupère la valeur de la propriété 'Id du noeud'.
 	 * @return Long nodId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id du noeud")
+	@Field(domain = "DoOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id du noeud")
 	public Long getNodId() {
 		return nodId;
 	}
@@ -49,7 +49,7 @@ public final class ONode implements Entity {
 	 * Récupère la valeur de la propriété 'Nom du noeud'.
 	 * @return String name <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOLibelle", required = true, label = "Nom du noeud")
+	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Nom du noeud")
 	public String getName() {
 		return name;
 	}
@@ -68,7 +68,7 @@ public final class ONode implements Entity {
 	 * Récupère la valeur de la propriété 'Date de dernière activité'.
 	 * @return Instant heartbeat
 	 */
-	@Field(domain = "DoOTimestamp", label = "Date de dernière activité")
+	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Date de dernière activité")
 	public java.time.Instant getHeartbeat() {
 		return heartbeat;
 	}

@@ -2,11 +2,11 @@ package io.vertigo.studio.domain.famille
 
 create DtDefinition DtFamille {
 		id famId 	{ domain: DoId, 	label:"identifiant de la famille"}
-		field libelle {domain: DoString, 		label:"Libelle",  			required : "false"}
+		field libelle {domain: DoString, 		label:"Libelle",  			cardinality:"?"}
 }
 
 alter DtDefinition DtFamille {
-    computed description {domain : DoLibelleLong, label:"Libelle"
+    computed description {domain : DoLibelleLong, label:"Libelle" cardinality:"1"
         expression:"final StringBuilder builder = new StringBuilder();
         builder.append(getLibelle());
         builder.append('[');

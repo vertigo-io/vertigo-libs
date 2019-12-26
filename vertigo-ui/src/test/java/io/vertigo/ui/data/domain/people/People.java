@@ -18,6 +18,7 @@
  */
 package io.vertigo.ui.data.domain.people;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
@@ -49,7 +50,7 @@ public final class People implements KeyConcept {
 	 * Récupère la valeur de la propriété 'PEO_ID'.
 	 * @return Long peoId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", required = true, label = "PEO_ID")
+	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "PEO_ID")
 	public Long getPeoId() {
 		return peoId;
 	}

@@ -190,7 +190,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInAttribute(idFieldName, idField.getDomain(), Cardinality.ONE)
-				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + uri.getDefinition().getName() + "Dto", Domain.class), Cardinality.OPTIONAL_OR_NULLABLE)
+				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + uri.getDefinition().getName(), Domain.class), Cardinality.OPTIONAL_OR_NULLABLE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
@@ -239,7 +239,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInAttribute(fkFieldName, fkField.getDomain(), Cardinality.ONE)
-				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dtc", Domain.class), Cardinality.MANY)
+				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName(), Domain.class), Cardinality.MANY)
 				.build();
 
 		final UID uid = dtcUri.getSource();
@@ -291,7 +291,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
-				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dtc", Domain.class), Cardinality.MANY)
+				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName(), Domain.class), Cardinality.MANY)
 				.build();
 
 		final TaskBuilder taskBuilder = Task.builder(taskDefinition);
@@ -388,7 +388,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withEngine(getTaskEngineClass(insert))
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName() + "Dto", Domain.class), Cardinality.ONE)
+				.addInAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName(), Domain.class), Cardinality.ONE)
 				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, Cardinality.ONE)
 				.build();
 
@@ -505,7 +505,7 @@ public final class SqlDataStorePlugin implements DataStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInAttribute(idFieldName, idField.getDomain(), Cardinality.ONE)
-				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + uri.getDefinition().getName() + "Dto", Domain.class), Cardinality.OPTIONAL_OR_NULLABLE)
+				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + uri.getDefinition().getName(), Domain.class), Cardinality.OPTIONAL_OR_NULLABLE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)

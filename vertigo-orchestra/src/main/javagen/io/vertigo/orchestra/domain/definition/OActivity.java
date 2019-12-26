@@ -49,7 +49,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Id Activité'.
 	 * @return Long actId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "ID", required = true, label = "Id Activité")
+	@Field(domain = "DoOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id Activité")
 	public Long getActId() {
 		return actId;
 	}
@@ -68,7 +68,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Nom de l'activité'.
 	 * @return String name
 	 */
-	@Field(domain = "DoOLibelle", label = "Nom de l'activité")
+	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Nom de l'activité")
 	public String getName() {
 		return name;
 	}
@@ -87,7 +87,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Libellé de l'activité'.
 	 * @return String label
 	 */
-	@Field(domain = "DoOLibelle", label = "Libellé de l'activité")
+	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Libellé de l'activité")
 	public String getLabel() {
 		return label;
 	}
@@ -106,7 +106,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Numéro de l'activité'.
 	 * @return Integer number
 	 */
-	@Field(domain = "DoONombre", label = "Numéro de l'activité")
+	@Field(domain = "DoONombre", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Numéro de l'activité")
 	public Integer getNumber() {
 		return number;
 	}
@@ -125,7 +125,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Jalon'.
 	 * @return Boolean milestone
 	 */
-	@Field(domain = "DoOBooleen", label = "Jalon")
+	@Field(domain = "DoOBooleen", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Jalon")
 	public Boolean getMilestone() {
 		return milestone;
 	}
@@ -144,7 +144,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Implémentation de l'activité'.
 	 * @return String engine
 	 */
-	@Field(domain = "DoOClasse", label = "Implémentation de l'activité")
+	@Field(domain = "DoOClasse", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Implémentation de l'activité")
 	public String getEngine() {
 		return engine;
 	}
@@ -163,7 +163,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", required = true, label = "Processus")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Processus")
 	public Long getProId() {
 		return (Long) proIdAccessor.getId();
 	}

@@ -11,7 +11,7 @@ create Task TkGetActiveProcessExecutionByProId {
         	and (pre.EST_CD = 'WAITING' or pre.EST_CD = 'RESERVED' or pre.EST_CD = 'SUBMITTED' or pre.EST_CD = 'RUNNING' or pre.EST_CD = 'PENDING')     	
 			"
 		attribute proId					{domain : DoOIdentifiant 						cardinality: "1" 	inOut :"in"}
-		attribute dtcProcessExecution	 	{domain : DoDtOProcessExecutionDtc 		cardinality: "*" 	inOut :"out"}
+		attribute dtcProcessExecution	 	{domain : DoDtOProcessExecution 		cardinality: "*" 	inOut :"out"}
 },
 
 create Task TkGetLogByPreId {
@@ -26,7 +26,7 @@ create Task TkGetLogByPreId {
 			order by ace.end_time desc limit 1         	
 			"
 		attribute preId					{domain : DoOIdentifiant 				cardinality: "1" 		inOut :"in" }
-		attribute dtActivityLog	 		{domain : DoDtOActivityLogDto 		cardinality: "?" 	inOut :"out"}
+		attribute dtActivityLog	 		{domain : DoDtOActivityLog 		cardinality: "?" 	inOut :"out"}
 },
 
 create Task TkUpdateProcessExecutionTreatment {

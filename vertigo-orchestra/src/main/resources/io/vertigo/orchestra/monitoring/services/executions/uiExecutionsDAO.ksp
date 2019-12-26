@@ -23,7 +23,7 @@ create Task TkGetExecutionByPreId {
         	where pre.PRE_ID = #preId#     	
 			"
 	attribute preId	 	{domain : DoOIdentifiant		cardinality: "1" 	inOut :"in"}
-	attribute dtOProcessExecutionUi	 	{domain : DoDtOProcessExecutionUiDto		cardinality: "1" 	inOut :"out"}
+	attribute dtOProcessExecutionUi	 	{domain : DoDtOProcessExecutionUi		cardinality: "1" 	inOut :"out"}
 }
 
 
@@ -51,7 +51,7 @@ create Task TkGetExecutionsByProcessName {
 	attribute status	{domain : DoOCodeIdentifiant		cardinality: "1" 	inOut :"in"}
 	attribute limit	 	{domain : DoONombre		cardinality: "1" 	inOut :"in"}
 	attribute offset	 	{domain : DoONombre		cardinality: "1" 	inOut :"in"}
-	attribute dtcOProcessExecutionUi	 	{domain : DoDtOProcessExecutionUiDtc		cardinality: "*" 	inOut :"out"}
+	attribute dtcOProcessExecutionUi	 	{domain : DoDtOProcessExecutionUi		cardinality: "*" 	inOut :"out"}
 }
 
 
@@ -78,7 +78,7 @@ create Task TkGetActivitiyByAceId {
         	
 			"
 	attribute aceId	 	{domain : DoOIdentifiant		cardinality: "1" 	inOut :"in"}
-	attribute dtOActivityExecutionUi	 	{domain : DoDtOActivityExecutionUiDto		cardinality: "1" 	inOut :"out"}
+	attribute dtOActivityExecutionUi	 	{domain : DoDtOActivityExecutionUi		cardinality: "1" 	inOut :"out"}
 }
 
 create Task TkGetActivitiesByPreId {
@@ -104,5 +104,5 @@ create Task TkGetActivitiesByPreId {
         	
 			"
 	attribute preId	 	{domain : DoOIdentifiant		cardinality: "1" 	inOut :"in"}
-	attribute dtcOActivityExecutionUi	 	{domain : DoDtOActivityExecutionUiDtc		cardinality: "*" 	inOut :"out"}
+	attribute dtcOActivityExecutionUi	 	{domain : DoDtOActivityExecutionUi		cardinality: "*" 	inOut :"out"}
 }
