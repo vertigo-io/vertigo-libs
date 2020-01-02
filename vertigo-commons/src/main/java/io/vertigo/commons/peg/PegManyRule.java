@@ -29,9 +29,9 @@ import io.vertigo.core.lang.Assertion;
  * the text is
  *  - empty : an empty list is returned only if emptyAccepted.
  *  - ABAB : a list with a size of 2 is returned
- *  - ABABC : a list with a size of 2 is returned only if repeat is false.
+ *  - ABABC : a list with a size of 2 is returned only if untilEnd is false.
  *
- *  if repeat is true then all the text must be consumed during the evaluation.
+ *  if untilEnd is true then all the text must be consumed during the evaluation.
  *
  * @author pchretien
  * @param <R> Type of the product text parsing
@@ -40,20 +40,20 @@ final class PegManyRule<R> implements PegRule<List<R>> {
 	private final PegRule<R> rule;
 	private final String expression;
 	private final boolean zeroAccepted;
-	private final boolean repeat;
+	private final boolean untilEnd;
 
 	/**
 	 * Constructor.
 	 * @param rule the rule that's will be evaluated
 	 * @param zeroAccepted zeroOrMore else oneOrMore
-	 * @param repeat if the evaluation must be repeated
+	 * @param untilEnd if the evaluation must parse all text
 	 */
-	PegManyRule(final PegRule<R> rule, final boolean zeroAccepted, final boolean repeat) {
+	PegManyRule(final PegRule<R> rule, final boolean zeroAccepted, final boolean untilEnd) {
 		Assertion.checkNotNull(rule);
 		//-----
 		this.rule = rule;
 		this.zeroAccepted = zeroAccepted;
-		this.repeat = repeat;
+		this.untilEnd = untilEnd;
 		expression = rule.getExpression() + (zeroAccepted ? "*" : "+");
 	}
 
@@ -75,6 +75,7 @@ final class PegManyRule<R> implements PegRule<List<R>> {
 	@Override
 	public PegResult<List<R>> parse(final String text, final int start) throws PegNoMatchFoundException {
 		int index = start;
+		int i = 0;
 		//-----
 		final List<R> results = new ArrayList<>();
 		PegNoMatchFoundException best = null;
@@ -82,26 +83,29 @@ final class PegManyRule<R> implements PegRule<List<R>> {
 			int prevIndex = -1;
 			while (index < text.length() && index > prevIndex) {
 				prevIndex = index;
+				PegLogger.look("MANY", "m" + i++, prevIndex, getRule());
+
 				final PegResult<R> parserCursor = getRule()
 						.parse(text, index);
 				index = parserCursor.getIndex();
+				PegLogger.found("MANY", "m" + i, prevIndex, index, text, getRule());
+
 				if (index > prevIndex) {
-					//celé signifie que l"index n a pas avancé, on sort
+					//cela signifie que l'index n a pas avancé, on sort
 					results.add(parserCursor.getValue());
 				}
 			}
 		} catch (final PegNoMatchFoundException e) {
-			best = e;
-			if (best.getIndex() > index) {
-				//Si on a plus avancé avec une autre règle c'est que celle ci n'avance pas assez (typiquement une WhiteSpace seule, ou une OptionRule)
-				throw best;
+			if (best == null || best.getIndex() < index) {
+				best = e;
+				PegLogger.miss("MANY", "m" + i, index, getRule());
 			}
 		}
 		if (!isEmptyAccepted() && results.isEmpty()) {
-			throw new PegNoMatchFoundException(text, start, best, "Aucun élément de la liste trouvé : {0}", getExpression());
+			throw new PegNoMatchFoundException(text, best != null ? best.getIndex() : start, best, "Aucun élément de la liste trouvé : {0}", getExpression());
 		}
-		if (repeat && text.length() > index) {
-			throw new PegNoMatchFoundException(text, start, best, "{0} élément(s) trouvé(s), éléments suivants non parsés selon la règle :{1}", results.size(), getExpression());
+		if (untilEnd && text.length() > index) {
+			throw new PegNoMatchFoundException(text, best != null ? best.getIndex() : start, best, "{0} élément(s) trouvé(s), éléments suivants non parsés selon la règle :{1}", results.size(), getExpression());
 		}
 		return new PegResult<>(index, results);
 	}

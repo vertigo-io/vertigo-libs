@@ -105,7 +105,9 @@ public final class ParserTest {
 
 	@Test
 	public void testTermFail() {
-		Assertions.assertThrows(PegNoMatchFoundException.class, () -> HELLO.parse("Hi", 0));
+		final PegNoMatchFoundException e = rootCause(Assertions.assertThrows(PegNoMatchFoundException.class, () -> HELLO.parse("Hi", 0)));
+		assertEquals(0, e.getIndex());
+		assertTrue(e.getMessage().contains("Terminal 'hello' is expected"));
 	}
 
 	@Test
@@ -127,7 +129,9 @@ public final class ParserTest {
 
 	@Test
 	public void testSequenceFail() {
-		Assertions.assertThrows(PegNoMatchFoundException.class, () -> HELLO_WORLD.parse("hello worms", 0));
+		final PegNoMatchFoundException e = rootCause(Assertions.assertThrows(PegNoMatchFoundException.class, () -> HELLO_WORLD.parse("hello worms", 0)));
+		assertEquals(9, e.getIndex());
+		assertTrue(e.getMessage().contains("Terminal 'world' is expected"));
 	}
 
 	@Test
@@ -148,13 +152,17 @@ public final class ParserTest {
 
 	@Test
 	public void testFirstOfFail() {
-		Assertions.assertThrows(PegNoMatchFoundException.class, () -> WORLD_MUSIC.parse("worm", 0));
+		final PegNoMatchFoundException e = rootCause(Assertions.assertThrows(PegNoMatchFoundException.class, () -> WORLD_MUSIC.parse("worm", 0)));
+		assertEquals(3, e.getIndex());
+		assertTrue(e.getMessage().contains("Terminal 'world' is expected"));
 	}
 
 	@Test
 	public void testChoiceEmptyFailed() {
 		//An empty list of choices
-		Assertions.assertThrows(PegNoMatchFoundException.class, () -> PegRules.choice().parse("world", 0));
+		final PegNoMatchFoundException e = rootCause(Assertions.assertThrows(PegNoMatchFoundException.class, () -> PegRules.choice().parse("world", 0)));
+		assertEquals(0, e.getIndex());
+		assertTrue(e.getMessage().contains("No rule found when evalutating  FirstOf : '()'"));
 	}
 
 	@Test
@@ -225,6 +233,10 @@ public final class ParserTest {
 				.parse("abc", 0)
 				.getValue();
 		assertEquals(1, results.size());
+		results = MANY_AB
+				.parse("aba", 0)
+				.getValue();
+		assertEquals(1, results.size());
 		//-
 		results = MANY_AB
 				.parse("abababab", 0)
@@ -238,12 +250,17 @@ public final class ParserTest {
 
 	@Test
 	public void testManyGlobalFail() {
-		Assertions.assertThrows(PegNoMatchFoundException.class, () -> MANY_AB2.parse("a", 0));
+		final PegNoMatchFoundException rootCause = rootCause(
+				Assertions.assertThrows(PegNoMatchFoundException.class, () -> MANY_AB2.parse("a", 0)));
+		assertEquals(rootCause.getIndex(), 1);
+		assertTrue(rootCause.getMessage().contains("Terminal 'ab' is expected"));
 	}
 
 	@Test
 	public void testManyGlobalFail2() {
-		Assertions.assertThrows(PegNoMatchFoundException.class, () -> MANY_AB2.parse("abc", 0));
+		final PegNoMatchFoundException e = rootCause(Assertions.assertThrows(PegNoMatchFoundException.class, () -> MANY_AB2.parse("abc", 0)));
+		assertEquals(2, e.getIndex());
+		assert e.getMessage().contains("Terminal 'ab' is expected");
 	}
 
 	@Test
@@ -289,12 +306,21 @@ public final class ParserTest {
 
 	@Test
 	public void testManyMoreFail() {
-		Assertions.assertThrows(PegNoMatchFoundException.class, () -> MANY_AB_MORE.parse("", 0));
+		final PegNoMatchFoundException e = rootCause(Assertions.assertThrows(PegNoMatchFoundException.class, () -> MANY_AB_MORE.parse("", 0)));
+		assertEquals(0, e.getIndex());
+		assertTrue(e.getMessage().contains("Aucun élément de la liste trouvé : 'ab'+"));
 	}
 
 	@Test
 	public void testManyMoreFail2() {
-		Assertions.assertThrows(PegNoMatchFoundException.class, () -> MANY_AB_MORE.parse("a", 0));
+		final PegNoMatchFoundException e = rootCause(Assertions.assertThrows(PegNoMatchFoundException.class, () -> MANY_AB_MORE.parse("a", 0)));
+		assertEquals(1, e.getIndex());
+		assertTrue(e.getMessage().contains("Terminal 'ab' is expected"));
+	}
+
+	@Test
+	public void testManyMoreFail3() throws PegNoMatchFoundException {
+		parse(MANY_AB_MORE, "aba");
 	}
 
 	public static void main(final String[] args) throws PegNoMatchFoundException {
@@ -315,5 +341,13 @@ public final class ParserTest {
 		System.out.println("Règle : " + rule.getExpression());
 		System.out.println("  reste     :" + text.substring(cursor.getIndex()));
 		System.out.println("  elements  :" + cursor.getValue());
+	}
+
+	private PegNoMatchFoundException rootCause(final PegNoMatchFoundException e) {
+		PegNoMatchFoundException root = e;
+		while (root.getCause() instanceof PegNoMatchFoundException) {
+			root = (PegNoMatchFoundException) root.getCause();
+		}
+		return root;
 	}
 }
