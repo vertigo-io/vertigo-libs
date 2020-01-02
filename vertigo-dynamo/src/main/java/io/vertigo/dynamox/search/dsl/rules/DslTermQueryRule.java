@@ -37,7 +37,7 @@ import io.vertigo.dynamox.search.dsl.model.DslTermQuery.EscapeMode;
 final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<Object>> {
 
 	DslTermQueryRule() {
-		super(createMainRule(), "query");
+		super(createMainRule(), "termQuery");
 	}
 
 	private static PegRule<List<Object>> createMainRule() {
@@ -96,7 +96,6 @@ final class DslTermQueryRule extends AbstractRule<DslTermQuery, List<Object>> {
 		final Optional<String> defaultValue = defaultRuleOpt.map(defaultRule -> (String) defaultRule.get(1));
 
 		final String postQuery = (String) parsing.get(3);
-		//final String postSpaces = (String) parsing.get(4);
 		return new DslTermQuery(DslUtil.concat(preSpaces, preQuery), preTerm, termField, postTerm, escapeMode, defaultValue, postQuery);
 	}
 

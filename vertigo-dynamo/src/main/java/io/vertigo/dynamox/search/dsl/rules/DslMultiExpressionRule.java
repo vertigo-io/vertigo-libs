@@ -19,6 +19,7 @@
 package io.vertigo.dynamox.search.dsl.rules;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 	}
 
 	private DslMultiExpressionRule(final int level) {
-		super(createMainRule(level));
+		super(createMainRule(level), "multiExpression-" + level);
 	}
 
 	private static PegRule<PegChoice> createMainRule(final int level) {
@@ -57,18 +58,22 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 				new DslExpressionRule(), //0
 				new DslMultiExpressionRule(level + 1) //1
 		);
+
 		final PegRule<List<PegChoice>> manyExpressionRule = PegRules.oneOrMore(expressionsRule, false);
+
 		final PegRule<List<Object>> blockExpressionRule = PegRules.sequence(
 				PegRules.optional(new DslBooleanOperatorRule()), //0
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //1
 				DslSyntaxRules.BLOCK_START, //2
 				manyExpressionRule, //3
-				DslSyntaxRules.BLOCK_END, //4
-				DslSyntaxRules.POST_MODIFIER_VALUE); //5
+				DslSyntaxRules.SPACES,
+				DslSyntaxRules.BLOCK_END, //5
+				DslSyntaxRules.POST_MODIFIER_VALUE); //6
+
 		return PegRules.choice(//"single or multiple")
 				blockExpressionRule, //0
 				manyExpressionRule //1
-		);
+				, DslSyntaxRules.SPACES); //2
 	}
 
 	/** {@inheritDoc} */
@@ -83,12 +88,18 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 				final List<?> blockExpression = (List<?>) parsing.getValue();
 				preMultiExpression = ((Optional<String>) blockExpression.get(0)).orElse("") + blockExpression.get(1);
 				many = (List<PegChoice>) blockExpression.get(3);
-				postMultiExpression = (String) blockExpression.get(5);
+				postMultiExpression = (String) blockExpression.get(6);
 				break;
 			case 1:
 				preMultiExpression = "";
 				many = (List<PegChoice>) parsing.getValue();
 				postMultiExpression = "";
+				break;
+			case 2:
+				//spaces
+				preMultiExpression = "";
+				many = Collections.emptyList();
+				postMultiExpression = (String) parsing.getValue();
 				break;
 			default:
 				throw new IllegalArgumentException("case " + parsing.getChoiceIndex() + " not implemented");
@@ -97,7 +108,7 @@ final class DslMultiExpressionRule extends AbstractRule<DslMultiExpression, PegC
 		final List<DslExpression> expressionDefinitions = new ArrayList<>();
 		final List<DslMultiExpression> multiExpressionDefinitions = new ArrayList<>();
 
-		//On récupère le produit de la règle many
+		//On récupère le produit de la règle many (list de sequence)
 		for (final PegChoice item : many) {
 			switch (item.getChoiceIndex()) {
 				case 0:

@@ -18,6 +18,8 @@
  */
 package io.vertigo.dynamox.search;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,6 +28,8 @@ import java.time.ZoneOffset;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
@@ -347,6 +351,18 @@ public final class DslListFilterBuilderTest {
 	}
 
 	@Test
+	public void testStringWithSpaceQuery() {
+		//ElasticSearch reserved characters are: ' ' \n \t \r
+		final String[][] testQueries = new String[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ " ALL:#query# ", "Andrey Mariette", "ALL:(Andrey Mariette)" },
+				{ "ALL:(#query# )", "Andrey Mariette", "ALL:((Andrey Mariette))" },
+				{ "(ALL:(#query#) ALL:(#query#) ) ", "Andrey Mariette", "(ALL:((Andrey Mariette)) ALL:((Andrey Mariette)))" },
+		};
+		testStringFixedQuery(testQueries);
+	}
+
+	@Test
 	public void testStringHackQuery() {
 		final String[][] testQueries = new String[][] {
 				//QueryPattern, UserQuery, EspectedResult
@@ -397,6 +413,36 @@ public final class DslListFilterBuilderTest {
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#date1#!(*) TO *] +DATE_NAISSANCE:#date2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:\"2015-07-23\"" }, //26
 		};
 		testObjectFixedQuery(testQueries);
+	}
+
+	@Test
+	public void testFailQuery() {
+		final LocalDate dateTest1 = DateUtil.parseToLocalDate("230715", "ddMMyy");
+		final LocalDate dateTest2 = DateUtil.parseToLocalDate("230715", "ddMMyy");
+		final Instant instantTest1 = LocalDateTime.of(2015, 07, 23, 12, 30, 00).toInstant(ZoneOffset.UTC);
+		final Instant instantTest2 = LocalDateTime.of(2015, 07, 23, 16, 45, 00).toInstant(ZoneOffset.UTC);
+
+		final TestBean testBean = new TestBean("Test", "Test test2", dateTest1, dateTest2, instantTest1, instantTest2, 5, 10);
+		final Object[][] testQueries = new Object[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "NOM_NAISSANCE:#str1# NOM=#str1#", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:\"2015-07-23\"" }, //26
+		};
+
+		final PegNoMatchFoundException e = rootCause(Assertions.assertThrows(WrappedException.class, () -> testObjectFixedQuery(testQueries)));
+		assertEquals(24, e.getIndex());
+		assert e.getMessage().contains("Terminal ':' is expected");
+	}
+
+	private PegNoMatchFoundException rootCause(final WrappedException e) {
+		return rootCause((PegNoMatchFoundException) e.getCause());
+	}
+
+	private PegNoMatchFoundException rootCause(final PegNoMatchFoundException e) {
+		PegNoMatchFoundException root = e;
+		while (root.getCause() instanceof PegNoMatchFoundException) {
+			root = (PegNoMatchFoundException) root.getCause();
+		}
+		return root;
 	}
 
 	@Test
@@ -456,9 +502,25 @@ public final class DslListFilterBuilderTest {
 						"+FIELD_1:(Test test2)^4 +FIELD_2:(Test test2)^4 +FIELD_1:(Test* test2*)^2 +FIELD_2:(Test* test2*)^2 +FIELD_1:(Test~2 test2~2) +FIELD_2:(Test~2 test2~2)" }, //11
 				{ "+[FIELD_1,FIELD_2]:#+query*#", "Test test2", "+(+(FIELD_1:(Test*) FIELD_2:(Test*)) +(FIELD_1:(test2*) FIELD_2:(test2*)))" }, //12
 				{ "+[FIELD_1,FIELD_2*]:#+query#", "Test test2", "+(+(FIELD_1:Test FIELD_2:Test*) +(FIELD_1:test2 FIELD_2:test2*))" }, //13
-
 		};
 		testStringFixedQuery(testQueries);
+	}
+
+	@Test
+	public void testMultiFieldQueryBean() {
+
+		final LocalDate dateTest1 = DateUtil.parseToLocalDate("230715", "ddMMyy");
+		final LocalDate dateTest2 = DateUtil.parseToLocalDate("230715", "ddMMyy");
+		final Instant instantTest1 = LocalDateTime.of(2015, 07, 23, 12, 30, 00).toInstant(ZoneOffset.UTC);
+		final Instant instantTest2 = LocalDateTime.of(2015, 07, 23, 16, 45, 00).toInstant(ZoneOffset.UTC);
+
+		final TestBean testBean = new TestBean("Test", "Test test2", dateTest1, dateTest2, instantTest1, instantTest2, 5, 10);
+		final Object[][] testQueries = new Object[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "+([FIELD_1,FIELD_2]:#+str1*# \n\r\t+FIELD_2:#str1# \n\r\t+DATE_MODIFICATION_DEPUIS:[#date1# TO #date2#])", testBean,
+						"+(+(FIELD_1:(Test*) FIELD_2:(Test*)) +FIELD_2:Test +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO \"2015-07-23\"])" }, //0
+		};
+		testObjectFixedQuery(testQueries);
 	}
 
 	private <O> ListFilterBuilder<O> createListFilterBuilder(final Class<O> criteriaType) {

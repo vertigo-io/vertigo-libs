@@ -64,8 +64,9 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<Object>> 
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
 				DslSyntaxRules.BLOCK_START,
 				manyQueriesRule, //2
+				DslSyntaxRules.SPACES,
 				DslSyntaxRules.BLOCK_END,
-				DslSyntaxRules.POST_MODIFIER_VALUE); //4
+				DslSyntaxRules.POST_MODIFIER_VALUE); //5
 	}
 
 	/** {@inheritDoc} */
@@ -73,7 +74,9 @@ final class DslMultiQueryRule extends AbstractRule<DslBlockQuery, List<Object>> 
 	protected DslBlockQuery handle(final List<Object> parsing) {
 		final String preQuery = (String) parsing.get(0);
 		final List<DslQuery> queryDefinitions = new ArrayList<>();
-		final String postQuery = (String) parsing.get(4);
+		final String postQuery = (String) parsing.get(5);
+
+		//On récupère le produit de la règle many (list de sequence)
 		final List<PegChoice> manyQueries = (List<PegChoice>) parsing.get(2);
 		for (final PegChoice item : manyQueries) {
 			queryDefinitions.add((DslQuery) item.getValue());
