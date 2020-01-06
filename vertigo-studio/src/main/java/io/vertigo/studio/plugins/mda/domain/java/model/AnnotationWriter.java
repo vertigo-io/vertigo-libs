@@ -113,12 +113,14 @@ class AnnotationWriter {
 			// "DATA" est la valeur par défaut de type dans l'annotation Field
 			buffer.append("type = \"").append(dtField.getType()).append("\", ");
 		}
-		// The cardinality is always here
-		buffer.append("cardinality = ")
-				.append(Cardinality.class.getCanonicalName())
-				.append('.')
-				.append(dtField.getCardinality().name())
-				.append(", ");
+		// The cardinality is always here but OptionalOrNullable is the default in annotation so we skip it to limit verbosity
+		if (Cardinality.OPTIONAL_OR_NULLABLE != dtField.getCardinality()) {
+			buffer.append("cardinality = ")
+					.append(Cardinality.class.getCanonicalName())
+					.append('.')
+					.append(dtField.getCardinality().name())
+					.append(", ");
+		}
 		if (!dtField.isPersistent()) {
 			// On ne précise la persistance que si elle n'est pas gérée
 			buffer.append("persistent = false, ");
