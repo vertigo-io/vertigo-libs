@@ -19,6 +19,7 @@
 package io.vertigo.dynamox.search;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -425,12 +426,12 @@ public final class DslListFilterBuilderTest {
 		final TestBean testBean = new TestBean("Test", "Test test2", dateTest1, dateTest2, instantTest1, instantTest2, 5, 10);
 		final Object[][] testQueries = new Object[][] {
 				//QueryPattern, UserQuery, EspectedResult
-				{ "NOM_NAISSANCE:#str1# NOM=#str1#", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:\"2015-07-23\"" }, //26
+				{ "NOM_NAISSANCE:#str1# NOM=#str1#", testBean, 24, "Terminal ':' is expected" }, //0
+				{ "NOM_NAISSANCE:#str1# NOM:#str1# (NOM_NAISSANCE:#str1# NOM=#str1#) NOM_NAISSANCE:#str1# NOM:#str1# ", testBean, 57, "Terminal ':' is expected" }, //1
 		};
 
-		final PegNoMatchFoundException e = rootCause(Assertions.assertThrows(WrappedException.class, () -> testObjectFixedQuery(testQueries)));
-		assertEquals(24, e.getIndex());
-		assert e.getMessage().contains("Terminal ':' is expected");
+		testErrorObjectFixedQuery(testQueries);
+
 	}
 
 	private PegNoMatchFoundException rootCause(final WrappedException e) {
@@ -555,6 +556,23 @@ public final class DslListFilterBuilderTest {
 			final String result = listFilter.getFilterValue();
 			final Object expectedResult = testParam[Math.min(getPreferedResult(), testParam.length - 1)];
 			Assertions.assertEquals(expectedResult, result, "Built query #" + i + " incorrect");
+			i++;
+		}
+	}
+
+	private void testErrorObjectFixedQuery(final Object[]... testData) {
+		int i = 0;
+		for (final Object[] testParam : testData) {
+			final PegNoMatchFoundException e = rootCause(
+					Assertions.assertThrows(WrappedException.class, () -> {
+						final ListFilter listFilter = createListFilterBuilder(Object.class)
+								.withBuildQuery((String) testParam[0])
+								.withCriteria(testParam[1])
+								.build();
+						listFilter.getFilterValue();
+					}));
+			assertEquals(testParam[2], e.getIndex(), "Error query #" + i + " incorrect\n" + e.getMessage());
+			assertTrue(e.getMessage().contains((String) testParam[3]), "Error query #" + i + " incorrect\n" + e.getMessage());
 			i++;
 		}
 	}
