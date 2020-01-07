@@ -43,12 +43,12 @@ abstract class AbstractScriptTag {
 	/**
 	 * FIELD_PATH_CALL.
 	 */
-	protected static final String FIELD_PATH_CALL = "^([a-z][0-9a-zA-Z]*(?:\\.[a-z][0-9a-zA-Z]*)*)";
+	protected static final Pattern FIELD_PATH_CALL = Pattern.compile("^([a-z][0-9a-zA-Z]*(?:\\.[a-z][0-9a-zA-Z]*)*)");
 	/**
 	 * FIELD_PATH_CALL_CONDITIONAL.
 	 * ADU - 20120529 : modification du pattern pour acceptation espaces et accents.
 	 */
-	protected static final String FIELD_PATH_CALL_EQUALS_CONDITION = "^([a-z][0-9a-zA-Z]*(?:\\.[a-z][0-9a-zA-Z]*)*)=(\\&quot;|\")(.*)(\\&quot;|\")";
+	protected static final Pattern FIELD_PATH_CALL_EQUALS_CONDITION = Pattern.compile("^([a-z][0-9a-zA-Z]*(?:\\.[a-z][0-9a-zA-Z]*)*)=(\\&quot;|\")(.*)(\\&quot;|\")");
 
 	/**
 	 * Ajouter l'appel de la methode getStringValue sur un fieldPath.
@@ -131,25 +131,24 @@ abstract class AbstractScriptTag {
 	 * Permet de vérifier le format d'un attribut de tag et de le parser.
 	 *
 	 * @param attribute l'attribut d'un tag
-	 * @param regEexpFormat le format dans lequel il doit etre ecrit
+	 * @param regEexpPattern le pattern dans lequel il doit etre ecrit
 	 * @return la list des groupe de l'expression reguliere(chaine entre
 	 *         parentheses dans l'expression reguliere) ou null si cela ne
-	 *         matche pas le format. la premiere case du tableau correspond
+	 *         matche pas le pattern. la premiere case du tableau correspond
 	 *         toujours a la chaine à l'attribut lui même
 	 */
-	protected static final String[] parseAttribute(final String attribute, final String regEexpFormat) {
+	protected static final String[] parseAttribute(final String attribute, final Pattern regEexpPattern) {
 		Assertion.checkNotNull(attribute);
-		Assertion.checkNotNull(regEexpFormat);
+		Assertion.checkNotNull(regEexpPattern);
 		//-----
 
 		final String[] groups;
 		int nbGroup = 0;
 
-		final Pattern pattern = Pattern.compile(regEexpFormat);
-		final Matcher matcher = pattern.matcher(attribute);
+		final Matcher matcher = regEexpPattern.matcher(attribute);
 
 		if (!matcher.matches()) {
-			throw new VSystemException("attribut \'{0}\' mal forme (ne respect pas le format {1})", attribute, regEexpFormat);
+			throw new VSystemException("attribut \'{0}\' mal forme (ne respect pas le format {1})", attribute, regEexpPattern);
 		}
 
 		nbGroup = matcher.groupCount();
