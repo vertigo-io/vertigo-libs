@@ -63,7 +63,7 @@ final class PegOptionalRule<R> implements PegRule<Optional<R>> {
 			return new PegResult<>(result.getIndex(), option);
 		} catch (final PegNoMatchFoundException e) {
 			//As the rule is optional, if we found nothing then the index doesn't move and no exception is thrown.
-			return new PegResult<>(start, Optional.empty());
+			return new PegResult<>(start, Optional.empty(), e);
 		}
 	}
 }

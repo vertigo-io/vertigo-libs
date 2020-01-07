@@ -18,6 +18,8 @@
  */
 package io.vertigo.commons.peg;
 
+import java.util.Optional;
+
 import io.vertigo.core.lang.Assertion;
 
 /**
@@ -31,6 +33,7 @@ import io.vertigo.core.lang.Assertion;
 public final class PegResult<R> {
 	private final int index;
 	private final R value;
+	private final Optional<PegNoMatchFoundException> bestUncompleteRule;
 
 	/**
 	 * Constructor.
@@ -42,6 +45,21 @@ public final class PegResult<R> {
 		//---
 		this.index = index;
 		this.value = result;
+		this.bestUncompleteRule = Optional.empty();
+	}
+
+	/**
+	 * Constructor.
+	 * @param index
+	 * @param result
+	 * @param bestUncompleteRule
+	 */
+	PegResult(final int index, final R result, final PegNoMatchFoundException bestUncompleteRule) {
+		Assertion.checkNotNull(result);
+		//---
+		this.index = index;
+		this.value = result;
+		this.bestUncompleteRule = Optional.ofNullable(bestUncompleteRule);
 	}
 
 	/**
@@ -56,6 +74,13 @@ public final class PegResult<R> {
 	 */
 	public R getValue() {
 		return value;
+	}
+
+	/**
+	 * @return the best Uncomplete Rule
+	 */
+	public Optional<PegNoMatchFoundException> getBestUncompleteRule() {
+		return bestUncompleteRule;
 	}
 
 }

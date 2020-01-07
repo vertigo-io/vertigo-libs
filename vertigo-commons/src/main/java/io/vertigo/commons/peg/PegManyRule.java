@@ -107,6 +107,6 @@ final class PegManyRule<R> implements PegRule<List<R>> {
 		if (untilEnd && text.length() > index) {
 			throw new PegNoMatchFoundException(text, best != null ? best.getIndex() : start, best, "{0} élément(s) trouvé(s), éléments suivants non parsés selon la règle :{1}", results.size(), getExpression());
 		}
-		return new PegResult<>(index, results);
+		return new PegResult<>(index, results, best);
 	}
 }
