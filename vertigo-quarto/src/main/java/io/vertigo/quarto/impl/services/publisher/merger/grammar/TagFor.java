@@ -18,6 +18,8 @@
  */
 package io.vertigo.quarto.impl.services.publisher.merger.grammar;
 
+import java.util.regex.Pattern;
+
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.quarto.impl.services.publisher.merger.script.ScriptContext;
 import io.vertigo.quarto.impl.services.publisher.merger.script.ScriptTag;
@@ -29,7 +31,7 @@ import io.vertigo.quarto.impl.services.publisher.merger.script.ScriptTagContent;
 //public car instancié dynamiquement
 public final class TagFor extends AbstractScriptTag implements ScriptTag {
 	private static final String FOR_CALL = "for (java.util.Iterator {2}It = {0}.iterator(); {2}It.hasNext();) \\{ {1} {2} = ({1}) {2}It.next(); ";
-	private static final String FOR_ATTRIBUTE = "^([0-9a-zA-Z_]+) *: *([0-9a-zA-Z_]+(\\.[0-9a-zA-Z_]+)*)";
+	private static final Pattern FOR_ATTRIBUTE = Pattern.compile("^([0-9a-zA-Z_]+) *: *([0-9a-zA-Z_]+(\\.[0-9a-zA-Z_]+)*)");
 
 	/** {@inheritDoc} */
 	@Override
