@@ -30,8 +30,10 @@
 	<modules>
 		<module>vertigo-commons</module>
 		<module>vertigo-database</module>
-		<module>vertigo-dynamo</module>
-		<module>vertigo-dynamo-plugin-elasticsearch_5_6</module>
+		<module>vertigo-model</module>
+		<module>vertigo-store</module>
+		<module>vertigo-data</module>
+		<module>vertigo-data-plugin-elasticsearch_5_6</module>
 		<module>vertigo-account</module>
 		<module>vertigo-vega</module>
 		

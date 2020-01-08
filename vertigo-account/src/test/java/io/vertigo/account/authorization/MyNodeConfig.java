@@ -28,7 +28,7 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 
 public final class MyNodeConfig {
 
@@ -44,7 +44,7 @@ public final class MyNodeConfig {
 						.withAuthorization()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addAllParams(Param.of("encoding", "utf-8"))
 								.addDefinitionResource("kpr", "security/generation.kpr")
 								.build())

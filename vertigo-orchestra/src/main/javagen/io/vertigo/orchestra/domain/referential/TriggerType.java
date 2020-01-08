@@ -48,7 +48,7 @@ public final class TriggerType implements Entity {
 	 * Récupère la valeur de la propriété 'Libellé'.
 	 * @return String label
 	 */
-	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Libellé")
+	@Field(domain = "DoOLibelle", label = "Libellé")
 	public String getLabel() {
 		return label;
 	}

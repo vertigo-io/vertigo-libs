@@ -3,7 +3,7 @@ package io.vertigo.orchestra.domain.definition;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.model.VAccessor;
+import io.vertigo.dynamo.impl.store.datastore.StoreVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -36,7 +36,7 @@ public final class OActivity implements Entity {
 			foreignRole = "Activity",
 			foreignLabel = "Activity",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.definition.OProcess> proIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.definition.OProcess.class, "Process");
+	private final StoreVAccessor<io.vertigo.orchestra.domain.definition.OProcess> proIdAccessor = new StoreVAccessor<>(io.vertigo.orchestra.domain.definition.OProcess.class, "Process");
 
 	/** {@inheritDoc} */
 	@Override
@@ -68,7 +68,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Nom de l'activité'.
 	 * @return String name
 	 */
-	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Nom de l'activité")
+	@Field(domain = "DoOLibelle", label = "Nom de l'activité")
 	public String getName() {
 		return name;
 	}
@@ -87,7 +87,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Libellé de l'activité'.
 	 * @return String label
 	 */
-	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Libellé de l'activité")
+	@Field(domain = "DoOLibelle", label = "Libellé de l'activité")
 	public String getLabel() {
 		return label;
 	}
@@ -106,7 +106,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Numéro de l'activité'.
 	 * @return Integer number
 	 */
-	@Field(domain = "DoONombre", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Numéro de l'activité")
+	@Field(domain = "DoONombre", label = "Numéro de l'activité")
 	public Integer getNumber() {
 		return number;
 	}
@@ -125,7 +125,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Jalon'.
 	 * @return Boolean milestone
 	 */
-	@Field(domain = "DoOBooleen", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Jalon")
+	@Field(domain = "DoOBooleen", label = "Jalon")
 	public Boolean getMilestone() {
 		return milestone;
 	}
@@ -144,7 +144,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Implémentation de l'activité'.
 	 * @return String engine
 	 */
-	@Field(domain = "DoOClasse", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Implémentation de l'activité")
+	@Field(domain = "DoOClasse", label = "Implémentation de l'activité")
 	public String getEngine() {
 		return engine;
 	}
@@ -181,7 +181,7 @@ public final class OActivity implements Entity {
 	 * Association : Processus.
 	 * @return l'accesseur vers la propriété 'Processus'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.definition.OProcess> process() {
+	public StoreVAccessor<io.vertigo.orchestra.domain.definition.OProcess> process() {
 		return proIdAccessor;
 	}
 	

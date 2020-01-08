@@ -26,8 +26,8 @@ import java.util.List;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.impl.store.datastore.StoreVAccessor;
 
 public final class Contact implements KeyConcept {
 	private static final long serialVersionUID = 2074906343392206381L;
@@ -61,7 +61,7 @@ public final class Contact implements KeyConcept {
 			foreignRole = "Contact",
 			foreignLabel = "Contact",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<Address> adrIdAccessor = new VAccessor<>(Address.class, "address");
+	private final StoreVAccessor<Address> adrIdAccessor = new StoreVAccessor<>(Address.class, "address");
 
 	/** {@inheritDoc} */
 	@Override
@@ -117,7 +117,7 @@ public final class Contact implements KeyConcept {
 		this.email = email;
 	}
 
-	public VAccessor<Address> getAddressAccessor() {
+	public StoreVAccessor<Address> getAddressAccessor() {
 		return adrIdAccessor;
 	}
 

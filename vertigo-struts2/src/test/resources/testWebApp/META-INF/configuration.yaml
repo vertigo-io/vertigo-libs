@@ -24,13 +24,13 @@ modules:
           dataBaseClass: io.vertigo.database.impl.sql.vendor.h2.H2DataBase
           jdbcDriver: org.h2.Driver
           jdbcUrl: jdbc:h2:mem:test
-  io.vertigo.dynamo.DynamoFeatures:
+  io.vertigo.dynamo.ModelFeatures:
+  io.vertigo.dynamo.StoreFeatures:
     features:
       - store:
       - kvStore:
     featuresConfig:
       - store.data.sql:
-      - collections.luceneIndex:
       - kvStore.berkeley:
           collections: VActionContext;TTL=43200
           dbFilePath: ${java.io.tmpdir}/vertigo/TestVActionContext
@@ -39,6 +39,9 @@ modules:
           values: "true=Oui;false=Non"
           dtDefinitionName: DtOuiNonChoice
       - io.vertigo.struts2.services.util.CommuneStorePlugin: {}
+  io.vertigo.dynamo.DataFeatures:
+    featuresConfig:
+      - collections.luceneIndex:
   io.vertigo.account.AccountFeatures:
     features:
       - security:

@@ -26,6 +26,11 @@
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-vega</artifactId>
 			<version>${vertigo.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-data</artifactId>
+			<version>${vertigo.version}</version>
 		</dependency>		
 		<dependency>
 			<groupId>io.vertigo</groupId>

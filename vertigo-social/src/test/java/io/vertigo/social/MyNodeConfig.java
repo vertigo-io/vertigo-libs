@@ -28,7 +28,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.config.NodeConfigBuilder;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.DynamoFeatures;
+import io.vertigo.dynamo.StoreFeatures;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.notification.data.TestUserSession;
 import io.vertigo.social.notification.webservices.TestLoginWebServices;
@@ -67,7 +67,7 @@ public final class MyNodeConfig {
 
 		nodeConfigBuilder
 				.addModule(commonsFeatures.build())
-				.addModule(new DynamoFeatures().build())
+				.addModule(new StoreFeatures().build())
 				.addModule(ModuleConfig.builder("identities")
 						.addComponent(MockIdentities.class)
 						.build());

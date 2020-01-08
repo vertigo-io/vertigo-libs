@@ -3,16 +3,16 @@ package ${dtDefinition.packageName};
 import io.vertigo.core.lang.Generated;
 import ${dtDefinition.stereotypePackageName};
 <#if dtDefinition.containsEnumAccessor()>
-import io.vertigo.dynamo.domain.model.EnumVAccessor;
+import io.vertigo.dynamo.impl.store.datastore.EnumStoreVAccessor;
 </#if>
 <#if dtDefinition.containsListAccessor()>
-import io.vertigo.dynamo.domain.model.ListVAccessor;
+import io.vertigo.dynamo.impl.store.datastore.StoreListVAccessor;
 </#if>
 <#if dtDefinition.entity || dtDefinition.fragment>
 import io.vertigo.dynamo.domain.model.UID;
 </#if>
 <#if dtDefinition.containsAccessor()>
-import io.vertigo.dynamo.domain.model.VAccessor;
+import io.vertigo.dynamo.impl.store.datastore.StoreVAccessor;
 </#if>	
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
@@ -35,9 +35,9 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	${annotation}
 			</#list>
 			<#if dtField.association.targetStaticMasterData>
-	private final EnumVAccessor<${dtField.association.returnType}, ${dtField.association.returnType}Enum> ${dtField.name}Accessor = new EnumVAccessor<>(${dtField.association.returnType}.class, "${dtField.association.role}", ${dtField.association.returnType}Enum.class);
+	private final EnumStoreVAccessor<${dtField.association.returnType}, ${dtField.association.returnType}Enum> ${dtField.name}Accessor = new EnumStoreVAccessor<>(${dtField.association.returnType}.class, "${dtField.association.role}", ${dtField.association.returnType}Enum.class);
 			<#else>
-	private final VAccessor<${dtField.association.returnType}> ${dtField.name?uncap_first}Accessor = new VAccessor<>(${dtField.association.returnType}.class, "${dtField.association.role}");
+	private final StoreVAccessor<${dtField.association.returnType}> ${dtField.name?uncap_first}Accessor = new StoreVAccessor<>(${dtField.association.returnType}.class, "${dtField.association.role}");
 			</#if>
 		<#else>
 	private ${dtField.javaType} ${dtField.name};
@@ -50,7 +50,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 			<#list annotations(association.definition) as annotation>
 	${annotation}
 			</#list>
-	private final ListVAccessor<${association.returnType}> ${association.role?uncap_first}Accessor = new ListVAccessor<>(this, "${association.urn}", "${association.role}");
+	private final StoreListVAccessor<${association.returnType}> ${association.role?uncap_first}Accessor = new StoreListVAccessor<>(this, "${association.urn}", "${association.role}");
 			</#if>
 		</#if>
 	</#list>
@@ -146,9 +146,9 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	 * @return l'accesseur vers la propriété '${association.label}'
 	 */
 		<#if association.targetStaticMasterData>
-	public EnumVAccessor<${association.returnType}, ${association.returnType}Enum> ${association.role?uncap_first}() {
+	public EnumStoreVAccessor<${association.returnType}, ${association.returnType}Enum> ${association.role?uncap_first}() {
 		<#else>
-	public VAccessor<${association.returnType}> ${association.role?uncap_first}() {
+	public StoreVAccessor<${association.returnType}> ${association.role?uncap_first}() {
 		</#if>
 		return ${association.fkFieldName}Accessor;
 	}
@@ -158,7 +158,7 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	 * Association : ${association.label}.
 	 * @return l'accesseur vers la propriété '${association.label}'
 	 */
-	public ListVAccessor<${association.returnType}> ${association.role?uncap_first}() {
+	public StoreListVAccessor<${association.returnType}> ${association.role?uncap_first}() {
 		return ${association.role?uncap_first}Accessor;
 	}
 			</#if>

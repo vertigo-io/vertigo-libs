@@ -1,11 +1,19 @@
 package io.vertigo.dynamock.domain
 
+alter DtDefinition DtContact {
+	stereotype : "KeyConcept"
+	computed allText {domain : DoTexte50, label:"all" cardinality:"1"
+        expression:"return \"\";"
+  } 
+}
+
 /**************************************************************************************************/
 /********************************* Gestion des formatters *****************************************/
 /**************************************************************************************************/
 create Formatter FmtDefault{
 	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault",
 }
+
 
 /**************************************************************************************************/
 /********************************* Gestion des contraintes ****************************************/

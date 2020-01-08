@@ -20,9 +20,9 @@ package io.vertigo.vega.webservice.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.impl.store.datastore.StoreListVAccessor;
 
 public final class Address implements Entity {
 	private static final long serialVersionUID = 8922834274442256496L;
@@ -53,7 +53,7 @@ public final class Address implements Entity {
 			foreignRole = "Contact",
 			foreignLabel = "Contact",
 			foreignMultiplicity = "0..*")
-	private final ListVAccessor<Contact> contactAccessor = new ListVAccessor<>(this, "AConAdr", "Contact");
+	private final StoreListVAccessor<Contact> contactAccessor = new StoreListVAccessor<>(this, "AConAdr", "Contact");
 
 	/** {@inheritDoc} */
 	@Override
@@ -109,7 +109,7 @@ public final class Address implements Entity {
 		this.country = country;
 	}
 
-	public ListVAccessor<Contact> getContactAccessor() {
+	public StoreListVAccessor<Contact> getContactAccessor() {
 		return contactAccessor;
 	}
 

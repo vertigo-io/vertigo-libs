@@ -33,10 +33,11 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.DynamoFeatures;
+import io.vertigo.dynamo.StoreFeatures;
+import io.vertigo.dynamo.ModelFeatures;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.quarto.QuartoFeatures;
 import io.vertigo.quarto.services.export.data.DtDefinitions.ContinentFields;
 import io.vertigo.quarto.services.export.data.DtDefinitions.CountryFields;
@@ -68,7 +69,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU5 {
 						.withCache()
 						.withMemoryCache()
 						.build())
-				.addModule(new DynamoFeatures()
+				.addModule(new ModelFeatures().build())
+				.addModule(new StoreFeatures()
 						.withStore()
 						.build())
 				.addModule(new QuartoFeatures()
@@ -79,7 +81,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU5 {
 						.withXLSExporter()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/quarto/services/export/data/execution.kpr")
 								.addDefinitionResource("classes", "io.vertigo.quarto.services.export.data.DtDefinitions")
 								.build())

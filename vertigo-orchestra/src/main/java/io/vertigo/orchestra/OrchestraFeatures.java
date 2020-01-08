@@ -26,7 +26,7 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.orchestra.dao.definition.DefinitionPAO;
 import io.vertigo.orchestra.dao.definition.OActivityDAO;
 import io.vertigo.orchestra.dao.definition.OProcessDAO;
@@ -129,8 +129,9 @@ public final class OrchestraFeatures extends Features<OrchestraFeatures> {
 				.addComponent(UiexecutionsPAO.class)
 				.addComponent(SummaryPAO.class)
 				//----Definitions
-				.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
-						.addDefinitionResource("kpr", "io/vertigo/orchestra/execution.kpr")
+				.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
+						.addDefinitionResource("kpr", "io/vertigo/orchestra/domains.kpr")
+						.addDefinitionResource("kpr", "io/vertigo/orchestra/tasks.kpr")
 						.addDefinitionResource("classes", DtDefinitions.class.getName())
 						.build());
 		return this;

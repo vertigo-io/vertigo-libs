@@ -3,7 +3,7 @@ package io.vertigo.orchestra.domain.execution;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.model.VAccessor;
+import io.vertigo.dynamo.impl.store.datastore.StoreVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -33,7 +33,7 @@ public final class OActivityLog implements Entity {
 			foreignRole = "ActivityLog",
 			foreignLabel = "ActivityLog",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.execution.OActivityExecution> aceIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.execution.OActivityExecution.class, "ActivityExecution");
+	private final StoreVAccessor<io.vertigo.orchestra.domain.execution.OActivityExecution> aceIdAccessor = new StoreVAccessor<>(io.vertigo.orchestra.domain.execution.OActivityExecution.class, "ActivityExecution");
 
 	/** {@inheritDoc} */
 	@Override
@@ -65,7 +65,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'Contenu du log'.
 	 * @return String log
 	 */
-	@Field(domain = "DoOText", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Contenu du log")
+	@Field(domain = "DoOText", label = "Contenu du log")
 	public String getLog() {
 		return log;
 	}
@@ -84,7 +84,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'Fichier joint'.
 	 * @return String attachment
 	 */
-	@Field(domain = "DoOText", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Fichier joint")
+	@Field(domain = "DoOText", label = "Fichier joint")
 	public String getAttachment() {
 		return attachment;
 	}
@@ -121,7 +121,7 @@ public final class OActivityLog implements Entity {
 	 * Association : ActivityExecution.
 	 * @return l'accesseur vers la propriété 'ActivityExecution'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.execution.OActivityExecution> activityExecution() {
+	public StoreVAccessor<io.vertigo.orchestra.domain.execution.OActivityExecution> activityExecution() {
 		return aceIdAccessor;
 	}
 	

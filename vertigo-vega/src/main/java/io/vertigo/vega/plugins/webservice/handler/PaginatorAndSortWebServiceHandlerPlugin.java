@@ -23,10 +23,11 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.token.TokenManager;
@@ -49,19 +50,15 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 	private static final int DEFAULT_RESULT_PER_PAGE = 20;
 
 	private final TokenManager tokenManager;
-	private final CollectionsManager collectionsManager;
 
 	/**
 	 * Constructor.
-	 * @param collectionsManager collections manager
 	 * @param tokenManager token manager
 	 */
 	@Inject
-	public PaginatorAndSortWebServiceHandlerPlugin(final CollectionsManager collectionsManager, final TokenManager tokenManager) {
-		Assertion.checkNotNull(collectionsManager);
+	public PaginatorAndSortWebServiceHandlerPlugin(final TokenManager tokenManager) {
 		Assertion.checkNotNull(tokenManager);
 		//-----
-		this.collectionsManager = collectionsManager;
 		this.tokenManager = tokenManager;
 	}
 
@@ -145,10 +142,14 @@ public final class PaginatorAndSortWebServiceHandlerPlugin implements WebService
 
 	}
 
-	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
+	private static <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
 		if (dtListState.getSortFieldName().isPresent()) {
-			sortedList = collectionsManager.sort(unFilteredList, dtListState.getSortFieldName().get(), dtListState.isSortDesc().get());
+			final DtField sortField = unFilteredList.getDefinition().getField(dtListState.getSortFieldName().get());
+			sortedList = unFilteredList
+					.stream()
+					.sorted((dt1, dt2) -> DtObjectUtil.compareFieldValues(dt1, dt2, sortField, dtListState.isSortDesc().get()))
+					.collect(VCollectors.toDtList(unFilteredList.getDefinition()));
 		} else {
 			sortedList = unFilteredList;
 		}

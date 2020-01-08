@@ -3,7 +3,7 @@ package io.vertigo.orchestra.domain.planification;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.model.VAccessor;
+import io.vertigo.dynamo.impl.store.datastore.StoreVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -33,7 +33,7 @@ public final class OProcessPlanification implements Entity {
 			foreignRole = "ProcessPlanification",
 			foreignLabel = "PlanificationProcessus",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.definition.OProcess> proIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.definition.OProcess.class, "Processus");
+	private final StoreVAccessor<io.vertigo.orchestra.domain.definition.OProcess> proIdAccessor = new StoreVAccessor<>(io.vertigo.orchestra.domain.definition.OProcess.class, "Processus");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "APrpNod",
@@ -48,7 +48,7 @@ public final class OProcessPlanification implements Entity {
 			foreignRole = "ProcessPlanification",
 			foreignLabel = "PlanificationProcessus",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.execution.ONode> nodIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.execution.ONode.class, "Node");
+	private final StoreVAccessor<io.vertigo.orchestra.domain.execution.ONode> nodIdAccessor = new StoreVAccessor<>(io.vertigo.orchestra.domain.execution.ONode.class, "Node");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "APrpPst",
@@ -63,7 +63,7 @@ public final class OProcessPlanification implements Entity {
 			foreignRole = "ProcessPlanification",
 			foreignLabel = "ProcessPlanification",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.referential.OSchedulerState> sstCdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.referential.OSchedulerState.class, "PlanificationState");
+	private final StoreVAccessor<io.vertigo.orchestra.domain.referential.OSchedulerState> sstCdAccessor = new StoreVAccessor<>(io.vertigo.orchestra.domain.referential.OSchedulerState.class, "PlanificationState");
 
 	/** {@inheritDoc} */
 	@Override
@@ -95,7 +95,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Date d'execution prévue'.
 	 * @return Instant expectedTime
 	 */
-	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Date d'execution prévue")
+	@Field(domain = "DoOTimestamp", label = "Date d'execution prévue")
 	public java.time.Instant getExpectedTime() {
 		return expectedTime;
 	}
@@ -114,7 +114,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
 	 * @return String initialParams
 	 */
-	@Field(domain = "DoOJsonText", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Paramètres initiaux sous forme de JSON")
+	@Field(domain = "DoOJsonText", label = "Paramètres initiaux sous forme de JSON")
 	public String getInitialParams() {
 		return initialParams;
 	}
@@ -152,7 +152,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Node'.
 	 * @return Long nodId
 	 */
-	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Node")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", label = "Node")
 	public Long getNodId() {
 		return (Long) nodIdAccessor.getId();
 	}
@@ -171,7 +171,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'PlanificationState'.
 	 * @return String sstCd
 	 */
-	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "PlanificationState")
+	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", label = "PlanificationState")
 	public String getSstCd() {
 		return (String) sstCdAccessor.getId();
 	}
@@ -189,7 +189,7 @@ public final class OProcessPlanification implements Entity {
 	 * Association : Node.
 	 * @return l'accesseur vers la propriété 'Node'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.execution.ONode> node() {
+	public StoreVAccessor<io.vertigo.orchestra.domain.execution.ONode> node() {
 		return nodIdAccessor;
 	}
 
@@ -197,7 +197,7 @@ public final class OProcessPlanification implements Entity {
 	 * Association : Processus.
 	 * @return l'accesseur vers la propriété 'Processus'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.definition.OProcess> processus() {
+	public StoreVAccessor<io.vertigo.orchestra.domain.definition.OProcess> processus() {
 		return proIdAccessor;
 	}
 
@@ -205,7 +205,7 @@ public final class OProcessPlanification implements Entity {
 	 * Association : PlanificationState.
 	 * @return l'accesseur vers la propriété 'PlanificationState'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.referential.OSchedulerState> planificationState() {
+	public StoreVAccessor<io.vertigo.orchestra.domain.referential.OSchedulerState> planificationState() {
 		return sstCdAccessor;
 	}
 	

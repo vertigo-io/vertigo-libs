@@ -26,7 +26,7 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.studio.StudioFeatures;
 import io.vertigo.studio.tools.NameSpace2Java;
 
@@ -52,8 +52,9 @@ public class DtDefinitionsGeneratorTest {
 								Param.of("dictionaryClassName", "MyDtDefinitions"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/studio/data/generationWTask.kpr")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/studio/data/model.kpr")
+								.addDefinitionResource("kpr", "io/vertigo/studio/data/tasks.kpr")
 								.build())
 						.build())
 				.build();

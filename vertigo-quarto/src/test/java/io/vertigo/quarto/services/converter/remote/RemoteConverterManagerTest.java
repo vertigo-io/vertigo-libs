@@ -35,7 +35,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.util.TempFile;
-import io.vertigo.dynamo.DynamoFeatures;
+import io.vertigo.dynamo.StoreFeatures;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
@@ -65,7 +65,7 @@ public final class RemoteConverterManagerTest extends AbstractTestCaseJU5 {
 				.beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures().build())
-				.addModule(new DynamoFeatures().build())
+				.addModule(new StoreFeatures().build())
 				.addModule(new QuartoFeatures()
 						.withConverter()
 						.withRemoteOpenOfficeConverter(

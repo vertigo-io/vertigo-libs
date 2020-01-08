@@ -3,7 +3,7 @@ package io.vertigo.orchestra.domain.definition;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.model.VAccessor;
+import io.vertigo.dynamo.impl.store.datastore.StoreVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -41,7 +41,7 @@ public final class OProcess implements Entity {
 			foreignRole = "Process",
 			foreignLabel = "Process",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.referential.TriggerType> trtCdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.referential.TriggerType.class, "TriggerType");
+	private final StoreVAccessor<io.vertigo.orchestra.domain.referential.TriggerType> trtCdAccessor = new StoreVAccessor<>(io.vertigo.orchestra.domain.referential.TriggerType.class, "TriggerType");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "AProPrt",
@@ -56,7 +56,7 @@ public final class OProcess implements Entity {
 			foreignRole = "Process",
 			foreignLabel = "Process",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.referential.OProcessType> prtCdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.referential.OProcessType.class, "ProcessType");
+	private final StoreVAccessor<io.vertigo.orchestra.domain.referential.OProcessType> prtCdAccessor = new StoreVAccessor<>(io.vertigo.orchestra.domain.referential.OProcessType.class, "ProcessType");
 
 	/** {@inheritDoc} */
 	@Override
@@ -88,7 +88,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Nom du processus'.
 	 * @return String name
 	 */
-	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Nom du processus")
+	@Field(domain = "DoOLibelle", label = "Nom du processus")
 	public String getName() {
 		return name;
 	}
@@ -107,7 +107,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Libellé du processus'.
 	 * @return String label
 	 */
-	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Libellé du processus")
+	@Field(domain = "DoOLibelle", label = "Libellé du processus")
 	public String getLabel() {
 		return label;
 	}
@@ -126,7 +126,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Expression récurrence du processus'.
 	 * @return String cronExpression
 	 */
-	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Expression récurrence du processus")
+	@Field(domain = "DoOLibelle", label = "Expression récurrence du processus")
 	public String getCronExpression() {
 		return cronExpression;
 	}
@@ -145,7 +145,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
 	 * @return String initialParams
 	 */
-	@Field(domain = "DoOJsonText", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Paramètres initiaux sous forme de JSON")
+	@Field(domain = "DoOJsonText", label = "Paramètres initiaux sous forme de JSON")
 	public String getInitialParams() {
 		return initialParams;
 	}
@@ -164,7 +164,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Accepte la multi-execution'.
 	 * @return Boolean multiexecution
 	 */
-	@Field(domain = "DoOBooleen", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Accepte la multi-execution")
+	@Field(domain = "DoOBooleen", label = "Accepte la multi-execution")
 	public Boolean getMultiexecution() {
 		return multiexecution;
 	}
@@ -240,7 +240,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Meta-données du processus'.
 	 * @return String metadatas
 	 */
-	@Field(domain = "DoOMetadatas", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Meta-données du processus")
+	@Field(domain = "DoOMetadatas", label = "Meta-données du processus")
 	public String getMetadatas() {
 		return metadatas;
 	}
@@ -297,7 +297,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'ProcessType'.
 	 * @return String prtCd
 	 */
-	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "ProcessType")
+	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", label = "ProcessType")
 	public String getPrtCd() {
 		return (String) prtCdAccessor.getId();
 	}
@@ -315,7 +315,7 @@ public final class OProcess implements Entity {
 	 * Association : ProcessType.
 	 * @return l'accesseur vers la propriété 'ProcessType'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.referential.OProcessType> processType() {
+	public StoreVAccessor<io.vertigo.orchestra.domain.referential.OProcessType> processType() {
 		return prtCdAccessor;
 	}
 
@@ -323,7 +323,7 @@ public final class OProcess implements Entity {
 	 * Association : TriggerType.
 	 * @return l'accesseur vers la propriété 'TriggerType'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.referential.TriggerType> triggerType() {
+	public StoreVAccessor<io.vertigo.orchestra.domain.referential.TriggerType> triggerType() {
 		return trtCdAccessor;
 	}
 	

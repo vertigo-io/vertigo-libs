@@ -38,7 +38,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 
 /**
  * Implementation standard de la gestion centralisee des droits d'acces.
@@ -76,7 +76,7 @@ abstract class AbstractIdentityProviderManagerTest extends AbstractTestCaseJU5 {
 								Param.of("ldapUserAttributeMapping", "usrId:cn, fullName:description"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addAllParams(Param.of("encoding", "utf-8"))
 								.addDefinitionResource("kpr", "security/generation.kpr")
 								.build())

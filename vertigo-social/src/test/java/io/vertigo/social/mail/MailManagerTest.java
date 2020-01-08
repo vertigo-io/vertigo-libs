@@ -29,7 +29,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
-import io.vertigo.dynamo.DynamoFeatures;
+import io.vertigo.dynamo.StoreFeatures;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.social.SocialFeatures;
@@ -59,7 +59,7 @@ public final class MailManagerTest extends AbstractTestCaseJU5 {
 				.withLocales("fr_FR")
 				.endBoot()
 				.addModule(new CommonsFeatures().build())
-				.addModule(new DynamoFeatures().build())
+				.addModule(new StoreFeatures().build())
 				.addModule(new SocialFeatures()
 						.withMails()
 						.withJavaxMail(

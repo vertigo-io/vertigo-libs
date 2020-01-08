@@ -47,7 +47,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Nom du processus'.
 	 * @return String name
 	 */
-	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Nom du processus")
+	@Field(domain = "DoOLibelle", label = "Nom du processus")
 	public String getName() {
 		return name;
 	}
@@ -66,7 +66,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Libellé du processus'.
 	 * @return String label
 	 */
-	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Libellé du processus")
+	@Field(domain = "DoOLibelle", label = "Libellé du processus")
 	public String getLabel() {
 		return label;
 	}
@@ -85,7 +85,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Expression récurrence du processus'.
 	 * @return String cronExpression
 	 */
-	@Field(domain = "DoOLibelle", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Expression récurrence du processus")
+	@Field(domain = "DoOLibelle", label = "Expression récurrence du processus")
 	public String getCronExpression() {
 		return cronExpression;
 	}
@@ -104,7 +104,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
 	 * @return String initialParams
 	 */
-	@Field(domain = "DoOJsonText", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Paramètres initiaux sous forme de JSON")
+	@Field(domain = "DoOJsonText", label = "Paramètres initiaux sous forme de JSON")
 	public String getInitialParams() {
 		return initialParams;
 	}
@@ -123,7 +123,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Accepte la multi-execution'.
 	 * @return Boolean multiexecution
 	 */
-	@Field(domain = "DoOBooleen", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Accepte la multi-execution")
+	@Field(domain = "DoOBooleen", label = "Accepte la multi-execution")
 	public Boolean getMultiexecution() {
 		return multiexecution;
 	}
@@ -180,7 +180,7 @@ public final class OProcessUi implements DtObject {
 	 * Récupère la valeur de la propriété 'Métadonnées du processus'.
 	 * @return String metadatas
 	 */
-	@Field(domain = "DoOMetadatas", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Métadonnées du processus")
+	@Field(domain = "DoOMetadatas", label = "Métadonnées du processus")
 	public String getMetadatas() {
 		return metadatas;
 	}

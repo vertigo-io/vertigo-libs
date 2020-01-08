@@ -31,8 +31,9 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.dynamo.DynamoFeatures;
-import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.dynamo.StoreFeatures;
+import io.vertigo.dynamo.ModelFeatures;
+import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 
 public final class MyNodeConfig {
 	private static final String REDIS_HOST = "redis-pic.part.klee.lan.net";
@@ -56,7 +57,7 @@ public final class MyNodeConfig {
 		}
 
 		final DatabaseFeatures databaseFeatures = new DatabaseFeatures();
-		final DynamoFeatures dynamoFeatures = new DynamoFeatures();
+		final StoreFeatures dynamoFeatures = new StoreFeatures();
 		final AccountFeatures accountFeatures = new AccountFeatures()
 				.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
 				.withAccount();
@@ -101,11 +102,12 @@ public final class MyNodeConfig {
 						.withMemoryCache()
 						.build())
 				.addModule(databaseFeatures.build())
+				.addModule(new ModelFeatures().build())
 				.addModule(dynamoFeatures.build())
 				.addModule(accountFeatures.build())
 				.addModule(ModuleConfig.builder("app")
 						.addDefinitionProvider(
-								DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+								DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 										.addDefinitionResource("classes", DtDefinitions.class.getName())
 										.addDefinitionResource("kpr", "account/domains.kpr")
 										.build())

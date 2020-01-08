@@ -68,7 +68,7 @@ public final class ONode implements Entity {
 	 * Récupère la valeur de la propriété 'Date de dernière activité'.
 	 * @return Instant heartbeat
 	 */
-	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Date de dernière activité")
+	@Field(domain = "DoOTimestamp", label = "Date de dernière activité")
 	public java.time.Instant getHeartbeat() {
 		return heartbeat;
 	}

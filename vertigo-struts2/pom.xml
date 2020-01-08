@@ -30,7 +30,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-dynamo</artifactId><!-- for io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl and 
+			<artifactId>vertigo-model</artifactId><!-- for io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl and 
 				io.vertigo.dynamox.domain.formatter.Resources -->
 			<version>${vertigo.version}</version>
 		</dependency>

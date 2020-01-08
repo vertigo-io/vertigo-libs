@@ -29,8 +29,8 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.DynamoFeatures;
-import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.dynamo.StoreFeatures;
+import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.quarto.impl.services.publisher.PublisherDataUtil;
 import io.vertigo.quarto.impl.services.publisher.PublisherManagerImpl;
 import io.vertigo.quarto.plugins.publisher.odt.OpenOfficeMergerPlugin;
@@ -60,12 +60,12 @@ public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 						.withScript()
 						.withJaninoScript()
 						.build())
-				.addModule(new DynamoFeatures()
+				.addModule(new StoreFeatures()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addComponent(PublisherManager.class, PublisherManagerImpl.class)
 						.addPlugin(OpenOfficeMergerPlugin.class)
-						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/quarto/services/publisher/data/execution.kpr")
 								.build())
 						.addDefinitionProvider(TestStandardPublisherDefinitionProvider.class)

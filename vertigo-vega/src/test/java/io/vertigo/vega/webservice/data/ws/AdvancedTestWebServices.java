@@ -34,7 +34,6 @@ import javax.inject.Inject;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.DateUtil;
-import io.vertigo.dynamo.collections.CollectionsManager;
 import io.vertigo.dynamo.criteria.CriterionLimit;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -81,8 +80,6 @@ import io.vertigo.vega.webservice.stereotype.Validate;
 @PathPrefix("/test")
 public final class AdvancedTestWebServices implements WebServices {
 
-	@Inject
-	private CollectionsManager collectionsManager;
 	@Inject
 	private ResourceManager resourcetManager;
 	@Inject
@@ -339,7 +336,11 @@ public final class AdvancedTestWebServices implements WebServices {
 	private <D extends DtObject> DtList<D> applySortAndPagination(final DtList<D> unFilteredList, final DtListState dtListState) {
 		final DtList<D> sortedList;
 		if (dtListState.getSortFieldName().isPresent()) {
-			sortedList = collectionsManager.sort(unFilteredList, dtListState.getSortFieldName().get(), dtListState.isSortDesc().get());
+			final DtField sortField = unFilteredList.getDefinition().getField(dtListState.getSortFieldName().get());
+			sortedList = unFilteredList
+					.stream()
+					.sorted((dt1, dt2) -> DtObjectUtil.compareFieldValues(dt1, dt2, sortField, dtListState.isSortDesc().get()))
+					.collect(VCollectors.toDtList(unFilteredList.getDefinition()));
 		} else {
 			sortedList = unFilteredList;
 		}

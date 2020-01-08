@@ -334,3 +334,35 @@ create Constraint CkTelephone {
 	className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex"
 	args : "^0[0-9]{9}$"
 }
+
+
+
+create Domain DoGedLabel {
+	dataType : String
+	formatter : FmtDefault
+    storeType : "VARCHAR(30)"
+}
+
+create Domain DoGedDate {
+	dataType : LocalDate
+	formatter : FmtDate
+    storeType : "DATE"
+}
+
+create Domain DoGedUri {
+	dataType : Long
+	formatter : FmtDefault
+    storeType : "BIGINT"
+}
+
+create Domain DoGedSize {
+	dataType : Long
+	formatter : FmtDefault
+    storeType : "BIGINT"
+}
+
+create Domain DoGedDataStream {
+	dataType : DataStream
+	formatter : FmtDefault
+	storeType : "BLOB"
+}

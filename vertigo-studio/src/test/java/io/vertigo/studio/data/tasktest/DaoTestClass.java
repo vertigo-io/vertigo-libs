@@ -38,8 +38,9 @@ import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
-import io.vertigo.dynamo.DynamoFeatures;
-import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.dynamo.StoreFeatures;
+import io.vertigo.dynamo.ModelFeatures;
+import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.studio.mda.DataBaseScriptUtil;
 import io.vertigo.studio.plugins.mda.task.test.TaskTestDaoChecker;
@@ -76,7 +77,8 @@ public class DaoTestClass extends AbstractTestCaseJU5 {
 								Param.of("jdbcDriver", "org.h2.Driver"),
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.build())
-				.addModule(new DynamoFeatures()
+				.addModule(new ModelFeatures().build())
+				.addModule(new StoreFeatures()
 						.withStore()
 						.addPlugin(SqlDataStorePlugin.class,
 								Param.of("sequencePrefix", "SEQ_"))
@@ -85,9 +87,10 @@ public class DaoTestClass extends AbstractTestCaseJU5 {
 						// to use this class for actual test target/javagen must contains those two dao classes and target/javagen must be included as a source folder
 						// .addComponent(CarDAO.class)
 						.addComponent(DaoPAO.class)
-						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("classes", "io.vertigo.studio.data.DtDefinitions")
-								.addDefinitionResource("kpr", "io/vertigo/studio/data/generationWTask.kpr")
+								.addDefinitionResource("kpr", "io/vertigo/studio/data/model.kpr")
+								.addDefinitionResource("kpr", "io/vertigo/studio/data/tasks.kpr")
 								.build())
 						.build())
 				.build();

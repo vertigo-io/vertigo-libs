@@ -3,7 +3,7 @@ package io.vertigo.orchestra.domain.execution;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.model.VAccessor;
+import io.vertigo.dynamo.impl.store.datastore.StoreVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -36,7 +36,7 @@ public final class OActivityExecution implements Entity {
 			foreignRole = "ExecutionActivity",
 			foreignLabel = "ExecutionActivity",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.definition.OActivity> actIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.definition.OActivity.class, "Activity");
+	private final StoreVAccessor<io.vertigo.orchestra.domain.definition.OActivity> actIdAccessor = new StoreVAccessor<>(io.vertigo.orchestra.domain.definition.OActivity.class, "Activity");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "AAcePre",
@@ -51,7 +51,7 @@ public final class OActivityExecution implements Entity {
 			foreignRole = "ExecutionActivity",
 			foreignLabel = "ExecutionActivity",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.execution.OProcessExecution> preIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.execution.OProcessExecution.class, "ProcessusExecution");
+	private final StoreVAccessor<io.vertigo.orchestra.domain.execution.OProcessExecution> preIdAccessor = new StoreVAccessor<>(io.vertigo.orchestra.domain.execution.OProcessExecution.class, "ProcessusExecution");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "AAceNod",
@@ -66,7 +66,7 @@ public final class OActivityExecution implements Entity {
 			foreignRole = "ExecutionActivity",
 			foreignLabel = "ExecutionActivity",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.execution.ONode> nodIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.execution.ONode.class, "Node");
+	private final StoreVAccessor<io.vertigo.orchestra.domain.execution.ONode> nodIdAccessor = new StoreVAccessor<>(io.vertigo.orchestra.domain.execution.ONode.class, "Node");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "AAceEst",
@@ -81,7 +81,7 @@ public final class OActivityExecution implements Entity {
 			foreignRole = "ExecutionActivity",
 			foreignLabel = "ExecutionActivity",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> estCdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.referential.OExecutionState.class, "ExecutionState");
+	private final StoreVAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> estCdAccessor = new StoreVAccessor<>(io.vertigo.orchestra.domain.referential.OExecutionState.class, "ExecutionState");
 
 	/** {@inheritDoc} */
 	@Override
@@ -132,7 +132,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de début'.
 	 * @return Instant beginTime
 	 */
-	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Date de début")
+	@Field(domain = "DoOTimestamp", label = "Date de début")
 	public java.time.Instant getBeginTime() {
 		return beginTime;
 	}
@@ -151,7 +151,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de fin'.
 	 * @return Instant endTime
 	 */
-	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Date de fin")
+	@Field(domain = "DoOTimestamp", label = "Date de fin")
 	public java.time.Instant getEndTime() {
 		return endTime;
 	}
@@ -170,7 +170,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Implémentation effective de l'execution'.
 	 * @return String engine
 	 */
-	@Field(domain = "DoOClasse", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Implémentation effective de l'execution")
+	@Field(domain = "DoOClasse", label = "Implémentation effective de l'execution")
 	public String getEngine() {
 		return engine;
 	}
@@ -189,7 +189,7 @@ public final class OActivityExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Token d'identification'.
 	 * @return String token
 	 */
-	@Field(domain = "DoOToken", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Token d'identification")
+	@Field(domain = "DoOToken", label = "Token d'identification")
 	public String getToken() {
 		return token;
 	}
@@ -283,7 +283,7 @@ public final class OActivityExecution implements Entity {
 	 * Association : Activity.
 	 * @return l'accesseur vers la propriété 'Activity'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.definition.OActivity> activity() {
+	public StoreVAccessor<io.vertigo.orchestra.domain.definition.OActivity> activity() {
 		return actIdAccessor;
 	}
 
@@ -291,7 +291,7 @@ public final class OActivityExecution implements Entity {
 	 * Association : ExecutionState.
 	 * @return l'accesseur vers la propriété 'ExecutionState'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> executionState() {
+	public StoreVAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> executionState() {
 		return estCdAccessor;
 	}
 
@@ -299,7 +299,7 @@ public final class OActivityExecution implements Entity {
 	 * Association : Node.
 	 * @return l'accesseur vers la propriété 'Node'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.execution.ONode> node() {
+	public StoreVAccessor<io.vertigo.orchestra.domain.execution.ONode> node() {
 		return nodIdAccessor;
 	}
 
@@ -307,7 +307,7 @@ public final class OActivityExecution implements Entity {
 	 * Association : Processus.
 	 * @return l'accesseur vers la propriété 'Processus'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.execution.OProcessExecution> processusExecution() {
+	public StoreVAccessor<io.vertigo.orchestra.domain.execution.OProcessExecution> processusExecution() {
 		return preIdAccessor;
 	}
 	

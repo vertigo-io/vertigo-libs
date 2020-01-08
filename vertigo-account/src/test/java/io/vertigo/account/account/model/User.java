@@ -21,9 +21,9 @@ package io.vertigo.account.account.model;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.impl.store.datastore.StoreVAccessor;
 
 /**
  * User.
@@ -37,7 +37,7 @@ public final class User implements KeyConcept {
 	private String email;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(name = "AGrpUsr", fkFieldName = "grpId", primaryDtDefinitionName = "DtUserGroup", primaryIsNavigable = true, primaryRole = "Group", primaryLabel = "Group", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DtUser", foreignIsNavigable = false, foreignRole = "User", foreignLabel = "User", foreignMultiplicity = "0..*")
-	private final VAccessor<UserGroup> grpIdAccessor = new VAccessor<>(UserGroup.class, "Group");
+	private final StoreVAccessor<UserGroup> grpIdAccessor = new StoreVAccessor<>(UserGroup.class, "Group");
 
 	/** {@inheritDoc} */
 	@Override

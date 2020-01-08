@@ -28,8 +28,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.util.InjectorUtil;
-import io.vertigo.dynamo.DynamoFeatures;
-import io.vertigo.dynamo.plugins.environment.DynamoDefinitionProvider;
+import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.studio.StudioFeatures;
 import io.vertigo.studio.mda.MdaManager;
 
@@ -42,12 +41,13 @@ public class Studio {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new CommonsFeatures().build())
-				.addModule(new DynamoFeatures().build())
 				//----Definitions
 				.addModule(ModuleConfig.builder("ressources")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(DynamoDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addParam(Param.of("encoding", "UTF-8"))
-								.addDefinitionResource("kpr", "io/vertigo/orchestra/generation.kpr")
+								.addDefinitionResource("kpr", "io/vertigo/orchestra/domains.kpr")
+								.addDefinitionResource("kpr", "io/vertigo/orchestra/model.kpr")
+								.addDefinitionResource("kpr", "io/vertigo/orchestra/tasks.kpr")
 								.build())
 						.build())
 				// ---StudioFeature

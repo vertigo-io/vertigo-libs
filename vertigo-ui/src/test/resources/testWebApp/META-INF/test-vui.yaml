@@ -31,21 +31,25 @@ modules:
           dataBaseClass: io.vertigo.database.impl.sql.vendor.h2.H2DataBase
           jdbcDriver: org.h2.Driver
           jdbcUrl: jdbc:h2:mem:test
-  io.vertigo.dynamo.DynamoFeatures:
+  io.vertigo.dynamo.ModelFeatures:
+  io.vertigo.dynamo.StoreFeatures:
     features:
       - store:
       - kvStore:
-      - search:
     featuresConfig:
       - store.data.sql:
+      - kvStore.berkeley:
+          collections: VViewContext;TTL=43200
+          dbFilePath: ${java.io.tmpdir}/vertigo/TestVViewContext
+  io.vertigo.dynamo.DataFeatures:
+    features:
+      - search:
+    featuresConfig:
       - collections.luceneIndex:
       - search.elasticsearch.client:          
           envIndexPrefix: tuTest
           rowsPerQuery: 50
           config.file: esconfig/elasticsearch.yml
-      - kvStore.berkeley:
-          collections: VViewContext;TTL=43200
-          dbFilePath: ${java.io.tmpdir}/vertigo/TestVViewContext
   io.vertigo.account.AccountFeatures:
     features:
       - security:

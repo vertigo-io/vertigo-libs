@@ -3,7 +3,7 @@ package io.vertigo.orchestra.domain.execution;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.model.VAccessor;
+import io.vertigo.dynamo.impl.store.datastore.StoreVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
@@ -37,7 +37,7 @@ public final class OProcessExecution implements Entity {
 			foreignRole = "ExecutionProcessus",
 			foreignLabel = "ExecutionProcessus",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.definition.OProcess> proIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.definition.OProcess.class, "Process");
+	private final StoreVAccessor<io.vertigo.orchestra.domain.definition.OProcess> proIdAccessor = new StoreVAccessor<>(io.vertigo.orchestra.domain.definition.OProcess.class, "Process");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "APreEst",
@@ -52,7 +52,7 @@ public final class OProcessExecution implements Entity {
 			foreignRole = "ExecutionProcess",
 			foreignLabel = "ExecutionProcessus",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> estCdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.referential.OExecutionState.class, "ExecutionState");
+	private final StoreVAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> estCdAccessor = new StoreVAccessor<>(io.vertigo.orchestra.domain.referential.OExecutionState.class, "ExecutionState");
 
 	@io.vertigo.dynamo.domain.stereotype.Association(
 			name = "APreUsr",
@@ -67,7 +67,7 @@ public final class OProcessExecution implements Entity {
 			foreignRole = "ExecutionProcess",
 			foreignLabel = "ExecutionProcessus",
 			foreignMultiplicity = "0..*")
-	private final VAccessor<io.vertigo.orchestra.domain.referential.OUser> usrIdAccessor = new VAccessor<>(io.vertigo.orchestra.domain.referential.OUser.class, "User");
+	private final StoreVAccessor<io.vertigo.orchestra.domain.referential.OUser> usrIdAccessor = new StoreVAccessor<>(io.vertigo.orchestra.domain.referential.OUser.class, "User");
 
 	/** {@inheritDoc} */
 	@Override
@@ -118,7 +118,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de fin'.
 	 * @return Instant endTime
 	 */
-	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Date de fin")
+	@Field(domain = "DoOTimestamp", label = "Date de fin")
 	public java.time.Instant getEndTime() {
 		return endTime;
 	}
@@ -137,7 +137,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Implémentation effective de l'execution'.
 	 * @return String engine
 	 */
-	@Field(domain = "DoOClasse", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Implémentation effective de l'execution")
+	@Field(domain = "DoOClasse", label = "Implémentation effective de l'execution")
 	public String getEngine() {
 		return engine;
 	}
@@ -156,7 +156,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Pris en charge'.
 	 * @return Boolean checked
 	 */
-	@Field(domain = "DoOBooleen", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Pris en charge")
+	@Field(domain = "DoOBooleen", label = "Pris en charge")
 	public Boolean getChecked() {
 		return checked;
 	}
@@ -175,7 +175,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de prise en charge'.
 	 * @return Instant checkingDate
 	 */
-	@Field(domain = "DoOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Date de prise en charge")
+	@Field(domain = "DoOTimestamp", label = "Date de prise en charge")
 	public java.time.Instant getCheckingDate() {
 		return checkingDate;
 	}
@@ -194,7 +194,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Commentaire'.
 	 * @return String checkingComment
 	 */
-	@Field(domain = "DoOText", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "Commentaire")
+	@Field(domain = "DoOText", label = "Commentaire")
 	public String getCheckingComment() {
 		return checkingComment;
 	}
@@ -232,7 +232,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'ExecutionState'.
 	 * @return String estCd
 	 */
-	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "ExecutionState")
+	@Field(domain = "DoOCodeIdentifiant", type = "FOREIGN_KEY", label = "ExecutionState")
 	public String getEstCd() {
 		return (String) estCdAccessor.getId();
 	}
@@ -251,7 +251,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'User'.
 	 * @return Long usrId
 	 */
-	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.OPTIONAL_OR_NULLABLE, label = "User")
+	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", label = "User")
 	public Long getUsrId() {
 		return (Long) usrIdAccessor.getId();
 	}
@@ -269,7 +269,7 @@ public final class OProcessExecution implements Entity {
 	 * Association : ExecutionState.
 	 * @return l'accesseur vers la propriété 'ExecutionState'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> executionState() {
+	public StoreVAccessor<io.vertigo.orchestra.domain.referential.OExecutionState> executionState() {
 		return estCdAccessor;
 	}
 
@@ -277,7 +277,7 @@ public final class OProcessExecution implements Entity {
 	 * Association : Processus.
 	 * @return l'accesseur vers la propriété 'Processus'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.definition.OProcess> process() {
+	public StoreVAccessor<io.vertigo.orchestra.domain.definition.OProcess> process() {
 		return proIdAccessor;
 	}
 
@@ -285,7 +285,7 @@ public final class OProcessExecution implements Entity {
 	 * Association : User.
 	 * @return l'accesseur vers la propriété 'User'
 	 */
-	public VAccessor<io.vertigo.orchestra.domain.referential.OUser> user() {
+	public StoreVAccessor<io.vertigo.orchestra.domain.referential.OUser> user() {
 		return usrIdAccessor;
 	}
 	
