@@ -42,7 +42,6 @@ import io.vertigo.vega.webservice.stereotype.AccessTokenConsume;
 import io.vertigo.vega.webservice.stereotype.AccessTokenMandatory;
 import io.vertigo.vega.webservice.stereotype.AccessTokenPublish;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
-import io.vertigo.vega.webservice.stereotype.AutoSortAndPagination;
 import io.vertigo.vega.webservice.stereotype.DELETE;
 import io.vertigo.vega.webservice.stereotype.Doc;
 import io.vertigo.vega.webservice.stereotype.ExcludedFields;
@@ -128,8 +127,6 @@ final class AnnotationsWebServiceScannerUtil {
 				builder.withAccessTokenConsume(true);
 			} else if (annotation instanceof ServerSideSave) {
 				builder.withServerSideSave(true);
-			} else if (annotation instanceof AutoSortAndPagination) {
-				builder.withAutoSortAndPagination(true);
 			} else if (annotation instanceof Doc) {
 				builder.withDoc(((Doc) annotation).value());
 			} else if (annotation instanceof FileAttachment) {

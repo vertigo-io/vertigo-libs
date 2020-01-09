@@ -25,6 +25,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.DataFeatures;
+import io.vertigo.dynamo.impl.search.grammar.SearchDefinitionProvider;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.dynamo.plugins.search.elasticsearch_5_6.embedded.ESEmbeddedSearchServicesPlugin;
 import io.vertigo.dynamo.search.data.domain.ItemSearchLoader;
@@ -56,8 +57,11 @@ public class SearchManagerTest extends AbstractSearchManagerTest {
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/dynamo/search/data/execution.kpr")
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/search/data/model_run.kpr")
 								.addDefinitionResource("classes", "io.vertigo.dynamo.search.data.DtDefinitions")
+								.build())
+						.addDefinitionProvider(DefinitionProviderConfig.builder(SearchDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/search/data/search.kpr")
 								.build())
 						.addComponent(ItemSearchLoader.class)
 						.build())

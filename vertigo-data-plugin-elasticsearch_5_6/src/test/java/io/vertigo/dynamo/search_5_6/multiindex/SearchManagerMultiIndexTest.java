@@ -35,6 +35,7 @@ import io.vertigo.dynamo.DataFeatures;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.impl.search.grammar.SearchDefinitionProvider;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.data.domain.Item;
@@ -76,8 +77,11 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/dynamo/search/data/execution.kpr")
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/search/data/model_run.kpr")
 								.addDefinitionResource("classes", "io.vertigo.dynamo.search.data.DtDefinitions")
+								.build())
+						.addDefinitionProvider(DefinitionProviderConfig.builder(SearchDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/search/data/search.kpr")
 								.build())
 						.build())
 				.build();

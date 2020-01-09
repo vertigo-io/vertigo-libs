@@ -1303,38 +1303,20 @@ abstract class AbstractWebServiceManagerTest {
 
 	@Test
 	public void testSearchQueryPagined() {
-		doTestSearchPagined(false);
-	}
-
-	@Test
-	public void testSearchAutoPagined() {
-		doTestSearchPagined(true);
-	}
-
-	private void doTestSearchPagined(final boolean isAuto) {
 		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
 				.put("birthdayMin", "1978-05-19")
 				.put("birthdayMax", "1985-05-19")
 				.build();
 
 		final String serverSideToken;
-		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto); //if Fournier : dateCriteria not applied
-		doPaginedSearch(criteriaContact, 3, 2, "name", false, serverSideToken, 3, "Garcia", "Moreau", isAuto);
-		doPaginedSearch(criteriaContact, 3, 5, "name", false, serverSideToken, 1, "Petit", "Petit", isAuto);
-		doPaginedSearch(criteriaContact, 10, 10, "name", false, serverSideToken, 0, "Petit", "Petit", isAuto);
+		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia"); //if Fournier : dateCriteria not applied
+		doPaginedSearch(criteriaContact, 3, 2, "name", false, serverSideToken, 3, "Garcia", "Moreau");
+		doPaginedSearch(criteriaContact, 3, 5, "name", false, serverSideToken, 1, "Petit", "Petit");
+		doPaginedSearch(criteriaContact, 10, 10, "name", false, serverSideToken, 0, "Petit", "Petit");
 	}
 
 	@Test
 	public void testSearchQueryPaginedSortName() {
-		doTestSearchPaginedSortName(false);
-	}
-
-	@Test
-	public void testSearchAutoPaginedSortName() {
-		doTestSearchPaginedSortName(true);
-	}
-
-	private void doTestSearchPaginedSortName(final boolean isAuto) {
 		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
 				.put("birthdayMin", "1978-05-19")
 				.put("birthdayMax", "1985-05-19")
@@ -1342,58 +1324,40 @@ abstract class AbstractWebServiceManagerTest {
 		//gets : "Dubois","Durant","Garcia","Martin","Moreau","Petit"
 
 		final String serverSideToken;
-		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
-		doPaginedSearch(criteriaContact, 10, 0, "name", false, serverSideToken, 6, "Dubois", "Petit", isAuto);
-		doPaginedSearch(criteriaContact, 4, 0, "name", false, serverSideToken, 4, "Dubois", "Martin", isAuto);
-		doPaginedSearch(criteriaContact, 4, 0, "name", true, serverSideToken, 4, "Petit", "Garcia", isAuto);
-		doPaginedSearch(criteriaContact, 4, 1, "name", true, serverSideToken, 4, "Moreau", "Durant", isAuto);
-		doPaginedSearch(criteriaContact, 4, 1, "name", false, serverSideToken, 4, "Durant", "Moreau", isAuto);
+		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia");
+		doPaginedSearch(criteriaContact, 10, 0, "name", false, serverSideToken, 6, "Dubois", "Petit");
+		doPaginedSearch(criteriaContact, 4, 0, "name", false, serverSideToken, 4, "Dubois", "Martin");
+		doPaginedSearch(criteriaContact, 4, 0, "name", true, serverSideToken, 4, "Petit", "Garcia");
+		doPaginedSearch(criteriaContact, 4, 1, "name", true, serverSideToken, 4, "Moreau", "Durant");
+		doPaginedSearch(criteriaContact, 4, 1, "name", false, serverSideToken, 4, "Durant", "Moreau");
 	}
 
 	@Test
 	public void testSearchQueryPaginedSortDate() {
-		doTestSearchPaginedSortDate(false);
-	}
-
-	@Test
-	public void testSearchAutoPaginedSortDate() {
-		doTestSearchPaginedSortDate(true);
-	}
-
-	private void doTestSearchPaginedSortDate(final boolean isAuto) {
 		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
 				.put("birthdayMin", "1978-05-19")
 				.put("birthdayMax", "1985-05-19")
 				.build();
 
 		final String serverSideToken;
-		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
-		doPaginedSearch(criteriaContact, 10, 0, "birthday", false, serverSideToken, 6, "Petit", "Garcia", isAuto);
-		doPaginedSearch(criteriaContact, 3, 1, "birthday", false, serverSideToken, 3, "Martin", "Durant", isAuto);
-		doPaginedSearch(criteriaContact, 3, 1, "birthday", true, serverSideToken, 3, "Moreau", "Dubois", isAuto);
+		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia");
+		doPaginedSearch(criteriaContact, 10, 0, "birthday", false, serverSideToken, 6, "Petit", "Garcia");
+		doPaginedSearch(criteriaContact, 3, 1, "birthday", false, serverSideToken, 3, "Martin", "Durant");
+		doPaginedSearch(criteriaContact, 3, 1, "birthday", true, serverSideToken, 3, "Moreau", "Dubois");
 	}
 
 	@Test
 	public void testSearchQueryPaginedMissing() {
-		doTestSearchPaginedMissing(false);
-	}
-
-	@Test
-	public void testSearchAutoPaginedMissing() {
-		doTestSearchPaginedMissing(true);
-	}
-
-	private void doTestSearchPaginedMissing(final boolean isAuto) {
 		final Map<String, Object> criteriaContact = new MapBuilder<String, Object>()
 				.put("birthdayMin", "1978-05-19")
 				.put("birthdayMax", "1985-05-19")
 				.build();
 
 		String serverSideToken;
-		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia", isAuto);
-		doPaginedSearch(criteriaContact, null, null, null, null, serverSideToken, 6, "Martin", "Garcia", isAuto);
-		doPaginedSearch(criteriaContact, 5, null, null, null, serverSideToken, 5, "Martin", "Moreau", isAuto);
-		doPaginedSearch(criteriaContact, 5, 5, null, null, serverSideToken, 1, "Garcia", "Garcia", isAuto);
+		serverSideToken = doPaginedSearch(criteriaContact, 3, 0, "name", false, null, 3, "Dubois", "Garcia");
+		doPaginedSearch(criteriaContact, null, null, null, null, serverSideToken, 6, "Martin", "Garcia");
+		doPaginedSearch(criteriaContact, 5, null, null, null, serverSideToken, 5, "Martin", "Moreau");
+		doPaginedSearch(criteriaContact, 5, 5, null, null, serverSideToken, 1, "Garcia", "Garcia");
 	}
 
 	private String doPaginedSearch(
@@ -1405,10 +1369,9 @@ abstract class AbstractWebServiceManagerTest {
 			final String listServerToken,
 			final int expectedSize,
 			final String firstContactName,
-			final String lastContactName,
-			final boolean isAuto) {
+			final String lastContactName) {
 		final RequestSpecification given = given().filter(loggedSessionFilter);
-		final String wsUrl = isAuto ? "/test/_searchAutoPagined" : "/test/_searchQueryPagined";
+		final String wsUrl = "/test/_searchQueryPagined";
 		if (top != null) {
 			given.queryParam("top", top);
 		}

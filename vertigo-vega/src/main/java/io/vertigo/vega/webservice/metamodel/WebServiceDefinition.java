@@ -62,7 +62,6 @@ public final class WebServiceDefinition implements Definition {
 	private final boolean accessTokenMandatory;
 	private final boolean accessTokenConsume;
 	private final boolean serverSideSave;
-	private final boolean autoSortAndPagination;
 
 	private final Set<String> includedFields;
 	private final Set<String> excludedFields;
@@ -89,7 +88,6 @@ public final class WebServiceDefinition implements Definition {
 			final boolean accessTokenMandatory,
 			final boolean accessTokenConsume,
 			final boolean serverSideSave,
-			final boolean autoSortAndPagination,
 			final Set<String> includedFields,
 			final Set<String> excludedFields,
 			final List<WebServiceParam> webServiceParams,
@@ -130,7 +128,6 @@ public final class WebServiceDefinition implements Definition {
 		this.accessTokenMandatory = accessTokenMandatory;
 		this.accessTokenConsume = accessTokenConsume;
 		this.serverSideSave = serverSideSave;
-		this.autoSortAndPagination = autoSortAndPagination;
 
 		this.includedFields = Collections.unmodifiableSet(new LinkedHashSet<>(includedFields));
 		this.excludedFields = Collections.unmodifiableSet(new LinkedHashSet<>(excludedFields));
@@ -262,13 +259,6 @@ public final class WebServiceDefinition implements Definition {
 	 */
 	public boolean isServerSideSave() {
 		return serverSideSave;
-	}
-
-	/**
-	 * @return autoSortAndPagination
-	 */
-	public boolean isAutoSortAndPagination() {
-		return autoSortAndPagination;
 	}
 
 	/**

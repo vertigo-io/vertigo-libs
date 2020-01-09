@@ -21,6 +21,7 @@ package io.vertigo.dynamo.store.data;
 import java.util.Iterator;
 
 import io.vertigo.core.util.ListBuilder;
+import io.vertigo.dynamo.store.data.domain.SmartItem;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.data.domain.car.MotorType;
 import io.vertigo.dynamo.store.data.domain.famille.Famille;
@@ -31,6 +32,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	@Override
 	public Iterator<Class<?>> iterator() {
 		return new ListBuilder<Class<?>>()
+				.add(SmartItem.class)
 				.add(Car.class)
 				.add(MotorType.class)
 				.add(Famille.class)

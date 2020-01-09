@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.impl.collections;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -70,18 +69,6 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 
 	private static StoreManager getStoreManager() {
 		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public <D extends DtObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc) {
-		Assertion.checkNotNull(list);
-		Assertion.checkArgNotEmpty(fieldName);
-		//-----
-		final Comparator<D> comparator = new DtObjectComparator<>(getStoreManager(), list.getDefinition().getField(fieldName), desc);
-		return list.stream()
-				.sorted(comparator)
-				.collect(VCollectors.toDtList(list.getDefinition()));
 	}
 
 	/** {@inheritDoc} */

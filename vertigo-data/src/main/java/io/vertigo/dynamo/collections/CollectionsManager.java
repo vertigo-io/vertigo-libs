@@ -45,15 +45,6 @@ public interface CollectionsManager extends Manager {
 	<D extends DtObject> Predicate<D> filter(final ListFilter listFilter);
 
 	/**
-	 * Sorts a list from a column.
-	 * @param list the list to sort
-	 * @param fieldName the field name
-	 * @param desc if the sotr is desc
-	 * @return the sorted list
-	 */
-	<D extends DtObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc);
-
-	/**
 	 * Filter or sort a list via a listProcessor powered by an index engine, can be composed of filters or sorters.
 	 * @return DtListIndexProcessor
 	 * @param <D> Type de l'objet de la liste

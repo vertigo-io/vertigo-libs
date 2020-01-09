@@ -19,6 +19,8 @@
 package io.vertigo.dynamo.store;
 
 import io.vertigo.core.node.component.Manager;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.store.datastore.DataStore;
 import io.vertigo.dynamo.store.datastore.DataStoreConfig;
 import io.vertigo.dynamo.store.datastore.MasterDataConfig;
@@ -53,4 +55,13 @@ public interface StoreManager extends Manager {
 	 * @return Configuration MDM
 	 */
 	MasterDataConfig getMasterDataConfig();
+
+	/**
+	 * Sorts a list from a column.
+	 * @param list the list to sort
+	 * @param fieldName the field name
+	 * @param desc if the sotr is desc
+	 * @return the sorted list
+	 */
+	<D extends DtObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc);
 }

@@ -23,7 +23,7 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.StoreFeatures;
+import io.vertigo.dynamo.DataFeatures;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 
 /**
@@ -42,8 +42,7 @@ public class CollectionsManagerLucene_6_6Test extends CollectionsManagerTest {
 						.withCache()
 						.withMemoryCache()
 						.build())
-				.addModule(new StoreFeatures()
-						.withStore()
+				.addModule(new DataFeatures()
 						.addPlugin(io.vertigo.dynamo.plugins.collections.lucene_6_6.LuceneIndexPlugin.class)
 						.build())
 				.addModule(ModuleConfig.builder("myApp")

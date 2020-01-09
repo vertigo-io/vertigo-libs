@@ -29,9 +29,7 @@ import java.util.Set;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition.Verb;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam.WebServiceParamType;
 
 /**
  * WebServiceDefinition Builder.
@@ -53,7 +51,6 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	private boolean myAccessTokenMandatory;
 	private boolean myAccessTokenConsume;
 	private boolean myServerSideSave;
-	private boolean myAutoSortAndPagination;
 	private String myDoc = "";
 	private boolean myCorsProtected = true; //true by default
 	private boolean myFileAttachment = true; //true by default
@@ -89,7 +86,6 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 				myAccessTokenMandatory,
 				myAccessTokenConsume,
 				myServerSideSave,
-				myAutoSortAndPagination,
 				myIncludedFields,
 				myExcludedFields,
 				myWebServiceParams,
@@ -239,28 +235,6 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	 */
 	public WebServiceDefinitionBuilder withServerSideSave(final boolean serverSideSave) {
 		myServerSideSave = serverSideSave;
-		return this;
-	}
-
-	/**
-	 * @param autoSortAndPagination autoSortAndPagination
-	 * @return this builder
-	 */
-	public WebServiceDefinitionBuilder withAutoSortAndPagination(final boolean autoSortAndPagination) {
-		myAutoSortAndPagination = autoSortAndPagination;
-
-		//autoSortAndPagination must keep the list serverSide but not the input one, its the full one, so we don't use serverSideSave marker
-		//autoSortAndPagination use a Implicit DtListState, this one must be show in API, so we add it to webServiceParams
-		//autoSortAndPaginationHandler will use it
-		if (autoSortAndPagination) {
-			addWebServiceParam(WebServiceParam.builder(String.class)
-					.with(WebServiceParamType.Query, "listServerToken") // We declare listServerToken in query without prefix
-					.optional()
-					.build());
-			addWebServiceParam(WebServiceParam.builder(DtListState.class)
-					.with(WebServiceParamType.Query, "") // We declare ListState in query without prefix
-					.build());
-		}
 		return this;
 	}
 

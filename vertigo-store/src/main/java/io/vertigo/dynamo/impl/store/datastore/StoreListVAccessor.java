@@ -2,23 +2,17 @@ package io.vertigo.dynamo.impl.store.datastore;
 
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Home;
-import io.vertigo.core.node.definition.DefinitionReference;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.ListVAccessor;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.store.StoreManager;
 
 public class StoreListVAccessor<E extends Entity> extends ListVAccessor<E> {
 
 	private static final long serialVersionUID = -4840484505809842010L;
-	private final DefinitionReference<DtDefinition> targetDefinitionReference;
 
 	public StoreListVAccessor(final Entity entity, final String associationDefinitionName, final String roleName) {
 		super(entity, associationDefinitionName, roleName);
-		//---
-		this.targetDefinitionReference = new DefinitionReference<>(DtObjectUtil.findDtDefinition(entity));
 	}
 
 	/**
@@ -32,7 +26,7 @@ public class StoreListVAccessor<E extends Entity> extends ListVAccessor<E> {
 			super.set(dtList);
 		} else {
 			// if the uid is null we return an empty dtList
-			super.set(new DtList<>(targetDefinitionReference.get()));
+			super.set(new DtList<>(getTargetDefinitionReference().get()));
 		}
 	}
 

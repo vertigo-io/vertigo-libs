@@ -40,6 +40,7 @@ import io.vertigo.dynamo.StoreFeatures;
 import io.vertigo.dynamo.TestUtil;
 import io.vertigo.dynamo.file.model.InputStreamBuilder;
 import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.dynamo.impl.file.grammar.FileStoreDefinitionProvider;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 
 /**
@@ -64,7 +65,10 @@ public final class FileManagerTest extends AbstractTestCaseJU5 {
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/dynamo/file/data/execution.kpr")
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/file/data/model.kpr")
+								.build())
+						.addDefinitionProvider(DefinitionProviderConfig.builder(FileStoreDefinitionProvider.class)
+								.addDefinitionResource("kpr", "io/vertigo/dynamo/file/data/fileinfo.kpr")
 								.build())
 						.build())
 				.build();

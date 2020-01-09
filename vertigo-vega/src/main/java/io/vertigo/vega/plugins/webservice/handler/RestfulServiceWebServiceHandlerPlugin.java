@@ -27,12 +27,10 @@ import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.vega.impl.webservice.WebServiceHandlerPlugin;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.exception.SessionException;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
-import io.vertigo.vega.webservice.metamodel.WebServiceParam;
 import io.vertigo.vega.webservice.validation.ValidationUserException;
 import spark.Request;
 import spark.Response;
@@ -90,18 +88,6 @@ public final class RestfulServiceWebServiceHandlerPlugin implements WebServiceHa
 
 	private static Object[] makeArgs(final WebServiceCallContext routeContext) {
 		final WebServiceDefinition webServiceDefinition = routeContext.getWebServiceDefinition();
-		if (webServiceDefinition.isAutoSortAndPagination()) {
-			final Object[] serviceArgs = new Object[webServiceDefinition.getWebServiceParams().size() - 2]; //when using AutoSortAndPagination, there is 2 automanaged params
-			int i = 0;
-			for (final WebServiceParam webServiceParam : webServiceDefinition.getWebServiceParams()) {
-				if (!webServiceParam.getType().isAssignableFrom(DtListState.class)
-						&& !webServiceParam.getName().equals(PaginatorAndSortWebServiceHandlerPlugin.LIST_SERVER_TOKEN)) {
-					serviceArgs[i] = routeContext.getParamValue(webServiceParam);
-					i++;
-				}
-			}
-			return serviceArgs;
-		}
 		return webServiceDefinition.getWebServiceParams()
 				.stream()
 				.map(webServiceParam -> routeContext.getParamValue(webServiceParam))

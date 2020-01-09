@@ -59,7 +59,6 @@ import io.vertigo.vega.webservice.stereotype.AccessTokenConsume;
 import io.vertigo.vega.webservice.stereotype.AccessTokenMandatory;
 import io.vertigo.vega.webservice.stereotype.AccessTokenPublish;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
-import io.vertigo.vega.webservice.stereotype.AutoSortAndPagination;
 import io.vertigo.vega.webservice.stereotype.Doc;
 import io.vertigo.vega.webservice.stereotype.ExcludedFields;
 import io.vertigo.vega.webservice.stereotype.GET;
@@ -264,19 +263,6 @@ public final class AdvancedTestWebServices implements WebServices {
 		//offset + range ?
 		//code 200
 		return applySortAndPagination(filteredContacts, dtListState);
-	}
-
-	@AutoSortAndPagination
-	@POST("/_searchAutoPagined")
-	@ExcludedFields({ "conId", "email", "birthday", "address", "tels" })
-	public List<Contact> testSearchServiceAutoPagined(final ContactCriteria contact) {
-		final Predicate<Contact> predicate = createFilterFunction(contact, Contact.class);
-		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
-		//offset + range ?
-		//code 200
-		return allContacts.stream()
-				.filter(predicate)
-				.collect(VCollectors.toDtList(Contact.class));
 	}
 
 	@POST("/uploadFile")

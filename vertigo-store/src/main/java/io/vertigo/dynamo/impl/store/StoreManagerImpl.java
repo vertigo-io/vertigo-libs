@@ -18,6 +18,7 @@
  */
 package io.vertigo.dynamo.impl.store;
 
+import java.util.Comparator;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,9 +34,13 @@ import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreConfigImpl;
 import io.vertigo.dynamo.impl.store.datastore.DataStoreImpl;
 import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
+import io.vertigo.dynamo.impl.store.datastore.DtObjectComparator;
 import io.vertigo.dynamo.impl.store.datastore.MasterDataConfigImpl;
 import io.vertigo.dynamo.impl.store.datastore.cache.CacheData;
 import io.vertigo.dynamo.impl.store.filestore.FileStoreConfig;
@@ -143,5 +148,17 @@ public final class StoreManagerImpl implements StoreManager, Activeable, SimpleD
 	@Override
 	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 		return ((SimpleDefinitionProvider) dataStore).provideDefinitions(definitionSpace);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <D extends DtObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc) {
+		Assertion.checkNotNull(list);
+		Assertion.checkArgNotEmpty(fieldName);
+		//-----
+		final Comparator<D> comparator = new DtObjectComparator<>(this, list.getDefinition().getField(fieldName), desc);
+		return list.stream()
+				.sorted(comparator)
+				.collect(VCollectors.toDtList(list.getDefinition()));
 	}
 }

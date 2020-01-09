@@ -36,7 +36,6 @@ import io.vertigo.vega.plugins.webservice.handler.AnalyticsWebServiceHandlerPlug
 import io.vertigo.vega.plugins.webservice.handler.CorsAllowerWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.ExceptionWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.JsonConverterWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.webservice.handler.PaginatorAndSortWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.RateLimitingWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.RestfulServiceWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.SecurityWebServiceHandlerPlugin;
@@ -88,7 +87,6 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 		getModuleConfigBuilder()
 				.addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
 				.addPlugin(AccessTokenWebServiceHandlerPlugin.class)
-				.addPlugin(PaginatorAndSortWebServiceHandlerPlugin.class)
 				.addComponent(TokenManager.class, TokenManagerImpl.class,
 						Param.of("collection", myTokens));
 		return this;

@@ -53,6 +53,7 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 	private final DefinitionReference<AssociationDefinition> associationDefinitionReference;
 	private final String roleName;
 	private DtList<E> value;
+	private final DefinitionReference<DtDefinition> targetDefinitionReference;
 
 	/**
 	 * Constructor.
@@ -75,6 +76,7 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 				.orElseThrow(() -> new VSystemException("Unable to find association node with role '{1}' on association '{0}'", associationDefinitionName, roleName))
 				.getDtDefinition();
 		//---
+		targetDefinitionReference = new DefinitionReference<>(targetDefinition);
 	}
 
 	/**
@@ -131,6 +133,10 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 
 	protected UID<E> getSourceUID() {
 		return entity.getUID();
+	}
+
+	protected DefinitionReference<DtDefinition> getTargetDefinitionReference() {
+		return targetDefinitionReference;
 	}
 
 }

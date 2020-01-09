@@ -21,7 +21,6 @@ package io.vertigo.dynamo.collections;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
@@ -37,8 +36,8 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.DataFeatures;
-import io.vertigo.dynamo.StoreFeatures;
 import io.vertigo.dynamo.ModelFeatures;
+import io.vertigo.dynamo.StoreFeatures;
 import io.vertigo.dynamo.collections.data.DtDefinitions;
 import io.vertigo.dynamo.collections.data.domain.SmartItem;
 import io.vertigo.dynamo.criteria.Criterions;
@@ -94,69 +93,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 	@Override
 	protected void doSetUp() {
 		dtDefinitionItem = DtObjectUtil.findDtDefinition(SmartItem.class);
-	}
-
-	@Test
-	public void testHeavySort() {
-		// final DtList<Item> sortDtc;
-		final DtList<SmartItem> dtc = createItems();
-		//
-		for (int i = 0; i < 50000; i++) {
-			final SmartItem mocka = new SmartItem();
-			mocka.setLabel(String.valueOf(i % 100));
-			dtc.add(mocka);
-		}
-
-		final DtList<SmartItem> sortedDtc = collectionsManager.sort(dtc, "label", false);
-
-		nop(sortedDtc);
-
-	}
-
-	@Test
-	public void testSort() {
-		DtList<SmartItem> sortDtc;
-		final DtList<SmartItem> dtc = createItems();
-		final String[] indexDtc = extractLabels(dtc);
-
-		// Cas de base.
-		// ======================== Ascendant
-		// =================================== nullLast
-		// ================================================ ignoreCase
-		sortDtc = collectionsManager.sort(dtc, "label", false);
-
-		assertEquals(indexDtc, extractLabels(dtc));
-		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
-
-		// ======================== Descendant
-		// =================================== not nullLast
-		// ================================================ ignoreCase
-		sortDtc = collectionsManager.sort(dtc, "label", true);
-		assertEquals(indexDtc, extractLabels(dtc));
-		assertEquals(new String[] { null, bb_aa, Ba_aa, aaa_ba }, extractLabels(sortDtc));
-	}
-
-	@Test
-	public void testNumericSort() {
-		DtList<SmartItem> sortDtc;
-		final DtList<SmartItem> dtc = createItems();
-		final String[] indexDtc = extractLabels(dtc);
-
-		// Cas de base.
-		// ======================== Ascendant
-		// =================================== nullLast
-		// ================================================ ignoreCase
-		sortDtc = collectionsManager.sort(dtc, "id", false);
-
-		assertEquals(indexDtc, extractLabels(dtc));
-		assertEquals(new String[] { Ba_aa, null, aaa_ba, bb_aa }, extractLabels(sortDtc));
-
-		// ======================== Descendant
-		// =================================== not nullLast
-		// ================================================ ignoreCase
-		sortDtc = collectionsManager.sort(dtc, "id", true);
-		assertEquals(indexDtc, extractLabels(dtc));
-		assertEquals(new String[] { bb_aa, aaa_ba, null, Ba_aa }, extractLabels(sortDtc));
 	}
 
 	@Test
@@ -376,65 +312,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 				.skip(start)
 				.limit(end - start)
 				.collect(VCollectors.toDtList(dtc.getDefinition()));
-	}
-
-	/**
-	 * combiner sort/filter ; filter/sort ; sublist/sort ; filter/sublist.
-	 *
-	 */
-	@Test
-	public void testChainFilterSortSubList() {
-
-		final DtList<SmartItem> dtc = createItems();
-		final String[] indexDtc = extractLabels(dtc);
-
-		final Predicate<SmartItem> predicate = Criterions.isEqualTo(DtDefinitions.Fields.label, aaa_ba).toPredicate();
-		final Function<DtList<SmartItem>, DtList<SmartItem>> sort = (list) -> collectionsManager.sort(list, "label", false);
-
-		final int sizeDtc = dtc.size();
-
-		DtList<SmartItem> sortDtc, filterDtc, subList;
-		// ======================== sort/filter
-		sortDtc = sort.apply(dtc);
-		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
-		filterDtc = sortDtc.stream()
-				.filter(predicate)
-				.collect(VCollectors.toDtList(SmartItem.class));
-		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
-
-		// ======================== sort/sublist
-		sortDtc = sort.apply(dtc);
-		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
-		subList = subList(sortDtc, 0, sizeDtc - 1);
-		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
-
-		// ======================== filter/sort
-		filterDtc = dtc.stream().filter(predicate).collect(VCollectors.toDtList(SmartItem.class));
-		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
-		sortDtc = sort.apply(filterDtc);
-		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
-
-		// ======================== filter/sublist
-		filterDtc = dtc.stream().filter(predicate).collect(VCollectors.toDtList(SmartItem.class));
-		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
-		subList = subList(filterDtc, 0, filterDtc.size() - 1);
-		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
-
-		// ======================== sublist/sort
-		subList = subList(dtc, 0, sizeDtc - 1);
-		assertEquals(new String[] { Ba_aa, null, aaa_ba }, extractLabels(subList));
-		sortDtc = sort.apply(subList);
-		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
-
-		// ======================== sublist/filter
-		subList = subList(dtc, 0, sizeDtc - 1);
-		assertEquals(new String[] { Ba_aa, null, aaa_ba }, extractLabels(subList));
-		filterDtc = subList.stream().filter(predicate).collect(VCollectors.toDtList(SmartItem.class));
-		assertEquals(new String[] { aaa_ba }, extractLabels(filterDtc));
-
-		// === dtc non modifié
-		assertEquals(indexDtc, extractLabels(dtc));
-
 	}
 
 	@Test

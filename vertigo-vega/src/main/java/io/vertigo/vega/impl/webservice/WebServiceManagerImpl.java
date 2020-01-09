@@ -40,7 +40,6 @@ import io.vertigo.vega.plugins.webservice.handler.CorsAllowerWebServiceHandlerPl
 import io.vertigo.vega.plugins.webservice.handler.ExceptionWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.HandlerChain;
 import io.vertigo.vega.plugins.webservice.handler.JsonConverterWebServiceHandlerPlugin;
-import io.vertigo.vega.plugins.webservice.handler.PaginatorAndSortWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.RateLimitingWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.RestfulServiceWebServiceHandlerPlugin;
 import io.vertigo.vega.plugins.webservice.handler.SecurityWebServiceHandlerPlugin;
@@ -71,7 +70,6 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 			+ "- " + SecurityWebServiceHandlerPlugin.class.getSimpleName() + "\n"
 			+ "- " + AccessTokenWebServiceHandlerPlugin.class.getSimpleName() + "\n"
 			+ "- " + JsonConverterWebServiceHandlerPlugin.class.getSimpleName() + "\n"
-			+ "- " + PaginatorAndSortWebServiceHandlerPlugin.class.getSimpleName() + "\n"
 			+ "- " + ValidatorWebServiceHandlerPlugin.class.getSimpleName() + "\n"
 			+ "- " + RestfulServiceWebServiceHandlerPlugin.class.getSimpleName() + "\n";
 

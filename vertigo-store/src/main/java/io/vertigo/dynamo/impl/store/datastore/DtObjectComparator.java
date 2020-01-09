@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.dynamo.impl.collections;
+package io.vertigo.dynamo.impl.store.datastore;
 
 import java.util.Comparator;
 
@@ -42,7 +42,7 @@ import io.vertigo.dynamo.store.datastore.DataStore;
  *
  * @author pchretien
  */
-final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
+public final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 
 	//On ne veut pas d'un comparateur sérializable !!!
 	/**
@@ -61,7 +61,7 @@ final class DtObjectComparator<D extends DtObject> implements Comparator<D> {
 	 * @param sortField the sort field
 	 * @param sortDesc sort order
 	 */
-	DtObjectComparator(final StoreManager storeManager, final DtField sortField, final boolean sortDesc) {
+	public DtObjectComparator(final StoreManager storeManager, final DtField sortField, final boolean sortDesc) {
 		Assertion.checkNotNull(sortField);
 		//-----
 		this.sortField = sortField;
