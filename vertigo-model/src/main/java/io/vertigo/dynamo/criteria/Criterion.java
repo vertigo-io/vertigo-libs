@@ -26,7 +26,6 @@ import java.util.function.Predicate;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.DateUtil;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -41,7 +40,6 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 	private static final String INSTANT_PATTERN = "dd/MM/yyyy HH:mm:ss";
 
 	private final DtFieldName<E> dtFieldName;
-	private final String sqlFieldName;
 	private final CriterionOperator criterionOperator;
 	private final Serializable[] values;
 
@@ -56,7 +54,6 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 		//---
 		this.criterionOperator = criterionOperator;
 		this.dtFieldName = dtFieldName;
-		this.sqlFieldName = StringUtil.camelToConstCase(dtFieldName.name());
 		this.values = values;
 	}
 
