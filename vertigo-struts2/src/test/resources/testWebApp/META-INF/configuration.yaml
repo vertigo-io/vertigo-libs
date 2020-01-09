@@ -24,8 +24,8 @@ modules:
           dataBaseClass: io.vertigo.database.impl.sql.vendor.h2.H2DataBase
           jdbcDriver: org.h2.Driver
           jdbcUrl: jdbc:h2:mem:test
-  io.vertigo.dynamo.ModelFeatures:
-  io.vertigo.dynamo.StoreFeatures:
+  io.vertigo.dynamo.DataModelFeatures:
+  io.vertigo.dynamo.DataStoreFeatures:
     features:
       - store:
       - kvStore:
@@ -39,7 +39,7 @@ modules:
           values: "true=Oui;false=Non"
           dtDefinitionName: DtOuiNonChoice
       - io.vertigo.struts2.services.util.CommuneStorePlugin: {}
-  io.vertigo.dynamo.DataFeatures:
+  io.vertigo.dynamo.DataFactoryFeatures:
     featuresConfig:
       - collections.luceneIndex:
   io.vertigo.account.AccountFeatures:

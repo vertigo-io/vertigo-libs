@@ -31,8 +31,8 @@ modules:
           dataBaseClass: io.vertigo.database.impl.sql.vendor.h2.H2DataBase
           jdbcDriver: org.h2.Driver
           jdbcUrl: jdbc:h2:mem:test
-  io.vertigo.dynamo.ModelFeatures:
-  io.vertigo.dynamo.StoreFeatures:
+  io.vertigo.dynamo.DataModelFeatures:
+  io.vertigo.dynamo.DataStoreFeatures:
     features:
       - store:
       - kvStore:
@@ -41,7 +41,7 @@ modules:
       - kvStore.berkeley:
           collections: VViewContext;TTL=43200
           dbFilePath: ${java.io.tmpdir}/vertigo/TestVViewContext
-  io.vertigo.dynamo.DataFeatures:
+  io.vertigo.dynamo.DataFactoryFeatures:
     features:
       - search:
     featuresConfig:
