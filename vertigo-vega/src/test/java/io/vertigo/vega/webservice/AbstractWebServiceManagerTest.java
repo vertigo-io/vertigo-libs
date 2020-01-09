@@ -1833,18 +1833,26 @@ abstract class AbstractWebServiceManagerTest {
 	@Test
 	public void testInstant() {
 		loggedAndExpect(given())
-				.body(Matchers.equalTo("\"2016-05-26T21:30:20Z\""))
+				.body(Matchers.equalTo("\"2016-05-26T21:30:20.000Z\""))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.get("/test/instant");
 
 		final String inputInstant = "2016-01-18T17:21:42Z";
 		loggedAndExpect(given())
-				.body("input", Matchers.equalTo(inputInstant))
+				.body("input", Matchers.equalTo("2016-01-18T17:21:42.000Z"))
 				.body("inputAsString", Matchers.equalTo("2016-01-18T17:21:42Z"))
 				.statusCode(HttpStatus.SC_OK)
 				.when()
 				.put("/test/instant?date=" + inputInstant);
+
+		final String inputInstant2 = "2016-01-18T17:21:42.125Z";
+		loggedAndExpect(given())
+				.body("input", Matchers.equalTo("2016-01-18T17:21:42.125Z"))
+				.body("inputAsString", Matchers.equalTo("2016-01-18T17:21:42.125Z"))
+				.statusCode(HttpStatus.SC_OK)
+				.when()
+				.put("/test/instant?date=" + inputInstant2);
 	}
 
 	@Test

@@ -57,6 +57,16 @@ public final class UTCDateUtil {
 	}
 
 	/**
+	 * Format instant to utc string.
+	 * @param instant instant to format
+	 * @return Utc string
+	 */
+	public static String formatInstant(final Instant instant) {
+		//Use INPUT_DATE_FORMATS[0] => ISO8601 format
+		return DateTimeFormatter.ofPattern(INPUT_DATE_FORMATS[0]).withZone(ZoneId.of("UTC")).format(instant);
+	}
+
+	/**
 	 * Parse Utc date string to date
 	 * @param inputDate Utc date string
 	 * @return date

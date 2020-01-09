@@ -459,7 +459,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		/** {@inheritDoc} */
 		@Override
 		public JsonElement serialize(final Instant date, final Type typeOfSrc, final JsonSerializationContext context) {
-			return new JsonPrimitive(date.toString()); // "yyyy-mm-ddTHH:MI:SSZ"
+			return new JsonPrimitive(UTCDateUtil.formatInstant(date)); // "yyyy-mm-ddTHH:MI:SSZ"
 		}
 
 		/** {@inheritDoc} */
