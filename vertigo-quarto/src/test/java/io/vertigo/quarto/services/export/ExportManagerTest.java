@@ -33,8 +33,8 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.StoreFeatures;
-import io.vertigo.dynamo.ModelFeatures;
+import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
@@ -69,8 +69,8 @@ public final class ExportManagerTest extends AbstractTestCaseJU5 {
 						.withCache()
 						.withMemoryCache()
 						.build())
-				.addModule(new ModelFeatures().build())
-				.addModule(new StoreFeatures()
+				.addModule(new DataModelFeatures().build())
+				.addModule(new DataStoreFeatures()
 						.withStore()
 						.build())
 				.addModule(new QuartoFeatures()

@@ -28,8 +28,8 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.dynamo.StoreFeatures;
-import io.vertigo.dynamo.ModelFeatures;
+import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.orchestra.boot.DataBaseInitializer;
 import io.vertigo.orchestra.services.execution.LocalExecutionProcessInitializer;
 import io.vertigo.orchestra.util.monitoring.MonitoringServices;
@@ -67,8 +67,8 @@ public final class MyNodeConfig {
 								Param.of("jdbcUrl", "jdbc:h2:~/vertigo/orchestra;AUTO_SERVER=TRUE"))
 						//Param.of("jdbcUrl", "jdbc:h2:mem:orchestra;MVCC=FALSE"))
 						.build())
-				.addModule(new ModelFeatures().build())
-				.addModule(new StoreFeatures()
+				.addModule(new DataModelFeatures().build())
+				.addModule(new DataStoreFeatures()
 						.withKVStore()
 						.withDelayedMemoryKV(
 								Param.of("collections", "tokens"),

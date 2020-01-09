@@ -36,8 +36,8 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.DataFeatures;
-import io.vertigo.dynamo.ModelFeatures;
-import io.vertigo.dynamo.StoreFeatures;
+import io.vertigo.dynamo.DataModelFeatures;
+import io.vertigo.dynamo.DataStoreFeatures;
 import io.vertigo.dynamo.collections.data.DtDefinitions;
 import io.vertigo.dynamo.collections.data.domain.SmartItem;
 import io.vertigo.dynamo.criteria.Criterions;
@@ -72,8 +72,8 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 						.withCache()
 						.withMemoryCache()
 						.build())
-				.addModule(new ModelFeatures().build())
-				.addModule(new StoreFeatures()
+				.addModule(new DataModelFeatures().build())
+				.addModule(new DataStoreFeatures()
 						.withStore()
 						.build())
 				.addModule(new DataFeatures()

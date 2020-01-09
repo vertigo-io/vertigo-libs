@@ -45,8 +45,8 @@ import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.dynamo.DataFeatures;
-import io.vertigo.dynamo.StoreFeatures;
-import io.vertigo.dynamo.ModelFeatures;
+import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
 import io.vertigo.vega.VegaFeatures;
 
@@ -108,8 +108,8 @@ public class DashboardLauncherTest {
 						.withTimeSeriesDataBase()
 						.withInfluxDb()
 						.build())
-				.addModule(new ModelFeatures().build())
-				.addModule(new StoreFeatures()
+				.addModule(new DataModelFeatures().build())
+				.addModule(new DataStoreFeatures()
 						.withStore()
 						.withSqlStore()
 						.build())

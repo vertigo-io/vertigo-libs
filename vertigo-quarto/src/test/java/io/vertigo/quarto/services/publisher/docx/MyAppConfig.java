@@ -23,7 +23,7 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.StoreFeatures;
+import io.vertigo.dynamo.DataStoreFeatures;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.quarto.impl.services.publisher.PublisherManagerImpl;
 import io.vertigo.quarto.plugins.publisher.docx.DOCXMergerPlugin;
@@ -41,7 +41,7 @@ class MyNodeConfig {
 						.withScript()
 						.withJaninoScript()
 						.build())
-				.addModule(new StoreFeatures()
+				.addModule(new DataStoreFeatures()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addComponent(PublisherManager.class, PublisherManagerImpl.class)

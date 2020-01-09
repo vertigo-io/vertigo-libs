@@ -32,8 +32,8 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.DataFeatures;
-import io.vertigo.dynamo.StoreFeatures;
-import io.vertigo.dynamo.ModelFeatures;
+import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.impl.search.grammar.SearchDefinitionProvider;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
@@ -93,8 +93,8 @@ public final class MyNodeConfig {
 						.addPlugin(MemoryCachePlugin.class)
 						.withNodeInfosPlugin(HttpAppNodeInfosPlugin.class)
 						.build())
-				.addModule(new ModelFeatures().build())
-				.addModule(new StoreFeatures()
+				.addModule(new DataModelFeatures().build())
+				.addModule(new DataStoreFeatures()
 						.withStore()
 						.withKVStore()
 						.addPlugin(DelayedMemoryKVStorePlugin.class,

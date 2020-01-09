@@ -25,8 +25,8 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.local.LocalResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
-import io.vertigo.dynamo.StoreFeatures;
-import io.vertigo.dynamo.ModelFeatures;
+import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 
 public final class SqlTestConfigurator {
@@ -49,8 +49,8 @@ public final class SqlTestConfigurator {
 								Param.of("jdbcDriver", "org.h2.Driver"),
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.build())
-				.addModule(new ModelFeatures().build())
-				.addModule(new StoreFeatures()
+				.addModule(new DataModelFeatures().build())
+				.addModule(new DataStoreFeatures()
 						.withStore()
 						.addPlugin(SqlDataStorePlugin.class,
 								Param.of("sequencePrefix", "SEQ_"))

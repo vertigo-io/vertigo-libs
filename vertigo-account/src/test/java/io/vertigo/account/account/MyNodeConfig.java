@@ -31,8 +31,8 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.dynamo.StoreFeatures;
-import io.vertigo.dynamo.ModelFeatures;
+import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 
 public final class MyNodeConfig {
@@ -57,7 +57,7 @@ public final class MyNodeConfig {
 		}
 
 		final DatabaseFeatures databaseFeatures = new DatabaseFeatures();
-		final StoreFeatures dynamoFeatures = new StoreFeatures();
+		final DataStoreFeatures dynamoFeatures = new DataStoreFeatures();
 		final AccountFeatures accountFeatures = new AccountFeatures()
 				.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
 				.withAccount();
@@ -102,7 +102,7 @@ public final class MyNodeConfig {
 						.withMemoryCache()
 						.build())
 				.addModule(databaseFeatures.build())
-				.addModule(new ModelFeatures().build())
+				.addModule(new DataModelFeatures().build())
 				.addModule(dynamoFeatures.build())
 				.addModule(accountFeatures.build())
 				.addModule(ModuleConfig.builder("app")

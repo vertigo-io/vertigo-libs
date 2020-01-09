@@ -30,8 +30,8 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.dynamo.DataFeatures;
-import io.vertigo.dynamo.StoreFeatures;
-import io.vertigo.dynamo.ModelFeatures;
+import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.impl.search.grammar.SearchDefinitionProvider;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.dynamo.search.data.domain.ItemSearchLoader;
@@ -83,8 +83,8 @@ public final class MyNodeConfig {
 									Param.of("jdbcDriver", "org.h2.Driver"),
 									Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 							.build())
-					.addModule(new ModelFeatures().build())
-					.addModule(new StoreFeatures()
+					.addModule(new DataModelFeatures().build())
+					.addModule(new DataStoreFeatures()
 							.withStore()
 							.withSqlStore()
 							.build());

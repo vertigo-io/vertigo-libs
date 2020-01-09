@@ -19,7 +19,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-store</artifactId>
+			<artifactId>vertigo-datastore</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
 		<!-- -->

@@ -33,7 +33,7 @@ import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.util.TempFile;
-import io.vertigo.dynamo.StoreFeatures;
+import io.vertigo.dynamo.DataStoreFeatures;
 import io.vertigo.dynamo.file.FileManager;
 import io.vertigo.dynamo.file.model.VFile;
 import io.vertigo.dynamo.file.util.FileUtil;
@@ -63,7 +63,7 @@ public final class XDocReportConverterManagerTest extends AbstractTestCaseJU5 {
 				.beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures().build())
-				.addModule(new StoreFeatures().build())
+				.addModule(new DataStoreFeatures().build())
 				.addModule(new QuartoFeatures()
 						.withConverter()
 						.withXDocReportConverter()

@@ -27,7 +27,7 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.dynamo.StoreFeatures;
+import io.vertigo.dynamo.DataStoreFeatures;
 import io.vertigo.orchestra.OrchestraFeatures;
 import io.vertigo.orchestra.util.monitoring.MonitoringServices;
 import io.vertigo.orchestra.util.monitoring.MonitoringServicesImpl;
@@ -56,7 +56,7 @@ public final class OrchestraNode1NodeConfig {
 								Param.of("jdbcDriver", org.h2.Driver.class.getName()),
 								Param.of("jdbcUrl", "jdbc:h2:~/vertigo/orchestra;MVCC=FALSE;AUTO_SERVER=TRUE"))
 						.build())
-				.addModule(new StoreFeatures()
+				.addModule(new DataStoreFeatures()
 						.withKVStore()
 						.withDelayedMemoryKV(
 								Param.of("collections", "tokens"),

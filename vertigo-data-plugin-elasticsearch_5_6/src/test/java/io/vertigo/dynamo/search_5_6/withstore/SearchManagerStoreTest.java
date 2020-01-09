@@ -42,8 +42,8 @@ import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.dynamo.DataFeatures;
-import io.vertigo.dynamo.ModelFeatures;
-import io.vertigo.dynamo.StoreFeatures;
+import io.vertigo.dynamo.DataModelFeatures;
+import io.vertigo.dynamo.DataStoreFeatures;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;
@@ -98,8 +98,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 								Param.of("jdbcDriver", "org.h2.Driver"),
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.build())
-				.addModule(new ModelFeatures().build())
-				.addModule(new StoreFeatures()
+				.addModule(new DataModelFeatures().build())
+				.addModule(new DataStoreFeatures()
 						.withStore()
 						.withSqlStore()
 						.build())
