@@ -44,7 +44,7 @@ import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.TimeFilter;
-import io.vertigo.dynamo.DataFeatures;
+import io.vertigo.dynamo.DataFactoryFeatures;
 import io.vertigo.dynamo.DataStoreFeatures;
 import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
@@ -113,7 +113,7 @@ public class DashboardLauncherTest {
 						.withStore()
 						.withSqlStore()
 						.build())
-				.addModule(new DataFeatures()
+				.addModule(new DataFactoryFeatures()
 						.withSearch()
 						.withESHL(
 								Param.of("config.file", "io/vertigo/dashboard/search/indexconfig/elasticsearch.yml"),

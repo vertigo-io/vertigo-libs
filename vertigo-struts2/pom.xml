@@ -31,7 +31,7 @@
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-datamodel</artifactId><!-- for io.vertigo.dynamo.impl.domain.metamodel.AbstractFormatterImpl and 
-				io.vertigo.dynamox.domain.formatter.Resources -->
+				io.vertigo.dynamox.domain.formatter.Resources --> 
 			<version>${vertigo.version}</version>
 		</dependency>
 

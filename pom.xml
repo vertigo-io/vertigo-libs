@@ -32,8 +32,8 @@
 		<module>vertigo-database</module>
 		<module>vertigo-datamodel</module>
 		<module>vertigo-datastore</module>
-		<module>vertigo-data</module>
-		<module>vertigo-data-plugin-elasticsearch_5_6</module>
+		<module>vertigo-datafactory</module>
+		<module>vertigo-datafactory-plugin-elasticsearch_5_6</module>
 		<module>vertigo-account</module>
 		<module>vertigo-vega</module>
 		

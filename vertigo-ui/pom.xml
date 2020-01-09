@@ -29,7 +29,7 @@
 		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-data</artifactId>
+			<artifactId>vertigo-datafactory</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>		
 		<dependency>

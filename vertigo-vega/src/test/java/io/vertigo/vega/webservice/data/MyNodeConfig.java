@@ -31,7 +31,7 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.DataFeatures;
+import io.vertigo.dynamo.DataFactoryFeatures;
 import io.vertigo.dynamo.DataStoreFeatures;
 import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.impl.search.grammar.SearchDefinitionProvider;
@@ -101,7 +101,7 @@ public final class MyNodeConfig {
 								Param.of("collections", "tokens"),
 								Param.of("timeToLiveSeconds", "120"))
 						.build())
-				.addModule(new DataFeatures().build())
+				.addModule(new DataFactoryFeatures().build())
 				.addModule(new AccountFeatures()
 						.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
 						.withAuthorization()
