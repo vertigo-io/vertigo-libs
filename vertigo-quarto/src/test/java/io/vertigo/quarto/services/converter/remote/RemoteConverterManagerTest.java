@@ -71,7 +71,7 @@ public final class RemoteConverterManagerTest extends AbstractTestCaseJU5 {
 						.withRemoteOpenOfficeConverter(
 								Param.of("unohost", "ficenrecette.part.klee.lan.net"),
 								Param.of("unoport", "8200"),
-								Param.of("convertTimeoutSeconds", "5"))
+								Param.of("convertTimeoutSeconds", "10"))
 						.build())
 				.build();
 	}
