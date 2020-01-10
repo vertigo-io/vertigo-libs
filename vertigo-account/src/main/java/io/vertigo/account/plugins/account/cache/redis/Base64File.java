@@ -24,7 +24,7 @@ import java.time.Instant;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.model.VFile;
 
 /**
  * Objet redis correspondant à un VFile. Le contenu du VFile est stocké sous forme base64.

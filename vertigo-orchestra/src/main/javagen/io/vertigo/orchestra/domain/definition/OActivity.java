@@ -3,7 +3,7 @@ package io.vertigo.orchestra.domain.definition;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.impl.store.datastore.StoreVAccessor;
+import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 

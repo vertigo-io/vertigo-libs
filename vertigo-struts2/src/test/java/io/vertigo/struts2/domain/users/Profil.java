@@ -97,7 +97,7 @@ public final class Profil implements Entity {
 		//---------------------------------------------------------------------
 		//On est toujours dans un mode lazy.
 		if (securityRole == null) {
-			securityRole = io.vertigo.core.node.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().findAll(fkDtListURI);
+			securityRole = io.vertigo.core.node.Home.getApp().getComponentSpace().resolve(io.vertigo.datastore.entitystore.EntityStoreManager.class).findAll(fkDtListURI);
 		}
 		return securityRole;
 	}

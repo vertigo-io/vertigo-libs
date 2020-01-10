@@ -21,7 +21,7 @@ package io.vertigo.quarto.services.publisher;
 import java.net.URL;
 
 import io.vertigo.core.node.component.Manager;
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.quarto.services.publisher.model.PublisherData;
 
 /**

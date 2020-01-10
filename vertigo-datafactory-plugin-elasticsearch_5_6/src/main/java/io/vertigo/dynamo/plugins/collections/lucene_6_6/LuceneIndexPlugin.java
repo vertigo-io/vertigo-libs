@@ -38,6 +38,7 @@ import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.datastore.entitystore.StoreEvent;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -46,7 +47,6 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.impl.collections.IndexPlugin;
-import io.vertigo.dynamo.store.StoreEvent;
 
 /**
  * Plugin de d'indexation de DtList utilisant Lucene en Ram.

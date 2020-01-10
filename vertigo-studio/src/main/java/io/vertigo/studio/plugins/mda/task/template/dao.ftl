@@ -16,9 +16,9 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
 <#if dao.keyConcept>
 import io.vertigo.dynamo.domain.model.UID;
 </#if>
-import io.vertigo.dynamo.impl.store.util.DAO;
-import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.StoreServices;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.impl.dao.DAO;
+import io.vertigo.datastore.impl.dao.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import ${dao.dtClassCanonicalName};
 
@@ -31,12 +31,12 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 
 	/**
 	 * Contructeur.
-	 * @param storeManager Manager de persistance
+	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public ${dao.classSimpleName}(final StoreManager storeManager, final TaskManager taskManager) {
-		super(${dao.dtClassSimpleName}.class, storeManager, taskManager);
+	public ${dao.classSimpleName}(final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
+		super(${dao.dtClassSimpleName}.class, entityStoreManager, taskManager);
 	}
 
 	<#if dao.keyConcept>
@@ -48,7 +48,7 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 	 * @return KeyConcept à modifier
 	 */
 	public ${dao.dtClassSimpleName} readOneForUpdate(final UID<${dao.dtClassSimpleName}> uid) {
-		return dataStore.readOneForUpdate(uid);
+		return entityStoreManager.readOneForUpdate(uid);
 	}
 
 	/**

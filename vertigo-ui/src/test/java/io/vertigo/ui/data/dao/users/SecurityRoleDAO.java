@@ -20,9 +20,9 @@ package io.vertigo.ui.data.dao.users;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.impl.store.util.DAO;
-import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.StoreServices;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.impl.dao.DAO;
+import io.vertigo.datastore.impl.dao.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.ui.data.domain.users.SecurityRole;
 
@@ -34,12 +34,12 @@ public final class SecurityRoleDAO extends DAO<SecurityRole, java.lang.String> i
 
 	/**
 	 * Contructeur.
-	 * @param storeManager Manager de persistance
+	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public SecurityRoleDAO(final StoreManager storeManager, final TaskManager taskManager) {
-		super(SecurityRole.class, storeManager, taskManager);
+	public SecurityRoleDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
+		super(SecurityRole.class, entityStoreManager, taskManager);
 	}
 
 }

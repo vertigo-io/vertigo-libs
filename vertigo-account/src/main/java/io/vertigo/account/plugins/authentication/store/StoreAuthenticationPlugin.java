@@ -30,13 +30,13 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.store.StoreManager;
 
 /**
  * A Store implementation of the Realm interface that
@@ -44,7 +44,7 @@ import io.vertigo.dynamo.store.StoreManager;
  */
 public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeable {
 
-	private final StoreManager storeManager;
+	private final EntityStoreManager entityStoreManager;
 	private final String userCredentialEntity;
 	private final String userLoginField;
 	private final String userPasswordField;
@@ -54,7 +54,7 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 
 	/**
 	 * Constructor.
-	 * @param storeManager Store Manager
+	 * @param entityStoreManager Store Manager
 	 * @param userCredentialEntity Entity name of userCredentialObject
 	 * @param userLoginField Login fieldName
 	 * @param userPasswordField Encoded Password fieldName
@@ -66,12 +66,12 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 			@ParamValue("userLoginField") final String userLoginField,
 			@ParamValue("userPasswordField") final String userPasswordField,
 			@ParamValue("userTokenIdField") final String userTokenIdField,
-			final StoreManager storeManager) {
-		Assertion.checkNotNull(storeManager);
+			final EntityStoreManager entityStoreManager) {
+		Assertion.checkNotNull(entityStoreManager);
 		Assertion.checkArgNotEmpty(userLoginField);
 		Assertion.checkArgNotEmpty(userPasswordField);
 		// -----
-		this.storeManager = storeManager;
+		this.entityStoreManager = entityStoreManager;
 		this.userCredentialEntity = userCredentialEntity;
 		this.userLoginField = userLoginField;
 		this.userPasswordField = userPasswordField;
@@ -90,7 +90,7 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 	@Override
 	public Optional<String> authenticateAccount(final AuthenticationToken token) {
 		final Criteria criteriaByLogin = Criterions.isEqualTo(() -> userLoginField, token.getPrincipal());
-		final DtList<DtObject> results = storeManager.getDataStore().find(userCredentialDefinition, criteriaByLogin, DtListState.of(2));
+		final DtList<DtObject> results = entityStoreManager.find(userCredentialDefinition, criteriaByLogin, DtListState.of(2));
 		//may ensure, that valid or invalid login took the same time, so we don't assert no result here
 		Assertion.checkState(results.size() <= 1, "Too many matching credentials for {0}", token.getPrincipal());
 

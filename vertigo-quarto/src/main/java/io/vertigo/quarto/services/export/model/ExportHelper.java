@@ -22,28 +22,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.store.StoreManager;
 
 /**
  * Classe utilitaire pour export.
  * @author pchretien, evernat
  */
 public final class ExportHelper {
-	private final StoreManager storeManager;
+	private final EntityStoreManager entityStoreManager;
 
 	/**
 	 * Constructor.
-	 * @param storeManager StoreManager for MasterData management
+	 * @param entityStoreManager StoreManager for MasterData management
 	 */
-	public ExportHelper(final StoreManager storeManager) {
-		Assertion.checkNotNull(storeManager);
+	public ExportHelper(final EntityStoreManager entityStoreManager) {
+		Assertion.checkNotNull(entityStoreManager);
 		//-----
-		this.storeManager = storeManager;
+		this.entityStoreManager = entityStoreManager;
 	}
 
 	/**
@@ -90,7 +90,7 @@ public final class ExportHelper {
 			final ExportField exportColumn) {
 		final DtField dtField = exportColumn.getDtField();
 		Object value;
-		if (dtField.getType() == DtField.FieldType.FOREIGN_KEY && storeManager.getMasterDataConfig().containsMasterData(dtField.getFkDtDefinition())) {
+		if (dtField.getType() == DtField.FieldType.FOREIGN_KEY && entityStoreManager.getMasterDataConfig().containsMasterData(dtField.getFkDtDefinition())) {
 			Map<Object, String> referenceIndex = referenceCache.get(dtField);
 			if (referenceIndex == null) {
 				referenceIndex = createReferentielIndex(dtField);
@@ -118,8 +118,8 @@ public final class ExportHelper {
 	private Map<Object, String> createReferentielIndex(final DtField dtField) {
 		//TODO ceci est un copier/coller de KSelectionListBean (qui resemble plus à un helper des MasterData qu'a un bean)
 		//La collection n'est pas précisé alors on va la chercher dans le repository du référentiel
-		final DtListURIForMasterData mdlUri = storeManager.getMasterDataConfig().getDtListURIForMasterData(dtField.getFkDtDefinition());
-		final DtList<Entity> valueList = storeManager.getDataStore().findAll(mdlUri);
+		final DtListURIForMasterData mdlUri = entityStoreManager.getMasterDataConfig().getDtListURIForMasterData(dtField.getFkDtDefinition());
+		final DtList<Entity> valueList = entityStoreManager.findAll(mdlUri);
 		final DtField dtFieldDisplay = mdlUri.getDtDefinition().getDisplayField().get();
 		final DtField dtFieldKey = valueList.getDefinition().getIdField().get();
 		return createDenormIndex(valueList, dtFieldKey, dtFieldDisplay);

@@ -153,7 +153,7 @@ public final class ApplicationUser implements Entity {
 		}
 		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
 		if (profil == null || !fkURI.equals(profil.getUID())) {
-			profil = io.vertigo.core.node.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
+			profil = io.vertigo.core.node.Home.getApp().getComponentSpace().resolve(io.vertigo.datastore.entitystore.EntityStoreManager.class).readOne(fkURI);
 		}
 		return profil;
 	}

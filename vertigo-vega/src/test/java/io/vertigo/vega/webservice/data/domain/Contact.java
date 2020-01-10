@@ -24,10 +24,10 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.impl.store.datastore.StoreVAccessor;
 
 public final class Contact implements KeyConcept {
 	private static final long serialVersionUID = 2074906343392206381L;

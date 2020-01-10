@@ -30,7 +30,7 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import io.vertigo.core.util.TempFile;
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.quarto.impl.services.publisher.merger.processor.ZipUtil;
 
 /**

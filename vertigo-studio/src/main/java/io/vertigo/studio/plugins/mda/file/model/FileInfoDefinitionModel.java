@@ -20,7 +20,7 @@ package io.vertigo.studio.plugins.mda.file.model;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionUtil;
-import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
+import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
 
 /**
  * Génération des classes/méthodes des fileInfo.

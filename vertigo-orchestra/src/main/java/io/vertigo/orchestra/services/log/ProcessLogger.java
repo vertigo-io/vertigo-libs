@@ -20,7 +20,7 @@ package io.vertigo.orchestra.services.log;
 
 import java.util.Optional;
 
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.model.VFile;
 
 public interface ProcessLogger {
 

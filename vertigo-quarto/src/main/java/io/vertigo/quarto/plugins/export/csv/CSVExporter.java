@@ -29,10 +29,10 @@ import java.util.Map;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.codec.Encoder;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.quarto.impl.services.export.util.ExportUtil;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportField;
@@ -61,19 +61,19 @@ final class CSVExporter {
 
 	private final Map<DtField, Map<Object, String>> referenceCache = new HashMap<>();
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
-	private final StoreManager storeManager;
+	private final EntityStoreManager entityStoreManager;
 
 	/**
 	 * Constructeur.
 	 *
 	 * @param codecManager Manager des codecs
 	 */
-	CSVExporter(final CodecManager codecManager, final StoreManager storeManager) {
+	CSVExporter(final CodecManager codecManager, final EntityStoreManager entityStoreManager) {
 		Assertion.checkNotNull(codecManager);
-		Assertion.checkNotNull(storeManager);
+		Assertion.checkNotNull(entityStoreManager);
 		//-----
 		csvEncoder = codecManager.getCsvEncoder();
-		this.storeManager = storeManager;
+		this.entityStoreManager = entityStoreManager;
 	}
 
 	/**
@@ -150,7 +150,7 @@ final class CSVExporter {
 		for (final ExportField exportColumn : parameters.getExportFields()) {
 			final DtField dtField = exportColumn.getDtField();
 			out.write(sep);
-			sValue = ExportUtil.getText(storeManager, referenceCache, denormCache, dto, exportColumn);
+			sValue = ExportUtil.getText(entityStoreManager, referenceCache, denormCache, dto, exportColumn);
 			if (dtField.getDomain().getDataType() == DataType.BigDecimal) {
 				out.write(encodeNumber(sValue));
 			} else {

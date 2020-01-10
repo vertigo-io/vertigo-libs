@@ -24,6 +24,7 @@ import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.util.ListBuilder;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
@@ -32,7 +33,6 @@ import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinitio
 import io.vertigo.dynamo.domain.stereotype.Association;
 import io.vertigo.dynamo.domain.stereotype.AssociationNN;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
-import io.vertigo.dynamo.store.StoreManager;
 
 /**
  * Gestion centralisée des annotations sur les objets générés.
@@ -87,7 +87,7 @@ class AnnotationWriter {
 
 			lines.add(buffer.toString());
 		}
-		if (dtDefinition.isPersistent() && !StoreManager.MAIN_DATA_SPACE_NAME.equals(dtDefinition.getDataSpace())) {
+		if (dtDefinition.isPersistent() && !EntityStoreManager.MAIN_DATA_SPACE_NAME.equals(dtDefinition.getDataSpace())) {
 			final String dataSpace = new StringBuilder()
 					.append('@').append(io.vertigo.dynamo.domain.stereotype.DataSpace.class.getCanonicalName())
 					.append("(\"").append(dtDefinition.getDataSpace()).append("\")")

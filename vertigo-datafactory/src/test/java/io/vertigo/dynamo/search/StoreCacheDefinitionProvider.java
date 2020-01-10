@@ -25,8 +25,8 @@ import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.datastore.impl.entitystore.cache.CacheData;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.impl.store.datastore.cache.CacheData;
 import io.vertigo.dynamo.search.data.domain.Item;
 
 /**

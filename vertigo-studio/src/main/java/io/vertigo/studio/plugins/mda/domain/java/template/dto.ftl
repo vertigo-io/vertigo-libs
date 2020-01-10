@@ -3,16 +3,16 @@ package ${dtDefinition.packageName};
 import io.vertigo.core.lang.Generated;
 import ${dtDefinition.stereotypePackageName};
 <#if dtDefinition.containsEnumAccessor()>
-import io.vertigo.dynamo.impl.store.datastore.EnumStoreVAccessor;
+import io.vertigo.datastore.impl.entitystore.EnumStoreVAccessor;
 </#if>
 <#if dtDefinition.containsListAccessor()>
-import io.vertigo.dynamo.impl.store.datastore.StoreListVAccessor;
+import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
 </#if>
 <#if dtDefinition.entity || dtDefinition.fragment>
 import io.vertigo.dynamo.domain.model.UID;
 </#if>
 <#if dtDefinition.containsAccessor()>
-import io.vertigo.dynamo.impl.store.datastore.StoreVAccessor;
+import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 </#if>	
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;

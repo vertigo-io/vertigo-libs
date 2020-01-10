@@ -32,12 +32,12 @@ modules:
           jdbcDriver: org.h2.Driver
           jdbcUrl: jdbc:h2:mem:test
   io.vertigo.dynamo.DataModelFeatures:
-  io.vertigo.dynamo.DataStoreFeatures:
+  io.vertigo.datastore.DataStoreFeatures:
     features:
-      - store:
+      - entitystore:
       - kvStore:
     featuresConfig:
-      - store.data.sql:
+      - entitystore.sql:
       - kvStore.berkeley:
           collections: VViewContext;TTL=43200
           dbFilePath: ${java.io.tmpdir}/vertigo/TestVViewContext

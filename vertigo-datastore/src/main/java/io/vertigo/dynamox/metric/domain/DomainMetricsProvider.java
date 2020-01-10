@@ -32,9 +32,9 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.database.sql.connection.SqlConnection;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
@@ -46,20 +46,20 @@ import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
  */
 public final class DomainMetricsProvider implements Component {
 	private final VTransactionManager transactionManager;
-	private final StoreManager storeManager;
+	private final EntityStoreManager entityStoreManager;
 
 	/**
 	 * Constructor.
 	 * @param transactionManager the transactionManager
-	 * @param storeManager the storeManager
+	 * @param entityStoreManager the storeManager
 	 */
 	@Inject
-	public DomainMetricsProvider(final VTransactionManager transactionManager, final StoreManager storeManager) {
+	public DomainMetricsProvider(final VTransactionManager transactionManager, final EntityStoreManager entityStoreManager) {
 		Assertion.checkNotNull(transactionManager);
-		Assertion.checkNotNull(storeManager);
+		Assertion.checkNotNull(entityStoreManager);
 		//-----
 		this.transactionManager = transactionManager;
-		this.storeManager = storeManager;
+		this.entityStoreManager = entityStoreManager;
 
 	}
 
@@ -197,7 +197,7 @@ public final class DomainMetricsProvider implements Component {
 			if (vTransactionResource != null) {
 				vTransactionResource.getJdbcConnection().rollback();
 			}
-			final double count = storeManager.getDataStore().count(dtDefinition);
+			final double count = entityStoreManager.count(dtDefinition);
 			return metricBuilder
 					.withSuccess()
 					.withValue(count)

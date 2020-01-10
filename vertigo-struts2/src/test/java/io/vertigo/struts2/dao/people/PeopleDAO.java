@@ -20,10 +20,10 @@ package io.vertigo.struts2.dao.people;
 
 import javax.inject.Inject;
 
+import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.impl.dao.DAO;
+import io.vertigo.datastore.impl.dao.StoreServices;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.impl.store.util.DAO;
-import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.struts2.domain.people.People;
 
@@ -35,12 +35,12 @@ public final class PeopleDAO extends DAO<People, java.lang.Long> implements Stor
 
 	/**
 	 * Contructeur.
-	 * @param storeManager Manager de persistance
+	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public PeopleDAO(final StoreManager storeManager, final TaskManager taskManager) {
-		super(People.class, storeManager, taskManager);
+	public PeopleDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
+		super(People.class, entityStoreManager, taskManager);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public final class PeopleDAO extends DAO<People, java.lang.Long> implements Stor
 	 * @return KeyConcept à modifier
 	 */
 	public People readOneForUpdate(final UID<People> uri) {
-		return dataStore.readOneForUpdate(uri);
+		return entityStoreManager.readOneForUpdate(uri);
 	}
 
 	/**

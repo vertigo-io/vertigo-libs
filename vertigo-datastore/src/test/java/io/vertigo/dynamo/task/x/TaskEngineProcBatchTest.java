@@ -38,7 +38,7 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
@@ -92,8 +92,8 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.build())
 				.addModule(new DataStoreFeatures()
-						.withStore()
-						.withSqlStore()
+						.withEntityStore()
+						.withSqlEntityStore()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)

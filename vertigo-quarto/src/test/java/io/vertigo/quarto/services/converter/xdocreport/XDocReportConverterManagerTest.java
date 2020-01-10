@@ -33,10 +33,10 @@ import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.util.TempFile;
-import io.vertigo.dynamo.DataStoreFeatures;
-import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.filestore.FileManager;
+import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.filestore.util.FileUtil;
 import io.vertigo.quarto.QuartoFeatures;
 import io.vertigo.quarto.services.converter.ConverterManager;
 

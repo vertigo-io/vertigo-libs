@@ -31,7 +31,7 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 
@@ -71,8 +71,8 @@ public final class MyNodeConfig {
 							Param.of("jdbcUrl", "jdbc:h2:mem:database"));
 
 			dynamoFeatures
-					.withStore()
-					.withSqlStore();
+					.withEntityStore()
+					.withSqlEntityStore();
 
 			accountFeatures.withStoreAccount(
 					Param.of("userIdentityEntity", "DtUser"),

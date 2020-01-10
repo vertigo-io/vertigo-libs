@@ -29,8 +29,8 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.dynamo.DataFactoryFeatures;
-import io.vertigo.dynamo.DataStoreFeatures;
 import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.impl.search.grammar.SearchDefinitionProvider;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
@@ -85,8 +85,8 @@ public final class MyNodeConfig {
 							.build())
 					.addModule(new DataModelFeatures().build())
 					.addModule(new DataStoreFeatures()
-							.withStore()
-							.withSqlStore()
+							.withEntityStore()
+							.withSqlEntityStore()
 							.build());
 		}
 		nodeConfigBuilder.addModule(elasticSearchFeatures.build())

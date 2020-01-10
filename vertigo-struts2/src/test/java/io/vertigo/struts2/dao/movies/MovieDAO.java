@@ -20,10 +20,10 @@ package io.vertigo.struts2.dao.movies;
 
 import javax.inject.Inject;
 
+import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.impl.dao.DAO;
+import io.vertigo.datastore.impl.dao.StoreServices;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.impl.store.util.DAO;
-import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.struts2.domain.movies.Movie;
 
@@ -35,12 +35,12 @@ public final class MovieDAO extends DAO<Movie, java.lang.Long> implements StoreS
 
 	/**
 	 * Contructeur.
-	 * @param storeManager Manager de persistance
+	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public MovieDAO(final StoreManager storeManager, final TaskManager taskManager) {
-		super(Movie.class, storeManager, taskManager);
+	public MovieDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
+		super(Movie.class, entityStoreManager, taskManager);
 	}
 
 	/**
@@ -51,7 +51,7 @@ public final class MovieDAO extends DAO<Movie, java.lang.Long> implements StoreS
 	 * @return KeyConcept à modifier
 	 */
 	public Movie readOneForUpdate(final UID<Movie> uri) {
-		return dataStore.readOneForUpdate(uri);
+		return entityStoreManager.readOneForUpdate(uri);
 	}
 
 	/**

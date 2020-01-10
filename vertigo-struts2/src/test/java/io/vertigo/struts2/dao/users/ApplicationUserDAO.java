@@ -20,9 +20,9 @@ package io.vertigo.struts2.dao.users;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.impl.store.util.DAO;
-import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.StoreServices;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.impl.dao.DAO;
+import io.vertigo.datastore.impl.dao.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.struts2.domain.users.ApplicationUser;
 
@@ -34,12 +34,12 @@ public final class ApplicationUserDAO extends DAO<ApplicationUser, java.lang.Lon
 
 	/**
 	 * Contructeur.
-	 * @param storeManager Manager de persistance
+	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public ApplicationUserDAO(final StoreManager storeManager, final TaskManager taskManager) {
-		super(ApplicationUser.class, storeManager, taskManager);
+	public ApplicationUserDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
+		super(ApplicationUser.class, entityStoreManager, taskManager);
 	}
 
 }

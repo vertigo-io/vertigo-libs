@@ -36,9 +36,9 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Home;
-import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.InputStreamBuilder;
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.FileManager;
+import io.vertigo.datastore.filestore.model.InputStreamBuilder;
+import io.vertigo.datastore.filestore.model.VFile;
 
 /**
  * @author npiedeloup

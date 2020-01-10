@@ -27,12 +27,12 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
-import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.impl.filestore.grammar.FileStoreDefinitionProvider;
+import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
+import io.vertigo.datastore.plugins.filestore.db.DbFileStorePlugin;
 import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.impl.file.grammar.FileStoreDefinitionProvider;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
-import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
-import io.vertigo.dynamo.plugins.store.filestore.db.DbFileStorePlugin;
 import io.vertigo.dynamo.store.StoreCacheDefinitionProvider;
 
 /**
@@ -63,8 +63,9 @@ public class SqlDataStoreNodeConfig {
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
-						.withStore()
-						.addPlugin(SqlDataStorePlugin.class)
+						.withEntityStore()
+						.withFileStore()
+						.addPlugin(SqlEntityStorePlugin.class)
 						.addPlugin(DbFileStorePlugin.class,
 								Param.of("storeDtName", "DtVxFileInfo"))
 						.build())

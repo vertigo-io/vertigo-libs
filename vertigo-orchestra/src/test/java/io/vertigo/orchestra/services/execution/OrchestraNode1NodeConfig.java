@@ -27,7 +27,7 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.orchestra.OrchestraFeatures;
 import io.vertigo.orchestra.util.monitoring.MonitoringServices;
 import io.vertigo.orchestra.util.monitoring.MonitoringServicesImpl;
@@ -61,8 +61,8 @@ public final class OrchestraNode1NodeConfig {
 						.withDelayedMemoryKV(
 								Param.of("collections", "tokens"),
 								Param.of("timeToLiveSeconds", "120"))
-						.withStore()
-						.withSqlStore(
+						.withEntityStore()
+						.withSqlEntityStore(
 								Param.of("dataSpace", "orchestra"),
 								Param.of("connectionName", "orchestra"),
 								Param.of("sequencePrefix", "SEQ_"))

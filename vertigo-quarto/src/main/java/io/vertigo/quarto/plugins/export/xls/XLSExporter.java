@@ -50,11 +50,11 @@ import org.apache.poi.ss.util.CellRangeAddress;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.quarto.impl.services.export.util.ExportUtil;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportField;
@@ -75,16 +75,16 @@ final class XLSExporter {
 	private final Map<DataType, HSSFCellStyle> evenHssfStyleCache = new EnumMap<>(DataType.class);
 	private final Map<DataType, HSSFCellStyle> oddHssfStyleCache = new EnumMap<>(DataType.class);
 
-	private final StoreManager storeManager;
+	private final EntityStoreManager entityStoreManager;
 
 	/**
 	 * Constructor.
 	 * @param storeManager Store manager
 	 */
-	XLSExporter(final StoreManager storeManager) {
-		Assertion.checkNotNull(storeManager);
+	XLSExporter(final EntityStoreManager entityStoreManager) {
+		Assertion.checkNotNull(entityStoreManager);
 		//-----
-		this.storeManager = storeManager;
+		this.entityStoreManager = entityStoreManager;
 	}
 
 	private static HSSFCellStyle createHeaderCellStyle(final HSSFWorkbook workbook) {
@@ -240,7 +240,7 @@ final class XLSExporter {
 			for (final ExportField exportColumn : parameters.getExportFields()) {
 				final HSSFCell cell = row.createCell(cellIndex);
 
-				value = ExportUtil.getValue(storeManager, referenceCache, denormCache, dto, exportColumn);
+				value = ExportUtil.getValue(entityStoreManager, referenceCache, denormCache, dto, exportColumn);
 				putValueInCell(value, cell, rowIndex % 2 == 0 ? evenHssfStyleCache : oddHssfStyleCache, cellIndex, maxWidthPerColumn, exportColumn.getDtField().getDomain());
 
 				cellIndex++;
@@ -265,7 +265,7 @@ final class XLSExporter {
 			updateMaxWidthPerColumn(label.getDisplay(), 1.2, labelCellIndex, maxWidthPerColumn); // +20% pour les majuscules
 
 			final HSSFCell valueCell = row.createCell(valueCellIndex);
-			value = ExportUtil.getValue(storeManager, referenceCache, denormCache, dto, exportColumn);
+			value = ExportUtil.getValue(entityStoreManager, referenceCache, denormCache, dto, exportColumn);
 			putValueInCell(value, valueCell, oddHssfStyleCache, valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().getDomain());
 			rowIndex++;
 		}

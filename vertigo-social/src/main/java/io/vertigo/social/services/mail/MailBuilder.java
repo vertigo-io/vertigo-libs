@@ -23,7 +23,7 @@ import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.model.VFile;
 
 /**
  * EMail Builder.

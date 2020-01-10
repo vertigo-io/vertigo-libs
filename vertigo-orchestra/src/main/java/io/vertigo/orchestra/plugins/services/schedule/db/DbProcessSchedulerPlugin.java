@@ -45,9 +45,9 @@ import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.orchestra.dao.execution.OProcessExecutionDAO;
 import io.vertigo.orchestra.dao.planification.OProcessPlanificationDAO;
 import io.vertigo.orchestra.dao.planification.PlanificationPAO;
@@ -80,7 +80,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	@Inject
 	private OProcessExecutionDAO processExecutionDAO;
 	@Inject
-	private StoreManager storeManager;
+	private EntityStoreManager entityStoreManager;
 
 	private final String nodeName;
 	private Long nodId;
@@ -239,7 +239,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	private void lockProcess(final ProcessDefinition processDefinition) {
 		final UID<OProcess> processURI = UID.of(OProcess.class, processDefinition.getId());
-		storeManager.getDataStore().readOneForUpdate(processURI);
+		entityStoreManager.readOneForUpdate(processURI);
 	}
 
 	private void plannRecurrentProcesses() {

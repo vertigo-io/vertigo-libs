@@ -41,6 +41,7 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.datastore.entitystore.StoreEvent;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -54,7 +55,6 @@ import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.dynamo.store.StoreEvent;
 
 /**
  * Implémentation standard du gestionnaire des indexes de recherche.

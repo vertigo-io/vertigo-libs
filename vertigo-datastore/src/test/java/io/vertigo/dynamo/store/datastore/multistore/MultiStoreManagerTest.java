@@ -46,14 +46,14 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.filestore.model.FileInfo;
+import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.filestore.util.FileUtil;
+import io.vertigo.datastore.impl.filestore.FileStorePlugin;
+import io.vertigo.datastore.plugins.filestore.fs.FsFullFileStorePlugin;
 import io.vertigo.dynamo.TestUtil;
-import io.vertigo.dynamo.file.model.FileInfo;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.file.util.FileUtil;
-import io.vertigo.dynamo.impl.store.filestore.FileStorePlugin;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
-import io.vertigo.dynamo.plugins.store.filestore.fs.FsFullFileStorePlugin;
 import io.vertigo.dynamo.store.StoreCacheDefinitionProvider;
 import io.vertigo.dynamo.store.data.fileinfo.FileInfoFs;
 import io.vertigo.dynamo.store.data.fileinfo.FileInfoTemp;
@@ -93,9 +93,10 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 								Param.of("jdbcUrl", "jdbc:h2:mem:database2"))
 						.build())
 				.addModule(new DataStoreFeatures()
-						.withStore()
-						.withSqlStore()
-						.withSqlStore(
+						.withEntityStore()
+						.withFileStore()
+						.withSqlEntityStore()
+						.withSqlEntityStore(
 								Param.of("dataSpace", "otherStore"),
 								Param.of("connectionName", "otherBase"))
 						.withDbFileStore(Param.of("storeDtName", "DtVxFileInfo"))
@@ -172,7 +173,7 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 		final FileInfo createdFileInfo;
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//2. Sauvegarde en Temp
-			createdFileInfo = storeManager.getFileStore().create(fileInfo);
+			createdFileInfo = fileStoreManager.create(fileInfo);
 			transaction.commit(); //can't read file if not commited (TODO ?)
 			System.out.println("testOtherStoreFile " + createdFileInfo.getURI().toURN());
 
@@ -181,7 +182,7 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 
 			//3.relecture du fichier
-			final FileInfo readFileInfo = storeManager.getFileStore().read(createdFileInfo.getURI());
+			final FileInfo readFileInfo = fileStoreManager.read(createdFileInfo.getURI());
 
 			//4. comparaison du fichier créé et du fichier lu.
 
@@ -267,7 +268,7 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 			//1.Création du fichier depuis un fichier texte du FS
 			final FileInfo fileInfo = new FileInfoTemp(vFile);
 			//2. Sauvegarde en Temp
-			final FileInfo createdFileInfo = storeManager.getFileStore().create(fileInfo);
+			final FileInfo createdFileInfo = fileStoreManager.create(fileInfo);
 			System.out.println(createdFileInfo.getURI().toURN());
 			transaction.commit(); //can't read file if not commited (TODO ?)
 		}

@@ -26,7 +26,7 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.impl.file.grammar.FileStoreDefinitionProvider;
+import io.vertigo.datastore.impl.filestore.grammar.FileStoreDefinitionProvider;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.studio.StudioFeatures;
 import io.vertigo.studio.tools.NameSpace2Java;

@@ -38,9 +38,9 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.Table;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.quarto.impl.services.export.util.ExportUtil;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportField;
@@ -54,16 +54,16 @@ public abstract class AbstractExporterIText {
 	private final Map<DtField, Map<Object, String>> referenceCache = new HashMap<>();
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
 
-	private final StoreManager storeManager;
+	private final EntityStoreManager entityStoreManager;
 
 	/**
 	 * Constructor.
 	 * @param storeManager Store manager
 	 */
-	protected AbstractExporterIText(final StoreManager storeManager) {
-		Assertion.checkNotNull(storeManager);
+	protected AbstractExporterIText(final EntityStoreManager entityStoreManager) {
+		Assertion.checkNotNull(entityStoreManager);
 		//-----
-		this.storeManager = storeManager;
+		this.entityStoreManager = entityStoreManager;
 	}
 
 	/**
@@ -163,7 +163,7 @@ public abstract class AbstractExporterIText {
 			}
 			datatable.getDefaultCell().setHorizontalAlignment(horizontalAlignement);
 
-			String text = ExportUtil.getText(storeManager, referenceCache, denormCache, exportSheet.getDtObject(), exportColumn);
+			String text = ExportUtil.getText(entityStoreManager, referenceCache, denormCache, exportSheet.getDtObject(), exportColumn);
 			if (text == null) {
 				text = "";
 			}
@@ -219,7 +219,7 @@ public abstract class AbstractExporterIText {
 				}
 				datatable.getDefaultCell().setHorizontalAlignment(horizontalAlignement);
 
-				String text = ExportUtil.getText(storeManager, referenceCache, denormCache, dto, exportColumn);
+				String text = ExportUtil.getText(entityStoreManager, referenceCache, denormCache, dto, exportColumn);
 				if (text == null) {
 					text = "";
 				}

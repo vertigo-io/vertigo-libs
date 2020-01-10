@@ -29,7 +29,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.MapBuilder;
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.model.VFile;
 
 final class PhotoCodec {
 	private static final int CODEC_BUFFER_SIZE = 3 * 1024;

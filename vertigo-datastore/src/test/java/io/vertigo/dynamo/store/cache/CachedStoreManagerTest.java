@@ -30,8 +30,8 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.DataStoreFeatures;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
@@ -67,8 +67,9 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
-						.withStore()
-						.withSqlStore()
+						.withEntityStore()
+						.withFileStore()
+						.withSqlEntityStore()
 						.withDbFileStore(Param.of("storeDtName", "DtVxFileInfo"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
@@ -89,18 +90,18 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 	public void testAddFamille() {
 		//ce test est modifier car le cache n'est pas transactionnel : la liste n'est pas accessible sans commit
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final DtList<Famille> dtc = storeManager.getDataStore().find(dtDefinitionFamille, null, DtListState.of(null));
+			final DtList<Famille> dtc = entityStoreManager.find(dtDefinitionFamille, null, DtListState.of(null));
 			Assertions.assertEquals(0, dtc.size());
 			//-----
 			final Famille famille = new Famille();
 			famille.setLibelle("encore un");
-			final Famille createdFamille = storeManager.getDataStore().create(famille);
+			final Famille createdFamille = entityStoreManager.create(famille);
 			// on attend un objet avec un ID non null ?
 			Assertions.assertNotNull(createdFamille.getFamId());
 			transaction.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final DtList<Famille> dtc = storeManager.getDataStore().find(dtDefinitionFamille, null, DtListState.of(null));
+			final DtList<Famille> dtc = entityStoreManager.find(dtDefinitionFamille, null, DtListState.of(null));
 			Assertions.assertEquals(1, dtc.size());
 
 		}

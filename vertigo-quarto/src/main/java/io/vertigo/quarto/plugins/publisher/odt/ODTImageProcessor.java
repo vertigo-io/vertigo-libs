@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.quarto.impl.services.publisher.merger.processor.MergerProcessor;
 import io.vertigo.quarto.services.publisher.model.PublisherData;
 

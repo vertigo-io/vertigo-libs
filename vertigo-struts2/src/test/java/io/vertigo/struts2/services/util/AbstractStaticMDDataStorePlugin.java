@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.datastore.impl.entitystore.DataStorePlugin;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
@@ -30,7 +31,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.impl.store.datastore.DataStorePlugin;
 
 /**
  * Impl�mentation du MasterDataStore qui permet l'impl�mentation manuel des m�thodes de chargement.

@@ -53,6 +53,7 @@ import org.apache.lucene.util.BytesRef;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.node.Home;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -62,7 +63,6 @@ import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.store.StoreManager;
 
 /**
  * Implémentation Ram de l'index Lucene.
@@ -207,20 +207,20 @@ final class RamLuceneIndex<D extends DtObject> {
 		}
 	}
 
-	private static StoreManager getStoreManager() {
-		return Home.getApp().getComponentSpace().resolve(StoreManager.class);
+	private static EntityStoreManager getEntityStoreManager() {
+		return Home.getApp().getComponentSpace().resolve(EntityStoreManager.class);
 	}
 
 	private static String getStringValue(final DtObject dto, final DtField field) {
 		final String stringValue;
 		final Object value = field.getDataAccessor().getValue(dto);
 		if (value != null) {
-			if (field.getType() == DtField.FieldType.FOREIGN_KEY && getStoreManager().getMasterDataConfig().containsMasterData(field.getFkDtDefinition())) {
+			if (field.getType() == DtField.FieldType.FOREIGN_KEY && getEntityStoreManager().getMasterDataConfig().containsMasterData(field.getFkDtDefinition())) {
 				//TODO voir pour mise en cache de cette navigation
-				final DtListURIForMasterData mdlUri = getStoreManager().getMasterDataConfig().getDtListURIForMasterData(field.getFkDtDefinition());
+				final DtListURIForMasterData mdlUri = getEntityStoreManager().getMasterDataConfig().getDtListURIForMasterData(field.getFkDtDefinition());
 				final DtField displayField = mdlUri.getDtDefinition().getDisplayField().get();
 				final UID<Entity> uid = UID.of(field.getFkDtDefinition(), value);
-				final DtObject fkDto = getStoreManager().getDataStore().readOne(uid);
+				final DtObject fkDto = getEntityStoreManager().readOne(uid);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
 				stringValue = displayField.getDomain().valueToString(displayValue);
 			} else {

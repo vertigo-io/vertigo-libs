@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.model.VFile;
 
 /**
  * Builder d'envoi de Fichier.

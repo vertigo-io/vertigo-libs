@@ -28,6 +28,11 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.filestore.FileStoreManager;
+import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
+import io.vertigo.datastore.filestore.model.FileInfoURI;
+import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -35,10 +40,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.dynamo.file.model.FileInfoURI;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.store.StoreManager;
 
 /**
  * Source of identity.
@@ -46,7 +47,8 @@ import io.vertigo.dynamo.store.StoreManager;
  */
 public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin, Activeable {
 
-	private final StoreManager storeManager;
+	private final EntityStoreManager entityStoreManager;
+	private final FileStoreManager fileStoreManager;
 
 	private final String userIdentityEntity;
 	private final String userAuthField;
@@ -59,7 +61,8 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 	 * Constructor.
 	 * @param userIdentityEntity Entity name of userIdentityEntity
 	 * @param userAuthField FieldName use to find user by it's authToken
-	 * @param storeManager Store Manager
+	 * @param entityStoreManager Store Manager
+	 * @param fileStoreManager Store Manager
 	 */
 	@Inject
 	public StoreIdentityProviderPlugin(
@@ -67,22 +70,26 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 			@ParamValue("userAuthField") final String userAuthField,
 			@ParamValue("photoIdField") final Optional<String> photoIdField,
 			@ParamValue("photoFileInfo") final Optional<String> photoFileInfo,
-			final StoreManager storeManager) {
+			final EntityStoreManager entityStoreManager,
+			final FileStoreManager fileStoreManager) {
 		Assertion.checkArgNotEmpty(userIdentityEntity);
 		Assertion.checkArgNotEmpty(userAuthField);
-		Assertion.checkNotNull(storeManager);
+		Assertion.checkNotNull(entityStoreManager);
+		Assertion.checkNotNull(fileStoreManager);
+		//---
 		this.userIdentityEntity = userIdentityEntity;
 		this.userAuthField = userAuthField;
 		this.photoIdField = photoIdField;
 		this.photoFileInfo = photoFileInfo;
-		this.storeManager = storeManager;
+		this.entityStoreManager = entityStoreManager;
+		this.fileStoreManager = fileStoreManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E getUserByAuthToken(final String userAuthToken) {
 		final Criteria<Entity> criteriaByAuthToken = Criterions.isEqualTo(() -> userAuthField, userAuthToken);
-		final DtList<Entity> results = storeManager.getDataStore().find(userIdentityDefinition, criteriaByAuthToken, DtListState.of(2));
+		final DtList<Entity> results = entityStoreManager.find(userIdentityDefinition, criteriaByAuthToken, DtListState.of(2));
 		Assertion.checkState(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken);
 		Assertion.checkState(!results.isEmpty(), "No user found for this authToken {0}", userAuthToken);
 		return (E) results.get(0);
@@ -91,24 +98,24 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 	/** {@inheritDoc} */
 	@Override
 	public long getUsersCount() {
-		return storeManager.getDataStore().count(userIdentityDefinition);
+		return entityStoreManager.count(userIdentityDefinition);
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> List<E> getAllUsers() {
-		return storeManager.getDataStore().find(userIdentityDefinition, Criterions.alwaysTrue(), DtListState.of(null));
+		return entityStoreManager.find(userIdentityDefinition, Criterions.alwaysTrue(), DtListState.of(null));
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> Optional<VFile> getPhoto(final UID<E> userURI) {
 		if (photoFileInfoDefinition.isPresent()) {
-			final E entity = storeManager.getDataStore().readOne(userURI);
+			final E entity = entityStoreManager.readOne(userURI);
 			final Object photoId = userIdentityDefinition.getField(photoIdField.get()).getDataAccessor().getValue(entity);
 			if (photoId != null) {
 				final FileInfoURI photoUri = new FileInfoURI(photoFileInfoDefinition.get(), photoId);
-				return Optional.of(storeManager.getFileStore().read(photoUri).getVFile());
+				return Optional.of(fileStoreManager.read(photoUri).getVFile());
 			}
 		}
 		return Optional.empty();

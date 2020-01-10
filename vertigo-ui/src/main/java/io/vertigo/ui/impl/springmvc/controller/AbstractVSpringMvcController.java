@@ -33,7 +33,7 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.kvstore.KVStoreManager;
+import io.vertigo.datastore.kvstore.KVStoreManager;
 import io.vertigo.ui.core.ComponentStates;
 import io.vertigo.ui.core.FormMode;
 import io.vertigo.ui.core.ViewContext;

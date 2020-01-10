@@ -19,7 +19,7 @@
 package io.vertigo.quarto.impl.services.converter;
 
 import io.vertigo.core.node.component.Plugin;
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.model.VFile;
 
 /**
  * Plugin de Conversion des fichiers.

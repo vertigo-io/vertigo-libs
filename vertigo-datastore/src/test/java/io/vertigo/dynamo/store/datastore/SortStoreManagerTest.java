@@ -15,13 +15,13 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.DataStoreFeatures;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.util.VCollectors;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.data.domain.SmartItem;
 
 public class SortStoreManagerTest extends AbstractTestCaseJU5 {
@@ -30,7 +30,7 @@ public class SortStoreManagerTest extends AbstractTestCaseJU5 {
 	private static final String aaa_ba = "aaa ba";
 	private static final String bb_aa = "bb aa";
 	@Inject
-	private StoreManager storeManager;
+	private EntityStoreManager entityStoreManager;
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
@@ -45,7 +45,7 @@ public class SortStoreManagerTest extends AbstractTestCaseJU5 {
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
-						.withStore()
+						.withEntityStore()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
@@ -67,7 +67,7 @@ public class SortStoreManagerTest extends AbstractTestCaseJU5 {
 			dtc.add(mocka);
 		}
 
-		final DtList<SmartItem> sortedDtc = storeManager.sort(dtc, "label", false);
+		final DtList<SmartItem> sortedDtc = entityStoreManager.sort(dtc, "label", false);
 
 		nop(sortedDtc);
 
@@ -83,7 +83,7 @@ public class SortStoreManagerTest extends AbstractTestCaseJU5 {
 		// ======================== Ascendant
 		// =================================== nullLast
 		// ================================================ ignoreCase
-		sortDtc = storeManager.sort(dtc, "label", false);
+		sortDtc = entityStoreManager.sort(dtc, "label", false);
 
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { aaa_ba, Ba_aa, bb_aa, null }, extractLabels(sortDtc));
@@ -91,7 +91,7 @@ public class SortStoreManagerTest extends AbstractTestCaseJU5 {
 		// ======================== Descendant
 		// =================================== not nullLast
 		// ================================================ ignoreCase
-		sortDtc = storeManager.sort(dtc, "label", true);
+		sortDtc = entityStoreManager.sort(dtc, "label", true);
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { null, bb_aa, Ba_aa, aaa_ba }, extractLabels(sortDtc));
 	}
@@ -106,7 +106,7 @@ public class SortStoreManagerTest extends AbstractTestCaseJU5 {
 		// ======================== Ascendant
 		// =================================== nullLast
 		// ================================================ ignoreCase
-		sortDtc = storeManager.sort(dtc, "id", false);
+		sortDtc = entityStoreManager.sort(dtc, "id", false);
 
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { Ba_aa, null, aaa_ba, bb_aa }, extractLabels(sortDtc));
@@ -114,7 +114,7 @@ public class SortStoreManagerTest extends AbstractTestCaseJU5 {
 		// ======================== Descendant
 		// =================================== not nullLast
 		// ================================================ ignoreCase
-		sortDtc = storeManager.sort(dtc, "id", true);
+		sortDtc = entityStoreManager.sort(dtc, "id", true);
 		assertEquals(indexDtc, extractLabels(dtc));
 		assertEquals(new String[] { bb_aa, aaa_ba, null, Ba_aa }, extractLabels(sortDtc));
 	}
@@ -130,7 +130,7 @@ public class SortStoreManagerTest extends AbstractTestCaseJU5 {
 		final String[] indexDtc = extractLabels(dtc);
 
 		final Predicate<SmartItem> predicate = Criterions.<SmartItem> isEqualTo(() -> "label", aaa_ba).toPredicate();
-		final Function<DtList<SmartItem>, DtList<SmartItem>> sort = (list) -> storeManager.sort(list, "label", false);
+		final Function<DtList<SmartItem>, DtList<SmartItem>> sort = (list) -> entityStoreManager.sort(list, "label", false);
 
 		final int sizeDtc = dtc.size();
 

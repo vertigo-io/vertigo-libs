@@ -32,8 +32,8 @@ import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.plugins.account.store.loader.AccountLoader;
 import io.vertigo.account.plugins.account.store.loader.GroupLoader;
 import io.vertigo.core.util.ListBuilder;
+import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.file.model.VFile;
 
 public final class TestIdentities implements AccountLoader, GroupLoader {
 

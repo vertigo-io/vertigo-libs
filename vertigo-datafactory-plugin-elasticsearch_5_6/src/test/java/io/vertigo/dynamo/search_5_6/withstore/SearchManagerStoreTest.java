@@ -41,9 +41,10 @@ import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
+import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.DataFactoryFeatures;
 import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.DataStoreFeatures;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.model.DtListState;
@@ -55,7 +56,6 @@ import io.vertigo.dynamo.search.data.domain.Item;
 import io.vertigo.dynamo.search.data.domain.ItemDataBase;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.dynamo.store.StoreManager;
 
 /**
  * Test de l'implémentation standard couplé au store.
@@ -66,7 +66,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
-	private StoreManager storeManager;
+	private EntityStoreManager entityStoreManager;
 	@Inject
 	private VTransactionManager transactionManager;
 	@Inject
@@ -100,8 +100,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
-						.withStore()
-						.withSqlStore()
+						.withEntityStore()
+						.withSqlEntityStore()
 						.build())
 				.addModule(new DataFactoryFeatures()
 						.withSearch()
@@ -143,7 +143,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			for (final Item item : itemDataBase.getAllItems()) {
 				item.setId(null);
-				storeManager.getDataStore().create(item);
+				entityStoreManager.create(item);
 			}
 			transaction.commit();
 		}
@@ -185,7 +185,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final Item item = createNewItem();
-			storeManager.getDataStore().create(item);
+			entityStoreManager.create(item);
 			transaction.commit();
 		}
 		waitAndExpectIndexation(initialDbItemSize + 1);
@@ -202,7 +202,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 		Assertions.assertEquals(1, query("id:10001"));
 
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			storeManager.getDataStore().delete(createURI(10001L));
+			entityStoreManager.delete(createURI(10001L));
 			transaction.commit();
 		}
 		waitAndExpectIndexation(initialDbItemSize - 1);
@@ -219,7 +219,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 		final Item item = createNewItem();
 
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			storeManager.getDataStore().create(item);
+			entityStoreManager.create(item);
 			transaction.commit();
 		}
 
@@ -228,7 +228,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 
 		item.setDescription("Vendue");
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			storeManager.getDataStore().update(item);
+			entityStoreManager.update(item);
 			transaction.commit();
 		}
 		waitAndExpectIndexation(0, "description:légende");
@@ -246,7 +246,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 		final Item item = createNewItem();
 
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			storeManager.getDataStore().create(item);
+			entityStoreManager.create(item);
 			transaction.commit();
 		}
 
@@ -255,10 +255,10 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 
 		item.setDescription("Vendue");
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			storeManager.getDataStore().update(item);
-			storeManager.getDataStore().update(item);
-			storeManager.getDataStore().update(item);
-			storeManager.getDataStore().update(item);
+			entityStoreManager.update(item);
+			entityStoreManager.update(item);
+			entityStoreManager.update(item);
+			entityStoreManager.update(item);
 			transaction.commit();
 		}
 
@@ -309,7 +309,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 			connectionCloseable.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			Assertions.assertEquals(initialDbItemSize - 1, storeManager.getDataStore().count(itemIndexDefinition.getKeyConceptDtDefinition()));
+			Assertions.assertEquals(initialDbItemSize - 1, entityStoreManager.count(itemIndexDefinition.getKeyConceptDtDefinition()));
 		}
 		doReindexAll();
 		waitAndExpectIndexation(initialDbItemSize - 1);
@@ -330,7 +330,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 			connectionCloseable.commit();
 		}
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			Assertions.assertEquals(0, storeManager.getDataStore().count(itemIndexDefinition.getKeyConceptDtDefinition()));
+			Assertions.assertEquals(0, entityStoreManager.count(itemIndexDefinition.getKeyConceptDtDefinition()));
 		}
 		doReindexAll();
 		waitIndexation();

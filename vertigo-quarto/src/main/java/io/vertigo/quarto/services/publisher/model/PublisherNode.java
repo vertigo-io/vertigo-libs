@@ -27,7 +27,7 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherField;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherFieldType;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherNodeDefinition;

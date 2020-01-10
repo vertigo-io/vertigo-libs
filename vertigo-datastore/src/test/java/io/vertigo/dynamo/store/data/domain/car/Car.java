@@ -20,13 +20,13 @@ package io.vertigo.dynamo.store.data.domain.car;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
+import io.vertigo.datastore.impl.entitystore.EnumStoreVAccessor;
+import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
+import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.impl.store.datastore.EnumStoreVAccessor;
-import io.vertigo.dynamo.impl.store.datastore.StoreListVAccessor;
-import io.vertigo.dynamo.impl.store.datastore.StoreVAccessor;
 import io.vertigo.dynamo.store.data.domain.famille.Famille;
 
 /**

@@ -35,7 +35,7 @@ import com.sun.star.uno.UnoRuntime;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.dynamo.file.FileManager;
+import io.vertigo.datastore.filestore.FileManager;
 
 /**
  * Conversion des fichiers à partir de OpenOffice.

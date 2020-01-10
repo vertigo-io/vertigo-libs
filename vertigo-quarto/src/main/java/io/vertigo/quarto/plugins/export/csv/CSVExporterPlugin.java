@@ -25,7 +25,7 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.quarto.impl.services.export.ExporterPlugin;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportFormat;
@@ -37,7 +37,7 @@ import io.vertigo.quarto.services.export.model.ExportFormat;
  */
 public final class CSVExporterPlugin implements ExporterPlugin {
 	private final CodecManager codecManager;
-	private final StoreManager storeManager;
+	private final EntityStoreManager entityStoreManager;
 
 	/**
 	 * Constructor.
@@ -46,18 +46,18 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 	 * @param codecManager the codecmanager
 	 */
 	@Inject
-	public CSVExporterPlugin(final StoreManager storeManager, final CodecManager codecManager) {
-		Assertion.checkNotNull(storeManager);
+	public CSVExporterPlugin(final EntityStoreManager entityStoreManager, final CodecManager codecManager) {
+		Assertion.checkNotNull(entityStoreManager);
 		Assertion.checkNotNull(codecManager);
 		//-----
 		this.codecManager = codecManager;
-		this.storeManager = storeManager;
+		this.entityStoreManager = entityStoreManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void exportData(final Export export, final OutputStream out) throws IOException {
-		new CSVExporter(codecManager, storeManager).exportData(export, out);
+		new CSVExporter(codecManager, entityStoreManager).exportData(export, out);
 	}
 
 	/** {@inheritDoc} */

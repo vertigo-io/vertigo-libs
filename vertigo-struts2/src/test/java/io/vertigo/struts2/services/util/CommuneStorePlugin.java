@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datastore.plugins.entitystore.AbstractStaticEntityStorePlugin;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -31,7 +32,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.plugins.store.datastore.AbstractStaticDataStorePlugin;
 import io.vertigo.struts2.domain.DtDefinitions;
 import io.vertigo.struts2.domain.reference.Commune;
 
@@ -39,7 +39,7 @@ import io.vertigo.struts2.domain.reference.Commune;
  * Loader of Commune masterdata file.
  * @author npiedeloup (6 févr. 2015 10:38:17)
  */
-public final class CommuneStorePlugin extends AbstractStaticDataStorePlugin {
+public final class CommuneStorePlugin extends AbstractStaticEntityStorePlugin {
 	private static final String DEFAULT_CONNECTION_NAME = "main";
 
 	/** {@inheritDoc} */

@@ -3,9 +3,9 @@ package io.vertigo.orchestra.dao.referential;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Generated;
-import io.vertigo.dynamo.impl.store.util.DAO;
-import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.StoreServices;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.impl.dao.DAO;
+import io.vertigo.datastore.impl.dao.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.referential.OSchedulerState;
 
@@ -18,12 +18,12 @@ public final class OSchedulerStateDAO extends DAO<OSchedulerState, java.lang.Str
 
 	/**
 	 * Contructeur.
-	 * @param storeManager Manager de persistance
+	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public OSchedulerStateDAO(final StoreManager storeManager, final TaskManager taskManager) {
-		super(OSchedulerState.class, storeManager, taskManager);
+	public OSchedulerStateDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
+		super(OSchedulerState.class, entityStoreManager, taskManager);
 	}
 
 }

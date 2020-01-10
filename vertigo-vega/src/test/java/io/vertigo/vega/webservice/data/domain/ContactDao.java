@@ -29,7 +29,7 @@ import java.util.UUID;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.dynamo.store.StoreServices;
+import io.vertigo.datastore.impl.dao.StoreServices;
 
 public class ContactDao implements Activeable, StoreServices {
 	private final Map<Long, Contact> contacts = new HashMap<>();

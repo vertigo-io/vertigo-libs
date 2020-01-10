@@ -38,10 +38,10 @@ import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
-import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
-import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 import io.vertigo.studio.mda.DataBaseScriptUtil;
 import io.vertigo.studio.plugins.mda.task.test.TaskTestDaoChecker;
 import io.vertigo.studio.plugins.mda.task.test.TaskTestDummyGenerator;
@@ -79,8 +79,8 @@ public class DaoTestClass extends AbstractTestCaseJU5 {
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
-						.withStore()
-						.addPlugin(SqlDataStorePlugin.class,
+						.withEntityStore()
+						.addPlugin(SqlEntityStorePlugin.class,
 								Param.of("sequencePrefix", "SEQ_"))
 						.build())
 				.addModule(ModuleConfig.builder("dao")

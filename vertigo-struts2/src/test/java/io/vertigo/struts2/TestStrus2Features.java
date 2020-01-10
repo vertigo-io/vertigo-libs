@@ -2,7 +2,7 @@ package io.vertigo.struts2;
 
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.Features;
-import io.vertigo.dynamo.impl.file.grammar.FileStoreDefinitionProvider;
+import io.vertigo.datastore.impl.filestore.grammar.FileStoreDefinitionProvider;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.struts2.boot.initializer.TestStruts2MasterDataDefinitionProvider;
 import io.vertigo.struts2.dao.movies.MovieDAO;

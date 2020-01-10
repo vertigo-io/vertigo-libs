@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.model.VFile;
 
 /**
  * Message à envoyer par mail.

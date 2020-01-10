@@ -9,7 +9,7 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamo.store.StoreServices;
+import io.vertigo.datastore.impl.dao.StoreServices;
 
 /**
  * This class is automatically generated.

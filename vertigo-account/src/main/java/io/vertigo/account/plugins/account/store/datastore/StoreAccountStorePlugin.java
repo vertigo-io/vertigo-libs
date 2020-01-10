@@ -38,6 +38,11 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.filestore.FileStoreManager;
+import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
+import io.vertigo.datastore.filestore.model.FileInfoURI;
+import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -53,10 +58,6 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.dynamo.file.model.FileInfoURI;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.store.StoreManager;
 
 /**
  * Source of identity.
@@ -65,7 +66,8 @@ import io.vertigo.dynamo.store.StoreManager;
 public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin implements AccountStorePlugin {
 
 	private final VTransactionManager transactionManager;
-	private final StoreManager storeManager;
+	private final EntityStoreManager entityStoreManager;
+	private final FileStoreManager fileStoreManager;
 
 	private DtField userIdField;
 	private final String groupIdentityEntity;
@@ -92,7 +94,8 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	 * @param userAuthField FieldName use to find user by it's authToken
 	 * @param userToAccountMappingStr User to account conversion mapping
 	 * @param groupToGroupAccountMappingStr User to account conversion mapping
-	 * @param storeManager Store Manager
+	 * @param entityStoreManager Store Manager
+	 * @param fileStoreManager File Store Manager
 	 */
 	@Inject
 	public StoreAccountStorePlugin(
@@ -102,18 +105,21 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			@ParamValue("photoFileInfo") final Optional<String> photoFileInfo,
 			@ParamValue("userToAccountMapping") final String userToAccountMappingStr,
 			@ParamValue("groupToGroupAccountMapping") final String groupToGroupAccountMappingStr,
-			final StoreManager storeManager,
+			final EntityStoreManager entityStoreManager,
+			final FileStoreManager fileStoreManager,
 			final VTransactionManager transactionManager) {
 		super(userIdentityEntity, userToAccountMappingStr);
 		Assertion.checkArgNotEmpty(userIdentityEntity);
 		Assertion.checkArgNotEmpty(userAuthField);
-		Assertion.checkNotNull(storeManager);
+		Assertion.checkNotNull(entityStoreManager);
+		Assertion.checkNotNull(fileStoreManager);
 		Assertion.checkArgNotEmpty(groupToGroupAccountMappingStr);
 
 		this.groupIdentityEntity = groupIdentityEntity;
 		this.userAuthField = userAuthField;
 		this.photoFileInfo = photoFileInfo;
-		this.storeManager = storeManager;
+		this.entityStoreManager = entityStoreManager;
+		this.fileStoreManager = fileStoreManager;
 		this.transactionManager = transactionManager;
 		this.groupToGroupAccountMappingStr = groupToGroupAccountMappingStr;
 	}
@@ -178,7 +184,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		final DtListURI groupDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, accountUID, associationGroupRoleName);
 
 		//-----
-		final DtList<? extends Entity> result = Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().findAll(groupDtListURI);
+		final DtList<? extends Entity> result = Home.getApp().getComponentSpace().resolve(EntityStoreManager.class).findAll(groupDtListURI);
 		return result.stream().map(groupEntity ->
 
 		groupToAccount(groupEntity).getUID())
@@ -205,7 +211,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			userDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, groupUID, associationUserRoleName);
 		}
 		//-----
-		final DtList<? extends Entity> result = Home.getApp().getComponentSpace().resolve(StoreManager.class).getDataStore().findAll(userDtListURI);
+		final DtList<? extends Entity> result = Home.getApp().getComponentSpace().resolve(EntityStoreManager.class).findAll(userDtListURI);
 		return result.stream()
 				.map(userEntity -> userToAccount(userEntity).getUID())
 				.collect(Collectors.toSet());
@@ -219,7 +225,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		if (photoId != null && photoFileInfoDefinition.isPresent()) {
 			return executeInTransaction(() -> {
 				final FileInfoURI photoUri = new FileInfoURI(photoFileInfoDefinition.get(), photoId);
-				return Optional.of(storeManager.getFileStore().read(photoUri).getVFile());
+				return Optional.of(fileStoreManager.read(photoUri).getVFile());
 			});
 		}
 		return Optional.empty();
@@ -237,7 +243,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		}
 		final Criteria<Entity> criteriaByAuthToken = Criterions.isEqualTo(() -> userAuthField, userAuthTokenValue);
 		return executeInTransaction(() -> {
-			final DtList<Entity> results = storeManager.getDataStore().find(getUserDtDefinition(), criteriaByAuthToken, DtListState.of(2));
+			final DtList<Entity> results = entityStoreManager.find(getUserDtDefinition(), criteriaByAuthToken, DtListState.of(2));
 			Assertion.checkState(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken);
 			if (!results.isEmpty()) {
 				return Optional.of(userToAccount(results.get(0)));
@@ -262,7 +268,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			try {
 				final Serializable typedId = (Serializable) userIdField.getDomain().stringToValue((String) accountURI.getId()); //account id IS always a String
 				final UID<Entity> userURI = UID.of(getUserDtDefinition(), typedId);
-				return storeManager.getDataStore().readOne(userURI);
+				return entityStoreManager.readOne(userURI);
 			} catch (final FormatterException e) {
 				throw WrappedException.wrap(e, "Can't get UserEntity from Store");
 			}
@@ -274,7 +280,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			try {
 				final Serializable typedId = (Serializable) groupIdField.getDomain().stringToValue((String) accountGroupURI.getId()); //accountGroup id IS always a String
 				final UID<Entity> groupURI = UID.of(userGroupDtDefinition, typedId);
-				return storeManager.getDataStore().readOne(groupURI);
+				return entityStoreManager.readOne(groupURI);
 			} catch (final FormatterException e) {
 				throw WrappedException.wrap(e, "Can't get UserGroupEntity from Store");
 			}

@@ -27,7 +27,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.OrchestraServices;

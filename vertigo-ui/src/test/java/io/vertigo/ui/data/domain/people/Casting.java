@@ -123,44 +123,12 @@ public final class Casting implements Entity {
 	}
 
 	/**
-	 * Association : People.
-	 * @return io.vertigo.struts2.domain.people.People
-	 */
-	public io.vertigo.ui.data.domain.people.People getPeople() {
-		final io.vertigo.dynamo.domain.model.UID<io.vertigo.ui.data.domain.people.People> fkURI = getPeopleURI();
-		if (fkURI == null) {
-			return null;
-		}
-		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (people == null || !fkURI.equals(people.getUID())) {
-			people = io.vertigo.core.node.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
-		}
-		return people;
-	}
-
-	/**
 	 * Retourne l'URI: People.
 	 * @return URI de l'association
 	 */
 	@io.vertigo.dynamo.domain.stereotype.Association(name = "ACastPeo", fkFieldName = "peoId", primaryDtDefinitionName = "DtPeople", primaryIsNavigable = true, primaryRole = "People", primaryLabel = "People", primaryMultiplicity = "1..1", foreignDtDefinitionName = "DtCasting", foreignIsNavigable = false, foreignRole = "Casting", foreignLabel = "Casting", foreignMultiplicity = "0..*")
 	public io.vertigo.dynamo.domain.model.UID<io.vertigo.ui.data.domain.people.People> getPeopleURI() {
 		return io.vertigo.dynamo.domain.util.DtObjectUtil.createUID(this, "ACastPeo", io.vertigo.ui.data.domain.people.People.class);
-	}
-
-	/**
-	 * Association : Movie.
-	 * @return io.vertigo.struts2.domain.movies.Movie
-	 */
-	public io.vertigo.ui.data.domain.movies.Movie getMovie() {
-		final io.vertigo.dynamo.domain.model.UID<io.vertigo.ui.data.domain.movies.Movie> fkURI = getMovieURI();
-		if (fkURI == null) {
-			return null;
-		}
-		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (movie == null || !fkURI.equals(movie.getUID())) {
-			movie = io.vertigo.core.node.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
-		}
-		return movie;
 	}
 
 	/**

@@ -122,22 +122,6 @@ public final class UserAuthentification implements Entity {
 	}
 
 	/**
-	 * Association : Application user.
-	 * @return io.vertigo.struts2.domain.users.ApplicationUser
-	 */
-	public io.vertigo.ui.data.domain.users.ApplicationUser getApplicationUser() {
-		final io.vertigo.dynamo.domain.model.UID<io.vertigo.ui.data.domain.users.ApplicationUser> fkURI = getApplicationUserURI();
-		if (fkURI == null) {
-			return null;
-		}
-		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (applicationUser == null || !fkURI.equals(applicationUser.getUID())) {
-			applicationUser = io.vertigo.core.node.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
-		}
-		return applicationUser;
-	}
-
-	/**
 	 * Retourne l'URI: Application user.
 	 * @return URI de l'association
 	 */

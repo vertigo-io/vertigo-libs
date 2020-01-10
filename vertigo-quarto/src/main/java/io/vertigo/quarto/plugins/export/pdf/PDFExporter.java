@@ -24,7 +24,7 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfWriter;
 
-import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.quarto.plugins.export.pdfrtf.AbstractExporterIText;
 
 /**
@@ -37,8 +37,8 @@ final class PDFExporter extends AbstractExporterIText {
 	 * Constructor.
 	 * @param storeManager Store manager
 	 */
-	PDFExporter(final StoreManager storeManager) {
-		super(storeManager);
+	PDFExporter(final EntityStoreManager entityStoreManager) {
+		super(entityStoreManager);
 	}
 
 	/** {@inheritDoc} */

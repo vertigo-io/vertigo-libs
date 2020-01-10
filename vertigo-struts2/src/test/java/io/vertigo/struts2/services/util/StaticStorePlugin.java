@@ -24,6 +24,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.datastore.plugins.entitystore.AbstractStaticEntityStorePlugin;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -33,14 +34,13 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.plugins.store.datastore.AbstractStaticDataStorePlugin;
 
 /**
  * MasterDataStore for the static lists.
  * @author npiedeloup
  * @version $Id: TutoMasterDataStoreStatic.java,v 1.3 2014/06/27 12:21:39 pchretien Exp $
  */
-public final class StaticStorePlugin extends AbstractStaticDataStorePlugin implements Activeable {
+public final class StaticStorePlugin extends AbstractStaticEntityStorePlugin implements Activeable {
 	private static final String DEFAULT_CONNECTION_NAME = "main";
 
 	private final String values;

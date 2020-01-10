@@ -141,23 +141,6 @@ public final class ApplicationUser implements Entity {
 		this.proId = proId;
 	}
 
-	// Association : User authentification non navigable
-	/**
-	 * Association : Profil.
-	 * @return io.vertigo.struts2.domain.users.Profil
-	 */
-	public io.vertigo.ui.data.domain.users.Profil getProfil() {
-		final io.vertigo.dynamo.domain.model.UID<io.vertigo.ui.data.domain.users.Profil> fkURI = getProfilURI();
-		if (fkURI == null) {
-			return null;
-		}
-		//On est toujours dans un mode lazy. On s'assure cependant que l'objet associé n'a pas changé
-		if (profil == null || !fkURI.equals(profil.getUID())) {
-			profil = io.vertigo.core.node.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().readOne(fkURI);
-		}
-		return profil;
-	}
-
 	/**
 	 * Retourne l'URI: Profil.
 	 * @return URI de l'association

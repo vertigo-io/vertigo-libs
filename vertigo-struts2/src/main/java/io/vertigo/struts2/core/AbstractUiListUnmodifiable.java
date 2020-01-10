@@ -30,6 +30,7 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
@@ -38,7 +39,6 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 
@@ -55,7 +55,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	/**
 	 * Accès au storeManager.
 	 */
-	protected final ComponentRef<StoreManager> storeManager = ComponentRef.makeLazyRef(StoreManager.class);
+	protected final ComponentRef<EntityStoreManager> entityStoreManager = ComponentRef.makeLazyRef(EntityStoreManager.class);
 	/**
 	 * Accès au transactionManager.
 	 */
@@ -211,7 +211,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	private Entity loadDto(final Object key) {
 		//-- Transaction BEGIN
 		try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-			return storeManager.get().getDataStore().<Entity> readOne(UID.<Entity> of(getDtDefinition(), key));
+			return entityStoreManager.get().<Entity> readOne(UID.<Entity> of(getDtDefinition(), key));
 		}
 	}
 

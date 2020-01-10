@@ -33,11 +33,11 @@ import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.store.data.domain.car.Car;
 import io.vertigo.dynamo.store.data.domain.car.CarDataBase;
 import io.vertigo.dynamo.store.data.domain.famille.Famille.CarFields;
@@ -53,7 +53,7 @@ public final class SqlCriteriaTest extends AbstractTestCaseJU5 {
 	@Inject
 	private VTransactionManager transactionManager;
 	@Inject
-	private StoreManager storeManager;
+	private EntityStoreManager entityStoreManager;
 	@Inject
 	private TaskManager taskManager;
 
@@ -78,7 +78,7 @@ public final class SqlCriteriaTest extends AbstractTestCaseJU5 {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			for (final Car car : carDataBase.getAllCars()) {
 				car.setId(null);
-				storeManager.getDataStore().create(car);
+				entityStoreManager.create(car);
 			}
 			transaction.commit();
 		}
@@ -98,7 +98,7 @@ public final class SqlCriteriaTest extends AbstractTestCaseJU5 {
 	public void assertCriteria() {
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
 			final DtDefinition dtDefinitionCar = DtObjectUtil.findDtDefinition(Car.class);
-			final long count = storeManager.getDataStore().find(dtDefinitionCar, Criterions.isEqualTo(CarFields.model, "passat"), DtListState.of(null)).size();
+			final long count = entityStoreManager.find(dtDefinitionCar, Criterions.isEqualTo(CarFields.model, "passat"), DtListState.of(null)).size();
 			Assertions.assertEquals(1, count);
 		}
 	}

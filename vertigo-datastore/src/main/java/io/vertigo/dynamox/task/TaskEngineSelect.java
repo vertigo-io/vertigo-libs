@@ -31,10 +31,10 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.VCollectors;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 
 /**
@@ -63,16 +63,16 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 	 * Constructor.
 	 * @param scriptManager scriptManager
 	 * @param transactionManager transactionManager
-	 * @param storeManager storeManager
+	 * @param entityStoreManager storeManager
 	 * @param sqlDataBaseManager sqlDataBaseManager
 	 */
 	@Inject
 	public TaskEngineSelect(
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
-			final StoreManager storeManager,
+			final EntityStoreManager entityStoreManager,
 			final SqlDataBaseManager sqlDataBaseManager) {
-		super(scriptManager, transactionManager, storeManager, sqlDataBaseManager);
+		super(scriptManager, transactionManager, entityStoreManager, sqlDataBaseManager);
 	}
 
 	/*

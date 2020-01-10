@@ -21,7 +21,7 @@
  */
 package io.vertigo.ui.data.boot.initializer;
 
-import io.vertigo.dynamo.impl.store.datastore.AbstractMasterDataDefinitionProvider;
+import io.vertigo.datastore.impl.entitystore.AbstractMasterDataDefinitionProvider;
 import io.vertigo.ui.data.domain.movies.Movie;
 import io.vertigo.ui.data.domain.reference.Commune;
 import io.vertigo.ui.data.domain.reference.OuiNonChoice;

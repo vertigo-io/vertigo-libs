@@ -48,11 +48,11 @@ import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.InjectorUtil;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.orchestra.dao.definition.OActivityDAO;
 import io.vertigo.orchestra.dao.execution.ExecutionPAO;
 import io.vertigo.orchestra.dao.execution.OActivityExecutionDAO;
@@ -99,7 +99,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 	@Inject
 	private OActivityDAO activityDAO;
 	@Inject
-	private StoreManager storeManager;
+	private EntityStoreManager entityStoreManager;
 	@Inject
 	private AnalyticsManager analyticsManager;
 
@@ -583,7 +583,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 
 	private void lockActivityExecution(final Long aceId) {
 		final UID<OActivityExecution> activityExecutionURI = UID.of(OActivityExecution.class, aceId);
-		storeManager.getDataStore().readOneForUpdate(activityExecutionURI);
+		entityStoreManager.readOneForUpdate(activityExecutionURI);
 	}
 
 	private void doChangeExecutionState(final OActivityExecution activityExecution, final ExecutionState executionState) {

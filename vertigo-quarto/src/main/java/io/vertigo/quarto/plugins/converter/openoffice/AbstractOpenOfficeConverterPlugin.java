@@ -43,8 +43,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.util.TempFile;
-import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.FileManager;
+import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.quarto.impl.services.converter.ConverterPlugin;
 
 /**

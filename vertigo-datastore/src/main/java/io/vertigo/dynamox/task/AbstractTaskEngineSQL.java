@@ -36,7 +36,7 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.statement.SqlStatementBuilder;
-import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.model.TaskEngine;
 
@@ -95,7 +95,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 
 	private final ScriptManager scriptManager;
 	private final VTransactionManager transactionManager;
-	private final StoreManager storeManager;
+	private final EntityStoreManager entityStoreManager;
 	private final SqlDataBaseManager sqlDataBaseManager;
 
 	/**
@@ -105,16 +105,16 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	protected AbstractTaskEngineSQL(
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
-			final StoreManager storeManager,
+			final EntityStoreManager entityStoreManager,
 			final SqlDataBaseManager sqlDataBaseManager) {
 		Assertion.checkNotNull(scriptManager);
 		Assertion.checkNotNull(transactionManager);
-		Assertion.checkNotNull(storeManager);
+		Assertion.checkNotNull(entityStoreManager);
 		Assertion.checkNotNull(sqlDataBaseManager);
 		//-----
 		this.scriptManager = scriptManager;
 		this.transactionManager = transactionManager;
-		this.storeManager = storeManager;
+		this.entityStoreManager = entityStoreManager;
 		this.sqlDataBaseManager = sqlDataBaseManager;
 	}
 
@@ -237,7 +237,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 */
 	protected VTransactionResourceId<SqlConnection> getVTransactionResourceId() {
 		final String dataSpace = getTaskDefinition().getDataSpace();
-		if (StoreManager.MAIN_DATA_SPACE_NAME.equals(dataSpace)) {
+		if (EntityStoreManager.MAIN_DATA_SPACE_NAME.equals(dataSpace)) {
 			return SQL_MAIN_RESOURCE_ID;
 		}
 		return new VTransactionResourceId<>(VTransactionResourceId.Priority.TOP, "Sql-" + dataSpace);
@@ -256,7 +256,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	 */
 	protected SqlConnectionProvider getConnectionProvider() {
 		final String dataSpace = getTaskDefinition().getDataSpace();
-		final String connectionName = storeManager.getDataStoreConfig().getConnectionName(dataSpace);
+		final String connectionName = entityStoreManager.getDataStoreConfig().getConnectionName(dataSpace);
 		return getDataBaseManager().getConnectionProvider(connectionName);
 	}
 

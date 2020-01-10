@@ -31,7 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.node.Home;
-import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.datastore.filestore.util.FileUtil;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.metamodel.WebServiceDefinition;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;

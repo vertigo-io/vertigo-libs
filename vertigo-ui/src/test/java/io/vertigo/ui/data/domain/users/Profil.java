@@ -81,27 +81,6 @@ public final class Profil implements Entity {
 		this.label = label;
 	}
 
-	// Association : Application user non navigable
-	/**
-	 * Association : Security role.
-	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.struts2.domain.users.SecurityRole>
-	 */
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.ui.data.domain.users.SecurityRole> getSecurityRoleList() {
-		//		return this.<io.vertigo.struts2.domain.users.SecurityRole> getList(getSecurityRoleListURI());
-		// On doit avoir une clé primaire renseignée. Si ce n'est pas le cas, on renvoie une liste vide
-		if (io.vertigo.dynamo.domain.util.DtObjectUtil.getId(this) == null) {
-			return new io.vertigo.dynamo.domain.model.DtList<>(io.vertigo.ui.data.domain.users.SecurityRole.class);
-		}
-		final io.vertigo.dynamo.domain.model.DtListURI fkDtListURI = getSecurityRoleDtListURI();
-		io.vertigo.core.lang.Assertion.checkNotNull(fkDtListURI);
-		//---------------------------------------------------------------------
-		//On est toujours dans un mode lazy.
-		if (securityRole == null) {
-			securityRole = io.vertigo.core.node.Home.getApp().getComponentSpace().resolve(io.vertigo.dynamo.store.StoreManager.class).getDataStore().findAll(fkDtListURI);
-		}
-		return securityRole;
-	}
-
 	/**
 	 * Association URI: Security role.
 	 * @return URI de l'association

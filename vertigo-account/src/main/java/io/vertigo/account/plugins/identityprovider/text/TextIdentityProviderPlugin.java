@@ -47,14 +47,14 @@ import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.impl.file.model.FSFile;
 
 /**
  * A simple implementation of the Realm interface that

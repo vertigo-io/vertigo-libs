@@ -8,9 +8,9 @@ import io.vertigo.core.node.Home;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.dynamo.impl.store.util.DAO;
-import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.StoreServices;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.impl.dao.DAO;
+import io.vertigo.datastore.impl.dao.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.execution.OActivityLog;
 
@@ -23,12 +23,12 @@ public final class OActivityLogDAO extends DAO<OActivityLog, java.lang.Long> imp
 
 	/**
 	 * Contructeur.
-	 * @param storeManager Manager de persistance
+	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public OActivityLogDAO(final StoreManager storeManager, final TaskManager taskManager) {
-		super(OActivityLog.class, storeManager, taskManager);
+	public OActivityLogDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
+		super(OActivityLog.class, entityStoreManager, taskManager);
 	}
 
 

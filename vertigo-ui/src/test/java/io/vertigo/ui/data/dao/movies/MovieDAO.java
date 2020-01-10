@@ -26,6 +26,9 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.util.InjectorUtil;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.impl.dao.DAO;
+import io.vertigo.datastore.impl.dao.StoreServices;
 import io.vertigo.dynamo.collections.ListFilter;
 import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
@@ -33,13 +36,10 @@ import io.vertigo.dynamo.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.impl.store.util.DAO;
 import io.vertigo.dynamo.search.SearchManager;
 import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
 import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.dynamo.search.model.SearchQueryBuilder;
-import io.vertigo.dynamo.store.StoreManager;
-import io.vertigo.dynamo.store.StoreServices;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
@@ -58,14 +58,14 @@ public final class MovieDAO extends DAO<Movie, java.lang.Long> implements StoreS
 
 	/**
 	 * Contructeur.
-	 * @param storeManager Manager de persistance
+	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
 	 * @param searchManager Search Manager
 	 * @param transactionManager Transaction Manager
 	 */
 	@Inject
-	public MovieDAO(final StoreManager storeManager, final TaskManager taskManager, final SearchManager searchManager, final VTransactionManager transactionManager) {
-		super(Movie.class, storeManager, taskManager);
+	public MovieDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SearchManager searchManager, final VTransactionManager transactionManager) {
+		super(Movie.class, entityStoreManager, taskManager);
 		this.searchManager = searchManager;
 		this.transactionManager = transactionManager;
 	}
@@ -78,7 +78,7 @@ public final class MovieDAO extends DAO<Movie, java.lang.Long> implements StoreS
 	 * @return KeyConcept à modifier
 	 */
 	public Movie readOneForUpdate(final UID<Movie> uri) {
-		return dataStore.readOneForUpdate(uri);
+		return entityStoreManager.readOneForUpdate(uri);
 	}
 
 	/**

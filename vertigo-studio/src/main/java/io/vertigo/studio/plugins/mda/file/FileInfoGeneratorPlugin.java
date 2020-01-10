@@ -29,7 +29,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.MapBuilder;
-import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
+import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;

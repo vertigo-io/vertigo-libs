@@ -25,9 +25,9 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.local.LocalResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
-import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 
 public final class SqlTestConfigurator {
 	public static NodeConfig config() {
@@ -51,8 +51,8 @@ public final class SqlTestConfigurator {
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
-						.withStore()
-						.addPlugin(SqlDataStorePlugin.class,
+						.withEntityStore()
+						.addPlugin(SqlEntityStorePlugin.class,
 								Param.of("sequencePrefix", "SEQ_"))
 						.build())
 				.build();

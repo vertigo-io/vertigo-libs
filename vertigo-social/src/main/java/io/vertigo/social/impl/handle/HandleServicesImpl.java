@@ -16,6 +16,8 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.entitystore.StoreEvent;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DataAccessor;
@@ -23,8 +25,6 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.store.StoreEvent;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.social.services.handle.Handle;
 import io.vertigo.social.services.handle.HandleServices;
 
@@ -32,7 +32,7 @@ public final class HandleServicesImpl implements HandleServices, Activeable {
 
 	private static final int CHUNK_SIZE = 1000;
 
-	private final StoreManager storeManager;
+	private final EntityStoreManager entityStoreManager;
 	private final VTransactionManager transactionManager;
 
 	private List<DtDefinition> dtDefinitionsWithHandle;
@@ -40,14 +40,14 @@ public final class HandleServicesImpl implements HandleServices, Activeable {
 
 	@Inject
 	public HandleServicesImpl(
-			final StoreManager storeManager,
+			final EntityStoreManager entityStoreManager,
 			final VTransactionManager transactionManager,
 			final HandlePlugin handlePlugin) {
-		Assertion.checkNotNull(storeManager);
+		Assertion.checkNotNull(entityStoreManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(handlePlugin);
 		//---
-		this.storeManager = storeManager;
+		this.entityStoreManager = entityStoreManager;
 		this.transactionManager = transactionManager;
 		this.handlePlugin = handlePlugin;
 
@@ -85,7 +85,7 @@ public final class HandleServicesImpl implements HandleServices, Activeable {
 					final Entity entity;
 					try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 						//we need to make better than this...
-						entity = storeManager.getDataStore().readOne(uid);
+						entity = entityStoreManager.readOne(uid);
 					}
 					// add the handle in the plugin
 					handlePlugin.add(Collections.singletonList(toHandle(uid.getDefinition(), entity)));
@@ -161,7 +161,7 @@ public final class HandleServicesImpl implements HandleServices, Activeable {
 			try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 				final Criteria criteria = lastId != null ? Criterions.isGreaterThan(() -> idFieldName, lastId) : Criterions.alwaysTrue();
 				final DtListState dtListState = DtListState.of(CHUNK_SIZE, 0, idFieldName, false);
-				entities = storeManager.getDataStore().find(dtDefinition, criteria, dtListState);
+				entities = entityStoreManager.find(dtDefinition, criteria, dtListState);
 			}
 			lastResultsSize = entities.size();
 			lastId = (Serializable) idFieldAccessor.getValue(entities.get(entities.size() - 1));

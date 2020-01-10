@@ -23,7 +23,7 @@ import java.io.Serializable;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.node.Home;
-import io.vertigo.dynamo.kvstore.KVStoreManager;
+import io.vertigo.datastore.kvstore.KVStoreManager;
 
 /**
  * @author npiedeloup

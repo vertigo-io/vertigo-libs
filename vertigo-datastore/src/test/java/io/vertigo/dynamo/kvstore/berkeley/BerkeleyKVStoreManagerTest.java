@@ -32,7 +32,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.util.ListBuilder;
-import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.dynamo.kvstore.AbstractKVStoreManagerTest;
 import io.vertigo.dynamo.kvstore.data.Flower;
 

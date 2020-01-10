@@ -23,7 +23,7 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 
 /**
@@ -43,7 +43,7 @@ public final class FacetManagerLucene_6_6Test extends FacetManagerTest {
 						.withMemoryCache()
 						.build())
 				.addModule(new DataStoreFeatures()
-						.withStore()
+						.withEntityStore()
 						.addPlugin(io.vertigo.dynamo.plugins.collections.lucene_6_6.LuceneIndexPlugin.class)
 						.build())
 				.addModule(ModuleConfig.builder("myApp")

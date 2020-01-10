@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import com.lowagie.text.DocumentException;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.quarto.impl.services.export.ExporterPlugin;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportFormat;
@@ -36,17 +36,17 @@ import io.vertigo.quarto.services.export.model.ExportFormat;
  * @author pchretien, npiedeloup
  */
 public final class RTFExporterPlugin implements ExporterPlugin {
-	private final StoreManager storeManager;
+	private final EntityStoreManager entityStoreManager;
 
 	@Inject
-	public RTFExporterPlugin(final StoreManager storeManager) {
-		this.storeManager = storeManager;
+	public RTFExporterPlugin(final EntityStoreManager entityStoreManager) {
+		this.entityStoreManager = entityStoreManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void exportData(final Export export, final OutputStream out) throws DocumentException {
-		new RTFExporter(storeManager).exportData(export, out);
+		new RTFExporter(entityStoreManager).exportData(export, out);
 	}
 
 	/** {@inheritDoc} */

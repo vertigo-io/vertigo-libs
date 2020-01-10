@@ -21,8 +21,8 @@ package io.vertigo.dynamo.task.data.domain;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
@@ -76,13 +76,13 @@ public final class SuperHeroDataBase {
 		return superHero;
 	}
 
-	public void populateSuperHero(final StoreManager storeManager, final int size) {
+	public void populateSuperHero(final EntityStoreManager entityStoreManager, final int size) {
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			//-----
 			for (int i = 0; i < size; i++) {
 				final SuperHero superHero = new SuperHero();
 				superHero.setName("SuperHero ( " + i + ")");
-				storeManager.getDataStore().create(superHero);
+				entityStoreManager.create(superHero);
 			}
 			transaction.commit();
 		}

@@ -37,9 +37,9 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
-import io.vertigo.dynamo.store.StoreManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.data.domain.SuperHeroDataBase;
 import io.vertigo.dynamo.task.x.SuperHeroDao;
@@ -56,7 +56,7 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 	@Inject
 	private TaskManager taskManager;
 	@Inject
-	private StoreManager storeManager;
+	private EntityStoreManager entityStoreManager;
 	@Inject
 	private VTransactionManager transactionManager;
 
@@ -83,8 +83,8 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.build())
 				.addModule(new DataStoreFeatures()
-						.withStore()
-						.withSqlStore()
+						.withEntityStore()
+						.withSqlEntityStore()
 						.withTaskProxyMethod()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
@@ -105,7 +105,7 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 	protected void doSetUp() throws Exception {
 		superHeroDataBase = new SuperHeroDataBase(transactionManager, taskManager);
 		superHeroDataBase.createDataBase();
-		superHeroDataBase.populateSuperHero(storeManager, 33);
+		superHeroDataBase.populateSuperHero(entityStoreManager, 33);
 	}
 
 	@Test

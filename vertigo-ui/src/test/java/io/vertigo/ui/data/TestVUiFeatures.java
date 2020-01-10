@@ -20,7 +20,7 @@ package io.vertigo.ui.data;
 
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.discovery.ModuleDiscoveryFeatures;
-import io.vertigo.dynamo.impl.file.grammar.FileStoreDefinitionProvider;
+import io.vertigo.datastore.impl.filestore.grammar.FileStoreDefinitionProvider;
 import io.vertigo.dynamo.impl.search.grammar.SearchDefinitionProvider;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.ui.data.boot.initializer.TestVertigoUiMasterDataDefinitionProvider;

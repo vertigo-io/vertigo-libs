@@ -29,8 +29,8 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.FileManager;
+import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.FileAttachment;

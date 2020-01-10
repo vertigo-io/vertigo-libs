@@ -25,9 +25,9 @@ import java.io.InputStream;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.TempFile;
-import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.file.util.FileUtil;
+import io.vertigo.datastore.filestore.FileManager;
+import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.filestore.util.FileUtil;
 
 /**
  * Utilitaire pour construire des cas de tests.

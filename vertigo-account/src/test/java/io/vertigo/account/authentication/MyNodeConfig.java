@@ -32,10 +32,10 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.dynamo.DataStoreFeatures;
+import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
-import io.vertigo.dynamo.plugins.store.datastore.sql.SqlDataStorePlugin;
 
 public final class MyNodeConfig {
 	private static final String REDIS_HOST = "redis-pic.part.klee.lan.net";
@@ -98,8 +98,8 @@ public final class MyNodeConfig {
 							Param.of("jdbcDriver", "org.h2.Driver"),
 							Param.of("jdbcUrl", "jdbc:h2:mem:database"));
 			dynamoFeatures
-					.withStore()
-					.addPlugin(SqlDataStorePlugin.class);
+					.withEntityStore()
+					.addPlugin(SqlEntityStorePlugin.class);
 			accountFeatures.withStoreAuthentication(
 					Param.of("userCredentialEntity", "DtUserCredential"),
 					Param.of("userLoginField", "login"),

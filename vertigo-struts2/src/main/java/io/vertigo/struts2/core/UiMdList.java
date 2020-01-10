@@ -48,7 +48,7 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 	 */
 	public UiMdList(final DtListURIForMasterData dtListURIForMasterData) {
 		super(dtListURIForMasterData.getDtDefinition(), Optional.empty());
-		Assertion.checkArgument(storeManager.get().getMasterDataConfig().containsMasterData(dtListURIForMasterData.getDtDefinition()), "UiMdList can't be use with {0}, it's not a MasterDataList.",
+		Assertion.checkArgument(entityStoreManager.get().getMasterDataConfig().containsMasterData(dtListURIForMasterData.getDtDefinition()), "UiMdList can't be use with {0}, it's not a MasterDataList.",
 				dtListURIForMasterData.getDtDefinition().getName());
 		// -------------------------------------------------------------------------
 		this.dtListURIForMasterData = dtListURIForMasterData;
@@ -63,7 +63,7 @@ final class UiMdList<E extends Entity> extends AbstractUiListUnmodifiable<E> {
 	public DtList<E> obtainDtList() {
 		if (lazyDtList == null) {
 			try (final VTransactionWritable transaction = transactionManager.get().createCurrentTransaction()) {
-				lazyDtList = storeManager.get().getDataStore().<E> findAll(dtListURIForMasterData);
+				lazyDtList = entityStoreManager.get().<E> findAll(dtListURIForMasterData);
 			}
 		}
 		return lazyDtList;

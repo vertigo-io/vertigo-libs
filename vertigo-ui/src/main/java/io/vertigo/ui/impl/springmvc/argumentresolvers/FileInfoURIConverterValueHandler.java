@@ -37,7 +37,7 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.file.model.FileInfoURI;
+import io.vertigo.datastore.filestore.model.FileInfoURI;
 import io.vertigo.ui.core.ProtectedValueUtil;
 import io.vertigo.vega.webservice.stereotype.QueryParam;
 

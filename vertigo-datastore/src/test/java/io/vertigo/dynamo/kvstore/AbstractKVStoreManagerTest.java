@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.datastore.kvstore.KVStoreManager;
 import io.vertigo.dynamo.kvstore.data.Flower;
 
 /**

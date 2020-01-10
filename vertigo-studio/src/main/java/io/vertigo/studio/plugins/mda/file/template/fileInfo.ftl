@@ -1,8 +1,8 @@
 package ${packageName};
 
-import io.vertigo.dynamo.file.metamodel.FileInfoDefinition;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.impl.file.model.AbstractFileInfo;
+import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
+import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.impl.filestore.model.AbstractFileInfo;
 
 /**
  * Attention cette classe est générée automatiquement !

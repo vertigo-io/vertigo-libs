@@ -31,12 +31,12 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.dynamo.DataFactoryFeatures;
-import io.vertigo.dynamo.DataStoreFeatures;
 import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.impl.search.grammar.SearchDefinitionProvider;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
-import io.vertigo.dynamo.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.vega.VegaFeatures;
 import io.vertigo.vega.engines.webservice.cmd.ComponentCmdWebServices;
 import io.vertigo.vega.webservice.data.domain.Address;
@@ -95,7 +95,7 @@ public final class MyNodeConfig {
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
-						.withStore()
+						.withEntityStore()
 						.withKVStore()
 						.addPlugin(DelayedMemoryKVStorePlugin.class,
 								Param.of("collections", "tokens"),

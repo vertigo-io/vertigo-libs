@@ -27,8 +27,8 @@ import javax.inject.Inject;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.dynamo.file.FileManager;
-import io.vertigo.dynamo.file.model.VFile;
+import io.vertigo.datastore.filestore.FileManager;
+import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.quarto.services.publisher.PublisherManager;
 import io.vertigo.quarto.services.publisher.model.PublisherData;
 

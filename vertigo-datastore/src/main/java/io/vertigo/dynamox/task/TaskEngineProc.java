@@ -28,7 +28,7 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
-import io.vertigo.dynamo.store.StoreManager;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 /**
  * Permet l'appel de requête de manipulation de données (insert, update, delete)
@@ -58,16 +58,16 @@ public class TaskEngineProc extends AbstractTaskEngineSQL {
 	 * Constructeur.
 	 * @param scriptManager Manager de traitment de scripts
 	 * @param transactionManager Transaction manager
-	 * @param storeManager Store manager
+	 * @param entityStoreManager Store manager
 	 * @param sqlDataBaseManager Sql dataBase manager
 	 */
 	@Inject
 	public TaskEngineProc(
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
-			final StoreManager storeManager,
+			final EntityStoreManager entityStoreManager,
 			final SqlDataBaseManager sqlDataBaseManager) {
-		super(scriptManager, transactionManager, storeManager, sqlDataBaseManager);
+		super(scriptManager, transactionManager, entityStoreManager, sqlDataBaseManager);
 	}
 
 	/** {@inheritDoc} */

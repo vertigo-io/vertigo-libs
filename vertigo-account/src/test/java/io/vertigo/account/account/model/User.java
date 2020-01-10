@@ -19,11 +19,11 @@
 package io.vertigo.account.account.model;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.impl.store.datastore.StoreVAccessor;
 
 /**
  * User.

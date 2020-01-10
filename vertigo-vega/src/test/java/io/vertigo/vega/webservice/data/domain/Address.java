@@ -19,10 +19,10 @@
 package io.vertigo.vega.webservice.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.impl.store.datastore.StoreListVAccessor;
 
 public final class Address implements Entity {
 	private static final long serialVersionUID = 8922834274442256496L;

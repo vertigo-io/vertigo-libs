@@ -51,7 +51,7 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamManager;
 import io.vertigo.core.util.InjectorUtil;
-import io.vertigo.dynamo.kvstore.KVStoreManager;
+import io.vertigo.datastore.kvstore.KVStoreManager;
 import io.vertigo.struts2.exception.ExpiredContextException;
 
 /**

@@ -26,8 +26,8 @@ import org.apache.struts2.dispatcher.multipart.UploadedFile;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
-import io.vertigo.dynamo.file.model.VFile;
-import io.vertigo.dynamo.impl.file.model.FSFile;
+import io.vertigo.datastore.filestore.model.VFile;
+import io.vertigo.datastore.impl.filestore.model.FSFile;
 
 /**
  * Liste des couples (clé, object) enregistrés.
