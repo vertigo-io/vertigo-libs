@@ -68,7 +68,8 @@ public final class MyNodeConfig {
 				.withMemoryCache();
 
 		final DatabaseFeatures databaseFeatures = new DatabaseFeatures();
-		final DataStoreFeatures dynamoFeatures = new DataStoreFeatures();
+		final DataStoreFeatures datastoreFeatures = new DataStoreFeatures()
+				.withFileStore();
 		final AccountFeatures accountFeatures = new AccountFeatures()
 				.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
 				.withAccount()
@@ -110,7 +111,7 @@ public final class MyNodeConfig {
 							Param.of("dataBaseClass", H2DataBase.class.getName()),
 							Param.of("jdbcDriver", "org.h2.Driver"),
 							Param.of("jdbcUrl", "jdbc:h2:mem:database"));
-			dynamoFeatures
+			datastoreFeatures
 					.withEntityStore()
 					.withSqlEntityStore();
 			accountFeatures.withStoreIdentityProvider(
@@ -122,7 +123,7 @@ public final class MyNodeConfig {
 				.addModule(commonsFeatures.build())
 				.addModule(databaseFeatures.build())
 				.addModule(new DataModelFeatures().build())
-				.addModule(dynamoFeatures.build())
+				.addModule(datastoreFeatures.build())
 				.addModule(accountFeatures.build())
 				.addModule(ModuleConfig.builder("app")
 						.addDefinitionProvider(
