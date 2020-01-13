@@ -23,6 +23,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import io.vertigo.datafactory.search.metamodel.SearchChunk;
+import io.vertigo.datafactory.search.metamodel.SearchLoader;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
@@ -30,8 +32,6 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.search.metamodel.SearchChunk;
-import io.vertigo.dynamo.search.metamodel.SearchLoader;
 
 /**
  * Abstract SearchLoader with default chunk implementation.

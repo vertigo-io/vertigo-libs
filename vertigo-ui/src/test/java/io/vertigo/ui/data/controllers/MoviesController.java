@@ -26,14 +26,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import io.vertigo.datafactory.collections.model.FacetedQueryResult;
+import io.vertigo.datafactory.collections.model.SelectedFacetValues;
+import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
-import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.VCollectors;
-import io.vertigo.dynamo.search.model.SearchQuery;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.data.domain.DtDefinitions.MovieDisplayFields;

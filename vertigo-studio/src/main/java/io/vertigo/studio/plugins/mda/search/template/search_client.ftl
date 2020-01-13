@@ -9,17 +9,17 @@ import io.vertigo.core.lang.Generated;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.core.util.InjectorUtil;
-import io.vertigo.dynamo.collections.ListFilter;
-import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
-import io.vertigo.dynamo.collections.metamodel.ListFilterBuilder;
-import io.vertigo.dynamo.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.collections.model.SelectedFacetValues;
+import io.vertigo.datafactory.collections.ListFilter;
+import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.datafactory.collections.metamodel.ListFilterBuilder;
+import io.vertigo.datafactory.collections.model.FacetedQueryResult;
+import io.vertigo.datafactory.collections.model.SelectedFacetValues;
+import io.vertigo.datafactory.search.SearchManager;
+import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
+import io.vertigo.datafactory.search.model.SearchQuery;
+import io.vertigo.datafactory.search.model.SearchQueryBuilder;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.search.SearchManager;
-import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
-import io.vertigo.dynamo.search.model.SearchQuery;
-import io.vertigo.dynamo.search.model.SearchQueryBuilder;
 <#if indexDtDefinition.classCanonicalName != dtDefinition.classCanonicalName >
 import ${indexDtDefinition.classCanonicalName};
 </#if>

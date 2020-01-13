@@ -29,10 +29,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-import io.vertigo.dynamo.collections.metamodel.FacetDefinition;
-import io.vertigo.dynamo.collections.model.Facet;
-import io.vertigo.dynamo.collections.model.FacetValue;
-import io.vertigo.dynamo.collections.model.FacetedQueryResult;
+import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
+import io.vertigo.datafactory.collections.model.Facet;
+import io.vertigo.datafactory.collections.model.FacetValue;
+import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;

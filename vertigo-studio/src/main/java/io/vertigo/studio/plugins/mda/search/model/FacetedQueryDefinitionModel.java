@@ -20,7 +20,7 @@ package io.vertigo.studio.plugins.mda.search.model;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionUtil;
-import io.vertigo.dynamo.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 
 /**

@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.ComponentInitializer;
-import io.vertigo.dynamo.search.SearchManager;
+import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.ui.data.domain.movies.Movie;
 
 /**

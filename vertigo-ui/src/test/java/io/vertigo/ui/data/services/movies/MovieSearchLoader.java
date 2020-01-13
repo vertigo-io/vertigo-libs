@@ -24,12 +24,12 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.datafactory.search.SearchManager;
+import io.vertigo.datafactory.search.metamodel.SearchChunk;
+import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
+import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.search.SearchManager;
-import io.vertigo.dynamo.search.metamodel.SearchChunk;
-import io.vertigo.dynamo.search.metamodel.SearchIndexDefinition;
-import io.vertigo.dynamo.search.model.SearchIndex;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamox.search.AbstractSqlSearchLoader;
 import io.vertigo.ui.data.domain.movies.Movie;

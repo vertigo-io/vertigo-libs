@@ -36,7 +36,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.collections.model.SelectedFacetValues;
+import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.ui.core.UiSelectedFacetValues;

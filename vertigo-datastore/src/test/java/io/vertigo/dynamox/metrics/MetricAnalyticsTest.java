@@ -39,10 +39,11 @@ import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.task.data.domain.SuperHeroDataBase;
+import io.vertigo.datastore.task.x.SuperHeroDao;
+import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.dynamo.task.data.domain.SuperHeroDataBase;
-import io.vertigo.dynamo.task.x.SuperHeroDao;
 import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
 import io.vertigo.dynamox.metric.task.TasksMetricsProvider;
 
@@ -82,6 +83,7 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 								Param.of("jdbcDriver", "org.h2.Driver"),
 								Param.of("jdbcUrl", "jdbc:h2:mem:database"))
 						.build())
+				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
 						.withEntityStore()
 						.withSqlEntityStore()
@@ -89,8 +91,8 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/dynamo/task/data/executionWTask.kpr")
-								.addDefinitionResource("classes", "io.vertigo.dynamo.task.data.DtDefinitions")
+								.addDefinitionResource("kpr", "io/vertigo/datastore/task/data/executionWTask.kpr")
+								.addDefinitionResource("classes", "io.vertigo.datastore.task.data.DtDefinitions")
 								.build())
 						.addProxy(SuperHeroDao.class)
 						.build())

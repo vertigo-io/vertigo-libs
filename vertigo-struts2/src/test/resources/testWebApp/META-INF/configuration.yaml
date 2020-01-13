@@ -39,7 +39,7 @@ modules:
           values: "true=Oui;false=Non"
           dtDefinitionName: DtOuiNonChoice
       - io.vertigo.struts2.services.util.CommuneStorePlugin: {}
-  io.vertigo.dynamo.DataFactoryFeatures:
+  io.vertigo.datafactory.DataFactoryFeatures:
     featuresConfig:
       - collections.luceneIndex:
   io.vertigo.account.AccountFeatures:

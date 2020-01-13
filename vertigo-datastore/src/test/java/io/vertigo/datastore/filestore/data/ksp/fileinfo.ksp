@@ -1,0 +1,14 @@
+package io.vertigo.dynamo.file.data.domain
+
+create FileInfo FiFileInfoStd {
+	storeName : "main"
+}
+
+create FileInfo FiFileInfoTemp {
+	storeName : "temp"
+}
+
+create FileInfo FiFileInfoFs {
+	storeName : "fsStore"
+}
+

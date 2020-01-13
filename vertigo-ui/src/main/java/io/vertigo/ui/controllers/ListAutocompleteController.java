@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.dynamo.collections.CollectionsManager;
+import io.vertigo.datafactory.collections.CollectionsManager;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;

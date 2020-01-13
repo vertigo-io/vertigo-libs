@@ -1,5 +1,0 @@
-package io.vertigo.dynamo.file.data.domain
-
-create FileInfo FiFileInfoStd {
-	storeName : "main"
-}
