@@ -81,7 +81,6 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 						.withSqlEntityStore(
 								Param.of("dataSpace", "otherStore"),
 								Param.of("connectionName", "otherBase"))
-						.withDbFileStore(Param.of("storeDtName", "DtVxFileInfo"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
