@@ -8,6 +8,8 @@ public interface CriteriaEncoder {
 
 	String encodeOperator(CriteriaCtx ctx, CriterionOperator criterionOperator, DtFieldName dtFieldName, Serializable[] values);
 
+	String encodeLogicalOperator(CriteriaLogicalOperator logicalOperator);
+
 	String getExpressionStartDelimiter();
 
 	String getExpressionEndDelimiter();

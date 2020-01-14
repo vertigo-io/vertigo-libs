@@ -87,6 +87,11 @@ public abstract class Criteria<E extends Entity> implements Serializable {
 			}
 
 			@Override
+			public String encodeLogicalOperator(final CriteriaLogicalOperator logicalOperator) {
+				return logicalOperator.name();
+			}
+
+			@Override
 			public String getExpressionStartDelimiter() {
 				return "(";
 			}

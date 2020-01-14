@@ -18,7 +18,6 @@
  */
 package io.vertigo.dynamo.criteria;
 
-import io.vertigo.dynamo.criteria.CriteriaExpression.CriteriaOperator;
 import io.vertigo.dynamo.domain.model.Entity;
 
 final class CriteriaUtil {
@@ -38,19 +37,19 @@ final class CriteriaUtil {
 			final CriteriaExpression<E> criteria = CriteriaExpression.class.cast(leftOperand);
 			switch (criteria.getOperator()) {
 				case AND:
-					return new CriteriaExpression<>(CriteriaOperator.AND, criteria.getOperands(), rightOperand);
+					return new CriteriaExpression<>(CriteriaLogicalOperator.AND, criteria.getOperands(), rightOperand);
 				case OR:
 					//the most complex case !  a+b*c => a + (b*c)
 					final Criteria<E>[] leftOperands = new Criteria[criteria.getOperands().length - 1];
 					for (int i = 0; i < (criteria.getOperands().length - 1); i++) {
 						leftOperands[i] = criteria.getOperands()[i];
 					}
-					return new CriteriaExpression<>(CriteriaOperator.OR, leftOperands, and(criteria.getOperands()[criteria.getOperands().length - 1], rightOperand));
+					return new CriteriaExpression<>(CriteriaLogicalOperator.OR, leftOperands, and(criteria.getOperands()[criteria.getOperands().length - 1], rightOperand));
 				default:
 					throw new IllegalStateException();
 			}
 		}
-		return new CriteriaExpression<>(CriteriaOperator.AND, leftOperand, rightOperand);
+		return new CriteriaExpression<>(CriteriaLogicalOperator.AND, leftOperand, rightOperand);
 	}
 
 	static <E extends Entity> Criteria<E> or(final Criteria<E> leftOperand, final Criteria<E> rightOperand) {
@@ -61,10 +60,10 @@ final class CriteriaUtil {
 		//		then +(exp.operands, c)
 		if (leftOperand instanceof CriteriaExpression && rightOperand instanceof Criterion) {
 			final CriteriaExpression<E> criteria = CriteriaExpression.class.cast(leftOperand);
-			if (criteria.getOperator() == CriteriaOperator.OR) {
-				return new CriteriaExpression<>(CriteriaOperator.OR, criteria.getOperands(), rightOperand);
+			if (criteria.getOperator() == CriteriaLogicalOperator.OR) {
+				return new CriteriaExpression<>(CriteriaLogicalOperator.OR, criteria.getOperands(), rightOperand);
 			}
 		}
-		return new CriteriaExpression<>(CriteriaOperator.OR, leftOperand, rightOperand);
+		return new CriteriaExpression<>(CriteriaLogicalOperator.OR, leftOperand, rightOperand);
 	}
 }

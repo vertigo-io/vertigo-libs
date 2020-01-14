@@ -10,6 +10,7 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.dynamo.criteria.CriteriaCtx;
 import io.vertigo.dynamo.criteria.CriteriaEncoder;
+import io.vertigo.dynamo.criteria.CriteriaLogicalOperator;
 import io.vertigo.dynamo.criteria.CriterionLimit;
 import io.vertigo.dynamo.criteria.CriterionOperator;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
@@ -23,6 +24,11 @@ public class SqlCriteriaEncoder implements CriteriaEncoder {
 	public SqlCriteriaEncoder(final SqlDialect sqlDialect) {
 		this.sqlDialect = sqlDialect;
 
+	}
+
+	@Override
+	public String encodeLogicalOperator(final CriteriaLogicalOperator logicalOperator) {
+		return logicalOperator.name();
 	}
 
 	@Override

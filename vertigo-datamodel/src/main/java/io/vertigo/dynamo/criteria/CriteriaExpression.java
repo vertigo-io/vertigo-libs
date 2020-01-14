@@ -29,14 +29,10 @@ import io.vertigo.dynamo.domain.model.Entity;
 final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 	private static final long serialVersionUID = 8301054336845536973L;
 
-	enum CriteriaOperator {
-		OR, AND
-	}
-
-	private final CriteriaOperator operator;
+	private final CriteriaLogicalOperator operator;
 	private final Criteria<E>[] operands;
 
-	CriteriaExpression(final CriteriaOperator operator, final Criteria<E>[] leftOperands, final Criteria<E> rightOperand) {
+	CriteriaExpression(final CriteriaLogicalOperator operator, final Criteria<E>[] leftOperands, final Criteria<E> rightOperand) {
 		Assertion.checkNotNull(operator);
 		Assertion.checkNotNull(leftOperands);
 		//---
@@ -49,7 +45,7 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 		this.operands[size - 1] = rightOperand;
 	}
 
-	CriteriaExpression(final CriteriaOperator operator, final Criteria<E> leftOperand, final Criteria<E> rightOperand) {
+	CriteriaExpression(final CriteriaLogicalOperator operator, final Criteria<E> leftOperand, final Criteria<E> rightOperand) {
 		Assertion.checkNotNull(operator);
 		Assertion.checkNotNull(leftOperand);
 		//---
@@ -57,7 +53,7 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 		this.operands = new Criteria[] { leftOperand, rightOperand };
 	}
 
-	CriteriaOperator getOperator() {
+	CriteriaLogicalOperator getOperator() {
 		return operator;
 	}
 
@@ -68,9 +64,9 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 	@Override
 	public Predicate<E> toPredicate() {
 		final BinaryOperator<Predicate<E>> accumulator;
-		if (operator == CriteriaOperator.OR) {
+		if (operator == CriteriaLogicalOperator.OR) {
 			accumulator = Predicate::or;
-		} else if (operator == CriteriaOperator.AND) {
+		} else if (operator == CriteriaLogicalOperator.AND) {
 			accumulator = Predicate::and;
 		} else {
 			throw new IllegalAccessError();
@@ -86,6 +82,6 @@ final class CriteriaExpression<E extends Entity> extends Criteria<E> {
 	String toString(final CriteriaCtx ctx, final CriteriaEncoder criteriaEncoder) {
 		return Arrays.stream(operands)
 				.map(operand -> operand.toString(ctx, criteriaEncoder))
-				.collect(Collectors.joining(" " + operator.name() + " ", criteriaEncoder.getExpressionStartDelimiter(), criteriaEncoder.getExpressionEndDelimiter()));
+				.collect(Collectors.joining(" " + criteriaEncoder.encodeLogicalOperator(operator) + " ", criteriaEncoder.getExpressionStartDelimiter(), criteriaEncoder.getExpressionEndDelimiter()));
 	}
 }
