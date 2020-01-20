@@ -20,6 +20,8 @@ package io.vertigo.dynamo.criteria;
 
 import java.io.Serializable;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
@@ -83,7 +85,42 @@ public abstract class Criteria<E extends Entity> implements Serializable {
 
 			@Override
 			public String encodeOperator(final CriteriaCtx ctx, final CriterionOperator criterionOperator, final DtFieldName dtFieldName, final Serializable[] values) {
-				return null;
+				final String fieldName = dtFieldName.name();
+				//---
+				switch (criterionOperator) {
+					case IS_NOT_NULL:
+						return fieldName + " is not null";
+					case IS_NULL:
+						return fieldName + " is null";
+					case EQ:
+						if (values[0] == null) {
+							return fieldName + " is null ";
+						}
+						return fieldName + " = #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+					case NEQ:
+						if (values[0] == null) {
+							return fieldName + " is not null ";
+						}
+						return "(" + fieldName + " is null or " + fieldName + " != #" + ctx.attributeName(dtFieldName, values[0]) + "# )";
+					case GT:
+						return fieldName + " > #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+					case GTE:
+						return fieldName + " >= #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+					case LT:
+						return fieldName + " < #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+					case LTE:
+						return fieldName + " <= #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+					case BETWEEN:
+						return fieldName + " between(" + CriterionLimit.class.cast(values[0]) + "," + CriterionLimit.class.cast(values[1]) + ")";
+					case STARTS_WITH:
+						return fieldName + " startWith  #" + ctx.attributeName(dtFieldName, values[0]) + "#";
+					case IN:
+						return Stream.of(values)
+								.map(Serializable::toString)
+								.collect(Collectors.joining(", ", fieldName + " in (", ")"));
+					default:
+						throw new IllegalAccessError();
+				}
 			}
 
 			@Override
