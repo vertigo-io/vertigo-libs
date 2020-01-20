@@ -22,7 +22,7 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 
@@ -66,14 +66,14 @@ public final class TemplateTaskAttribute {
 	/**
 	 * @return Domain.
 	 */
-	Domain getDomain() {
+	SmartTypeDefinition getSmartTypeDefinition() {
 		return taskAttribute.getDomain();
 	}
 
-	private static String create(final Domain domain, final Cardinality cardinality) {
+	private static String create(final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {
 		final String dumFunction;
 		if (cardinality.hasMany()) {
-			if (domain.getScope().isDataObject()) {
+			if (smartTypeDefinition.getScope().isDataObject()) {
 				dumFunction = "dumDtList";
 			} else {
 				dumFunction = "dumList";
@@ -82,7 +82,7 @@ public final class TemplateTaskAttribute {
 			dumFunction = "dum";
 		}
 		//we don't have generated classes right now... so we need to only we the domain info and can't use domain.getJavaClass() for this case
-		final String javaClassName = domain.getScope().isDataObject() ? domain.getDtDefinition().getClassCanonicalName() : domain.getJavaClass().getCanonicalName();
+		final String javaClassName = smartTypeDefinition.getValueObjectClassName();
 		//---
 		final String rawExpression = "dum()." + dumFunction + "(" + javaClassName + ".class)";
 		final String expression = cardinality.isOptionalOrNullable() ? Optional.class.getCanonicalName() + ".ofNullable(" + rawExpression + ")" : rawExpression;

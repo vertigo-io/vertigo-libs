@@ -26,8 +26,8 @@ import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
@@ -80,9 +80,9 @@ final class TaskPopulator {
 				break;
 			case DATA_OBJECT:
 				if (attribute.getCardinality().hasMany()) {
-					value = new DtList(attribute.getDomain().getDtDefinition());
+					value = new DtList(attribute.getDomain().getJavaClass());
 				} else {
-					value = DtObjectUtil.createDtObject(attribute.getDomain().getDtDefinition());
+					value = ClassUtil.newInstance(attribute.getDomain().getJavaClass());
 				}
 				break;
 			case VALUE_OBJECT:
@@ -103,7 +103,8 @@ final class TaskPopulator {
 
 	private Object getDefaultPrimitiveValue(final TaskAttribute attribute) {
 		Object item;
-		switch (attribute.getDomain().getDataType()) {
+		//we are primitives only
+		switch (DataType.of(attribute.getDomain().getJavaClass()).get()) {
 			case Boolean:
 				item = Boolean.TRUE;
 				break;

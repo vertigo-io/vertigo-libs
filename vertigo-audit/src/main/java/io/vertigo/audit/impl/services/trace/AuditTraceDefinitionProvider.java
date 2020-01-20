@@ -26,8 +26,8 @@ import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 /**
  * Provides all the definitions used in the 'Audit' module.
@@ -37,34 +37,34 @@ public final class AuditTraceDefinitionProvider implements SimpleDefinitionProvi
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final Domain domainAuditId = Domain.builder("DoXAuditId", DataType.Long).build();
-		final Domain domainAuditCategory = Domain.builder("DoXAuditCategory", DataType.String).build();
-		final Domain domainAuditUser = Domain.builder("DoXAuditUser", DataType.String).build();
-		final Domain domainAuditInstant = Domain.builder("DoXAuditInstant", DataType.Instant).build();
-		final Domain domainAuditItem = Domain.builder("DoXAuditItem", DataType.Long).build();
-		final Domain domainAuditMessage = Domain.builder("DoXAuditMessage", DataType.String).build();
-		final Domain domainAuditContext = Domain.builder("DoXAuditContext", DataType.String).build();
+		final SmartTypeDefinition smartTypeAuditId = SmartTypeDefinition.builder("STyXAuditId", DataType.Long).build();
+		final SmartTypeDefinition smartTypeAuditCategory = SmartTypeDefinition.builder("STyXAuditCategory", DataType.String).build();
+		final SmartTypeDefinition smartTypeAuditUser = SmartTypeDefinition.builder("STyXAuditUser", DataType.String).build();
+		final SmartTypeDefinition smartTypeAuditInstant = SmartTypeDefinition.builder("STyXAuditInstant", DataType.Instant).build();
+		final SmartTypeDefinition smartTypeAuditItem = SmartTypeDefinition.builder("STyXAuditItem", DataType.Long).build();
+		final SmartTypeDefinition smartTypeAuditMessage = SmartTypeDefinition.builder("STyXAuditMessage", DataType.String).build();
+		final SmartTypeDefinition smartTypeAuditContext = SmartTypeDefinition.builder("STyXAuditContext", DataType.String).build();
 
 		final DtDefinition auditTraceDtDefinition = DtDefinition.builder("DtAuditTrace")
-				.addIdField("id", "id", domainAuditId)
+				.addIdField("id", "id", smartTypeAuditId)
 				.withSortField("category")
 				.withDisplayField("category")
-				.addDataField("category", "category", domainAuditCategory, Cardinality.ONE, true)
-				.addDataField("user", "user", domainAuditUser, Cardinality.ONE, true)
-				.addDataField("dateBusiness", "dateBusiness", domainAuditInstant, Cardinality.OPTIONAL_OR_NULLABLE, true)
-				.addDataField("dateExecution", "dateExecution", domainAuditInstant, Cardinality.ONE, true)
-				.addDataField("item", "item", domainAuditItem, Cardinality.ONE, true)
-				.addDataField("message", "message", domainAuditMessage, Cardinality.ONE, true)
-				.addDataField("context", "context", domainAuditContext, Cardinality.OPTIONAL_OR_NULLABLE, true)
+				.addDataField("category", "category", smartTypeAuditCategory, Cardinality.ONE, true)
+				.addDataField("user", "user", smartTypeAuditUser, Cardinality.ONE, true)
+				.addDataField("dateBusiness", "dateBusiness", smartTypeAuditInstant, Cardinality.OPTIONAL_OR_NULLABLE, true)
+				.addDataField("dateExecution", "dateExecution", smartTypeAuditInstant, Cardinality.ONE, true)
+				.addDataField("item", "item", smartTypeAuditItem, Cardinality.ONE, true)
+				.addDataField("message", "message", smartTypeAuditMessage, Cardinality.ONE, true)
+				.addDataField("context", "context", smartTypeAuditContext, Cardinality.OPTIONAL_OR_NULLABLE, true)
 				.build();
 
 		return new ListBuilder<Definition>()
-				.add(domainAuditId)
-				.add(domainAuditCategory)
-				.add(domainAuditUser)
-				.add(domainAuditInstant)
-				.add(domainAuditItem)
-				.add(domainAuditContext)
+				.add(smartTypeAuditId)
+				.add(smartTypeAuditCategory)
+				.add(smartTypeAuditUser)
+				.add(smartTypeAuditInstant)
+				.add(smartTypeAuditItem)
+				.add(smartTypeAuditContext)
 				.add(auditTraceDtDefinition)
 				.build();
 	}

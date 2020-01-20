@@ -51,7 +51,7 @@ public final class SqlDtDefinitionModel {
 
 		final Optional<DtField> pkField = dtDefinition.getIdField();
 		if (pkField.isPresent()) {
-			final DataType pkDataType = pkField.get().getDomain().getDataType();
+			final DataType pkDataType = DataType.of(pkField.get().getDomain().getJavaClass()).get();
 			hasSequence = pkDataType.isNumber();
 		} else {
 			hasSequence = false;

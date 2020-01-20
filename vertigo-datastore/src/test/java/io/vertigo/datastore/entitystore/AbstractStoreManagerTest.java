@@ -44,12 +44,12 @@ import io.vertigo.datastore.entitystore.sql.SqlUtil;
 import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
@@ -222,7 +222,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkCountCars")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select count(*) from CAR")
-				.withOutAttribute("count", Domain.builder("DoCount", DataType.Long).build(), Cardinality.ONE)
+				.withOutAttribute("count", SmartTypeDefinition.builder("STyCount", DataType.Long).build(), Cardinality.ONE)
 				.build();
 
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {
@@ -239,13 +239,13 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doCar = definitionSpace.resolve("DoDtCar", Domain.class);
+		final SmartTypeDefinition smartTypeCar = definitionSpace.resolve("STyDtCar", SmartTypeDefinition.class);
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkInsertCar")
 				.withEngine(TaskEngineProc.class)
 				.withRequest("insert into CAR (ID, FAM_ID,MANUFACTURER, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MTY_CD) values "
 						+ "(NEXT VALUE FOR SEQ_CAR, #dtoCar.famId#, #dtoCar.manufacturer#, #dtoCar.model#, #dtoCar.description#, #dtoCar.year#, #dtoCar.kilo#, #dtoCar.price#, #dtoCar.mtyCd#)")
-				.addInAttribute("dtoCar", doCar, Cardinality.ONE)
+				.addInAttribute("dtoCar", smartTypeCar, Cardinality.ONE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
@@ -258,12 +258,12 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 
 	protected final DtList<Car> nativeLoadCarList() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doCarList = definitionSpace.resolve("DoDtCar", Domain.class);
+		final SmartTypeDefinition smartTypeCar = definitionSpace.resolve("STyDtCar", SmartTypeDefinition.class);
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkLoadAllCars")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from CAR")
-				.withOutAttribute("dtc", doCarList, Cardinality.MANY)
+				.withOutAttribute("dtc", smartTypeCar, Cardinality.MANY)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)

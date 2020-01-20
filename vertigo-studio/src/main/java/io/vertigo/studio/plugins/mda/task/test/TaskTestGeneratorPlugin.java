@@ -34,8 +34,9 @@ import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
@@ -272,22 +273,22 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 	private static DtDefinition getDtDefinition(final TaskDefinitionModel templateTaskDefinition) {
 		if (templateTaskDefinition.isOut()) {
 			//si out on regarde si en sortie on a un DTO ou une DTC typé.
-			final Domain outDomain = templateTaskDefinition.getOutAttribute().getDomain();
-			if (outDomain.getScope().isDataObject()) {
-				return outDomain.getDtDefinition();
+			final SmartTypeDefinition outSmartType = templateTaskDefinition.getOutAttribute().getSmartTypeDefinition();
+			if (outSmartType.getScope().isDataObject()) {
+				return DtObjectUtil.findDtDefinition(outSmartType.getValueObjectClassName());
 			}
 			return null;
 		}
 		//there is no OUT param
 		//We are searching igf there is an no-ambiguous IN param defined as a DataObject(DTO or DTC)
-		final List<Domain> candidates = templateTaskDefinition.getInAttributes()
+		final List<SmartTypeDefinition> candidates = templateTaskDefinition.getInAttributes()
 				.stream()
-				.map(TaskAttributeModel::getDomain)
+				.map(TaskAttributeModel::getSmartTypeDefinition)
 				.filter(domain -> domain.getScope().isDataObject())
 				.collect(Collectors.toList());
 		//There MUST be only ONE candidate
 		if (candidates.size() == 1) {
-			return candidates.get(0).getDtDefinition();
+			return DtObjectUtil.findDtDefinition(candidates.get(0).getValueObjectClassName());
 		}
 		//Ambiguosity => PAO
 		return null;

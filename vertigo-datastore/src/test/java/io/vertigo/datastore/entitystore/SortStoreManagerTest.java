@@ -16,12 +16,14 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.entitystore.data.DtDefinitions;
+import io.vertigo.datastore.entitystore.data.TestSmartTypes;
 import io.vertigo.datastore.entitystore.data.domain.SmartItem;
 import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.util.VCollectors;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 public class SortStoreManagerTest extends AbstractTestCaseJU5 {
 
@@ -47,9 +49,9 @@ public class SortStoreManagerTest extends AbstractTestCaseJU5 {
 						.withEntityStore()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datastore/entitystore/data/execution.kpr")
-								.addDefinitionResource("classes", "io.vertigo.datastore.entitystore.data.DtDefinitions")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", DtDefinitions.class.getName())
 								.build())
 						.build())
 				.build();

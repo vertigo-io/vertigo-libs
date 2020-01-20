@@ -20,59 +20,60 @@ package io.vertigo.studio.plugins.mda.domain.ts.model;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 /**
  * Model used to define a Domain.
  *
  * @author npiedeloup
  */
-public final class TSDomainModel {
-	private final Domain domain;
+public final class TSSmartTypeModel {
+	private final SmartTypeDefinition smartTypeDefinition;
 
 	/***
 	 * Constructor.
 	 * @param domain Domain
 	 */
-	TSDomainModel(final Domain domain) {
-		Assertion.checkNotNull(domain);
+	TSSmartTypeModel(final SmartTypeDefinition smartTypeDefinition) {
+		Assertion.checkNotNull(smartTypeDefinition);
 		//-----
-		this.domain = domain;
+		this.smartTypeDefinition = smartTypeDefinition;
 	}
 
 	/**
 	 * @return Type javascript du champ with cardinality
 	 */
 	public String getTypescriptType() {
-		return buildTypescriptType(domain, true);
+		return buildTypescriptType(smartTypeDefinition, true);
 	}
 
 	/**
 	 * @return Name of the domain
 	 */
 	public String getDomainName() {
-		return domain.getName();
+		return smartTypeDefinition.getName();
 	}
 
 	/**
 	 * @return Local name of the domain
 	 */
-	public String getDomainDefinitionName() {
-		return domain.getDtDefinition().getLocalName();
+	public String getSmartTypeDefinitionName() {
+		return DtObjectUtil.findDtDefinition(smartTypeDefinition.getValueObjectClassName()).getLocalName();
 	}
 
 	/**
 	 * @return Simple TS type
 	 */
 	public String getDomainTypeName() {
-		return buildTypescriptType(domain, false);
+		return buildTypescriptType(smartTypeDefinition, false);
 	}
 
 	/**
 	 * @return True si le type est une primitive.
 	 */
 	public boolean isPrimitive() {
-		return domain.getScope().isPrimitive();
+		return smartTypeDefinition.getScope().isPrimitive();
 	}
 
 	/**
@@ -80,9 +81,9 @@ public final class TSDomainModel {
 	 * @param  domain DtDomain
 	 * @return String
 	 */
-	private static String buildTypescriptType(final Domain domain, final boolean multiple) {
-		if (domain.getScope().isPrimitive()) {
-			final DataType dataType = domain.getDataType();
+	private static String buildTypescriptType(final SmartTypeDefinition smartTypeDefinition, final boolean multiple) {
+		if (smartTypeDefinition.getScope().isPrimitive()) {
+			final DataType dataType = smartTypeDefinition.getTargetDataType();
 			if (dataType.isNumber()) {
 				return "number";
 			} else if (dataType == DataType.Boolean) {
@@ -90,6 +91,6 @@ public final class TSDomainModel {
 			}
 			return "string";
 		}
-		return domain.getJavaClass().getSimpleName() + ((multiple) ? "[]" : "");
+		return smartTypeDefinition.getJavaClass().getSimpleName() + ((multiple) ? "[]" : "");
 	}
 }

@@ -58,6 +58,7 @@ import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 
 /**
  * Source of identity.
@@ -65,6 +66,7 @@ import io.vertigo.dynamo.domain.model.UID;
  */
 public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin implements AccountStorePlugin {
 
+	private final ModelManager modelManager;
 	private final VTransactionManager transactionManager;
 	private final EntityStoreManager entityStoreManager;
 	private final FileStoreManager fileStoreManager;
@@ -105,12 +107,14 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			@ParamValue("photoFileInfo") final Optional<String> photoFileInfo,
 			@ParamValue("userToAccountMapping") final String userToAccountMappingStr,
 			@ParamValue("groupToGroupAccountMapping") final String groupToGroupAccountMappingStr,
+			final ModelManager modelManager,
 			final EntityStoreManager entityStoreManager,
 			final FileStoreManager fileStoreManager,
 			final VTransactionManager transactionManager) {
 		super(userIdentityEntity, userToAccountMappingStr);
 		Assertion.checkArgNotEmpty(userIdentityEntity);
 		Assertion.checkArgNotEmpty(userAuthField);
+		Assertion.checkNotNull(modelManager);
 		Assertion.checkNotNull(entityStoreManager);
 		Assertion.checkNotNull(fileStoreManager);
 		Assertion.checkArgNotEmpty(groupToGroupAccountMappingStr);
@@ -118,6 +122,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		this.groupIdentityEntity = groupIdentityEntity;
 		this.userAuthField = userAuthField;
 		this.photoFileInfo = photoFileInfo;
+		this.modelManager = modelManager;
 		this.entityStoreManager = entityStoreManager;
 		this.fileStoreManager = fileStoreManager;
 		this.transactionManager = transactionManager;
@@ -237,7 +242,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 
 		Serializable userAuthTokenValue;
 		try {
-			userAuthTokenValue = Serializable.class.cast(getUserDtDefinition().getField(userAuthField).getDomain().stringToValue(userAuthToken));
+			userAuthTokenValue = Serializable.class.cast(modelManager.stringToValue(getUserDtDefinition().getField(userAuthField).getDomain(), userAuthToken));
 		} catch (final FormatterException e) {
 			throw WrappedException.wrap(e);
 		}
@@ -266,7 +271,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	private Entity readUserEntity(final UID<Account> accountURI) {
 		return executeInTransaction(() -> {
 			try {
-				final Serializable typedId = (Serializable) userIdField.getDomain().stringToValue((String) accountURI.getId()); //account id IS always a String
+				final Serializable typedId = (Serializable) modelManager.stringToValue(userIdField.getDomain(), (String) accountURI.getId()); //account id IS always a String
 				final UID<Entity> userURI = UID.of(getUserDtDefinition(), typedId);
 				return entityStoreManager.readOne(userURI);
 			} catch (final FormatterException e) {
@@ -278,7 +283,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	private Entity readGroupEntity(final UID<AccountGroup> accountGroupURI) {
 		return executeInTransaction(() -> {
 			try {
-				final Serializable typedId = (Serializable) groupIdField.getDomain().stringToValue((String) accountGroupURI.getId()); //accountGroup id IS always a String
+				final Serializable typedId = (Serializable) modelManager.stringToValue(groupIdField.getDomain(), (String) accountGroupURI.getId()); //accountGroup id IS always a String
 				final UID<Entity> groupURI = UID.of(userGroupDtDefinition, typedId);
 				return entityStoreManager.readOne(groupURI);
 			} catch (final FormatterException e) {

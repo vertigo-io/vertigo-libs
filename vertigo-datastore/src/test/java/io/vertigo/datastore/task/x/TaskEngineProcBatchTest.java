@@ -39,12 +39,13 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.task.data.TestSmartTypes;
 import io.vertigo.datastore.task.data.domain.SuperHero;
 import io.vertigo.datastore.task.data.domain.SuperHeroDataBase;
 import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
@@ -61,9 +62,9 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 	private static final String SUPER_HERO_ID_LIST_IN = "superHeroIdListIn";
 	private static final String DTC_SUPER_HERO_OUT = "dtcSuperHeroOut";
 	private static final String OTHER_PARAM_IN = "otherParam";
-	private static final String DO_DT_SUPER_HERO = "DoDtSuperHero";
-	private static final String DO_ID = "DoId";
-	private static final String DO_STRING = "DoString";
+	private static final String STY_DT_SUPER_HERO = "STyDtSuperHero";
+	private static final String STY_ID = "STyId";
+	private static final String STY_STRING = "STyString";
 
 	@Inject
 	private TaskManager taskManager;
@@ -98,9 +99,9 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 						.withSqlEntityStore()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datastore/task/data/execution.kpr")
-								.addDefinitionResource("classes", "io.vertigo.datastore.task.data.DtDefinitions")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", "io.vertigo.datastore.task.data.DtDefinitions")
 								.build())
 						.build())
 				.build();
@@ -123,7 +124,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInAttribute(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO, Domain.class), Cardinality.MANY)
+				.addInAttribute(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
 				.withRequest(request)
 				.build();
 
@@ -153,8 +154,8 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInAttribute(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO, Domain.class), Cardinality.MANY)
-				.addInAttribute(OTHER_PARAM_IN, getApp().getDefinitionSpace().resolve(DO_STRING, Domain.class), Cardinality.ONE)
+				.addInAttribute(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
+				.addInAttribute(OTHER_PARAM_IN, getApp().getDefinitionSpace().resolve(STY_STRING, SmartTypeDefinition.class), Cardinality.ONE)
 				.withRequest(request)
 				.build();
 
@@ -184,7 +185,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInAttribute(SUPER_HERO_ID_LIST_IN, getApp().getDefinitionSpace().resolve(DO_ID, Domain.class), Cardinality.MANY)
+				.addInAttribute(SUPER_HERO_ID_LIST_IN, getApp().getDefinitionSpace().resolve(STY_ID, SmartTypeDefinition.class), Cardinality.MANY)
 				.withRequest(request)
 				.build();
 
@@ -207,7 +208,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkSelectHeroes")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from SUPER_HERO")
-				.withOutAttribute(DTC_SUPER_HERO_OUT, getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO, Domain.class), Cardinality.MANY)
+				.withOutAttribute(DTC_SUPER_HERO_OUT, getApp().getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
 				.build();
 		final Task task = Task.builder(taskDefinition).build();
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {

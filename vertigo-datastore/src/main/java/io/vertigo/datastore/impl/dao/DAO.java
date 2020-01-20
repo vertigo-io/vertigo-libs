@@ -39,6 +39,7 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.Fragment;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.dynamo.task.TaskManager;
 
 /**
@@ -54,6 +55,7 @@ public class DAO<E extends Entity, P> {
 	private final Class<? extends Entity> entityClass;
 	protected final EntityStoreManager entityStoreManager;
 	private final TaskManager taskManager;
+	private final ModelManager modelManager;
 
 	/**
 	 * Contructeur.
@@ -62,14 +64,16 @@ public class DAO<E extends Entity, P> {
 	 * @param entityStoreManager Manager de gestion de la persistance
 	 * @param taskManager Manager de gestion des tâches
 	 */
-	public DAO(final Class<? extends Entity> entityClass, final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
+	public DAO(final Class<? extends Entity> entityClass, final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
 		Assertion.checkNotNull(entityClass);
 		Assertion.checkNotNull(entityStoreManager);
 		Assertion.checkNotNull(taskManager);
+		Assertion.checkNotNull(modelManager);
 		//-----
 		this.entityClass = entityClass;
 		this.entityStoreManager = entityStoreManager;
 		this.taskManager = taskManager;
+		this.modelManager = modelManager;
 	}
 
 	protected final TaskManager getTaskManager() {
@@ -239,10 +243,10 @@ public class DAO<E extends Entity, P> {
 				throw new ClassCastException("Value " + value + " must be a list");
 			}
 			for (final Object element : List.class.cast(value)) {
-				dtField.getDomain().checkValue(element);
+				modelManager.checkValue(dtField.getDomain(), element);
 			}
 		} else {
-			dtField.getDomain().checkValue(value);
+			modelManager.checkValue(dtField.getDomain(), value);
 		}
 		return entityStoreManager.find(dtDefinition, criteria, dtListState);
 	}

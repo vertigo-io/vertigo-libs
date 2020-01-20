@@ -23,10 +23,12 @@ import java.util.List;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.Home;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.ngdomain.ModelManager;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 /**
  * Attribut d'une tache.
@@ -45,7 +47,7 @@ public final class TaskAttribute {
 	/** Name of the attribute. */
 	private final String name;
 
-	private final Domain domain;
+	private final SmartTypeDefinition smartTypeDefinition;
 
 	/** if the attribute cardinality. */
 	private final Cardinality cardinality;
@@ -57,14 +59,14 @@ public final class TaskAttribute {
 	 * @param domain the domain of the attribute
 	 * @param required if the attribute is required
 	 */
-	TaskAttribute(final String attributeName, final Domain domain, final Cardinality cardinality) {
+	TaskAttribute(final String attributeName, final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {
 		Assertion.checkNotNull(attributeName);
 		Assertion.checkNotNull(cardinality);
 		Assertion.checkArgument(StringUtil.isLowerCamelCase(attributeName), "the name of the attribute {0} must be in lowerCamelCase", attributeName);
-		Assertion.checkNotNull(domain);
+		Assertion.checkNotNull(smartTypeDefinition);
 		//-----
 		name = attributeName;
-		this.domain = domain;
+		this.smartTypeDefinition = smartTypeDefinition;
 		this.cardinality = cardinality;
 	}
 
@@ -78,8 +80,8 @@ public final class TaskAttribute {
 	/**
 	 * @return Domain the domain
 	 */
-	public Domain getDomain() {
-		return domain;
+	public SmartTypeDefinition getDomain() {
+		return smartTypeDefinition;
 	}
 
 	/**
@@ -92,7 +94,7 @@ public final class TaskAttribute {
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
-		return "{ name : " + name + ", domain :" + domain + ", cardinality :" + cardinality + "]";
+		return "{ name : " + name + ", smarttype :" + smartTypeDefinition + ", cardinality :" + cardinality + "]";
 	}
 
 	/**
@@ -101,6 +103,7 @@ public final class TaskAttribute {
 	 * @param value Valeur (Object primitif ou DtObject ou bien DtList)
 	 */
 	public void checkAttribute(final Object value) {
+		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
 		if (cardinality.hasOne()) {
 			Assertion.checkNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", getName());
 		}
@@ -110,10 +113,10 @@ public final class TaskAttribute {
 					throw new ClassCastException("Value " + value + " must be a list");
 				}
 				for (final Object element : List.class.cast(value)) {
-					getDomain().checkConstraints(element);
+					modelManager.checkConstraints(getDomain(), element);
 				}
 			} else {
-				getDomain().checkConstraints(value);
+				modelManager.checkConstraints(getDomain(), value);
 			}
 		} catch (final ConstraintException e) {
 			//On retransforme en Runtime pour conserver une API sur les getters et setters.
@@ -128,7 +131,7 @@ public final class TaskAttribute {
 	 */
 	public Class getTargetJavaClass() {
 		if (cardinality.hasMany()) {
-			switch (domain.getScope()) {
+			switch (smartTypeDefinition.getScope()) {
 				case PRIMITIVE:
 					return List.class;
 				case DATA_OBJECT:
@@ -139,6 +142,6 @@ public final class TaskAttribute {
 					throw new IllegalStateException();
 			}
 		}
-		return domain.getJavaClass();
+		return smartTypeDefinition.getJavaClass();
 	}
 }

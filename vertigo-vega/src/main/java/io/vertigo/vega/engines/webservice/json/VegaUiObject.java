@@ -29,13 +29,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionReference;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.ModelManager;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.vega.webservice.validation.DtObjectErrors;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
@@ -269,9 +271,9 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		}
 		final Object value = doGetTypedValue(fieldName);
 		final DtField dtField = getDtField(fieldName);
-		final Domain domain = dtField.getDomain();
-		if (domain.getScope().isPrimitive() && !dtField.getCardinality().hasMany()) {
-			return domain.valueToString(value);// encodeValue
+		final SmartTypeDefinition smartType = dtField.getDomain();
+		if (smartType.getScope().isPrimitive() && !dtField.getCardinality().hasMany()) {
+			return Home.getApp().getComponentSpace().resolve(ModelManager.class).valueToString(smartType, value);// encodeValue
 		}
 		return null; // only non multiple primitives are supported (from user input)
 	}
@@ -281,6 +283,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	public void setInputValue(final String fieldName, final String stringValue) {
 		Assertion.checkArgNotEmpty(fieldName);
 		Assertion.checkNotNull(stringValue, "formatted value can't be null, but may be empty : {0}", fieldName);
+		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
 		//-----
 		final DtField dtField = getDtField(fieldName);
 		//---
@@ -288,10 +291,10 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		getDtObjectErrors().clearErrors(dtField.getName());
 		String formattedValue;
 		try {
-			final Serializable typedValue = (Serializable) dtField.getDomain().stringToValue(stringValue);// we should use an encoder instead
+			final Serializable typedValue = (Serializable) modelManager.stringToValue(dtField.getDomain(), stringValue);// we should use an encoder instead
 			doSetTypedValue(dtField, typedValue);
 			// succesful encoding we can format and put in the inputbuffer
-			formattedValue = dtField.getDomain().valueToString(typedValue);
+			formattedValue = modelManager.valueToString(dtField.getDomain(), typedValue);
 		} catch (final FormatterException e) { //We don't log nor rethrow this exception // it should be an encoding exception
 			/** Erreur de typage.	 */
 			//encoding error

@@ -27,13 +27,13 @@ import java.util.Map;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Home;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 
 /**
@@ -90,8 +90,8 @@ public final class DomainUtil {
 		return buildJavaTypeLabel(taskAttribute.getDomain(), taskAttribute.getCardinality(), getManyTargetJavaClass(taskAttribute.getDomain()));
 	}
 
-	private static Class getManyTargetJavaClass(final Domain domain) {
-		switch (domain.getScope()) {
+	private static Class getManyTargetJavaClass(final SmartTypeDefinition smartTypeDefinition) {
+		switch (smartTypeDefinition.getScope()) {
 			case DATA_OBJECT:
 				return DtList.class;
 			case PRIMITIVE:
@@ -102,11 +102,11 @@ public final class DomainUtil {
 		}
 	}
 
-	private static String buildJavaType(final Domain domain, final Cardinality cardinality, final Class manyTargetClass) {
+	private static String buildJavaType(final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality, final Class manyTargetClass) {
 		final String className;
-		switch (domain.getScope()) {
+		switch (smartTypeDefinition.getScope()) {
 			case PRIMITIVE:
-				String javaType = domain.getJavaClass().getName();
+				String javaType = smartTypeDefinition.getJavaClass().getName();
 
 				//On simplifie l'écriture des types primitifs
 				//java.lang.String => String
@@ -116,10 +116,8 @@ public final class DomainUtil {
 				className = javaType;
 				break;
 			case DATA_OBJECT:
-				className = domain.getDtDefinition().getClassCanonicalName();
-				break;
 			case VALUE_OBJECT:
-				className = domain.getJavaClass().getName();
+				className = smartTypeDefinition.getJavaClass().getName();
 				break;
 			default:
 				throw new IllegalStateException();
@@ -130,21 +128,8 @@ public final class DomainUtil {
 		return className;
 	}
 
-	public static String buildJavaTypeLabel(final Domain domain, final Cardinality cardinality, final Class manyTargetClass) {
-		final String classLabel;
-		switch (domain.getScope()) {
-			case PRIMITIVE:
-				classLabel = domain.getJavaClass().getSimpleName();
-				break;
-			case DATA_OBJECT:
-				classLabel = domain.getDtDefinition().getClassSimpleName();
-				break;
-			case VALUE_OBJECT:
-				classLabel = domain.getJavaClass().getSimpleName();
-				break;
-			default:
-				throw new IllegalStateException();
-		}
+	public static String buildJavaTypeLabel(final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality, final Class manyTargetClass) {
+		final String classLabel = smartTypeDefinition.getJavaClass().getSimpleName();
 		if (cardinality.hasMany()) {
 			return manyTargetClass.getSimpleName() + " de " + classLabel;
 		}

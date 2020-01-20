@@ -38,10 +38,11 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.TestUtil;
+import io.vertigo.datastore.filestore.data.TestSmartTypes;
 import io.vertigo.datastore.filestore.model.InputStreamBuilder;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.grammar.FileStoreDefinitionProvider;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 /**
  * Test de l'implémentation standard.
@@ -64,8 +65,8 @@ public final class FileManagerTest extends AbstractTestCaseJU5 {
 				.addModule(new DataStoreFeatures()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datastore/filestore/data/model.kpr")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
 								.build())
 						.addDefinitionProvider(DefinitionProviderConfig.builder(FileStoreDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/datastore/filestore/data/fileinfo.kpr")

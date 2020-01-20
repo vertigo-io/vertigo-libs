@@ -19,6 +19,7 @@
 package io.vertigo.datastore.filestore.model;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
@@ -100,38 +101,41 @@ public final class FileInfoURI implements Serializable {
 		return key;
 	}
 
-	public Serializable getKeyAs(final DataType dataType) {
-		switch (dataType) {
-			case Integer:
-				if (key instanceof Long) {
-					return ((Long) key).intValue();
-				} else if (key instanceof Integer) {
-					return key;
-				} else if (key instanceof String) {
-					return Integer.valueOf((String) key);
-				}
-				break;
-			case Long:
-				if (key instanceof Long) {
-					return key;
-				} else if (key instanceof Integer) {
-					return ((Integer) key).longValue();
-				} else if (key instanceof String) {
-					return Long.valueOf((String) key);
-				}
-				break;
-			case String:
-				return String.valueOf(key);
-			case BigDecimal:
-			case Boolean:
-			case DataStream:
-			case Double:
-			case Instant:
-			case LocalDate:
-			default:
-				break;
+	public Serializable getKeyAs(final Class valueObjectClass) {
+		final Optional<DataType> dataTypeOpt = DataType.of(valueObjectClass);
+		if (dataTypeOpt.isPresent()) {
+			switch (dataTypeOpt.get()) {
+				case Integer:
+					if (key instanceof Long) {
+						return ((Long) key).intValue();
+					} else if (key instanceof Integer) {
+						return key;
+					} else if (key instanceof String) {
+						return Integer.valueOf((String) key);
+					}
+					break;
+				case Long:
+					if (key instanceof Long) {
+						return key;
+					} else if (key instanceof Integer) {
+						return ((Integer) key).longValue();
+					} else if (key instanceof String) {
+						return Long.valueOf((String) key);
+					}
+					break;
+				case String:
+					return String.valueOf(key);
+				case BigDecimal:
+				case Boolean:
+				case DataStream:
+				case Double:
+				case Instant:
+				case LocalDate:
+				default:
+					break;
+			}
 		}
-		throw new IllegalStateException("Unsupported key type : " + dataType);
+		throw new IllegalStateException("Unsupported key type : " + valueObjectClass);
 	}
 
 	//=========================================================================

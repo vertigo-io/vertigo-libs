@@ -58,6 +58,7 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.WrappedException;
@@ -78,6 +79,7 @@ import io.vertigo.dynamo.domain.model.ListVAccessor;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.model.VAccessor;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.vega.webservice.WebServiceTypeUtil;
 import io.vertigo.vega.webservice.model.DtListDelta;
 import io.vertigo.vega.webservice.model.UiList;
@@ -89,6 +91,7 @@ import io.vertigo.vega.webservice.model.UiObject;
 public final class GoogleJsonEngine implements JsonEngine {
 	private static final String FIRST_LEVEL_KEY = "this";
 	private final Gson gson;
+	private final ModelManager modelManager;
 
 	private enum SearchApiVersion {
 		V1(FacetedQueryResultJsonSerializerV1.class), //first api
@@ -108,9 +111,14 @@ public final class GoogleJsonEngine implements JsonEngine {
 	}
 
 	@Inject
-	public GoogleJsonEngine(@ParamValue("serializeNulls") final Optional<Boolean> serializeNulls, @ParamValue("searchApiVersion") final Optional<String> searchApiVersionStr) {
+	public GoogleJsonEngine(
+			@ParamValue("serializeNulls") final Optional<Boolean> serializeNulls,
+			@ParamValue("searchApiVersion") final Optional<String> searchApiVersionStr,
+			final ModelManager modelManager) {
 		final SearchApiVersion searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V4.name()));
 		gson = createGson(serializeNulls.orElse(false), searchApiVersion);
+		Assertion.checkNotNull(modelManager);
+		this.modelManager = modelManager;
 	}
 
 	/** {@inheritDoc} */
@@ -376,7 +384,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	private static final class URIJsonAdapter implements JsonSerializer<UID>, JsonDeserializer<UID> {
+	private final class URIJsonAdapter implements JsonSerializer<UID>, JsonDeserializer<UID> {
 
 		/** {@inheritDoc} */
 		@Override
@@ -398,7 +406,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 				final DtDefinition entityDefinition = DtObjectUtil.findDtDefinition(entityClass);
 				Object entityId;
 				try {
-					entityId = entityDefinition.getIdField().get().getDomain().stringToValue(uidJsonValue);
+					entityId = modelManager.stringToValue(entityDefinition.getIdField().get().getDomain(), uidJsonValue);
 				} catch (final FormatterException e) {
 					throw new JsonParseException("Unsupported UID format " + uidJsonValue, e);
 				}

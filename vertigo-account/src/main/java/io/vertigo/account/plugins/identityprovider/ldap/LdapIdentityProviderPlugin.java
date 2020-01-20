@@ -59,6 +59,7 @@ import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 
 /**
  * Source of identity.
@@ -73,6 +74,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 
 	private final LdapConnector ldapConnector;
 	private final CodecManager codecManager;
+	private final ModelManager modelManager;
 
 	private final String ldapAccountBaseDn;
 
@@ -102,12 +104,14 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 			@ParamValue("ldapUserAttributeMapping") final String ldapUserAttributeMappingStr,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final CodecManager codecManager,
+			final ModelManager modelManager,
 			final List<LdapConnector> ldapConnectors) {
 		Assertion.checkArgNotEmpty(ldapAccountBaseDn);
 		Assertion.checkArgNotEmpty(ldapUserAuthAttribute);
 		Assertion.checkArgNotEmpty(userIdentityEntity);
 		Assertion.checkArgNotEmpty(ldapUserAttributeMappingStr);
 		Assertion.checkNotNull(codecManager);
+		Assertion.checkNotNull(modelManager);
 		Assertion.checkNotNull(ldapConnectors);
 		Assertion.checkArgument(!ldapConnectors.isEmpty(), "At least one LdapConnector espected");
 		//-----
@@ -115,6 +119,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		this.ldapUserAuthAttribute = ldapUserAuthAttribute;
 		this.userIdentityEntity = userIdentityEntity;
 		this.ldapUserAttributeMappingStr = ldapUserAttributeMappingStr;
+		this.modelManager = modelManager;
 		this.codecManager = codecManager;
 		final String connectorName = connectorNameOpt.orElse("main");
 		ldapConnector = ldapConnectors.stream()
@@ -287,8 +292,8 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		}
 	}
 
-	private static void setTypedValue(final DtField dtField, final Entity user, final String valueStr) throws FormatterException {
-		final Serializable typedValue = (Serializable) dtField.getDomain().stringToValue(valueStr);
+	private void setTypedValue(final DtField dtField, final Entity user, final String valueStr) throws FormatterException {
+		final Serializable typedValue = (Serializable) modelManager.stringToValue(dtField.getDomain(), valueStr);
 		dtField.getDataAccessor().setValue(user, typedValue);
 	}
 

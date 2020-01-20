@@ -32,7 +32,6 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.util.MapBuilder;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.KeyConcept;
@@ -165,12 +164,12 @@ public final class CommentWebServices implements WebServices {
 		final Optional<DtField> idFieldOption = dtDefinition.getIdField();
 		Assertion.checkArgument(idFieldOption.isPresent(), "KeyConcept {0} must have an id field, in order to support Comment extension", dtDefinition.getLocalName());
 
-		final DataType dataType = idFieldOption.get().getDomain().getDataType();
-		if (dataType == DataType.String) {
+		final Class dataType = idFieldOption.get().getDomain().getJavaClass();
+		if (String.class.isAssignableFrom(dataType)) {
 			return id;
-		} else if (dataType == DataType.Integer) {
+		} else if (Integer.class.isAssignableFrom(dataType)) {
 			return Integer.valueOf(id);
-		} else if (dataType == DataType.Long) {
+		} else if (Long.class.isAssignableFrom(dataType)) {
 			return Long.valueOf(id);
 		}
 		throw new IllegalArgumentException("the id of the keyConcept " + dtDefinition.getLocalName() + " must be String, Long or Integer");

@@ -18,16 +18,19 @@
  */
 package io.vertigo.datastore.entitystore;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Comparator;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Optional;
 
+import javax.inject.Inject;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.commons.transaction.VTransactionManager;
+import io.vertigo.commons.transaction.VTransactionWritable;
+import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -37,17 +40,30 @@ import io.vertigo.core.util.ListBuilder;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.entitystore.data.OtherStoreDtDefinitions;
+import io.vertigo.datastore.entitystore.data.TestSmartTypes;
+import io.vertigo.datastore.entitystore.data.domain.otherstore.Famille;
 import io.vertigo.datastore.entitystore.sql.SqlUtil;
-import io.vertigo.datastore.filestore.util.FileUtil;
 import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.domain.model.DtListState;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
+import io.vertigo.dynamo.task.TaskManager;
 
 /**
  * Test de l'implémentation standard.
  *
  * @author pchretien
  */
-public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
+public final class MultiStoreManagerTest extends AbstractTestCaseJU5 {
+
+	@Inject
+	private VTransactionManager transactionManager;
+	@Inject
+	private TaskManager taskManager;
+	@Inject
+	private EntityStoreManager entityStoreManager;
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
@@ -83,9 +99,9 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 								Param.of("connectionName", "otherBase"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datastore/entitystore/data/executionOtherStore.kpr")
-								.addDefinitionResource("classes", "io.vertigo.datastore.entitystore.data.DtDefinitions")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", OtherStoreDtDefinitions.class.getName())
 								.build())
 						.addDefinitionProvider(StoreCacheDefinitionProvider.class)
 						.build())
@@ -94,49 +110,126 @@ public final class MultiStoreManagerTest extends AbstractStoreManagerTest {
 
 	@Override
 	protected void doSetUp() throws Exception {
-		super.doSetUp();
-		initOtherStore();
-	}
-
-	protected void initOtherStore() {
 		//A chaque test on recrée la table famille dans l'autre base
 		SqlUtil.execRequests(
 				transactionManager,
 				taskManager,
-				getCreateOtherStoreRequests(),
+				getCreateMainStoreRequests(),
+				"TkInit",
+				Optional.empty());
+		//A chaque test on recrée la table famille dans l'autre base
+		SqlUtil.execRequests(
+				transactionManager,
+				taskManager,
+				getCreateFamilleRequests(),
 				"TkInitOther",
 				Optional.of("otherStore"));
+
+	}
+
+	protected List<String> getCreateMainStoreRequests() {
+		return new ListBuilder<String>()
+				.addAll(getCreateFamilleRequests())
+				.addAll(getCreateCarRequests())
+				.build();
+	}
+
+	protected List<String> getCreateFamilleRequests() {
+		return new ListBuilder<String>()
+				.add(" create table famille(FAM_ID BIGINT , LIBELLE varchar(255))")
+				.add(" create sequence SEQ_FAMILLE start with 10001 increment by 1")
+				.build();
+	}
+
+	protected List<String> getCreateCarRequests() {
+		return new ListBuilder<String>()
+				.add(" create table fam_car_location(FAM_ID BIGINT, ID BIGINT)")
+				.add(" create table motor_type(MTY_CD varchar(50) , LABEL varchar(255))")
+				.add("insert into motor_type(MTY_CD, LABEL) values ('ESSENCE', 'Essence')")
+				.add("insert into motor_type(MTY_CD, LABEL) values ('DIESEL', 'Diesel')")
+				.add(" create table car(ID BIGINT, FAM_ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50) )")
+				.add(" create sequence SEQ_CAR start with 10001 increment by 1")
+				.build();
 	}
 
 	@Override
 	protected void doTearDown() throws Exception {
-		super.doTearDown();
-
-		final Path tempFsDir = Paths.get(FileUtil.translatePath("${java.io.tmpdir}/testFsVertigo/"));
-		removeAllPath(tempFsDir);
+		SqlUtil.execRequests(
+				transactionManager,
+				taskManager,
+				getDropRequests(),
+				"TkShutDown",
+				Optional.empty());
 	}
 
-	private void removeAllPath(final Path pathToBeDeleted) throws IOException {
-		if (Files.exists(pathToBeDeleted)) {
-			Files.walk(pathToBeDeleted)
-					.sorted(Comparator.reverseOrder())
-					.map(Path::toFile)
-					.forEach(File::delete);
-		}
-	}
-
-	@Override
-	protected List<String> getCreateMainStoreRequests() {
-		//On retire famille du main store
+	protected List<String> getDropRequests() {
 		return new ListBuilder<String>()
-				.addAll(getCreateCarRequests())
-				.addAll(getCreateFileInfoRequests())
+				.add(" drop table if exists VX_FILE_INFO ")
+				.add(" drop sequence if exists SEQ_VX_FILE_INFO")
+				.add(" drop table if exists fam_car_location")
+				.add(" drop table if exists car")
+				.add(" drop table if exists motor_type")
+				.add(" drop sequence if exists SEQ_CAR")
+				.add(" drop table if exists famille")
+				.add(" drop sequence if exists SEQ_FAMILLE")
 				.build();
 	}
 
-	private List<String> getCreateOtherStoreRequests() {
-		final List<String> requests = getCreateFamilleRequests();
-		return requests;
+	/**
+	 * On vérifie que la liste est vide.
+	 */
+	@Test
+	public void testGetFamille() {
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final DtList<Famille> dtc = entityStoreManager.find(DtObjectUtil.findDtDefinition(Famille.class), null, DtListState.of(null));
+			Assertions.assertNotNull(dtc);
+			Assertions.assertTrue(dtc.isEmpty(), "La liste des famille est vide");
+			transaction.commit();
+		}
+	}
+
+	/**
+	 * On charge une liste, ajoute un element et recharge la liste pour verifier l'ajout.
+	 */
+	@Test
+	public void testAddFamille() {
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			DtList<Famille> dtc = entityStoreManager.find(DtObjectUtil.findDtDefinition(Famille.class), null, DtListState.of(null));
+			Assertions.assertEquals(0, dtc.size());
+			//-----
+			final Famille famille = new Famille();
+			famille.setLibelle("encore un");
+			final Famille createdFamille = entityStoreManager.create(famille);
+			// on attend un objet avec un id non null ?
+			Assertions.assertNotNull(createdFamille.getFamId());
+			//-----
+			dtc = entityStoreManager.find(DtObjectUtil.findDtDefinition(Famille.class), null, DtListState.of(null));
+			Assertions.assertEquals(1, dtc.size());
+			transaction.commit();
+		}
+	}
+
+	/**
+	 * on vérifier l'exception levée si une contrainte bdd n'est pas respecté.
+	 */
+	@Test
+	public void testCreateFamilleFail() {
+		Assertions.assertThrows(Exception.class, () -> {
+			try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+				final DecimalFormat df = new DecimalFormat("000000000:");
+				//-----
+				final Famille famille = new Famille();
+				final StringBuilder sb = new StringBuilder();
+				for (int i = 0; i < 4000; i++) {
+					sb.append(df.format(i));
+				}
+				// libelle
+				famille.setLibelle(sb.toString());
+				//On doit échouer car le libellé est trop long
+				entityStoreManager.create(famille);
+				Assertions.fail();
+			}
+		});
 	}
 
 }

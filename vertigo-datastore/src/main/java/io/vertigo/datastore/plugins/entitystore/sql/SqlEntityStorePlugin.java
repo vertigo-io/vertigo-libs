@@ -42,7 +42,6 @@ import io.vertigo.dynamo.criteria.CriteriaCtx;
 import io.vertigo.dynamo.criteria.CriteriaEncoder;
 import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
@@ -55,6 +54,7 @@ import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -73,7 +73,7 @@ import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
  */
 public final class SqlEntityStorePlugin implements DataStorePlugin {
 	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
-	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
+	private static final String SMART_TYPE_PREFIX = DefinitionUtil.getPrefix(SmartTypeDefinition.class);
 
 	private final String dataSpace;
 	private final String connectionName;
@@ -82,7 +82,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 	 * Domaine à usage interne.
 	 * Ce domaine n'est pas enregistré.
 	 */
-	private final Domain integerDomain;
+	private final SmartTypeDefinition integerSmartType;
 
 	private enum TASK {
 		/** Prefix of the SELECT.*/
@@ -130,7 +130,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 		this.taskManager = taskManager;
 		sqlDialect = sqlDataBaseManager.getConnectionProvider(connectionName).getDataBase().getSqlDialect();
 		criteriaEncoder = new SqlCriteriaEncoder(sqlDialect);
-		integerDomain = Domain.builder("DO_INTEGER_SQL", DataType.Integer).build();
+		integerSmartType = SmartTypeDefinition.builder("STyIntegerSql", DataType.Integer).build();
 	}
 
 	/**
@@ -193,7 +193,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInAttribute(idFieldName, idField.getDomain(), Cardinality.ONE)
-				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + uri.getDefinition().getName(), Domain.class), Cardinality.OPTIONAL_OR_NULLABLE)
+				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + uri.getDefinition().getName(), SmartTypeDefinition.class), Cardinality.OPTIONAL_OR_NULLABLE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
@@ -242,7 +242,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInAttribute(fkFieldName, fkField.getDomain(), Cardinality.ONE)
-				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName(), Domain.class), Cardinality.MANY)
+				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 				.build();
 
 		final UID uid = dtcUri.getSource();
@@ -294,7 +294,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
-				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName(), Domain.class), Cardinality.MANY)
+				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 				.build();
 
 		final TaskBuilder taskBuilder = Task.builder(taskDefinition);
@@ -391,8 +391,8 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 				.withEngine(getTaskEngineClass(insert))
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName(), Domain.class), Cardinality.ONE)
-				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, Cardinality.ONE)
+				.addInAttribute("dto", Home.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.ONE)
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
@@ -443,7 +443,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInAttribute(idFieldName, idField.getDomain(), Cardinality.ONE)
-				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, Cardinality.ONE)
+				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
@@ -470,7 +470,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 		final String entityName = getEntityName(dtDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final String taskName = TASK.TkCount + entityName;
-		final Domain countDomain = Domain.builder("DO_COUNT", DataType.Long).build();
+		final SmartTypeDefinition countSmartType = SmartTypeDefinition.builder("STyCount", DataType.Long).build();
 
 		final String request = "select count(*) from " + tableName;
 
@@ -478,7 +478,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.withOutAttribute("count", countDomain, Cardinality.ONE)
+				.withOutAttribute("count", countSmartType, Cardinality.ONE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)
@@ -508,7 +508,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 				.withDataSpace(dataSpace)
 				.withRequest(request)
 				.addInAttribute(idFieldName, idField.getDomain(), Cardinality.ONE)
-				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + uri.getDefinition().getName(), Domain.class), Cardinality.OPTIONAL_OR_NULLABLE)
+				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + uri.getDefinition().getName(), SmartTypeDefinition.class), Cardinality.OPTIONAL_OR_NULLABLE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)

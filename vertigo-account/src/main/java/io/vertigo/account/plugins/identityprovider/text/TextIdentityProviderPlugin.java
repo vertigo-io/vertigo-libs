@@ -55,6 +55,7 @@ import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 
 /**
  * A simple implementation of the Realm interface that
@@ -76,6 +77,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	private final Map<String, IdentityUserInfo> authToUsers; //auth-to-Account
 	private final Map<Serializable, IdentityUserInfo> idsToUsers; //id-to-Account
 	private final ResourceManager resourceManager;
+	private final ModelManager modelManager;
 	private final String filePath;
 	private final String userIdentityEntity;
 	private final String userAuthField;
@@ -94,8 +96,10 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 			@ParamValue("identityFilePattern") final String filePatternStr,
 			@ParamValue("userAuthField") final String userAuthField,
 			@ParamValue("userIdentityEntity") final String userIdentityEntity,
-			final ResourceManager resourceManager) {
+			final ResourceManager resourceManager,
+			final ModelManager modelManager) {
 		Assertion.checkNotNull(resourceManager);
+		Assertion.checkNotNull(modelManager);
 		Assertion.checkArgNotEmpty(filePatternStr);
 		Assertion.checkArgument(filePatternStr.contains("(?<"),
 				"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' (like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )", PHOTO_URL_RESERVED_FIELD);
@@ -107,6 +111,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		Assertion.checkArgNotEmpty(userAuthField);
 		// -----
 		this.resourceManager = resourceManager;
+		this.modelManager = modelManager;
 		this.filePath = filePath;
 		//SimpleAccountRealms are memory-only realms
 		authToUsers = new LinkedHashMap<>();
@@ -233,9 +238,9 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		idsToUsers.put(user.getUID().getId(), userInfo);
 	}
 
-	private static void setTypedValue(final DtDefinition userDtDefinition, final Entity user, final String fieldName, final String valueStr) throws FormatterException {
+	private void setTypedValue(final DtDefinition userDtDefinition, final Entity user, final String fieldName, final String valueStr) throws FormatterException {
 		final DtField dtField = userDtDefinition.getField(fieldName);
-		final Serializable typedValue = (Serializable) dtField.getDomain().stringToValue(valueStr);
+		final Serializable typedValue = (Serializable) modelManager.stringToValue(dtField.getDomain(), valueStr);
 		dtField.getDataAccessor().setValue(user, typedValue);
 	}
 

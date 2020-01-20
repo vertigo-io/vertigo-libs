@@ -29,7 +29,6 @@ import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DynamicRegistry;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
-import io.vertigo.dynamo.plugins.environment.registries.domain.DomainDynamicRegistry;
 import io.vertigo.dynamo.plugins.environment.registries.task.TaskDynamicRegistry;
 
 /**
@@ -44,7 +43,7 @@ public final class DynamoDynamicRegistry implements DynamicRegistry {
 	 */
 	public DynamoDynamicRegistry() {
 		dynamicRegistries = new ListBuilder()
-				.add(new DomainDynamicRegistry())
+				//.add(new DomainDynamicRegistry())
 				.add(new TaskDynamicRegistry())
 				.build();
 		dslGrammar = createGrammar();

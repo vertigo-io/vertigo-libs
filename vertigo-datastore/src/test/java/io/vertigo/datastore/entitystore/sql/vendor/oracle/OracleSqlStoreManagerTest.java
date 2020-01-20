@@ -31,7 +31,7 @@ import io.vertigo.database.impl.sql.vendor.oracle.Oracle11DataBase;
 import io.vertigo.datastore.entitystore.data.domain.car.Car;
 import io.vertigo.datastore.entitystore.sql.AbstractSqlStoreManagerTest;
 import io.vertigo.datastore.entitystore.sql.SqlDataStoreNodeConfig;
-import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskResult;
@@ -96,13 +96,13 @@ public final class OracleSqlStoreManagerTest extends AbstractSqlStoreManagerTest
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final Domain doCar = definitionSpace.resolve("DoDtCar", Domain.class);
+		final SmartTypeDefinition smartTypeCar = definitionSpace.resolve("STyDtCar", SmartTypeDefinition.class);
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkInsertCar")
 				.withEngine(TaskEngineProc.class)
 				.withRequest("insert into CAR (ID, FAM_ID,MANUFACTURER, MODEL, DESCRIPTION, YEAR, KILO, PRICE, MTY_CD) values "
 						+ "(SEQ_CAR.nextval, #dtoCar.famId#, #dtoCar.manufacturer#, #dtoCar.model#, #dtoCar.description#, #dtoCar.year#, #dtoCar.kilo#, #dtoCar.price#, #dtoCar.mtyCd#)")
-				.addInAttribute("dtoCar", doCar, Cardinality.ONE)
+				.addInAttribute("dtoCar", smartTypeCar, Cardinality.ONE)
 				.build();
 
 		final Task task = Task.builder(taskDefinition)

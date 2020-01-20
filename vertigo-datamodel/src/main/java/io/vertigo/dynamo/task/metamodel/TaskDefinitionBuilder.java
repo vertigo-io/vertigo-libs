@@ -25,8 +25,8 @@ import java.util.Optional;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.model.TaskEngine;
 
 /**
@@ -114,12 +114,12 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @param cardinality cadinality (one, optional, many)
 	 * @return this builder
 	 */
-	public TaskDefinitionBuilder addInAttribute(final String attributeName, final Domain domain, final Cardinality cardinality) {
+	public TaskDefinitionBuilder addInAttribute(final String attributeName, final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {
 		Assertion.checkNotNull(attributeName);
-		Assertion.checkNotNull(domain);
+		Assertion.checkNotNull(smartTypeDefinition);
 		Assertion.checkNotNull(cardinality);
 		//-----
-		final TaskAttribute taskAttribute = new TaskAttribute(attributeName, domain, cardinality);
+		final TaskAttribute taskAttribute = new TaskAttribute(attributeName, smartTypeDefinition, cardinality);
 		myInTaskAttributes.add(taskAttribute);
 		return this;
 	}
@@ -132,9 +132,9 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @param cardinality cadinality (one, optional, many)
 	 * @return this builder
 	 */
-	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final Domain domain, final Cardinality cardinality) {
+	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {
 		//-----
-		myOutTaskAttribute = new TaskAttribute(attributeName, domain, cardinality);
+		myOutTaskAttribute = new TaskAttribute(attributeName, smartTypeDefinition, cardinality);
 		return this;
 	}
 

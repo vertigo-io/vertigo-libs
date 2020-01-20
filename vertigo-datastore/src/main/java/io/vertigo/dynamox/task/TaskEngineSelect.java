@@ -98,7 +98,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 					final DtList<?> dtList = result
 							.stream()
 							.map(DtObject.class::cast)
-							.collect(VCollectors.toDtList(outAttribute.getDomain().getDtDefinition()));
+							.collect(VCollectors.toDtList(outAttribute.getDomain().getJavaClass()));
 					setResult(dtList);
 				} else {
 					Assertion.checkState(result.size() <= 1, "Limit exceeded");

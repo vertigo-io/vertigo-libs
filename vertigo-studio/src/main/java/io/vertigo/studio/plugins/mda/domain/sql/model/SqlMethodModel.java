@@ -26,8 +26,8 @@ import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 /**
  * Méthode Freemarker 'sql'.
@@ -43,17 +43,17 @@ public final class SqlMethodModel implements TemplateMethodModelEx {
 	public TemplateModel exec(final List params) throws TemplateModelException {
 		final Object type = ((StringModel) params.get(0)).getWrappedObject();
 		if (type instanceof SqlDtFieldModel) {
-			final Domain domain = ((SqlDtFieldModel) type).getSource().getDomain();
-			return new SimpleScalar(getSqlType((domain)));
-		} else if (type instanceof Domain) {
-			return new SimpleScalar(getSqlType(((Domain) type)));
+			final SmartTypeDefinition smartType = ((SqlDtFieldModel) type).getSource().getDomain();
+			return new SimpleScalar(getSqlType((smartType)));
+		} else if (type instanceof SmartTypeDefinition) {
+			return new SimpleScalar(getSqlType(((SmartTypeDefinition) type)));
 		}
 		throw new TemplateModelException("Le paramètre type n'est pas un Domain.");
 	}
 
-	private static String getSqlType(final Domain domain) {
-		final String storeType = domain.getProperties().getValue(DtProperty.STORE_TYPE);
-		Assertion.checkNotNull(storeType, "La propriété StoreType est obligatoire dans le cas de génération de Sql. Domaine incriminé : {0}", domain.getName());
+	private static String getSqlType(final SmartTypeDefinition smartType) {
+		final String storeType = smartType.getProperties().getValue(DtProperty.STORE_TYPE);
+		Assertion.checkNotNull(storeType, "La propriété StoreType est obligatoire dans le cas de génération de Sql. Domaine incriminé : {0}", smartType.getName());
 		return storeType;
 	}
 

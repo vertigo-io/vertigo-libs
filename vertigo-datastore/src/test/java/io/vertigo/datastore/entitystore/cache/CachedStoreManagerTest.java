@@ -32,11 +32,13 @@ import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.AbstractStoreManagerTest;
+import io.vertigo.datastore.entitystore.data.DtDefinitions;
+import io.vertigo.datastore.entitystore.data.TestSmartTypes;
 import io.vertigo.datastore.entitystore.data.domain.famille.Famille;
 import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 /**
  * Test de l'implémentation avec cache.
@@ -71,9 +73,9 @@ public final class CachedStoreManagerTest extends AbstractStoreManagerTest {
 						.withSqlEntityStore()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datastore/entitystore/data/execution.kpr")
-								.addDefinitionResource("classes", "io.vertigo.datastore.entitystore.data.DtDefinitions")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", DtDefinitions.class.getName())
 								.build())
 						.addDefinitionProvider(TestCacheStoreManagerDefinitionProvider.class)
 						.build())

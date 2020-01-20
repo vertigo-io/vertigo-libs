@@ -70,7 +70,7 @@ public enum DataType {
 	 * Lance une exception avec message adequat si pb.
 	 * @param value Valeur é tester
 	 */
-	void checkValue(final Object value) {
+	public void checkValue(final Object value) {
 		//Il suffit de vérifier que la valeur passée est une instance de la classe java définie pour le type Dynamo.
 		//Le test doit être effectué car le cast est non fiable par les generics
 		if (value != null && !javaClass.isInstance(value)) {

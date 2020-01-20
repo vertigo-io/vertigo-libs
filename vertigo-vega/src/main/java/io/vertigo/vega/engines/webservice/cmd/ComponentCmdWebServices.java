@@ -20,7 +20,6 @@ package io.vertigo.vega.engines.webservice.cmd;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -36,7 +35,6 @@ import io.vertigo.core.node.Home;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
-import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
 import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
@@ -45,7 +43,9 @@ import io.vertigo.vega.webservice.stereotype.PathParam;
 import io.vertigo.vega.webservice.stereotype.SessionLess;
 
 public final class ComponentCmdWebServices implements WebServices {
-	private final JsonEngine jsonEngine = new GoogleJsonEngine(Optional.empty(), Optional.empty());
+
+	@Inject
+	private JsonEngine jsonEngine;
 
 	@Inject
 	private AnalyticsManager analyticsManager;

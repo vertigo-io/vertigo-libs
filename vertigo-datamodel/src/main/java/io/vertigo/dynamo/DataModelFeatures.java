@@ -20,6 +20,8 @@ package io.vertigo.dynamo;
 
 import io.vertigo.core.node.config.Features;
 import io.vertigo.dynamo.impl.task.TaskManagerImpl;
+import io.vertigo.dynamo.ngdomain.ModelManager;
+import io.vertigo.dynamo.ngdomain.ModelManagerImpl;
 import io.vertigo.dynamo.task.TaskManager;
 
 /**
@@ -40,6 +42,7 @@ public final class DataModelFeatures extends Features<DataModelFeatures> {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
+				.addComponent(ModelManager.class, ModelManagerImpl.class)
 				.addComponent(TaskManager.class, TaskManagerImpl.class);
 
 	}

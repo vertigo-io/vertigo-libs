@@ -20,8 +20,8 @@ package io.vertigo.studio.plugins.mda.domain.sql.model;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 /**
  * Objet utilisé par FreeMarker.
@@ -72,7 +72,7 @@ public final class SqlAssociationNNModel {
 	/**
 	 * @return Association nodeA Id domain
 	 */
-	public Domain getNodeAPKDomain() {
+	public SmartTypeDefinition getNodeAPKSmartType() {
 		return associationDefinition.getAssociationNodeA().getDtDefinition().getIdField().get().getDomain();
 	}
 
@@ -93,7 +93,7 @@ public final class SqlAssociationNNModel {
 	/**
 	 * @return Association nodeB Id domain
 	 */
-	public Domain getNodeBPKDomain() {
+	public SmartTypeDefinition getNodeBPKSmartType() {
 		return associationDefinition.getAssociationNodeB().getDtDefinition().getIdField().get().getDomain();
 	}
 

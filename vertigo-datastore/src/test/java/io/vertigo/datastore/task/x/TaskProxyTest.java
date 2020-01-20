@@ -39,11 +39,12 @@ import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.task.data.TestSmartTypes;
 import io.vertigo.datastore.task.data.domain.SuperHero;
 import io.vertigo.datastore.task.data.domain.SuperHeroDataBase;
 import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 import io.vertigo.dynamo.task.TaskManager;
 
 /**
@@ -89,9 +90,9 @@ public final class TaskProxyTest extends AbstractTestCaseJU5 {
 						.withTaskProxyMethod()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datastore/task/data/execution.kpr")
-								.addDefinitionResource("classes", "io.vertigo.datastore.task.data.DtDefinitions")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", "io.vertigo.datastore.task.data.DtDefinitions")
 								.build())
 						.addProxy(SuperHeroDao.class)
 						.build())

@@ -21,9 +21,11 @@ package io.vertigo.vega.webservice.validation;
 import java.util.List;
 
 import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.node.Home;
 import io.vertigo.dynamo.domain.metamodel.ConstraintException;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 
 /**
  * Default DtObject validation : check domain's constraints on modified fields.
@@ -35,6 +37,8 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 	/** {@inheritDoc} */
 	@Override
 	protected void checkMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
+		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
+		//---
 		final Object value = dtField.getDataAccessor().getValue(dtObject);
 		//pas d'assertion notNull, car le champs n'est pas forcément obligatoire
 		if (value == null && dtField.getCardinality().hasOne()) {
@@ -48,10 +52,10 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 						throw new ClassCastException("Value " + value + " must be a list");
 					}
 					for (final Object element : List.class.cast(value)) {
-						dtField.getDomain().checkConstraints(element);
+						modelManager.checkConstraints(dtField.getDomain(), element);
 					}
 				} else {
-					dtField.getDomain().checkConstraints(value);
+					modelManager.checkConstraints(dtField.getDomain(), value);
 				}
 			} catch (final ConstraintException e) {
 				// Erreur lors du check de la valeur,

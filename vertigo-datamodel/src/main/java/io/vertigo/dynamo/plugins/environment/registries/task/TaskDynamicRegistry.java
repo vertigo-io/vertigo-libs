@@ -23,7 +23,7 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DynamicRegistry;
@@ -74,14 +74,14 @@ public final class TaskDynamicRegistry implements DynamicRegistry {
 		for (final DslDefinition xtaskAttribute : xtaskDefinition.getChildDefinitions(TaskGrammar.TASK_ATTRIBUTE)) {
 			final String attributeName = xtaskAttribute.getName();
 			Assertion.checkNotNull(attributeName);
-			final String domainName = xtaskAttribute.getDefinitionLinkName("domain");
-			final Domain domain = Home.getApp().getDefinitionSpace().resolve(domainName, Domain.class);
+			final String smartTypeName = xtaskAttribute.getDefinitionLinkName("domain");
+			final SmartTypeDefinition smartType = Home.getApp().getDefinitionSpace().resolve(smartTypeName, SmartTypeDefinition.class);
 			//-----
 			final Cardinality cardinality = Cardinality.fromSymbol((String) xtaskAttribute.getPropertyValue(KspProperty.CARDINALITY));
 			if (isInValue((String) xtaskAttribute.getPropertyValue(KspProperty.IN_OUT))) {
-				taskDefinitionBuilder.addInAttribute(attributeName, domain, cardinality);
+				taskDefinitionBuilder.addInAttribute(attributeName, smartType, cardinality);
 			} else {
-				taskDefinitionBuilder.withOutAttribute(attributeName, domain, cardinality);
+				taskDefinitionBuilder.withOutAttribute(attributeName, smartType, cardinality);
 			}
 		}
 		return taskDefinitionBuilder.build();

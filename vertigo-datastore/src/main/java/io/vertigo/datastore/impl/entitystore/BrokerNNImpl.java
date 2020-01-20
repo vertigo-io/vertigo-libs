@@ -28,13 +28,13 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datastore.entitystore.BrokerNN;
 import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -49,7 +49,7 @@ import io.vertigo.dynamox.task.TaskEngineProc;
  */
 @Deprecated
 final class BrokerNNImpl implements BrokerNN {
-	private final Domain integerDomain;
+	private final SmartTypeDefinition integerSmartType;
 	private final TaskManager taskManager;
 
 	private static final class DescriptionNN {
@@ -86,7 +86,7 @@ final class BrokerNNImpl implements BrokerNN {
 		Assertion.checkNotNull(taskManager);
 		//-----
 		this.taskManager = taskManager;
-		integerDomain = Domain.builder("DO_INTEGER_BROKER", DataType.Integer).build();
+		integerSmartType = SmartTypeDefinition.builder("STyIntegerBroker", DataType.Integer).build();
 	}
 
 	/** {@inheritDoc} */
@@ -209,7 +209,7 @@ final class BrokerNNImpl implements BrokerNN {
 			taskDefinitionBuilder.addInAttribute(targetField.getName(), targetField.getDomain(), Cardinality.ONE);
 		}
 		//OUT, obligatoire
-		final TaskDefinition taskDefinition = taskDefinitionBuilder.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerDomain, Cardinality.ONE)
+		final TaskDefinition taskDefinition = taskDefinitionBuilder.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)
 				.build();
 
 		/* Création de la tache. */

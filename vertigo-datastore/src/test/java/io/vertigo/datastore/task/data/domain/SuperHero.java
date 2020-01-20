@@ -19,22 +19,26 @@
 package io.vertigo.datastore.task.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.util.JsonMapper;
+import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
 /**
  * SuperHero
  */
+@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class SuperHero implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "superHero ID")
+	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "superHero ID")
 	private Long id;
 
-	@Field(domain = "DoString", label = "name")
+	@Field(domain = "STyString", label = "name")
 	private String name;
 
 	/** {@inheritDoc} */

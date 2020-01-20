@@ -20,8 +20,9 @@ package io.vertigo.studio.plugins.mda.domain.ts.model;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 /**
  * Model used to define a DtField.
@@ -62,7 +63,7 @@ public final class TSDtFieldModel {
 	/**
 	 * @return Name of the domain
 	 */
-	public String getDomainName() {
+	public String getSmartTypeName() {
 		return dtField.getDomain().getName();
 	}
 
@@ -70,7 +71,7 @@ public final class TSDtFieldModel {
 	 * @return Local name of the domain
 	 */
 	public String getDomainDefinitionName() {
-		return dtField.getDomain().getDtDefinition().getLocalName();
+		return DtObjectUtil.findDtDefinition(dtField.getDomain().getValueObjectClassName()).getLocalName();
 	}
 
 	/**
@@ -113,10 +114,10 @@ public final class TSDtFieldModel {
 	 * @param  domain DtDomain
 	 * @return String
 	 */
-	private static String buildTypescriptType(final Domain domain, final boolean withArray) {
+	private static String buildTypescriptType(final SmartTypeDefinition smartTypeDefinition, final boolean withArray) {
 		final String typescriptType;
-		if (domain.getScope().isPrimitive()) {
-			final DataType dataType = domain.getDataType();
+		if (smartTypeDefinition.getScope().isPrimitive()) {
+			final DataType dataType = smartTypeDefinition.getTargetDataType();
 			if (dataType.isNumber()) {
 				typescriptType = "number";
 			} else if (dataType == DataType.Boolean) {
@@ -125,7 +126,7 @@ public final class TSDtFieldModel {
 				typescriptType = "string";
 			}
 		} else {
-			typescriptType = domain.getJavaClass().getSimpleName();
+			typescriptType = smartTypeDefinition.getJavaClass().getSimpleName();
 		}
 		return typescriptType + (withArray ? "[]" : "");
 	}

@@ -208,6 +208,18 @@ public final class DtObjectUtil {
 	}
 
 	/**
+	 * Finds the definition from a type of 'DtObject'
+	 * @param dtObjectClassName  the name of the 'DtObject'
+	 * @return the id
+	 */
+	public static DtDefinition findDtDefinition(final String className) {
+		Assertion.checkNotNull(className);
+		//-----
+		final String simpleName = className.substring(className.lastIndexOf('.') + 1);
+		return Home.getApp().getDefinitionSpace().resolve(simpleName, DtDefinition.class);
+	}
+
+	/**
 	 * Compare values.
 	 * @param sortDesc sort order
 	 * @param dtoObject1 value 1

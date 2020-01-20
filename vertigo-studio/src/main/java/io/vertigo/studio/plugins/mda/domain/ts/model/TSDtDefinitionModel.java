@@ -36,7 +36,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 public final class TSDtDefinitionModel {
 	private final DtDefinition dtDefinition;
 	private final List<TSDtFieldModel> dtFieldModels;
-	private final Set<TSDomainModel> domainModels;
+	private final Set<TSSmartTypeModel> domainModels;
 
 	/**
 	 * Constructeur.
@@ -57,7 +57,7 @@ public final class TSDtDefinitionModel {
 				.filter(dtField -> FieldType.COMPUTED != dtField.getType())
 				.map(DtField::getDomain)
 				.distinct()
-				.map(TSDomainModel::new)
+				.map(TSSmartTypeModel::new)
 				.collect(Collectors.toSet());
 	}
 
@@ -131,7 +131,7 @@ public final class TSDtDefinitionModel {
 	/**
 	 * @return Liste de domains
 	 */
-	public Set<TSDomainModel> getDomains() {
+	public Set<TSSmartTypeModel> getDomains() {
 		return domainModels;
 	}
 }

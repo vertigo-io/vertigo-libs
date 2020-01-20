@@ -19,7 +19,7 @@
 package io.vertigo.studio.plugins.mda.task.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 
@@ -75,7 +75,7 @@ public final class TaskAttributeModel {
 	/**
 	 * @return Domain.
 	 */
-	public Domain getDomain() {
+	public SmartTypeDefinition getSmartTypeDefinition() {
 		return taskAttribute.getDomain();
 	}
 }

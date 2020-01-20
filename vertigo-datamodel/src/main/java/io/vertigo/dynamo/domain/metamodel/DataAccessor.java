@@ -21,8 +21,10 @@ package io.vertigo.dynamo.domain.metamodel;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
 import io.vertigo.core.util.BeanUtil;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 
 /**
  * Permet d'accéder aux données d'un objet par son champ.
@@ -49,16 +51,17 @@ public final class DataAccessor {
 	 * @param value Object
 	 */
 	public void setValue(final DtObject dto, final Object value) {
+		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
 		//On vérifie le type java de l'objet.
 		if (dtField.getCardinality().hasMany()) {
 			if (!(value instanceof List)) {
 				throw new ClassCastException("Value " + value + " must be a list");
 			}
 			for (final Object element : List.class.cast(value)) {
-				dtField.getDomain().checkValue(element);
+				modelManager.checkValue(dtField.getDomain(), element);
 			}
 		} else {
-			dtField.getDomain().checkValue(value);
+			modelManager.checkValue(dtField.getDomain(), value);
 		}
 		//-----
 		BeanUtil.setValue(dto, dtField.getName(), value);

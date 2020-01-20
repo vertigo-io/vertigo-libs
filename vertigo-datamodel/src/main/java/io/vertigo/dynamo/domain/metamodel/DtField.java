@@ -28,6 +28,7 @@ import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 /**
  * This class defines the structure of a field.
@@ -87,7 +88,7 @@ public final class DtField {
 	private final String name;
 	private final FieldType type;
 	private final Cardinality cardinality;
-	private final DefinitionReference<Domain> domainRef;
+	private final DefinitionReference<SmartTypeDefinition> domainRef;
 	private final MessageText label;
 	private final boolean persistent;
 
@@ -120,7 +121,7 @@ public final class DtField {
 			final String id,
 			final String fieldName,
 			final FieldType type,
-			final Domain domain,
+			final SmartTypeDefinition domain,
 			final MessageText label,
 			final Cardinality cardinality,
 			final boolean persistent,
@@ -196,7 +197,7 @@ public final class DtField {
 	/**
 	 * @return the domain of the field
 	 */
-	public Domain getDomain() {
+	public SmartTypeDefinition getDomain() {
 		return domainRef.get();
 	}
 
@@ -253,7 +254,7 @@ public final class DtField {
 	 * @return the data accessor.
 	 */
 	public Class getTargetJavaClass() {
-		final Domain domain = getDomain();
+		final SmartTypeDefinition domain = getDomain();
 		if (cardinality.hasMany()) {
 			switch (domain.getScope()) {
 				case PRIMITIVE:

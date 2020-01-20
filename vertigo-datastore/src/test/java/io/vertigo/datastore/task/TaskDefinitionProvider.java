@@ -31,7 +31,7 @@ import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.util.ListBuilder;
-import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 
 public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
@@ -56,16 +56,16 @@ public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
 			final DefinitionSpace definitionSpace,
 			final String taskDefinitionName,
 			final String params) {
-		final Domain doInteger = definitionSpace.resolve("DoInteger", Domain.class);
+		final SmartTypeDefinition smartTypeInteger = definitionSpace.resolve("STyInteger", SmartTypeDefinition.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineMock.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineMock.class.getPackage().getName())
-				.addInAttribute(ATTR_IN_INT_1, doInteger, Cardinality.ONE)
-				.addInAttribute(ATTR_IN_INT_2, doInteger, Cardinality.ONE)
-				.addInAttribute(ATTR_IN_INT_3, doInteger, Cardinality.ONE)
-				.withOutAttribute(ATTR_OUT, doInteger, Cardinality.ONE)
+				.addInAttribute(ATTR_IN_INT_1, smartTypeInteger, Cardinality.ONE)
+				.addInAttribute(ATTR_IN_INT_2, smartTypeInteger, Cardinality.ONE)
+				.addInAttribute(ATTR_IN_INT_3, smartTypeInteger, Cardinality.ONE)
+				.withOutAttribute(ATTR_OUT, smartTypeInteger, Cardinality.ONE)
 				.build();
 	}
 
@@ -73,15 +73,14 @@ public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
 			final DefinitionSpace definitionSpace,
 			final String taskDefinitionName,
 			final String params) {
-		final Domain doIntegers = definitionSpace.resolve("DoInteger", Domain.class);
-		final Domain doInteger = definitionSpace.resolve("DoInteger", Domain.class);
+		final SmartTypeDefinition smartTypeInteger = definitionSpace.resolve("STyInteger", SmartTypeDefinition.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineMock2.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineMock.class.getPackage().getName())
-				.addInAttribute(ATTR_IN_INTEGERS, doIntegers, Cardinality.MANY)
-				.withOutAttribute(ATTR_OUT, doInteger, Cardinality.ONE)
+				.addInAttribute(ATTR_IN_INTEGERS, smartTypeInteger, Cardinality.MANY)
+				.withOutAttribute(ATTR_OUT, smartTypeInteger, Cardinality.ONE)
 				.build();
 	}
 }

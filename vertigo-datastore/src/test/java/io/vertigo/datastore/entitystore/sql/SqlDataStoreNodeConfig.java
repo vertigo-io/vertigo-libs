@@ -29,9 +29,11 @@ import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.StoreCacheDefinitionProvider;
+import io.vertigo.datastore.entitystore.data.DtDefinitions;
+import io.vertigo.datastore.entitystore.data.TestSmartTypes;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 /**
  * NodeConfig builder for SqlStore tests. (Params for db specificities)
@@ -65,9 +67,9 @@ public class SqlDataStoreNodeConfig {
 						.addPlugin(SqlEntityStorePlugin.class)
 						.build())
 				.addModule(ModuleConfig.builder("definition")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datastore/entitystore/data/execution.kpr")
-								.addDefinitionResource("classes", "io.vertigo.datastore.entitystore.data.DtDefinitions")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", DtDefinitions.class.getName())
 								.build())
 						.addDefinitionProvider(StoreCacheDefinitionProvider.class)
 						.build())

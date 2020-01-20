@@ -40,12 +40,13 @@ import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.task.data.TestSmartTypes;
 import io.vertigo.datastore.task.data.domain.SuperHero;
 import io.vertigo.datastore.task.data.domain.SuperHeroDataBase;
 import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
@@ -58,9 +59,9 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
 public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU5 {
 	private static final String DTC_SUPER_HERO_IN = "dtcSuperHeroIn";
 	private static final String SUPER_HERO_ID_LIST = "superHeroIdList";
-	private static final String DO_INTEGER = "DoInteger";
-	private static final String DO_ID = "DoId";
-	private static final String DO_DT_SUPER_HERO = "DoDtSuperHero";
+	private static final String STY_INTEGER = "STyInteger";
+	private static final String STY_ID = "STyId";
+	private static final String STY_DT_SUPER_HERO = "STyDtSuperHero";
 	private static final String DTO_SUPER_HERO = "dtoSuperHero";
 	@Inject
 	private TaskManager taskManager;
@@ -97,9 +98,9 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU5 {
 						.withSqlEntityStore()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datastore/task/data/execution.kpr")
-								.addDefinitionResource("classes", "io.vertigo.datastore.task.data.DtDefinitions")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", "io.vertigo.datastore.task.data.DtDefinitions")
 								.build())
 						.build())
 				.build();
@@ -475,54 +476,54 @@ public final class TaskEngineSelectDynamicTest extends AbstractTestCaseJU5 {
 	}
 
 	private TaskDefinition registerTaskWithNullableIn(final String taskDefinitionName, final String params) {
-		final Domain doInteger = getApp().getDefinitionSpace().resolve(DO_INTEGER, Domain.class);
-		final Domain doSuperHeroes = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO, Domain.class);
+		final SmartTypeDefinition smartTypeInteger = getApp().getDefinitionSpace().resolve(STY_INTEGER, SmartTypeDefinition.class);
+		final SmartTypeDefinition smartTypeSuperHeroe = getApp().getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInAttribute("param1", doInteger, Cardinality.OPTIONAL_OR_NULLABLE)
-				.addInAttribute("param2", doInteger, Cardinality.OPTIONAL_OR_NULLABLE)
-				.addInAttribute("param3", doInteger, Cardinality.OPTIONAL_OR_NULLABLE)
-				.withOutAttribute("dtc", doSuperHeroes, Cardinality.MANY)
+				.addInAttribute("param1", smartTypeInteger, Cardinality.OPTIONAL_OR_NULLABLE)
+				.addInAttribute("param2", smartTypeInteger, Cardinality.OPTIONAL_OR_NULLABLE)
+				.addInAttribute("param3", smartTypeInteger, Cardinality.OPTIONAL_OR_NULLABLE)
+				.withOutAttribute("dtc", smartTypeSuperHeroe, Cardinality.MANY)
 				.build();
 	}
 
 	private TaskDefinition registerTaskObject(final String taskDefinitionName, final String params) {
-		final Domain doSupeHero = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO, Domain.class);
+		final SmartTypeDefinition smartTypeSupeHero = getApp().getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInAttribute(DTO_SUPER_HERO, doSupeHero, Cardinality.ONE)
-				.withOutAttribute("dtc", doSupeHero, Cardinality.MANY)
+				.addInAttribute(DTO_SUPER_HERO, smartTypeSupeHero, Cardinality.ONE)
+				.withOutAttribute("dtc", smartTypeSupeHero, Cardinality.MANY)
 				.build();
 	}
 
 	private TaskDefinition registerTaskList(final String taskDefinitionName, final String params) {
-		final Domain doSupeHeroes = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO, Domain.class);
+		final SmartTypeDefinition smartTypeSupeHeroe = getApp().getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInAttribute(DTC_SUPER_HERO_IN, doSupeHeroes, Cardinality.MANY)
-				.withOutAttribute("dtc", doSupeHeroes, Cardinality.MANY)
+				.addInAttribute(DTC_SUPER_HERO_IN, smartTypeSupeHeroe, Cardinality.MANY)
+				.withOutAttribute("dtc", smartTypeSupeHeroe, Cardinality.MANY)
 				.build();
 	}
 
 	private TaskDefinition registerTaskListPrimitive(final String taskDefinitionName, final String params) {
-		final Domain doLongs = getApp().getDefinitionSpace().resolve(DO_ID, Domain.class);
-		final Domain doSupeHeroes = getApp().getDefinitionSpace().resolve(DO_DT_SUPER_HERO, Domain.class);
+		final SmartTypeDefinition smartTypeLong = getApp().getDefinitionSpace().resolve(STY_ID, SmartTypeDefinition.class);
+		final SmartTypeDefinition smartTypeSupeHeroe = getApp().getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class);
 
 		return TaskDefinition.builder(taskDefinitionName)
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(params)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.addInAttribute(SUPER_HERO_ID_LIST, doLongs, Cardinality.MANY)
-				.withOutAttribute("dtc", doSupeHeroes, Cardinality.MANY)
+				.addInAttribute(SUPER_HERO_ID_LIST, smartTypeLong, Cardinality.MANY)
+				.withOutAttribute("dtc", smartTypeSupeHeroe, Cardinality.MANY)
 				.build();
 	}
 

@@ -30,6 +30,7 @@ import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 /**
  * This class must be used to build a DtDefinition.
@@ -129,7 +130,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	public DtDefinitionBuilder addForeignKey(
 			final String fieldName,
 			final String label,
-			final Domain domain,
+			final SmartTypeDefinition domain,
 			final Cardinality cardinality,
 			final String fkDtDefinitionName) {
 		//Pour l'instant on ne gère pas les chamsp computed dynamiques
@@ -143,8 +144,8 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				persistent,
 				fkDtDefinitionName,
 				null);
-		//On suppose que le build est déjà effectué.
-		dtDefinition.registerDtField(dtField);
+		//On suppose que le build est déjà effectué. TODO: WTF
+		myFields.add(dtField);
 		return this;
 	}
 
@@ -160,7 +161,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	public DtDefinitionBuilder addComputedField(
 			final String fieldName,
 			final String label,
-			final Domain domain,
+			final SmartTypeDefinition domain,
 			final Cardinality cardinality,
 			final ComputedExpression computedExpression) {
 		final boolean persistent = false;
@@ -190,7 +191,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	public DtDefinitionBuilder addDataField(
 			final String fieldName,
 			final String label,
-			final Domain domain,
+			final SmartTypeDefinition domain,
 			final Cardinality cardinality,
 			final boolean persistent) {
 		//the field is dynamic if and only if the dtDefinition is dynamic
@@ -219,7 +220,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	public DtDefinitionBuilder addIdField(
 			final String fieldName,
 			final String label,
-			final Domain domain) {
+			final SmartTypeDefinition domain) {
 		Assertion.checkArgument(myIdField == null, "only one ID per Entity is permitted, error on {0}", myPackageName);
 		//---
 		//le champ ID est tjrs required
@@ -244,7 +245,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	private DtField createField(
 			final String fieldName,
 			final DtField.FieldType type,
-			final Domain domain,
+			final SmartTypeDefinition domain,
 			final String strLabel,
 			final Cardinality cardinality,
 			final boolean persistent,

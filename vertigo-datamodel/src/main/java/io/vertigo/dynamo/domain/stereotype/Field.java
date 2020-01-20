@@ -57,4 +57,9 @@ public @interface Field {
 	 * Persistance du champ.
 	 */
 	boolean persistent() default true;
+
+	/**
+	 * Foreign DtDefinition
+	 */
+	String fkDefinition() default "";
 }

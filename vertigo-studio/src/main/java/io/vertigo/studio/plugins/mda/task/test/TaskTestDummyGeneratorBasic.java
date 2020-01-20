@@ -27,7 +27,6 @@ import java.util.List;
 
 import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.lang.VSystemException;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -113,8 +112,7 @@ public class TaskTestDummyGeneratorBasic implements TaskTestDummyGenerator {
 		def.getFields().stream()
 				.filter(dtField -> dtField.getType() == FieldType.COMPUTED)// we don't treat computed field (no setter)
 				.forEach(dtField -> {
-					final Domain domain = dtField.getDomain();
-					final Class javaClass = domain.getJavaClass();
+					final Class javaClass = dtField.getDomain().getJavaClass();
 					final Object value;
 					if (dtField.getCardinality().hasMany()) {
 						if (dtField.getDomain().getScope().isDataObject()) {

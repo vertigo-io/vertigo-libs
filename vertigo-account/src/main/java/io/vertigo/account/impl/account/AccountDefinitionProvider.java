@@ -26,9 +26,9 @@ import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
+import io.vertigo.dynamo.ngdomain.FormatterConfig;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamox.domain.formatter.FormatterString;
 
 /**
@@ -45,11 +45,10 @@ public final class AccountDefinitionProvider implements SimpleDefinitionProvider
 	/** {@inheritDoc} */
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final FormatterDefinition formatterDefinition = new FormatterDefinition("FmtXAccountId", FormatterString.class.getName(), null);
-		final Domain domainAccountId = Domain.builder("DoXAccountId", DataType.String).withFormatter(formatterDefinition).build();
-		final Domain domainAccountName = Domain.builder("DoXAccountName", DataType.String).build();
-		final Domain domainAccountEmail = Domain.builder("DoXAccountEmail", DataType.String).build();
-		final Domain domainAccountPhoto = Domain.builder("DoXAccountPhoto", DataType.String).build();
+		final SmartTypeDefinition domainAccountId = SmartTypeDefinition.builder("DoXAccountId", DataType.String).withFormatter(new FormatterConfig(FormatterString.class, null)).build();
+		final SmartTypeDefinition domainAccountName = SmartTypeDefinition.builder("DoXAccountName", DataType.String).build();
+		final SmartTypeDefinition domainAccountEmail = SmartTypeDefinition.builder("DoXAccountEmail", DataType.String).build();
+		final SmartTypeDefinition domainAccountPhoto = SmartTypeDefinition.builder("DoXAccountPhoto", DataType.String).build();
 
 		final DtDefinition accountDtDefinition = DtDefinition.builder("DtAccount")
 				.addIdField(ID, "id", domainAccountId)

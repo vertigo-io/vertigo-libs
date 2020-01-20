@@ -27,7 +27,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.proxy.ProxyMethod;
-import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
@@ -44,8 +44,8 @@ public final class TaskProxyMethod implements ProxyMethod {
 		return io.vertigo.dynamo.task.proxy.TaskAnnotation.class;
 	}
 
-	private static Domain resolveDomain(final String domainName) {
-		return Home.getApp().getDefinitionSpace().resolve(domainName, Domain.class);
+	private static SmartTypeDefinition resolveSmartTypeDefinition(final String smartTypeName) {
+		return Home.getApp().getDefinitionSpace().resolve(smartTypeName, SmartTypeDefinition.class);
 	}
 
 	private static boolean hasOut(final Method method) {
@@ -62,10 +62,10 @@ public final class TaskProxyMethod implements ProxyMethod {
 		}
 	}
 
-	private static Domain findOutDomain(final Method method) {
+	private static SmartTypeDefinition findOutSmartType(final Method method) {
 		final TaskOutput taskOutput = method.getAnnotation(TaskOutput.class);
 		Assertion.checkNotNull(taskOutput, "The return method '{0}' must be annotated with '{1}'", method, TaskOutput.class);
-		return resolveDomain(taskOutput.domain());
+		return resolveSmartTypeDefinition(taskOutput.domain());
 	}
 
 	private static TaskManager getTaskManager() {
@@ -92,9 +92,9 @@ public final class TaskProxyMethod implements ProxyMethod {
 				.withDataSpace(taskAnnotation.dataSpace().isEmpty() ? null : taskAnnotation.dataSpace());
 
 		if (hasOut(method)) {
-			final Domain outDomain = findOutDomain(method);
+			final SmartTypeDefinition outSmartType = findOutSmartType(method);
 			final Cardinality outCardinality = getCardinality(method.getReturnType());
-			taskDefinitionBuilder.withOutAttribute("out", outDomain, outCardinality);
+			taskDefinitionBuilder.withOutAttribute("out", outSmartType, outCardinality);
 		}
 		for (final Parameter parameter : method.getParameters()) {
 			final TaskInput taskAttributeAnnotation = parameter.getAnnotation(TaskInput.class);
@@ -103,7 +103,7 @@ public final class TaskProxyMethod implements ProxyMethod {
 			//test if the parameter is an optional type
 			taskDefinitionBuilder.addInAttribute(
 					taskAttributeAnnotation.name(),
-					resolveDomain(taskAttributeAnnotation.domain()),
+					resolveSmartTypeDefinition(taskAttributeAnnotation.domain()),
 					inAttributeCardinality);
 		}
 

@@ -35,6 +35,8 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskAttribute;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
@@ -94,8 +96,8 @@ public final class DomainMetricsProvider implements Component {
 	}
 
 	@Metrics
-	public List<Metric> getDomainUsageTasksMetrics() {
-		return Home.getApp().getDefinitionSpace().getAll(Domain.class)
+	public List<Metric> getSmartTypeUsageTasksMetrics() {
+		return Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
 				.map(domain -> Metric.builder()
 						.withSuccess()
@@ -121,18 +123,18 @@ public final class DomainMetricsProvider implements Component {
 
 	}
 
-	private static double countTaskDependencies(final Domain domain) {
-		Assertion.checkNotNull(domain);
+	private static double countTaskDependencies(final SmartTypeDefinition smartTypeDefinition) {
+		Assertion.checkNotNull(smartTypeDefinition);
 		//---
 		int count = 0;
 		for (final TaskDefinition taskDefinition : Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)) {
 			for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
-				if (domain.equals(taskAttribute.getDomain())) {
+				if (smartTypeDefinition.equals(taskAttribute.getDomain())) {
 					count++;
 				}
 			}
 			if (taskDefinition.getOutAttributeOption().isPresent()) {
-				if (domain.equals(taskDefinition.getOutAttributeOption().get().getDomain())) {
+				if (smartTypeDefinition.equals(taskDefinition.getOutAttributeOption().get().getDomain())) {
 					count++;
 				}
 			}
@@ -166,7 +168,7 @@ public final class DomainMetricsProvider implements Component {
 
 	private static double count(final DtDefinition dtDefinition, final TaskAttribute taskAttribute) {
 		if (taskAttribute.getDomain().getScope().isDataObject()) {
-			if (dtDefinition.equals(taskAttribute.getDomain().getDtDefinition())) {
+			if (dtDefinition.equals(DtObjectUtil.findDtDefinition(taskAttribute.getDomain().getJavaClass()))) {
 				return 1;
 			}
 		}
