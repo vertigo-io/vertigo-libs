@@ -45,31 +45,31 @@ public final class AccountDefinitionProvider implements SimpleDefinitionProvider
 	/** {@inheritDoc} */
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final SmartTypeDefinition domainAccountId = SmartTypeDefinition.builder("DoXAccountId", DataType.String).withFormatter(new FormatterConfig(FormatterString.class, null)).build();
-		final SmartTypeDefinition domainAccountName = SmartTypeDefinition.builder("DoXAccountName", DataType.String).build();
-		final SmartTypeDefinition domainAccountEmail = SmartTypeDefinition.builder("DoXAccountEmail", DataType.String).build();
-		final SmartTypeDefinition domainAccountPhoto = SmartTypeDefinition.builder("DoXAccountPhoto", DataType.String).build();
+		final SmartTypeDefinition smartTypeAccountId = SmartTypeDefinition.builder("STyXAccountId", DataType.String).withFormatter(new FormatterConfig(FormatterString.class, null)).build();
+		final SmartTypeDefinition smartTypeAccountName = SmartTypeDefinition.builder("STyXAccountName", DataType.String).build();
+		final SmartTypeDefinition smartTypeAccountEmail = SmartTypeDefinition.builder("STyXAccountEmail", DataType.String).build();
+		final SmartTypeDefinition smartTypeAccountPhoto = SmartTypeDefinition.builder("STyXAccountPhoto", DataType.String).build();
 
 		final DtDefinition accountDtDefinition = DtDefinition.builder("DtAccount")
-				.addIdField(ID, "id", domainAccountId)
-				.addDataField(DISPLAY_NAME, "displayName", domainAccountName, Cardinality.OPTIONAL_OR_NULLABLE, true)
-				.addDataField(EMAIL, "email", domainAccountEmail, Cardinality.OPTIONAL_OR_NULLABLE, true)
-				.addDataField(PHOTO, "photo", domainAccountPhoto, Cardinality.OPTIONAL_OR_NULLABLE, true)
+				.addIdField(ID, "id", smartTypeAccountId)
+				.addDataField(DISPLAY_NAME, "displayName", smartTypeAccountName, Cardinality.OPTIONAL_OR_NULLABLE, true)
+				.addDataField(EMAIL, "email", smartTypeAccountEmail, Cardinality.OPTIONAL_OR_NULLABLE, true)
+				.addDataField(PHOTO, "photo", smartTypeAccountPhoto, Cardinality.OPTIONAL_OR_NULLABLE, true)
 				.withSortField(DISPLAY_NAME)
 				.withDisplayField(DISPLAY_NAME)
 				.build();
 
 		final DtDefinition accountGroupDtDefinition = DtDefinition.builder("DtAccountGroup")
-				.addIdField(ID, "id", domainAccountId)
-				.addDataField(DISPLAY_NAME, "displayName", domainAccountName, Cardinality.OPTIONAL_OR_NULLABLE, true)
+				.addIdField(ID, "id", smartTypeAccountId)
+				.addDataField(DISPLAY_NAME, "displayName", smartTypeAccountName, Cardinality.OPTIONAL_OR_NULLABLE, true)
 				.withSortField(DISPLAY_NAME)
 				.withDisplayField(DISPLAY_NAME)
 				.build();
 
 		return new ListBuilder<Definition>()
-				.add(domainAccountId)
-				.add(domainAccountName)
-				.add(domainAccountEmail)
+				.add(smartTypeAccountId)
+				.add(smartTypeAccountName)
+				.add(smartTypeAccountEmail)
 				.add(accountDtDefinition)
 				.add(accountGroupDtDefinition)
 				.build();

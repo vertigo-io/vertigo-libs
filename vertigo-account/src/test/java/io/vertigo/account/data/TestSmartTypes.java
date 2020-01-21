@@ -18,13 +18,13 @@ public enum TestSmartTypes {
 	@SmartTypeProperty(property = "storeType", value = "NUMERIC")
 	Id,
 
-	@SmartTypeDefinition(Long.class)
+	@SmartTypeDefinition(String.class)
 	@FormatterDefault
 	@Constraint(clazz = ConstraintStringLength.class, arg = "10", msg = "")
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(10)")
 	Code,
 
-	@SmartTypeDefinition(Long.class)
+	@SmartTypeDefinition(String.class)
 	@FormatterDefault
 	@Constraint(clazz = ConstraintStringLength.class, arg = "100", msg = "")
 	@SmartTypeProperty(property = "storeType", value = "VARCHAR(100)")

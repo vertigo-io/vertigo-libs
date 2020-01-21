@@ -19,14 +19,18 @@
 package io.vertigo.account.authentication.model;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.util.JsonMapper;
+import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
 /**
  * UserCredential.
  */
+@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class UserCredential implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -42,7 +46,7 @@ public final class UserCredential implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DoCode", type = "ID", cardinality = Cardinality.ONE, label = "Id")
+	@Field(domain = "STyCode", type = "ID", cardinality = Cardinality.ONE, label = "Id")
 	public String getUcrId() {
 		return ucrId;
 	}
@@ -51,7 +55,7 @@ public final class UserCredential implements KeyConcept {
 		this.ucrId = ucrId;
 	}
 
-	@Field(domain = "DoLabel", cardinality = Cardinality.ONE, label = "login")
+	@Field(domain = "STyLabel", cardinality = Cardinality.ONE, label = "login")
 	public String getLogin() {
 		return login;
 	}
@@ -60,7 +64,7 @@ public final class UserCredential implements KeyConcept {
 		this.login = login;
 	}
 
-	@Field(domain = "DoLabel", cardinality = Cardinality.ONE, label = "password")
+	@Field(domain = "STyLabel", cardinality = Cardinality.ONE, label = "password")
 	public String getPassword() {
 		return password;
 	}
@@ -69,7 +73,7 @@ public final class UserCredential implements KeyConcept {
 		this.password = password;
 	}
 
-	@Field(domain = "DoLabel", cardinality = Cardinality.ONE, label = "mail")
+	@Field(domain = "STyLabel", cardinality = Cardinality.ONE, label = "mail")
 	public String getMail() {
 		return mail;
 	}
