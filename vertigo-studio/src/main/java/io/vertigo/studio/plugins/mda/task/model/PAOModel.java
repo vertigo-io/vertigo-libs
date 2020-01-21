@@ -24,7 +24,7 @@ import java.util.Collections;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.dynamo.task.metamodel.StudioTaskDefinition;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 
 /**
@@ -41,7 +41,7 @@ public final class PAOModel {
 	/**
 	 * Constructor.
 	 */
-	public PAOModel(final FileGeneratorConfig fileGeneratorConfig, final Collection<TaskDefinition> taskDefinitionCollection, final String packageName) {
+	public PAOModel(final FileGeneratorConfig fileGeneratorConfig, final Collection<StudioTaskDefinition> taskDefinitionCollection, final String packageName) {
 		Assertion.checkNotNull(fileGeneratorConfig);
 		Assertion.checkNotNull(taskDefinitionCollection);
 		Assertion.checkArgument(!taskDefinitionCollection.isEmpty(), "Aucune tache dans le package {0}", packageName);
@@ -52,7 +52,7 @@ public final class PAOModel {
 		className = getLastPackagename(packageName) + "PAO";
 		boolean hasOption = false;
 		taskDefinitionModels = new ArrayList<>();
-		for (final TaskDefinition taskDefinition : taskDefinitionCollection) {
+		for (final StudioTaskDefinition taskDefinition : taskDefinitionCollection) {
 			final TaskDefinitionModel templateTaskDefinition = new TaskDefinitionModel(taskDefinition);
 			taskDefinitionModels.add(templateTaskDefinition);
 			hasOption = hasOption || templateTaskDefinition.hasOptions();

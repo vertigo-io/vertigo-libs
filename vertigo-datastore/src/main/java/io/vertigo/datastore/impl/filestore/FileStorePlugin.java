@@ -68,4 +68,10 @@ public interface FileStorePlugin extends Plugin {
 	 */
 	void delete(FileInfoURI uri);
 
+	/**
+	 * Get's the FileInfo Class that are handled by the particular plugin
+	 * @return
+	 */
+	Class<? extends FileInfo> getFileInfoClass();
+
 }

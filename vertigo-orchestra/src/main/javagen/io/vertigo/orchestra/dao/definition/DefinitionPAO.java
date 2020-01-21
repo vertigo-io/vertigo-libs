@@ -41,10 +41,18 @@ public final class DefinitionPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TkDisableOldProcessDefinitions.
+	 * Execute la tache StTkDisableOldProcessDefinitions.
 	 * @param name String
 	*/
-	public void disableOldProcessDefinitions(final String name) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkDisableOldProcessDefinitions",
+			request = "update o_process " + 
+ "        	set ACTIVE_VERSION = false," + 
+ "        		NEED_UPDATE = false" + 
+ "        	where NAME = #name#",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineProc.class)
+	public void disableOldProcessDefinitions(@io.vertigo.dynamo.task.proxy.TaskInput(name = "name", domain = "STyOLibelle") final String name) {
 		final Task task = createTaskBuilder("TkDisableOldProcessDefinitions")
 				.addValue("name", name)
 				.build();
@@ -52,11 +60,20 @@ public final class DefinitionPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TkGetProcessesByName.
+	 * Execute la tache StTkGetProcessesByName.
 	 * @param name String
 	 * @return Integer nombre
 	*/
-	public Integer getProcessesByName(final String name) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetProcessesByName",
+			request = "select " + 
+ "        		count(*)" + 
+ "        	from o_process pro" + 
+ "        	where pro.NAME = #name#",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyONombre")
+	public Integer getProcessesByName(@io.vertigo.dynamo.task.proxy.TaskInput(name = "name", domain = "STyOLibelle") final String name) {
 		final Task task = createTaskBuilder("TkGetProcessesByName")
 				.addValue("name", name)
 				.build();

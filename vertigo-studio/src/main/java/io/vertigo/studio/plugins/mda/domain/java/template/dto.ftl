@@ -25,6 +25,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 <#list annotations(dtDefinition.dtDefinition) as annotation>
 ${annotation}
 </#list>
+@io.vertigo.dynamo.ngdomain.annotations.Mapper(clazz = io.vertigo.dynamo.domain.util.JsonMapper.class, dataType = io.vertigo.dynamo.domain.metamodel.DataType.String)
 public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.stereotypeInterfaceName} {
 	private static final long serialVersionUID = 1L;
 

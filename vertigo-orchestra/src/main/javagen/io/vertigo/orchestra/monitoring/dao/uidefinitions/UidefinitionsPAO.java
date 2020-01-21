@@ -41,11 +41,27 @@ public final class UidefinitionsPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TkGetProcessByName.
+	 * Execute la tache StTkGetProcessByName.
 	 * @param name String
 	 * @return OProcessUi dtOProcessUi
 	*/
-	public io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi getProcessByName(final String name) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetProcessByName",
+			request = "select  pro.PRO_ID as PRO_ID," + 
+ "        			pro.NAME as NAME," + 
+ "        			pro.LABEL as LABEL," + 
+ "        			pro.CRON_EXPRESSION as CRON_EXPRESSION," + 
+ "        			pro.INITIAL_PARAMS as INITIAL_PARAMS," + 
+ "        			pro.MULTIEXECUTION as MULTIEXECUTION," + 
+ "        			pro.ACTIVE as ACTIVE," + 
+ "        			pro.RESCUE_PERIOD as RESCUE_PERIOD," + 
+ "        			pro.METADATAS as METADATAS" + 
+ "        	from o_process pro   " + 
+ "        	where pro.NAME = #name# and pro.ACTIVE_VERSION is true",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOProcessUi")
+	public io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi getProcessByName(@io.vertigo.dynamo.task.proxy.TaskInput(name = "name", domain = "STyOLibelle") final String name) {
 		final Task task = createTaskBuilder("TkGetProcessByName")
 				.addValue("name", name)
 				.build();
@@ -55,11 +71,27 @@ public final class UidefinitionsPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TkSearchProcessByLabel.
+	 * Execute la tache StTkSearchProcessByLabel.
 	 * @param search String
 	 * @return DtList de OProcessUi dtcOProcessUi
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi> searchProcessByLabel(final String search) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkSearchProcessByLabel",
+			request = "select  pro.PRO_ID as PRO_ID," + 
+ "        			pro.NAME as NAME," + 
+ "        			pro.LABEL as LABEL," + 
+ "        			pro.CRON_EXPRESSION as CRON_EXPRESSION," + 
+ "        			pro.INITIAL_PARAMS as INITIAL_PARAMS," + 
+ "        			pro.MULTIEXECUTION as MULTIEXECUTION," + 
+ "        			pro.ACTIVE as ACTIVE," + 
+ "        			pro.RESCUE_PERIOD as RESCUE_PERIOD," + 
+ "        			pro.METADATAS as METADATAS" + 
+ "        	from o_process pro   " + 
+ "        	where lower(pro.LABEL) like lower(#search#)  and pro.ACTIVE_VERSION is true",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOProcessUi")
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi> searchProcessByLabel(@io.vertigo.dynamo.task.proxy.TaskInput(name = "search", domain = "STyOLibelle") final String search) {
 		final Task task = createTaskBuilder("TkSearchProcessByLabel")
 				.addValue("search", search)
 				.build();

@@ -20,6 +20,7 @@ package io.vertigo.account.authorization.model;
 
 import io.vertigo.account.authorization.annotations.Secured;
 import io.vertigo.account.authorization.annotations.SecuredOperation;
+import io.vertigo.account.data.model.Record;
 import io.vertigo.core.node.component.Component;
 
 /**

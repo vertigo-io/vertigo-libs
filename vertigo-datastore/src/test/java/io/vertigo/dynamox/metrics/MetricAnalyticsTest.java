@@ -39,12 +39,11 @@ import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.datastore.task.SuperHeroDao;
 import io.vertigo.datastore.task.data.TestSmartTypes;
 import io.vertigo.datastore.task.data.domain.SuperHeroDataBase;
-import io.vertigo.datastore.task.x.SuperHeroDao;
 import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
 import io.vertigo.dynamox.metric.task.TasksMetricsProvider;
@@ -96,9 +95,6 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", "io.vertigo.datastore.task.data.DtDefinitions")
 								.build())
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datastore/task/data/task.kpr")
-								.build())
 						.addProxy(SuperHeroDao.class)
 						.build())
 				.addModule(ModuleConfig.builder("analytics-metric")
@@ -119,6 +115,6 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 	public void testAnalyze() {
 		final List<Metric> metrics = analyticsManager.getMetrics();
 		//---
-		Assertions.assertEquals(24, metrics.size());
+		Assertions.assertEquals(11, metrics.size());
 	}
 }

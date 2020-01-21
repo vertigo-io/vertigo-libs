@@ -19,7 +19,7 @@
 package io.vertigo.studio.plugins.mda.task.test;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.dynamo.task.metamodel.StudioTaskDefinition;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 
 /**
@@ -38,7 +38,7 @@ public final class TemplateAoTaskTest {
 	 */
 	TemplateAoTaskTest(
 			final FileGeneratorConfig taskConfiguration,
-			final TaskDefinition taskDefinition,
+			final StudioTaskDefinition taskDefinition,
 			final String packageName,
 			final String classSimpleName,
 			final String daoTestBaseClass) {
@@ -49,7 +49,7 @@ public final class TemplateAoTaskTest {
 		this.packageName = packageName;
 
 		this.classSimpleName = classSimpleName;
-		this.templateTaskDefinition = new TemplateTaskDefinition(taskDefinition, packageName, classSimpleName);
+		templateTaskDefinition = new TemplateTaskDefinition(taskDefinition, packageName, classSimpleName);
 		this.daoTestBaseClass = daoTestBaseClass;
 	}
 

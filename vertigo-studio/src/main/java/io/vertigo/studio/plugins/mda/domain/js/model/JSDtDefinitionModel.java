@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
+import io.vertigo.dynamo.domain.metamodel.StudioDtField;
 
 /**
  * Model used by FreeMarker.
@@ -31,29 +31,29 @@ import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
  * @author pchretien
  */
 public final class JSDtDefinitionModel {
-	private final DtDefinition dtDefinition;
-	private final List<JSDtFieldModel> dtFieldModels;
+	private final StudioDtDefinition dtDefinition;
+	private final List<JSStudioDtFieldModel> dtFieldModels;
 
 	/**
 	 * Constructeur.
 	 *
 	 * @param dtDefinition DtDefinition de l'objet à générer
 	 */
-	public JSDtDefinitionModel(final DtDefinition dtDefinition) {
+	public JSDtDefinitionModel(final StudioDtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		this.dtDefinition = dtDefinition;
 
 		dtFieldModels = dtDefinition.getFields().stream()
-				.filter(dtField -> FieldType.COMPUTED != dtField.getType())
-				.map(JSDtFieldModel::new)
+				.filter(dtField -> StudioDtField.FieldType.COMPUTED != dtField.getType())
+				.map(JSStudioDtFieldModel::new)
 				.collect(Collectors.toList());
 	}
 
 	/**
 	 * @return DT définition
 	 */
-	public DtDefinition getDtDefinition() {
+	public StudioDtDefinition getDtDefinition() {
 		return dtDefinition;
 	}
 
@@ -67,7 +67,7 @@ public final class JSDtDefinitionModel {
 	/**
 	 * @return Liste de champs
 	 */
-	public List<JSDtFieldModel> getFields() {
+	public List<JSStudioDtFieldModel> getFields() {
 		return dtFieldModels;
 	}
 }

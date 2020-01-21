@@ -42,6 +42,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.VCollectors;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 
 /**
  * Implémentation du gestionnaire de la manipulation des collections.
@@ -58,11 +59,13 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	 * @param indexPluginOpt Plugin optionnel d'index
 	 */
 	@Inject
-	public CollectionsManagerImpl(final Optional<IndexPlugin> indexPluginOpt) {
+	public CollectionsManagerImpl(
+			final ModelManager modelManager,
+			final Optional<IndexPlugin> indexPluginOpt) {
 		Assertion.checkNotNull(indexPluginOpt);
 		//-----
 		this.indexPluginOpt = indexPluginOpt;
-		facetFactory = new FacetFactory(this);
+		facetFactory = new FacetFactory(this, modelManager);
 	}
 
 	/** {@inheritDoc} */

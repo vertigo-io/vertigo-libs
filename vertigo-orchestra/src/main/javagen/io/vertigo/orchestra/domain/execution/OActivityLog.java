@@ -13,6 +13,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  */
 @Generated
 @io.vertigo.dynamo.domain.stereotype.DataSpace("orchestra")
+@io.vertigo.dynamo.ngdomain.annotations.Mapper(clazz = io.vertigo.dynamo.domain.util.JsonMapper.class, dataType = io.vertigo.dynamo.domain.metamodel.DataType.String)
 public final class OActivityLog implements Entity {
 	private static final long serialVersionUID = 1L;
 
@@ -46,7 +47,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'Id du log'.
 	 * @return Long aclId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id du log")
+	@Field(domain = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id du log")
 	public Long getAclId() {
 		return aclId;
 	}
@@ -65,7 +66,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'Contenu du log'.
 	 * @return String log
 	 */
-	@Field(domain = "DoOText", label = "Contenu du log")
+	@Field(domain = "STyOText", label = "Contenu du log")
 	public String getLog() {
 		return log;
 	}
@@ -84,7 +85,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'Fichier joint'.
 	 * @return String attachment
 	 */
-	@Field(domain = "DoOText", label = "Fichier joint")
+	@Field(domain = "STyOText", label = "Fichier joint")
 	public String getAttachment() {
 		return attachment;
 	}
@@ -103,7 +104,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'ActivityExecution'.
 	 * @return Long aceId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "ActivityExecution")
+	@io.vertigo.dynamo.domain.stereotype.ForeignKey(domain = "STyOIdentifiant", label = "ActivityExecution", fkDefinition = "DtOActivityExecution" )
 	public Long getAceId() {
 		return (Long) aceIdAccessor.getId();
 	}

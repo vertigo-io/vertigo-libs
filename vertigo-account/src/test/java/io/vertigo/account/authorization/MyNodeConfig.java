@@ -21,14 +21,16 @@ package io.vertigo.account.authorization;
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.authorization.model.FullSecuredServices;
 import io.vertigo.account.authorization.model.PartialSecuredServices;
+import io.vertigo.account.data.TestSmartTypes;
 import io.vertigo.account.data.TestUserSession;
+import io.vertigo.account.data.model.DtDefinitions;
 import io.vertigo.account.plugins.authorization.loaders.JsonSecurityDefinitionProvider;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 public final class MyNodeConfig {
 
@@ -44,10 +46,11 @@ public final class MyNodeConfig {
 						.withAuthorization()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addAllParams(Param.of("encoding", "utf-8"))
-								.addDefinitionResource("kpr", "security/generation.kpr")
-								.build())
+						.addDefinitionProvider(
+								DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+										.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
+										.addDefinitionResource("dtobjects", DtDefinitions.class.getName())
+										.build())
 						.addDefinitionProvider(DefinitionProviderConfig.builder(JsonSecurityDefinitionProvider.class)
 								.addDefinitionResource("security", "io/vertigo/account/authorization/advanced-auth-config-v2.json")
 								.build())

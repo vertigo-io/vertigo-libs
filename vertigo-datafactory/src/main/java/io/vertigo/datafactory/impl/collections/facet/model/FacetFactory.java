@@ -40,6 +40,7 @@ import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.VCollectors;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 
 /**
  * Factory de FacetedQueryDefinition.
@@ -48,15 +49,20 @@ import io.vertigo.dynamo.domain.util.VCollectors;
  */
 public final class FacetFactory {
 	private final CollectionsManager collectionManager;
+	private final ModelManager modelManager;
 
 	/**
 	 * Constructor.
 	 * @param collectionManager Collections Manager
 	 */
-	public FacetFactory(final CollectionsManager collectionManager) {
+	public FacetFactory(
+			final CollectionsManager collectionManager,
+			final ModelManager modelManager) {
 		Assertion.checkNotNull(collectionManager);
+		Assertion.checkNotNull(modelManager);
 		//-----
 		this.collectionManager = collectionManager;
+		this.modelManager = modelManager;
 	}
 
 	/**
@@ -130,7 +136,7 @@ public final class FacetFactory {
 		return clusterValues;
 	}
 
-	private static <D extends DtObject> Facet createTermFacet(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+	private <D extends DtObject> Facet createTermFacet(final FacetDefinition facetDefinition, final DtList<D> dtList) {
 		final Map<FacetValue, DtList<D>> clusterValues = createTermCluster(facetDefinition, dtList);
 		//map résultat avec le count par FacetFilter
 		final Map<FacetValue, Long> facetValues = new LinkedHashMap<>();
@@ -138,7 +144,7 @@ public final class FacetFactory {
 		return new Facet(facetDefinition, facetValues);
 	}
 
-	private static <D extends DtObject> Map<FacetValue, DtList<D>> createTermCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
+	private <D extends DtObject> Map<FacetValue, DtList<D>> createTermCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
 		//map résultat avec les docs par FacetFilter
 		final Map<FacetValue, DtList<D>> clusterValues = new LinkedHashMap<>();
 
@@ -152,7 +158,7 @@ public final class FacetFactory {
 			final Object value = dtField.getDataAccessor().getValue(dto);
 			facetValue = facetFilterIndex.get(value);
 			if (facetValue == null) {
-				final String valueAsString = dtField.getDomain().valueToString(value);
+				final String valueAsString = modelManager.valueToString(dtField.getDomain(), value);
 				final String label;
 				if (StringUtil.isEmpty(valueAsString)) {
 					label = "_empty_";

@@ -27,14 +27,14 @@ import java.util.Map;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Home;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
+import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
+import io.vertigo.dynamo.domain.metamodel.StudioDtField;
+import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationNNDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
-import io.vertigo.dynamo.task.metamodel.TaskAttribute;
+import io.vertigo.dynamo.task.metamodel.StudioTaskAttribute;
 
 /**
  * Helper.
@@ -56,7 +56,7 @@ public final class DomainUtil {
 	 * @param dtField the field
 	 * @return String
 	 */
-	public static String buildJavaType(final DtField dtField) {
+	public static String buildJavaType(final StudioDtField dtField) {
 		return buildJavaType(dtField.getDomain(), dtField.getCardinality(), getManyTargetJavaClass(dtField.getDomain()));
 	}
 
@@ -66,7 +66,7 @@ public final class DomainUtil {
 	 * @param taskAttribute the attribute
 	 * @return String
 	 */
-	public static String buildJavaType(final TaskAttribute taskAttribute) {
+	public static String buildJavaType(final StudioTaskAttribute taskAttribute) {
 		return buildJavaType(taskAttribute.getDomain(), taskAttribute.getCardinality(), getManyTargetJavaClass(taskAttribute.getDomain()));
 	}
 
@@ -76,7 +76,7 @@ public final class DomainUtil {
 	 * @param dtField DtField
 	 * @return String
 	 */
-	public static String buildJavaTypeLabel(final DtField dtField) {
+	public static String buildJavaTypeLabel(final StudioDtField dtField) {
 		return buildJavaTypeLabel(dtField.getDomain(), dtField.getCardinality(), getManyTargetJavaClass(dtField.getDomain()));
 	}
 
@@ -86,12 +86,12 @@ public final class DomainUtil {
 	 * @param taskAttribute the attribute
 	 * @return String
 	 */
-	public static String buildJavaTypeLabel(final TaskAttribute taskAttribute) {
+	public static String buildJavaTypeLabel(final StudioTaskAttribute taskAttribute) {
 		return buildJavaTypeLabel(taskAttribute.getDomain(), taskAttribute.getCardinality(), getManyTargetJavaClass(taskAttribute.getDomain()));
 	}
 
-	private static Class getManyTargetJavaClass(final SmartTypeDefinition smartTypeDefinition) {
-		switch (smartTypeDefinition.getScope()) {
+	private static Class getManyTargetJavaClass(final Domain domain) {
+		switch (domain.getScope()) {
 			case DATA_OBJECT:
 				return DtList.class;
 			case PRIMITIVE:
@@ -102,11 +102,11 @@ public final class DomainUtil {
 		}
 	}
 
-	private static String buildJavaType(final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality, final Class manyTargetClass) {
+	private static String buildJavaType(final Domain domain, final Cardinality cardinality, final Class manyTargetClass) {
 		final String className;
-		switch (smartTypeDefinition.getScope()) {
+		switch (domain.getScope()) {
 			case PRIMITIVE:
-				String javaType = smartTypeDefinition.getJavaClass().getName();
+				String javaType = domain.getJavaClass().getName();
 
 				//On simplifie l'écriture des types primitifs
 				//java.lang.String => String
@@ -116,8 +116,10 @@ public final class DomainUtil {
 				className = javaType;
 				break;
 			case DATA_OBJECT:
+				className = domain.getDtDefinition().getClassCanonicalName();
+				break;
 			case VALUE_OBJECT:
-				className = smartTypeDefinition.getJavaClass().getName();
+				className = domain.getJavaClass().getName();
 				break;
 			default:
 				throw new IllegalStateException();
@@ -128,28 +130,41 @@ public final class DomainUtil {
 		return className;
 	}
 
-	public static String buildJavaTypeLabel(final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality, final Class manyTargetClass) {
-		final String classLabel = smartTypeDefinition.getJavaClass().getSimpleName();
+	public static String buildJavaTypeLabel(final Domain domain, final Cardinality cardinality, final Class manyTargetClass) {
+		final String classLabel;
+		switch (domain.getScope()) {
+			case PRIMITIVE:
+				classLabel = domain.getJavaClass().getSimpleName();
+				break;
+			case DATA_OBJECT:
+				classLabel = domain.getDtDefinition().getClassSimpleName();
+				break;
+			case VALUE_OBJECT:
+				classLabel = domain.getJavaClass().getSimpleName();
+				break;
+			default:
+				throw new IllegalStateException();
+		}
 		if (cardinality.hasMany()) {
 			return manyTargetClass.getSimpleName() + " de " + classLabel;
 		}
 		return classLabel;
 	}
 
-	public static Collection<DtDefinition> getDtDefinitions() {
-		return sortDefinitionCollection(Home.getApp().getDefinitionSpace().getAll(DtDefinition.class));
+	public static Collection<StudioDtDefinition> getDtDefinitions() {
+		return sortDefinitionCollection(Home.getApp().getDefinitionSpace().getAll(StudioDtDefinition.class));
 	}
 
-	public static Map<String, Collection<DtDefinition>> getDtDefinitionCollectionMap() {
+	public static Map<String, Collection<StudioDtDefinition>> getDtDefinitionCollectionMap() {
 		return getDefinitionCollectionMap(getDtDefinitions());
 	}
 
-	public static Collection<AssociationSimpleDefinition> getSimpleAssociations() {
-		return sortAssociationsCollection(Home.getApp().getDefinitionSpace().getAll(AssociationSimpleDefinition.class));
+	public static Collection<StudioAssociationSimpleDefinition> getSimpleAssociations() {
+		return sortAssociationsCollection(Home.getApp().getDefinitionSpace().getAll(StudioAssociationSimpleDefinition.class));
 	}
 
-	public static Collection<AssociationNNDefinition> getNNAssociations() {
-		return sortAssociationsCollection(Home.getApp().getDefinitionSpace().getAll(AssociationNNDefinition.class));
+	public static Collection<StudioAssociationNNDefinition> getNNAssociations() {
+		return sortAssociationsCollection(Home.getApp().getDefinitionSpace().getAll(StudioAssociationNNDefinition.class));
 	}
 
 	/**
@@ -157,9 +172,9 @@ public final class DomainUtil {
 	 * @param definitionCollection collection à trier
 	 * @return collection triée
 	 */
-	public static List<DtDefinition> sortDefinitionCollection(final Collection<DtDefinition> definitionCollection) {
-		final List<DtDefinition> list = new ArrayList<>(definitionCollection);
-		list.sort(Comparator.comparing(DtDefinition::getName));
+	public static List<StudioDtDefinition> sortDefinitionCollection(final Collection<StudioDtDefinition> definitionCollection) {
+		final List<StudioDtDefinition> list = new ArrayList<>(definitionCollection);
+		list.sort(Comparator.comparing(StudioDtDefinition::getName));
 		return list;
 	}
 
@@ -167,10 +182,10 @@ public final class DomainUtil {
 	 * @param definitionCollection collection à traiter
 	 * @return map ayant le package name en clef
 	 */
-	private static Map<String, Collection<DtDefinition>> getDefinitionCollectionMap(final Collection<DtDefinition> definitions) {
-		final Map<String, Collection<DtDefinition>> map = new LinkedHashMap<>();
+	private static Map<String, Collection<StudioDtDefinition>> getDefinitionCollectionMap(final Collection<StudioDtDefinition> definitions) {
+		final Map<String, Collection<StudioDtDefinition>> map = new LinkedHashMap<>();
 
-		for (final DtDefinition definition : definitions) {
+		for (final StudioDtDefinition definition : definitions) {
 			map.computeIfAbsent(definition.getPackageName(),
 					k -> new ArrayList<>())
 					.add(definition);
@@ -178,9 +193,9 @@ public final class DomainUtil {
 		return map;
 	}
 
-	private static <A extends AssociationDefinition> Collection<A> sortAssociationsCollection(final Collection<A> associationCollection) {
+	private static <A extends StudioAssociationDefinition> Collection<A> sortAssociationsCollection(final Collection<A> associationCollection) {
 		final List<A> list = new ArrayList<>(associationCollection);
-		list.sort(Comparator.comparing(AssociationDefinition::getName));
+		list.sort(Comparator.comparing(StudioAssociationDefinition::getName));
 		return list;
 	}
 }

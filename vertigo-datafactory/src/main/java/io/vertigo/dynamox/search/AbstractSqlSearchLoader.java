@@ -32,7 +32,6 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtList;
@@ -40,6 +39,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
@@ -54,7 +54,7 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
  */
 public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends KeyConcept, I extends DtObject> extends AbstractSearchLoader<P, S, I> {
 
-	private static final String DOMAIN_PREFIX = DefinitionUtil.getPrefix(Domain.class);
+	private static final String SMART_TYPE_PREFIX = DefinitionUtil.getPrefix(SmartTypeDefinition.class);
 	private static final int SEARCH_CHUNK_SIZE = 500;
 	private final TaskManager taskManager;
 	private final VTransactionManager transactionManager;
@@ -96,7 +96,7 @@ public abstract class AbstractSqlSearchLoader<P extends Serializable, S extends 
 					.withDataSpace(dtDefinition.getDataSpace())
 					.withRequest(request)
 					.addInAttribute(idFieldName, idField.getDomain(), Cardinality.ONE)
-					.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(DOMAIN_PREFIX + dtDefinition.getName(), Domain.class), Cardinality.MANY)
+					.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 					.build();
 
 			final Task task = Task.builder(taskDefinition)

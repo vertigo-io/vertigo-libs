@@ -10,6 +10,7 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.execution.OActivityExecution;
 
@@ -26,8 +27,8 @@ public final class OActivityExecutionDAO extends DAO<OActivityExecution, java.la
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public OActivityExecutionDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
-		super(OActivityExecution.class, entityStoreManager, taskManager);
+	public OActivityExecutionDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
+		super(OActivityExecution.class, entityStoreManager, taskManager, modelManager);
 	}
 
 
@@ -42,11 +43,21 @@ public final class OActivityExecutionDAO extends DAO<OActivityExecution, java.la
 	}
 
 	/**
-	 * Execute la tache TkGetActivitiesToLaunch.
+	 * Execute la tache StTkGetActivitiesToLaunch.
 	 * @param nodId Long
 	 * @return DtList de OActivityExecution dtcActivityExecution
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivitiesToLaunch(final Long nodId) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetActivitiesToLaunch",
+			request = "select " + 
+ "        		ace.*" + 
+ "        	from o_activity_execution ace" + 
+ "        	where ace.EST_CD = 'RESERVED'" + 
+ "        	and ace.NOD_ID = #nodId#",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOActivityExecution")
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivitiesToLaunch(@io.vertigo.dynamo.task.proxy.TaskInput(name = "nodId", domain = "STyOIdentifiant") final Long nodId) {
 		final Task task = createTaskBuilder("TkGetActivitiesToLaunch")
 				.addValue("nodId", nodId)
 				.build();
@@ -56,12 +67,22 @@ public final class OActivityExecutionDAO extends DAO<OActivityExecution, java.la
 	}
 
 	/**
-	 * Execute la tache TkGetActivityExecutionByToken.
+	 * Execute la tache StTkGetActivityExecutionByToken.
 	 * @param aceId Long
 	 * @param token String
 	 * @return OActivityExecution dtActivityExecution
 	*/
-	public io.vertigo.orchestra.domain.execution.OActivityExecution getActivityExecutionByToken(final Long aceId, final String token) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetActivityExecutionByToken",
+			request = "select " + 
+ "        		ace.*" + 
+ "        	from o_activity_execution ace" + 
+ "        	where ace.ACE_ID = #aceId#" + 
+ "        	and ace.TOKEN = #token#",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOActivityExecution")
+	public io.vertigo.orchestra.domain.execution.OActivityExecution getActivityExecutionByToken(@io.vertigo.dynamo.task.proxy.TaskInput(name = "aceId", domain = "STyOIdentifiant") final Long aceId, @io.vertigo.dynamo.task.proxy.TaskInput(name = "token", domain = "STyOToken") final String token) {
 		final Task task = createTaskBuilder("TkGetActivityExecutionByToken")
 				.addValue("aceId", aceId)
 				.addValue("token", token)
@@ -72,11 +93,19 @@ public final class OActivityExecutionDAO extends DAO<OActivityExecution, java.la
 	}
 
 	/**
-	 * Execute la tache TkGetActivityExecutionsByPreId.
+	 * Execute la tache StTkGetActivityExecutionsByPreId.
 	 * @param preId Long
 	 * @return DtList de OActivityExecution dtcOActivityExecution
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivityExecutionsByPreId(final Long preId) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetActivityExecutionsByPreId",
+			request = "select ace.*" + 
+ "        	from o_activity_execution ace" + 
+ "        	where ace.PRE_ID = #preId#",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOActivityExecution")
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OActivityExecution> getActivityExecutionsByPreId(@io.vertigo.dynamo.task.proxy.TaskInput(name = "preId", domain = "STyOIdentifiant") final Long preId) {
 		final Task task = createTaskBuilder("TkGetActivityExecutionsByPreId")
 				.addValue("preId", preId)
 				.build();

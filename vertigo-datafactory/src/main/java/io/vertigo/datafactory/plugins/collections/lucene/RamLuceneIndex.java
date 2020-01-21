@@ -63,6 +63,7 @@ import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 
 /**
  * Implémentation Ram de l'index Lucene.
@@ -83,17 +84,22 @@ final class RamLuceneIndex<D extends DtObject> {
 
 	private final Analyzer indexAnalyser;
 	private final RamLuceneQueryFactory luceneQueryFactory;
+	private final ModelManager modelManager;
 
 	/**
 	 * @param dtDefinition DtDefinition des objets indexés
 	 * @throws IOException Exception I/O
 	 */
-	RamLuceneIndex(final DtDefinition dtDefinition) throws IOException {
+	RamLuceneIndex(
+			final DtDefinition dtDefinition,
+			final ModelManager modelManager) throws IOException {
 		Assertion.checkNotNull(dtDefinition);
+		Assertion.checkNotNull(modelManager);
 		//-----
 		indexAnalyser = new DefaultAnalyzer(false); //les stop word marchent mal si asymétrique entre l'indexation et la query
 		luceneQueryFactory = new RamLuceneQueryFactory(indexAnalyser);
 		this.dtDefinition = dtDefinition;
+		this.modelManager = modelManager;
 		directory = new RAMDirectory();
 
 		//l'index est crée automatiquement la premiere fois.
@@ -191,7 +197,7 @@ final class RamLuceneIndex<D extends DtObject> {
 					final Object value = dtField.getDataAccessor().getValue(dto);
 					if (value != null && !dtField.equals(idField)) {
 						if (value instanceof String) {
-							final String valueAsString = getStringValue(dto, dtField);
+							final String valueAsString = getStringValue(dto, dtField, modelManager);
 							addIndexed(document, dtField.getName(), valueAsString, storeValue);
 						} else if (value instanceof Date) {
 							final String valueAsString = DateTools.dateToString((Date) value, DateTools.Resolution.DAY);
@@ -211,7 +217,7 @@ final class RamLuceneIndex<D extends DtObject> {
 		return Home.getApp().getComponentSpace().resolve(EntityStoreManager.class);
 	}
 
-	private static String getStringValue(final DtObject dto, final DtField field) {
+	private static String getStringValue(final DtObject dto, final DtField field, final ModelManager modelManager) {
 		final String stringValue;
 		final Object value = field.getDataAccessor().getValue(dto);
 		if (value != null) {
@@ -222,7 +228,7 @@ final class RamLuceneIndex<D extends DtObject> {
 				final UID<Entity> uid = UID.of(field.getFkDtDefinition(), value);
 				final DtObject fkDto = getEntityStoreManager().readOne(uid);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
-				stringValue = displayField.getDomain().valueToString(displayValue);
+				stringValue = modelManager.valueToString(displayField.getDomain(), displayValue);
 			} else {
 				stringValue = String.valueOf(field.getDataAccessor().getValue(dto));
 			}

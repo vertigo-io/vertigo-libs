@@ -53,16 +53,21 @@ abstract class AbstractDbFileStorePlugin {
 	 */
 	private final boolean readOnly;
 	private final String name;
+	private final String fileInfoClassName;
 
 	/**
 	 * Constructor.
 	 * @param name Store name
 	 */
-	AbstractDbFileStorePlugin(@ParamValue("name") final Optional<String> name) {
+	AbstractDbFileStorePlugin(
+			@ParamValue("name") final Optional<String> name,
+			final String fileInfoClassName) {
 		Assertion.checkNotNull(name);
+		Assertion.checkArgNotEmpty(fileInfoClassName);
 		//-----
 		readOnly = false;
 		this.name = name.orElse(FileStoreManager.MAIN_DATA_SPACE_NAME);
+		this.fileInfoClassName = fileInfoClassName;
 	}
 
 	/**
@@ -70,6 +75,13 @@ abstract class AbstractDbFileStorePlugin {
 	 */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * @return the fileInfo className
+	 */
+	public String getFileInfoClassName() {
+		return fileInfoClassName;
 	}
 
 	/**

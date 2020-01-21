@@ -41,10 +41,16 @@ public final class PlanificationPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TkCleanFuturePlanifications.
+	 * Execute la tache StTkCleanFuturePlanifications.
 	 * @param processName String
 	*/
-	public void cleanFuturePlanifications(final String processName) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkCleanFuturePlanifications",
+			request = "delete from o_process_planification prp" + 
+ "        	where prp.PRO_ID in (select pro.PRO_ID from o_process pro where pro.NAME = #processName#) and prp.SST_CD = 'WAITING' and prp.expected_time > current_timestamp",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineProc.class)
+	public void cleanFuturePlanifications(@io.vertigo.dynamo.task.proxy.TaskInput(name = "processName", domain = "STyOLibelle") final String processName) {
 		final Task task = createTaskBuilder("TkCleanFuturePlanifications")
 				.addValue("processName", processName)
 				.build();
@@ -52,10 +58,22 @@ public final class PlanificationPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TkCleanPlanificationsOnBoot.
+	 * Execute la tache StTkCleanPlanificationsOnBoot.
 	 * @param currentDate Instant
 	*/
-	public void cleanPlanificationsOnBoot(final java.time.Instant currentDate) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkCleanPlanificationsOnBoot",
+			request = "update o_process_planification set " + 
+ "			SST_CD = 'MISFIRED'" + 
+ "			where SST_CD = 'WAITING' and expected_time < #currentDate# and prp_id not in (select prp.PRP_ID from  o_process_planification prp" + 
+ "        	inner join (" + 
+ "				    select pro_id, max(expected_time) as MaxDate" + 
+ "				    from o_process_planification" + 
+ "				    group by pro_id" + 
+ "				) pp on pp.pro_id = prp.pro_id and pp.MaxDate = prp.expected_time)",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineProc.class)
+	public void cleanPlanificationsOnBoot(@io.vertigo.dynamo.task.proxy.TaskInput(name = "currentDate", domain = "STyOTimestamp") final java.time.Instant currentDate) {
 		final Task task = createTaskBuilder("TkCleanPlanificationsOnBoot")
 				.addValue("currentDate", currentDate)
 				.build();
@@ -63,12 +81,20 @@ public final class PlanificationPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TkReserveProcessToExecute.
+	 * Execute la tache StTkReserveProcessToExecute.
 	 * @param lowerLimit Instant
 	 * @param upperLimit Instant
 	 * @param nodId Long
 	*/
-	public void reserveProcessToExecute(final java.time.Instant lowerLimit, final java.time.Instant upperLimit, final Long nodId) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkReserveProcessToExecute",
+			request = "update o_process_planification" + 
+ "        	set SST_CD = 'RESERVED', NOD_ID = #nodId#" + 
+ "        	where (SST_CD = 'WAITING' and expected_time >= #lowerLimit# and expected_time <= #upperLimit#) " + 
+ "        			or (SST_CD = 'RESCUED')",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineProc.class)
+	public void reserveProcessToExecute(@io.vertigo.dynamo.task.proxy.TaskInput(name = "lowerLimit", domain = "STyOTimestamp") final java.time.Instant lowerLimit, @io.vertigo.dynamo.task.proxy.TaskInput(name = "upperLimit", domain = "STyOTimestamp") final java.time.Instant upperLimit, @io.vertigo.dynamo.task.proxy.TaskInput(name = "nodId", domain = "STyOIdentifiant") final Long nodId) {
 		final Task task = createTaskBuilder("TkReserveProcessToExecute")
 				.addValue("lowerLimit", lowerLimit)
 				.addValue("upperLimit", upperLimit)

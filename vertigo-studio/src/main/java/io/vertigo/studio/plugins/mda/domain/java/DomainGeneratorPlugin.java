@@ -35,6 +35,7 @@ import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.masterdata.MasterDataManager;
 import io.vertigo.studio.masterdata.MasterDataValue;
@@ -42,8 +43,8 @@ import io.vertigo.studio.masterdata.MasterDataValues;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
-import io.vertigo.studio.plugins.mda.domain.java.model.DtDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.java.model.MethodAnnotationsModel;
+import io.vertigo.studio.plugins.mda.domain.java.model.StudioDtDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.java.model.masterdata.MasterDataDefinitionModel;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.studio.plugins.mda.util.MdaUtil;
@@ -134,7 +135,7 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 	private void generateDtObjects(
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder) {
-		for (final DtDefinition dtDefinition : DomainUtil.getDtDefinitions()) {
+		for (final StudioDtDefinition dtDefinition : DomainUtil.getDtDefinitions()) {
 			generateDtObject(fileGeneratorConfig, mdaResultBuilder, dtDefinition);
 		}
 	}
@@ -142,8 +143,8 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 	private void generateDtObject(
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder,
-			final DtDefinition dtDefinition) {
-		final DtDefinitionModel dtDefinitionModel = new DtDefinitionModel(dtDefinition);
+			final StudioDtDefinition dtDefinition) {
+		final StudioDtDefinitionModel dtDefinitionModel = new StudioDtDefinitionModel(dtDefinition);
 
 		final Map<String, Object> model = new MapBuilder<String, Object>()
 				.put("dtDefinition", dtDefinitionModel)
@@ -160,9 +161,9 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 				.generateFile(mdaResultBuilder);
 	}
 
-	private static List<DtDefinitionModel> toModels(final Collection<DtDefinition> dtDefinitions) {
+	private static List<StudioDtDefinitionModel> toModels(final Collection<StudioDtDefinition> dtDefinitions) {
 		return dtDefinitions.stream()
-				.map(DtDefinitionModel::new)
+				.map(StudioDtDefinitionModel::new)
 				.collect(Collectors.toList());
 	}
 
@@ -180,8 +181,8 @@ public final class DomainGeneratorPlugin implements GeneratorPlugin {
 		/**
 		 * Génération des ressources afférentes au DT.
 		 */
-		for (final Entry<String, Collection<DtDefinition>> entry : DomainUtil.getDtDefinitionCollectionMap().entrySet()) {
-			final Collection<DtDefinition> dtDefinitions = entry.getValue();
+		for (final Entry<String, Collection<StudioDtDefinition>> entry : DomainUtil.getDtDefinitionCollectionMap().entrySet()) {
+			final Collection<StudioDtDefinition> dtDefinitions = entry.getValue();
 			Assertion.checkNotNull(dtDefinitions);
 			final String packageName = entry.getKey();
 

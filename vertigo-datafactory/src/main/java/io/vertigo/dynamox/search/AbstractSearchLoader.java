@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.search.metamodel.SearchChunk;
 import io.vertigo.datafactory.search.metamodel.SearchLoader;
 import io.vertigo.dynamo.domain.metamodel.DataType;
@@ -63,7 +64,11 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 
 	private P getLowestIdValue(final DtDefinition dtDefinition) {
 		final DtField idField = dtDefinition.getIdField().get();
-		final DataType idDataType = idField.getDomain().getDataType();
+		Assertion.checkState(
+				idField.getDomain().getScope().isPrimitive(),
+				"Ids must be primitives : idField '{0}' on dtDefinition '{1}' has the smartType '{2}'", dtDefinition, idField.getName(), idField.getDomain());
+		//---
+		final DataType idDataType = idField.getDomain().getTargetDataType();
 		P pkValue;
 		switch (idDataType) {
 			case Integer:

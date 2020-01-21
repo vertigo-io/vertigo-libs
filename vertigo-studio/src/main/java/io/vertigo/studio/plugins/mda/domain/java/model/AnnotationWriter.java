@@ -25,13 +25,14 @@ import java.util.List;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationNode;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
+import io.vertigo.dynamo.domain.metamodel.StudioDtField;
+import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationNNDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationNode;
+import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationSimpleDefinition;
 import io.vertigo.dynamo.domain.stereotype.Association;
 import io.vertigo.dynamo.domain.stereotype.AssociationNN;
+import io.vertigo.dynamo.domain.stereotype.ForeignKey;
 import io.vertigo.dynamo.domain.util.AssociationUtil;
 
 /**
@@ -73,7 +74,7 @@ class AnnotationWriter {
 	 * @param dtDefinition DtDefinition
 	 * @return Liste des lignes de code java à ajouter.
 	 */
-	List<String> writeAnnotations(final DtDefinition dtDefinition) {
+	List<String> writeAnnotations(final StudioDtDefinition dtDefinition) {
 		final List<String> lines = new ArrayList<>();
 		if (dtDefinition.getFragment().isPresent()) {
 			// Générations des annotations Dynamo
@@ -103,13 +104,23 @@ class AnnotationWriter {
 	 * @param dtField Champ de la DT_DEFINITION
 	 * @return Liste des lignes de code java à ajouter.
 	 */
-	List<String> writeAnnotations(final DtField dtField) {
-		final List<String> lines = new ArrayList<>();
+	List<String> writeAnnotations(final StudioDtField dtField) {
 		// Générations des annotations Dynamo
-		// if (!isComputed) {
+		// if we are a foreign key
+		if (dtField.getType() == StudioDtField.FieldType.FOREIGN_KEY) {
+			return Collections.singletonList(new StringBuilder("@").append(ForeignKey.class.getName()).append("(")
+					.append("domain = \"").append(dtField.getDomain().getSmartTypeName()).append("\", ")
+					.append("label = \"").append(dtField.getLabel().getDisplay()).append("\", ")
+					.append("fkDefinition = \"").append("Dt").append(dtField.getFkDtDefinition().getLocalName()).append("\" ")
+					.append(")")
+					.toString());
+		}
+
+		final List<String> lines = new ArrayList<>();
+		// we are other type of field
 		final StringBuilder buffer = new StringBuilder("@Field(")
-				.append("domain = \"").append(dtField.getDomain().getName()).append("\", ");
-		if (dtField.getType() != DtField.FieldType.DATA) {
+				.append("domain = \"").append(dtField.getDomain().getSmartTypeName()).append("\", ");
+		if (dtField.getType() != StudioDtField.FieldType.DATA) {
 			// "DATA" est la valeur par défaut de type dans l'annotation Field
 			buffer.append("type = \"").append(dtField.getType()).append("\", ");
 		}
@@ -148,22 +159,22 @@ class AnnotationWriter {
 	 * @param associationSimple Definition de l'association
 	 * @return Liste des lignes de code java à ajouter.
 	 */
-	List<String> writeSimpleAssociationAnnotation(final AssociationSimpleDefinition associationSimple) {
-		final AssociationNode primaryNode = associationSimple.getPrimaryAssociationNode();
-		final AssociationNode foreignNode = associationSimple.getForeignAssociationNode();
+	List<String> writeSimpleAssociationAnnotation(final StudioAssociationSimpleDefinition associationSimple) {
+		final StudioAssociationNode primaryNode = associationSimple.getPrimaryAssociationNode();
+		final StudioAssociationNode foreignNode = associationSimple.getForeignAssociationNode();
 		final String primaryMultiplicity = AssociationUtil.getMultiplicity(primaryNode.isNotNull(), primaryNode.isMultiple());
 		final String foreignMultiplipicity = AssociationUtil.getMultiplicity(foreignNode.isNotNull(), foreignNode.isMultiple());
 
 		return new ListBuilder<String>()
 				.add("@" + Association.class.getCanonicalName() + "(")
-				.add(INDENT + "name = \"" + associationSimple.getName() + "\",")
+				.add(INDENT + "name = \"" + "A" + associationSimple.getLocalName() + "\",")
 				.add(INDENT + "fkFieldName = \"" + associationSimple.getFKField().getName() + "\",")
-				.add(INDENT + "primaryDtDefinitionName = \"" + primaryNode.getDtDefinition().getName() + "\",")
+				.add(INDENT + "primaryDtDefinitionName = \"" + "Dt" + primaryNode.getDtDefinition().getLocalName() + "\",")
 				.add(INDENT + "primaryIsNavigable = " + primaryNode.isNavigable() + ',')
 				.add(INDENT + "primaryRole = \"" + primaryNode.getRole() + "\",")
 				.add(INDENT + "primaryLabel = \"" + primaryNode.getLabel() + "\",")
 				.add(INDENT + "primaryMultiplicity = \"" + primaryMultiplicity + "\",")
-				.add(INDENT + "foreignDtDefinitionName = \"" + foreignNode.getDtDefinition().getName() + "\",")
+				.add(INDENT + "foreignDtDefinitionName = \"" + "Dt" + foreignNode.getDtDefinition().getLocalName() + "\",")
 				.add(INDENT + "foreignIsNavigable = " + foreignNode.isNavigable() + ',')
 				.add(INDENT + "foreignRole = \"" + foreignNode.getRole() + "\",")
 				.add(INDENT + "foreignLabel = \"" + foreignNode.getLabel() + "\",")
@@ -177,16 +188,16 @@ class AnnotationWriter {
 	 * @param associationNN Definition de l'association
 	 * @return Liste des lignes de code java à ajouter.
 	 */
-	List<String> writeNNAssociationAnnotation(final AssociationNNDefinition associationNN) {
-		final AssociationNode nodeA = associationNN.getAssociationNodeA();
-		final AssociationNode nodeB = associationNN.getAssociationNodeB();
+	List<String> writeNNAssociationAnnotation(final StudioAssociationNNDefinition associationNN) {
+		final StudioAssociationNode nodeA = associationNN.getAssociationNodeA();
+		final StudioAssociationNode nodeB = associationNN.getAssociationNodeB();
 
 		return new ListBuilder<String>()
 				.add("@" + AssociationNN.class.getCanonicalName() + "(")
-				.add(INDENT + "name = \"" + associationNN.getName() + "\",")
+				.add(INDENT + "name = \"" + "Ann" + associationNN.getLocalName() + "\",")
 				.add(INDENT + "tableName = \"" + associationNN.getTableName() + "\",")
-				.add(INDENT + "dtDefinitionA = \"" + nodeA.getDtDefinition().getName() + "\",")
-				.add(INDENT + "dtDefinitionB = \"" + nodeB.getDtDefinition().getName() + "\",")
+				.add(INDENT + "dtDefinitionA = \"" + "Dt" + nodeA.getDtDefinition().getLocalName() + "\",")
+				.add(INDENT + "dtDefinitionB = \"" + "Dt" + nodeB.getDtDefinition().getLocalName() + "\",")
 				.add(INDENT + "navigabilityA = " + nodeA.isNavigable() + ',')
 				.add(INDENT + "navigabilityB = " + nodeB.isNavigable() + ',')
 				.add(INDENT + "roleA = \"" + nodeA.getRole() + "\",")

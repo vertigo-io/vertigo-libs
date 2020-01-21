@@ -18,20 +18,39 @@
  */
 package io.vertigo.dynamo.impl.task;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.util.InjectorUtil;
+import io.vertigo.core.util.Selector;
+import io.vertigo.core.util.Selector.MethodConditions;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.TaskManager;
+import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.dynamo.task.metamodel.TaskDefinitionBuilder;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskEngine;
 import io.vertigo.dynamo.task.model.TaskResult;
+import io.vertigo.dynamo.task.proxy.TaskAnnotation;
+import io.vertigo.dynamo.task.proxy.TaskInput;
+import io.vertigo.dynamo.task.proxy.TaskOutput;
 
 /**
  * @author pchretien
  */
-public final class TaskManagerImpl implements TaskManager {
+public final class TaskManagerImpl implements TaskManager, SimpleDefinitionProvider {
 	private final AnalyticsManager analyticsManager;
 
 	/**
@@ -57,5 +76,72 @@ public final class TaskManagerImpl implements TaskManager {
 	private static TaskResult doExecute(final Task task) {
 		final TaskEngine taskEngine = InjectorUtil.newInstance(task.getDefinition().getTaskEngineClass());
 		return taskEngine.process(task);
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		final List<Class> componenentClasses = Home.getApp().getComponentSpace().keySet()
+				.stream()
+				.map(componentId -> Home.getApp().getComponentSpace().resolve(componentId, Object.class).getClass())
+				.collect(Collectors.toList());
+
+		return new Selector().from(componenentClasses)
+				.filterMethods(MethodConditions.annotatedWith(TaskAnnotation.class))
+				.findMethods()
+				.stream()
+				.map(tuple -> tuple.getVal2())
+				.map(TaskManagerImpl::createTaskDefinition)
+				.collect(Collectors.toList());
+	}
+
+	private static TaskDefinition createTaskDefinition(final Method method) {
+		final io.vertigo.dynamo.task.proxy.TaskAnnotation taskAnnotation = method.getAnnotation(io.vertigo.dynamo.task.proxy.TaskAnnotation.class);
+
+		final TaskDefinitionBuilder taskDefinitionBuilder = TaskDefinition.builder(taskAnnotation.name())
+				.withEngine(taskAnnotation.taskEngineClass())
+				.withRequest(taskAnnotation.request())
+				.withDataSpace(taskAnnotation.dataSpace().isEmpty() ? null : taskAnnotation.dataSpace());
+
+		if (hasOut(method)) {
+			final SmartTypeDefinition outSmartType = findOutSmartType(method);
+			final Cardinality outCardinality = getCardinality(method.getReturnType());
+			taskDefinitionBuilder.withOutAttribute("out", outSmartType, outCardinality);
+		}
+		for (final Parameter parameter : method.getParameters()) {
+			final TaskInput taskAttributeAnnotation = parameter.getAnnotation(TaskInput.class);
+			final Cardinality inAttributeCardinality = getCardinality(parameter.getType());
+
+			//test if the parameter is an optional type
+			taskDefinitionBuilder.addInAttribute(
+					taskAttributeAnnotation.name(),
+					resolveSmartTypeDefinition(taskAttributeAnnotation.domain()),
+					inAttributeCardinality);
+		}
+
+		return taskDefinitionBuilder.build();
+	}
+
+	private static SmartTypeDefinition resolveSmartTypeDefinition(final String smartTypeName) {
+		return Home.getApp().getDefinitionSpace().resolve(smartTypeName, SmartTypeDefinition.class);
+	}
+
+	private static boolean hasOut(final Method method) {
+		return !void.class.equals(method.getReturnType());
+	}
+
+	private static Cardinality getCardinality(final Class type) {
+		if (Optional.class.isAssignableFrom(type)) {
+			return Cardinality.OPTIONAL_OR_NULLABLE;
+		} else if (List.class.isAssignableFrom(type)) {
+			return Cardinality.MANY;
+		} else {
+			return Cardinality.ONE;
+		}
+	}
+
+	private static SmartTypeDefinition findOutSmartType(final Method method) {
+		final TaskOutput taskOutput = method.getAnnotation(TaskOutput.class);
+		Assertion.checkNotNull(taskOutput, "The return method '{0}' must be annotated with '{1}'", method, TaskOutput.class);
+		return resolveSmartTypeDefinition(taskOutput.domain());
 	}
 }

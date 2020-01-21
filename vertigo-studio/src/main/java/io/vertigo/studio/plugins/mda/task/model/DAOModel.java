@@ -23,9 +23,9 @@ import java.util.Collection;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
+import io.vertigo.dynamo.task.metamodel.StudioTaskDefinition;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
 
 /**
@@ -34,7 +34,7 @@ import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
  * @author pchretien
  */
 public final class DAOModel {
-	private final DtDefinition dtDefinition;
+	private final StudioDtDefinition dtDefinition;
 	private final String packageName;
 	private final Collection<TaskDefinitionModel> taskDefinitions = new ArrayList<>();
 
@@ -45,7 +45,7 @@ public final class DAOModel {
 	 *
 	 * @param dtDefinition DtDefinition de l'objet à générer
 	 */
-	public DAOModel(final FileGeneratorConfig fileGeneratorConfig, final DtDefinition dtDefinition, final Collection<TaskDefinition> taskDefinitionCollection) {
+	public DAOModel(final FileGeneratorConfig fileGeneratorConfig, final StudioDtDefinition dtDefinition, final Collection<StudioTaskDefinition> taskDefinitionCollection) {
 		Assertion.checkNotNull(fileGeneratorConfig);
 		Assertion.checkNotNull(dtDefinition);
 		Assertion.checkNotNull(taskDefinitionCollection);
@@ -69,7 +69,7 @@ public final class DAOModel {
 		packageName = fileGeneratorConfig.getProjectPackageName() + featureName + ".dao" + subpackage;
 
 		boolean hasOption = false;
-		for (final TaskDefinition taskDefinition : taskDefinitionCollection) {
+		for (final StudioTaskDefinition taskDefinition : taskDefinitionCollection) {
 			final TaskDefinitionModel templateTaskDefinition = new TaskDefinitionModel(taskDefinition);
 			taskDefinitions.add(templateTaskDefinition);
 			hasOption = hasOption || templateTaskDefinition.hasOptions();

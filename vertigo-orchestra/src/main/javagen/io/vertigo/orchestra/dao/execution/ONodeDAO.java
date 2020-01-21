@@ -11,6 +11,7 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.execution.ONode;
 
@@ -27,8 +28,8 @@ public final class ONodeDAO extends DAO<ONode, java.lang.Long> implements StoreS
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public ONodeDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
-		super(ONode.class, entityStoreManager, taskManager);
+	public ONodeDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
+		super(ONode.class, entityStoreManager, taskManager, modelManager);
 	}
 
 
@@ -43,11 +44,20 @@ public final class ONodeDAO extends DAO<ONode, java.lang.Long> implements StoreS
 	}
 
 	/**
-	 * Execute la tache TkGetNodeByName.
+	 * Execute la tache StTkGetNodeByName.
 	 * @param nodeName String
 	 * @return Option de ONode dtoONode
 	*/
-	public Optional<io.vertigo.orchestra.domain.execution.ONode> getNodeByName(final String nodeName) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetNodeByName",
+			request = "select " + 
+ "        		nod.*" + 
+ "        	from o_node nod" + 
+ "        	where nod.NAME = #nodeName#",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtONode")
+	public Optional<io.vertigo.orchestra.domain.execution.ONode> getNodeByName(@io.vertigo.dynamo.task.proxy.TaskInput(name = "nodeName", domain = "STyOLibelle") final String nodeName) {
 		final Task task = createTaskBuilder("TkGetNodeByName")
 				.addValue("nodeName", nodeName)
 				.build();

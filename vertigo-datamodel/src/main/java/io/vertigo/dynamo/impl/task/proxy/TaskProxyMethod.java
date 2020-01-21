@@ -40,8 +40,8 @@ import io.vertigo.dynamo.task.proxy.TaskOutput;
 public final class TaskProxyMethod implements ProxyMethod {
 
 	@Override
-	public Class<io.vertigo.dynamo.task.proxy.TaskAnnotation> getAnnotationType() {
-		return io.vertigo.dynamo.task.proxy.TaskAnnotation.class;
+	public Class<io.vertigo.dynamo.task.proxy.TaskProxyAnnotation> getAnnotationType() {
+		return io.vertigo.dynamo.task.proxy.TaskProxyAnnotation.class;
 	}
 
 	private static SmartTypeDefinition resolveSmartTypeDefinition(final String smartTypeName) {
@@ -84,7 +84,7 @@ public final class TaskProxyMethod implements ProxyMethod {
 	}
 
 	private static TaskDefinition createTaskDefinition(final Method method) {
-		final io.vertigo.dynamo.task.proxy.TaskAnnotation taskAnnotation = method.getAnnotation(io.vertigo.dynamo.task.proxy.TaskAnnotation.class);
+		final io.vertigo.dynamo.task.proxy.TaskProxyAnnotation taskAnnotation = method.getAnnotation(io.vertigo.dynamo.task.proxy.TaskProxyAnnotation.class);
 
 		final TaskDefinitionBuilder taskDefinitionBuilder = TaskDefinition.builder(taskAnnotation.name())
 				.withEngine(taskAnnotation.taskEngineClass())

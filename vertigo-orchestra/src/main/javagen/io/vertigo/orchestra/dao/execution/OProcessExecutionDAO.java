@@ -10,6 +10,7 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.execution.OProcessExecution;
 
@@ -26,8 +27,8 @@ public final class OProcessExecutionDAO extends DAO<OProcessExecution, java.lang
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public OProcessExecutionDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
-		super(OProcessExecution.class, entityStoreManager, taskManager);
+	public OProcessExecutionDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
+		super(OProcessExecution.class, entityStoreManager, taskManager, modelManager);
 	}
 
 
@@ -42,11 +43,21 @@ public final class OProcessExecutionDAO extends DAO<OProcessExecution, java.lang
 	}
 
 	/**
-	 * Execute la tache TkGetActiveProcessExecutionByProId.
+	 * Execute la tache StTkGetActiveProcessExecutionByProId.
 	 * @param proId Long
 	 * @return DtList de OProcessExecution dtcProcessExecution
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OProcessExecution> getActiveProcessExecutionByProId(final Long proId) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetActiveProcessExecutionByProId",
+			request = "select " + 
+ "        		pre.*" + 
+ "        	from o_process_execution pre" + 
+ "        	where pre.PRO_ID = #proId#" + 
+ "        	and (pre.EST_CD = 'WAITING' or pre.EST_CD = 'RESERVED' or pre.EST_CD = 'SUBMITTED' or pre.EST_CD = 'RUNNING' or pre.EST_CD = 'PENDING')",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOProcessExecution")
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OProcessExecution> getActiveProcessExecutionByProId(@io.vertigo.dynamo.task.proxy.TaskInput(name = "proId", domain = "STyOIdentifiant") final Long proId) {
 		final Task task = createTaskBuilder("TkGetActiveProcessExecutionByProId")
 				.addValue("proId", proId)
 				.build();
@@ -56,11 +67,20 @@ public final class OProcessExecutionDAO extends DAO<OProcessExecution, java.lang
 	}
 
 	/**
-	 * Execute la tache TkGetExecutionsByProId.
+	 * Execute la tache StTkGetExecutionsByProId.
 	 * @param proId Long
 	 * @return DtList de OProcessExecution dtcOProcessExecution
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OProcessExecution> getExecutionsByProId(final Long proId) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetExecutionsByProId",
+			request = "select pre.*" + 
+ "        	from o_process_execution pre" + 
+ "        	where pre.PRO_ID = #proId#" + 
+ "        	order by pre.begin_time desc",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOProcessExecution")
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.execution.OProcessExecution> getExecutionsByProId(@io.vertigo.dynamo.task.proxy.TaskInput(name = "proId", domain = "STyOIdentifiant") final Long proId) {
 		final Task task = createTaskBuilder("TkGetExecutionsByProId")
 				.addValue("proId", proId)
 				.build();

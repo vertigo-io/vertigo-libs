@@ -20,6 +20,7 @@ package io.vertigo.account.authentication;
 
 import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.authentication.model.DtDefinitions;
+import io.vertigo.account.data.TestSmartTypes;
 import io.vertigo.account.data.TestUserSession;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.ldap.LdapFeatures;
@@ -35,7 +36,7 @@ import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 public final class MyNodeConfig {
 	private static final String REDIS_HOST = "redis-pic.part.klee.lan.net";
@@ -122,9 +123,9 @@ public final class MyNodeConfig {
 				.addModule(accountFeatures.build())
 				.addModule(ModuleConfig.builder("app")
 						.addDefinitionProvider(
-								DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-										.addDefinitionResource("classes", DtDefinitions.class.getName())
-										.addDefinitionResource("kpr", "account/domains.kpr")
+								DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+										.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
+										.addDefinitionResource("dtobjects", DtDefinitions.class.getName())
 										.build())
 						.build())
 				.build();

@@ -27,8 +27,8 @@ import java.util.Map;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 /**
  * Définition des requêtes d'accès à l'index de recherche.
@@ -50,7 +50,7 @@ public final class FacetedQueryDefinition implements Definition {
 	private final Map<String, FacetDefinition> facetDefinitions = new LinkedHashMap<>();
 
 	/** Domain du criteria. */
-	private final Domain criteriaDomain;
+	private final SmartTypeDefinition criteriaDomain;
 
 	/** Query du listFilterBuilder. */
 	private final String listFilterBuilderQuery;
@@ -73,7 +73,7 @@ public final class FacetedQueryDefinition implements Definition {
 			final String name,
 			final DtDefinition keyConceptDtDefinition,
 			final List<FacetDefinition> facetDefinitions,
-			final Domain criteriaDomain,
+			final SmartTypeDefinition criteriaDomain,
 			final Class<? extends ListFilterBuilder> listFilterBuilderClass,
 			final String listFilterBuilderQuery) {
 		Assertion.checkArgNotEmpty(name);
@@ -132,7 +132,7 @@ public final class FacetedQueryDefinition implements Definition {
 	/**
 	 * @return Domain du criteria.
 	 */
-	public Domain getCriteriaDomain() {
+	public SmartTypeDefinition getCriteriaDomain() {
 		return criteriaDomain;
 	}
 

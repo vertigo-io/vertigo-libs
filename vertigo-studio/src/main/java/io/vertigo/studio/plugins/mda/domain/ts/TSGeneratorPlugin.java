@@ -34,16 +34,16 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.MapBuilder;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.masterdata.MasterDataManager;
 import io.vertigo.studio.masterdata.MasterDataValues;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
-import io.vertigo.studio.plugins.mda.domain.ts.model.TSDtDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.ts.model.TSMasterDataDefinitionModel;
+import io.vertigo.studio.plugins.mda.domain.ts.model.TSStudioDtDefinitionModel;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.studio.plugins.mda.util.MdaUtil;
 
@@ -100,14 +100,14 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 		}
 	}
 
-	private static List<TSDtDefinitionModel> getTsDtDefinitionModels() {
+	private static List<TSStudioDtDefinitionModel> getTsDtDefinitionModels() {
 		return DomainUtil.getDtDefinitions().stream()
-				.map(TSDtDefinitionModel::new)
+				.map(TSStudioDtDefinitionModel::new)
 				.collect(Collectors.toList());
 	}
 
 	private static void generateTsDtDefinitions(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
-		for (final TSDtDefinitionModel dtDefinitionModel : getTsDtDefinitionModels()) {
+		for (final TSStudioDtDefinitionModel dtDefinitionModel : getTsDtDefinitionModels()) {
 			generateTs(dtDefinitionModel, targetSubDir, fileGeneratorConfig, mdaResultBuilder);
 		}
 	}
@@ -117,7 +117,7 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 
 		final MasterDataValues masterDataValues = masterDataManager.getValues();
 
-		final List<TSMasterDataDefinitionModel> tsMasterDataDefinitionModels = Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
+		final List<TSMasterDataDefinitionModel> tsMasterDataDefinitionModels = Home.getApp().getDefinitionSpace().getAll(StudioDtDefinition.class)
 				.stream()
 				.filter(dtDefinition -> dtDefinition.getStereotype() == DtStereotype.StaticMasterData)
 				.map(dtDefinition -> new TSMasterDataDefinitionModel(dtDefinition, masterDataValues.getOrDefault(dtDefinition.getClassCanonicalName(), Collections.emptyMap())))
@@ -138,7 +138,7 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 
 	}
 
-	private static void generateTs(final TSDtDefinitionModel dtDefinitionModel, final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
+	private static void generateTs(final TSStudioDtDefinitionModel dtDefinitionModel, final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig, final MdaResultBuilder mdaResultBuilder) {
 		final Map<String, Object> model = new MapBuilder<String, Object>()
 				.put("classSimpleName", "DtDefinitions")
 				.put("dtDefinition", dtDefinitionModel)
@@ -163,8 +163,8 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder) {
 
-		final Map<String, List<TSDtDefinitionModel>> packageMap = new HashMap<>();
-		for (final TSDtDefinitionModel dtDefinitionModel : getTsDtDefinitionModels()) {
+		final Map<String, List<TSStudioDtDefinitionModel>> packageMap = new HashMap<>();
+		for (final TSStudioDtDefinitionModel dtDefinitionModel : getTsDtDefinitionModels()) {
 			final String packageName = dtDefinitionModel.getFunctionnalPackageName();
 			packageMap.computeIfAbsent(packageName, o -> new ArrayList<>()).add(dtDefinitionModel);
 		}
@@ -172,7 +172,7 @@ public final class TSGeneratorPlugin implements GeneratorPlugin {
 		final String simpleClassName = "DtDefinitions" + "Label";
 		//final String packageName = fileGeneratorConfig.getProjectPackageName() + ".domain";
 
-		for (final Entry<String, List<TSDtDefinitionModel>> entry : packageMap.entrySet()) {
+		for (final Entry<String, List<TSStudioDtDefinitionModel>> entry : packageMap.entrySet()) {
 			final Map<String, Object> model = new MapBuilder<String, Object>()
 					.put("packageName", entry.getKey())
 					.put("simpleClassName", simpleClassName)

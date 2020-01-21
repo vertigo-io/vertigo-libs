@@ -47,6 +47,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtListURI;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 
 /**
  * Plugin de d'indexation de DtList utilisant Lucene en Ram.
@@ -56,6 +57,7 @@ import io.vertigo.dynamo.domain.model.DtObject;
 public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionProvider {
 
 	private final CacheManager cacheManager;
+	private final ModelManager modelManager;
 
 	private static final String CACHE_LUCENE_INDEX = "CacheLuceneIndex";
 
@@ -69,12 +71,15 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 	public LuceneIndexPlugin(
 			final LocaleManager localeManager,
 			final CacheManager cacheManager,
-			final EventBusManager eventBusManager) {
+			final EventBusManager eventBusManager,
+			final ModelManager modelManager) {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkNotNull(cacheManager);
+		Assertion.checkNotNull(modelManager);
 		//-----
 		this.cacheManager = cacheManager;
 		localeManager.add(Resources.class.getName(), Resources.values());
+		this.modelManager = modelManager;
 	}
 
 	/**
@@ -121,10 +126,10 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 		return "IndexCache:" + dtDefinition.getName();
 	}
 
-	private static <D extends DtObject> RamLuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
+	private <D extends DtObject> RamLuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
 		Assertion.checkNotNull(fullDtc);
 		//-----
-		final RamLuceneIndex<D> luceneDb = new RamLuceneIndex<>(fullDtc.getDefinition());
+		final RamLuceneIndex<D> luceneDb = new RamLuceneIndex<>(fullDtc.getDefinition(), modelManager);
 		luceneDb.addAll(fullDtc, storeValue);
 		return luceneDb;
 	}

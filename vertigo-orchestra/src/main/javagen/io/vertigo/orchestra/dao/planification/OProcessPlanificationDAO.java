@@ -11,6 +11,7 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.planification.OProcessPlanification;
 
@@ -27,8 +28,8 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public OProcessPlanificationDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
-		super(OProcessPlanification.class, entityStoreManager, taskManager);
+	public OProcessPlanificationDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
+		super(OProcessPlanification.class, entityStoreManager, taskManager, modelManager);
 	}
 
 
@@ -43,11 +44,19 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache TkGetAllLastPastPlanifications.
+	 * Execute la tache StTkGetAllLastPastPlanifications.
 	 * @param currentDate Instant
 	 * @return DtList de OProcessPlanification processPlanifications
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getAllLastPastPlanifications(final java.time.Instant currentDate) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetAllLastPastPlanifications",
+			request = "select prp.* from  o_process_planification prp" + 
+ "			where prp.expected_time < #currentDate# and prp.SST_CD = 'WAITING'" + 
+ "			for update",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOProcessPlanification")
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getAllLastPastPlanifications(@io.vertigo.dynamo.task.proxy.TaskInput(name = "currentDate", domain = "STyOTimestamp") final java.time.Instant currentDate) {
 		final Task task = createTaskBuilder("TkGetAllLastPastPlanifications")
 				.addValue("currentDate", currentDate)
 				.build();
@@ -57,11 +66,20 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache TkGetLastPlanificationByProId.
+	 * Execute la tache StTkGetLastPlanificationByProId.
 	 * @param proId Long
 	 * @return Option de OProcessPlanification dtOProcessPlanification
 	*/
-	public Optional<io.vertigo.orchestra.domain.planification.OProcessPlanification> getLastPlanificationByProId(final Long proId) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetLastPlanificationByProId",
+			request = "select prp.* from  o_process_planification prp" + 
+ "        	where prp.PRO_ID = (select pro.PRO_ID from o_process pro where pro.PRO_ID = #proId# for update) and prp.SST_CD = 'WAITING'" + 
+ "        	order by prp.expected_time desc" + 
+ "        	limit 1",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOProcessPlanification")
+	public Optional<io.vertigo.orchestra.domain.planification.OProcessPlanification> getLastPlanificationByProId(@io.vertigo.dynamo.task.proxy.TaskInput(name = "proId", domain = "STyOIdentifiant") final Long proId) {
 		final Task task = createTaskBuilder("TkGetLastPlanificationByProId")
 				.addValue("proId", proId)
 				.build();
@@ -71,11 +89,19 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache TkGetPlanificationsByProId.
+	 * Execute la tache StTkGetPlanificationsByProId.
 	 * @param proId Long
 	 * @return DtList de OProcessPlanification dtcOProcessPlanification
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getPlanificationsByProId(final Long proId) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetPlanificationsByProId",
+			request = "select prp.*" + 
+ "        	from o_process_planification prp" + 
+ "        	where prp.PRO_ID = #proId#",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOProcessPlanification")
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getPlanificationsByProId(@io.vertigo.dynamo.task.proxy.TaskInput(name = "proId", domain = "STyOIdentifiant") final Long proId) {
 		final Task task = createTaskBuilder("TkGetPlanificationsByProId")
 				.addValue("proId", proId)
 				.build();
@@ -85,11 +111,20 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	}
 
 	/**
-	 * Execute la tache TkGetProcessToExecute.
+	 * Execute la tache StTkGetProcessToExecute.
 	 * @param nodId Long
 	 * @return DtList de OProcessPlanification dtcOProcessPlanification
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getProcessToExecute(final Long nodId) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetProcessToExecute",
+			request = "select prp.*" + 
+ "        	from o_process_planification prp" + 
+ "        	where prp.SST_CD = 'RESERVED'" + 
+ "        	and prp.NOD_ID = #nodId#",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOProcessPlanification")
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getProcessToExecute(@io.vertigo.dynamo.task.proxy.TaskInput(name = "nodId", domain = "STyOIdentifiant") final Long nodId) {
 		final Task task = createTaskBuilder("TkGetProcessToExecute")
 				.addValue("nodId", nodId)
 				.build();

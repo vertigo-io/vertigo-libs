@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.dynamo.task.metamodel.StudioTaskDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 
 /**
@@ -32,14 +33,14 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
  * @author sezratty, mlaroche
  */
 public final class TemplateTaskDefinition {
-	private final TaskDefinition taskDefinition;
+	private final StudioTaskDefinition taskDefinition;
 	private final List<TemplateTaskAttribute> templateInTaskAttributes;
 	private final String testPackageName;
 	private final String testClassSimpleName;
 	private final String packageName;
 	private final String classSimpleName;
 
-	TemplateTaskDefinition(final TaskDefinition taskDefinition, final String packageName, final String classSimpleName) {
+	TemplateTaskDefinition(final StudioTaskDefinition taskDefinition, final String packageName, final String classSimpleName) {
 		Assertion.checkNotNull(taskDefinition);
 		Assertion.checkNotNull(packageName);
 		Assertion.checkNotNull(classSimpleName);

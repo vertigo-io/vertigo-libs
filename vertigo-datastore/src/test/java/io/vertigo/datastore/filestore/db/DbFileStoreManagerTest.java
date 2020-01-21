@@ -24,7 +24,9 @@ import io.vertigo.datastore.entitystore.sql.SqlUtil;
 import io.vertigo.datastore.filestore.AbstractFileStoreManagerTest;
 import io.vertigo.datastore.filestore.data.DtDefinitions;
 import io.vertigo.datastore.filestore.data.TestSmartTypes;
-import io.vertigo.datastore.impl.filestore.grammar.FileStoreDefinitionProvider;
+import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoFs;
+import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoStd;
+import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoTemp;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 import io.vertigo.datastore.plugins.filestore.db.DbFileStorePlugin;
 import io.vertigo.dynamo.DataModelFeatures;
@@ -89,22 +91,22 @@ public class DbFileStoreManagerTest extends AbstractFileStoreManagerTest {
 						.withFileStore()
 						.addPlugin(SqlEntityStorePlugin.class)
 						.addPlugin(DbFileStorePlugin.class,
-								Param.of("storeDtName", "DtVxFileInfo"))
+								Param.of("storeDtName", "DtVxFileInfo"),
+								Param.of("fileInfoClass", FileInfoStd.class.getName()))
 						.withFsFileStore(Param.of("name", "fsStore"),
 								Param.of("path", "${java.io.tmpdir}/testFsVertigo/"),
-								Param.of("storeDtName", "DtVxFileInfo"))
+								Param.of("storeDtName", "DtVxFileInfo"),
+								Param.of("fileInfoClass", FileInfoFs.class.getName()))
 						.withFsFullFileStore(
 								Param.of("name", "temp"),
 								Param.of("path", "${java.io.tmpdir}/testVertigo/"),
-								Param.of("purgeDelayMinutes", "0"))
+								Param.of("purgeDelayMinutes", "0"),
+								Param.of("fileInfoClass", FileInfoTemp.class.getName()))
 						.build())
 				.addModule(ModuleConfig.builder("definition")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", DtDefinitions.class.getName())
-								.build())
-						.addDefinitionProvider(DefinitionProviderConfig.builder(FileStoreDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datastore/filestore/data/fileinfo.kpr")
 								.build())
 						.build())
 				.build();

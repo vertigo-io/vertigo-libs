@@ -19,10 +19,15 @@
 package io.vertigo.datastore.impl.filestore;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.Definition;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.DefinitionUtil;
+import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datastore.filestore.FileStoreManager;
 import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
@@ -32,8 +37,9 @@ import io.vertigo.datastore.filestore.model.FileInfoURI;
  * Implementation of FileStore.
  * @author pchretien
  */
-public final class FileStoreManagerImpl implements FileStoreManager {
+public final class FileStoreManagerImpl implements FileStoreManager, SimpleDefinitionProvider {
 	private final FileStoreConfig fileStoreConfig;
+	private final List<FileStorePlugin> fileStorePlugins;
 
 	/**
 	 * Constructor.
@@ -43,7 +49,17 @@ public final class FileStoreManagerImpl implements FileStoreManager {
 	public FileStoreManagerImpl(final List<FileStorePlugin> fileStorePlugins) {
 		Assertion.checkNotNull(fileStorePlugins);
 		//-----
+		this.fileStorePlugins = fileStorePlugins;
 		fileStoreConfig = new FileStoreConfig(fileStorePlugins);
+	}
+
+	@Override
+	public List<? extends Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
+		return fileStorePlugins.stream()
+				.map(fileStorePlugin -> new FileInfoDefinition(
+						DefinitionUtil.getPrefix(FileInfoDefinition.class) + fileStorePlugin.getFileInfoClass().getSimpleName(),
+						fileStorePlugin.getName()))
+				.collect(Collectors.toList());
 	}
 
 	private FileStorePlugin getPhysicalStore(final FileInfoDefinition fileInfoDefinition) {
@@ -84,4 +100,5 @@ public final class FileStoreManagerImpl implements FileStoreManager {
 		Assertion.checkNotNull(fileInfo, "Le fichier {0} n''a pas été trouvé", uri);
 		return fileInfo;
 	}
+
 }

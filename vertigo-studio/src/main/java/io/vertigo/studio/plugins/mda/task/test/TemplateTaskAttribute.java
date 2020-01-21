@@ -22,8 +22,8 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
-import io.vertigo.dynamo.task.metamodel.TaskAttribute;
+import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.task.metamodel.StudioTaskAttribute;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 
 /**
@@ -32,10 +32,10 @@ import io.vertigo.studio.plugins.mda.util.DomainUtil;
  * @author sezratty, mlaroche
  */
 public final class TemplateTaskAttribute {
-	private final TaskAttribute taskAttribute;
+	private final StudioTaskAttribute taskAttribute;
 	private final String value;
 
-	TemplateTaskAttribute(final TaskAttribute taskAttribute) {
+	TemplateTaskAttribute(final StudioTaskAttribute taskAttribute) {
 		Assertion.checkNotNull(taskAttribute);
 		//-----
 		this.taskAttribute = taskAttribute;
@@ -66,14 +66,14 @@ public final class TemplateTaskAttribute {
 	/**
 	 * @return Domain.
 	 */
-	SmartTypeDefinition getSmartTypeDefinition() {
+	Domain getDomain() {
 		return taskAttribute.getDomain();
 	}
 
-	private static String create(final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {
+	private static String create(final Domain domain, final Cardinality cardinality) {
 		final String dumFunction;
 		if (cardinality.hasMany()) {
-			if (smartTypeDefinition.getScope().isDataObject()) {
+			if (domain.getScope().isDataObject()) {
 				dumFunction = "dumDtList";
 			} else {
 				dumFunction = "dumList";
@@ -82,7 +82,7 @@ public final class TemplateTaskAttribute {
 			dumFunction = "dum";
 		}
 		//we don't have generated classes right now... so we need to only we the domain info and can't use domain.getJavaClass() for this case
-		final String javaClassName = smartTypeDefinition.getValueObjectClassName();
+		final String javaClassName = domain.getScope().isDataObject() ? domain.getDtDefinition().getClassCanonicalName() : domain.getJavaClass().getCanonicalName();
 		//---
 		final String rawExpression = "dum()." + dumFunction + "(" + javaClassName + ".class)";
 		final String expression = cardinality.isOptionalOrNullable() ? Optional.class.getCanonicalName() + ".ofNullable(" + rawExpression + ")" : rawExpression;

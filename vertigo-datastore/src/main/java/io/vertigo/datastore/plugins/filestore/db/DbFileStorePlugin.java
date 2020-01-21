@@ -28,6 +28,7 @@ import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.FileInfo;
 import io.vertigo.datastore.filestore.model.FileInfoURI;
@@ -73,8 +74,9 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	public DbFileStorePlugin(
 			@ParamValue("name") final Optional<String> name,
 			@ParamValue("storeDtName") final String storeDtDefinitionName,
+			@ParamValue("fileInfoClass") final String fileInfoClassName,
 			final FileManager fileManager) {
-		super(name);
+		super(name, fileInfoClassName);
 		Assertion.checkArgNotEmpty(storeDtDefinitionName);
 		Assertion.checkNotNull(fileManager);
 		//-----
@@ -152,6 +154,11 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		getEntityStoreManager().delete(dtoUri);
 	}
 
+	@Override
+	public Class<? extends FileInfo> getFileInfoClass() {
+		return ClassUtil.classForName(getFileInfoClassName(), FileInfo.class);
+	}
+
 	private Entity createFileInfoDto(final FileInfo fileInfo) {
 		//Il doit exister un DtObjet associé à storeDtDefinition avec la structure attendue.
 		final Entity fileInfoDto = DtObjectUtil.createEntity(storeDtDefinition);
@@ -169,4 +176,5 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		}
 		return fileInfoDto;
 	}
+
 }

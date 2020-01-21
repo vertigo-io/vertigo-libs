@@ -26,7 +26,7 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.plugins.environment.StudioModelDefinitionProvider;
 import io.vertigo.studio.StudioFeatures;
 import io.vertigo.studio.tools.NameSpace2Java;
 
@@ -55,7 +55,7 @@ public class MasterDataDomainGeneratorTest {
 								Param.of("fileName", "io/vertigo/studio/mda/data/masterdata/testJsonMasterDataValues2.json"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioModelDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/studio/data/model.kpr")
 								.addDefinitionResource("kpr", "io/vertigo/studio/data/tasks.kpr")
 								.build())

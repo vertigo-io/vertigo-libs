@@ -30,16 +30,16 @@ import io.vertigo.core.analytics.metric.Metric;
 import io.vertigo.core.node.App;
 import io.vertigo.core.node.Home;
 import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
-import io.vertigo.dashboard.ui.dynamo.model.DomainModel;
 import io.vertigo.dashboard.ui.dynamo.model.EntityModel;
+import io.vertigo.dashboard.ui.dynamo.model.SmartTypeModel;
 import io.vertigo.dashboard.ui.dynamo.model.TaskModel;
 import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.TabularDataSerie;
 import io.vertigo.database.timeseries.TabularDatas;
 import io.vertigo.database.timeseries.TimeFilter;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 
 public final class DynamoDashboardControler extends AbstractDashboardModuleControler {
@@ -135,17 +135,17 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 				.filter(metric -> "domainUsageInDtDefinitions".equals(metric.getName()))
 				.forEach(metric -> dtDefinitionCount.put(metric.getFeature(), metric.getValue()));
 
-		final Collection<Domain> domains = Home.getApp().getDefinitionSpace().getAll(Domain.class);
-		final List<DomainModel> domainModels = domains
+		final Collection<SmartTypeDefinition> domains = Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class);
+		final List<SmartTypeModel> domainModels = domains
 				.stream()
 				.filter(domain -> domain.getScope().isPrimitive()) // we display only primitives
-				.map(domain -> new DomainModel(
-						domain,
-						taskCount.get(domain.getName()),
-						dtDefinitionCount.get(domain.getName())))
+				.map(smartType -> new SmartTypeModel(
+						smartType,
+						taskCount.get(smartType.getName()),
+						dtDefinitionCount.get(smartType.getName())))
 				.collect(Collectors.toList());
 
-		model.put("domains", domainModels);
+		model.put("smartTypes", domainModels);
 
 	}
 

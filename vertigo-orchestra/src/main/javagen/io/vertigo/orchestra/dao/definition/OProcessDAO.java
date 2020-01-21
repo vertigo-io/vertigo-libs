@@ -11,6 +11,7 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.definition.OProcess;
 
@@ -27,8 +28,8 @@ public final class OProcessDAO extends DAO<OProcess, java.lang.Long> implements 
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public OProcessDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
-		super(OProcess.class, entityStoreManager, taskManager);
+	public OProcessDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
+		super(OProcess.class, entityStoreManager, taskManager, modelManager);
 	}
 
 
@@ -43,11 +44,21 @@ public final class OProcessDAO extends DAO<OProcess, java.lang.Long> implements 
 	}
 
 	/**
-	 * Execute la tache TkGetActiveProcessByName.
+	 * Execute la tache StTkGetActiveProcessByName.
 	 * @param name String
 	 * @return Option de OProcess dtProcess
 	*/
-	public Optional<io.vertigo.orchestra.domain.definition.OProcess> getActiveProcessByName(final String name) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetActiveProcessByName",
+			request = "select " + 
+ "        		pro.*" + 
+ "        	from o_process pro" + 
+ "        	where pro.NAME = #name#" + 
+ "	        	and pro.ACTIVE_VERSION is true",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOProcess")
+	public Optional<io.vertigo.orchestra.domain.definition.OProcess> getActiveProcessByName(@io.vertigo.dynamo.task.proxy.TaskInput(name = "name", domain = "STyOLibelle") final String name) {
 		final Task task = createTaskBuilder("TkGetActiveProcessByName")
 				.addValue("name", name)
 				.build();
@@ -57,9 +68,18 @@ public final class OProcessDAO extends DAO<OProcess, java.lang.Long> implements 
 	}
 
 	/**
-	 * Execute la tache TkGetAllActiveProcesses.
+	 * Execute la tache StTkGetAllActiveProcesses.
 	 * @return DtList de OProcess dtcProcesses
 	*/
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetAllActiveProcesses",
+			request = "select " + 
+ "        		pro.*" + 
+ "        	from o_process pro" + 
+ "        	where pro.ACTIVE_VERSION is true",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOProcess")
 	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.domain.definition.OProcess> getAllActiveProcesses() {
 		final Task task = createTaskBuilder("TkGetAllActiveProcesses")
 				.build();

@@ -13,6 +13,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  */
 @Generated
 @io.vertigo.dynamo.domain.stereotype.DataSpace("orchestra")
+@io.vertigo.dynamo.ngdomain.annotations.Mapper(clazz = io.vertigo.dynamo.domain.util.JsonMapper.class, dataType = io.vertigo.dynamo.domain.metamodel.DataType.String)
 public final class OActivityWorkspace implements Entity {
 	private static final long serialVersionUID = 1L;
 
@@ -46,7 +47,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'Id de l'execution d'un processus'.
 	 * @return Long acwId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id de l'execution d'un processus")
+	@Field(domain = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id de l'execution d'un processus")
 	public Long getAcwId() {
 		return acwId;
 	}
@@ -65,7 +66,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'Workspace in/out'.
 	 * @return Boolean isIn <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Workspace in/out")
+	@Field(domain = "STyOBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Workspace in/out")
 	public Boolean getIsIn() {
 		return isIn;
 	}
@@ -84,7 +85,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'Contenu du workspace'.
 	 * @return String workspace
 	 */
-	@Field(domain = "DoOJsonText", label = "Contenu du workspace")
+	@Field(domain = "STyOJsonText", label = "Contenu du workspace")
 	public String getWorkspace() {
 		return workspace;
 	}
@@ -103,7 +104,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'ActivityExecution'.
 	 * @return Long aceId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOIdentifiant", type = "FOREIGN_KEY", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "ActivityExecution")
+	@io.vertigo.dynamo.domain.stereotype.ForeignKey(domain = "STyOIdentifiant", label = "ActivityExecution", fkDefinition = "DtOActivityExecution" )
 	public Long getAceId() {
 		return (Long) aceIdAccessor.getId();
 	}

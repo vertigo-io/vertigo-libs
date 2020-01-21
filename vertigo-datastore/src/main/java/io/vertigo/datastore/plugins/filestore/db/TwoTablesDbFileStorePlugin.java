@@ -27,6 +27,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
@@ -74,8 +75,9 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 			@ParamValue("name") final Optional<String> name,
 			@ParamValue("storeMetaDataDtName") final String storeMetaDataDtDefinitionName,
 			@ParamValue("storeFileDtName") final String storeFileDtDefinitionName,
+			@ParamValue("fileInfoClass") final String fileInfoClassName,
 			final FileManager fileManager) {
-		super(name);
+		super(name, fileInfoClassName);
 		Assertion.checkNotNull(fileManager);
 		//-----
 		this.fileManager = fileManager;
@@ -167,6 +169,11 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 
 		getEntityStoreManager().delete(dtoMetaDataUri);
 		getEntityStoreManager().delete(dtoDataUri);
+	}
+
+	@Override
+	public Class<? extends FileInfo> getFileInfoClass() {
+		return ClassUtil.classForName(getFileInfoClassName(), FileInfo.class);
 	}
 
 	private Entity createMetaDataEntity(final FileInfo fileInfo) {

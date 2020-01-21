@@ -24,9 +24,9 @@ import freemarker.template.SimpleScalar;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateSequenceModel;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationNNDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationSimpleDefinition;
 
 /**
  * Permet de construire les lignes décritants l'annotation.
@@ -50,7 +50,7 @@ final class AnnotationsModel implements TemplateSequenceModel {
 	 * @param annotationWriter AnnotationWriter
 	 * @param dtDefinition DtDefinition
 	 */
-	public AnnotationsModel(final AnnotationWriter annotationWriter, final DtDefinition dtDefinition) {
+	public AnnotationsModel(final AnnotationWriter annotationWriter, final StudioDtDefinition dtDefinition) {
 		this(annotationWriter.writeAnnotations(dtDefinition));
 	}
 
@@ -60,7 +60,7 @@ final class AnnotationsModel implements TemplateSequenceModel {
 	 * @param dtField Champ
 	 * @param dtDefinition DtDefinition
 	 */
-	AnnotationsModel(final AnnotationWriter annotationWriter, final DtFieldModel dtFieldModel) {
+	AnnotationsModel(final AnnotationWriter annotationWriter, final StudioDtFieldModel dtFieldModel) {
 		this(annotationWriter.writeAnnotations(dtFieldModel.getSource()));
 	}
 
@@ -69,7 +69,7 @@ final class AnnotationsModel implements TemplateSequenceModel {
 	 * @param annotationWriter AnnotationWriter
 	 * @param associationSimple définition de l'association
 	 */
-	AnnotationsModel(final AnnotationWriter annotationWriter, final AssociationSimpleDefinition associationSimple) {
+	AnnotationsModel(final AnnotationWriter annotationWriter, final StudioAssociationSimpleDefinition associationSimple) {
 		this(annotationWriter.writeSimpleAssociationAnnotation(associationSimple));
 	}
 
@@ -78,7 +78,7 @@ final class AnnotationsModel implements TemplateSequenceModel {
 	 * @param annotationWriter AnnotationWriter
 	 * @param associationNN définition de l'association
 	 */
-	AnnotationsModel(final AnnotationWriter annotationWriter, final AssociationNNDefinition associationNN) {
+	AnnotationsModel(final AnnotationWriter annotationWriter, final StudioAssociationNNDefinition associationNN) {
 		this(annotationWriter.writeNNAssociationAnnotation(associationNN));
 	}
 

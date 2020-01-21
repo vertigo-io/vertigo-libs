@@ -24,8 +24,9 @@ import java.util.List;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.task.metamodel.TaskAttribute;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
+import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.dynamo.task.metamodel.StudioTaskAttribute;
+import io.vertigo.dynamo.task.metamodel.StudioTaskDefinition;
 
 /**
  * Génération des classes/méthodes des taches de type DAO.
@@ -33,26 +34,26 @@ import io.vertigo.dynamo.task.metamodel.TaskDefinition;
  * @author pchretien
  */
 public final class TaskDefinitionModel {
-	private final TaskDefinition taskDefinition;
+	private final StudioTaskDefinition taskDefinition;
 	private final List<TaskAttributeModel> ins = new ArrayList<>();
 
 	private final TaskAttributeModel out;
 	private final boolean optional;
 
-	public TaskDefinitionModel(final TaskDefinition taskDefinition) {
+	public TaskDefinitionModel(final StudioTaskDefinition taskDefinition) {
 		Assertion.checkNotNull(taskDefinition);
 		//-----
 		this.taskDefinition = taskDefinition;
 		boolean hasOption = false;
 
-		for (final TaskAttribute attribute : taskDefinition.getInAttributes()) {
+		for (final StudioTaskAttribute attribute : taskDefinition.getInAttributes()) {
 			final TaskAttributeModel templateTaskAttribute = new TaskAttributeModel(attribute);
 			ins.add(templateTaskAttribute);
 			hasOption = hasOption || attribute.getCardinality().isOptionalOrNullable();
 		}
 
 		if (taskDefinition.getOutAttributeOption().isPresent()) {
-			final TaskAttribute attribute = taskDefinition.getOutAttributeOption().get();
+			final StudioTaskAttribute attribute = taskDefinition.getOutAttributeOption().get();
 			final TaskAttributeModel templateTaskAttribute = new TaskAttributeModel(attribute);
 			//On est dans le cas des paramètres OUT
 			out = templateTaskAttribute;
@@ -71,11 +72,18 @@ public final class TaskDefinitionModel {
 	}
 
 	/**
+	 * @return Name of taskDefinition
+	 */
+	public String getTaskName() {
+		return taskDefinition.getTaskName();
+	}
+
+	/**
 	 * @return Nom de la méthode en CamelCase
 	 */
 	public String getMethodName() {
 		// Nom de la définition sans prefix (XxxYyyy).
-		final String localName = DefinitionUtil.getLocalName(taskDefinition.getName(), TaskDefinition.class);
+		final String localName = DefinitionUtil.getLocalName(taskDefinition.getName(), StudioTaskDefinition.class);
 		return StringUtil.first2LowerCase(localName);
 	}
 
@@ -103,9 +111,39 @@ public final class TaskDefinitionModel {
 	}
 
 	/**
+	 * @return Attribut de sortie (Unique)
+	 */
+	public String getRequest() {
+		return taskDefinition.getRequest()
+				.replaceAll("\"", "\\\\\"")
+				.replaceAll("\\n", "\" + \n \"");
+	}
+
+	/**
+	 * @return Attribut de sortie (Unique)
+	 */
+	public String getTaskEngineClass() {
+		return taskDefinition.getTaskEngineClass().getName();
+	}
+
+	/**
 	 * @return Si cette task utilise vertigo.core.lang.Option
 	 */
 	public boolean hasOptions() {
 		return optional;
+	}
+
+	/**
+	 * @return Si cette task est liée à un dataspace spécifique (différent de main)
+	 */
+	public boolean hasSpecificDataSpace() {
+		return !EntityStoreManager.MAIN_DATA_SPACE_NAME.equals(taskDefinition.getDataSpace());
+	}
+
+	/**
+	 * @return Si cette task est liée à un dataspace spécifique (différent de main)
+	 */
+	public String getDataSpace() {
+		return taskDefinition.getDataSpace();
 	}
 }

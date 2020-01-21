@@ -68,13 +68,13 @@ import io.vertigo.datafactory.plugins.search.elasticsearch.IndexType;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 /**
  * Gestion de la connexion au serveur Solr de manière transactionnel.
@@ -310,15 +310,16 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), esClient);
 	}
 
-	private static String obtainPkIndexDataType(final Domain domain) {
+	private static String obtainPkIndexDataType(final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque domaine le type d'indexation
 		// Calcul automatique  par default.
-		switch (domain.getDataType()) {
+		Assertion.checkState(smartTypeDefinition.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
+		switch (smartTypeDefinition.getTargetDataType()) {
 			case Boolean:
 			case Double:
 			case Integer:
 			case Long:
-				return domain.getDataType().name().toLowerCase(Locale.ROOT);
+				return smartTypeDefinition.getTargetDataType().name().toLowerCase(Locale.ROOT);
 			case String:
 				return "keyword";
 			case LocalDate:
@@ -326,7 +327,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 			case BigDecimal:
 			case DataStream:
 			default:
-				throw new IllegalArgumentException("Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + domain + "].");
+				throw new IllegalArgumentException();
 		}
 	}
 

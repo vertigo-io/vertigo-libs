@@ -27,7 +27,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.AccountFeatures;
+import io.vertigo.account.data.TestSmartTypes;
 import io.vertigo.account.data.TestUserSession;
+import io.vertigo.account.data.model.DtDefinitions;
 import io.vertigo.account.identityprovider.model.User;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.commons.CommonsFeatures;
@@ -38,7 +40,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 /**
  * Implementation standard de la gestion centralisee des droits d'acces.
@@ -76,10 +78,11 @@ abstract class AbstractIdentityProviderManagerTest extends AbstractTestCaseJU5 {
 								Param.of("ldapUserAttributeMapping", "usrId:cn, fullName:description"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addAllParams(Param.of("encoding", "utf-8"))
-								.addDefinitionResource("kpr", "security/generation.kpr")
-								.build())
+						.addDefinitionProvider(
+								DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+										.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
+										.addDefinitionResource("dtobjects", DtDefinitions.class.getName())
+										.build())
 						.build())
 				.build();
 	}

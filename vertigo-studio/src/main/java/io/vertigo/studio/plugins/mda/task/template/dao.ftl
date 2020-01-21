@@ -19,6 +19,7 @@ import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.dynamo.task.TaskManager;
 import ${dao.dtClassCanonicalName};
 
@@ -35,8 +36,8 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public ${dao.classSimpleName}(final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
-		super(${dao.dtClassSimpleName}.class, entityStoreManager, taskManager);
+	public ${dao.classSimpleName}(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
+		super(${dao.dtClassSimpleName}.class, entityStoreManager, taskManager, modelManager);
 	}
 
 	<#if dao.keyConcept>

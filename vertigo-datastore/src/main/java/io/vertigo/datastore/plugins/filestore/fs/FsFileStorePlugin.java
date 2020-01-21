@@ -37,6 +37,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.FileStoreManager;
@@ -94,6 +95,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	private DtDefinition storeDtDefinition;
 	private final String storeDtDefinitionName;
 	private final VTransactionManager transactionManager;
+	private final String fileInfoClassName;
 
 	/**
 	 * Constructor.
@@ -108,11 +110,13 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 			@ParamValue("name") final Optional<String> name,
 			@ParamValue("storeDtName") final String storeDtDefinitionName,
 			@ParamValue("path") final String path,
+			@ParamValue("fileInfoClass") final String fileInfoClassName,
 			final VTransactionManager transactionManager,
 			final FileManager fileManager) {
 		Assertion.checkNotNull(name);
 		Assertion.checkArgNotEmpty(storeDtDefinitionName);
 		Assertion.checkArgNotEmpty(path);
+		Assertion.checkArgNotEmpty(fileInfoClassName);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkArgument(path.endsWith("/"), "store path must ends with / ({0})", path);
@@ -123,6 +127,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		this.fileManager = fileManager;
 		documentRoot = FileUtil.translatePath(path);
 		this.storeDtDefinitionName = storeDtDefinitionName;
+		this.fileInfoClassName = fileInfoClassName;
 	}
 
 	@Override
@@ -266,6 +271,11 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		getCurrentTransaction().addAfterCompletion(new FileActionDelete(documentRoot + path));
 		//-----suppression en base
 		getEntityStoreManager().delete(dtoUri);
+	}
+
+	@Override
+	public Class<? extends FileInfo> getFileInfoClass() {
+		return ClassUtil.classForName(fileInfoClassName, FileInfo.class);
 	}
 
 	/**

@@ -20,7 +20,7 @@ package io.vertigo.account.authorization;
 
 import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.account.authorization.metamodel.OperationName;
-import io.vertigo.account.authorization.model.Record;
+import io.vertigo.account.data.model.Record;
 
 public final class SecurityNames {
 

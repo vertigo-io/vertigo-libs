@@ -36,21 +36,21 @@ import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtStereotype;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationNNDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationSimpleDefinition;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.masterdata.MasterDataManager;
 import io.vertigo.studio.masterdata.MasterDataValues;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
-import io.vertigo.studio.plugins.mda.domain.sql.model.SqlAssociationNNModel;
-import io.vertigo.studio.plugins.mda.domain.sql.model.SqlAssociationSimpleModel;
-import io.vertigo.studio.plugins.mda.domain.sql.model.SqlDtDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.sql.model.SqlMasterDataDefinitionModel;
 import io.vertigo.studio.plugins.mda.domain.sql.model.SqlMethodModel;
+import io.vertigo.studio.plugins.mda.domain.sql.model.SqlStudioAssociationNNModel;
+import io.vertigo.studio.plugins.mda.domain.sql.model.SqlStudioAssociationSimpleModel;
+import io.vertigo.studio.plugins.mda.domain.sql.model.SqlStudioDtDefinitionModel;
 import io.vertigo.studio.plugins.mda.util.DomainUtil;
 import io.vertigo.studio.plugins.mda.util.MdaUtil;
 
@@ -121,7 +121,7 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 
 		final MasterDataValues masterDataValues = masterDataManager.getValues();
 
-		final List<SqlMasterDataDefinitionModel> sqlMasterDataDefinitionModels = Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
+		final List<SqlMasterDataDefinitionModel> sqlMasterDataDefinitionModels = Home.getApp().getDefinitionSpace().getAll(StudioDtDefinition.class)
 				.stream()
 				.filter(dtDefinition -> dtDefinition.getStereotype() == DtStereotype.StaticMasterData)
 				.map(dtDefinition -> new SqlMasterDataDefinitionModel(dtDefinition, masterDataValues.getOrDefault(dtDefinition.getClassCanonicalName(), Collections.emptyMap())))
@@ -148,23 +148,23 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder) {
 
-		final Map<String, List<SqlDtDefinitionModel>> mapListDtDef = new HashMap<>();
-		for (final DtDefinition dtDefinition : DomainUtil.sortDefinitionCollection(DomainUtil.getDtDefinitions())) {
+		final Map<String, List<SqlStudioDtDefinitionModel>> mapListDtDef = new HashMap<>();
+		for (final StudioDtDefinition dtDefinition : DomainUtil.sortDefinitionCollection(DomainUtil.getDtDefinitions())) {
 			if (dtDefinition.isPersistent()) {
-				final SqlDtDefinitionModel templateDef = new SqlDtDefinitionModel(dtDefinition);
+				final SqlStudioDtDefinitionModel templateDef = new SqlStudioDtDefinitionModel(dtDefinition);
 				final String dataSpace = dtDefinition.getDataSpace();
-				final List<SqlDtDefinitionModel> listDtDef = obtainListDtDefinitionPerDataSpace(mapListDtDef, dataSpace);
+				final List<SqlStudioDtDefinitionModel> listDtDef = obtainListDtDefinitionPerDataSpace(mapListDtDef, dataSpace);
 				listDtDef.add(templateDef);
 			}
 		}
 		//
-		final Collection<AssociationSimpleDefinition> collectionSimpleAll = DomainUtil.getSimpleAssociations();
-		final Collection<AssociationNNDefinition> collectionNNAll = DomainUtil.getNNAssociations();
+		final Collection<StudioAssociationSimpleDefinition> collectionSimpleAll = DomainUtil.getSimpleAssociations();
+		final Collection<StudioAssociationNNDefinition> collectionNNAll = DomainUtil.getNNAssociations();
 		//
-		for (final Entry<String, List<SqlDtDefinitionModel>> entry : mapListDtDef.entrySet()) {
+		for (final Entry<String, List<SqlStudioDtDefinitionModel>> entry : mapListDtDef.entrySet()) {
 			final String dataSpace = entry.getKey();
-			final Collection<SqlAssociationSimpleModel> associationSimpleDefinitions = filterAssociationSimple(collectionSimpleAll, dataSpace);
-			final Collection<SqlAssociationNNModel> associationNNDefinitions = filterAssociationNN(collectionNNAll, dataSpace);
+			final Collection<SqlStudioAssociationSimpleModel> associationSimpleDefinitions = filterAssociationSimple(collectionSimpleAll, dataSpace);
+			final Collection<SqlStudioAssociationNNModel> associationNNDefinitions = filterAssociationNN(collectionNNAll, dataSpace);
 
 			generateSqlByDataSpace(
 					fileGeneratorConfig,
@@ -179,10 +179,10 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 	private void generateSqlByDataSpace(
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder,
-			final Collection<SqlAssociationSimpleModel> associationSimpleDefinitions,
-			final Collection<SqlAssociationNNModel> associationNNDefinitions,
+			final Collection<SqlStudioAssociationSimpleModel> associationSimpleDefinitions,
+			final Collection<SqlStudioAssociationNNModel> associationNNDefinitions,
 			final String dataSpace,
-			final List<SqlDtDefinitionModel> dtDefinitions) {
+			final List<SqlStudioDtDefinitionModel> dtDefinitions) {
 		final StringBuilder filename = new StringBuilder()
 				.append("crebas");
 		if (!StringUtil.isEmpty(dataSpace) && !DEFAULT_DATA_SPACE.equals(dataSpace)) {
@@ -198,36 +198,36 @@ public final class SqlGeneratorPlugin implements GeneratorPlugin {
 				filename.toString());
 	}
 
-	private static List<SqlDtDefinitionModel> obtainListDtDefinitionPerDataSpace(final Map<String, List<SqlDtDefinitionModel>> mapListDtDef, final String dataSpace) {
+	private static List<SqlStudioDtDefinitionModel> obtainListDtDefinitionPerDataSpace(final Map<String, List<SqlStudioDtDefinitionModel>> mapListDtDef, final String dataSpace) {
 		return mapListDtDef.computeIfAbsent(dataSpace, k -> new ArrayList<>());
 	}
 
-	private static Collection<SqlAssociationSimpleModel> filterAssociationSimple(
-			final Collection<AssociationSimpleDefinition> collectionSimpleAll,
+	private static Collection<SqlStudioAssociationSimpleModel> filterAssociationSimple(
+			final Collection<StudioAssociationSimpleDefinition> collectionSimpleAll,
 			final String dataSpace) {
 		return collectionSimpleAll.stream()
 				.filter(a -> dataSpace.equals(a.getAssociationNodeA().getDtDefinition().getDataSpace()))
 				.filter(a -> a.getAssociationNodeA().getDtDefinition().isPersistent() && a.getAssociationNodeB().getDtDefinition().isPersistent())
-				.map(a -> new SqlAssociationSimpleModel(a))
+				.map(a -> new SqlStudioAssociationSimpleModel(a))
 				.collect(Collectors.toList());
 	}
 
-	private static Collection<SqlAssociationNNModel> filterAssociationNN(
-			final Collection<AssociationNNDefinition> collectionNNAll,
+	private static Collection<SqlStudioAssociationNNModel> filterAssociationNN(
+			final Collection<StudioAssociationNNDefinition> collectionNNAll,
 			final String dataSpace) {
 		return collectionNNAll.stream()
 				.filter(a -> dataSpace.equals(a.getAssociationNodeA().getDtDefinition().getDataSpace()))
 				.filter(a -> a.getAssociationNodeA().getDtDefinition().isPersistent() && a.getAssociationNodeB().getDtDefinition().isPersistent())
-				.map(a -> new SqlAssociationNNModel(a))
+				.map(a -> new SqlStudioAssociationNNModel(a))
 				.collect(Collectors.toList());
 	}
 
 	private void generateFile(
 			final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder,
-			final List<SqlDtDefinitionModel> dtDefinitionModels,
-			final Collection<SqlAssociationSimpleModel> associationSimpleDefinitions,
-			final Collection<SqlAssociationNNModel> associationNNDefinitions,
+			final List<SqlStudioDtDefinitionModel> dtDefinitionModels,
+			final Collection<SqlStudioAssociationSimpleModel> associationSimpleDefinitions,
+			final Collection<SqlStudioAssociationNNModel> associationNNDefinitions,
 			final String fileName) {
 		final MapBuilder<String, Object> modelBuilder = new MapBuilder<String, Object>()
 				.put("sql", new SqlMethodModel())

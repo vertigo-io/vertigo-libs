@@ -26,9 +26,9 @@ import freemarker.template.TemplateMethodModelEx;
 import freemarker.template.TemplateModel;
 import freemarker.template.TemplateModelException;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationNNDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationSimpleDefinition;
 
 /**
  * Méthode Freemarker 'annotations'.
@@ -65,14 +65,14 @@ public final class MethodAnnotationsModel implements TemplateMethodModelEx {
 			type = ((StringModel) param).getWrappedObject();
 		}
 
-		if (type instanceof DtDefinition) {
-			return new AnnotationsModel(annotationWriter, (DtDefinition) type);
-		} else if (type instanceof DtFieldModel) {
-			return new AnnotationsModel(annotationWriter, (DtFieldModel) type);
-		} else if (type instanceof AssociationSimpleDefinition) {
-			return new AnnotationsModel(annotationWriter, (AssociationSimpleDefinition) type);
-		} else if (type instanceof AssociationNNDefinition) {
-			return new AnnotationsModel(annotationWriter, (AssociationNNDefinition) type);
+		if (type instanceof StudioDtDefinition) {
+			return new AnnotationsModel(annotationWriter, (StudioDtDefinition) type);
+		} else if (type instanceof StudioDtFieldModel) {
+			return new AnnotationsModel(annotationWriter, (StudioDtFieldModel) type);
+		} else if (type instanceof StudioAssociationSimpleDefinition) {
+			return new AnnotationsModel(annotationWriter, (StudioAssociationSimpleDefinition) type);
+		} else if (type instanceof StudioAssociationNNDefinition) {
+			return new AnnotationsModel(annotationWriter, (StudioAssociationNNDefinition) type);
 		} else if (type instanceof String) {
 			return new AnnotationsModel(annotationWriter, (String) type);
 		} else {

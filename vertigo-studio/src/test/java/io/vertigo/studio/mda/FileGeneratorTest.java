@@ -26,8 +26,7 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.datastore.impl.filestore.grammar.FileStoreDefinitionProvider;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.plugins.environment.StudioModelDefinitionProvider;
 import io.vertigo.studio.StudioFeatures;
 import io.vertigo.studio.tools.NameSpace2Java;
 
@@ -52,10 +51,8 @@ public class FileGeneratorTest {
 						.withFileGenerator()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioModelDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/studio/data/model.kpr")
-								.build())
-						.addDefinitionProvider(DefinitionProviderConfig.builder(FileStoreDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/studio/data/fileinfo.kpr")
 								.build())
 						.build())

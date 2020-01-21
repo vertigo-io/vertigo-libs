@@ -33,7 +33,6 @@ import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
@@ -99,25 +98,25 @@ public final class DomainMetricsProvider implements Component {
 	public List<Metric> getSmartTypeUsageTasksMetrics() {
 		return Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
-				.map(domain -> Metric.builder()
+				.map(smartType -> Metric.builder()
 						.withSuccess()
-						.withName("domainUsageInTasks")
-						.withFeature(domain.getName())
-						.withValue(countTaskDependencies(domain))
+						.withName("smartTypeUsageInTasks")
+						.withFeature(smartType.getName())
+						.withValue(countTaskDependencies(smartType))
 						.build())
 				.collect(Collectors.toList());
 
 	}
 
 	@Metrics
-	public List<Metric> getDomainUsageDtDefinitionMetrics() {
-		return Home.getApp().getDefinitionSpace().getAll(Domain.class)
+	public List<Metric> getSmartTypeUsageDtDefinitionMetrics() {
+		return Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
-				.map(domain -> Metric.builder()
+				.map(smartType -> Metric.builder()
 						.withSuccess()
-						.withName("domainUsageInDtDefinitions")
-						.withFeature(domain.getName())
-						.withValue(countDtDefinitionDependencies(domain))
+						.withName("smartTypeUsageInDtDefinitions")
+						.withFeature(smartType.getName())
+						.withValue(countDtDefinitionDependencies(smartType))
 						.build())
 				.collect(Collectors.toList());
 
@@ -142,13 +141,13 @@ public final class DomainMetricsProvider implements Component {
 		return count;
 	}
 
-	private static double countDtDefinitionDependencies(final Domain domain) {
-		Assertion.checkNotNull(domain);
+	private static double countDtDefinitionDependencies(final SmartTypeDefinition smartTypeDefinition) {
+		Assertion.checkNotNull(smartTypeDefinition);
 		//---
 		return Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()
 				.flatMap(dtDefinition -> dtDefinition.getFields().stream())
-				.filter(field -> domain.equals(field.getDomain()))
+				.filter(field -> smartTypeDefinition.equals(field.getDomain()))
 				.count();
 	}
 

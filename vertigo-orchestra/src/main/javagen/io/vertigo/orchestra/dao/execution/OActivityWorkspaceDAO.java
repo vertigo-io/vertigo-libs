@@ -11,6 +11,7 @@ import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.execution.OActivityWorkspace;
 
@@ -27,8 +28,8 @@ public final class OActivityWorkspaceDAO extends DAO<OActivityWorkspace, java.la
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public OActivityWorkspaceDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager) {
-		super(OActivityWorkspace.class, entityStoreManager, taskManager);
+	public OActivityWorkspaceDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
+		super(OActivityWorkspace.class, entityStoreManager, taskManager, modelManager);
 	}
 
 
@@ -43,12 +44,21 @@ public final class OActivityWorkspaceDAO extends DAO<OActivityWorkspace, java.la
 	}
 
 	/**
-	 * Execute la tache TkGetActivityWorkspace.
+	 * Execute la tache StTkGetActivityWorkspace.
 	 * @param aceId Long
 	 * @param in Boolean
 	 * @return Option de OActivityWorkspace dtOActivityWorkspace
 	*/
-	public Optional<io.vertigo.orchestra.domain.execution.OActivityWorkspace> getActivityWorkspace(final Long aceId, final Boolean in) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			dataSpace = "orchestra",
+			name = "TkGetActivityWorkspace",
+			request = "select acw.*" + 
+ "        	 from o_activity_workspace acw" + 
+ "        	 where acw.ACE_ID = #aceId#" + 
+ "        	 and   acw.IS_IN = #in#",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOActivityWorkspace")
+	public Optional<io.vertigo.orchestra.domain.execution.OActivityWorkspace> getActivityWorkspace(@io.vertigo.dynamo.task.proxy.TaskInput(name = "aceId", domain = "STyOIdentifiant") final Long aceId, @io.vertigo.dynamo.task.proxy.TaskInput(name = "in", domain = "STyOBooleen") final Boolean in) {
 		final Task task = createTaskBuilder("TkGetActivityWorkspace")
 				.addValue("aceId", aceId)
 				.addValue("in", in)

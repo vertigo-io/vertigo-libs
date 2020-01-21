@@ -12,6 +12,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  */
 @Generated
 @io.vertigo.dynamo.domain.stereotype.DataSpace("orchestra")
+@io.vertigo.dynamo.ngdomain.annotations.Mapper(clazz = io.vertigo.dynamo.domain.util.JsonMapper.class, dataType = io.vertigo.dynamo.domain.metamodel.DataType.String)
 public final class OExecutionState implements Entity {
 	private static final long serialVersionUID = 1L;
 
@@ -29,7 +30,7 @@ public final class OExecutionState implements Entity {
 	 * Récupère la valeur de la propriété 'Code'.
 	 * @return String estCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoOCodeIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Code")
+	@Field(domain = "STyOCodeIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Code")
 	public String getEstCd() {
 		return estCd;
 	}
@@ -48,7 +49,7 @@ public final class OExecutionState implements Entity {
 	 * Récupère la valeur de la propriété 'Libellé'.
 	 * @return String label
 	 */
-	@Field(domain = "DoOLibelle", label = "Libellé")
+	@Field(domain = "STyOLibelle", label = "Libellé")
 	public String getLabel() {
 		return label;
 	}

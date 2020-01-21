@@ -51,6 +51,7 @@ import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
 import io.vertigo.datastore.filestore.model.FileInfo;
@@ -83,6 +84,8 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	private final VTransactionManager transactionManager;
 	private final Optional<Integer> purgeDelayMinutesOpt;
 
+	private final String fileInfoClassName;
+
 	/**
 	 * Constructor.
 	 * @param name Store name
@@ -95,11 +98,13 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	public FsFullFileStorePlugin(
 			@ParamValue("name") final Optional<String> name,
 			@ParamValue("path") final String path,
+			@ParamValue("fileInfoClass") final String fileInfoClassName,
 			final FileManager fileManager,
 			final VTransactionManager transactionManager,
 			@ParamValue("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
 		Assertion.checkNotNull(name);
 		Assertion.checkArgNotEmpty(path);
+		Assertion.checkArgNotEmpty(fileInfoClassName);
 		Assertion.checkNotNull(fileManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkArgument(path.endsWith("/"), "store path must ends with / ({0})", path);
@@ -113,6 +118,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 				.check(() -> Files.isDirectory(documentRoot), "documentRoot ({0}) must be a directory", documentRoot.toAbsolutePath().toString());
 
 		this.purgeDelayMinutesOpt = purgeDelayMinutesOpt;
+		this.fileInfoClassName = fileInfoClassName;
 	}
 
 	/**
@@ -247,6 +253,11 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 		//-----suppression du fichier
 		getCurrentTransaction().addAfterCompletion(new FileActionDelete(obtainFullFilePath(uri).toString()));
 		getCurrentTransaction().addAfterCompletion(new FileActionDelete(obtainFullMetaDataFilePath(uri).toString()));
+	}
+
+	@Override
+	public Class<? extends FileInfo> getFileInfoClass() {
+		return ClassUtil.classForName(fileInfoClassName, FileInfo.class);
 	}
 
 	private static final class PathInputStreamBuilder implements InputStreamBuilder {

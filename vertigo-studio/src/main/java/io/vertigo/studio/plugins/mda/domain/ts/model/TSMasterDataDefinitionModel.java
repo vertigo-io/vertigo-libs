@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.studio.masterdata.MasterDataValue;
 
 /**
@@ -32,13 +32,13 @@ import io.vertigo.studio.masterdata.MasterDataValue;
  * @author npiedeloup
  */
 public final class TSMasterDataDefinitionModel {
-	private final TSDtDefinitionModel tsDtDefinitionModel;
+	private final TSStudioDtDefinitionModel tsDtDefinitionModel;
 	private final List<TSMasterDataValueModel> tsMasterDataValueModels;
 
-	public TSMasterDataDefinitionModel(final DtDefinition dtDefinition, final Map<String, MasterDataValue> masterDataValuesByDtDefinition) {
+	public TSMasterDataDefinitionModel(final StudioDtDefinition dtDefinition, final Map<String, MasterDataValue> masterDataValuesByDtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
-		tsDtDefinitionModel = new TSDtDefinitionModel(dtDefinition);
+		tsDtDefinitionModel = new TSStudioDtDefinitionModel(dtDefinition);
 		tsMasterDataValueModels = masterDataValuesByDtDefinition
 				.entrySet()
 				.stream()
@@ -46,7 +46,7 @@ public final class TSMasterDataDefinitionModel {
 				.collect(Collectors.toList());
 	}
 
-	public TSDtDefinitionModel getDefinition() {
+	public TSStudioDtDefinitionModel getDefinition() {
 		return tsDtDefinitionModel;
 	}
 
