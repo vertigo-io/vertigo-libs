@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datafactory.impl.search.grammar;
+package io.vertigo.dynamo.plugins.environment.registries.search;
 
 import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.Boolean;
 import static io.vertigo.dynamo.plugins.environment.dsl.entity.DslPropertyType.String;

@@ -18,10 +18,15 @@
  */
 package io.vertigo.studio.plugins.mda.search.model;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.search.StudioFacetedQueryDefinition;
 
 /**
  * Génération des classes/méthodes des taches de type DAO.
@@ -29,18 +34,19 @@ import io.vertigo.dynamo.domain.metamodel.Domain;
  * @author pchretien
  */
 public final class FacetedQueryDefinitionModel {
-	private final FacetedQueryDefinition facetedQueryDefinition;
+	private final StudioFacetedQueryDefinition facetedQueryDefinition;
 
 	private final String simpleName;
 	private final String criteriaClassCanonicalName;
+	private final List<FacetDefinitionModel> facetDefinitionModels;
 
-	public FacetedQueryDefinitionModel(final FacetedQueryDefinition facetedQueryDefinition) {
+	public FacetedQueryDefinitionModel(final StudioFacetedQueryDefinition facetedQueryDefinition) {
 		Assertion.checkNotNull(facetedQueryDefinition);
 		//-----
 		this.facetedQueryDefinition = facetedQueryDefinition;
-		simpleName = DefinitionUtil.getLocalName(facetedQueryDefinition.getName(), FacetedQueryDefinition.class);
+		simpleName = DefinitionUtil.getLocalName(facetedQueryDefinition.getName(), StudioFacetedQueryDefinition.class);
 		criteriaClassCanonicalName = obtainCriteriaClassCanonicalName();
-
+		facetDefinitionModels = facetedQueryDefinition.getFacetDefinitions().stream().map(FacetDefinitionModel::new).collect(Collectors.toList());
 	}
 
 	/**
@@ -57,11 +63,35 @@ public final class FacetedQueryDefinitionModel {
 		return facetedQueryDefinition.getName();
 	}
 
+	public String getQueryName() {
+		return DefinitionUtil.getPrefix(FacetedQueryDefinition.class) + simpleName;
+	}
+
+	public String getCriteriaSmartType() {
+		return facetedQueryDefinition.getCriteriaDomain().getSmartTypeName();
+	}
+
+	public String getListFilterBuilderQuery() {
+		return facetedQueryDefinition.getListFilterBuilderQuery();
+	}
+
+	public String getKeyConceptDtDefinition() {
+		return DefinitionUtil.getPrefix(DtDefinition.class) + facetedQueryDefinition.getKeyConceptDtDefinition().getLocalName();
+	}
+
+	public String getListFilterClassName() {
+		return facetedQueryDefinition.getListFilterBuilderClass().getName();
+	}
+
 	/**
 	 * @return Nom de la classe du criteria
 	 */
 	public String getCriteriaClassCanonicalName() {
 		return criteriaClassCanonicalName;
+	}
+
+	public List<FacetDefinitionModel> getFacetDefinitions() {
+		return facetDefinitionModels;
 	}
 
 	private String obtainCriteriaClassCanonicalName() {

@@ -21,7 +21,7 @@ package io.vertigo.studio.plugins.mda.domain.java.model.masterdata;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 
 /**
  * Model Sql des materdata.
@@ -34,7 +34,7 @@ public final class MasterDataValueModel {
 	private final String enumNameValue;
 	private final Map<String, String> allFieldValues;
 
-	public MasterDataValueModel(final DtDefinition dtDefinition, final String enumNameValue, final Map<String, String> allFieldValues) {
+	public MasterDataValueModel(final StudioDtDefinition dtDefinition, final String enumNameValue, final Map<String, String> allFieldValues) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		this.enumNameValue = enumNameValue;

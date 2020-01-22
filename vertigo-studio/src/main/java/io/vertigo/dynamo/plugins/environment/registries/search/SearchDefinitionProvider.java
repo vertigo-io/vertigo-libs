@@ -1,4 +1,4 @@
-package io.vertigo.datafactory.impl.search.grammar;
+package io.vertigo.dynamo.plugins.environment.registries.search;
 
 import java.util.ArrayList;
 import java.util.List;

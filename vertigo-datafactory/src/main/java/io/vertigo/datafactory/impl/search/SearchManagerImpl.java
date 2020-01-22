@@ -41,6 +41,10 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.definition.DefinitionProvider;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.search.SearchManager;
@@ -60,7 +64,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
  * Implémentation standard du gestionnaire des indexes de recherche.
  * @author dchallas, npiedeloup
  */
-public final class SearchManagerImpl implements SearchManager, Activeable {
+public final class SearchManagerImpl implements SearchManager, Activeable, DefinitionProvider {
 
 	private static final String CATEGORY = "search";
 	private final AnalyticsManager analyticsManager;
@@ -268,6 +272,13 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 			final List<UID<? extends KeyConcept>> list = Collections.singletonList(uid);
 			markAsDirty(list);
 		}
+	}
+
+	@Override
+	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
+		return SearchDefinitionUtil.scanComponents(Home.getApp().getComponentSpace().keySet().stream()
+				.map(componentId -> Home.getApp().getComponentSpace().resolve(componentId, Component.class).getClass())
+				.collect(Collectors.toList()));
 	}
 
 }
