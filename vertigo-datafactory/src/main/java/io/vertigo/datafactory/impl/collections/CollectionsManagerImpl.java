@@ -151,6 +151,6 @@ public final class CollectionsManagerImpl implements CollectionsManager, Definit
 	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
 		return FacetDefinitionUtil.scanComponents(Home.getApp().getComponentSpace().keySet().stream()
 				.map(componentId -> Home.getApp().getComponentSpace().resolve(componentId, Component.class).getClass())
-				.collect(Collectors.toList()));
+				.collect(Collectors.toList()), definitionSpace);
 	}
 }

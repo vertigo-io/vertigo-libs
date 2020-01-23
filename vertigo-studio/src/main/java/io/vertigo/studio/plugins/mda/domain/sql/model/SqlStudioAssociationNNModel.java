@@ -72,7 +72,7 @@ public final class SqlStudioAssociationNNModel {
 	/**
 	 * @return Association nodeA Id domain
 	 */
-	public Domain getNodeAPKSmartType() {
+	public Domain getNodeAPKDomain() {
 		return associationDefinition.getAssociationNodeA().getDtDefinition().getIdField().get().getDomain();
 	}
 
@@ -93,7 +93,7 @@ public final class SqlStudioAssociationNNModel {
 	/**
 	 * @return Association nodeB Id domain
 	 */
-	public Domain getNodeBPKSmartType() {
+	public Domain getNodeBPKDomain() {
 		return associationDefinition.getAssociationNodeB().getDtDefinition().getIdField().get().getDomain();
 	}
 

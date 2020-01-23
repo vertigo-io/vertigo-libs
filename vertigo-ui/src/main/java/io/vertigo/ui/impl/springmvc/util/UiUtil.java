@@ -30,6 +30,8 @@ import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
+import io.vertigo.dynamo.ngdomain.ModelManager;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.ui.core.AbstractUiListUnmodifiable;
 import io.vertigo.ui.core.ViewContext;
@@ -124,20 +126,23 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			final DataType dataType = getDtField(object + "." + fieldName).getDomain().getDataType();
-			switch (dataType) {
-				case Long:
-				case Integer:
-				case Double:
-				case BigDecimal:
-					return "right";
-				case Boolean:
-				case Instant:
-				case LocalDate:
-				case String:
-				case DataStream:
-				default:
-					return "left";
+			final SmartTypeDefinition smartTypeDefinition = getDtField(object + "." + fieldName).getDomain();
+			if (smartTypeDefinition.getScope().isPrimitive()) {
+				final DataType dataType = smartTypeDefinition.getTargetDataType();
+				switch (dataType) {
+					case Long:
+					case Integer:
+					case Double:
+					case BigDecimal:
+						return "right";
+					case Boolean:
+					case Instant:
+					case LocalDate:
+					case String:
+					case DataStream:
+					default:
+						return "left";
+				}
 			}
 		}
 		return "left";
@@ -149,10 +154,11 @@ public final class UiUtil implements Serializable {
 	 * @return rendu du champs boolean
 	 */
 	public static String formatBoolean(final String fieldPath, final Boolean value) {
+		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
 			return DEFAULT_FORMATTER.valueToString(value, DataType.Boolean);
 		}
-		return getDtField(fieldPath).getDomain().valueToString(value);
+		return modelManager.valueToString(getDtField(fieldPath).getDomain(), value);
 	}
 
 	public static Double getMinValue(final String fieldPath) {

@@ -39,12 +39,15 @@ import io.vertigo.ui.data.dao.movies.MoviesPAO;
 import io.vertigo.ui.data.domain.movies.Movie;
 import io.vertigo.ui.data.domain.movies.MovieDisplay;
 import io.vertigo.ui.data.domain.movies.MovieIndex;
+import io.vertigo.ui.data.search.movies.MovieSearchClient;
 
 @Transactional
 public class MovieServicesImpl implements MovieServices {
 
 	@Inject
 	private MovieDAO movieDAO;
+	@Inject
+	private MovieSearchClient movieSearchClient;
 	@Inject
 	private MoviesPAO moviesPAO;
 
@@ -69,18 +72,23 @@ public class MovieServicesImpl implements MovieServices {
 	public DtList<MovieDisplay> getMoviesDisplay(final DtListState dtListState) {
 		return movieDAO.findAll(Criterions.alwaysTrue(), dtListState)
 				.stream()
-				.map(movie -> new MovieDisplay(movie.getMovId(), movie.getTitle()))
+				.map(movie -> {
+					final MovieDisplay movieDisplay = new MovieDisplay();
+					movieDisplay.setMovId(movie.getMovId());
+					movieDisplay.setTitle(movie.getTitle());
+					return movieDisplay;
+				})
 				.collect(VCollectors.toDtList(MovieDisplay.class));
 	}
 
 	@Override
 	public FacetedQueryResult<MovieIndex, SearchQuery> searchMovies(final String criteria, final SelectedFacetValues listFilters, final DtListState dtListState, final Optional<String> group) {
-		final SearchQueryBuilder searchQueryBuilder = movieDAO.createSearchQueryBuilderMovie(criteria, listFilters);
+		final SearchQueryBuilder searchQueryBuilder = movieSearchClient.createSearchQueryBuilderMovie(criteria, listFilters);
 		if (group.isPresent()) {
 			final FacetDefinition clusteringFacetDefinition = Home.getApp().getDefinitionSpace().resolve(group.get(), FacetDefinition.class);
 			searchQueryBuilder.withFacetClustering(clusteringFacetDefinition);
 		}
-		return movieDAO.loadList(searchQueryBuilder.build(), dtListState);
+		return movieSearchClient.loadList(searchQueryBuilder.build(), dtListState);
 	}
 
 	@Override

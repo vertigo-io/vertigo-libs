@@ -28,7 +28,6 @@ import freemarker.template.TemplateModelException;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
-import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 /**
  * Méthode Freemarker 'sql'.
@@ -46,7 +45,7 @@ public final class SqlMethodModel implements TemplateMethodModelEx {
 		if (type instanceof SqlStudioDtFieldModel) {
 			final Domain smartType = ((SqlStudioDtFieldModel) type).getSource().getDomain();
 			return new SimpleScalar(getSqlType((smartType)));
-		} else if (type instanceof SmartTypeDefinition) {
+		} else if (type instanceof Domain) {
 			return new SimpleScalar(getSqlType(((Domain) type)));
 		}
 		throw new TemplateModelException("Le paramètre type n'est pas un Domain.");

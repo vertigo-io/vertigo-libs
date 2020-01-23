@@ -30,12 +30,13 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.FormatterException;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.ui.core.encoders.EncoderDate;
 import io.vertigo.vega.engines.webservice.json.VegaUiObject;
 
@@ -102,8 +103,9 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		} else if (isAboutDate(dtField)) {
 			strValue = requestParameterToString(value);
 			try {
-				final Object typedValue = EncoderDate.stringToValue(strValue, dtField.getDomain().getDataType());
-				strValue = dtField.getDomain().valueToString(typedValue);// we fall back in the normal case if everything is right -> go to formatter
+				final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
+				final Object typedValue = EncoderDate.stringToValue(strValue, dtField.getDomain().getTargetDataType());
+				strValue = modelManager.valueToString(dtField.getDomain(), typedValue);// we fall back in the normal case if everything is right -> go to formatter
 			} catch (final FormatterException e) {
 				// do nothing we keep the input value
 			}
@@ -138,11 +140,11 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	}
 
 	private static boolean isBoolean(final DtField dtField) {
-		return dtField.getDomain().getDataType() == DataType.Boolean;
+		return dtField.getDomain().getScope().isPrimitive() && dtField.getDomain().getTargetDataType() == DataType.Boolean;
 	}
 
 	private static boolean isAboutDate(final DtField dtField) {
-		return dtField.getDomain().getDataType().isAboutDate();
+		return dtField.getDomain().getScope().isPrimitive() && dtField.getDomain().getTargetDataType().isAboutDate();
 	}
 
 	/** {@inheritDoc} */
@@ -269,8 +271,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		final DtField dtField = getDtField(keyFieldName);
 		if (isAboutDate(dtField)) {
 			final Serializable value = getTypedValue(keyFieldName, Serializable.class);
-			final Domain domain = dtField.getDomain();
-			return EncoderDate.valueToString(value, domain.getDataType());// encodeValue
+			return EncoderDate.valueToString(value, dtField.getDomain().getTargetDataType());// encodeValue
 		} else if (isMultiple(dtField)) {
 			final String value = getTypedValue(keyFieldName, String.class);
 			return value != null ? parseMultipleValue(value) : new String[0];
@@ -279,10 +280,10 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	}
 
 	private String getFormattedValue(final String keyFieldName) {
-
+		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
 		final DtField dtField = getDtField(keyFieldName);
 		final Serializable typedValue = getEncodedValue(keyFieldName);
-		return typedValue != null ? dtField.getDomain().valueToString(typedValue) : null;
+		return typedValue != null ? modelManager.valueToString(dtField.getDomain(), typedValue) : null;
 	}
 
 }

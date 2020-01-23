@@ -62,7 +62,7 @@ public final class TSStudioDtFieldModel {
 	/**
 	 * @return Name of the domain
 	 */
-	public String getSmartTypeName() {
+	public String getDomainName() {
 		return dtField.getDomain().getName();
 	}
 

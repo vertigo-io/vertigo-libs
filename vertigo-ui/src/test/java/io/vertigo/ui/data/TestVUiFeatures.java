@@ -20,9 +20,7 @@ package io.vertigo.ui.data;
 
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.discovery.ModuleDiscoveryFeatures;
-import io.vertigo.datafactory.impl.search.grammar.SearchDefinitionProvider;
-import io.vertigo.datastore.impl.filestore.grammar.FileStoreDefinitionProvider;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 import io.vertigo.ui.data.boot.initializer.TestVertigoUiMasterDataDefinitionProvider;
 
 public class TestVUiFeatures extends ModuleDiscoveryFeatures<TestVUiFeatures> {
@@ -41,16 +39,9 @@ public class TestVUiFeatures extends ModuleDiscoveryFeatures<TestVUiFeatures> {
 		super.buildFeatures();
 		//---
 		getModuleConfigBuilder()
-				.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-						.addDefinitionResource("classes", "io.vertigo.ui.data.domain.DtDefinitions")
-						.addDefinitionResource("kpr", "/META-INF/io/vertigo/ui/model_run.kpr")
-						.addDefinitionResource("kpr", "/META-INF/io/vertigo/ui/tasks.kpr")
-						.build())
-				.addDefinitionProvider(DefinitionProviderConfig.builder(FileStoreDefinitionProvider.class)
-						.addDefinitionResource("kpr", "/META-INF/io/vertigo/ui/fileinfo.kpr")
-						.build())
-				.addDefinitionProvider(DefinitionProviderConfig.builder(SearchDefinitionProvider.class)
-						.addDefinitionResource("kpr", "/META-INF/io/vertigo/ui/search.kpr")
+				.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+						.addDefinitionResource("smarttypes", VuiTestSmartTypes.class.getName())
+						.addDefinitionResource("dtobjects", "io.vertigo.ui.data.domain.DtDefinitions")
 						.build())
 				.addDefinitionProvider(TestVertigoUiMasterDataDefinitionProvider.class)
 				.build();

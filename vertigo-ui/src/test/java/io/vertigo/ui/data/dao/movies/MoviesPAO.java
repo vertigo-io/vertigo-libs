@@ -1,24 +1,4 @@
-/**
- * vertigo - simple java starter
- *
- * Copyright (C) 2013-2019, vertigo-io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
- * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package io.vertigo.ui.data.dao.movies;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -30,7 +10,6 @@ import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
 import io.vertigo.dynamo.task.model.TaskBuilder;
-import io.vertigo.ui.data.domain.movies.MovieIndex;
 
 /**
  * This class is automatically generated.
@@ -62,35 +41,34 @@ public final class MoviesPAO implements StoreServices {
 	}
 
 	/**
-	 * Execute la tache TK_LOAD_MOVIE_INDEX.
-	 * @param dtc io.vertigo.dynamo.domain.model.DtList<io.vertigo.pandora.domain.movies.Dummy>
-	 * @return io.vertigo.dynamo.domain.model.DtList<io.vertigo.pandora.domain.movies.MovieIndex> dtcIndex
+	 * Execute la tache StTkLoadMovieIndex.
+	 * @param movieIds List de Long
+	 * @return DtList de MovieIndex dtcIndex
 	*/
-	public io.vertigo.dynamo.domain.model.DtList<MovieIndex> loadMovieIndex(final List<Long> movieIds) {
+	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+			name = "TkLoadMovieIndex",
+			request = "select MOV_ID," +
+					"						 TITLE," +
+					"						 TITLE as TITLE_SORT_ONLY," +
+					"						 YEAR as PRODUCTION_YEAR," +
+					"						 'Film' as MOVIE_TYPE," +
+					"						 POSTER," +
+					"						 TITLE as ORIGINAL_TITLE," +
+					"						 RUNTIME," +
+					"						 DESCRIPTION as SHORT_SYNOPSIS," +
+					"						 DESCRIPTION as SYNOPSIS," +
+					"						 RATED as USER_RATING" +
+					"				from MOVIE mov" +
+					"				where MOV_ID in (#movieIds.rownum#);",
+			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
+	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtMovieIndex")
+	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.ui.data.domain.movies.MovieIndex> loadMovieIndex(@io.vertigo.dynamo.task.proxy.TaskInput(name = "movieIds", domain = "STyId") final java.util.List<Long> movieIds) {
 		final Task task = createTaskBuilder("TkLoadMovieIndex")
 				.addValue("movieIds", movieIds)
 				.build();
 		return getTaskManager()
 				.execute(task)
 				.getResult();
-	}
-
-	/**
-	 * Execute la tache TK_REMOVE_ALL_ACTOR_ROLES.
-	*/
-	public void removeAllActorRoles() {
-		final Task task = createTaskBuilder("TkRemoveAllActorRoles")
-				.build();
-		getTaskManager().execute(task);
-	}
-
-	/**
-	 * Execute la tache TK_REMOVE_ALL_MOVIES.
-	*/
-	public void removeAllMovies() {
-		final Task task = createTaskBuilder("TkRemoveAllMovies")
-				.build();
-		getTaskManager().execute(task);
 	}
 
 	private TaskManager getTaskManager() {
