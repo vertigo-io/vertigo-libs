@@ -110,7 +110,7 @@ public final class StrutsUiObject<D extends DtObject> extends VegaUiObject<D> im
 	}
 
 	private static boolean isBoolean(final DtField dtField) {
-		return dtField.getDomain().getDataType() == DataType.Boolean;
+		return dtField.getDomain().getScope().isPrimitive() && dtField.getDomain().getTargetDataType() == DataType.Boolean;
 	}
 
 	/** {@inheritDoc} */

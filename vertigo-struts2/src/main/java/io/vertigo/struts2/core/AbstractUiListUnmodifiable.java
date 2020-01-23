@@ -28,6 +28,7 @@ import java.util.Optional;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
@@ -39,6 +40,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 
@@ -199,8 +201,8 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		UiObject<O> uiObject;
 		final DtField dtField = dtDefinition.getField(keyFieldName);
 		Assertion.checkArgument(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
-
-		final Object key = dtField.getDomain().stringToValue(keyValueAsString);
+		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
+		final Object key = modelManager.stringToValue(dtField.getDomain(), keyValueAsString);
 		final O entity = (O) loadDto(key);
 		uiObject = new StrutsUiObject<>(entity);
 		uiObjectById.put(keyValueAsString, uiObject);

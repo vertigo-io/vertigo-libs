@@ -22,11 +22,11 @@
 package io.vertigo.struts2.boot.initializer;
 
 import io.vertigo.datastore.impl.entitystore.AbstractMasterDataDefinitionProvider;
-import io.vertigo.struts2.domain.movies.Movie;
-import io.vertigo.struts2.domain.reference.Commune;
-import io.vertigo.struts2.domain.reference.OuiNonChoice;
-import io.vertigo.struts2.domain.users.Profil;
-import io.vertigo.struts2.domain.users.SecurityRole;
+import io.vertigo.struts2.data.domain.movies.Movie;
+import io.vertigo.struts2.data.domain.reference.Commune;
+import io.vertigo.struts2.data.domain.reference.OuiNonChoice;
+import io.vertigo.struts2.data.domain.users.Profil;
+import io.vertigo.struts2.data.domain.users.SecurityRole;
 
 /**
  * Init masterdata list.

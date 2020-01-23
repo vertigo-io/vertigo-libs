@@ -149,7 +149,7 @@ public abstract class AbstractFileStoreManagerTest extends AbstractTestCaseJU5 {
 	protected void doUpdateFile(final Function<VFile, FileInfo> createFileInfoFct) throws Exception {
 		//1.Création du fichier depuis un fichier texte du FS
 
-		final VFile vFile = TestUtil.createVFile(fileManager, "./data/model.kpr", AbstractFileStoreManagerTest.class);
+		final VFile vFile = TestUtil.createVFile(fileManager, "./data/testFile.txt", AbstractFileStoreManagerTest.class);
 		final VFile vFile2 = TestUtil.createVFile(fileManager, "./data/lautreamont.txt", AbstractFileStoreManagerTest.class);
 		//2. Sauvegarde en BDD
 		final FileInfo createdFileInfo;

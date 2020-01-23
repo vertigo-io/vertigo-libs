@@ -78,7 +78,7 @@ public final class StaticStorePlugin extends AbstractStaticEntityStorePlugin imp
 		dataSpace = staticDtDefinition.getDataSpace();
 		//----
 		dtc = new DtList<>(staticDtDefinition);
-		final DataType keyDataType = staticDtDefinition.getIdField().get().getDomain().getDataType();
+		final DataType keyDataType = staticDtDefinition.getIdField().get().getDomain().getTargetDataType();
 		final String[] splittedValues = values.split("\\s*[,;|]\\s*");
 		for (final String splittedValue : splittedValues) {
 			final String[] keyLabel = splittedValue.split("\\s*=\\s*");

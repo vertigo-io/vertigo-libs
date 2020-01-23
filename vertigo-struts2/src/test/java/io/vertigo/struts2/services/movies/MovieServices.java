@@ -21,8 +21,8 @@ package io.vertigo.struts2.services.movies;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.struts2.domain.movies.Movie;
-import io.vertigo.struts2.domain.movies.MovieDisplay;
+import io.vertigo.struts2.data.domain.movies.Movie;
+import io.vertigo.struts2.data.domain.movies.MovieDisplay;
 
 public interface MovieServices extends Component {
 

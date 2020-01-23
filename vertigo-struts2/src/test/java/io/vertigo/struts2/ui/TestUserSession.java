@@ -22,7 +22,7 @@ import java.time.ZoneId;
 import java.util.Locale;
 
 import io.vertigo.account.security.UserSession;
-import io.vertigo.struts2.domain.users.ApplicationUser;
+import io.vertigo.struts2.data.domain.users.ApplicationUser;
 
 /**
  * Session d'un utilisateur<br>

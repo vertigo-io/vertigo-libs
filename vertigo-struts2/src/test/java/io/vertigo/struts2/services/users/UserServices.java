@@ -19,7 +19,7 @@
 package io.vertigo.struts2.services.users;
 
 import io.vertigo.core.node.component.Component;
-import io.vertigo.struts2.domain.users.ApplicationUser;
+import io.vertigo.struts2.data.domain.users.ApplicationUser;
 
 public interface UserServices extends Component {
 

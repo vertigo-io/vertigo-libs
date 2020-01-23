@@ -37,8 +37,8 @@ import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
-import io.vertigo.struts2.dao.movies.MovieDAO;
-import io.vertigo.struts2.domain.movies.Movie;
+import io.vertigo.struts2.data.dao.movies.MovieDAO;
+import io.vertigo.struts2.data.domain.movies.Movie;
 
 /**
  * Init masterdata list.

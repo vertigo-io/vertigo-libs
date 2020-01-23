@@ -24,10 +24,12 @@ import java.util.List;
 import com.opensymphony.xwork2.ActionContext;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.metamodel.Formatter;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
@@ -85,7 +87,8 @@ public final class UiUtil implements Serializable {
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
 			return DEFAULT_FORMATTER.valueToString(value, DataType.Boolean);
 		}
-		return getDtField(fieldPath).getDomain().valueToString(value);
+		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
+		return modelManager.valueToString(getDtField(fieldPath).getDomain(), value);
 	}
 
 	/**

@@ -32,8 +32,8 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.struts2.domain.DtDefinitions;
-import io.vertigo.struts2.domain.reference.Commune;
+import io.vertigo.struts2.data.domain.DtDefinitions;
+import io.vertigo.struts2.data.domain.reference.Commune;
 
 /**
  * Loader of Commune masterdata file.

@@ -25,9 +25,9 @@ import io.vertigo.dynamo.criteria.Criterions;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.util.VCollectors;
-import io.vertigo.struts2.dao.movies.MovieDAO;
-import io.vertigo.struts2.domain.movies.Movie;
-import io.vertigo.struts2.domain.movies.MovieDisplay;
+import io.vertigo.struts2.data.dao.movies.MovieDAO;
+import io.vertigo.struts2.data.domain.movies.Movie;
+import io.vertigo.struts2.data.domain.movies.MovieDisplay;
 
 @Transactional
 public class MovieServicesImpl implements MovieServices {
@@ -56,7 +56,12 @@ public class MovieServicesImpl implements MovieServices {
 	public DtList<MovieDisplay> getMoviesDisplay(final DtListState dtListState) {
 		return movieDAO.findAll(Criterions.alwaysTrue(), dtListState)
 				.stream()
-				.map(movie -> new MovieDisplay(movie.getMovId(), movie.getTitle()))
+				.map(movie -> {
+					final MovieDisplay movieDisplay = new MovieDisplay();
+					movieDisplay.setMovId(movie.getMovId());
+					movieDisplay.setTitle(movie.getTitle());
+					return movieDisplay;
+				})
 				.collect(VCollectors.toDtList(MovieDisplay.class));
 	}
 

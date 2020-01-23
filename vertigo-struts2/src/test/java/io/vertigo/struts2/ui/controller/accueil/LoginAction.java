@@ -22,7 +22,7 @@ import javax.inject.Inject;
 
 import io.vertigo.struts2.core.ContextForm;
 import io.vertigo.struts2.core.UiRequestUtil;
-import io.vertigo.struts2.domain.users.UserAuthentification;
+import io.vertigo.struts2.data.domain.users.UserAuthentification;
 import io.vertigo.struts2.services.users.UserServices;
 import io.vertigo.struts2.ui.controller.AbstractTestActionSupport;
 
