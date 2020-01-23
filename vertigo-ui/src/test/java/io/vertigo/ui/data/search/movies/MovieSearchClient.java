@@ -53,12 +53,12 @@ public final class MovieSearchClient implements Component {
 	 */
 	@io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation(name = "QryMovie", keyConcept = "DtMovie", listFilterBuilderClass = io.vertigo.dynamox.search.DslListFilterBuilder.class, listFilterBuilderQuery = "_all:#+query*#", criteriaSmartType = "STyLabel")
 	@io.vertigo.datafactory.search.metamodel.annotation.FacetTerm(
-			name = "FctMovieType",
+			name = "FctMovieType$qryMovie",
 			fieldName = "movieType",
 			label = "Par type",
 			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count)
 	@io.vertigo.datafactory.search.metamodel.annotation.FacetRange(
-			name = "FctMovieTitle",
+			name = "FctMovieTitle$qryMovie",
 			fieldName = "titleSortOnly",
 			label = "Par titre",
 			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
@@ -69,7 +69,7 @@ public final class MovieSearchClient implements Component {
 					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r4", filter = "titleSortOnly:[n TO t]", label = "n-s"),
 					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r5", filter = "titleSortOnly:[t TO *]", label = "t-z") })
 	@io.vertigo.datafactory.search.metamodel.annotation.FacetRange(
-			name = "FctMovieYear",
+			name = "FctMovieYear$qryMovie",
 			fieldName = "productionYear",
 			label = "Par date",
 			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
@@ -99,12 +99,12 @@ public final class MovieSearchClient implements Component {
 	 */
 	@io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation(name = "QryMovieWithPoster", keyConcept = "DtMovie", listFilterBuilderClass = io.vertigo.dynamox.search.DslListFilterBuilder.class, listFilterBuilderQuery = "_all:#+query*# +_exists_:poster", criteriaSmartType = "STyLabel")
 	@io.vertigo.datafactory.search.metamodel.annotation.FacetTerm(
-			name = "FctMovieType",
+			name = "FctMovieType$qryMovieWithPoster",
 			fieldName = "movieType",
 			label = "Par type",
 			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count)
 	@io.vertigo.datafactory.search.metamodel.annotation.FacetRange(
-			name = "FctMovieTitle",
+			name = "FctMovieTitle$qryMovieWithPoster",
 			fieldName = "titleSortOnly",
 			label = "Par titre",
 			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
@@ -115,7 +115,7 @@ public final class MovieSearchClient implements Component {
 					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r4", filter = "titleSortOnly:[n TO t]", label = "n-s"),
 					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r5", filter = "titleSortOnly:[t TO *]", label = "t-z") })
 	@io.vertigo.datafactory.search.metamodel.annotation.FacetRange(
-			name = "FctMovieYear",
+			name = "FctMovieYear$qryMovieWithPoster",
 			fieldName = "productionYear",
 			label = "Par date",
 			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,

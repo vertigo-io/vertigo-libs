@@ -4,10 +4,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,14 +40,13 @@ public class FacetDefinitionUtil {
 				.stream()
 				.map(clazz -> readSearchIndexDefinition(clazz));
 
-		final Set<String> alreadyDoneFacets = new HashSet<>();
 		final Stream<DefinitionSupplier> facetDefinitionSuppliers = new Selector()
 				.from(componentClasses)
 				.filterClasses(ClassConditions.annotatedWith(SearchIndexAnnotation.class))
 				.filterMethods(MethodConditions.annotatedWith(FacetedQueryAnnotation.class))
 				.findMethods()
 				.stream()
-				.flatMap(tuple -> readFacetedDefinition(tuple, dS, alreadyDoneFacets).stream());
+				.flatMap(tuple -> readFacetedDefinition(tuple).stream());
 
 		return Stream.concat(indexDefinitionSuppliers, facetDefinitionSuppliers)
 				.collect(Collectors.toList());
@@ -72,44 +69,38 @@ public class FacetDefinitionUtil {
 		};
 	}
 
-	private static List<DefinitionSupplier> readFacetedDefinition(final Tuple<Class, Method> tuple, final DefinitionSpace dS, final Set<String> alreadyDoneFacets) {
+	private static List<DefinitionSupplier> readFacetedDefinition(final Tuple<Class, Method> tuple) {
 		final List<DefinitionSupplier> definitionSuppliers = new ArrayList<>();
 
 		final FacetedQueryAnnotation facetedQueryAnnotation = tuple.getVal2().getAnnotation(FacetedQueryAnnotation.class);
 		for (final Annotation annotation : tuple.getVal2().getAnnotations()) {
 			if (annotation instanceof FacetTerm) {
-				if (!dS.contains(((FacetTerm) annotation).name()) && !alreadyDoneFacets.contains(((FacetTerm) annotation).name())) {
-					definitionSuppliers.add(definitionSpace -> {
-						final SearchIndexAnnotation searchIndexAnnotation = (SearchIndexAnnotation) tuple.getVal1().getAnnotation(SearchIndexAnnotation.class);
-						final DtDefinition indexDtDefinition = definitionSpace.resolve(searchIndexAnnotation.dtIndex(), DtDefinition.class);
-						final FacetTerm facetTermAnnotation = (FacetTerm) annotation;
-						return FacetDefinition.createFacetDefinitionByTerm(
-								facetTermAnnotation.name(),
-								indexDtDefinition.getField(facetTermAnnotation.fieldName()),
-								MessageText.of(facetTermAnnotation.label()),
-								facetTermAnnotation.multiselectable(),
-								facetTermAnnotation.order());
-					});
-					alreadyDoneFacets.add(((FacetTerm) annotation).name());
-				}
+				definitionSuppliers.add(definitionSpace -> {
+					final SearchIndexAnnotation searchIndexAnnotation = (SearchIndexAnnotation) tuple.getVal1().getAnnotation(SearchIndexAnnotation.class);
+					final DtDefinition indexDtDefinition = definitionSpace.resolve(searchIndexAnnotation.dtIndex(), DtDefinition.class);
+					final FacetTerm facetTermAnnotation = (FacetTerm) annotation;
+					return FacetDefinition.createFacetDefinitionByTerm(
+							facetTermAnnotation.name(),
+							indexDtDefinition.getField(facetTermAnnotation.fieldName()),
+							MessageText.of(facetTermAnnotation.label()),
+							facetTermAnnotation.multiselectable(),
+							facetTermAnnotation.order());
+				});
 			} else if (annotation instanceof FacetRange) {
-				if (!dS.contains(((FacetRange) annotation).name()) && !alreadyDoneFacets.contains(((FacetRange) annotation).name())) {
-					definitionSuppliers.add(definitionSpace -> {
-						final SearchIndexAnnotation searchIndexAnnotation = (SearchIndexAnnotation) tuple.getVal1().getAnnotation(SearchIndexAnnotation.class);
-						final DtDefinition indexDtDefinition = definitionSpace.resolve(searchIndexAnnotation.dtIndex(), DtDefinition.class);
-						final FacetRange facetRangeAnnotation = (FacetRange) annotation;
-						return FacetDefinition.createFacetDefinitionByRange(
-								facetRangeAnnotation.name(),
-								indexDtDefinition.getField(facetRangeAnnotation.fieldName()),
-								MessageText.of(facetRangeAnnotation.label()),
-								Stream.of(facetRangeAnnotation.ranges())
-										.map(range -> new FacetValue(range.code(), ListFilter.of(range.filter()), MessageText.of(range.label())))
-										.collect(Collectors.toList()),
-								facetRangeAnnotation.multiselectable(),
-								facetRangeAnnotation.order());
-					});
-					alreadyDoneFacets.add(((FacetRange) annotation).name());
-				}
+				definitionSuppliers.add(definitionSpace -> {
+					final SearchIndexAnnotation searchIndexAnnotation = (SearchIndexAnnotation) tuple.getVal1().getAnnotation(SearchIndexAnnotation.class);
+					final DtDefinition indexDtDefinition = definitionSpace.resolve(searchIndexAnnotation.dtIndex(), DtDefinition.class);
+					final FacetRange facetRangeAnnotation = (FacetRange) annotation;
+					return FacetDefinition.createFacetDefinitionByRange(
+							facetRangeAnnotation.name(),
+							indexDtDefinition.getField(facetRangeAnnotation.fieldName()),
+							MessageText.of(facetRangeAnnotation.label()),
+							Stream.of(facetRangeAnnotation.ranges())
+									.map(range -> new FacetValue(range.code(), ListFilter.of(range.filter()), MessageText.of(range.label())))
+									.collect(Collectors.toList()),
+							facetRangeAnnotation.multiselectable(),
+							facetRangeAnnotation.order());
+				});
 			}
 		}
 

@@ -62,7 +62,7 @@ public final class ${dtDefinition.classSimpleName}SearchClient implements Compon
 	<#list facetedQueryDefinition.facetDefinitions as facetDefinition>
 	<#if facetDefinition.isRange()>
 	@io.vertigo.datafactory.search.metamodel.annotation.FacetRange(
-			name = "${facetDefinition.name}",
+			name = "${facetDefinition.name}$${facetedQueryDefinition.queryName?uncap_first}",
 			fieldName = "${facetDefinition.fieldName}",
 			label = "${facetDefinition.label}",
 			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.${facetDefinition.order},<#if facetDefinition.isMultiSelectable()>
@@ -73,7 +73,7 @@ public final class ${dtDefinition.classSimpleName}SearchClient implements Compon
 	</#if>
 	<#if facetDefinition.isTerm()>
 	@io.vertigo.datafactory.search.metamodel.annotation.FacetTerm(
-			name = "${facetDefinition.name}",
+			name = "${facetDefinition.name}$${facetedQueryDefinition.queryName?uncap_first}",
 			fieldName = "${facetDefinition.fieldName}",
 			label = "${facetDefinition.label}",<#if facetDefinition.isMultiSelectable()>
 			multiselectable = true,<#else><#rt></#if>

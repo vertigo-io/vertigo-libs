@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.dynamo.search.StudioSearchIndexDefinition;
 
 public class SearchIndexDefinitionModel {
@@ -21,7 +22,7 @@ public class SearchIndexDefinitionModel {
 	}
 
 	public String getName() {
-		return studioSearchIndexDefinition.getName();
+		return DefinitionUtil.getLocalName(studioSearchIndexDefinition.getName(), StudioSearchIndexDefinition.class);
 	}
 
 	public String getLoaderId() {
