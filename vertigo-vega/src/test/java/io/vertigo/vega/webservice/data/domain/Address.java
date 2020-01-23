@@ -20,24 +20,28 @@ package io.vertigo.vega.webservice.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.domain.util.JsonMapper;
+import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
+@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class Address implements Entity {
 	private static final long serialVersionUID = 8922834274442256496L;
 
-	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "address Id")
+	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "address Id")
 	private Long adrId;
-	@Field(domain = "DoTexte50", label = "street1")
+	@Field(domain = "STyTexte50", label = "street1")
 	private String street1;
-	@Field(domain = "DoTexte50", label = "street2")
+	@Field(domain = "STyTexte50", label = "street2")
 	private String street2;
-	@Field(domain = "DoTexte50", label = "city")
+	@Field(domain = "STyTexte50", label = "city")
 	private String city;
-	@Field(domain = "DoTexte50", label = "postal code")
+	@Field(domain = "STyTexte50", label = "postal code")
 	private String postalCode;
-	@Field(domain = "DoTexte50", label = "country")
+	@Field(domain = "STyTexte50", label = "country")
 	private String country;
 
 	@io.vertigo.dynamo.domain.stereotype.Association(

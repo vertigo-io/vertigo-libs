@@ -19,23 +19,27 @@
 package io.vertigo.dynamo.criteria.data.movies;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.util.JsonMapper;
+import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
 /**
  * Movie.
  */
+@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class Movie2 implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id of the movie")
+	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "id of the movie")
 	private Long id;
-	@Field(domain = "DoString", label = "title")
+	@Field(domain = "STyString", label = "title")
 	private String title;
-	@Field(domain = "DoInteger", label = "year")
+	@Field(domain = "STyInteger", label = "year")
 	private Integer year;
 
 	public Long getId() {

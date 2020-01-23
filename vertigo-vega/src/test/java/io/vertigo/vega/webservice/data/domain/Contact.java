@@ -25,25 +25,30 @@ import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.domain.stereotype.ForeignKey;
+import io.vertigo.dynamo.domain.util.JsonMapper;
+import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
+@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class Contact implements KeyConcept {
 	private static final long serialVersionUID = 2074906343392206381L;
 
-	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "Contact Id")
+	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "Contact Id")
 	private Long conId;
-	@Field(domain = "DoCode", label = "Honorific title")
+	@Field(domain = "STyCode", label = "Honorific title")
 	private String honorificCode;
 	//mandatory
-	@Field(domain = "DoTexte50", cardinality = Cardinality.ONE, label = "Name")
+	@Field(domain = "STyTexte50", cardinality = Cardinality.ONE, label = "Name")
 	private String name;
-	@Field(domain = "DoTexte50", label = "Firstname")
+	@Field(domain = "STyTexte50", label = "Firstname")
 	private String firstName;
-	@Field(domain = "DoLocalDate", label = "Birthday")
+	@Field(domain = "STyLocalDate", label = "Birthday")
 	private LocalDate birthday;
-	@Field(domain = "DoEmail", label = "Email")
+	@Field(domain = "STyEmail", label = "Email")
 	private String email;
 
 	private List<String> tels;
@@ -121,20 +126,13 @@ public final class Contact implements KeyConcept {
 		return adrIdAccessor;
 	}
 
-	@Field(domain = "DO_ID", type = "FOREIGN_KEY", label = "AdrId")
-	@Deprecated
+	@ForeignKey(domain = "STyId", label = "AdrId", fkDefinition = "DtAddress")
 	public Long getAdrId() {
 		return (Long) adrIdAccessor.getId();
 	}
 
-	@Deprecated
 	public void setAdrId(final Long adrId) {
 		adrIdAccessor.setId(adrId);
-	}
-
-	@Deprecated
-	public Address getAddress() {
-		return adrIdAccessor.get();
 	}
 
 	public List<String> getTels() {
@@ -143,6 +141,11 @@ public final class Contact implements KeyConcept {
 
 	public void setTels(final List<String> tels) {
 		this.tels = new ArrayList<>(tels);
+	}
+
+	@Field(domain = "STyTexte50", type = "COMPUTED", label = "All Text", cardinality = Cardinality.ONE)
+	public String getAllText() {
+		return "";
 	}
 
 }

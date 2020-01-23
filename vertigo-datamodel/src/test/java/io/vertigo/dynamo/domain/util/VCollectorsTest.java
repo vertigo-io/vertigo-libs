@@ -30,9 +30,11 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.dynamo.domain.data.DtDefinitions;
+import io.vertigo.dynamo.domain.data.TestSmartTypes;
 import io.vertigo.dynamo.domain.data.domain.Artist;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 /**
  *
@@ -49,9 +51,9 @@ public class VCollectorsTest extends AbstractTestCaseJU5 {
 				.withLocales("fr_FR")
 				.endBoot()
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/dynamo/domain/data/execution.kpr")
-								.addDefinitionResource("classes", "io.vertigo.dynamo.domain.data.DtDefinitions")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", DtDefinitions.class.getName())
 								.build())
 						.build())
 				.build();

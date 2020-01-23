@@ -21,75 +21,75 @@ public enum TestSmartTypes {
 
 	@SmartTypeDefinition(Long.class)
 	@Formatter(clazz = FormatterId.class)
-	id,
+	Id,
 
 	@SmartTypeDefinition(String.class)
 	@FormatterDefault
-	multipleIds,
+	MultipleIds,
 
 	@SmartTypeDefinition(LocalDate.class)
 	@Formatter(clazz = FormatterDate.class, arg = "dd/MM/yyyy")
-	localdate,
+	Localdate,
 
 	@SmartTypeDefinition(BigDecimal.class)
 	@FormatterDefault
-	currency,
+	Currency,
 
 	@SmartTypeDefinition(Integer.class)
 	@Constraint(clazz = ConstraintNumberMinimum.class, arg = "0", msg = "")
 	@Constraint(clazz = ConstraintNumberMaximum.class, arg = "100", msg = "")
-	health,
+	Health,
 
 	@SmartTypeDefinition(String.class)
 	@FormatterDefault
 	@Constraint(clazz = ConstraintStringLength.class, arg = "100", msg = "")
-	label,
+	Label,
 
 	@SmartTypeDefinition(String.class)
 	@FormatterDefault
 	@Constraint(clazz = ConstraintStringLength.class, arg = "350", msg = "")
-	description,
+	Description,
 
 	@SmartTypeDefinition(String.class)
 	@FormatterDefault
 	@Constraint(clazz = ConstraintRegex.class, arg = "^[_a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\\.[_a-zA-Z0-9-]+)*(\\.[a-zA-Z0-9-]{2,3})+$", msg = "L'email n'est pas valide")
-	email,
+	Email,
 
 	@SmartTypeDefinition(String.class)
 	@FormatterDefault
-	url,
+	Url,
 
 	@SmartTypeDefinition(String.class)
 	@FormatterDefault
 	@Constraint(clazz = ConstraintStringLength.class, arg = "100", msg = "")
-	code,
+	Code,
 
 	@SmartTypeDefinition(String.class)
 	@FormatterDefault
-	label2,
+	Label2,
 
 	@SmartTypeDefinition(String.class)
 	@FormatterDefault
 	@Constraint(clazz = ConstraintStringLength.class, arg = "14", msg = "")
-	label3,
+	Label3,
 
 	@SmartTypeDefinition(Long.class)
 	@FormatterDefault
-	size,
+	Size,
 
 	@SmartTypeDefinition(String.class)
 	@FormatterDefault
 	@Constraint(clazz = ConstraintStringLength.class, arg = "14", msg = "")
-	siret,
+	Siret,
 
 	@SmartTypeDefinition(String.class)
 	@Formatter(clazz = FormatterString.class, arg = "UPPER")
 	@Constraint(clazz = ConstraintStringLength.class, arg = "14", msg = "")
-	siret2,
+	Siret2,
 
 	@SmartTypeDefinition(GeoPoint.class)
 	@Mapper(dataType = DataType.String, clazz = GeoPointMapper.class)
 	@FormatterDefault
-	geoPoint;
+	GeoPoint;
 
 }

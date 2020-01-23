@@ -32,11 +32,10 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datafactory.DataFactoryFeatures;
-import io.vertigo.datafactory.impl.search.grammar.SearchDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
 import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 import io.vertigo.vega.VegaFeatures;
 import io.vertigo.vega.engines.webservice.cmd.ComponentCmdWebServices;
 import io.vertigo.vega.webservice.data.domain.Address;
@@ -44,6 +43,7 @@ import io.vertigo.vega.webservice.data.domain.Contact;
 import io.vertigo.vega.webservice.data.domain.ContactCriteria;
 import io.vertigo.vega.webservice.data.domain.ContactDao;
 import io.vertigo.vega.webservice.data.domain.ContactView;
+import io.vertigo.vega.webservice.data.search.ContactSearchClient;
 import io.vertigo.vega.webservice.data.user.TestUserSession;
 import io.vertigo.vega.webservice.data.ws.AdvancedTestWebServices;
 import io.vertigo.vega.webservice.data.ws.AnonymousTestWebServices;
@@ -110,6 +110,7 @@ public final class MyNodeConfig {
 				//-----
 				.addModule(ModuleConfig.builder("dao-app")
 						.addComponent(ContactDao.class)
+						.addComponent(ContactSearchClient.class)
 						.build())
 				.addModule(ModuleConfig.builder("webservices-app")
 						.addComponent(ComponentCmdWebServices.class)
@@ -125,12 +126,9 @@ public final class MyNodeConfig {
 						.addComponent(SearchTestWebServices.class)
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("classes", DtDefinitions.class.getName())
-								.addDefinitionResource("kpr", "io/vertigo/vega/webservice/data/model_run.kpr")
-								.build())
-						.addDefinitionProvider(DefinitionProviderConfig.builder(SearchDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/vega/webservice/data/search.kpr")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", VegaTestSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", DtDefinitions.class.getName())
 								.build())
 						.addDefinitionProvider(DefinitionProviderConfig.builder(JsonSecurityDefinitionProvider.class)
 								.addDefinitionResource("security", "io/vertigo/vega/webservice/data/ws-auth-config.json")

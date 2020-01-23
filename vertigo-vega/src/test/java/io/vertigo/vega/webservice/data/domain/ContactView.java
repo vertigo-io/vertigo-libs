@@ -24,25 +24,29 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.domain.util.JsonMapper;
+import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
+@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class ContactView implements DtObject {
 	private static final long serialVersionUID = 2074906343392206381L;
 
-	@Field(domain = "DoCode", label = "Honorific title")
+	@Field(domain = "STyCode", label = "Honorific title")
 	private String honorificCode;
 	//mandatory
-	@Field(domain = "DoTexte50", cardinality = Cardinality.ONE, label = "Name")
+	@Field(domain = "STyTexte50", cardinality = Cardinality.ONE, label = "Name")
 	private String name;
-	@Field(domain = "DoTexte50", label = "Firstname")
+	@Field(domain = "STyTexte50", label = "Firstname")
 	private String firstName;
-	@Field(domain = "DoLocalDate", label = "Birthday")
+	@Field(domain = "STyLocalDate", label = "Birthday")
 	private LocalDate birthday;
-	@Field(domain = "DoEmail", label = "Email")
+	@Field(domain = "STyEmail", label = "Email")
 	private String email;
-	@Field(domain = "DoDtAddress", label = "Addresses connues", cardinality = Cardinality.MANY, persistent = false)
+	@Field(domain = "STyDtAddress", label = "Addresses connues", cardinality = Cardinality.MANY, persistent = false)
 	private DtList<Address> addresses;
 
 	private List<String> tels;

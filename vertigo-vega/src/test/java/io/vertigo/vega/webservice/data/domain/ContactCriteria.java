@@ -20,21 +20,25 @@ package io.vertigo.vega.webservice.data.domain;
 
 import java.time.LocalDate;
 
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.domain.util.JsonMapper;
+import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
+@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class ContactCriteria implements DtObject {
 
 	private static final long serialVersionUID = 6839427455017031471L;
 
 	//mandatory
-	@Field(domain = "DoTexte50", label = "Name")
+	@Field(domain = "STyTexte50", label = "Name")
 	private String name;
-	@Field(domain = "DoTexte50", label = "Firstname")
+	@Field(domain = "STyTexte50", label = "Firstname")
 	private String firstName;
-	@Field(domain = "DoLocalDate", label = "Birthday min")
+	@Field(domain = "STyLocalDate", label = "Birthday min")
 	private LocalDate birthdayMin;
-	@Field(domain = "DoLocalDate", label = "Birthday max")
+	@Field(domain = "STyLocalDate", label = "Birthday max")
 	private LocalDate birthdayMax;
 
 	public String getName() {

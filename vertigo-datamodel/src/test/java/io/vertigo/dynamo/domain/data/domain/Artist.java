@@ -19,14 +19,18 @@
 package io.vertigo.dynamo.domain.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.util.JsonMapper;
+import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
 /**
  * Artist.
  */
+@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class Artist implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -40,7 +44,7 @@ public final class Artist implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id of the artist")
+	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "id of the artist")
 	public Long getId() {
 		return id;
 	}
@@ -49,7 +53,7 @@ public final class Artist implements KeyConcept {
 		this.id = id;
 	}
 
-	@Field(domain = "DoString", label = "name")
+	@Field(domain = "STyString", label = "name")
 	public String getName() {
 		return name;
 	}

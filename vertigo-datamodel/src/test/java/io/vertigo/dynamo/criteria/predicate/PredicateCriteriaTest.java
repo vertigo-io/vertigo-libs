@@ -34,10 +34,12 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.dynamo.criteria.Criteria;
 import io.vertigo.dynamo.criteria.Criterions;
+import io.vertigo.dynamo.criteria.data.CriteriaTestSmartTypes;
+import io.vertigo.dynamo.criteria.data.DtDefinitions;
 import io.vertigo.dynamo.criteria.data.movies.Movie2;
 import io.vertigo.dynamo.criteria.data.movies.Movie2DataBase;
 import io.vertigo.dynamo.domain.metamodel.DtFieldName;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 /**
  *
@@ -54,9 +56,9 @@ public final class PredicateCriteriaTest extends AbstractTestCaseJU5 {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/dynamo/criteria/data/execution.kpr")
-								.addDefinitionResource("classes", "io.vertigo.dynamo.criteria.data.DtDefinitions")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", CriteriaTestSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", DtDefinitions.class.getName())
 								.build())
 						.build())
 				.build();

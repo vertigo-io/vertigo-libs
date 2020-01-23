@@ -23,10 +23,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.definition.DefinitionProvider;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.datafactory.collections.CollectionsManager;
 import io.vertigo.datafactory.collections.IndexDtListFunctionBuilder;
 import io.vertigo.datafactory.collections.ListFilter;
@@ -49,7 +55,7 @@ import io.vertigo.dynamo.ngdomain.ModelManager;
  *
  * @author  pchretien
  */
-public final class CollectionsManagerImpl implements CollectionsManager {
+public final class CollectionsManagerImpl implements CollectionsManager, DefinitionProvider {
 	private final Optional<IndexPlugin> indexPluginOpt;
 
 	private final FacetFactory facetFactory;
@@ -139,5 +145,12 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	@Override
 	public <D extends DtObject> Predicate<D> filter(final ListFilter listFilter) {
 		return new DtListPatternFilter<>(listFilter.getFilterValue());
+	}
+
+	@Override
+	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
+		return FacetDefinitionUtil.scanComponents(Home.getApp().getComponentSpace().keySet().stream()
+				.map(componentId -> Home.getApp().getComponentSpace().resolve(componentId, Component.class).getClass())
+				.collect(Collectors.toList()));
 	}
 }
