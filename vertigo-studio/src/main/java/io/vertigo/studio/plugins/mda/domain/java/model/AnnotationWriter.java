@@ -142,6 +142,7 @@ class AnnotationWriter {
 				// on place le label a la fin, car il ne faut pas de ','
 				.append(')');
 		lines.add(buffer.toString());
+
 		return lines;
 	}
 

@@ -49,7 +49,7 @@ import io.vertigo.vega.engines.webservice.json.VegaUiObject;
  */
 public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> implements Map<String, Serializable> {
 	private static final long serialVersionUID = -4639050257543017072L;
-	private static final String DOMAIN_MULTIPLE_IDS = "DoMultipleIds";
+	private static final String SMART_TYPE_MULTIPLE_IDS = "STyMultipleIds";
 
 	/**
 	 * Constructor.
@@ -136,7 +136,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	}
 
 	private static boolean isMultiple(final DtField dtField) {
-		return DOMAIN_MULTIPLE_IDS.equals(dtField.getDomain().getName());
+		return SMART_TYPE_MULTIPLE_IDS.equals(dtField.getDomain().getName());
 	}
 
 	private static boolean isBoolean(final DtField dtField) {

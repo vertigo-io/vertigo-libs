@@ -109,7 +109,13 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	 */
 		<#list annotations(dtField) as annotation>
 	${annotation}
-		</#list>
+	</#list>
+	<#if dtField.isSortField()>
+	@io.vertigo.dynamo.domain.stereotype.SortField
+	</#if>
+	<#if dtField.isDisplayField()>
+	@io.vertigo.dynamo.domain.stereotype.DisplayField
+	</#if>
 	public ${dtField.javaType} get${dtField.name?cap_first}() {
 		return ${dtField.name};
 	}

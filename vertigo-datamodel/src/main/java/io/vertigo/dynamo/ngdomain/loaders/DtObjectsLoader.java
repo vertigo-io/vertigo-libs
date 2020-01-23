@@ -174,8 +174,13 @@ public final class DtObjectsLoader implements Loader {
 								if (field.isAnnotationPresent(io.vertigo.dynamo.domain.stereotype.Field.class)) {
 									//Le nom est automatiquement déduit du nom du champ
 									final io.vertigo.dynamo.domain.stereotype.Field fieldAnnotation = field.getAnnotation(io.vertigo.dynamo.domain.stereotype.Field.class);
-									final String fieldName = createFieldName(field);
-									parseAnnotation(fieldName, dtDefinitionBuilder, fieldAnnotation, definitionSpace);
+									parseAnnotation(createFieldName(field), dtDefinitionBuilder, fieldAnnotation, definitionSpace);
+								}
+								if (field.isAnnotationPresent(io.vertigo.dynamo.domain.stereotype.SortField.class)) {
+									dtDefinitionBuilder.withSortField(createFieldName(field));
+								}
+								if (field.isAnnotationPresent(io.vertigo.dynamo.domain.stereotype.DisplayField.class)) {
+									dtDefinitionBuilder.withDisplayField(createFieldName(field));
 								}
 
 							}
@@ -185,13 +190,19 @@ public final class DtObjectsLoader implements Loader {
 									final String fieldName = createFieldName(method);
 									parseAnnotation(fieldName, dtDefinitionBuilder, methodAnnotation, definitionSpace);
 								}
+								if (method.isAnnotationPresent(io.vertigo.dynamo.domain.stereotype.SortField.class)) {
+									dtDefinitionBuilder.withSortField(createFieldName(method));
+								}
+								if (method.isAnnotationPresent(io.vertigo.dynamo.domain.stereotype.DisplayField.class)) {
+									dtDefinitionBuilder.withDisplayField(createFieldName(method));
+								}
 								if (method.isAnnotationPresent(io.vertigo.dynamo.domain.stereotype.ForeignKey.class)) {
 									//Le nom est automatiquement déduit du nom du champ
 									final io.vertigo.dynamo.domain.stereotype.ForeignKey foreignKeyAnnotation = method.getAnnotation(io.vertigo.dynamo.domain.stereotype.ForeignKey.class);
-									final String fieldName = createFieldName(method);
-									dtDefinitionBuilder.addForeignKey(fieldName, foreignKeyAnnotation.label(), definitionSpace.resolve(foreignKeyAnnotation.domain(), SmartTypeDefinition.class), foreignKeyAnnotation.cardinality(), foreignKeyAnnotation.fkDefinition());
+									dtDefinitionBuilder.addForeignKey(createFieldName(method), foreignKeyAnnotation.label(), definitionSpace.resolve(foreignKeyAnnotation.domain(), SmartTypeDefinition.class), foreignKeyAnnotation.cardinality(), foreignKeyAnnotation.fkDefinition());
 
 								}
+
 							}
 							return dtDefinitionBuilder.build();
 						}

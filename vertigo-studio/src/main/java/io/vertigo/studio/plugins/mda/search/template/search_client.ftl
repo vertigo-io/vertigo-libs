@@ -58,30 +58,32 @@ public final class ${dtDefinition.classSimpleName}SearchClient implements Compon
 	 * @param selectedFacetValues Liste des facettes sélectionnées à appliquer
 	 * @return SearchQueryBuilder pour ce type de recherche
 	 */
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation(name = "${facetedQueryDefinition.queryName}", keyConcept = "${facetedQueryDefinition.keyConceptDtDefinition}", listFilterBuilderClass = ${facetedQueryDefinition.listFilterClassName}.class, listFilterBuilderQuery = "${facetedQueryDefinition.listFilterBuilderQuery}", criteriaSmartType = "${facetedQueryDefinition.criteriaSmartType}")
+	@io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation(
+		name = "${facetedQueryDefinition.queryName}",
+		keyConcept = "${facetedQueryDefinition.keyConceptDtDefinition}",
+		listFilterBuilderClass = ${facetedQueryDefinition.listFilterClassName}.class,
+		listFilterBuilderQuery = "${facetedQueryDefinition.listFilterBuilderQuery}",
+		criteriaSmartType = "${facetedQueryDefinition.criteriaSmartType}",
+		facets = {
 	<#list facetedQueryDefinition.facetDefinitions as facetDefinition>
-	<#if facetDefinition.isRange()>
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetRange(
-			name = "${facetDefinition.name}$${facetedQueryDefinition.queryName?uncap_first}",
-			fieldName = "${facetDefinition.fieldName}",
-			label = "${facetDefinition.label}",
-			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.${facetDefinition.order},<#if facetDefinition.isMultiSelectable()>
-			multiselectable = true,<#else><#rt></#if>
-			ranges = {
-				<#list facetDefinition.facetValues as facetValue>@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "${facetValue.code}", filter = "${facetValue.listFilter}", label = "${facetValue.label}")<#sep>,
-				</#list>})
-	</#if>
-	<#if facetDefinition.isTerm()>
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetTerm(
-			name = "${facetDefinition.name}$${facetedQueryDefinition.queryName?uncap_first}",
-			fieldName = "${facetDefinition.fieldName}",
-			label = "${facetDefinition.label}",<#if facetDefinition.isMultiSelectable()>
-			multiselectable = true,<#else><#rt></#if>
-			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.${facetDefinition.order})
-	</#if>
+			@io.vertigo.datafactory.search.metamodel.annotation.Facet(
+				type = "<#if facetDefinition.isRange()>range<#else>term</#if>",
+				name = "${facetDefinition.name}$${facetedQueryDefinition.queryName?uncap_first}",
+				fieldName = "${facetDefinition.fieldName}",
+				label = "${facetDefinition.label}",
+				<#if facetDefinition.isMultiSelectable()>
+				multiselectable = true,
+				</#if>
+				<#if facetDefinition.isRange()>
+				ranges = {
+					<#list facetDefinition.facetValues as facetValue>@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "${facetValue.code}", filter = "${facetValue.listFilter}", label = "${facetValue.label}")<#sep>,
+					</#list>},
+				</#if>
+				order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.${facetDefinition.order})<#sep>,
 	</#list>
+		})
 	public SearchQueryBuilder createSearchQueryBuilder${facetedQueryDefinition.simpleName}(final ${facetedQueryDefinition.criteriaClassCanonicalName} criteria, final SelectedFacetValues selectedFacetValues) {
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("${facetedQueryDefinition.urn}", FacetedQueryDefinition.class);
+		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("${facetedQueryDefinition.queryName}", FacetedQueryDefinition.class);
 		final ListFilterBuilder<${facetedQueryDefinition.criteriaClassCanonicalName}> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
 		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
 		return SearchQuery.builder(criteriaListFilter).withFacet(facetedQueryDefinition, selectedFacetValues);

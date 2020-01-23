@@ -51,39 +51,49 @@ public final class MovieSearchClient implements Component {
 	 * @param selectedFacetValues Liste des facettes sélectionnées à appliquer
 	 * @return SearchQueryBuilder pour ce type de recherche
 	 */
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation(name = "QryMovie", keyConcept = "DtMovie", listFilterBuilderClass = io.vertigo.dynamox.search.DslListFilterBuilder.class, listFilterBuilderQuery = "_all:#+query*#", criteriaSmartType = "STyLabel")
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetTerm(
-			name = "FctMovieType$qryMovie",
-			fieldName = "movieType",
-			label = "Par type",
-			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count)
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetRange(
-			name = "FctMovieTitle$qryMovie",
-			fieldName = "titleSortOnly",
-			label = "Par titre",
-			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
-			ranges = {
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r1", filter = "titleSortOnly:[* TO a]", label = "#"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r2", filter = "titleSortOnly:[a TO g]", label = "a-f"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r3", filter = "titleSortOnly:[g TO n]", label = "g-m"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r4", filter = "titleSortOnly:[n TO t]", label = "n-s"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r5", filter = "titleSortOnly:[t TO *]", label = "t-z") })
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetRange(
-			name = "FctMovieYear$qryMovie",
-			fieldName = "productionYear",
-			label = "Par date",
-			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
-			ranges = {
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r1", filter = "productionYear:[* TO 1930]", label = "< années 30"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r2", filter = "productionYear:[1930 TO 1940]", label = "années 30"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r3", filter = "productionYear:[1940 TO 1950]", label = "années 40"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r4", filter = "productionYear:[1950 TO 1960]", label = "années 50"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r5", filter = "productionYear:[1960 TO 1970]", label = "années 60"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r6", filter = "productionYear:[1970 TO 1980]", label = "années 70"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r7", filter = "productionYear:[1980 TO 1990]", label = "années 80"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r8", filter = "productionYear:[1990 TO 2000]", label = "années 90"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r9", filter = "productionYear:[2000 TO 2010]", label = "années 2000"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r10", filter = "productionYear:[2010 TO *]", label = "> années 2010") })
+	@io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation(
+			name = "QryMovie",
+			keyConcept = "DtMovie",
+			listFilterBuilderClass = io.vertigo.dynamox.search.DslListFilterBuilder.class,
+			listFilterBuilderQuery = "_all:#+query*#",
+			criteriaSmartType = "STyLabel",
+			facets = {
+					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
+							type = "term",
+							name = "FctMovieType$qryMovie",
+							fieldName = "movieType",
+							label = "Par type",
+							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count),
+					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
+							type = "range",
+							name = "FctMovieTitle$qryMovie",
+							fieldName = "titleSortOnly",
+							label = "Par titre",
+							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
+							ranges = {
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r1", filter = "titleSortOnly:[* TO a]", label = "#"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r2", filter = "titleSortOnly:[a TO g]", label = "a-f"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r3", filter = "titleSortOnly:[g TO n]", label = "g-m"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r4", filter = "titleSortOnly:[n TO t]", label = "n-s"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r5", filter = "titleSortOnly:[t TO *]", label = "t-z") }),
+					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
+							type = "range",
+							name = "FctMovieYear$qryMovie",
+							fieldName = "productionYear",
+							label = "Par date",
+							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
+							ranges = {
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r1", filter = "productionYear:[* TO 1930]", label = "< années 30"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r2", filter = "productionYear:[1930 TO 1940]", label = "années 30"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r3", filter = "productionYear:[1940 TO 1950]", label = "années 40"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r4", filter = "productionYear:[1950 TO 1960]", label = "années 50"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r5", filter = "productionYear:[1960 TO 1970]", label = "années 60"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r6", filter = "productionYear:[1970 TO 1980]", label = "années 70"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r7", filter = "productionYear:[1980 TO 1990]", label = "années 80"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r8", filter = "productionYear:[1990 TO 2000]", label = "années 90"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r9", filter = "productionYear:[2000 TO 2010]", label = "années 2000"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r10", filter = "productionYear:[2010 TO *]", label = "> années 2010") })
+			})
 	public SearchQueryBuilder createSearchQueryBuilderMovie(final java.lang.String criteria, final SelectedFacetValues selectedFacetValues) {
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("StQryMovie", FacetedQueryDefinition.class);
 		final ListFilterBuilder<java.lang.String> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
@@ -97,39 +107,49 @@ public final class MovieSearchClient implements Component {
 	 * @param selectedFacetValues Liste des facettes sélectionnées à appliquer
 	 * @return SearchQueryBuilder pour ce type de recherche
 	 */
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation(name = "QryMovieWithPoster", keyConcept = "DtMovie", listFilterBuilderClass = io.vertigo.dynamox.search.DslListFilterBuilder.class, listFilterBuilderQuery = "_all:#+query*# +_exists_:poster", criteriaSmartType = "STyLabel")
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetTerm(
-			name = "FctMovieType$qryMovieWithPoster",
-			fieldName = "movieType",
-			label = "Par type",
-			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count)
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetRange(
-			name = "FctMovieTitle$qryMovieWithPoster",
-			fieldName = "titleSortOnly",
-			label = "Par titre",
-			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
-			ranges = {
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r1", filter = "titleSortOnly:[* TO a]", label = "#"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r2", filter = "titleSortOnly:[a TO g]", label = "a-f"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r3", filter = "titleSortOnly:[g TO n]", label = "g-m"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r4", filter = "titleSortOnly:[n TO t]", label = "n-s"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r5", filter = "titleSortOnly:[t TO *]", label = "t-z") })
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetRange(
-			name = "FctMovieYear$qryMovieWithPoster",
-			fieldName = "productionYear",
-			label = "Par date",
-			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
-			ranges = {
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r1", filter = "productionYear:[* TO 1930]", label = "< années 30"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r2", filter = "productionYear:[1930 TO 1940]", label = "années 30"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r3", filter = "productionYear:[1940 TO 1950]", label = "années 40"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r4", filter = "productionYear:[1950 TO 1960]", label = "années 50"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r5", filter = "productionYear:[1960 TO 1970]", label = "années 60"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r6", filter = "productionYear:[1970 TO 1980]", label = "années 70"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r7", filter = "productionYear:[1980 TO 1990]", label = "années 80"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r8", filter = "productionYear:[1990 TO 2000]", label = "années 90"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r9", filter = "productionYear:[2000 TO 2010]", label = "années 2000"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r10", filter = "productionYear:[2010 TO *]", label = "> années 2010") })
+	@io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation(
+			name = "QryMovieWithPoster",
+			keyConcept = "DtMovie",
+			listFilterBuilderClass = io.vertigo.dynamox.search.DslListFilterBuilder.class,
+			listFilterBuilderQuery = "_all:#+query*# +_exists_:poster",
+			criteriaSmartType = "STyLabel",
+			facets = {
+					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
+							type = "term",
+							name = "FctMovieType$qryMovieWithPoster",
+							fieldName = "movieType",
+							label = "Par type",
+							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count),
+					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
+							type = "range",
+							name = "FctMovieTitle$qryMovieWithPoster",
+							fieldName = "titleSortOnly",
+							label = "Par titre",
+							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
+							ranges = {
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r1", filter = "titleSortOnly:[* TO a]", label = "#"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r2", filter = "titleSortOnly:[a TO g]", label = "a-f"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r3", filter = "titleSortOnly:[g TO n]", label = "g-m"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r4", filter = "titleSortOnly:[n TO t]", label = "n-s"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r5", filter = "titleSortOnly:[t TO *]", label = "t-z") }),
+					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
+							type = "range",
+							name = "FctMovieYear$qryMovieWithPoster",
+							fieldName = "productionYear",
+							label = "Par date",
+							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
+							ranges = {
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r1", filter = "productionYear:[* TO 1930]", label = "< années 30"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r2", filter = "productionYear:[1930 TO 1940]", label = "années 30"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r3", filter = "productionYear:[1940 TO 1950]", label = "années 40"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r4", filter = "productionYear:[1950 TO 1960]", label = "années 50"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r5", filter = "productionYear:[1960 TO 1970]", label = "années 60"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r6", filter = "productionYear:[1970 TO 1980]", label = "années 70"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r7", filter = "productionYear:[1980 TO 1990]", label = "années 80"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r8", filter = "productionYear:[1990 TO 2000]", label = "années 90"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r9", filter = "productionYear:[2000 TO 2010]", label = "années 2000"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r10", filter = "productionYear:[2010 TO *]", label = "> années 2010") })
+			})
 	public SearchQueryBuilder createSearchQueryBuilderMovieWithPoster(final java.lang.String criteria, final SelectedFacetValues selectedFacetValues) {
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("StQryMovieWithPoster", FacetedQueryDefinition.class);
 		final ListFilterBuilder<java.lang.String> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());

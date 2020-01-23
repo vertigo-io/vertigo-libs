@@ -1,6 +1,5 @@
 package io.vertigo.datafactory.impl.collections;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,8 +20,7 @@ import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
 import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
-import io.vertigo.datafactory.search.metamodel.annotation.FacetRange;
-import io.vertigo.datafactory.search.metamodel.annotation.FacetTerm;
+import io.vertigo.datafactory.search.metamodel.annotation.Facet;
 import io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation;
 import io.vertigo.datafactory.search.metamodel.annotation.IndexCopyTo;
 import io.vertigo.datafactory.search.metamodel.annotation.SearchIndexAnnotation;
@@ -73,33 +71,31 @@ public class FacetDefinitionUtil {
 		final List<DefinitionSupplier> definitionSuppliers = new ArrayList<>();
 
 		final FacetedQueryAnnotation facetedQueryAnnotation = tuple.getVal2().getAnnotation(FacetedQueryAnnotation.class);
-		for (final Annotation annotation : tuple.getVal2().getAnnotations()) {
-			if (annotation instanceof FacetTerm) {
+		for (final Facet facet : facetedQueryAnnotation.facets()) {
+			if ("term".equals(facet.type())) {
 				definitionSuppliers.add(definitionSpace -> {
 					final SearchIndexAnnotation searchIndexAnnotation = (SearchIndexAnnotation) tuple.getVal1().getAnnotation(SearchIndexAnnotation.class);
 					final DtDefinition indexDtDefinition = definitionSpace.resolve(searchIndexAnnotation.dtIndex(), DtDefinition.class);
-					final FacetTerm facetTermAnnotation = (FacetTerm) annotation;
 					return FacetDefinition.createFacetDefinitionByTerm(
-							facetTermAnnotation.name(),
-							indexDtDefinition.getField(facetTermAnnotation.fieldName()),
-							MessageText.of(facetTermAnnotation.label()),
-							facetTermAnnotation.multiselectable(),
-							facetTermAnnotation.order());
+							facet.name(),
+							indexDtDefinition.getField(facet.fieldName()),
+							MessageText.of(facet.label()),
+							facet.multiselectable(),
+							facet.order());
 				});
-			} else if (annotation instanceof FacetRange) {
+			} else if ("range".equals(facet.type())) {
 				definitionSuppliers.add(definitionSpace -> {
 					final SearchIndexAnnotation searchIndexAnnotation = (SearchIndexAnnotation) tuple.getVal1().getAnnotation(SearchIndexAnnotation.class);
 					final DtDefinition indexDtDefinition = definitionSpace.resolve(searchIndexAnnotation.dtIndex(), DtDefinition.class);
-					final FacetRange facetRangeAnnotation = (FacetRange) annotation;
 					return FacetDefinition.createFacetDefinitionByRange(
-							facetRangeAnnotation.name(),
-							indexDtDefinition.getField(facetRangeAnnotation.fieldName()),
-							MessageText.of(facetRangeAnnotation.label()),
-							Stream.of(facetRangeAnnotation.ranges())
+							facet.name(),
+							indexDtDefinition.getField(facet.fieldName()),
+							MessageText.of(facet.label()),
+							Stream.of(facet.ranges())
 									.map(range -> new FacetValue(range.code(), ListFilter.of(range.filter()), MessageText.of(range.label())))
 									.collect(Collectors.toList()),
-							facetRangeAnnotation.multiselectable(),
-							facetRangeAnnotation.order());
+							facet.multiselectable(),
+							facet.order());
 				});
 			}
 		}
@@ -107,14 +103,9 @@ public class FacetDefinitionUtil {
 		definitionSuppliers.add(definitionSpace -> {
 			final SearchIndexAnnotation searchIndexAnnotation = (SearchIndexAnnotation) tuple.getVal1().getAnnotation(SearchIndexAnnotation.class);
 			final DtDefinition keyConceptDtDefinition = definitionSpace.resolve(searchIndexAnnotation.keyConcept(), DtDefinition.class);
-			final List<FacetDefinition> facetDefinitions = Stream.of(tuple.getVal2().getAnnotations())
-					.filter(annotation -> annotation instanceof FacetTerm || annotation instanceof FacetRange)
-					.map(annotation -> {
-						if (annotation instanceof FacetTerm) {
-							return definitionSpace.resolve(((FacetTerm) annotation).name(), FacetDefinition.class);
-						}
-						return definitionSpace.resolve(((FacetRange) annotation).name(), FacetDefinition.class);
-					}).collect(Collectors.toList());
+			final List<FacetDefinition> facetDefinitions = Stream.of(facetedQueryAnnotation.facets())
+					.map(facetAnn -> definitionSpace.resolve(facetAnn.name(), FacetDefinition.class))
+					.collect(Collectors.toList());
 			final SmartTypeDefinition criteriaSmartType = definitionSpace.resolve(facetedQueryAnnotation.criteriaSmartType(), SmartTypeDefinition.class);
 			return new FacetedQueryDefinition(
 					facetedQueryAnnotation.name(),

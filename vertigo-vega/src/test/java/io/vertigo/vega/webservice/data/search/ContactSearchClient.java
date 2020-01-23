@@ -25,24 +25,33 @@ public class ContactSearchClient implements Component {
 	 * @param selectedFacetValues Liste des facettes sélectionnées à appliquer
 	 * @return SearchQueryBuilder pour ce type de recherche
 	 */
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation(name = "QryContactFacet", keyConcept = "DtContact", listFilterBuilderClass = io.vertigo.dynamox.search.DslListFilterBuilder.class, listFilterBuilderQuery = "#criteria#", criteriaSmartType = "STyTexte50")
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetTerm(
-			name = "FctHonorificCode",
-			fieldName = "honorificCode",
-			label = "Par code honorific",
-			multiselectable = true,
-			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count)
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetRange(
-			name = "FctBirthday",
-			fieldName = "birthday",
-			label = "Par date",
-			order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
-			ranges = {
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r1", filter = "birthday:[* TO 01/01/1980]", label = "avant 1980"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r2", filter = "birthday:[01/01/1980 TO 01/01/1990]", label = "1980-1990"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r3", filter = "birthday:[01/01/1990 TO 01/01/2000]", label = "1990-2000"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r4", filter = "birthday:[01/01/2000 TO 01/01/2010]", label = "2000-2010"),
-					@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r5", filter = "birthday:[01/01/2010 TO *]", label = "apres 2010") })
+	@io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation(
+			name = "QryContactFacet",
+			keyConcept = "DtContact",
+			listFilterBuilderClass = io.vertigo.dynamox.search.DslListFilterBuilder.class,
+			listFilterBuilderQuery = "#criteria#",
+			criteriaSmartType = "STyTexte50",
+			facets = {
+					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
+							type = "term",
+							name = "FctHonorificCode",
+							fieldName = "honorificCode",
+							label = "Par code honorific",
+							multiselectable = true,
+							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count),
+					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
+							type = "range",
+							name = "FctBirthday",
+							fieldName = "birthday",
+							label = "Par date",
+							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
+							ranges = {
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r1", filter = "birthday:[* TO 01/01/1980]", label = "avant 1980"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r2", filter = "birthday:[01/01/1980 TO 01/01/1990]", label = "1980-1990"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r3", filter = "birthday:[01/01/1990 TO 01/01/2000]", label = "1990-2000"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r4", filter = "birthday:[01/01/2000 TO 01/01/2010]", label = "2000-2010"),
+									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "r5", filter = "birthday:[01/01/2010 TO *]", label = "apres 2010") })
+			})
 	public SearchQueryBuilder createSearchQueryBuilderBase(final java.lang.String criteria, final SelectedFacetValues selectedFacetValues) {
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryContactFacet", FacetedQueryDefinition.class);
 		final ListFilterBuilder<java.lang.String> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());

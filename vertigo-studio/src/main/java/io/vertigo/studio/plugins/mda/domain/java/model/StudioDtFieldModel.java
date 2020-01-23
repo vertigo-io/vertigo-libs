@@ -100,6 +100,20 @@ public final class StudioDtFieldModel {
 	}
 
 	/**
+	 * @return Label du champ
+	 */
+	public boolean isSortField() {
+		return dtDefinition.getSortField().isPresent() && dtDefinition.getSortField().get().getName().equals(dtField.getName());
+	}
+
+	/**
+	 * @return Label du champ
+	 */
+	public boolean isDisplayField() {
+		return dtDefinition.getDisplayField().isPresent() && dtDefinition.getDisplayField().get().getName().equals(dtField.getName());
+	}
+
+	/**
 	 * @return Si la propriété est requise
 	 */
 	public boolean isRequired() {

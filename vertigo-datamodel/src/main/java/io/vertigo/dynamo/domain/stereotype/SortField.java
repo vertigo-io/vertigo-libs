@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datafactory.search.metamodel.annotation;
+package io.vertigo.dynamo.domain.stereotype;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -24,30 +24,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import io.vertigo.datafactory.collections.metamodel.ListFilterBuilder;
-
 /**
- * Nom du DataSpace auquel est rattaché l'entité.
- * @author  mlaroche
+ * @author pchretien
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
-@Target({ ElementType.METHOD })
-public @interface FacetedQueryAnnotation {
-
-	String name();
-
-	/**
-	 * @return KeyConcept name
-	 */
-	String keyConcept();
-
-	String criteriaSmartType();
-
-	String listFilterBuilderQuery();
-
-	Class<? extends ListFilterBuilder> listFilterBuilderClass();
-
-	Facet[] facets();
-
+@Target({ ElementType.FIELD, ElementType.METHOD })
+public @interface SortField {
+	//
 }
