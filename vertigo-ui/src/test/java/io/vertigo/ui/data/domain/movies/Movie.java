@@ -3,7 +3,9 @@ package io.vertigo.ui.data.domain.movies;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.stereotype.DisplayField;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.domain.stereotype.SortField;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
@@ -24,13 +26,14 @@ public final class Movie implements KeyConcept {
 	private String poster;
 	private String rated;
 	private java.time.Instant lastModified;
+	private String tags;
 
 	/** {@inheritDoc} */
 	@Override
 	public UID<Movie> getUID() {
 		return UID.of(this);
 	}
-	
+
 	/**
 	 * Champ : ID.
 	 * Récupère la valeur de la propriété 'MOV_ID'.
@@ -49,13 +52,15 @@ public final class Movie implements KeyConcept {
 	public void setMovId(final Long movId) {
 		this.movId = movId;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'TITLE'.
 	 * @return String title
 	 */
 	@Field(domain = "STyLabelLong", label = "TITLE")
+	@SortField
+	@DisplayField
 	public String getTitle() {
 		return title;
 	}
@@ -68,7 +73,7 @@ public final class Movie implements KeyConcept {
 	public void setTitle(final String title) {
 		this.title = title;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Released'.
@@ -87,7 +92,7 @@ public final class Movie implements KeyConcept {
 	public void setReleased(final java.time.LocalDate released) {
 		this.released = released;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Year'.
@@ -106,7 +111,7 @@ public final class Movie implements KeyConcept {
 	public void setYear(final Integer year) {
 		this.year = year;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Runtime'.
@@ -125,7 +130,7 @@ public final class Movie implements KeyConcept {
 	public void setRuntime(final Integer runtime) {
 		this.runtime = runtime;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Description'.
@@ -144,7 +149,7 @@ public final class Movie implements KeyConcept {
 	public void setDescription(final String description) {
 		this.description = description;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'Poster'.
@@ -163,7 +168,26 @@ public final class Movie implements KeyConcept {
 	public void setPoster(final String poster) {
 		this.poster = poster;
 	}
-	
+
+	/**
+	 * Champ : DATA.
+	 * Récupère la valeur de la propriété 'Poster'.
+	 * @return String poster
+	 */
+	@Field(domain = "STyMultipleIds", label = "Tags")
+	public String getTags() {
+		return tags;
+	}
+
+	/**
+	 * Champ : DATA.
+	 * Définit la valeur de la propriété 'Poster'.
+	 * @param poster String
+	 */
+	public void setTags(final String tags) {
+		this.tags = tags;
+	}
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'rated'.
@@ -182,7 +206,7 @@ public final class Movie implements KeyConcept {
 	public void setRated(final String rated) {
 		this.rated = rated;
 	}
-	
+
 	/**
 	 * Champ : DATA.
 	 * Récupère la valeur de la propriété 'lastModified'.
@@ -201,7 +225,7 @@ public final class Movie implements KeyConcept {
 	public void setLastModified(final java.time.Instant lastModified) {
 		this.lastModified = lastModified;
 	}
-	
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {

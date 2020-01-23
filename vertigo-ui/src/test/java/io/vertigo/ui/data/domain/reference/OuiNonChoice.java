@@ -3,7 +3,9 @@ package io.vertigo.ui.data.domain.reference;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.stereotype.DisplayField;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.domain.stereotype.SortField;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
@@ -49,6 +51,8 @@ public final class OuiNonChoice implements Entity {
 	 * @return String libelle
 	 */
 	@Field(domain = "STyLabel", label = "Libellé")
+	@SortField
+	@DisplayField
 	public String getLibelle() {
 		return libelle;
 	}

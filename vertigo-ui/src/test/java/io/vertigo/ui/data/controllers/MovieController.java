@@ -24,7 +24,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.ui.core.ViewContext;
@@ -67,10 +66,9 @@ public class MovieController extends AbstractVSpringMvcController {
 
 	@PostMapping("/_save")
 	public String doSave(
-			@ViewAttribute("movie") final Movie movie, final RedirectAttributes redirectAttributes) {
+			@ViewAttribute("movie") final Movie movie) {
 		movieServices.save(movie);
-		redirectAttributes.addAttribute("movId", movie.getMovId());
-		return "redirect:/movie/";
+		return "redirect:/movie/" + movie.getMovId();
 	}
 
 }

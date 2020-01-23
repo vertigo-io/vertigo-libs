@@ -3,7 +3,9 @@ package io.vertigo.ui.data.domain.reference;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.domain.stereotype.DisplayField;
 import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.dynamo.domain.stereotype.SortField;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
@@ -32,6 +34,7 @@ public final class Commune implements Entity {
 	 * @return Long idInsee <b>Obligatoire</b>
 	 */
 	@Field(domain = "STyId", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "idInsee")
+	@SortField
 	public Long getIdInsee() {
 		return idInsee;
 	}
@@ -70,6 +73,7 @@ public final class Commune implements Entity {
 	 * @return String commune
 	 */
 	@Field(domain = "STyLabel", label = "commune")
+	@DisplayField
 	public String getCommune() {
 		return commune;
 	}

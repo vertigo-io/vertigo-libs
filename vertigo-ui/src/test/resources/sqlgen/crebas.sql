@@ -141,6 +141,7 @@ create table MOVIE
     RUNTIME     	 NUMERIC     	,
     DESCRIPTION 	 TEXT        	,
     POSTER      	 VARCHAR(250)	,
+    TAGS	      	 VARCHAR(250)	,
     RATED       	 VARCHAR(250)	,
     LAST_MODIFIED	 TIMESTAMP   	,
     constraint PK_MOVIE primary key (MOV_ID)

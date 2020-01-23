@@ -133,5 +133,10 @@ public enum VuiTestSmartTypes {
 	@SmartTypeDefinition(Boolean.class)
 	@Formatter(clazz = FormatterBoolean.class, arg = "Oui;Non")
 	@SmartTypeProperty(property = "storeType", value = "BOOLEAN")
-	OuiNon;
+	OuiNon,
+
+	@SmartTypeDefinition(String.class)
+	@FormatterDefault
+	@SmartTypeProperty(property = "storeType", value = "VARCHAR(250)")
+	MultipleIds;
 }
