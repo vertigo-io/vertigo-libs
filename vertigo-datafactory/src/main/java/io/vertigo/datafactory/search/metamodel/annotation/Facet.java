@@ -17,6 +17,8 @@ public @interface Facet {
 
 	String name();
 
+	String dtDefinition();
+
 	String fieldName();
 
 	String label();

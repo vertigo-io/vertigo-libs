@@ -34,14 +34,16 @@ public class ContactSearchClient implements Component {
 			facets = {
 					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
 							type = "term",
-							name = "FctHonorificCode",
+							name = "FctHonorificCode$qryContactFacet",
+							dtDefinition = "DtContact",
 							fieldName = "honorificCode",
 							label = "Par code honorific",
 							multiselectable = true,
 							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count),
 					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
 							type = "range",
-							name = "FctBirthday",
+							name = "FctBirthday$qryContactFacet",
+							dtDefinition = "DtContact",
 							fieldName = "birthday",
 							label = "Par date",
 							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,

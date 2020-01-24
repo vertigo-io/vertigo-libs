@@ -37,6 +37,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datafactory.DataFactoryFeatures;
 import io.vertigo.datafactory.collections.data.DtDefinitions;
+import io.vertigo.datafactory.collections.data.TestCollectionsSmartTypes;
 import io.vertigo.datafactory.collections.data.domain.SmartItem;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.dynamo.DataModelFeatures;
@@ -47,7 +48,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
 import io.vertigo.dynamo.domain.util.VCollectors;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 /**
  * @author pchretien
@@ -81,9 +82,9 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 						.build())
 
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datafactory/collections/data/execution.kpr")
-								.addDefinitionResource("classes", "io.vertigo.datafactory.collections.data.DtDefinitions")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestCollectionsSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", "io.vertigo.datafactory.collections.data.DtDefinitions")
 								.build())
 						.build())
 				.build();

@@ -69,6 +69,7 @@ public final class ${dtDefinition.classSimpleName}SearchClient implements Compon
 			@io.vertigo.datafactory.search.metamodel.annotation.Facet(
 				type = "<#if facetDefinition.isRange()>range<#else>term</#if>",
 				name = "${facetDefinition.name}$${facetedQueryDefinition.queryName?uncap_first}",
+				dtDefinition = "${searchIndexDefinition.indexDtDefinition}",
 				fieldName = "${facetDefinition.fieldName}",
 				label = "${facetDefinition.label}",
 				<#if facetDefinition.isMultiSelectable()>

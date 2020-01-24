@@ -40,7 +40,6 @@ public class FacetDefinitionUtil {
 
 		final Stream<DefinitionSupplier> facetDefinitionSuppliers = new Selector()
 				.from(componentClasses)
-				.filterClasses(ClassConditions.annotatedWith(SearchIndexAnnotation.class))
 				.filterMethods(MethodConditions.annotatedWith(FacetedQueryAnnotation.class))
 				.findMethods()
 				.stream()
@@ -74,8 +73,7 @@ public class FacetDefinitionUtil {
 		for (final Facet facet : facetedQueryAnnotation.facets()) {
 			if ("term".equals(facet.type())) {
 				definitionSuppliers.add(definitionSpace -> {
-					final SearchIndexAnnotation searchIndexAnnotation = (SearchIndexAnnotation) tuple.getVal1().getAnnotation(SearchIndexAnnotation.class);
-					final DtDefinition indexDtDefinition = definitionSpace.resolve(searchIndexAnnotation.dtIndex(), DtDefinition.class);
+					final DtDefinition indexDtDefinition = definitionSpace.resolve(facet.dtDefinition(), DtDefinition.class);
 					return FacetDefinition.createFacetDefinitionByTerm(
 							facet.name(),
 							indexDtDefinition.getField(facet.fieldName()),
@@ -85,8 +83,7 @@ public class FacetDefinitionUtil {
 				});
 			} else if ("range".equals(facet.type())) {
 				definitionSuppliers.add(definitionSpace -> {
-					final SearchIndexAnnotation searchIndexAnnotation = (SearchIndexAnnotation) tuple.getVal1().getAnnotation(SearchIndexAnnotation.class);
-					final DtDefinition indexDtDefinition = definitionSpace.resolve(searchIndexAnnotation.dtIndex(), DtDefinition.class);
+					final DtDefinition indexDtDefinition = definitionSpace.resolve(facet.dtDefinition(), DtDefinition.class);
 					return FacetDefinition.createFacetDefinitionByRange(
 							facet.name(),
 							indexDtDefinition.getField(facet.fieldName()),
@@ -101,15 +98,12 @@ public class FacetDefinitionUtil {
 		}
 
 		definitionSuppliers.add(definitionSpace -> {
-			final SearchIndexAnnotation searchIndexAnnotation = (SearchIndexAnnotation) tuple.getVal1().getAnnotation(SearchIndexAnnotation.class);
-			final DtDefinition keyConceptDtDefinition = definitionSpace.resolve(searchIndexAnnotation.keyConcept(), DtDefinition.class);
 			final List<FacetDefinition> facetDefinitions = Stream.of(facetedQueryAnnotation.facets())
 					.map(facetAnn -> definitionSpace.resolve(facetAnn.name(), FacetDefinition.class))
 					.collect(Collectors.toList());
 			final SmartTypeDefinition criteriaSmartType = definitionSpace.resolve(facetedQueryAnnotation.criteriaSmartType(), SmartTypeDefinition.class);
 			return new FacetedQueryDefinition(
 					facetedQueryAnnotation.name(),
-					keyConceptDtDefinition,
 					facetDefinitions,
 					criteriaSmartType,
 					facetedQueryAnnotation.listFilterBuilderClass(),

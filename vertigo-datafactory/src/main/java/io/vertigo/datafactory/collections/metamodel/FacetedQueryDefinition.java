@@ -27,7 +27,6 @@ import java.util.Map;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 /**
@@ -43,8 +42,6 @@ public final class FacetedQueryDefinition implements Definition {
 	 * Nom de la définition.
 	 */
 	private final String name;
-
-	private final DtDefinition keyConceptDtDefinition;
 
 	/** Liste indexée des facettes.*/
 	private final Map<String, FacetDefinition> facetDefinitions = new LinkedHashMap<>();
@@ -71,20 +68,17 @@ public final class FacetedQueryDefinition implements Definition {
 	 */
 	public FacetedQueryDefinition(
 			final String name,
-			final DtDefinition keyConceptDtDefinition,
 			final List<FacetDefinition> facetDefinitions,
 			final SmartTypeDefinition criteriaDomain,
 			final Class<? extends ListFilterBuilder> listFilterBuilderClass,
 			final String listFilterBuilderQuery) {
 		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(keyConceptDtDefinition);
 		Assertion.checkNotNull(facetDefinitions);
 		Assertion.checkNotNull(criteriaDomain);
 		Assertion.checkNotNull(listFilterBuilderClass);
 		Assertion.checkNotNull(listFilterBuilderQuery);
 		//-----
 		this.name = name;
-		this.keyConceptDtDefinition = keyConceptDtDefinition;
 		for (final FacetDefinition facetDefinition : facetDefinitions) {
 			this.facetDefinitions.put(facetDefinition.getName(), facetDefinition);
 		}
@@ -112,14 +106,6 @@ public final class FacetedQueryDefinition implements Definition {
 	@Override
 	public String getName() {
 		return name;
-	}
-
-	/**
-	 * Définition du keyConcept de cette recherche.
-	 * @return Définition du keyConcept.
-	 */
-	public DtDefinition getKeyConceptDtDefinition() {
-		return keyConceptDtDefinition;
 	}
 
 	/**

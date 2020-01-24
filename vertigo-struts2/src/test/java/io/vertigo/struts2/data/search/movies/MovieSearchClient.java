@@ -61,12 +61,14 @@ public final class MovieSearchClient implements Component {
 					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
 							type = "term",
 							name = "FctMovieType$qryMovie",
+							dtDefinition = "DtMovieIndex",
 							fieldName = "movieType",
 							label = "Par type",
 							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count),
 					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
 							type = "range",
 							name = "FctMovieTitle$qryMovie",
+							dtDefinition = "DtMovieIndex",
 							fieldName = "titleSortOnly",
 							label = "Par titre",
 							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
@@ -79,6 +81,7 @@ public final class MovieSearchClient implements Component {
 					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
 							type = "range",
 							name = "FctMovieYear$qryMovie",
+							dtDefinition = "DtMovieIndex",
 							fieldName = "productionYear",
 							label = "Par date",
 							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
@@ -117,12 +120,14 @@ public final class MovieSearchClient implements Component {
 					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
 							type = "term",
 							name = "FctMovieType$qryMovieWithPoster",
+							dtDefinition = "DtMovieIndex",
 							fieldName = "movieType",
 							label = "Par type",
 							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count),
 					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
 							type = "range",
 							name = "FctMovieTitle$qryMovieWithPoster",
+							dtDefinition = "DtMovieIndex",
 							fieldName = "titleSortOnly",
 							label = "Par titre",
 							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,
@@ -135,6 +140,7 @@ public final class MovieSearchClient implements Component {
 					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
 							type = "range",
 							name = "FctMovieYear$qryMovieWithPoster",
+							dtDefinition = "DtMovieIndex",
 							fieldName = "productionYear",
 							label = "Par date",
 							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition,

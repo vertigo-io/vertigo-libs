@@ -19,22 +19,26 @@
 package io.vertigo.datafactory.collections.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.util.JsonMapper;
+import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
+@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class SmartCar implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
+	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
 	private Long id;
-	@Field(domain = "DoKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
+	@Field(domain = "STyKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
 	private String manufacturer;
-	@Field(domain = "DoInteger", cardinality = Cardinality.ONE, label = "Année")
+	@Field(domain = "STyInteger", cardinality = Cardinality.ONE, label = "Année")
 	private Integer year;
-	@Field(domain = "DoText", cardinality = Cardinality.ONE, label = "Descriptif")
+	@Field(domain = "STyText", cardinality = Cardinality.ONE, label = "Descriptif")
 	private String description;
 
 	/** {@inheritDoc} */
