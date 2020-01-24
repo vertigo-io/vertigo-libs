@@ -30,7 +30,7 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
 
 public final class MyNodeConfig {
 

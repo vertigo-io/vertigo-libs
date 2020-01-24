@@ -22,10 +22,10 @@ import java.util.List;
 
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.Home;
-import io.vertigo.dynamo.domain.metamodel.ConstraintException;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.ngdomain.ModelManager;
+import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.structure.metamodel.ConstraintException;
+import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.model.DtObject;
 
 /**
  * Default DtObject validation : check domain's constraints on modified fields.

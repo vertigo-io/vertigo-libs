@@ -23,6 +23,8 @@ import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
+import io.vertigo.datamodel.structure.metamodel.DataType;
+import io.vertigo.datamodel.structure.metamodel.Properties;
 import io.vertigo.dynamo.domain.metamodel.Domain.Scope;
 
 /**

@@ -20,8 +20,8 @@ package io.vertigo.datastore.entitystore;
 
 import java.util.List;
 
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.metamodel.association.DtListURIForNNAssociation;
+import io.vertigo.datamodel.structure.model.UID;
 
 /**
  * Gestion des relations NN.

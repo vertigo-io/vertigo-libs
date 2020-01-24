@@ -2,7 +2,7 @@ package io.vertigo.struts2;
 
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.Features;
-import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
 import io.vertigo.struts2.boot.initializer.TestStruts2MasterDataDefinitionProvider;
 import io.vertigo.struts2.data.Struts2TestSmartTypes;
 import io.vertigo.struts2.data.dao.movies.MovieDAO;

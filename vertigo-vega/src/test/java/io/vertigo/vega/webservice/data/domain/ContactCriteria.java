@@ -20,11 +20,11 @@ package io.vertigo.vega.webservice.data.domain;
 
 import java.time.LocalDate;
 
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.domain.util.JsonMapper;
-import io.vertigo.dynamo.ngdomain.annotations.Mapper;
+import io.vertigo.datamodel.smarttype.annotations.Mapper;
+import io.vertigo.datamodel.structure.metamodel.DataType;
+import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.structure.util.JsonMapper;
 
 @Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class ContactCriteria implements DtObject {

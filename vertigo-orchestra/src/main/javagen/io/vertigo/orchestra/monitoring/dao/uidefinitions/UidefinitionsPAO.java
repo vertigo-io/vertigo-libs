@@ -3,12 +3,12 @@ package io.vertigo.orchestra.monitoring.dao.uidefinitions;
 import javax.inject.Inject;
 
 import io.vertigo.core.node.Home;
+import io.vertigo.datamodel.task.TaskManager;
+import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.model.Task;
+import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Generated;
-import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.datastore.impl.dao.StoreServices;
 
 /**
@@ -45,7 +45,7 @@ public final class UidefinitionsPAO implements StoreServices {
 	 * @param name String
 	 * @return OProcessUi dtOProcessUi
 	*/
-	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetProcessByName",
 			request = "select  pro.PRO_ID as PRO_ID," + 
@@ -60,8 +60,8 @@ public final class UidefinitionsPAO implements StoreServices {
  "        	from o_process pro   " + 
  "        	where pro.NAME = #name# and pro.ACTIVE_VERSION is true",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOProcessUi")
-	public io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi getProcessByName(@io.vertigo.dynamo.task.proxy.TaskInput(name = "name", domain = "STyOLibelle") final String name) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtOProcessUi")
+	public io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi getProcessByName(@io.vertigo.datamodel.task.proxy.TaskInput(name = "name", domain = "STyOLibelle") final String name) {
 		final Task task = createTaskBuilder("TkGetProcessByName")
 				.addValue("name", name)
 				.build();
@@ -75,7 +75,7 @@ public final class UidefinitionsPAO implements StoreServices {
 	 * @param search String
 	 * @return DtList de OProcessUi dtcOProcessUi
 	*/
-	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkSearchProcessByLabel",
 			request = "select  pro.PRO_ID as PRO_ID," + 
@@ -90,8 +90,8 @@ public final class UidefinitionsPAO implements StoreServices {
  "        	from o_process pro   " + 
  "        	where lower(pro.LABEL) like lower(#search#)  and pro.ACTIVE_VERSION is true",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOProcessUi")
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi> searchProcessByLabel(@io.vertigo.dynamo.task.proxy.TaskInput(name = "search", domain = "STyOLibelle") final String search) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtOProcessUi")
+	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.monitoring.domain.uidefinitions.OProcessUi> searchProcessByLabel(@io.vertigo.datamodel.task.proxy.TaskInput(name = "search", domain = "STyOLibelle") final String search) {
 		final Task task = createTaskBuilder("TkSearchProcessByLabel")
 				.addValue("search", search)
 				.build();

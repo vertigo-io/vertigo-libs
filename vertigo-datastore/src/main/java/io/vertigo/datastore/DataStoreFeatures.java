@@ -21,6 +21,7 @@ package io.vertigo.datastore;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
+import io.vertigo.datamodel.impl.task.proxy.TaskProxyMethod;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.FileStoreManager;
@@ -35,7 +36,6 @@ import io.vertigo.datastore.plugins.filestore.fs.FsFileStorePlugin;
 import io.vertigo.datastore.plugins.filestore.fs.FsFullFileStorePlugin;
 import io.vertigo.datastore.plugins.kvstore.berkeley.BerkeleyKVStorePlugin;
 import io.vertigo.datastore.plugins.kvstore.delayedmemory.DelayedMemoryKVStorePlugin;
-import io.vertigo.dynamo.impl.task.proxy.TaskProxyMethod;
 import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
 
 /**

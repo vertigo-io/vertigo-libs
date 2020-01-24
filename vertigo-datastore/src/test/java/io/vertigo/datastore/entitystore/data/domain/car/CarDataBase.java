@@ -23,8 +23,8 @@ import java.math.RoundingMode;
 import java.util.List;
 
 import io.vertigo.core.util.ListBuilder;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.util.VCollectors;
+import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.structure.util.VCollectors;
 
 /**
  * Base de données des voitures.

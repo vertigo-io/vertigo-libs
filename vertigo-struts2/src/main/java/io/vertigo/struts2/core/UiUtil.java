@@ -25,12 +25,12 @@ import com.opensymphony.xwork2.ActionContext;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.metamodel.Formatter;
-import io.vertigo.dynamo.ngdomain.ModelManager;
-import io.vertigo.dynamox.domain.formatter.FormatterDefault;
+import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault;
+import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.structure.metamodel.DataType;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.metamodel.Formatter;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 

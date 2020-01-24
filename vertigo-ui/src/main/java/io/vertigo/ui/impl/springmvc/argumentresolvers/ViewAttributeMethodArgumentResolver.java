@@ -37,8 +37,8 @@ import com.google.gson.GsonBuilder;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.ui.core.UiSelectedFacetValues;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;

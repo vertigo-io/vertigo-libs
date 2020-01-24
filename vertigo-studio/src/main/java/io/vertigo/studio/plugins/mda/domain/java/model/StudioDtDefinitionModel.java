@@ -24,19 +24,19 @@ import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
-import io.vertigo.dynamo.domain.metamodel.DtStereotype;
+import io.vertigo.datamodel.structure.metamodel.DtStereotype;
+import io.vertigo.datamodel.structure.model.DtMasterData;
+import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.structure.model.DtStaticMasterData;
+import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.Fragment;
+import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.dynamo.domain.metamodel.StudioDtField;
 import io.vertigo.dynamo.domain.metamodel.StudioDtField.FieldType;
 import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationSimpleDefinition;
-import io.vertigo.dynamo.domain.model.DtMasterData;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.DtStaticMasterData;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.Fragment;
-import io.vertigo.dynamo.domain.model.KeyConcept;
 
 /**
  * Model used by FreeMarker.

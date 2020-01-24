@@ -20,7 +20,7 @@ package io.vertigo.account.authorization.metamodel;
 
 import java.io.Serializable;
 
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.datamodel.structure.model.DtObject;
 
 /**
  * the name of the security operation.

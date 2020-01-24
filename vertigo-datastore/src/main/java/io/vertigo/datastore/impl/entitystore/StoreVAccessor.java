@@ -19,9 +19,9 @@
 package io.vertigo.datastore.impl.entitystore;
 
 import io.vertigo.core.node.Home;
+import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.VAccessor;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.VAccessor;
 
 /**
  * This class is a way to access an entity defined by a relationship.

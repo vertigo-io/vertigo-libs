@@ -26,8 +26,8 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.datafactory.DataFactoryFeatures;
 import io.vertigo.datafactory.collections.data.SmartCarSearchClient;
 import io.vertigo.datafactory.collections.data.TestCollectionsSmartTypes;
-import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
+import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
 
 /**
  * @author  npiedeloup

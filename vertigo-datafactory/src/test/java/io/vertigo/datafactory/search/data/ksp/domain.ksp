@@ -1,11 +1,11 @@
 package io.vertigo.dynamo.search.data.domain
 
 create Formatter FmtDefault{
-	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
+	className : "io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault"
 }
 
 create Constraint CkMaxLength250 {
-    className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
+    className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength"
     args :"250"
 }
 

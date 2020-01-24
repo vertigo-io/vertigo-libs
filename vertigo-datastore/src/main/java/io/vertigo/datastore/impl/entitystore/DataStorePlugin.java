@@ -19,14 +19,14 @@
 package io.vertigo.datastore.impl.entitystore;
 
 import io.vertigo.core.node.component.Plugin;
-import io.vertigo.dynamo.criteria.Criteria;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.criteria.Criteria;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.metamodel.association.DtListURIForNNAssociation;
+import io.vertigo.datamodel.structure.metamodel.association.DtListURIForSimpleAssociation;
+import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.structure.model.DtListState;
+import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.UID;
 
 /**
  * The DataStorePlugin class defines the logical way used to read and write data in a data store.

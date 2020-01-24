@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import io.vertigo.account.account.Account;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.impl.notification.NotificationEvent;
 import io.vertigo.social.impl.notification.NotificationPlugin;
 import io.vertigo.social.services.notification.Notification;

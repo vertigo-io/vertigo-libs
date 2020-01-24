@@ -33,8 +33,8 @@ import io.vertigo.account.plugins.account.store.loader.AccountLoader;
 import io.vertigo.account.plugins.account.store.loader.GroupLoader;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.core.util.ListBuilder;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.dynamo.domain.model.UID;
 
 public final class MockIdentities implements Component, AccountLoader, GroupLoader {
 

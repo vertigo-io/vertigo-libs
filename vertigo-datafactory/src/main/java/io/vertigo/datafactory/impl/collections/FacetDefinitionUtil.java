@@ -24,9 +24,9 @@ import io.vertigo.datafactory.search.metamodel.annotation.Facet;
 import io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation;
 import io.vertigo.datafactory.search.metamodel.annotation.IndexCopyTo;
 import io.vertigo.datafactory.search.metamodel.annotation.SearchIndexAnnotation;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.metamodel.DtField;
 
 public class FacetDefinitionUtil {
 

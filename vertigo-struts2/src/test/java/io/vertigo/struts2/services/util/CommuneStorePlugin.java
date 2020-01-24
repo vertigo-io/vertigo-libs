@@ -24,14 +24,14 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datamodel.criteria.Criteria;
+import io.vertigo.datamodel.criteria.Criterions;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.structure.model.DtListState;
+import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.plugins.entitystore.AbstractStaticEntityStorePlugin;
-import io.vertigo.dynamo.criteria.Criteria;
-import io.vertigo.dynamo.criteria.Criterions;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.struts2.data.domain.DtDefinitions;
 import io.vertigo.struts2.data.domain.reference.Commune;
 

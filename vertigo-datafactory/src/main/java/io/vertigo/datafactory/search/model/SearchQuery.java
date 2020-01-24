@@ -26,7 +26,7 @@ import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
-import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.datamodel.structure.metamodel.DtField;
 
 /**
  * Critères de recherche.

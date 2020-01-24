@@ -5,14 +5,14 @@ import javax.inject.Inject;
 import java.util.Optional;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.core.node.Home;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
+import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.task.TaskManager;
+import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.model.Task;
+import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
-import io.vertigo.dynamo.ngdomain.ModelManager;
-import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.execution.ONode;
 
 /**
@@ -48,7 +48,7 @@ public final class ONodeDAO extends DAO<ONode, java.lang.Long> implements StoreS
 	 * @param nodeName String
 	 * @return Option de ONode dtoONode
 	*/
-	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetNodeByName",
 			request = "select " + 
@@ -56,8 +56,8 @@ public final class ONodeDAO extends DAO<ONode, java.lang.Long> implements StoreS
  "        	from o_node nod" + 
  "        	where nod.NAME = #nodeName#",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtONode")
-	public Optional<io.vertigo.orchestra.domain.execution.ONode> getNodeByName(@io.vertigo.dynamo.task.proxy.TaskInput(name = "nodeName", domain = "STyOLibelle") final String nodeName) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtONode")
+	public Optional<io.vertigo.orchestra.domain.execution.ONode> getNodeByName(@io.vertigo.datamodel.task.proxy.TaskInput(name = "nodeName", domain = "STyOLibelle") final String nodeName) {
 		final Task task = createTaskBuilder("TkGetNodeByName")
 				.addValue("nodeName", nodeName)
 				.build();

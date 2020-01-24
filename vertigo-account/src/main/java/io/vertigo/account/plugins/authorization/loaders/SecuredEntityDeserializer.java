@@ -45,8 +45,8 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.metamodel.DtField;
 
 /**
  * Deserializer json

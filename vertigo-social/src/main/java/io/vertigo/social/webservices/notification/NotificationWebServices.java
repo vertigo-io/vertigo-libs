@@ -30,7 +30,7 @@ import io.vertigo.account.authentication.AuthenticationManager;
 import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.util.MapBuilder;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.services.notification.Notification;
 import io.vertigo.social.services.notification.NotificationServices;
 import io.vertigo.vega.webservice.WebServices;

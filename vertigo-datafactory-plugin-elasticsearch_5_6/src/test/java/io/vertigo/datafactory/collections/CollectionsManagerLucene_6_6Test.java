@@ -25,8 +25,8 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datafactory.DataFactoryFeatures;
 import io.vertigo.datafactory.collections.data.TestCollectionsSmartTypes;
-import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
+import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
 
 /**
  * @author npiedeloup

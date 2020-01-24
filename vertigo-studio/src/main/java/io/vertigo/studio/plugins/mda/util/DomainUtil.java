@@ -27,13 +27,13 @@ import java.util.Map;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Home;
+import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.dynamo.domain.metamodel.StudioDtField;
 import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationSimpleDefinition;
-import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.task.metamodel.StudioTaskAttribute;
 
 /**

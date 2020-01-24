@@ -32,9 +32,9 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
-import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 public final class MyNodeConfig {
 	private static final String REDIS_HOST = "redis-pic.part.klee.lan.net";

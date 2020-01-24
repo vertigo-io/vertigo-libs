@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datamodel.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.metamodel.StudioTaskDefinition;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 
 /**
  * Génération des classes/méthodes des taches de type DAO.

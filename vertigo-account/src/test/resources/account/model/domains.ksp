@@ -4,7 +4,7 @@ package io.vertigo.account.security.model
 /********************************* Formatters *****************************************************/
 /**************************************************************************************************/
 create Formatter FmtDefault{
-	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
+	className : "io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault"
 }
 
 /**************************************************************************************************/
@@ -12,11 +12,11 @@ create Formatter FmtDefault{
 /**************************************************************************************************/
 
 create Constraint CkMaxLength10 {
-	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
+	className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength"
 	args :"10"
 }
 create Constraint CkMaxLength100 {
-	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
+	className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength"
 	args :"100"
 }
 /**************************************************************************************************/

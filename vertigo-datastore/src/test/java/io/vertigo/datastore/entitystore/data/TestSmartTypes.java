@@ -5,11 +5,11 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 import io.vertigo.core.lang.DataStream;
-import io.vertigo.dynamo.ngdomain.annotations.Constraint;
-import io.vertigo.dynamo.ngdomain.annotations.FormatterDefault;
-import io.vertigo.dynamo.ngdomain.annotations.SmartTypeDefinition;
-import io.vertigo.dynamo.ngdomain.annotations.SmartTypeProperty;
-import io.vertigo.dynamox.domain.constraint.ConstraintStringLength;
+import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength;
+import io.vertigo.datamodel.smarttype.annotations.Constraint;
+import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
+import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
 
 public enum TestSmartTypes {
 

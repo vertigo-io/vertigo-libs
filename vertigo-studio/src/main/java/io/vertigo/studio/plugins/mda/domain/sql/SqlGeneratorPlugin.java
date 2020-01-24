@@ -36,7 +36,7 @@ import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.domain.metamodel.DtStereotype;
+import io.vertigo.datamodel.structure.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationSimpleDefinition;

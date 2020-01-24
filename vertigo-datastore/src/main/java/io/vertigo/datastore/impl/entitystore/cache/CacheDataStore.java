@@ -26,24 +26,24 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.datamodel.criteria.Criteria;
+import io.vertigo.datamodel.criteria.Criterions;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.metamodel.association.DtListURIForNNAssociation;
+import io.vertigo.datamodel.structure.metamodel.association.DtListURIForSimpleAssociation;
+import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.structure.model.DtListState;
+import io.vertigo.datamodel.structure.model.DtListURI;
+import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
+import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.structure.util.VCollectors;
 import io.vertigo.datastore.entitystore.MasterDataConfig;
 import io.vertigo.datastore.entitystore.StoreEvent;
 import io.vertigo.datastore.impl.entitystore.DataStoreConfigImpl;
 import io.vertigo.datastore.impl.entitystore.DataStorePlugin;
 import io.vertigo.datastore.impl.entitystore.logical.LogicalDataStoreConfig;
-import io.vertigo.dynamo.criteria.Criteria;
-import io.vertigo.dynamo.criteria.Criterions;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForNNAssociation;
-import io.vertigo.dynamo.domain.metamodel.association.DtListURIForSimpleAssociation;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.model.DtListURI;
-import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.domain.util.VCollectors;
 
 /**
  * Gestion des données mises en cache.

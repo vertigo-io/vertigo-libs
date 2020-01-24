@@ -34,7 +34,7 @@ import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.account.authorization.metamodel.Role;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionReference;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 
 /**
  * This class list User's Authorizations.

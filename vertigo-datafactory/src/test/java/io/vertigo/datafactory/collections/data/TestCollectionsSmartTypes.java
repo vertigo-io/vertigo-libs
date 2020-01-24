@@ -1,7 +1,7 @@
 package io.vertigo.datafactory.collections.data;
 
-import io.vertigo.dynamo.ngdomain.annotations.FormatterDefault;
-import io.vertigo.dynamo.ngdomain.annotations.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
+import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
 
 public enum TestCollectionsSmartTypes {
 

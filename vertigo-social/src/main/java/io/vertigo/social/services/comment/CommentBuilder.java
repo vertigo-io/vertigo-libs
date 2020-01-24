@@ -27,7 +27,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.util.DateUtil;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.model.UID;
 
 /**
  * @author pchretien

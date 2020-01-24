@@ -37,9 +37,9 @@ import io.vertigo.datafactory.search.metamodel.SearchChunk;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.metamodel.SearchLoader;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.structure.model.KeyConcept;
+import io.vertigo.datamodel.structure.model.UID;
 
 final class ReindexTask implements Runnable {
 	private static final Logger LOGGER = LogManager.getLogger(ReindexTask.class);

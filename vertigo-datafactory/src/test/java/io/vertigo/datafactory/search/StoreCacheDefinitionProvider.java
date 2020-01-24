@@ -26,8 +26,8 @@ import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datafactory.search.data.domain.Item;
+import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datastore.impl.entitystore.cache.CacheData;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
 
 /**
  * Initialisation des listes de références.

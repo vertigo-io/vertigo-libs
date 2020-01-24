@@ -28,8 +28,8 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datastore.DataStoreFeatures;
-import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.orchestra.boot.DataBaseInitializer;
 import io.vertigo.orchestra.services.execution.LocalExecutionProcessInitializer;
 import io.vertigo.orchestra.util.monitoring.MonitoringServices;

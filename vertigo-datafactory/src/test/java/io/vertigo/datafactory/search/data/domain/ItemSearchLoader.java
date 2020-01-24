@@ -30,8 +30,8 @@ import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.metamodel.SearchChunk;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.dynamox.search.AbstractSearchLoader;
 
 public final class ItemSearchLoader extends AbstractSearchLoader<Long, Item, Item> {

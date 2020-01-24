@@ -26,8 +26,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
-import io.vertigo.dynamo.domain.metamodel.DataType;
 
 /**
  * Représente l'identifiant ABSOLU d'une ressource de type FileInfo.

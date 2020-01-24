@@ -30,8 +30,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.dynamo.domain.model.UID;
 
 /**
  * Specific account store, use to redirect loading to a applicative component.

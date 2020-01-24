@@ -24,8 +24,8 @@ import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
 import com.lowagie.text.pdf.PdfWriter;
 
+import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
-import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.quarto.plugins.export.pdfrtf.AbstractExporterIText;
 
 /**

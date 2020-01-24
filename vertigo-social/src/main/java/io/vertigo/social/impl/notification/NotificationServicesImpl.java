@@ -26,7 +26,7 @@ import javax.inject.Inject;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.services.notification.Notification;
 import io.vertigo.social.services.notification.NotificationServices;
 

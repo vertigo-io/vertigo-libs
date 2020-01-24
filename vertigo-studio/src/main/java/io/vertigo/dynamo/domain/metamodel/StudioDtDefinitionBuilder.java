@@ -30,6 +30,10 @@ import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datamodel.structure.metamodel.ComputedExpression;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.metamodel.DtStereotype;
 
 /**
  * This class must be used to build a DtDefinition.

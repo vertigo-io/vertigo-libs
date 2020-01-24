@@ -43,8 +43,8 @@ import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
+import io.vertigo.datamodel.criteria.CriteriaCtx;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlCriteriaEncoder;
-import io.vertigo.dynamo.criteria.CriteriaCtx;
 
 /**
  * @author pchretien

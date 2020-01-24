@@ -47,9 +47,9 @@ import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
-import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
+import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.structure.model.DtList;
 
 /**
  * @author  npiedeloup

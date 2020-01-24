@@ -20,8 +20,8 @@ package io.vertigo.studio.plugins.mda.task.test;
 
 import java.util.List;
 
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.structure.model.DtObject;
 
 /**
  *

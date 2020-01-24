@@ -28,6 +28,9 @@ import io.vertigo.core.util.ListBuilder;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
+import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.TestUtil;
 import io.vertigo.datastore.entitystore.sql.SqlUtil;
@@ -41,9 +44,6 @@ import io.vertigo.datastore.filestore.util.FileUtil;
 import io.vertigo.datastore.impl.filestore.FileStorePlugin;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 import io.vertigo.datastore.plugins.filestore.fs.FsFullFileStorePlugin;
-import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
-import io.vertigo.dynamo.task.TaskManager;
 
 public class TempFileStoreManagerTest extends AbstractTestCaseJU5 {
 

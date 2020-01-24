@@ -31,7 +31,7 @@ import com.google.gson.JsonSerializer;
 import io.vertigo.datafactory.collections.model.Facet;
 import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
-import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.datamodel.structure.model.DtList;
 
 /**
  * JsonSerializer of FacetedQueryResult.

@@ -19,6 +19,9 @@ import io.vertigo.core.util.ListBuilder;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
+import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.sql.SqlUtil;
 import io.vertigo.datastore.filestore.AbstractFileStoreManagerTest;
@@ -29,9 +32,6 @@ import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoStd;
 import io.vertigo.datastore.filestore.data.domain.fileinfo.FileInfoTemp;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 import io.vertigo.datastore.plugins.filestore.db.DbFileStorePlugin;
-import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
-import io.vertigo.dynamo.task.TaskManager;
 
 public class DbFileStoreManagerTest extends AbstractFileStoreManagerTest {
 

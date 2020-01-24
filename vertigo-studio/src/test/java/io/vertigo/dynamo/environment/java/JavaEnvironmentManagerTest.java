@@ -27,12 +27,12 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.domain.metamodel.DataType;
+import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault;
+import io.vertigo.datamodel.structure.metamodel.DataType;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
 import io.vertigo.dynamo.plugins.environment.StudioModelDefinitionProvider;
-import io.vertigo.dynamox.domain.formatter.FormatterDefault;
 
 /**
  * Test de l'implémentation standard.

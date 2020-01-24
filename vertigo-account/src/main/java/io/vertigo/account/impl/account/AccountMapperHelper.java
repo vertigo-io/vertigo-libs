@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 
 /**
  * @author npiedeloup

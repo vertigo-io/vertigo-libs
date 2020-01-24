@@ -31,9 +31,9 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.core.util.ListBuilder;
-import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.model.Task;
+import io.vertigo.datamodel.task.TaskManager;
+import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.model.Task;
 import io.vertigo.dynamox.task.TaskEngineProc;
 
 /**

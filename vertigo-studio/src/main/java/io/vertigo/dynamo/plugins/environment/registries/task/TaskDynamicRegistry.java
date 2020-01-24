@@ -23,6 +23,7 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.datamodel.task.model.TaskEngine;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.plugins.environment.KspProperty;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
@@ -31,7 +32,6 @@ import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslGrammar;
 import io.vertigo.dynamo.task.metamodel.StudioTaskDefinition;
 import io.vertigo.dynamo.task.metamodel.StudioTaskDefinitionBuilder;
-import io.vertigo.dynamo.task.model.TaskEngine;
 
 /**
  * @author pchretien

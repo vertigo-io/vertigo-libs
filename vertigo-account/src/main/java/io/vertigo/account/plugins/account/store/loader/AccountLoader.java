@@ -21,8 +21,8 @@ package io.vertigo.account.plugins.account.store.loader;
 import java.util.Optional;
 
 import io.vertigo.account.account.Account;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.dynamo.domain.model.UID;
 
 /**
  * @author npiedeloup

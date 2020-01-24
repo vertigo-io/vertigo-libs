@@ -20,10 +20,10 @@ package io.vertigo.struts2.impl.formatter;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.Formatter;
-import io.vertigo.dynamo.domain.metamodel.FormatterException;
-import io.vertigo.dynamox.domain.formatter.Resources;
+import io.vertigo.datamodel.impl.smarttype.formatter.Resources;
+import io.vertigo.datamodel.structure.metamodel.DataType;
+import io.vertigo.datamodel.structure.metamodel.Formatter;
+import io.vertigo.datamodel.structure.metamodel.FormatterException;
 
 /**
  * Gestion des formattages des identifiants.

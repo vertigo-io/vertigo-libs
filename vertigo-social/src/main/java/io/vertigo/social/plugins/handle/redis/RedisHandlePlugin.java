@@ -11,7 +11,7 @@ import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.MapBuilder;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.impl.handle.HandlePlugin;
 import io.vertigo.social.services.handle.Handle;
 import redis.clients.jedis.Jedis;

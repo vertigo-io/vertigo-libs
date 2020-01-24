@@ -3,8 +3,8 @@ package io.vertigo.quarto.services.export.data;
 import java.time.Instant;
 import java.time.LocalDate;
 
-import io.vertigo.dynamo.ngdomain.annotations.FormatterDefault;
-import io.vertigo.dynamo.ngdomain.annotations.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
+import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
 
 public enum TestExporterSmartTypes {
 

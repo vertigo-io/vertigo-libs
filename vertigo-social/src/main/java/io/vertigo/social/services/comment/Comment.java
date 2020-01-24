@@ -23,7 +23,7 @@ import java.util.UUID;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.model.UID;
 
 /**
  * @author pchretien

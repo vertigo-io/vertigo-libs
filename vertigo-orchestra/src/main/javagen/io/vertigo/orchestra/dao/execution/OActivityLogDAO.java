@@ -5,14 +5,14 @@ import javax.inject.Inject;
 import java.util.Optional;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.core.node.Home;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
+import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.task.TaskManager;
+import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.model.Task;
+import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
-import io.vertigo.dynamo.ngdomain.ModelManager;
-import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.orchestra.domain.execution.OActivityLog;
 
 /**
@@ -48,15 +48,15 @@ public final class OActivityLogDAO extends DAO<OActivityLog, java.lang.Long> imp
 	 * @param aceId Long
 	 * @return Option de OActivityLog dtcOActivityLog
 	*/
-	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetActivityLogByAceId",
 			request = "select acl.*" + 
  "        	from o_activity_log acl" + 
  "        	where acl.ACE_ID = #aceId#",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOActivityLog")
-	public Optional<io.vertigo.orchestra.domain.execution.OActivityLog> getActivityLogByAceId(@io.vertigo.dynamo.task.proxy.TaskInput(name = "aceId", domain = "STyOIdentifiant") final Long aceId) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtOActivityLog")
+	public Optional<io.vertigo.orchestra.domain.execution.OActivityLog> getActivityLogByAceId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "aceId", domain = "STyOIdentifiant") final Long aceId) {
 		final Task task = createTaskBuilder("TkGetActivityLogByAceId")
 				.addValue("aceId", aceId)
 				.build();
@@ -70,7 +70,7 @@ public final class OActivityLogDAO extends DAO<OActivityLog, java.lang.Long> imp
 	 * @param preId Long
 	 * @return Option de OActivityLog dtActivityLog
 	*/
-	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetLogByPreId",
 			request = "select " + 
@@ -80,8 +80,8 @@ public final class OActivityLogDAO extends DAO<OActivityLog, java.lang.Long> imp
  "			where ace.PRE_ID = #preId#" + 
  "			order by ace.end_time desc limit 1",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOActivityLog")
-	public Optional<io.vertigo.orchestra.domain.execution.OActivityLog> getLogByPreId(@io.vertigo.dynamo.task.proxy.TaskInput(name = "preId", domain = "STyOIdentifiant") final Long preId) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtOActivityLog")
+	public Optional<io.vertigo.orchestra.domain.execution.OActivityLog> getLogByPreId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "preId", domain = "STyOIdentifiant") final Long preId) {
 		final Task task = createTaskBuilder("TkGetLogByPreId")
 				.addValue("preId", preId)
 				.build();

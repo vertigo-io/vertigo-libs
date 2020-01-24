@@ -33,8 +33,8 @@ import com.lowagie.text.rtf.field.RtfPageNumber;
 import com.lowagie.text.rtf.field.RtfTotalPageNumber;
 import com.lowagie.text.rtf.headerfooter.RtfHeaderFooter;
 
+import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
-import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.quarto.plugins.export.pdfrtf.AbstractExporterIText;
 
 /**

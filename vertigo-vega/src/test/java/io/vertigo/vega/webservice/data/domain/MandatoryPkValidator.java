@@ -21,10 +21,10 @@ package io.vertigo.vega.webservice.data.domain;
 import java.util.Set;
 
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.vega.webservice.validation.AbstractDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectErrors;
 

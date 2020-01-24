@@ -22,8 +22,8 @@ import java.util.Locale;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.metamodel.DtProperty;
-import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
+import io.vertigo.datamodel.structure.metamodel.DtProperty;
 
 public final class IndexType {
 	private static final String INDEX_TYPE_ERROR_MSG = "indexType ({0}) should respect this usage : indexType : "

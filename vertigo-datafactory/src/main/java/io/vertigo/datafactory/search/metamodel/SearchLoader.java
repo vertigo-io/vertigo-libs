@@ -22,8 +22,8 @@ import java.util.List;
 
 import io.vertigo.core.node.component.Component;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.structure.model.KeyConcept;
 
 /**
  * Specific SearchIndex loader.

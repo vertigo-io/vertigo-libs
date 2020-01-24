@@ -26,8 +26,8 @@ import javax.inject.Inject;
 import io.vertigo.account.account.Account;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.DateUtil;
-import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.model.KeyConcept;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.services.comment.Comment;
 import io.vertigo.social.services.comment.CommentServices;
 

@@ -33,17 +33,17 @@ import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
+import io.vertigo.datamodel.criteria.Criterions;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.model.DtListState;
+import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.entitystore.data.domain.car.Car;
 import io.vertigo.datastore.entitystore.data.domain.car.CarDataBase;
 import io.vertigo.datastore.entitystore.data.domain.famille.Famille.CarFields;
 import io.vertigo.datastore.entitystore.sql.SqlDataStoreNodeConfig;
 import io.vertigo.datastore.entitystore.sql.SqlUtil;
-import io.vertigo.dynamo.criteria.Criterions;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.task.TaskManager;
 
 /**
  *

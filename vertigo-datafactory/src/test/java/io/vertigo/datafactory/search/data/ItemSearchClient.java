@@ -18,8 +18,8 @@ import io.vertigo.datafactory.search.data.domain.Item;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datafactory.search.model.SearchQueryBuilder;
-import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.model.DtListState;
+import io.vertigo.datamodel.structure.model.UID;
 
 @io.vertigo.datafactory.search.metamodel.annotation.SearchIndexAnnotation(name = "IdxItem", dtIndex = "DtItem", keyConcept = "DtItem", loaderId = "ItemSearchLoader")
 @io.vertigo.datafactory.search.metamodel.annotation.IndexCopyTo(field = "manufacturer", to = { "allText" })

@@ -25,7 +25,7 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.datamodel.structure.metamodel.DtField;
 
 /**
  * Secured data dimension.

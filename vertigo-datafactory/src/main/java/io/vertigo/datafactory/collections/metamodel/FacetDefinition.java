@@ -26,7 +26,7 @@ import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datafactory.collections.model.FacetValue;
-import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.datamodel.structure.metamodel.DtField;
 
 /**
  * Définition de Facette.

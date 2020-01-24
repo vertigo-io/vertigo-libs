@@ -31,6 +31,8 @@ import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.node.definition.DefinitionUtil;
+import io.vertigo.datamodel.structure.metamodel.DtFieldName;
+import io.vertigo.datamodel.structure.metamodel.DtStereotype;
 
 /**
  * The DtDefinition class defines the definition of data.

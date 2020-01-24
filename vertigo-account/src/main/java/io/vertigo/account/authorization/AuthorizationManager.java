@@ -23,8 +23,8 @@ import java.util.List;
 import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.account.authorization.metamodel.OperationName;
 import io.vertigo.core.node.component.Manager;
-import io.vertigo.dynamo.criteria.Criteria;
-import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.datamodel.criteria.Criteria;
+import io.vertigo.datamodel.structure.model.KeyConcept;
 
 /**
  * Authorizations manager.

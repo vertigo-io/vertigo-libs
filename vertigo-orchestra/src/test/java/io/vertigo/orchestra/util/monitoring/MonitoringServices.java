@@ -21,7 +21,7 @@ package io.vertigo.orchestra.util.monitoring;
 import java.util.Optional;
 
 import io.vertigo.core.node.component.Component;
-import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.orchestra.domain.execution.OActivityExecution;
 import io.vertigo.orchestra.domain.execution.OActivityLog;
 import io.vertigo.orchestra.domain.execution.OActivityWorkspace;

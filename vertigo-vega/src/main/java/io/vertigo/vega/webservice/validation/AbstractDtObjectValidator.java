@@ -22,9 +22,9 @@ import java.util.Date;
 import java.util.Set;
 
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 /**
  * Objet de validation d'un DtObject.

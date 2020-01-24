@@ -18,10 +18,10 @@
  */
 package io.vertigo.quarto.services.publisher.data.domain;
 
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.JsonMapper;
-import io.vertigo.dynamo.ngdomain.annotations.Mapper;
+import io.vertigo.datamodel.smarttype.annotations.Mapper;
+import io.vertigo.datamodel.structure.metamodel.DataType;
+import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.structure.util.JsonMapper;
 
 /**
  * Attention cette classe est générée automatiquement !
@@ -32,9 +32,9 @@ public final class Ville implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyString", label = "Nom")
+	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyString", label = "Nom")
 	private String nom;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyString", label = "Code postal")
+	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyString", label = "Code postal")
 	private String codePostal;
 
 	/**

@@ -24,16 +24,16 @@ import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.util.ListBuilder;
+import io.vertigo.datamodel.structure.stereotype.Association;
+import io.vertigo.datamodel.structure.stereotype.AssociationNN;
+import io.vertigo.datamodel.structure.stereotype.ForeignKey;
+import io.vertigo.datamodel.structure.util.AssociationUtil;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.dynamo.domain.metamodel.StudioDtField;
 import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationNNDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationSimpleDefinition;
-import io.vertigo.dynamo.domain.stereotype.Association;
-import io.vertigo.dynamo.domain.stereotype.AssociationNN;
-import io.vertigo.dynamo.domain.stereotype.ForeignKey;
-import io.vertigo.dynamo.domain.util.AssociationUtil;
 
 /**
  * Gestion centralisée des annotations sur les objets générés.
@@ -79,7 +79,7 @@ class AnnotationWriter {
 		if (dtDefinition.getFragment().isPresent()) {
 			// Générations des annotations Dynamo
 			final StringBuilder buffer = new StringBuilder()
-					.append('@').append(io.vertigo.dynamo.domain.stereotype.Fragment.class.getCanonicalName());
+					.append('@').append(io.vertigo.datamodel.structure.stereotype.Fragment.class.getCanonicalName());
 			if (dtDefinition.getFragment().isPresent()) {
 				buffer.append('(')
 						.append("fragmentOf = \"").append(dtDefinition.getFragment().get().getName()).append('\"')
@@ -90,7 +90,7 @@ class AnnotationWriter {
 		}
 		if (dtDefinition.isPersistent() && !EntityStoreManager.MAIN_DATA_SPACE_NAME.equals(dtDefinition.getDataSpace())) {
 			final String dataSpace = new StringBuilder()
-					.append('@').append(io.vertigo.dynamo.domain.stereotype.DataSpace.class.getCanonicalName())
+					.append('@').append(io.vertigo.datamodel.structure.stereotype.DataSpace.class.getCanonicalName())
 					.append("(\"").append(dtDefinition.getDataSpace()).append("\")")
 					.toString();
 			lines.add(dataSpace);

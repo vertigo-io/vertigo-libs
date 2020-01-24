@@ -9,13 +9,13 @@ import io.vertigo.datastore.impl.entitystore.EnumStoreVAccessor;
 import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
 </#if>
 <#if dtDefinition.entity || dtDefinition.fragment>
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.model.UID;
 </#if>
 <#if dtDefinition.containsAccessor()>
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 </#if>	
-import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 /**
  * This class is automatically generated.
@@ -25,7 +25,7 @@ import io.vertigo.dynamo.domain.util.DtObjectUtil;
 <#list annotations(dtDefinition.dtDefinition) as annotation>
 ${annotation}
 </#list>
-@io.vertigo.dynamo.ngdomain.annotations.Mapper(clazz = io.vertigo.dynamo.domain.util.JsonMapper.class, dataType = io.vertigo.dynamo.domain.metamodel.DataType.String)
+@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.datamodel.structure.metamodel.DataType.String)
 public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.stereotypeInterfaceName} {
 	private static final long serialVersionUID = 1L;
 
@@ -111,10 +111,10 @@ public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.ste
 	${annotation}
 	</#list>
 	<#if dtField.isSortField()>
-	@io.vertigo.dynamo.domain.stereotype.SortField
+	@io.vertigo.datamodel.structure.stereotype.SortField
 	</#if>
 	<#if dtField.isDisplayField()>
-	@io.vertigo.dynamo.domain.stereotype.DisplayField
+	@io.vertigo.datamodel.structure.stereotype.DisplayField
 	</#if>
 	public ${dtField.javaType} get${dtField.name?cap_first}() {
 		return ${dtField.name};

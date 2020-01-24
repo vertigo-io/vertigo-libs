@@ -25,9 +25,9 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.local.LocalResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
+import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
-import io.vertigo.dynamo.DataModelFeatures;
 
 public final class SqlTestConfigurator {
 	public static NodeConfig config() {

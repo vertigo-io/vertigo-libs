@@ -39,16 +39,16 @@ import io.vertigo.datafactory.DataFactoryFeatures;
 import io.vertigo.datafactory.collections.data.DtDefinitions;
 import io.vertigo.datafactory.collections.data.TestCollectionsSmartTypes;
 import io.vertigo.datafactory.collections.data.domain.SmartItem;
+import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.criteria.Criterions;
+import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.structure.util.VCollectors;
 import io.vertigo.datastore.DataStoreFeatures;
-import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.criteria.Criterions;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.domain.util.VCollectors;
-import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 /**
  * @author pchretien

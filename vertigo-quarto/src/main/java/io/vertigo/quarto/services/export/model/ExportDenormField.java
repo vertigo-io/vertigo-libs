@@ -19,8 +19,8 @@
 package io.vertigo.quarto.services.export.model;
 
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.model.DtList;
 
 /**
  * Définition d'une colonne de type dénormalisation à exporter. On précise la

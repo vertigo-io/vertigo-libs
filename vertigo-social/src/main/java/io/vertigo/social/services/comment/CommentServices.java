@@ -22,8 +22,8 @@ import java.util.List;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.core.node.component.Component;
-import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.model.KeyConcept;
+import io.vertigo.datamodel.structure.model.UID;
 
 /**
  * @author pchretien

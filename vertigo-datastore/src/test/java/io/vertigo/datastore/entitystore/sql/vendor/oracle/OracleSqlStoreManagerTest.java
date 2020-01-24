@@ -28,13 +28,13 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.database.impl.sql.vendor.oracle.Oracle11DataBase;
+import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
+import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.model.Task;
+import io.vertigo.datamodel.task.model.TaskResult;
 import io.vertigo.datastore.entitystore.data.domain.car.Car;
 import io.vertigo.datastore.entitystore.sql.AbstractSqlStoreManagerTest;
 import io.vertigo.datastore.entitystore.sql.SqlDataStoreNodeConfig;
-import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskResult;
 import io.vertigo.dynamox.task.TaskEngineProc;
 
 /**

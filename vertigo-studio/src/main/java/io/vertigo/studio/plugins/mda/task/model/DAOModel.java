@@ -23,7 +23,7 @@ import java.util.Collection;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.domain.metamodel.DtStereotype;
+import io.vertigo.datamodel.structure.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.dynamo.task.metamodel.StudioTaskDefinition;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;

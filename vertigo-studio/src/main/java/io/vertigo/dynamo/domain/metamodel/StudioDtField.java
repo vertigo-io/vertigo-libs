@@ -26,7 +26,8 @@ import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.datamodel.structure.metamodel.ComputedExpression;
+import io.vertigo.datamodel.structure.model.DtList;
 
 /**
  * This class defines the structure of a field.

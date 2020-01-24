@@ -25,7 +25,7 @@ import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.JsonExclude;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.datamodel.structure.model.DtObject;
 
 /**
  * Class d'enregistrement des messages.

@@ -23,10 +23,10 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datastore.entitystore.MasterDataConfig;
 import io.vertigo.datastore.entitystore.MasterDataDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 
 /**
  * Configuration des listes de référence.

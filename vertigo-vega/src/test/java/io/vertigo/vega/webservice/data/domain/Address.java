@@ -19,13 +19,13 @@
 package io.vertigo.vega.webservice.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.datamodel.smarttype.annotations.Mapper;
+import io.vertigo.datamodel.structure.metamodel.DataType;
+import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.structure.util.JsonMapper;
 import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.domain.util.JsonMapper;
-import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
 @Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class Address implements Entity {
@@ -44,7 +44,7 @@ public final class Address implements Entity {
 	@Field(domain = "STyTexte50", label = "country")
 	private String country;
 
-	@io.vertigo.dynamo.domain.stereotype.Association(
+	@io.vertigo.datamodel.structure.stereotype.Association(
 			name = "AConAdr",
 			fkFieldName = "adrId",
 			primaryDtDefinitionName = "DtAddress",

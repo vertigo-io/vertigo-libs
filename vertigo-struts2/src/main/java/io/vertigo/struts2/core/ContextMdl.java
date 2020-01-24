@@ -19,10 +19,10 @@
 package io.vertigo.struts2.core;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
+import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 /**
  * Liste de reference des couples (clé, object) enregistrés.

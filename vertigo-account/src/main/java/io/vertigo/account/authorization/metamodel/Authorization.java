@@ -30,7 +30,7 @@ import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 
 /**
  * Une authorization est un droit sur une fonction de l'application.

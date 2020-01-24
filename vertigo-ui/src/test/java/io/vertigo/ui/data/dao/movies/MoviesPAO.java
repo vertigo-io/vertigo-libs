@@ -5,11 +5,11 @@ import javax.inject.Inject;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.core.node.Home;
+import io.vertigo.datamodel.task.TaskManager;
+import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.model.Task;
+import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datastore.impl.dao.StoreServices;
-import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
 
 /**
  * This class is automatically generated.
@@ -45,7 +45,7 @@ public final class MoviesPAO implements StoreServices {
 	 * @param movieIds List de Long
 	 * @return DtList de MovieIndex dtcIndex
 	*/
-	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			name = "TkLoadMovieIndex",
 			request = "select MOV_ID," +
 					"						 TITLE," +
@@ -61,8 +61,8 @@ public final class MoviesPAO implements StoreServices {
 					"				from MOVIE mov" +
 					"				where MOV_ID in (#movieIds.rownum#);",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtMovieIndex")
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.ui.data.domain.movies.MovieIndex> loadMovieIndex(@io.vertigo.dynamo.task.proxy.TaskInput(name = "movieIds", domain = "STyId") final java.util.List<Long> movieIds) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtMovieIndex")
+	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.ui.data.domain.movies.MovieIndex> loadMovieIndex(@io.vertigo.datamodel.task.proxy.TaskInput(name = "movieIds", domain = "STyId") final java.util.List<Long> movieIds) {
 		final Task task = createTaskBuilder("TkLoadMovieIndex")
 				.addValue("movieIds", movieIds)
 				.build();

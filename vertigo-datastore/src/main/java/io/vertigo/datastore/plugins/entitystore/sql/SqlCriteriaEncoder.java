@@ -8,12 +8,12 @@ import java.util.stream.Stream;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.database.sql.vendor.SqlDialect;
-import io.vertigo.dynamo.criteria.CriteriaCtx;
-import io.vertigo.dynamo.criteria.CriteriaEncoder;
-import io.vertigo.dynamo.criteria.CriteriaLogicalOperator;
-import io.vertigo.dynamo.criteria.CriterionLimit;
-import io.vertigo.dynamo.criteria.CriterionOperator;
-import io.vertigo.dynamo.domain.metamodel.DtFieldName;
+import io.vertigo.datamodel.criteria.CriteriaCtx;
+import io.vertigo.datamodel.criteria.CriteriaEncoder;
+import io.vertigo.datamodel.criteria.CriteriaLogicalOperator;
+import io.vertigo.datamodel.criteria.CriterionLimit;
+import io.vertigo.datamodel.criteria.CriterionOperator;
+import io.vertigo.datamodel.structure.metamodel.DtFieldName;
 
 public class SqlCriteriaEncoder implements CriteriaEncoder {
 

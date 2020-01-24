@@ -28,7 +28,7 @@ import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.node.Home;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.impl.notification.NotificationPlugin;
 import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;

@@ -28,6 +28,12 @@ import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.datamodel.structure.metamodel.ConstraintException;
+import io.vertigo.datamodel.structure.metamodel.DataType;
+import io.vertigo.datamodel.structure.metamodel.FormatterException;
+import io.vertigo.datamodel.structure.metamodel.Properties;
+import io.vertigo.datamodel.structure.metamodel.PropertiesBuilder;
+import io.vertigo.datamodel.structure.metamodel.Property;
 
 /**
  * A domain exists to enrich the primitive datatypes, giving them super powers.

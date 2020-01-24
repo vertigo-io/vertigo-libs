@@ -35,7 +35,7 @@ import io.vertigo.datafactory.search.data.domain.ItemDataBase;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.datamodel.structure.model.DtObject;
 
 /**
  * @author  npiedeloup

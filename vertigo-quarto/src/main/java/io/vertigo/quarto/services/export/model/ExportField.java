@@ -20,7 +20,7 @@ package io.vertigo.quarto.services.export.model;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.dynamo.domain.metamodel.DtField;
+import io.vertigo.datamodel.structure.metamodel.DtField;
 
 /**
  * Définition d'une colonne à exporter.

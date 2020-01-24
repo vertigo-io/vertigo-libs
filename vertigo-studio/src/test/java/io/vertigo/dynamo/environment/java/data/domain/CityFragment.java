@@ -19,16 +19,16 @@
 package io.vertigo.dynamo.environment.java.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.dynamo.domain.model.Fragment;
-import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.datamodel.structure.model.Fragment;
+import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 /**
  * Attention cette classe est générée automatiquement !
  * Objet de données City
  */
-@io.vertigo.dynamo.domain.stereotype.Fragment(fragmentOf = "DtCity")
+@io.vertigo.datamodel.structure.stereotype.Fragment(fragmentOf = "DtCity")
 public final class CityFragment implements Fragment<City> {
 
 	/** SerialVersionUID. */

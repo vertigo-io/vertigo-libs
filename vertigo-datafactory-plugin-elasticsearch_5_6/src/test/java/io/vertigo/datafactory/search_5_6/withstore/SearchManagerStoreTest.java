@@ -51,12 +51,12 @@ import io.vertigo.datafactory.search.data.domain.Item;
 import io.vertigo.datafactory.search.data.domain.ItemDataBase;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchQuery;
+import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.structure.model.DtListState;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
-import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 /**
  * Test de l'implémentation standard couplé au store.

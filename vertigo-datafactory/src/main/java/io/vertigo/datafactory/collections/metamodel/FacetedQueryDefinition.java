@@ -27,7 +27,7 @@ import java.util.Map;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 
 /**
  * Définition des requêtes d'accès à l'index de recherche.

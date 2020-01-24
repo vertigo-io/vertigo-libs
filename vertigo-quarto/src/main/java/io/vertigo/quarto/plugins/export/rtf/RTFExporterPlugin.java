@@ -25,8 +25,8 @@ import javax.inject.Inject;
 import com.lowagie.text.DocumentException;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
-import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.quarto.impl.services.export.ExporterPlugin;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportFormat;

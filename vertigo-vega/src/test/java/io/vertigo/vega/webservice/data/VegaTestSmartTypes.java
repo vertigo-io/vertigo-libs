@@ -3,11 +3,11 @@ package io.vertigo.vega.webservice.data;
 import java.time.Instant;
 import java.time.LocalDate;
 
-import io.vertigo.dynamo.ngdomain.annotations.Constraint;
-import io.vertigo.dynamo.ngdomain.annotations.FormatterDefault;
-import io.vertigo.dynamo.ngdomain.annotations.SmartTypeDefinition;
-import io.vertigo.dynamox.domain.constraint.ConstraintRegex;
-import io.vertigo.dynamox.domain.constraint.ConstraintStringLength;
+import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintRegex;
+import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength;
+import io.vertigo.datamodel.smarttype.annotations.Constraint;
+import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
+import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
 
 public enum VegaTestSmartTypes {
 

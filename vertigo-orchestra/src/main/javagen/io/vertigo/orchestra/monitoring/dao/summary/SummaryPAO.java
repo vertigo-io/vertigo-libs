@@ -3,12 +3,12 @@ package io.vertigo.orchestra.monitoring.dao.summary;
 import javax.inject.Inject;
 
 import io.vertigo.core.node.Home;
+import io.vertigo.datamodel.task.TaskManager;
+import io.vertigo.datamodel.task.metamodel.TaskDefinition;
+import io.vertigo.datamodel.task.model.Task;
+import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Generated;
-import io.vertigo.dynamo.task.TaskManager;
-import io.vertigo.dynamo.task.metamodel.TaskDefinition;
-import io.vertigo.dynamo.task.model.Task;
-import io.vertigo.dynamo.task.model.TaskBuilder;
 import io.vertigo.datastore.impl.dao.StoreServices;
 
 /**
@@ -47,7 +47,7 @@ public final class SummaryPAO implements StoreServices {
 	 * @param status String
 	 * @return DtList de OExecutionSummary dtcExecutionSummary
 	*/
-	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetExecutionSummariesByDate",
 			request = "select 	* from (select " + 
@@ -123,8 +123,8 @@ public final class SummaryPAO implements StoreServices {
  "			<%}%>" + 
  "			;",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOExecutionSummary")
-	public io.vertigo.dynamo.domain.model.DtList<io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary> getExecutionSummariesByDate(@io.vertigo.dynamo.task.proxy.TaskInput(name = "dateMin", domain = "STyOTimestamp") final java.time.Instant dateMin, @io.vertigo.dynamo.task.proxy.TaskInput(name = "dateMax", domain = "STyOTimestamp") final java.time.Instant dateMax, @io.vertigo.dynamo.task.proxy.TaskInput(name = "status", domain = "STyOCodeIdentifiant") final String status) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtOExecutionSummary")
+	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary> getExecutionSummariesByDate(@io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMin", domain = "STyOTimestamp") final java.time.Instant dateMin, @io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMax", domain = "STyOTimestamp") final java.time.Instant dateMax, @io.vertigo.datamodel.task.proxy.TaskInput(name = "status", domain = "STyOCodeIdentifiant") final String status) {
 		final Task task = createTaskBuilder("TkGetExecutionSummariesByDate")
 				.addValue("dateMin", dateMin)
 				.addValue("dateMax", dateMax)
@@ -142,7 +142,7 @@ public final class SummaryPAO implements StoreServices {
 	 * @param name String
 	 * @return OExecutionSummary dtExecutionSummary
 	*/
-	@io.vertigo.dynamo.task.proxy.TaskAnnotation(
+	@io.vertigo.datamodel.task.proxy.TaskAnnotation(
 			dataSpace = "orchestra",
 			name = "TkGetExecutionSummaryByDateAndName",
 			request = "select " + 
@@ -211,8 +211,8 @@ public final class SummaryPAO implements StoreServices {
  "						group by planif.name" + 
  "					) lat_planif on true;",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.dynamo.task.proxy.TaskOutput(domain = "STyDtOExecutionSummary")
-	public io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary getExecutionSummaryByDateAndName(@io.vertigo.dynamo.task.proxy.TaskInput(name = "dateMin", domain = "STyOTimestamp") final java.time.Instant dateMin, @io.vertigo.dynamo.task.proxy.TaskInput(name = "dateMax", domain = "STyOTimestamp") final java.time.Instant dateMax, @io.vertigo.dynamo.task.proxy.TaskInput(name = "name", domain = "STyOLibelle") final String name) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtOExecutionSummary")
+	public io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary getExecutionSummaryByDateAndName(@io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMin", domain = "STyOTimestamp") final java.time.Instant dateMin, @io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMax", domain = "STyOTimestamp") final java.time.Instant dateMax, @io.vertigo.datamodel.task.proxy.TaskInput(name = "name", domain = "STyOLibelle") final String name) {
 		final Task task = createTaskBuilder("TkGetExecutionSummaryByDateAndName")
 				.addValue("dateMin", dateMin)
 				.addValue("dateMax", dateMax)

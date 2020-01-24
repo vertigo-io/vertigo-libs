@@ -23,8 +23,8 @@ import java.util.List;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.util.StringUtil;
+import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.dynamo.domain.metamodel.Domain;
-import io.vertigo.dynamo.domain.model.DtList;
 
 /**
  * Attribut d'une tache.

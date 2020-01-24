@@ -45,8 +45,8 @@ import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
 import io.vertigo.database.timeseries.TimeFilter;
 import io.vertigo.datafactory.DataFactoryFeatures;
+import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datastore.DataStoreFeatures;
-import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamox.metric.domain.DomainMetricsProvider;
 import io.vertigo.vega.VegaFeatures;
 

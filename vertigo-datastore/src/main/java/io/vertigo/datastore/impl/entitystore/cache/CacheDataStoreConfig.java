@@ -23,7 +23,7 @@ import java.util.Map;
 
 import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 
 /**
  * Configuration des données mises en cache.

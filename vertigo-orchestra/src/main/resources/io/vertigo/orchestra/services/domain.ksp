@@ -83,16 +83,16 @@ create Domain DoOText {
 /**************************************************************************************************/
 
 create Formatter FmtOOuiNon {
-      className :"io.vertigo.dynamox.domain.formatter.FormatterBoolean"
+      className :"io.vertigo.datamodel.impl.smarttype.formatter.FormatterBoolean"
       args : "Oui;Non"
 },
 
 create Formatter FmtODefault {
-	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
+	className : "io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault"
 },
 
 create Formatter FmtODateHeure {
-     className :"io.vertigo.dynamox.domain.formatter.FormatterDate"
+     className :"io.vertigo.datamodel.impl.smarttype.formatter.FormatterDate"
      args : "dd/MM/yyyy HH:mm"
 },
 
@@ -101,22 +101,22 @@ create Formatter FmtODateHeure {
 /**************************************************************************************************/
 
 create Constraint CkOMaxLength20 {
-	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength",
+	className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength",
 	args :"20",
 },
 
 create Constraint CkOMaxLength100 {
-	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength",
+	className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength",
 	args :"100",
 },
 
 create Constraint CkOMaxLength200 {
-	className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength",
+	className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength",
 	args :"200",
 },
 
 create Constraint CkOCode {
-	className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex",
+	className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintRegex",
 	args : "([0-9A-Z_-]+)*$",
 	msg : "La liste des identifiants n'est pas valide",
 },

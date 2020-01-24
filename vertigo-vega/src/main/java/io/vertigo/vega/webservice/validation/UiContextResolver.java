@@ -21,7 +21,7 @@ package io.vertigo.vega.webservice.validation;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.datamodel.structure.model.DtObject;
 
 /**
 * @author npiedeloup

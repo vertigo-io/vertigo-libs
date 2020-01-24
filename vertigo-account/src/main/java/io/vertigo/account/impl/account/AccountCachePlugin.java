@@ -24,8 +24,8 @@ import java.util.Set;
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.core.node.component.Plugin;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.dynamo.domain.model.UID;
 
 /**
  * @author pchretien

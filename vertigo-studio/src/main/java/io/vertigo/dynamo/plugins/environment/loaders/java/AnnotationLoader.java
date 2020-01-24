@@ -49,17 +49,17 @@ import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.Selector;
 import io.vertigo.core.util.Selector.ClassConditions;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datamodel.structure.metamodel.DtStereotype;
+import io.vertigo.datamodel.structure.metamodel.DtField.FieldType;
+import io.vertigo.datamodel.structure.model.DtMasterData;
+import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.structure.model.DtStaticMasterData;
+import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.Fragment;
+import io.vertigo.datamodel.structure.model.KeyConcept;
+import io.vertigo.datamodel.structure.stereotype.DataSpace;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.dynamo.domain.metamodel.DtDefinition;
-import io.vertigo.dynamo.domain.metamodel.DtField.FieldType;
-import io.vertigo.dynamo.domain.metamodel.DtStereotype;
-import io.vertigo.dynamo.domain.model.DtMasterData;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.model.DtStaticMasterData;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.Fragment;
-import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.stereotype.DataSpace;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionBuilder;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinitionRepository;
@@ -119,8 +119,8 @@ public final class AnnotationLoader implements Loader {
 		if (Fragment.class.isAssignableFrom(clazz)) {
 			//Fragments
 			for (final Annotation annotation : clazz.getAnnotations()) {
-				if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Fragment) {
-					fragmentOf = ((io.vertigo.dynamo.domain.stereotype.Fragment) annotation).fragmentOf();
+				if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Fragment) {
+					fragmentOf = ((io.vertigo.datamodel.structure.stereotype.Fragment) annotation).fragmentOf();
 					break;
 				}
 			}
@@ -227,8 +227,8 @@ public final class AnnotationLoader implements Loader {
 	}
 
 	private static void parseAssociationDefinition(final DslDefinitionRepository dynamicModelRepository, final Annotation annotation, final String packageName) {
-		if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Association) {
-			final io.vertigo.dynamo.domain.stereotype.Association association = (io.vertigo.dynamo.domain.stereotype.Association) annotation;
+		if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Association) {
+			final io.vertigo.datamodel.structure.stereotype.Association association = (io.vertigo.datamodel.structure.stereotype.Association) annotation;
 			//============================================================
 			//Attention pamc inverse dans oom les déclarations des objets !!
 
@@ -257,8 +257,8 @@ public final class AnnotationLoader implements Loader {
 				//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 				dynamicModelRepository.addDefinition(associationDefinition);
 			}
-		} else if (annotation instanceof io.vertigo.dynamo.domain.stereotype.AssociationNN) {
-			final io.vertigo.dynamo.domain.stereotype.AssociationNN association = (io.vertigo.dynamo.domain.stereotype.AssociationNN) annotation;
+		} else if (annotation instanceof io.vertigo.datamodel.structure.stereotype.AssociationNN) {
+			final io.vertigo.datamodel.structure.stereotype.AssociationNN association = (io.vertigo.datamodel.structure.stereotype.AssociationNN) annotation;
 			//============================================================
 
 			//Attention pamc inverse dans oom les déclarations des objets !!
@@ -291,20 +291,20 @@ public final class AnnotationLoader implements Loader {
 
 	private static void parseFieldAnnotations(final Field field, final DslDefinitionBuilder dtDefinition) {
 		for (final Annotation annotation : field.getAnnotations()) {
-			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Field) {
+			if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Field) {
 				//Le nom est automatiquement déduit du nom du champ
 				final String fieldName = createFieldName(field);
-				parseAnnotation(fieldName, dtDefinition, io.vertigo.dynamo.domain.stereotype.Field.class.cast(annotation));
+				parseAnnotation(fieldName, dtDefinition, io.vertigo.datamodel.structure.stereotype.Field.class.cast(annotation));
 			}
 		}
 	}
 
 	private static void parseMethodAnnotations(final Method method, final DslDefinitionBuilder dtDefinition) {
 		for (final Annotation annotation : method.getAnnotations()) {
-			if (annotation instanceof io.vertigo.dynamo.domain.stereotype.Field) {
+			if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Field) {
 				//Le nom est automatiquement déduit du nom de la méthode
 				final String fieldName = createFieldName(method);
-				parseAnnotation(fieldName, dtDefinition, io.vertigo.dynamo.domain.stereotype.Field.class.cast(annotation));
+				parseAnnotation(fieldName, dtDefinition, io.vertigo.datamodel.structure.stereotype.Field.class.cast(annotation));
 			}
 		}
 	}
@@ -312,7 +312,7 @@ public final class AnnotationLoader implements Loader {
 	/*
 	 * Centralisation du parsing des annotations liées à un champ.
 	 */
-	private static void parseAnnotation(final String fieldName, final DslDefinitionBuilder dtDefinition, final io.vertigo.dynamo.domain.stereotype.Field field) {
+	private static void parseAnnotation(final String fieldName, final DslDefinitionBuilder dtDefinition, final io.vertigo.datamodel.structure.stereotype.Field field) {
 		//Si on trouve un domaine on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
 

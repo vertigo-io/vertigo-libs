@@ -24,6 +24,9 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.datamodel.structure.metamodel.DataType;
+import io.vertigo.datamodel.structure.metamodel.Formatter;
+import io.vertigo.datamodel.structure.metamodel.FormatterException;
 
 /**
  * Par nature un formatter est une ressource partagée et non modifiable.

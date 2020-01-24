@@ -19,15 +19,15 @@
 package io.vertigo.account.data.model;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.datamodel.smarttype.annotations.Mapper;
+import io.vertigo.datamodel.structure.metamodel.DataType;
+import io.vertigo.datamodel.structure.model.KeyConcept;
+import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.structure.stereotype.ForeignKey;
+import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.structure.util.JsonMapper;
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.domain.stereotype.ForeignKey;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.domain.util.JsonMapper;
-import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
 /**
  * User.
@@ -41,7 +41,7 @@ public final class User implements KeyConcept {
 	private String fullName;
 	private String email;
 
-	@io.vertigo.dynamo.domain.stereotype.Association(name = "AGrpUsr", fkFieldName = "grpId", primaryDtDefinitionName = "DtUserGroup", primaryIsNavigable = true, primaryRole = "Group", primaryLabel = "Group", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DtUser", foreignIsNavigable = false, foreignRole = "User", foreignLabel = "User", foreignMultiplicity = "0..*")
+	@io.vertigo.datamodel.structure.stereotype.Association(name = "AGrpUsr", fkFieldName = "grpId", primaryDtDefinitionName = "DtUserGroup", primaryIsNavigable = true, primaryRole = "Group", primaryLabel = "Group", primaryMultiplicity = "0..1", foreignDtDefinitionName = "DtUser", foreignIsNavigable = false, foreignRole = "User", foreignLabel = "User", foreignMultiplicity = "0..*")
 	private final StoreVAccessor<UserGroup> grpIdAccessor = new StoreVAccessor<>(UserGroup.class, "Group");
 
 	/** {@inheritDoc} */

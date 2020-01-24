@@ -23,11 +23,11 @@ import java.util.Optional;
 
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.core.node.component.Component;
+import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.task.proxy.TaskInput;
+import io.vertigo.datamodel.task.proxy.TaskOutput;
+import io.vertigo.datamodel.task.proxy.TaskProxyAnnotation;
 import io.vertigo.datastore.task.data.domain.SuperHero;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.task.proxy.TaskProxyAnnotation;
-import io.vertigo.dynamo.task.proxy.TaskInput;
-import io.vertigo.dynamo.task.proxy.TaskOutput;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 

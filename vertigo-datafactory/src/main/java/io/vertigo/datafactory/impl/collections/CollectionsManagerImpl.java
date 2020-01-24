@@ -44,11 +44,11 @@ import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.impl.collections.facet.model.FacetFactory;
 import io.vertigo.datafactory.impl.collections.functions.filter.DtListPatternFilter;
-import io.vertigo.dynamo.domain.metamodel.DtField;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtObject;
-import io.vertigo.dynamo.domain.util.VCollectors;
-import io.vertigo.dynamo.ngdomain.ModelManager;
+import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.datamodel.structure.util.VCollectors;
 
 /**
  * Implémentation du gestionnaire de la manipulation des collections.

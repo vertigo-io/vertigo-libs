@@ -27,13 +27,13 @@ import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
+import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.StoreCacheDefinitionProvider;
 import io.vertigo.datastore.entitystore.data.DtDefinitions;
 import io.vertigo.datastore.entitystore.data.TestSmartTypes;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
-import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 /**
  * NodeConfig builder for SqlStore tests. (Params for db specificities)

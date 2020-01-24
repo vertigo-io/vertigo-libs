@@ -33,7 +33,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.component.aop.Aspect;
 import io.vertigo.core.node.component.aop.AspectMethodInvocation;
-import io.vertigo.dynamo.domain.model.KeyConcept;
+import io.vertigo.datamodel.structure.model.KeyConcept;
 
 /**
  * Aspect pour la gestion des Secured au niveau de la couche service.

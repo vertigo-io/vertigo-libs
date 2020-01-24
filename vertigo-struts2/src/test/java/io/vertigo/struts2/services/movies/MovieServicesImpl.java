@@ -21,10 +21,10 @@ package io.vertigo.struts2.services.movies;
 import javax.inject.Inject;
 
 import io.vertigo.commons.transaction.Transactional;
-import io.vertigo.dynamo.criteria.Criterions;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListState;
-import io.vertigo.dynamo.domain.util.VCollectors;
+import io.vertigo.datamodel.criteria.Criterions;
+import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.structure.model.DtListState;
+import io.vertigo.datamodel.structure.util.VCollectors;
 import io.vertigo.struts2.data.dao.movies.MovieDAO;
 import io.vertigo.struts2.data.domain.movies.Movie;
 import io.vertigo.struts2.data.domain.movies.MovieDisplay;

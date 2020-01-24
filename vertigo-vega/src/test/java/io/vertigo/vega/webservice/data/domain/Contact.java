@@ -24,14 +24,14 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.datamodel.smarttype.annotations.Mapper;
+import io.vertigo.datamodel.structure.metamodel.DataType;
+import io.vertigo.datamodel.structure.model.KeyConcept;
+import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.structure.stereotype.ForeignKey;
+import io.vertigo.datamodel.structure.util.JsonMapper;
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.model.KeyConcept;
-import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.domain.stereotype.ForeignKey;
-import io.vertigo.dynamo.domain.util.JsonMapper;
-import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
 @Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class Contact implements KeyConcept {
@@ -53,7 +53,7 @@ public final class Contact implements KeyConcept {
 
 	private List<String> tels;
 
-	@io.vertigo.dynamo.domain.stereotype.Association(
+	@io.vertigo.datamodel.structure.stereotype.Association(
 			name = "AConAdr",
 			fkFieldName = "adrId",
 			primaryDtDefinitionName = "DtAddress",

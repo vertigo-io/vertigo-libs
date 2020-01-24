@@ -25,6 +25,8 @@ import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.datamodel.structure.metamodel.Constraint;
+import io.vertigo.datamodel.structure.metamodel.Property;
 
 /**
  * Par nature une contrainte est une ressource partagée et non modifiable.

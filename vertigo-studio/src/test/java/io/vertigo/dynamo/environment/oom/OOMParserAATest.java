@@ -27,8 +27,8 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationNNDefinition;
-import io.vertigo.dynamo.domain.metamodel.association.AssociationSimpleDefinition;
+import io.vertigo.datamodel.structure.metamodel.association.AssociationNNDefinition;
+import io.vertigo.datamodel.structure.metamodel.association.AssociationSimpleDefinition;
 import io.vertigo.dynamo.plugins.environment.StudioModelDefinitionProvider;
 
 /**

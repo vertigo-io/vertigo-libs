@@ -32,8 +32,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.domain.model.DtListState;
+import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.core.ViewContextKey;
 import io.vertigo.ui.data.domain.DtDefinitions.MovieDisplayFields;

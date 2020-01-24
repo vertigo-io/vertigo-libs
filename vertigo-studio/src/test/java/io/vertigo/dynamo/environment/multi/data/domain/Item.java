@@ -19,10 +19,10 @@
 package io.vertigo.dynamo.environment.multi.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 public final class Item implements Entity {
 	/** SerialVersionUID. */

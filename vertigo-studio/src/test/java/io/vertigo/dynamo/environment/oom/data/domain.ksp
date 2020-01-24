@@ -133,33 +133,33 @@ create Domain DoPassword {
 
 
 create Formatter FmtBooleanDefault {
-    className : "io.vertigo.dynamox.domain.formatter.FormatterBoolean"
+    className : "io.vertigo.datamodel.impl.smarttype.formatter.FormatterBoolean"
     args : "MyTrue;MyFalse"
 }
 
 create Formatter FmtDefault {
-    className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
+    className : "io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault"
 }
 
 
 create Formatter FmtUppercase {
-    className : "io.vertigo.dynamox.domain.formatter.FormatterString"
+    className : "io.vertigo.datamodel.impl.smarttype.formatter.FormatterString"
     args : "UPPER"
 }
 
 create Formatter FmtDate {
-     className :"io.vertigo.dynamox.domain.formatter.FormatterDate"
+     className :"io.vertigo.datamodel.impl.smarttype.formatter.FormatterDate"
      args : "dd/MM/yyyy"
 }
 
 create Formatter FmtOuiNon {
-      className :"io.vertigo.dynamox.domain.formatter.FormatterBoolean"
+      className :"io.vertigo.datamodel.impl.smarttype.formatter.FormatterBoolean"
       /*args : "<img src:'../static/images/icon/select_on.gif' alt:'oui'/>;<img src:'../static/images/icon/select_off.gif' alt:'non'/>";*/
       args : "Oui;Non"
 }
 
 create Formatter FmtActifInactif {
-      className :"io.vertigo.dynamox.domain.formatter.FormatterBoolean"
+      className :"io.vertigo.datamodel.impl.smarttype.formatter.FormatterBoolean"
       /*args : "<img src:'../static/images/icon/select_on.gif' alt:'actif'/>;<img src:'../static/images/icon/select_off.gif' alt:'inactif'/>";*/
       args : "Actif;Inactif"
 }
@@ -170,7 +170,7 @@ Formatage avec deux chiffres maximum après la virgule.
 Pas d'affichage de 0 après virgule si pas nécessaire (ex: 100 sera affiché sous la forme 100 et 100.00)
 */
 create Formatter FmtTaux {
-     className :"io.vertigo.dynamox.domain.formatter.FormatterNumber"
+     className :"io.vertigo.datamodel.impl.smarttype.formatter.FormatterNumber"
      args : "#.##"
 }
 
@@ -181,48 +181,48 @@ create Formatter FmtTaux {
 /**************************************************************************************************/
 
 create Constraint CkUrn {
-    className : "io.vertigo.dynamox.domain.constraint.ConstraintRegex"
+    className : "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintRegex"
     args : "[A-Z0-9_]{3,40}([$][A-Z0-9_]{3,40})?"
 }
 
 
 create Constraint CkMaxLength30 {
-    className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
+    className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength"
     args :"30"
 }
 
 create Constraint CkMaxLength40 {
-    className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
+    className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength"
     args :"40"
 }
 
 create Constraint CkMaxLength50 {
-    className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
+    className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength"
     args :"50"
 }
 
 create Constraint CkMaxLength100 {
-    className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
+    className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength"
     args :"100"
 }
 
 create Constraint CkMaxLength250 {
-    className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
+    className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength"
     args :"250"
 }
 
 create Constraint CkMaxLength4000 {
-    className: "io.vertigo.dynamox.domain.constraint.ConstraintStringLength"
+    className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength"
     args :"4000"
 }
 
 create Constraint CkMinValue0 {
-    className: "io.vertigo.dynamox.domain.constraint.ConstraintNumberMinimum"
+    className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintNumberMinimum"
     args :"0"
 }
 
 create Constraint CkMaxValue100 {
-    className: "io.vertigo.dynamox.domain.constraint.ConstraintNumberMaximum"
+    className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintNumberMaximum"
     args :"100"
 }
 
@@ -230,7 +230,7 @@ create Constraint CkMaxValue100 {
 Prise en compte uniquement des codes postaux français.
 */
 create Constraint CkCodePostal {
-    className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex"
+    className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintRegex"
     args : "^[0-9]{5}$"
 }
 
@@ -238,12 +238,12 @@ create Constraint CkCodePostal {
 Prise en compte uniquement du format de durée HH:MM.
 */ 
 create Constraint CkDuree {
-    className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex"
+    className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintRegex"
     args : "^([0-1][0-9]|[2][0-3]):([0-5][0-9])$"
 }
 
 create Constraint CkEmail {
-    className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex"
+    className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintRegex"
     args : "^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*(\.[a-zA-Z0-9-]{2,3})+$"
     msg : "L'email n'est pas valide"
 }
@@ -253,6 +253,6 @@ Prise en compte des numéros de téléphones français sans le préfixe internat
 Prise en compte des numéros de téléphones fixes (numéros commençant par 01, 02, 03, 04, 05, 08 ou 09) et protables (numéros commençant par 06 ou 07).
 */
 create Constraint CkTelephone {
-    className: "io.vertigo.dynamox.domain.constraint.ConstraintRegex"
+    className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintRegex"
     args : "^0[0-9]{9}$"
 }

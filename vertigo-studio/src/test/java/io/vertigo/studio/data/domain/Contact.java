@@ -24,9 +24,9 @@ import java.util.Date;
 import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.stereotype.Field;
+import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.structure.stereotype.Field;
 
 public final class Contact implements Entity {
 	private static final long serialVersionUID = 2074906343392206381L;

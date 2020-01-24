@@ -19,7 +19,7 @@
 package io.vertigo.studio.plugins.mda.domain.java.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.metamodel.DtStereotype;
+import io.vertigo.datamodel.structure.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationDefinition;
 import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationNode;
 import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationSimpleDefinition;

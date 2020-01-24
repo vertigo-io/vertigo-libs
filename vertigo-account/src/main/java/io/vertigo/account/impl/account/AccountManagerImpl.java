@@ -30,9 +30,9 @@ import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.dynamo.domain.model.UID;
 
 /**
  * @author pchretien, npiedeloup

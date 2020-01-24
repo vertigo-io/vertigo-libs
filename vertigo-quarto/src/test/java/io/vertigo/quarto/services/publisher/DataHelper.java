@@ -18,7 +18,7 @@
  */
 package io.vertigo.quarto.services.publisher;
 
-import io.vertigo.dynamo.domain.model.DtList;
+import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.quarto.services.publisher.data.domain.Address;
 import io.vertigo.quarto.services.publisher.data.domain.Enquete;
 import io.vertigo.quarto.services.publisher.data.domain.Enqueteur;

@@ -23,7 +23,7 @@ import java.util.function.Predicate;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
+import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 
 @DefinitionPrefix("Md")
 public class MasterDataDefinition implements Definition {

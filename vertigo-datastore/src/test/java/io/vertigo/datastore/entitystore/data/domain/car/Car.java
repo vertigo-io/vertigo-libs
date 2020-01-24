@@ -20,18 +20,18 @@ package io.vertigo.datastore.entitystore.data.domain.car;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
+import io.vertigo.datamodel.smarttype.annotations.Mapper;
+import io.vertigo.datamodel.structure.metamodel.DataType;
+import io.vertigo.datamodel.structure.model.Entity;
+import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.structure.stereotype.ForeignKey;
+import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datamodel.structure.util.JsonMapper;
 import io.vertigo.datastore.entitystore.data.domain.famille.Famille;
 import io.vertigo.datastore.impl.entitystore.EnumStoreVAccessor;
 import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
-import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.model.Entity;
-import io.vertigo.dynamo.domain.model.UID;
-import io.vertigo.dynamo.domain.stereotype.Field;
-import io.vertigo.dynamo.domain.stereotype.ForeignKey;
-import io.vertigo.dynamo.domain.util.DtObjectUtil;
-import io.vertigo.dynamo.domain.util.JsonMapper;
-import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
 /**
  * This class is automatically generated.
@@ -51,7 +51,7 @@ public final class Car implements Entity {
 	private Integer price;
 	private java.math.BigDecimal consommation;
 
-	@io.vertigo.dynamo.domain.stereotype.Association(
+	@io.vertigo.datamodel.structure.stereotype.Association(
 			name = "AMtyCar",
 			fkFieldName = "mtyCd",
 			primaryDtDefinitionName = "DtMotorType",
@@ -66,7 +66,7 @@ public final class Car implements Entity {
 			foreignMultiplicity = "0..*")
 	private final EnumStoreVAccessor<MotorType, MotorTypeEnum> mtyCdAccessor = new EnumStoreVAccessor<>(MotorType.class, "MotorType", MotorTypeEnum.class);
 
-	@io.vertigo.dynamo.domain.stereotype.Association(
+	@io.vertigo.datamodel.structure.stereotype.Association(
 			name = "AFamCarFamille",
 			fkFieldName = "famId",
 			primaryDtDefinitionName = "DtFamille",
@@ -81,7 +81,7 @@ public final class Car implements Entity {
 			foreignMultiplicity = "0..*")
 	private final StoreVAccessor<Famille> famIdAccessor = new StoreVAccessor<>(Famille.class, "Famille");
 
-	@io.vertigo.dynamo.domain.stereotype.AssociationNN(
+	@io.vertigo.datamodel.structure.stereotype.AssociationNN(
 			name = "AnnFamCarLocation",
 			tableName = "FAM_CAR_LOCATION",
 			dtDefinitionA = "DtFamille",
@@ -320,7 +320,7 @@ public final class Car implements Entity {
 	 * @return UID de l'association
 	 */
 	@Deprecated
-	public io.vertigo.dynamo.domain.model.UID<MotorType> getMotorTypeURI() {
+	public io.vertigo.datamodel.structure.model.UID<MotorType> getMotorTypeURI() {
 		return mtyCdAccessor.getUID();
 	}
 

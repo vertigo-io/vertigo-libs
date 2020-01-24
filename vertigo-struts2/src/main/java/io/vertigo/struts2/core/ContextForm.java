@@ -21,7 +21,7 @@ package io.vertigo.struts2.core;
 import java.util.Collections;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectValidator;

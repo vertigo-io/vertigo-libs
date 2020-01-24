@@ -1,7 +1,7 @@
 package io.vertigo.dynamock.domain
 
 create Formatter FmtDefault{
-	className : "io.vertigo.dynamox.domain.formatter.FormatterDefault"
+	className : "io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault"
 }
 
 create Domain DoIdentifiant{

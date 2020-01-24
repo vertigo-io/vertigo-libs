@@ -22,7 +22,7 @@ import java.util.Set;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
-import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.datamodel.structure.model.UID;
 
 /**
  * @author npiedeloup
