@@ -22,8 +22,8 @@ import java.util.Locale;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtProperty;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 final class IndexType {
 	private static final String INDEX_TYPE_ERROR_MSG = "indexType ({0}) should respect this usage : indexType : "
@@ -41,14 +41,14 @@ final class IndexType {
 	private final boolean indexSubKeyword;
 	private final boolean indexFieldData;
 
-	private IndexType(final String indexType, final Domain domain) {
-		Assertion.checkNotNull(domain);
+	private IndexType(final String indexType, final SmartTypeDefinition smartType) {
+		Assertion.checkNotNull(smartType);
 		//-----
-		checkIndexType(indexType, domain);
+		checkIndexType(indexType, smartType);
 		if (indexType == null) {
 			//si pas d'indexType on précise juste le dataType pour rester triable
 			indexAnalyzer = Optional.empty();
-			indexDataType = obtainDefaultIndexDataType(domain);
+			indexDataType = obtainDefaultIndexDataType(smartType);
 			indexStored = true;
 			indexSubKeyword = false;
 			indexFieldData = false;
@@ -59,7 +59,7 @@ final class IndexType {
 			indexAnalyzer = Optional.ofNullable(!indexTypeArray[0].isEmpty() ? indexTypeArray[0] : null); //le premier est toujours l'analyzer (ou le normalizer)
 			//les suivants sont optionnels et soit indexDataType, soit le indexStored, soit le indexKeyword
 			if (indexTypeArray.length == 1) {
-				indexDataType = obtainDefaultIndexDataType(domain);
+				indexDataType = obtainDefaultIndexDataType(smartType);
 				indexStored = true;
 				indexSubKeyword = false;
 				indexFieldData = false;
@@ -86,7 +86,7 @@ final class IndexType {
 					}
 				}
 				//valeurs par défaut
-				indexDataType = parsedIndexDataType != null ? parsedIndexDataType : obtainDefaultIndexDataType(domain);
+				indexDataType = parsedIndexDataType != null ? parsedIndexDataType : obtainDefaultIndexDataType(smartType);
 				indexStored = parsedIndexStored != null ? parsedIndexStored : true;
 				indexSubKeyword = parsedIndexSubKeyword != null ? parsedIndexSubKeyword : false;
 				indexFieldData = parsedIndexFieldData != null ? parsedIndexFieldData : false;
@@ -97,23 +97,24 @@ final class IndexType {
 	// par convention l'indexType du domain => l'analyzer de l'index
 	// L'indexType peut-être compléter pour préciser le type si différente de string avec le séparateur :
 
-	static IndexType readIndexType(final Domain domain) {
-		final String indexType = domain.getProperties().getValue(DtProperty.INDEX_TYPE);
+	static IndexType readIndexType(final SmartTypeDefinition smartType) {
+		final String indexType = smartType.getProperties().getValue(DtProperty.INDEX_TYPE);
 		if (indexType == null) {
-			return new IndexType(null, domain);
+			return new IndexType(null, smartType);
 		}
-		return new IndexType(indexType, domain);
+		return new IndexType(indexType, smartType);
 	}
 
-	private static String obtainDefaultIndexDataType(final Domain domain) {
+	private static String obtainDefaultIndexDataType(final SmartTypeDefinition smartType) {
 		// On peut préciser pour chaque domaine le type d'indexation
 		// Calcul automatique  par default.
-		switch (domain.getDataType()) {
+		Assertion.checkState(smartType.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartType + "].");
+		switch (smartType.getTargetDataType()) {
 			case Boolean:
 			case Double:
 			case Integer:
 			case Long:
-				return domain.getDataType().name().toLowerCase(Locale.ROOT);
+				return smartType.getTargetDataType().name().toLowerCase(Locale.ROOT);
 			case String:
 				return "text";
 			case LocalDate:
@@ -123,14 +124,15 @@ final class IndexType {
 				return "scaled_float";
 			case DataStream:
 			default:
-				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + domain + "].");
+				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartType + "].");
 		}
 	}
 
-	private static void checkIndexType(final String indexType, final Domain domain) {
+	private static void checkIndexType(final String indexType, final SmartTypeDefinition smartType) {
 		// On peut préciser pour chaque domaine le type d'indexation
 		// Calcul automatique  par default.
-		switch (domain.getDataType()) {
+		Assertion.checkState(smartType.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartType + "].");
+		switch (smartType.getTargetDataType()) {
 			case Boolean:
 			case LocalDate:
 			case Instant:
@@ -142,12 +144,12 @@ final class IndexType {
 				break;
 			case String:
 				if (indexType == null) {
-					throw new IllegalArgumentException("Précisez la valeur \"indexType\" dans le domain [" + domain + "].");
+					throw new IllegalArgumentException("Précisez la valeur \"indexType\" dans le domain [" + smartType + "].");
 				}
 				break;
 			case DataStream:
 			default:
-				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + domain + "].");
+				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartType + "].");
 		}
 	}
 

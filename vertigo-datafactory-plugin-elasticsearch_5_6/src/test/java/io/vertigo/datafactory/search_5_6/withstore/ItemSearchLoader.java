@@ -35,9 +35,9 @@ import io.vertigo.datafactory.search.data.domain.Item;
 import io.vertigo.datafactory.search.metamodel.SearchChunk;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.dynamo.task.TaskManager;
 import io.vertigo.dynamo.task.metamodel.TaskDefinition;
 import io.vertigo.dynamo.task.model.Task;
@@ -92,7 +92,7 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 	}
 
 	private TaskDefinition getTaskDefinition(final SearchChunk<Item> searchChunk) {
-		final Domain doItems = definitionSpace.resolve("DoDtItem", Domain.class);
+		final SmartTypeDefinition smartTypeItem = definitionSpace.resolve("STyDtItem", SmartTypeDefinition.class);
 		final String sql = searchChunk.getAllUIDs()
 				.stream()
 				.map(uri -> uri.getId().toString())
@@ -102,7 +102,7 @@ public final class ItemSearchLoader extends AbstractSqlSearchLoader<Long, Item, 
 				.withEngine(TaskEngineSelect.class)
 				.withRequest(sql)
 				.withPackageName(TaskEngineSelect.class.getPackage().getName())
-				.withOutAttribute("dtc", doItems, Cardinality.MANY)
+				.withOutAttribute("dtc", smartTypeItem, Cardinality.MANY)
 				.build();
 	}
 }

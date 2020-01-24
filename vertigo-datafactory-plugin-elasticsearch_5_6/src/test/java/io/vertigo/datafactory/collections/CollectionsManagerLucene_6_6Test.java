@@ -24,7 +24,9 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datafactory.DataFactoryFeatures;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.datafactory.collections.data.TestCollectionsSmartTypes;
+import io.vertigo.dynamo.DataModelFeatures;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 /**
  * @author npiedeloup
@@ -42,13 +44,14 @@ public class CollectionsManagerLucene_6_6Test extends CollectionsManagerTest {
 						.withCache()
 						.withMemoryCache()
 						.build())
+				.addModule(new DataModelFeatures().build())
 				.addModule(new DataFactoryFeatures()
 						.addPlugin(io.vertigo.datafactory.plugins.collections.lucene_6_6.LuceneIndexPlugin.class)
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datafactory/collections/data/execution.kpr")
-								.addDefinitionResource("classes", "io.vertigo.datafactory.collections.data.DtDefinitions")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestCollectionsSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", "io.vertigo.datafactory.collections.data.DtDefinitions")
 								.build())
 						.build())
 				.build();

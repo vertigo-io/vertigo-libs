@@ -33,6 +33,7 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.quarto.impl.services.export.util.ExportUtil;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportField;
@@ -62,18 +63,23 @@ final class CSVExporter {
 	private final Map<DtField, Map<Object, String>> referenceCache = new HashMap<>();
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
 	private final EntityStoreManager entityStoreManager;
+	private final ModelManager modelManager;
 
 	/**
 	 * Constructeur.
 	 *
 	 * @param codecManager Manager des codecs
 	 */
-	CSVExporter(final CodecManager codecManager, final EntityStoreManager entityStoreManager) {
+	CSVExporter(final CodecManager codecManager,
+			final EntityStoreManager entityStoreManager,
+			final ModelManager modelManager) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkNotNull(entityStoreManager);
+		Assertion.checkNotNull(modelManager);
 		//-----
 		csvEncoder = codecManager.getCsvEncoder();
 		this.entityStoreManager = entityStoreManager;
+		this.modelManager = modelManager;
 	}
 
 	/**
@@ -150,8 +156,8 @@ final class CSVExporter {
 		for (final ExportField exportColumn : parameters.getExportFields()) {
 			final DtField dtField = exportColumn.getDtField();
 			out.write(sep);
-			sValue = ExportUtil.getText(entityStoreManager, referenceCache, denormCache, dto, exportColumn);
-			if (dtField.getDomain().getDataType() == DataType.BigDecimal) {
+			sValue = ExportUtil.getText(entityStoreManager, modelManager, referenceCache, denormCache, dto, exportColumn);
+			if (dtField.getDomain().getScope().isPrimitive() && dtField.getDomain().getTargetDataType() == DataType.BigDecimal) {
 				out.write(encodeNumber(sValue));
 			} else {
 				out.write(encodeString(sValue));

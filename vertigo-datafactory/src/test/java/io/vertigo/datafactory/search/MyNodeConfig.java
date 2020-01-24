@@ -30,17 +30,18 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datafactory.DataFactoryFeatures;
-import io.vertigo.datafactory.impl.search.grammar.SearchDefinitionProvider;
+import io.vertigo.datafactory.search.data.ItemSearchClient;
+import io.vertigo.datafactory.search.data.TestSearchSmartTypes;
 import io.vertigo.datafactory.search.data.domain.ItemSearchLoader;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.dynamo.DataModelFeatures;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 public final class MyNodeConfig {
 
 	public static NodeConfig config(final boolean esHL, final boolean withDb) {
-		final DataFactoryFeatures dataFeatures = new DataFactoryFeatures();
-		dataFeatures.withSearch();
+		final DataFactoryFeatures dataFactoryFeatures = new DataFactoryFeatures();
+		dataFactoryFeatures.withSearch();
 
 		final ElasticSearchFeatures elasticSearchFeatures = new ElasticSearchFeatures()
 				.withEmbeddedServer(
@@ -49,7 +50,7 @@ public final class MyNodeConfig {
 			elasticSearchFeatures.withRestHL(
 					Param.of("servers.names", "localhost:9200"));
 
-			dataFeatures.withESHL(
+			dataFactoryFeatures.withESHL(
 					Param.of("config.file", "io/vertigo/datafactory/search/indexconfig/elasticsearch.yml"),
 					Param.of("envIndexPrefix", "TuTest"),
 					Param.of("rowsPerQuery", "50"));
@@ -58,7 +59,7 @@ public final class MyNodeConfig {
 					Param.of("servers.names", "localhost:9300"),
 					Param.of("cluster.name", EmbeddedElasticSearchServer.DEFAULT_VERTIGO_ES_CLUSTER_NAME));
 
-			dataFeatures.withESClient(
+			dataFactoryFeatures.withESClient(
 					Param.of("config.file", "io/vertigo/datafactory/search/indexconfig/elasticsearch.yml"),
 					Param.of("envIndexPrefix", "TuTest"),
 					Param.of("rowsPerQuery", "50"));
@@ -75,29 +76,28 @@ public final class MyNodeConfig {
 						.withJaninoScript()
 						.build());
 		if (withDb) {
-			nodeConfigBuilder
-					.addModule(new DatabaseFeatures()
-							.withSqlDataBase()
-							.withC3p0(
-									Param.of("dataBaseClass", H2DataBase.class.getName()),
-									Param.of("jdbcDriver", "org.h2.Driver"),
-									Param.of("jdbcUrl", "jdbc:h2:mem:database"))
-							.build())
-					.addModule(new DataModelFeatures().build())
-					.addModule(new DataStoreFeatures()
-							.withEntityStore()
-							.withSqlEntityStore()
-							.build());
+			nodeConfigBuilder.addModule(new DatabaseFeatures()
+					.withSqlDataBase()
+					.withC3p0(
+							Param.of("dataBaseClass", H2DataBase.class.getName()),
+							Param.of("jdbcDriver", "org.h2.Driver"),
+							Param.of("jdbcUrl", "jdbc:h2:mem:database"))
+					.build());
+		}
+		nodeConfigBuilder.addModule(new DataModelFeatures().build());
+		if (withDb) {
+			nodeConfigBuilder.addModule(new DataStoreFeatures()
+					.withEntityStore()
+					.withSqlEntityStore()
+					.build());
 		}
 		nodeConfigBuilder.addModule(elasticSearchFeatures.build())
-				.addModule(dataFeatures.build())
+				.addModule(dataFactoryFeatures.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datafactory/search/data/model_run.kpr")
-								.addDefinitionResource("classes", "io.vertigo.datafactory.search.data.DtDefinitions")
-								.build())
-						.addDefinitionProvider(DefinitionProviderConfig.builder(SearchDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datafactory/search/data/search.kpr")
+						.addComponent(ItemSearchClient.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestSearchSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", "io.vertigo.datafactory.search.data.DtDefinitions")
 								.build())
 						.addComponent(withDb ? io.vertigo.datafactory.search.withstore.ItemSearchLoader.class : ItemSearchLoader.class)
 						.addDefinitionProvider(StoreCacheDefinitionProvider.class)

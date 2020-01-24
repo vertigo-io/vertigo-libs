@@ -22,11 +22,15 @@ import java.time.Instant;
 
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.VSystemException;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.util.JsonMapper;
+import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
+@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class Item implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -51,7 +55,7 @@ public final class Item implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DoIdentifiant", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
+	@Field(domain = "STyIdentifiant", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
 	public final Long getId() {
 		return id;
 	}
@@ -60,7 +64,7 @@ public final class Item implements KeyConcept {
 		this.id = id;
 	}
 
-	@Field(domain = "DoKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
+	@Field(domain = "STyKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
 	public final String getManufacturer() {
 		return manufacturer;
 	}
@@ -69,7 +73,7 @@ public final class Item implements KeyConcept {
 		this.manufacturer = manufacturer;
 	}
 
-	@Field(domain = "DoString", cardinality = Cardinality.ONE, label = "Modéle")
+	@Field(domain = "STyString", cardinality = Cardinality.ONE, label = "Modéle")
 	public final String getModel() {
 		return model;
 	}
@@ -78,7 +82,7 @@ public final class Item implements KeyConcept {
 		this.model = model;
 	}
 
-	@Field(domain = "DoFullText", cardinality = Cardinality.ONE, label = "Descriptif")
+	@Field(domain = "STyFullText", cardinality = Cardinality.ONE, label = "Descriptif")
 	public final String getDescription() {
 		return description;
 	}
@@ -87,7 +91,7 @@ public final class Item implements KeyConcept {
 		this.description = description;
 	}
 
-	@Field(domain = "DoInteger", cardinality = Cardinality.ONE, label = "Année")
+	@Field(domain = "STyInteger", cardinality = Cardinality.ONE, label = "Année")
 	public final Integer getYear() {
 		return year;
 	}
@@ -96,7 +100,7 @@ public final class Item implements KeyConcept {
 		this.year = year;
 	}
 
-	@Field(domain = "DoInteger", cardinality = Cardinality.ONE, label = "Kilométrage")
+	@Field(domain = "STyInteger", cardinality = Cardinality.ONE, label = "Kilométrage")
 	public final Integer getKilo() {
 		return kilo;
 	}
@@ -105,7 +109,7 @@ public final class Item implements KeyConcept {
 		this.kilo = kilo;
 	}
 
-	@Field(domain = "DoInteger", cardinality = Cardinality.ONE, label = "Prix")
+	@Field(domain = "STyInteger", cardinality = Cardinality.ONE, label = "Prix")
 	public final Integer getPrice() {
 		return price;
 	}
@@ -114,7 +118,7 @@ public final class Item implements KeyConcept {
 		this.price = price;
 	}
 
-	@Field(domain = "DoConso", cardinality = Cardinality.ONE, label = "Consomation")
+	@Field(domain = "STyConso", cardinality = Cardinality.ONE, label = "Consomation")
 	public java.math.BigDecimal getConsommation() {
 		return consommation;
 	}
@@ -123,7 +127,7 @@ public final class Item implements KeyConcept {
 		this.consommation = consommation;
 	}
 
-	@Field(domain = "DoKeyword", cardinality = Cardinality.ONE, label = "Type de moteur")
+	@Field(domain = "STyKeyword", cardinality = Cardinality.ONE, label = "Type de moteur")
 	public final String getMotorType() {
 		return motorType;
 	}
@@ -132,7 +136,7 @@ public final class Item implements KeyConcept {
 		this.motorType = motorType;
 	}
 
-	@Field(domain = "DoIdentifiant", type = "FOREIGN_KEY", cardinality = Cardinality.ONE, label = "Famille")
+	@Field(domain = "STyIdentifiant", type = "FOREIGN_KEY", cardinality = Cardinality.ONE, label = "Famille")
 	public final Long getFamId() {
 		return famId;
 	}
@@ -141,7 +145,7 @@ public final class Item implements KeyConcept {
 		this.famId = famId;
 	}
 
-	@Field(domain = "DoIdentifiant", label = "OptionalNumber")
+	@Field(domain = "STyIdentifiant", label = "OptionalNumber")
 	public final Long getOptionalNumber() {
 		return optionalNumber;
 	}
@@ -150,7 +154,7 @@ public final class Item implements KeyConcept {
 		this.optionalNumber = optionalNumber;
 	}
 
-	@Field(domain = "DoKeyword", label = "OptionalString")
+	@Field(domain = "STyKeyword", label = "OptionalString")
 	public final String getOptionalString() {
 		return optionalString;
 	}
@@ -159,7 +163,7 @@ public final class Item implements KeyConcept {
 		this.optionalString = optionalString;
 	}
 
-	@Field(domain = "DoDateTime", label = "LastModified")
+	@Field(domain = "STyDateTime", label = "LastModified")
 	public final Instant getLastModified() {
 		return lastModified;
 	}
@@ -168,12 +172,12 @@ public final class Item implements KeyConcept {
 		this.lastModified = lastModified;
 	}
 
-	/*@Field(domain = "DO_KEYWORD", type = "COMPUTED", persistent = false, label = "model sort")
+	/*@Field(domain = "STy_KEYWORD", type = "COMPUTED", persistent = false, label = "model sort")
 	public String getModelSort() {
 		throw new VSystemException("Can't use index copyTo field");
 	}*/
 
-	@Field(domain = "DoFullText", type = "COMPUTED", persistent = false, label = "index all")
+	@Field(domain = "STyFullText", type = "COMPUTED", persistent = false, label = "index all")
 	public String getAllText() {
 		throw new VSystemException("Can't use index copyTo field");
 	}

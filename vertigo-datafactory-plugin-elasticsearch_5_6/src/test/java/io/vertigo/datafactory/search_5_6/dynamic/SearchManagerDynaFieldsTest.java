@@ -25,10 +25,12 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datafactory.DataFactoryFeatures;
-import io.vertigo.datafactory.impl.search.grammar.SearchDefinitionProvider;
+import io.vertigo.datafactory.search.data.ItemSearchClient;
+import io.vertigo.datafactory.search.data.TestSearchSmartTypes;
 import io.vertigo.datafactory.search.data.domain.ItemSearchLoader;
 import io.vertigo.datafactory.search_5_6.AbstractSearchManagerTest;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.DataModelFeatures;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 
 /**
  * @author  npiedeloup
@@ -46,6 +48,7 @@ public class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
 				.endBoot()
 				.addModule(new CommonsFeatures()
 						.build())
+				.addModule(new DataModelFeatures().build())
 				.addModule(new DataFactoryFeatures()
 						.withSearch()
 						.addPlugin(io.vertigo.datafactory.plugins.search.elasticsearch_5_6.embedded.ESEmbeddedSearchServicesPlugin.class,
@@ -55,12 +58,10 @@ public class SearchManagerDynaFieldsTest extends AbstractSearchManagerTest {
 								Param.of("rowsPerQuery", "50"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datafactory/search/data/model_run.kpr")
-								.addDefinitionResource("classes", "io.vertigo.datafactory.search.data.DtDefinitions")
-								.build())
-						.addDefinitionProvider(DefinitionProviderConfig.builder(SearchDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/datafactory/search/data/search.kpr")
+						.addComponent(ItemSearchClient.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestSearchSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", "io.vertigo.datafactory.search.data.DtDefinitions")
 								.build())
 						.addComponent(ItemSearchLoader.class)
 						.build())

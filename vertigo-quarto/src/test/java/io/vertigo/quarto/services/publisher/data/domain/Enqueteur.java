@@ -18,21 +18,25 @@
  */
 package io.vertigo.quarto.services.publisher.data.domain;
 
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.JsonMapper;
+import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
 /**
  * Attention cette classe est générée automatiquement !
  * Objet de données AbstractEnqueteur
  */
+@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class Enqueteur implements DtObject {
 	/**
 	 * SerialVersionUID.
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Nom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyString", label = "Nom")
 	private String nom;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Prenom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyString", label = "Prenom")
 	private String prenom;
 
 	/**

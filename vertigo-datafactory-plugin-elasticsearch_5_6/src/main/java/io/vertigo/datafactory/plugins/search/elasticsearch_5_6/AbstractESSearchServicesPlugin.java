@@ -60,13 +60,13 @@ import io.vertigo.datafactory.impl.search.SearchServicesPlugin;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtListState;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 /**
  * Gestion de la connexion au serveur Solr de manière transactionnel.
@@ -305,15 +305,16 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), indexDefinition.getName(), esClient);
 	}
 
-	private static String obtainPkIndexDataType(final Domain domain) {
+	private static String obtainPkIndexDataType(final SmartTypeDefinition smartType) {
 		// On peut préciser pour chaque domaine le type d'indexation
 		// Calcul automatique  par default.
-		switch (domain.getDataType()) {
+		Assertion.checkState(smartType.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartType + "].");
+		switch (smartType.getTargetDataType()) {
 			case Boolean:
 			case Double:
 			case Integer:
 			case Long:
-				return domain.getDataType().name().toLowerCase(Locale.ROOT);
+				return smartType.getTargetDataType().name().toLowerCase(Locale.ROOT);
 			case String:
 				return "keyword";
 			case LocalDate:
@@ -321,7 +322,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			case BigDecimal:
 			case DataStream:
 			default:
-				throw new IllegalArgumentException("Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + domain + "].");
+				throw new IllegalArgumentException("Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartType + "].");
 		}
 	}
 

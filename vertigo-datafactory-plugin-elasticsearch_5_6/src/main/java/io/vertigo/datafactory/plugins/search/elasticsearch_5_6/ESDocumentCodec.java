@@ -32,13 +32,13 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.dynamo.domain.metamodel.DataAccessor;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.KeyConcept;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 
 /**
  * Traduction bi directionnelle des objets SOLR en objets logique de recherche.
@@ -175,8 +175,8 @@ final class ESDocumentCodec {
 		return clonedDto;
 	}
 
-	private static boolean isIndexStoredDomain(final Domain domain) {
-		final IndexType indexType = IndexType.readIndexType(domain);
+	private static boolean isIndexStoredDomain(final SmartTypeDefinition smartType) {
+		final IndexType indexType = IndexType.readIndexType(smartType);
 		return indexType.isIndexStored(); //is no specific indexType, the field should be stored
 	}
 

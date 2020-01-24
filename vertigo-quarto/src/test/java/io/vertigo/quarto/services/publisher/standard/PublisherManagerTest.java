@@ -30,11 +30,12 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datastore.DataStoreFeatures;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 import io.vertigo.quarto.impl.services.publisher.PublisherDataUtil;
 import io.vertigo.quarto.impl.services.publisher.PublisherManagerImpl;
 import io.vertigo.quarto.plugins.publisher.odt.OpenOfficeMergerPlugin;
 import io.vertigo.quarto.services.publisher.PublisherManager;
+import io.vertigo.quarto.services.publisher.data.TestPublisherSmartTypes;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherField;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherNodeDefinition;
@@ -65,8 +66,9 @@ public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 				.addModule(ModuleConfig.builder("myApp")
 						.addComponent(PublisherManager.class, PublisherManagerImpl.class)
 						.addPlugin(OpenOfficeMergerPlugin.class)
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/quarto/services/publisher/data/execution.kpr")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestPublisherSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", "io.vertigo.quarto.services.publisher.data.domain*")
 								.build())
 						.addDefinitionProvider(TestStandardPublisherDefinitionProvider.class)
 						.build())

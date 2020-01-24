@@ -26,6 +26,7 @@ import com.lowagie.text.DocumentException;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.quarto.impl.services.export.ExporterPlugin;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportFormat;
@@ -37,16 +38,18 @@ import io.vertigo.quarto.services.export.model.ExportFormat;
  */
 public final class RTFExporterPlugin implements ExporterPlugin {
 	private final EntityStoreManager entityStoreManager;
+	private final ModelManager modelManager;
 
 	@Inject
-	public RTFExporterPlugin(final EntityStoreManager entityStoreManager) {
+	public RTFExporterPlugin(final EntityStoreManager entityStoreManager, final ModelManager modelManager) {
 		this.entityStoreManager = entityStoreManager;
+		this.modelManager = modelManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void exportData(final Export export, final OutputStream out) throws DocumentException {
-		new RTFExporter(entityStoreManager).exportData(export, out);
+		new RTFExporter(entityStoreManager, modelManager).exportData(export, out);
 	}
 
 	/** {@inheritDoc} */

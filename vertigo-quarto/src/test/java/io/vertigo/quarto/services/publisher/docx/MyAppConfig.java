@@ -24,11 +24,13 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datastore.DataStoreFeatures;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.DataModelFeatures;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 import io.vertigo.quarto.impl.services.publisher.PublisherManagerImpl;
 import io.vertigo.quarto.plugins.publisher.docx.DOCXMergerPlugin;
 import io.vertigo.quarto.services.publisher.PublisherManager;
 import io.vertigo.quarto.services.publisher.TestPublisherDefinitionProvider;
+import io.vertigo.quarto.services.publisher.data.TestPublisherSmartTypes;
 
 class MyNodeConfig {
 
@@ -41,13 +43,15 @@ class MyNodeConfig {
 						.withScript()
 						.withJaninoScript()
 						.build())
+				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addComponent(PublisherManager.class, PublisherManagerImpl.class)
 						.addPlugin(DOCXMergerPlugin.class)
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/quarto/services/publisher/data/execution.kpr")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestPublisherSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", "io.vertigo.quarto.services.publisher.data.domain*")
 								.build())
 						.addDefinitionProvider(TestPublisherDefinitionProvider.class)
 						.build())

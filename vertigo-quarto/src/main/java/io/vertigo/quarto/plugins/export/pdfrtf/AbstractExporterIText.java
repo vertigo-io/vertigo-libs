@@ -41,6 +41,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.quarto.impl.services.export.util.ExportUtil;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportField;
@@ -55,15 +56,18 @@ public abstract class AbstractExporterIText {
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
 
 	private final EntityStoreManager entityStoreManager;
+	private final ModelManager modelManager;
 
 	/**
 	 * Constructor.
 	 * @param storeManager Store manager
 	 */
-	protected AbstractExporterIText(final EntityStoreManager entityStoreManager) {
+	protected AbstractExporterIText(final EntityStoreManager entityStoreManager, final ModelManager modelManager) {
 		Assertion.checkNotNull(entityStoreManager);
+		Assertion.checkNotNull(modelManager);
 		//-----
 		this.entityStoreManager = entityStoreManager;
+		this.modelManager = modelManager;
 	}
 
 	/**
@@ -163,7 +167,7 @@ public abstract class AbstractExporterIText {
 			}
 			datatable.getDefaultCell().setHorizontalAlignment(horizontalAlignement);
 
-			String text = ExportUtil.getText(entityStoreManager, referenceCache, denormCache, exportSheet.getDtObject(), exportColumn);
+			String text = ExportUtil.getText(entityStoreManager, modelManager, referenceCache, denormCache, exportSheet.getDtObject(), exportColumn);
 			if (text == null) {
 				text = "";
 			}
@@ -219,7 +223,7 @@ public abstract class AbstractExporterIText {
 				}
 				datatable.getDefaultCell().setHorizontalAlignment(horizontalAlignement);
 
-				String text = ExportUtil.getText(entityStoreManager, referenceCache, denormCache, dto, exportColumn);
+				String text = ExportUtil.getText(entityStoreManager, modelManager, referenceCache, denormCache, dto, exportColumn);
 				if (text == null) {
 					text = "";
 				}

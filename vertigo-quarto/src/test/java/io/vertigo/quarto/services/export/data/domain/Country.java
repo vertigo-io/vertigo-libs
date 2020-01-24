@@ -22,14 +22,18 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.util.JsonMapper;
+import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
 /**
  * Country.
  */
+@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class Country implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -46,7 +50,7 @@ public final class Country implements Entity {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id of the country")
+	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "id of the country")
 	public final Long getId() {
 		return id;
 	}
@@ -56,7 +60,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "DoId", cardinality = Cardinality.ONE, label = "id of the continent")
+	@Field(domain = "STyId", cardinality = Cardinality.ONE, label = "id of the continent")
 	public final Long getConId() {
 		return conId;
 	}
@@ -66,7 +70,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "DoString", label = "name")
+	@Field(domain = "STyString", label = "name")
 	public final String getName() {
 		return name;
 	}
@@ -76,7 +80,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "DoBoolean", label = "active")
+	@Field(domain = "STyBoolean", label = "active")
 	public final Boolean getActive() {
 		return active;
 	}
@@ -86,7 +90,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "DoLocalDate", label = "local date")
+	@Field(domain = "STyLocalDate", label = "local date")
 	public final LocalDate getLocalDate() {
 		return localDate;
 	}
@@ -96,7 +100,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "DoInstant", label = "instant")
+	@Field(domain = "STyInstant", label = "instant")
 	public final Instant getInstant() {
 		return instant;
 	}

@@ -28,6 +28,7 @@ import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtListURIForMasterData;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.model.Entity;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 
 /**
  * Classe utilitaire pour export.
@@ -35,15 +36,20 @@ import io.vertigo.dynamo.domain.model.Entity;
  */
 public final class ExportHelper {
 	private final EntityStoreManager entityStoreManager;
+	private final ModelManager modelManager;
 
 	/**
 	 * Constructor.
 	 * @param entityStoreManager StoreManager for MasterData management
 	 */
-	public ExportHelper(final EntityStoreManager entityStoreManager) {
+	public ExportHelper(
+			final EntityStoreManager entityStoreManager,
+			final ModelManager modelManager) {
 		Assertion.checkNotNull(entityStoreManager);
+		Assertion.checkNotNull(modelManager);
 		//-----
 		this.entityStoreManager = entityStoreManager;
+		this.modelManager = modelManager;
 	}
 
 	/**
@@ -108,7 +114,7 @@ public final class ExportHelper {
 		} else {
 			value = exportColumn.getDtField().getDataAccessor().getValue(dto);
 			if (forceStringValue) {
-				value = exportColumn.getDtField().getDomain().valueToString(value);
+				value = modelManager.valueToString(exportColumn.getDtField().getDomain(), value);
 			}
 		}
 		//Check if we should return some magic value ("??") when exception are throw here. Previous impl manage this "useless ?" case.
@@ -125,10 +131,10 @@ public final class ExportHelper {
 		return createDenormIndex(valueList, dtFieldKey, dtFieldDisplay);
 	}
 
-	private static Map<Object, String> createDenormIndex(final DtList<?> valueList, final DtField keyField, final DtField displayField) {
+	private Map<Object, String> createDenormIndex(final DtList<?> valueList, final DtField keyField, final DtField displayField) {
 		final Map<Object, String> denormIndex = new HashMap<>(valueList.size());
 		for (final DtObject dto : valueList) {
-			final String svalue = displayField.getDomain().valueToString(displayField.getDataAccessor().getValue(dto));
+			final String svalue = modelManager.valueToString(displayField.getDomain(), displayField.getDataAccessor().getValue(dto));
 			denormIndex.put(keyField.getDataAccessor().getValue(dto), svalue);
 		}
 		return denormIndex;

@@ -20,45 +20,50 @@ package io.vertigo.quarto.services.publisher.data.domain;
 
 import java.time.LocalDate;
 
+import io.vertigo.core.lang.Cardinality;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.domain.util.JsonMapper;
+import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
 /**
  * Attention cette classe est générée automatiquement !
  * Objet de données AbstractPublisherMock
  */
+@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class PublisherMock implements DtObject {
 	/**
 	 * SerialVersionUID.
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Titre")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyString", label = "Titre")
 	private String titre;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Nom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyString", label = "Nom")
 	private String nom;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Prénom")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyString", label = "Prénom")
 	private String prenom;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Adresse (multi ligne)")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyString", label = "Adresse (multi ligne)")
 	private String address;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Commentaire (multi paragraphe)")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyString", label = "Commentaire (multi paragraphe)")
 	private String commentaire;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoBoolean", label = "booleen 1")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyBoolean", label = "booleen 1")
 	private Boolean boolean1;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoBoolean", label = "booleen 2")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyBoolean", label = "booleen 2")
 	private Boolean boolean2;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoBoolean", label = "booleen 3")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyBoolean", label = "booleen 3")
 	private Boolean boolean3;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoString", label = "Test champs inutilisé")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyString", label = "Test champs inutilisé")
 	private String testDummy;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoLong", label = "Test long")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyLong", label = "Test long")
 	private Long testLong;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoDouble", label = "Test double")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyDouble", label = "Test double")
 	private Double testDouble;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoInteger", label = "Test integer")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyInteger", label = "Test integer")
 	private Integer testInteger;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoDate", label = "Test date")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyDate", label = "Test date")
 	private LocalDate testDate;
-	@io.vertigo.dynamo.domain.stereotype.Field(domain = "DoDtPublisherMockDtc", label = "Test list")
+	@io.vertigo.dynamo.domain.stereotype.Field(domain = "STyDtPublisherMock", cardinality = Cardinality.MANY, label = "Test list")
 	private io.vertigo.dynamo.domain.model.DtList<io.vertigo.quarto.services.publisher.data.domain.PublisherMock> dtcTest;
 
 	/**

@@ -19,14 +19,18 @@
 package io.vertigo.quarto.services.export.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.model.Entity;
 import io.vertigo.dynamo.domain.model.UID;
 import io.vertigo.dynamo.domain.stereotype.Field;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.domain.util.JsonMapper;
+import io.vertigo.dynamo.ngdomain.annotations.Mapper;
 
 /**
  * Continent.
  */
+@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
 public final class Continent implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -39,7 +43,7 @@ public final class Continent implements Entity {
 		return UID.of(this);
 	}
 
-	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id of the Continent")
+	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "id of the Continent")
 	public final Long getId() {
 		return id;
 	}
@@ -49,7 +53,7 @@ public final class Continent implements Entity {
 		return this;
 	}
 
-	@Field(domain = "DoString", label = "name")
+	@Field(domain = "STyString", label = "name")
 	public final String getName() {
 		return name;
 	}

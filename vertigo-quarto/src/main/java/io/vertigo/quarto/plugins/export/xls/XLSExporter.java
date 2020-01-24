@@ -52,9 +52,10 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.dynamo.domain.metamodel.DataType;
-import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.DtField;
 import io.vertigo.dynamo.domain.model.DtObject;
+import io.vertigo.dynamo.ngdomain.ModelManager;
+import io.vertigo.dynamo.ngdomain.SmartTypeDefinition;
 import io.vertigo.quarto.impl.services.export.util.ExportUtil;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportField;
@@ -76,15 +77,18 @@ final class XLSExporter {
 	private final Map<DataType, HSSFCellStyle> oddHssfStyleCache = new EnumMap<>(DataType.class);
 
 	private final EntityStoreManager entityStoreManager;
+	private final ModelManager modelManager;
 
 	/**
 	 * Constructor.
 	 * @param storeManager Store manager
 	 */
-	XLSExporter(final EntityStoreManager entityStoreManager) {
+	XLSExporter(final EntityStoreManager entityStoreManager, final ModelManager modelManager) {
 		Assertion.checkNotNull(entityStoreManager);
+		Assertion.checkNotNull(modelManager);
 		//-----
 		this.entityStoreManager = entityStoreManager;
+		this.modelManager = modelManager;
 	}
 
 	private static HSSFCellStyle createHeaderCellStyle(final HSSFWorkbook workbook) {
@@ -240,8 +244,8 @@ final class XLSExporter {
 			for (final ExportField exportColumn : parameters.getExportFields()) {
 				final HSSFCell cell = row.createCell(cellIndex);
 
-				value = ExportUtil.getValue(entityStoreManager, referenceCache, denormCache, dto, exportColumn);
-				putValueInCell(value, cell, rowIndex % 2 == 0 ? evenHssfStyleCache : oddHssfStyleCache, cellIndex, maxWidthPerColumn, exportColumn.getDtField().getDomain());
+				value = ExportUtil.getValue(entityStoreManager, modelManager, referenceCache, denormCache, dto, exportColumn);
+				putValueInCell(modelManager, value, cell, rowIndex % 2 == 0 ? evenHssfStyleCache : oddHssfStyleCache, cellIndex, maxWidthPerColumn, exportColumn.getDtField().getDomain());
 
 				cellIndex++;
 			}
@@ -265,25 +269,25 @@ final class XLSExporter {
 			updateMaxWidthPerColumn(label.getDisplay(), 1.2, labelCellIndex, maxWidthPerColumn); // +20% pour les majuscules
 
 			final HSSFCell valueCell = row.createCell(valueCellIndex);
-			value = ExportUtil.getValue(entityStoreManager, referenceCache, denormCache, dto, exportColumn);
-			putValueInCell(value, valueCell, oddHssfStyleCache, valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().getDomain());
+			value = ExportUtil.getValue(entityStoreManager, modelManager, referenceCache, denormCache, dto, exportColumn);
+			putValueInCell(modelManager, value, valueCell, oddHssfStyleCache, valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().getDomain());
 			rowIndex++;
 		}
 
 	}
 
 	private static void putValueInCell(
+			final ModelManager modelManager,
 			final Object value,
 			final HSSFCell cell,
 			final Map<DataType, HSSFCellStyle> rowCellStyle,
 			final int cellIndex,
 			final Map<Integer, Double> maxWidthPerColumn,
-			final Domain domain) {
+			final SmartTypeDefinition smartTypeDefinition) {
 		String stringValueForColumnWidth;
-		cell.setCellStyle(rowCellStyle.get(domain.getDataType()));
+		cell.setCellStyle(rowCellStyle.get(smartTypeDefinition.getTargetDataType()));
 		if (value != null) {
 			stringValueForColumnWidth = String.valueOf(value);
-
 			if (value instanceof String) {
 				final String stringValue = (String) value;
 				cell.setCellValue(new HSSFRichTextString(stringValue));
@@ -304,7 +308,7 @@ final class XLSExporter {
 			} else if (value instanceof Boolean) {
 				final Boolean bValue = (Boolean) value;
 				//cell.setCellValue(bValue.booleanValue() ? "Oui" : "Non");
-				cell.setCellValue(domain.valueToString(bValue));
+				cell.setCellValue(modelManager.valueToString(smartTypeDefinition, bValue));
 			} else if (value instanceof LocalDate) {
 				final LocalDate dateValue = (LocalDate) value;
 				// sans ce style "date" les dates apparaîtraient au format
@@ -318,7 +322,7 @@ final class XLSExporter {
 				stringValueForColumnWidth = "DD/MM/YYYY HH:mm";
 				// ceci ne sert que pour déterminer la taille de la cellule, on a pas besoin de la vrai valeur
 			} else {
-				throw new UnsupportedOperationException("Type " + domain.getDataType() + " not supported by this Excel exporter");
+				throw new UnsupportedOperationException("Type " + smartTypeDefinition.getJavaClass() + " not supported by this Excel exporter");
 			}
 			updateMaxWidthPerColumn(stringValueForColumnWidth, 1, cellIndex, maxWidthPerColumn); // +20% pour les majuscules
 		}

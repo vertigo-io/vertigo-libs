@@ -23,6 +23,7 @@ import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
+import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.DtDefinition;
@@ -31,6 +32,7 @@ import io.vertigo.dynamo.domain.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.model.DtList;
 import io.vertigo.dynamo.domain.model.DtObject;
 import io.vertigo.dynamo.domain.util.DtObjectUtil;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherField;
 import io.vertigo.quarto.services.publisher.metamodel.PublisherNodeDefinition;
 import io.vertigo.quarto.services.publisher.model.PublisherNode;
@@ -151,9 +153,9 @@ public final class PublisherDataUtil {
 	 */
 	public static String renderStringField(final DtObject dto, final DtField dtField) {
 		final String unit = dtField.getDomain().getProperties().getValue(DtProperty.UNIT);
-
+		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
 		final Object value = dtField.getDataAccessor().getValue(dto);
-		final String formattedValue = dtField.getDomain().valueToString(value);
+		final String formattedValue = modelManager.valueToString(dtField.getDomain(), value);
 		return formattedValue + (!StringUtil.isEmpty(unit) ? " " + unit : "");
 	}
 
@@ -187,15 +189,27 @@ public final class PublisherDataUtil {
 		sb.append("PN_").append(dtDefinition.getLocalName()).append("  = new PublisherNode (\n");
 		for (final DtField dtField : dtDefinition.getFields()) {
 			final String fieldName = dtField.getName();
-			if (DataType.Boolean == dtField.getDomain().getDataType()) {
-				sb.append("\t\tbooleanField[").append(fieldName).append(")] = new DataField ();\n");
-			} else if (dtField.getDomain().getScope().isDataObject()) {
-				sb.append("\t\tdataField[").append(fieldName).append(")] = new NodeField (type = PN_").append(dtField.getDomain().getDtDefinition().getLocalName()).append(";);\n");
-			} else if (dtField.isDtList()) {
-				sb.append("\t\tlistField[").append(fieldName).append(")] = new NodeField (type = PN_").append(dtField.getDomain().getDtDefinition().getLocalName()).append(";);\n");
-			} else { //aussi si FieldType.FOREIGN_KEY == dtField.getType()
-				sb.append("\t\tstringField[").append(fieldName).append(")] = new DataField ();\n");
+			switch (dtField.getDomain().getScope()) {
+				case PRIMITIVE:
+					if (DataType.Boolean == dtField.getDomain().getTargetDataType()) {
+						sb.append("\t\tbooleanField[").append(fieldName).append(")] = new DataField ();\n");
+					} else {
+						sb.append("\t\tstringField[").append(fieldName).append(")] = new DataField ();\n");
+					}
+					break;
+				case DATA_OBJECT:
+					if (dtField.getCardinality().hasMany()) {
+						sb.append("\t\tlistField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DefinitionUtil.getPrefix(DtDefinition.class) + dtField.getDomain().getJavaClass().getSimpleName()).append(";);\n");
+					} else {
+						sb.append("\t\tdataField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DefinitionUtil.getPrefix(DtDefinition.class) + dtField.getDomain().getJavaClass().getSimpleName()).append(";);\n");
+					}
+					break;
+				case VALUE_OBJECT:
+				default:
+					throw new IllegalArgumentException("Value object smartTypes are not supported yet in publisher");
+
 			}
+
 		}
 		sb.append(");\n");
 

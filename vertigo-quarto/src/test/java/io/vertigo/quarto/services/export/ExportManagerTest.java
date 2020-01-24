@@ -37,10 +37,11 @@ import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.dynamo.DataModelFeatures;
 import io.vertigo.dynamo.domain.model.DtList;
-import io.vertigo.dynamo.plugins.environment.ModelDefinitionProvider;
+import io.vertigo.dynamo.ngdomain.NewModelDefinitionProvider;
 import io.vertigo.quarto.QuartoFeatures;
 import io.vertigo.quarto.services.export.data.DtDefinitions.ContinentFields;
 import io.vertigo.quarto.services.export.data.DtDefinitions.CountryFields;
+import io.vertigo.quarto.services.export.data.TestExporterSmartTypes;
 import io.vertigo.quarto.services.export.data.domain.Continent;
 import io.vertigo.quarto.services.export.data.domain.Country;
 import io.vertigo.quarto.services.export.model.Export;
@@ -81,9 +82,9 @@ public final class ExportManagerTest extends AbstractTestCaseJU5 {
 						.withXLSExporter()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
-								.addDefinitionResource("kpr", "io/vertigo/quarto/services/export/data/execution.kpr")
-								.addDefinitionResource("classes", "io.vertigo.quarto.services.export.data.DtDefinitions")
+						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								.addDefinitionResource("smarttypes", TestExporterSmartTypes.class.getName())
+								.addDefinitionResource("dtobjects", "io.vertigo.quarto.services.export.data.DtDefinitions")
 								.build())
 						.build())
 				.build();

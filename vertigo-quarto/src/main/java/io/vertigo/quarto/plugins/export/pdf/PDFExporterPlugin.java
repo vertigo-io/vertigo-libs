@@ -24,6 +24,7 @@ import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.dynamo.ngdomain.ModelManager;
 import io.vertigo.quarto.impl.services.export.ExporterPlugin;
 import io.vertigo.quarto.services.export.model.Export;
 import io.vertigo.quarto.services.export.model.ExportFormat;
@@ -35,19 +36,21 @@ import io.vertigo.quarto.services.export.model.ExportFormat;
  */
 public final class PDFExporterPlugin implements ExporterPlugin {
 	private final EntityStoreManager entityStoreManager;
+	private final ModelManager modelManager;
 
 	/**
 	 * @param storeManager store manager
 	 */
 	@Inject
-	public PDFExporterPlugin(final EntityStoreManager entityStoreManager) {
+	public PDFExporterPlugin(final EntityStoreManager entityStoreManager, final ModelManager modelManager) {
 		this.entityStoreManager = entityStoreManager;
+		this.modelManager = modelManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void exportData(final Export export, final OutputStream out) throws Exception {
-		new PDFExporter(entityStoreManager).exportData(export, out);
+		new PDFExporter(entityStoreManager, modelManager).exportData(export, out);
 	}
 
 	/** {@inheritDoc} */
