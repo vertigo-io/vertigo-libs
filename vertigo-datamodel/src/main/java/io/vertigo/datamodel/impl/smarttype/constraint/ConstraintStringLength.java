@@ -18,6 +18,8 @@
  */
 package io.vertigo.datamodel.impl.smarttype.constraint;
 
+import java.util.Optional;
+
 import io.vertigo.core.locale.MessageText;
 
 /**
@@ -27,12 +29,16 @@ import io.vertigo.core.locale.MessageText;
  */
 public final class ConstraintStringLength extends AbstractConstraintLength<String> {
 
+	private final MessageText errorMessage;
+
 	/**
 	 * @param args Liste des arguments réduite à un seul castable en integer.
 	 * Cet argument correspond au nombre de caractères maximum authorisés sur la chaine de caractères.
 	 */
-	public ConstraintStringLength(final String args) {
+	public ConstraintStringLength(final String args, final Optional<String> overrideMessageOpt) {
 		super(args);
+		//---
+		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED, Integer.toString(getMaxLength()));
 	}
 
 	/** {@inheritDoc} */
@@ -47,6 +53,6 @@ public final class ConstraintStringLength extends AbstractConstraintLength<Strin
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_STRINGLENGTH_EXCEEDED, Integer.toString(getMaxLength()));
+		return errorMessage;
 	}
 }

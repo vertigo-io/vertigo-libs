@@ -3,11 +3,13 @@ package io.vertigo.datamodel.impl.smarttype;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.DataTypeMapper;
 import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
@@ -49,8 +51,9 @@ public class ModelManagerImpl implements ModelManager, Activeable {
 		return smartTypeDefinition.getConstraintConfigs()
 				.stream()
 				.map(constraintConfig -> {
-					final Constructor<? extends Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(), new Class[] { String.class });
-					return ClassUtil.newInstance(constructor, new Object[] { constraintConfig.getArg() });
+					final Optional<String> msgOpt = StringUtil.isEmpty(constraintConfig.getMsg()) ? Optional.empty() : Optional.of(constraintConfig.getMsg());
+					final Constructor<? extends Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(), new Class[] { String.class, Optional.class });
+					return ClassUtil.newInstance(constructor, new Object[] { constraintConfig.getArg(), msgOpt });
 				})
 				.collect(Collectors.toList());
 	}

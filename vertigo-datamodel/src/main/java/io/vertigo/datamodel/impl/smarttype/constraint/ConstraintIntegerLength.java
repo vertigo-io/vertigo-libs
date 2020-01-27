@@ -18,6 +18,8 @@
  */
 package io.vertigo.datamodel.impl.smarttype.constraint;
 
+import java.util.Optional;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
 
@@ -43,12 +45,14 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 	 */
 	private final int minValue;
 
+	private final MessageText errorMessage;
+
 	/**
 	 * Constructeur nécessaire pour le ksp.
 	 * @param args Liste des arguments réduite à un seul castable en integer.
 	 * Cet argument correspond au nombre de chifres maximum authorisé sur le Integer.
 	 */
-	public ConstraintIntegerLength(final String args) {
+	public ConstraintIntegerLength(final String args, final Optional<String> overrideMessageOpt) {
 		super(args);
 		//-----
 		Assertion.checkArgument(getMaxLength() < 10, "Longueur max doit être strictement inférieure à 10");
@@ -60,6 +64,8 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 		}
 		maxValue = tmpMaxValue;
 		minValue = -tmpMaxValue;
+		//--
+		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_INTEGERLENGTH_EXCEEDED, minValue, maxValue);
 	}
 
 	/** {@inheritDoc} */
@@ -75,6 +81,6 @@ public final class ConstraintIntegerLength extends AbstractConstraintLength<Inte
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_INTEGERLENGTH_EXCEEDED, minValue, maxValue);
+		return errorMessage;
 	}
 }

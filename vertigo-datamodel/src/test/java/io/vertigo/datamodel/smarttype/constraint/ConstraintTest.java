@@ -19,6 +19,7 @@
 package io.vertigo.datamodel.smarttype.constraint;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -66,20 +67,20 @@ public final class ConstraintTest extends AbstractTestCaseJU5 {
 		//		constraintNotNull = new ConstraintNotNull();
 		//		constraintNotNull.initParameters(null);
 
-		constraintBigDecimal = new ConstraintBigDecimal("5,2");
+		constraintBigDecimal = new ConstraintBigDecimal("5,2", Optional.empty());
 
-		constraintBigDecimalLength = new ConstraintBigDecimalLength("3"); //10^3
+		constraintBigDecimalLength = new ConstraintBigDecimalLength("3", Optional.empty()); //10^3
 
-		constraintDoubleLength = new ConstraintDoubleLength("3"); //10^3
+		constraintDoubleLength = new ConstraintDoubleLength("3", Optional.empty()); //10^3
 
-		constraintIntegerLength = new ConstraintIntegerLength("3"); //10^3
+		constraintIntegerLength = new ConstraintIntegerLength("3", Optional.empty()); //10^3
 
-		constraintLongLength = new ConstraintLongLength("3"); //10^3
+		constraintLongLength = new ConstraintLongLength("3", Optional.empty()); //10^3
 
-		constraintStringLength = new ConstraintStringLength("3"); //10^3
+		constraintStringLength = new ConstraintStringLength("3", Optional.empty()); //10^3
 
 		// \w signifie WORD [A-Za-z0-9_] et on ajoute le tiret -
-		constraintRegex = new ConstraintRegex("[\\w-]*");
+		constraintRegex = new ConstraintRegex("[\\w-]*", Optional.empty());
 	}
 
 	private void testBDTrue(final BigDecimal value) {

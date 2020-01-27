@@ -20,6 +20,7 @@ package io.vertigo.datamodel.impl.smarttype.constraint;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
@@ -39,12 +40,13 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 	private static final String SEPARATOR_ARGS = ",";
 	private Integer maxPrecision;
 	private Integer maxScale;
+	private final MessageText errorMessage;
 
 	/**
 	 * Initialise les paramètres.
 	 * @param args args but no args
 	 */
-	public ConstraintBigDecimal(final String args) {
+	public ConstraintBigDecimal(final String args, final Optional<String> overrideMessageOpt) {
 		final String[] beforeAfter = args.split(SEPARATOR_ARGS);
 		Assertion.checkState(beforeAfter.length == 2, "L'argument doit être au format M,D. M le nombre de chiffre au total (precision) et D le nombre de chiffre à droite de la virgule (scale).");
 		try {
@@ -61,6 +63,11 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 		Assertion.checkNotNull(maxPrecision, "Le nombre de chiffres ne peut pas être null");
 		Assertion.checkNotNull(maxScale, "Le nombre de chiffres après la virgule ne peut pas être null");
 		Assertion.checkArgument(maxScale <= maxPrecision, "Le nombre de chiffres après la virgule doit être inférieur au nombre total de chiffres");
+		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get())
+				: MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,
+						new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),
+						maxScale,
+						maxPrecision - maxScale);
 	}
 
 	/** {@inheritDoc} */
@@ -78,10 +85,7 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,
-				new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),
-				maxScale,
-				maxPrecision - maxScale);
+		return errorMessage;
 	}
 
 	/** {@inheritDoc} */

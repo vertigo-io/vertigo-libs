@@ -18,6 +18,8 @@
  */
 package io.vertigo.datamodel.impl.smarttype.constraint;
 
+import java.util.Optional;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.datamodel.structure.metamodel.Constraint;
@@ -31,15 +33,18 @@ import io.vertigo.datamodel.structure.metamodel.Property;
  */
 public final class ConstraintNumberMinimum implements Constraint<Number, Number> {
 	private final double minValue;
+	private final MessageText errorMessage;
 
 	/**
 	 * Constructor.
 	 * @param args the minimum value
 	 */
-	public ConstraintNumberMinimum(final String args) {
+	public ConstraintNumberMinimum(final String args, final Optional<String> overrideMessageOpt) {
 		Assertion.checkArgument(args != null && args.length() > 0, "Vous devez préciser la valeur minimum comme argument de ConstraintNumberMinimum");
+		Assertion.checkNotNull(overrideMessageOpt);
 		//-----
 		minValue = Double.parseDouble(args);
+		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue);
 	}
 
 	/** {@inheritDoc} */
@@ -54,7 +59,7 @@ public final class ConstraintNumberMinimum implements Constraint<Number, Number>
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_NUMBER_MINIMUM, minValue);
+		return errorMessage;
 	}
 
 	/** {@inheritDoc} */

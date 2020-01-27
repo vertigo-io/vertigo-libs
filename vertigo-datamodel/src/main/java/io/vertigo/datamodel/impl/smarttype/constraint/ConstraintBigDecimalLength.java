@@ -19,6 +19,7 @@
 package io.vertigo.datamodel.impl.smarttype.constraint;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import io.vertigo.core.locale.MessageText;
 
@@ -41,17 +42,20 @@ public final class ConstraintBigDecimalLength extends AbstractConstraintLength<B
 	 */
 	private final BigDecimal minValue;
 
+	private final MessageText errorMessage;
+
 	/**
 	 * Constructeur nécessaire pour le ksp.
 	 * @param args Liste des arguments réduite à un seul castable en integer.
 	 * Cet argument correspond au nombre de chifres maximum authorisé sur le BigDecimal.
 	 * maxLength Valeur n du segment ]-10^n, 10^n[ dans lequel est comprise la valeur.
 	 */
-	public ConstraintBigDecimalLength(final String args) {
+	public ConstraintBigDecimalLength(final String args, final Optional<String> overrideMessageOpt) {
 		super(args);
 		//-----
 		maxValue = BigDecimal.valueOf(1L).movePointRight(getMaxLength());
 		minValue = maxValue.negate();
+		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED, minValue, maxValue);
 	}
 
 	/** {@inheritDoc} */
@@ -66,6 +70,6 @@ public final class ConstraintBigDecimalLength extends AbstractConstraintLength<B
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMALLENGTH_EXCEEDED, minValue, maxValue);
+		return errorMessage;
 	}
 }

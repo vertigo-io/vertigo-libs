@@ -18,6 +18,8 @@
  */
 package io.vertigo.datamodel.impl.smarttype.constraint;
 
+import java.util.Optional;
+
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
 
@@ -43,11 +45,13 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 	 */
 	private final long minValue;
 
+	private final MessageText errorMessage;
+
 	/**
 	 * @param args Liste des arguments réduite à un seul castable en long.
 	 * Cet argument correspond au nombre de chifres maximum authorisé sur le Long.
 	 */
-	public ConstraintLongLength(final String args) {
+	public ConstraintLongLength(final String args, final Optional<String> overrideMessageOpt) {
 		super(args);
 		//-----
 		Assertion.checkArgument(getMaxLength() < 19, "Longueur max doit être strictement inférieure à 19");
@@ -58,6 +62,8 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 		}
 		maxValue = tmpMaxValue;
 		minValue = -tmpMaxValue;
+		//---
+		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED, minValue, maxValue);
 	}
 
 	/** {@inheritDoc} */
@@ -73,6 +79,6 @@ public final class ConstraintLongLength extends AbstractConstraintLength<Long> {
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_LONGLENGTH_EXCEEDED, minValue, maxValue);
+		return errorMessage;
 	}
 }

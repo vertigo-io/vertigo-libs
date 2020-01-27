@@ -18,9 +18,11 @@
  */
 package io.vertigo.datamodel.impl.smarttype.constraint;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.datamodel.structure.metamodel.Constraint;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
@@ -33,12 +35,17 @@ import io.vertigo.datamodel.structure.metamodel.Property;
  */
 public final class ConstraintRegex implements Constraint<String, String> {
 	private final Pattern pattern;
+	private final MessageText errorMessage;
 
 	/**
 	 * @param regex Expression régulière
 	 */
-	public ConstraintRegex(final String regex) {
+	public ConstraintRegex(final String regex, final Optional<String> overrideMessageOpt) {
+		Assertion.checkArgNotEmpty(regex);
+		Assertion.checkNotNull(overrideMessageOpt);
+		//---
 		pattern = Pattern.compile(regex);
+		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());
 	}
 
 	/** {@inheritDoc} */
@@ -55,7 +62,7 @@ public final class ConstraintRegex implements Constraint<String, String> {
 	/** {@inheritDoc} */
 	@Override
 	public MessageText getErrorMessage() {
-		return MessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());
+		return errorMessage;
 	}
 
 	/** {@inheritDoc} */
