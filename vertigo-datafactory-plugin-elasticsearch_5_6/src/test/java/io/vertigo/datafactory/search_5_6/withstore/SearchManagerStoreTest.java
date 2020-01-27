@@ -52,7 +52,7 @@ import io.vertigo.datafactory.search.data.domain.ItemDataBase;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.DataStoreFeatures;
@@ -114,7 +114,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addComponent(ItemSearchClient.class)
-						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", TestSearchSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", "io.vertigo.datafactory.search.data.DtDefinitions")
 								.build())

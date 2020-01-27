@@ -35,7 +35,7 @@ import io.vertigo.datamodel.structure.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.ConstraintDefinition;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
-import io.vertigo.dynamo.plugins.environment.StudioModelDefinitionProvider;
+import io.vertigo.dynamo.plugins.environment.StudioDefinitionProvider;
 
 /**
  * Test de l'implémentation standard.
@@ -52,7 +52,7 @@ public final class EAXmiEnvironmentManagerTest extends AbstractTestCaseJU5 {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioDefinitionProvider.class)
 								.addDefinitionResource("xmi", "io/vertigo/dynamo/environment/eaxmi/data/demo.xml")
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/eaxmi/data/domain.kpr")
 								.build())

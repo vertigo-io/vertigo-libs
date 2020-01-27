@@ -34,7 +34,7 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.filestore.model.VFile;
@@ -82,7 +82,7 @@ public final class ExportManagerTest extends AbstractTestCaseJU5 {
 						.withXLSExporter()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", TestExporterSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", "io.vertigo.quarto.services.export.data.DtDefinitions")
 								.build())

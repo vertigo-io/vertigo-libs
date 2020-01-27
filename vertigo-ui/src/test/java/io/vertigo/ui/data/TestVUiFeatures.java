@@ -20,7 +20,7 @@ package io.vertigo.ui.data;
 
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.discovery.ModuleDiscoveryFeatures;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.ui.data.boot.initializer.TestVertigoUiMasterDataDefinitionProvider;
 
 public class TestVUiFeatures extends ModuleDiscoveryFeatures<TestVUiFeatures> {
@@ -39,7 +39,7 @@ public class TestVUiFeatures extends ModuleDiscoveryFeatures<TestVUiFeatures> {
 		super.buildFeatures();
 		//---
 		getModuleConfigBuilder()
-				.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+				.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 						.addDefinitionResource("smarttypes", VuiTestSmartTypes.class.getName())
 						.addDefinitionResource("dtobjects", "io.vertigo.ui.data.domain.DtDefinitions")
 						.build())

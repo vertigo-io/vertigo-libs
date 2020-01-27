@@ -34,7 +34,7 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 
@@ -123,7 +123,7 @@ public final class MyNodeConfig {
 				.addModule(accountFeatures.build())
 				.addModule(ModuleConfig.builder("app")
 						.addDefinitionProvider(
-								DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+								DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 										.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
 										.addDefinitionResource("dtobjects", DtDefinitions.class.getName())
 										.build())

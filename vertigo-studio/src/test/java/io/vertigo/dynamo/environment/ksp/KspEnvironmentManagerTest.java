@@ -28,7 +28,7 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.config.NodeConfigBuilder;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.dynamo.plugins.environment.StudioModelDefinitionProvider;
+import io.vertigo.dynamo.plugins.environment.StudioDefinitionProvider;
 
 /**
  * Test ksp model.
@@ -76,7 +76,7 @@ public final class KspEnvironmentManagerTest {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(ModuleConfig.builder("myModule")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioDefinitionProvider.class)
 								.addDefinitionResource("kpr", kprPath)
 								.build())
 						.build());

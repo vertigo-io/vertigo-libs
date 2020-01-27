@@ -2,7 +2,7 @@ package io.vertigo.struts2;
 
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.Features;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.struts2.boot.initializer.TestStruts2MasterDataDefinitionProvider;
 import io.vertigo.struts2.data.Struts2TestSmartTypes;
 import io.vertigo.struts2.data.dao.movies.MovieDAO;
@@ -20,7 +20,7 @@ public class TestStrus2Features extends Features<TestStrus2Features> {
 	@Override
 	protected void buildFeatures() {
 		getModuleConfigBuilder()
-				.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+				.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 						.addDefinitionResource("smarttypes", Struts2TestSmartTypes.class.getName())
 						.addDefinitionResource("dtobjects", "io.vertigo.struts2.data.domain.DtDefinitions")
 						.build())

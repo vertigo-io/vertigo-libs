@@ -38,7 +38,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.data.TestSmartTypes;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
@@ -67,7 +67,7 @@ public final class TaskManagerTest extends AbstractTestCaseJU5 {
 				.addModule(new DataModelFeatures().build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addComponent(TestComponentTaskAnnotation.class)
-						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
 								.build())
 						.addDefinitionProvider(TaskDefinitionProvider.class)

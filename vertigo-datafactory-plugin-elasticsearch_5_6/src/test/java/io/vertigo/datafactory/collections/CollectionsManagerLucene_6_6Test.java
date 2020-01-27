@@ -26,7 +26,7 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.datafactory.DataFactoryFeatures;
 import io.vertigo.datafactory.collections.data.TestCollectionsSmartTypes;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 
 /**
  * @author npiedeloup
@@ -49,7 +49,7 @@ public class CollectionsManagerLucene_6_6Test extends CollectionsManagerTest {
 						.addPlugin(io.vertigo.datafactory.plugins.collections.lucene_6_6.LuceneIndexPlugin.class)
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", TestCollectionsSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", "io.vertigo.datafactory.collections.data.DtDefinitions")
 								.build())

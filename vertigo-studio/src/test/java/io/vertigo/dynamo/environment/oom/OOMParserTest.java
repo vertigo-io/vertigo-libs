@@ -28,7 +28,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datamodel.structure.metamodel.association.AssociationNNDefinition;
 import io.vertigo.datamodel.structure.metamodel.association.AssociationSimpleDefinition;
-import io.vertigo.dynamo.plugins.environment.StudioModelDefinitionProvider;
+import io.vertigo.dynamo.plugins.environment.StudioDefinitionProvider;
 
 /**
  * Test de lecture d'un OOM.
@@ -43,7 +43,7 @@ public class OOMParserTest extends AbstractTestCaseJU5 {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/oom/data/domain.kpr")
 								.addDefinitionResource("oom", "io/vertigo/dynamo/environment/oom/data/Associations.oom")
 								.build())

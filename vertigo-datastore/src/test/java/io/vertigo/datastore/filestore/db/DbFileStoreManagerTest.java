@@ -20,7 +20,7 @@ import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.sql.SqlUtil;
@@ -104,7 +104,7 @@ public class DbFileStoreManagerTest extends AbstractFileStoreManagerTest {
 								Param.of("fileInfoClass", FileInfoTemp.class.getName()))
 						.build())
 				.addModule(ModuleConfig.builder("definition")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", DtDefinitions.class.getName())
 								.build())

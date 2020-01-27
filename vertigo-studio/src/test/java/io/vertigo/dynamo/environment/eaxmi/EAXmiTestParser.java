@@ -28,7 +28,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datamodel.structure.metamodel.association.AssociationNNDefinition;
 import io.vertigo.datamodel.structure.metamodel.association.AssociationSimpleDefinition;
-import io.vertigo.dynamo.plugins.environment.StudioModelDefinitionProvider;
+import io.vertigo.dynamo.plugins.environment.StudioDefinitionProvider;
 
 /**
  * Test de lecture d'un OOM.
@@ -44,7 +44,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU5 {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioDefinitionProvider.class)
 								.addDefinitionResource("xmi", "io/vertigo/dynamo/environment/eaxmi/data/associations.xml")
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/eaxmi/data/domain.kpr")
 								.build())

@@ -31,7 +31,7 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.environment.multi.data.DtDefinitions;
-import io.vertigo.dynamo.plugins.environment.StudioModelDefinitionProvider;
+import io.vertigo.dynamo.plugins.environment.StudioDefinitionProvider;
 
 /**
  * Test de l'implémentation standard.
@@ -49,7 +49,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 	public void testFirst() {
 		final NodeConfig nodeConfig = prepareDefaultNodeConfigBuilder()
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
 								.build())
 						.build())
@@ -65,7 +65,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 	public void testMergedResources() {
 		final NodeConfig nodeConfig = prepareDefaultNodeConfigBuilder()
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
 								.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName()).build())
 						.build())
@@ -83,7 +83,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 	public void testSplittedModules() {
 		final NodeConfig nodeConfig = prepareDefaultNodeConfigBuilder()
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioDefinitionProvider.class)
 								.addDefinitionResource("kpr", "io/vertigo/dynamo/environment/multi/data/execution.kpr")
 								.addDefinitionResource("classes", DtDefinitions.class.getCanonicalName())
 								.build())

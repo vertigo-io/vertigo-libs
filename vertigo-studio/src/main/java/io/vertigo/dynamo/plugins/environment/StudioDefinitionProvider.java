@@ -55,7 +55,7 @@ import io.vertigo.dynamo.plugins.environment.registries.DynamoDynamicRegistry;
  *
  * @author pchretien
  */
-public class StudioModelDefinitionProvider implements DefinitionProvider {
+public class StudioDefinitionProvider implements DefinitionProvider {
 
 	private final Map<String, Loader> loadersByType;
 	private final List<DefinitionResourceConfig> definitionResourceConfigs = new ArrayList<>();
@@ -66,7 +66,7 @@ public class StudioModelDefinitionProvider implements DefinitionProvider {
 	 * @param encoding the encoding to use for reading ksp files
 	 */
 	@Inject
-	public StudioModelDefinitionProvider(final ResourceManager resourceManager, @ParamValue("encoding") final Optional<String> encoding, @ParamValue("constFieldName") final Optional<Boolean> constFieldName) {
+	public StudioDefinitionProvider(final ResourceManager resourceManager, @ParamValue("encoding") final Optional<String> encoding, @ParamValue("constFieldName") final Optional<Boolean> constFieldName) {
 		loadersByType = new MapBuilder<String, Loader>()
 				.put("kpr", new KprLoader(resourceManager, encoding))
 				.put("oom", new OOMLoader(constFieldName.orElse(true), resourceManager))

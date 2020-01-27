@@ -40,7 +40,7 @@ import io.vertigo.core.util.ListBuilder;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
@@ -99,7 +99,7 @@ public final class MultiStoreManagerTest extends AbstractTestCaseJU5 {
 								Param.of("connectionName", "otherBase"))
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", OtherStoreDtDefinitions.class.getName())
 								.build())

@@ -30,7 +30,7 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.smarttype.data.DtDefinitions;
 import io.vertigo.datamodel.smarttype.data.TestSmartTypes;
 import io.vertigo.datamodel.smarttype.data.domain.Artist;
@@ -52,7 +52,7 @@ public class VCollectorsTest extends AbstractTestCaseJU5 {
 				.withLocales("fr_FR")
 				.endBoot()
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", DtDefinitions.class.getName())
 								.build())

@@ -34,7 +34,7 @@ import io.vertigo.datafactory.search.data.ItemSearchClient;
 import io.vertigo.datafactory.search.data.TestSearchSmartTypes;
 import io.vertigo.datafactory.search.data.domain.ItemSearchLoader;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
 
 public final class MyNodeConfig {
@@ -95,7 +95,7 @@ public final class MyNodeConfig {
 				.addModule(dataFactoryFeatures.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addComponent(ItemSearchClient.class)
-						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", TestSearchSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", "io.vertigo.datafactory.search.data.DtDefinitions")
 								.build())

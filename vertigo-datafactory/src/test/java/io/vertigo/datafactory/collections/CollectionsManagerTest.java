@@ -41,7 +41,7 @@ import io.vertigo.datafactory.collections.data.TestCollectionsSmartTypes;
 import io.vertigo.datafactory.collections.data.domain.SmartItem;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
@@ -82,7 +82,7 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 						.build())
 
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", TestCollectionsSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", "io.vertigo.datafactory.collections.data.DtDefinitions")
 								.build())

@@ -21,7 +21,7 @@ import io.vertigo.datamodel.impl.smarttype.loaders.DtObjectsLoader;
 import io.vertigo.datamodel.impl.smarttype.loaders.Loader;
 import io.vertigo.datamodel.impl.smarttype.loaders.SmartTypesLoader;
 
-public class NewModelDefinitionProvider implements DefinitionProvider {
+public class ModelDefinitionProvider implements DefinitionProvider {
 
 	private final Map<String, Loader> loadersByType;
 	private final List<DefinitionResourceConfig> definitionResourceConfigs = new ArrayList<>();
@@ -31,7 +31,7 @@ public class NewModelDefinitionProvider implements DefinitionProvider {
 	 * @param resourceManager the component for finding resources
 	 */
 	@Inject
-	public NewModelDefinitionProvider(final ResourceManager resourceManager) {
+	public ModelDefinitionProvider(final ResourceManager resourceManager) {
 		loadersByType = new MapBuilder<String, Loader>()
 				.put("smarttypes", new SmartTypesLoader())
 				.put("dtobjects", new DtObjectsLoader())

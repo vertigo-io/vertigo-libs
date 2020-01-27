@@ -38,7 +38,7 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
@@ -91,7 +91,7 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 						.withTaskProxyMethod()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", "io.vertigo.datastore.task.data.DtDefinitions")
 								.build())

@@ -43,7 +43,7 @@ import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.structure.model.DtObject;
 
 /**
@@ -80,7 +80,7 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addComponent(ItemSearchClient.class)
-						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", TestSearchSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", "io.vertigo.datafactory.search.data.DtDefinitions")
 								.build())

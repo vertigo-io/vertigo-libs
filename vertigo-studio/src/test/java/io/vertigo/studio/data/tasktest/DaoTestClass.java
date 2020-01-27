@@ -41,7 +41,7 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
-import io.vertigo.dynamo.plugins.environment.StudioModelDefinitionProvider;
+import io.vertigo.dynamo.plugins.environment.StudioDefinitionProvider;
 import io.vertigo.studio.mda.DataBaseScriptUtil;
 import io.vertigo.studio.plugins.mda.task.test.TaskTestDaoChecker;
 import io.vertigo.studio.plugins.mda.task.test.TaskTestDummyGenerator;
@@ -87,7 +87,7 @@ public class DaoTestClass extends AbstractTestCaseJU5 {
 						// to use this class for actual test target/javagen must contains those two dao classes and target/javagen must be included as a source folder
 						// .addComponent(CarDAO.class)
 						.addComponent(DaoPAO.class)
-						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioDefinitionProvider.class)
 								.addDefinitionResource("classes", "io.vertigo.studio.data.DtDefinitions")
 								.addDefinitionResource("kpr", "io/vertigo/studio/data/model.kpr")
 								.addDefinitionResource("kpr", "io/vertigo/studio/data/tasks.kpr")

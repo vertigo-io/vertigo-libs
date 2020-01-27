@@ -23,7 +23,7 @@ public class SmartTypeDefinitionProviderTest extends AbstractTestCaseJU5 {
 		return NodeConfig.builder()
 				.addModule(new DataModelFeatures().build())
 				.addModule(ModuleConfig.builder("myModule")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", TestSmartTypes.class.getCanonicalName())
 								.addDefinitionResource("dtobjects", Base.class.getPackage().getName() + "*")
 								.build())

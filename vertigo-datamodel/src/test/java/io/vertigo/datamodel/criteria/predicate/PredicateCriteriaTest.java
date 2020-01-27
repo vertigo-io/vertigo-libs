@@ -38,7 +38,7 @@ import io.vertigo.datamodel.criteria.data.CriteriaTestSmartTypes;
 import io.vertigo.datamodel.criteria.data.DtDefinitions;
 import io.vertigo.datamodel.criteria.data.movies.Movie2;
 import io.vertigo.datamodel.criteria.data.movies.Movie2DataBase;
-import io.vertigo.datamodel.smarttype.NewModelDefinitionProvider;
+import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.structure.metamodel.DtFieldName;
 
 /**
@@ -56,7 +56,7 @@ public final class PredicateCriteriaTest extends AbstractTestCaseJU5 {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(NewModelDefinitionProvider.class)
+						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", CriteriaTestSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", DtDefinitions.class.getName())
 								.build())
