@@ -32,12 +32,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.Selector;
 import io.vertigo.core.util.Selector.ClassConditions;
+import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition.Scope;
@@ -45,8 +45,8 @@ import io.vertigo.datamodel.smarttype.annotations.Mapper;
 import io.vertigo.datamodel.structure.metamodel.ComputedExpression;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtDefinitionBuilder;
-import io.vertigo.datamodel.structure.metamodel.DtStereotype;
 import io.vertigo.datamodel.structure.metamodel.DtField.FieldType;
+import io.vertigo.datamodel.structure.metamodel.DtStereotype;
 import io.vertigo.datamodel.structure.metamodel.association.AssociationNNDefinition;
 import io.vertigo.datamodel.structure.metamodel.association.AssociationNode;
 import io.vertigo.datamodel.structure.metamodel.association.AssociationSimpleDefinition;
@@ -58,12 +58,11 @@ import io.vertigo.datamodel.structure.model.Fragment;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.stereotype.DataSpace;
 import io.vertigo.datamodel.structure.util.AssociationUtil;
-import io.vertigo.core.util.StringUtil;
 
 /**
  * Lecture des annotations présentes sur les objets métier.
  *
- * @author pchretien
+ * @author pchretien, mlaroche
  */
 public final class DtObjectsLoader implements Loader {
 	private static final String DT_DEFINITION_PREFIX = DefinitionUtil.getPrefix(DtDefinition.class);
@@ -106,12 +105,7 @@ public final class DtObjectsLoader implements Loader {
 	private static void load(final Class<DtObject> clazz, final Map<String, DynamicDefinition> dslDefinitionRepository) {
 		Assertion.checkNotNull(dslDefinitionRepository);
 		//-----
-		final String simpleName = clazz.getSimpleName();
-		final String packageName = clazz.getPackage().getName();
-		final String dtDefinitionName = DT_DEFINITION_PREFIX + simpleName;
-
 		parseDynamicDefinitionBuilder(clazz, dslDefinitionRepository);
-
 	}
 
 	private static void parseDynamicDefinitionBuilder(final Class<DtObject> clazz, final Map<String, DynamicDefinition> dynamicModelRepository) {
@@ -316,22 +310,7 @@ public final class DtObjectsLoader implements Loader {
 									final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA));
 									final AssociationNode associationNodeB = new AssociationNode(dtDefinitionB, navigabilityB, roleB, labelB, AssociationUtil.isMultiple(multiplicityB), AssociationUtil.isNotNull(multiplicityB));
 
-									final AssociationSimpleDefinition associationSimpleDefinition = new AssociationSimpleDefinition(association.name(), fkFieldName, associationNodeA, associationNodeB);
-
-									final AssociationNode primaryAssociationNode = associationSimpleDefinition.getPrimaryAssociationNode();
-									final AssociationNode foreignAssociationNode = associationSimpleDefinition.getForeignAssociationNode();
-
-									final DtDefinition fkDefinition = primaryAssociationNode.getDtDefinition();
-
-									//LOGGER.trace("{} : ajout d'une FK [{}] sur la table '{}'", association.name(), fkFieldName, foreignAssociationNode.getDtDefinition().getName());
-
-									final String label = primaryAssociationNode.getLabel();
-									final Cardinality fieldCardinality = primaryAssociationNode.isNotNull() ? Cardinality.ONE : Cardinality.OPTIONAL_OR_NULLABLE;
-									//dtDefinitionBuilders.get(foreignAssociationNode.getDtDefinition().getName())
-									//		.addForeignKey(fkFieldName, label, fkDefinition.getIdField().get().getDomain(), fieldCardinality, fkDefinition.getName());
-									//On estime qu'une FK n'est ni une colonne de tri ni un champ d'affichage
-
-									return associationSimpleDefinition;
+									return new AssociationSimpleDefinition(association.name(), fkFieldName, associationNodeA, associationNodeB);
 								}));
 			}
 		} else if (annotation instanceof io.vertigo.datamodel.structure.stereotype.AssociationNN) {
