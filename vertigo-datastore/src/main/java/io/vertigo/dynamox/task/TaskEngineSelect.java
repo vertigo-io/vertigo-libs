@@ -95,7 +95,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 		switch (outAttribute.getDomain().getScope()) {
 			case DATA_OBJECT:
 				if (outAttribute.getCardinality().hasMany()) {
-					final DtList<?> dtList = result
+					final DtList<?> dtList = (DtList<?>) result
 							.stream()
 							.map(DtObject.class::cast)
 							.collect(VCollectors.toDtList(outAttribute.getDomain().getJavaClass()));
