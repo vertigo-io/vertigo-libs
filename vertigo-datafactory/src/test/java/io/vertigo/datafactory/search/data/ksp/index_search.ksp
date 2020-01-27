@@ -7,13 +7,6 @@ create IndexDefinition IdxItem {
     loaderId : "ItemSearchLoader"
 }
 
-create IndexDefinition IdxDynaItem {
-    keyConcept : DtItem
-    dtIndex : DtItem
-    indexCopyTo allText 	{ from: "manufacturer,model,description,year,kilo,price,motorType" }
-    loaderId : "ItemSearchLoader"
-}
-
 create FacetDefinition FctDescriptionItem {
 	dtDefinition : DtItem 
 	fieldName : "description" 
