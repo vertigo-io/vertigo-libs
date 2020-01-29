@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.dynamo.domain.metamodel.StudioDtField;
@@ -50,7 +50,7 @@ public final class SqlStudioDtDefinitionModel {
 
 		final Optional<StudioDtField> pkField = dtDefinition.getIdField();
 		if (pkField.isPresent()) {
-			final DataType pkDataType = DataType.of(pkField.get().getDomain().getJavaClass()).get();
+			final BasicType pkDataType = BasicType.of(pkField.get().getDomain().getJavaClass()).get();
 			hasSequence = pkDataType.isNumber();
 		} else {
 			hasSequence = false;

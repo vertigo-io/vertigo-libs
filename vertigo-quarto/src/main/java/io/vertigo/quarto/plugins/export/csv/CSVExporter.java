@@ -29,7 +29,7 @@ import java.util.Map;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.codec.Encoder;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -157,7 +157,7 @@ final class CSVExporter {
 			final DtField dtField = exportColumn.getDtField();
 			out.write(sep);
 			sValue = ExportUtil.getText(entityStoreManager, modelManager, referenceCache, denormCache, dto, exportColumn);
-			if (dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getTargetDataType() == DataType.BigDecimal) {
+			if (dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getTargetDataType() == BasicType.BigDecimal) {
 				out.write(encodeNumber(sValue));
 			} else {
 				out.write(encodeString(sValue));

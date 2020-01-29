@@ -27,7 +27,9 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.OptionalInt;
 
 import javax.inject.Inject;
@@ -37,8 +39,10 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.DataStream;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
+import io.vertigo.database.sql.data.Mail;
 import io.vertigo.database.sql.data.Movie;
 import io.vertigo.database.sql.data.MovieInfo;
 import io.vertigo.database.sql.data.Movies;
@@ -68,6 +72,34 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 			+ "release_local_date date , "
 			+ "release_instant timestamp , "
 			+ "icon blob );";
+
+	private static final Map<Class, BasicTypeAdapter> MAIL_ADAPTER = new HashMap<Class, BasicTypeAdapter>() {
+		private static final long serialVersionUID = 1L;
+
+		{
+			put(Mail.class, new BasicTypeAdapter<Mail, String>() {
+				@Override
+				public Mail toJava(final String sqlValue) {
+					return sqlValue == null ? null : new Mail(sqlValue);
+				}
+
+				@Override
+				public String toBasic(final Mail mail) {
+					return mail != null ? mail.toString() : null;
+				}
+
+				@Override
+				public Class<Mail> getJavaType() {
+					return Mail.class;
+				}
+
+				@Override
+				public Class<String> getBasicType() {
+					return String.class;
+				}
+			});
+		}
+	};
 	@Inject
 	protected SqlDataBaseManager dataBaseManager;
 
@@ -125,7 +157,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 
 	protected void execpreparedStatement(final SqlConnection connection, final String sql) throws SQLException {
 		dataBaseManager
-				.executeUpdate(SqlStatement.builder(sql).build(), connection);
+				.executeUpdate(SqlStatement.builder(sql).build(), MAIL_ADAPTER, connection);
 	}
 
 	private void insert(
@@ -137,6 +169,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 						SqlStatement.builder(INSERT_INTO_MOVIE_VALUES)
 								.bind("movie", Movie.class, movie)
 								.build(),
+						MAIL_ADAPTER,
 						connection);
 	}
 
@@ -230,7 +263,9 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 			return dataBaseManager
 					.executeQuery(
 							SqlStatement.builder(sql).build(),
-							dataType, limit,
+							dataType,
+							MAIL_ADAPTER,
+							limit,
 							connection);
 		} finally {
 			connection.release();
@@ -281,6 +316,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 					.bind("movies", List.class, moviesParams)
 					.build(),
 					Movie.class,
+					MAIL_ADAPTER,
 					2,
 					connection);
 
@@ -303,6 +339,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 					.bind("title", String.class, Movies.TITLE_MOVIE_1)
 					.build(),
 					Movie.class,
+					MAIL_ADAPTER,
 					1,
 					connection);
 
@@ -327,6 +364,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 						.bind("title", String.class, Movies.TITLE_MOVIE_1)
 						.build(),
 						Movie.class,
+						MAIL_ADAPTER,
 						1,
 						connection);
 
@@ -371,7 +409,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 						.bind("movie", Movie.class, movie)
 						.nextLine();
 			}
-			result = dataBaseManager.executeBatch(sqlStatementBuilder.build(), connection);
+			result = dataBaseManager.executeBatch(sqlStatementBuilder.build(), MAIL_ADAPTER, connection);
 			connection.commit();
 		} finally {
 			connection.release();
@@ -463,6 +501,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 							generationMode,
 							"id",
 							Long.class,
+							MAIL_ADAPTER,
 							connection)
 					.getVal2();
 			connection.commit();

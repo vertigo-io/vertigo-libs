@@ -1,7 +1,7 @@
 package io.vertigo.datastore.entitystore.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
@@ -9,7 +9,7 @@ import io.vertigo.datamodel.structure.stereotype.Field;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datamodel.structure.util.JsonMapper;
 
-@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
+@Mapper(clazz = JsonMapper.class, dataType = BasicType.String)
 public final class SmartItem implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;

@@ -251,6 +251,13 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	}
 
 	/**
+	 * @return Manager de store des entités
+	 */
+	protected final EntityStoreManager getEntityStoreManager() {
+		return entityStoreManager;
+	}
+
+	/**
 	 * Il est possible de surcharger la configuration SQL d'un service.
 	 * @return Configuration SQL.
 	 */

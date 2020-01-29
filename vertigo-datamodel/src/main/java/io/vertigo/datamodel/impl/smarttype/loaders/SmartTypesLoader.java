@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
@@ -51,8 +51,8 @@ public class SmartTypesLoader implements Loader {
 		final String smartTypeName = "STy" + field.getName();
 		final Scope scope;
 		final Class targetJavaClass = field.getAnnotation(io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition.class).value();
-		final Optional<DataType> dataTypeOpt = DataType.of(targetJavaClass);
-		final DataType targetDataType;
+		final Optional<BasicType> dataTypeOpt = BasicType.of(targetJavaClass);
+		final BasicType targetDataType;
 		final FormatterConfig formatterConfig;
 		final List<ConstraintConfig> constraintConfigs;
 		final Optional<Class<? extends DataTypeMapper>> dataTypeMapperOpt;

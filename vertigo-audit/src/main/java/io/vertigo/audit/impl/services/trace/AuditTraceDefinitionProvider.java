@@ -21,7 +21,7 @@ package io.vertigo.audit.impl.services.trace;
 import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
@@ -37,13 +37,13 @@ public final class AuditTraceDefinitionProvider implements SimpleDefinitionProvi
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final SmartTypeDefinition smartTypeAuditId = SmartTypeDefinition.builder("STyXAuditId", DataType.Long).build();
-		final SmartTypeDefinition smartTypeAuditCategory = SmartTypeDefinition.builder("STyXAuditCategory", DataType.String).build();
-		final SmartTypeDefinition smartTypeAuditUser = SmartTypeDefinition.builder("STyXAuditUser", DataType.String).build();
-		final SmartTypeDefinition smartTypeAuditInstant = SmartTypeDefinition.builder("STyXAuditInstant", DataType.Instant).build();
-		final SmartTypeDefinition smartTypeAuditItem = SmartTypeDefinition.builder("STyXAuditItem", DataType.Long).build();
-		final SmartTypeDefinition smartTypeAuditMessage = SmartTypeDefinition.builder("STyXAuditMessage", DataType.String).build();
-		final SmartTypeDefinition smartTypeAuditContext = SmartTypeDefinition.builder("STyXAuditContext", DataType.String).build();
+		final SmartTypeDefinition smartTypeAuditId = SmartTypeDefinition.builder("STyXAuditId", BasicType.Long).build();
+		final SmartTypeDefinition smartTypeAuditCategory = SmartTypeDefinition.builder("STyXAuditCategory", BasicType.String).build();
+		final SmartTypeDefinition smartTypeAuditUser = SmartTypeDefinition.builder("STyXAuditUser", BasicType.String).build();
+		final SmartTypeDefinition smartTypeAuditInstant = SmartTypeDefinition.builder("STyXAuditInstant", BasicType.Instant).build();
+		final SmartTypeDefinition smartTypeAuditItem = SmartTypeDefinition.builder("STyXAuditItem", BasicType.Long).build();
+		final SmartTypeDefinition smartTypeAuditMessage = SmartTypeDefinition.builder("STyXAuditMessage", BasicType.String).build();
+		final SmartTypeDefinition smartTypeAuditContext = SmartTypeDefinition.builder("STyXAuditContext", BasicType.String).build();
 
 		final DtDefinition auditTraceDtDefinition = DtDefinition.builder("DtAuditTrace")
 				.addIdField("id", "id", smartTypeAuditId)

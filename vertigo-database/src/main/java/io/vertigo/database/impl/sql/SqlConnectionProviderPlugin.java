@@ -18,6 +18,8 @@
  */
 package io.vertigo.database.impl.sql;
 
+import java.util.Collections;
+
 import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthMeasureBuilder;
@@ -53,7 +55,9 @@ public interface SqlConnectionProviderPlugin extends SqlConnectionProvider, Plug
 			try {
 				sqlDataBaseManager.executeQuery(
 						SqlStatement.builder(testQuery).build(),
-						Integer.class, 1,
+						Integer.class,
+						Collections.emptyMap(),
+						1,
 						connection);
 			} finally {
 				connection.release();

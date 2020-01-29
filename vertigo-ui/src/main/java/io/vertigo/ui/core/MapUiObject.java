@@ -30,7 +30,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Home;
 import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -140,7 +140,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	}
 
 	private static boolean isBoolean(final DtField dtField) {
-		return dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getTargetDataType() == DataType.Boolean;
+		return dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getTargetDataType() == BasicType.Boolean;
 	}
 
 	private static boolean isAboutDate(final DtField dtField) {

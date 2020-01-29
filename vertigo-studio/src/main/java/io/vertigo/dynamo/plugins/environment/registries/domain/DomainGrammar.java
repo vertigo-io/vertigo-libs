@@ -54,7 +54,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.dynamo.plugins.environment.dsl.dynamic.DslDefinition;
 import io.vertigo.dynamo.plugins.environment.dsl.entity.DslEntity;
@@ -222,8 +222,8 @@ public final class DomainGrammar implements DslGrammar {
 	public List<DslDefinition> getRootDefinitions() {
 		//We are listing all primitives types
 		final List<String> types = new ListBuilder()
-				.addAll(Arrays.stream(DataType.values())
-						.map(DataType::name)
+				.addAll(Arrays.stream(BasicType.values())
+						.map(BasicType::name)
 						.collect(Collectors.toList()))
 				.add("DtObject")
 				.add("DtList")

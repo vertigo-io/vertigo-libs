@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.criteria.CriterionLimit;
@@ -77,7 +77,7 @@ public final class DtListPatternFilterUtil {
 		final String fieldName = parsedFilter[1]; //attention parsedFilter[0] = filtre entier
 		final DtField dtField = dtDefinition.getField(fieldName);
 		Assertion.checkState(dtField.getSmartTypeDefinition().getScope().isPrimitive(), "Only primitive types can be used in pattern");
-		final DataType dataType = dtField.getSmartTypeDefinition().getTargetDataType();
+		final BasicType dataType = dtField.getSmartTypeDefinition().getTargetDataType();
 
 		switch (filterPattern) {
 			case Range:
@@ -115,7 +115,7 @@ public final class DtListPatternFilterUtil {
 		return Optional.of(groups);
 	}
 
-	private static <D extends DtObject> Predicate<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final DataType dataType) {
+	private static <D extends DtObject> Predicate<D> createDtListTermFilter(final String[] parsedFilter, final String fieldName, final BasicType dataType) {
 		final Serializable filterValue = convertToValue(parsedFilter[2], dataType, false);
 		final Predicate predicate;
 		if (filterValue != null) {
@@ -129,7 +129,7 @@ public final class DtListPatternFilterUtil {
 	private static <D extends DtObject> Predicate<D> createDtListRangeFilter(
 			final String[] parsedFilter,
 			final String fieldName,
-			final DataType dataType) {
+			final BasicType dataType) {
 		final boolean minIncluded = "[".equals(parsedFilter[2]);
 		final Serializable minValue = convertToValue(parsedFilter[3], dataType, true);
 		final Serializable maxValue = convertToValue(parsedFilter[4], dataType, true);
@@ -141,7 +141,7 @@ public final class DtListPatternFilterUtil {
 		return predicate;
 	}
 
-	private static Serializable convertToValue(final String valueToConvert, final DataType dataType, final boolean acceptJoker) {
+	private static Serializable convertToValue(final String valueToConvert, final BasicType dataType, final boolean acceptJoker) {
 		final String stringValue = valueToConvert.trim();
 		if (acceptJoker && "*".equals(stringValue) || "".equals(stringValue)) {
 			return null;//pas de test
@@ -151,7 +151,7 @@ public final class DtListPatternFilterUtil {
 	}
 
 	/** Same as Criterion. */
-	private static Serializable valueOf(final DataType dataType, final String stringValue) {
+	private static Serializable valueOf(final BasicType dataType, final String stringValue) {
 		switch (dataType) {
 			case Integer:
 				return Integer.valueOf(stringValue);

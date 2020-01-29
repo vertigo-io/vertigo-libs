@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.task.metamodel.TaskAttribute;
@@ -104,7 +104,7 @@ final class TaskPopulator {
 	private Object getDefaultPrimitiveValue(final TaskAttribute attribute) {
 		Object item;
 		//we are primitives only
-		switch (DataType.of(attribute.getSmartTypeDefinition().getJavaClass()).get()) {
+		switch (BasicType.of(attribute.getSmartTypeDefinition().getJavaClass()).get()) {
 			case Boolean:
 				item = Boolean.TRUE;
 				break;

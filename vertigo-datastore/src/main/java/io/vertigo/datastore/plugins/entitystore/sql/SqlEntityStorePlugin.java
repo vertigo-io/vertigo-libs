@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Home;
@@ -130,7 +130,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 		this.taskManager = taskManager;
 		sqlDialect = sqlDataBaseManager.getConnectionProvider(connectionName).getDataBase().getSqlDialect();
 		criteriaEncoder = new SqlCriteriaEncoder(sqlDialect);
-		integerSmartType = SmartTypeDefinition.builder("STyIntegerSql", DataType.Integer).build();
+		integerSmartType = SmartTypeDefinition.builder("STyIntegerSql", BasicType.Integer).build();
 	}
 
 	/**
@@ -470,7 +470,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 		final String entityName = getEntityName(dtDefinition);
 		final String tableName = StringUtil.camelToConstCase(entityName);
 		final String taskName = TASK.TkCount + entityName;
-		final SmartTypeDefinition countSmartType = SmartTypeDefinition.builder("STyCount", DataType.Long).build();
+		final SmartTypeDefinition countSmartType = SmartTypeDefinition.builder("STyCount", BasicType.Long).build();
 
 		final String request = "select count(*) from " + tableName;
 

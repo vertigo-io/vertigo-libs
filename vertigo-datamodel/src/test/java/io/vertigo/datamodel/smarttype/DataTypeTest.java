@@ -24,7 +24,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 
 /**
  * @author pchretien
@@ -33,9 +33,9 @@ public final class DataTypeTest {
 
 	@Test
 	public void testDataTypes() {
-		Arrays.stream(DataType.values())
+		Arrays.stream(BasicType.values())
 				.forEach(dataType -> {
-					Assertions.assertEquals(Optional.of(dataType), DataType.of(dataType.getJavaClass()));
+					Assertions.assertEquals(Optional.of(dataType), BasicType.of(dataType.getJavaClass()));
 				});
 
 	}

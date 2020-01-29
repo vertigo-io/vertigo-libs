@@ -20,8 +20,10 @@ package io.vertigo.database.sql;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.OptionalInt;
 
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.component.Manager;
 import io.vertigo.database.sql.connection.SqlConnection;
@@ -56,6 +58,7 @@ public interface SqlDataBaseManager extends Manager {
 	<O> List<O> executeQuery(
 			SqlStatement sqlStatement,
 			final Class<O> dataType,
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final Integer limit,
 			final SqlConnection connection) throws SQLException;
 
@@ -68,6 +71,7 @@ public interface SqlDataBaseManager extends Manager {
 	 */
 	int executeUpdate(
 			SqlStatement sqlStatement,
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException;
 
 	/**
@@ -85,6 +89,7 @@ public interface SqlDataBaseManager extends Manager {
 			final GenerationMode generationMode,
 			final String columnName,
 			final Class<O> dataType,
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException;
 
 	/**
@@ -97,5 +102,6 @@ public interface SqlDataBaseManager extends Manager {
 	 */
 	OptionalInt executeBatch(
 			SqlStatement sqlStatement,
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException;
 }

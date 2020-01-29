@@ -20,10 +20,10 @@ package io.vertigo.database.impl.sql;
 
 import java.util.List;
 
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.node.component.Plugin;
-import io.vertigo.database.sql.mapper.SqlAdapter;
 
 public interface SqlAdapterSupplierPlugin extends Plugin {
 
-	List<SqlAdapter> getAdapters();
+	List<BasicTypeAdapter> getAdapters();
 }

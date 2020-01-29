@@ -27,16 +27,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.OptionalInt;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.process.ProcessAnalyticsTracer;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.database.impl.sql.mapper.SqlMapper;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
@@ -66,18 +65,15 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	 * @param localeManager Manager des messages localisés
 	 * @param analyticsManager Manager de la performance applicative
 	 * @param sqlConnectionProviderPlugins List of connectionProviderPlugin. Names must be unique.
-	 * @param sqlAdapterSupplierPlugins List of adapterSupplierPlugin. Names must be unique.
 	 */
 	@Inject
 	public SqlDataBaseManagerImpl(
 			final LocaleManager localeManager,
 			final AnalyticsManager analyticsManager,
-			final List<SqlConnectionProviderPlugin> sqlConnectionProviderPlugins,
-			final List<SqlAdapterSupplierPlugin> sqlAdapterSupplierPlugins) {
+			final List<SqlConnectionProviderPlugin> sqlConnectionProviderPlugins) {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkNotNull(analyticsManager);
 		Assertion.checkNotNull(sqlConnectionProviderPlugins);
-		Assertion.checkNotNull(sqlAdapterSupplierPlugins);
 		//-----
 		this.analyticsManager = analyticsManager;
 		connectionProviderPluginMap = new HashMap<>();
@@ -88,10 +84,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		}
 		localeManager.add("io.vertigo.database.impl.sql.DataBase", io.vertigo.database.impl.sql.Resources.values());
 		//---
-		sqlStatementDriver = new SqlStatementDriver(new SqlMapper(sqlAdapterSupplierPlugins
-				.stream()
-				.flatMap(plugin -> plugin.getAdapters().stream())
-				.collect(Collectors.toList())));
+		sqlStatementDriver = new SqlStatementDriver();
 	}
 
 	/** {@inheritDoc} */
@@ -107,6 +100,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	public <O> List<O> executeQuery(
 			final SqlStatement sqlStatement,
 			final Class<O> dataType,
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final Integer limit,
 			final SqlConnection connection) throws SQLException {
 		Assertion.checkNotNull(sqlStatement);
@@ -114,9 +108,9 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		Assertion.checkNotNull(connection);
 		//-----
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
-			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), connection);
+			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), basicTypeAdapters, connection);
 			//-----
-			return traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecuteQuery(statement, tracer, dataType, limit, connection));
+			return traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecuteQuery(statement, tracer, dataType, basicTypeAdapters, limit, connection));
 		} catch (final WrappedSqlException e) {
 			//SQl Exception is unWrapped
 			throw e.getSqlException();
@@ -127,13 +121,14 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 			final PreparedStatement statement,
 			final ProcessAnalyticsTracer tracer,
 			final Class<O> dataType,
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final Integer limit,
 			final SqlConnection connection) {
 		// ResultSet JDBC
 		final SqlMapping mapping = connection.getDataBase().getSqlMapping();
 		try (final ResultSet resultSet = statement.executeQuery()) {
 			//Le Handler a la responsabilité de créer les données.
-			final List<O> result = sqlStatementDriver.buildResult(dataType, mapping, resultSet, limit);
+			final List<O> result = sqlStatementDriver.buildResult(dataType, basicTypeAdapters, mapping, resultSet, limit);
 			tracer.setMeasure("nbSelectedRow", result.size());
 			return result;
 		} catch (final SQLException e) {
@@ -149,6 +144,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 			final GenerationMode generationMode,
 			final String columnName,
 			final Class<O> dataType,
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException {
 		Assertion.checkNotNull(sqlStatement);
 		Assertion.checkNotNull(generationMode);
@@ -157,7 +153,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 		Assertion.checkNotNull(connection);
 		//---
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), generationMode, new String[] { columnName }, connection)) {
-			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), connection);
+			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), basicTypeAdapters, connection);
 			//---
 			//execution de la Requête
 			final int result = traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecute(statement, tracer));
@@ -172,12 +168,13 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	@Override
 	public int executeUpdate(
 			final SqlStatement sqlStatement,
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException {
 		Assertion.checkNotNull(sqlStatement);
 		Assertion.checkNotNull(connection);
 		//---
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
-			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), connection);
+			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), basicTypeAdapters, connection);
 			//---
 			return traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecute(statement, tracer));
 		} catch (final WrappedSqlException e) {
@@ -215,13 +212,14 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	@Override
 	public OptionalInt executeBatch(
 			final SqlStatement sqlStatement,
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException {
 		Assertion.checkNotNull(sqlStatement);
 		Assertion.checkNotNull(connection);
 		//---
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
 			for (final List<SqlParameter> parameters : sqlStatement.getSqlParametersForBatch()) {
-				sqlStatementDriver.setParameters(statement, parameters, connection);
+				sqlStatementDriver.setParameters(statement, parameters, basicTypeAdapters, connection);
 				statement.addBatch();
 			}
 			return traceWithReturn(sqlStatement.getSqlQuery(), tracer -> doExecuteBatch(statement, tracer));

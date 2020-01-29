@@ -67,7 +67,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 		Assertion.checkNotNull(sqlStatement);
 		Assertion.checkNotNull(connection);
 		//---
-		return getDataBaseManager().executeBatch(sqlStatement, connection);
+		return getDataBaseManager().executeBatch(sqlStatement, getEntityStoreManager().getBasicTypeAdapters(), connection);
 	}
 
 	@Override

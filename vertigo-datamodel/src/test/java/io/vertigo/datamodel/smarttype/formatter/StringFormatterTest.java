@@ -21,7 +21,7 @@ package io.vertigo.datamodel.smarttype.formatter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterString;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
 
@@ -35,27 +35,27 @@ public class StringFormatterTest {
 	@Test
 	public void testUpper() {
 		final Formatter formatterString = new FormatterString("UPPER");
-		Assertions.assertEquals("AA", formatterString.valueToString("aa", DataType.String));
-		Assertions.assertEquals("AA", formatterString.valueToString("AA", DataType.String));
-		Assertions.assertEquals("AA", formatterString.valueToString("Aa", DataType.String));
-		Assertions.assertEquals("AA", formatterString.valueToString("aA", DataType.String));
+		Assertions.assertEquals("AA", formatterString.valueToString("aa", BasicType.String));
+		Assertions.assertEquals("AA", formatterString.valueToString("AA", BasicType.String));
+		Assertions.assertEquals("AA", formatterString.valueToString("Aa", BasicType.String));
+		Assertions.assertEquals("AA", formatterString.valueToString("aA", BasicType.String));
 	}
 
 	@Test
 	public void testLower() {
 		final Formatter formatterString = new FormatterString("LOWER");
-		Assertions.assertEquals("aa", formatterString.valueToString("aa", DataType.String));
-		Assertions.assertEquals("aa", formatterString.valueToString("AA", DataType.String));
-		Assertions.assertEquals("aa", formatterString.valueToString("Aa", DataType.String));
-		Assertions.assertEquals("aa", formatterString.valueToString("aA", DataType.String));
+		Assertions.assertEquals("aa", formatterString.valueToString("aa", BasicType.String));
+		Assertions.assertEquals("aa", formatterString.valueToString("AA", BasicType.String));
+		Assertions.assertEquals("aa", formatterString.valueToString("Aa", BasicType.String));
+		Assertions.assertEquals("aa", formatterString.valueToString("aA", BasicType.String));
 	}
 
 	@Test
 	public void testUpperFirst() {
 		final Formatter formatterString = new FormatterString("UPPER_FIRST");
-		Assertions.assertEquals("Aa", formatterString.valueToString("aa", DataType.String));
-		Assertions.assertEquals("Aa", formatterString.valueToString("AA", DataType.String));
-		Assertions.assertEquals("Aa", formatterString.valueToString("Aa", DataType.String));
-		Assertions.assertEquals("Aa", formatterString.valueToString("aA", DataType.String));
+		Assertions.assertEquals("Aa", formatterString.valueToString("aa", BasicType.String));
+		Assertions.assertEquals("Aa", formatterString.valueToString("AA", BasicType.String));
+		Assertions.assertEquals("Aa", formatterString.valueToString("Aa", BasicType.String));
+		Assertions.assertEquals("Aa", formatterString.valueToString("aA", BasicType.String));
 	}
 }

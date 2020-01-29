@@ -46,7 +46,7 @@ import org.elasticsearch.search.sort.SortOrder;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
 import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
@@ -348,8 +348,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 	private static AggregationBuilder rangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
 		//facette par range
 		Assertion.checkState(dtField.getSmartTypeDefinition().getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + dtField.getSmartTypeDefinition() + "].");
-		final DataType dataType = dtField.getSmartTypeDefinition().getTargetDataType();
-		if (dataType == DataType.LocalDate) {
+		final BasicType dataType = dtField.getSmartTypeDefinition().getTargetDataType();
+		if (dataType == BasicType.LocalDate) {
 			return dateRangeFacetToAggregationBuilder(facetDefinition, dtField);
 		} else if (dataType.isNumber()) {
 			return numberRangeFacetToAggregationBuilder(facetDefinition, dtField);

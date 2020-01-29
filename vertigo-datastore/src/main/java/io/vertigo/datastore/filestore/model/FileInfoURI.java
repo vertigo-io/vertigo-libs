@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.StringUtil;
@@ -102,7 +102,7 @@ public final class FileInfoURI implements Serializable {
 	}
 
 	public Serializable getKeyAs(final Class valueObjectClass) {
-		final Optional<DataType> dataTypeOpt = DataType.of(valueObjectClass);
+		final Optional<BasicType> dataTypeOpt = BasicType.of(valueObjectClass);
 		if (dataTypeOpt.isPresent()) {
 			switch (dataTypeOpt.get()) {
 				case Integer:

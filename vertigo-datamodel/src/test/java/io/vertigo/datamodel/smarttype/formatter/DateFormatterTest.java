@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDate;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
@@ -53,22 +53,22 @@ public class DateFormatterTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testLocalDateFormatter() throws FormatterException {
 		final LocalDate localDate = LocalDate.of(2000, 12, 25);
-		Assertions.assertEquals("2000-12-25", formatterDate.valueToString(localDate, DataType.LocalDate));
-		Assertions.assertEquals(localDate, formatterDate.stringToValue("2000-12-25", DataType.LocalDate));
+		Assertions.assertEquals("2000-12-25", formatterDate.valueToString(localDate, BasicType.LocalDate));
+		Assertions.assertEquals(localDate, formatterDate.stringToValue("2000-12-25", BasicType.LocalDate));
 	}
 
 	@Test
 	public void testInstantFormatter() throws FormatterException {
 		final Instant instant = LocalDateTime.of(2009, 2, 23, 16, 30).toInstant(ZoneOffset.UTC);
-		Assertions.assertEquals("2009-02-23 16:30:00", formatterDateTime.valueToString(instant, DataType.Instant));
-		Assertions.assertEquals(instant, formatterDateTime.stringToValue("2009-02-23 16:30:00", DataType.Instant));
+		Assertions.assertEquals("2009-02-23 16:30:00", formatterDateTime.valueToString(instant, BasicType.Instant));
+		Assertions.assertEquals(instant, formatterDateTime.stringToValue("2009-02-23 16:30:00", BasicType.Instant));
 	}
 
 	@Test
 	public void testFormatterErrorLocalDate() {
 		Assertions.assertThrows(FormatterException.class, () -> {
 			final LocalDate localDate = LocalDate.of(2000, 12, 25);
-			Assertions.assertEquals(localDate, formatterDate.stringToValue("2003/09/15", DataType.LocalDate));
+			Assertions.assertEquals(localDate, formatterDate.stringToValue("2003/09/15", BasicType.LocalDate));
 		});
 	}
 
@@ -76,7 +76,7 @@ public class DateFormatterTest extends AbstractTestCaseJU5 {
 	public void testFormatterErrorInstant() {
 		Assertions.assertThrows(FormatterException.class, () -> {
 			final Instant instant = LocalDateTime.of(2009, 2, 23, 16, 30).toInstant(ZoneOffset.UTC);
-			Assertions.assertEquals(instant, formatterDate.stringToValue("2003/09/15 16:30:00", DataType.Instant));
+			Assertions.assertEquals(instant, formatterDate.stringToValue("2003/09/15 16:30:00", BasicType.Instant));
 		});
 	}
 

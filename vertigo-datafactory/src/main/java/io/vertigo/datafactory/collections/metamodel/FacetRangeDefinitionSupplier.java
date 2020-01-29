@@ -13,35 +13,35 @@ import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 
 public final class FacetRangeDefinitionSupplier implements DefinitionSupplier {
 
-	private final String name;
-	private String dtDefinitionName;
-	private String fieldName;
-	private String label;
-	private boolean multiSelectable;
+	private final String myName;
+	private String myDtDefinitionName;
+	private String myFieldName;
+	private String myLabel;
+	private boolean myMultiSelectable;
 	private final List<FacetValue> facetValues = new ArrayList<>();
-	private FacetOrder order;
+	private FacetOrder myOrder;
 
 	public FacetRangeDefinitionSupplier(final String name) {
-		this.name = name;
+		this.myName = name;
 	}
 
 	public FacetRangeDefinitionSupplier withDtDefinition(final String dtDefinitionName) {
-		this.dtDefinitionName = dtDefinitionName;
+		this.myDtDefinitionName = dtDefinitionName;
 		return this;
 	}
 
 	public FacetRangeDefinitionSupplier withFieldName(final String fieldName) {
-		this.fieldName = fieldName;
+		this.myFieldName = fieldName;
 		return this;
 	}
 
 	public FacetRangeDefinitionSupplier withLabel(final String label) {
-		this.label = label;
+		this.myLabel = label;
 		return this;
 	}
 
 	public FacetRangeDefinitionSupplier withMultiSelectable() {
-		multiSelectable = true;
+		myMultiSelectable = true;
 		return this;
 	}
 
@@ -51,19 +51,19 @@ public final class FacetRangeDefinitionSupplier implements DefinitionSupplier {
 	}
 
 	public FacetRangeDefinitionSupplier withOrder(final FacetOrder order) {
-		this.order = order;
+		this.myOrder = order;
 		return this;
 	}
 
 	@Override
 	public FacetDefinition get(final DefinitionSpace definitionSpace) {
-		final DtDefinition indexDtDefinition = definitionSpace.resolve(dtDefinitionName, DtDefinition.class);
+		final DtDefinition indexDtDefinition = definitionSpace.resolve(myDtDefinitionName, DtDefinition.class);
 		return FacetDefinition.createFacetDefinitionByRange(
-				name,
-				indexDtDefinition.getField(fieldName),
-				MessageText.of(label),
+				myName,
+				indexDtDefinition.getField(myFieldName),
+				MessageText.of(myLabel),
 				facetValues,
-				multiSelectable,
-				order);
+				myMultiSelectable,
+				myOrder);
 	}
 }

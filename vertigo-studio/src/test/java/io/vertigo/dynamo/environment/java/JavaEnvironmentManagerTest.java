@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -67,7 +67,7 @@ public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU5 {
 	public void testDomain() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final io.vertigo.dynamo.domain.metamodel.Domain domain = definitionSpace.resolve("DoId", Domain.class);
-		Assertions.assertEquals(DataType.Long, domain.getDataType());
+		Assertions.assertEquals(BasicType.Long, domain.getDataType());
 		Assertions.assertEquals(FormatterDefault.class.getName(), domain.getFormatterClassName());
 	}
 

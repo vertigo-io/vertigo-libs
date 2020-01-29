@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.util.StringUtil;
@@ -128,7 +128,7 @@ public final class UiUtil implements Serializable {
 		} else if (fieldName != null) {
 			final SmartTypeDefinition smartTypeDefinition = getDtField(object + "." + fieldName).getSmartTypeDefinition();
 			if (smartTypeDefinition.getScope().isPrimitive()) {
-				final DataType dataType = smartTypeDefinition.getTargetDataType();
+				final BasicType dataType = smartTypeDefinition.getTargetDataType();
 				switch (dataType) {
 					case Long:
 					case Integer:
@@ -156,7 +156,7 @@ public final class UiUtil implements Serializable {
 	public static String formatBoolean(final String fieldPath, final Boolean value) {
 		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
-			return DEFAULT_FORMATTER.valueToString(value, DataType.Boolean);
+			return DEFAULT_FORMATTER.valueToString(value, BasicType.Boolean);
 		}
 		return modelManager.valueToString(getDtField(fieldPath).getSmartTypeDefinition(), value);
 	}

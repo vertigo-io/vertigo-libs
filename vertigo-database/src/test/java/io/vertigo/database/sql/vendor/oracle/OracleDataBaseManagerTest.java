@@ -28,7 +28,6 @@ import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.impl.sql.vendor.oracle.Oracle11DataBase;
 import io.vertigo.database.impl.sql.vendor.oracle.OracleDataBase;
 import io.vertigo.database.sql.AbstractSqlDataBaseManagerTest;
-import io.vertigo.database.sql.mapper.MailAdapterSupplierPlugin;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
@@ -62,7 +61,6 @@ public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerT
 								Param.of("dataBaseClass", H2DataBase.class.getName()),
 								Param.of("jdbcDriver", "org.h2.Driver"),
 								Param.of("jdbcUrl", "jdbc:h2:mem:secondaryDatabase"))
-						.addPlugin(MailAdapterSupplierPlugin.class)
 						.build())
 				.build();
 	}

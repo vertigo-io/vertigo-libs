@@ -24,7 +24,7 @@ import java.util.List;
 import com.opensymphony.xwork2.ActionContext;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Home;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault;
 import io.vertigo.datamodel.smarttype.ModelManager;
@@ -85,7 +85,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static String formatBoolean(final String fieldPath, final Boolean value) {
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
-			return DEFAULT_FORMATTER.valueToString(value, DataType.Boolean);
+			return DEFAULT_FORMATTER.valueToString(value, BasicType.Boolean);
 		}
 		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
 		return modelManager.valueToString(getDtField(fieldPath).getSmartTypeDefinition(), value);

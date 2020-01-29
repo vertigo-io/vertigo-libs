@@ -21,7 +21,7 @@ package io.vertigo.datamodel.smarttype.formatter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterId;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
@@ -41,21 +41,21 @@ public class IdFormatterTest {
 	*/
 	@Test
 	public void testFormatter() throws FormatterException {
-		Assertions.assertEquals(10L, formatterId.stringToValue("10", DataType.Long));
-		Assertions.assertEquals(null, formatterId.stringToValue(null, DataType.Long));
-		Assertions.assertEquals(null, formatterId.stringToValue("", DataType.Long));
-		Assertions.assertEquals(null, formatterId.stringToValue(" ", DataType.Long));
+		Assertions.assertEquals(10L, formatterId.stringToValue("10", BasicType.Long));
+		Assertions.assertEquals(null, formatterId.stringToValue(null, BasicType.Long));
+		Assertions.assertEquals(null, formatterId.stringToValue("", BasicType.Long));
+		Assertions.assertEquals(null, formatterId.stringToValue(" ", BasicType.Long));
 
-		Assertions.assertEquals(10L, formatterId.stringToValue(" 10", DataType.Long));
-		Assertions.assertEquals(10L, formatterId.stringToValue("10 ", DataType.Long));
+		Assertions.assertEquals(10L, formatterId.stringToValue(" 10", BasicType.Long));
+		Assertions.assertEquals(10L, formatterId.stringToValue("10 ", BasicType.Long));
 
-		Assertions.assertEquals("10", formatterId.valueToString(10L, DataType.Long));
-		Assertions.assertEquals("", formatterId.valueToString(null, DataType.Long));
+		Assertions.assertEquals("10", formatterId.valueToString(10L, BasicType.Long));
+		Assertions.assertEquals("", formatterId.valueToString(null, BasicType.Long));
 	}
 
 	@Test
 	public void testFormatter1() {
-		Assertions.assertThrows(FormatterException.class, () -> formatterId.stringToValue("abc ", DataType.Long));
+		Assertions.assertThrows(FormatterException.class, () -> formatterId.stringToValue("abc ", BasicType.Long));
 	}
 
 }

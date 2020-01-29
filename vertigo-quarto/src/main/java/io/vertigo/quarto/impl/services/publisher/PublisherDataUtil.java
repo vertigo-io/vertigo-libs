@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
@@ -191,7 +191,7 @@ public final class PublisherDataUtil {
 			final String fieldName = dtField.getName();
 			switch (dtField.getSmartTypeDefinition().getScope()) {
 				case PRIMITIVE:
-					if (DataType.Boolean == dtField.getSmartTypeDefinition().getTargetDataType()) {
+					if (BasicType.Boolean == dtField.getSmartTypeDefinition().getTargetDataType()) {
 						sb.append("\t\tbooleanField[").append(fieldName).append(")] = new DataField ();\n");
 					} else {
 						sb.append("\t\tstringField[").append(fieldName).append(")] = new DataField ();\n");

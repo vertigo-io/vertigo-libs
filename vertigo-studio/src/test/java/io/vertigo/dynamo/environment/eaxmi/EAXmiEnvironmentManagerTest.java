@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -86,7 +86,7 @@ public final class EAXmiEnvironmentManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testDomain() {
 		final io.vertigo.dynamo.domain.metamodel.Domain domain = definitionSpace.resolve("DoEmail", Domain.class);
-		Assertions.assertEquals(DataType.String, domain.getDataType());
+		Assertions.assertEquals(BasicType.String, domain.getDataType());
 		Assertions.assertEquals(FormatterDefault.class.getName(), domain.getFormatterClassName());
 	}
 

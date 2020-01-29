@@ -25,7 +25,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -156,7 +156,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 	}
 
 	/**same as DtListPatternFilterUtil*/
-	private static Serializable valueOf(final DataType dataType, final String stringValue) {
+	private static Serializable valueOf(final BasicType dataType, final String stringValue) {
 		switch (dataType) {
 			case Integer:
 				return Integer.valueOf(stringValue);

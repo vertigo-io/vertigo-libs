@@ -29,7 +29,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -131,7 +131,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		if ("DtObject".equals(type)) {
 			domainBuilder = Domain.builder(domainName, properties.getValue(DtProperty.TYPE));
 		} else {
-			final DataType dataType = DataType.valueOf(type);
+			final BasicType dataType = BasicType.valueOf(type);
 			domainBuilder = Domain.builder(domainName, dataType);
 			//only primitive can have a formatter
 			final boolean hasFormatter = !xdomain.getDefinitionLinkNames("formatter").isEmpty();

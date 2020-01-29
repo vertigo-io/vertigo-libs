@@ -19,7 +19,7 @@
 package io.vertigo.studio.plugins.mda.domain.ts.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 
 /**
@@ -82,10 +82,10 @@ public final class TSDomainModel {
 	 */
 	private static String buildTypescriptType(final Domain domain, final boolean multiple) {
 		if (domain.getScope().isPrimitive()) {
-			final DataType dataType = domain.getDataType();
+			final BasicType dataType = domain.getDataType();
 			if (dataType.isNumber()) {
 				return "number";
-			} else if (dataType == DataType.Boolean) {
+			} else if (dataType == BasicType.Boolean) {
 				return "boolean";
 			}
 			return "string";

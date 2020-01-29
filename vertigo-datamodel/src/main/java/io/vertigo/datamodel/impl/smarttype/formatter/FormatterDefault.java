@@ -19,7 +19,7 @@
 package io.vertigo.datamodel.impl.smarttype.formatter;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
@@ -68,7 +68,7 @@ public final class FormatterDefault implements Formatter {
 	 * @param dataType Type
 	 * @return Formatter simple utilisé.
 	 */
-	public Formatter getFormatter(final DataType dataType) {
+	public Formatter getFormatter(final BasicType dataType) {
 		switch (dataType) {
 			case String:
 				return stringFormatter;
@@ -91,13 +91,13 @@ public final class FormatterDefault implements Formatter {
 
 	/** {@inheritDoc} */
 	@Override
-	public String valueToString(final Object objValue, final DataType dataType) {
+	public String valueToString(final Object objValue, final BasicType dataType) {
 		return getFormatter(dataType).valueToString(objValue, dataType);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
+	public Object stringToValue(final String strValue, final BasicType dataType) throws FormatterException {
 		return getFormatter(dataType).stringToValue(strValue, dataType);
 	}
 

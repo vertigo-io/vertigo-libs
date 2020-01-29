@@ -80,7 +80,13 @@ public class TaskEngineInsertWithGeneratedKeys extends AbstractTaskEngineSQL {
 		final DtField idField = dtDefinition.getIdField().get();
 
 		final Tuple<Integer, ?> result = getDataBaseManager()
-				.executeUpdateWithGeneratedKey(sqlStatement, generationMode, StringUtil.camelToConstCase(idField.getName()), idField.getSmartTypeDefinition().getJavaClass(), connection);
+				.executeUpdateWithGeneratedKey(
+						sqlStatement,
+						generationMode,
+						StringUtil.camelToConstCase(idField.getName()),
+						idField.getSmartTypeDefinition().getJavaClass(),
+						getEntityStoreManager().getBasicTypeAdapters(),
+						connection);
 
 		final Object id = result.getVal2();
 		idField.getDataAccessor().setValue(entity, id);

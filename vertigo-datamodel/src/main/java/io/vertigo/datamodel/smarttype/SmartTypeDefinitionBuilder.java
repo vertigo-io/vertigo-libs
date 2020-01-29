@@ -24,7 +24,7 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition.Scope;
 import io.vertigo.datamodel.structure.metamodel.Properties;
 
@@ -36,7 +36,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	private final String myName;
 	private SmartTypeDefinition.Scope myScope;
 
-	private DataType myDataType;
+	private BasicType myDataType;
 	private final Class myValueObjectClass;
 	private Class<? extends DataTypeMapper> myMapper;
 
@@ -54,7 +54,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	 * @param name the name of the domain
 	 * @param dataType the dataType of the domain
 	 */
-	SmartTypeDefinitionBuilder(final String name, final DataType dataType) {
+	SmartTypeDefinitionBuilder(final String name, final BasicType dataType) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dataType);
 		//---
@@ -127,7 +127,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	* @param properties the properties
 	* @return this builder
 	*/
-	public SmartTypeDefinitionBuilder withMapper(final Class<? extends DataTypeMapper> mapperClass, final DataType targetDataType) {
+	public SmartTypeDefinitionBuilder withMapper(final Class<? extends DataTypeMapper> mapperClass, final BasicType targetDataType) {
 		Assertion.checkNotNull(mapperClass);
 		Assertion.checkNotNull(targetDataType);
 		//---

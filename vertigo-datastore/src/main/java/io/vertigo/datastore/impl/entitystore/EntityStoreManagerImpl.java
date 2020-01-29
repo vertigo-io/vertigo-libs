@@ -18,8 +18,10 @@
  */
 package io.vertigo.datastore.impl.entitystore;
 
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -28,6 +30,7 @@ import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.definition.Definition;
@@ -264,6 +267,12 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 		return list.stream()
 				.sorted(comparator)
 				.collect(VCollectors.toDtList(list.getDefinition()));
+	}
+
+	@Override
+	public Map<Class, BasicTypeAdapter> getBasicTypeAdapters() {
+		// TODO Recupérer dans le definitionSpace les adapter du bon type
+		return Collections.emptyMap();
 	}
 
 }

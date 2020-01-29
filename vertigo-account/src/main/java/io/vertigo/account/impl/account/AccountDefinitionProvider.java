@@ -21,7 +21,7 @@ package io.vertigo.account.impl.account;
 import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
@@ -45,10 +45,10 @@ public final class AccountDefinitionProvider implements SimpleDefinitionProvider
 	/** {@inheritDoc} */
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		final SmartTypeDefinition smartTypeAccountId = SmartTypeDefinition.builder("STyXAccountId", DataType.String).withFormatter(new FormatterConfig(FormatterString.class, null)).build();
-		final SmartTypeDefinition smartTypeAccountName = SmartTypeDefinition.builder("STyXAccountName", DataType.String).build();
-		final SmartTypeDefinition smartTypeAccountEmail = SmartTypeDefinition.builder("STyXAccountEmail", DataType.String).build();
-		final SmartTypeDefinition smartTypeAccountPhoto = SmartTypeDefinition.builder("STyXAccountPhoto", DataType.String).build();
+		final SmartTypeDefinition smartTypeAccountId = SmartTypeDefinition.builder("STyXAccountId", BasicType.String).withFormatter(new FormatterConfig(FormatterString.class, null)).build();
+		final SmartTypeDefinition smartTypeAccountName = SmartTypeDefinition.builder("STyXAccountName", BasicType.String).build();
+		final SmartTypeDefinition smartTypeAccountEmail = SmartTypeDefinition.builder("STyXAccountEmail", BasicType.String).build();
+		final SmartTypeDefinition smartTypeAccountPhoto = SmartTypeDefinition.builder("STyXAccountPhoto", BasicType.String).build();
 
 		final DtDefinition accountDtDefinition = DtDefinition.builder("DtAccount")
 				.addIdField(ID, "id", smartTypeAccountId)

@@ -27,7 +27,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -110,7 +110,7 @@ public final class StrutsUiObject<D extends DtObject> extends VegaUiObject<D> im
 	}
 
 	private static boolean isBoolean(final DtField dtField) {
-		return dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getTargetDataType() == DataType.Boolean;
+		return dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getTargetDataType() == BasicType.Boolean;
 	}
 
 	/** {@inheritDoc} */

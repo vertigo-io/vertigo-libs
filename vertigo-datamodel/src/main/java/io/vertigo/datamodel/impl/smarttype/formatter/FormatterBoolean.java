@@ -21,7 +21,7 @@ package io.vertigo.datamodel.impl.smarttype.formatter;
 import java.util.StringTokenizer;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
@@ -75,16 +75,16 @@ public final class FormatterBoolean implements Formatter {
 
 	/** {@inheritDoc} */
 	@Override
-	public String valueToString(final Object objValue, final DataType dataType) {
-		Assertion.checkArgument(dataType == DataType.Boolean, "Formatter ne s'applique qu'aux booléens");
+	public String valueToString(final Object objValue, final BasicType dataType) {
+		Assertion.checkArgument(dataType == BasicType.Boolean, "Formatter ne s'applique qu'aux booléens");
 		//-----
 		return booleanToString((Boolean) objValue);
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public Boolean stringToValue(final String strValue, final DataType dataType) throws FormatterException {
-		Assertion.checkArgument(dataType == DataType.Boolean, "Formatter ne s'applique qu'aux booléens");
+	public Boolean stringToValue(final String strValue, final BasicType dataType) throws FormatterException {
+		Assertion.checkArgument(dataType == BasicType.Boolean, "Formatter ne s'applique qu'aux booléens");
 		//-----
 		final String sValue = StringUtil.isEmpty(strValue) ? null : strValue.trim();
 

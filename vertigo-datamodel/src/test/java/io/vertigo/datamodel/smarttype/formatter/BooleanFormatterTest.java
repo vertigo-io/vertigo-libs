@@ -21,7 +21,7 @@ package io.vertigo.datamodel.smarttype.formatter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterBoolean;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
@@ -40,34 +40,34 @@ public final class BooleanFormatterTest {
 	*/
 	@Test
 	public void testFormatter() throws FormatterException {
-		Assertions.assertEquals(Boolean.TRUE, formatterBoolean.stringToValue("YES", DataType.Boolean));
-		Assertions.assertEquals(Boolean.TRUE, formatterBoolean.stringToValue("YES ", DataType.Boolean));
-		Assertions.assertEquals(Boolean.FALSE, formatterBoolean.stringToValue("NO", DataType.Boolean));
-		Assertions.assertEquals(Boolean.FALSE, formatterBoolean.stringToValue("NO ", DataType.Boolean));
-		Assertions.assertEquals(null, formatterBoolean.stringToValue(null, DataType.Boolean));
-		Assertions.assertEquals(null, formatterBoolean.stringToValue("", DataType.Boolean));
-		Assertions.assertEquals(null, formatterBoolean.stringToValue(" ", DataType.Boolean));
+		Assertions.assertEquals(Boolean.TRUE, formatterBoolean.stringToValue("YES", BasicType.Boolean));
+		Assertions.assertEquals(Boolean.TRUE, formatterBoolean.stringToValue("YES ", BasicType.Boolean));
+		Assertions.assertEquals(Boolean.FALSE, formatterBoolean.stringToValue("NO", BasicType.Boolean));
+		Assertions.assertEquals(Boolean.FALSE, formatterBoolean.stringToValue("NO ", BasicType.Boolean));
+		Assertions.assertEquals(null, formatterBoolean.stringToValue(null, BasicType.Boolean));
+		Assertions.assertEquals(null, formatterBoolean.stringToValue("", BasicType.Boolean));
+		Assertions.assertEquals(null, formatterBoolean.stringToValue(" ", BasicType.Boolean));
 
-		Assertions.assertEquals(Boolean.TRUE, formatterBoolean.stringToValue(" YES", DataType.Boolean));
-		Assertions.assertEquals(Boolean.TRUE, formatterBoolean.stringToValue("YES ", DataType.Boolean));
+		Assertions.assertEquals(Boolean.TRUE, formatterBoolean.stringToValue(" YES", BasicType.Boolean));
+		Assertions.assertEquals(Boolean.TRUE, formatterBoolean.stringToValue("YES ", BasicType.Boolean));
 
-		Assertions.assertEquals("YES", formatterBoolean.valueToString(Boolean.TRUE, DataType.Boolean));
-		Assertions.assertEquals("NO", formatterBoolean.valueToString(Boolean.FALSE, DataType.Boolean));
-		Assertions.assertEquals(null, formatterBoolean.valueToString(null, DataType.Boolean));
+		Assertions.assertEquals("YES", formatterBoolean.valueToString(Boolean.TRUE, BasicType.Boolean));
+		Assertions.assertEquals("NO", formatterBoolean.valueToString(Boolean.FALSE, BasicType.Boolean));
+		Assertions.assertEquals(null, formatterBoolean.valueToString(null, BasicType.Boolean));
 	}
 
 	@Test
 	public void testFormatter1() {
-		Assertions.assertThrows(FormatterException.class, () -> formatterBoolean.stringToValue("abc ", DataType.Boolean));
+		Assertions.assertThrows(FormatterException.class, () -> formatterBoolean.stringToValue("abc ", BasicType.Boolean));
 	}
 
 	@Test
 	public void testFormatter2() {
-		Assertions.assertThrows(Exception.class, () -> formatterBoolean.valueToString("", DataType.Boolean));
+		Assertions.assertThrows(Exception.class, () -> formatterBoolean.valueToString("", BasicType.Boolean));
 	}
 
 	@Test
 	public void testFormatter3() {
-		Assertions.assertThrows(Exception.class, () -> formatterBoolean.valueToString(" ", DataType.Boolean));
+		Assertions.assertThrows(Exception.class, () -> formatterBoolean.valueToString(" ", BasicType.Boolean));
 	}
 }

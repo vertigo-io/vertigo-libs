@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterNumber;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterNumberLocalized;
@@ -57,25 +57,25 @@ public class NumberFormatterTest extends AbstractTestCaseJU5 {
 
 		//BigDecimal
 		final BigDecimal pi = new BigDecimal("3.14");
-		Assertions.assertEquals(pi, formatterNumber.stringToValue("3.14", DataType.BigDecimal));
-		Assertions.assertEquals(pi, formatterNumber.stringToValue("3,14", DataType.BigDecimal));
-		Assertions.assertEquals("3,14", formatterNumber.valueToString(pi, DataType.BigDecimal));
-		Assertions.assertEquals(new BigDecimal("0.14"), formatterNumber.stringToValue("0.14", DataType.BigDecimal));
+		Assertions.assertEquals(pi, formatterNumber.stringToValue("3.14", BasicType.BigDecimal));
+		Assertions.assertEquals(pi, formatterNumber.stringToValue("3,14", BasicType.BigDecimal));
+		Assertions.assertEquals("3,14", formatterNumber.valueToString(pi, BasicType.BigDecimal));
+		Assertions.assertEquals(new BigDecimal("0.14"), formatterNumber.stringToValue("0.14", BasicType.BigDecimal));
 		//Integer
-		Assertions.assertEquals(1492, formatterNumber.stringToValue("1492", DataType.Integer));
-		Assertions.assertEquals(1492, formatterNumber.stringToValue("1 492", DataType.Integer));
-		Assertions.assertEquals(1492, formatterNumber.stringToValue("1492  ", DataType.Integer));
-		Assertions.assertEquals(1492, formatterNumber.stringToValue("01492  ", DataType.Integer));
+		Assertions.assertEquals(1492, formatterNumber.stringToValue("1492", BasicType.Integer));
+		Assertions.assertEquals(1492, formatterNumber.stringToValue("1 492", BasicType.Integer));
+		Assertions.assertEquals(1492, formatterNumber.stringToValue("1492  ", BasicType.Integer));
+		Assertions.assertEquals(1492, formatterNumber.stringToValue("01492  ", BasicType.Integer));
 		//Long
-		Assertions.assertEquals(1492L, formatterNumber.stringToValue("1492", DataType.Long));
-		Assertions.assertEquals(1492L, formatterNumber.stringToValue("1 492", DataType.Long));
-		Assertions.assertEquals(1492L, formatterNumber.stringToValue("1492  ", DataType.Long));
-		Assertions.assertEquals(1492L, formatterNumber.stringToValue("01492  ", DataType.Long));
+		Assertions.assertEquals(1492L, formatterNumber.stringToValue("1492", BasicType.Long));
+		Assertions.assertEquals(1492L, formatterNumber.stringToValue("1 492", BasicType.Long));
+		Assertions.assertEquals(1492L, formatterNumber.stringToValue("1492  ", BasicType.Long));
+		Assertions.assertEquals(1492L, formatterNumber.stringToValue("01492  ", BasicType.Long));
 		//Double
-		Assertions.assertEquals(3.14D, formatterNumber.stringToValue("3.14", DataType.Double));
-		Assertions.assertEquals(3.14D, formatterNumber.stringToValue("3,14", DataType.Double));
-		Assertions.assertEquals(.14D, formatterNumber.stringToValue("0.14", DataType.Double));
-		Assertions.assertEquals("3,14", formatterNumber.valueToString(3.14D, DataType.Double));
+		Assertions.assertEquals(3.14D, formatterNumber.stringToValue("3.14", BasicType.Double));
+		Assertions.assertEquals(3.14D, formatterNumber.stringToValue("3,14", BasicType.Double));
+		Assertions.assertEquals(.14D, formatterNumber.stringToValue("0.14", BasicType.Double));
+		Assertions.assertEquals("3,14", formatterNumber.valueToString(3.14D, BasicType.Double));
 	}
 
 	/**
@@ -90,28 +90,28 @@ public class NumberFormatterTest extends AbstractTestCaseJU5 {
 
 		//BigDecimal
 		final BigDecimal pi = new BigDecimal("3.14");
-		Assertions.assertEquals(pi, formatterNumberLocalized.stringToValue("3.14", DataType.BigDecimal));
-		Assertions.assertEquals(pi, formatterNumberLocalized.stringToValue("3,14", DataType.BigDecimal));
-		Assertions.assertEquals(new BigDecimal("0.14"), formatterNumberLocalized.stringToValue("0.14", DataType.BigDecimal));
+		Assertions.assertEquals(pi, formatterNumberLocalized.stringToValue("3.14", BasicType.BigDecimal));
+		Assertions.assertEquals(pi, formatterNumberLocalized.stringToValue("3,14", BasicType.BigDecimal));
+		Assertions.assertEquals(new BigDecimal("0.14"), formatterNumberLocalized.stringToValue("0.14", BasicType.BigDecimal));
 
-		Assertions.assertEquals("3,14", formatterNumberLocalized.valueToString(pi, DataType.BigDecimal));
-		Assertions.assertEquals("1" + (char) 160 + "495,00", formatterNumberLocalized.valueToString(1495, DataType.BigDecimal));
-		Assertions.assertEquals("1\u00A0495,00", formatterNumberLocalized.valueToString(1495, DataType.BigDecimal));
-		Assertions.assertEquals("1\u00A0495,52", formatterNumberLocalized.valueToString(1495.52, DataType.BigDecimal));
+		Assertions.assertEquals("3,14", formatterNumberLocalized.valueToString(pi, BasicType.BigDecimal));
+		Assertions.assertEquals("1" + (char) 160 + "495,00", formatterNumberLocalized.valueToString(1495, BasicType.BigDecimal));
+		Assertions.assertEquals("1\u00A0495,00", formatterNumberLocalized.valueToString(1495, BasicType.BigDecimal));
+		Assertions.assertEquals("1\u00A0495,52", formatterNumberLocalized.valueToString(1495.52, BasicType.BigDecimal));
 
 		//Integer
-		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1492", DataType.Integer));
-		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1 492", DataType.Integer));
-		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1492  ", DataType.Integer));
-		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("01492  ", DataType.Integer));
-		Assertions.assertEquals("1\u00A0492,00", formatterNumberLocalized.valueToString(1492, DataType.Integer));
+		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1492", BasicType.Integer));
+		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1 492", BasicType.Integer));
+		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1492  ", BasicType.Integer));
+		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("01492  ", BasicType.Integer));
+		Assertions.assertEquals("1\u00A0492,00", formatterNumberLocalized.valueToString(1492, BasicType.Integer));
 
 		//Long
-		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("1492", DataType.Long));
-		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("1 492", DataType.Long));
-		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("1492  ", DataType.Long));
-		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("01492  ", DataType.Long));
-		Assertions.assertEquals("1\u00A0492,00", formatterNumberLocalized.valueToString(1492L, DataType.Long));
+		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("1492", BasicType.Long));
+		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("1 492", BasicType.Long));
+		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("1492  ", BasicType.Long));
+		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("01492  ", BasicType.Long));
+		Assertions.assertEquals("1\u00A0492,00", formatterNumberLocalized.valueToString(1492L, BasicType.Long));
 	}
 
 	/**
@@ -129,27 +129,27 @@ public class NumberFormatterTest extends AbstractTestCaseJU5 {
 
 		//BigDecimal
 		final BigDecimal pi = new BigDecimal("3.14");
-		Assertions.assertEquals(pi, formatterNumberLocalized.stringToValue("3.14", DataType.BigDecimal));
-		Assertions.assertEquals(pi, formatterNumberLocalized.stringToValue("3,14", DataType.BigDecimal));
-		Assertions.assertEquals(new BigDecimal("0.14"), formatterNumberLocalized.stringToValue("0.14", DataType.BigDecimal));
+		Assertions.assertEquals(pi, formatterNumberLocalized.stringToValue("3.14", BasicType.BigDecimal));
+		Assertions.assertEquals(pi, formatterNumberLocalized.stringToValue("3,14", BasicType.BigDecimal));
+		Assertions.assertEquals(new BigDecimal("0.14"), formatterNumberLocalized.stringToValue("0.14", BasicType.BigDecimal));
 
-		Assertions.assertEquals("3.14", formatterNumberLocalized.valueToString(pi, DataType.BigDecimal));
-		Assertions.assertEquals("1\u00A0495", formatterNumberLocalized.valueToString(1495, DataType.BigDecimal));
-		Assertions.assertEquals("1 495.52", formatterNumberLocalizedSpace.valueToString(1495.52, DataType.BigDecimal));
+		Assertions.assertEquals("3.14", formatterNumberLocalized.valueToString(pi, BasicType.BigDecimal));
+		Assertions.assertEquals("1\u00A0495", formatterNumberLocalized.valueToString(1495, BasicType.BigDecimal));
+		Assertions.assertEquals("1 495.52", formatterNumberLocalizedSpace.valueToString(1495.52, BasicType.BigDecimal));
 
 		//Integer
-		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1492", DataType.Integer));
-		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1\u00A0492", DataType.Integer));
-		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1492  ", DataType.Integer));
-		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("01492  ", DataType.Integer));
-		Assertions.assertEquals("1\u00A0492", formatterNumberLocalized.valueToString(1492, DataType.Integer));
+		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1492", BasicType.Integer));
+		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1\u00A0492", BasicType.Integer));
+		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("1492  ", BasicType.Integer));
+		Assertions.assertEquals(1492, formatterNumberLocalized.stringToValue("01492  ", BasicType.Integer));
+		Assertions.assertEquals("1\u00A0492", formatterNumberLocalized.valueToString(1492, BasicType.Integer));
 
 		//Long
-		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("1492", DataType.Long));
-		Assertions.assertEquals(1492L, formatterNumberLocalizedSpace.stringToValue("1\u00A0492", DataType.Long));
-		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("1492  ", DataType.Long));
-		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("01492  ", DataType.Long));
-		Assertions.assertEquals("1 492", formatterNumberLocalizedSpace.valueToString(1492L, DataType.Long));
+		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("1492", BasicType.Long));
+		Assertions.assertEquals(1492L, formatterNumberLocalizedSpace.stringToValue("1\u00A0492", BasicType.Long));
+		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("1492  ", BasicType.Long));
+		Assertions.assertEquals(1492L, formatterNumberLocalized.stringToValue("01492  ", BasicType.Long));
+		Assertions.assertEquals("1 492", formatterNumberLocalizedSpace.valueToString(1492L, BasicType.Long));
 
 	}
 
@@ -161,7 +161,7 @@ public class NumberFormatterTest extends AbstractTestCaseJU5 {
 	public void testFormatterNumberMLConflit() throws FormatterException {
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			final FormatterNumber formatterNumberLocalized = new FormatterNumberLocalized("#,##0.##|.,|.");
-			formatterNumberLocalized.stringToValue("3.14", DataType.BigDecimal);
+			formatterNumberLocalized.stringToValue("3.14", BasicType.BigDecimal);
 			//Détection du conflit entre séparateur décimal et de millier
 		});
 	}

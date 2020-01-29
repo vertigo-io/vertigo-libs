@@ -23,7 +23,7 @@ import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.datamodel.structure.metamodel.Properties;
 import io.vertigo.dynamo.domain.metamodel.Domain.Scope;
 
@@ -35,7 +35,7 @@ public final class DomainBuilder implements Builder<Domain> {
 	private final String myName;
 	private final Domain.Scope myScope;
 
-	private final DataType myDataType;
+	private final BasicType myDataType;
 	private final String myDtDefinitionName;
 	private final Class myValueObjectClass;
 
@@ -53,7 +53,7 @@ public final class DomainBuilder implements Builder<Domain> {
 	 * @param name the name of the domain
 	 * @param dataType the dataType of the domain
 	 */
-	DomainBuilder(final String name, final DataType dataType) {
+	DomainBuilder(final String name, final BasicType dataType) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(dataType);
 		//---

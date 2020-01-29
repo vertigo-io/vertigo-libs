@@ -11,9 +11,9 @@ import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 public final class FacetedQueryDefinitionSupplier implements DefinitionSupplier {
 
 	private final String name;
-	private String criteriaSmartTypeName;
-	private String listFilterBuilderQuery;
-	private Class<? extends ListFilterBuilder> listFilterBuilderClass;
+	private String myCriteriaSmartTypeName;
+	private String myListFilterBuilderQuery;
+	private Class<? extends ListFilterBuilder> myListFilterBuilderClass;
 	private final List<String> facets = new ArrayList<>();
 
 	public FacetedQueryDefinitionSupplier(final String name) {
@@ -26,17 +26,17 @@ public final class FacetedQueryDefinitionSupplier implements DefinitionSupplier 
 	}
 
 	public FacetedQueryDefinitionSupplier withCriteriaSmartType(final String criteriaSmartTypeName) {
-		this.criteriaSmartTypeName = criteriaSmartTypeName;
+		this.myCriteriaSmartTypeName = criteriaSmartTypeName;
 		return this;
 	}
 
 	public FacetedQueryDefinitionSupplier withListFilterBuilderQuery(final String listFilterBuilderQuery) {
-		this.listFilterBuilderQuery = listFilterBuilderQuery;
+		this.myListFilterBuilderQuery = listFilterBuilderQuery;
 		return this;
 	}
 
 	public FacetedQueryDefinitionSupplier withListFilterBuilderClass(final Class<? extends ListFilterBuilder> listFilterBuilderClass) {
-		this.listFilterBuilderClass = listFilterBuilderClass;
+		this.myListFilterBuilderClass = listFilterBuilderClass;
 		return this;
 	}
 
@@ -45,12 +45,12 @@ public final class FacetedQueryDefinitionSupplier implements DefinitionSupplier 
 		final List<FacetDefinition> facetDefinitions = facets.stream()
 				.map(facetName -> definitionSpace.resolve(facetName, FacetDefinition.class))
 				.collect(Collectors.toList());
-		final SmartTypeDefinition criteriaSmartType = definitionSpace.resolve(criteriaSmartTypeName, SmartTypeDefinition.class);
+		final SmartTypeDefinition criteriaSmartType = definitionSpace.resolve(myCriteriaSmartTypeName, SmartTypeDefinition.class);
 		return new FacetedQueryDefinition(
 				name,
 				facetDefinitions,
 				criteriaSmartType,
-				listFilterBuilderClass,
-				listFilterBuilderQuery);
+				myListFilterBuilderClass,
+				myListFilterBuilderQuery);
 	}
 }

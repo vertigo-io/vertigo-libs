@@ -19,7 +19,7 @@
 package io.vertigo.vega.webservice.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
@@ -27,7 +27,7 @@ import io.vertigo.datamodel.structure.stereotype.Field;
 import io.vertigo.datamodel.structure.util.JsonMapper;
 import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
 
-@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
+@Mapper(clazz = JsonMapper.class, dataType = BasicType.String)
 public final class Address implements Entity {
 	private static final long serialVersionUID = 8922834274442256496L;
 

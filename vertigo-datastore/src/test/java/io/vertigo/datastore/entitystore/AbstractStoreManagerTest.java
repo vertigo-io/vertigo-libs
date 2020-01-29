@@ -33,7 +33,7 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.criteria.Criterions;
@@ -222,7 +222,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkCountCars")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select count(*) from CAR")
-				.withOutAttribute("count", SmartTypeDefinition.builder("STyCount", DataType.Long).build(), Cardinality.ONE)
+				.withOutAttribute("count", SmartTypeDefinition.builder("STyCount", BasicType.Long).build(), Cardinality.ONE)
 				.build();
 
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {

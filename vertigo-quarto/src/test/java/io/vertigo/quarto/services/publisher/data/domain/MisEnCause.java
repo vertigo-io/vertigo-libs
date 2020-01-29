@@ -19,7 +19,7 @@
 package io.vertigo.quarto.services.publisher.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.JsonMapper;
@@ -28,7 +28,7 @@ import io.vertigo.datamodel.structure.util.JsonMapper;
  * Attention cette classe est générée automatiquement !
  * Objet de données AbstractMisEnCause
  */
-@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
+@Mapper(clazz = JsonMapper.class, dataType = BasicType.String)
 public final class MisEnCause implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;

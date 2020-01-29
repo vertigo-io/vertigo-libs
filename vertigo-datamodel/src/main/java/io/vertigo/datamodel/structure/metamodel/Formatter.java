@@ -18,7 +18,7 @@
  */
 package io.vertigo.datamodel.structure.metamodel;
 
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 
 /**
  * Permet de définir des formats particuliers d'affichages et de saisie.
@@ -36,7 +36,7 @@ public interface Formatter {
 	 * @param dataType Type
 	 * @return  chaine formattée
 	 */
-	String valueToString(Object objValue, DataType dataType);
+	String valueToString(Object objValue, BasicType dataType);
 
 	/**
 	 * Transforme une String en valeur typée.
@@ -45,5 +45,5 @@ public interface Formatter {
 	 * @return  Valeur typée (déformattage)
 	 * @throws FormatterException Erreur de parsing
 	 */
-	Object stringToValue(String strValue, DataType dataType) throws FormatterException;
+	Object stringToValue(String strValue, BasicType dataType) throws FormatterException;
 }

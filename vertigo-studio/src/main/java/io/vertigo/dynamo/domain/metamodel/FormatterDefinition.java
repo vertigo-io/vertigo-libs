@@ -21,7 +21,7 @@ package io.vertigo.dynamo.domain.metamodel;
 import java.lang.reflect.Constructor;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.util.ClassUtil;
@@ -81,12 +81,12 @@ public final class FormatterDefinition implements Formatter, Definition {
 	}
 
 	@Override
-	public String valueToString(final Object objValue, final DataType dataType) {
+	public String valueToString(final Object objValue, final BasicType dataType) {
 		return formatter.valueToString(objValue, dataType);
 	}
 
 	@Override
-	public Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
+	public Object stringToValue(final String strValue, final BasicType dataType) throws FormatterException {
 		return formatter.stringToValue(strValue, dataType);
 	}
 

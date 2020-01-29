@@ -21,6 +21,7 @@ package io.vertigo.datafactory.search.withstore;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.SQLException;
+import java.util.Collections;
 
 import javax.inject.Inject;
 
@@ -104,6 +105,7 @@ abstract class AbstractSearchManagerStoreTest extends AbstractTestCaseJU5 {
 	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
 		dataBaseManager.executeUpdate(
 				SqlStatement.builder(sql).build(),
+				Collections.emptyMap(),
 				connection);
 	}
 

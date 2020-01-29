@@ -24,7 +24,7 @@ import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
@@ -86,7 +86,7 @@ final class BrokerNNImpl implements BrokerNN {
 		Assertion.checkNotNull(taskManager);
 		//-----
 		this.taskManager = taskManager;
-		integerSmartType = SmartTypeDefinition.builder("STyIntegerBroker", DataType.Integer).build();
+		integerSmartType = SmartTypeDefinition.builder("STyIntegerBroker", BasicType.Integer).build();
 	}
 
 	/** {@inheritDoc} */

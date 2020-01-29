@@ -24,7 +24,7 @@ import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
@@ -104,13 +104,13 @@ public class FormatterNumber implements Formatter {
 		return new DecimalFormat(pattern, getDecimalFormatSymbols());
 	}
 
-	private static void checkType(final DataType dataType) {
+	private static void checkType(final BasicType dataType) {
 		Assertion.checkArgument(dataType.isNumber(), "FormatterNumber ne s'applique qu'aux Nombres");
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	public final Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
+	public final Object stringToValue(final String strValue, final BasicType dataType) throws FormatterException {
 		checkType(dataType);
 		//-----
 		//Pour les nombres on "trim" à droite et à gauche
@@ -128,13 +128,13 @@ public class FormatterNumber implements Formatter {
 			 */
 			sValue = cleanStringNumber(sValue, decimalFormatSymbols);
 
-			if (dataType == DataType.BigDecimal) {
+			if (dataType == BasicType.BigDecimal) {
 				return new BigDecimal(sValue);
-			} else if (dataType == DataType.Double) {
+			} else if (dataType == BasicType.Double) {
 				return Double.valueOf(sValue);
-			} else if (dataType == DataType.Integer) {
+			} else if (dataType == BasicType.Integer) {
 				return toInteger(sValue);
-			} else if (dataType == DataType.Long) {
+			} else if (dataType == BasicType.Long) {
 				return Long.valueOf(sValue);
 			}
 			throw new IllegalArgumentException("Type unsupported : " + dataType);
@@ -195,13 +195,13 @@ public class FormatterNumber implements Formatter {
 
 	/** {@inheritDoc} */
 	@Override
-	public final String valueToString(final Object objValue, final DataType dataType) {
+	public final String valueToString(final Object objValue, final BasicType dataType) {
 		checkType(dataType);
 		//-----
 		if (objValue == null) {
 			return "";
 		}
-		if (pattern == null && (dataType == DataType.Integer || dataType == DataType.Long)) {
+		if (pattern == null && (dataType == BasicType.Integer || dataType == BasicType.Long)) {
 			// on ne passe surtout pas pas un formatter interne java
 			// pour les perfs et conserver des identifiants en un seul morceau
 			return objValue.toString();

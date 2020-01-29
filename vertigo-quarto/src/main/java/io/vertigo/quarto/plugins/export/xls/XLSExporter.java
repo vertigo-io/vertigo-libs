@@ -49,7 +49,7 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
@@ -73,8 +73,8 @@ final class XLSExporter {
 	private final Map<DtField, Map<Object, String>> referenceCache = new HashMap<>();
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
 
-	private final Map<DataType, HSSFCellStyle> evenHssfStyleCache = new EnumMap<>(DataType.class);
-	private final Map<DataType, HSSFCellStyle> oddHssfStyleCache = new EnumMap<>(DataType.class);
+	private final Map<BasicType, HSSFCellStyle> evenHssfStyleCache = new EnumMap<>(BasicType.class);
+	private final Map<BasicType, HSSFCellStyle> oddHssfStyleCache = new EnumMap<>(BasicType.class);
 
 	private final EntityStoreManager entityStoreManager;
 	private final ModelManager modelManager;
@@ -177,46 +177,46 @@ final class XLSExporter {
 		// default:
 		final HSSFCellStyle oddCellStyle = createRowCellStyle(workbook, true);
 		final HSSFCellStyle evenCellStyle = createRowCellStyle(workbook, true);
-		oddHssfStyleCache.put(DataType.Boolean, oddCellStyle);
-		oddHssfStyleCache.put(DataType.String, oddCellStyle);
-		evenHssfStyleCache.put(DataType.Boolean, evenCellStyle);
-		evenHssfStyleCache.put(DataType.String, evenCellStyle);
+		oddHssfStyleCache.put(BasicType.Boolean, oddCellStyle);
+		oddHssfStyleCache.put(BasicType.String, oddCellStyle);
+		evenHssfStyleCache.put(BasicType.Boolean, evenCellStyle);
+		evenHssfStyleCache.put(BasicType.String, evenCellStyle);
 
 		// Nombre sans décimal
 		final HSSFCellStyle oddLongCellStyle = createRowCellStyle(workbook, true);
 		final HSSFCellStyle evenLongCellStyle = createRowCellStyle(workbook, true);
 		oddLongCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("#,##0"));
 		evenLongCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("#,##0"));
-		oddHssfStyleCache.put(DataType.Long, oddLongCellStyle);
-		oddHssfStyleCache.put(DataType.Integer, oddLongCellStyle);
-		evenHssfStyleCache.put(DataType.Long, evenLongCellStyle);
-		evenHssfStyleCache.put(DataType.Integer, evenLongCellStyle);
+		oddHssfStyleCache.put(BasicType.Long, oddLongCellStyle);
+		oddHssfStyleCache.put(BasicType.Integer, oddLongCellStyle);
+		evenHssfStyleCache.put(BasicType.Long, evenLongCellStyle);
+		evenHssfStyleCache.put(BasicType.Integer, evenLongCellStyle);
 
 		// Nombre a décimal
 		final HSSFCellStyle oddDoubleCellStyle = createRowCellStyle(workbook, true);
 		final HSSFCellStyle evenDoubleCellStyle = createRowCellStyle(workbook, true);
 		oddDoubleCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("#,##0.00"));
 		evenDoubleCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("#,##0.00"));
-		oddHssfStyleCache.put(DataType.Double, oddDoubleCellStyle);
-		oddHssfStyleCache.put(DataType.BigDecimal, oddDoubleCellStyle);
-		evenHssfStyleCache.put(DataType.Double, evenDoubleCellStyle);
-		evenHssfStyleCache.put(DataType.BigDecimal, evenDoubleCellStyle);
+		oddHssfStyleCache.put(BasicType.Double, oddDoubleCellStyle);
+		oddHssfStyleCache.put(BasicType.BigDecimal, oddDoubleCellStyle);
+		evenHssfStyleCache.put(BasicType.Double, evenDoubleCellStyle);
+		evenHssfStyleCache.put(BasicType.BigDecimal, evenDoubleCellStyle);
 
 		// Date
 		final HSSFCellStyle oddDateCellStyle = createRowCellStyle(workbook, true);
 		final HSSFCellStyle evenDateCellStyle = createRowCellStyle(workbook, true);
 		oddDateCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy" /* "m/d/yy h:mm" */));
 		evenDateCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy" /* "m/d/yy h:mm" */));
-		oddHssfStyleCache.put(DataType.LocalDate, oddDateCellStyle);
-		evenHssfStyleCache.put(DataType.LocalDate, evenDateCellStyle);
+		oddHssfStyleCache.put(BasicType.LocalDate, oddDateCellStyle);
+		evenHssfStyleCache.put(BasicType.LocalDate, evenDateCellStyle);
 
 		// Instant
 		final HSSFCellStyle oddDateTimeCellStyle = createRowCellStyle(workbook, true);
 		final HSSFCellStyle evenDateTimeCellStyle = createRowCellStyle(workbook, true);
 		oddDateTimeCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy h:mm"));
 		evenDateTimeCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("m/d/yy h:mm"));
-		oddHssfStyleCache.put(DataType.Instant, oddDateTimeCellStyle);
-		evenHssfStyleCache.put(DataType.Instant, evenDateTimeCellStyle);
+		oddHssfStyleCache.put(BasicType.Instant, oddDateTimeCellStyle);
+		evenHssfStyleCache.put(BasicType.Instant, evenDateTimeCellStyle);
 
 	}
 
@@ -280,7 +280,7 @@ final class XLSExporter {
 			final ModelManager modelManager,
 			final Object value,
 			final HSSFCell cell,
-			final Map<DataType, HSSFCellStyle> rowCellStyle,
+			final Map<BasicType, HSSFCellStyle> rowCellStyle,
 			final int cellIndex,
 			final Map<Integer, Double> maxWidthPerColumn,
 			final SmartTypeDefinition smartTypeDefinition) {

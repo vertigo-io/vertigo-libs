@@ -18,6 +18,9 @@
  */
 package io.vertigo.datastore.entitystore;
 
+import java.util.Map;
+
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.node.component.Manager;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -126,5 +129,7 @@ public interface EntityStoreManager extends Manager {
 	DataStoreConfig getDataStoreConfig();
 
 	MasterDataConfig getMasterDataConfig();
+
+	Map<Class, BasicTypeAdapter> getBasicTypeAdapters();
 
 }

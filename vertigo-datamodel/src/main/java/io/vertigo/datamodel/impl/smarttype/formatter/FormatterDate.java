@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Home;
@@ -86,7 +86,7 @@ public final class FormatterDate implements Formatter {
 
 	/** {@inheritDoc} */
 	@Override
-	public String valueToString(final Object objValue, final DataType dataType) {
+	public String valueToString(final Object objValue, final BasicType dataType) {
 		Assertion.checkArgument(dataType.isAboutDate(), "this formatter only applies on date formats");
 		//-----
 		if (objValue == null) {
@@ -104,7 +104,7 @@ public final class FormatterDate implements Formatter {
 
 	/** {@inheritDoc} */
 	@Override
-	public Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
+	public Object stringToValue(final String strValue, final BasicType dataType) throws FormatterException {
 		Assertion.checkArgument(dataType.isAboutDate(), "Formatter ne s'applique qu'aux dates");
 		//-----
 		if (StringUtil.isEmpty(strValue)) {

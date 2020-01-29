@@ -3,7 +3,7 @@ package io.vertigo.datamodel.smarttype.data;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintNumberMaximum;
 import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintNumberMinimum;
 import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintRegex;
@@ -93,7 +93,7 @@ public enum TestSmartTypes {
 	Siret2,
 
 	@SmartTypeDefinition(GeoPoint.class)
-	@Mapper(dataType = DataType.String, clazz = GeoPointMapper.class)
+	@Mapper(dataType = BasicType.String, clazz = GeoPointMapper.class)
 	@FormatterDefault
 	GeoPoint;
 }

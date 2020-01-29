@@ -19,7 +19,7 @@
 package io.vertigo.datastore.task.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
@@ -30,7 +30,7 @@ import io.vertigo.datamodel.structure.util.JsonMapper;
 /**
  * SuperHero
  */
-@Mapper(clazz = JsonMapper.class, dataType = DataType.String)
+@Mapper(clazz = JsonMapper.class, dataType = BasicType.String)
 public final class SuperHero implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;

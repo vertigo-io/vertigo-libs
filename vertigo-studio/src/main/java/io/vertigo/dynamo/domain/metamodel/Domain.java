@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
@@ -82,7 +82,7 @@ public final class Domain implements Definition {
 
 	private final String name;
 	private final Scope scope;
-	private final DataType dataType;
+	private final BasicType dataType;
 
 	private final Class valueObjectClass;
 	/**
@@ -111,7 +111,7 @@ public final class Domain implements Definition {
 	Domain(
 			final String name,
 			final Scope scope,
-			final DataType dataType,
+			final BasicType dataType,
 			final String dtDefinitionName,
 			final Class valueObjectClass,
 			final FormatterDefinition formatterDefinition,
@@ -154,7 +154,7 @@ public final class Domain implements Definition {
 	 * @param dataType the dataType managed by the domain
 	 * @return DomainBuilder
 	 */
-	public static DomainBuilder builder(final String name, final DataType dataType) {
+	public static DomainBuilder builder(final String name, final BasicType dataType) {
 		return new DomainBuilder(name, dataType);
 	}
 
@@ -181,7 +181,7 @@ public final class Domain implements Definition {
 	 *
 	 * @return the dataType.
 	 */
-	public DataType getDataType() {
+	public BasicType getDataType() {
 		Assertion.checkState(scope == Scope.PRIMITIVE, "can only be used with primitives");
 		//---
 		return dataType;

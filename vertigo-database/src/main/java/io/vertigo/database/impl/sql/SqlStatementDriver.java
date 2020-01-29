@@ -31,14 +31,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataStream;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.BeanUtil;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.database.impl.sql.mapper.SqlMapper;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlParameter;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
@@ -68,10 +70,7 @@ final class SqlStatementDriver {
 
 	private static final int GENERATED_KEYS_INDEX = 1;
 
-	private final SqlMapper sqlMapper;
-
-	SqlStatementDriver(final SqlMapper sqlMapper) {
-		this.sqlMapper = sqlMapper;
+	SqlStatementDriver() {
 	}
 
 	//------------------ Statement creations ----------------------------------//
@@ -114,14 +113,21 @@ final class SqlStatementDriver {
 	void setParameters(
 			final PreparedStatement statement,
 			final List<SqlParameter> parameters,
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException {
 		//-----
 		for (int index = 0; index < parameters.size(); index++) {
 			final SqlParameter parameter = parameters.get(index);
 			final Class javaDataType = parameter.getDataType();
-			final Class sqlDataType = sqlMapper.getSqlType(javaDataType);
-			connection.getDataBase().getSqlMapping().setValueOnStatement(
-					statement, index + 1, sqlDataType, sqlMapper.toSql(javaDataType, parameter.getValue()));
+			if (isPrimitive(parameter.getDataType())) {
+				connection.getDataBase().getSqlMapping().setValueOnStatement(
+						statement, index + 1, javaDataType, parameter.getValue());
+			} else {
+				// complex we find the adapter
+				final BasicTypeAdapter adapter = basicTypeAdapters.get(parameter.getDataType());
+				connection.getDataBase().getSqlMapping().setValueOnStatement(
+						statement, index + 1, adapter.getBasicType(), adapter.toBasic(parameter.getValue()));
+			}
 		}
 	}
 
@@ -137,6 +143,7 @@ final class SqlStatementDriver {
 	 */
 	<O> List<O> buildResult(
 			final Class<O> dataType,
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlMapping sqlMapping,
 			final ResultSet resultSet,
 			final Integer limit) throws SQLException {
@@ -144,11 +151,12 @@ final class SqlStatementDriver {
 		Assertion.checkNotNull(sqlMapping);
 		Assertion.checkNotNull(resultSet);
 		//-----
-		return retrieveData(dataType, sqlMapping, resultSet, limit);
+		return retrieveData(dataType, basicTypeAdapters, sqlMapping, resultSet, limit);
 	}
 
 	private <O> List<O> retrieveData(
 			final Class<O> dataType,
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlMapping sqlMapping,
 			final ResultSet resultSet,
 			final Integer limit) throws SQLException {
@@ -165,7 +173,7 @@ final class SqlStatementDriver {
 			if (isPrimitive) {
 				list.add(readPrimitive(sqlMapping, resultSet, dataType));
 			} else {
-				list.add(readRow(sqlMapping, resultSet, dataType, fields));
+				list.add(readRow(basicTypeAdapters, sqlMapping, resultSet, dataType, fields));
 			}
 		}
 		return list;
@@ -175,11 +183,11 @@ final class SqlStatementDriver {
 			final SqlMapping mapping,
 			final ResultSet resultSet,
 			final Class<O> dataType) throws SQLException {
-		final Class<?> sqlDataType = sqlMapper.getSqlType(dataType);
-		return sqlMapper.toJava(dataType, mapping.getValueForResultSet(resultSet, 1, sqlDataType));
+		return mapping.getValueForResultSet(resultSet, 1, dataType);
 	}
 
 	private <O> O readRow(
+			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlMapping mapping,
 			final ResultSet resultSet,
 			final Class<O> dataType,
@@ -188,9 +196,13 @@ final class SqlStatementDriver {
 		Object value;
 		for (int i = 0; i < fields.length; i++) {
 			final Class<?> javaFieldDataType = fields[i].type;
-			final Class<?> sqlFieldDataType = sqlMapper.getSqlType(javaFieldDataType);
-			value = sqlMapper.toJava(javaFieldDataType, mapping.getValueForResultSet(resultSet, i + 1, sqlFieldDataType));
-			fields[i].setValue(bean, value);
+			if (isPrimitive(javaFieldDataType)) {
+				fields[i].setValue(bean, mapping.getValueForResultSet(resultSet, i + 1, javaFieldDataType));
+			} else {
+				final BasicTypeAdapter adapter = basicTypeAdapters.get(javaFieldDataType);
+				value = adapter.toJava(mapping.getValueForResultSet(resultSet, i + 1, adapter.getBasicType()));
+				fields[i].setValue(bean, value);
+			}
 		}
 		return bean;
 	}
@@ -249,7 +261,8 @@ final class SqlStatementDriver {
 				Instant.class,
 				LocalDate.class,
 				BigDecimal.class,
-				Long.class)
+				Long.class,
+				DataStream.class)
 				.anyMatch(primitiveClazz -> primitiveClazz.isAssignableFrom(dataType));
 	}
 
@@ -272,9 +285,7 @@ final class SqlStatementDriver {
 			}
 			//ResultSet haven't correctly named columns so we fall back to get the first column, instead of looking for column index by name.
 			final int pkRsCol = GENERATED_KEYS_INDEX;//attention le pkRsCol correspond au n° de column dans le RETURNING
-			final Class<?> sqlDataType = sqlMapper.getSqlType(dataType);
-			final O id = sqlMapper.toJava(dataType, sqlMapping.getValueForResultSet(
-					rs, pkRsCol, sqlDataType));
+			final O id = sqlMapping.getValueForResultSet(rs, pkRsCol, dataType);
 			if (rs.wasNull()) {
 				throw new SQLException("GeneratedKeys wasNull", "23502", NULL_GENERATED_KEY_ERROR_VENDOR_CODE);
 			}

@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.util.ClassUtil;
@@ -75,7 +75,7 @@ public final class SmartTypeDefinition implements Definition {
 	private final String name;
 	private final Scope scope;
 	private final String valueObjectClassName;
-	private final DataType targetDataType;
+	private final BasicType targetDataType;
 	private final Optional<Class<? extends DataTypeMapper>> mapperClassOpt;
 	private final FormatterConfig formatterConfig;
 	private final List<ConstraintConfig> constraintConfigs;
@@ -86,7 +86,7 @@ public final class SmartTypeDefinition implements Definition {
 			final String name,
 			final Scope scope,
 			final String valueObjectClassName,
-			final DataType targetDataType,
+			final BasicType targetDataType,
 			final Optional<Class<? extends DataTypeMapper>> mapperClassOpt,
 			final FormatterConfig formatterConfig,
 			final List<ConstraintConfig> constraintConfigs,
@@ -131,7 +131,7 @@ public final class SmartTypeDefinition implements Definition {
 		return ClassUtil.classForName(valueObjectClassName);
 	}
 
-	public DataType getTargetDataType() {
+	public BasicType getTargetDataType() {
 		return targetDataType;
 	}
 
@@ -156,7 +156,7 @@ public final class SmartTypeDefinition implements Definition {
 		return constraintConfigs;
 	}
 
-	public static SmartTypeDefinitionBuilder builder(final String name, final DataType dataType) {
+	public static SmartTypeDefinitionBuilder builder(final String name, final BasicType dataType) {
 		return new SmartTypeDefinitionBuilder(name, dataType);
 	}
 

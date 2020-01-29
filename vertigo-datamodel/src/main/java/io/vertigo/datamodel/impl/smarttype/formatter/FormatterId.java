@@ -19,7 +19,7 @@
 package io.vertigo.datamodel.impl.smarttype.formatter;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
@@ -40,8 +40,8 @@ public final class FormatterId implements Formatter {
 
 	/** {@inheritDoc} */
 	@Override
-	public Long stringToValue(final String strValue, final DataType dataType) throws FormatterException {
-		Assertion.checkArgument(dataType == DataType.Long, "Formatter ne s'applique qu'aux Long");
+	public Long stringToValue(final String strValue, final BasicType dataType) throws FormatterException {
+		Assertion.checkArgument(dataType == BasicType.Long, "Formatter ne s'applique qu'aux Long");
 		//---
 		if (StringUtil.isEmpty(strValue)) {
 			return null;
@@ -57,8 +57,8 @@ public final class FormatterId implements Formatter {
 
 	/** {@inheritDoc} */
 	@Override
-	public String valueToString(final Object objValue, final DataType dataType) {
-		Assertion.checkArgument(dataType == DataType.Long, "Formatter ne s'applique qu'aux Long");
+	public String valueToString(final Object objValue, final BasicType dataType) {
+		Assertion.checkArgument(dataType == BasicType.Long, "Formatter ne s'applique qu'aux Long");
 		//---
 		if (objValue == null) {
 			return "";

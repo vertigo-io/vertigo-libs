@@ -24,7 +24,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.function.Function;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataType;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.util.StringUtil;
@@ -46,7 +46,7 @@ public final class EncoderDate {
 	private EncoderDate() {
 	}
 
-	public static String valueToString(final Object objValue, final DataType dataType) {
+	public static String valueToString(final Object objValue, final BasicType dataType) {
 		Assertion.checkArgument(dataType.isAboutDate(), "this formatter only applies on date formats");
 		//-----
 		if (objValue == null) {
@@ -62,7 +62,7 @@ public final class EncoderDate {
 		}
 	}
 
-	public static Object stringToValue(final String strValue, final DataType dataType) throws FormatterException {
+	public static Object stringToValue(final String strValue, final BasicType dataType) throws FormatterException {
 		Assertion.checkArgument(dataType.isAboutDate(), "Formatter ne s'applique qu'aux dates");
 		//-----
 		if (StringUtil.isEmpty(strValue)) {
