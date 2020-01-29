@@ -1,60 +1,76 @@
 package io.vertigo.datafactory.collections.data;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.inject.Inject;
 
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.definition.DefinitionProvider;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.DefinitionSupplier;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datafactory.collections.CollectionsManager;
 import io.vertigo.datafactory.collections.data.domain.SmartCar;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
+import io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder;
+import io.vertigo.datafactory.collections.metamodel.FacetRangeDefinitionSupplier;
+import io.vertigo.datafactory.collections.metamodel.FacetTermDefinitionSupplier;
 import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinitionSupplier;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datamodel.structure.model.DtList;
 
-public class SmartCarSearchClient implements Component {
+public class SmartCarSearchClient implements Component, DefinitionProvider {
 
 	@Inject
 	private CollectionsManager collectionsManager;
 
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation(
-			name = "QryCarFacet",
-			keyConcept = "DtSmartCar",
-			listFilterBuilderClass = io.vertigo.dynamox.search.DslListFilterBuilder.class,
-			listFilterBuilderQuery = "#query#",
-			criteriaSmartType = "STyText",
-			facets = {
-					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
-							type = "term",
-							name = "FctDescriptionCar$qryCarFacet",
-							dtDefinition = "DtSmartCar",
-							fieldName = "description",
-							label = "Par description",
-							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count),
-					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
-							type = "term",
-							name = "FctManufacturerCar$qryCarFacet",
-							dtDefinition = "DtSmartCar",
-							fieldName = "manufacturer",
-							label = "Par constructeur",
-							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count),
-					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
-							type = "range",
-							name = "FctYearCar$qryCarFacet",
-							dtDefinition = "DtSmartCar",
-							fieldName = "year",
-							label = "Par année",
-							ranges = {
-									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "R1", filter = "year:[* TO 2000]", label = "avant 2000"),
-									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "R2", filter = "year:[2000 TO 2005]", label = "2000-2005"),
-									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "R3", filter = "year:[2005 TO *]", label = "après 2005") },
-							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition) })
 	public FacetedQueryResult<SmartCar, DtList<SmartCar>> createSearchQueryBuilderBase(final DtList<SmartCar> smartCars, final SelectedFacetValues selectedFacetValues, final Optional<FacetDefinition> clusterFacetDefinitionOpt) {
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryCarFacet", FacetedQueryDefinition.class);
 		return collectionsManager.facetList(smartCars, new FacetedQuery(facetedQueryDefinition, selectedFacetValues), clusterFacetDefinitionOpt);
 	}
 
+	/** {@inheritDoc} */
+	@Override
+	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
+		return new ListBuilder<DefinitionSupplier>()
+				//---
+				// FacetedQueryDefinition
+				//-----
+				.add(new FacetedQueryDefinitionSupplier("QryCarFacet")
+						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
+						.withListFilterBuilderQuery("#query#")
+						.withCriteriaSmartType("STyLabel")
+						.withFacet("FctDescriptionCar")
+						.withFacet("FctManufacturerCar")
+						.withFacet("FctYearCar"))
+
+				//---
+				// FacetTermDefinition
+				//-----
+				.add(new FacetRangeDefinitionSupplier("FctDescriptionCar")
+						.withDtDefinition("DtSmartCar")
+						.withFieldName("description")
+						.withLabel("Par description")
+						.withOrder(FacetOrder.count))
+				.add(new FacetTermDefinitionSupplier("FctManufacturerCar")
+						.withDtDefinition("DtSmartCar")
+						.withFieldName("manufacturer")
+						.withLabel("Par constructeur")
+						.withOrder(FacetOrder.count))
+				.add(new FacetRangeDefinitionSupplier("FctYearCar")
+						.withDtDefinition("DtSmartCar")
+						.withFieldName("year")
+						.withLabel("Par année")
+						.withRange("r1", "year:[* TO 2000]", "avant 2000")
+						.withRange("r2", "year:[2000 TO 2005]", "2000-2005")
+						.withRange("r3", "year:[2005 TO *]", "après 2005")
+						.withOrder(FacetOrder.definition))
+
+				.build();
+	}
 }

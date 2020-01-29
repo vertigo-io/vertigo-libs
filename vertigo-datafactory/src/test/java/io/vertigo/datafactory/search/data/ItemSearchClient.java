@@ -1,35 +1,37 @@
 package io.vertigo.datafactory.search.data;
 
 import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.definition.DefinitionProvider;
+import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.core.util.InjectorUtil;
+import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datafactory.collections.ListFilter;
+import io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder;
+import io.vertigo.datafactory.collections.metamodel.FacetRangeDefinitionSupplier;
+import io.vertigo.datafactory.collections.metamodel.FacetTermDefinitionSupplier;
 import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinitionSupplier;
 import io.vertigo.datafactory.collections.metamodel.ListFilterBuilder;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.search.SearchManager;
 import io.vertigo.datafactory.search.data.domain.Item;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
+import io.vertigo.datafactory.search.metamodel.SearchIndexDefinitionSupplier;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datafactory.search.model.SearchQueryBuilder;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.UID;
 
-@io.vertigo.datafactory.search.metamodel.annotation.SearchIndexAnnotation(name = "IdxItem", dtIndex = "DtItem", keyConcept = "DtItem", loaderId = "ItemSearchLoader")
-@io.vertigo.datafactory.search.metamodel.annotation.IndexCopyTo(field = "manufacturer", to = { "allText" })
-@io.vertigo.datafactory.search.metamodel.annotation.IndexCopyTo(field = "model", to = { "allText" })
-@io.vertigo.datafactory.search.metamodel.annotation.IndexCopyTo(field = "description", to = { "allText" })
-@io.vertigo.datafactory.search.metamodel.annotation.IndexCopyTo(field = "year", to = { "allText" })
-@io.vertigo.datafactory.search.metamodel.annotation.IndexCopyTo(field = "kilo", to = { "allText" })
-@io.vertigo.datafactory.search.metamodel.annotation.IndexCopyTo(field = "price", to = { "allText" })
-@io.vertigo.datafactory.search.metamodel.annotation.IndexCopyTo(field = "motorType", to = { "allText" })
-public class ItemSearchClient implements Component {
+public class ItemSearchClient implements Component, DefinitionProvider {
 
 	private final SearchManager searchManager;
 	private final VTransactionManager transactionManager;
@@ -40,71 +42,21 @@ public class ItemSearchClient implements Component {
 	 * @param transactionManager Transaction Manager
 	 */
 	@Inject
-	public ItemSearchClient(final SearchManager searchManager, final VTransactionManager transactionManager) {
+	public ItemSearchClient(
+
+			final SearchManager searchManager,
+			final VTransactionManager transactionManager) {
 		this.searchManager = searchManager;
 		this.transactionManager = transactionManager;
 	}
 
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation(
-			name = "QryItemFacet",
-			keyConcept = "DtItem",
-			listFilterBuilderClass = io.vertigo.dynamox.search.DslListFilterBuilder.class,
-			listFilterBuilderQuery = "#criteria#",
-			criteriaSmartType = "STyString",
-			facets = {
-					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
-							type = "term",
-							name = "FctDescriptionItem$qryItemFacet",
-							dtDefinition = "DtItem",
-							fieldName = "description",
-							label = "Description",
-							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count),
-					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
-							type = "term",
-							name = "FctManufacturerItem$qryItemFacet",
-							dtDefinition = "DtItem",
-							fieldName = "manufacturer",
-							label = "Par constructeur",
-							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count),
-					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
-							type = "term",
-							name = "FctManufacturerItemAlpha$qryItemFacet",
-							dtDefinition = "DtItem",
-							fieldName = "manufacturer",
-							label = "Par constructeur",
-							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.alpha),
-					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
-							type = "range",
-							name = "FctYearItem$qryItemFacet",
-							dtDefinition = "DtItem",
-							fieldName = "year",
-							label = "Par date",
-							ranges = {
-									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "R1", filter = "year:[* TO 2000]", label = "avant 2000"),
-									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "R2", filter = "year:[2000 TO 2005]", label = "2000-2005"),
-									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "R3", filter = "year:[2005 TO *]", label = "apres 2005") },
-							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition) })
-	public SearchQueryBuilder createSearchQueryBuilderItemFacet(final java.lang.String criteria, final SelectedFacetValues selectedFacetValues) {
+	public SearchQueryBuilder createSearchQueryBuilderItemFacet(final String criteria, final SelectedFacetValues selectedFacetValues) {
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryItemFacet", FacetedQueryDefinition.class);
 		final ListFilterBuilder<java.lang.String> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
 		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
 		return SearchQuery.builder(criteriaListFilter).withFacet(facetedQueryDefinition, selectedFacetValues);
 	}
 
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation(
-			name = "QryItemOptionalFacet",
-			keyConcept = "DtItem",
-			listFilterBuilderClass = io.vertigo.dynamox.search.DslListFilterBuilder.class,
-			listFilterBuilderQuery = "#criteria#",
-			criteriaSmartType = "STyString",
-			facets = {
-					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
-							type = "term",
-							name = "FctOptionalStringItem$qryItemOptionalFacet",
-							dtDefinition = "DtItem",
-							fieldName = "optionalString",
-							label = "optionalString",
-							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count) })
 	public SearchQueryBuilder createSearchQueryBuilderItemOptionalFacet(final java.lang.String criteria, final SelectedFacetValues selectedFacetValues) {
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryItemOptionalFacet", FacetedQueryDefinition.class);
 		final ListFilterBuilder<java.lang.String> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
@@ -112,40 +64,7 @@ public class ItemSearchClient implements Component {
 		return SearchQuery.builder(criteriaListFilter).withFacet(facetedQueryDefinition, selectedFacetValues);
 	}
 
-	@io.vertigo.datafactory.search.metamodel.annotation.FacetedQueryAnnotation(
-			name = "QryItemFacetMulti",
-			keyConcept = "DtItem",
-			listFilterBuilderClass = io.vertigo.dynamox.search.DslListFilterBuilder.class,
-			listFilterBuilderQuery = "#criteria#",
-			criteriaSmartType = "STyString",
-			facets = {
-					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
-							type = "term",
-							name = "FctDescriptionItem$qryItemFacetMulti",
-							dtDefinition = "DtItem",
-							fieldName = "description",
-							label = "Description",
-							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.count),
-					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
-							type = "term",
-							name = "FctManufacturerItemMulti$qryItemFacetMulti",
-							dtDefinition = "DtItem",
-							fieldName = "manufacturer",
-							label = "Par constructeur",
-							multiselectable = true,
-							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.alpha),
-					@io.vertigo.datafactory.search.metamodel.annotation.Facet(
-							type = "range",
-							name = "FctYearItem$qryItemFacetMulti",
-							dtDefinition = "DtItem",
-							fieldName = "year",
-							label = "Par date",
-							ranges = {
-									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "R1", filter = "year:[* TO 2000]", label = "avant 2000"),
-									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "R2", filter = "year:[2000 TO 2005]", label = "2000-2005"),
-									@io.vertigo.datafactory.search.metamodel.annotation.Range(code = "R3", filter = "year:[2005 TO *]", label = "apres 2005") },
-							order = io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder.definition) })
-	public SearchQueryBuilder createSearchQueryBuilderItemFacetMulti(final java.lang.String criteria, final SelectedFacetValues selectedFacetValues) {
+	public SearchQueryBuilder createSearchQueryBuilderItemFacetMulti(final String criteria, final SelectedFacetValues selectedFacetValues) {
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryItemFacetMulti", FacetedQueryDefinition.class);
 		final ListFilterBuilder<java.lang.String> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
 		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
@@ -185,6 +104,92 @@ public class ItemSearchClient implements Component {
 	 */
 	public void markAsDirty(final Item entity) {
 		markAsDirty(UID.of(entity));
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
+		return new ListBuilder<DefinitionSupplier>()
+				//---
+				// SearchIndexDefinition
+				//-----
+				.add(new SearchIndexDefinitionSupplier("IdxItem")
+						.withKeyConcept("DtItem")
+						.withIndexDtDefinition("DtItem")
+						.withLoaderId("ItemSearchLoader")
+						.withCopyToFields("allText", "manufacturer", "model", "description", "year", "kilo", "price", "motorType"))
+
+				//---
+				// FacetTermDefinition
+				//-----
+				.add(new FacetTermDefinitionSupplier("FctDescriptionItem")
+						.withDtDefinition("DtItem")
+						.withFieldName("description")
+						.withLabel("Description")
+						.withOrder(FacetOrder.count))
+
+				.add(new FacetTermDefinitionSupplier("FctOptionalStringItem")
+						.withDtDefinition("DtItem")
+						.withFieldName("optionalString")
+						.withLabel("optionalString")
+						.withOrder(FacetOrder.count))
+
+				.add(new FacetTermDefinitionSupplier("FctManufacturerItem")
+						.withDtDefinition("DtItem")
+						.withFieldName("manufacturer")
+						.withLabel("Par constructeur")
+						.withOrder(FacetOrder.count))
+
+				.add(new FacetTermDefinitionSupplier("FctManufacturerItemAlpha")
+						.withDtDefinition("DtItem")
+						.withFieldName("manufacturer")
+						.withLabel("Par constructeur")
+						.withOrder(FacetOrder.alpha))
+
+				.add(new FacetTermDefinitionSupplier("FctManufacturerItemMulti")
+						.withDtDefinition("DtItem")
+						.withFieldName("manufacturer")
+						.withLabel("Par constructeur")
+						.withMultiSelectable()
+						.withOrder(FacetOrder.alpha))
+
+				.add(new FacetRangeDefinitionSupplier("FctYearItem")
+						.withDtDefinition("DtItem")
+						.withFieldName("year")
+						.withLabel("Par date")
+						.withRange("R1", "year:[* TO 2000]", "avant 2000")
+						.withRange("R2", "year:[2000 TO 2005]", "2000-2005")
+						.withRange("R3", "year:[2005 TO *]", "apres 2005")
+						.withOrder(FacetOrder.definition))
+
+				//---
+				// FacetedQueryDefinition
+				//-----
+				.add(new FacetedQueryDefinitionSupplier("QryItemFacet")
+						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
+						.withListFilterBuilderQuery("#criteria#")
+						.withCriteriaSmartType("STyString")
+						.withFacet("FctManufacturerItem")
+						.withFacet("FctManufacturerItemAlpha")
+						.withFacet("FctYearItem"))
+
+				.add(new FacetedQueryDefinitionSupplier("QryItemOptionalFacet")
+						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
+						.withListFilterBuilderQuery("#criteria#")
+						.withCriteriaSmartType("STyString")
+						.withFacet("FctManufacturerItem")
+						.withFacet("FctManufacturerItemAlpha")
+						.withFacet("FctYearItem"))
+
+				.add(new FacetedQueryDefinitionSupplier("QryItemFacetMulti")
+						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
+						.withListFilterBuilderQuery("#criteria#")
+						.withCriteriaSmartType("STyString")
+						.withFacet("FctDescriptionItem")
+						.withFacet("FctManufacturerItemMulti")
+						.withFacet("FctYearItem"))
+
+				.build();
 	}
 
 }
