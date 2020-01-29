@@ -109,7 +109,7 @@ class AnnotationWriter {
 		// if we are a foreign key
 		if (dtField.getType() == StudioDtField.FieldType.FOREIGN_KEY) {
 			return Collections.singletonList(new StringBuilder("@").append(ForeignKey.class.getName()).append("(")
-					.append("domain = \"").append(dtField.getDomain().getSmartTypeName()).append("\", ")
+					.append("smartType = \"").append(dtField.getDomain().getSmartTypeName()).append("\", ")
 					.append("label = \"").append(dtField.getLabel().getDisplay()).append("\", ")
 					.append("fkDefinition = \"").append("Dt").append(dtField.getFkDtDefinition().getLocalName()).append("\" ")
 					.append(")")
@@ -119,7 +119,7 @@ class AnnotationWriter {
 		final List<String> lines = new ArrayList<>();
 		// we are other type of field
 		final StringBuilder buffer = new StringBuilder("@Field(")
-				.append("domain = \"").append(dtField.getDomain().getSmartTypeName()).append("\", ");
+				.append("smartType = \"").append(dtField.getDomain().getSmartTypeName()).append("\", ");
 		if (dtField.getType() != StudioDtField.FieldType.DATA) {
 			// "DATA" est la valeur par défaut de type dans l'annotation Field
 			buffer.append("type = \"").append(dtField.getType()).append("\", ");

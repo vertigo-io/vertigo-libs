@@ -26,8 +26,8 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.datamodel.structure.metamodel.association.AssociationNNDefinition;
-import io.vertigo.datamodel.structure.metamodel.association.AssociationSimpleDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationNNDefinition;
+import io.vertigo.dynamo.domain.metamodel.association.StudioAssociationSimpleDefinition;
 import io.vertigo.dynamo.plugins.environment.StudioDefinitionProvider;
 
 /**
@@ -58,14 +58,14 @@ public class EAXmiTestParser extends AbstractTestCaseJU5 {
 	 * - Cardinalité notée 	1 ou n
 	 * - Navigabilité notée v
 	 */
-	private AssociationSimpleDefinition getAssociationSimpleDefinition(final String urn) {
+	private StudioAssociationSimpleDefinition getAssociationSimpleDefinition(final String urn) {
 		return getApp().getDefinitionSpace()
-				.resolve(urn, AssociationSimpleDefinition.class);
+				.resolve(urn, StudioAssociationSimpleDefinition.class);
 	}
 
-	private AssociationNNDefinition getAssociationNNDefinition(final String urn) {
+	private StudioAssociationNNDefinition getAssociationNNDefinition(final String urn) {
 		return getApp().getDefinitionSpace()
-				.resolve(urn, AssociationNNDefinition.class);
+				.resolve(urn, StudioAssociationNNDefinition.class);
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationA1Bnv() {
-		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("AChaChi1");
+		final StudioAssociationSimpleDefinition association = getAssociationSimpleDefinition("StAChaChi1");
 		Assertions.assertNotNull(association);
 		/* "0..1" */
 		Assertions.assertFalse(association.getAssociationNodeA().isMultiple());
@@ -95,7 +95,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationA1vBnv() {
-		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("AChaChi2");
+		final StudioAssociationSimpleDefinition association = getAssociationSimpleDefinition("StAChaChi2");
 		/* "0..1" */
 		Assertions.assertFalse(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -115,7 +115,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationSimpleA1vBn() {
-		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("AChaChi3");
+		final StudioAssociationSimpleDefinition association = getAssociationSimpleDefinition("StAChaChi3");
 		/* "0..1" */
 		Assertions.assertFalse(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -135,7 +135,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationSimpleAnB1v() {
-		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("AChaChi4");
+		final StudioAssociationSimpleDefinition association = getAssociationSimpleDefinition("StAChaChi4");
 		/* "0..*" */
 		Assertions.assertTrue(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -155,7 +155,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationSimpleAnvB1() {
-		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("AChaChi5");
+		final StudioAssociationSimpleDefinition association = getAssociationSimpleDefinition("StAChaChi5");
 		/* "0..*" */
 		Assertions.assertTrue(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -175,7 +175,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationAnvB1v() {
-		final AssociationSimpleDefinition association = getAssociationSimpleDefinition("AChaChi6");
+		final StudioAssociationSimpleDefinition association = getAssociationSimpleDefinition("StAChaChi6");
 		/* "0..*" */
 		Assertions.assertTrue(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -195,7 +195,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationAnBnv() {
-		final AssociationNNDefinition association = getAssociationNNDefinition("AnnChaChi7");
+		final StudioAssociationNNDefinition association = getAssociationNNDefinition("StAnnChaChi7");
 		/* "0..*" */
 		Assertions.assertTrue(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -215,7 +215,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationAnvBnv() {
-		final AssociationNNDefinition association = getAssociationNNDefinition("AnnChaChi8");
+		final StudioAssociationNNDefinition association = getAssociationNNDefinition("StAnnChaChi8");
 		/* "0..*" */
 		Assertions.assertTrue(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -235,7 +235,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationAnBn() {
-		final AssociationNNDefinition association = getAssociationNNDefinition("AnnChaChi9");
+		final StudioAssociationNNDefinition association = getAssociationNNDefinition("StAnnChaChi9");
 		/* "0..*" */
 		Assertions.assertTrue(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());
@@ -255,7 +255,7 @@ public class EAXmiTestParser extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAssoctationAnvBn() {
-		final AssociationNNDefinition association = getAssociationNNDefinition("AnnChaChi10");
+		final StudioAssociationNNDefinition association = getAssociationNNDefinition("StAnnChaChi10");
 		/* "0..*" */
 		Assertions.assertTrue(association.getAssociationNodeA().isMultiple());
 		Assertions.assertFalse(association.getAssociationNodeA().isNotNull());

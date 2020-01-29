@@ -22,16 +22,16 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault;
-import io.vertigo.datamodel.structure.metamodel.DataType;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.dynamo.plugins.environment.StudioDefinitionProvider;
 
 /**
@@ -74,7 +74,7 @@ public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testCommand() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final DtDefinition dtDefinition = definitionSpace.resolve("DtCommand", DtDefinition.class);
+		final StudioDtDefinition dtDefinition = definitionSpace.resolve("StDtCommand", StudioDtDefinition.class);
 		Assertions.assertTrue(dtDefinition.isPersistent());
 		Assertions.assertEquals("io.vertigo.dynamo.environment.java.data.domain.Command", dtDefinition.getClassCanonicalName());
 		Assertions.assertEquals("io.vertigo.dynamo.environment.java.data.domain", dtDefinition.getPackageName());
@@ -84,7 +84,7 @@ public final class JavaEnvironmentManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testCityFragment() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		final DtDefinition dtDefinition = definitionSpace.resolve("DtCityFragment", DtDefinition.class);
+		final StudioDtDefinition dtDefinition = definitionSpace.resolve("StDtCityFragment", StudioDtDefinition.class);
 		Assertions.assertFalse(dtDefinition.isPersistent());
 		Assertions.assertTrue(dtDefinition.getFragment().isPresent());
 		Assertions.assertTrue("City".equals(dtDefinition.getFragment().get().getClassSimpleName()));

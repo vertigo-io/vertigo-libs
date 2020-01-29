@@ -19,8 +19,8 @@
 package io.vertigo.account.authentication.model;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -46,7 +46,7 @@ public final class UserCredential implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "STyCode", type = "ID", cardinality = Cardinality.ONE, label = "Id")
+	@Field(smartType = "STyCode", type = "ID", cardinality = Cardinality.ONE, label = "Id")
 	public String getUcrId() {
 		return ucrId;
 	}
@@ -55,7 +55,7 @@ public final class UserCredential implements KeyConcept {
 		this.ucrId = ucrId;
 	}
 
-	@Field(domain = "STyLabel", cardinality = Cardinality.ONE, label = "login")
+	@Field(smartType = "STyLabel", cardinality = Cardinality.ONE, label = "login")
 	public String getLogin() {
 		return login;
 	}
@@ -64,7 +64,7 @@ public final class UserCredential implements KeyConcept {
 		this.login = login;
 	}
 
-	@Field(domain = "STyLabel", cardinality = Cardinality.ONE, label = "password")
+	@Field(smartType = "STyLabel", cardinality = Cardinality.ONE, label = "password")
 	public String getPassword() {
 		return password;
 	}
@@ -73,7 +73,7 @@ public final class UserCredential implements KeyConcept {
 		this.password = password;
 	}
 
-	@Field(domain = "STyLabel", cardinality = Cardinality.ONE, label = "mail")
+	@Field(smartType = "STyLabel", cardinality = Cardinality.ONE, label = "mail")
 	public String getMail() {
 		return mail;
 	}

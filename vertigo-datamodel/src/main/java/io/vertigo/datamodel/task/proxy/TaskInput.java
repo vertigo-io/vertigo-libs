@@ -28,5 +28,5 @@ import java.lang.annotation.Target;
 public @interface TaskInput {
 	String name();
 
-	String domain();
+	String smartType();
 }

@@ -48,7 +48,7 @@ public final class City implements DtMasterData {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long citId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id")
+	@Field(smartType = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id")
 	public Long getCitId() {
 		return citId;
 	}
@@ -67,7 +67,7 @@ public final class City implements DtMasterData {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoFullText", cardinality = Cardinality.ONE, label = "Label")
+	@Field(smartType = "DoFullText", cardinality = Cardinality.ONE, label = "Label")
 	public String getLabel() {
 		return label;
 	}
@@ -86,7 +86,7 @@ public final class City implements DtMasterData {
 	 * Récupère la valeur de la propriété 'Postal code'.
 	 * @return String postalCode <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoKeyword", cardinality = Cardinality.ONE, label = "Postal code")
+	@Field(smartType = "DoKeyword", cardinality = Cardinality.ONE, label = "Postal code")
 	public String getPostalCode() {
 		return postalCode;
 	}

@@ -128,12 +128,12 @@ public final class DomainMetricsProvider implements Component {
 		int count = 0;
 		for (final TaskDefinition taskDefinition : Home.getApp().getDefinitionSpace().getAll(TaskDefinition.class)) {
 			for (final TaskAttribute taskAttribute : taskDefinition.getInAttributes()) {
-				if (smartTypeDefinition.equals(taskAttribute.getDomain())) {
+				if (smartTypeDefinition.equals(taskAttribute.getSmartTypeDefinition())) {
 					count++;
 				}
 			}
 			if (taskDefinition.getOutAttributeOption().isPresent()) {
-				if (smartTypeDefinition.equals(taskDefinition.getOutAttributeOption().get().getDomain())) {
+				if (smartTypeDefinition.equals(taskDefinition.getOutAttributeOption().get().getSmartTypeDefinition())) {
 					count++;
 				}
 			}
@@ -147,7 +147,7 @@ public final class DomainMetricsProvider implements Component {
 		return Home.getApp().getDefinitionSpace().getAll(DtDefinition.class)
 				.stream()
 				.flatMap(dtDefinition -> dtDefinition.getFields().stream())
-				.filter(field -> smartTypeDefinition.equals(field.getDomain()))
+				.filter(field -> smartTypeDefinition.equals(field.getSmartTypeDefinition()))
 				.count();
 	}
 
@@ -166,8 +166,8 @@ public final class DomainMetricsProvider implements Component {
 	}
 
 	private static double count(final DtDefinition dtDefinition, final TaskAttribute taskAttribute) {
-		if (taskAttribute.getDomain().getScope().isDataObject()) {
-			if (dtDefinition.equals(DtObjectUtil.findDtDefinition(taskAttribute.getDomain().getJavaClass()))) {
+		if (taskAttribute.getSmartTypeDefinition().getScope().isDataObject()) {
+			if (dtDefinition.equals(DtObjectUtil.findDtDefinition(taskAttribute.getSmartTypeDefinition().getJavaClass()))) {
 				return 1;
 			}
 		}

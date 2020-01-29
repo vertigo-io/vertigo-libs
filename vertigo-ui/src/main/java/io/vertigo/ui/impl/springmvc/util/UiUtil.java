@@ -22,13 +22,13 @@ import java.io.Serializable;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault;
 import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
@@ -89,7 +89,7 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			return getDtField(object + "." + fieldName).getDomain().getProperties().getValue(DtProperty.UNIT);
+			return getDtField(object + "." + fieldName).getSmartTypeDefinition().getProperties().getValue(DtProperty.UNIT);
 		}
 		return "";
 	}
@@ -100,7 +100,7 @@ public final class UiUtil implements Serializable {
 	 */
 	public static Integer domainMaxLength(final String object, final String fieldName) {
 		if (fieldName != null) {
-			return getDtField(object + "." + fieldName).getDomain().getProperties().getValue(DtProperty.MAX_LENGTH);
+			return getDtField(object + "." + fieldName).getSmartTypeDefinition().getProperties().getValue(DtProperty.MAX_LENGTH);
 		}
 		return null;
 	}
@@ -113,7 +113,7 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			return "col_" + getDtField(object + "." + fieldName).getDomain().getName();
+			return "col_" + getDtField(object + "." + fieldName).getSmartTypeDefinition().getName();
 		}
 		return defaultValue;
 	}
@@ -126,7 +126,7 @@ public final class UiUtil implements Serializable {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
-			final SmartTypeDefinition smartTypeDefinition = getDtField(object + "." + fieldName).getDomain();
+			final SmartTypeDefinition smartTypeDefinition = getDtField(object + "." + fieldName).getSmartTypeDefinition();
 			if (smartTypeDefinition.getScope().isPrimitive()) {
 				final DataType dataType = smartTypeDefinition.getTargetDataType();
 				switch (dataType) {
@@ -158,15 +158,15 @@ public final class UiUtil implements Serializable {
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
 			return DEFAULT_FORMATTER.valueToString(value, DataType.Boolean);
 		}
-		return modelManager.valueToString(getDtField(fieldPath).getDomain(), value);
+		return modelManager.valueToString(getDtField(fieldPath).getSmartTypeDefinition(), value);
 	}
 
 	public static Double getMinValue(final String fieldPath) {
-		return getDtField(fieldPath).getDomain().getProperties().getValue(DtProperty.MIN_VALUE);
+		return getDtField(fieldPath).getSmartTypeDefinition().getProperties().getValue(DtProperty.MIN_VALUE);
 	}
 
 	public static Double getMaxValue(final String fieldPath) {
-		return getDtField(fieldPath).getDomain().getProperties().getValue(DtProperty.MAX_VALUE);
+		return getDtField(fieldPath).getSmartTypeDefinition().getProperties().getValue(DtProperty.MAX_VALUE);
 	}
 
 	public static Double getStep(final Double minValue, final Double maxValue) {

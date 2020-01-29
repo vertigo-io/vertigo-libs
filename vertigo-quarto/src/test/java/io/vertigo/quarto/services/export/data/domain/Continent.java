@@ -19,8 +19,8 @@
 package io.vertigo.quarto.services.export.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -43,7 +43,7 @@ public final class Continent implements Entity {
 		return UID.of(this);
 	}
 
-	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "id of the Continent")
+	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "id of the Continent")
 	public final Long getId() {
 		return id;
 	}
@@ -53,7 +53,7 @@ public final class Continent implements Entity {
 		return this;
 	}
 
-	@Field(domain = "STyString", label = "name")
+	@Field(smartType = "STyString", label = "name")
 	public final String getName() {
 		return name;
 	}

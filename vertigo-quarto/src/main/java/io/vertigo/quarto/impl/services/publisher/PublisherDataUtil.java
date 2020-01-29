@@ -22,11 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.ModelManager;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
@@ -152,10 +152,10 @@ public final class PublisherDataUtil {
 	 * @return la chaine de caractère correspondant au rendu du champs
 	 */
 	public static String renderStringField(final DtObject dto, final DtField dtField) {
-		final String unit = dtField.getDomain().getProperties().getValue(DtProperty.UNIT);
+		final String unit = dtField.getSmartTypeDefinition().getProperties().getValue(DtProperty.UNIT);
 		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
 		final Object value = dtField.getDataAccessor().getValue(dto);
-		final String formattedValue = modelManager.valueToString(dtField.getDomain(), value);
+		final String formattedValue = modelManager.valueToString(dtField.getSmartTypeDefinition(), value);
 		return formattedValue + (!StringUtil.isEmpty(unit) ? " " + unit : "");
 	}
 
@@ -189,9 +189,9 @@ public final class PublisherDataUtil {
 		sb.append("PN_").append(dtDefinition.getLocalName()).append("  = new PublisherNode (\n");
 		for (final DtField dtField : dtDefinition.getFields()) {
 			final String fieldName = dtField.getName();
-			switch (dtField.getDomain().getScope()) {
+			switch (dtField.getSmartTypeDefinition().getScope()) {
 				case PRIMITIVE:
-					if (DataType.Boolean == dtField.getDomain().getTargetDataType()) {
+					if (DataType.Boolean == dtField.getSmartTypeDefinition().getTargetDataType()) {
 						sb.append("\t\tbooleanField[").append(fieldName).append(")] = new DataField ();\n");
 					} else {
 						sb.append("\t\tstringField[").append(fieldName).append(")] = new DataField ();\n");
@@ -199,9 +199,9 @@ public final class PublisherDataUtil {
 					break;
 				case DATA_OBJECT:
 					if (dtField.getCardinality().hasMany()) {
-						sb.append("\t\tlistField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DefinitionUtil.getPrefix(DtDefinition.class) + dtField.getDomain().getJavaClass().getSimpleName()).append(";);\n");
+						sb.append("\t\tlistField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DefinitionUtil.getPrefix(DtDefinition.class) + dtField.getSmartTypeDefinition().getJavaClass().getSimpleName()).append(";);\n");
 					} else {
-						sb.append("\t\tdataField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DefinitionUtil.getPrefix(DtDefinition.class) + dtField.getDomain().getJavaClass().getSimpleName()).append(";);\n");
+						sb.append("\t\tdataField[").append(fieldName).append(")] = new NodeField (type = PN_").append(DefinitionUtil.getPrefix(DtDefinition.class) + dtField.getSmartTypeDefinition().getJavaClass().getSimpleName()).append(";);\n");
 					}
 					break;
 				case VALUE_OBJECT:

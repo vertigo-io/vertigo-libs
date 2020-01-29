@@ -317,7 +317,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 					.forEach(field -> field.getDataAccessor()
 							.setValue(
 									dtObject,
-									context.deserialize(jsonObject.get(field.getName()), field.getDomain().getJavaClass())));
+									context.deserialize(jsonObject.get(field.getName()), field.getSmartTypeDefinition().getJavaClass())));
 
 			return dtObject;
 
@@ -406,7 +406,7 @@ public final class GoogleJsonEngine implements JsonEngine {
 				final DtDefinition entityDefinition = DtObjectUtil.findDtDefinition(entityClass);
 				Object entityId;
 				try {
-					entityId = modelManager.stringToValue(entityDefinition.getIdField().get().getDomain(), uidJsonValue);
+					entityId = modelManager.stringToValue(entityDefinition.getIdField().get().getSmartTypeDefinition(), uidJsonValue);
 				} catch (final FormatterException e) {
 					throw new JsonParseException("Unsupported UID format " + uidJsonValue, e);
 				}

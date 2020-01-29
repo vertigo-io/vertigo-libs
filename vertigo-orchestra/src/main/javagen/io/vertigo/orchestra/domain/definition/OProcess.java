@@ -13,7 +13,7 @@ import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
  */
 @Generated
 @io.vertigo.datamodel.structure.stereotype.DataSpace("orchestra")
-@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.datamodel.structure.metamodel.DataType.String)
+@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.core.lang.DataType.String)
 public final class OProcess implements Entity {
 	private static final long serialVersionUID = 1L;
 
@@ -70,7 +70,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Id de la definition du processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id de la definition du processus")
+	@Field(smartType = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id de la definition du processus")
 	public Long getProId() {
 		return proId;
 	}
@@ -89,7 +89,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Nom du processus'.
 	 * @return String name
 	 */
-	@Field(domain = "STyOLibelle", label = "Nom du processus")
+	@Field(smartType = "STyOLibelle", label = "Nom du processus")
 	public String getName() {
 		return name;
 	}
@@ -108,7 +108,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Libellé du processus'.
 	 * @return String label
 	 */
-	@Field(domain = "STyOLibelle", label = "Libellé du processus")
+	@Field(smartType = "STyOLibelle", label = "Libellé du processus")
 	public String getLabel() {
 		return label;
 	}
@@ -127,7 +127,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Expression récurrence du processus'.
 	 * @return String cronExpression
 	 */
-	@Field(domain = "STyOLibelle", label = "Expression récurrence du processus")
+	@Field(smartType = "STyOLibelle", label = "Expression récurrence du processus")
 	public String getCronExpression() {
 		return cronExpression;
 	}
@@ -146,7 +146,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
 	 * @return String initialParams
 	 */
-	@Field(domain = "STyOJsonText", label = "Paramètres initiaux sous forme de JSON")
+	@Field(smartType = "STyOJsonText", label = "Paramètres initiaux sous forme de JSON")
 	public String getInitialParams() {
 		return initialParams;
 	}
@@ -165,7 +165,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Accepte la multi-execution'.
 	 * @return Boolean multiexecution
 	 */
-	@Field(domain = "STyOBooleen", label = "Accepte la multi-execution")
+	@Field(smartType = "STyOBooleen", label = "Accepte la multi-execution")
 	public Boolean getMultiexecution() {
 		return multiexecution;
 	}
@@ -184,7 +184,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Version active'.
 	 * @return Boolean activeVersion <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Version active")
+	@Field(smartType = "STyOBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Version active")
 	public Boolean getActiveVersion() {
 		return activeVersion;
 	}
@@ -203,7 +203,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Processus actif'.
 	 * @return Boolean active <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Processus actif")
+	@Field(smartType = "STyOBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Processus actif")
 	public Boolean getActive() {
 		return active;
 	}
@@ -222,7 +222,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Temps de validité d'une planification'.
 	 * @return Integer rescuePeriod <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyONombre", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Temps de validité d'une planification")
+	@Field(smartType = "STyONombre", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Temps de validité d'une planification")
 	public Integer getRescuePeriod() {
 		return rescuePeriod;
 	}
@@ -241,7 +241,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Meta-données du processus'.
 	 * @return String metadatas
 	 */
-	@Field(domain = "STyOMetadatas", label = "Meta-données du processus")
+	@Field(smartType = "STyOMetadatas", label = "Meta-données du processus")
 	public String getMetadatas() {
 		return metadatas;
 	}
@@ -260,7 +260,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'Doit être mise à jour lors du démarrage'.
 	 * @return Boolean needUpdate <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Doit être mise à jour lors du démarrage")
+	@Field(smartType = "STyOBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Doit être mise à jour lors du démarrage")
 	public Boolean getNeedUpdate() {
 		return needUpdate;
 	}
@@ -279,7 +279,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'TriggerType'.
 	 * @return String trtCd <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(domain = "STyOCodeIdentifiant", label = "TriggerType", fkDefinition = "DtTriggerType" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOCodeIdentifiant", label = "TriggerType", fkDefinition = "DtTriggerType" )
 	public String getTrtCd() {
 		return (String) trtCdAccessor.getId();
 	}
@@ -298,7 +298,7 @@ public final class OProcess implements Entity {
 	 * Récupère la valeur de la propriété 'ProcessType'.
 	 * @return String prtCd
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(domain = "STyOCodeIdentifiant", label = "ProcessType", fkDefinition = "DtOProcessType" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOCodeIdentifiant", label = "ProcessType", fkDefinition = "DtOProcessType" )
 	public String getPrtCd() {
 		return (String) prtCdAccessor.getId();
 	}

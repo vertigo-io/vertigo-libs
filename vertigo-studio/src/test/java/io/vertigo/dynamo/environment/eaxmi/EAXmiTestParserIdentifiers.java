@@ -26,7 +26,7 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.dynamo.plugins.environment.StudioDefinitionProvider;
 
 /**
@@ -50,14 +50,14 @@ public final class EAXmiTestParserIdentifiers extends AbstractTestCaseJU5 {
 				.build();
 	}
 
-	private DtDefinition getDtDefinition(final String urn) {
+	private StudioDtDefinition getDtDefinition(final String urn) {
 		return getApp().getDefinitionSpace()
-				.resolve(urn, DtDefinition.class);
+				.resolve(urn, StudioDtDefinition.class);
 	}
 
 	@Test
 	public void testIdentifiersVsPrimaryKey() {
-		final DtDefinition loginDefinition = getDtDefinition("DtLogin");
+		final StudioDtDefinition loginDefinition = getDtDefinition("StDtLogin");
 		Assertions.assertTrue(loginDefinition.getIdField().isPresent());
 	}
 }

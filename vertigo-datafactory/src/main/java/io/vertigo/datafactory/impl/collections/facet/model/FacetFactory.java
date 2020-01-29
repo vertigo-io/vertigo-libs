@@ -158,7 +158,7 @@ public final class FacetFactory {
 			final Object value = dtField.getDataAccessor().getValue(dto);
 			facetValue = facetFilterIndex.get(value);
 			if (facetValue == null) {
-				final String valueAsString = modelManager.valueToString(dtField.getDomain(), value);
+				final String valueAsString = modelManager.valueToString(dtField.getSmartTypeDefinition(), value);
 				final String label;
 				if (StringUtil.isEmpty(valueAsString)) {
 					label = "_empty_";

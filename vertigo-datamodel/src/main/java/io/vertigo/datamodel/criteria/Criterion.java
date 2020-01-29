@@ -25,8 +25,8 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.util.DateUtil;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.DtFieldName;
@@ -76,7 +76,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 		for (int i = 0; i < values.length; i++) {
 			final Serializable criterionValue = values[i];
 			if (criterionValue instanceof String) {
-				criterionValues[i] = valueOf(dtField.getDomain().getTargetDataType(), (String) criterionValue);
+				criterionValues[i] = valueOf(dtField.getSmartTypeDefinition().getTargetDataType(), (String) criterionValue);
 			} else {
 				criterionValues[i] = criterionValue;
 			}

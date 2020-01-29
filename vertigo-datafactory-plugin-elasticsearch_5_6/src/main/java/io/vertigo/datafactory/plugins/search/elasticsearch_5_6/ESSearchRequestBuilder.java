@@ -46,6 +46,7 @@ import org.elasticsearch.search.sort.SortOrder;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
 import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
@@ -54,7 +55,6 @@ import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.impl.collections.functions.filter.DtListPatternFilterUtil;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtListState;
 
@@ -168,7 +168,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	private static FieldSortBuilder getFieldSortBuilder(final SearchIndexDefinition myIndexDefinition, final DtListState myListState) {
 		final DtField sortField = myIndexDefinition.getIndexDtDefinition().getField(myListState.getSortFieldName().get());
 		String sortIndexFieldName = sortField.getName();
-		final IndexType indexType = IndexType.readIndexType(sortField.getDomain());
+		final IndexType indexType = IndexType.readIndexType(sortField.getSmartTypeDefinition());
 
 		if (indexType.isIndexSubKeyword()) { //s'il y a un subKeyword on tri dessus
 			sortIndexFieldName = sortIndexFieldName + ".keyword";
@@ -332,7 +332,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		}
 
 		//Warning term aggregations are inaccurate : see http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-terms-aggregation.html
-		final IndexType indexType = IndexType.readIndexType(dtField.getDomain());
+		final IndexType indexType = IndexType.readIndexType(dtField.getSmartTypeDefinition());
 		String fieldName = dtField.getName();
 		if (!indexType.isIndexFieldData() && indexType.isIndexSubKeyword()) { //si le champs n'est pas facetable mais qu'il y a un sub keyword on le prend
 			fieldName = fieldName + ".keyword";
@@ -345,8 +345,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 	private static AggregationBuilder rangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
 		//facette par range
-		Assertion.checkState(dtField.getDomain().getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + dtField.getDomain() + "].");
-		final DataType dataType = dtField.getDomain().getTargetDataType();
+		Assertion.checkState(dtField.getSmartTypeDefinition().getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + dtField.getSmartTypeDefinition() + "].");
+		final DataType dataType = dtField.getSmartTypeDefinition().getTargetDataType();
 		if (dataType == DataType.LocalDate) {
 			return dateRangeFacetToAggregationBuilder(facetDefinition, dtField);
 		} else if (dataType.isNumber()) {

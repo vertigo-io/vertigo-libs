@@ -21,6 +21,7 @@ package io.vertigo.account.impl.account;
 import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
@@ -28,7 +29,6 @@ import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterString;
 import io.vertigo.datamodel.smarttype.FormatterConfig;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 
 /**

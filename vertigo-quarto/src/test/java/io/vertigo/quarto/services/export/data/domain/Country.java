@@ -22,8 +22,8 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -50,7 +50,7 @@ public final class Country implements Entity {
 		return UID.of(this);
 	}
 
-	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "id of the country")
+	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "id of the country")
 	public final Long getId() {
 		return id;
 	}
@@ -60,7 +60,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "STyId", cardinality = Cardinality.ONE, label = "id of the continent")
+	@Field(smartType = "STyId", cardinality = Cardinality.ONE, label = "id of the continent")
 	public final Long getConId() {
 		return conId;
 	}
@@ -70,7 +70,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "STyString", label = "name")
+	@Field(smartType = "STyString", label = "name")
 	public final String getName() {
 		return name;
 	}
@@ -80,7 +80,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "STyBoolean", label = "active")
+	@Field(smartType = "STyBoolean", label = "active")
 	public final Boolean getActive() {
 		return active;
 	}
@@ -90,7 +90,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "STyLocalDate", label = "local date")
+	@Field(smartType = "STyLocalDate", label = "local date")
 	public final LocalDate getLocalDate() {
 		return localDate;
 	}
@@ -100,7 +100,7 @@ public final class Country implements Entity {
 		return this;
 	}
 
-	@Field(domain = "STyInstant", label = "instant")
+	@Field(smartType = "STyInstant", label = "instant")
 	public final Instant getInstant() {
 		return instant;
 	}

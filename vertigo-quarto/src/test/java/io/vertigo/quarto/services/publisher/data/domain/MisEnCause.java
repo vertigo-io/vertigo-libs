@@ -19,8 +19,8 @@
 package io.vertigo.quarto.services.publisher.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.JsonMapper;
 
@@ -32,13 +32,13 @@ import io.vertigo.datamodel.structure.util.JsonMapper;
 public final class MisEnCause implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyBoolean", label = "Sexe")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyBoolean", label = "Sexe")
 	private Boolean siHomme;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyString", label = "Nom")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyString", label = "Nom")
 	private String nom;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyString", label = "Prenom")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyString", label = "Prenom")
 	private String prenom;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyDtAddress", cardinality = Cardinality.MANY, label = "Addresses connues")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyDtAddress", cardinality = Cardinality.MANY, label = "Addresses connues")
 	private io.vertigo.datamodel.structure.model.DtList<io.vertigo.quarto.services.publisher.data.domain.Address> adressesConnues;
 
 	/**

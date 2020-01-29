@@ -24,10 +24,10 @@ import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.association.AssociationNNDefinition;
 import io.vertigo.datamodel.structure.metamodel.association.AssociationNode;
@@ -204,9 +204,9 @@ final class BrokerNNImpl implements BrokerNN {
 				.withEngine(TaskEngineProc.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute(sourceFieldName, sourceField.getDomain(), Cardinality.ONE);
+				.addInAttribute(sourceFieldName, sourceField.getSmartTypeDefinition(), Cardinality.ONE);
 		if (targetField != null) {
-			taskDefinitionBuilder.addInAttribute(targetField.getName(), targetField.getDomain(), Cardinality.ONE);
+			taskDefinitionBuilder.addInAttribute(targetField.getName(), targetField.getSmartTypeDefinition(), Cardinality.ONE);
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)

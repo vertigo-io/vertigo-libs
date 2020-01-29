@@ -88,7 +88,7 @@ public final class DtField {
 	private final String name;
 	private final FieldType type;
 	private final Cardinality cardinality;
-	private final DefinitionReference<SmartTypeDefinition> domainRef;
+	private final DefinitionReference<SmartTypeDefinition> smartTypeRef;
 	private final MessageText label;
 	private final boolean persistent;
 
@@ -109,7 +109,7 @@ public final class DtField {
 	 * @param id the ID of the field
 	 * @param fieldName the name of the field
 	 * @param type the type of the field
-	 * @param domain the domain of the field
+	 * @param smartType the domain of the field
 	 * @param label the label of the field
 	 * @param required if the field is required
 	 * @param persistent if the field is persistent
@@ -121,7 +121,7 @@ public final class DtField {
 			final String id,
 			final String fieldName,
 			final FieldType type,
-			final SmartTypeDefinition domain,
+			final SmartTypeDefinition smartType,
 			final MessageText label,
 			final Cardinality cardinality,
 			final boolean persistent,
@@ -129,12 +129,12 @@ public final class DtField {
 			final ComputedExpression computedExpression) {
 		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(type);
-		Assertion.checkNotNull(domain);
+		Assertion.checkNotNull(smartType);
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(cardinality);
 		//-----
 		this.id = id;
-		domainRef = new DefinitionReference<>(domain);
+		smartTypeRef = new DefinitionReference<>(smartType);
 		this.type = type;
 		this.cardinality = cardinality;
 		//-----
@@ -195,10 +195,10 @@ public final class DtField {
 	}
 
 	/**
-	 * @return the domain of the field
+	 * @return the smarttype of the field
 	 */
-	public SmartTypeDefinition getDomain() {
-		return domainRef.get();
+	public SmartTypeDefinition getSmartTypeDefinition() {
+		return smartTypeRef.get();
 	}
 
 	/**
@@ -217,7 +217,7 @@ public final class DtField {
 	}
 
 	public boolean isDtList() {
-		return getDomain().getScope().isDataObject() && cardinality.hasMany();
+		return getSmartTypeDefinition().getScope().isDataObject() && cardinality.hasMany();
 	}
 
 	/**
@@ -254,7 +254,7 @@ public final class DtField {
 	 * @return the data accessor.
 	 */
 	public Class getTargetJavaClass() {
-		final SmartTypeDefinition domain = getDomain();
+		final SmartTypeDefinition domain = getSmartTypeDefinition();
 		if (cardinality.hasMany()) {
 			switch (domain.getScope()) {
 				case PRIMITIVE:

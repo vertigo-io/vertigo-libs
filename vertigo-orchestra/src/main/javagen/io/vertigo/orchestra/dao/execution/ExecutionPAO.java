@@ -62,7 +62,7 @@ public final class ExecutionPAO implements StoreServices {
  "				join o_activity_execution ace on ace.PRE_ID = pre.PRE_ID" + 
  "				where ace.EST_CD = 'ABORTED');",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineProc.class)
-	public void handleDeadProcessesOfNode(@io.vertigo.datamodel.task.proxy.TaskInput(name = "nodId", domain = "STyOIdentifiant") final Long nodId) {
+	public void handleDeadProcessesOfNode(@io.vertigo.datamodel.task.proxy.TaskInput(name = "nodId", smartType = "STyOIdentifiant") final Long nodId) {
 		final Task task = createTaskBuilder("TkHandleDeadProcessesOfNode")
 				.addValue("nodId", nodId)
 				.build();
@@ -92,7 +92,7 @@ public final class ExecutionPAO implements StoreServices {
  "				join o_activity_execution ace on ace.PRE_ID = pre.PRE_ID" + 
  "				where ace.EST_CD = 'ABORTED');",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineProc.class)
-	public void handleProcessesOfDeadNodes(@io.vertigo.datamodel.task.proxy.TaskInput(name = "maxDate", domain = "STyOTimestamp") final java.time.Instant maxDate) {
+	public void handleProcessesOfDeadNodes(@io.vertigo.datamodel.task.proxy.TaskInput(name = "maxDate", smartType = "STyOTimestamp") final java.time.Instant maxDate) {
 		final Task task = createTaskBuilder("TkHandleProcessesOfDeadNodes")
 				.addValue("maxDate", maxDate)
 				.build();
@@ -119,7 +119,7 @@ public final class ExecutionPAO implements StoreServices {
  "        			limit #maxNumber#" + 
  "        	)",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineProc.class)
-	public void reserveActivitiesToLaunch(@io.vertigo.datamodel.task.proxy.TaskInput(name = "nodId", domain = "STyOIdentifiant") final Long nodId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "maxNumber", domain = "STyONombre") final Integer maxNumber) {
+	public void reserveActivitiesToLaunch(@io.vertigo.datamodel.task.proxy.TaskInput(name = "nodId", smartType = "STyOIdentifiant") final Long nodId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "maxNumber", smartType = "STyONombre") final Integer maxNumber) {
 		final Task task = createTaskBuilder("TkReserveActivitiesToLaunch")
 				.addValue("nodId", nodId)
 				.addValue("maxNumber", maxNumber)
@@ -143,7 +143,7 @@ public final class ExecutionPAO implements StoreServices {
  "        		CHECKING_COMMENT = #checkingComment#" + 
  "        		where PRE_ID = #preId#",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineProc.class)
-	public void updateProcessExecutionTreatment(@io.vertigo.datamodel.task.proxy.TaskInput(name = "preId", domain = "STyOIdentifiant") final Long preId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "checked", domain = "STyOBooleen") final Boolean checked, @io.vertigo.datamodel.task.proxy.TaskInput(name = "checkingDate", domain = "STyOTimestamp") final java.time.Instant checkingDate, @io.vertigo.datamodel.task.proxy.TaskInput(name = "checkingComment", domain = "STyOText") final String checkingComment) {
+	public void updateProcessExecutionTreatment(@io.vertigo.datamodel.task.proxy.TaskInput(name = "preId", smartType = "STyOIdentifiant") final Long preId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "checked", smartType = "STyOBooleen") final Boolean checked, @io.vertigo.datamodel.task.proxy.TaskInput(name = "checkingDate", smartType = "STyOTimestamp") final java.time.Instant checkingDate, @io.vertigo.datamodel.task.proxy.TaskInput(name = "checkingComment", smartType = "STyOText") final String checkingComment) {
 		final Task task = createTaskBuilder("TkUpdateProcessExecutionTreatment")
 				.addValue("preId", preId)
 				.addValue("checked", checked)

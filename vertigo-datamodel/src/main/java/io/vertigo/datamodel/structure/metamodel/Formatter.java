@@ -18,6 +18,8 @@
  */
 package io.vertigo.datamodel.structure.metamodel;
 
+import io.vertigo.core.lang.DataType;
+
 /**
  * Permet de définir des formats particuliers d'affichages et de saisie.
  *

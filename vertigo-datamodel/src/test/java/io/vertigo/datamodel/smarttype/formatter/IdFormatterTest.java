@@ -21,8 +21,8 @@ package io.vertigo.datamodel.smarttype.formatter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterId;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
 

@@ -88,10 +88,10 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 		final List<?> list = getValue(listAttribute.getName());
 		list.forEach(object -> {
 			// we bind the parameter of the batch
-			sqlStatementBuilder.bind(listAttribute.getName(), listAttribute.getDomain().getJavaClass(), object);
+			sqlStatementBuilder.bind(listAttribute.getName(), listAttribute.getSmartTypeDefinition().getJavaClass(), object);
 			// we add all the "constant" parameters
 			otherAttributes.forEach(
-					otherAttribute -> sqlStatementBuilder.bind(otherAttribute.getName(), otherAttribute.getDomain().getJavaClass(), getValue(otherAttribute.getName())));
+					otherAttribute -> sqlStatementBuilder.bind(otherAttribute.getName(), otherAttribute.getSmartTypeDefinition().getJavaClass(), getValue(otherAttribute.getName())));
 			sqlStatementBuilder.nextLine();
 		});
 	}

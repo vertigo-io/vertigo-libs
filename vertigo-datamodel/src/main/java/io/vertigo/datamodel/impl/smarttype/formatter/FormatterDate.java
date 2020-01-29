@@ -25,12 +25,12 @@ import java.util.List;
 import java.util.function.BiFunction;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
 

@@ -63,7 +63,7 @@ public final class Attachment implements Entity {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long attId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id")
+	@Field(smartType = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id")
 	public Long getAttId() {
 		return attId;
 	}
@@ -82,7 +82,7 @@ public final class Attachment implements Entity {
 	 * Récupère la valeur de la propriété 'Url'.
 	 * @return String url <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoKeyword", cardinality = Cardinality.ONE, label = "Url")
+	@Field(smartType = "DoKeyword", cardinality = Cardinality.ONE, label = "Url")
 	public String getUrl() {
 		return url;
 	}
@@ -101,7 +101,7 @@ public final class Attachment implements Entity {
 	 * Récupère la valeur de la propriété 'Command'.
 	 * @return Long cmdId
 	 */
-	@Field(domain = "DoId", type = "FOREIGN_KEY", label = "Command")
+	@Field(smartType = "DoId", type = "FOREIGN_KEY", label = "Command")
 	public Long getCmdId() {
 		return (Long) cmdIdAccessor.getId();
 	}

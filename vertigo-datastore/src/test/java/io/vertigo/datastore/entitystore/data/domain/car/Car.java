@@ -19,9 +19,9 @@
 package io.vertigo.datastore.entitystore.data.domain.car;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -105,7 +105,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'identifiant de la voiture'.
 	 * @return Long id <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
+	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
 	public Long getId() {
 		return id;
 	}
@@ -124,7 +124,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Constructeur'.
 	 * @return String manufacturer <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
+	@Field(smartType = "STyKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
 	public String getManufacturer() {
 		return manufacturer;
 	}
@@ -143,7 +143,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'ModÃ¨le'.
 	 * @return String model <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyFullText", cardinality = Cardinality.ONE, label = "ModÃ¨le")
+	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "ModÃ¨le")
 	public String getModel() {
 		return model;
 	}
@@ -162,7 +162,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Descriptif'.
 	 * @return String description <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyFullText", cardinality = Cardinality.ONE, label = "Descriptif")
+	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "Descriptif")
 	public String getDescription() {
 		return description;
 	}
@@ -181,7 +181,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'AnnÃ©e'.
 	 * @return Integer year <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyInteger", cardinality = Cardinality.ONE, label = "AnnÃ©e")
+	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "AnnÃ©e")
 	public Integer getYear() {
 		return year;
 	}
@@ -200,7 +200,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'KilomÃ©trage'.
 	 * @return Integer kilo <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyInteger", cardinality = Cardinality.ONE, label = "KilomÃ©trage")
+	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "KilomÃ©trage")
 	public Integer getKilo() {
 		return kilo;
 	}
@@ -219,7 +219,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Prix'.
 	 * @return Integer price <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyInteger", cardinality = Cardinality.ONE, label = "Prix")
+	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Prix")
 	public Integer getPrice() {
 		return price;
 	}
@@ -238,7 +238,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Consommation'.
 	 * @return BigDecimal consommation <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyConso", cardinality = Cardinality.ONE, label = "Consommation")
+	@Field(smartType = "STyConso", cardinality = Cardinality.ONE, label = "Consommation")
 	public java.math.BigDecimal getConsommation() {
 		return consommation;
 	}
@@ -257,7 +257,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Motor type'.
 	 * @return String mtyCd
 	 */
-	@ForeignKey(domain = "STyString", label = "Motor type", fkDefinition = "DtMotorType")
+	@ForeignKey(smartType = "STyString", label = "Motor type", fkDefinition = "DtMotorType")
 	public String getMtyCd() {
 		return (String) mtyCdAccessor.getId();
 	}
@@ -276,7 +276,7 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Famille'.
 	 * @return Long famId <b>Obligatoire</b>
 	 */
-	@ForeignKey(domain = "STyId", cardinality = Cardinality.ONE, label = "Famille", fkDefinition = "DtFamille")
+	@ForeignKey(smartType = "STyId", cardinality = Cardinality.ONE, label = "Famille", fkDefinition = "DtFamille")
 	public Long getFamId() {
 		return (Long) famIdAccessor.getId();
 	}

@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Home;
@@ -40,7 +41,6 @@ import io.vertigo.datamodel.criteria.CriteriaCtx;
 import io.vertigo.datamodel.criteria.CriteriaEncoder;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.association.AssociationNNDefinition;
@@ -192,7 +192,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute(idFieldName, idField.getDomain(), Cardinality.ONE)
+				.addInAttribute(idFieldName, idField.getSmartTypeDefinition(), Cardinality.ONE)
 				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + uri.getDefinition().getName(), SmartTypeDefinition.class), Cardinality.OPTIONAL_OR_NULLABLE)
 				.build();
 
@@ -241,7 +241,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute(fkFieldName, fkField.getDomain(), Cardinality.ONE)
+				.addInAttribute(fkFieldName, fkField.getSmartTypeDefinition(), Cardinality.ONE)
 				.withOutAttribute("dtc", Home.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + dtDefinition.getName(), SmartTypeDefinition.class), Cardinality.MANY)
 				.build();
 
@@ -290,7 +290,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 		final CriteriaCtx ctx = tuple.getVal2();
 		//IN, Optional
 		for (final String attributeName : ctx.getAttributeNames()) {
-			taskDefinitionBuilder.addInAttribute(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getDomain(), Cardinality.OPTIONAL_OR_NULLABLE);
+			taskDefinitionBuilder.addInAttribute(attributeName, dtDefinition.getField(ctx.getDtFieldName(attributeName)).getSmartTypeDefinition(), Cardinality.OPTIONAL_OR_NULLABLE);
 		}
 		//OUT, obligatoire
 		final TaskDefinition taskDefinition = taskDefinitionBuilder
@@ -442,7 +442,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineProc.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute(idFieldName, idField.getDomain(), Cardinality.ONE)
+				.addInAttribute(idFieldName, idField.getSmartTypeDefinition(), Cardinality.ONE)
 				.withOutAttribute(AbstractTaskEngineSQL.SQL_ROWCOUNT, integerSmartType, Cardinality.ONE)
 				.build();
 
@@ -507,7 +507,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 				.withEngine(TaskEngineSelect.class)
 				.withDataSpace(dataSpace)
 				.withRequest(request)
-				.addInAttribute(idFieldName, idField.getDomain(), Cardinality.ONE)
+				.addInAttribute(idFieldName, idField.getSmartTypeDefinition(), Cardinality.ONE)
 				.withOutAttribute("dto", Home.getApp().getDefinitionSpace().resolve(SMART_TYPE_PREFIX + uri.getDefinition().getName(), SmartTypeDefinition.class), Cardinality.OPTIONAL_OR_NULLABLE)
 				.build();
 

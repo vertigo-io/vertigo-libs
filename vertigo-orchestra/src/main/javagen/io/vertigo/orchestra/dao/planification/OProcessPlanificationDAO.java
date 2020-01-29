@@ -55,8 +55,8 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
  "			where prp.expected_time < #currentDate# and prp.SST_CD = 'WAITING'" + 
  "			for update",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtOProcessPlanification")
-	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getAllLastPastPlanifications(@io.vertigo.datamodel.task.proxy.TaskInput(name = "currentDate", domain = "STyOTimestamp") final java.time.Instant currentDate) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessPlanification")
+	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getAllLastPastPlanifications(@io.vertigo.datamodel.task.proxy.TaskInput(name = "currentDate", smartType = "STyOTimestamp") final java.time.Instant currentDate) {
 		final Task task = createTaskBuilder("TkGetAllLastPastPlanifications")
 				.addValue("currentDate", currentDate)
 				.build();
@@ -78,8 +78,8 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
  "        	order by prp.expected_time desc" + 
  "        	limit 1",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtOProcessPlanification")
-	public Optional<io.vertigo.orchestra.domain.planification.OProcessPlanification> getLastPlanificationByProId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "proId", domain = "STyOIdentifiant") final Long proId) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessPlanification")
+	public Optional<io.vertigo.orchestra.domain.planification.OProcessPlanification> getLastPlanificationByProId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "proId", smartType = "STyOIdentifiant") final Long proId) {
 		final Task task = createTaskBuilder("TkGetLastPlanificationByProId")
 				.addValue("proId", proId)
 				.build();
@@ -100,8 +100,8 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
  "        	from o_process_planification prp" + 
  "        	where prp.PRO_ID = #proId#",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtOProcessPlanification")
-	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getPlanificationsByProId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "proId", domain = "STyOIdentifiant") final Long proId) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessPlanification")
+	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getPlanificationsByProId(@io.vertigo.datamodel.task.proxy.TaskInput(name = "proId", smartType = "STyOIdentifiant") final Long proId) {
 		final Task task = createTaskBuilder("TkGetPlanificationsByProId")
 				.addValue("proId", proId)
 				.build();
@@ -123,8 +123,8 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
  "        	where prp.SST_CD = 'RESERVED'" + 
  "        	and prp.NOD_ID = #nodId#",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtOProcessPlanification")
-	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getProcessToExecute(@io.vertigo.datamodel.task.proxy.TaskInput(name = "nodId", domain = "STyOIdentifiant") final Long nodId) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOProcessPlanification")
+	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.domain.planification.OProcessPlanification> getProcessToExecute(@io.vertigo.datamodel.task.proxy.TaskInput(name = "nodId", smartType = "STyOIdentifiant") final Long nodId) {
 		final Task task = createTaskBuilder("TkGetProcessToExecute")
 				.addValue("nodId", nodId)
 				.build();

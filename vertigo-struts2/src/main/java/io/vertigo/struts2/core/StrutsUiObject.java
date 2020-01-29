@@ -27,8 +27,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
@@ -106,11 +106,11 @@ public final class StrutsUiObject<D extends DtObject> extends VegaUiObject<D> im
 	}
 
 	private static boolean isMultiple(final DtField dtField) {
-		return DOMAIN_MULTIPLE_IDS.equals(dtField.getDomain().getName());
+		return DOMAIN_MULTIPLE_IDS.equals(dtField.getSmartTypeDefinition().getName());
 	}
 
 	private static boolean isBoolean(final DtField dtField) {
-		return dtField.getDomain().getScope().isPrimitive() && dtField.getDomain().getTargetDataType() == DataType.Boolean;
+		return dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getTargetDataType() == DataType.Boolean;
 	}
 
 	/** {@inheritDoc} */

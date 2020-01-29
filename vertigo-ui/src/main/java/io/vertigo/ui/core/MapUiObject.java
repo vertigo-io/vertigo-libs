@@ -30,9 +30,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.node.Home;
 import io.vertigo.datamodel.smarttype.ModelManager;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -104,8 +104,8 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 			strValue = requestParameterToString(value);
 			try {
 				final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
-				final Object typedValue = EncoderDate.stringToValue(strValue, dtField.getDomain().getTargetDataType());
-				strValue = modelManager.valueToString(dtField.getDomain(), typedValue);// we fall back in the normal case if everything is right -> go to formatter
+				final Object typedValue = EncoderDate.stringToValue(strValue, dtField.getSmartTypeDefinition().getTargetDataType());
+				strValue = modelManager.valueToString(dtField.getSmartTypeDefinition(), typedValue);// we fall back in the normal case if everything is right -> go to formatter
 			} catch (final FormatterException e) {
 				// do nothing we keep the input value
 			}
@@ -136,15 +136,15 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	}
 
 	private static boolean isMultiple(final DtField dtField) {
-		return SMART_TYPE_MULTIPLE_IDS.equals(dtField.getDomain().getName());
+		return SMART_TYPE_MULTIPLE_IDS.equals(dtField.getSmartTypeDefinition().getName());
 	}
 
 	private static boolean isBoolean(final DtField dtField) {
-		return dtField.getDomain().getScope().isPrimitive() && dtField.getDomain().getTargetDataType() == DataType.Boolean;
+		return dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getTargetDataType() == DataType.Boolean;
 	}
 
 	private static boolean isAboutDate(final DtField dtField) {
-		return dtField.getDomain().getScope().isPrimitive() && dtField.getDomain().getTargetDataType().isAboutDate();
+		return dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getTargetDataType().isAboutDate();
 	}
 
 	/** {@inheritDoc} */
@@ -271,7 +271,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		final DtField dtField = getDtField(keyFieldName);
 		if (isAboutDate(dtField)) {
 			final Serializable value = getTypedValue(keyFieldName, Serializable.class);
-			return EncoderDate.valueToString(value, dtField.getDomain().getTargetDataType());// encodeValue
+			return EncoderDate.valueToString(value, dtField.getSmartTypeDefinition().getTargetDataType());// encodeValue
 		} else if (isMultiple(dtField)) {
 			final String value = getTypedValue(keyFieldName, String.class);
 			return value != null ? parseMultipleValue(value) : new String[0];
@@ -283,7 +283,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
 		final DtField dtField = getDtField(keyFieldName);
 		final Serializable typedValue = getEncodedValue(keyFieldName);
-		return typedValue != null ? modelManager.valueToString(dtField.getDomain(), typedValue) : null;
+		return typedValue != null ? modelManager.valueToString(dtField.getSmartTypeDefinition(), typedValue) : null;
 	}
 
 }

@@ -40,7 +40,7 @@ public final class CommandCriteria implements DtObject {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return String cmdId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoFullText", label = "Numero de commande")
+	@Field(smartType = "DoFullText", label = "Numero de commande")
 	public String getCmdId() {
 		return cmdId;
 	}
@@ -59,7 +59,7 @@ public final class CommandCriteria implements DtObject {
 	 * Récupère la valeur de la propriété 'Command type'.
 	 * @return Long ctyId
 	 */
-	@Field(domain = "DoIdentifiant", type = "FOREIGN_KEY", label = "Command type")
+	@Field(smartType = "DoIdentifiant", type = "FOREIGN_KEY", label = "Command type")
 	public Long getCtyId() {
 		return ctyId;
 	}
@@ -78,7 +78,7 @@ public final class CommandCriteria implements DtObject {
 	 * Récupère la valeur de la propriété 'City'.
 	 * @return Long citId
 	 */
-	@Field(domain = "DoIdentifiant", type = "FOREIGN_KEY", label = "City")
+	@Field(smartType = "DoIdentifiant", type = "FOREIGN_KEY", label = "City")
 	public Long getCitId() {
 		return citId;
 	}

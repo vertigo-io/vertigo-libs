@@ -293,7 +293,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	}
 
 	private void setTypedValue(final DtField dtField, final Entity user, final String valueStr) throws FormatterException {
-		final Serializable typedValue = (Serializable) modelManager.stringToValue(dtField.getDomain(), valueStr);
+		final Serializable typedValue = (Serializable) modelManager.stringToValue(dtField.getSmartTypeDefinition(), valueStr);
 		dtField.getDataAccessor().setValue(user, typedValue);
 	}
 

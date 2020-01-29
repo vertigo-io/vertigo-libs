@@ -240,7 +240,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 
 	private void setTypedValue(final DtDefinition userDtDefinition, final Entity user, final String fieldName, final String valueStr) throws FormatterException {
 		final DtField dtField = userDtDefinition.getField(fieldName);
-		final Serializable typedValue = (Serializable) modelManager.stringToValue(dtField.getDomain(), valueStr);
+		final Serializable typedValue = (Serializable) modelManager.stringToValue(dtField.getSmartTypeDefinition(), valueStr);
 		dtField.getDataAccessor().setValue(user, typedValue);
 	}
 

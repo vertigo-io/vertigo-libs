@@ -13,7 +13,7 @@ import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
  */
 @Generated
 @io.vertigo.datamodel.structure.stereotype.DataSpace("orchestra")
-@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.datamodel.structure.metamodel.DataType.String)
+@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.core.lang.DataType.String)
 public final class OActivity implements Entity {
 	private static final long serialVersionUID = 1L;
 
@@ -50,7 +50,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Id Activité'.
 	 * @return Long actId <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id Activité")
+	@Field(smartType = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id Activité")
 	public Long getActId() {
 		return actId;
 	}
@@ -69,7 +69,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Nom de l'activité'.
 	 * @return String name
 	 */
-	@Field(domain = "STyOLibelle", label = "Nom de l'activité")
+	@Field(smartType = "STyOLibelle", label = "Nom de l'activité")
 	public String getName() {
 		return name;
 	}
@@ -88,7 +88,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Libellé de l'activité'.
 	 * @return String label
 	 */
-	@Field(domain = "STyOLibelle", label = "Libellé de l'activité")
+	@Field(smartType = "STyOLibelle", label = "Libellé de l'activité")
 	public String getLabel() {
 		return label;
 	}
@@ -107,7 +107,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Numéro de l'activité'.
 	 * @return Integer number
 	 */
-	@Field(domain = "STyONombre", label = "Numéro de l'activité")
+	@Field(smartType = "STyONombre", label = "Numéro de l'activité")
 	public Integer getNumber() {
 		return number;
 	}
@@ -126,7 +126,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Jalon'.
 	 * @return Boolean milestone
 	 */
-	@Field(domain = "STyOBooleen", label = "Jalon")
+	@Field(smartType = "STyOBooleen", label = "Jalon")
 	public Boolean getMilestone() {
 		return milestone;
 	}
@@ -145,7 +145,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Implémentation de l'activité'.
 	 * @return String engine
 	 */
-	@Field(domain = "STyOClasse", label = "Implémentation de l'activité")
+	@Field(smartType = "STyOClasse", label = "Implémentation de l'activité")
 	public String getEngine() {
 		return engine;
 	}
@@ -164,7 +164,7 @@ public final class OActivity implements Entity {
 	 * Récupère la valeur de la propriété 'Processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(domain = "STyOIdentifiant", label = "Processus", fkDefinition = "DtOProcess" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "Processus", fkDefinition = "DtOProcess" )
 	public Long getProId() {
 		return (Long) proIdAccessor.getId();
 	}

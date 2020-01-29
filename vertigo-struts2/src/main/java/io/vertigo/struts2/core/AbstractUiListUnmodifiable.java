@@ -202,7 +202,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		final DtField dtField = dtDefinition.getField(keyFieldName);
 		Assertion.checkArgument(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
 		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
-		final Object key = modelManager.stringToValue(dtField.getDomain(), keyValueAsString);
+		final Object key = modelManager.stringToValue(dtField.getSmartTypeDefinition(), keyValueAsString);
 		final O entity = (O) loadDto(key);
 		uiObject = new StrutsUiObject<>(entity);
 		uiObjectById.put(keyValueAsString, uiObject);

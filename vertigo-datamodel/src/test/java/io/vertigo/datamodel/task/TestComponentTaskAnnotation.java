@@ -22,8 +22,8 @@ public class TestComponentTaskAnnotation implements Component {
 			name = "TkMultiplyAnnotation",
 			request = "*",
 			taskEngineClass = TaskEngineMock2.class)
-	@TaskOutput(domain = "STyInteger")
-	public Integer multiply(@TaskInput(name = TaskEngineMock2.ATTR_IN_INTEGERS, domain = "STyInteger") final List<Integer> values) {
+	@TaskOutput(smartType = "STyInteger")
+	public Integer multiply(@TaskInput(name = TaskEngineMock2.ATTR_IN_INTEGERS, smartType = "STyInteger") final List<Integer> values) {
 		return taskManager.execute(Task.builder(Home.getApp().getDefinitionSpace().resolve("TkMultiplyAnnotation", TaskDefinition.class))
 				.addValue(TaskEngineMock2.ATTR_IN_INTEGERS, values)
 				.build())

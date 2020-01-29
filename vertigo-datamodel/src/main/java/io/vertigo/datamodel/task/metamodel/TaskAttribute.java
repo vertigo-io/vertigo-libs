@@ -80,7 +80,7 @@ public final class TaskAttribute {
 	/**
 	 * @return Domain the domain
 	 */
-	public SmartTypeDefinition getDomain() {
+	public SmartTypeDefinition getSmartTypeDefinition() {
 		return smartTypeDefinition;
 	}
 
@@ -113,10 +113,10 @@ public final class TaskAttribute {
 					throw new ClassCastException("Value " + value + " must be a list");
 				}
 				for (final Object element : List.class.cast(value)) {
-					modelManager.checkConstraints(getDomain(), element);
+					modelManager.checkConstraints(getSmartTypeDefinition(), element);
 				}
 			} else {
-				modelManager.checkConstraints(getDomain(), value);
+				modelManager.checkConstraints(getSmartTypeDefinition(), value);
 			}
 		} catch (final ConstraintException e) {
 			//On retransforme en Runtime pour conserver une API sur les getters et setters.

@@ -63,7 +63,7 @@ public final class CommandValidation implements Entity {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long cvaId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id")
+	@Field(smartType = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id")
 	public Long getCvaId() {
 		return cvaId;
 	}
@@ -82,7 +82,7 @@ public final class CommandValidation implements Entity {
 	 * Récupère la valeur de la propriété 'Signer name'.
 	 * @return String signerName <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoFullText", cardinality = Cardinality.ONE, label = "Signer name")
+	@Field(smartType = "DoFullText", cardinality = Cardinality.ONE, label = "Signer name")
 	public String getSignerName() {
 		return signerName;
 	}
@@ -101,7 +101,7 @@ public final class CommandValidation implements Entity {
 	 * Récupère la valeur de la propriété 'Command'.
 	 * @return Long cmdId
 	 */
-	@Field(domain = "DoId", type = "FOREIGN_KEY", label = "Command")
+	@Field(smartType = "DoId", type = "FOREIGN_KEY", label = "Command")
 	public Long getCmdId() {
 		return (Long) cmdIdAccessor.getId();
 	}

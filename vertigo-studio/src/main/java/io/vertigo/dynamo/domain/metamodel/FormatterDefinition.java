@@ -21,10 +21,10 @@ package io.vertigo.dynamo.domain.metamodel;
 import java.lang.reflect.Constructor;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
 

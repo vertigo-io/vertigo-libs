@@ -22,18 +22,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.datamodel.structure.metamodel.ConstraintException;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
 import io.vertigo.datamodel.structure.metamodel.Properties;
-import io.vertigo.datamodel.structure.metamodel.PropertiesBuilder;
-import io.vertigo.datamodel.structure.metamodel.Property;
 
 /**
  * A domain exists to enrich the primitive datatypes, giving them super powers.
@@ -148,7 +145,7 @@ public final class Domain implements Definition {
 		//---Constraints
 		constraintDefinitionRefs = buildConstraintDefinitionRefs(constraintDefinitions);
 		//---Properties
-		this.properties = buildProperties(constraintDefinitions, properties);
+		this.properties = properties;
 	}
 
 	/**
@@ -177,19 +174,6 @@ public final class Domain implements Definition {
 				.stream()
 				.map(DefinitionReference::new)
 				.collect(Collectors.toList());
-	}
-
-	private static Properties buildProperties(final List<ConstraintDefinition> constraintDefinitions, final Properties inputProperties) {
-		final PropertiesBuilder propertiesBuilder = Properties.builder();
-		for (final Property property : inputProperties.getProperties()) {
-			propertiesBuilder.addValue(property, inputProperties.getValue(property));
-		}
-
-		//Properties are inferred from constraints
-		for (final ConstraintDefinition constraintDefinition : constraintDefinitions) {
-			propertiesBuilder.addValue(constraintDefinition.getProperty(), constraintDefinition.getPropertyValue());
-		}
-		return propertiesBuilder.build();
 	}
 
 	/**
@@ -229,25 +213,6 @@ public final class Domain implements Definition {
 	public void checkValue(final Object value) {
 		if (getScope().isPrimitive()) {
 			dataType.checkValue(value);
-		}
-	}
-
-	/**
-	 * Chechs if
-	 *  - the value is valid
-	 *  - the constraints are ok.
-	 *
-	 * @param value the value to check
-	 * @throws ConstraintException if a constraint has failed
-	 */
-	public void checkConstraints(final Object value) throws ConstraintException {
-		checkValue(value);
-		//---
-		for (final DefinitionReference<ConstraintDefinition> constraintDefinitionRef : constraintDefinitionRefs) {
-			//when a constraint fails, there is no validation
-			if (!constraintDefinitionRef.get().checkConstraint(value)) {
-				throw new ConstraintException(constraintDefinitionRef.get().getErrorMessage());
-			}
 		}
 	}
 

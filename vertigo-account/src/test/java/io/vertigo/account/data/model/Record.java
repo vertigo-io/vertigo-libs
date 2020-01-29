@@ -19,8 +19,8 @@
 package io.vertigo.account.data.model;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -54,7 +54,7 @@ public final class Record implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "Id")
+	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "Id")
 	public final Long getDosId() {
 		return dosId;
 	}
@@ -63,7 +63,7 @@ public final class Record implements KeyConcept {
 		this.dosId = dosId;
 	}
 
-	@Field(domain = "STyId", label = "Region")
+	@Field(smartType = "STyId", label = "Region")
 	public final Long getRegId() {
 		return regId;
 	}
@@ -72,7 +72,7 @@ public final class Record implements KeyConcept {
 		this.regId = regId;
 	}
 
-	@Field(domain = "STyId", label = "Département")
+	@Field(smartType = "STyId", label = "Département")
 	public final Long getDepId() {
 		return depId;
 	}
@@ -81,7 +81,7 @@ public final class Record implements KeyConcept {
 		this.depId = depId;
 	}
 
-	@Field(domain = "STyId", label = "Commune")
+	@Field(smartType = "STyId", label = "Commune")
 	public final Long getComId() {
 		return comId;
 	}
@@ -90,7 +90,7 @@ public final class Record implements KeyConcept {
 		this.comId = comId;
 	}
 
-	@Field(domain = "STyId", cardinality = Cardinality.ONE, label = "Type dossier")
+	@Field(smartType = "STyId", cardinality = Cardinality.ONE, label = "Type dossier")
 	public final Long getTypId() {
 		return typId;
 	}
@@ -99,7 +99,7 @@ public final class Record implements KeyConcept {
 		this.typId = typId;
 	}
 
-	@Field(domain = "STyLabel", cardinality = Cardinality.ONE, label = "Title")
+	@Field(smartType = "STyLabel", cardinality = Cardinality.ONE, label = "Title")
 	public final String getTitle() {
 		return title;
 	}
@@ -108,7 +108,7 @@ public final class Record implements KeyConcept {
 		this.title = title;
 	}
 
-	@Field(domain = "STyMontant", cardinality = Cardinality.ONE, label = "Amount")
+	@Field(smartType = "STyMontant", cardinality = Cardinality.ONE, label = "Amount")
 	public final Double getAmount() {
 		return amount;
 	}
@@ -117,7 +117,7 @@ public final class Record implements KeyConcept {
 		this.amount = amount;
 	}
 
-	@Field(domain = "STyId", cardinality = Cardinality.ONE, label = "Créateur")
+	@Field(smartType = "STyId", cardinality = Cardinality.ONE, label = "Créateur")
 	public final Long getUtiIdOwner() {
 		return utiIdOwner;
 	}
@@ -126,7 +126,7 @@ public final class Record implements KeyConcept {
 		this.utiIdOwner = utiIdOwner;
 	}
 
-	@Field(domain = "STyCode", cardinality = Cardinality.ONE, label = "Etat dossier")
+	@Field(smartType = "STyCode", cardinality = Cardinality.ONE, label = "Etat dossier")
 	public final String getEtaCd() {
 		return etaCd;
 	}

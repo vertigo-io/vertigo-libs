@@ -20,8 +20,8 @@ package io.vertigo.vega.webservice.data.domain;
 
 import java.time.LocalDate;
 
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.stereotype.Field;
 import io.vertigo.datamodel.structure.util.JsonMapper;
@@ -32,13 +32,13 @@ public final class ContactCriteria implements DtObject {
 	private static final long serialVersionUID = 6839427455017031471L;
 
 	//mandatory
-	@Field(domain = "STyTexte50", label = "Name")
+	@Field(smartType = "STyTexte50", label = "Name")
 	private String name;
-	@Field(domain = "STyTexte50", label = "Firstname")
+	@Field(smartType = "STyTexte50", label = "Firstname")
 	private String firstName;
-	@Field(domain = "STyLocalDate", label = "Birthday min")
+	@Field(smartType = "STyLocalDate", label = "Birthday min")
 	private LocalDate birthdayMin;
-	@Field(domain = "STyLocalDate", label = "Birthday max")
+	@Field(smartType = "STyLocalDate", label = "Birthday max")
 	private LocalDate birthdayMax;
 
 	public String getName() {

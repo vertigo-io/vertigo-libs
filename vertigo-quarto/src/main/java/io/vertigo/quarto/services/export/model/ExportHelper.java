@@ -114,7 +114,7 @@ public final class ExportHelper {
 		} else {
 			value = exportColumn.getDtField().getDataAccessor().getValue(dto);
 			if (forceStringValue) {
-				value = modelManager.valueToString(exportColumn.getDtField().getDomain(), value);
+				value = modelManager.valueToString(exportColumn.getDtField().getSmartTypeDefinition(), value);
 			}
 		}
 		//Check if we should return some magic value ("??") when exception are throw here. Previous impl manage this "useless ?" case.
@@ -134,7 +134,7 @@ public final class ExportHelper {
 	private Map<Object, String> createDenormIndex(final DtList<?> valueList, final DtField keyField, final DtField displayField) {
 		final Map<Object, String> denormIndex = new HashMap<>(valueList.size());
 		for (final DtObject dto : valueList) {
-			final String svalue = modelManager.valueToString(displayField.getDomain(), displayField.getDataAccessor().getValue(dto));
+			final String svalue = modelManager.valueToString(displayField.getSmartTypeDefinition(), displayField.getDataAccessor().getValue(dto));
 			denormIndex.put(keyField.getDataAccessor().getValue(dto), svalue);
 		}
 		return denormIndex;

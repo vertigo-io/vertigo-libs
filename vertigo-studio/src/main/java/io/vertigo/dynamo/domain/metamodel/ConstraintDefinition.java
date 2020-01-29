@@ -18,15 +18,9 @@
  */
 package io.vertigo.dynamo.domain.metamodel;
 
-import java.lang.reflect.Constructor;
-
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
-import io.vertigo.core.util.ClassUtil;
-import io.vertigo.datamodel.structure.metamodel.Constraint;
-import io.vertigo.datamodel.structure.metamodel.Property;
 
 /**
  * Par nature une contrainte est une ressource partagée et non modifiable.
@@ -34,7 +28,7 @@ import io.vertigo.datamodel.structure.metamodel.Property;
  * @author pchretien
  */
 @DefinitionPrefix("Ck")
-public final class ConstraintDefinition implements Constraint, Definition {
+public final class ConstraintDefinition implements Definition {
 	/**
 	 * Nom de la contrainte.
 	 * On n'utilise pas les génériques car problémes.
@@ -44,9 +38,9 @@ public final class ConstraintDefinition implements Constraint, Definition {
 	/**
 	 * Message d'erreur surchargé.
 	 */
-	private final MessageText msg;
+	private final String msg;
 
-	private final Constraint constraint;
+	private final String constraintClassName;
 
 	/**
 	 * Constructor
@@ -60,15 +54,8 @@ public final class ConstraintDefinition implements Constraint, Definition {
 		Assertion.checkArgNotEmpty(name);
 		//-----
 		this.name = name;
-		this.msg = msg == null ? null : MessageText.of(msg);
-		//-----
-		constraint = createConstraint(constraintClassName, args);
-	}
-
-	private static Constraint createConstraint(final String constraintClassName, final String args) {
-		final Class<? extends Constraint> constraintClass = ClassUtil.classForName(constraintClassName, Constraint.class);
-		final Constructor<? extends Constraint> constructor = ClassUtil.findConstructor(constraintClass, new Class[] { String.class });
-		return ClassUtil.newInstance(constructor, new Object[] { args });
+		this.constraintClassName = constraintClassName;
+		this.msg = msg;
 	}
 
 	/** {@inheritDoc} */
@@ -77,35 +64,21 @@ public final class ConstraintDefinition implements Constraint, Definition {
 		return name;
 	}
 
+	public String getConstraintClassName() {
+		return constraintClassName;
+	}
+
+	/**
+	 * @return Message d'erreur (Nullable)
+	 */
+	public String getErrorMessage() {
+		return msg;
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public String toString() {
 		return name;
 	}
 
-	/**
-	 * @return Message d'erreur (Nullable)
-	 */
-	@Override
-	public MessageText getErrorMessage() {
-		return msg != null ? msg : constraint.getErrorMessage();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Property getProperty() {
-		return constraint.getProperty();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public Object getPropertyValue() {
-		return constraint.getPropertyValue();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public boolean checkConstraint(final Object value) {
-		return constraint.checkConstraint(value);
-	}
 }

@@ -34,14 +34,14 @@ import io.vertigo.core.lang.Cardinality;
 @Target({ ElementType.FIELD, ElementType.METHOD })
 public @interface Field {
 	/**
-	 * Type du champ.
+	 * Type of field.
 	 */
 	String type() default "DATA";
 
 	/**
-	 * Nom du domaine.
+	 * SmartType of the field.
 	 */
-	String domain();
+	String smartType();
 
 	/**
 	 * Field's cardinality
@@ -49,12 +49,12 @@ public @interface Field {
 	Cardinality cardinality() default Cardinality.OPTIONAL_OR_NULLABLE;
 
 	/**
-	 * Libellé du champ.
+	 * Field's label.
 	 */
 	String label();
 
 	/**
-	 * Persistance du champ.
+	 * Is the field persistent.
 	 */
 	boolean persistent() default true;
 

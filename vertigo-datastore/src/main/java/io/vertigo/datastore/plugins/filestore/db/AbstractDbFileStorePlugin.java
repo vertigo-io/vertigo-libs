@@ -135,7 +135,7 @@ abstract class AbstractDbFileStorePlugin {
 	protected static void setIdValue(final DtObject dto, final FileInfoURI uri) {
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final DtField idField = dtDefinition.getIdField().get();
-		idField.getDataAccessor().setValue(dto, uri.getKeyAs(idField.getDomain().getJavaClass()));
+		idField.getDataAccessor().setValue(dto, uri.getKeyAs(idField.getSmartTypeDefinition().getJavaClass()));
 	}
 
 	/**

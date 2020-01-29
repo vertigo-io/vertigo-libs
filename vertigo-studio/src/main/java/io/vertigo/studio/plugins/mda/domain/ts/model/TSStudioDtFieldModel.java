@@ -19,7 +19,7 @@
 package io.vertigo.studio.plugins.mda.domain.ts.model;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.structure.metamodel.DataType;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.StudioDtField;
 

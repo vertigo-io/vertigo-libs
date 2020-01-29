@@ -23,10 +23,10 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datastore.filestore.metamodel.FileInfoDefinition;
 
 /**

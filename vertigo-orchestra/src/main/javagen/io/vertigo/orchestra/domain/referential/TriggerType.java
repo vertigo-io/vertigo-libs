@@ -12,7 +12,7 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
  */
 @Generated
 @io.vertigo.datamodel.structure.stereotype.DataSpace("orchestra")
-@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.datamodel.structure.metamodel.DataType.String)
+@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.core.lang.DataType.String)
 public final class TriggerType implements Entity {
 	private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,7 @@ public final class TriggerType implements Entity {
 	 * Récupère la valeur de la propriété 'Code'.
 	 * @return String trtCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOCodeIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Code")
+	@Field(smartType = "STyOCodeIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Code")
 	public String getTrtCd() {
 		return trtCd;
 	}
@@ -49,7 +49,7 @@ public final class TriggerType implements Entity {
 	 * Récupère la valeur de la propriété 'Libellé'.
 	 * @return String label
 	 */
-	@Field(domain = "STyOLibelle", label = "Libellé")
+	@Field(smartType = "STyOLibelle", label = "Libellé")
 	public String getLabel() {
 		return label;
 	}

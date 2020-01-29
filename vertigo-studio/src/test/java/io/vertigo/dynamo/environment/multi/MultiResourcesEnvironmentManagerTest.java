@@ -28,8 +28,8 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.config.NodeConfigBuilder;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.dynamo.domain.metamodel.Domain;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.dynamo.environment.multi.data.DtDefinitions;
 import io.vertigo.dynamo.plugins.environment.StudioDefinitionProvider;
 
@@ -74,7 +74,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 		try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DoString", Domain.class);
 			Assertions.assertNotNull(doString);
-			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DtItem", DtDefinition.class);
+			final StudioDtDefinition dtItem = app.getDefinitionSpace().resolve("StDtItem", StudioDtDefinition.class);
 			Assertions.assertNotNull(dtItem);
 		}
 	}
@@ -93,7 +93,7 @@ public final class MultiResourcesEnvironmentManagerTest {
 		try (final AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			final Domain doString = app.getDefinitionSpace().resolve("DoString", Domain.class);
 			Assertions.assertNotNull(doString);
-			final DtDefinition dtItem = app.getDefinitionSpace().resolve("DtItem", DtDefinition.class);
+			final StudioDtDefinition dtItem = app.getDefinitionSpace().resolve("StDtItem", StudioDtDefinition.class);
 			Assertions.assertNotNull(dtItem);
 		}
 	}

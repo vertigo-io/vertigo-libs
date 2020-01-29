@@ -165,7 +165,7 @@ public final class ExportXlsHelper<R extends DtObject> {
 	private static void addFieldToExcludedExportColumnNameList(final DtDefinition definition, final List<String> criterionExcludedColumnNameList) {
 		if (definition.getIdField().isPresent()) {
 			final DtField keyField = definition.getIdField().get();
-			if ("DoIdentifier".equals(keyField.getDomain().getName())) {
+			if ("DoIdentifier".equals(keyField.getSmartTypeDefinition().getName())) {
 				criterionExcludedColumnNameList.add(keyField.getName());
 			}
 		}

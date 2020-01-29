@@ -49,7 +49,7 @@ public final class CityFragment implements Fragment<City> {
 	 * Récupère la valeur de la propriété 'CIT ID'.
 	 * @return Long citId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoIdentity", type = "FOREIGN_KEY", cardinality = Cardinality.ONE, label = "CIT ID")
+	@Field(smartType = "DoIdentity", type = "FOREIGN_KEY", cardinality = Cardinality.ONE, label = "CIT ID")
 	public Long getCitId() {
 		return citId;
 	}
@@ -68,7 +68,7 @@ public final class CityFragment implements Fragment<City> {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoFullText", cardinality = Cardinality.ONE, label = "Label")
+	@Field(smartType = "DoFullText", cardinality = Cardinality.ONE, label = "Label")
 	public String getLabel() {
 		return label;
 	}
@@ -87,7 +87,7 @@ public final class CityFragment implements Fragment<City> {
 	 * Récupère la valeur de la propriété 'Postal code'.
 	 * @return String postalCode <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoKeyword", cardinality = Cardinality.ONE, label = "Postal code")
+	@Field(smartType = "DoKeyword", cardinality = Cardinality.ONE, label = "Postal code")
 	public String getPostalCode() {
 		return postalCode;
 	}

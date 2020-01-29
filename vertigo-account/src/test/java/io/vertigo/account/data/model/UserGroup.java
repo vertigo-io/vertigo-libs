@@ -19,8 +19,8 @@
 package io.vertigo.account.data.model;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -45,7 +45,7 @@ public final class UserGroup implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "STyCode", type = "ID", cardinality = Cardinality.ONE, label = "Id")
+	@Field(smartType = "STyCode", type = "ID", cardinality = Cardinality.ONE, label = "Id")
 	public String getGrpId() {
 		return grpId;
 	}
@@ -54,7 +54,7 @@ public final class UserGroup implements KeyConcept {
 		this.grpId = grpId;
 	}
 
-	@Field(domain = "STyLabel", cardinality = Cardinality.ONE, label = "Name")
+	@Field(smartType = "STyLabel", cardinality = Cardinality.ONE, label = "Name")
 	public String getName() {
 		return name;
 	}
@@ -63,7 +63,7 @@ public final class UserGroup implements KeyConcept {
 		this.name = name;
 	}
 
-	@Field(domain = "STyLabel", cardinality = Cardinality.ONE, label = "comment")
+	@Field(smartType = "STyLabel", cardinality = Cardinality.ONE, label = "comment")
 	public String getComment() {
 		return comment;
 	}

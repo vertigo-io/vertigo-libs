@@ -24,10 +24,10 @@ import java.util.List;
 import com.opensymphony.xwork2.ActionContext;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.node.Home;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault;
 import io.vertigo.datamodel.smarttype.ModelManager;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
@@ -88,7 +88,7 @@ public final class UiUtil implements Serializable {
 			return DEFAULT_FORMATTER.valueToString(value, DataType.Boolean);
 		}
 		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
-		return modelManager.valueToString(getDtField(fieldPath).getDomain(), value);
+		return modelManager.valueToString(getDtField(fieldPath).getSmartTypeDefinition(), value);
 	}
 
 	/**

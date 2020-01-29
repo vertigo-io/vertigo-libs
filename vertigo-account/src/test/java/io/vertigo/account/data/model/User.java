@@ -19,8 +19,8 @@
 package io.vertigo.account.data.model;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -50,7 +50,7 @@ public final class User implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "STyCode", type = "ID", cardinality = Cardinality.ONE, label = "Id")
+	@Field(smartType = "STyCode", type = "ID", cardinality = Cardinality.ONE, label = "Id")
 	public String getUsrId() {
 		return usrId;
 	}
@@ -59,7 +59,7 @@ public final class User implements KeyConcept {
 		this.usrId = usrId;
 	}
 
-	@Field(domain = "STyLabel", cardinality = Cardinality.ONE, label = "FullName")
+	@Field(smartType = "STyLabel", cardinality = Cardinality.ONE, label = "FullName")
 	public String getFullName() {
 		return fullName;
 	}
@@ -68,7 +68,7 @@ public final class User implements KeyConcept {
 		this.fullName = fullName;
 	}
 
-	@Field(domain = "STyLabel", cardinality = Cardinality.ONE, label = "Email")
+	@Field(smartType = "STyLabel", cardinality = Cardinality.ONE, label = "Email")
 	public String getEmail() {
 		return email;
 	}
@@ -82,7 +82,7 @@ public final class User implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Group'.
 	 * @return String grpId
 	 */
-	@ForeignKey(domain = "STyCode", label = "Group", fkDefinition = "DtUserGroup")
+	@ForeignKey(smartType = "STyCode", label = "Group", fkDefinition = "DtUserGroup")
 	public String getGrpId() {
 		return (String) grpIdAccessor.getId();
 	}

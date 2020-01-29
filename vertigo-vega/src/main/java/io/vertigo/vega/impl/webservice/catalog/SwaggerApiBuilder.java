@@ -306,7 +306,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	}
 
 	private static Type getFieldType(final DtField dtField) {
-		final Class<?> dtClass = dtField.getDomain().getJavaClass();
+		final Class<?> dtClass = dtField.getSmartTypeDefinition().getJavaClass();
 		if (dtField.getCardinality().hasMany()) {
 			return new CustomParameterizedType(dtField.getTargetJavaClass(), dtClass);
 		}
@@ -437,7 +437,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 			final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(paramClass);
 			for (final DtField dtField : dtDefinition.getFields()) {
 				final String fieldName = dtField.getName();
-				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.getDomain().getJavaClass())
+				pseudoWebServiceParams.add(WebServiceParam.builder(dtField.getSmartTypeDefinition().getJavaClass())
 						.with(webServiceParam.getParamType(), prefix + fieldName)
 						.build());
 			}

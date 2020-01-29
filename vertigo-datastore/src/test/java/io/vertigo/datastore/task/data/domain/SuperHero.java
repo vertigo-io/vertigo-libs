@@ -19,8 +19,8 @@
 package io.vertigo.datastore.task.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -35,10 +35,10 @@ public final class SuperHero implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "superHero ID")
+	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "superHero ID")
 	private Long id;
 
-	@Field(domain = "STyString", label = "name")
+	@Field(smartType = "STyString", label = "name")
 	private String name;
 
 	/** {@inheritDoc} */

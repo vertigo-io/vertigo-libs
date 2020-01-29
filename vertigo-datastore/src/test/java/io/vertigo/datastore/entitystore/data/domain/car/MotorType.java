@@ -19,9 +19,9 @@
 package io.vertigo.datastore.entitystore.data.domain.car;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.DtStaticMasterData;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -51,7 +51,7 @@ public final class MotorType implements DtStaticMasterData {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return String mtyCd <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyString", type = "ID", cardinality = Cardinality.ONE, label = "id")
+	@Field(smartType = "STyString", type = "ID", cardinality = Cardinality.ONE, label = "id")
 	public String getMtyCd() {
 		return mtyCd;
 	}
@@ -70,7 +70,7 @@ public final class MotorType implements DtStaticMasterData {
 	 * Récupère la valeur de la propriété 'Label'.
 	 * @return String label <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyFullText", cardinality = Cardinality.ONE, label = "Label")
+	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "Label")
 	public String getLabel() {
 		return label;
 	}

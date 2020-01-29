@@ -21,8 +21,8 @@ package io.vertigo.quarto.services.publisher.data.domain;
 import java.time.LocalDate;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.JsonMapper;
 
@@ -37,33 +37,33 @@ public final class PublisherMock implements DtObject {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyString", label = "Titre")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyString", label = "Titre")
 	private String titre;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyString", label = "Nom")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyString", label = "Nom")
 	private String nom;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyString", label = "Prénom")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyString", label = "Prénom")
 	private String prenom;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyString", label = "Adresse (multi ligne)")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyString", label = "Adresse (multi ligne)")
 	private String address;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyString", label = "Commentaire (multi paragraphe)")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyString", label = "Commentaire (multi paragraphe)")
 	private String commentaire;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyBoolean", label = "booleen 1")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyBoolean", label = "booleen 1")
 	private Boolean boolean1;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyBoolean", label = "booleen 2")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyBoolean", label = "booleen 2")
 	private Boolean boolean2;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyBoolean", label = "booleen 3")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyBoolean", label = "booleen 3")
 	private Boolean boolean3;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyString", label = "Test champs inutilisé")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyString", label = "Test champs inutilisé")
 	private String testDummy;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyLong", label = "Test long")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyLong", label = "Test long")
 	private Long testLong;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyDouble", label = "Test double")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyDouble", label = "Test double")
 	private Double testDouble;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyInteger", label = "Test integer")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyInteger", label = "Test integer")
 	private Integer testInteger;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyDate", label = "Test date")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyDate", label = "Test date")
 	private LocalDate testDate;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyDtPublisherMock", cardinality = Cardinality.MANY, label = "Test list")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyDtPublisherMock", cardinality = Cardinality.MANY, label = "Test list")
 	private io.vertigo.datamodel.structure.model.DtList<io.vertigo.quarto.services.publisher.data.domain.PublisherMock> dtcTest;
 
 	/**

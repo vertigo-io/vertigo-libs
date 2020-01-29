@@ -128,18 +128,18 @@ public final class DtObjectsLoader implements Loader {
 		for (final Field field : fields) {
 			for (final Annotation annotation : field.getAnnotations()) {
 				if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Field) {
-					definitionLinks.add(io.vertigo.datamodel.structure.stereotype.Field.class.cast(annotation).domain());
+					definitionLinks.add(io.vertigo.datamodel.structure.stereotype.Field.class.cast(annotation).smartType());
 				}
 			}
 		}
 		for (final Method method : methods) {
 			for (final Annotation annotation : method.getAnnotations()) {
 				if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Field) {
-					definitionLinks.add(io.vertigo.datamodel.structure.stereotype.Field.class.cast(annotation).domain());
+					definitionLinks.add(io.vertigo.datamodel.structure.stereotype.Field.class.cast(annotation).smartType());
 				}
 				//FK are only on getter/setter
 				if (annotation instanceof io.vertigo.datamodel.structure.stereotype.ForeignKey) {
-					definitionLinks.add(io.vertigo.datamodel.structure.stereotype.ForeignKey.class.cast(annotation).domain());
+					definitionLinks.add(io.vertigo.datamodel.structure.stereotype.ForeignKey.class.cast(annotation).smartType());
 				}
 			}
 		}
@@ -193,7 +193,7 @@ public final class DtObjectsLoader implements Loader {
 								if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.ForeignKey.class)) {
 									//Le nom est automatiquement déduit du nom du champ
 									final io.vertigo.datamodel.structure.stereotype.ForeignKey foreignKeyAnnotation = method.getAnnotation(io.vertigo.datamodel.structure.stereotype.ForeignKey.class);
-									dtDefinitionBuilder.addForeignKey(createFieldName(method), foreignKeyAnnotation.label(), definitionSpace.resolve(foreignKeyAnnotation.domain(), SmartTypeDefinition.class), foreignKeyAnnotation.cardinality(), foreignKeyAnnotation.fkDefinition());
+									dtDefinitionBuilder.addForeignKey(createFieldName(method), foreignKeyAnnotation.label(), definitionSpace.resolve(foreignKeyAnnotation.smartType(), SmartTypeDefinition.class), foreignKeyAnnotation.cardinality(), foreignKeyAnnotation.fkDefinition());
 
 								}
 
@@ -342,18 +342,18 @@ public final class DtObjectsLoader implements Loader {
 		switch (type) {
 			case ID:
 
-				dtDefinitionBuilder.addIdField(fieldName, field.label(), definitionSpace.resolve(field.domain(), SmartTypeDefinition.class));
+				dtDefinitionBuilder.addIdField(fieldName, field.label(), definitionSpace.resolve(field.smartType(), SmartTypeDefinition.class));
 				break;
 			case DATA:
-				dtDefinitionBuilder.addDataField(fieldName, field.label(), definitionSpace.resolve(field.domain(), SmartTypeDefinition.class), field.cardinality(), field.persistent());
+				dtDefinitionBuilder.addDataField(fieldName, field.label(), definitionSpace.resolve(field.smartType(), SmartTypeDefinition.class), field.cardinality(), field.persistent());
 				break;
 			case COMPUTED:
 				//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
-				dtDefinitionBuilder.addComputedField(fieldName, field.label(), definitionSpace.resolve(field.domain(), SmartTypeDefinition.class), field.cardinality(), new ComputedExpression(null));
+				dtDefinitionBuilder.addComputedField(fieldName, field.label(), definitionSpace.resolve(field.smartType(), SmartTypeDefinition.class), field.cardinality(), new ComputedExpression(null));
 				break;
 			case FOREIGN_KEY:
 				// TODO : a refaire de toute urgence
-				dtDefinitionBuilder.addForeignKey(fieldName, field.label(), definitionSpace.resolve(field.domain(), SmartTypeDefinition.class), field.cardinality(), "DtWtf");
+				dtDefinitionBuilder.addForeignKey(fieldName, field.label(), definitionSpace.resolve(field.smartType(), SmartTypeDefinition.class), field.cardinality(), "DtWtf");
 				break;
 			default:
 				throw new IllegalArgumentException("case " + type + " not implemented");

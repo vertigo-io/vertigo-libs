@@ -13,7 +13,7 @@ import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
  */
 @Generated
 @io.vertigo.datamodel.structure.stereotype.DataSpace("orchestra")
-@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.datamodel.structure.metamodel.DataType.String)
+@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.core.lang.DataType.String)
 public final class OActivityWorkspace implements Entity {
 	private static final long serialVersionUID = 1L;
 
@@ -47,7 +47,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'Id de l'execution d'un processus'.
 	 * @return Long acwId <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id de l'execution d'un processus")
+	@Field(smartType = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id de l'execution d'un processus")
 	public Long getAcwId() {
 		return acwId;
 	}
@@ -66,7 +66,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'Workspace in/out'.
 	 * @return Boolean isIn <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Workspace in/out")
+	@Field(smartType = "STyOBooleen", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Workspace in/out")
 	public Boolean getIsIn() {
 		return isIn;
 	}
@@ -85,7 +85,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'Contenu du workspace'.
 	 * @return String workspace
 	 */
-	@Field(domain = "STyOJsonText", label = "Contenu du workspace")
+	@Field(smartType = "STyOJsonText", label = "Contenu du workspace")
 	public String getWorkspace() {
 		return workspace;
 	}
@@ -104,7 +104,7 @@ public final class OActivityWorkspace implements Entity {
 	 * Récupère la valeur de la propriété 'ActivityExecution'.
 	 * @return Long aceId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(domain = "STyOIdentifiant", label = "ActivityExecution", fkDefinition = "DtOActivityExecution" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "ActivityExecution", fkDefinition = "DtOActivityExecution" )
 	public Long getAceId() {
 		return (Long) aceIdAccessor.getId();
 	}

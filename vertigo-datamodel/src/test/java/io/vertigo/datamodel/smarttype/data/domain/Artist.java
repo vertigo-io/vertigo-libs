@@ -19,8 +19,8 @@
 package io.vertigo.datamodel.smarttype.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -44,7 +44,7 @@ public final class Artist implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "id of the artist")
+	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "id of the artist")
 	public Long getId() {
 		return id;
 	}
@@ -53,7 +53,7 @@ public final class Artist implements KeyConcept {
 		this.id = id;
 	}
 
-	@Field(domain = "STyString", label = "name")
+	@Field(smartType = "STyString", label = "name")
 	public String getName() {
 		return name;
 	}

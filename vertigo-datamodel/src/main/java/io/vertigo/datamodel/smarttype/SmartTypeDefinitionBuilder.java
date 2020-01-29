@@ -24,8 +24,8 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition.Scope;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.Properties;
 
 /**

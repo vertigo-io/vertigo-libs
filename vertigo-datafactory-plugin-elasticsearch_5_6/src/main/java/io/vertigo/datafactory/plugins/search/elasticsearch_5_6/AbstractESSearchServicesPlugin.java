@@ -341,14 +341,14 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 					.endObject();
 
 			typeMapping.startObject(ESDocumentCodec.DOC_ID)
-					.field("type", obtainPkIndexDataType(indexDefinition.getKeyConceptDtDefinition().getIdField().get().getDomain()))
+					.field("type", obtainPkIndexDataType(indexDefinition.getKeyConceptDtDefinition().getIdField().get().getSmartTypeDefinition()))
 					.endObject();
 
 			/* 3 : Les champs du dto index */
 			final Set<DtField> copyFromFields = indexDefinition.getIndexCopyFromFields();
 			final DtDefinition indexDtDefinition = indexDefinition.getIndexDtDefinition();
 			for (final DtField dtField : indexDtDefinition.getFields()) {
-				final IndexType indexType = IndexType.readIndexType(dtField.getDomain());
+				final IndexType indexType = IndexType.readIndexType(dtField.getSmartTypeDefinition());
 				typeMapping.startObject(dtField.getName());
 				appendIndexTypeMapping(typeMapping, indexType);
 				if (copyFromFields.contains(dtField)) {

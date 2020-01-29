@@ -19,8 +19,8 @@
 package io.vertigo.datastore.entitystore.data.domain.fileinfo;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -50,7 +50,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Identifiant'.
 	 * @return Long filId <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "Identifiant")
+	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "Identifiant")
 	public Long getFilId() {
 		return filId;
 	}
@@ -69,7 +69,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Nom'.
 	 * @return String fileName <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyString", cardinality = Cardinality.ONE, label = "Nom")
+	@Field(smartType = "STyString", cardinality = Cardinality.ONE, label = "Nom")
 	public String getFileName() {
 		return fileName;
 	}
@@ -88,7 +88,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Type mime'.
 	 * @return String mimeType <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyString", cardinality = Cardinality.ONE, label = "Type mime")
+	@Field(smartType = "STyString", cardinality = Cardinality.ONE, label = "Type mime")
 	public String getMimeType() {
 		return mimeType;
 	}
@@ -107,7 +107,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Taille'.
 	 * @return Long length <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyLong", cardinality = Cardinality.ONE, label = "Taille")
+	@Field(smartType = "STyLong", cardinality = Cardinality.ONE, label = "Taille")
 	public Long getLength() {
 		return length;
 	}
@@ -126,7 +126,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'Date de derniÃ¨re modification'.
 	 * @return java.time.Instant lastModified <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyInstant", cardinality = Cardinality.ONE, label = "Date de derniÃ¨re modification")
+	@Field(smartType = "STyInstant", cardinality = Cardinality.ONE, label = "Date de derniÃ¨re modification")
 	public java.time.Instant getLastModified() {
 		return lastModified;
 	}
@@ -145,7 +145,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'filePath'.
 	 * @return String filePath
 	 */
-	@Field(domain = "STyString", cardinality = Cardinality.OPTIONAL_OR_NULLABLE, label = "File Path")
+	@Field(smartType = "STyString", cardinality = Cardinality.OPTIONAL_OR_NULLABLE, label = "File Path")
 	public String getFilePath() {
 		return filePath;
 	}
@@ -164,7 +164,7 @@ public final class VxFileInfo implements Entity {
 	 * Récupère la valeur de la propriété 'data'.
 	 * @return io.vertigo.lang.DataStream fileData
 	 */
-	@Field(domain = "STyStream", label = "data")
+	@Field(smartType = "STyStream", label = "data")
 	public io.vertigo.core.lang.DataStream getFileData() {
 		return fileData;
 	}

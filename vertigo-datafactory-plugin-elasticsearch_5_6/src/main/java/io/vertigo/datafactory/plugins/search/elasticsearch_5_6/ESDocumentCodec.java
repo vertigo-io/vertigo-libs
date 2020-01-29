@@ -160,7 +160,7 @@ final class ESDocumentCodec {
 
 	private static List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {
 		return dtDefinition.getFields().stream()
-				.filter(dtField -> !isIndexStoredDomain(dtField.getDomain()))
+				.filter(dtField -> !isIndexStoredDomain(dtField.getSmartTypeDefinition()))
 				.collect(Collectors.toList());
 	}
 

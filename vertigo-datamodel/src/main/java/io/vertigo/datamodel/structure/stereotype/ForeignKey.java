@@ -35,12 +35,12 @@ import io.vertigo.core.lang.Cardinality;
 public @interface ForeignKey {
 
 	/**
-	 * Nom du domaine.
+	 * SmartType.
 	 */
-	String domain();
+	String smartType();
 
 	/**
-	 * Libellé du champ.
+	 * Field's label.
 	 */
 	String label();
 

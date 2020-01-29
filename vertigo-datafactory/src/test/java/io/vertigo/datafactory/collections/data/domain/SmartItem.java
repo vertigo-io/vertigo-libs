@@ -19,8 +19,8 @@
 package io.vertigo.datafactory.collections.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -32,10 +32,10 @@ public final class SmartItem implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "id")
+	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "id")
 	private Long id;
 
-	@Field(domain = "STyText", label = "label")
+	@Field(smartType = "STyText", label = "label")
 	private String label;
 
 	/** {@inheritDoc} */

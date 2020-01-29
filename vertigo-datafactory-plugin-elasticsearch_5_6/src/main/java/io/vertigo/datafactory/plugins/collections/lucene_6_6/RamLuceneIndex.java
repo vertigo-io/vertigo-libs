@@ -226,7 +226,7 @@ final class RamLuceneIndex<D extends DtObject> {
 				final UID<Entity> uid = UID.of(field.getFkDtDefinition(), value);
 				final DtObject fkDto = getEntityStoreManager().readOne(uid);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
-				stringValue = modelManager.valueToString(displayField.getDomain(), displayValue);
+				stringValue = modelManager.valueToString(displayField.getSmartTypeDefinition(), displayValue);
 			} else {
 				stringValue = String.valueOf(field.getDataAccessor().getValue(dto));
 			}

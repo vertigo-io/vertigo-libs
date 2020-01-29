@@ -26,9 +26,9 @@
 			request = "${taskDefinition.request}",
 			taskEngineClass = ${taskDefinition.taskEngineClass}.class)
 	<#if taskDefinition.out>
-	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "${taskDefinition.outAttribute.smartTypeName}")
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "${taskDefinition.outAttribute.smartTypeName}")
 	</#if>
-	public <#if taskDefinition.out><#if taskDefinition.outAttribute.optionalOrNullable>Optional<</#if>${taskDefinition.outAttribute.dataType}<#if taskDefinition.outAttribute.optionalOrNullable>></#if><#else>void</#if> ${taskDefinition.methodName}(<#list taskDefinition.inAttributes as taskAttribute>@io.vertigo.datamodel.task.proxy.TaskInput(name = "${taskAttribute.name}", domain = "${taskAttribute.smartTypeName}") final <#if taskAttribute.optionalOrNullable>Optional<</#if>${taskAttribute.dataType}<#if taskAttribute.optionalOrNullable>></#if> ${taskAttribute.variableName}<#if taskAttribute_has_next>, </#if></#list>) {
+	public <#if taskDefinition.out><#if taskDefinition.outAttribute.optionalOrNullable>Optional<</#if>${taskDefinition.outAttribute.dataType}<#if taskDefinition.outAttribute.optionalOrNullable>></#if><#else>void</#if> ${taskDefinition.methodName}(<#list taskDefinition.inAttributes as taskAttribute>@io.vertigo.datamodel.task.proxy.TaskInput(name = "${taskAttribute.name}", smartType = "${taskAttribute.smartTypeName}") final <#if taskAttribute.optionalOrNullable>Optional<</#if>${taskAttribute.dataType}<#if taskAttribute.optionalOrNullable>></#if> ${taskAttribute.variableName}<#if taskAttribute_has_next>, </#if></#list>) {
 		final Task task = createTaskBuilder("${taskDefinition.taskName}")
 	<#list taskDefinition.inAttributes as taskAttribute>
 				.addValue("${taskAttribute.name}", ${taskAttribute.variableName}<#if taskAttribute.optionalOrNullable>.orElse(null)</#if>)

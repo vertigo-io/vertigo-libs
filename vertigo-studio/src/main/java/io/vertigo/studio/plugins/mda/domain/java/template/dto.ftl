@@ -25,7 +25,7 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
 <#list annotations(dtDefinition.dtDefinition) as annotation>
 ${annotation}
 </#list>
-@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.datamodel.structure.metamodel.DataType.String)
+@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.core.lang.DataType.String)
 public final class ${dtDefinition.classSimpleName} implements ${dtDefinition.stereotypeInterfaceName} {
 	private static final long serialVersionUID = 1L;
 

@@ -23,8 +23,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.dynamo.domain.metamodel.StudioDtField;
 

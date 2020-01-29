@@ -24,7 +24,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.datamodel.structure.metamodel.DataType;
+import io.vertigo.core.lang.DataType;
 
 /**
  * @author pchretien

@@ -49,10 +49,10 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
@@ -245,7 +245,7 @@ final class XLSExporter {
 				final HSSFCell cell = row.createCell(cellIndex);
 
 				value = ExportUtil.getValue(entityStoreManager, modelManager, referenceCache, denormCache, dto, exportColumn);
-				putValueInCell(modelManager, value, cell, rowIndex % 2 == 0 ? evenHssfStyleCache : oddHssfStyleCache, cellIndex, maxWidthPerColumn, exportColumn.getDtField().getDomain());
+				putValueInCell(modelManager, value, cell, rowIndex % 2 == 0 ? evenHssfStyleCache : oddHssfStyleCache, cellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
 
 				cellIndex++;
 			}
@@ -270,7 +270,7 @@ final class XLSExporter {
 
 			final HSSFCell valueCell = row.createCell(valueCellIndex);
 			value = ExportUtil.getValue(entityStoreManager, modelManager, referenceCache, denormCache, dto, exportColumn);
-			putValueInCell(modelManager, value, valueCell, oddHssfStyleCache, valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().getDomain());
+			putValueInCell(modelManager, value, valueCell, oddHssfStyleCache, valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
 			rowIndex++;
 		}
 

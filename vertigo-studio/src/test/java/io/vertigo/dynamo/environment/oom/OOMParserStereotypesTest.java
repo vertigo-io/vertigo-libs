@@ -26,8 +26,8 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtStereotype;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.dynamo.plugins.environment.StudioDefinitionProvider;
 
 /**
@@ -51,8 +51,8 @@ public final class OOMParserStereotypesTest extends AbstractTestCaseJU5 {
 				.build();
 	}
 
-	private DtDefinition getDtDefinition(final String urn) {
-		return getApp().getDefinitionSpace().resolve(urn, DtDefinition.class);
+	private StudioDtDefinition getDtDefinition(final String urn) {
+		return getApp().getDefinitionSpace().resolve(urn, StudioDtDefinition.class);
 	}
 
 	/**
@@ -60,11 +60,11 @@ public final class OOMParserStereotypesTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testStereotypeMasterData() {
-		final DtDefinition dtDefinitionCity = getDtDefinition("DtCity");
+		final StudioDtDefinition dtDefinitionCity = getDtDefinition("StDtCity");
 		Assertions.assertNotNull(dtDefinitionCity);
 		Assertions.assertEquals(DtStereotype.MasterData, dtDefinitionCity.getStereotype());
 
-		final DtDefinition dtDefinitionCommandType = getDtDefinition("DtCommandType");
+		final StudioDtDefinition dtDefinitionCommandType = getDtDefinition("StDtCommandType");
 		Assertions.assertNotNull(dtDefinitionCommandType);
 		Assertions.assertEquals(DtStereotype.StaticMasterData, dtDefinitionCommandType.getStereotype());
 	}
@@ -74,7 +74,7 @@ public final class OOMParserStereotypesTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testStereotypeKeyConcept() {
-		final DtDefinition dtDefinitionCommand = getDtDefinition("DtCommand");
+		final StudioDtDefinition dtDefinitionCommand = getDtDefinition("StDtCommand");
 		Assertions.assertNotNull(dtDefinitionCommand);
 		Assertions.assertEquals(DtStereotype.KeyConcept, dtDefinitionCommand.getStereotype());
 
@@ -85,11 +85,11 @@ public final class OOMParserStereotypesTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testStereotypeData() {
-		final DtDefinition dtDefinitionAttachment = getDtDefinition("DtAttachment");
+		final StudioDtDefinition dtDefinitionAttachment = getDtDefinition("StDtAttachment");
 		Assertions.assertNotNull(dtDefinitionAttachment);
 		Assertions.assertEquals(DtStereotype.Entity, dtDefinitionAttachment.getStereotype());
 
-		final DtDefinition dtDefinitionCommandValidation = getDtDefinition("DtCommandValidation");
+		final StudioDtDefinition dtDefinitionCommandValidation = getDtDefinition("StDtCommandValidation");
 		Assertions.assertNotNull(dtDefinitionCommandValidation);
 		Assertions.assertEquals(DtStereotype.Entity, dtDefinitionCommandValidation.getStereotype());
 	}

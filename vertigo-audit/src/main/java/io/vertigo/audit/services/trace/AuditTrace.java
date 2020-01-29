@@ -33,28 +33,28 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
 public final class AuditTrace implements DtObject {
 	private static final long serialVersionUID = 2280022920606418634L;
 
-	@Field(type = "ID", domain = "STyXAuditId", cardinality = Cardinality.ONE, label = "id")
+	@Field(type = "ID", smartType = "STyXAuditId", cardinality = Cardinality.ONE, label = "id")
 	private Long id;
 
-	@Field(domain = "STyXAuditCategory", label = "category")
+	@Field(smartType = "STyXAuditCategory", label = "category")
 	private final String category;
 
-	@Field(domain = "STyXAuditUsername", label = "username")
+	@Field(smartType = "STyXAuditUsername", label = "username")
 	private final String username;
 
-	@Field(domain = "STyXAuditInstant", label = "businessDate")
+	@Field(smartType = "STyXAuditInstant", label = "businessDate")
 	private final Instant businessDate;
 
-	@Field(domain = "STyXAuditInstant", label = "executionDate")
+	@Field(smartType = "STyXAuditInstant", label = "executionDate")
 	private final Instant executionDate;
 
-	@Field(domain = "STyXAuditItem", label = "item")
+	@Field(smartType = "STyXAuditItem", label = "item")
 	private final Long item;
 
-	@Field(domain = "STyXAuditMessage", label = "message")
+	@Field(smartType = "STyXAuditMessage", label = "message")
 	private final String message;
 
-	@Field(domain = "STyXAuditContext", label = "context")
+	@Field(smartType = "STyXAuditContext", label = "context")
 	private final String context;
 
 	AuditTrace(

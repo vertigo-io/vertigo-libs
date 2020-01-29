@@ -29,6 +29,7 @@ import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
@@ -36,7 +37,6 @@ import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.structure.metamodel.ComputedExpression;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
 import io.vertigo.datamodel.structure.metamodel.DtStereotype;
 import io.vertigo.datamodel.structure.metamodel.Properties;
@@ -149,7 +149,7 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 	}
 
 	private static StudioDtDefinition createFragmentStudioDtDefinition(final DefinitionSpace definitionSpace, final DslDefinition xdtDefinition) {
-		final StudioDtDefinition from = definitionSpace.resolve(xdtDefinition.getDefinitionLinkName("from"), StudioDtDefinition.class);
+		final StudioDtDefinition from = definitionSpace.resolve("St" + xdtDefinition.getDefinitionLinkName("from"), StudioDtDefinition.class);
 
 		final String sortFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.SORT_FIELD);
 		final String displayFieldName = (String) xdtDefinition.getPropertyValue(KspProperty.DISPLAY_FIELD);

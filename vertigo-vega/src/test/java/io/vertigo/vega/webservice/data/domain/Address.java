@@ -19,8 +19,8 @@
 package io.vertigo.vega.webservice.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -31,17 +31,17 @@ import io.vertigo.datastore.impl.entitystore.StoreListVAccessor;
 public final class Address implements Entity {
 	private static final long serialVersionUID = 8922834274442256496L;
 
-	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "address Id")
+	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "address Id")
 	private Long adrId;
-	@Field(domain = "STyTexte50", label = "street1")
+	@Field(smartType = "STyTexte50", label = "street1")
 	private String street1;
-	@Field(domain = "STyTexte50", label = "street2")
+	@Field(smartType = "STyTexte50", label = "street2")
 	private String street2;
-	@Field(domain = "STyTexte50", label = "city")
+	@Field(smartType = "STyTexte50", label = "city")
 	private String city;
-	@Field(domain = "STyTexte50", label = "postal code")
+	@Field(smartType = "STyTexte50", label = "postal code")
 	private String postalCode;
-	@Field(domain = "STyTexte50", label = "country")
+	@Field(smartType = "STyTexte50", label = "country")
 	private String country;
 
 	@io.vertigo.datamodel.structure.stereotype.Association(

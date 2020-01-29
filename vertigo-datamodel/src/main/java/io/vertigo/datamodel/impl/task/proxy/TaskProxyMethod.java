@@ -65,7 +65,7 @@ public final class TaskProxyMethod implements ProxyMethod {
 	private static SmartTypeDefinition findOutSmartType(final Method method) {
 		final TaskOutput taskOutput = method.getAnnotation(TaskOutput.class);
 		Assertion.checkNotNull(taskOutput, "The return method '{0}' must be annotated with '{1}'", method, TaskOutput.class);
-		return resolveSmartTypeDefinition(taskOutput.domain());
+		return resolveSmartTypeDefinition(taskOutput.smartType());
 	}
 
 	private static TaskManager getTaskManager() {
@@ -103,7 +103,7 @@ public final class TaskProxyMethod implements ProxyMethod {
 			//test if the parameter is an optional type
 			taskDefinitionBuilder.addInAttribute(
 					taskAttributeAnnotation.name(),
-					resolveSmartTypeDefinition(taskAttributeAnnotation.domain()),
+					resolveSmartTypeDefinition(taskAttributeAnnotation.smartType()),
 					inAttributeCardinality);
 		}
 

@@ -22,19 +22,19 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintRegex;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterNumber;
-import io.vertigo.datamodel.structure.metamodel.DataType;
-import io.vertigo.datamodel.structure.metamodel.DtDefinition;
-import io.vertigo.datamodel.structure.metamodel.DtProperty;
 import io.vertigo.dynamo.domain.metamodel.ConstraintDefinition;
 import io.vertigo.dynamo.domain.metamodel.Domain;
 import io.vertigo.dynamo.domain.metamodel.FormatterDefinition;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.dynamo.plugins.environment.StudioDefinitionProvider;
 
 /**
@@ -68,7 +68,7 @@ public final class EAXmiEnvironmentManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void testConstraint() {
 		final ConstraintDefinition constraint = definitionSpace.resolve("CkTelephone", ConstraintDefinition.class);
-		Assertions.assertEquals(DtProperty.REGEX, constraint.getProperty());
+		Assertions.assertEquals(ConstraintRegex.class.getName(), constraint.getConstraintClassName());
 	}
 
 	@Test
@@ -92,7 +92,7 @@ public final class EAXmiEnvironmentManagerTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testDtDefinition() {
-		final DtDefinition dtDefinition = definitionSpace.resolve("DtFamille", DtDefinition.class);
+		final StudioDtDefinition dtDefinition = definitionSpace.resolve("StDtFamille", StudioDtDefinition.class);
 		Assertions.assertEquals("io.vertigo.dynamock.domain.famille.Famille", dtDefinition.getClassCanonicalName());
 		Assertions.assertTrue(dtDefinition.isPersistent());
 		Assertions.assertEquals("io.vertigo.dynamock.domain.famille", dtDefinition.getPackageName());

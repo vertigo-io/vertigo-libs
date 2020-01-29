@@ -112,10 +112,10 @@ public class TaskTestDummyGeneratorBasic implements TaskTestDummyGenerator {
 		def.getFields().stream()
 				.filter(dtField -> dtField.getType() == FieldType.COMPUTED)// we don't treat computed field (no setter)
 				.forEach(dtField -> {
-					final Class javaClass = dtField.getDomain().getJavaClass();
+					final Class javaClass = dtField.getSmartTypeDefinition().getJavaClass();
 					final Object value;
 					if (dtField.getCardinality().hasMany()) {
-						if (dtField.getDomain().getScope().isDataObject()) {
+						if (dtField.getSmartTypeDefinition().getScope().isDataObject()) {
 							value = dumDtList(javaClass);
 						} else {
 							value = dumList(javaClass);

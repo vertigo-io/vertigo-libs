@@ -19,9 +19,9 @@
 package io.vertigo.datamodel.impl.smarttype.formatter;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionSpace;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
 

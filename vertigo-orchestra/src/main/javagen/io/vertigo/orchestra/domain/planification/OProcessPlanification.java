@@ -13,7 +13,7 @@ import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
  */
 @Generated
 @io.vertigo.datamodel.structure.stereotype.DataSpace("orchestra")
-@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.datamodel.structure.metamodel.DataType.String)
+@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.core.lang.DataType.String)
 public final class OProcessPlanification implements Entity {
 	private static final long serialVersionUID = 1L;
 
@@ -77,7 +77,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Id Planification'.
 	 * @return Long prpId <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id Planification")
+	@Field(smartType = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id Planification")
 	public Long getPrpId() {
 		return prpId;
 	}
@@ -96,7 +96,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Date d'execution prévue'.
 	 * @return Instant expectedTime
 	 */
-	@Field(domain = "STyOTimestamp", label = "Date d'execution prévue")
+	@Field(smartType = "STyOTimestamp", label = "Date d'execution prévue")
 	public java.time.Instant getExpectedTime() {
 		return expectedTime;
 	}
@@ -115,7 +115,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Paramètres initiaux sous forme de JSON'.
 	 * @return String initialParams
 	 */
-	@Field(domain = "STyOJsonText", label = "Paramètres initiaux sous forme de JSON")
+	@Field(smartType = "STyOJsonText", label = "Paramètres initiaux sous forme de JSON")
 	public String getInitialParams() {
 		return initialParams;
 	}
@@ -134,7 +134,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(domain = "STyOIdentifiant", label = "Processus", fkDefinition = "DtOProcess" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "Processus", fkDefinition = "DtOProcess" )
 	public Long getProId() {
 		return (Long) proIdAccessor.getId();
 	}
@@ -153,7 +153,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'Node'.
 	 * @return Long nodId
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(domain = "STyOIdentifiant", label = "Node", fkDefinition = "DtONode" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "Node", fkDefinition = "DtONode" )
 	public Long getNodId() {
 		return (Long) nodIdAccessor.getId();
 	}
@@ -172,7 +172,7 @@ public final class OProcessPlanification implements Entity {
 	 * Récupère la valeur de la propriété 'PlanificationState'.
 	 * @return String sstCd
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(domain = "STyOCodeIdentifiant", label = "PlanificationState", fkDefinition = "DtOSchedulerState" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOCodeIdentifiant", label = "PlanificationState", fkDefinition = "DtOSchedulerState" )
 	public String getSstCd() {
 		return (String) sstCdAccessor.getId();
 	}

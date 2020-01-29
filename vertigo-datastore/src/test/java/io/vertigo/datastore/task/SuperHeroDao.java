@@ -37,7 +37,7 @@ public interface SuperHeroDao extends Component {
 			name = "TkCarCount",
 			request = "select count(*) from super_hero ",
 			taskEngineClass = TaskEngineSelect.class)
-	@TaskOutput(domain = "STyInteger")
+	@TaskOutput(smartType = "STyInteger")
 	int count();
 
 	@TaskProxyAnnotation(
@@ -45,23 +45,23 @@ public interface SuperHeroDao extends Component {
 			request = "<%if (name !=null) {%>select * from super_hero where name = #name# <%} else {%>"
 					+ "select * from super_hero <%}%>",
 			taskEngineClass = TaskEngineSelect.class)
-	@TaskOutput(domain = "STyDtSuperHero")
+	@TaskOutput(smartType = "STyDtSuperHero")
 	DtList<SuperHero> findAll(
-			@TaskInput(name = "name", domain = "STyString") Optional<String> nameOpt);
+			@TaskInput(name = "name", smartType = "STyString") Optional<String> nameOpt);
 
 	@TaskProxyAnnotation(
 			name = "TkSuperHeroCountByName",
 			request = "select count(*) from super_hero where name=#name# ",
 			taskEngineClass = TaskEngineSelect.class)
-	@TaskOutput(domain = "STyInteger")
+	@TaskOutput(smartType = "STyInteger")
 	int count(
-			@TaskInput(name = "name", domain = "STyString") String manufacturer);
+			@TaskInput(name = "name", smartType = "STyString") String manufacturer);
 
 	@TaskProxyAnnotation(
 			name = "TkLoadSuperHeroNames",
 			request = "select distinct name from super_hero ",
 			taskEngineClass = TaskEngineSelect.class)
-	@TaskOutput(domain = "STyString")
+	@TaskOutput(smartType = "STyString")
 	List<String> names();
 
 	@TaskProxyAnnotation(
@@ -69,7 +69,7 @@ public interface SuperHeroDao extends Component {
 			request = "update  super_hero set name =#newName# where name=#oldName#",
 			taskEngineClass = TaskEngineProc.class)
 	void update(
-			@TaskInput(name = "oldName", domain = "STyString") String oldName,
-			@TaskInput(name = "newName", domain = "STyString") String newName);
+			@TaskInput(name = "oldName", smartType = "STyString") String oldName,
+			@TaskInput(name = "newName", smartType = "STyString") String newName);
 
 }

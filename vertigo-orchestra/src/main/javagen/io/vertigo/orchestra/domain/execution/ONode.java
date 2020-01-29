@@ -12,7 +12,7 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
  */
 @Generated
 @io.vertigo.datamodel.structure.stereotype.DataSpace("orchestra")
-@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.datamodel.structure.metamodel.DataType.String)
+@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.core.lang.DataType.String)
 public final class ONode implements Entity {
 	private static final long serialVersionUID = 1L;
 
@@ -31,7 +31,7 @@ public final class ONode implements Entity {
 	 * Récupère la valeur de la propriété 'Id du noeud'.
 	 * @return Long nodId <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id du noeud")
+	@Field(smartType = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id du noeud")
 	public Long getNodId() {
 		return nodId;
 	}
@@ -50,7 +50,7 @@ public final class ONode implements Entity {
 	 * Récupère la valeur de la propriété 'Nom du noeud'.
 	 * @return String name <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOLibelle", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Nom du noeud")
+	@Field(smartType = "STyOLibelle", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Nom du noeud")
 	public String getName() {
 		return name;
 	}
@@ -69,7 +69,7 @@ public final class ONode implements Entity {
 	 * Récupère la valeur de la propriété 'Date de dernière activité'.
 	 * @return Instant heartbeat
 	 */
-	@Field(domain = "STyOTimestamp", label = "Date de dernière activité")
+	@Field(smartType = "STyOTimestamp", label = "Date de dernière activité")
 	public java.time.Instant getHeartbeat() {
 		return heartbeat;
 	}

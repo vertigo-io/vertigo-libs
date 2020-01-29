@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.services.publisher.data.domain;
 
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.JsonMapper;
 
@@ -34,9 +34,9 @@ public final class Enqueteur implements DtObject {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyString", label = "Nom")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyString", label = "Nom")
 	private String nom;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyString", label = "Prenom")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyString", label = "Prenom")
 	private String prenom;
 
 	/**

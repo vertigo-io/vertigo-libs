@@ -13,7 +13,7 @@ import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
  */
 @Generated
 @io.vertigo.datamodel.structure.stereotype.DataSpace("orchestra")
-@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.datamodel.structure.metamodel.DataType.String)
+@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.core.lang.DataType.String)
 public final class OActivityLog implements Entity {
 	private static final long serialVersionUID = 1L;
 
@@ -47,7 +47,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'Id du log'.
 	 * @return Long aclId <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id du log")
+	@Field(smartType = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id du log")
 	public Long getAclId() {
 		return aclId;
 	}
@@ -66,7 +66,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'Contenu du log'.
 	 * @return String log
 	 */
-	@Field(domain = "STyOText", label = "Contenu du log")
+	@Field(smartType = "STyOText", label = "Contenu du log")
 	public String getLog() {
 		return log;
 	}
@@ -85,7 +85,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'Fichier joint'.
 	 * @return String attachment
 	 */
-	@Field(domain = "STyOText", label = "Fichier joint")
+	@Field(smartType = "STyOText", label = "Fichier joint")
 	public String getAttachment() {
 		return attachment;
 	}
@@ -104,7 +104,7 @@ public final class OActivityLog implements Entity {
 	 * Récupère la valeur de la propriété 'ActivityExecution'.
 	 * @return Long aceId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(domain = "STyOIdentifiant", label = "ActivityExecution", fkDefinition = "DtOActivityExecution" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "ActivityExecution", fkDefinition = "DtOActivityExecution" )
 	public Long getAceId() {
 		return (Long) aceIdAccessor.getId();
 	}

@@ -25,8 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.task.metamodel.TaskAttribute;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
@@ -67,7 +67,7 @@ final class TaskPopulator {
 	private void populateTaskAttribute(final TaskAttribute attribute) {
 		final String attributeName = attribute.getName();
 		final Object value;
-		switch (attribute.getDomain().getScope()) {
+		switch (attribute.getSmartTypeDefinition().getScope()) {
 			case PRIMITIVE:
 				final Object item = getDefaultPrimitiveValue(attribute);
 				if (attribute.getCardinality().hasMany()) {
@@ -80,13 +80,13 @@ final class TaskPopulator {
 				break;
 			case DATA_OBJECT:
 				if (attribute.getCardinality().hasMany()) {
-					value = new DtList(attribute.getDomain().getJavaClass());
+					value = new DtList(attribute.getSmartTypeDefinition().getJavaClass());
 				} else {
-					value = ClassUtil.newInstance(attribute.getDomain().getJavaClass());
+					value = ClassUtil.newInstance(attribute.getSmartTypeDefinition().getJavaClass());
 				}
 				break;
 			case VALUE_OBJECT:
-				final Object valueObject = ClassUtil.newInstance(attribute.getDomain().getJavaClass());
+				final Object valueObject = ClassUtil.newInstance(attribute.getSmartTypeDefinition().getJavaClass());
 				if (attribute.getCardinality().hasMany()) {
 					final List list = new ArrayList();
 					list.add(valueObject);
@@ -104,7 +104,7 @@ final class TaskPopulator {
 	private Object getDefaultPrimitiveValue(final TaskAttribute attribute) {
 		Object item;
 		//we are primitives only
-		switch (DataType.of(attribute.getDomain().getJavaClass()).get()) {
+		switch (DataType.of(attribute.getSmartTypeDefinition().getJavaClass()).get()) {
 			case Boolean:
 				item = Boolean.TRUE;
 				break;

@@ -21,11 +21,11 @@ package io.vertigo.struts2.services.util;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.criteria.Criteria;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
@@ -78,7 +78,7 @@ public final class StaticStorePlugin extends AbstractStaticEntityStorePlugin imp
 		dataSpace = staticDtDefinition.getDataSpace();
 		//----
 		dtc = new DtList<>(staticDtDefinition);
-		final DataType keyDataType = staticDtDefinition.getIdField().get().getDomain().getTargetDataType();
+		final DataType keyDataType = staticDtDefinition.getIdField().get().getSmartTypeDefinition().getTargetDataType();
 		final String[] splittedValues = values.split("\\s*[,;|]\\s*");
 		for (final String splittedValue : splittedValues) {
 			final String[] keyLabel = splittedValue.split("\\s*=\\s*");

@@ -65,7 +65,7 @@ public final class UID<E extends Entity> implements Serializable {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(definition);
 		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
-		modelManager.checkValue(definition.getIdField().get().getDomain(), id);
+		modelManager.checkValue(definition.getIdField().get().getSmartTypeDefinition(), id);
 		//-----
 		this.id = Serializable.class.cast(id);
 		this.definitionRef = new DefinitionReference<>(definition);

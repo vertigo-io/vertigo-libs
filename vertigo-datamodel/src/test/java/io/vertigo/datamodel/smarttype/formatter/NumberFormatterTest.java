@@ -24,10 +24,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterNumber;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterNumberLocalized;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
 

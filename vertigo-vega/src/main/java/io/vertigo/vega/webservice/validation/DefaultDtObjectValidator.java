@@ -52,10 +52,10 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 						throw new ClassCastException("Value " + value + " must be a list");
 					}
 					for (final Object element : List.class.cast(value)) {
-						modelManager.checkConstraints(dtField.getDomain(), element);
+						modelManager.checkConstraints(dtField.getSmartTypeDefinition(), element);
 					}
 				} else {
-					modelManager.checkConstraints(dtField.getDomain(), value);
+					modelManager.checkConstraints(dtField.getSmartTypeDefinition(), value);
 				}
 			} catch (final ConstraintException e) {
 				// Erreur lors du check de la valeur,

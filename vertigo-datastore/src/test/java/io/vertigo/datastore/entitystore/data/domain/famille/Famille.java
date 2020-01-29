@@ -19,9 +19,9 @@
 package io.vertigo.datastore.entitystore.data.domain.famille;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtFieldName;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
@@ -87,7 +87,7 @@ public final class Famille implements Entity {
 	 * Récupère la valeur de la propriété 'identifiant de la famille'.
 	 * @return Long famId <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la famille")
+	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la famille")
 	public Long getFamId() {
 		return famId;
 	}
@@ -106,7 +106,7 @@ public final class Famille implements Entity {
 	 * Récupère la valeur de la propriété 'Libelle'.
 	 * @return String libelle
 	 */
-	@Field(domain = "STyString", label = "Libelle")
+	@Field(smartType = "STyString", label = "Libelle")
 	public String getLibelle() {
 		return libelle;
 	}
@@ -125,7 +125,7 @@ public final class Famille implements Entity {
 	 * Récupère la valeur de la propriété calculée 'Libelle'.
 	 * @return String description
 	 */
-	@Field(domain = "STyLibelleLong", type = "COMPUTED", persistent = false, label = "Libelle")
+	@Field(smartType = "STyLibelleLong", type = "COMPUTED", persistent = false, label = "Libelle")
 	public String getDescription() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append(getLibelle());

@@ -5,8 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.DataTypeMapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.FIELD, ElementType.TYPE })

@@ -19,8 +19,8 @@
 package io.vertigo.datafactory.collections.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -32,13 +32,13 @@ public final class SmartCar implements KeyConcept {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
+	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
 	private Long id;
-	@Field(domain = "STyKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
+	@Field(smartType = "STyKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
 	private String manufacturer;
-	@Field(domain = "STyInteger", cardinality = Cardinality.ONE, label = "Année")
+	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Année")
 	private Integer year;
-	@Field(domain = "STyText", cardinality = Cardinality.ONE, label = "Descriptif")
+	@Field(smartType = "STyText", cardinality = Cardinality.ONE, label = "Descriptif")
 	private String description;
 
 	/** {@inheritDoc} */

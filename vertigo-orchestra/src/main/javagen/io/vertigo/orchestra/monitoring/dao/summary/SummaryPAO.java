@@ -123,8 +123,8 @@ public final class SummaryPAO implements StoreServices {
  "			<%}%>" + 
  "			;",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtOExecutionSummary")
-	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary> getExecutionSummariesByDate(@io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMin", domain = "STyOTimestamp") final java.time.Instant dateMin, @io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMax", domain = "STyOTimestamp") final java.time.Instant dateMax, @io.vertigo.datamodel.task.proxy.TaskInput(name = "status", domain = "STyOCodeIdentifiant") final String status) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOExecutionSummary")
+	public io.vertigo.datamodel.structure.model.DtList<io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary> getExecutionSummariesByDate(@io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMin", smartType = "STyOTimestamp") final java.time.Instant dateMin, @io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMax", smartType = "STyOTimestamp") final java.time.Instant dateMax, @io.vertigo.datamodel.task.proxy.TaskInput(name = "status", smartType = "STyOCodeIdentifiant") final String status) {
 		final Task task = createTaskBuilder("TkGetExecutionSummariesByDate")
 				.addValue("dateMin", dateMin)
 				.addValue("dateMax", dateMax)
@@ -211,8 +211,8 @@ public final class SummaryPAO implements StoreServices {
  "						group by planif.name" + 
  "					) lat_planif on true;",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtOExecutionSummary")
-	public io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary getExecutionSummaryByDateAndName(@io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMin", domain = "STyOTimestamp") final java.time.Instant dateMin, @io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMax", domain = "STyOTimestamp") final java.time.Instant dateMax, @io.vertigo.datamodel.task.proxy.TaskInput(name = "name", domain = "STyOLibelle") final String name) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOExecutionSummary")
+	public io.vertigo.orchestra.monitoring.domain.summary.OExecutionSummary getExecutionSummaryByDateAndName(@io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMin", smartType = "STyOTimestamp") final java.time.Instant dateMin, @io.vertigo.datamodel.task.proxy.TaskInput(name = "dateMax", smartType = "STyOTimestamp") final java.time.Instant dateMax, @io.vertigo.datamodel.task.proxy.TaskInput(name = "name", smartType = "STyOLibelle") final String name) {
 		final Task task = createTaskBuilder("TkGetExecutionSummaryByDateAndName")
 				.addValue("dateMin", dateMin)
 				.addValue("dateMax", dateMax)

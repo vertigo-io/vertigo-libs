@@ -56,8 +56,8 @@ public final class ONodeDAO extends DAO<ONode, java.lang.Long> implements StoreS
  "        	from o_node nod" + 
  "        	where nod.NAME = #nodeName#",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtONode")
-	public Optional<io.vertigo.orchestra.domain.execution.ONode> getNodeByName(@io.vertigo.datamodel.task.proxy.TaskInput(name = "nodeName", domain = "STyOLibelle") final String nodeName) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtONode")
+	public Optional<io.vertigo.orchestra.domain.execution.ONode> getNodeByName(@io.vertigo.datamodel.task.proxy.TaskInput(name = "nodeName", smartType = "STyOLibelle") final String nodeName) {
 		final Task task = createTaskBuilder("TkGetNodeByName")
 				.addValue("nodeName", nodeName)
 				.build();

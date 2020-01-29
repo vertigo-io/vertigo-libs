@@ -271,7 +271,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		}
 		final Object value = doGetTypedValue(fieldName);
 		final DtField dtField = getDtField(fieldName);
-		final SmartTypeDefinition smartType = dtField.getDomain();
+		final SmartTypeDefinition smartType = dtField.getSmartTypeDefinition();
 		if (smartType.getScope().isPrimitive() && !dtField.getCardinality().hasMany()) {
 			return Home.getApp().getComponentSpace().resolve(ModelManager.class).valueToString(smartType, value);// encodeValue
 		}
@@ -291,10 +291,10 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		getDtObjectErrors().clearErrors(dtField.getName());
 		String formattedValue;
 		try {
-			final Serializable typedValue = (Serializable) modelManager.stringToValue(dtField.getDomain(), stringValue);// we should use an encoder instead
+			final Serializable typedValue = (Serializable) modelManager.stringToValue(dtField.getSmartTypeDefinition(), stringValue);// we should use an encoder instead
 			doSetTypedValue(dtField, typedValue);
 			// succesful encoding we can format and put in the inputbuffer
-			formattedValue = modelManager.valueToString(dtField.getDomain(), typedValue);
+			formattedValue = modelManager.valueToString(dtField.getSmartTypeDefinition(), typedValue);
 		} catch (final FormatterException e) { //We don't log nor rethrow this exception // it should be an encoding exception
 			/** Erreur de typage.	 */
 			//encoding error

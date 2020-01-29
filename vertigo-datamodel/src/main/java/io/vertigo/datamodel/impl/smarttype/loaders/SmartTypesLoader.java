@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
@@ -23,7 +24,6 @@ import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
 import io.vertigo.datamodel.structure.metamodel.Properties;
 import io.vertigo.datamodel.structure.metamodel.PropertiesBuilder;

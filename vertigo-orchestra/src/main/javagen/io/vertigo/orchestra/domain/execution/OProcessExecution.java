@@ -13,7 +13,7 @@ import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
  */
 @Generated
 @io.vertigo.datamodel.structure.stereotype.DataSpace("orchestra")
-@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.datamodel.structure.metamodel.DataType.String)
+@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.core.lang.DataType.String)
 public final class OProcessExecution implements Entity {
 	private static final long serialVersionUID = 1L;
 
@@ -81,7 +81,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Id de l'execution d'un processus'.
 	 * @return Long preId <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id de l'execution d'un processus")
+	@Field(smartType = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id de l'execution d'un processus")
 	public Long getPreId() {
 		return preId;
 	}
@@ -100,7 +100,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de début'.
 	 * @return Instant beginTime <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Date de début")
+	@Field(smartType = "STyOTimestamp", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Date de début")
 	public java.time.Instant getBeginTime() {
 		return beginTime;
 	}
@@ -119,7 +119,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de fin'.
 	 * @return Instant endTime
 	 */
-	@Field(domain = "STyOTimestamp", label = "Date de fin")
+	@Field(smartType = "STyOTimestamp", label = "Date de fin")
 	public java.time.Instant getEndTime() {
 		return endTime;
 	}
@@ -138,7 +138,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Implémentation effective de l'execution'.
 	 * @return String engine
 	 */
-	@Field(domain = "STyOClasse", label = "Implémentation effective de l'execution")
+	@Field(smartType = "STyOClasse", label = "Implémentation effective de l'execution")
 	public String getEngine() {
 		return engine;
 	}
@@ -157,7 +157,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Pris en charge'.
 	 * @return Boolean checked
 	 */
-	@Field(domain = "STyOBooleen", label = "Pris en charge")
+	@Field(smartType = "STyOBooleen", label = "Pris en charge")
 	public Boolean getChecked() {
 		return checked;
 	}
@@ -176,7 +176,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Date de prise en charge'.
 	 * @return Instant checkingDate
 	 */
-	@Field(domain = "STyOTimestamp", label = "Date de prise en charge")
+	@Field(smartType = "STyOTimestamp", label = "Date de prise en charge")
 	public java.time.Instant getCheckingDate() {
 		return checkingDate;
 	}
@@ -195,7 +195,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Commentaire'.
 	 * @return String checkingComment
 	 */
-	@Field(domain = "STyOText", label = "Commentaire")
+	@Field(smartType = "STyOText", label = "Commentaire")
 	public String getCheckingComment() {
 		return checkingComment;
 	}
@@ -214,7 +214,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'Processus'.
 	 * @return Long proId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(domain = "STyOIdentifiant", label = "Processus", fkDefinition = "DtOProcess" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "Processus", fkDefinition = "DtOProcess" )
 	public Long getProId() {
 		return (Long) proIdAccessor.getId();
 	}
@@ -233,7 +233,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'ExecutionState'.
 	 * @return String estCd
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(domain = "STyOCodeIdentifiant", label = "ExecutionState", fkDefinition = "DtOExecutionState" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOCodeIdentifiant", label = "ExecutionState", fkDefinition = "DtOExecutionState" )
 	public String getEstCd() {
 		return (String) estCdAccessor.getId();
 	}
@@ -252,7 +252,7 @@ public final class OProcessExecution implements Entity {
 	 * Récupère la valeur de la propriété 'User'.
 	 * @return Long usrId
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(domain = "STyOIdentifiant", label = "User", fkDefinition = "DtOUser" )
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyOIdentifiant", label = "User", fkDefinition = "DtOUser" )
 	public Long getUsrId() {
 		return (Long) usrIdAccessor.getId();
 	}

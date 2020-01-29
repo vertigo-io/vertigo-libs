@@ -21,9 +21,9 @@ package io.vertigo.datafactory.search.data.domain;
 import java.time.Instant;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -55,7 +55,7 @@ public final class Item implements KeyConcept {
 		return UID.of(this);
 	}
 
-	@Field(domain = "STyIdentifiant", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
+	@Field(smartType = "STyIdentifiant", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
 	public final Long getId() {
 		return id;
 	}
@@ -64,7 +64,7 @@ public final class Item implements KeyConcept {
 		this.id = id;
 	}
 
-	@Field(domain = "STyKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
+	@Field(smartType = "STyKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
 	public final String getManufacturer() {
 		return manufacturer;
 	}
@@ -73,7 +73,7 @@ public final class Item implements KeyConcept {
 		this.manufacturer = manufacturer;
 	}
 
-	@Field(domain = "STyString", cardinality = Cardinality.ONE, label = "Modéle")
+	@Field(smartType = "STyString", cardinality = Cardinality.ONE, label = "Modéle")
 	public final String getModel() {
 		return model;
 	}
@@ -82,7 +82,7 @@ public final class Item implements KeyConcept {
 		this.model = model;
 	}
 
-	@Field(domain = "STyFullText", cardinality = Cardinality.ONE, label = "Descriptif")
+	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "Descriptif")
 	public final String getDescription() {
 		return description;
 	}
@@ -91,7 +91,7 @@ public final class Item implements KeyConcept {
 		this.description = description;
 	}
 
-	@Field(domain = "STyInteger", cardinality = Cardinality.ONE, label = "Année")
+	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Année")
 	public final Integer getYear() {
 		return year;
 	}
@@ -100,7 +100,7 @@ public final class Item implements KeyConcept {
 		this.year = year;
 	}
 
-	@Field(domain = "STyInteger", cardinality = Cardinality.ONE, label = "Kilométrage")
+	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Kilométrage")
 	public final Integer getKilo() {
 		return kilo;
 	}
@@ -109,7 +109,7 @@ public final class Item implements KeyConcept {
 		this.kilo = kilo;
 	}
 
-	@Field(domain = "STyInteger", cardinality = Cardinality.ONE, label = "Prix")
+	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Prix")
 	public final Integer getPrice() {
 		return price;
 	}
@@ -118,7 +118,7 @@ public final class Item implements KeyConcept {
 		this.price = price;
 	}
 
-	@Field(domain = "STyConso", cardinality = Cardinality.ONE, label = "Consomation")
+	@Field(smartType = "STyConso", cardinality = Cardinality.ONE, label = "Consomation")
 	public java.math.BigDecimal getConsommation() {
 		return consommation;
 	}
@@ -127,7 +127,7 @@ public final class Item implements KeyConcept {
 		this.consommation = consommation;
 	}
 
-	@Field(domain = "STyKeyword", cardinality = Cardinality.ONE, label = "Type de moteur")
+	@Field(smartType = "STyKeyword", cardinality = Cardinality.ONE, label = "Type de moteur")
 	public final String getMotorType() {
 		return motorType;
 	}
@@ -136,7 +136,7 @@ public final class Item implements KeyConcept {
 		this.motorType = motorType;
 	}
 
-	@Field(domain = "STyIdentifiant", type = "FOREIGN_KEY", cardinality = Cardinality.ONE, label = "Famille")
+	@Field(smartType = "STyIdentifiant", type = "FOREIGN_KEY", cardinality = Cardinality.ONE, label = "Famille")
 	public final Long getFamId() {
 		return famId;
 	}
@@ -145,7 +145,7 @@ public final class Item implements KeyConcept {
 		this.famId = famId;
 	}
 
-	@Field(domain = "STyIdentifiant", label = "OptionalNumber")
+	@Field(smartType = "STyIdentifiant", label = "OptionalNumber")
 	public final Long getOptionalNumber() {
 		return optionalNumber;
 	}
@@ -154,7 +154,7 @@ public final class Item implements KeyConcept {
 		this.optionalNumber = optionalNumber;
 	}
 
-	@Field(domain = "STyKeyword", label = "OptionalString")
+	@Field(smartType = "STyKeyword", label = "OptionalString")
 	public final String getOptionalString() {
 		return optionalString;
 	}
@@ -163,7 +163,7 @@ public final class Item implements KeyConcept {
 		this.optionalString = optionalString;
 	}
 
-	@Field(domain = "STyDateTime", label = "LastModified")
+	@Field(smartType = "STyDateTime", label = "LastModified")
 	public final Instant getLastModified() {
 		return lastModified;
 	}
@@ -177,7 +177,7 @@ public final class Item implements KeyConcept {
 		throw new VSystemException("Can't use index copyTo field");
 	}*/
 
-	@Field(domain = "STyFullText", type = "COMPUTED", persistent = false, label = "index all")
+	@Field(smartType = "STyFullText", type = "COMPUTED", persistent = false, label = "index all")
 	public String getAllText() {
 		throw new VSystemException("Can't use index copyTo field");
 	}

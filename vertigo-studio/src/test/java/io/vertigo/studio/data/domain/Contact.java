@@ -31,18 +31,18 @@ import io.vertigo.datamodel.structure.stereotype.Field;
 public final class Contact implements Entity {
 	private static final long serialVersionUID = 2074906343392206381L;
 
-	@Field(domain = "DoLong", type = "ID", cardinality = Cardinality.ONE, label = "Contact Id")
+	@Field(smartType = "DoLong", type = "ID", cardinality = Cardinality.ONE, label = "Contact Id")
 	private Long conId;
-	@Field(domain = "DoString", label = "Honorific title")
+	@Field(smartType = "DoString", label = "Honorific title")
 	private String honorificCode;
 	//mandatory
-	@Field(domain = "DoString", cardinality = Cardinality.ONE, label = "Name")
+	@Field(smartType = "DoString", cardinality = Cardinality.ONE, label = "Name")
 	private String name;
-	@Field(domain = "DoString", label = "Firstname")
+	@Field(smartType = "DoString", label = "Firstname")
 	private String firstName;
-	@Field(domain = "DoDate", label = "Birthday")
+	@Field(smartType = "DoDate", label = "Birthday")
 	private Date birthday;
-	@Field(domain = "DoString", label = "Email")
+	@Field(smartType = "DoString", label = "Email")
 	private String email;
 
 	private List<String> tels;

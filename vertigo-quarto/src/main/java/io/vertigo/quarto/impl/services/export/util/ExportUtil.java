@@ -121,7 +121,7 @@ public final class ExportUtil {
 			} else {
 				value = exportColumn.getDtField().getDataAccessor().getValue(dto);
 				if (forceStringValue) {
-					value = modelManager.valueToString(exportColumn.getDtField().getDomain(), value);
+					value = modelManager.valueToString(exportColumn.getDtField().getSmartTypeDefinition(), value);
 				}
 			}
 		} catch (final Exception e) {
@@ -152,7 +152,7 @@ public final class ExportUtil {
 			final DtField displayField) {
 		final Map<Object, String> denormIndex = new HashMap<>(valueList.size());
 		for (final DtObject dto : valueList) {
-			final String svalue = modelManager.valueToString(displayField.getDomain(), displayField.getDataAccessor().getValue(dto));
+			final String svalue = modelManager.valueToString(displayField.getSmartTypeDefinition(), displayField.getDataAccessor().getValue(dto));
 			denormIndex.put(keyField.getDataAccessor().getValue(dto), svalue);
 		}
 		return denormIndex;

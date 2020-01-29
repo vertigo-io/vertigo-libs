@@ -1,7 +1,7 @@
 package io.vertigo.datamodel.smarttype.data.domain;
 
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.model.VAccessor;
@@ -51,7 +51,7 @@ public final class Base implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Id'.
 	 * @return Long baseId <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyId", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id")
+	@Field(smartType = "STyId", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id")
 	public Long getBaseId() {
 		return baseId;
 	}
@@ -70,7 +70,7 @@ public final class Base implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Code'.
 	 * @return String code <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyCode", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Code")
+	@Field(smartType = "STyCode", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Code")
 	public String getCode() {
 		return code;
 	}
@@ -89,7 +89,7 @@ public final class Base implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Name'.
 	 * @return String name
 	 */
-	@Field(domain = "STyLabel", label = "Name")
+	@Field(smartType = "STyLabel", label = "Name")
 	public String getName() {
 		return name;
 	}
@@ -108,7 +108,7 @@ public final class Base implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Health Level'.
 	 * @return Integer healthLevel
 	 */
-	@Field(domain = "STyHealth", label = "Health Level")
+	@Field(smartType = "STyHealth", label = "Health Level")
 	public Integer getHealthLevel() {
 		return healthLevel;
 	}
@@ -127,7 +127,7 @@ public final class Base implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Creation Date'.
 	 * @return LocalDate creationDate
 	 */
-	@Field(domain = "STyLocaldate", label = "Creation Date")
+	@Field(smartType = "STyLocaldate", label = "Creation Date")
 	public java.time.LocalDate getCreationDate() {
 		return creationDate;
 	}
@@ -146,7 +146,7 @@ public final class Base implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Description'.
 	 * @return String description
 	 */
-	@Field(domain = "STyDescription", label = "Description")
+	@Field(smartType = "STyDescription", label = "Description")
 	public String getDescription() {
 		return description;
 	}
@@ -165,7 +165,7 @@ public final class Base implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Geographic Location'.
 	 * @return String geoLocation
 	 */
-	@Field(domain = "STyLabel", label = "Geographic Location")
+	@Field(smartType = "STyLabel", label = "Geographic Location")
 	public String getGeoLocation() {
 		return geoLocation;
 	}
@@ -184,7 +184,7 @@ public final class Base implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Current base assets value'.
 	 * @return BigDecimal assetsValue
 	 */
-	@Field(domain = "STyCurrency", label = "Current base assets value")
+	@Field(smartType = "STyCurrency", label = "Current base assets value")
 	public java.math.BigDecimal getAssetsValue() {
 		return assetsValue;
 	}
@@ -203,7 +203,7 @@ public final class Base implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Renting Fee'.
 	 * @return BigDecimal rentingFee
 	 */
-	@Field(domain = "STyCurrency", label = "Renting Fee")
+	@Field(smartType = "STyCurrency", label = "Renting Fee")
 	public java.math.BigDecimal getRentingFee() {
 		return rentingFee;
 	}
@@ -222,7 +222,7 @@ public final class Base implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Tags'.
 	 * @return String tags
 	 */
-	@Field(domain = "STyMultipleIds", label = "Tags")
+	@Field(smartType = "STyMultipleIds", label = "Tags")
 	public String getTags() {
 		return tags;
 	}
@@ -241,7 +241,7 @@ public final class Base implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Base Geosector'.
 	 * @return Long geosectorId
 	 */
-	@ForeignKey(domain = "STyId", label = "Base Geosector", fkDefinition = "DtGeosector")
+	@ForeignKey(smartType = "STyId", label = "Base Geosector", fkDefinition = "DtGeosector")
 	public Long getGeosectorId() {
 		return (Long) geosectorIdAccessor.getId();
 	}

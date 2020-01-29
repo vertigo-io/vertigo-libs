@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.services.publisher.data.domain;
 
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.JsonMapper;
 
@@ -32,9 +32,9 @@ public final class Address implements DtObject {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyString", label = "Rue")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyString", label = "Rue")
 	private String rue;
-	@io.vertigo.datamodel.structure.stereotype.Field(domain = "STyDtVille", label = "Ville")
+	@io.vertigo.datamodel.structure.stereotype.Field(smartType = "STyDtVille", label = "Ville")
 	private io.vertigo.quarto.services.publisher.data.domain.Ville ville;
 
 	/**

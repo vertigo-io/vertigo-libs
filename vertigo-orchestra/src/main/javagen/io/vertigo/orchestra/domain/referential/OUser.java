@@ -12,7 +12,7 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
  */
 @Generated
 @io.vertigo.datamodel.structure.stereotype.DataSpace("orchestra")
-@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.datamodel.structure.metamodel.DataType.String)
+@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.core.lang.DataType.String)
 public final class OUser implements Entity {
 	private static final long serialVersionUID = 1L;
 
@@ -35,7 +35,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Id'.
 	 * @return Long usrId <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id")
+	@Field(smartType = "STyOIdentifiant", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id")
 	public Long getUsrId() {
 		return usrId;
 	}
@@ -54,7 +54,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Nom'.
 	 * @return String firstName
 	 */
-	@Field(domain = "STyOLibelle", label = "Nom")
+	@Field(smartType = "STyOLibelle", label = "Nom")
 	public String getFirstName() {
 		return firstName;
 	}
@@ -73,7 +73,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Prénom'.
 	 * @return String lastName
 	 */
-	@Field(domain = "STyOLibelle", label = "Prénom")
+	@Field(smartType = "STyOLibelle", label = "Prénom")
 	public String getLastName() {
 		return lastName;
 	}
@@ -92,7 +92,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Email'.
 	 * @return String email
 	 */
-	@Field(domain = "STyOLibelle", label = "Email")
+	@Field(smartType = "STyOLibelle", label = "Email")
 	public String getEmail() {
 		return email;
 	}
@@ -111,7 +111,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Mot de passe'.
 	 * @return String password
 	 */
-	@Field(domain = "STyOLibelle", label = "Mot de passe")
+	@Field(smartType = "STyOLibelle", label = "Mot de passe")
 	public String getPassword() {
 		return password;
 	}
@@ -130,7 +130,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Alerté en cas d'erreur'.
 	 * @return Boolean mailAlert
 	 */
-	@Field(domain = "STyOBooleen", label = "Alerté en cas d'erreur")
+	@Field(smartType = "STyOBooleen", label = "Alerté en cas d'erreur")
 	public Boolean getMailAlert() {
 		return mailAlert;
 	}
@@ -149,7 +149,7 @@ public final class OUser implements Entity {
 	 * Récupère la valeur de la propriété 'Compte Actif'.
 	 * @return Boolean active
 	 */
-	@Field(domain = "STyOBooleen", label = "Compte Actif")
+	@Field(smartType = "STyOBooleen", label = "Compte Actif")
 	public Boolean getActive() {
 		return active;
 	}

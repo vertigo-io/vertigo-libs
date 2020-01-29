@@ -19,8 +19,8 @@
 package io.vertigo.datamodel.criteria.data.movies;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -35,11 +35,11 @@ public final class Movie2 implements Entity {
 	/** SerialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "id of the movie")
+	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "id of the movie")
 	private Long id;
-	@Field(domain = "STyString", label = "title")
+	@Field(smartType = "STyString", label = "title")
 	private String title;
-	@Field(domain = "STyInteger", label = "year")
+	@Field(smartType = "STyInteger", label = "year")
 	private Integer year;
 
 	public Long getId() {

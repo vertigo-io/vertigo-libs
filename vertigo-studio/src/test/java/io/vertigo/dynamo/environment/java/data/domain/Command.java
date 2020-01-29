@@ -93,7 +93,7 @@ public final class Command implements KeyConcept {
 	 * Récupère la valeur de la propriété 'id'.
 	 * @return Long cmdId <b>Obligatoire</b>
 	 */
-	@Field(domain = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id")
+	@Field(smartType = "DoId", type = "ID", cardinality = Cardinality.ONE, label = "id")
 	public Long getCmdId() {
 		return cmdId;
 	}
@@ -112,7 +112,7 @@ public final class Command implements KeyConcept {
 	 * Récupère la valeur de la propriété 'Command type'.
 	 * @return Long ctyId
 	 */
-	@Field(domain = "DoId", type = "FOREIGN_KEY", label = "Command type")
+	@Field(smartType = "DoId", type = "FOREIGN_KEY", label = "Command type")
 	public Long getCtyId() {
 		return (Long) ctyIdAccessor.getId();
 	}
@@ -131,7 +131,7 @@ public final class Command implements KeyConcept {
 	 * Récupère la valeur de la propriété 'City'.
 	 * @return Long citId
 	 */
-	@Field(domain = "DoId", type = "FOREIGN_KEY", label = "City")
+	@Field(smartType = "DoId", type = "FOREIGN_KEY", label = "City")
 	public Long getCitId() {
 		return (Long) citIdAccessor.getId();
 	}

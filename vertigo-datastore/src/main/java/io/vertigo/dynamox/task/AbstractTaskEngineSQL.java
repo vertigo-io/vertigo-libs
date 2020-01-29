@@ -212,7 +212,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 		getTaskDefinition().getInAttributes()
 				.forEach(taskInAttribute -> sqlStatementBuilder.bind(
 						taskInAttribute.getName(),
-						taskInAttribute.getDomain().getJavaClass(),
+						taskInAttribute.getSmartTypeDefinition().getJavaClass(),
 						getValue(taskInAttribute.getName())));
 	}
 

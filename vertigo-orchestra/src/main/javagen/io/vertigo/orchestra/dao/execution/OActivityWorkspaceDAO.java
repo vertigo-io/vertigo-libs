@@ -57,8 +57,8 @@ public final class OActivityWorkspaceDAO extends DAO<OActivityWorkspace, java.la
  "        	 where acw.ACE_ID = #aceId#" + 
  "        	 and   acw.IS_IN = #in#",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyDtOActivityWorkspace")
-	public Optional<io.vertigo.orchestra.domain.execution.OActivityWorkspace> getActivityWorkspace(@io.vertigo.datamodel.task.proxy.TaskInput(name = "aceId", domain = "STyOIdentifiant") final Long aceId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "in", domain = "STyOBooleen") final Boolean in) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyDtOActivityWorkspace")
+	public Optional<io.vertigo.orchestra.domain.execution.OActivityWorkspace> getActivityWorkspace(@io.vertigo.datamodel.task.proxy.TaskInput(name = "aceId", smartType = "STyOIdentifiant") final Long aceId, @io.vertigo.datamodel.task.proxy.TaskInput(name = "in", smartType = "STyOBooleen") final Boolean in) {
 		final Task task = createTaskBuilder("TkGetActivityWorkspace")
 				.addValue("aceId", aceId)
 				.addValue("in", in)

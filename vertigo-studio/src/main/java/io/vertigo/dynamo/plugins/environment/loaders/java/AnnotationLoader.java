@@ -319,14 +319,14 @@ public final class AnnotationLoader implements Loader {
 		switch (type) {
 			case ID:
 				final DslDefinition idField = DslDefinition.builder(fieldName, DomainGrammar.DT_ID_FIELD_ENTITY)
-						.addDefinitionLink("domain", field.domain())
+						.addDefinitionLink("domain", field.smartType())
 						.addPropertyValue(LABEL, field.label())
 						.build();
 				dtDefinition.addChildDefinition(DomainGrammar.ID_FIELD, idField);
 				break;
 			case DATA:
 				final DslDefinition dataField = DslDefinition.builder(fieldName, DomainGrammar.DT_DATA_FIELD_ENTITY)
-						.addDefinitionLink("domain", field.domain())
+						.addDefinitionLink("domain", field.smartType())
 						.addPropertyValue(LABEL, field.label())
 						.addPropertyValue(CARDINALITY, field.cardinality().toSymbol())
 						.addPropertyValue(PERSISTENT, field.persistent())
@@ -335,7 +335,7 @@ public final class AnnotationLoader implements Loader {
 				break;
 			case COMPUTED:
 				final DslDefinition computedField = DslDefinition.builder(fieldName, DomainGrammar.DT_COMPUTED_FIELD_ENTITY)
-						.addDefinitionLink("domain", field.domain())
+						.addDefinitionLink("domain", field.smartType())
 						.addPropertyValue(LABEL, field.label())
 						.addPropertyValue(CARDINALITY, field.cardinality().toSymbol())
 						//.addPropertyValue(EXPRESSION, null) no expression on annotation

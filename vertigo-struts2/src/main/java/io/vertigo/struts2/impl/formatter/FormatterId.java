@@ -19,9 +19,9 @@
 package io.vertigo.struts2.impl.formatter;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.formatter.Resources;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
 

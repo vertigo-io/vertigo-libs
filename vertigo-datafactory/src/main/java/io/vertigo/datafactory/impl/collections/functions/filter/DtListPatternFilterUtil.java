@@ -26,11 +26,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.criteria.CriterionLimit;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -76,8 +76,8 @@ public final class DtListPatternFilterUtil {
 		//Si on trouve un pattern, on passe sur du code spécifique
 		final String fieldName = parsedFilter[1]; //attention parsedFilter[0] = filtre entier
 		final DtField dtField = dtDefinition.getField(fieldName);
-		Assertion.checkState(dtField.getDomain().getScope().isPrimitive(), "Only primitive types can be used in pattern");
-		final DataType dataType = dtField.getDomain().getTargetDataType();
+		Assertion.checkState(dtField.getSmartTypeDefinition().getScope().isPrimitive(), "Only primitive types can be used in pattern");
+		final DataType dataType = dtField.getSmartTypeDefinition().getTargetDataType();
 
 		switch (filterPattern) {
 			case Range:

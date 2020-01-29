@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -37,18 +37,18 @@ import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 public final class Contact implements KeyConcept {
 	private static final long serialVersionUID = 2074906343392206381L;
 
-	@Field(domain = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "Contact Id")
+	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "Contact Id")
 	private Long conId;
-	@Field(domain = "STyCode", label = "Honorific title")
+	@Field(smartType = "STyCode", label = "Honorific title")
 	private String honorificCode;
 	//mandatory
-	@Field(domain = "STyTexte50", cardinality = Cardinality.ONE, label = "Name")
+	@Field(smartType = "STyTexte50", cardinality = Cardinality.ONE, label = "Name")
 	private String name;
-	@Field(domain = "STyTexte50", label = "Firstname")
+	@Field(smartType = "STyTexte50", label = "Firstname")
 	private String firstName;
-	@Field(domain = "STyLocalDate", label = "Birthday")
+	@Field(smartType = "STyLocalDate", label = "Birthday")
 	private LocalDate birthday;
-	@Field(domain = "STyEmail", label = "Email")
+	@Field(smartType = "STyEmail", label = "Email")
 	private String email;
 
 	private List<String> tels;
@@ -126,7 +126,7 @@ public final class Contact implements KeyConcept {
 		return adrIdAccessor;
 	}
 
-	@ForeignKey(domain = "STyId", label = "AdrId", fkDefinition = "DtAddress")
+	@ForeignKey(smartType = "STyId", label = "AdrId", fkDefinition = "DtAddress")
 	public Long getAdrId() {
 		return (Long) adrIdAccessor.getId();
 	}
@@ -143,7 +143,7 @@ public final class Contact implements KeyConcept {
 		this.tels = new ArrayList<>(tels);
 	}
 
-	@Field(domain = "STyTexte50", type = "COMPUTED", label = "All Text", cardinality = Cardinality.ONE)
+	@Field(smartType = "STyTexte50", type = "COMPUTED", label = "All Text", cardinality = Cardinality.ONE)
 	public String getAllText() {
 		return "";
 	}

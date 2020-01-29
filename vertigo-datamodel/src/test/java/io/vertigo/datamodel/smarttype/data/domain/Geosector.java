@@ -1,7 +1,7 @@
 package io.vertigo.datamodel.smarttype.data.domain;
 
+import io.vertigo.core.lang.DataType;
 import io.vertigo.datamodel.smarttype.annotations.Mapper;
-import io.vertigo.datamodel.structure.metamodel.DataType;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
@@ -26,7 +26,7 @@ public final class Geosector implements Entity {
 	 * Récupère la valeur de la propriété 'Id'.
 	 * @return Long geosectorId <b>Obligatoire</b>
 	 */
-	@Field(domain = "STyId", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id")
+	@Field(smartType = "STyId", type = "ID", cardinality = io.vertigo.core.lang.Cardinality.ONE, label = "Id")
 	public Long getGeosectorId() {
 		return geosectorId;
 	}
@@ -45,7 +45,7 @@ public final class Geosector implements Entity {
 	 * Récupère la valeur de la propriété 'Sector Label'.
 	 * @return String sectorLabel
 	 */
-	@Field(domain = "STyLabel", label = "Sector Label")
+	@Field(smartType = "STyLabel", label = "Sector Label")
 	public String getSectorLabel() {
 		return sectorLabel;
 	}

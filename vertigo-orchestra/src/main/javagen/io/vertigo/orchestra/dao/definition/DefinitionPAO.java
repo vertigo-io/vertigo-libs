@@ -52,7 +52,7 @@ public final class DefinitionPAO implements StoreServices {
  "        		NEED_UPDATE = false" + 
  "        	where NAME = #name#",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineProc.class)
-	public void disableOldProcessDefinitions(@io.vertigo.datamodel.task.proxy.TaskInput(name = "name", domain = "STyOLibelle") final String name) {
+	public void disableOldProcessDefinitions(@io.vertigo.datamodel.task.proxy.TaskInput(name = "name", smartType = "STyOLibelle") final String name) {
 		final Task task = createTaskBuilder("TkDisableOldProcessDefinitions")
 				.addValue("name", name)
 				.build();
@@ -72,8 +72,8 @@ public final class DefinitionPAO implements StoreServices {
  "        	from o_process pro" + 
  "        	where pro.NAME = #name#",
 			taskEngineClass = io.vertigo.dynamox.task.TaskEngineSelect.class)
-	@io.vertigo.datamodel.task.proxy.TaskOutput(domain = "STyONombre")
-	public Integer getProcessesByName(@io.vertigo.datamodel.task.proxy.TaskInput(name = "name", domain = "STyOLibelle") final String name) {
+	@io.vertigo.datamodel.task.proxy.TaskOutput(smartType = "STyONombre")
+	public Integer getProcessesByName(@io.vertigo.datamodel.task.proxy.TaskInput(name = "name", smartType = "STyOLibelle") final String name) {
 		final Task task = createTaskBuilder("TkGetProcessesByName")
 				.addValue("name", name)
 				.build();

@@ -288,7 +288,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 		Assertion.checkNotNull(uri, "file uri must be provided.");
 		//-----
 		// Il doit exister un DtObjet associé, avec la structure attendue.
-		return UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getDomain().getJavaClass()));
+		return UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getSmartTypeDefinition().getJavaClass()));
 	}
 
 	/**
@@ -331,7 +331,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 
 	private static void setIdValue(final DtObject dto, final FileInfoURI uri) {
 		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getIdField().get();
-		dtField.getDataAccessor().setValue(dto, uri.getKeyAs(dtField.getDomain().getJavaClass()));
+		dtField.getDataAccessor().setValue(dto, uri.getKeyAs(dtField.getSmartTypeDefinition().getJavaClass()));
 	}
 
 	private static final class FileInputStreamBuilder implements InputStreamBuilder {
