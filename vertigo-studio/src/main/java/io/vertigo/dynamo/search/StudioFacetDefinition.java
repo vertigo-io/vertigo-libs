@@ -26,6 +26,7 @@ import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionPrefix;
 import io.vertigo.datafactory.collections.model.FacetValue;
+import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
 import io.vertigo.dynamo.domain.metamodel.StudioDtField;
 
 /**
@@ -53,6 +54,7 @@ import io.vertigo.dynamo.domain.metamodel.StudioDtField;
 @DefinitionPrefix("StFct")
 public final class StudioFacetDefinition implements Definition {
 	private final String name;
+	private final StudioDtDefinition indexDtDefinition;
 	private final StudioDtField dtField;
 	private final MessageText label;
 	private final List<FacetValue> facetValues;
@@ -75,6 +77,7 @@ public final class StudioFacetDefinition implements Definition {
 	/**
 	 * Constructor.
 	 * @param name the name of the facet
+	 * @param indexDtDefinition the dtDefinition of the facet
 	 * @param dtField the field of the facet
 	 * @param facetValues the list of filters
 	 * @param rangeFacet if the facet is of type 'range'
@@ -83,6 +86,7 @@ public final class StudioFacetDefinition implements Definition {
 	 */
 	private StudioFacetDefinition(
 			final String name,
+			final StudioDtDefinition indexDtDefinition,
 			final StudioDtField dtField,
 			final MessageText label,
 			final List<FacetValue> facetValues,
@@ -90,6 +94,7 @@ public final class StudioFacetDefinition implements Definition {
 			final boolean multiSelectable,
 			final FacetOrder order) {
 		Assertion.checkArgNotEmpty(name);
+		Assertion.checkNotNull(indexDtDefinition);
 		Assertion.checkNotNull(dtField);
 		Assertion.checkNotNull(label);
 		Assertion.checkNotNull(facetValues);
@@ -100,6 +105,7 @@ public final class StudioFacetDefinition implements Definition {
 		Assertion.checkNotNull(order);
 		//-----
 		this.name = name;
+		this.indexDtDefinition = indexDtDefinition;
 		this.dtField = dtField;
 		this.label = label;
 		this.facetValues = Collections.unmodifiableList(facetValues);
@@ -117,6 +123,7 @@ public final class StudioFacetDefinition implements Definition {
 	 * [0-100[
 	 * [100-*[
 	 * @param name the name of the facet
+	 * @param indexDtDefinition the dtDefinition of the facet
 	 * @param dtField the field of the facet
 	 * @param label the label of the facet
 	 * @param facetValues the list of filters
@@ -126,18 +133,20 @@ public final class StudioFacetDefinition implements Definition {
 	 */
 	public static StudioFacetDefinition createFacetDefinitionByRange(
 			final String name,
+			final StudioDtDefinition indexDtDefinition,
 			final StudioDtField dtField,
 			final MessageText label,
 			final List<FacetValue> facetValues,
 			final boolean multiSelectable,
 			final FacetOrder order) {
-		return new StudioFacetDefinition(name, dtField, label, facetValues, true, multiSelectable, order);
+		return new StudioFacetDefinition(name, indexDtDefinition, dtField, label, facetValues, true, multiSelectable, order);
 	}
 
 	/**
 	 * Creates a new facetDefinition of type 'term'.
 	 *
 	 * @param name the name of the facet
+	 * @param indexDtDefinition the dtDefinition of the facet
 	 * @param dtField the field of the facet
 	 * @param label the label of the facet
 	 * @param multiSelectable Can select multiple values
@@ -146,11 +155,12 @@ public final class StudioFacetDefinition implements Definition {
 	 */
 	public static StudioFacetDefinition createFacetDefinitionByTerm(
 			final String name,
+			final StudioDtDefinition indexDtDefinition,
 			final StudioDtField dtField,
 			final MessageText label,
 			final boolean multiSelectable,
 			final FacetOrder order) {
-		return new StudioFacetDefinition(name, dtField, label, Collections.emptyList(), false, multiSelectable, order);
+		return new StudioFacetDefinition(name, indexDtDefinition, dtField, label, Collections.emptyList(), false, multiSelectable, order);
 	}
 
 	/**
@@ -158,6 +168,14 @@ public final class StudioFacetDefinition implements Definition {
 	 */
 	public MessageText getLabel() {
 		return label;
+	}
+
+	/**
+	 * Le DtDefinition de l'index.
+	 * @return DtDefinition sur lequel porte la facette
+	 */
+	public StudioDtDefinition getIndexDtDefinition() {
+		return indexDtDefinition;
 	}
 
 	/**

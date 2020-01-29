@@ -119,6 +119,7 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 		if (rangeDefinitions.isEmpty()) {
 			facetDefinition = StudioFacetDefinition.createFacetDefinitionByTerm(
 					definitionName,
+					indexDtDefinition,
 					dtField,
 					labelMsg,
 					isMultiSelectable(xdefinition, false),
@@ -129,6 +130,7 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 					.collect(Collectors.toList());
 			facetDefinition = StudioFacetDefinition.createFacetDefinitionByRange(
 					definitionName,
+					indexDtDefinition,
 					dtField,
 					labelMsg,
 					facetValues,

@@ -33,12 +33,14 @@ import io.vertigo.core.util.MapBuilder;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.structure.metamodel.DtStereotype;
 import io.vertigo.dynamo.domain.metamodel.StudioDtDefinition;
+import io.vertigo.dynamo.search.StudioFacetDefinition;
 import io.vertigo.dynamo.search.StudioFacetedQueryDefinition;
 import io.vertigo.dynamo.search.StudioSearchIndexDefinition;
 import io.vertigo.studio.impl.mda.GeneratorPlugin;
 import io.vertigo.studio.mda.MdaResultBuilder;
 import io.vertigo.studio.plugins.mda.FileGenerator;
 import io.vertigo.studio.plugins.mda.FileGeneratorConfig;
+import io.vertigo.studio.plugins.mda.search.model.FacetDefinitionModel;
 import io.vertigo.studio.plugins.mda.search.model.FacetedQueryDefinitionModel;
 import io.vertigo.studio.plugins.mda.search.model.SearchDtDefinitionModel;
 import io.vertigo.studio.plugins.mda.search.model.SearchIndexDefinitionModel;
@@ -116,8 +118,13 @@ public final class SearchGeneratorPlugin implements GeneratorPlugin {
 		//On construit le nom du package à partir du package de la DT et de la feature.
 		final String packageName = fileGeneratorConfig.getProjectPackageName() + featureName + ".search" + subpackage;
 
-		final List<FacetedQueryDefinitionModel> facetedQueryDefinitions = new ArrayList<>();
 		final SearchDtDefinitionModel searchDtDefinitionModel = new SearchDtDefinitionModel(dtDefinition);
+
+		final Optional<StudioSearchIndexDefinition> searchIndexDefinitionOpt = Home.getApp().getDefinitionSpace().getAll(StudioSearchIndexDefinition.class).stream()
+				.filter(indexDefinition -> indexDefinition.getKeyConceptDtDefinition().equals(dtDefinition))
+				.findFirst();
+
+		final List<FacetedQueryDefinitionModel> facetedQueryDefinitions = new ArrayList<>();
 		for (final StudioFacetedQueryDefinition facetedQueryDefinition : Home.getApp().getDefinitionSpace().getAll(StudioFacetedQueryDefinition.class)) {
 			if (facetedQueryDefinition.getKeyConceptDtDefinition().equals(dtDefinition)) {
 				final FacetedQueryDefinitionModel templateFacetedQueryDefinition = new FacetedQueryDefinitionModel(facetedQueryDefinition);
@@ -125,15 +132,22 @@ public final class SearchGeneratorPlugin implements GeneratorPlugin {
 			}
 		}
 
-		final Optional<StudioSearchIndexDefinition> searchIndexDefinitionOpt = Home.getApp().getDefinitionSpace().getAll(StudioSearchIndexDefinition.class).stream()
-				.filter(indexDefinition -> indexDefinition.getKeyConceptDtDefinition().equals(dtDefinition))
-				.findFirst();
+		final List<FacetDefinitionModel> facetDefinitions = new ArrayList<>();
+		if (searchIndexDefinitionOpt.isPresent()) {
+			for (final StudioFacetDefinition facetDefinition : Home.getApp().getDefinitionSpace().getAll(StudioFacetDefinition.class)) {
+				if (facetDefinition.getIndexDtDefinition().equals(searchIndexDefinitionOpt.get().getIndexDtDefinition())) {
+					final FacetDefinitionModel templateFacetedQueryDefinition = new FacetDefinitionModel(facetDefinition);
+					facetDefinitions.add(templateFacetedQueryDefinition);
+				}
+			}
+		}
 
 		if (searchIndexDefinitionOpt.isPresent()) {
 
 			final Map<String, Object> model = new MapBuilder<String, Object>()
 					.put("packageName", packageName)
 					.put("facetedQueryDefinitions", facetedQueryDefinitions)
+					.put("facetDefinitions", facetDefinitions)
 					.put("dtDefinition", searchDtDefinitionModel)
 					.put("indexDtDefinition", new SearchDtDefinitionModel(searchIndexDefinitionOpt.get().getIndexDtDefinition()))
 					.put("searchIndexDefinition", new SearchIndexDefinitionModel(searchIndexDefinitionOpt.get()))
