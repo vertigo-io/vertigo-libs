@@ -21,23 +21,24 @@ package io.vertigo.datamodel.impl.smarttype.formatter;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Home;
-import io.vertigo.core.node.definition.DefinitionSpace;
+import io.vertigo.core.param.Param;
+import io.vertigo.core.param.ParamManager;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
 
 /**
  * Default formatter for boolean, number, date and string.
- * It's possible to override default formatting by registering a specific formatter with a conventional name.
- * FMT_STRING_DEFAULT, FMT_DATE_DEFAULT, FMT_BOOLEAN_DEFAULT, FMT_NUMBER_DEFAULT
- * Must be declared before this default Formatter !!
+ * It's possible to override default formatting args by registering specifics parameters with a conventional name.
+ * fmtStringDefaultArgs, fmtLocalDateDefaultArgs, fmtInstantDefaultArgs, fmtBooleanDefaultArgs, fmtNumberDefaultArgs
+ *
  * @author pchretien, npiedeloup
  */
 public final class FormatterDefault implements Formatter {
-	private static final String FMT_STRING_DEFAULT = "FmtStringDefault";
-	private static final String FMT_LOCAL_DATE_DEFAULT = "FmtLocalDateDefault";
-	private static final String FMT_INSTANT_DEFAULT = "FmtInstantDefault";
-	private static final String FMT_BOOLEAN_DEFAULT = "FmtBooleanDefault";
-	private static final String FMT_NUMBER_DEFAULT = "FmtNumberDefault";
+	private static final String FMT_STRING_DEFAULT_ARGS = "FmtStringDefaultArgs";
+	private static final String FMT_LOCAL_DATE_DEFAULT_ARGS = "FmtLocalDateDefaultArgs";
+	private static final String FMT_INSTANT_DEFAULT_ARGS = "FmtInstantDefaultArgs";
+	private static final String FMT_BOOLEAN_DEFAULT_ARGS = "FmtBooleanDefaultArgs";
+	private static final String FMT_NUMBER_DEFAULT_ARGS = "FmtNumberDefaultArgs";
 
 	private final Formatter booleanFormatter;
 	private final Formatter numberformatter;
@@ -52,15 +53,12 @@ public final class FormatterDefault implements Formatter {
 		// Les arguments doivent être vides.
 		Assertion.checkArgument(args == null, "Les arguments pour la construction de FormatterDefault sont invalides");
 		//-----
-		booleanFormatter = obtainFormatterBoolean();
-		numberformatter = obtainFormatterNumber();
-		localDateFormater = obtainFormatterLocalDate();
-		instantFormater = obtainFormatterInstant();
-		stringFormatter = obtainFormatterString();
-	}
-
-	private static DefinitionSpace getDefinitionSpace() {
-		return Home.getApp().getDefinitionSpace();
+		final ParamManager paramManager = Home.getApp().getComponentSpace().resolve(ParamManager.class);
+		booleanFormatter = obtainFormatterBoolean(paramManager);
+		numberformatter = obtainFormatterNumber(paramManager);
+		localDateFormater = obtainFormatterLocalDate(paramManager);
+		instantFormater = obtainFormatterInstant(paramManager);
+		stringFormatter = obtainFormatterString(paramManager);
 	}
 
 	/**
@@ -101,40 +99,40 @@ public final class FormatterDefault implements Formatter {
 		return getFormatter(dataType).stringToValue(strValue, dataType);
 	}
 
-	private static Formatter obtainFormatterBoolean() {
-		//		if (getDefinitionSpace().contains(FMT_BOOLEAN_DEFAULT)) {
-		//			return getDefinitionSpace().resolve(FMT_BOOLEAN_DEFAULT, FormatterDefinition.class);
-		//		}
-		return new FormatterBoolean("Oui; Non");
+	private static Formatter obtainFormatterBoolean(final ParamManager paramManager) {
+		return new FormatterBoolean(
+				paramManager.getOptionalParam(FMT_BOOLEAN_DEFAULT_ARGS)
+						.orElse(Param.of(FMT_BOOLEAN_DEFAULT_ARGS, "Oui; Non"))
+						.getValueAsString());
 	}
 
-	private static Formatter obtainFormatterNumber() {
-		//		if (getDefinitionSpace().contains(FMT_NUMBER_DEFAULT)) {
-		//			return getDefinitionSpace().resolve(FMT_NUMBER_DEFAULT, FormatterDefinition.class);
-		//		}
-		return new FormatterNumber("#,###.##");
+	private static Formatter obtainFormatterNumber(final ParamManager paramManager) {
+		return new FormatterNumber(
+				paramManager.getOptionalParam(FMT_NUMBER_DEFAULT_ARGS)
+						.orElse(Param.of(FMT_NUMBER_DEFAULT_ARGS, "#,###.##"))
+						.getValueAsString());
 	}
 
-	private static Formatter obtainFormatterLocalDate() {
-		//		if (getDefinitionSpace().contains(FMT_LOCAL_DATE_DEFAULT)) {
-		//			return getDefinitionSpace().resolve(FMT_LOCAL_DATE_DEFAULT, FormatterDefinition.class);
-		//		}
-		return new FormatterDate("dd/MM/yyyy");
+	private static Formatter obtainFormatterLocalDate(final ParamManager paramManager) {
+		return new FormatterDate(
+				paramManager.getOptionalParam(FMT_LOCAL_DATE_DEFAULT_ARGS)
+						.orElse(Param.of(FMT_LOCAL_DATE_DEFAULT_ARGS, "dd/MM/yyyy"))
+						.getValueAsString());
 	}
 
-	private static Formatter obtainFormatterInstant() {
-		//		if (getDefinitionSpace().contains(FMT_INSTANT_DEFAULT)) {
-		//			return getDefinitionSpace().resolve(FMT_INSTANT_DEFAULT, FormatterDefinition.class);
-		//		}
-		return new FormatterDate("dd/MM/yyyy HH:mm");
+	private static Formatter obtainFormatterInstant(final ParamManager paramManager) {
+		return new FormatterDate(
+				paramManager.getOptionalParam(FMT_INSTANT_DEFAULT_ARGS)
+						.orElse(Param.of(FMT_INSTANT_DEFAULT_ARGS, "dd/MM/yyyy HH:mm"))
+						.getValueAsString());
 	}
 
-	private static Formatter obtainFormatterString() {
-		//		if (getDefinitionSpace().contains(FMT_STRING_DEFAULT)) {
-		//			return getDefinitionSpace().resolve(FMT_STRING_DEFAULT, FormatterDefinition.class);
-		//		}
+	private static Formatter obtainFormatterString(final ParamManager paramManager) {
 		//Fonctionnement de base (pas de formatage)
-		return new FormatterString(null);
+		return new FormatterString(
+				paramManager.getOptionalParam(FMT_STRING_DEFAULT_ARGS)
+						.orElse(Param.of(FMT_STRING_DEFAULT_ARGS, "BASIC"))
+						.getValueAsString());
 	}
 
 }

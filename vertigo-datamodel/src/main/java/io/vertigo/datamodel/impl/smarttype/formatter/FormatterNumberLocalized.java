@@ -19,6 +19,7 @@
 package io.vertigo.datamodel.impl.smarttype.formatter;
 
 import java.text.DecimalFormatSymbols;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class FormatterNumberLocalized extends FormatterNumber {
 	}
 
 	private void initLocalizedParameters(final String args) {
-		decimalFormatSymbolsMap = java.util.Collections.synchronizedMap(new HashMap<Locale, DecimalFormatSymbols>());
+		decimalFormatSymbolsMap = Collections.synchronizedMap(new HashMap<Locale, DecimalFormatSymbols>());
 		if (args != null) {
 			//-----
 			final StringTokenizer st = new StringTokenizer(args, "|");
