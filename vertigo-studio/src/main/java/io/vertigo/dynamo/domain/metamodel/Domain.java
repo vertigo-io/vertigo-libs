@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.domain.metamodel;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
@@ -54,9 +53,7 @@ import io.vertigo.datamodel.structure.metamodel.Properties;
 @DefinitionPrefix("Do")
 public final class Domain implements Definition {
 	public enum Scope {
-		PRIMITIVE,
-		VALUE_OBJECT,
-		DATA_OBJECT;
+		PRIMITIVE, VALUE_OBJECT, DATA_OBJECT;
 
 		/**
 		 * @return if the domain is a primitive type
@@ -92,9 +89,6 @@ public final class Domain implements Definition {
 
 	/** Formatter. */
 	private final DefinitionReference<FormatterDefinition> formatterDefinitionRef;
-
-	/** Validator composed by a list of constraints. */
-	private final List<DefinitionReference<ConstraintDefinition>> constraintDefinitionRefs;
 
 	/** List of property-value tuples */
 	private final Properties properties;
@@ -142,8 +136,6 @@ public final class Domain implements Definition {
 		this.valueObjectClass = valueObjectClass;
 		//---
 		formatterDefinitionRef = formatterDefinition == null ? null : new DefinitionReference<>(formatterDefinition);
-		//---Constraints
-		constraintDefinitionRefs = buildConstraintDefinitionRefs(constraintDefinitions);
 		//---Properties
 		this.properties = properties;
 	}
@@ -167,13 +159,6 @@ public final class Domain implements Definition {
 	 */
 	public static DomainBuilder builder(final String name, final String dtDefinitionName) {
 		return new DomainBuilder(name, dtDefinitionName);
-	}
-
-	private static List<DefinitionReference<ConstraintDefinition>> buildConstraintDefinitionRefs(final List<ConstraintDefinition> constraintDefinitions) {
-		return constraintDefinitions
-				.stream()
-				.map(DefinitionReference::new)
-				.collect(Collectors.toList());
 	}
 
 	/**
