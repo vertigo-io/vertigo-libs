@@ -85,7 +85,7 @@ public final class SearchTestWebServices implements WebServices {
 		final DtList<Contact> allContacts = asDtList(contactDao.getList(), Contact.class);
 		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryContactFacet", FacetedQueryDefinition.class);
 		final FacetedQuery facetedQuery = new FacetedQuery(facetedQueryDefinition, selectedFacetValues);
-		return collectionsManager.facetList(allContacts, facetedQuery, Optional.of(obtainFacetDefinition("FctHonorificCode$qryContactFacet")));
+		return collectionsManager.facetList(allContacts, facetedQuery, Optional.of(obtainFacetDefinition("FctHonorificCode")));
 	}
 
 	private static FacetDefinition obtainFacetDefinition(final String facetName) {

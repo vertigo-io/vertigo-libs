@@ -1924,49 +1924,49 @@ abstract class AbstractWebServiceManagerTest {
 				.post("/search/selectedFacetValues");
 
 		final Map<String, Object> selectedFacetsMono = new MapBuilder<String, Object>()
-				.put("FctHonorificCode$qryContactFacet", "Mr")
+				.put("FctHonorificCode", "Mr")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsMono))
 				.statusCode(HttpStatus.SC_OK)
-				.body(Matchers.equalTo("{\"FctHonorificCode$qryContactFacet\":\"Mr\"}"))
+				.body(Matchers.equalTo("{\"FctHonorificCode\":\"Mr\"}"))
 				.when()
 				.post("/search/selectedFacetValues");
 
 		final Map<String, Object> selectedFacetsByCode = new MapBuilder<String, Object>()
-				.put("FctBirthday$qryContactFacet", "r1")
+				.put("FctBirthday", "r1")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsByCode))
 				.statusCode(HttpStatus.SC_OK)
-				.body(Matchers.equalTo("{\"FctBirthday$qryContactFacet\":\"r1\"}"))
+				.body(Matchers.equalTo("{\"FctBirthday\":\"r1\"}"))
 				.when()
 				.post("/search/selectedFacetValues");
 
 		final Map<String, Object> selectedFacetsByLabel = new MapBuilder<String, Object>()
-				.put("FctBirthday$qryContactFacet", "1980-1990")
+				.put("FctBirthday", "1980-1990")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsByLabel))
 				.statusCode(HttpStatus.SC_OK)
-				.body(Matchers.equalTo("{\"FctBirthday$qryContactFacet\":\"r2\"}"))
+				.body(Matchers.equalTo("{\"FctBirthday\":\"r2\"}"))
 				.when()
 				.post("/search/selectedFacetValues");
 
 		final Map<String, Object> selectedFacetsBoth = new MapBuilder<String, Object>()
-				.put("FctHonorificCode$qryContactFacet", "Mr")
-				.put("FctBirthday$qryContactFacet", "r1")
+				.put("FctHonorificCode", "Mr")
+				.put("FctBirthday", "r1")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsBoth))
 				.statusCode(HttpStatus.SC_OK)
-				.body(Matchers.equalTo("{\"FctBirthday$qryContactFacet\":\"r1\", \"FctHonorificCode$qryContactFacet\":\"Mr\"}"))
+				.body(Matchers.equalTo("{\"FctHonorificCode\":\"Mr\", \"FctBirthday\":\"r1\"}"))
 				.when()
 				.post("/search/selectedFacetValues");
 
 		final Map<String, Object> selectedFacetsMultiple = new MapBuilder<String, Object>()
-				.put("FctHonorificCode$qryContactFacet", "Mr")
-				.put("FctBirthday$qryContactFacet", new String[] { "r1", "r3" })
+				.put("FctHonorificCode", "Mr")
+				.put("FctBirthday", new String[] { "r1", "r3" })
 				.build();
 		loggedAndExpect(given().body(selectedFacetsMultiple))
 				.statusCode(HttpStatus.SC_OK)
-				.body(Matchers.equalTo("{\"FctBirthday$qryContactFacet\":\"r1,r3\", \"FctHonorificCode$qryContactFacet\":\"Mr\"}"))
+				.body(Matchers.equalTo("{\"FctHonorificCode\":\"Mr\", \"FctBirthday\":\"r1,r3\"}"))
 				.when()
 				.post("/search/selectedFacetValues");
 
@@ -1981,7 +1981,7 @@ abstract class AbstractWebServiceManagerTest {
 				.body("list", Matchers.hasSize(Matchers.greaterThanOrEqualTo(10)))
 				.body("list.get(0).address", Matchers.nullValue())
 				.body("highlight", Matchers.nullValue())
-				.body("facets.get(1).code", Matchers.equalTo("FctBirthday$qryContactFacet"))
+				.body("facets.get(1).code", Matchers.equalTo("FctBirthday"))
 				.body("facets.get(1).values.get(0).code", Matchers.equalTo("r1"))
 				.body("facets.get(1).values.get(0).count", Matchers.equalTo(5))
 				.body("facets.get(1).values.get(1).code", Matchers.equalTo("r2"))
@@ -1993,7 +1993,7 @@ abstract class AbstractWebServiceManagerTest {
 		final int fctBirthDayR2 = getResponse.body().path("facets.get(1).values.get(1).count");
 
 		final Map<String, Object> selectedFacetsMono = new MapBuilder<String, Object>()
-				.put("FctHonorificCode$qryContactFacet", "MR_")
+				.put("FctHonorificCode", "MR_")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsMono))
 				.statusCode(HttpStatus.SC_OK)
@@ -2004,7 +2004,7 @@ abstract class AbstractWebServiceManagerTest {
 				.post("/search/facetedResult");
 
 		final Map<String, Object> selectedFacetsByCode = new MapBuilder<String, Object>()
-				.put("FctBirthday$qryContactFacet", "r1")
+				.put("FctBirthday", "r1")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsByCode))
 				.statusCode(HttpStatus.SC_OK)
@@ -2015,7 +2015,7 @@ abstract class AbstractWebServiceManagerTest {
 				.post("/search/facetedResult");
 
 		final Map<String, Object> selectedFacetsByLabel = new MapBuilder<String, Object>()
-				.put("FctBirthday$qryContactFacet", "1980-1990")
+				.put("FctBirthday", "1980-1990")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsByLabel))
 				.statusCode(HttpStatus.SC_OK)
@@ -2026,8 +2026,8 @@ abstract class AbstractWebServiceManagerTest {
 				.post("/search/facetedResult");
 
 		final Map<String, Object> selectedFacetsBoth = new MapBuilder<String, Object>()
-				.put("FctHonorificCode$qryContactFacet", "MR_")
-				.put("FctBirthday$qryContactFacet", "r2")
+				.put("FctHonorificCode", "MR_")
+				.put("FctBirthday", "r2")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsBoth))
 				.statusCode(HttpStatus.SC_OK)
@@ -2038,8 +2038,8 @@ abstract class AbstractWebServiceManagerTest {
 				.post("/search/facetedResult");
 
 		final Map<String, Object> selectedFacetsMultiple = new MapBuilder<String, Object>()
-				.put("FctHonorificCode$qryContactFacet", new String[] { "MR_", "MS_" })
-				.put("FctBirthday$qryContactFacet", "r2")
+				.put("FctHonorificCode", new String[] { "MR_", "MS_" })
+				.put("FctBirthday", "r2")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsMultiple))
 				.statusCode(HttpStatus.SC_OK)
@@ -2061,7 +2061,7 @@ abstract class AbstractWebServiceManagerTest {
 				.body("groups.get(0).list", Matchers.hasSize(Matchers.greaterThanOrEqualTo(1)))
 				.body("groups.get(0).list.get(0).address", Matchers.nullValue())
 				.body("highlight", Matchers.nullValue())
-				.body("facets.get(1).code", Matchers.equalTo("FctBirthday$qryContactFacet"))
+				.body("facets.get(1).code", Matchers.equalTo("FctBirthday"))
 				.body("facets.get(1).values.get(0).code", Matchers.equalTo("r1"))
 				.body("facets.get(1).values.get(0).count", Matchers.equalTo(5))
 				.body("facets.get(1).values.get(1).code", Matchers.equalTo("r2"))
@@ -2073,7 +2073,7 @@ abstract class AbstractWebServiceManagerTest {
 		final int fctBirthDayR2 = getResponse.body().path("facets.get(1).values.get(1).count");
 
 		final Map<String, Object> selectedFacetsMono = new MapBuilder<String, Object>()
-				.put("FctHonorificCode$qryContactFacet", "MR_")
+				.put("FctHonorificCode", "MR_")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsMono))
 				.statusCode(HttpStatus.SC_OK)
@@ -2084,7 +2084,7 @@ abstract class AbstractWebServiceManagerTest {
 				.post("/search/facetedClusteredResult");
 
 		final Map<String, Object> selectedFacetsByCode = new MapBuilder<String, Object>()
-				.put("FctBirthday$qryContactFacet", "r1")
+				.put("FctBirthday", "r1")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsByCode))
 				.statusCode(HttpStatus.SC_OK)
@@ -2095,7 +2095,7 @@ abstract class AbstractWebServiceManagerTest {
 				.post("/search/facetedClusteredResult");
 
 		final Map<String, Object> selectedFacetsByLabel = new MapBuilder<String, Object>()
-				.put("FctBirthday$qryContactFacet", "1980-1990")
+				.put("FctBirthday", "1980-1990")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsByLabel))
 				.statusCode(HttpStatus.SC_OK)
@@ -2106,8 +2106,8 @@ abstract class AbstractWebServiceManagerTest {
 				.post("/search/facetedClusteredResult");
 
 		final Map<String, Object> selectedFacetsMultiple = new MapBuilder<String, Object>()
-				.put("FctHonorificCode$qryContactFacet", new String[] { "MR_", "MS_" })
-				.put("FctBirthday$qryContactFacet", "r2")
+				.put("FctHonorificCode", new String[] { "MR_", "MS_" })
+				.put("FctBirthday", "r2")
 				.build();
 		loggedAndExpect(given().body(selectedFacetsMultiple))
 				.statusCode(HttpStatus.SC_OK)

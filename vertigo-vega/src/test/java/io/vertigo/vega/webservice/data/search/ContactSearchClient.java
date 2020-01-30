@@ -62,11 +62,11 @@ public class ContactSearchClient implements Component, DefinitionProvider {
 						.withDtDefinition("DtContact")
 						.withFieldName("birthday")
 						.withLabel("Par date")
-						.withRange("R1", "birthday:[* TO 01/01/1980]", "avant 1980")
-						.withRange("R2", "birthday:[01/01/1980 TO 01/01/1990]", "1980-1990")
-						.withRange("R3", "birthday:[01/01/1990 TO 01/01/2000]", "1990-2000")
-						.withRange("R4", "birthday:[01/01/2000 TO 01/01/2010]", "2000-2010")
-						.withRange("R5", "birthday:[01/01/2010 TO *]", "apres 2010")
+						.withRange("r1", "birthday:[* TO 01/01/1980]", "avant 1980")
+						.withRange("r2", "birthday:[01/01/1980 TO 01/01/1990]", "1980-1990")
+						.withRange("r3", "birthday:[01/01/1990 TO 01/01/2000]", "1990-2000")
+						.withRange("r4", "birthday:[01/01/2000 TO 01/01/2010]", "2000-2010")
+						.withRange("r5", "birthday:[01/01/2010 TO *]", "apres 2010")
 						.withOrder(FacetOrder.definition))
 
 				//---
