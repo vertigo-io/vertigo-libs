@@ -68,7 +68,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 				idField.getSmartTypeDefinition().getScope().isPrimitive(),
 				"Ids must be primitives : idField '{0}' on dtDefinition '{1}' has the smartType '{2}'", dtDefinition, idField.getName(), idField.getSmartTypeDefinition());
 		//---
-		final BasicType idDataType = idField.getSmartTypeDefinition().getTargetDataType();
+		final BasicType idDataType = idField.getSmartTypeDefinition().getBasicType();
 		P pkValue;
 		switch (idDataType) {
 			case Integer:

@@ -18,12 +18,12 @@
  */
 package io.vertigo.dynamo.plugins.environment.registries.search;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
@@ -89,18 +89,13 @@ public final class SearchDynamicRegistry implements DynamicRegistry {
 	}
 
 	private static Map<StudioDtField, List<StudioDtField>> populateCopyFields(final DslDefinition xsearchObjet, final StudioDtDefinition indexDtDefinition) {
-		final Map<StudioDtField, List<StudioDtField>> copyToFields = new HashMap<>(); //(map fromField : [toField, toField, ...])
+		final Map<StudioDtField, List<StudioDtField>> copyToFields = new HashMap<>(); //(map toField : [fromField, fromField, ...])
 		final List<DslDefinition> copyToFieldNames = xsearchObjet.getChildDefinitions(SearchGrammar.INDEX_COPY_TO_PROPERTY);
 		for (final DslDefinition copyToFieldDefinition : copyToFieldNames) {
-			final StudioDtField dtFieldTo = indexDtDefinition.getField(copyToFieldDefinition.getName());
 			final String copyFromFieldNames = (String) copyToFieldDefinition.getPropertyValue(SearchGrammar.INDEX_COPY_FROM_PROPERTY);
-
-			for (final String copyFromFieldName : copyFromFieldNames.split(",")) {
-				final StudioDtField dtFieldFrom = indexDtDefinition.getField(copyFromFieldName.trim());
-				copyToFields.computeIfAbsent(dtFieldFrom, k -> new ArrayList<>())
-						.add(dtFieldTo);
-			}
-
+			copyToFields.put(
+					indexDtDefinition.getField(copyToFieldDefinition.getName()),
+					Stream.of(copyFromFieldNames.split(",")).map(fieldName -> indexDtDefinition.getField(fieldName)).collect(Collectors.toList()));
 		}
 		return copyToFields;
 	}

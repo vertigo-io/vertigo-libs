@@ -18,16 +18,12 @@
  */
 package io.vertigo.quarto.services.publisher.data.domain;
 
-import io.vertigo.core.lang.BasicType;
-import io.vertigo.datamodel.smarttype.annotations.Mapper;
 import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.JsonMapper;
 
 /**
  * Attention cette classe est générée automatiquement !
  * Objet de données AbstractEnqueteur
  */
-@Mapper(clazz = JsonMapper.class, dataType = BasicType.String)
 public final class Enqueteur implements DtObject {
 	/**
 	 * SerialVersionUID.

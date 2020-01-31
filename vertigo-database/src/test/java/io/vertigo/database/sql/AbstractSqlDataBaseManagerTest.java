@@ -38,8 +38,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
-import io.vertigo.core.lang.DataStream;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.BasicTypeAdapter;
+import io.vertigo.core.lang.DataStream;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.data.Mail;
@@ -79,7 +80,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 		{
 			put(Mail.class, new BasicTypeAdapter<Mail, String>() {
 				@Override
-				public Mail toJava(final String sqlValue) {
+				public Mail toJava(final String sqlValue, final Class<Mail> javaClass) {
 					return sqlValue == null ? null : new Mail(sqlValue);
 				}
 
@@ -89,13 +90,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 				}
 
 				@Override
-				public Class<Mail> getJavaType() {
-					return Mail.class;
-				}
-
-				@Override
-				public Class<String> getBasicType() {
-					return String.class;
+				public BasicType getBasicType() {
+					return BasicType.String;
 				}
 			});
 		}

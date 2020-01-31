@@ -18,13 +18,14 @@
  */
 package io.vertigo.datamodel.smarttype;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.BasicTypeAdapter;
+import io.vertigo.core.lang.Builder;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition.Scope;
 import io.vertigo.datamodel.structure.metamodel.Properties;
 
@@ -36,9 +37,8 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	private final String myName;
 	private SmartTypeDefinition.Scope myScope;
 
-	private BasicType myDataType;
 	private final Class myValueObjectClass;
-	private Class<? extends DataTypeMapper> myMapper;
+	private final List<AdapterConfig> myAdapterConfigs = new ArrayList<>();
 
 	/** Formatter. */
 	private FormatterConfig myformatterConfig;
@@ -61,7 +61,6 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 		myName = name;
 		myScope = SmartTypeDefinition.Scope.PRIMITIVE;
 
-		myDataType = dataType;
 		myValueObjectClass = dataType.getJavaClass();
 	}
 
@@ -127,12 +126,11 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	* @param properties the properties
 	* @return this builder
 	*/
-	public SmartTypeDefinitionBuilder withMapper(final Class<? extends DataTypeMapper> mapperClass, final BasicType targetDataType) {
-		Assertion.checkNotNull(mapperClass);
+	public SmartTypeDefinitionBuilder addAdapter(final String type, final Class<? extends BasicTypeAdapter> adapterClass, final BasicType targetDataType) {
+		Assertion.checkNotNull(adapterClass);
 		Assertion.checkNotNull(targetDataType);
 		//---
-		myMapper = mapperClass;
-		myDataType = targetDataType;
+		myAdapterConfigs.add(new AdapterConfig(type, adapterClass, targetDataType));
 		return this;
 	}
 
@@ -142,8 +140,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 				myName,
 				myScope,
 				myValueObjectClass.getName(),
-				myDataType,
-				myMapper == null ? Optional.empty() : Optional.of(myMapper),
+				myAdapterConfigs,
 				myformatterConfig,
 				myConstraintConfigs == null ? Collections.emptyList() : myConstraintConfigs,
 				myProperties == null ? Properties.builder().build() : myProperties);

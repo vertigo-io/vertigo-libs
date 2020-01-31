@@ -20,13 +20,9 @@ package io.vertigo.vega.webservice.data.domain;
 
 import java.time.LocalDate;
 
-import io.vertigo.core.lang.BasicType;
-import io.vertigo.datamodel.smarttype.annotations.Mapper;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.stereotype.Field;
-import io.vertigo.datamodel.structure.util.JsonMapper;
 
-@Mapper(clazz = JsonMapper.class, dataType = BasicType.String)
 public final class ContactCriteria implements DtObject {
 
 	private static final long serialVersionUID = 6839427455017031471L;

@@ -31,8 +31,10 @@ import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.node.Home;
 import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -104,7 +106,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 			strValue = requestParameterToString(value);
 			try {
 				final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
-				final Object typedValue = EncoderDate.stringToValue(strValue, dtField.getSmartTypeDefinition().getTargetDataType());
+				final Object typedValue = EncoderDate.stringToValue(strValue, dtField.getSmartTypeDefinition().getBasicType());
 				strValue = modelManager.valueToString(dtField.getSmartTypeDefinition(), typedValue);// we fall back in the normal case if everything is right -> go to formatter
 			} catch (final FormatterException e) {
 				// do nothing we keep the input value
@@ -140,11 +142,11 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	}
 
 	private static boolean isBoolean(final DtField dtField) {
-		return dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getTargetDataType() == BasicType.Boolean;
+		return dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getBasicType() == BasicType.Boolean;
 	}
 
 	private static boolean isAboutDate(final DtField dtField) {
-		return dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getTargetDataType().isAboutDate();
+		return dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getBasicType().isAboutDate();
 	}
 
 	/** {@inheritDoc} */
@@ -269,12 +271,21 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 		Assertion.checkArgument(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//---
 		final DtField dtField = getDtField(keyFieldName);
-		if (isAboutDate(dtField)) {
-			final Serializable value = getTypedValue(keyFieldName, Serializable.class);
-			return EncoderDate.valueToString(value, dtField.getSmartTypeDefinition().getTargetDataType());// encodeValue
-		} else if (isMultiple(dtField)) {
-			final String value = getTypedValue(keyFieldName, String.class);
-			return value != null ? parseMultipleValue(value) : new String[0];
+		final SmartTypeDefinition smartType = dtField.getSmartTypeDefinition();
+		if (smartType.getScope().isPrimitive()) {
+			if (isAboutDate(dtField)) {
+				final Serializable value = getTypedValue(keyFieldName, Serializable.class);
+				return EncoderDate.valueToString(value, dtField.getSmartTypeDefinition().getBasicType());// encodeValue
+			} else if (isMultiple(dtField)) {
+				final String value = getTypedValue(keyFieldName, String.class);
+				return value != null ? parseMultipleValue(value) : new String[0];
+			}
+		}
+		// we are complex
+		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
+		final Map<Class, BasicTypeAdapter> uiAdapters = modelManager.getTypeAdapters("ui");
+		if (uiAdapters.containsKey(smartType.getJavaClass())) {
+			return (Serializable) uiAdapters.get(smartType.getJavaClass()).toBasic(getTypedValue(keyFieldName, smartType.getJavaClass()));
 		}
 		return getTypedValue(keyFieldName, Serializable.class);
 	}

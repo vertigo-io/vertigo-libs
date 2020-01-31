@@ -59,9 +59,12 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.JsonExclude;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.util.ClassUtil;
@@ -70,8 +73,8 @@ import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
-import io.vertigo.datamodel.structure.metamodel.FormatterException;
 import io.vertigo.datamodel.structure.metamodel.DtField.FieldType;
+import io.vertigo.datamodel.structure.metamodel.FormatterException;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -88,10 +91,12 @@ import io.vertigo.vega.webservice.model.UiObject;
 /**
  * @author pchretien, npiedeloup
  */
-public final class GoogleJsonEngine implements JsonEngine {
+public final class GoogleJsonEngine implements JsonEngine, Activeable {
 	private static final String FIRST_LEVEL_KEY = "this";
-	private final Gson gson;
+	private Gson gson;
 	private final ModelManager modelManager;
+	private final SearchApiVersion searchApiVersion;
+	private final Boolean serializeNulls;
 
 	private enum SearchApiVersion {
 		V1(FacetedQueryResultJsonSerializerV1.class), //first api
@@ -112,13 +117,26 @@ public final class GoogleJsonEngine implements JsonEngine {
 
 	@Inject
 	public GoogleJsonEngine(
-			@ParamValue("serializeNulls") final Optional<Boolean> serializeNulls,
+			@ParamValue("serializeNulls") final Optional<Boolean> serializeNullsOpt,
 			@ParamValue("searchApiVersion") final Optional<String> searchApiVersionStr,
 			final ModelManager modelManager) {
-		final SearchApiVersion searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V4.name()));
-		gson = createGson(serializeNulls.orElse(false), searchApiVersion);
 		Assertion.checkNotNull(modelManager);
+		//---
 		this.modelManager = modelManager;
+		serializeNulls = serializeNullsOpt.orElse(false);
+		searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V4.name()));
+	}
+
+	@Override
+	public void start() {
+		gson = createGson(modelManager.getTypeAdapters("json"));
+
+	}
+
+	@Override
+	public void stop() {
+		// nothing
+
 	}
 
 	/** {@inheritDoc} */
@@ -490,12 +508,37 @@ public final class GoogleJsonEngine implements JsonEngine {
 		}
 	}
 
-	private Gson createGson(final boolean serializeNulls, final SearchApiVersion searchApiVersion) {
+	private Gson createGson(final Map<Class, BasicTypeAdapter> jsonBasicTypeAdapters) {
 		try {
 			final GsonBuilder gsonBuilder = new GsonBuilder();
 			if (serializeNulls) {
 				gsonBuilder.serializeNulls();
 			}
+			jsonBasicTypeAdapters.entrySet().stream()
+					.forEach(entry -> {
+						gsonBuilder.registerTypeAdapter(entry.getKey(), new JsonSerializer() {
+
+							@Override
+							public JsonElement serialize(final Object src, final Type typeOfSrc, final JsonSerializationContext context) {
+								if (BasicType.String == entry.getValue().getBasicType()) { //TODO should be json
+									return JsonParser.parseString((String) entry.getValue().toBasic(src));
+								}
+								return context.serialize(entry.getValue().toBasic(src));
+							}
+						});
+
+						gsonBuilder.registerTypeAdapter(entry.getKey(), new JsonDeserializer() {
+
+							@Override
+							public Object deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+								if (BasicType.String == entry.getValue().getBasicType()) {//TODO should be json
+									return entry.getValue().toJava(json.toString(), entry.getKey());
+								}
+								return entry.getValue().toJava(context.deserialize(json, entry.getValue().getBasicType().getJavaClass()), entry.getKey());
+							}
+
+						});
+					});
 			return gsonBuilder
 					.setPrettyPrinting()
 					//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")

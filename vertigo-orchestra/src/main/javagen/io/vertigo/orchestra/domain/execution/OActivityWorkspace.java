@@ -13,7 +13,6 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
  */
 @Generated
 @io.vertigo.datamodel.structure.stereotype.DataSpace("orchestra")
-@io.vertigo.datamodel.smarttype.annotations.Mapper(clazz = io.vertigo.datamodel.structure.util.JsonMapper.class, dataType = io.vertigo.core.lang.BasicType.String)
 public final class OActivityWorkspace implements Entity {
 	private static final long serialVersionUID = 1L;
 

@@ -109,12 +109,12 @@ public final class IndexType {
 		// On peut préciser pour chaque domaine le type d'indexation
 		// Calcul automatique  par default.
 		Assertion.checkState(smartTypeDefinition.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
-		switch (smartTypeDefinition.getTargetDataType()) {
+		switch (smartTypeDefinition.getBasicType()) {
 			case Boolean:
 			case Double:
 			case Integer:
 			case Long:
-				return smartTypeDefinition.getTargetDataType().name().toLowerCase(Locale.ROOT);
+				return smartTypeDefinition.getBasicType().name().toLowerCase(Locale.ROOT);
 			case String:
 				return "text";
 			case LocalDate:
@@ -132,7 +132,7 @@ public final class IndexType {
 		// On peut préciser pour chaque domaine le type d'indexation
 		// Calcul automatique  par default.
 		Assertion.checkState(smartTypeDefinition.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
-		switch (smartTypeDefinition.getTargetDataType()) {
+		switch (smartTypeDefinition.getBasicType()) {
 			case Boolean:
 			case LocalDate:
 			case Instant:

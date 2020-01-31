@@ -4,12 +4,16 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.DataStream;
 import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength;
+import io.vertigo.datamodel.smarttype.annotations.Adapter;
 import io.vertigo.datamodel.smarttype.annotations.Constraint;
 import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
+import io.vertigo.datastore.entitystore.data.domain.GeoPoint;
+import io.vertigo.datastore.entitystore.data.domain.GeoPointAdapter;
 
 public enum TestSmartTypes {
 
@@ -78,6 +82,12 @@ public enum TestSmartTypes {
 	@SmartTypeDefinition(BigDecimal.class)
 	@FormatterDefault
 	@SmartTypeProperty(property = "storeType", value = "NUMERIC(8,2)")
-	Conso;
+	Conso,
+
+	@SmartTypeDefinition(GeoPoint.class)
+	@FormatterDefault
+	@Adapter(clazz = GeoPointAdapter.class, targetBasicType = BasicType.String)
+	@SmartTypeProperty(property = "storeType", value = "TEXT")
+	GeoPoint;
 
 }

@@ -1,6 +1,7 @@
 package io.vertigo.datamodel.impl.smarttype.loaders;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -14,15 +15,15 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
+import io.vertigo.datamodel.smarttype.AdapterConfig;
 import io.vertigo.datamodel.smarttype.ConstraintConfig;
-import io.vertigo.datamodel.smarttype.DataTypeMapper;
 import io.vertigo.datamodel.smarttype.FormatterConfig;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition.Scope;
 import io.vertigo.datamodel.smarttype.annotations.Constraint;
 import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
-import io.vertigo.datamodel.smarttype.annotations.Mapper;
+import io.vertigo.datamodel.smarttype.annotations.Adapter;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
 import io.vertigo.datamodel.structure.metamodel.Properties;
@@ -55,22 +56,22 @@ public class SmartTypesLoader implements Loader {
 		final BasicType targetDataType;
 		final FormatterConfig formatterConfig;
 		final List<ConstraintConfig> constraintConfigs;
-		final Optional<Class<? extends DataTypeMapper>> dataTypeMapperOpt;
+		final List<AdapterConfig> adapterConfigs = new ArrayList<>();
 		final PropertiesBuilder propertiesBuilder = Properties.builder();
 
 		// DataType and Mapper
 		if (dataTypeOpt.isPresent()) {
 			//we are a primitive
 			targetDataType = dataTypeOpt.get();
-			dataTypeMapperOpt = Optional.empty();
 			scope = Scope.PRIMITIVE;
 		} else {
 			//we are not primitive, we need a mapper
-			Assertion.checkState(field.isAnnotationPresent(Mapper.class),
+			Assertion.checkState(field.isAnnotationPresent(Adapter.class),
 					"Your smarttype '{0}' is not a primitive one, you need to specify a mapper to a targeted DataType with the @Mapper annotation", smartTypeName);
-			final Mapper mapper = field.getAnnotation(Mapper.class);
-			targetDataType = mapper.dataType();
-			dataTypeMapperOpt = Optional.of(mapper.clazz());
+			final Adapter[] adapters = field.getAnnotationsByType(Adapter.class);
+			for (final Adapter adapter : adapters) {
+				adapterConfigs.add(new AdapterConfig(adapter.type(), adapter.clazz(), adapter.targetBasicType()));
+			}
 			scope = DtObject.class.isAssignableFrom(targetJavaClass) ? Scope.DATA_OBJECT : Scope.VALUE_OBJECT;
 		}
 
@@ -102,8 +103,7 @@ public class SmartTypesLoader implements Loader {
 				smartTypeName,
 				scope,
 				targetJavaClass.getName(),
-				targetDataType,
-				dataTypeMapperOpt,
+				adapterConfigs,
 				formatterConfig,
 				constraintConfigs,
 				propertiesBuilder.build());

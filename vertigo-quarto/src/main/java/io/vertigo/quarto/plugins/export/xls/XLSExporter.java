@@ -285,7 +285,7 @@ final class XLSExporter {
 			final Map<Integer, Double> maxWidthPerColumn,
 			final SmartTypeDefinition smartTypeDefinition) {
 		String stringValueForColumnWidth;
-		cell.setCellStyle(rowCellStyle.get(smartTypeDefinition.getTargetDataType()));
+		cell.setCellStyle(rowCellStyle.get(smartTypeDefinition.getBasicType()));
 		if (value != null) {
 			stringValueForColumnWidth = String.valueOf(value);
 			if (value instanceof String) {

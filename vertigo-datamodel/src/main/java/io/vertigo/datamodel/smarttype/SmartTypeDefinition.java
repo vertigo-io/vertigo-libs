@@ -75,8 +75,8 @@ public final class SmartTypeDefinition implements Definition {
 	private final String name;
 	private final Scope scope;
 	private final String valueObjectClassName;
-	private final BasicType targetDataType;
-	private final Optional<Class<? extends DataTypeMapper>> mapperClassOpt;
+	private final Optional<BasicType> basicTypeOpt; //nullable
+	private final List<AdapterConfig> adapterConfigs;
 	private final FormatterConfig formatterConfig;
 	private final List<ConstraintConfig> constraintConfigs;
 
@@ -86,24 +86,22 @@ public final class SmartTypeDefinition implements Definition {
 			final String name,
 			final Scope scope,
 			final String valueObjectClassName,
-			final BasicType targetDataType,
-			final Optional<Class<? extends DataTypeMapper>> mapperClassOpt,
+			final List<AdapterConfig> adapterConfigs,
 			final FormatterConfig formatterConfig,
 			final List<ConstraintConfig> constraintConfigs,
 			final Properties properties) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(scope);
 		Assertion.checkNotNull(valueObjectClassName);
-		Assertion.checkNotNull(targetDataType);
-		Assertion.checkNotNull(mapperClassOpt);
+		Assertion.checkNotNull(adapterConfigs);
 		Assertion.checkNotNull(constraintConfigs);
 		Assertion.checkNotNull(properties);
 		//-----
 		this.name = name;
 		this.scope = scope;
 		this.valueObjectClassName = valueObjectClassName;
-		this.targetDataType = targetDataType;
-		this.mapperClassOpt = mapperClassOpt;
+		basicTypeOpt = BasicType.of(getJavaClass());
+		this.adapterConfigs = adapterConfigs;
 		this.properties = properties;
 		this.formatterConfig = formatterConfig;
 		this.constraintConfigs = constraintConfigs;
@@ -131,12 +129,13 @@ public final class SmartTypeDefinition implements Definition {
 		return ClassUtil.classForName(valueObjectClassName);
 	}
 
-	public BasicType getTargetDataType() {
-		return targetDataType;
+	public BasicType getBasicType() {
+		Assertion.checkState(basicTypeOpt.isPresent(), "Only smarttypes that are derived from BasicTypes have a basic type, use a dedicated adapter instead to convert the value into a BasicType");
+		return basicTypeOpt.get();
 	}
 
-	public Optional<Class<? extends DataTypeMapper>> getMapperClassOpt() {
-		return mapperClassOpt;
+	public List<AdapterConfig> getAdapterConfigs() {
+		return adapterConfigs;
 	}
 
 	public Properties getProperties() {

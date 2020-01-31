@@ -28,13 +28,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.core.node.definition.DefinitionUtil;
+import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.structure.metamodel.ComputedExpression;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
@@ -130,6 +131,8 @@ public final class DomainDynamicRegistry implements DynamicRegistry {
 		final DomainBuilder domainBuilder;
 		if ("DtObject".equals(type)) {
 			domainBuilder = Domain.builder(domainName, properties.getValue(DtProperty.TYPE));
+		} else if ("ValueObject".equals(type)) {
+			domainBuilder = Domain.builder(domainName, ClassUtil.classForName(properties.getValue(DtProperty.TYPE)));
 		} else {
 			final BasicType dataType = BasicType.valueOf(type);
 			domainBuilder = Domain.builder(domainName, dataType);

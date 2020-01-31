@@ -31,6 +31,7 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
+import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.VCollectors;
@@ -71,8 +72,9 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
 			final EntityStoreManager entityStoreManager,
-			final SqlDataBaseManager sqlDataBaseManager) {
-		super(scriptManager, transactionManager, entityStoreManager, sqlDataBaseManager);
+			final SqlDataBaseManager sqlDataBaseManager,
+			final ModelManager modelManager) {
+		super(scriptManager, transactionManager, entityStoreManager, sqlDataBaseManager, modelManager);
 	}
 
 	/*
@@ -91,7 +93,7 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 		final TaskAttribute outAttribute = getOutTaskAttribute();
 		final List<?> result;
 		final Integer limit = outAttribute.getCardinality().hasMany() ? null : 1;
-		result = getDataBaseManager().executeQuery(sqlStatement, outAttribute.getSmartTypeDefinition().getJavaClass(), getEntityStoreManager().getBasicTypeAdapters(), limit, connection);
+		result = getDataBaseManager().executeQuery(sqlStatement, outAttribute.getSmartTypeDefinition().getJavaClass(), getModelManager().getTypeAdapters("sql"), limit, connection);
 		switch (outAttribute.getSmartTypeDefinition().getScope()) {
 			case DATA_OBJECT:
 				if (outAttribute.getCardinality().hasMany()) {

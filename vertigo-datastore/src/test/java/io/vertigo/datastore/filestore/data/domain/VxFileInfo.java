@@ -1,15 +1,11 @@
 package io.vertigo.datastore.filestore.data.domain;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.BasicType;
-import io.vertigo.datamodel.smarttype.annotations.Mapper;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
-import io.vertigo.datamodel.structure.util.JsonMapper;
 
-@Mapper(clazz = JsonMapper.class, dataType = BasicType.String)
 public final class VxFileInfo implements Entity {
 	private static final long serialVersionUID = 1L;
 

@@ -1,16 +1,21 @@
 package io.vertigo.datamodel.impl.smarttype;
 
 import java.lang.reflect.Constructor;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.lang.BasicTypeAdapter;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.util.ClassUtil;
+import io.vertigo.core.util.MapBuilder;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.smarttype.DataTypeMapper;
+import io.vertigo.datamodel.smarttype.AdapterConfig;
 import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.Constraint;
@@ -22,7 +27,8 @@ public class ModelManagerImpl implements ModelManager, Activeable {
 
 	private Map<String, Formatter> formatterBySmartType;
 	private Map<String, List<Constraint>> constraintsBySmartType;
-	private Map<String, DataTypeMapper> mapperBySmartType;
+	private final Map<String, Map<Class, BasicTypeAdapter>> adaptersByType = new HashMap<>();
+	private Map<Class, BasicTypeAdapter> wildcardAdapters;
 
 	@Override
 	public void start() {
@@ -35,10 +41,18 @@ public class ModelManagerImpl implements ModelManager, Activeable {
 				.stream()
 				.collect(Collectors.toMap(SmartTypeDefinition::getName, smartTypeDefinition -> createConstraints(smartTypeDefinition)));
 
-		mapperBySmartType = Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
+		wildcardAdapters = Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
-				.filter(smartTypeDefinition -> smartTypeDefinition.getMapperClassOpt().isPresent())
-				.collect(Collectors.toMap(SmartTypeDefinition::getName, smartTypeDefinition -> createDataTypeMapper(smartTypeDefinition)));
+				.flatMap(smartTypeDefinition -> smartTypeDefinition.getAdapterConfigs().stream().map(adapterConfig -> Tuple.of(smartTypeDefinition.getJavaClass(), adapterConfig)))
+				.filter(tuple -> "*".equals(tuple.getVal2().getType()))
+				.collect(Collectors.toMap(Tuple::getVal1, tuple -> createBasicTypeAdapter(tuple.getVal2())));
+
+		Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
+				.stream()
+				.flatMap(smartTypeDefinition -> smartTypeDefinition.getAdapterConfigs().stream().map(adapterConfig -> Tuple.of(smartTypeDefinition.getJavaClass(), adapterConfig)))
+				.filter(tuple -> !"*".equals(tuple.getVal2().getType()))
+				.forEach(tuple -> adaptersByType.putIfAbsent(tuple.getVal2().getType(), new HashMap<>())
+						.put(tuple.getVal1(), createBasicTypeAdapter(tuple.getVal2())));
 
 	}
 
@@ -58,8 +72,8 @@ public class ModelManagerImpl implements ModelManager, Activeable {
 				.collect(Collectors.toList());
 	}
 
-	private static DataTypeMapper createDataTypeMapper(final SmartTypeDefinition smartTypeDefinition) {
-		return ClassUtil.newInstance(smartTypeDefinition.getMapperClassOpt().get());
+	private static BasicTypeAdapter createBasicTypeAdapter(final AdapterConfig adapterConfig) {
+		return ClassUtil.newInstance(adapterConfig.getAdapterClass());
 	}
 
 	@Override
@@ -70,7 +84,7 @@ public class ModelManagerImpl implements ModelManager, Activeable {
 	@Override
 	public void checkValue(final SmartTypeDefinition smartTypeDefinition, final Object value) {
 		if (smartTypeDefinition.getScope().isPrimitive()) {
-			smartTypeDefinition.getTargetDataType().checkValue(value);
+			smartTypeDefinition.getBasicType().checkValue(value);
 		}
 
 	}
@@ -92,14 +106,21 @@ public class ModelManagerImpl implements ModelManager, Activeable {
 
 	@Override
 	public String valueToString(final SmartTypeDefinition smartTypeDefinition, final Object objValue) {
-		final Object valueToFormat = smartTypeDefinition.getMapperClassOpt().isPresent() ? mapperBySmartType.get(smartTypeDefinition.getName()).to(objValue, smartTypeDefinition.getJavaClass()) : objValue;
-		return formatterBySmartType.get(smartTypeDefinition.getName()).valueToString(valueToFormat, smartTypeDefinition.getTargetDataType());
+		return formatterBySmartType.get(smartTypeDefinition.getName()).valueToString(objValue, smartTypeDefinition.getBasicType());
 	}
 
 	@Override
 	public Object stringToValue(final SmartTypeDefinition smartTypeDefinition, final String strValue) throws FormatterException {
-		final Object rawValue = formatterBySmartType.get(smartTypeDefinition.getName()).stringToValue(strValue, smartTypeDefinition.getTargetDataType());
-		return smartTypeDefinition.getMapperClassOpt().isPresent() ? mapperBySmartType.get(smartTypeDefinition.getName()).from(rawValue, smartTypeDefinition.getJavaClass()) : rawValue;
+		return formatterBySmartType.get(smartTypeDefinition.getName()).stringToValue(strValue, smartTypeDefinition.getBasicType());
+	}
+
+	@Override
+	public Map<Class, BasicTypeAdapter> getTypeAdapters(final String adapterType) {
+		return new MapBuilder<Class, BasicTypeAdapter>()
+				.putAll(wildcardAdapters)// we start with basic ones
+				.putAll(adaptersByType.getOrDefault(adapterType, Collections.emptyMap())) // we add specialized ones
+				.unmodifiable() // we dont want modifs
+				.build();
 	}
 
 }

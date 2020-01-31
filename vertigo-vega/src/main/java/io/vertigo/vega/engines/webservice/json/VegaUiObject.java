@@ -272,10 +272,16 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		final Object value = doGetTypedValue(fieldName);
 		final DtField dtField = getDtField(fieldName);
 		final SmartTypeDefinition smartType = dtField.getSmartTypeDefinition();
-		if (smartType.getScope().isPrimitive() && !dtField.getCardinality().hasMany()) {
-			return Home.getApp().getComponentSpace().resolve(ModelManager.class).valueToString(smartType, value);// encodeValue
+		if (!dtField.getCardinality().hasMany()) {
+			final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
+			if (smartType.getScope().isPrimitive()) {
+				return modelManager.valueToString(smartType, value);// encodeValue
+			}
+			// find an adapter we are complex
+			return modelManager.getTypeAdapters("ui").get(smartType.getJavaClass()).toBasic(value).toString();// encodeValue
+
 		}
-		return null; // only non multiple primitives are supported (from user input)
+		return null; // only non multiple are supported (from user input)
 	}
 
 	/** {@inheritDoc} */
@@ -291,10 +297,18 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		getDtObjectErrors().clearErrors(dtField.getName());
 		String formattedValue;
 		try {
-			final Serializable typedValue = (Serializable) modelManager.stringToValue(dtField.getSmartTypeDefinition(), stringValue);// we should use an encoder instead
+			final SmartTypeDefinition smartTypeDefinition = dtField.getSmartTypeDefinition();
+			final Serializable typedValue;
+			if (smartTypeDefinition.getScope().isPrimitive()) {
+				typedValue = (Serializable) modelManager.stringToValue(smartTypeDefinition, stringValue);// we should use an encoder instead
+				// succesful encoding we can format and put in the inputbuffer
+				formattedValue = modelManager.valueToString(dtField.getSmartTypeDefinition(), typedValue);
+			} else {
+				typedValue = (Serializable) modelManager.getTypeAdapters("ui").get(smartTypeDefinition.getJavaClass()).toJava(stringValue, smartTypeDefinition.getJavaClass());
+				formattedValue = stringValue;
+			}
 			doSetTypedValue(dtField, typedValue);
-			// succesful encoding we can format and put in the inputbuffer
-			formattedValue = modelManager.valueToString(dtField.getSmartTypeDefinition(), typedValue);
+
 		} catch (final FormatterException e) { //We don't log nor rethrow this exception // it should be an encoding exception
 			/** Erreur de typage.	 */
 			//encoding error

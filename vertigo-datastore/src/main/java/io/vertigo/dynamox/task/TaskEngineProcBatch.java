@@ -35,6 +35,7 @@ import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.statement.SqlStatementBuilder;
+import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.task.metamodel.TaskAttribute;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
@@ -55,8 +56,9 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
 			final EntityStoreManager entityStoreManager,
-			final SqlDataBaseManager sqlDataBaseManager) {
-		super(scriptManager, transactionManager, entityStoreManager, sqlDataBaseManager);
+			final SqlDataBaseManager sqlDataBaseManager,
+			final ModelManager modelManager) {
+		super(scriptManager, transactionManager, entityStoreManager, sqlDataBaseManager, modelManager);
 	}
 
 	/** {@inheritDoc} */
@@ -67,7 +69,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 		Assertion.checkNotNull(sqlStatement);
 		Assertion.checkNotNull(connection);
 		//---
-		return getDataBaseManager().executeBatch(sqlStatement, getEntityStoreManager().getBasicTypeAdapters(), connection);
+		return getDataBaseManager().executeBatch(sqlStatement, getModelManager().getTypeAdapters("sql"), connection);
 	}
 
 	@Override

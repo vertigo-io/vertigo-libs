@@ -21,16 +21,12 @@ package io.vertigo.quarto.services.publisher.data.domain;
 import java.time.LocalDate;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.BasicType;
-import io.vertigo.datamodel.smarttype.annotations.Mapper;
 import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.datamodel.structure.util.JsonMapper;
 
 /**
  * Attention cette classe est générée automatiquement !
  * Objet de données AbstractPublisherMock
  */
-@Mapper(clazz = JsonMapper.class, dataType = BasicType.String)
 public final class PublisherMock implements DtObject {
 	/**
 	 * SerialVersionUID.

@@ -154,11 +154,20 @@ public final class Domain implements Definition {
 	 * Static method factory for DomainBuilder
 	 * @param name the name of the domain
 	 * @param dtDefinitionName the definition managed by the domain
-	 * @param multiple if the domain is a list
 	 * @return DomainBuilder
 	 */
 	public static DomainBuilder builder(final String name, final String dtDefinitionName) {
 		return new DomainBuilder(name, dtDefinitionName);
+	}
+
+	/**
+	 * Static method factory for DomainBuilder
+	 * @param name the name of the domain
+	 * @param valueObjectClass the definition managed by the domain
+	 * @return DomainBuilder
+	 */
+	public static DomainBuilder builder(final String name, final Class valueObjectClass) {
+		return new DomainBuilder(name, valueObjectClass);
 	}
 
 	/**

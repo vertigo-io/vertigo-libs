@@ -191,7 +191,7 @@ public final class PublisherDataUtil {
 			final String fieldName = dtField.getName();
 			switch (dtField.getSmartTypeDefinition().getScope()) {
 				case PRIMITIVE:
-					if (BasicType.Boolean == dtField.getSmartTypeDefinition().getTargetDataType()) {
+					if (BasicType.Boolean == dtField.getSmartTypeDefinition().getBasicType()) {
 						sb.append("\t\tbooleanField[").append(fieldName).append(")] = new DataField ();\n");
 					} else {
 						sb.append("\t\tstringField[").append(fieldName).append(")] = new DataField ();\n");

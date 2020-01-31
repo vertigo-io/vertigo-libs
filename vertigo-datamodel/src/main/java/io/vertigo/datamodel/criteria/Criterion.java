@@ -76,7 +76,7 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 		for (int i = 0; i < values.length; i++) {
 			final Serializable criterionValue = values[i];
 			if (criterionValue instanceof String) {
-				criterionValues[i] = valueOf(dtField.getSmartTypeDefinition().getTargetDataType(), (String) criterionValue);
+				criterionValues[i] = valueOf(dtField.getSmartTypeDefinition().getBasicType(), (String) criterionValue);
 			} else {
 				criterionValues[i] = criterionValue;
 			}

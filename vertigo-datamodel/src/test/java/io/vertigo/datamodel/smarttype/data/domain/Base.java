@@ -1,16 +1,12 @@
 package io.vertigo.datamodel.smarttype.data.domain;
 
-import io.vertigo.core.lang.BasicType;
-import io.vertigo.datamodel.smarttype.annotations.Mapper;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.model.VAccessor;
 import io.vertigo.datamodel.structure.stereotype.Field;
 import io.vertigo.datamodel.structure.stereotype.ForeignKey;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
-import io.vertigo.datamodel.structure.util.JsonMapper;
 
-@Mapper(clazz = JsonMapper.class, dataType = BasicType.String)
 public final class Base implements KeyConcept {
 	private static final long serialVersionUID = 1L;
 

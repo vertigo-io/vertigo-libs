@@ -32,8 +32,8 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.criteria.Criterions;
@@ -126,7 +126,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 				.add(" create table motor_type(MTY_CD varchar(50) , LABEL varchar(255))")
 				.add("insert into motor_type(MTY_CD, LABEL) values ('ESSENCE', 'Essence')")
 				.add("insert into motor_type(MTY_CD, LABEL) values ('DIESEL', 'Diesel')")
-				.add(" create table car(ID BIGINT, FAM_ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50) )")
+				.add(" create table car(ID BIGINT, FAM_ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50), GEO_POINT TEXT )")
 				.add(" create sequence SEQ_CAR start with 10001 increment by 1")
 				.build();
 	}
@@ -435,6 +435,15 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 	public void testTxNativeSelectRollback() {
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			checkNativeCarsCount(0);
+		}
+	}
+
+	@Test
+	public void testSelectSmartType() {
+		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
+			final Car peugeotCar = entityStoreManager.readOne(UID.of(Car.class, 10001L));
+			Assertions.assertEquals(1, peugeotCar.getGeoPoint().getX(), "Test geopoint smartType adapter");
+			Assertions.assertEquals(2, peugeotCar.getGeoPoint().getY(), "Test geopoint smartType adapter");
 		}
 	}
 

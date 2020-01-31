@@ -14,7 +14,7 @@ import io.vertigo.datamodel.impl.smarttype.formatter.FormatterString;
 import io.vertigo.datamodel.smarttype.annotations.Constraint;
 import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
-import io.vertigo.datamodel.smarttype.annotations.Mapper;
+import io.vertigo.datamodel.smarttype.annotations.Adapter;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.data.domain.GeoPoint;
 import io.vertigo.datamodel.smarttype.data.domain.GeoPointMapper;
@@ -93,7 +93,7 @@ public enum TestSmartTypes {
 	Siret2,
 
 	@SmartTypeDefinition(GeoPoint.class)
-	@Mapper(dataType = BasicType.String, clazz = GeoPointMapper.class)
+	@Adapter(targetBasicType = BasicType.String, clazz = GeoPointMapper.class)
 	@FormatterDefault
 	GeoPoint;
 }

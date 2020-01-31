@@ -226,7 +226,7 @@ public final class DomainGrammar implements DslGrammar {
 						.map(BasicType::name)
 						.collect(Collectors.toList()))
 				.add("DtObject")
-				.add("DtList")
+				.add("ValueObject")
 				.build();
 
 		return types

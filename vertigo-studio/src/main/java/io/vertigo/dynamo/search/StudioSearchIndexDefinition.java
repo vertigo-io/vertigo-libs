@@ -19,7 +19,6 @@
 package io.vertigo.dynamo.search;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -61,8 +60,6 @@ public final class StudioSearchIndexDefinition implements Definition {
 
 	private final Map<StudioDtField, List<StudioDtField>> indexCopyToFieldsMap;
 
-	private final Set<StudioDtField> indexCopyToFields;
-
 	private final String searchLoaderId;
 
 	/**
@@ -94,8 +91,6 @@ public final class StudioSearchIndexDefinition implements Definition {
 		this.indexCopyToFieldsMap = indexCopyToFieldsMap;
 		this.searchLoaderId = searchLoaderId;
 
-		indexCopyToFields = new HashSet<>();
-		indexCopyToFieldsMap.forEach((k, v) -> indexCopyToFields.addAll(v));
 	}
 
 	/**
@@ -116,11 +111,11 @@ public final class StudioSearchIndexDefinition implements Definition {
 	}
 
 	/**
-	 * @param fromField Field to copy to others
+	 * @param toField Field to copy from others
 	 * @return list des copyToFields.
 	 */
-	public List<StudioDtField> getIndexCopyToFields(final StudioDtField fromField) {
-		final List<StudioDtField> copyToFields = indexCopyToFieldsMap.get(fromField);
+	public List<StudioDtField> getIndexCopyToFromFields(final StudioDtField toField) {
+		final List<StudioDtField> copyToFields = indexCopyToFieldsMap.get(toField);
 		Assertion.checkNotNull(copyToFields);
 		//-----
 		return Collections.unmodifiableList(copyToFields);
@@ -129,15 +124,8 @@ public final class StudioSearchIndexDefinition implements Definition {
 	/**
 	 * @return copyFields from.
 	 */
-	public Set<StudioDtField> getIndexCopyFromFields() {
-		return Collections.unmodifiableSet(indexCopyToFieldsMap.keySet());
-	}
-
-	/**
-	 * @return copyFields to.
-	 */
 	public Set<StudioDtField> getIndexCopyToFields() {
-		return Collections.unmodifiableSet(indexCopyToFields);
+		return Collections.unmodifiableSet(indexCopyToFieldsMap.keySet());
 	}
 
 	/**

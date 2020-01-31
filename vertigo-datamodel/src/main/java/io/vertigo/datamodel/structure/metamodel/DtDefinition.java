@@ -106,8 +106,8 @@ public final class DtDefinition implements Definition {
 
 		for (final DtField dtField : dtFields) {
 			Assertion.when(stereotype.isPersistent() && dtField.isPersistent())
-					.check(() -> dtField.getSmartTypeDefinition().getScope().isPrimitive() && !dtField.getCardinality().hasMany(),
-							"Only non multiple primitives are allowed in entity '{0}'", name);
+					.check(() -> !dtField.getCardinality().hasMany(),
+							"Only non multiple smarttype are allowed in entity '{0}'", name);
 			if (dtField.getType().isId()) {
 				Assertion.checkState(id == null, "Only one ID Field is allowed : {0}", name);
 				id = dtField;

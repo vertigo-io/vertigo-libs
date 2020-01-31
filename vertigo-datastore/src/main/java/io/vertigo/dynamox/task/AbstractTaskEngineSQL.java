@@ -36,6 +36,7 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.statement.SqlStatementBuilder;
+import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.task.metamodel.TaskAttribute;
 import io.vertigo.datamodel.task.model.TaskEngine;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
@@ -97,6 +98,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	private final VTransactionManager transactionManager;
 	private final EntityStoreManager entityStoreManager;
 	private final SqlDataBaseManager sqlDataBaseManager;
+	private final ModelManager modelManager;
 
 	/**
 	 * Constructor.
@@ -106,16 +108,19 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
 			final EntityStoreManager entityStoreManager,
-			final SqlDataBaseManager sqlDataBaseManager) {
+			final SqlDataBaseManager sqlDataBaseManager,
+			final ModelManager modelManager) {
 		Assertion.checkNotNull(scriptManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(entityStoreManager);
 		Assertion.checkNotNull(sqlDataBaseManager);
+		Assertion.checkNotNull(modelManager);
 		//-----
 		this.scriptManager = scriptManager;
 		this.transactionManager = transactionManager;
 		this.entityStoreManager = entityStoreManager;
 		this.sqlDataBaseManager = sqlDataBaseManager;
+		this.modelManager = modelManager;
 	}
 
 	/**
@@ -251,10 +256,10 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	}
 
 	/**
-	 * @return Manager de store des entités
+	 * @return Manager du modèle
 	 */
-	protected final EntityStoreManager getEntityStoreManager() {
-		return entityStoreManager;
+	protected final ModelManager getModelManager() {
+		return modelManager;
 	}
 
 	/**

@@ -346,7 +346,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	private static AggregationBuilder rangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
 		//facette par range
 		Assertion.checkState(dtField.getSmartTypeDefinition().getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + dtField.getSmartTypeDefinition() + "].");
-		final BasicType dataType = dtField.getSmartTypeDefinition().getTargetDataType();
+		final BasicType dataType = dtField.getSmartTypeDefinition().getBasicType();
 		if (dataType == BasicType.LocalDate) {
 			return dateRangeFacetToAggregationBuilder(facetDefinition, dtField);
 		} else if (dataType.isNumber()) {

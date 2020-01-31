@@ -7,23 +7,23 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamo.domain.metamodel.StudioDtField;
 
 public class IndexCopyToModel {
-	private final StudioDtField fromField;
-	private final List<StudioDtField> toFields;
+	private final StudioDtField toField;
+	private final List<StudioDtField> fromFields;
 
-	public IndexCopyToModel(final StudioDtField fromField, final List<StudioDtField> toFields) {
-		Assertion.checkNotNull(fromField);
-		Assertion.checkNotNull(toFields);
+	public IndexCopyToModel(final StudioDtField toField, final List<StudioDtField> fromFields) {
+		Assertion.checkNotNull(toField);
+		Assertion.checkNotNull(fromFields);
 		//---
-		this.fromField = fromField;
-		this.toFields = toFields;
+		this.toField = toField;
+		this.fromFields = fromFields;
 	}
 
-	public String getFrom() {
-		return fromField.getName();
+	public String getTo() {
+		return toField.getName();
 	}
 
-	public List<String> getTo() {
-		return toFields.stream().map(StudioDtField::getName).collect(Collectors.toList());
+	public List<String> getFrom() {
+		return fromFields.stream().map(StudioDtField::getName).collect(Collectors.toList());
 	}
 
 }

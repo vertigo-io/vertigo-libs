@@ -35,8 +35,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.lang.BasicTypeAdapter;
+import io.vertigo.core.lang.DataStream;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.BeanUtil;
 import io.vertigo.core.util.ClassUtil;
@@ -126,7 +126,7 @@ final class SqlStatementDriver {
 				// complex we find the adapter
 				final BasicTypeAdapter adapter = basicTypeAdapters.get(parameter.getDataType());
 				connection.getDataBase().getSqlMapping().setValueOnStatement(
-						statement, index + 1, adapter.getBasicType(), adapter.toBasic(parameter.getValue()));
+						statement, index + 1, adapter.getBasicType().getJavaClass(), adapter.toBasic(parameter.getValue()));
 			}
 		}
 	}
@@ -200,7 +200,7 @@ final class SqlStatementDriver {
 				fields[i].setValue(bean, mapping.getValueForResultSet(resultSet, i + 1, javaFieldDataType));
 			} else {
 				final BasicTypeAdapter adapter = basicTypeAdapters.get(javaFieldDataType);
-				value = adapter.toJava(mapping.getValueForResultSet(resultSet, i + 1, adapter.getBasicType()));
+				value = adapter.toJava(mapping.getValueForResultSet(resultSet, i + 1, adapter.getBasicType().getJavaClass()), javaFieldDataType);
 				fields[i].setValue(bean, value);
 			}
 		}

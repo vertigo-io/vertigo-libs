@@ -28,6 +28,7 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
+import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 
 /**
@@ -66,8 +67,9 @@ public class TaskEngineProc extends AbstractTaskEngineSQL {
 			final ScriptManager scriptManager,
 			final VTransactionManager transactionManager,
 			final EntityStoreManager entityStoreManager,
-			final SqlDataBaseManager sqlDataBaseManager) {
-		super(scriptManager, transactionManager, entityStoreManager, sqlDataBaseManager);
+			final SqlDataBaseManager sqlDataBaseManager,
+			final ModelManager modelManager) {
+		super(scriptManager, transactionManager, entityStoreManager, sqlDataBaseManager, modelManager);
 	}
 
 	/** {@inheritDoc} */
@@ -75,7 +77,7 @@ public class TaskEngineProc extends AbstractTaskEngineSQL {
 	protected OptionalInt doExecute(
 			final SqlStatement sqlStatement,
 			final SqlConnection connection) throws SQLException {
-		return OptionalInt.of(getDataBaseManager().executeUpdate(sqlStatement, getEntityStoreManager().getBasicTypeAdapters(), connection));
+		return OptionalInt.of(getDataBaseManager().executeUpdate(sqlStatement, getModelManager().getTypeAdapters("sql"), connection));
 	}
 
 }

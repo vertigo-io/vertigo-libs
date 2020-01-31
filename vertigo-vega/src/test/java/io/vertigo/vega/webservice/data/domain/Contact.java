@@ -24,16 +24,12 @@ import java.util.Collections;
 import java.util.List;
 
 import io.vertigo.core.lang.Cardinality;
-import io.vertigo.core.lang.BasicType;
-import io.vertigo.datamodel.smarttype.annotations.Mapper;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
 import io.vertigo.datamodel.structure.stereotype.ForeignKey;
-import io.vertigo.datamodel.structure.util.JsonMapper;
 import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 
-@Mapper(clazz = JsonMapper.class, dataType = BasicType.String)
 public final class Contact implements KeyConcept {
 	private static final long serialVersionUID = 2074906343392206381L;
 

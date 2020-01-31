@@ -41,7 +41,8 @@ import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition.Scope;
-import io.vertigo.datamodel.smarttype.annotations.Mapper;
+import io.vertigo.datamodel.smarttype.SmartTypeDefinitionBuilder;
+import io.vertigo.datamodel.smarttype.annotations.Adapter;
 import io.vertigo.datamodel.structure.metamodel.ComputedExpression;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtDefinitionBuilder;
@@ -213,16 +214,19 @@ public final class DtObjectsLoader implements Loader {
 
 		// SmartType
 		final String smartTypeName = DefinitionUtil.getPrefix(SmartTypeDefinition.class) + dtDefinitionName;
-		Assertion.checkState(clazz.isAnnotationPresent(Mapper.class),
-				"Your dtObject with clazz '{0}' need to specify a mapper to a targeted DataType with the @Mapper annotation", clazz);
-		final Mapper mapper = clazz.getAnnotation(Mapper.class);
+		final Adapter[] adapters = clazz.getAnnotationsByType(Adapter.class);
 		dynamicModelRepository.put(
 				simpleName,
 				new DynamicDefinition(smartTypeName, Collections.emptyList(),
-						ds -> SmartTypeDefinition.builder(smartTypeName, clazz)
-								.withMapper(mapper.clazz(), mapper.dataType())
-								.withScope(Scope.DATA_OBJECT)
-								.build()));
+						ds -> {
+							final SmartTypeDefinitionBuilder smartTypeDefinitionBuilder = SmartTypeDefinition.builder(smartTypeName, clazz);
+							smartTypeDefinitionBuilder
+									.withScope(Scope.DATA_OBJECT);
+							for (final Adapter adapter : adapters) {
+								smartTypeDefinitionBuilder.addAdapter(adapter.type(), adapter.clazz(), adapter.targetBasicType());
+							}
+							return smartTypeDefinitionBuilder.build();
+						}));
 
 	}
 

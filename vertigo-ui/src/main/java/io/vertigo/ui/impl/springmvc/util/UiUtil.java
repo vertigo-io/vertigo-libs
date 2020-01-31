@@ -128,7 +128,7 @@ public final class UiUtil implements Serializable {
 		} else if (fieldName != null) {
 			final SmartTypeDefinition smartTypeDefinition = getDtField(object + "." + fieldName).getSmartTypeDefinition();
 			if (smartTypeDefinition.getScope().isPrimitive()) {
-				final BasicType dataType = smartTypeDefinition.getTargetDataType();
+				final BasicType dataType = smartTypeDefinition.getBasicType();
 				switch (dataType) {
 					case Long:
 					case Integer:

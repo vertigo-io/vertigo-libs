@@ -118,7 +118,7 @@ public final class ${dtDefinition.classSimpleName}SearchClient implements Compon
 						.withIndexDtDefinition("${searchIndexDefinition.indexDtDefinition}")
 						.withKeyConcept("${searchIndexDefinition.keyConceptDtDefinition}")						
 						<#list searchIndexDefinition.copyToModels as copyTo>
-						.withCopyToFields("${copyTo.to}", <#list copyTo.From as from>"${from}"<#sep>, </#list>))
+						.withCopyToFields("${copyTo.to}", <#list copyTo.from as from>"${from}"<#sep>, </#list>)
 						</#list>
 						.withLoaderId("${searchIndexDefinition.loaderId}"))
 							

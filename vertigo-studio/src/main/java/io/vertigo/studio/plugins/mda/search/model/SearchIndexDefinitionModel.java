@@ -17,8 +17,8 @@ public class SearchIndexDefinitionModel {
 		Assertion.checkNotNull(studioSearchIndexDefinition);
 		//---
 		this.studioSearchIndexDefinition = studioSearchIndexDefinition;
-		copyToModels = studioSearchIndexDefinition.getIndexCopyFromFields().stream()
-				.map(fromField -> new IndexCopyToModel(fromField, studioSearchIndexDefinition.getIndexCopyToFields(fromField)))
+		copyToModels = studioSearchIndexDefinition.getIndexCopyToFields().stream()
+				.map(fromField -> new IndexCopyToModel(fromField, studioSearchIndexDefinition.getIndexCopyToFromFields(fromField)))
 				.collect(Collectors.toList());
 	}
 
