@@ -51,7 +51,6 @@ import io.vertigo.datamodel.structure.model.DtObject;
  */
 public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 	//Index
-	private static final String IDX_DYNA_ITEM = "IdxDynaItem";
 	private static final String IDX_ITEM = "IdxItem";
 
 	/** Manager de recherche. */
@@ -103,17 +102,12 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 	public void testIndex() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final SearchIndexDefinition itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
-		final SearchIndexDefinition itemDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_ITEM, SearchIndexDefinition.class);
 
 		for (final Item item : itemDataBase.getAllItems()) {
 			final SearchIndex<Item, Item> index = SearchIndex.createIndex(itemIndexDefinition, item.getUID(), item);
 			searchManager.put(itemIndexDefinition, index);
-
-			final SearchIndex<Item, Item> index2 = SearchIndex.createIndex(itemDynIndexDefinition, item.getUID(), item);
-			searchManager.put(itemDynIndexDefinition, index2);
 		}
 		waitAndExpectIndexation(itemDataBase.size(), itemIndexDefinition);
-		waitAndExpectIndexation(itemDataBase.size(), itemDynIndexDefinition);
 	}
 
 	/**
@@ -124,13 +118,10 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 	public void testClean() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final SearchIndexDefinition itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
-		final SearchIndexDefinition itemDynIndexDefinition = definitionSpace.resolve(IDX_DYNA_ITEM, SearchIndexDefinition.class);
 		final ListFilter removeQuery = ListFilter.of("*:*");
 		searchManager.removeAll(itemIndexDefinition, removeQuery);
-		searchManager.removeAll(itemDynIndexDefinition, removeQuery);
 
 		waitAndExpectIndexation(0, itemIndexDefinition);
-		waitAndExpectIndexation(0, itemDynIndexDefinition);
 	}
 
 	private long query(final String query, final SearchIndexDefinition indexDefinition) {
