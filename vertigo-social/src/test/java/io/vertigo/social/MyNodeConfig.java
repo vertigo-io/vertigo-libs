@@ -28,6 +28,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.config.NodeConfigBuilder;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
+import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.notification.data.TestUserSession;
@@ -67,6 +68,7 @@ public final class MyNodeConfig {
 
 		nodeConfigBuilder
 				.addModule(commonsFeatures.build())
+				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures().build())
 				.addModule(ModuleConfig.builder("identities")
 						.addComponent(MockIdentities.class)
