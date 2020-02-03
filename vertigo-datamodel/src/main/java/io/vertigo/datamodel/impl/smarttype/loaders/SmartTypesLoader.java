@@ -20,10 +20,10 @@ import io.vertigo.datamodel.smarttype.ConstraintConfig;
 import io.vertigo.datamodel.smarttype.FormatterConfig;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition.Scope;
+import io.vertigo.datamodel.smarttype.annotations.Adapter;
 import io.vertigo.datamodel.smarttype.annotations.Constraint;
 import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
-import io.vertigo.datamodel.smarttype.annotations.Adapter;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
 import io.vertigo.datamodel.structure.metamodel.Properties;
@@ -53,7 +53,6 @@ public class SmartTypesLoader implements Loader {
 		final Scope scope;
 		final Class targetJavaClass = field.getAnnotation(io.vertigo.datamodel.smarttype.annotations.SmartTypeDefinition.class).value();
 		final Optional<BasicType> dataTypeOpt = BasicType.of(targetJavaClass);
-		final BasicType targetDataType;
 		final FormatterConfig formatterConfig;
 		final List<ConstraintConfig> constraintConfigs;
 		final List<AdapterConfig> adapterConfigs = new ArrayList<>();
@@ -62,7 +61,6 @@ public class SmartTypesLoader implements Loader {
 		// DataType and Mapper
 		if (dataTypeOpt.isPresent()) {
 			//we are a primitive
-			targetDataType = dataTypeOpt.get();
 			scope = Scope.PRIMITIVE;
 		} else {
 			//we are not primitive, we need a mapper
