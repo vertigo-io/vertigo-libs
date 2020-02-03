@@ -49,6 +49,8 @@ public interface SqlDataBaseManager extends Manager {
 	 * Executes a sql query returning a list
 	 * @param sqlStatement sqlStatement
 	 * @param dataType the return dataType of the list
+	 * @param basicTypeAdapters a list of adapters from complexTypes (not natively supported by db) to basicType (supported ones).
+	 *  Values are transformed from complex types to basic one before storage.
 	 * @param limit the return limit (null if no limit)
 	 * @param connection the sqlConnection
 	 * @return the list
@@ -65,6 +67,8 @@ public interface SqlDataBaseManager extends Manager {
 	/**
 	 * Executes a sql query returning the number of modified rows.
 	 * @param sqlStatement sqlStatement
+	 * @param basicTypeAdapters a list of adapters from complexTypes (not natively supported by db) to basicType (supported ones).
+	 *  Values are transformed from complex types to basic one before storage.
 	 * @param connection sqlConnection
 	 * @return either the row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing
 	 * @throws SQLException
@@ -80,6 +84,8 @@ public interface SqlDataBaseManager extends Manager {
 	 * @param generationMode the generation methode
 	 * @param columnName the column name (of the generated key)
 	 * @param dataType the dataType of the generated key
+	 * @param basicTypeAdapters a list of adapters from complexTypes (not natively supported by db) to basicType (supported ones).
+	 *  Values are transformed from complex types to basic one before storage.
 	 * @param connection sqlConnection
 	 * @return a tuple with the row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing and the generated key
 	 * @throws SQLException
@@ -95,6 +101,8 @@ public interface SqlDataBaseManager extends Manager {
 	/**
 	 * Executes the batch .
 	 * @param sqlStatement sqlStatement
+	 * @param basicTypeAdapters a list of adapters from complexTypes (not natively supported by db) to basicType (supported ones).
+	 *  Values are transformed from complex types to basic one before storage.
 	 * @param connection sqlConnection
 	 * @return the SUM of  row count for INSERT, UPDATE or DELETE statements; or 0 for SQL statements that return nothing
 	 * if no info available an empty Optional is returned
