@@ -169,6 +169,7 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("#criteria#")
 						.withCriteriaSmartType("STyString")
+						.withFacet("FctDescriptionItem")
 						.withFacet("FctManufacturerItem")
 						.withFacet("FctManufacturerItemAlpha")
 						.withFacet("FctYearItem"))
@@ -177,9 +178,7 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("#criteria#")
 						.withCriteriaSmartType("STyString")
-						.withFacet("FctManufacturerItem")
-						.withFacet("FctManufacturerItemAlpha")
-						.withFacet("FctYearItem"))
+						.withFacet("FctOptionalStringItem"))
 
 				.add(new FacetedQueryDefinitionSupplier("QryItemFacetMulti")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
