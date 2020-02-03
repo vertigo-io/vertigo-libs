@@ -33,7 +33,7 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
  *
  *  Le DtObject d'index utilise
  *  - la propriété 'persistent' des fields pour savoir si le champs fait partit du résultat ou non
- *  - le domain et sa propriété indexType pour savoir si le champs est indéxé ou non
+ *  - le smartType et sa propriété indexType pour savoir si le champs est indéxé ou non
  *
  * @author dchallas
  * @param <K> keyConcept type

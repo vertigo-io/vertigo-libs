@@ -340,9 +340,8 @@ public final class DtObjectsLoader implements Loader {
 	 * Centralisation du parsing des annotations liées à un champ.
 	 */
 	private static void parseAnnotation(final String fieldName, final DtDefinitionBuilder dtDefinitionBuilder, final io.vertigo.datamodel.structure.stereotype.Field field, final DefinitionSpace definitionSpace) {
-		//Si on trouve un domaine on est dans un objet dynamo.
+		//Si on trouve un smartType on est dans un objet dynamo.
 		final FieldType type = FieldType.valueOf(field.type());
-
 		switch (type) {
 			case ID:
 

@@ -36,10 +36,10 @@ import io.vertigo.datamodel.structure.metamodel.Properties;
  *  - an ability to be transformed in and from a primitive datatype
  *
  * Examples :
- *  A mail is not defined by a simple "String", but by a domain called 'Mail'.
+ *  A mail is not defined by a simple "String", but by a smartType called 'Mail'.
  *  Weights, currencies, codes, labels...
  *
- *  An application is built with some dozens of domains.
+ *  An application is built with some dozens of smartType.
  *
  * @author pchretien
  */
@@ -51,21 +51,21 @@ public final class SmartTypeDefinition implements Definition {
 		DATA_OBJECT;
 
 		/**
-		 * @return if the domain is a primitive type
+		 * @return if the smartType is a primitive type
 		 */
 		public boolean isPrimitive() {
 			return this == Scope.PRIMITIVE;
 		}
 
 		/**
-		 * @return if the domain is a value-object
+		 * @return if the smartType is a value-object
 		 */
 		public boolean isValueObject() {
 			return this == Scope.VALUE_OBJECT;
 		}
 
 		/**
-		 * @return if the domain is a data-object
+		 * @return if the smartType is a data-object
 		 */
 		public boolean isDataObject() {
 			return this == Scope.DATA_OBJECT;
@@ -115,7 +115,7 @@ public final class SmartTypeDefinition implements Definition {
 	}
 
 	/**
-	 * @return the domain scope
+	 * @return the smartType scope
 	 */
 	public Scope getScope() {
 		return scope;

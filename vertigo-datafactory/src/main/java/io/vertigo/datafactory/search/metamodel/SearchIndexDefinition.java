@@ -44,7 +44,7 @@ import io.vertigo.datamodel.structure.metamodel.DtStereotype;
  * L'objet d'index est à la fois porteur des champs de recherche, et ceux utilisé à l'affichage.
  * La différence entre les deux peut-être affiné par :
  * - la propriété 'persistent' des fields pour savoir si le champs fait partit ou non du résultat utilisé pour l'affichage
- * - le domain et sa propriété indexType pour savoir si le champs est indéxé ou non
+ * - le smartType et sa propriété indexType pour savoir si le champs est indéxé ou non
  *
  * L'objet d'affichage peut être simple (Ex: résultat google) alors qu'il se réfère à un index plus riche.
  *

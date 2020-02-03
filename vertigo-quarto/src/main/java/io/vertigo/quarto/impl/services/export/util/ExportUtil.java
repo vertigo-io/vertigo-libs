@@ -48,7 +48,7 @@ public final class ExportUtil {
 	}
 
 	/**
-	 * Retourne le text d'un champs du DTO en utilisant le formateur du domaine,
+	 * Retourne le text d'un champs du DTO en utilisant le formateur du smartType,
 	 * ou l'élément issu de la liste de REF si il y a une dénormalisation à
 	 * faire.
 	 * @param entityStoreManager Store Manager

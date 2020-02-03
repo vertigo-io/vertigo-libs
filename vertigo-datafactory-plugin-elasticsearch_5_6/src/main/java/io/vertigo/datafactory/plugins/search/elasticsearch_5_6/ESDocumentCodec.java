@@ -117,7 +117,7 @@ final class ESDocumentCodec {
 		//-----
 
 		final DtDefinition dtDefinition = index.getDefinition().getIndexDtDefinition();
-		final List<DtField> notStoredFields = getNotStoredFields(dtDefinition); //on ne copie pas les champs not stored dans le domain
+		final List<DtField> notStoredFields = getNotStoredFields(dtDefinition); //on ne copie pas les champs not stored dans le smartType
 		notStoredFields.addAll(index.getDefinition().getIndexCopyToFields()); //on ne copie pas les champs (copyTo)
 		final I dtResult;
 		if (notStoredFields.isEmpty()) {

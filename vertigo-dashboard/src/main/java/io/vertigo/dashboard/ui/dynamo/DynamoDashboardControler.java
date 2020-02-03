@@ -135,17 +135,17 @@ public final class DynamoDashboardControler extends AbstractDashboardModuleContr
 				.filter(metric -> "domainUsageInDtDefinitions".equals(metric.getName()))
 				.forEach(metric -> dtDefinitionCount.put(metric.getFeature(), metric.getValue()));
 
-		final Collection<SmartTypeDefinition> domains = Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class);
-		final List<SmartTypeModel> domainModels = domains
+		final Collection<SmartTypeDefinition> smartTypes = Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class);
+		final List<SmartTypeModel> smartTypeModels = smartTypes
 				.stream()
-				.filter(domain -> domain.getScope().isPrimitive()) // we display only primitives
+				.filter(smartType -> smartType.getScope().isPrimitive()) // we display only primitives
 				.map(smartType -> new SmartTypeModel(
 						smartType,
 						taskCount.get(smartType.getName()),
 						dtDefinitionCount.get(smartType.getName())))
 				.collect(Collectors.toList());
 
-		model.put("smartTypes", domainModels);
+		model.put("smartTypes", smartTypeModels);
 
 	}
 

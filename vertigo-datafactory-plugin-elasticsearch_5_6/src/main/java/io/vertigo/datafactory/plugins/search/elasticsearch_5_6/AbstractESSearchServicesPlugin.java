@@ -306,7 +306,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 	}
 
 	private static String obtainPkIndexDataType(final SmartTypeDefinition smartType) {
-		// On peut préciser pour chaque domaine le type d'indexation
+		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
 		Assertion.checkState(smartType.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartType + "].");
 		switch (smartType.getBasicType()) {

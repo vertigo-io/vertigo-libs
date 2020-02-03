@@ -135,7 +135,9 @@ final class SqlStatementDriver {
 
 	/**
 	 * Création du résultat issu d'un resultSet.
-	 * @param domain Domain résultat
+	 * @param dataType Type of the result
+	 * @param basicTypeAdapters a list of adapters from complexTypes (not natively supported by db) to basicType (supported ones).
+	 *  Values are transformed from complex types to basic one before storage.
 	 * @param mapping Mapping SQL
 	 * @param resultSet ResultSet comprenant résultat et Metadonnées permettant le cas échéant de créer dynamiquement un type dynamiquement.
 	 * @return Résultat de la requête.

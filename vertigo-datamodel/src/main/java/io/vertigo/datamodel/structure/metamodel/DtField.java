@@ -109,7 +109,8 @@ public final class DtField {
 	 * @param id the ID of the field
 	 * @param fieldName the name of the field
 	 * @param type the type of the field
-	 * @param smartType the domain of the field
+	 * @param smartType the smartType of the field
+	 * @param cardinality cardinality of the field see {@code Cardinality}
 	 * @param label the label of the field
 	 * @param required if the field is required
 	 * @param persistent if the field is persistent

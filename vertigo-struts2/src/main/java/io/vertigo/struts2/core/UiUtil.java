@@ -84,7 +84,7 @@ public final class UiUtil implements Serializable {
 	 * @return rendu du champs boolean
 	 */
 	public static String formatBoolean(final String fieldPath, final Boolean value) {
-		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
+		if (!fieldPath.contains(".")) { //cas des ContextRef sans smartType
 			return DEFAULT_FORMATTER.valueToString(value, BasicType.Boolean);
 		}
 		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);

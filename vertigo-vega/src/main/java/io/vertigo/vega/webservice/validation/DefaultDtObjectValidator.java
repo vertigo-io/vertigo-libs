@@ -28,7 +28,7 @@ import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 
 /**
- * Default DtObject validation : check domain's constraints on modified fields.
+ * Default DtObject validation : check constraints on modified fields.
  * @author npiedeloup
  * @param <O> Type d'objet
  */

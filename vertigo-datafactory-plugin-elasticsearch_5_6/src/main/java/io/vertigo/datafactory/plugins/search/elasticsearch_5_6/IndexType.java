@@ -53,7 +53,7 @@ final class IndexType {
 			indexSubKeyword = false;
 			indexFieldData = false;
 		} else {
-			// par convention l'indexType du domain => l'analyzer de l'index
+			// par convention l'indexType du smartType => l'analyzer de l'index
 			// L'indexType peut-être compléter pour préciser le type si différente de string avec le séparateur :
 			final String[] indexTypeArray = indexType.split(":", 4);
 			indexAnalyzer = Optional.ofNullable(!indexTypeArray[0].isEmpty() ? indexTypeArray[0] : null); //le premier est toujours l'analyzer (ou le normalizer)
@@ -94,7 +94,7 @@ final class IndexType {
 		}
 	}
 
-	// par convention l'indexType du domain => l'analyzer de l'index
+	// par convention l'indexType du smartType => l'analyzer de l'index
 	// L'indexType peut-être compléter pour préciser le type si différente de string avec le séparateur :
 
 	static IndexType readIndexType(final SmartTypeDefinition smartType) {
@@ -106,7 +106,7 @@ final class IndexType {
 	}
 
 	private static String obtainDefaultIndexDataType(final SmartTypeDefinition smartType) {
-		// On peut préciser pour chaque domaine le type d'indexation
+		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
 		Assertion.checkState(smartType.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartType + "].");
 		switch (smartType.getBasicType()) {
@@ -129,7 +129,7 @@ final class IndexType {
 	}
 
 	private static void checkIndexType(final String indexType, final SmartTypeDefinition smartType) {
-		// On peut préciser pour chaque domaine le type d'indexation
+		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
 		Assertion.checkState(smartType.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartType + "].");
 		switch (smartType.getBasicType()) {
@@ -144,7 +144,7 @@ final class IndexType {
 				break;
 			case String:
 				if (indexType == null) {
-					throw new IllegalArgumentException("Précisez la valeur \"indexType\" dans le domain [" + smartType + "].");
+					throw new IllegalArgumentException("Précisez la valeur \"indexType\" dans le smartType [" + smartType + "].");
 				}
 				break;
 			case DataStream:

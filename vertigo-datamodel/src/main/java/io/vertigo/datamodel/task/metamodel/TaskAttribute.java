@@ -56,7 +56,8 @@ public final class TaskAttribute {
 	 * Constructor.
 	 *
 	 * @param attributeName the name of the attribute
-	 * @param domain the domain of the attribute
+	 * @param smartType the smartType of the attribute
+	 * @param cardinality cardinality of the attribute see {@code Cardinality}
 	 * @param required if the attribute is required
 	 */
 	TaskAttribute(final String attributeName, final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {

@@ -83,9 +83,9 @@ public final class UiUtil implements Serializable {
 
 	/**
 	 * @param fieldPath Chemin du champ
-	 * @return Domain du champs
+	 * @return unit of the field
 	 */
-	public static String domainUnit(final String object, final String fieldName, final String overrideValue) {
+	public static String smartTypeUnit(final String object, final String fieldName, final String overrideValue) {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
@@ -96,9 +96,9 @@ public final class UiUtil implements Serializable {
 
 	/**
 	 * @param fieldPath Chemin du champ
-	 * @return Domain du champs
+	 * @return maxLength of the field
 	 */
-	public static Integer domainMaxLength(final String object, final String fieldName) {
+	public static Integer smartTypeMaxLength(final String object, final String fieldName) {
 		if (fieldName != null) {
 			return getDtField(object + "." + fieldName).getSmartTypeDefinition().getProperties().getValue(DtProperty.MAX_LENGTH);
 		}
@@ -107,9 +107,9 @@ public final class UiUtil implements Serializable {
 
 	/**
 	 * @param fieldPath Chemin du champ
-	 * @return Domain du champs
+	 * @return css of the field
 	 */
-	public static String domainCss(final String object, final String fieldName, final String overrideValue, final String defaultValue) {
+	public static String smartTypeCss(final String object, final String fieldName, final String overrideValue, final String defaultValue) {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {
@@ -120,9 +120,9 @@ public final class UiUtil implements Serializable {
 
 	/**
 	 * @param fieldPath Chemin du champ
-	 * @return Domain du champs
+	 * @return align direction of the field
 	 */
-	public static String domainAlign(final String object, final String fieldName, final String overrideValue) {
+	public static String smartTypeAlign(final String object, final String fieldName, final String overrideValue) {
 		if (overrideValue != null) {
 			return overrideValue;
 		} else if (fieldName != null) {

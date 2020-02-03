@@ -53,7 +53,7 @@ public final class ExportHelper {
 	}
 
 	/**
-	 * Retourne le text d'un champs du DTO en utilisant le formateur du domaine, ou l'élément issu de la liste de REF si il y a une dénormalisation à faire.
+	 * Retourne le text d'un champs du DTO en utilisant le formateur du smartType, ou l'élément issu de la liste de REF si il y a une dénormalisation à faire.
 	 * @param referenceCache Cache des éléments de référence (clé-libellé), peut être vide la premiere fois il sera remplit automatiquement
 	 *  (utilisé pour les champs issus d'association avec une liste de ref)
 	 * @param denormCache Cache des colonnes dénormalisées par field, peut être vide la premiere fois il sera remplit automatiquement

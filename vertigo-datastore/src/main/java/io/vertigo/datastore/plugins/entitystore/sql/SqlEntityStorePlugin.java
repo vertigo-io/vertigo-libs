@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Home;
@@ -80,7 +80,7 @@ public final class SqlEntityStorePlugin implements DataStorePlugin {
 	private final String sequencePrefix;
 	/**
 	 * Domaine à usage interne.
-	 * Ce domaine n'est pas enregistré.
+	 * Ce smartType n'est pas enregistré.
 	 */
 	private final SmartTypeDefinition integerSmartType;
 

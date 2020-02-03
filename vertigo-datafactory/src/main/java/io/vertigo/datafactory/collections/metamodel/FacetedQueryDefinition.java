@@ -62,19 +62,19 @@ public final class FacetedQueryDefinition implements Definition {
 	 * @param name Nom de la definition
 	 * @param keyConceptDtDefinition Definition du keyConcept sur lequel s'applique cette recherche
 	 * @param facetDefinitions Liste des facettes
-	 * @param criteriaDomain Criteria's domain
+	 * @param criteriaSmartType Criteria's smartType
 	 * @param listFilterBuilderClass listFilterBuilderClass to use
 	 * @param listFilterBuilderQuery listFilterBuilderQuery to use
 	 */
 	public FacetedQueryDefinition(
 			final String name,
 			final List<FacetDefinition> facetDefinitions,
-			final SmartTypeDefinition criteriaDomain,
+			final SmartTypeDefinition criteriaSmartType,
 			final Class<? extends ListFilterBuilder> listFilterBuilderClass,
 			final String listFilterBuilderQuery) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(facetDefinitions);
-		Assertion.checkNotNull(criteriaDomain);
+		Assertion.checkNotNull(criteriaSmartType);
 		Assertion.checkNotNull(listFilterBuilderClass);
 		Assertion.checkNotNull(listFilterBuilderQuery);
 		//-----
@@ -82,7 +82,7 @@ public final class FacetedQueryDefinition implements Definition {
 		for (final FacetDefinition facetDefinition : facetDefinitions) {
 			this.facetDefinitions.put(facetDefinition.getName(), facetDefinition);
 		}
-		this.criteriaDomain = criteriaDomain;
+		this.criteriaDomain = criteriaSmartType;
 		this.listFilterBuilderClass = listFilterBuilderClass;
 		this.listFilterBuilderQuery = listFilterBuilderQuery;
 	}

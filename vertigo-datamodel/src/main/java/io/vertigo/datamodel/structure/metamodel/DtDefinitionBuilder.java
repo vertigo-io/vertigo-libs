@@ -123,7 +123,8 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param fieldName the name of the field
 	 * @param fkDtDefinitionName the name of the linked definition
 	 * @param label the label of the field
-	 * @param domain the domain of the field
+	 * @param smartType the smartType of the field
+	 * @param cardinality cardinality of the field see {@code Cardinality}
 	 * @param required if the field is required
 	 * @return this builder
 	 */
@@ -154,21 +155,22 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 *
 	 * @param fieldName the name of the field
 	 * @param label the label of the field
-	 * @param domain the domain of the field
+	 * @param smartType the smartType of the field
+	 * @param cardinality cardinality of the field see {@code Cardinality}
 	 * @param computedExpression the expression use to compute the field
 	 * @return this builder
 	 */
 	public DtDefinitionBuilder addComputedField(
 			final String fieldName,
 			final String label,
-			final SmartTypeDefinition domain,
+			final SmartTypeDefinition smartType,
 			final Cardinality cardinality,
 			final ComputedExpression computedExpression) {
 		final boolean persistent = false;
 		final DtField dtField = createField(
 				fieldName,
 				DtField.FieldType.COMPUTED,
-				domain,
+				smartType,
 				label,
 				cardinality,
 				persistent,
@@ -182,7 +184,8 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * Adds a common data field.
 	 *
 	 * @param fieldName the name of the field
-	 * @param domain the domain of the field
+	 * @param smartType the smartType of the field
+	 * @param cardinality cardinality of the field see {@code Cardinality}
 	 * @param label the label of the field
 	 * @param required if the field is required
 	 * @param persistent if the fiels is persistent
@@ -213,7 +216,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * This field is required.
 	 *
 	 * @param fieldName the name of the field
-	 * @param domain the domain of the field
+	 * @param smartType the smartType of the field
 	 * @param label the label of the field
 	 * @return this builder
 	 */

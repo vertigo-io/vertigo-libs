@@ -128,8 +128,8 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * Adds an output attribute.
 	 *
 	 * @param attributeName the name of the attribute
-	 * @param domain the domain of the attribute
-	 * @param cardinality cadinality (one, optional, many)
+	 * @param smartType the smartType of the attribute
+	 * @param cardinality cardinality of the attribute see {@code Cardinality}
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {

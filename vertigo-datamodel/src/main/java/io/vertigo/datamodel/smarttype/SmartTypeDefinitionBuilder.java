@@ -51,8 +51,8 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 
 	/**
 	 * Constructor.
-	 * @param name the name of the domain
-	 * @param dataType the dataType of the domain
+	 * @param name the name of the smartType
+	 * @param dataType the dataType of the smartType
 	 */
 	SmartTypeDefinitionBuilder(final String name, final BasicType dataType) {
 		Assertion.checkArgNotEmpty(name);
@@ -66,8 +66,8 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 
 	/**
 	 * Constructor.
-	 * @param name the name of the domain
-	 * @param valueObjectClass the value-object class of the domain
+	 * @param name the name of the smartType
+	 * @param valueObjectClass the value-object class of the smartType
 	 */
 	SmartTypeDefinitionBuilder(final String name, final Class valueObjectClass) {
 		Assertion.checkArgNotEmpty(name);
