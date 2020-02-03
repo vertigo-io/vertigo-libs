@@ -508,6 +508,32 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 		}
 	}
 
+	private static class SmartTypeAdapter<S> implements JsonSerializer<S>, JsonDeserializer<S> {
+		private final Class<S> smartType;
+		private final BasicTypeAdapter<S, String> basicTypeAdapter;
+
+		SmartTypeAdapter(final Class<S> smartType, final BasicTypeAdapter<S, String> basicTypeAdapter) {
+			this.smartType = smartType;
+			this.basicTypeAdapter = basicTypeAdapter;
+		}
+
+		@Override
+		public S deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
+			if (BasicType.String == basicTypeAdapter.getBasicType()) {//TODO should be json
+				return basicTypeAdapter.toJava(json.toString(), smartType);
+			}
+			return basicTypeAdapter.toJava(context.deserialize(json, basicTypeAdapter.getBasicType().getJavaClass()), smartType);
+		}
+
+		@Override
+		public JsonElement serialize(final S src, final Type typeOfSrc, final JsonSerializationContext context) {
+			if (BasicType.String == basicTypeAdapter.getBasicType()) { //TODO should be json
+				return JsonParser.parseString(basicTypeAdapter.toBasic(src));
+			}
+			return context.serialize(basicTypeAdapter.toBasic(src));
+		}
+	}
+
 	private Gson createGson(final Map<Class, BasicTypeAdapter> jsonBasicTypeAdapters) {
 		try {
 			final GsonBuilder gsonBuilder = new GsonBuilder();
@@ -515,30 +541,8 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 				gsonBuilder.serializeNulls();
 			}
 			jsonBasicTypeAdapters.entrySet().stream()
-					.forEach(entry -> {
-						gsonBuilder.registerTypeAdapter(entry.getKey(), new JsonSerializer() {
+					.forEach(entry -> gsonBuilder.registerTypeAdapter(entry.getKey(), new SmartTypeAdapter(entry.getKey(), entry.getValue())));
 
-							@Override
-							public JsonElement serialize(final Object src, final Type typeOfSrc, final JsonSerializationContext context) {
-								if (BasicType.String == entry.getValue().getBasicType()) { //TODO should be json
-									return JsonParser.parseString((String) entry.getValue().toBasic(src));
-								}
-								return context.serialize(entry.getValue().toBasic(src));
-							}
-						});
-
-						gsonBuilder.registerTypeAdapter(entry.getKey(), new JsonDeserializer() {
-
-							@Override
-							public Object deserialize(final JsonElement json, final Type typeOfT, final JsonDeserializationContext context) throws JsonParseException {
-								if (BasicType.String == entry.getValue().getBasicType()) {//TODO should be json
-									return entry.getValue().toJava(json.toString(), entry.getKey());
-								}
-								return entry.getValue().toJava(context.deserialize(json, entry.getValue().getBasicType().getJavaClass()), entry.getKey());
-							}
-
-						});
-					});
 			return gsonBuilder
 					.setPrettyPrinting()
 					//.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
