@@ -21,6 +21,7 @@ package io.vertigo.stella.work.distributed.rest;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
+import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.stella.StellaFeatures;
 import io.vertigo.stella.work.AbstractWorkManagerTest;
 import io.vertigo.vega.VegaFeatures;
@@ -36,6 +37,8 @@ public final class LocalRestWorkManagerTest extends AbstractWorkManagerTest {
 				.beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(new DataModelFeatures()
 						.build())
 				.addModule(new VegaFeatures()
 						.withWebServices()

@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
+import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.stella.StellaFeatures;
 import io.vertigo.stella.master.MasterManager;
 import io.vertigo.stella.work.AbstractWorkManagerTest;
@@ -69,6 +70,8 @@ public final class RestWorkManagerTest extends AbstractWorkManagerTest {
 				.beginBoot()
 				.endBoot()
 				.addModule(new CommonsFeatures()
+						.build())
+				.addModule(new DataModelFeatures()
 						.build())
 				.addModule(new VegaFeatures()
 						.withWebServices()
