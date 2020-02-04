@@ -44,6 +44,7 @@ public final class Item implements KeyConcept {
 	private Long optionalNumber;
 	private String optionalString;
 	private Instant lastModified;
+	private GeoPoint localisation;
 
 	/** {@inheritDoc} */
 	@Override
@@ -52,65 +53,65 @@ public final class Item implements KeyConcept {
 	}
 
 	@Field(smartType = "STyIdentifiant", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
-	public final Long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public final void setId(final Long id) {
+	public void setId(final Long id) {
 		this.id = id;
 	}
 
 	@Field(smartType = "STyKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
-	public final String getManufacturer() {
+	public String getManufacturer() {
 		return manufacturer;
 	}
 
-	public final void setManufacturer(final String manufacturer) {
+	public void setManufacturer(final String manufacturer) {
 		this.manufacturer = manufacturer;
 	}
 
 	@Field(smartType = "STyString", cardinality = Cardinality.ONE, label = "Modéle")
-	public final String getModel() {
+	public String getModel() {
 		return model;
 	}
 
-	public final void setModel(final String model) {
+	public void setModel(final String model) {
 		this.model = model;
 	}
 
 	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "Descriptif")
-	public final String getDescription() {
+	public String getDescription() {
 		return description;
 	}
 
-	public final void setDescription(final String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
 	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Année")
-	public final Integer getYear() {
+	public Integer getYear() {
 		return year;
 	}
 
-	public final void setYear(final Integer year) {
+	public void setYear(final Integer year) {
 		this.year = year;
 	}
 
 	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Kilométrage")
-	public final Integer getKilo() {
+	public Integer getKilo() {
 		return kilo;
 	}
 
-	public final void setKilo(final Integer kilo) {
+	public void setKilo(final Integer kilo) {
 		this.kilo = kilo;
 	}
 
 	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Prix")
-	public final Integer getPrice() {
+	public Integer getPrice() {
 		return price;
 	}
 
-	public final void setPrice(final Integer price) {
+	public void setPrice(final Integer price) {
 		this.price = price;
 	}
 
@@ -124,48 +125,57 @@ public final class Item implements KeyConcept {
 	}
 
 	@Field(smartType = "STyKeyword", cardinality = Cardinality.ONE, label = "Type de moteur")
-	public final String getMotorType() {
+	public String getMotorType() {
 		return motorType;
 	}
 
-	public final void setMotorType(final String motorType) {
+	public void setMotorType(final String motorType) {
 		this.motorType = motorType;
 	}
 
 	@Field(smartType = "STyIdentifiant", type = "FOREIGN_KEY", cardinality = Cardinality.ONE, label = "Famille")
-	public final Long getFamId() {
+	public Long getFamId() {
 		return famId;
 	}
 
-	public final void setFamId(final Long famId) {
+	public void setFamId(final Long famId) {
 		this.famId = famId;
 	}
 
 	@Field(smartType = "STyIdentifiant", label = "OptionalNumber")
-	public final Long getOptionalNumber() {
+	public Long getOptionalNumber() {
 		return optionalNumber;
 	}
 
-	public final void setOptionalNumber(final Long optionalNumber) {
+	public void setOptionalNumber(final Long optionalNumber) {
 		this.optionalNumber = optionalNumber;
 	}
 
 	@Field(smartType = "STyKeyword", label = "OptionalString")
-	public final String getOptionalString() {
+	public String getOptionalString() {
 		return optionalString;
 	}
 
-	public final void setOptionalString(final String optionalString) {
+	public void setOptionalString(final String optionalString) {
 		this.optionalString = optionalString;
 	}
 
 	@Field(smartType = "STyDateTime", label = "LastModified")
-	public final Instant getLastModified() {
+	public Instant getLastModified() {
 		return lastModified;
 	}
 
-	public final void setLastModified(final Instant lastModified) {
+	public void setLastModified(final Instant lastModified) {
 		this.lastModified = lastModified;
+	}
+
+	@Field(smartType = "STyGeoPoint", label = "localisation")
+	public GeoPoint getLocalisation() {
+		return localisation;
+	}
+
+	public void setLocalisation(final GeoPoint localisation) {
+		this.localisation = localisation;
 	}
 
 	/*@Field(domain = "STy_KEYWORD", type = "COMPUTED", persistent = false, label = "model sort")

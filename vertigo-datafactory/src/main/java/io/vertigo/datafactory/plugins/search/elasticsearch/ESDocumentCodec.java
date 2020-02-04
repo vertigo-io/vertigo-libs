@@ -20,6 +20,7 @@ package io.vertigo.datafactory.plugins.search.elasticsearch;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -29,8 +30,10 @@ import org.elasticsearch.search.SearchHit;
 
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
+import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DataAccessor;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -53,15 +56,19 @@ public final class ESDocumentCodec {
 
 	//-----
 	private final CodecManager codecManager;
+	private final ModelManager modelManager;
 
 	/**
 	 * Constructor.
 	 * @param codecManager Manager des codecs
+	 * @param codecManager Manager de la modelisation (SmartTypes)
 	 */
-	public ESDocumentCodec(final CodecManager codecManager) {
+	public ESDocumentCodec(final CodecManager codecManager, final ModelManager modelManager) {
 		Assertion.checkNotNull(codecManager);
+		Assertion.checkNotNull(modelManager);
 		//-----
 		this.codecManager = codecManager;
+		this.modelManager = modelManager;
 	}
 
 	private <I extends DtObject> String encode(final I dto) {
@@ -139,17 +146,27 @@ public final class ESDocumentCodec {
 			final DtObject dtIndex = index.getIndexDtObject();
 			final DtDefinition indexDtDefinition = DtObjectUtil.findDtDefinition(dtIndex);
 			final Set<DtField> copyToFields = index.getDefinition().getIndexCopyToFields();
-
+			final Map<Class, BasicTypeAdapter> typeAdapters = modelManager.getTypeAdapters("search");
 			for (final DtField dtField : indexDtDefinition.getFields()) {
 				if (!copyToFields.contains(dtField)) {//On index pas les copyFields
 					final Object value = dtField.getDataAccessor().getValue(dtIndex);
 					if (value != null) { //les valeurs null ne sont pas indexées => conséquence : on ne peut pas les rechercher
 						final String indexFieldName = dtField.getName();
-						if (value instanceof String) {
-							final String encodedValue = escapeInvalidUTF8Char((String) value);
-							xContentBuilder.field(indexFieldName, encodedValue);
-						} else {
-							xContentBuilder.field(indexFieldName, value);
+						switch (dtField.getSmartTypeDefinition().getScope()) {
+							case PRIMITIVE:
+								if (value instanceof String) {
+									final String encodedValue = escapeInvalidUTF8Char((String) value);
+									xContentBuilder.field(indexFieldName, encodedValue);
+								} else {
+									xContentBuilder.field(indexFieldName, value);
+								}
+								break;
+							case VALUE_OBJECT:
+								final BasicTypeAdapter basicTypeAdapter = typeAdapters.get(dtField.getSmartTypeDefinition().getJavaClass());
+								xContentBuilder.field(indexFieldName, basicTypeAdapter.toBasic(value));
+								break;
+							default:
+								throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + dtField.getSmartTypeDefinition() + "].");
 						}
 					}
 				}

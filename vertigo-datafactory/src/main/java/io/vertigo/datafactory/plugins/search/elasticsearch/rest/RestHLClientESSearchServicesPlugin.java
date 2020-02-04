@@ -72,6 +72,7 @@ import io.vertigo.datafactory.plugins.search.elasticsearch.IndexType;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
+import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -119,9 +120,9 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<RestHighLevelElasticSearchConnector> elasticSearchConnectors,
 			final CodecManager codecManager,
+			final ModelManager modelManager,
 			final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(envIndexPrefix);
-		Assertion.checkNotNull(codecManager);
 		Assertion.checkNotNull(elasticSearchConnectors);
 		Assertion.checkArgument(!elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
 		//Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
@@ -129,7 +130,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		//-----
 		this.defaultMaxRows = defaultMaxRows;
 		defaultListState = DtListState.of(defaultMaxRows);
-		elasticDocumentCodec = new ESDocumentCodec(codecManager);
+		elasticDocumentCodec = new ESDocumentCodec(codecManager, modelManager);
 		//------
 		this.envIndexPrefix = envIndexPrefix;
 		configFileUrl = resourceManager.resolve(configFile);
