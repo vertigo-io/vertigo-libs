@@ -92,7 +92,7 @@ public class FormatterNumberLocalized extends FormatterNumber {
 		final Locale currentLocale = Home.getApp().getComponentSpace().resolve(LocaleManager.class).getCurrentLocale();
 		DecimalFormatSymbols decimalFormatSymbols = decimalFormatSymbolsMap.get(currentLocale);
 		if (decimalFormatSymbols == null) {
-			// si Locale.FRANCE cela donne la virugle comme séparateur décimal
+			// si Locale.FRANCE cela donne la virgule comme séparateur décimal
 			// et l'espace insécable comme séparateur de milliers
 			decimalFormatSymbols = new java.text.DecimalFormatSymbols(currentLocale);
 			if (decimalSep != null) {
