@@ -23,8 +23,6 @@ import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
-import io.vertigo.core.node.Home;
-import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
 
@@ -37,7 +35,6 @@ public final class IndexType {
 	private static final String INDEX_NOT_SORTABLE = "notSortable";
 	private static final String INDEX_FACETABLE = "facetable";
 	private static final String INDEX_NOT_FACETABLE = "notFacetable";
-	private final ModelManager modelManager;
 	private final Optional<String> indexAnalyzer;
 	private final String indexDataType;
 	private final boolean indexStored;
@@ -47,12 +44,11 @@ public final class IndexType {
 	private IndexType(final String indexType, final SmartTypeDefinition smartTypeDefinition) {
 		Assertion.checkNotNull(smartTypeDefinition);
 		//-----
-		modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
-		checkIndexType(indexType, smartTypeDefinition, modelManager);
+		checkIndexType(indexType, smartTypeDefinition);
 		if (indexType == null) {
 			//si pas d'indexType on précise juste le dataType pour rester triable
 			indexAnalyzer = Optional.empty();
-			indexDataType = obtainDefaultIndexDataType(smartTypeDefinition, modelManager);
+			indexDataType = obtainDefaultIndexDataType(smartTypeDefinition);
 			indexStored = true;
 			indexSubKeyword = false;
 			indexFieldData = false;
@@ -63,7 +59,7 @@ public final class IndexType {
 			indexAnalyzer = Optional.ofNullable(!indexTypeArray[0].isEmpty() ? indexTypeArray[0] : null); //le premier est toujours l'analyzer (ou le normalizer)
 			//les suivants sont optionnels et soit indexDataType, soit le indexStored, soit le indexKeyword
 			if (indexTypeArray.length == 1) {
-				indexDataType = obtainDefaultIndexDataType(smartTypeDefinition, modelManager);
+				indexDataType = obtainDefaultIndexDataType(smartTypeDefinition);
 				indexStored = true;
 				indexSubKeyword = false;
 				indexFieldData = false;
@@ -90,7 +86,7 @@ public final class IndexType {
 					}
 				}
 				//valeurs par défaut
-				indexDataType = parsedIndexDataType != null ? parsedIndexDataType : obtainDefaultIndexDataType(smartTypeDefinition, modelManager);
+				indexDataType = parsedIndexDataType != null ? parsedIndexDataType : obtainDefaultIndexDataType(smartTypeDefinition);
 				indexStored = parsedIndexStored != null ? parsedIndexStored : true;
 				indexSubKeyword = parsedIndexSubKeyword != null ? parsedIndexSubKeyword : false;
 				indexFieldData = parsedIndexFieldData != null ? parsedIndexFieldData : false;
@@ -109,7 +105,7 @@ public final class IndexType {
 		return new IndexType(indexType, smartTypeDefinition);
 	}
 
-	private static String obtainDefaultIndexDataType(final SmartTypeDefinition smartTypeDefinition, final ModelManager modelManager) {
+	private static String obtainDefaultIndexDataType(final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
 		Assertion.checkState(smartTypeDefinition.getScope().isPrimitive()
@@ -118,7 +114,7 @@ public final class IndexType {
 		if (smartTypeDefinition.getScope().isPrimitive()) {
 			basicType = smartTypeDefinition.getBasicType();
 		} else { // smartTypeDefinition.getScope().isValueObject()
-			basicType = modelManager.getTypeAdapters("search").get(smartTypeDefinition.getJavaClass()).getBasicType();
+			basicType = smartTypeDefinition.getAdapterConfigs().get("search").getTargetBasicType();
 		}
 
 		switch (basicType) {
@@ -140,7 +136,7 @@ public final class IndexType {
 		}
 	}
 
-	private static void checkIndexType(final String indexType, final SmartTypeDefinition smartTypeDefinition, final ModelManager modelManager) {
+	private static void checkIndexType(final String indexType, final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
 		Assertion.checkState(smartTypeDefinition.getScope().isPrimitive()
@@ -150,7 +146,7 @@ public final class IndexType {
 		if (smartTypeDefinition.getScope().isPrimitive()) {
 			basicType = smartTypeDefinition.getBasicType();
 		} else { // smartTypeDefinition.getScope().isValueObject()
-			basicType = modelManager.getTypeAdapters("search").get(smartTypeDefinition.getJavaClass()).getBasicType();
+			basicType = smartTypeDefinition.getAdapterConfigs().get("search").getTargetBasicType();
 		}
 		switch (basicType) {
 			case Boolean:

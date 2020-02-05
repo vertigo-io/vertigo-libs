@@ -43,13 +43,13 @@ public class ModelManagerImpl implements ModelManager, Activeable {
 
 		wildcardAdapters = Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
-				.flatMap(smartTypeDefinition -> smartTypeDefinition.getAdapterConfigs().stream().map(adapterConfig -> Tuple.of(smartTypeDefinition.getJavaClass(), adapterConfig)))
-				.filter(tuple -> "*".equals(tuple.getVal2().getType()))
+				.filter(smartTypeDefinition -> smartTypeDefinition.getAdapterConfigs().containsKey("*"))
+				.map(smartTypeDefinition -> Tuple.of(smartTypeDefinition.getJavaClass(), smartTypeDefinition.getAdapterConfigs().get("*")))
 				.collect(Collectors.toMap(Tuple::getVal1, tuple -> createBasicTypeAdapter(tuple.getVal2())));
 
 		Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
-				.flatMap(smartTypeDefinition -> smartTypeDefinition.getAdapterConfigs().stream().map(adapterConfig -> Tuple.of(smartTypeDefinition.getJavaClass(), adapterConfig)))
+				.flatMap(smartTypeDefinition -> smartTypeDefinition.getAdapterConfigs().values().stream().map(adapterConfig -> Tuple.of(smartTypeDefinition.getJavaClass(), adapterConfig)))
 				.filter(tuple -> !"*".equals(tuple.getVal2().getType()))
 				.forEach(tuple -> adaptersByType.putIfAbsent(tuple.getVal2().getType(), new HashMap<>())
 						.put(tuple.getVal1(), createBasicTypeAdapter(tuple.getVal2())));

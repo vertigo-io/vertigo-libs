@@ -19,7 +19,10 @@
 package io.vertigo.datamodel.smarttype;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
@@ -76,7 +79,7 @@ public final class SmartTypeDefinition implements Definition {
 	private final Scope scope;
 	private final String valueObjectClassName;
 	private final Optional<BasicType> basicTypeOpt; //nullable
-	private final List<AdapterConfig> adapterConfigs;
+	private final Map<String, AdapterConfig> adapterConfigs;
 	private final FormatterConfig formatterConfig;
 	private final List<ConstraintConfig> constraintConfigs;
 
@@ -101,7 +104,11 @@ public final class SmartTypeDefinition implements Definition {
 		this.scope = scope;
 		this.valueObjectClassName = valueObjectClassName;
 		basicTypeOpt = BasicType.of(getJavaClass());
-		this.adapterConfigs = adapterConfigs;
+		this.adapterConfigs = adapterConfigs
+				.stream()
+				.collect(Collectors.toMap(AdapterConfig::getType, Function.identity(), (a, b) -> {
+					throw new IllegalArgumentException("Only one adapter per type is supported. Smarttype '" + name + "' declares multiple adapters for type '" + a.getType() + "'");
+				}));
 		this.properties = properties;
 		this.formatterConfig = formatterConfig;
 		this.constraintConfigs = constraintConfigs;
@@ -134,7 +141,7 @@ public final class SmartTypeDefinition implements Definition {
 		return basicTypeOpt.get();
 	}
 
-	public List<AdapterConfig> getAdapterConfigs() {
+	public Map<String, AdapterConfig> getAdapterConfigs() {
 		return adapterConfigs;
 	}
 
