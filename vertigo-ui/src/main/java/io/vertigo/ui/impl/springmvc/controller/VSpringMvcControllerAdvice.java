@@ -18,6 +18,8 @@
  */
 package io.vertigo.ui.impl.springmvc.controller;
 
+import java.util.function.Supplier;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.HttpStatus;
@@ -48,6 +50,12 @@ public final class VSpringMvcControllerAdvice {
 		final UiMessageStack uiMessageStack = UiRequestUtil.obtainCurrentUiMessageStack();
 		//---
 		model.addAttribute("model", viewContext.asMap());
+		model.addAttribute("viewContextAsJson", new Supplier<String>() {
+			@Override
+			public String get() {
+				return viewContext.getFilteredViewContextAsJson();
+			}
+		});
 		model.addAttribute("uiMessageStack", uiMessageStack);
 		// here we can retrieve anything and put it into the model or in our context
 		// we can also use argument resolvers to retrieve attributes in our context for convenience (a DtObject or an UiObject can be retrieved as parameters

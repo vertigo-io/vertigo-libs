@@ -345,10 +345,6 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 				Arrays.asList(MAP_VALUE_TRANSFORMER, listKey, listKeyFieldName, listDisplayFieldName));
 	}
 
-	public ViewContextMap getFilteredViewContext() {
-		return getFilteredViewContext(Optional.empty());
-	}
-
 	ViewContextMap getFilteredViewContext(final Optional<Set<String>> subFilterOpt) {
 		final ViewContextMap viewContextMapForClient = new ViewContextMap();
 		viewContextMapForClient.put(CTX, get(CTX));

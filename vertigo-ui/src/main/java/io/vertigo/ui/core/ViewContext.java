@@ -46,6 +46,7 @@ import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.model.UiList;
 import io.vertigo.vega.webservice.model.UiObject;
 import io.vertigo.vega.webservice.validation.DefaultDtObjectValidator;
@@ -67,10 +68,14 @@ public final class ViewContext implements Serializable {
 	private final Set<String> modifiedKeys = new HashSet<>();
 	private final ViewContextMap viewContextMap;
 
-	public ViewContext(final ViewContextMap viewContextMap) {
+	private final JsonEngine jsonEngine;
+
+	public ViewContext(final ViewContextMap viewContextMap, final JsonEngine jsonEngine) {
 		Assertion.checkNotNull(viewContextMap);
+		Assertion.checkNotNull(jsonEngine);
 		//---
 		this.viewContextMap = viewContextMap;
+		this.jsonEngine = jsonEngine;
 	}
 
 	/* ================================== Life cycle =====================================*/
@@ -123,6 +128,14 @@ public final class ViewContext implements Serializable {
 		return viewContextMap;
 	}
 
+	public ViewContextMap asUpdatesMap() {
+		return viewContextMap.getFilteredViewContext(Optional.of(modifiedKeys));
+	}
+
+	public String getFilteredViewContextAsJson() {
+		return jsonEngine.toJson(viewContextMap.getFilteredViewContext(Optional.empty()));
+	}
+
 	public void markModifiedKeys(final ViewContextKey... newModifiedKeys) {
 		modifiedKeys.addAll(Arrays.stream(newModifiedKeys)
 				.map(ViewContextKey::get)
@@ -131,10 +144,6 @@ public final class ViewContext implements Serializable {
 
 	public void markModifiedKeys(final String... newModifiedKeys) {
 		modifiedKeys.addAll(Arrays.asList(newModifiedKeys));
-	}
-
-	public ViewContextMap asUpdatesMap() {
-		return viewContextMap.getFilteredViewContext(Optional.of(modifiedKeys));
 	}
 
 	/* ================================== Map =====================================*/

@@ -18,6 +18,7 @@
  */
 package io.vertigo.vega.engines.webservice.json;
 
+import java.io.Reader;
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -76,6 +77,16 @@ public interface JsonEngine extends Component {
 	 * @return Object filled with json typed data
 	 */
 	<D> D fromJson(String json, Type paramType);
+
+	/**
+	 * Standard convert Json to object.
+	 * While converting accept missing object fields and unknown object fields (and then just forgot json value)
+	 * @param <D> Object type
+	 * @param jsonReader Reader
+	 * @param paramType Object type
+	 * @return Object filled with json typed data
+	 */
+	<D> D fromJson(Reader jsonReader, Type paramType);
 
 	/**
 	 * Specific convertion Json to UiObject.

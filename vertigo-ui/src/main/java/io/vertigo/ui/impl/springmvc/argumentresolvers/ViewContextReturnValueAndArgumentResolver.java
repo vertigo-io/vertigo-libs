@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.core.MethodParameter;
-import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.http.server.ServletServerHttpResponse;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -32,13 +31,15 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.mvc.method.annotation.AbstractMessageConverterMethodProcessor;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.ui.core.ViewContext;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 
 public class ViewContextReturnValueAndArgumentResolver extends AbstractMessageConverterMethodProcessor {
 
 	public ViewContextReturnValueAndArgumentResolver() {
-		super(Collections.singletonList(new GsonHttpMessageConverter()));
+		super(Collections.singletonList(DIInjector.newInstance(VegaJsonHttpMessageConverter.class, Home.getApp().getComponentSpace())));
 	}
 
 	@Override

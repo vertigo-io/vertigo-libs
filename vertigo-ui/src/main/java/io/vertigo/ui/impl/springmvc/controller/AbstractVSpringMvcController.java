@@ -42,6 +42,7 @@ import io.vertigo.ui.core.ViewContextMap;
 import io.vertigo.ui.exception.ExpiredViewContextException;
 import io.vertigo.ui.impl.springmvc.util.UiRequestUtil;
 import io.vertigo.ui.impl.springmvc.util.UiUtil;
+import io.vertigo.vega.engines.webservice.json.JsonEngine;
 import io.vertigo.vega.webservice.validation.UiMessageStack;
 
 /**
@@ -85,6 +86,8 @@ public abstract class AbstractVSpringMvcController {
 	private KVStoreManager kvStoreManager;
 	@Inject
 	private VTransactionManager transactionManager;
+	@Inject
+	private JsonEngine jsonEngine;
 
 	public void prepareContext(final HttpServletRequest request) throws ExpiredViewContextException {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
@@ -102,13 +105,13 @@ public abstract class AbstractVSpringMvcController {
 				if (viewContextMap == null) {
 					contextMiss(ctxId);
 				}
-				viewContext = new ViewContext(viewContextMap);
+				viewContext = new ViewContext(viewContextMap, jsonEngine);
 				viewContext.makeModifiable();
 			}
 			viewContext.setInputCtxId(ctxId);
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
 		} else {
-			viewContext = new ViewContext(new ViewContextMap());
+			viewContext = new ViewContext(new ViewContextMap(), jsonEngine);
 			attributes.setAttribute("viewContext", viewContext, RequestAttributes.SCOPE_REQUEST);
 			//initContextUrlParameters(request, viewContext);
 			//TODO vérifier que l'action demandée n'attendait pas de context : il va etre recrée vide ce qui n'est pas bon dans certains cas.

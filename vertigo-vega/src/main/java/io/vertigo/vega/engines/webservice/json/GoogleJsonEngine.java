@@ -18,6 +18,7 @@
  */
 package io.vertigo.vega.engines.webservice.json;
 
+import java.io.Reader;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -180,6 +181,12 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 	@Override
 	public <D> D fromJson(final String json, final Type paramType) {
 		return gson.fromJson(json, paramType);
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public <D> D fromJson(final Reader jsonReader, final Type paramType) {
+		return gson.fromJson(jsonReader, paramType);
 	}
 
 	/** {@inheritDoc} */
@@ -651,4 +658,5 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			getter.apply(tuple).add(value);
 		}
 	}
+
 }

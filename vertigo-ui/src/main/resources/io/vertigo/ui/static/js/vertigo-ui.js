@@ -169,14 +169,18 @@ var VUi = {
 						}
 					})
 					var selectedFacetValues = vueData[contextKey+"_selectedFacets"][facetCode]
-					if (selectedFacetValues.includes(facetValueCode)) {
-						if (multiple) {
-							selectedFacetValues.splice(selectedFacetValues.indexOf(facetValueCode), 1);
+					if (selectedFacetValues) {
+						if (selectedFacetValues.includes(facetValueCode)) {
+							if (multiple) {
+								selectedFacetValues.splice(selectedFacetValues.indexOf(facetValueCode), 1);
+							} else {
+								selectedFacetValues.splice(0);
+							}
 						} else {
-							selectedFacetValues.splice(0);
+							selectedFacetValues.push(facetValueCode);
 						}
 					} else {
-						selectedFacetValues.push(facetValueCode);
+						vueData[contextKey+"_selectedFacets"][facetCode] = [facetValueCode];
 					}
 					this.search(contextKey);
 				},

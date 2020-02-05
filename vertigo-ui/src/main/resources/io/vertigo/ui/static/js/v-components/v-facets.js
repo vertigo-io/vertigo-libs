@@ -62,7 +62,10 @@ Vue.component('v-facets', {
 		  return this.selectedFacets[facetCode].includes(facetValueCode);
 	  },
 	  isFacetSelected : function (facetCode){
-		  return this.selectedFacets[facetCode].length > 0;
+		  if (this.selectedFacets[facetCode]) {
+			  return this.selectedFacets[facetCode].length > 0;
+		  }
+		  return false;
 	  },
 	  facetValueLabel : function (label, count){
 		  return label + ' (' + count + ')';

@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
-import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.node.Home;
 import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
@@ -280,12 +279,6 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 				final String value = getTypedValue(keyFieldName, String.class);
 				return value != null ? parseMultipleValue(value) : new String[0];
 			}
-		}
-		// we are complex
-		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
-		final Map<Class, BasicTypeAdapter> uiAdapters = modelManager.getTypeAdapters("ui");
-		if (uiAdapters.containsKey(smartType.getJavaClass())) {
-			return (Serializable) uiAdapters.get(smartType.getJavaClass()).toBasic(getTypedValue(keyFieldName, smartType.getJavaClass()));
 		}
 		return getTypedValue(keyFieldName, Serializable.class);
 	}

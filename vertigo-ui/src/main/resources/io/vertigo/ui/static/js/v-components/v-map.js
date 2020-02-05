@@ -11,11 +11,12 @@ Vue.component('v-map', {
 		id: { type: String, required: true},
 		list : { type: Array, required: true },
 		field: { type: String, required: true},
-		nameField: { type: String, required: true},
+		nameField: { type: String},
+		zoomLevel : { type: Number},
 		markerColor : { type: String, 'default': "#000000" },
 		markerFont : { type: String, 'default': "Material Icons" },
 		markerIcon : { type: String, 'default': "place" },
-		markerSize : { type: String, 'default': "45px" }
+		markerSize : { type: Number, 'default': 45 }
 	},
 	data : function () {
 		return {
@@ -28,14 +29,14 @@ Vue.component('v-map', {
 
 		var styleIcon = new ol.style.Style({
 			text : new ol.style.Text({
-				font : this.$props.markerSize +' ' + this.$props.markerFont,
+				font : this.$props.markerSize +'px ' + this.$props.markerFont,
 				text : this.$props.markerIcon,
-				fill : new ol.style.Fill({color : this.$props.markerColor })
+				fill : new ol.style.Fill({color : this.$props.markerColor }),
+				offsetY : -this.$props.markerSize/2
 			})
 		});
 
 		var geoField = this.$props.field;
-		var nameField = this.$props.nameField;
 		features = this.$props.list.map(function(object) {
 			var geoObject;
 			if (typeof object[geoField] === 'string' || object[geoField] instanceof String){
@@ -47,11 +48,13 @@ Vue.component('v-map', {
 				geometry : new ol.geom.Point(ol.proj.fromLonLat([ geoObject.lon, geoObject.lat ])),
 			});
 			
-			iconFeature.set('name', object[nameField]);
+			if (this.$props.nameField) {
+				iconFeature.set('name', object[this.$props.nameField]);
+			}
 			
 			iconFeature.setStyle(styleIcon);
 			return iconFeature
-		});
+		}.bind(this));
 
 		var vectorSource = new ol.source.Vector({
 			features : features
@@ -80,41 +83,45 @@ Vue.component('v-map', {
 		if (features.length > 0) {
 			map.getView().fit(vectorLayer.getSource().getExtent(), map.getSize());
 		}
+		if (this.$props.zoomLevel) {
+			map.getView().setZoom(this.$props.zoomLevel);
+		}
 		
-		var popup = new ol.Overlay({
-	        element: this.$el.querySelector('#popup'),
-	        positioning: 'bottom-center',
-	        stopEvent: false,
-	        offset: [0, -10]
-	      });
-	    map.addOverlay(popup);
-		// display popup on click
-        map.on('click', function(evt) {
-          var feature = map.forEachFeatureAtPixel(evt.pixel,
-            function(feature) {
-              return feature;
-            });
-          if (feature) {
-            var coordinates = feature.getGeometry().getCoordinates();
-            popup.setPosition(coordinates);
-            this.$data.popupDisplayed = true;
-            this.$data.popupTitle = feature.get('name');
-          } else {
-          	this.$data.popupDisplayed = false;
-          }
-        }.bind(this));
-	      
-	    // change mouse cursor when over marker
-	    map.on('pointermove', function(e) {
-			if (e.dragging) {
-				this.$data.popupDisplayed = false;
-			  return;
-			}
-			var pixel = map.getEventPixel(e.originalEvent);
-			var hit = map.hasFeatureAtPixel(pixel);
-			map.getTargetElement().style.cursor = hit ? 'pointer' : '';
-		}.bind(this));
-		
+		if (this.$props.nameField) {
+			var popup = new ol.Overlay({
+		        element: this.$el.querySelector('#popup'),
+		        positioning: 'bottom-center',
+		        stopEvent: false,
+		        offset: [0, -10]
+		      });
+		    map.addOverlay(popup);
+			// display popup on click
+	        map.on('click', function(evt) {
+	          var feature = map.forEachFeatureAtPixel(evt.pixel,
+	            function(feature) {
+	              return feature;
+	            });
+	          if (feature) {
+	            var coordinates = feature.getGeometry().getCoordinates();
+	            popup.setPosition(coordinates);
+	            this.$data.popupDisplayed = true;
+	            this.$data.popupTitle = feature.get('name');
+	          } else {
+	          	this.$data.popupDisplayed = false;
+	          }
+	        }.bind(this));
+		      
+		    // change mouse cursor when over marker
+		    map.on('pointermove', function(e) {
+				if (e.dragging) {
+					this.$data.popupDisplayed = false;
+				  return;
+				}
+				var pixel = map.getEventPixel(e.originalEvent);
+				var hit = map.hasFeatureAtPixel(pixel);
+				map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+			}.bind(this));
+		}
 
 	}
 })
