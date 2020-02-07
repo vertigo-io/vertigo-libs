@@ -39,20 +39,9 @@ public class SmartCarSearchClient implements Component, DefinitionProvider {
 	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
 		return new ListBuilder<DefinitionSupplier>()
 				//---
-				// FacetedQueryDefinition
-				//-----
-				.add(new FacetedQueryDefinitionSupplier("QryCarFacet")
-						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
-						.withListFilterBuilderQuery("#query#")
-						.withCriteriaSmartType("STyLabel")
-						.withFacet("FctDescriptionCar")
-						.withFacet("FctManufacturerCar")
-						.withFacet("FctYearCar"))
-
-				//---
 				// FacetTermDefinition
 				//-----
-				.add(new FacetRangeDefinitionSupplier("FctDescriptionCar")
+				.add(new FacetTermDefinitionSupplier("FctDescriptionCar")
 						.withDtDefinition("DtSmartCar")
 						.withFieldName("description")
 						.withLabel("Par description")
@@ -70,6 +59,17 @@ public class SmartCarSearchClient implements Component, DefinitionProvider {
 						.withRange("r2", "year:[2000 TO 2005]", "2000-2005")
 						.withRange("r3", "year:[2005 TO *]", "après 2005")
 						.withOrder(FacetOrder.definition))
+
+				//---
+				// FacetedQueryDefinition
+				//-----
+				.add(new FacetedQueryDefinitionSupplier("QryCarFacet")
+						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
+						.withListFilterBuilderQuery("#query#")
+						.withCriteriaSmartType("STyText")
+						.withFacet("FctDescriptionCar")
+						.withFacet("FctManufacturerCar")
+						.withFacet("FctYearCar"))
 
 				.build();
 	}

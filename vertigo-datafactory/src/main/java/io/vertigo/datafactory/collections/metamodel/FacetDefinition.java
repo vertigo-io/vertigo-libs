@@ -94,9 +94,9 @@ public final class FacetDefinition implements Definition {
 		Assertion.checkNotNull(label);
 		Assertion.checkNotNull(facetValues);
 		Assertion.when(rangeFacet)
-				.check(() -> !facetValues.isEmpty(), "Les FacetDefinition de type 'range' doivent fournir la liste des segments non vides (FacetValues)");
+				.check(() -> !facetValues.isEmpty(), "Les FacetDefinition de type 'range' doivent fournir la liste des segments non vides (FacetValues) sur " + name);
 		Assertion.when(!rangeFacet)
-				.check(facetValues::isEmpty, "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide");
+				.check(facetValues::isEmpty, "Les FacetDefinition de type 'term' doivent fournir une liste des segments vide sur " + name);
 		Assertion.checkNotNull(order);
 		//-----
 		this.name = name;
