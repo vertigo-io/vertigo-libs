@@ -49,9 +49,7 @@ import io.vertigo.datamodel.structure.metamodel.Properties;
 @DefinitionPrefix("STy")
 public final class SmartTypeDefinition implements Definition {
 	public enum Scope {
-		PRIMITIVE,
-		VALUE_OBJECT,
-		DATA_OBJECT;
+		PRIMITIVE, VALUE_OBJECT, DATA_OBJECT;
 
 		/**
 		 * @return if the smartType is a primitive type
@@ -79,6 +77,7 @@ public final class SmartTypeDefinition implements Definition {
 	private final Scope scope;
 	private final String valueObjectClassName;
 	private final Optional<BasicType> basicTypeOpt; //nullable
+	private final AdapterConfig wildCardAdapterConfigs;
 	private final Map<String, AdapterConfig> adapterConfigs;
 	private final FormatterConfig formatterConfig;
 	private final List<ConstraintConfig> constraintConfigs;
@@ -109,6 +108,7 @@ public final class SmartTypeDefinition implements Definition {
 				.collect(Collectors.toMap(AdapterConfig::getType, Function.identity(), (a, b) -> {
 					throw new IllegalArgumentException("Only one adapter per type is supported. Smarttype '" + name + "' declares multiple adapters for type '" + a.getType() + "'");
 				}));
+		wildCardAdapterConfigs = this.adapterConfigs.get("*");
 		this.properties = properties;
 		this.formatterConfig = formatterConfig;
 		this.constraintConfigs = constraintConfigs;
@@ -143,6 +143,10 @@ public final class SmartTypeDefinition implements Definition {
 
 	public Map<String, AdapterConfig> getAdapterConfigs() {
 		return adapterConfigs;
+	}
+
+	public AdapterConfig getAdapterConfig(final String type) {
+		return adapterConfigs.getOrDefault(type, wildCardAdapterConfigs);
 	}
 
 	public Properties getProperties() {
