@@ -22,6 +22,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicType;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
 
@@ -41,14 +42,14 @@ final class IndexType {
 	private final boolean indexSubKeyword;
 	private final boolean indexFieldData;
 
-	private IndexType(final String indexType, final SmartTypeDefinition smartType) {
-		Assertion.checkNotNull(smartType);
+	private IndexType(final String indexType, final SmartTypeDefinition smartTypeDefinition) {
+		Assertion.checkNotNull(smartTypeDefinition);
 		//-----
-		checkIndexType(indexType, smartType);
+		checkIndexType(indexType, smartTypeDefinition);
 		if (indexType == null) {
 			//si pas d'indexType on précise juste le dataType pour rester triable
 			indexAnalyzer = Optional.empty();
-			indexDataType = obtainDefaultIndexDataType(smartType);
+			indexDataType = obtainDefaultIndexDataType(smartTypeDefinition);
 			indexStored = true;
 			indexSubKeyword = false;
 			indexFieldData = false;
@@ -59,7 +60,7 @@ final class IndexType {
 			indexAnalyzer = Optional.ofNullable(!indexTypeArray[0].isEmpty() ? indexTypeArray[0] : null); //le premier est toujours l'analyzer (ou le normalizer)
 			//les suivants sont optionnels et soit indexDataType, soit le indexStored, soit le indexKeyword
 			if (indexTypeArray.length == 1) {
-				indexDataType = obtainDefaultIndexDataType(smartType);
+				indexDataType = obtainDefaultIndexDataType(smartTypeDefinition);
 				indexStored = true;
 				indexSubKeyword = false;
 				indexFieldData = false;
@@ -86,7 +87,7 @@ final class IndexType {
 					}
 				}
 				//valeurs par défaut
-				indexDataType = parsedIndexDataType != null ? parsedIndexDataType : obtainDefaultIndexDataType(smartType);
+				indexDataType = parsedIndexDataType != null ? parsedIndexDataType : obtainDefaultIndexDataType(smartTypeDefinition);
 				indexStored = parsedIndexStored != null ? parsedIndexStored : true;
 				indexSubKeyword = parsedIndexSubKeyword != null ? parsedIndexSubKeyword : false;
 				indexFieldData = parsedIndexFieldData != null ? parsedIndexFieldData : false;
@@ -97,24 +98,32 @@ final class IndexType {
 	// par convention l'indexType du smartType => l'analyzer de l'index
 	// L'indexType peut-être compléter pour préciser le type si différente de string avec le séparateur :
 
-	static IndexType readIndexType(final SmartTypeDefinition smartType) {
-		final String indexType = smartType.getProperties().getValue(DtProperty.INDEX_TYPE);
+	static IndexType readIndexType(final SmartTypeDefinition smartTypeDefinition) {
+		final String indexType = smartTypeDefinition.getProperties().getValue(DtProperty.INDEX_TYPE);
 		if (indexType == null) {
-			return new IndexType(null, smartType);
+			return new IndexType(null, smartTypeDefinition);
 		}
-		return new IndexType(indexType, smartType);
+		return new IndexType(indexType, smartTypeDefinition);
 	}
 
-	private static String obtainDefaultIndexDataType(final SmartTypeDefinition smartType) {
+	private static String obtainDefaultIndexDataType(final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
-		Assertion.checkState(smartType.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartType + "].");
-		switch (smartType.getBasicType()) {
+		Assertion.checkState(smartTypeDefinition.getScope().isPrimitive()
+				|| smartTypeDefinition.getScope().isValueObject(), "Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition + "].");
+		final BasicType basicType;
+		if (smartTypeDefinition.getScope().isPrimitive()) {
+			basicType = smartTypeDefinition.getBasicType();
+		} else { // smartTypeDefinition.getScope().isValueObject()
+			basicType = smartTypeDefinition.getAdapterConfig("search").getTargetBasicType();
+		}
+		
+		switch (basicType) {
 			case Boolean:
 			case Double:
 			case Integer:
 			case Long:
-				return smartType.getBasicType().name().toLowerCase(Locale.ROOT);
+				return basicType.name().toLowerCase(Locale.ROOT);
 			case String:
 				return "text";
 			case LocalDate:
@@ -124,15 +133,23 @@ final class IndexType {
 				return "scaled_float";
 			case DataStream:
 			default:
-				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartType + "].");
+				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartTypeDefinition + "].");
 		}
 	}
 
-	private static void checkIndexType(final String indexType, final SmartTypeDefinition smartType) {
+	private static void checkIndexType(final String indexType, final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
-		Assertion.checkState(smartType.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartType + "].");
-		switch (smartType.getBasicType()) {
+		Assertion.checkState(smartTypeDefinition.getScope().isPrimitive()
+				|| smartTypeDefinition.getScope().isValueObject(), "Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition + "].");
+
+		final BasicType basicType;
+		if (smartTypeDefinition.getScope().isPrimitive()) {
+			basicType = smartTypeDefinition.getBasicType();
+		} else { // smartTypeDefinition.getScope().isValueObject()
+			basicType = smartTypeDefinition.getAdapterConfig("search").getTargetBasicType();
+		}
+		switch (basicType) {
 			case Boolean:
 			case LocalDate:
 			case Instant:
@@ -144,12 +161,12 @@ final class IndexType {
 				break;
 			case String:
 				if (indexType == null) {
-					throw new IllegalArgumentException("Précisez la valeur \"indexType\" dans le smartType [" + smartType + "].");
+					throw new IllegalArgumentException("Précisez la valeur \"indexType\" dans le smart type [" + smartTypeDefinition + "].");
 				}
 				break;
 			case DataStream:
 			default:
-				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartType + "].");
+				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartTypeDefinition + "].");
 		}
 	}
 

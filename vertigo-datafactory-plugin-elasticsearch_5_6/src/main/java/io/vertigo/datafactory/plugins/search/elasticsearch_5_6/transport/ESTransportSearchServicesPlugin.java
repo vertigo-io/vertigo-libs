@@ -34,6 +34,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.datafactory.plugins.search.elasticsearch_5_6.AbstractESSearchServicesPlugin;
+import io.vertigo.datamodel.smarttype.ModelManager;
 
 /**
  * Gestion de la connexion au serveur elasticSearch en mode HTTP. Utilisation du client Transport simple, sans
@@ -75,8 +76,9 @@ public final class ESTransportSearchServicesPlugin extends AbstractESSearchServi
 			@ParamValue("config.file") final String configFile,
 			@ParamValue("node.name") final Optional<String> nodeNameOpt,
 			final CodecManager codecManager,
+			final ModelManager modelManager,
 			final ResourceManager resourceManager) {
-		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, resourceManager);
+		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, modelManager, resourceManager);
 		Assertion.checkArgNotEmpty(serversNamesStr,
 				"Il faut définir les urls des serveurs ElasticSearch (ex : host1:3889,host2:3889). Séparateur : ','");
 		Assertion.checkArgument(!serversNamesStr.contains(";"),

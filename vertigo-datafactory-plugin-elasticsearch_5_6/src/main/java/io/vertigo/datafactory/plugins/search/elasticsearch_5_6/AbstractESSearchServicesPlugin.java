@@ -60,6 +60,7 @@ import io.vertigo.datafactory.impl.search.SearchServicesPlugin;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
+import io.vertigo.datamodel.smarttype.ModelManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -106,6 +107,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final int defaultMaxRows,
 			final String configFile,
 			final CodecManager codecManager,
+			final ModelManager modelManager,
 			final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(indexNameOrPrefix);
 		Assertion.checkNotNull(codecManager);
@@ -114,7 +116,7 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 		//-----
 		this.defaultMaxRows = defaultMaxRows;
 		defaultListState = DtListState.of(defaultMaxRows);
-		elasticDocumentCodec = new ESDocumentCodec(codecManager);
+		elasticDocumentCodec = new ESDocumentCodec(codecManager, modelManager);
 		//------
 		this.indexNameOrPrefix = indexNameOrPrefix.toLowerCase(Locale.ROOT).trim();
 		this.indexNameIsPrefix = indexNameIsPrefix;
