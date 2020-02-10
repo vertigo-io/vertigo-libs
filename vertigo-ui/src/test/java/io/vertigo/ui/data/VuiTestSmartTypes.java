@@ -3,6 +3,7 @@ package io.vertigo.ui.data;
 import java.time.Instant;
 import java.time.LocalDate;
 
+import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintNumberMaximum;
 import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintNumberMinimum;
 import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintRegex;
 import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength;
@@ -62,7 +63,7 @@ public enum VuiTestSmartTypes {
 	@SmartTypeDefinition(Integer.class)
 	@FormatterDefault
 	@Constraint(clazz = ConstraintNumberMinimum.class, arg = "1500", msg = "")
-	@Constraint(clazz = ConstraintNumberMinimum.class, arg = "2500", msg = "")
+	@Constraint(clazz = ConstraintNumberMaximum.class, arg = "2500", msg = "")
 	@SmartTypeProperty(property = "storeType", value = "NUMERIC")
 	Year,
 

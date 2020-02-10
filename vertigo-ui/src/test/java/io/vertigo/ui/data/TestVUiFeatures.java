@@ -22,6 +22,8 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.discovery.ModuleDiscoveryFeatures;
 import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
 import io.vertigo.ui.data.boot.initializer.TestVertigoUiMasterDataDefinitionProvider;
+import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
+import io.vertigo.vega.engines.webservice.json.JsonEngine;
 
 public class TestVUiFeatures extends ModuleDiscoveryFeatures<TestVUiFeatures> {
 
@@ -38,6 +40,8 @@ public class TestVUiFeatures extends ModuleDiscoveryFeatures<TestVUiFeatures> {
 	protected void buildFeatures() {
 		super.buildFeatures();
 		//---
+		getModuleConfigBuilder()
+				.addComponent(JsonEngine.class, GoogleJsonEngine.class);
 		getModuleConfigBuilder()
 				.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 						.addDefinitionResource("smarttypes", VuiTestSmartTypes.class.getName())
