@@ -181,14 +181,6 @@ public final class MovieSearchClient implements Component, DefinitionProvider {
 						.withFacet("FctMovieTitle")
 						.withFacet("FctMovieYear"))
 
-				.add(new FacetedQueryDefinitionSupplier("QryItemFacetMulti")
-						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
-						.withListFilterBuilderQuery("#criteria#")
-						.withCriteriaSmartType("STyString")
-						.withFacet("FctDescriptionItem")
-						.withFacet("FctManufacturerItemMulti")
-						.withFacet("FctYearItem"))
-
 				.build();
 	}
 
