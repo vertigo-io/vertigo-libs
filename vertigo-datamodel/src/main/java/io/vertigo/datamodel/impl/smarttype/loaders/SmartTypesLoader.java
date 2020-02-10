@@ -1,5 +1,6 @@
 package io.vertigo.datamodel.impl.smarttype.loaders;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +23,7 @@ import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition.Scope;
 import io.vertigo.datamodel.smarttype.annotations.Adapter;
 import io.vertigo.datamodel.smarttype.annotations.Constraint;
+import io.vertigo.datamodel.smarttype.annotations.Constraints;
 import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
@@ -83,11 +85,20 @@ public class SmartTypesLoader implements Loader {
 			formatterConfig = null;
 		}
 		// Constraints
-		if (field.isAnnotationPresent(Constraint.class)) {
+		if (field.isAnnotationPresent(Constraints.class)) {
 			final Constraint[] constraints = field.getAnnotationsByType(Constraint.class);
 			constraintConfigs = Arrays.stream(constraints)
 					.map(contraint -> new ConstraintConfig(contraint.clazz(), contraint.arg(), contraint.msg()))
 					.collect(Collectors.toList());
+
+			constraintConfigs.stream()
+					.forEach(constraintConfig -> {
+						final Optional<String> msgOpt = StringUtil.isEmpty(constraintConfig.getMsg()) ? Optional.empty() : Optional.of(constraintConfig.getMsg());
+						final Constructor<? extends io.vertigo.datamodel.structure.metamodel.Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(), new Class[] { String.class, Optional.class });
+						final io.vertigo.datamodel.structure.metamodel.Constraint newConstraint = ClassUtil.newInstance(constructor, new Object[] { constraintConfig.getArg(), msgOpt });
+						propertiesBuilder.addValue(newConstraint.getProperty(), newConstraint.getPropertyValue());
+					});
+
 		} else {
 			constraintConfigs = Collections.emptyList();
 		}
