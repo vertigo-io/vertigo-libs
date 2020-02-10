@@ -1,5 +1,6 @@
 package io.vertigo.struts2.data.domain.people;
 
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.Generated;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
@@ -97,7 +98,7 @@ public final class Casting implements Entity {
 	 * Récupère la valeur de la propriété 'People'.
 	 * @return Long peoId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyId", label = "People", fkDefinition = "DtPeople")
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyId", label = "People", fkDefinition = "DtPeople", cardinality = Cardinality.ONE)
 	public Long getPeoId() {
 		return (Long) peoIdAccessor.getId();
 	}
@@ -116,7 +117,7 @@ public final class Casting implements Entity {
 	 * Récupère la valeur de la propriété 'Movie'.
 	 * @return Long movId <b>Obligatoire</b>
 	 */
-	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyId", label = "Movie", fkDefinition = "DtMovie")
+	@io.vertigo.datamodel.structure.stereotype.ForeignKey(smartType = "STyId", label = "Movie", fkDefinition = "DtMovie", cardinality = Cardinality.ONE)
 	public Long getMovId() {
 		return (Long) movIdAccessor.getId();
 	}
