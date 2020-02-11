@@ -85,7 +85,7 @@ public class SmartTypesLoader implements Loader {
 			formatterConfig = null;
 		}
 		// Constraints
-		if (field.isAnnotationPresent(Constraints.class)) {
+		if (field.isAnnotationPresent(Constraint.class) || field.isAnnotationPresent(Constraints.class)) {
 			final Constraint[] constraints = field.getAnnotationsByType(Constraint.class);
 			constraintConfigs = Arrays.stream(constraints)
 					.map(contraint -> new ConstraintConfig(contraint.clazz(), contraint.arg(), contraint.msg()))
