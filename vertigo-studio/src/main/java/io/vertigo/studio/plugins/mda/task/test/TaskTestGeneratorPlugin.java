@@ -76,12 +76,8 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 		Assertion.checkNotNull(mdaResultBuilder);
 		//-----
 
-		final List<TemplateTestSuite> aoSuites = new ArrayList<>();
-
-		generatePaos(targetSubDir, fileGeneratorConfig, mdaResultBuilder, aoSuites);
-		generateDaos(targetSubDir, fileGeneratorConfig, mdaResultBuilder, aoSuites);
-
-		generateAllAoSuite(targetSubDir, fileGeneratorConfig, mdaResultBuilder, aoSuites);
+		generatePaos(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
+		generateDaos(targetSubDir, fileGeneratorConfig, mdaResultBuilder);
 	}
 
 	/**
@@ -90,8 +86,7 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 	private void generatePaos(
 			final String paosTargetSubDir,
 			final FileGeneratorConfig fileGeneratorConfig,
-			final MdaResultBuilder mdaResultBuilder,
-			final List<TemplateTestSuite> aoSuites) {
+			final MdaResultBuilder mdaResultBuilder) {
 
 		//On liste des taches regroupées par Package.
 		for (final Entry<String, List<StudioTaskDefinition>> entry : buildPackageMap().entrySet()) {
@@ -102,42 +97,10 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 				final String classSimpleName = getLastPackageName(packageName) + "PAO";
 
 				generateAo(paosTargetSubDir, fileGeneratorConfig, mdaResultBuilder, taskDefinitionCollection, packageName,
-						classSimpleName, aoSuites);
+						classSimpleName);
 			}
 		}
 
-	}
-
-	private static void generateAllAoSuite(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig,
-			final MdaResultBuilder mdaResultBuilder, final List<TemplateTestSuite> aoSuites) {
-
-		if (aoSuites.isEmpty()) {
-			return;
-		}
-
-		final List<TemplateTestClass> testClasses = new ArrayList<>();
-		for (final TemplateTestSuite taskSuite : aoSuites) {
-			final TemplateTestClass testClass = new TemplateTestClass(taskSuite.getPackageName(), "AllTests");
-			testClasses.add(testClass);
-		}
-
-		/* Calcule le nom du package DAO à partir de la première suite. */
-		final TemplateTestClass templateTestClass = testClasses.get(0);
-		final String allPaoPackageName = getDaoPackageName(templateTestClass.getPackageName());
-
-		final TemplateTestSuite suiteModel = new TemplateTestSuite(testClasses, allPaoPackageName);
-		generateAllPaoSuite(targetSubDir, fileGeneratorConfig, mdaResultBuilder, allPaoPackageName, suiteModel);
-	}
-
-	private static String getDaoPackageName(final String packageName) {
-		final List<String> parts = new ArrayList<>();
-		for (final String part : packageName.split("\\.")) {
-			parts.add(part);
-			if ("dao".equals(part)) {
-				break;
-			}
-		}
-		return String.join(".", parts);
 	}
 
 	/**
@@ -146,8 +109,7 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 	private void generateDaos(
 			final String daosTargetSubDir,
 			final FileGeneratorConfig fileGeneratorConfig,
-			final MdaResultBuilder mdaResultBuilder,
-			final List<TemplateTestSuite> aoSuites) {
+			final MdaResultBuilder mdaResultBuilder) {
 
 		for (final Entry<StudioDtDefinition, List<StudioTaskDefinition>> entry : builDtDefinitiondMap().entrySet()) {
 			final StudioDtDefinition dtDefinition = entry.getKey();
@@ -159,14 +121,14 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 				final String classSimpleName = dtDefinition.getClassSimpleName() + "DAO";
 
 				generateAo(daosTargetSubDir, fileGeneratorConfig, mdaResultBuilder, entry.getValue(), packageName,
-						classSimpleName, aoSuites);
+						classSimpleName);
 			}
 		}
 	}
 
 	private void generateAo(final String aoTargetSubDir, final FileGeneratorConfig fileGeneratorConfig,
 			final MdaResultBuilder mdaResultBuilder, final Collection<StudioTaskDefinition> taskDefinitionCollection,
-			final String packageName, final String classSimpleName, final List<TemplateTestSuite> paoSuites) {
+			final String packageName, final String classSimpleName) {
 		final List<TemplateTestClass> testClasses = new ArrayList<>();
 		for (final StudioTaskDefinition taskDefinition : taskDefinitionCollection) {
 			final TemplateAoTaskTest paoModel = new TemplateAoTaskTest(fileGeneratorConfig, taskDefinition, packageName, classSimpleName, baseTestClass);
@@ -174,15 +136,6 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 			testClasses.add(testClass);
 
 			generatePaoTaskTest(aoTargetSubDir, fileGeneratorConfig, mdaResultBuilder, paoModel);
-		}
-
-		/* Génération de la suite des tests des tasks de tout le PAO. */
-		if (!testClasses.isEmpty()) {
-			final String suitePackageName = testClasses.get(0).getPackageName();
-			final TemplateTestSuite suiteModel = new TemplateTestSuite(testClasses, suitePackageName);
-			paoSuites.add(suiteModel);
-
-			generatePaoSuite(aoTargetSubDir, fileGeneratorConfig, mdaResultBuilder, suitePackageName, suiteModel);
 		}
 	}
 
@@ -198,38 +151,6 @@ public final class TaskTestGeneratorPlugin implements GeneratorPlugin {
 			lastPackageName = lastPackageName.substring(lastPackageName.lastIndexOf('.') + 1);
 		}
 		return StringUtil.first2UpperCase(lastPackageName);
-	}
-
-	private static void generatePaoSuite(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig,
-			final MdaResultBuilder mdaResultBuilder, final String suitePackageName, final TemplateTestSuite suiteModel) {
-		final Map<String, Object> model = new MapBuilder<String, Object>()
-				.put("suite", suiteModel)
-				.build();
-
-		FileGenerator.builder(fileGeneratorConfig)
-				.withModel(model)
-				.withFileName("AllTests.java")
-				.withGenSubDir(targetSubDir)
-				.withPackageName(suitePackageName)
-				.withTemplateName("task/test/test_suite.ftl")
-				.build()
-				.generateFile(mdaResultBuilder);
-	}
-
-	private static void generateAllPaoSuite(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig,
-			final MdaResultBuilder mdaResultBuilder, final String suitePackageName, final TemplateTestSuite suiteModel) {
-		final Map<String, Object> model = new MapBuilder<String, Object>()
-				.put("suite", suiteModel)
-				.build();
-
-		FileGenerator.builder(fileGeneratorConfig)
-				.withModel(model)
-				.withFileName("AllTestsAo.java")
-				.withGenSubDir(targetSubDir)
-				.withPackageName(suitePackageName)
-				.withTemplateName("task/test/test_suite_inline_class_name.ftl")
-				.build()
-				.generateFile(mdaResultBuilder);
 	}
 
 	private static void generatePaoTaskTest(final String targetSubDir, final FileGeneratorConfig fileGeneratorConfig,

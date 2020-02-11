@@ -56,6 +56,8 @@ public class AuthorizationGeneratorTest {
 								.addDefinitionResource("kpr", "io/vertigo/studio/data/model.kpr")
 								.addDefinitionResource("kpr", "io/vertigo/studio/data/tasks.kpr")
 								.build())
+						.build())
+				.addModule(ModuleConfig.builder("myApp2")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(JsonSecurityDefinitionProvider.class)
 								.addDefinitionResource("security", "io/vertigo/studio/mda/data/security/advanced-auth-config-v2.json")
 								.build())

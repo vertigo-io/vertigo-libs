@@ -1,7 +1,7 @@
 package ${pao.taskDefinition.testPackageName};
 
 import javax.inject.Inject;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import ${pao.daoTestBaseClass};
 
 public class ${pao.taskDefinition.testClassName} extends ${pao.daoTestBaseClassSimpleName} {
