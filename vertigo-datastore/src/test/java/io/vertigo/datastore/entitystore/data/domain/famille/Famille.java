@@ -158,7 +158,7 @@ public final class Famille implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.datamodel.structure.metamodel.association.DtListURIForSimpleAssociation getVoituresFamilleDtListURI() {
-		return (io.vertigo.datamodel.structure.metamodel.association.DtListURIForSimpleAssociation) voituresFamilleAccessor.getDtListURI();
+		return voituresFamilleAccessor.getDtListURI();
 	}
 
 	/**
@@ -188,7 +188,7 @@ public final class Famille implements Entity {
 	 */
 	@Deprecated
 	public io.vertigo.datamodel.structure.metamodel.association.DtListURIForNNAssociation getVoituresLocationDtListURI() {
-		return (io.vertigo.datamodel.structure.metamodel.association.DtListURIForNNAssociation) voituresLocationAccessor.getDtListURI();
+		return voituresLocationAccessor.getDtListURI();
 	}
 
 	/** {@inheritDoc} */

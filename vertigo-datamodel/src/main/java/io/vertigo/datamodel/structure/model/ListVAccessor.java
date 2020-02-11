@@ -44,7 +44,7 @@ import io.vertigo.datamodel.structure.metamodel.association.DtListURIForSimpleAs
 public class ListVAccessor<E extends Entity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private static enum State {
+	private enum State {
 		LOADED, NOT_LOADED
 	}
 
@@ -82,12 +82,12 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 	/**
 	 * @return the entity uri
 	 */
-	public final DtListURIForAssociation getDtListURI() {
+	public final <A extends DtListURIForAssociation> A getDtListURI() {
 		final AssociationDefinition associationDefinition = associationDefinitionReference.get();
 		if (associationDefinition instanceof AssociationSimpleDefinition) {
-			return new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationDefinition, entity.getUID(), roleName);
+			return (A) new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationDefinition, entity.getUID(), roleName);
 		} else if (associationDefinition instanceof AssociationNNDefinition) {
-			return new DtListURIForNNAssociation((AssociationNNDefinition) associationDefinition, entity.getUID(), roleName);
+			return (A) new DtListURIForNNAssociation((AssociationNNDefinition) associationDefinition, entity.getUID(), roleName);
 		}
 		throw new VSystemException("Unhandled type of association. Only Simple and NN Associations are supported");
 	}
