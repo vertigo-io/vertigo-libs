@@ -78,7 +78,7 @@ public final class OOMEnvironmentManagerTest extends AbstractTestCaseJU5 {
 	public void testDefaultBooleanFormatter() {
 		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
 		final Formatter formatter = definitionSpace.resolve("FmtDefault", FormatterDefinition.class);
-		Assertions.assertEquals("MyTrue", formatter.valueToString(true, BasicType.Boolean));
+		Assertions.assertEquals("Oui", formatter.valueToString(true, BasicType.Boolean));
 	}
 
 	@Test
