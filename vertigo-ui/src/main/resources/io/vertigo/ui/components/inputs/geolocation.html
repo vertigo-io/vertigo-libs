@@ -4,19 +4,8 @@
 	th:assert="${object} != null and ${field} != null">
 	<vu:include-data object="${object}" field="${field}"/>
 	<vu:label-edit label=${label} th:attr="__${label_attrs}__" >
-		<q-input 
-			th:v-model="${'vueData.' + object + '.' + field + '.lat'}" 
-			orientation="vertical"
-			th:attr="__${input_attrs}__"
-		>
-		</q-input>
-		<q-input 
-			th:v-model="${'vueData.' + object + '.' + field + '.lon'}" 
-			orientation="vertical"
-			th:attr="__${input_attrs}__"
-		>
-		</q-input>
-		<input type="hidden" th:name="|vContext[${object}][${field}]|" th:v-bind:value="|JSON.stringify(vueData.${object}.${field})|" />
+		<v-geopoint-input th:v-model="|vueData.${object}.${field}|" ></v-geopoint-input>
+		<input type="hidden" th:name="|vContext[${object}][${field}]|"  th:v-bind:value="|vueData.${object}.${field} ? vueData.${object}.${field}._v_inputValue : null|" />
 	</vu:label-edit>
 </th:block>
 <th:block th:fragment="geolocation-read(object, field, label, suffix, label_attrs, input_attrs)" 

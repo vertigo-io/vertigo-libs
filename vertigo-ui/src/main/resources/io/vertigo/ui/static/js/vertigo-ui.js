@@ -47,7 +47,13 @@ var VUi = {
 				  if(notif.message.length > 0) {
 				     this.$q.notify(notif);
 				  }
-				},			
+				},	
+				getSafeValue: function(objectkey, fieldKey, subFieldKey) {
+					if (this.$data.vueData[objectkey] && this.$data.vueData[objectkey][fieldKey] ) {
+						return this.$data.vueData[objectkey][fieldKey][subFieldKey];
+					} 
+					return null;
+				},
 				transformListForSelection: function (list, valueField, labelField) {
 					return this.$data.vueData[list].map(function (object) {
 						return { value: object[valueField], label: object[labelField].toString()} // a label is always a string
@@ -290,17 +296,25 @@ var VUi = {
 					for (var i = 0; i < keys.length; i++) {
 						var contextKey = keys[i];
 						var vueDataValue = this.$data.vueData[contextKey];
-						if (vueDataValue !== null && typeof vueDataValue === 'object' && Array.isArray(vueDataValue) === false) {
+						if (vueDataValue && typeof vueDataValue === 'object' && Array.isArray(vueDataValue) === false) {
 							// object
 							Object.keys(vueDataValue).forEach(function (propertyKey) {
 								if(!propertyKey.startsWith("_")) {
 									// _ properties are private and don't belong to the serialized entity
 									if (Array.isArray(vueDataValue[propertyKey])) {
 										vueDataValue[propertyKey].forEach(function (value, index) {
-											params['vContext['+contextKey+']['+propertyKey+']['+index+']'] = vueDataValue[propertyKey][index];
+											if(vueDataValue[propertyKey][index] && typeof vueDataValue[propertyKey][index] === 'object' ) {
+												params['vContext['+contextKey+']['+propertyKey+']['+index+']'] = vueDataValue[propertyKey][index]['_v_inputValue'];
+											} else {
+												params['vContext['+contextKey+']['+propertyKey+']['+index+']'] = vueDataValue[propertyKey][index];
+											}
 										});
 									} else {
-										params['vContext['+contextKey+']['+propertyKey+']'] = vueDataValue[propertyKey];
+										if(vueDataValue[propertyKey] && typeof vueDataValue[propertyKey] === 'object' ) {
+											params['vContext['+contextKey+']['+propertyKey+']'] = vueDataValue[propertyKey]['_v_inputValue'];
+										} else {
+											params['vContext['+contextKey+']['+propertyKey+']'] = vueDataValue[propertyKey];
+										}
 									}
 								}
 							});
