@@ -176,17 +176,13 @@ img.avatar {
 	width:100%;
 }
 
-.showButtonOnHover:hover > .q-btn {
+.no-touch .showButtonOnHover:hover > .q-btn,
+.no-touch tr:hover .showButtonOnHover > .q-btn {
   opacity: 1;
   transition: .5s;
 }
 
-tr:hover .showButtonOnHover > .q-btn {
-  opacity: 1;
-  transition: .5s;
-}
-
-.showButtonOnHover > .q-btn {
+.no-touch .showButtonOnHover > .q-btn {
   opacity: 0;
   transition: .5s;
 }
