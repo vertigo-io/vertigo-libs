@@ -21,8 +21,11 @@ package io.vertigo.database;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
+import io.vertigo.database.impl.migration.DataBaseMigrationManagerImpl;
 import io.vertigo.database.impl.sql.SqlDataBaseManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
+import io.vertigo.database.migration.DataBaseMigrationManager;
+import io.vertigo.database.plugins.migration.liquibase.LiquibaseDataBaseMigrationPlugin;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.database.plugins.sql.connection.datasource.DataSourceConnectionProviderPlugin;
 import io.vertigo.database.plugins.timeseries.fake.FakeTimeSeriesPlugin;
@@ -63,6 +66,17 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	public DatabaseFeatures withTimeSeriesDataBase() {
 		getModuleConfigBuilder()
 				.addComponent(TimeSeriesDataBaseManager.class, TimeSeriesDataBaseManagerImpl.class);
+		return this;
+	}
+
+	/**
+	 * Add database Migration service.
+	 * @return  the feature
+	 */
+	@Feature("migration")
+	public DatabaseFeatures withMigration(final Param... params) {
+		getModuleConfigBuilder()
+				.addComponent(DataBaseMigrationManager.class, DataBaseMigrationManagerImpl.class, params);
 		return this;
 	}
 
@@ -111,7 +125,18 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	}
 
 	/**
-	
+	 * Add LiquibaseMigrationPlugin
+	 * @return  the feature
+	 */
+	@Feature("migration.liquibase")
+	public DatabaseFeatures withLiquibaseDataBaseMigrationPlugin(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(LiquibaseDataBaseMigrationPlugin.class, params);
+		return this;
+	}
+
+	/**
+
 	/** {@inheritDoc} */
 	@Override
 	protected void buildFeatures() {
