@@ -20,10 +20,12 @@ Vue.component('v-geopoint-input', {
 	},
 	beforeMount() {
 	    this.updateJson();
+	    
 	},
 	methods: {
 	    updateJson() {
-	      this.$data.inputObject['_v_inputValue'] = JSON.stringify({  lon : this.$data.inputObject.lon, lat : this.$data.inputObject.lat});
+	      var newInputValue = JSON.stringify({  lon : this.$data.inputObject.lon, lat : this.$data.inputObject.lat});
+	      this.$set(this.$props.value, '_v_inputValue', newInputValue );
 	      this.$emit('input', this.$data.inputObject);
 	    }
 	  }
