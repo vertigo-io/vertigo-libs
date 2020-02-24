@@ -124,8 +124,28 @@ public final class DtObjectsLoader implements Loader {
 		final Method[] methods = clazz.getMethods();
 		Arrays.sort(methods, Comparator.comparing(Method::getName));
 
-		final List<String> definitionLinks = new ArrayList<>();
 		//DefinitionLinks
+		final List<String> definitionLinks = extractDefinitionLinks(fields, methods);
+
+		dynamicModelRepository.put(dtDefinitionName,
+				extractDynamicDefinition(clazz, packageName, dtDefinitionName, fields, methods, definitionLinks));
+
+		// Association
+		for (final Field field : fields) {
+			parseAssociationDefinition(dynamicModelRepository, field);
+		}
+		for (final Method method : methods) {
+			parseAssociationDefinition(dynamicModelRepository, method);
+		}
+
+		// SmartType
+		parseSmartTypes(clazz, dynamicModelRepository, simpleName, dtDefinitionName);
+
+	}
+
+	private static List<String> extractDefinitionLinks(final List<Field> fields, final Method[] methods) {
+		final List<String> definitionLinks = new ArrayList<>();
+
 		for (final Field field : fields) {
 			for (final Annotation annotation : field.getAnnotations()) {
 				if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Field) {
@@ -144,75 +164,69 @@ public final class DtObjectsLoader implements Loader {
 				}
 			}
 		}
+		return definitionLinks;
+	}
 
-		dynamicModelRepository.put(dtDefinitionName,
-				new DynamicDefinition(
-						dtDefinitionName,
-						definitionLinks,
-						definitionSpace -> {
-							final DtDefinitionBuilder dtDefinitionBuilder = DtDefinition.builder(dtDefinitionName)
-									.withPackageName(packageName)
-									.withDataSpace(parseDataSpaceAnnotation(clazz));
-							if (Fragment.class.isAssignableFrom(clazz)) {
-								//Fragments
-								for (final Annotation annotation : clazz.getAnnotations()) {
-									if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Fragment) {
-										dtDefinitionBuilder.withStereoType(DtStereotype.Fragment);
-										dtDefinitionBuilder.withFragment(definitionSpace.resolve(((io.vertigo.datamodel.structure.stereotype.Fragment) annotation).fragmentOf(), DtDefinition.class));
-										break;
-									}
-								}
-							} else {
-								dtDefinitionBuilder.withStereoType(parseStereotype(clazz));
+	private static DynamicDefinition extractDynamicDefinition(final Class<DtObject> clazz, final String packageName, final String dtDefinitionName, final List<Field> fields, final Method[] methods, final List<String> definitionLinks) {
+		return new DynamicDefinition(
+				dtDefinitionName,
+				definitionLinks,
+				definitionSpace -> {
+					final DtDefinitionBuilder dtDefinitionBuilder = DtDefinition.builder(dtDefinitionName)
+							.withPackageName(packageName)
+							.withDataSpace(parseDataSpaceAnnotation(clazz));
+					if (Fragment.class.isAssignableFrom(clazz)) {
+						//Fragments
+						for (final Annotation annotation : clazz.getAnnotations()) {
+							if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Fragment) {
+								dtDefinitionBuilder.withStereoType(DtStereotype.Fragment);
+								dtDefinitionBuilder.withFragment(definitionSpace.resolve(((io.vertigo.datamodel.structure.stereotype.Fragment) annotation).fragmentOf(), DtDefinition.class));
+								break;
 							}
-							for (final Field field : fields) {
-								if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.Field.class)) {
-									//Le nom est automatiquement déduit du nom du champ
-									final io.vertigo.datamodel.structure.stereotype.Field fieldAnnotation = field.getAnnotation(io.vertigo.datamodel.structure.stereotype.Field.class);
-									parseAnnotation(createFieldName(field), dtDefinitionBuilder, fieldAnnotation, definitionSpace);
-								}
-								if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.SortField.class)) {
-									dtDefinitionBuilder.withSortField(createFieldName(field));
-								}
-								if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.DisplayField.class)) {
-									dtDefinitionBuilder.withDisplayField(createFieldName(field));
-								}
-
-							}
-							for (final Method method : methods) {
-								if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.Field.class)) {
-									final io.vertigo.datamodel.structure.stereotype.Field methodAnnotation = method.getAnnotation(io.vertigo.datamodel.structure.stereotype.Field.class);
-									final String fieldName = createFieldName(method);
-									parseAnnotation(fieldName, dtDefinitionBuilder, methodAnnotation, definitionSpace);
-								}
-								if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.SortField.class)) {
-									dtDefinitionBuilder.withSortField(createFieldName(method));
-								}
-								if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.DisplayField.class)) {
-									dtDefinitionBuilder.withDisplayField(createFieldName(method));
-								}
-								if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.ForeignKey.class)) {
-									//Le nom est automatiquement déduit du nom du champ
-									final io.vertigo.datamodel.structure.stereotype.ForeignKey foreignKeyAnnotation = method.getAnnotation(io.vertigo.datamodel.structure.stereotype.ForeignKey.class);
-									dtDefinitionBuilder.addForeignKey(createFieldName(method), foreignKeyAnnotation.label(), definitionSpace.resolve(foreignKeyAnnotation.smartType(), SmartTypeDefinition.class), foreignKeyAnnotation.cardinality(), foreignKeyAnnotation.fkDefinition());
-
-								}
-
-							}
-							return dtDefinitionBuilder.build();
+						}
+					} else {
+						dtDefinitionBuilder.withStereoType(parseStereotype(clazz));
+					}
+					for (final Field field : fields) {
+						if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.Field.class)) {
+							//Le nom est automatiquement déduit du nom du champ
+							final io.vertigo.datamodel.structure.stereotype.Field fieldAnnotation = field.getAnnotation(io.vertigo.datamodel.structure.stereotype.Field.class);
+							parseAnnotation(createFieldName(field), dtDefinitionBuilder, fieldAnnotation, definitionSpace);
+						}
+						if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.SortField.class)) {
+							dtDefinitionBuilder.withSortField(createFieldName(field));
+						}
+						if (field.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.DisplayField.class)) {
+							dtDefinitionBuilder.withDisplayField(createFieldName(field));
 						}
 
-				));
+					}
+					for (final Method method : methods) {
+						if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.Field.class)) {
+							final io.vertigo.datamodel.structure.stereotype.Field methodAnnotation = method.getAnnotation(io.vertigo.datamodel.structure.stereotype.Field.class);
+							final String fieldName = createFieldName(method);
+							parseAnnotation(fieldName, dtDefinitionBuilder, methodAnnotation, definitionSpace);
+						}
+						if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.SortField.class)) {
+							dtDefinitionBuilder.withSortField(createFieldName(method));
+						}
+						if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.DisplayField.class)) {
+							dtDefinitionBuilder.withDisplayField(createFieldName(method));
+						}
+						if (method.isAnnotationPresent(io.vertigo.datamodel.structure.stereotype.ForeignKey.class)) {
+							//Le nom est automatiquement déduit du nom du champ
+							final io.vertigo.datamodel.structure.stereotype.ForeignKey foreignKeyAnnotation = method.getAnnotation(io.vertigo.datamodel.structure.stereotype.ForeignKey.class);
+							dtDefinitionBuilder.addForeignKey(createFieldName(method), foreignKeyAnnotation.label(), definitionSpace.resolve(foreignKeyAnnotation.smartType(), SmartTypeDefinition.class), foreignKeyAnnotation.cardinality(), foreignKeyAnnotation.fkDefinition());
+						}
 
-		// Association
-		for (final Field field : fields) {
-			parseAssociationDefinition(dynamicModelRepository, field, packageName);
-		}
-		for (final Method method : methods) {
-			parseAssociationDefinition(dynamicModelRepository, method, packageName);
-		}
+					}
+					return dtDefinitionBuilder.build();
+				}
 
-		// SmartType
+		);
+	}
+
+	private static void parseSmartTypes(final Class<DtObject> clazz, final Map<String, DynamicDefinition> dynamicModelRepository, final String simpleName, final String dtDefinitionName) {
 		final String smartTypeName = DefinitionUtil.getPrefix(SmartTypeDefinition.class) + dtDefinitionName;
 		final Adapter[] adapters = clazz.getAnnotationsByType(Adapter.class);
 		dynamicModelRepository.put(
@@ -227,7 +241,6 @@ public final class DtObjectsLoader implements Loader {
 							}
 							return smartTypeDefinitionBuilder.build();
 						}));
-
 	}
 
 	private static String parseDataSpaceAnnotation(final Class<?> clazz) {
@@ -253,19 +266,19 @@ public final class DtObjectsLoader implements Loader {
 		return DtStereotype.ValueObject;
 	}
 
-	private static void parseAssociationDefinition(final Map<String, DynamicDefinition> dynamicModelRepository, final Field field, final String packageName) {
+	private static void parseAssociationDefinition(final Map<String, DynamicDefinition> dynamicModelRepository, final Field field) {
 		for (final Annotation annotation : field.getAnnotations()) {
-			parseAssociationDefinition(dynamicModelRepository, annotation, packageName);
+			parseAssociationDefinition(dynamicModelRepository, annotation);
 		}
 	}
 
-	private static void parseAssociationDefinition(final Map<String, DynamicDefinition> dynamicModelRepository, final Method method, final String packageName) {
+	private static void parseAssociationDefinition(final Map<String, DynamicDefinition> dynamicModelRepository, final Method method) {
 		for (final Annotation annotation : method.getAnnotations()) {
-			parseAssociationDefinition(dynamicModelRepository, annotation, packageName);
+			parseAssociationDefinition(dynamicModelRepository, annotation);
 		}
 	}
 
-	private static void parseAssociationDefinition(final Map<String, DynamicDefinition> dynamicModelRepository, final Annotation annotation, final String packageName) {
+	private static void parseAssociationDefinition(final Map<String, DynamicDefinition> dynamicModelRepository, final Annotation annotation) {
 		if (annotation instanceof io.vertigo.datamodel.structure.stereotype.Association) {
 			final io.vertigo.datamodel.structure.stereotype.Association association = (io.vertigo.datamodel.structure.stereotype.Association) annotation;
 			//============================================================
@@ -274,66 +287,74 @@ public final class DtObjectsLoader implements Loader {
 			if (!dynamicModelRepository.containsKey(association.name())) {
 				//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 				dynamicModelRepository.put(association.name(),
-						new DynamicDefinition(
-								association.name(),
-								Arrays.asList(association.primaryDtDefinitionName(), association.foreignDtDefinitionName()),
-								definitionSpace -> {
-
-									final String multiplicityA = association.primaryMultiplicity();
-									final Boolean navigabilityA = association.primaryIsNavigable();
-									final String multiplicityB = association.foreignMultiplicity();
-									final Boolean navigabilityB = association.foreignIsNavigable();
-									//---
-									Assertion.checkNotNull(multiplicityA);
-									Assertion.checkNotNull(navigabilityA);
-									Assertion.checkNotNull(multiplicityB);
-									Assertion.checkNotNull(navigabilityB);
-									// Vérification que l'on est bien dans le cas d'une association simple de type 1-n
-									if (AssociationUtil.isMultiple(multiplicityB) && AssociationUtil.isMultiple(multiplicityA)) {
-										//Relation n-n
-										throw new IllegalArgumentException("Utiliser la déclaration AssociationNN");
-									}
-									if (!AssociationUtil.isMultiple(multiplicityB) && !AssociationUtil.isMultiple(multiplicityA)) {
-										//Relation 1-1
-										throw new IllegalArgumentException("Les associations 1-1 sont interdites");
-									}
-
-									final String fkFieldName = association.fkFieldName();
-
-									final DtDefinition dtDefinitionA = definitionSpace.resolve(association.primaryDtDefinitionName(), DtDefinition.class);
-									final String roleAOpt = association.primaryRole();
-									final String roleA = roleAOpt != null ? roleAOpt : dtDefinitionA.getLocalName();
-									final String labelAOpt = association.primaryLabel();
-									final String labelA = labelAOpt != null ? labelAOpt : dtDefinitionA.getLocalName();
-
-									final DtDefinition dtDefinitionB = definitionSpace.resolve(association.foreignDtDefinitionName(), DtDefinition.class);
-									final String roleBOpt = association.foreignRole();
-									final String roleB = roleBOpt != null ? roleBOpt : dtDefinitionB.getLocalName();
-									final String labelB = association.foreignLabel();
-
-									final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA));
-									final AssociationNode associationNodeB = new AssociationNode(dtDefinitionB, navigabilityB, roleB, labelB, AssociationUtil.isMultiple(multiplicityB), AssociationUtil.isNotNull(multiplicityB));
-
-									return new AssociationSimpleDefinition(association.name(), fkFieldName, associationNodeA, associationNodeB);
-								}));
+						createAssociationSimpleDefinition(association));
 			}
 		} else if (annotation instanceof io.vertigo.datamodel.structure.stereotype.AssociationNN) {
 			final io.vertigo.datamodel.structure.stereotype.AssociationNN association = (io.vertigo.datamodel.structure.stereotype.AssociationNN) annotation;
 			if (!dynamicModelRepository.containsKey(association.name())) {
 				//Les associations peuvent être déclarées sur les deux noeuds de l'association.
 				dynamicModelRepository.put(association.name(),
-						new DynamicDefinition(
-								association.name(),
-								Arrays.asList(association.dtDefinitionA(), association.dtDefinitionB()),
-								definitionSpace -> {
-									final DtDefinition dtDefinitionA = definitionSpace.resolve(association.dtDefinitionA(), DtDefinition.class);
-									final DtDefinition dtDefinitionB = definitionSpace.resolve(association.dtDefinitionB(), DtDefinition.class);
-									final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, association.navigabilityA(), association.roleA(), association.labelA(), true, false);
-									final AssociationNode associationNodeB = new AssociationNode(dtDefinitionB, association.navigabilityB(), association.roleB(), association.labelB(), true, false);
-									return new AssociationNNDefinition(association.name(), association.tableName(), associationNodeA, associationNodeB);
-								}));
+						createAssociationNNDefinition(association));
 			}
 		}
+	}
+
+	private static DynamicDefinition createAssociationSimpleDefinition(final io.vertigo.datamodel.structure.stereotype.Association association) {
+		return new DynamicDefinition(
+				association.name(),
+				Arrays.asList(association.primaryDtDefinitionName(), association.foreignDtDefinitionName()),
+				definitionSpace -> {
+
+					final String multiplicityA = association.primaryMultiplicity();
+					final Boolean navigabilityA = association.primaryIsNavigable();
+					final String multiplicityB = association.foreignMultiplicity();
+					final Boolean navigabilityB = association.foreignIsNavigable();
+					//---
+					Assertion.checkNotNull(multiplicityA);
+					Assertion.checkNotNull(navigabilityA);
+					Assertion.checkNotNull(multiplicityB);
+					Assertion.checkNotNull(navigabilityB);
+					// Vérification que l'on est bien dans le cas d'une association simple de type 1-n
+					if (AssociationUtil.isMultiple(multiplicityB) && AssociationUtil.isMultiple(multiplicityA)) {
+						//Relation n-n
+						throw new IllegalArgumentException("Utiliser la déclaration AssociationNN");
+					}
+					if (!AssociationUtil.isMultiple(multiplicityB) && !AssociationUtil.isMultiple(multiplicityA)) {
+						//Relation 1-1
+						throw new IllegalArgumentException("Les associations 1-1 sont interdites");
+					}
+
+					final String fkFieldName = association.fkFieldName();
+
+					final DtDefinition dtDefinitionA = definitionSpace.resolve(association.primaryDtDefinitionName(), DtDefinition.class);
+					final String roleAOpt = association.primaryRole();
+					final String roleA = roleAOpt != null ? roleAOpt : dtDefinitionA.getLocalName();
+					final String labelAOpt = association.primaryLabel();
+					final String labelA = labelAOpt != null ? labelAOpt : dtDefinitionA.getLocalName();
+
+					final DtDefinition dtDefinitionB = definitionSpace.resolve(association.foreignDtDefinitionName(), DtDefinition.class);
+					final String roleBOpt = association.foreignRole();
+					final String roleB = roleBOpt != null ? roleBOpt : dtDefinitionB.getLocalName();
+					final String labelB = association.foreignLabel();
+
+					final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, navigabilityA, roleA, labelA, AssociationUtil.isMultiple(multiplicityA), AssociationUtil.isNotNull(multiplicityA));
+					final AssociationNode associationNodeB = new AssociationNode(dtDefinitionB, navigabilityB, roleB, labelB, AssociationUtil.isMultiple(multiplicityB), AssociationUtil.isNotNull(multiplicityB));
+
+					return new AssociationSimpleDefinition(association.name(), fkFieldName, associationNodeA, associationNodeB);
+				});
+	}
+
+	private static DynamicDefinition createAssociationNNDefinition(final io.vertigo.datamodel.structure.stereotype.AssociationNN association) {
+		return new DynamicDefinition(
+				association.name(),
+				Arrays.asList(association.dtDefinitionA(), association.dtDefinitionB()),
+				definitionSpace -> {
+					final DtDefinition dtDefinitionA = definitionSpace.resolve(association.dtDefinitionA(), DtDefinition.class);
+					final DtDefinition dtDefinitionB = definitionSpace.resolve(association.dtDefinitionB(), DtDefinition.class);
+					final AssociationNode associationNodeA = new AssociationNode(dtDefinitionA, association.navigabilityA(), association.roleA(), association.labelA(), true, false);
+					final AssociationNode associationNodeB = new AssociationNode(dtDefinitionB, association.navigabilityB(), association.roleB(), association.labelB(), true, false);
+					return new AssociationNNDefinition(association.name(), association.tableName(), associationNodeA, associationNodeB);
+				});
 	}
 
 	/*
