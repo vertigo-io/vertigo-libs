@@ -7,20 +7,15 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.lang.Generated;
-import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
-import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.core.util.ListBuilder;
-import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder;
 import io.vertigo.datafactory.collections.metamodel.FacetRangeDefinitionSupplier;
 import io.vertigo.datafactory.collections.metamodel.FacetTermDefinitionSupplier;
-import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinitionSupplier;
-import io.vertigo.datafactory.collections.metamodel.ListFilterBuilder;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.search.SearchManager;
@@ -62,10 +57,9 @@ public final class MovieSearchClient implements Component, DefinitionProvider {
 	 */
 
 	public SearchQueryBuilder createSearchQueryBuilderMovie(final java.lang.String criteria, final SelectedFacetValues selectedFacetValues) {
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryMovie", FacetedQueryDefinition.class);
-		final ListFilterBuilder<java.lang.String> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
-		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
-		return SearchQuery.builder(criteriaListFilter).withFacet(facetedQueryDefinition, selectedFacetValues);
+		return SearchQuery.builder("QryMovie")
+				.withCriteria(criteria)
+				.withFacet(selectedFacetValues);
 	}
 
 	/**
@@ -75,10 +69,9 @@ public final class MovieSearchClient implements Component, DefinitionProvider {
 	 * @return SearchQueryBuilder pour ce type de recherche
 	 */
 	public SearchQueryBuilder createSearchQueryBuilderMovieWithPoster(final java.lang.String criteria, final SelectedFacetValues selectedFacetValues) {
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryMovieWithPoster", FacetedQueryDefinition.class);
-		final ListFilterBuilder<java.lang.String> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
-		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
-		return SearchQuery.builder(criteriaListFilter).withFacet(facetedQueryDefinition, selectedFacetValues);
+		return SearchQuery.builder("QryMovieWithPoster")
+				.withCriteria(criteria)
+				.withFacet(selectedFacetValues);
 	}
 
 	/**
