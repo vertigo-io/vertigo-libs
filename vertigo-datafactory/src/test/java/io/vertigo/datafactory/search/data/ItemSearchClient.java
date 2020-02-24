@@ -6,20 +6,15 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
-import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.core.util.ListBuilder;
-import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder;
 import io.vertigo.datafactory.collections.metamodel.FacetRangeDefinitionSupplier;
 import io.vertigo.datafactory.collections.metamodel.FacetTermDefinitionSupplier;
-import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinitionSupplier;
-import io.vertigo.datafactory.collections.metamodel.ListFilterBuilder;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.search.SearchManager;
@@ -51,24 +46,28 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 	}
 
 	public SearchQueryBuilder createSearchQueryBuilderItemFacet(final String criteria, final SelectedFacetValues selectedFacetValues) {
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryItemFacet", FacetedQueryDefinition.class);
-		final ListFilterBuilder<java.lang.String> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
-		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
-		return SearchQuery.builder(criteriaListFilter).withFacet(facetedQueryDefinition, selectedFacetValues);
+		return SearchQuery.builder("QryItemFacet")
+				.withCriteria(criteria)
+				.withFacet(selectedFacetValues);
 	}
 
 	public SearchQueryBuilder createSearchQueryBuilderItemOptionalFacet(final java.lang.String criteria, final SelectedFacetValues selectedFacetValues) {
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryItemOptionalFacet", FacetedQueryDefinition.class);
-		final ListFilterBuilder<java.lang.String> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
-		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
-		return SearchQuery.builder(criteriaListFilter).withFacet(facetedQueryDefinition, selectedFacetValues);
+		return SearchQuery.builder("QryItemOptionalFacet")
+				.withCriteria(criteria)
+				.withFacet(selectedFacetValues);
 	}
 
 	public SearchQueryBuilder createSearchQueryBuilderItemFacetMulti(final String criteria, final SelectedFacetValues selectedFacetValues) {
-		final FacetedQueryDefinition facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve("QryItemFacetMulti", FacetedQueryDefinition.class);
-		final ListFilterBuilder<java.lang.String> listFilterBuilder = InjectorUtil.newInstance(facetedQueryDefinition.getListFilterBuilderClass());
-		final ListFilter criteriaListFilter = listFilterBuilder.withBuildQuery(facetedQueryDefinition.getListFilterBuilderQuery()).withCriteria(criteria).build();
-		return SearchQuery.builder(criteriaListFilter).withFacet(facetedQueryDefinition, selectedFacetValues);
+		return SearchQuery.builder("QryItemFacetMulti")
+				.withCriteria(criteria)
+				.withFacet(selectedFacetValues);
+	}
+
+	public SearchQueryBuilder createSearchQueryBuilderItemFacetGeo(final Item criteria, final SelectedFacetValues selectedFacetValues) {
+		return SearchQuery.builder("QryItemFacetGeo")
+				.withCriteria(criteria)
+				.withFacet(selectedFacetValues);
+
 	}
 
 	/**
@@ -162,12 +161,24 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withRange("R3", "year:[2005 TO *]", "apres 2005")
 						.withOrder(FacetOrder.definition))
 
+				.add(new FacetRangeDefinitionSupplier("FctLocalisationItem")
+						.withDtDefinition("DtItem")
+						.withLabel("Par distance")
+						.withFieldName("localisation")
+						//.withOrigin("#loc1#")
+						.withRange("R1", "localisation:#loc1#~5km", " < 5km")
+						.withRange("R2", "localisation:#loc1#~10km", "< 10km")
+						.withRange("R3", "localisation:#loc1#~20km", "< 20km")
+						.withRange("R4", "localisation:#loc1#~50km", "< 50km")
+						.withOrder(FacetOrder.definition))
+
 				//---
 				// FacetedQueryDefinition
 				//-----
+
 				.add(new FacetedQueryDefinitionSupplier("QryItemFacet")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
-						.withListFilterBuilderQuery("#criteria#")
+						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
 						.withCriteriaSmartType("STyString")
 						.withFacet("FctDescriptionItem")
 						.withFacet("FctManufacturerItem")
@@ -176,17 +187,36 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 
 				.add(new FacetedQueryDefinitionSupplier("QryItemOptionalFacet")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
-						.withListFilterBuilderQuery("#criteria#")
+						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
 						.withCriteriaSmartType("STyString")
 						.withFacet("FctOptionalStringItem"))
 
 				.add(new FacetedQueryDefinitionSupplier("QryItemFacetMulti")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
-						.withListFilterBuilderQuery("#criteria#")
+						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
 						.withCriteriaSmartType("STyString")
 						.withFacet("FctDescriptionItem")
 						.withFacet("FctManufacturerItemMulti")
 						.withFacet("FctYearItem"))
+
+				.add(new FacetedQueryDefinitionSupplier("QryItemFacetGeo")
+						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
+						.withListFilterBuilderQuery("description:#+description*#")
+						.withGeoSearchQuery("localisation:#loc1#~20km") // distance
+						//						"geo_distance" : {
+						//		                    "distance" : "12km",
+						//		                    "pin.location" : "40,-70"
+						//		                }
+						//.withGeoSearchQuery("localisation:[#locUL# TO #locBR#]") // boundingBox
+						//						"geo_bounding_box" : {
+						//		                    "pin.location" : {
+						//		                        "wkt" : "BBOX (-74.1, -71.12, 40.73, 40.01)"
+						//		                    }
+						//		                }
+
+						//.withGeoSearchQuery("localisation:#loc1#/5") // geohash precision 5 (~ 4.9km x 4.9km)
+						.withCriteriaSmartType("STyString")
+						.withFacet("FctLocalisationItem"))
 
 				.build();
 	}

@@ -36,6 +36,7 @@ import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.model.DtObject;
+import io.vertigo.dynamox.search.DslListFilterBuilder;
 
 /**
  * @author  npiedeloup
@@ -100,7 +101,8 @@ public class RestHLSearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 
 	private long query(final String query, final SearchIndexDefinition indexDefinition) {
 		//recherche
-		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of(query))
+		final SearchQuery searchQuery = SearchQuery.builder(query, DslListFilterBuilder.class)
+				.withCriteria("")
 				.build();
 		final FacetedQueryResult<DtObject, SearchQuery> result = searchManager.loadList(indexDefinition, searchQuery, null);
 		return result.getCount();
