@@ -52,6 +52,9 @@ public final class FacetedQueryDefinition implements Definition {
 	/** Query du listFilterBuilder. */
 	private final String listFilterBuilderQuery;
 
+	/** Query du geoSearchQuery. */
+	private final String geoSearchQuery;
+
 	/**
 	 * Moyen de créer le ListFilter à partir du Criteria.
 	 */
@@ -65,26 +68,30 @@ public final class FacetedQueryDefinition implements Definition {
 	 * @param criteriaSmartType Criteria's smartType
 	 * @param listFilterBuilderClass listFilterBuilderClass to use
 	 * @param listFilterBuilderQuery listFilterBuilderQuery to use
+	 * @param myGeoSearchQuery geo query
 	 */
 	public FacetedQueryDefinition(
 			final String name,
 			final List<FacetDefinition> facetDefinitions,
 			final SmartTypeDefinition criteriaSmartType,
 			final Class<? extends ListFilterBuilder> listFilterBuilderClass,
-			final String listFilterBuilderQuery) {
+			final String listFilterBuilderQuery,
+			final String geoSearchQuery) {
 		Assertion.checkArgNotEmpty(name);
 		Assertion.checkNotNull(facetDefinitions);
 		Assertion.checkNotNull(criteriaSmartType);
 		Assertion.checkNotNull(listFilterBuilderClass);
 		Assertion.checkNotNull(listFilterBuilderQuery);
+		//Assertion.checkNotNull(geoSearchQuery);
 		//-----
 		this.name = name;
 		for (final FacetDefinition facetDefinition : facetDefinitions) {
 			this.facetDefinitions.put(facetDefinition.getName(), facetDefinition);
 		}
-		this.criteriaDomain = criteriaSmartType;
+		criteriaDomain = criteriaSmartType;
 		this.listFilterBuilderClass = listFilterBuilderClass;
 		this.listFilterBuilderQuery = listFilterBuilderQuery;
+		this.geoSearchQuery = geoSearchQuery;
 	}
 
 	/**
@@ -134,6 +141,13 @@ public final class FacetedQueryDefinition implements Definition {
 	 */
 	public String getListFilterBuilderQuery() {
 		return listFilterBuilderQuery;
+	}
+
+	/**
+	 * @return Query du geoSearchQuery.
+	 */
+	public String getGeoSearchQuery() {
+		return geoSearchQuery;
 	}
 
 	/** {@inheritDoc} */

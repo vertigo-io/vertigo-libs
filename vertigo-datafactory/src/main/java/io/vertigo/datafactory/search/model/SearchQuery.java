@@ -19,14 +19,20 @@
 package io.vertigo.datafactory.search.model;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.DefinitionReference;
+import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
+import io.vertigo.datafactory.collections.metamodel.ListFilterBuilder;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.dynamox.search.dsl.model.DslGeoExpression;
+import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
+import io.vertigo.dynamox.search.dsl.rules.DslParserUtil;
 
 /**
  * Critères de recherche.
@@ -35,7 +41,9 @@ import io.vertigo.datamodel.structure.metamodel.DtField;
 public final class SearchQuery implements Serializable {
 	private static final long serialVersionUID = -3215786603726103410L;
 
+	private final Object queryCriteria;
 	private final ListFilter queryListFilter;
+	private final Optional<DslGeoExpression> dslGeoExpression;
 	private final Optional<ListFilter> securityListFilter;
 
 	//Informations optionnelles pour booster la pertinence des documents plus récent (null si inutilisé)
@@ -47,8 +55,9 @@ public final class SearchQuery implements Serializable {
 
 	/**
 	 * Constructor.
-	 * @param facetedQuery facetedQueryDefinition
-	 * @param queryListFilter Filtre principal correspondant aux critères de la recherche
+	 * @param facetedQuery facetedQuery
+	 * @param facetedQueryDefinition Definition Filtre principal correspondant aux critères de la recherche
+	 * @param queryCriteria Critères de recherche
 	 * @param securityListFilter Filtre de sécurité
 	 * @param clusteringFacetDefinition Facet utilisée pour cluster des resultats (null si non utilisé)
 	 * @param boostedDocumentDateField Nom du champ portant la date du document (null si non utilisé)
@@ -56,15 +65,18 @@ public final class SearchQuery implements Serializable {
 	 * @param mostRecentBoost Boost relatif maximum entre les plus récents et ceux ayant l'age de référence (doit être > 1) (null si non utilisé)
 	 */
 	SearchQuery(
-			final Optional<FacetedQuery> facetedQuery,
-			final ListFilter queryListFilter,
+			final String listFilterBuilderQuery,
+			final Class<? extends ListFilterBuilder> listFilterBuilderClass,
+			final Optional<String> geoSearchQuery,
+			final Object queryCriteria,
 			final Optional<ListFilter> securityListFilter,
+			final Optional<FacetedQuery> facetedQuery,
 			final FacetDefinition clusteringFacetDefinition,
 			final DtField boostedDocumentDateField,
 			final Integer numDaysOfBoostRefDocument,
 			final Integer mostRecentBoost) {
 		Assertion.checkNotNull(facetedQuery);
-		Assertion.checkNotNull(queryListFilter);
+		Assertion.checkNotNull(queryCriteria);
 		Assertion.checkNotNull(securityListFilter);
 		Assertion.when(boostedDocumentDateField != null)
 				.check(() -> numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires.");
@@ -76,7 +88,25 @@ public final class SearchQuery implements Serializable {
 				.check(() -> mostRecentBoost.longValue() > 1, "numDaysOfBoostRefDocument et mostRecentBoost doivent être strictement supérieur à 1.");
 		//-----
 		this.facetedQuery = facetedQuery;
-		this.queryListFilter = queryListFilter;
+		this.queryCriteria = queryCriteria;
+
+		if (listFilterBuilderQuery.isEmpty() || "*:*".equals(listFilterBuilderQuery)) {
+			queryListFilter = ListFilter.of("*:*");
+		} else {
+			final List<DslMultiExpression> dslQuery = DslParserUtil.parseMultiExpression(listFilterBuilderQuery);
+			final ListFilterBuilder<Object> listFilterBuilder = InjectorUtil.newInstance(listFilterBuilderClass);
+			queryListFilter = listFilterBuilder
+					.withDslQuery(dslQuery)
+					.withCriteria(queryCriteria)
+					.build();
+		}
+
+		if (geoSearchQuery.isPresent()) {
+			dslGeoExpression = Optional.of(DslParserUtil.parseGeoExpression(geoSearchQuery.get()));
+		} else {
+			dslGeoExpression = Optional.empty();
+		}
+
 		this.securityListFilter = securityListFilter;
 		boostedDocumentDateFieldName = boostedDocumentDateField != null ? boostedDocumentDateField.getName() : null;
 		this.numDaysOfBoostRefDocument = numDaysOfBoostRefDocument;
@@ -89,8 +119,18 @@ public final class SearchQuery implements Serializable {
 	 * @param listFilter ListFilter
 	 * @return SearchQueryBuilder
 	 */
-	public static SearchQueryBuilder builder(final ListFilter listFilter) {
-		return new SearchQueryBuilder(listFilter);
+	public static SearchQueryBuilder builder(final String facetedQueryDefinitionName) {
+		return new SearchQueryBuilder(facetedQueryDefinitionName);
+	}
+
+	/**
+	 * Static method factory for manual SearchQueryBuilder (no definition)
+	 * @param listFilterBuilderQuery listFilterBuilderQuery
+	 * @param listFilterBuilderClass listFilterBuilderClass
+	 * @return SearchQueryBuilder
+	 */
+	public static SearchQueryBuilder builder(final String listFilterBuilderQuery, final Class<? extends ListFilterBuilder> listFilterBuilderClass) {
+		return new SearchQueryBuilder(listFilterBuilderQuery, listFilterBuilderClass);
 	}
 
 	/**
@@ -107,6 +147,14 @@ public final class SearchQuery implements Serializable {
 	 */
 	public ListFilter getListFilter() {
 		return queryListFilter;
+	}
+
+	/**
+	 * Filtre geo correspondant aux critères geo de la recherche.
+	 * @return Valeur du filtre
+	 */
+	public Optional<DslGeoExpression> getGeoExpression() {
+		return dslGeoExpression;
 	}
 
 	/**
@@ -173,6 +221,14 @@ public final class SearchQuery implements Serializable {
 		Assertion.checkArgument(isBoostMostRecent(), "Le boost des documents les plus récent, n'est pas activé sur cette recherche");
 		//-----
 		return mostRecentBoost;
+	}
+
+	/**
+	 * Query criteria
+	 * @return Query criteria
+	 */
+	public Object getCriteria() {
+		return queryCriteria;
 	}
 
 }

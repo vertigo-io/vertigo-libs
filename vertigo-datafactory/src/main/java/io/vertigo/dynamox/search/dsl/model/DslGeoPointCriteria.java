@@ -16,32 +16,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datafactory.collections.metamodel;
+package io.vertigo.dynamox.search.dsl.model;
 
-import java.util.List;
-
-import io.vertigo.core.lang.Builder;
-import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
+import io.vertigo.core.lang.Assertion;
 
 /**
- * Project specific builder from Criteria to ListFilter.
+ * Relative geo distance.
+ * #(geoPointFieldName)#
  * @author npiedeloup
- * @param <C> Criteria type
  */
-public interface ListFilterBuilder<C> extends Builder<ListFilter> {
+public final class DslGeoPointCriteria implements DslQuery {
+	private final String geoPointFieldName;
 
 	/**
-	 * Build Query.
-	 * @param buildQuery Query use by builder
-	 * @return this builder
+	 * @param geoPointFieldName geoPoint fieldName
 	 */
-	ListFilterBuilder<C> withDslQuery(final List<DslMultiExpression> dslQuery);
+	public DslGeoPointCriteria(final String geoPointFieldName) {
+		Assertion.checkArgNotEmpty(geoPointFieldName);
+		//-----
+		this.geoPointFieldName = geoPointFieldName;
+	}
 
 	/**
-	 * Process a criteria to produce a ListFilter.
-	 * @param criteria Criteria
-	 * @return this builder
+	 * @return geoPointFieldName
 	 */
-	ListFilterBuilder<C> withCriteria(C criteria);
+	public String getGeoPointFieldName() {
+		return geoPointFieldName;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return "#" + geoPointFieldName + "#";
+	}
 }

@@ -31,12 +31,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import io.vertigo.commons.peg.PegNoMatchFoundException;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
-import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.BeanUtil;
-import io.vertigo.core.util.StringUtil;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.metamodel.ListFilterBuilder;
 import io.vertigo.dynamox.search.dsl.model.DslBlockQuery;
@@ -109,19 +106,11 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 	 * @return this builder
 	 */
 	@Override
-	public ListFilterBuilder<C> withBuildQuery(final String buildQuery) {
-		Assertion.checkNotNull(buildQuery);
-		Assertion.checkState(myBuildQuery == null, "query was already set : {0}", myBuildQuery);
+	public ListFilterBuilder<C> withDslQuery(final List<DslMultiExpression> dslQuery) {
+		Assertion.checkNotNull(dslQuery);
+		Assertion.checkState(myBuildQuery == null, "query was already set : {0}", dslQuery);
 		//-----
-		try {
-			myBuildQuery = DslParserUtil.parseMultiExpression(buildQuery);
-		} catch (final PegNoMatchFoundException e) {
-			final String message = StringUtil.format("Echec de lecture du listFilterPattern {0}\n{1}", buildQuery, e.getFullMessage());
-			throw WrappedException.wrap(e, message);
-		} catch (final Exception e) {
-			final String message = StringUtil.format("Echec de lecture du listFilterPattern {0}\n{1}", buildQuery, e.getMessage());
-			throw WrappedException.wrap(e, message);
-		}
+		myBuildQuery = dslQuery;
 		return this;
 	}
 

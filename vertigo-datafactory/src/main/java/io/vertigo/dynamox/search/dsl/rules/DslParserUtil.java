@@ -21,6 +21,9 @@ package io.vertigo.dynamox.search.dsl.rules;
 import java.util.List;
 
 import io.vertigo.commons.peg.PegNoMatchFoundException;
+import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.util.StringUtil;
+import io.vertigo.dynamox.search.dsl.model.DslGeoExpression;
 import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
 import io.vertigo.dynamox.search.dsl.model.DslUserCriteria;
 
@@ -36,10 +39,26 @@ public final class DslParserUtil {
 
 	/**
 	 * @param buildQuery Builder pattern
+	 * @return List<DslMultiExpression> Parsed pattern
+	 */
+	public static List<DslMultiExpression> parseMultiExpression(final String buildQuery) {
+		try {
+			return parseMultiExpressionWithError(buildQuery);
+		} catch (final PegNoMatchFoundException e) {
+			final String message = StringUtil.format("Can't parse listFilterPattern {0}\n{1}", buildQuery, e.getFullMessage());
+			throw WrappedException.wrap(e, message);
+		} catch (final Exception e) {
+			final String message = StringUtil.format("Can't parse listFilterPattern {0}\n{1}", buildQuery, e.getMessage());
+			throw WrappedException.wrap(e, message);
+		}
+	}
+
+	/**
+	 * @param buildQuery Builder pattern
 	 * @return Parsed pattern
 	 * @throws PegNoMatchFoundException If pattern doesn't match grammar
 	 */
-	public static List<DslMultiExpression> parseMultiExpression(final String buildQuery) throws PegNoMatchFoundException {
+	private static List<DslMultiExpression> parseMultiExpressionWithError(final String buildQuery) throws PegNoMatchFoundException {
 		return new DslSearchExpressionRule()
 				.parse(buildQuery, 0)
 				.getValue();
@@ -51,5 +70,13 @@ public final class DslParserUtil {
 	 */
 	public static List<DslUserCriteria> parseUserCriteria(final String userString) {
 		return DslUserCriteriaRule.parse(userString);
+	}
+
+	/**
+	 * @param geoString geo criteria
+	 * @return Parsed GeoExpression
+	 */
+	public static DslGeoExpression parseGeoExpression(final String geoString) {
+		return DslGeoExpressionRule.parse(geoString);
 	}
 }

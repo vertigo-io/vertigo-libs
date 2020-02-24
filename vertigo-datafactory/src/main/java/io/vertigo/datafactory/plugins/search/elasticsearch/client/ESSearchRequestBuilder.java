@@ -27,6 +27,8 @@ import java.util.regex.Pattern;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.Client;
+import org.elasticsearch.common.geo.GeoPoint;
+import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -44,8 +46,10 @@ import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.Builder;
+import io.vertigo.core.lang.VSystemException;
+import io.vertigo.core.util.BeanUtil;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
 import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
@@ -58,6 +62,12 @@ import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtListState;
+import io.vertigo.dynamox.search.dsl.model.DslGeoDistanceQuery;
+import io.vertigo.dynamox.search.dsl.model.DslGeoExpression;
+import io.vertigo.dynamox.search.dsl.model.DslGeoPointCriteria;
+import io.vertigo.dynamox.search.dsl.model.DslGeoPointFixed;
+import io.vertigo.dynamox.search.dsl.model.DslGeoRangeQuery;
+import io.vertigo.dynamox.search.dsl.model.DslQuery;
 
 //vérifier
 /**
@@ -207,6 +217,10 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	private static QueryBuilder appendSearchQuery(final SearchQuery searchQuery, final BoolQueryBuilder filterBoolQueryBuilder) {
 		final QueryBuilder queryBuilder = translateToQueryBuilder(searchQuery.getListFilter());
 		filterBoolQueryBuilder.must(queryBuilder);
+		final Optional<DslGeoExpression> geoExpression = searchQuery.getGeoExpression();
+		if (geoExpression.isPresent()) {
+			filterBoolQueryBuilder.must(translateToQueryBuilder(searchQuery.getCriteria(), geoExpression.get()));
+		}
 		return queryBuilder;
 	}
 
@@ -279,7 +293,8 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		}
 		//Puis les facettes liées à la query, si présent
 		if (searchQuery.getFacetedQuery().isPresent()) {
-			final FacetedQueryDefinition facetedQueryDefinition = searchQuery.getFacetedQuery().get().getDefinition();
+			final FacetedQuery facetedQuery = searchQuery.getFacetedQuery().get();
+			final FacetedQueryDefinition facetedQueryDefinition = facetedQuery.getDefinition();
 			final Collection<FacetDefinition> facetDefinitions = new ArrayList<>(facetedQueryDefinition.getFacetDefinitions());
 			if (searchQuery.isClusteringFacet() && facetDefinitions.contains(searchQuery.getClusteringFacetDefinition())) {
 				facetDefinitions.remove(searchQuery.getClusteringFacetDefinition());
@@ -287,10 +302,10 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			for (final FacetDefinition facetDefinition : facetDefinitions) {
 				final AggregationBuilder aggregationBuilder = facetToAggregationBuilder(facetDefinition);
 				final BoolQueryBuilder aggsFilterBoolQueryBuilder = QueryBuilders.boolQuery();
-				for (final FacetDefinition filterFacetDefinition : searchQuery.getFacetedQuery().get().getDefinition().getFacetDefinitions()) {
+				for (final FacetDefinition filterFacetDefinition : facetedQuery.getDefinition().getFacetDefinitions()) {
 					if (filterFacetDefinition.isMultiSelectable() && !facetDefinition.equals(filterFacetDefinition)) {
 						//on ne doit refiltrer que les multiSelectable (les autres sont dans le filter de la request), sauf la facet qu'on est entrain de traiter
-						appendSelectedFacetValuesFilter(aggsFilterBoolQueryBuilder, searchQuery.getFacetedQuery().get().getSelectedFacetValues().getFacetValues(filterFacetDefinition.getName()));
+						appendSelectedFacetValuesFilter(aggsFilterBoolQueryBuilder, facetedQuery.getSelectedFacetValues().getFacetValues(filterFacetDefinition.getName()));
 					}
 				}
 				if (aggsFilterBoolQueryBuilder.hasClauses()) {
@@ -431,6 +446,46 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 
 	private static String cleanUserFilter(final String filterValue) {
 		return filterValue;
+		//replaceAll "(?i)((?<=\\S\\s)(or|and)(?=\\s\\S))"
+		//replaceAll "(?i)((?<=\\s)(or|and)(?=\\s))"
+	}
+
+	static QueryBuilder translateToQueryBuilder(final Object myCriteria, final DslGeoExpression dslGeoExpression) {
+		final String fieldName = dslGeoExpression.getField().getFieldName();
+		//TODO assert geoPoint field ?
+		final DslQuery geoQuery = dslGeoExpression.getGeoQuery();
+		if (geoQuery instanceof DslGeoDistanceQuery) {
+			final DslGeoDistanceQuery geoDistanceQuery = (DslGeoDistanceQuery) geoQuery;
+			final GeoPoint geoPoint = computeGeoPoint(geoDistanceQuery.getGeoPoint(), myCriteria);
+			return QueryBuilders.geoDistanceQuery(fieldName)
+					.point(geoPoint)
+					.distance(geoDistanceQuery.getDistance(), DistanceUnit.fromString(geoDistanceQuery.getDistanceUnit()));
+		} else if (geoQuery instanceof DslGeoRangeQuery) {
+			final DslGeoRangeQuery geoRangeQuery = (DslGeoRangeQuery) geoQuery;
+			final GeoPoint geoPointTopLeft = computeGeoPoint(geoRangeQuery.getStartGeoPoint(), myCriteria);
+			final GeoPoint geoPointBottomRight = computeGeoPoint(geoRangeQuery.getEndGeoPoint(), myCriteria);
+
+			return QueryBuilders.geoBoundingBoxQuery(fieldName)
+					.setCorners(geoPointTopLeft, geoPointBottomRight);
+		}
+		throw new VSystemException("Can't translate toGeoQuery " + dslGeoExpression);
+	}
+
+	private static GeoPoint computeGeoPoint(final DslQuery dslGeoPoint, final Object myCriteria) {
+		final GeoPoint geoPoint;
+		if (dslGeoPoint instanceof DslGeoPointFixed) {
+			geoPoint = new GeoPoint(((DslGeoPointFixed) dslGeoPoint).getGeoPointValue());
+		} else if (dslGeoPoint instanceof DslGeoPointCriteria) {
+			final String geoPointValue = cleanGeoCriteria(String.valueOf(BeanUtil.getValue(myCriteria, ((DslGeoPointCriteria) dslGeoPoint).getGeoPointFieldName())));
+			geoPoint = new GeoPoint(geoPointValue);
+		} else {
+			throw new VSystemException("Can't compute geoPoint for " + dslGeoPoint);
+		}
+		return geoPoint;
+	}
+
+	private static String cleanGeoCriteria(final String geoPointValue) {
+		return geoPointValue;
 		//replaceAll "(?i)((?<=\\S\\s)(or|and)(?=\\s\\S))"
 		//replaceAll "(?i)((?<=\\s)(or|and)(?=\\s))"
 	}

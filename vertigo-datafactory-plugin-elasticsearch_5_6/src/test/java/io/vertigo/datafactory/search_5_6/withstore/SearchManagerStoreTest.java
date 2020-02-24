@@ -58,6 +58,7 @@ import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
+import io.vertigo.dynamox.search.DslListFilterBuilder;
 
 /**
  * Test de l'implémentation standard couplé au store.
@@ -357,7 +358,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 
 	private long query(final String query) {
 		//recherche
-		final SearchQuery searchQuery = SearchQuery.builder(ListFilter.of(query))
+		final SearchQuery searchQuery = SearchQuery.builder(query, DslListFilterBuilder.class)
+				.withCriteria("")
 				.build();
 
 		return doQuery(searchQuery, null).getCount();

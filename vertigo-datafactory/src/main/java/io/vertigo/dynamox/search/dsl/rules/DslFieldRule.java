@@ -39,7 +39,7 @@ final class DslFieldRule extends AbstractRule<DslField, List<Object>> {
 	private static PegRule<List<Object>> createMainRule() {
 		return PegRules.sequence(
 				DslSyntaxRules.PRE_MODIFIER_VALUE, //0
-				DslSyntaxRules.WORD, //1
+				DslSyntaxRules.FIELD_NAME, //1
 				DslSyntaxRules.POST_MODIFIER_VALUE); //2
 	}
 

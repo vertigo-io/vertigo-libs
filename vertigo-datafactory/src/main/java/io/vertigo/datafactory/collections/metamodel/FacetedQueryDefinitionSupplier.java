@@ -14,6 +14,7 @@ public final class FacetedQueryDefinitionSupplier implements DefinitionSupplier 
 	private String myCriteriaSmartTypeName;
 	private String myListFilterBuilderQuery;
 	private Class<? extends ListFilterBuilder> myListFilterBuilderClass;
+	private String myGeoSearchQuery;
 	private final List<String> facets = new ArrayList<>();
 
 	public FacetedQueryDefinitionSupplier(final String name) {
@@ -26,17 +27,22 @@ public final class FacetedQueryDefinitionSupplier implements DefinitionSupplier 
 	}
 
 	public FacetedQueryDefinitionSupplier withCriteriaSmartType(final String criteriaSmartTypeName) {
-		this.myCriteriaSmartTypeName = criteriaSmartTypeName;
+		myCriteriaSmartTypeName = criteriaSmartTypeName;
 		return this;
 	}
 
 	public FacetedQueryDefinitionSupplier withListFilterBuilderQuery(final String listFilterBuilderQuery) {
-		this.myListFilterBuilderQuery = listFilterBuilderQuery;
+		myListFilterBuilderQuery = listFilterBuilderQuery;
 		return this;
 	}
 
 	public FacetedQueryDefinitionSupplier withListFilterBuilderClass(final Class<? extends ListFilterBuilder> listFilterBuilderClass) {
-		this.myListFilterBuilderClass = listFilterBuilderClass;
+		myListFilterBuilderClass = listFilterBuilderClass;
+		return this;
+	}
+
+	public FacetedQueryDefinitionSupplier withGeoSearchQuery(final String geoSearchQuery) {
+		myGeoSearchQuery = geoSearchQuery;
 		return this;
 	}
 
@@ -51,6 +57,8 @@ public final class FacetedQueryDefinitionSupplier implements DefinitionSupplier 
 				facetDefinitions,
 				criteriaSmartType,
 				myListFilterBuilderClass,
-				myListFilterBuilderQuery);
+				myListFilterBuilderQuery,
+				myGeoSearchQuery);
 	}
+
 }

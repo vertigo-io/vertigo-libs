@@ -69,6 +69,10 @@ final class DslSyntaxRules {
 	static final PegRule<String> POST_MODIFIER_VALUE = PegRules.word(true, POST_MODIFIER, PegWordRule.Mode.ACCEPT, "[~+-*?^0123456789\"]*");
 
 	//Il faut gérer le caractère d'évitement.
+
+	/** fieldname : like word but accept . (dot)*/
+	static final PegRule<String> FIELD_NAME = PegRules.word(false, "()[]\"!#$%&'*+,-/:;<=>?@\\^`|~" + WHITE_SPACE, PegWordRule.Mode.REJECT, "WORD");
+
 	/** word. */
 	static final PegRule<String> WORD = PegRules.word(false, DELIMITERS, PegWordRule.Mode.REJECT, "WORD");
 

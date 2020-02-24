@@ -26,6 +26,7 @@ import io.vertigo.core.node.Home;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
 import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
+import io.vertigo.datafactory.collections.metamodel.ListFilterBuilder;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -35,7 +36,11 @@ import io.vertigo.datamodel.structure.metamodel.DtField;
  */
 public final class SearchQueryBuilder implements Builder<SearchQuery> {
 
-	private final ListFilter myListFilter;
+	private final FacetedQueryDefinition facetedQueryDefinition;
+	private final String listFilterBuilderQuery;
+	private final Class<? extends ListFilterBuilder> listFilterBuilderClass;
+	private String geoSearchQuery;
+	private Object myCriteria;
 	private ListFilter mySecurityListFilter;
 	//-----
 	private DtField myDateField;
@@ -48,10 +53,31 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * Constructor.
 	 * @param listFilter ListFilter
 	 */
-	SearchQueryBuilder(final ListFilter listFilter) {
-		Assertion.checkNotNull(listFilter);
+	SearchQueryBuilder(final String facetedQueryDefinitionName) {
+		facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve(facetedQueryDefinitionName, FacetedQueryDefinition.class);
+		listFilterBuilderQuery = facetedQueryDefinition.getListFilterBuilderQuery();
+		listFilterBuilderClass = facetedQueryDefinition.getListFilterBuilderClass();
+		geoSearchQuery = facetedQueryDefinition.getGeoSearchQuery();
+	}
+
+	SearchQueryBuilder(final String listFilterBuilderQuery, final Class<? extends ListFilterBuilder> listFilterBuilderClass) {
+		facetedQueryDefinition = null; //can't add facet after that
+		this.listFilterBuilderQuery = listFilterBuilderQuery;
+		this.listFilterBuilderClass = listFilterBuilderClass;
+	}
+
+	public SearchQueryBuilder withGeoSearchQuery(final String geoSearchQuery) {
+		Assertion.checkNotNull(geoSearchQuery);
 		//-----
-		myListFilter = listFilter;
+		this.geoSearchQuery = geoSearchQuery;
+		return this;
+	}
+
+	public SearchQueryBuilder withCriteria(final Object criteria) {
+		Assertion.checkNotNull(criteria);
+		//-----
+		myCriteria = criteria;
+		return this;
 	}
 
 	/**
@@ -76,11 +102,10 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	}
 
 	/**
-	 * @param facetedQueryDefinition FacetedQueryDefinition
 	 * @param selectedFacetValues ListFilter of selected facets
 	 * @return this builder
 	 */
-	public SearchQueryBuilder withFacet(final FacetedQueryDefinition facetedQueryDefinition, final SelectedFacetValues selectedFacetValues) {
+	public SearchQueryBuilder withFacet(final SelectedFacetValues selectedFacetValues) {
 		return this.withFacet(new FacetedQuery(facetedQueryDefinition, selectedFacetValues));
 	}
 
@@ -90,6 +115,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 */
 	public SearchQueryBuilder withFacet(final FacetedQuery facetedQuery) {
 		Assertion.checkNotNull(facetedQuery);
+		Assertion.checkState(myFacetedQuery == null, "Facets already set (may have set via FacetedQueryDefinition {0})", facetedQueryDefinition.getName());
 		//-----
 		myFacetedQuery = facetedQuery;
 		return this;
@@ -135,9 +161,12 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	@Override
 	public SearchQuery build() {
 		return new SearchQuery(
-				Optional.ofNullable(myFacetedQuery),
-				myListFilter,
+				listFilterBuilderQuery,
+				listFilterBuilderClass,
+				Optional.ofNullable(geoSearchQuery),
+				myCriteria,
 				Optional.ofNullable(mySecurityListFilter),
+				Optional.ofNullable(myFacetedQuery),
 				myClusteringFacetDefinition,
 				myDateField,
 				myNumDaysOfBoostRef,

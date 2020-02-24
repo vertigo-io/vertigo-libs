@@ -16,32 +16,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.datafactory.collections.metamodel;
+package io.vertigo.dynamox.search.dsl.model;
 
-import java.util.List;
-
-import io.vertigo.core.lang.Builder;
-import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.dynamox.search.dsl.model.DslMultiExpression;
+import io.vertigo.core.lang.Assertion;
 
 /**
- * Project specific builder from Criteria to ListFilter.
+ * Fixed GeoPoint.
+ * 40.73, -74.14
  * @author npiedeloup
- * @param <C> Criteria type
  */
-public interface ListFilterBuilder<C> extends Builder<ListFilter> {
+public final class DslGeoPointFixed implements DslQuery {
+	private final String geoPointValue;
 
 	/**
-	 * Build Query.
-	 * @param buildQuery Query use by builder
-	 * @return this builder
+	 * @param geoPoint geoPoint value
 	 */
-	ListFilterBuilder<C> withDslQuery(final List<DslMultiExpression> dslQuery);
+	public DslGeoPointFixed(final String geoPointValue) {
+		Assertion.checkArgNotEmpty(geoPointValue);
+		//-----
+		this.geoPointValue = geoPointValue;
+	}
 
 	/**
-	 * Process a criteria to produce a ListFilter.
-	 * @param criteria Criteria
-	 * @return this builder
+	 * @return geoPointValue
 	 */
-	ListFilterBuilder<C> withCriteria(C criteria);
+	public String getGeoPointValue() {
+		return geoPointValue;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public String toString() {
+		return "\"" + geoPointValue + "\"";
+	}
 }
