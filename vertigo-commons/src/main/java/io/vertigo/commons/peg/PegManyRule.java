@@ -96,10 +96,8 @@ final class PegManyRule<R> implements PegRule<List<R>> {
 				}
 			}
 		} catch (final PegNoMatchFoundException e) {
-			if (best == null || best.getIndex() < index) {
-				best = e;
-				PegLogger.miss("MANY", "m" + i, index, getRule());
-			}
+			best = e;
+			PegLogger.miss("MANY", "m" + i, index, getRule());
 		}
 		if (!isEmptyAccepted() && results.isEmpty()) {
 			throw new PegNoMatchFoundException(text, best != null ? best.getIndex() : start, best, "Aucun élément de la liste trouvé : {0}", getExpression());
