@@ -22,9 +22,12 @@ import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.geo.impl.services.geocoder.GeoCoderManagerImpl;
+import io.vertigo.geo.impl.services.geosearch.GeoSearchServicesImpl;
 import io.vertigo.geo.plugins.geocoder.ban.BanGeoCoderPlugin;
 import io.vertigo.geo.plugins.geocoder.google.GoogleGeoCoderPlugin;
+import io.vertigo.geo.plugins.geosearch.es.ESGeoSearchPlugin;
 import io.vertigo.geo.services.geocoder.GeoCoderManager;
+import io.vertigo.geo.services.geosearch.GeoSearchServices;
 
 /**
  * Defines the 'geo' extension
@@ -50,6 +53,16 @@ public final class GeoFeatures extends Features<GeoFeatures> {
 	}
 
 	/**
+	 * Activates geosearch
+	 * @return the features
+	 */
+	@Feature("geosearch")
+	public GeoFeatures withGeosearch() {
+		getModuleConfigBuilder().addComponent(GeoSearchServices.class, GeoSearchServicesImpl.class);
+		return this;
+	}
+
+	/**
 	 * Activates comments
 	 * @return the features
 	 */
@@ -66,6 +79,16 @@ public final class GeoFeatures extends Features<GeoFeatures> {
 	@Feature("geocoding.ban")
 	public GeoFeatures withBanGeocoder(final Param... params) {
 		getModuleConfigBuilder().addPlugin(BanGeoCoderPlugin.class, params);
+		return this;
+	}
+
+	/**
+	 * Activates comments
+	 * @return the features
+	 */
+	@Feature("geosearch.es")
+	public GeoFeatures withESGeosearch(final Param... params) {
+		getModuleConfigBuilder().addPlugin(ESGeoSearchPlugin.class, params);
 		return this;
 	}
 

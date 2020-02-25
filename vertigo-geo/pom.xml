@@ -22,6 +22,18 @@
 			<artifactId>vertigo-datamodel</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-elasticsearch-connector</artifactId>
+			<version>${vertigo.version}</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+		    <groupId>org.elasticsearch.client</groupId>
+		    <artifactId>elasticsearch-rest-high-level-client</artifactId>
+		    <version>7.4.1</version>
+		    <optional>true</optional> <!-- RestHighLevelElasticSearchConnector -->
+		</dependency>
 
 		<!-- tests -->
 		<dependency>
