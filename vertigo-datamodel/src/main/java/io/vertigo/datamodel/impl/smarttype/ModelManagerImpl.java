@@ -51,7 +51,7 @@ public class ModelManagerImpl implements ModelManager, Activeable {
 				.stream()
 				.flatMap(smartTypeDefinition -> smartTypeDefinition.getAdapterConfigs().values().stream().map(adapterConfig -> Tuple.of(smartTypeDefinition.getJavaClass(), adapterConfig)))
 				.filter(tuple -> !"*".equals(tuple.getVal2().getType()))
-				.forEach(tuple -> adaptersByType.putIfAbsent(tuple.getVal2().getType(), new HashMap<>())
+				.forEach(tuple -> adaptersByType.computeIfAbsent(tuple.getVal2().getType(), k -> new HashMap<>())
 						.put(tuple.getVal1(), createBasicTypeAdapter(tuple.getVal2())));
 
 	}

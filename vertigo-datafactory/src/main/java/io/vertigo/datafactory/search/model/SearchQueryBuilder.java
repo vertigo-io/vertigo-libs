@@ -39,7 +39,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	private final FacetedQueryDefinition facetedQueryDefinition;
 	private final String listFilterBuilderQuery;
 	private final Class<? extends ListFilterBuilder> listFilterBuilderClass;
-	private String geoSearchQuery;
+	private String myGeoSearchQuery;
 	private Object myCriteria;
 	private ListFilter mySecurityListFilter;
 	//-----
@@ -57,7 +57,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 		facetedQueryDefinition = Home.getApp().getDefinitionSpace().resolve(facetedQueryDefinitionName, FacetedQueryDefinition.class);
 		listFilterBuilderQuery = facetedQueryDefinition.getListFilterBuilderQuery();
 		listFilterBuilderClass = facetedQueryDefinition.getListFilterBuilderClass();
-		geoSearchQuery = facetedQueryDefinition.getGeoSearchQuery();
+		myGeoSearchQuery = facetedQueryDefinition.getGeoSearchQuery();
 	}
 
 	SearchQueryBuilder(final String listFilterBuilderQuery, final Class<? extends ListFilterBuilder> listFilterBuilderClass) {
@@ -69,7 +69,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	public SearchQueryBuilder withGeoSearchQuery(final String geoSearchQuery) {
 		Assertion.checkNotNull(geoSearchQuery);
 		//-----
-		this.geoSearchQuery = geoSearchQuery;
+		this.myGeoSearchQuery = geoSearchQuery;
 		return this;
 	}
 
@@ -163,7 +163,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 		return new SearchQuery(
 				listFilterBuilderQuery,
 				listFilterBuilderClass,
-				Optional.ofNullable(geoSearchQuery),
+				Optional.ofNullable(myGeoSearchQuery),
 				myCriteria,
 				Optional.ofNullable(mySecurityListFilter),
 				Optional.ofNullable(myFacetedQuery),

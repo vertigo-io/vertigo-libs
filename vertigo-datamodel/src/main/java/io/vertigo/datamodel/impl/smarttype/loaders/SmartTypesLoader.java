@@ -66,9 +66,9 @@ public class SmartTypesLoader implements Loader {
 			scope = Scope.PRIMITIVE;
 		} else {
 			//we are not primitive, we need a mapper
-			Assertion.checkState(field.isAnnotationPresent(Adapter.class),
-					"Your smarttype '{0}' is not a primitive one, you need to specify a mapper to a targeted DataType with the @Mapper annotation", smartTypeName);
 			final Adapter[] adapters = field.getAnnotationsByType(Adapter.class);
+			Assertion.checkState(adapters.length > 0,
+					"Your smarttype '{0}' is not a primitive one, you need to specify a mapper to a targeted DataType with the @Adapter annotation", smartTypeName);
 			for (final Adapter adapter : adapters) {
 				adapterConfigs.add(new AdapterConfig(adapter.type(), adapter.clazz(), adapter.targetBasicType()));
 			}
