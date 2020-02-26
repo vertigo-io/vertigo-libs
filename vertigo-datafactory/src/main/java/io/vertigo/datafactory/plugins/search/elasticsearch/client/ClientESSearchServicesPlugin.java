@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -54,6 +55,7 @@ import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthMeasureBuilder;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
@@ -89,8 +91,12 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	public static final String SUFFIX_SORT_FIELD = ".keyword";
 
 	private static final Logger LOGGER = LogManager.getLogger(ClientESSearchServicesPlugin.class);
-	private final ESDocumentCodec elasticDocumentCodec;
+	private final ModelManager modelManager;
+	private final CodecManager codecManager;
 	private final ElasticSearchConnector elasticSearchConnector;
+
+	private ESDocumentCodec elasticDocumentCodec;
+	private Map<Class, BasicTypeAdapter> typeAdapters;
 
 	private Client esClient;
 	private final DtListState defaultListState;
@@ -127,7 +133,8 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		//-----
 		this.defaultMaxRows = defaultMaxRows;
 		defaultListState = DtListState.of(defaultMaxRows);
-		elasticDocumentCodec = new ESDocumentCodec(codecManager, modelManager);
+		this.modelManager = modelManager;
+		this.codecManager = codecManager;
 		//------
 		this.envIndexPrefix = envIndexPrefix;
 		configFileUrl = resourceManager.resolve(configFile);
@@ -140,6 +147,8 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
+		typeAdapters = modelManager.getTypeAdapters("search");
+		elasticDocumentCodec = new ESDocumentCodec(codecManager, typeAdapters);
 		//Init ElasticSearch Client
 		esClient = elasticSearchConnector.getClient();
 		indexSettingsValid = true;
@@ -308,7 +317,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		Assertion.checkNotNull(indexDefinition);
 		Assertion.checkArgument(types.contains(indexDefinition.getName()), "Type {0} hasn't been registered (Registered type: {1}).", indexDefinition.getName(), types);
 		//-----
-		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), esClient);
+		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), esClient, typeAdapters);
 	}
 
 	private static String obtainPkIndexDataType(final SmartTypeDefinition smartTypeDefinition) {

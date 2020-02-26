@@ -23,9 +23,9 @@ import java.util.regex.Pattern;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.dynamox.search.dsl.model.DslField;
-import io.vertigo.dynamox.search.dsl.model.DslGeoPointCriteria;
 import io.vertigo.dynamox.search.dsl.model.DslGeoDistanceQuery;
 import io.vertigo.dynamox.search.dsl.model.DslGeoExpression;
+import io.vertigo.dynamox.search.dsl.model.DslGeoPointCriteria;
 import io.vertigo.dynamox.search.dsl.model.DslGeoPointFixed;
 import io.vertigo.dynamox.search.dsl.model.DslGeoRangeQuery;
 import io.vertigo.dynamox.search.dsl.model.DslQuery;
@@ -46,10 +46,10 @@ import io.vertigo.dynamox.search.dsl.model.DslQuery;
  */
 final class DslGeoExpressionRule {
 
-	private static final String GEOLOC_FIXED_PATTERN = "(\"[0-9\\.]+\\s*,\\s*[0-9\\.]+\")";
+	private static final String GEOLOC_FIXED_PATTERN = "\"(-?[0-9\\.]+\\s*,\\s*-?[0-9\\.]+)\"";
 	private static final String GEOLOC_CRITERIA_PATTERN = "#([^#]+)#";
 
-	private static final String GEO_FIELD_PATTERN = "([^\\s\\:]+)(?:\\s):(?:\\s)";
+	private static final String GEO_FIELD_PATTERN = "([^\\s\\:]+)(?:\\s)*:(?:\\s)*";
 	private static final String GEO_DISTANCE_PATTERN = "(?:"
 			+ GEOLOC_FIXED_PATTERN + "|" + GEOLOC_CRITERIA_PATTERN //group geoLocFix | geoLocCrit
 			+ ")"
@@ -57,15 +57,15 @@ final class DslGeoExpressionRule {
 
 	private static final String GEO_RANGE_PATTERN = "\\[\\s*(?:"
 			+ GEOLOC_FIXED_PATTERN + "|" + GEOLOC_CRITERIA_PATTERN //group geoLocFix | geoLocCrit
-			+ ")(?:(?:to)|(?:TO))(?:"
+			+ ")\\s*(?:(?:to)|(?:TO))\\s*(?:"
 			+ GEOLOC_FIXED_PATTERN + "|" + GEOLOC_CRITERIA_PATTERN //group geoLocFix | geoLocCrit
 			+ ")\\s*\\]";
 
 	private static final String GEO_EXPRESSION_PATTERN_STRING = "(?:\\s|^)"
 			+ GEO_FIELD_PATTERN //group 1
-			+ GEO_DISTANCE_PATTERN // group 2-5
+			+ "(?:" + GEO_DISTANCE_PATTERN // group 2-5
 			+ "|" + GEO_RANGE_PATTERN // group 6-9
-			+ "(?=\\s|$)"; // group 10
+			+ ")(?=\\s|$)"; // group 10
 	private static final Pattern GEO_EXPRESSION_PATTERN = Pattern.compile(GEO_EXPRESSION_PATTERN_STRING);
 
 	/**
@@ -77,7 +77,7 @@ final class DslGeoExpressionRule {
 		final Matcher geoValueMatcher = GEO_EXPRESSION_PATTERN.matcher(geoString);
 		Assertion.checkArgument(geoValueMatcher.find(), "Can't parse geoExpression ({0})", geoString);
 
-		if (geoValueMatcher.group(2) != null) {
+		if (geoValueMatcher.group(4) != null) {
 			//found geoDistance
 			final DslField geoField = new DslField("", geoValueMatcher.group(1), "");
 			final DslQuery geoLoc;
@@ -86,12 +86,12 @@ final class DslGeoExpressionRule {
 			} else {
 				geoLoc = new DslGeoPointCriteria(geoValueMatcher.group(3));
 			}
-			final int distance = Integer.parseInt(geoValueMatcher.group(3));
-			final String distanceUnit = geoValueMatcher.group(4);
+			final int distance = Integer.parseInt(geoValueMatcher.group(4));
+			final String distanceUnit = geoValueMatcher.group(5);
 			final DslGeoDistanceQuery geoDistance = new DslGeoDistanceQuery(geoLoc, distance, distanceUnit);
 			dslGeoExpression = new DslGeoExpression(geoField, geoDistance);
 
-		} else if (geoValueMatcher.group(6) != null) {
+		} else if (geoValueMatcher.group(6) != null || geoValueMatcher.group(7) != null) {
 			//found geoBoundingBox
 			final DslField geoField = new DslField("", geoValueMatcher.group(1), "");
 			final DslQuery geoLoc1;

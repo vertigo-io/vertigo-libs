@@ -58,6 +58,7 @@ import io.vertigo.core.analytics.health.HealthChecked;
 import io.vertigo.core.analytics.health.HealthMeasure;
 import io.vertigo.core.analytics.health.HealthMeasureBuilder;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
@@ -93,8 +94,12 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	public static final String SUFFIX_SORT_FIELD = ".keyword";
 
 	private static final Logger LOGGER = LogManager.getLogger(RestHLClientESSearchServicesPlugin.class);
-	private final ESDocumentCodec elasticDocumentCodec;
+	private final ModelManager modelManager;
+	private final CodecManager codecManager;
 	private final RestHighLevelElasticSearchConnector elasticSearchConnector;
+
+	private Map<Class, BasicTypeAdapter> typeAdapters;
+	private ESDocumentCodec elasticDocumentCodec;
 
 	private RestHighLevelClient esClient;
 	private final DtListState defaultListState;
@@ -128,9 +133,10 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		//Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
 		//Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
 		//-----
+		this.modelManager = modelManager;
+		this.codecManager = codecManager;
 		this.defaultMaxRows = defaultMaxRows;
 		defaultListState = DtListState.of(defaultMaxRows);
-		elasticDocumentCodec = new ESDocumentCodec(codecManager, modelManager);
 		//------
 		this.envIndexPrefix = envIndexPrefix;
 		configFileUrl = resourceManager.resolve(configFile);
@@ -143,6 +149,8 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
+		typeAdapters = modelManager.getTypeAdapters("search");
+		elasticDocumentCodec = new ESDocumentCodec(codecManager, typeAdapters);
 		//Init ElasticSearch Client
 		esClient = elasticSearchConnector.getClient();
 		indexSettingsValid = true;
@@ -304,7 +312,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 				"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
 		Assertion.checkNotNull(indexDefinition);
 		//-----
-		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), esClient);
+		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), esClient, typeAdapters);
 	}
 
 	private static String obtainPkIndexDataType(final SmartTypeDefinition smartTypeDefinition) {

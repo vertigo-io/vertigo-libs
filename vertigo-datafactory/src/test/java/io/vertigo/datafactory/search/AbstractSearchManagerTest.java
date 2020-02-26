@@ -294,6 +294,84 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 
 	/**
 	 * Test de requétage de l'index.
+	 */
+	@Test
+	public void testGeoDistanceQuery() {
+		index(false);
+		long size;
+		size = query("*:*");
+		Assertions.assertEquals(itemDataBase.size(), size);
+
+		SearchQuery searchQuery = SearchQuery.builder("*:*", DslListFilterBuilder.class)
+				.withGeoSearchQuery("localisation:#query#~7km")
+				.withCriteria("48.80, 2.36")
+				.build();
+		int size10Km = (int) doQuery(searchQuery, null).getCount();
+		Assertions.assertEquals(3, size10Km);
+
+		searchQuery = SearchQuery.builder("*:*", DslListFilterBuilder.class)
+				.withGeoSearchQuery("localisation:#query#~15km")
+				.withCriteria("48.80, 2.36")
+				.build();
+		int size15Km = (int) doQuery(searchQuery, null).getCount();
+		Assertions.assertEquals(8, size15Km);
+
+		searchQuery = SearchQuery.builder("manufacturer:Vol*", DslListFilterBuilder.class)
+				.withGeoSearchQuery("localisation:#query#~7km")
+				.withCriteria("48.80, 2.36")
+				.build();
+		size10Km = (int) doQuery(searchQuery, null).getCount();
+		Assertions.assertEquals(1, size10Km);
+
+		searchQuery = SearchQuery.builder("manufacturer:Vol*", DslListFilterBuilder.class)
+				.withGeoSearchQuery("localisation:#query#~15km")
+				.withCriteria("48.80, 2.36")
+				.build();
+		size15Km = (int) doQuery(searchQuery, null).getCount();
+		Assertions.assertEquals(2, size15Km);
+	}
+
+	/**
+	 * Test de requétage de l'index.
+	 */
+	@Test
+	public void testGeoRangeQuery() {
+		index(false);
+		long size;
+		size = query("*:*");
+		Assertions.assertEquals(itemDataBase.size(), size);
+
+		SearchQuery searchQuery = SearchQuery.builder("*:*", DslListFilterBuilder.class)
+				.withGeoSearchQuery("localisation:[#query# TO \"47.0, 3.0\"]")
+				.withCriteria("49.0, 2.0")
+				.build();
+		int sizeRange = (int) doQuery(searchQuery, null).getCount();
+		Assertions.assertEquals(8, sizeRange);
+
+		searchQuery = SearchQuery.builder("*:*", DslListFilterBuilder.class)
+				.withGeoSearchQuery("localisation:[#query# TO \"48.77, 3.0\"]")
+				.withCriteria("49.0, 2.23")
+				.build();
+		sizeRange = (int) doQuery(searchQuery, null).getCount();
+		Assertions.assertEquals(5, sizeRange);
+
+		searchQuery = SearchQuery.builder("manufacturer:Vol*", DslListFilterBuilder.class)
+				.withGeoSearchQuery("localisation:[#query# TO \"47.0, 3.0\"]")
+				.withCriteria("49.0, 2.0")
+				.build();
+		sizeRange = (int) doQuery(searchQuery, null).getCount();
+		Assertions.assertEquals(2, sizeRange);
+
+		searchQuery = SearchQuery.builder("manufacturer:Vol*", DslListFilterBuilder.class)
+				.withGeoSearchQuery("localisation:[#query# TO \"48.77, 3.0\"]")
+				.withCriteria("49.0, 2.23")
+				.build();
+		sizeRange = (int) doQuery(searchQuery, null).getCount();
+		Assertions.assertEquals(1, sizeRange);
+	}
+
+	/**
+	 * Test de requétage de l'index.
 	 * La création s'effectue dans une seule transaction.
 	 */
 	@Test

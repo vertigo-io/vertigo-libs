@@ -20,6 +20,7 @@ package io.vertigo.datafactory.plugins.search.elasticsearch.client;
 
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,6 +38,7 @@ import org.elasticsearch.index.reindex.DeleteByQueryAction;
 import org.elasticsearch.index.reindex.DeleteByQueryRequestBuilder;
 
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
@@ -71,6 +73,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	private final String indexName;
 	private final Client esClient;
 	private final ESDocumentCodec esDocumentCodec;
+	private final Map<Class, BasicTypeAdapter> typeAdapters;
 
 	/**
 	 * Constructor.
@@ -78,14 +81,16 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * @param indexName Index name
 	 * @param esClient Client ElasticSearch.
 	 */
-	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final Client esClient) {
+	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final Client esClient, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		Assertion.checkArgNotEmpty(indexName);
 		Assertion.checkNotNull(esDocumentCodec);
 		Assertion.checkNotNull(esClient);
+		Assertion.checkNotNull(typeAdapters);
 		//-----
 		this.indexName = indexName;
 		this.esClient = esClient;
 		this.esDocumentCodec = esDocumentCodec;
+		this.typeAdapters = typeAdapters;
 	}
 
 	/**
@@ -181,7 +186,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	FacetedQueryResult<I, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows) {
 		Assertion.checkNotNull(searchQuery);
 		//-----
-		final SearchRequestBuilder searchRequestBuilder = new ESSearchRequestBuilder(indexName, esClient)
+		final SearchRequestBuilder searchRequestBuilder = new ESSearchRequestBuilder(indexName, esClient, typeAdapters)
 				.withSearchIndexDefinition(indexDefinition)
 				.withSearchQuery(searchQuery)
 				.withListState(listState, defaultMaxRows)
