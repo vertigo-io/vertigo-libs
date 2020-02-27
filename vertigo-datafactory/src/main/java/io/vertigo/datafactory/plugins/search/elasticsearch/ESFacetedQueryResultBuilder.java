@@ -142,7 +142,7 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 			//Cas des facettes par 'range'
 			final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
 			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-				final Bucket value = getBucketByKey(multiBuckets, facetRange.getListFilter().getFilterValue());
+				final Bucket value = getBucketByKey(multiBuckets, facetRange.getCode());
 				populateCluster(value, facetRange, resultCluster, dtcIndex, resultHighlights);
 			}
 		} else {
@@ -271,7 +271,7 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 		//Cas des facettes par range
 		final Map<FacetValue, Long> rangeValues = new LinkedHashMap<>();
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-			final Bucket value = getBucketByKey(rangeBuckets, facetRange.getListFilter().getFilterValue());
+			final Bucket value = getBucketByKey(rangeBuckets, facetRange.getCode());
 			rangeValues.put(facetRange, value.getDocCount());
 		}
 		return new Facet(facetDefinition, rangeValues);

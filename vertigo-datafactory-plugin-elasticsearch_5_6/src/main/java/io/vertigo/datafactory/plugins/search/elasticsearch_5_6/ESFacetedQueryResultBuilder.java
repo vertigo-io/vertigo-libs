@@ -270,7 +270,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 		//Cas des facettes par range
 		final Map<FacetValue, Long> rangeValues = new LinkedHashMap<>();
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-			final Bucket value = getBucketByKey(rangeBuckets, facetRange.getListFilter().getFilterValue());
+			final Bucket value = getBucketByKey(rangeBuckets, facetRange.getCode());
 			rangeValues.put(facetRange, value.getDocCount());
 		}
 		return new Facet(facetDefinition, rangeValues);

@@ -51,7 +51,7 @@ public final class DslGeoToQueryBuilderUtil {
 		throw new VSystemException("Can't translate toGeoQuery " + dslGeoExpression);
 	}
 
-	private static GeoPoint computeGeoPoint(final DslQuery dslGeoPoint, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
+	public static GeoPoint computeGeoPoint(final DslQuery dslGeoPoint, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		final GeoPoint esGeoPoint;
 		if (dslGeoPoint instanceof DslGeoPointFixed) {
 			esGeoPoint = new GeoPoint(((DslGeoPointFixed) dslGeoPoint).getGeoPointValue());

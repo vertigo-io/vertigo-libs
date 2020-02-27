@@ -54,6 +54,7 @@ import io.vertigo.datafactory.collections.model.FacetValue;
 import io.vertigo.datafactory.collections.model.FacetedQuery;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
+import io.vertigo.datafactory.search.data.domain.GeoPoint;
 import io.vertigo.datafactory.search.data.domain.Item;
 import io.vertigo.datafactory.search.data.domain.ItemDataBase;
 import io.vertigo.datafactory.search.data.domain.ItemSearchLoader;
@@ -754,6 +755,38 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		checkOrderByCount(getFacetByName(result, "FctDescriptionItem"));
 	}
 
+	private void testFacetResultByGeo(final FacetedQueryResult<Item, ?> result) {
+		Assertions.assertEquals(itemDataBase.size() - 1, result.getCount());
+
+		//On vérifie qu'il y a le bon nombre de facettes.
+		Assertions.assertEquals(1, result.getFacets().size());
+
+		//On recherche la facette constructeur
+		final Facet localisationFacet = getFacetByName(result, "FctLocalisationItem");
+		//On vérifie que l'on est sur le champ Manufacturer
+		Assertions.assertEquals("localisation", localisationFacet.getDefinition().getDtField().getName());
+		Assertions.assertTrue(localisationFacet.getDefinition().isRangeFacet());
+
+		Assertions.assertEquals(5, localisationFacet.getFacetValues().size());
+		for (final Entry<FacetValue, Long> entry : localisationFacet.getFacetValues().entrySet()) {
+			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH);
+			final long searchFacetCount = entry.getValue();
+			if ("< 5km".equals(searchFacetLabel)) {
+				Assertions.assertEquals(1, searchFacetCount);
+			} else if ("< 7km".equals(searchFacetLabel)) {
+				Assertions.assertEquals(3, searchFacetCount);
+			} else if ("< 8.5km".equals(searchFacetLabel)) {
+				Assertions.assertEquals(4, searchFacetCount);
+			} else if ("< 10km".equals(searchFacetLabel)) {
+				Assertions.assertEquals(7, searchFacetCount);
+			} else if ("< 20km".equals(searchFacetLabel)) {
+				Assertions.assertEquals(8, searchFacetCount);
+			} else {
+				Assertions.fail("Unexpected facet " + searchFacetLabel);
+			}
+		}
+	}
+
 	private void checkOrderByCount(final Facet facet) {
 		//on vérifie l'ordre
 		int lastCount = Integer.MAX_VALUE;
@@ -771,6 +804,31 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 			Assertions.assertTrue(label.compareTo(lastLabel) >= 0, "Ordre des facettes par 'alpha' non respecté");
 			lastLabel = label;
 		}
+	}
+
+	private static Facet getFacetByName(final FacetedQueryResult<Item, ?> result, final String facetName) {
+		return result.getFacets()
+				.stream()
+				.filter(facet -> facetName.equals(facet.getDefinition().getName()))
+				.findFirst()
+				.orElseThrow(() -> new IllegalArgumentException());
+	}
+
+	/**
+	 * Test de requétage de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testGeoFacetQueryByTerm() {
+		index(false);
+		final Item criteria = new Item();
+		criteria.setLocalisation(new GeoPoint(48.80f, 2.36f));
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacetGeo")
+				.withCriteria(criteria)
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.build();
+		final FacetedQueryResult<Item, SearchQuery> result = searchManager.loadList(itemIndexDefinition, searchQuery, null);
+		testFacetResultByGeo(result);
 	}
 
 	/**
@@ -796,14 +854,6 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		size = queryWithSecurityFilter("description:siège", "+year:[2005 TO *]");//La description est un text insenssible à la casse
 		Assertions.assertEquals(2L, size);
 
-	}
-
-	private static Facet getFacetByName(final FacetedQueryResult<Item, ?> result, final String facetName) {
-		return result.getFacets()
-				.stream()
-				.filter(facet -> facetName.equals(facet.getDefinition().getName()))
-				.findFirst()
-				.orElseThrow(() -> new IllegalArgumentException());
 	}
 
 	/**

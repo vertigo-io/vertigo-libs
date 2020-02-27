@@ -53,7 +53,7 @@ final class DslGeoExpressionRule {
 	private static final String GEO_DISTANCE_PATTERN = "(?:"
 			+ GEOLOC_FIXED_PATTERN + "|" + GEOLOC_CRITERIA_PATTERN //group geoLocFix | geoLocCrit
 			+ ")"
-			+ "+\\~([0-9]+)([a-z]+)"; //group distance distanceUnit
+			+ "+\\~([0-9\\.]+)([a-z]+)"; //group distance distanceUnit
 
 	private static final String GEO_RANGE_PATTERN = "\\[\\s*(?:"
 			+ GEOLOC_FIXED_PATTERN + "|" + GEOLOC_CRITERIA_PATTERN //group geoLocFix | geoLocCrit

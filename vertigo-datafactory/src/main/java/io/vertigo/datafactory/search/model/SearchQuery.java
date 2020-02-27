@@ -95,10 +95,11 @@ public final class SearchQuery implements Serializable {
 		} else {
 			final List<DslMultiExpression> dslQuery = DslParserUtil.parseMultiExpression(listFilterBuilderQuery);
 			final ListFilterBuilder<Object> listFilterBuilder = InjectorUtil.newInstance(listFilterBuilderClass);
-			queryListFilter = listFilterBuilder
+			final ListFilter listFilter = listFilterBuilder
 					.withDslQuery(dslQuery)
 					.withCriteria(queryCriteria)
 					.build();
+			queryListFilter = listFilter.getFilterValue().isEmpty() ? ListFilter.of("*:*") : listFilter;
 		}
 
 		if (geoSearchQuery.isPresent()) {

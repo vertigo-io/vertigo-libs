@@ -329,10 +329,11 @@ public final class DslListFilterBuilder<C> implements ListFilterBuilder<C> {
 		} else if (dslQuery.getDefaultValue().isPresent()) { //if value null => defaultValue
 			useBlock = appendSimpleCriteria(queryPart, dslQuery, dslQuery.getDefaultValue().get());
 		} else {
+			//if defaultValue null => no criteria
 			useBlock = false;
 		}
 		flushSubQueryToQuery(query, dslQuery.getPreBody(), dslQuery.getPostBody(), useBlock, queryPart);
-		//if defaultValue null => no criteria
+
 	}
 
 	private void appendRangeQuery(final StringBuilder query, final DslRangeQuery dslQuery, final DslExpression expressionDefinition) {

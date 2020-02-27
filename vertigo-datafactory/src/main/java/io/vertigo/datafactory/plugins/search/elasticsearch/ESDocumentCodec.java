@@ -149,28 +149,33 @@ public final class ESDocumentCodec {
 				if (!copyToFields.contains(dtField)) {//On index pas les copyFields
 					final Object value = dtField.getDataAccessor().getValue(dtIndex);
 					if (value != null) { //les valeurs null ne sont pas indexées => conséquence : on ne peut pas les rechercher
-						final String indexFieldName = dtField.getName();
-						switch (dtField.getSmartTypeDefinition().getScope()) {
-							case PRIMITIVE:
-								if (value instanceof String) {
-									final String encodedValue = escapeInvalidUTF8Char((String) value);
-									xContentBuilder.field(indexFieldName, encodedValue);
-								} else {
-									xContentBuilder.field(indexFieldName, value);
-								}
-								break;
-							case VALUE_OBJECT:
-								final BasicTypeAdapter basicTypeAdapter = typeAdapters.get(dtField.getSmartTypeDefinition().getJavaClass());
-								xContentBuilder.field(indexFieldName, basicTypeAdapter.toBasic(value));
-								break;
-							default:
-								throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + dtField.getSmartTypeDefinition() + "].");
-						}
+						xContentBuilder.field(dtField.getName(), encodeValue(value, dtField.getSmartTypeDefinition()));
 					}
 				}
 			}
 			return xContentBuilder.endObject();
 		}
+	}
+
+	public Object encodeValue(final Object value, final SmartTypeDefinition smartTypeDefinition) {
+		Assertion.checkNotNull(value);
+		Assertion.checkNotNull(smartTypeDefinition);
+		//-----
+		Object encodedValue = value;
+		switch (smartTypeDefinition.getScope()) {
+			case PRIMITIVE:
+				if (value instanceof String) {
+					encodedValue = escapeInvalidUTF8Char((String) value);
+				}
+				break;
+			case VALUE_OBJECT:
+				final BasicTypeAdapter basicTypeAdapter = typeAdapters.get(smartTypeDefinition.getJavaClass());
+				encodedValue = basicTypeAdapter.toBasic(value);
+				break;
+			default:
+				throw new IllegalArgumentException("Type de donnée non pris en charge pour l'indexation [" + smartTypeDefinition.getName() + "].");
+		}
+		return encodedValue;
 	}
 
 	private static List<DtField> getNotStoredFields(final DtDefinition dtDefinition) {

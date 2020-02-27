@@ -28,6 +28,8 @@ import java.util.regex.Pattern;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.geo.GeoPoint;
+import org.elasticsearch.common.unit.DistanceUnit;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -37,6 +39,7 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.BucketOrder;
 import org.elasticsearch.search.aggregations.bucket.filter.FiltersAggregator.KeyedFilter;
 import org.elasticsearch.search.aggregations.bucket.range.DateRangeAggregationBuilder;
+import org.elasticsearch.search.aggregations.bucket.range.GeoDistanceAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.range.RangeAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.TopHitsAggregationBuilder;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
@@ -62,7 +65,9 @@ import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtListState;
+import io.vertigo.dynamox.search.dsl.model.DslGeoDistanceQuery;
 import io.vertigo.dynamox.search.dsl.model.DslGeoExpression;
+import io.vertigo.dynamox.search.dsl.rules.DslParserUtil;
 
 //vérifier
 /**
@@ -162,7 +167,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 		//-----
 		appendListState();
 		appendSearchQuery(mySearchQuery, searchSourceBuilder, useHighlight, typeAdapters);
-		appendFacetDefinition(mySearchQuery, searchSourceBuilder, myIndexDefinition, myListState, useHighlight);
+		appendFacetDefinition(mySearchQuery, searchSourceBuilder, myIndexDefinition, myListState, useHighlight, typeAdapters);
 		return searchRequest;
 	}
 
@@ -193,9 +198,6 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 
 		//on ajoute les critères de la recherche AVEC impact sur le score
 		final QueryBuilder queryBuilder = appendSearchQuery(searchQuery, filterBoolQueryBuilder, typeAdapters);
-
-		//on ajoute les critères geo de la recherche SANS impact sur le score
-		appendSearchQuery(searchQuery, filterBoolQueryBuilder, typeAdapters);
 
 		//on ajoute les filtres de sécurité SANS impact sur le score
 		appendSecurityFilter(searchQuery.getSecurityListFilter(), filterBoolQueryBuilder);
@@ -272,14 +274,15 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 			final SearchSourceBuilder searchRequestBuilder,
 			final SearchIndexDefinition myIndexDefinition,
 			final DtListState myListState,
-			final boolean useHighlight) {
+			final boolean useHighlight,
+			final Map<Class, BasicTypeAdapter> typeAdapters) {
 		Assertion.checkNotNull(searchRequestBuilder);
 		//-----
 		//On ajoute le cluster, si présent
 		if (searchQuery.isClusteringFacet()) { //si il y a un cluster on le place en premier
 			final FacetDefinition clusteringFacetDefinition = searchQuery.getClusteringFacetDefinition();
 
-			final AggregationBuilder aggregationBuilder = facetToAggregationBuilder(clusteringFacetDefinition);
+			final AggregationBuilder aggregationBuilder = facetToAggregationBuilder(clusteringFacetDefinition, searchQuery.getCriteria(), typeAdapters);
 			final TopHitsAggregationBuilder topHitsBuilder = AggregationBuilders.topHits(TOPHITS_SUBAGGREGATION_NAME)
 					.size(myListState.getMaxRows().orElse(TOPHITS_SUBAGGREGATION_SIZE))
 					.from(myListState.getSkipRows());
@@ -305,7 +308,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 				facetDefinitions.remove(searchQuery.getClusteringFacetDefinition());
 			}
 			for (final FacetDefinition facetDefinition : facetDefinitions) {
-				final AggregationBuilder aggregationBuilder = facetToAggregationBuilder(facetDefinition);
+				final AggregationBuilder aggregationBuilder = facetToAggregationBuilder(facetDefinition, searchQuery.getCriteria(), typeAdapters);
 				final BoolQueryBuilder aggsFilterBoolQueryBuilder = QueryBuilders.boolQuery();
 				for (final FacetDefinition filterFacetDefinition : facetedQuery.getDefinition().getFacetDefinitions()) {
 					if (filterFacetDefinition.isMultiSelectable() && !facetDefinition.equals(filterFacetDefinition)) {
@@ -324,10 +327,10 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 		}
 	}
 
-	private static AggregationBuilder facetToAggregationBuilder(final FacetDefinition facetDefinition) {
+	private static AggregationBuilder facetToAggregationBuilder(final FacetDefinition facetDefinition, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		final DtField dtField = facetDefinition.getDtField();
 		if (facetDefinition.isRangeFacet()) {
-			return rangeFacetToAggregationBuilder(facetDefinition, dtField);
+			return rangeFacetToAggregationBuilder(facetDefinition, dtField, myCriteria, typeAdapters);
 		}
 		return termFacetToAggregationBuilder(facetDefinition, dtField);
 	}
@@ -361,21 +364,29 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 				.order(facetOrder);
 	}
 
-	private static AggregationBuilder rangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField) {
+	private static AggregationBuilder rangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		//facette par range
-		Assertion.checkState(dtField.getSmartTypeDefinition().getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + dtField.getSmartTypeDefinition() + "].");
-		final BasicType dataType = dtField.getSmartTypeDefinition().getBasicType();
-		if (dataType == BasicType.LocalDate) {
-			return dateRangeFacetToAggregationBuilder(facetDefinition, dtField);
-		} else if (dataType.isNumber()) {
-			return numberRangeFacetToAggregationBuilder(facetDefinition, dtField);
+		switch (dtField.getSmartTypeDefinition().getScope()) {
+			case PRIMITIVE:
+				final BasicType dataType = dtField.getSmartTypeDefinition().getBasicType();
+				if (dataType == BasicType.LocalDate) {
+					return dateRangeFacetToAggregationBuilder(facetDefinition, dtField);
+				} else if (dataType.isNumber()) {
+					return numberRangeFacetToAggregationBuilder(facetDefinition, dtField);
+				}
+				break;
+			case VALUE_OBJECT:
+				return geoRangeFacetToAggregationBuilder(facetDefinition, dtField, myCriteria, typeAdapters);
+			case DATA_OBJECT:
+			default:
+				throw new IllegalArgumentException("Type de donnée non pris en charge comme Facet pour le keyconcept indexé [" + dtField.getSmartTypeDefinition() + "].");
 		}
 
 		final List<KeyedFilter> filters = new ArrayList<>();
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
 			Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
-			filters.add(new KeyedFilter(filterValue, QueryBuilders.queryStringQuery(filterValue)));
+			filters.add(new KeyedFilter(facetRange.getCode(), QueryBuilders.queryStringQuery(filterValue)));
 		}
 		return AggregationBuilders.filters(facetDefinition.getName(), filters.toArray(new KeyedFilter[filters.size()]));
 	}
@@ -390,11 +401,11 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 			final Optional<Double> minValue = convertToDouble(parsedFilter[3]);
 			final Optional<Double> maxValue = convertToDouble(parsedFilter[4]);
 			if (!minValue.isPresent()) {
-				rangeBuilder.addUnboundedTo(filterValue, maxValue.get());
+				rangeBuilder.addUnboundedTo(facetRange.getCode(), maxValue.get());
 			} else if (!maxValue.isPresent()) {
-				rangeBuilder.addUnboundedFrom(filterValue, minValue.get());
+				rangeBuilder.addUnboundedFrom(facetRange.getCode(), minValue.get());
 			} else {
-				rangeBuilder.addRange(filterValue, minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch
+				rangeBuilder.addRange(facetRange.getCode(), minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch
 			}
 		}
 		return rangeBuilder;
@@ -411,14 +422,41 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 			final String minValue = parsedFilter[3];
 			final String maxValue = parsedFilter[4];
 			if ("*".equals(minValue)) {
-				dateRangeBuilder.addUnboundedTo(filterValue, maxValue);
+				dateRangeBuilder.addUnboundedTo(facetRange.getCode(), maxValue);
 			} else if ("*".equals(maxValue)) {
-				dateRangeBuilder.addUnboundedFrom(filterValue, minValue);
+				dateRangeBuilder.addUnboundedFrom(facetRange.getCode(), minValue);
 			} else {
-				dateRangeBuilder.addRange(filterValue, minValue, maxValue); //always min include and max exclude in ElasticSearch
+				dateRangeBuilder.addRange(facetRange.getCode(), minValue, maxValue); //always min include and max exclude in ElasticSearch
 			}
 		}
 		return dateRangeBuilder;
+	}
+
+	private static AggregationBuilder geoRangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
+		Assertion.checkArgument(!facetDefinition.getFacetRanges().isEmpty(), "Range facet can't be empty {0}", facetDefinition.getName());
+		//-----
+		String originExpression = null;
+		GeoDistanceAggregationBuilder rangeBuilder = null;//AggregationBuilders.geoDistance(name, origin)range(facetDefinition.getName())//
+		//.field(dtField.getName());
+		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
+			final String filterValue = facetRange.getListFilter().getFilterValue();
+			final DslGeoExpression dslGeoExpression = DslParserUtil.parseGeoExpression(filterValue);
+			final String geoFieldName = dslGeoExpression.getField().getFieldName();
+			Assertion.checkState(geoFieldName.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.checkState(dslGeoExpression.getGeoQuery() instanceof DslGeoDistanceQuery, "Only GeoDistanceQuery are supported in range facet (in {0})", facetDefinition.getName());
+
+			final DslGeoDistanceQuery geoDistanceQuery = (DslGeoDistanceQuery) dslGeoExpression.getGeoQuery();
+			if (rangeBuilder == null) {
+				final GeoPoint geoPoint = DslGeoToQueryBuilderUtil.computeGeoPoint(geoDistanceQuery.getGeoPoint(), myCriteria, typeAdapters);
+				originExpression = geoDistanceQuery.getGeoPoint().toString();
+				rangeBuilder = AggregationBuilders.geoDistance(facetDefinition.getName(), geoPoint).field(geoFieldName);
+			} else {
+				Assertion.checkState(geoDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
+			}
+			final DistanceUnit distanceUnit = DistanceUnit.fromString(geoDistanceQuery.getDistanceUnit());
+			rangeBuilder.addRange(facetRange.getCode(), 0, distanceUnit.toMeters(geoDistanceQuery.getDistance()));
+		}
+		return rangeBuilder;
 	}
 
 	private static Optional<Double> convertToDouble(final String valueToConvert) {

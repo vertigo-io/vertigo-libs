@@ -38,7 +38,6 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 	 */
 	@Inject
 	public ItemSearchClient(
-
 			final SearchManager searchManager,
 			final VTransactionManager transactionManager) {
 		this.searchManager = searchManager;
@@ -164,12 +163,13 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 				.add(new FacetRangeDefinitionSupplier("FctLocalisationItem")
 						.withDtDefinition("DtItem")
 						.withLabel("Par distance")
-						.withFieldName("localisation")
+						.withFieldName("localisation") //fieldname in index
 						//.withOrigin("#loc1#")
-						.withRange("R1", "localisation:#loc1#~5km", " < 5km")
-						.withRange("R2", "localisation:#loc1#~10km", "< 10km")
-						.withRange("R3", "localisation:#loc1#~20km", "< 20km")
-						.withRange("R4", "localisation:#loc1#~50km", "< 50km")
+						.withRange("R1", "localisation:#localisation#~5km", "< 5km") //#localisation# ref a field of criteria not index
+						.withRange("R2", "localisation:#localisation#~7km", "< 7km")
+						.withRange("R3", "localisation:#localisation#~8500m", "< 8.5km")
+						.withRange("R4", "localisation:#localisation#~10km", "< 10km")
+						.withRange("R5", "localisation:#localisation#~20km", "< 20km")
 						.withOrder(FacetOrder.definition))
 
 				//---
@@ -202,7 +202,7 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 				.add(new FacetedQueryDefinitionSupplier("QryItemFacetGeo")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#+description*#")
-						.withGeoSearchQuery("localisation:#loc1#~20km") // distance
+						.withGeoSearchQuery("localisation:#localisation#~50km") // distance
 						//						"geo_distance" : {
 						//		                    "distance" : "12km",
 						//		                    "pin.location" : "40,-70"
@@ -215,7 +215,7 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						//		                }
 
 						//.withGeoSearchQuery("localisation:#loc1#/5") // geohash precision 5 (~ 4.9km x 4.9km)
-						.withCriteriaSmartType("STyString")
+						.withCriteriaSmartType("STyDtItem")
 						.withFacet("FctLocalisationItem"))
 
 				.build();

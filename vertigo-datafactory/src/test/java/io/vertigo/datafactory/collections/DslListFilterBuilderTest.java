@@ -415,6 +415,27 @@ public final class DslListFilterBuilderTest {
 				{ "+DATE_SESSION:[#instant1# to *}", testBean, "+DATE_SESSION:[\"2015-07-23T12:30:00Z\" TO *}" }, //24
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#instant1#!(*) TO *] +DATE_NAISSANCE:#instant2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23T12:30:00Z\" TO *] +DATE_NAISSANCE:\"2015-07-23T16:45:00Z\"" }, //25
 				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+str2# +DATE_MODIFICATION_DEPUIS:[#date1#!(*) TO *] +DATE_NAISSANCE:#date2#!(*)", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test)) +PRENOM:(+Test +test2) +DATE_MODIFICATION_DEPUIS:[\"2015-07-23\" TO *] +DATE_NAISSANCE:\"2015-07-23\"" }, //26
+
+		};
+		testObjectFixedQuery(testQueries);
+	}
+
+	@Test
+	public void testBeanWithNullQuery() {
+		final LocalDate dateTest1 = DateUtil.parseToLocalDate("230715", "ddMMyy");
+		final LocalDate dateTest2 = DateUtil.parseToLocalDate("230715", "ddMMyy");
+		final Instant instantTest1 = LocalDateTime.of(2015, 07, 23, 12, 30, 00).toInstant(ZoneOffset.UTC);
+		final Instant instantTest2 = LocalDateTime.of(2015, 07, 23, 16, 45, 00).toInstant(ZoneOffset.UTC);
+
+		final TestBean testBean = new TestBean("Test", "Test test2", dateTest1, dateTest2, instantTest1, instantTest2, 5, 10);
+		final Object[][] testQueries = new Object[][] {
+				//QueryPattern, UserQuery, EspectedResult
+				{ "+(NOM_NAISSANCE:#+null# NOM:#+str1#) +PRENOM:#+str2#", testBean, "+(NOM:(+Test)) +PRENOM:(+Test +test2)" }, //0
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+null#) +PRENOM:#+str2#", testBean, "+(NOM_NAISSANCE:(+Test)) +PRENOM:(+Test +test2)" }, //1
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+str1#) +PRENOM:#+null#", testBean, "+(NOM_NAISSANCE:(+Test) OR NOM:(+Test))" }, //2
+				{ "+(NOM_NAISSANCE:#+null# NOM:#+str1#) +PRENOM:#+null#", testBean, "+(NOM:(+Test))" }, //3
+				{ "+(NOM_NAISSANCE:#+str1# OR NOM:#+null#) +PRENOM:#+null#", testBean, "+(NOM_NAISSANCE:(+Test))" }, //4
+				{ "+(NOM_NAISSANCE:#+null# OR NOM:#+null#) +PRENOM:#+null#", testBean, "" }, //5
 		};
 		testObjectFixedQuery(testQueries);
 	}
