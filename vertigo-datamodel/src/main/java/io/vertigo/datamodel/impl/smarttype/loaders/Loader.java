@@ -18,7 +18,7 @@
  */
 package io.vertigo.datamodel.impl.smarttype.loaders;
 
-import java.util.List;
+import java.util.Map;
 
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
 
@@ -34,6 +34,6 @@ public interface Loader {
 	 */
 	String getType();
 
-	List<DynamicDefinition> load(String resourcePath);
+	void load(String resourcePath, Map<String, DynamicDefinition> dynamicDefinitions);
 
 }

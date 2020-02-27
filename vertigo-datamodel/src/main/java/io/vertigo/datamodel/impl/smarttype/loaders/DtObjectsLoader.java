@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -92,15 +91,14 @@ public final class DtObjectsLoader implements Loader {
 
 	/** {@inheritDoc} */
 	@Override
-	public List<DynamicDefinition> load(final String resourcePath) {
+	public void load(final String resourcePath, final Map<String, DynamicDefinition> dynamicDefinitions) {
 		Assertion.checkArgNotEmpty(resourcePath);
+		Assertion.checkNotNull(dynamicDefinitions);
 		//-----
-		final Map<String, DynamicDefinition> dynamicDefinitions = new HashMap<>();
 		//--Enregistrement des fichiers java annotés
 		for (final Class<DtObject> javaClass : selectClasses(resourcePath, DtObject.class)) {
 			load(javaClass, dynamicDefinitions);
 		}
-		return new ArrayList<>(dynamicDefinitions.values());
 	}
 
 	private static void load(final Class<DtObject> clazz, final Map<String, DynamicDefinition> dslDefinitionRepository) {
@@ -229,8 +227,8 @@ public final class DtObjectsLoader implements Loader {
 	private static void parseSmartTypes(final Class<DtObject> clazz, final Map<String, DynamicDefinition> dynamicModelRepository, final String simpleName, final String dtDefinitionName) {
 		final String smartTypeName = DefinitionUtil.getPrefix(SmartTypeDefinition.class) + dtDefinitionName;
 		final Adapter[] adapters = clazz.getAnnotationsByType(Adapter.class);
-		dynamicModelRepository.put(
-				simpleName,
+		dynamicModelRepository.putIfAbsent(// smartTypes infered from the dtObject class is only used when no explicit SmartTypeDefinition is registered via a SmartTypesLoader
+				smartTypeName,
 				new DynamicDefinition(smartTypeName, Collections.emptyList(),
 						ds -> {
 							final SmartTypeDefinitionBuilder smartTypeDefinitionBuilder = SmartTypeDefinition.builder(smartTypeName, clazz);

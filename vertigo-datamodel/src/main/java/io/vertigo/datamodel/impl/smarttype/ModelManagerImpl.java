@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.Home;
@@ -28,7 +29,7 @@ public class ModelManagerImpl implements ModelManager, Activeable {
 	private Map<String, Formatter> formatterBySmartType;
 	private Map<String, List<Constraint>> constraintsBySmartType;
 	private final Map<String, Map<Class, BasicTypeAdapter>> adaptersByType = new HashMap<>();
-	private Map<Class, BasicTypeAdapter> wildcardAdapters;
+	private final Map<Class, BasicTypeAdapter> wildcardAdapters = new HashMap<>();
 
 	@Override
 	public void start() {
@@ -41,18 +42,30 @@ public class ModelManagerImpl implements ModelManager, Activeable {
 				.stream()
 				.collect(Collectors.toMap(SmartTypeDefinition::getName, smartTypeDefinition -> createConstraints(smartTypeDefinition)));
 
-		wildcardAdapters = Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
+		Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
 				.filter(smartTypeDefinition -> smartTypeDefinition.getAdapterConfigs().containsKey("*"))
-				.map(smartTypeDefinition -> Tuple.of(smartTypeDefinition.getJavaClass(), smartTypeDefinition.getAdapterConfigs().get("*")))
-				.collect(Collectors.toMap(Tuple::getVal1, tuple -> createBasicTypeAdapter(tuple.getVal2())));
+				.forEach(smartTypeDefinition -> {
+					final AdapterConfig wildcardAdapterConfig = smartTypeDefinition.getAdapterConfigs().get("*");
+					Assertion
+							.when(wildcardAdapters.containsKey(smartTypeDefinition.getJavaClass()))
+							.check(() -> wildcardAdapterConfig.getAdapterClass().equals(wildcardAdapters.get(smartTypeDefinition.getJavaClass()).getClass()),
+									"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered", smartTypeDefinition.getName(), smartTypeDefinition.getJavaClass(), wildcardAdapterConfig.getType());
+					wildcardAdapters.put(smartTypeDefinition.getJavaClass(), createBasicTypeAdapter(wildcardAdapterConfig));
+				});
 
 		Home.getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.stream()
-				.flatMap(smartTypeDefinition -> smartTypeDefinition.getAdapterConfigs().values().stream().map(adapterConfig -> Tuple.of(smartTypeDefinition.getJavaClass(), adapterConfig)))
+				.flatMap(smartTypeDefinition -> smartTypeDefinition.getAdapterConfigs().values().stream().map(adapterConfig -> Tuple.of(smartTypeDefinition, adapterConfig)))
 				.filter(tuple -> !"*".equals(tuple.getVal2().getType()))
-				.forEach(tuple -> adaptersByType.computeIfAbsent(tuple.getVal2().getType(), k -> new HashMap<>())
-						.put(tuple.getVal1(), createBasicTypeAdapter(tuple.getVal2())));
+				.forEach(tuple -> {
+					final Map<Class, BasicTypeAdapter> registeredAdapaters = adaptersByType.computeIfAbsent(tuple.getVal2().getType(), k -> new HashMap<>());
+					Assertion
+							.when(registeredAdapaters.containsKey(tuple.getVal1()))
+							.check(() -> tuple.getVal2().getAdapterClass().equals(registeredAdapaters.get(tuple.getVal1()).getClass()),
+									"SmartType {0} defines an adapter for the class {1} and the type {2}. An adapter for the same type and class is already registered", tuple.getVal1().getName(), tuple.getVal1(), tuple.getVal2().getType());
+					registeredAdapaters.put(tuple.getVal1().getJavaClass(), createBasicTypeAdapter(tuple.getVal2()));
+				});
 
 	}
 

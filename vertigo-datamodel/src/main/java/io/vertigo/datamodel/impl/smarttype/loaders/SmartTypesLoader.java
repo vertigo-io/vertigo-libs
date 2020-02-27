@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,6 +14,7 @@ import java.util.stream.Stream;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.dynamic.DynamicDefinition;
@@ -27,6 +29,7 @@ import io.vertigo.datamodel.smarttype.annotations.Constraints;
 import io.vertigo.datamodel.smarttype.annotations.Formatter;
 import io.vertigo.datamodel.smarttype.annotations.FormatterDefault;
 import io.vertigo.datamodel.smarttype.annotations.SmartTypeProperty;
+import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
 import io.vertigo.datamodel.structure.metamodel.Properties;
 import io.vertigo.datamodel.structure.metamodel.PropertiesBuilder;
@@ -36,9 +39,9 @@ import io.vertigo.datamodel.structure.model.DtObject;
 public class SmartTypesLoader implements Loader {
 
 	@Override
-	public List<DynamicDefinition> load(final String resourcePath) {
+	public void load(final String resourcePath, final Map<String, DynamicDefinition> dynamicDefinitions) {
 		final Class<? extends Enum> smartTypesDictionnaryClass = (Class<? extends Enum>) ClassUtil.classForName(resourcePath);
-		return Stream.of(smartTypesDictionnaryClass.getEnumConstants())
+		Stream.of(smartTypesDictionnaryClass.getEnumConstants())
 				.map(enumConstant -> {
 					try {
 						final SmartTypeDefinition smartTypeDefinition = readSmartTypeDefinition(smartTypesDictionnaryClass.getField(enumConstant.name()));
@@ -46,7 +49,10 @@ public class SmartTypesLoader implements Loader {
 					} catch (NoSuchFieldException | SecurityException e) {
 						throw WrappedException.wrap(e);
 					}
-				}).collect(Collectors.toList());
+				}).forEach(dynamicDefinition -> {
+					Assertion.checkState(!dynamicDefinitions.containsKey(dynamicDefinition.getName()), "SmartType with name {0} is declared twice", dynamicDefinition.getName());
+					dynamicDefinitions.put(dynamicDefinition.getName(), dynamicDefinition);
+				});
 
 	}
 
@@ -67,12 +73,17 @@ public class SmartTypesLoader implements Loader {
 		} else {
 			//we are not primitive, we need a mapper
 			final Adapter[] adapters = field.getAnnotationsByType(Adapter.class);
-			Assertion.checkState(adapters.length > 0,
-					"Your smarttype '{0}' is not a primitive one, you need to specify a mapper to a targeted DataType with the @Adapter annotation", smartTypeName);
 			for (final Adapter adapter : adapters) {
 				adapterConfigs.add(new AdapterConfig(adapter.type(), adapter.clazz(), adapter.targetBasicType()));
 			}
-			scope = DtObject.class.isAssignableFrom(targetJavaClass) ? Scope.DATA_OBJECT : Scope.VALUE_OBJECT;
+			if (DtObject.class.isAssignableFrom(targetJavaClass)) {
+				scope = Scope.DATA_OBJECT;
+				Assertion.checkState(field.getName().equals(DefinitionUtil.getPrefix(DtDefinition.class) + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}", field.getName(), targetJavaClass);
+			} else {
+				Assertion.checkState(adapters.length > 0,
+						"Your smarttype '{0}' is associated with a value object, you need to specify a mapper to a targeted DataType with the @Adapter annotation", smartTypeName);
+				scope = Scope.VALUE_OBJECT;
+			}
 		}
 
 		// Formatter

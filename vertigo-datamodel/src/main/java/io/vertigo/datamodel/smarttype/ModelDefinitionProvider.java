@@ -1,9 +1,9 @@
 package io.vertigo.datamodel.smarttype;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -48,10 +48,19 @@ public class ModelDefinitionProvider implements DefinitionProvider {
 
 	@Override
 	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
-		final Map<String, DynamicDefinition> dynamicDefinitions = definitionResourceConfigs
+		final Map<String, DynamicDefinition> dynamicDefinitions = new HashMap<>();
+
+		final Loader smartTypesLoader = loadersByType.get("smarttypes");
+		definitionResourceConfigs
 				.stream()
-				.flatMap(resourceConfig -> loadersByType.get(resourceConfig.getType()).load(resourceConfig.getPath()).stream())
-				.collect(Collectors.toMap(DynamicDefinition::getName, Function.identity()));
+				.filter(resourceConfig -> "smarttypes".equals(resourceConfig.getType()))
+				.forEach(resourceConfig -> smartTypesLoader.load(resourceConfig.getPath(), dynamicDefinitions));
+
+		final Loader dtobjectsLoader = loadersByType.get("dtobjects");
+		definitionResourceConfigs
+				.stream()
+				.filter(resourceConfig -> "dtobjects".equals(resourceConfig.getType()))
+				.forEach(resourceConfig -> dtobjectsLoader.load(resourceConfig.getPath(), dynamicDefinitions));
 
 		return DynamicDefinitionSolver.solve(definitionSpace, dynamicDefinitions)
 				.stream()
