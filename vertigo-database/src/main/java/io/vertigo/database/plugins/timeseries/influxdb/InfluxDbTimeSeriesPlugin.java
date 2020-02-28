@@ -37,12 +37,12 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 
 import org.influxdb.InfluxDB;
+import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.Point;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
 import org.influxdb.dto.QueryResult.Series;
 
-import io.vertigo.connectors.influxdb.InfluxDbConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.component.Activeable;
@@ -60,7 +60,6 @@ import io.vertigo.database.timeseries.TimedDatas;
 
 /**
  * @author mlaroche
- *
  */
 public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activeable {
 
@@ -69,19 +68,15 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	@Inject
 	public InfluxDbTimeSeriesPlugin(
-			@ParamValue("dbNames") final Optional<String> dbNamesOpt,
-			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
-			final List<InfluxDbConnector> influxdbConnectors) {
-		Assertion.checkNotNull(dbNamesOpt);
-		Assertion.checkNotNull(connectorNameOpt);
-		Assertion.checkNotNull(influxdbConnectors);
+			@ParamValue("host") final String host,
+			@ParamValue("user") final String user,
+			@ParamValue("password") final String password,
+			@ParamValue("dbNames") final Optional<String> dbNamesOpt) {
+		Assertion.checkArgNotEmpty(host);
+		Assertion.checkArgNotEmpty(user);
+		Assertion.checkArgNotEmpty(password);
 		//---
-		final String connectorName = connectorNameOpt.orElse("main");
-		final InfluxDbConnector influxdbConnector = influxdbConnectors.stream()
-				.filter(connector -> connectorName.equals(connector.getName()))
-				.findFirst()
-				.orElseThrow(() -> new IllegalArgumentException("Can't found LdapConnector named '" + connectorName + "' in " + influxdbConnectors));
-		influxDB = influxdbConnector.getInfluxdb();
+		influxDB = InfluxDBFactory.connect(host, user, password);
 		influxDB.enableBatch();
 		if (dbNamesOpt.isPresent()) {
 			dbNames = Arrays.asList(dbNamesOpt.get().split(";"));
@@ -120,6 +115,33 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 			}
 		}
 
+	}
+
+	private TimedDatas executeFlatTimedTabularQuery(final String appName, final String queryString) {
+		final Query query = new Query(queryString, appName);
+		final QueryResult queryResult = influxDB.query(query);
+
+		final List<Series> series = queryResult.getResults().get(0).getSeries();
+
+		if (series != null && !series.isEmpty()) {
+			final Series serie = series.get(0);
+			final List<String> columns = serie.getColumns();
+
+			// all columns are the measures
+			final List<String> seriesName = new ArrayList<>();
+			seriesName.addAll(columns.subList(1, columns.size()));
+
+			final List<TimedDataSerie> dataSeries = serie.getValues()
+					.stream()
+					.map(value -> {
+						final Map<String, Object> mapValues = buildMapValue(columns, value);
+						return new TimedDataSerie(LocalDateTime.parse(value.get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC), mapValues);
+					})
+					.collect(Collectors.toList());
+
+			return new TimedDatas(dataSeries, seriesName);
+		}
+		return new TimedDatas(Collections.emptyList(), Collections.emptyList());
 	}
 
 	private TimedDatas executeTimedTabularQuery(final String appName, final String queryString) {
@@ -189,7 +211,8 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 			final List<TimedDataSerie> dataSeries = series
 					.getValues()
 					.stream()
-					.map(values -> new TimedDataSerie(LocalDateTime.parse(values.get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC), buildMapValue(series.getColumns(), values)))
+					.map(values -> new TimedDataSerie(LocalDateTime.parse(values.get(0).toString(), DateTimeFormatter.ISO_OFFSET_DATE_TIME).toInstant(ZoneOffset.UTC),
+							buildMapValue(series.getColumns(), values)))
 					.collect(Collectors.toList());
 			return new TimedDatas(dataSeries, new ArrayList<>(series.getColumns().subList(1, series.getColumns().size())));//we remove the first one
 		}
@@ -256,8 +279,22 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	}
 
 	@Override
+	public TimedDatas getFlatTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final Optional<Long> limit) {
+		Assertion.checkNotNull(limit);
+		// -----
+		final Long resolvedLimit = limit.map(l -> Math.min(l, 5000L)).orElse(500L);
+
+		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter, false);
+		queryBuilder.append(" ORDER BY time DESC");
+		queryBuilder.append(" LIMIT " + resolvedLimit);
+
+		final String queryString = queryBuilder.toString();
+		return executeFlatTimedTabularQuery(appName, queryString);
+	}
+
+	@Override
 	public TimedDatas getTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter);
+		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter, true);
 
 		final String groupByClause = Stream.of(groupBy)
 				.collect(Collectors.joining("\", \"", "\"", "\""));
@@ -270,7 +307,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	@Override
 	public TabularDatas getTabularData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final String... groupBy) {
-		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter);
+		final StringBuilder queryBuilder = buildQuery(measures, dataFilter, timeFilter, true);
 
 		final String groupByClause = Stream.of(groupBy)
 				.collect(Collectors.joining("\", \"", "\"", "\""));
@@ -310,7 +347,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		Assertion.checkNotNull(dataFilter);
 		Assertion.checkNotNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
-		final String q = buildQuery(measures, dataFilter, timeFilter)
+		final String q = buildQuery(measures, dataFilter, timeFilter, true)
 				.append(" group by time(").append(timeFilter.getDim()).append(')')
 				.toString();
 
@@ -404,15 +441,22 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 		return measureQueryBuilder.toString();
 	}
 
-	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
+	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean needAggregatedMeasures) {
 		Assertion.checkNotNull(measures);
 		//---
 		final StringBuilder queryBuilder = new StringBuilder("select ");
 		String separator = "";
 		for (final String measure : measures) {
+			final boolean isAggregated = measure.contains(":");
+
+			Assertion.checkState(!needAggregatedMeasures || isAggregated, "No aggregation function provided for measure '{0}'. Provide it with ':' as in 'measure:sum'.", measure);
+			Assertion.checkState(needAggregatedMeasures || !isAggregated, "No support for aggregation function in this case. Measure '{0}'.", measure);
+
+			final String measureQuery = isAggregated ? buildMeasureQuery(measure, measure) : '"' + measure + '"';
+
 			queryBuilder
 					.append(separator)
-					.append(buildMeasureQuery(measure, measure));
+					.append(measureQuery);
 			separator = " ,";
 		}
 		queryBuilder.append(" from ").append(dataFilter.getMeasurement());
