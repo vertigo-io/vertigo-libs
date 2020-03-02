@@ -64,6 +64,7 @@ import io.vertigo.datafactory.plugins.search.elasticsearch.IndexType;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.structure.metamodel.DtField;
+import io.vertigo.datamodel.structure.metamodel.DtProperty;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.dynamox.search.dsl.model.DslGeoDistanceQuery;
 import io.vertigo.dynamox.search.dsl.model.DslGeoExpression;
@@ -203,7 +204,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 		appendSecurityFilter(searchQuery.getSecurityListFilter(), filterBoolQueryBuilder);
 
 		//on ajoute les filtres des facettes SANS impact sur le score
-		appendSelectedFacetValues(searchQuery.getFacetedQuery(), filterBoolQueryBuilder, postFilterBoolQueryBuilder);
+		appendSelectedFacetValues(searchQuery.getFacetedQuery(), filterBoolQueryBuilder, postFilterBoolQueryBuilder, searchQuery.getCriteria(), typeAdapters);
 
 		final QueryBuilder requestQueryBuilder;
 		if (searchQuery.isBoostMostRecent()) {
@@ -239,18 +240,25 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 		}
 	}
 
-	private static void appendSelectedFacetValues(final Optional<FacetedQuery> facetedQuery, final BoolQueryBuilder filterBoolQueryBuilder, final BoolQueryBuilder postFilterBoolQueryBuilder) {
+	private static void appendSelectedFacetValues(final Optional<FacetedQuery> facetedQuery, final BoolQueryBuilder filterBoolQueryBuilder, final BoolQueryBuilder postFilterBoolQueryBuilder, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		if (facetedQuery.isPresent()) {
 			for (final FacetDefinition facetDefinition : facetedQuery.get().getDefinition().getFacetDefinitions()) {
 				if (facetDefinition.isMultiSelectable()) {
 					appendSelectedFacetValuesFilter(postFilterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()));
+				} else if (isGeoField(facetDefinition.getDtField())) {
+					appendSelectedGeoFacetValuesFilter(filterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()), myCriteria, typeAdapters);
 				} else {
 					appendSelectedFacetValuesFilter(filterBoolQueryBuilder, facetedQuery.get().getSelectedFacetValues().getFacetValues(facetDefinition.getName()));
 				}
 			}
 		}
 	}
-
+	
+	private static boolean isGeoField(final DtField dtField) {
+		final String indexType = dtField.getSmartTypeDefinition().getProperties().getValue(DtProperty.INDEX_TYPE);
+		return indexType != null && indexType.indexOf("geo_point") != -1;
+	}
+	
 	private static void appendSelectedFacetValuesFilter(final BoolQueryBuilder filterBoolQueryBuilder, final List<FacetValue> facetValues) {
 		if (facetValues.size() == 1) {
 			filterBoolQueryBuilder.filter(translateToQueryBuilder(facetValues.get(0).getListFilter()));
@@ -258,6 +266,20 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 			final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
 			for (final FacetValue facetValue : facetValues) {
 				boolQueryBuilder.should(translateToQueryBuilder(facetValue.getListFilter()));//on ajoute les valeurs en OU
+			}
+			filterBoolQueryBuilder.filter(boolQueryBuilder);
+		}
+	}
+
+	private static void appendSelectedGeoFacetValuesFilter(final BoolQueryBuilder filterBoolQueryBuilder, final List<FacetValue> facetValues, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
+		if (facetValues.size() == 1) {
+			final DslGeoExpression geoExpression = DslParserUtil.parseGeoExpression(facetValues.get(0).getListFilter().getFilterValue());
+			filterBoolQueryBuilder.filter(DslGeoToQueryBuilderUtil.translateToQueryBuilder(geoExpression, myCriteria, typeAdapters));
+		} else if (facetValues.size() > 1) {
+			final BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+			for (final FacetValue facetValue : facetValues) {
+				final DslGeoExpression geoExpression = DslParserUtil.parseGeoExpression(facetValue.getListFilter().getFilterValue());
+				boolQueryBuilder.should(DslGeoToQueryBuilderUtil.translateToQueryBuilder(geoExpression, myCriteria, typeAdapters));//on ajoute les valeurs en OU
 			}
 			filterBoolQueryBuilder.filter(boolQueryBuilder);
 		}

@@ -73,6 +73,35 @@ public final class ItemDataBase {
 				.count();
 	}
 
+	public static long near(final List<Item> items, final GeoPoint origin, final double maxDistance) {
+		return items.stream()
+				.filter(item -> distance(item.getLocalisation(), origin) < maxDistance)
+				.count();
+	}
+
+	/**
+	 * Calculate distance between two points in latitude and longitude taking
+	 * into account height difference. If you are not interested in height
+	 * difference pass 0.0. Uses Haversine method as its base.
+	 *
+	 * @returns Distance in Meters
+	 */
+	public static double distance(final GeoPoint geo1, final GeoPoint geo2) {
+		if (geo1 == null || geo2 == null) {
+			return Double.MAX_VALUE;
+		}
+		final int R = 6371; // Radius of the earth
+		final double latDistance = Math.toRadians(geo2.getLat() - geo1.getLat());
+		final double lonDistance = Math.toRadians(geo2.getLon() - geo1.getLon());
+		final double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+				+ Math.cos(Math.toRadians(geo1.getLat())) * Math.cos(Math.toRadians(geo2.getLat()))
+						* Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+		final double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		double distance = R * c * 1000; // convert to meters
+		distance = Math.pow(distance, 2);
+		return Math.sqrt(distance);
+	}
+
 	private static Item createItem(final long id, final int price, final String manufacturer, final String model, final int year, final String motorType, final int kilo, final double consommation, final String description, final Long optionalNumber, final String optionalString, final String localisation) {
 		final Item item = new Item();
 		item.setId(id);
@@ -123,6 +152,10 @@ public final class ItemDataBase {
 
 	public long before(final int year) {
 		return before(items, year);
+	}
+
+	public long near(final GeoPoint origin, final double maxDistance) {
+		return near(items, origin, maxDistance);
 	}
 
 	public long containsDescription(final String word) {
