@@ -1428,16 +1428,16 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 				Assertions.fail("Unexpected facet " + searchFacetLabel);
 			}
 			for (final Item item : entry.getValue()) {
-				if (ItemDataBase.distance(origin, item.getLocalisation()) < 5000) {
-					Assertions.assertEquals(searchFacetLabel, "< 5km");
-				} else if (ItemDataBase.distance(origin, item.getLocalisation()) < 7000) {
-					Assertions.assertEquals(searchFacetLabel, "< 7km");
-				} else if (ItemDataBase.distance(origin, item.getLocalisation()) < 8500) {
-					Assertions.assertEquals(searchFacetLabel, "< 8.5km");
-				} else if (ItemDataBase.distance(origin, item.getLocalisation()) < 10000) {
-					Assertions.assertEquals(searchFacetLabel, "< 10km");
-				} else if (ItemDataBase.distance(origin, item.getLocalisation()) < 20000) {
-					Assertions.assertEquals(searchFacetLabel, "< 20km");
+				if ("< 5km".equals(searchFacetLabel)) {
+					Assertions.assertTrue(ItemDataBase.distance(origin, item.getLocalisation()) < 5000);
+				} else if ("< 7km".equals(searchFacetLabel)) {
+					Assertions.assertTrue(ItemDataBase.distance(origin, item.getLocalisation()) < 7000);
+				} else if ("< 8.5km".equals(searchFacetLabel)) {
+					Assertions.assertTrue(ItemDataBase.distance(origin, item.getLocalisation()) < 8500);
+				} else if ("< 10km".equals(searchFacetLabel)) {
+					Assertions.assertTrue(ItemDataBase.distance(origin, item.getLocalisation()) < 10000);
+				} else if ("< 20km".equals(searchFacetLabel)) {
+					Assertions.assertTrue(ItemDataBase.distance(origin, item.getLocalisation()) < 20000);
 				} else {
 					Assertions.fail("Unexpected facet " + searchFacetLabel);
 				}
