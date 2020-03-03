@@ -84,6 +84,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	private FacetDefinition manufacturerFacetDefinition;
 	private FacetDefinition yearFacetDefinition;
 	private FacetDefinition geoFacetDefinition;
+	private FacetDefinition geoClusterFacetDefinition;
 	private ItemDataBase itemDataBase;
 
 	/**
@@ -100,6 +101,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		manufacturerFacetDefinition = definitionSpace.resolve("FctManufacturerItem", FacetDefinition.class);
 		yearFacetDefinition = definitionSpace.resolve("FctYearItem", FacetDefinition.class);
 		geoFacetDefinition = definitionSpace.resolve("FctLocalisationItem", FacetDefinition.class);
+		geoClusterFacetDefinition = definitionSpace.resolve("FctLocalisationClusterItem", FacetDefinition.class);
 		itemIndexDefinition = definitionSpace.resolve(indexName, SearchIndexDefinition.class);
 		clean(itemIndexDefinition);
 	}
@@ -761,7 +763,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		Assertions.assertEquals(itemDataBase.size() - 1, result.getCount());
 
 		//On vérifie qu'il y a le bon nombre de facettes.
-		Assertions.assertEquals(1, result.getFacets().size());
+		Assertions.assertEquals(2, result.getFacets().size());
 
 		//On recherche la facette constructeur
 		final Facet localisationFacet = getFacetByName(result, "FctLocalisationItem");
@@ -1397,7 +1399,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	 * Test le facettage par geo range d'une liste.
 	 */
 	@Test
-	public void testClusterByFacetGeoRange() {
+	public void testClusterByFacetGeoRangeDistance() {
 		index(true);
 		final GeoPoint origin = new GeoPoint(48.80f, 2.36f);
 		final Item criteria = new Item();
@@ -1438,6 +1440,62 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 					Assertions.assertTrue(ItemDataBase.distance(origin, item.getLocalisation()) < 10000);
 				} else if ("< 20km".equals(searchFacetLabel)) {
 					Assertions.assertTrue(ItemDataBase.distance(origin, item.getLocalisation()) < 20000);
+				} else {
+					Assertions.fail("Unexpected facet " + searchFacetLabel);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Test le facettage par geo range d'une liste.
+	 */
+	@Test
+	public void testClusterByFacetGeoRangeCircle() {
+		index(true);
+		final GeoPoint origin = new GeoPoint(48.80f, 2.36f);
+		final Item criteria = new Item();
+		criteria.setLocalisation(origin);
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacetGeo")
+				.withCriteria(criteria)
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.withFacetClustering(geoClusterFacetDefinition)
+				.build();
+		final FacetedQueryResult<Item, SearchQuery> result = searchManager.loadList(itemIndexDefinition, searchQuery, null);
+
+		//On vérifie qu'il existe une valeur pour chaque range et que le nombre d'occurrences est correct
+		for (final Entry<FacetValue, DtList<Item>> entry : result.getClusters().entrySet()) {
+			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH);
+			final int searchFacetCount = entry.getValue().size();
+
+			if ("< 5km".equals(searchFacetLabel)) {
+				Assertions.assertEquals(ItemDataBase.near(entry.getValue(), origin, 5000), searchFacetCount);
+			} else if ("5 à 7km".equals(searchFacetLabel)) {
+				Assertions.assertEquals(ItemDataBase.near(entry.getValue(), origin, 7000), searchFacetCount);
+			} else if ("7 à 8.5km".equals(searchFacetLabel)) {
+				Assertions.assertEquals(ItemDataBase.near(entry.getValue(), origin, 8500), searchFacetCount);
+			} else if ("8.5 à 10km".equals(searchFacetLabel)) {
+				Assertions.assertEquals(ItemDataBase.near(entry.getValue(), origin, 10000), searchFacetCount);
+			} else if ("10 à 20km".equals(searchFacetLabel)) {
+				Assertions.assertEquals(ItemDataBase.near(entry.getValue(), origin, 20000), searchFacetCount);
+			} else if ("> 20km".equals(searchFacetLabel)) {
+				//nothing
+			} else {
+				Assertions.fail("Unexpected facet " + searchFacetLabel);
+			}
+			for (final Item item : entry.getValue()) {
+				if (ItemDataBase.distance(origin, item.getLocalisation()) <= 5000) {
+					Assertions.assertEquals("< 5km", searchFacetLabel);
+				} else if (ItemDataBase.distance(origin, item.getLocalisation()) <= 7000) {
+					Assertions.assertEquals("5 à 7km", searchFacetLabel);
+				} else if (ItemDataBase.distance(origin, item.getLocalisation()) <= 8500) {
+					Assertions.assertEquals("7 à 8.5km", searchFacetLabel);
+				} else if (ItemDataBase.distance(origin, item.getLocalisation()) <= 10000) {
+					Assertions.assertEquals("8.5 à 10km", searchFacetLabel);
+				} else if (ItemDataBase.distance(origin, item.getLocalisation()) <= 20000) {
+					Assertions.assertEquals("10 à 20km", searchFacetLabel);
+				} else if (ItemDataBase.distance(origin, item.getLocalisation()) > 20000) {
+					Assertions.assertEquals("> 20km", searchFacetLabel);
 				} else {
 					Assertions.fail("Unexpected facet " + searchFacetLabel);
 				}

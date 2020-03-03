@@ -45,8 +45,12 @@ public final class DslGeoRangeQuery implements DslQuery {
 		Assertion.checkNotNull(preBody);
 		Assertion.checkNotNull(startGeoPoint);
 		Assertion.checkNotNull(endGeoPoint);
-		Assertion.checkArgument(startGeoPoint instanceof DslGeoPointCriteria || startGeoPoint instanceof DslGeoPointFixed, "DslGeoDistanceQuery only support Criteria or Fixed startGeoPoint ({0})", startGeoPoint);
-		Assertion.checkArgument(endGeoPoint instanceof DslGeoPointCriteria || endGeoPoint instanceof DslGeoPointFixed, "DslGeoDistanceQuery only support Criteria or Fixed endGeoPoint ({0})", endGeoPoint);
+		Assertion.checkArgument(startGeoPoint instanceof DslGeoPointCriteria
+				|| startGeoPoint instanceof DslGeoPointFixed
+				|| startGeoPoint instanceof DslGeoDistanceQuery, "DslGeoDistanceQuery only support Criteria or Fixed startGeoPoint, may have distance and unit ({0})", startGeoPoint);
+		Assertion.checkArgument(endGeoPoint instanceof DslGeoPointCriteria
+				|| endGeoPoint instanceof DslGeoPointFixed
+				|| endGeoPoint instanceof DslGeoDistanceQuery, "DslGeoDistanceQuery only support Criteria or Fixed endGeoPoint, may have distance and unit ({0})", endGeoPoint);
 		Assertion.checkNotNull(postBody);
 		//-----
 		this.preBody = preBody;

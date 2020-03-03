@@ -68,6 +68,7 @@ import io.vertigo.datamodel.structure.metamodel.DtProperty;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.dynamox.search.dsl.model.DslGeoDistanceQuery;
 import io.vertigo.dynamox.search.dsl.model.DslGeoExpression;
+import io.vertigo.dynamox.search.dsl.model.DslGeoRangeQuery;
 import io.vertigo.dynamox.search.dsl.rules.DslParserUtil;
 
 //vérifier
@@ -253,12 +254,12 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 			}
 		}
 	}
-	
+
 	private static boolean isGeoField(final DtField dtField) {
 		final String indexType = dtField.getSmartTypeDefinition().getProperties().getValue(DtProperty.INDEX_TYPE);
 		return indexType != null && indexType.indexOf("geo_point") != -1;
 	}
-	
+
 	private static void appendSelectedFacetValuesFilter(final BoolQueryBuilder filterBoolQueryBuilder, final List<FacetValue> facetValues) {
 		if (facetValues.size() == 1) {
 			filterBoolQueryBuilder.filter(translateToQueryBuilder(facetValues.get(0).getListFilter()));
@@ -465,18 +466,38 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 			final DslGeoExpression dslGeoExpression = DslParserUtil.parseGeoExpression(filterValue);
 			final String geoFieldName = dslGeoExpression.getField().getFieldName();
 			Assertion.checkState(geoFieldName.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
-			Assertion.checkState(dslGeoExpression.getGeoQuery() instanceof DslGeoDistanceQuery, "Only GeoDistanceQuery are supported in range facet (in {0})", facetDefinition.getName());
+			//Assertion.checkState(dslGeoExpression.getGeoQuery() instanceof DslGeoDistanceQuery, "Only GeoDistanceQuery are supported in range facet (in {0})", facetDefinition.getName());
 
-			final DslGeoDistanceQuery geoDistanceQuery = (DslGeoDistanceQuery) dslGeoExpression.getGeoQuery();
-			if (rangeBuilder == null) {
-				final GeoPoint geoPoint = DslGeoToQueryBuilderUtil.computeGeoPoint(geoDistanceQuery.getGeoPoint(), myCriteria, typeAdapters);
-				originExpression = geoDistanceQuery.getGeoPoint().toString();
-				rangeBuilder = AggregationBuilders.geoDistance(facetDefinition.getName(), geoPoint).field(geoFieldName);
+			final DslGeoDistanceQuery geoStartDistanceQuery;
+			final DslGeoDistanceQuery geoEndDistanceQuery;
+			if (dslGeoExpression.getGeoQuery() instanceof DslGeoDistanceQuery) {
+				geoEndDistanceQuery = (DslGeoDistanceQuery) dslGeoExpression.getGeoQuery();
+				geoStartDistanceQuery = new DslGeoDistanceQuery(geoEndDistanceQuery.getGeoPoint(), 0, "m");
+				if (rangeBuilder == null) {
+					final GeoPoint geoPoint = DslGeoToQueryBuilderUtil.computeGeoPoint(geoEndDistanceQuery.getGeoPoint(), myCriteria, typeAdapters);
+					originExpression = geoEndDistanceQuery.getGeoPoint().toString();
+					rangeBuilder = AggregationBuilders.geoDistance(facetDefinition.getName(), geoPoint).field(geoFieldName);
+				} else {
+					Assertion.checkState(geoEndDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoEndDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
+				}
+			} else if (dslGeoExpression.getGeoQuery() instanceof DslGeoRangeQuery) {
+				final DslGeoRangeQuery geoRangeQuery = (DslGeoRangeQuery) dslGeoExpression.getGeoQuery();
+				geoStartDistanceQuery = (DslGeoDistanceQuery) geoRangeQuery.getStartGeoPoint();
+				geoEndDistanceQuery = (DslGeoDistanceQuery) geoRangeQuery.getEndGeoPoint();
+				if (rangeBuilder == null) {
+					final GeoPoint geoPoint = DslGeoToQueryBuilderUtil.computeGeoPoint(geoStartDistanceQuery.getGeoPoint(), myCriteria, typeAdapters);
+					originExpression = geoStartDistanceQuery.getGeoPoint().toString();
+					rangeBuilder = AggregationBuilders.geoDistance(facetDefinition.getName(), geoPoint).field(geoFieldName);
+				} else {
+					Assertion.checkState(geoStartDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoStartDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
+					Assertion.checkState(geoEndDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoEndDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
+				}
 			} else {
-				Assertion.checkState(geoDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
+				throw new IllegalArgumentException("Only GeoDistanceQuery or Range of GeoDistanceQuery are supported in range facet (in " + facetDefinition.getName() + ")");
 			}
-			final DistanceUnit distanceUnit = DistanceUnit.fromString(geoDistanceQuery.getDistanceUnit());
-			rangeBuilder.addRange(facetRange.getCode(), 0, distanceUnit.toMeters(geoDistanceQuery.getDistance()));
+			final DistanceUnit startDistanceUnit = DistanceUnit.fromString(geoStartDistanceQuery.getDistanceUnit());
+			final DistanceUnit endDistanceUnit = DistanceUnit.fromString(geoEndDistanceQuery.getDistanceUnit());
+			rangeBuilder.addRange(facetRange.getCode(), startDistanceUnit.toMeters(geoStartDistanceQuery.getDistance()), endDistanceUnit.toMeters(geoEndDistanceQuery.getDistance()));
 		}
 		return rangeBuilder;
 	}

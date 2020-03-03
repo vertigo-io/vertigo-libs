@@ -40,6 +40,7 @@ import io.vertigo.dynamox.search.dsl.model.DslQuery;
  *
  * Range :
  * fieldName:[#locUL# to #locBR#]
+ * fieldName:[#loc1#~5km to #loc1#~10km]
  * fieldName:["20.73, -54.1" to "40.73, -74.1"]
  *
  * @author npiedeloup
@@ -57,15 +58,15 @@ final class DslGeoExpressionRule {
 
 	private static final String GEO_RANGE_PATTERN = "\\[\\s*(?:"
 			+ GEOLOC_FIXED_PATTERN + "|" + GEOLOC_CRITERIA_PATTERN //group geoLocFix | geoLocCrit
-			+ ")\\s*(?:(?:to)|(?:TO))\\s*(?:"
+			+ ")+(?:\\~([0-9\\.]+)([a-z]+))?\\s*(?:(?:to)|(?:TO))\\s*(?:"
 			+ GEOLOC_FIXED_PATTERN + "|" + GEOLOC_CRITERIA_PATTERN //group geoLocFix | geoLocCrit
-			+ ")\\s*\\]";
+			+ ")+(?:\\~([0-9\\.]+)([a-z]+))?\\s*\\]";
 
 	private static final String GEO_EXPRESSION_PATTERN_STRING = "(?:\\s|^)"
 			+ GEO_FIELD_PATTERN //group 1
 			+ "(?:" + GEO_DISTANCE_PATTERN // group 2-5
-			+ "|" + GEO_RANGE_PATTERN // group 6-9
-			+ ")(?=\\s|$)"; // group 10
+			+ "|" + GEO_RANGE_PATTERN // group 6-13
+			+ ")(?=\\s|$)"; // group 14
 	private static final Pattern GEO_EXPRESSION_PATTERN = Pattern.compile(GEO_EXPRESSION_PATTERN_STRING);
 
 	/**
@@ -94,18 +95,29 @@ final class DslGeoExpressionRule {
 		} else if (geoValueMatcher.group(6) != null || geoValueMatcher.group(7) != null) {
 			//found geoBoundingBox
 			final DslField geoField = new DslField("", geoValueMatcher.group(1), "");
-			final DslQuery geoLoc1;
+			DslQuery geoLoc1;
 			if (geoValueMatcher.group(6) != null) {
 				geoLoc1 = new DslGeoPointFixed(geoValueMatcher.group(6));
 			} else {
 				geoLoc1 = new DslGeoPointCriteria(geoValueMatcher.group(7));
 			}
-			final DslQuery geoLoc2;
 			if (geoValueMatcher.group(8) != null) {
-				geoLoc2 = new DslGeoPointFixed(geoValueMatcher.group(8));
-			} else {
-				geoLoc2 = new DslGeoPointCriteria(geoValueMatcher.group(9));
+				final int distance = Integer.parseInt(geoValueMatcher.group(8));
+				final String distanceUnit = geoValueMatcher.group(9);
+				geoLoc1 = new DslGeoDistanceQuery(geoLoc1, distance, distanceUnit);
 			}
+			DslQuery geoLoc2;
+			if (geoValueMatcher.group(10) != null) {
+				geoLoc2 = new DslGeoPointFixed(geoValueMatcher.group(10));
+			} else {
+				geoLoc2 = new DslGeoPointCriteria(geoValueMatcher.group(11));
+			}
+			if (geoValueMatcher.group(12) != null) {
+				final int distance = Integer.parseInt(geoValueMatcher.group(12));
+				final String distanceUnit = geoValueMatcher.group(13);
+				geoLoc2 = new DslGeoDistanceQuery(geoLoc2, distance, distanceUnit);
+			}
+
 			final DslGeoRangeQuery geoRange = new DslGeoRangeQuery("", geoLoc1, geoLoc2, "");
 			dslGeoExpression = new DslGeoExpression(geoField, geoRange);
 		} else {
