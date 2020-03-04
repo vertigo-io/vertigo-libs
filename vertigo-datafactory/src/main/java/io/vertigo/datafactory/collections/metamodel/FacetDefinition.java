@@ -20,6 +20,7 @@ package io.vertigo.datafactory.collections.metamodel;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.MessageText;
@@ -56,6 +57,7 @@ public final class FacetDefinition implements Definition {
 	private final DtField dtField;
 	private final MessageText label;
 	private final List<FacetValue> facetValues;
+	private final Map<String, String> customFacetParams;
 	private final boolean rangeFacet;
 	private final boolean multiSelectable;
 	private final FacetOrder order;
@@ -77,6 +79,7 @@ public final class FacetDefinition implements Definition {
 	 * @param name the name of the facet
 	 * @param dtField the field of the facet
 	 * @param facetValues the list of filters
+	 * @param customFacetParams params for custom facet
 	 * @param rangeFacet if the facet is of type 'range'
 	 * @param multiSelectable Can select multiple values
 	 * @param order Facet Order
@@ -86,6 +89,7 @@ public final class FacetDefinition implements Definition {
 			final DtField dtField,
 			final MessageText label,
 			final List<FacetValue> facetValues,
+			final Map<String, String> customFacetParams,
 			final boolean rangeFacet,
 			final boolean multiSelectable,
 			final FacetOrder order) {
@@ -93,6 +97,7 @@ public final class FacetDefinition implements Definition {
 		Assertion.checkNotNull(dtField);
 		Assertion.checkNotNull(label);
 		Assertion.checkNotNull(facetValues);
+		Assertion.checkNotNull(customFacetParams);
 		Assertion.when(rangeFacet)
 				.check(() -> !facetValues.isEmpty(), "La FacetDefinition '" + name + "' de type 'range' doit fournir la liste des segments non vides (FacetValues)");
 		Assertion.when(!rangeFacet)
@@ -103,6 +108,7 @@ public final class FacetDefinition implements Definition {
 		this.dtField = dtField;
 		this.label = label;
 		this.facetValues = Collections.unmodifiableList(facetValues);
+		this.customFacetParams = Collections.unmodifiableMap(customFacetParams);
 		this.rangeFacet = rangeFacet;
 		this.multiSelectable = multiSelectable;
 		this.order = order;
@@ -131,7 +137,7 @@ public final class FacetDefinition implements Definition {
 			final List<FacetValue> facetValues,
 			final boolean multiSelectable,
 			final FacetOrder order) {
-		return new FacetDefinition(name, dtField, label, facetValues, true, multiSelectable, order);
+		return new FacetDefinition(name, dtField, label, facetValues, Collections.emptyMap(), true, multiSelectable, order);
 	}
 
 	/**
@@ -150,7 +156,26 @@ public final class FacetDefinition implements Definition {
 			final MessageText label,
 			final boolean multiSelectable,
 			final FacetOrder order) {
-		return new FacetDefinition(name, dtField, label, Collections.emptyList(), false, multiSelectable, order);
+		return new FacetDefinition(name, dtField, label, Collections.emptyList(), Collections.emptyMap(), false, multiSelectable, order);
+	}
+
+	/**
+	 * Creates a new facetDefinition of type 'term'.
+	 *
+	 * @param name the name of the facet
+	 * @param dtField the field of the facet
+	 * @param label the label of the facet
+	 * @param multiSelectable Can select multiple values
+	 * @param order Facet Order
+	 * @return new facetDefinition of type 'term'
+	 */
+	public static FacetDefinition createCustomFacetDefinition(
+			final String name,
+			final DtField dtField,
+			final MessageText label,
+			final Map<String, String> customParams,
+			final FacetOrder order) {
+		return new FacetDefinition(name, dtField, label, Collections.emptyList(), customParams, false, false, order);
 	}
 
 	/**
@@ -175,6 +200,22 @@ public final class FacetDefinition implements Definition {
 		Assertion.checkArgument(rangeFacet, "Cette facette ({0}) n'est pas segmentée.", getName());
 		//-----
 		return facetValues;
+	}
+
+	/**
+	 * @return Custom facet params
+	 */
+	public Map<String, String> getCustomParams() {
+		Assertion.checkArgument(!customFacetParams.isEmpty(), "Cette facette ({0}) n'est pas custom.", getName());
+		//-----
+		return customFacetParams;
+	}
+
+	/**
+	 * @return if the facet is of type 'custom'
+	 */
+	public boolean isCustomFacet() {
+		return !customFacetParams.isEmpty();
 	}
 
 	/**

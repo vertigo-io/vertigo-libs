@@ -84,7 +84,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	private FacetDefinition manufacturerFacetDefinition;
 	private FacetDefinition yearFacetDefinition;
 	private FacetDefinition geoFacetDefinition;
-	private FacetDefinition geoClusterFacetDefinition;
+	private FacetDefinition geoCircleFacetDefinition;
+	private FacetDefinition geoHashClusterFacetDefinition;
 	private ItemDataBase itemDataBase;
 
 	/**
@@ -101,7 +102,8 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		manufacturerFacetDefinition = definitionSpace.resolve("FctManufacturerItem", FacetDefinition.class);
 		yearFacetDefinition = definitionSpace.resolve("FctYearItem", FacetDefinition.class);
 		geoFacetDefinition = definitionSpace.resolve("FctLocalisationItem", FacetDefinition.class);
-		geoClusterFacetDefinition = definitionSpace.resolve("FctLocalisationClusterItem", FacetDefinition.class);
+		geoCircleFacetDefinition = definitionSpace.resolve("FctLocalisationCircleItem", FacetDefinition.class);
+		geoHashClusterFacetDefinition = definitionSpace.resolve("FctLocalisationHashItem", FacetDefinition.class);
 		itemIndexDefinition = definitionSpace.resolve(indexName, SearchIndexDefinition.class);
 		clean(itemIndexDefinition);
 	}
@@ -846,6 +848,33 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	}
 
 	/**
+	 * Test de requétage de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testGeoCircleFacetQueryByTerm() {
+		index(false);
+		final GeoPoint origin = new GeoPoint(48.80f, 2.36f);
+		final Item criteria = new Item();
+		criteria.setLocalisation(origin);
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacetGeo")
+				.withCriteria(criteria)
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.build();
+		final FacetedQueryResult<Item, SearchQuery> result = searchManager.loadList(itemIndexDefinition, searchQuery, null);
+		testFacetResultByGeo(result, origin);
+
+		//on applique une facette
+		final SearchQuery searchQuery2 = SearchQuery.builder("QryItemFacetGeo")
+				.withCriteria(criteria)
+				.withFacet(createFacetQuery("FctLocalisationCircleItem", "7 à 8.5km", result))
+				.build();
+		final FacetedQueryResult<Item, SearchQuery> resultFiltered = searchManager.loadList(itemIndexDefinition, searchQuery2, null);
+		Assertions.assertEquals(itemDataBase.near(origin, 8500) - itemDataBase.near(origin, 7000), resultFiltered.getCount());
+
+	}
+
+	/**
 	 * Test de requétage de l'index avec tri.
 	 * La création s'effectue dans une seule transaction.
 	 */
@@ -1459,7 +1488,7 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacetGeo")
 				.withCriteria(criteria)
 				.withFacet(EMPTY_SELECTED_FACET_VALUES)
-				.withFacetClustering(geoClusterFacetDefinition)
+				.withFacetClustering(geoCircleFacetDefinition)
 				.build();
 		final FacetedQueryResult<Item, SearchQuery> result = searchManager.loadList(itemIndexDefinition, searchQuery, null);
 
@@ -1499,6 +1528,43 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 				} else {
 					Assertions.fail("Unexpected facet " + searchFacetLabel);
 				}
+			}
+		}
+	}
+
+	/**
+	 * Test le facettage par geo range d'une liste.
+	 */
+	@Test
+	public void testClusterByFacetGeoHash() {
+		index(true);
+		final GeoPoint origin = new GeoPoint(48.80f, 2.36f);
+		final Item criteria = new Item();
+		criteria.setLocalisation(origin);
+		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacetGeo")
+				.withCriteria(criteria)
+				.withFacet(EMPTY_SELECTED_FACET_VALUES)
+				.withFacetClustering(geoHashClusterFacetDefinition)
+				.build();
+		final FacetedQueryResult<Item, SearchQuery> result = searchManager.loadList(itemIndexDefinition, searchQuery, null);
+
+		//On vérifie qu'il existe une valeur pour chaque range et que le nombre d'occurrences est correct
+		for (final Entry<FacetValue, DtList<Item>> entry : result.getClusters().entrySet()) {
+			final String searchFacetLabel = entry.getKey().getLabel().getDisplay().toLowerCase(Locale.FRENCH);
+			final int searchFacetCount = entry.getValue().size();
+
+			if ("u09t6".equals(searchFacetLabel)) {
+				Assertions.assertEquals(3, searchFacetCount);
+			} else if ("u09te".equals(searchFacetLabel)) {
+				Assertions.assertEquals(2, searchFacetCount);
+			} else if ("u09tt".equals(searchFacetLabel)) {
+				Assertions.assertEquals(1, searchFacetCount);
+			} else if ("u09td".equals(searchFacetLabel)) {
+				Assertions.assertEquals(1, searchFacetCount);
+			} else if ("u09t7".equals(searchFacetLabel)) {
+				Assertions.assertEquals(1, searchFacetCount);
+			} else {
+				Assertions.fail("Unexpected facet " + searchFacetLabel);
 			}
 		}
 	}

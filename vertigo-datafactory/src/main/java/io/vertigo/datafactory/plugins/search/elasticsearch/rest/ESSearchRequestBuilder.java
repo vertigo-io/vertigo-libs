@@ -352,7 +352,9 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 
 	private static AggregationBuilder facetToAggregationBuilder(final FacetDefinition facetDefinition, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		final DtField dtField = facetDefinition.getDtField();
-		if (facetDefinition.isRangeFacet()) {
+		if (facetDefinition.isCustomFacet()) {
+			return customFacetToAggregationBuilder(facetDefinition, dtField, myCriteria, typeAdapters);
+		} else if (facetDefinition.isRangeFacet()) {
 			return rangeFacetToAggregationBuilder(facetDefinition, dtField, myCriteria, typeAdapters);
 		}
 		return termFacetToAggregationBuilder(facetDefinition, dtField);
@@ -385,6 +387,10 @@ final class ESSearchRequestBuilder implements Builder<SearchRequest> {
 				.size(TERM_AGGREGATION_SIZE)
 				.field(fieldName)
 				.order(facetOrder);
+	}
+
+	private static AggregationBuilder customFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
+		return new CustomAggregationBuilder(facetDefinition.getName(), facetDefinition.getCustomParams());
 	}
 
 	private static AggregationBuilder rangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {

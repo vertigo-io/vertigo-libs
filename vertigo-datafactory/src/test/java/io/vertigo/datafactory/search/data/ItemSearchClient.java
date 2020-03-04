@@ -11,6 +11,7 @@ import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.core.util.ListBuilder;
+import io.vertigo.datafactory.collections.metamodel.FacetCustomDefinitionSupplier;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder;
 import io.vertigo.datafactory.collections.metamodel.FacetRangeDefinitionSupplier;
 import io.vertigo.datafactory.collections.metamodel.FacetTermDefinitionSupplier;
@@ -172,11 +173,10 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withRange("R5", "localisation:#localisation#~20km", "< 20km")
 						.withOrder(FacetOrder.definition))
 
-				.add(new FacetRangeDefinitionSupplier("FctLocalisationClusterItem")
+				.add(new FacetRangeDefinitionSupplier("FctLocalisationCircleItem")
 						.withDtDefinition("DtItem")
 						.withLabel("Par distance")
 						.withFieldName("localisation") //fieldname in index
-						//.withOrigin("#loc1#")
 						.withRange("R1", "localisation:[#localisation#~0km to #localisation#~5km]", "< 5km") //#localisation# ref a field of criteria not index
 						.withRange("R2", "localisation:[#localisation#~5km to #localisation#~7km]", "5 à 7km")
 						.withRange("R3", "localisation:[#localisation#~7km to #localisation#~8500m]", "7 à 8.5km")
@@ -184,6 +184,13 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withRange("R5", "localisation:[#localisation#~10km to #localisation#~20km]", "10 à 20km")
 						.withRange("R6", "localisation:[#localisation#~20km to #localisation#~0km]", "> 20km")
 						.withOrder(FacetOrder.definition))
+
+				.add(new FacetCustomDefinitionSupplier("FctLocalisationHashItem")
+						.withDtDefinition("DtItem")
+						.withLabel("Par geohash")
+						.withFieldName("localisation") //fieldname in index
+						.withParams("geohash_grid", "{\"field\" : \"localisation\",\"precision\" : 5 }")
+						.withOrder(FacetOrder.count))
 
 				//---
 				// FacetedQueryDefinition
@@ -230,12 +237,12 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						//.withGeoSearchQuery("localisation:#loc1#/5") // geohash precision 5 (~ 4.9km x 4.9km)
 						.withCriteriaSmartType("STyDtItem")
 						.withFacet("FctLocalisationItem")
-						.withFacet("FctLocalisationClusterItem"))
+						.withFacet("FctLocalisationCircleItem"))
 
 				.add(new FacetedQueryDefinitionSupplier("QryItemFacetGeo2")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#+description*#")
-						.withGeoSearchQuery("localisation:[#localisation#~5km to #localisation#~50km") // distance
+						.withGeoSearchQuery("localisation:[#localisation#~5km to #localisation#~50km]") // distance
 						//						"geo_distance" : {
 						//		                    "distance" : "12km",
 						//		                    "pin.location" : "40,-70"
@@ -249,7 +256,8 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 
 						//.withGeoSearchQuery("localisation:#loc1#/5") // geohash precision 5 (~ 4.9km x 4.9km)
 						.withCriteriaSmartType("STyDtItem")
-						.withFacet("FctLocalisationClusterItem"))
+						.withFacet("FctLocalisationCircleItem")
+						.withFacet("FctLocalisationHashItem"))
 
 				.build();
 	}
