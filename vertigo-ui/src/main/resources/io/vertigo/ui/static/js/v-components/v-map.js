@@ -2,7 +2,9 @@ Vue.component('v-map', {
 	template : '<div :id="id" >'
 +'					<div id="popup">'
 +'						<q-card  v-if="popupDisplayed" class="q-px-md">'
-+'							<div class="text-subtitle2">{{popupTitle}}</div>'
++'							<slot name="card" v-bind:objectDisplayed="objectDisplayed">'
++'    							<div class="text-subtitle2">{{objectDisplayed[nameField]}}</div>'
++' 							</slot>'	
 +'						</q-card>'
 +'					</div>'			
 +'				</div>'
@@ -13,16 +15,23 @@ Vue.component('v-map', {
 		baseUrl : { type: String },
 		field: { type: String, required: true},
 		nameField: { type: String},
-		zoomLevel : { type: Number},
+		initialZoomLevel : { type: Number},
+		initialCenter : { type: Object },
 		markerColor : { type: String, 'default': "#000000" },
 		markerFont : { type: String, 'default': "Material Icons" },
 		markerIcon : { type: String, 'default': "place" },
-		markerSize : { type: Number, 'default': 45 }
+		markerSize : { type: Number, 'default': 45 },
+		clusterCircleSize: { type: Number, 'default': 20 },
+		clusterColor: { type: String, 'default': "#fff" },
+		clusterCircleBorderColor: { type: String, 'default': "#000000" },
+		clusterTextColor: { type: String, 'default': "#000000" },
+		clusterTextSize: { type: Number, 'default': 12 },
+		clusterTextFont: { type: String, 'default' : 'sans-serif' }
 	},
 	data : function () {
 		return {
 			popupDisplayed : false,
-			popupTitle: '',
+			objectDisplayed: {},
 			items: [],
 			olMap: {}
 		}
@@ -30,14 +39,6 @@ Vue.component('v-map', {
 	computed : {
 		features: function() {
 			var geoField = this.$props.field;
-			var styleIcon = new ol.style.Style({
-				text : new ol.style.Text({
-					font : this.$props.markerSize +'px ' + this.$props.markerFont,
-					text : this.$props.markerIcon,
-					fill : new ol.style.Fill({color : this.$props.markerColor }),
-					offsetY : -this.$props.markerSize/2
-				})
-			});
 			var arrayOfFeatures = this.$data.items.map(function(object) {
 				var geoObject;
 				if (typeof object[geoField] === 'string' || object[geoField] instanceof String){
@@ -51,9 +52,8 @@ Vue.component('v-map', {
 				
 				if (this.$props.nameField) {
 					iconFeature.set('name', object[this.$props.nameField]);
+					iconFeature.set('innerObject', object);
 				}
-				
-				iconFeature.setStyle(styleIcon);
 				return iconFeature
 			}.bind(this));
 			return arrayOfFeatures;
@@ -61,11 +61,11 @@ Vue.component('v-map', {
 	},
 	methods : {
 		fetchList: function(topLeft, bottomRight) {
-	        this.$http.get(this.baseUrl+'bases/_geoSearch?topLeft="'+ topLeft.lat+','+topLeft.lon+'"&bottomRight="'+ bottomRight.lat+','+bottomRight.lon+ '"', { timeout:5*1000, })
+	        this.$http.get(this.baseUrl+'_geoSearch?topLeft="'+ topLeft.lat+','+topLeft.lon+'"&bottomRight="'+ bottomRight.lat+','+bottomRight.lon+ '"', { timeout:5*1000, })
 	        .then( function (response) { //Ok
 	        	this.$data.items = response.body;
-	        	this.olMap.getLayers().getArray()[1].getSource().clear();
-	        	this.olMap.getLayers().getArray()[1].getSource().addFeatures(this.features);
+	        	this.olMap.getLayers().getArray()[1].getSource().getSource().clear();
+	        	this.olMap.getLayers().getArray()[1].getSource().getSource().addFeatures(this.features);
 			});
 	    }
 		
@@ -77,10 +77,56 @@ Vue.component('v-map', {
 		var vectorSource = new ol.source.Vector({
 			features : this.features
 		});
-
-		var vectorLayer = new ol.layer.Vector({
-			source : vectorSource
+		
+		var clusterSource = new ol.source.Cluster({
+	        source: vectorSource,
+	        distance : 2*this.$props.clusterCircleSize
+	    });
+	    var clusterLayer = new ol.layer.Vector({
+	        source: clusterSource
+	    });
+	    
+	    var styleIcon = new ol.style.Style({
+			text : new ol.style.Text({
+				font : this.$props.markerSize +'px ' + this.$props.markerFont,
+				text : this.$props.markerIcon,
+				fill : new ol.style.Fill({color : this.$props.markerColor }),
+				offsetY : -this.$props.markerSize/2
+			})
 		});
+	    
+	    var styleCache = {};
+	    clusterLayer.setStyle(function(feature, resolution) {
+	        var size = feature.get('features').length;
+	        if (size == 1) {
+	        	return styleIcon;
+	        } else {
+	              // otherwise show the number of features
+	              var style = styleCache[size];
+	              if (!style) {
+	                style = new ol.style.Style({
+	                  image: new ol.style.Circle({
+	                    radius: this.$props.clusterCircleSize,
+	                    stroke: new ol.style.Stroke({
+	                        color: this.$props.clusterCircleBorderColor
+	                      }),
+	                    fill: new ol.style.Fill({
+	                      color: this.$props.clusterColor
+	                    })
+	                  }),
+	                  text: new ol.style.Text({
+	                    text: size.toString(),
+	                    font : this.$props.clusterTextSize +'px ' + this.$props.clusterTextFont,
+	                    fill: new ol.style.Fill({
+	                      color: this.$props.clusterTextColor
+	                    })
+	                  })
+	                });
+	                styleCache[size] = style;
+	              }
+	              return style;
+	        }
+	    }.bind(this));
 		
 		var osmLayer = new ol.layer.Tile({
 			preload : 4,
@@ -91,7 +137,7 @@ Vue.component('v-map', {
 	          onFocusOnly: true
 	        }),
 			target : this.$props.id,
-			layers : [ osmLayer, vectorLayer ],
+			layers : [ osmLayer, clusterLayer ],
 			// Improve user experience by loading tiles while animating. Will make animations stutter on mobile or slow devices.
 			loadTilesWhileAnimating : true,
 			view : view
@@ -99,20 +145,26 @@ Vue.component('v-map', {
 		
 		// fit view
 		if (this.features.length > 0) {
-			this.olMap.getView().fit(vectorLayer.getSource().getExtent(), this.olMap.getSize());
-		}
-		if (this.$props.zoomLevel) {
-			this.olMap.getView().setZoom(this.$props.zoomLevel);
+			this.olMap.getView().fit(clusterLayer.getSource().getSource().getExtent(), this.olMap.getSize());
 		}
 		
-		this.olMap.on('moveend', Quasar.utils.debounce(function(e) {
-			var mapExtent =  e.map.getView().calculateExtent();
-			var wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
-			var topLeft = ol.extent.getTopLeft(wgs84Extent);
-			var bottomRight = ol.extent.getBottomRight(wgs84Extent);
-			this.fetchList({lat:topLeft[0] , lon:topLeft[1]},{lat:bottomRight[0] , lon:bottomRight[1]});
-			
-		}.bind(this), 300));
+		if (this.$props.initialCenter) {
+			this.olMap.getView().setCenter(ol.proj.fromLonLat([this.$props.initialCenter.lon, this.$props.initialCenter.lat]));
+		}
+		if (this.$props.initialZoomLevel) {
+			this.olMap.getView().setZoom(this.$props.initialZoomLevel);
+		}
+		// handle refresh if an endPoint is specified
+		if (this.baseUrl) {
+			this.olMap.on('moveend', Quasar.utils.debounce(function(e) {
+				var mapExtent =  e.map.getView().calculateExtent();
+				var wgs84Extent = ol.proj.transformExtent(mapExtent, 'EPSG:3857', 'EPSG:4326');
+				var topLeft = ol.extent.getTopLeft(wgs84Extent);
+				var bottomRight = ol.extent.getBottomRight(wgs84Extent);
+				this.fetchList({lat:topLeft[0] , lon:topLeft[1]},{lat:bottomRight[0] , lon:bottomRight[1]});
+			}
+			.bind(this), 300));
+		}
 		
 		if (this.$props.nameField) {
 			var popup = new ol.Overlay({
@@ -128,11 +180,12 @@ Vue.component('v-map', {
 	            function(feature) {
 	              return feature;
 	            });
-	          if (feature) {
+	          if (feature && feature.get('features').length == 1) {
+	        	var markerFeature = feature.get('features')[0];
 	            var coordinates = feature.getGeometry().getCoordinates();
 	            popup.setPosition(coordinates);
 	            this.$data.popupDisplayed = true;
-	            this.$data.popupTitle = feature.get('name');
+	            this.$data.objectDisplayed = feature.get('features')[0].get('innerObject');
 	          } else {
 	          	this.$data.popupDisplayed = false;
 	          }

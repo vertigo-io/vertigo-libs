@@ -8,5 +8,11 @@ import io.vertigo.geo.services.geocoder.GeoLocation;
 
 public interface GeoSearchPlugin extends Plugin {
 
-	<D extends DtObject> DtList<D> searchInBoundingBox(final GeoLocation topLeft, final GeoLocation bottomRight, final String indexName, final Class<D> dtIndexClass, final DtFieldName<D> fieldName);
+	<D extends DtObject> DtList<D> searchInBoundingBox(
+			final GeoLocation topLeft,
+			final GeoLocation bottomRight,
+			final String indexName,
+			final Class<D> dtIndexClass,
+			final DtFieldName<D> fieldName,
+			final Integer maxRows);
 }

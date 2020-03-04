@@ -106,7 +106,13 @@ public final class ESGeoSearchPlugin implements GeoSearchPlugin, Activeable {
 	}
 
 	@Override
-	public <D extends DtObject> DtList<D> searchInBoundingBox(final GeoLocation topLeft, final GeoLocation bottomRight, final String indexName, final Class<D> dtIndexClass, final DtFieldName<D> fieldName) {
+	public <D extends DtObject> DtList<D> searchInBoundingBox(
+			final GeoLocation topLeft,
+			final GeoLocation bottomRight,
+			final String indexName,
+			final Class<D> dtIndexClass,
+			final DtFieldName<D> fieldName,
+			final Integer maxRows) {
 		final GeoBoundingBoxQueryBuilder geoBoundingBoxQueryBuilder = QueryBuilders.geoBoundingBoxQuery(fieldName.name())
 				.setCorners(new GeoPoint(topLeft.getLatitude(), topLeft.getLongitude()), new GeoPoint(bottomRight.getLatitude(), bottomRight.getLongitude()));
 		try {
@@ -115,7 +121,8 @@ public final class ESGeoSearchPlugin implements GeoSearchPlugin, Activeable {
 							.searchType(SearchType.QUERY_THEN_FETCH)
 							.source(new SearchSourceBuilder()
 									.query(geoBoundingBoxQueryBuilder)
-									.fetchSource(new String[] { "fullResult" }, null)),
+									.fetchSource(new String[] { "fullResult" }, null)
+									.size(maxRows)),
 							RequestOptions.DEFAULT)
 					.getHits();
 			return Stream.of(searchHits.getHits())
