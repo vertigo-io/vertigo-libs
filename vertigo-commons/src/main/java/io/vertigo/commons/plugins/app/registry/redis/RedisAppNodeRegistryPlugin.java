@@ -74,7 +74,7 @@ public final class RedisAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	@Override
 	public void register(final Node node) {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			final Boolean isIdUsed = jedis.sismember(VERTIGO_NODES, node.getId());
 			Assertion.checkState(!isIdUsed, "A node id must be unique : Id '{0}' is already used ", node.getId());
 			// ---
@@ -88,7 +88,7 @@ public final class RedisAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	@Override
 	public void unregister(final Node node) {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			try (final Transaction tx = jedis.multi()) {
 				tx.del(VERTIGO_NODE + node.getId());
 				tx.srem(VERTIGO_NODES, node.getId());
@@ -99,7 +99,7 @@ public final class RedisAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	@Override
 	public Optional<Node> find(final String nodeId) {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			final String result = jedis.hget(VERTIGO_NODE + nodeId, "json");
 			if (result != null) {
 				return Optional.of(gson.fromJson(result, Node.class));
@@ -110,14 +110,14 @@ public final class RedisAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	@Override
 	public void updateStatus(final Node node) {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			jedis.hset(VERTIGO_NODE + node.getId(), "json", gson.toJson(node));
 		}
 	}
 
 	@Override
 	public List<Node> getTopology() {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			return jedis.smembers(VERTIGO_NODES)
 					.stream()
 					.map(nodeId -> jedis.hget(VERTIGO_NODE + nodeId, "json"))

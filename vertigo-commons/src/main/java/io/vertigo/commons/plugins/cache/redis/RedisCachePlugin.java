@@ -82,7 +82,7 @@ public class RedisCachePlugin implements CachePlugin {
 		final byte[] serializedObject = codecManager.getCompressedSerializationCodec().encode((Serializable) value);
 		final String redisValue = codecManager.getBase64Codec().encode(serializedObject);
 
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			jedis.setex(redisKey, getCacheDefinition(context).getTimeToLiveSeconds(), redisValue);
 		}
 	}
@@ -93,7 +93,7 @@ public class RedisCachePlugin implements CachePlugin {
 		final String redisKey = buildRedisKey(context, key); //Assertions on context and key done inside this private method
 		final String redisValue;
 
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			redisValue = jedis.get(redisKey);
 		}
 
@@ -108,7 +108,7 @@ public class RedisCachePlugin implements CachePlugin {
 	@Override
 	public boolean remove(final String context, final Serializable key) {
 		final String redisKey = buildRedisKey(context, key); //Assertions on context and key done inside this private method
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			return jedis.del(redisKey) > 0;
 		}
 	}
@@ -117,7 +117,7 @@ public class RedisCachePlugin implements CachePlugin {
 	@Override
 	public void clear(final String context) {
 		final String pattern = buildPatternFromContext(context);
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			jedis.eval(String.format(DELETE_KEYS_ON_PATTERN_SCRIPT, pattern));
 		}
 	}
@@ -125,7 +125,7 @@ public class RedisCachePlugin implements CachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void clearAll() {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			jedis.eval(String.format(DELETE_KEYS_ON_PATTERN_SCRIPT, VERTIGO_CACHE + ":*"));
 		}
 

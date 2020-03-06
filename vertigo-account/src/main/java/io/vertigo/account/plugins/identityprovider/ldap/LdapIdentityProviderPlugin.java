@@ -146,7 +146,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E getUserByAuthToken(final String userAuthToken) {
-		final LdapContext ldapContext = ldapConnector.obtainLdapContext();
+		final LdapContext ldapContext = ldapConnector.getClient();
 		try {
 			return (E) getUserByAuthToken(userAuthToken, ldapContext);
 		} finally {
@@ -163,7 +163,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> List<E> getAllUsers() {
-		final LdapContext ldapContext = ldapConnector.obtainLdapContext();
+		final LdapContext ldapContext = ldapConnector.getClient();
 		try {
 			return searchUser("(" + ldapUserAuthAttribute + "=*)", MAX_ROWS, ldapContext);
 		} finally {
@@ -174,7 +174,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> Optional<VFile> getPhoto(final UID<E> accountURI) {
-		final LdapContext ldapContext = ldapConnector.obtainLdapContext();
+		final LdapContext ldapContext = ldapConnector.getClient();
 		try {
 			final String displayName = "photo-" + accountURI.getId() + ".jpg";
 			final String photoAttributeName = mapperHelper.getReservedSourceAttribute(PHOTO_RESERVED_FIELD);
