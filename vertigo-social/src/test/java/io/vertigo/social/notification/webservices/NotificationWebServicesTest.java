@@ -72,7 +72,7 @@ public final class NotificationWebServicesTest {
 	public void setUpInstance() {
 		InjectorUtil.injectMembers(this);
 		//---
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			jedis.flushAll();
 		}
 		mockIdentities.initData();

@@ -65,7 +65,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept> void publish(final Comment comment, final UID<S> keyConceptUri) {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			try (final Transaction tx = jedis.multi()) {
 				tx.hmset("comment:" + comment.getUuid(), toMap(comment));
 				tx.lpush("comments:" + keyConceptUri.urn(), comment.getUuid().toString());
@@ -78,7 +78,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void update(final Comment comment) {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			//On vérifie la présence de l'élément en base pour s'assurer la cohérence du stockage,
 			//et notament qu'il soit référencé dans "comments:keyConceptUrn"
 			final boolean elementExist = jedis.exists("comment:" + comment.getUuid());
@@ -92,7 +92,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Comment get(final UUID uuid) {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			return fromMap(jedis.hgetAll("comment:" + uuid));
 		}
 	}
@@ -101,7 +101,7 @@ public final class RedisCommentPlugin implements CommentPlugin {
 	@Override
 	public <S extends KeyConcept> List<Comment> getComments(final UID<S> keyConceptUri) {
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			final List<String> uuids = jedis.lrange("comments:" + keyConceptUri.urn(), 0, -1);
 			try (final Transaction tx = jedis.multi()) {
 				for (final String uuid : uuids) {

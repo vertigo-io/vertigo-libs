@@ -37,7 +37,7 @@ public class RedisHandlePlugin implements HandlePlugin {
 
 	@Override
 	public void add(final List<Handle> handles) {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			for (final Handle handle : handles) {
 				if (jedis.exists("urn_handle:" + handle.getUid().urn())) {
 					// if exist we need to clean the index and the reverse index
@@ -54,7 +54,7 @@ public class RedisHandlePlugin implements HandlePlugin {
 
 	@Override
 	public void remove(final List<UID> uids) {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			for (final UID uid : uids) {
 				if (jedis.exists("urn_handle:" + uid.urn())) {
 					// if exist we need to clean the index and the reverse index
@@ -69,7 +69,7 @@ public class RedisHandlePlugin implements HandlePlugin {
 
 	@Override
 	public List<Handle> search(final String prefix) {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			final List<Handle> handleResults = new ArrayList<>();
 			String cursor = "0";
 			final ScanParams scanParams = new ScanParams();
@@ -92,14 +92,14 @@ public class RedisHandlePlugin implements HandlePlugin {
 
 	@Override
 	public Handle getByCode(final String handleCode) {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			return fromMap(jedis.hgetAll("handle:" + handleCode));
 		}
 	}
 
 	@Override
 	public Handle getByUid(final UID uid) {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			return fromMap(jedis.hgetAll("urn_handle:" + uid.urn()));
 		}
 	}
@@ -118,7 +118,7 @@ public class RedisHandlePlugin implements HandlePlugin {
 
 	@Override
 	public void removeAll() {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			String cursor = "0";
 			final ScanParams handleScanParams = new ScanParams();
 			handleScanParams.match("handle:*");

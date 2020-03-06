@@ -77,7 +77,7 @@ public final class CommentWebServicesTest {
 	@BeforeEach
 	public void setUpInstance() {
 		InjectorUtil.injectMembers(this);
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			jedis.flushAll();
 		}
 		mockIdentities.initData();

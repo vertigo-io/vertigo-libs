@@ -90,7 +90,6 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	@Override
 	public void start() {
 		// nothing
-
 	}
 
 	@Override

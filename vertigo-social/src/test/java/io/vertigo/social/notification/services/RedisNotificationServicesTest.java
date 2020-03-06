@@ -35,7 +35,7 @@ public final class RedisNotificationServicesTest extends AbstractNotificationSer
 	@BeforeEach
 	public void cleanUp() {
 		final RedisConnector redisConnector = getApp().getComponentSpace().resolve(RedisConnector.class);
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			jedis.flushAll();
 		}
 	}

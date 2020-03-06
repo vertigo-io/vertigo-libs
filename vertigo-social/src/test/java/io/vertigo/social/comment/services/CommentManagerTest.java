@@ -58,7 +58,7 @@ public class CommentManagerTest {
 	public void setUp() {
 		app = new AutoCloseableApp(MyNodeConfig.vegaConfig());
 		InjectorUtil.injectMembers(this);
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			jedis.flushAll();
 		}
 		accountURI1 = MockIdentities.createAccountURI("1");

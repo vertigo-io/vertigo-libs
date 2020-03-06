@@ -55,7 +55,7 @@ public final class RedisDB {
 	}
 
 	public void reset() {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			jedis.flushAll();
 		}
 	}
@@ -71,7 +71,7 @@ public final class RedisDB {
 	public <R, W> void putWorkItem(final WorkItem<R, W> workItem) {
 		Assertion.checkNotNull(workItem);
 		//-----
-		try (Jedis jedis = redisConnector.getResource()) {
+		try (Jedis jedis = redisConnector.getClient()) {
 			//out.println("creating work [" + workId + "] : " + work.getClass().getSimpleName());
 
 			final Map<String, String> datas = new MapBuilder<String, String>()
@@ -116,7 +116,7 @@ public final class RedisDB {
 	}
 
 	private <W, R> WorkItem<W, R> doPollWorkItem(final String workType) {
-		try (Jedis jedis = redisConnector.getResource()) {
+		try (Jedis jedis = redisConnector.getClient()) {
 			final String workId = jedis.rpoplpush("works:todo:" + workType, "works:in progress");
 			if (workId == null) {
 				return null;
@@ -140,7 +140,7 @@ public final class RedisDB {
 		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
 		//-----
 		final Map<String, String> datas = new HashMap<>();
-		try (Jedis jedis = redisConnector.getResource()) {
+		try (Jedis jedis = redisConnector.getClient()) {
 			if (error == null) {
 				datas.put("result", encode(result));
 				datas.put("status", "ok");
@@ -175,7 +175,7 @@ public final class RedisDB {
 	}
 
 	private <R> WorkResult<R> doPollResult() {
-		try (final Jedis jedis = redisConnector.getResource()) {
+		try (final Jedis jedis = redisConnector.getClient()) {
 			final String workId = jedis.rpoplpush("works:done", "works:completed");
 			if (workId == null) {
 				return null;
