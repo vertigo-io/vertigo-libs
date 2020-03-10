@@ -1,4 +1,4 @@
-package io.vertigo.datafactory.plugins.search.elasticsearch.rest;
+package io.vertigo.datafactory.plugins.search.elasticsearch;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import org.elasticsearch.search.internal.SearchContext;
 
 public final class CustomAggregationBuilder extends AggregationBuilder {
 
+	private static final Object INNER_WRITE_TO_PARAM = "innerWriteTo";
 	protected Map<String, Object> metaData;
 	protected Map<String, String> customParams;
 
@@ -32,7 +33,7 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 
 	@Override
 	public String getType() {
-		return "custom2";
+		return customParams.keySet().iterator().next();
 	}
 
 	@Override
@@ -40,6 +41,38 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 		out.writeString(name);
 		factoriesBuilder.writeTo(out);
 		out.writeMap(metaData);
+		out.writeOptionalString(getType());
+		out.writeBoolean(false); //hasScript
+		out.writeBoolean(false); //hasValueType
+		out.writeOptionalString(null); //format
+		out.writeGenericValue(null); //missing
+		out.writeOptionalZoneId(null); //timeZone
+		if (customParams.containsKey(INNER_WRITE_TO_PARAM)) {
+			innerWriteTo(out); //type dependent
+		}
+	}
+
+	private void innerWriteTo(final StreamOutput out) throws NumberFormatException, IOException {
+		final String innerWriteToParam = customParams.get(INNER_WRITE_TO_PARAM);
+		final String[] innerWriteToOperations = innerWriteToParam.split("\\s*;\\s*");
+		for (final String operation : innerWriteToOperations) {
+			final String value = operation.substring(operation.indexOf('(') + 1, operation.indexOf(')'));
+			if (operation.startsWith("writeVInt(")) {
+				out.writeVInt(Integer.valueOf(value));
+			} else if (operation.startsWith("writeInt(")) {
+				out.writeInt(Integer.valueOf(value));
+			} else if (operation.startsWith("writeVLong(")) {
+				out.writeVLong(Long.valueOf(value));
+			} else if (operation.startsWith("writeLong(")) {
+				out.writeLong(Long.valueOf(value));
+			} else if (operation.startsWith("writeBoolean(")) {
+				out.writeBoolean(Boolean.valueOf(value));
+			} else if (operation.startsWith("writeDouble(")) {
+				out.writeDouble(Double.valueOf(value));
+			} else if (operation.startsWith("writeString(")) {
+				out.writeString(value);
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -102,7 +135,7 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 	@Override
 	public String getWriteableName() {
 		// We always use the type of the aggregation as the writeable name
-		return "custom1";
+		return getType();
 	}
 
 	@Override
@@ -118,13 +151,14 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 			builder.field("meta", metaData);
 		}
 		for (final Map.Entry<String, String> entry : customParams.entrySet()) {
-			builder.rawField(entry.getKey(), new ByteArrayInputStream(entry.getValue().getBytes()), XContentType.JSON);
+			if (!INNER_WRITE_TO_PARAM.equals(entry.getKey())) {
+				builder.rawField(entry.getKey(), new ByteArrayInputStream(entry.getValue().getBytes()), XContentType.JSON);
+			}
 		}
 
 		if (factoriesBuilder != null && factoriesBuilder.count() > 0) {
 			builder.field("aggregations");
 			factoriesBuilder.toXContent(builder, params);
-
 		}
 
 		return builder.endObject();

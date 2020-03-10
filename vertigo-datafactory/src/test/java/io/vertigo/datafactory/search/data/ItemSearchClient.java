@@ -190,6 +190,7 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withLabel("Par geohash")
 						.withFieldName("localisation") //fieldname in index
 						.withParams("geohash_grid", "{\"field\" : \"localisation\",\"precision\" : 5 }")
+						.withParams("innerWriteTo", "writeVInt(5);writeVInt(1000);writeVInt(-1)")
 						.withOrder(FacetOrder.count))
 
 				//---
@@ -223,18 +224,6 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#+description*#")
 						.withGeoSearchQuery("localisation:#localisation#~50km") // distance
-						//						"geo_distance" : {
-						//		                    "distance" : "12km",
-						//		                    "pin.location" : "40,-70"
-						//		                }
-						//.withGeoSearchQuery("localisation:[#locUL# TO #locBR#]") // boundingBox
-						//						"geo_bounding_box" : {
-						//		                    "pin.location" : {
-						//		                        "wkt" : "BBOX (-74.1, -71.12, 40.73, 40.01)"
-						//		                    }
-						//		                }
-
-						//.withGeoSearchQuery("localisation:#loc1#/5") // geohash precision 5 (~ 4.9km x 4.9km)
 						.withCriteriaSmartType("STyDtItem")
 						.withFacet("FctLocalisationItem")
 						.withFacet("FctLocalisationCircleItem"))
@@ -242,19 +231,7 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 				.add(new FacetedQueryDefinitionSupplier("QryItemFacetGeo2")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#+description*#")
-						.withGeoSearchQuery("localisation:[#localisation#~5km to #localisation#~50km]") // distance
-						//						"geo_distance" : {
-						//		                    "distance" : "12km",
-						//		                    "pin.location" : "40,-70"
-						//		                }
-						//.withGeoSearchQuery("localisation:[#locUL# TO #locBR#]") // boundingBox
-						//						"geo_bounding_box" : {
-						//		                    "pin.location" : {
-						//		                        "wkt" : "BBOX (-74.1, -71.12, 40.73, 40.01)"
-						//		                    }
-						//		                }
-
-						//.withGeoSearchQuery("localisation:#loc1#/5") // geohash precision 5 (~ 4.9km x 4.9km)
+						.withGeoSearchQuery("localisation:[#localisation#~5km to #localisation#~50km]") // distance circle
 						.withCriteriaSmartType("STyDtItem")
 						.withFacet("FctLocalisationCircleItem")
 						.withFacet("FctLocalisationHashItem"))
