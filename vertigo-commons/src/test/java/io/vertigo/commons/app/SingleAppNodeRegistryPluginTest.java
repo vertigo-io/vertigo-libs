@@ -16,12 +16,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.node;
+package io.vertigo.commons.app;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.config.NodeConfig;
 
-public class SingleNodeRegistryPluginTest extends AbstractNodeManagerTest {
+public class SingleAppNodeRegistryPluginTest extends AbstractAppManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {

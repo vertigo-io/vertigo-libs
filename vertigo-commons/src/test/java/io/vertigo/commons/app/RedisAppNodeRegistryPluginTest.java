@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.node;
+package io.vertigo.commons.app;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.app.registry.redis.RedisAppNodeRegistryPlugin;
@@ -24,7 +24,7 @@ import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 
-public class RedisNodeRegistryPluginTest extends AbstractNodeManagerTest {
+public class RedisAppNodeRegistryPluginTest extends AbstractAppManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {

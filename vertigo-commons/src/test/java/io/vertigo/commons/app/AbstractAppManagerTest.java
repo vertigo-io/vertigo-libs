@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.node;
+package io.vertigo.commons.app;
 
 import java.time.Instant;
 import java.util.List;
@@ -33,7 +33,7 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.config.NodeConfigBuilder;
 
-public abstract class AbstractNodeManagerTest extends AbstractTestCaseJU5 {
+public abstract class AbstractAppManagerTest extends AbstractTestCaseJU5 {
 
 	protected NodeConfigBuilder buildRootNodeConfig() {
 		return NodeConfig.builder()

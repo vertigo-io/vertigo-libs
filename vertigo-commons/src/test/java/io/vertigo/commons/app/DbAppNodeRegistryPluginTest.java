@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.node;
+package io.vertigo.commons.app;
 
 import org.h2.Driver;
 
@@ -25,7 +25,7 @@ import io.vertigo.commons.plugins.app.registry.db.DbAppNodeRegistryPlugin;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 
-public class DbNodeRegistryPluginTest extends AbstractNodeManagerTest {
+public class DbAppNodeRegistryPluginTest extends AbstractAppManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
