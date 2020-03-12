@@ -39,14 +39,23 @@ import io.vertigo.datastore.impl.entitystore.StoreVAccessor;
 public final class Car implements Entity {
 	private static final long serialVersionUID = 1L;
 
+	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
 	private Long id;
+	@Field(smartType = "STyKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
 	private String manufacturer;
+	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "ModÃ¨le")
 	private String model;
+	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "Descriptif")
 	private String description;
+	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "AnnÃ©e")
 	private Integer year;
+	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Kilométrage")
 	private Integer kilo;
+	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Prix")
 	private Integer price;
+	@Field(smartType = "STyConso", cardinality = Cardinality.ONE, label = "Consommation")
 	private java.math.BigDecimal consommation;
+	@Field(smartType = "STyGeoPoint", cardinality = Cardinality.ONE, label = "Localization")
 	private GeoPoint geoPoint;
 
 	@io.vertigo.datamodel.structure.stereotype.Association(
@@ -103,7 +112,6 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'identifiant de la voiture'.
 	 * @return Long id <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyId", type = "ID", cardinality = Cardinality.ONE, label = "identifiant de la voiture")
 	public Long getId() {
 		return id;
 	}
@@ -122,7 +130,6 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Constructeur'.
 	 * @return String manufacturer <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyKeyword", cardinality = Cardinality.ONE, label = "Constructeur")
 	public String getManufacturer() {
 		return manufacturer;
 	}
@@ -141,7 +148,6 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'ModÃ¨le'.
 	 * @return String model <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "ModÃ¨le")
 	public String getModel() {
 		return model;
 	}
@@ -160,7 +166,6 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Descriptif'.
 	 * @return String description <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyFullText", cardinality = Cardinality.ONE, label = "Descriptif")
 	public String getDescription() {
 		return description;
 	}
@@ -179,7 +184,6 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'AnnÃ©e'.
 	 * @return Integer year <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "AnnÃ©e")
 	public Integer getYear() {
 		return year;
 	}
@@ -198,7 +202,6 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'KilomÃ©trage'.
 	 * @return Integer kilo <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "KilomÃ©trage")
 	public Integer getKilo() {
 		return kilo;
 	}
@@ -217,7 +220,6 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Prix'.
 	 * @return Integer price <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyInteger", cardinality = Cardinality.ONE, label = "Prix")
 	public Integer getPrice() {
 		return price;
 	}
@@ -236,7 +238,6 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'Consommation'.
 	 * @return BigDecimal consommation <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyConso", cardinality = Cardinality.ONE, label = "Consommation")
 	public java.math.BigDecimal getConsommation() {
 		return consommation;
 	}
@@ -255,7 +256,6 @@ public final class Car implements Entity {
 	 * Récupère la valeur de la propriété 'GeoPoint'.
 	 * @return GeoPoint localization <b>Obligatoire</b>
 	 */
-	@Field(smartType = "STyGeoPoint", cardinality = Cardinality.ONE, label = "Localization")
 	public GeoPoint getGeoPoint() {
 		return geoPoint;
 	}
