@@ -1,4 +1,4 @@
-package io.vertigo.geo.impl.services.geosearch;
+package io.vertigo.geo.impl.geosearch;
 
 import java.util.Optional;
 
@@ -8,8 +8,8 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.metamodel.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.geo.services.geocoder.GeoLocation;
-import io.vertigo.geo.services.geosearch.GeoSearchServices;
+import io.vertigo.geo.geocoder.GeoLocation;
+import io.vertigo.geo.geosearch.GeoSearchServices;
 
 public class GeoSearchServicesImpl implements GeoSearchServices {
 

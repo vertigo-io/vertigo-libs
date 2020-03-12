@@ -16,10 +16,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.geo.impl.services.geocoder;
+package io.vertigo.geo.impl.geocoder;
 
 import io.vertigo.core.node.component.Plugin;
-import io.vertigo.geo.services.geocoder.GeoLocation;
+import io.vertigo.geo.geocoder.GeoLocation;
 
 /**
  * @author spoitrenaud

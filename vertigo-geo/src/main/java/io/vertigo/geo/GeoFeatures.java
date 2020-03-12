@@ -21,13 +21,13 @@ package io.vertigo.geo;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.geo.impl.services.geocoder.GeoCoderManagerImpl;
-import io.vertigo.geo.impl.services.geosearch.GeoSearchServicesImpl;
+import io.vertigo.geo.geocoder.GeoCoderManager;
+import io.vertigo.geo.geosearch.GeoSearchServices;
+import io.vertigo.geo.impl.geocoder.GeoCoderManagerImpl;
+import io.vertigo.geo.impl.geosearch.GeoSearchServicesImpl;
 import io.vertigo.geo.plugins.geocoder.ban.BanGeoCoderPlugin;
 import io.vertigo.geo.plugins.geocoder.google.GoogleGeoCoderPlugin;
 import io.vertigo.geo.plugins.geosearch.es.ESGeoSearchPlugin;
-import io.vertigo.geo.services.geocoder.GeoCoderManager;
-import io.vertigo.geo.services.geosearch.GeoSearchServices;
 
 /**
  * Defines the 'geo' extension
@@ -47,7 +47,7 @@ public final class GeoFeatures extends Features<GeoFeatures> {
 	 * @return the features
 	 */
 	@Feature("geocoding")
-	public GeoFeatures withGeocoding() {
+	public GeoFeatures withGeoCoder() {
 		getModuleConfigBuilder().addComponent(GeoCoderManager.class, GeoCoderManagerImpl.class);
 		return this;
 	}
@@ -57,7 +57,7 @@ public final class GeoFeatures extends Features<GeoFeatures> {
 	 * @return the features
 	 */
 	@Feature("geosearch")
-	public GeoFeatures withGeosearch() {
+	public GeoFeatures withGeoSearch() {
 		getModuleConfigBuilder().addComponent(GeoSearchServices.class, GeoSearchServicesImpl.class);
 		return this;
 	}
@@ -67,7 +67,7 @@ public final class GeoFeatures extends Features<GeoFeatures> {
 	 * @return the features
 	 */
 	@Feature("geocoding.google")
-	public GeoFeatures withGoogleGeocoder() {
+	public GeoFeatures withGoogleGeoCoder() {
 		getModuleConfigBuilder().addPlugin(GoogleGeoCoderPlugin.class);
 		return this;
 	}
@@ -77,7 +77,7 @@ public final class GeoFeatures extends Features<GeoFeatures> {
 	 * @return the features
 	 */
 	@Feature("geocoding.ban")
-	public GeoFeatures withBanGeocoder(final Param... params) {
+	public GeoFeatures withBanGeoCoder(final Param... params) {
 		getModuleConfigBuilder().addPlugin(BanGeoCoderPlugin.class, params);
 		return this;
 	}

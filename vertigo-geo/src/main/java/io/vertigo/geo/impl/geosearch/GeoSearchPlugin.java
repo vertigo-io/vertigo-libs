@@ -1,14 +1,12 @@
-package io.vertigo.geo.services.geosearch;
+package io.vertigo.geo.impl.geosearch;
 
-import java.util.Optional;
-
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.Plugin;
 import io.vertigo.datamodel.structure.metamodel.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
-import io.vertigo.geo.services.geocoder.GeoLocation;
+import io.vertigo.geo.geocoder.GeoLocation;
 
-public interface GeoSearchServices extends Component {
+public interface GeoSearchPlugin extends Plugin {
 
 	<D extends DtObject> DtList<D> searchInBoundingBox(
 			final GeoLocation topLeft,
@@ -16,6 +14,5 @@ public interface GeoSearchServices extends Component {
 			final String indexName,
 			final Class<D> dtIndexClass,
 			final DtFieldName<D> fieldName,
-			final Optional<Integer> maxRowsOpt);
-
+			final Integer maxRows);
 }

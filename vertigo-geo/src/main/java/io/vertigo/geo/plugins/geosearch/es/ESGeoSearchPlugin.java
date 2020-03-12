@@ -52,8 +52,8 @@ import io.vertigo.datamodel.structure.metamodel.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.VCollectors;
-import io.vertigo.geo.impl.services.geosearch.GeoSearchPlugin;
-import io.vertigo.geo.services.geocoder.GeoLocation;
+import io.vertigo.geo.geocoder.GeoLocation;
+import io.vertigo.geo.impl.geosearch.GeoSearchPlugin;
 
 public final class ESGeoSearchPlugin implements GeoSearchPlugin, Activeable {
 

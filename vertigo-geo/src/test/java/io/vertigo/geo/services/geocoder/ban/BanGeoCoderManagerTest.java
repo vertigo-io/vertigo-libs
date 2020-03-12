@@ -26,8 +26,8 @@ import org.junit.jupiter.api.Test;
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.geo.GeoFeatures;
-import io.vertigo.geo.services.geocoder.GeoCoderManager;
-import io.vertigo.geo.services.geocoder.GeoLocation;
+import io.vertigo.geo.geocoder.GeoCoderManager;
+import io.vertigo.geo.geocoder.GeoLocation;
 
 /**
  * @author spoitrenaud
@@ -54,8 +54,8 @@ public class BanGeoCoderManagerTest extends AbstractTestCaseJU5 {
 				.beginBoot()
 				.endBoot()
 				.addModule(new GeoFeatures()
-						.withGeocoding()
-						.withBanGeocoder()
+						.withGeoCoder()
+						.withBanGeoCoder()
 						.build())
 				.build();
 	}
