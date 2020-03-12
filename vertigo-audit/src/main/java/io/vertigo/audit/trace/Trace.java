@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.audit.services.trace;
+package io.vertigo.audit.trace;
 
 import java.time.Instant;
 
@@ -30,7 +30,7 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
  *
  * @author xdurand
  */
-public final class AuditTrace implements DtObject {
+public final class Trace implements DtObject {
 	private static final long serialVersionUID = 2280022920606418634L;
 
 	@Field(type = "ID", smartType = "STyXAuditId", cardinality = Cardinality.ONE, label = "id")
@@ -57,7 +57,7 @@ public final class AuditTrace implements DtObject {
 	@Field(smartType = "STyXAuditContext", label = "context")
 	private final String context;
 
-	AuditTrace(
+	Trace(
 			final Long id,
 			final String category,
 			final String username,

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.audit.services.trace;
+package io.vertigo.audit.trace;
 
 import java.time.Instant;
 import java.util.List;
@@ -30,7 +30,7 @@ import io.vertigo.core.lang.Builder;
  * @author xdurand
  *
  */
-public final class AuditTraceBuilder implements Builder<AuditTrace> {
+public final class TraceBuilder implements Builder<Trace> {
 	private final String myCategory;
 	private final String myUser;
 	private Instant myBusinessDate;
@@ -46,7 +46,7 @@ public final class AuditTraceBuilder implements Builder<AuditTrace> {
 	 * @param user
 	 * @param item
 	 */
-	public AuditTraceBuilder(final String category, final String user, final Long item, final String message) {
+	public TraceBuilder(final String category, final String user, final Long item, final String message) {
 		Assertion.checkNotNull(item);
 		Assertion.checkArgNotEmpty(category);
 		Assertion.checkArgNotEmpty(user);
@@ -63,7 +63,7 @@ public final class AuditTraceBuilder implements Builder<AuditTrace> {
 	 * @param dateBusiness
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceBuilder withDateBusiness(final Instant dateBusiness) {
+	public TraceBuilder withDateBusiness(final Instant dateBusiness) {
 		Assertion.checkNotNull(dateBusiness);
 		//---
 		myBusinessDate = dateBusiness;
@@ -75,7 +75,7 @@ public final class AuditTraceBuilder implements Builder<AuditTrace> {
 	 * @param context context for metadata
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceBuilder withContext(final List<String> context) {
+	public TraceBuilder withContext(final List<String> context) {
 		Assertion.checkNotNull(context);
 		Assertion.checkArgument(context.isEmpty() == false, "The provided context is empty");
 		//---
@@ -86,8 +86,8 @@ public final class AuditTraceBuilder implements Builder<AuditTrace> {
 	}
 
 	@Override
-	public AuditTrace build() {
-		return new AuditTrace(null, myCategory, myUser, myBusinessDate, myExecutionDate, myItem, myMessage, myContext);
+	public Trace build() {
+		return new Trace(null, myCategory, myUser, myBusinessDate, myExecutionDate, myItem, myMessage, myContext);
 	}
 
 }

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.audit;
+package io.vertigo.audit.trace;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,10 +29,10 @@ import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.audit.services.trace.AuditTrace;
-import io.vertigo.audit.services.trace.AuditTraceBuilder;
-import io.vertigo.audit.services.trace.AuditTraceCriteria;
-import io.vertigo.audit.services.trace.AuditTraceManager;
+import io.vertigo.audit.trace.Trace;
+import io.vertigo.audit.trace.TraceBuilder;
+import io.vertigo.audit.trace.TraceCriteria;
+import io.vertigo.audit.trace.TraceManager;
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.node.config.NodeConfig;
 
@@ -41,10 +41,10 @@ import io.vertigo.core.node.config.NodeConfig;
  * @author xdurand
  *
  */
-public class AuditManagerTest extends AbstractTestCaseJU5 {
+public class TraceManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
-	private AuditTraceManager auditManager;
+	private TraceManager auditManager;
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
@@ -56,10 +56,10 @@ public class AuditManagerTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testAddAuditTrace() {
-		final AuditTrace auditTrace = new AuditTraceBuilder("CAT1", "USER1", 1L, "My message 1").build();
+		final Trace auditTrace = new TraceBuilder("CAT1", "USER1", 1L, "My message 1").build();
 
 		auditManager.addTrace(auditTrace);
-		final AuditTrace auditFetch = auditManager.getTrace(auditTrace.getId());
+		final Trace auditFetch = auditManager.getTrace(auditTrace.getId());
 
 		assertThat(auditFetch).isEqualToIgnoringGivenFields(auditTrace, "id");
 	}
@@ -69,10 +69,10 @@ public class AuditManagerTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testFindAuditTrace() {
-		final AuditTrace auditTrace1 = new AuditTraceBuilder("CAT2", "USER2", 2L, "My message 2").build();
+		final Trace auditTrace1 = new TraceBuilder("CAT2", "USER2", 2L, "My message 2").build();
 		auditManager.addTrace(auditTrace1);
 
-		final AuditTrace auditTrace2 = new AuditTraceBuilder("CAT3", "USER3", 3L, "My message 3")
+		final Trace auditTrace2 = new TraceBuilder("CAT3", "USER3", 3L, "My message 3")
 				.withDateBusiness(Instant.now())
 				.withContext(Arrays.asList("Context 3"))
 				.build();
@@ -80,8 +80,8 @@ public class AuditManagerTest extends AbstractTestCaseJU5 {
 		auditManager.addTrace(auditTrace2);
 
 		//Criteria Category
-		final AuditTraceCriteria atc1 = AuditTraceCriteria.builder().withCategory("CAT2").build();
-		final List<AuditTrace> auditTraceFetch1 = auditManager.findTrace(atc1);
+		final TraceCriteria atc1 = TraceCriteria.builder().withCategory("CAT2").build();
+		final List<Trace> auditTraceFetch1 = auditManager.findTrace(atc1);
 
 		assertThat(auditTraceFetch1).hasSize(1);
 		assertThat(auditTraceFetch1).usingFieldByFieldElementComparator().contains(auditTrace1);
@@ -90,36 +90,36 @@ public class AuditManagerTest extends AbstractTestCaseJU5 {
 		final Instant dateJPlus1 = Instant.now().plus(1, ChronoUnit.DAYS);
 
 		//Criteria Business Date
-		final AuditTraceCriteria auditTraceCriteria2 = AuditTraceCriteria.builder()
+		final TraceCriteria auditTraceCriteria2 = TraceCriteria.builder()
 				.withDateBusinessStart(dateJMinus1)
 				.withDateBusinessEnd(dateJPlus1)
 				.build();
 
-		final List<AuditTrace> auditTraceFetch2 = auditManager.findTrace(auditTraceCriteria2);
+		final List<Trace> auditTraceFetch2 = auditManager.findTrace(auditTraceCriteria2);
 
 		assertThat(auditTraceFetch2).hasSize(1);
 		assertThat(auditTraceFetch2).usingFieldByFieldElementComparator().contains(auditTrace2);
 
 		//Criteria Exec Date
-		final AuditTraceCriteria auditTraceCriteria3 = AuditTraceCriteria.builder()
+		final TraceCriteria auditTraceCriteria3 = TraceCriteria.builder()
 				.withDateExecutionStart(dateJMinus1)
 				.withDateExecutionEnd(dateJPlus1)
 				.build();
-		final List<AuditTrace> auditTraceFetch3 = auditManager.findTrace(auditTraceCriteria3);
+		final List<Trace> auditTraceFetch3 = auditManager.findTrace(auditTraceCriteria3);
 
 		assertThat(auditTraceFetch3).hasSize(2);
 		assertThat(auditTraceFetch3).usingFieldByFieldElementComparator().contains(auditTrace1, auditTrace2);
 
 		//Criteria Item
-		final AuditTraceCriteria auditTraceCriteria4 = AuditTraceCriteria.builder().withItem(2L).build();
-		final List<AuditTrace> auditTraceFetch4 = auditManager.findTrace(auditTraceCriteria4);
+		final TraceCriteria auditTraceCriteria4 = TraceCriteria.builder().withItem(2L).build();
+		final List<Trace> auditTraceFetch4 = auditManager.findTrace(auditTraceCriteria4);
 
 		assertThat(auditTraceFetch4).hasSize(1);
 		assertThat(auditTraceFetch4).usingFieldByFieldElementComparator().contains(auditTrace1);
 
 		//Criteria User
-		final AuditTraceCriteria auditTraceCriteria5 = AuditTraceCriteria.builder().withUsername("USER3").build();
-		final List<AuditTrace> auditTraceFetch5 = auditManager.findTrace(auditTraceCriteria5);
+		final TraceCriteria auditTraceCriteria5 = TraceCriteria.builder().withUsername("USER3").build();
+		final List<Trace> auditTraceFetch5 = auditManager.findTrace(auditTraceCriteria5);
 
 		assertThat(auditTraceFetch5).hasSize(1);
 		assertThat(auditTraceFetch5).usingFieldByFieldElementComparator().contains(auditTrace2);

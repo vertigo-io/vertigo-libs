@@ -16,33 +16,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.audit;
+package io.vertigo.audit.trace;
 
-import io.vertigo.audit.impl.trace.TraceDefinitionProvider;
-import io.vertigo.audit.impl.trace.TraceManagerImpl;
-import io.vertigo.audit.plugins.trace.memory.MemoryTraceStorePlugin;
-import io.vertigo.audit.trace.TraceManager;
-import io.vertigo.core.node.config.Feature;
-import io.vertigo.core.node.config.Features;
+import io.vertigo.audit.AuditFeatures;
+import io.vertigo.core.node.config.NodeConfig;
 
-public class AuditFeatures extends Features<AuditFeatures> {
+/**
+ * Config for test
+ * @author xdurand
+ *
+ */
+public class MyNodeConfig {
 
-	public AuditFeatures() {
-		super("vertigo-audit");
-	}
-
-	@Feature("memoryTrace")
-	public AuditFeatures withMemoryTrace() {
-		getModuleConfigBuilder().addPlugin(MemoryTraceStorePlugin.class);
-		return this;
-	}
-
-	@Override
-	protected void buildFeatures() {
-		getModuleConfigBuilder()
-				.addDefinitionProvider(TraceDefinitionProvider.class)
-				.addComponent(TraceManager.class, TraceManagerImpl.class);
-
+	/**
+	 * Configure the app for testing
+	 * @return the application config for testing
+	 */
+	public static NodeConfig config() {
+		return NodeConfig.builder()
+				.addModule(new AuditFeatures()
+						.withMemoryTrace()
+						.build())
+				.build();
 	}
 
 }

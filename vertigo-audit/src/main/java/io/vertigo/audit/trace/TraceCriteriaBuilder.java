@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.audit.services.trace;
+package io.vertigo.audit.trace;
 
 import java.time.Instant;
 
@@ -28,7 +28,7 @@ import io.vertigo.core.lang.Builder;
  * @author xdurand
  *
  */
-public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriteria> {
+public final class TraceCriteriaBuilder implements Builder<TraceCriteria> {
 	private String myCategory;
 	private String myUsername;
 	private Instant myStartBusinessDate;
@@ -42,7 +42,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	 * @param category
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceCriteriaBuilder withCategory(final String category) {
+	public TraceCriteriaBuilder withCategory(final String category) {
 		Assertion.checkNotNull(category);
 		//---
 		myCategory = category;
@@ -54,7 +54,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	 * @param username
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceCriteriaBuilder withUsername(final String username) {
+	public TraceCriteriaBuilder withUsername(final String username) {
 		Assertion.checkNotNull(username);
 		//---
 		myUsername = username;
@@ -66,7 +66,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	 * @param startBusinessDate
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceCriteriaBuilder withDateBusinessStart(final Instant startBusinessDate) {
+	public TraceCriteriaBuilder withDateBusinessStart(final Instant startBusinessDate) {
 		Assertion.checkNotNull(startBusinessDate);
 		//---
 		myStartBusinessDate = startBusinessDate;
@@ -78,7 +78,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	 * @param endBusinessDate
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceCriteriaBuilder withDateBusinessEnd(final Instant endBusinessDate) {
+	public TraceCriteriaBuilder withDateBusinessEnd(final Instant endBusinessDate) {
 		Assertion.checkNotNull(endBusinessDate);
 		//---
 		myEndBusinessDate = endBusinessDate;
@@ -90,7 +90,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	 * @param startExecutionDate
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceCriteriaBuilder withDateExecutionStart(final Instant startExecutionDate) {
+	public TraceCriteriaBuilder withDateExecutionStart(final Instant startExecutionDate) {
 		Assertion.checkNotNull(startExecutionDate);
 		//---
 		myStartExecutionDate = startExecutionDate;
@@ -102,7 +102,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	 * @param endExecutionDate
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceCriteriaBuilder withDateExecutionEnd(final Instant endExecutionDate) {
+	public TraceCriteriaBuilder withDateExecutionEnd(final Instant endExecutionDate) {
 		Assertion.checkNotNull(endExecutionDate);
 		//---
 		myEndExecutionDate = endExecutionDate;
@@ -114,7 +114,7 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	 * @param item
 	 * @return the builder (for fluent style)
 	 */
-	public AuditTraceCriteriaBuilder withItem(final Long item) {
+	public TraceCriteriaBuilder withItem(final Long item) {
 		Assertion.checkNotNull(item);
 		//---
 		myItem = item;
@@ -122,8 +122,8 @@ public final class AuditTraceCriteriaBuilder implements Builder<AuditTraceCriter
 	}
 
 	@Override
-	public AuditTraceCriteria build() {
-		return new AuditTraceCriteria(myCategory, myUsername, myStartBusinessDate,
+	public TraceCriteria build() {
+		return new TraceCriteria(myCategory, myUsername, myStartBusinessDate,
 				myEndBusinessDate, myStartExecutionDate, myEndExecutionDate, myItem);
 	}
 

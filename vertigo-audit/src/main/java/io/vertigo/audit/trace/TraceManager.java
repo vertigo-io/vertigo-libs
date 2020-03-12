@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.audit.services.trace;
+package io.vertigo.audit.trace;
 
 import java.util.List;
 
@@ -25,25 +25,25 @@ import io.vertigo.core.node.component.Manager;
 /**
  * @author xdurand
  */
-public interface AuditTraceManager extends Manager {
+public interface TraceManager extends Manager {
 
 	/**
 	 * Add an audit trail
 	 * @param auditTrace
 	 */
-	void addTrace(AuditTrace auditTrace);
+	void addTrace(Trace auditTrace);
 
 	/**
 	 * Search an audit trail
 	 * @param auditTraceCriteria
 	 * @return the matching audit traces
 	 */
-	List<AuditTrace> findTrace(AuditTraceCriteria auditTraceCriteria);
+	List<Trace> findTrace(TraceCriteria auditTraceCriteria);
 
 	/**
 	 * Get an audit trail
 	 * @param idAuditTrace
 	 * @return the autdit trace for the desired id
 	 */
-	AuditTrace getTrace(Long idAuditTrace);
+	Trace getTrace(Long idAuditTrace);
 }

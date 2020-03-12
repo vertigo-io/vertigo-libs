@@ -16,27 +16,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.audit;
+package io.vertigo.audit.impl.trace;
 
-import io.vertigo.core.node.config.NodeConfig;
+import java.util.List;
+
+import io.vertigo.audit.trace.Trace;
+import io.vertigo.audit.trace.TraceCriteria;
+import io.vertigo.core.node.component.Plugin;
 
 /**
- * Config for test
+ * This class defines the storage of audit trails.
  * @author xdurand
- *
  */
-public class MyNodeConfig {
+public interface TraceStorePlugin extends Plugin {
+	/**
+	 * Gets an audit trail.
+	 * @param auditTraceId the audit trail defined by its id.
+	 * @return the
+	 */
+	Trace read(Long auditTraceId);
 
 	/**
-	 * Configure the app for testing
-	 * @return the application config for testing
+	 * Saves a new audit trail.
+	 * Attention: The audit MUST NOT have an id.
+	 * @param auditTrace the audit trail to save.
 	 */
-	public static NodeConfig config() {
-		return NodeConfig.builder()
-				.addModule(new AuditFeatures()
-						.withMemoryTrace()
-						.build())
-				.build();
-	}
+	void create(Trace auditTrace);
+
+	/**
+	 * Fetchs all Audit Trace mathing the provided criteria
+	 * @param auditTraceCriteria
+	 * @return the matching taces for the provided criteria
+	 */
+	List<Trace> findByCriteria(TraceCriteria auditTraceCriteria);
 
 }

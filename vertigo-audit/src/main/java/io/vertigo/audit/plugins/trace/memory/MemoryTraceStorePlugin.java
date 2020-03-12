@@ -23,9 +23,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import io.vertigo.audit.impl.services.trace.AuditTraceStorePlugin;
-import io.vertigo.audit.services.trace.AuditTrace;
-import io.vertigo.audit.services.trace.AuditTraceCriteria;
+import io.vertigo.audit.impl.trace.TraceStorePlugin;
+import io.vertigo.audit.trace.Trace;
+import io.vertigo.audit.trace.TraceCriteria;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.core.util.StringUtil;
@@ -35,17 +35,17 @@ import io.vertigo.core.util.StringUtil;
  * @author xdurand
  *
  */
-public final class MemoryAuditTraceStorePlugin implements AuditTraceStorePlugin {
-	private final Map<Long, AuditTrace> inMemoryStore = new ConcurrentHashMap<>();
+public final class MemoryTraceStorePlugin implements TraceStorePlugin {
+	private final Map<Long, Trace> inMemoryStore = new ConcurrentHashMap<>();
 	private final AtomicLong memorySequenceGenerator = new AtomicLong(0);
 
 	@Override
-	public AuditTrace read(final Long idAuditTrace) {
+	public Trace read(final Long idAuditTrace) {
 		return inMemoryStore.get(idAuditTrace);
 	}
 
 	@Override
-	public void create(final AuditTrace auditTrace) {
+	public void create(final Trace auditTrace) {
 		Assertion.checkNotNull(auditTrace);
 		Assertion.checkState(auditTrace.getId() == null, "A new audit trail must not have an id");
 		//---
@@ -55,10 +55,10 @@ public final class MemoryAuditTraceStorePlugin implements AuditTraceStorePlugin 
 	}
 
 	@Override
-	public List<AuditTrace> findByCriteria(final AuditTraceCriteria auditTraceCriteria) {
-		final ListBuilder<AuditTrace> auditTracesBuilder = new ListBuilder<>();
+	public List<Trace> findByCriteria(final TraceCriteria auditTraceCriteria) {
+		final ListBuilder<Trace> auditTracesBuilder = new ListBuilder<>();
 
-		for (final AuditTrace auditTrace : inMemoryStore.values()) {
+		for (final Trace auditTrace : inMemoryStore.values()) {
 			final boolean categoryMatched = matchCategory(auditTraceCriteria, auditTrace);
 			final boolean userMatched = matchUser(auditTraceCriteria, auditTrace);
 			final boolean businessDateMatched = matchBusinessDate(auditTraceCriteria, auditTrace);
@@ -74,31 +74,31 @@ public final class MemoryAuditTraceStorePlugin implements AuditTraceStorePlugin 
 				.build();
 	}
 
-	private static boolean matchItem(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
+	private static boolean matchItem(final TraceCriteria auditTraceCriteria, final Trace auditTrace) {
 		return auditTraceCriteria.getItem() != null
 				&& auditTraceCriteria.getItem().equals(auditTrace.getItem());
 	}
 
-	private static boolean matchExecutionDate(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
+	private static boolean matchExecutionDate(final TraceCriteria auditTraceCriteria, final Trace auditTrace) {
 		return auditTrace.getExecutionDate() != null
 				&& auditTraceCriteria.getStartExecutionDate() != null
 				&& auditTraceCriteria.getStartExecutionDate().isBefore(auditTrace.getExecutionDate())
 				&& (auditTraceCriteria.getEndExecutionDate() == null || auditTraceCriteria.getEndExecutionDate().isAfter(auditTrace.getExecutionDate()));
 	}
 
-	private static boolean matchBusinessDate(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
+	private static boolean matchBusinessDate(final TraceCriteria auditTraceCriteria, final Trace auditTrace) {
 		return auditTrace.getBusinessDate() != null
 				&& auditTraceCriteria.getStartBusinessDate() != null
 				&& auditTraceCriteria.getStartBusinessDate().isBefore(auditTrace.getBusinessDate())
 				&& (auditTraceCriteria.getEndBusinessDate() == null || auditTraceCriteria.getEndBusinessDate().isAfter(auditTrace.getBusinessDate()));
 	}
 
-	private static boolean matchUser(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
+	private static boolean matchUser(final TraceCriteria auditTraceCriteria, final Trace auditTrace) {
 		return !StringUtil.isEmpty(auditTraceCriteria.getUsername())
 				&& auditTraceCriteria.getUsername().equals(auditTrace.getUsername());
 	}
 
-	private static boolean matchCategory(final AuditTraceCriteria auditTraceCriteria, final AuditTrace auditTrace) {
+	private static boolean matchCategory(final TraceCriteria auditTraceCriteria, final Trace auditTrace) {
 		return !StringUtil.isEmpty(auditTraceCriteria.getCategory())
 				&& auditTraceCriteria.getCategory().equals(auditTrace.getCategory());
 	}

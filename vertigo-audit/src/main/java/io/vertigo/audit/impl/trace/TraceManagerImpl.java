@@ -16,46 +16,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.audit.impl.services.trace;
+package io.vertigo.audit.impl.trace;
 
 import java.util.List;
 
 import javax.inject.Inject;
 
-import io.vertigo.audit.services.trace.AuditTrace;
-import io.vertigo.audit.services.trace.AuditTraceCriteria;
-import io.vertigo.audit.services.trace.AuditTraceManager;
+import io.vertigo.audit.trace.Trace;
+import io.vertigo.audit.trace.TraceCriteria;
+import io.vertigo.audit.trace.TraceManager;
 import io.vertigo.core.lang.Assertion;
 
 /**
  * @author xdurand
  */
-public final class AuditTraceManagerImpl implements AuditTraceManager {
-	private final AuditTraceStorePlugin auditTraceStorePlugin;
+public final class TraceManagerImpl implements TraceManager {
+	private final TraceStorePlugin auditTraceStorePlugin;
 
 	/**
 	 * Constructor.
 	 * @param auditTraceStorePlugin
 	 */
 	@Inject
-	public AuditTraceManagerImpl(final AuditTraceStorePlugin auditTraceStorePlugin) {
+	public TraceManagerImpl(final TraceStorePlugin auditTraceStorePlugin) {
 		Assertion.checkNotNull(auditTraceStorePlugin);
 		//---
 		this.auditTraceStorePlugin = auditTraceStorePlugin;
 	}
 
 	@Override
-	public void addTrace(final AuditTrace auditTrace) {
+	public void addTrace(final Trace auditTrace) {
 		auditTraceStorePlugin.create(auditTrace);
 	}
 
 	@Override
-	public List<AuditTrace> findTrace(final AuditTraceCriteria auditTraceCriteria) {
+	public List<Trace> findTrace(final TraceCriteria auditTraceCriteria) {
 		return auditTraceStorePlugin.findByCriteria(auditTraceCriteria);
 	}
 
 	@Override
-	public AuditTrace getTrace(final Long auditTraceId) {
+	public Trace getTrace(final Long auditTraceId) {
 		return auditTraceStorePlugin.read(auditTraceId);
 	}
 

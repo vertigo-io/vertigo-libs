@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.audit.services.trace;
+package io.vertigo.audit.trace;
 
 import java.time.Instant;
 
@@ -28,7 +28,7 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
  *
  * @author xdurand
  */
-public final class AuditTraceCriteria implements DtObject {
+public final class TraceCriteria implements DtObject {
 	private static final long serialVersionUID = 1L;
 
 	private final String category;
@@ -39,7 +39,7 @@ public final class AuditTraceCriteria implements DtObject {
 	private final Instant endExecutionDate;
 	private final Long item;
 
-	AuditTraceCriteria(
+	TraceCriteria(
 			final String category,
 			final String username,
 			final Instant startBusinessDate,
@@ -60,8 +60,8 @@ public final class AuditTraceCriteria implements DtObject {
 	 * Static method factory for AuditTraceCriteriaBuilder
 	 * @return AuditTraceCriteriaBuilder
 	 */
-	public static AuditTraceCriteriaBuilder builder() {
-		return new AuditTraceCriteriaBuilder();
+	public static TraceCriteriaBuilder builder() {
+		return new TraceCriteriaBuilder();
 	}
 
 	/**
