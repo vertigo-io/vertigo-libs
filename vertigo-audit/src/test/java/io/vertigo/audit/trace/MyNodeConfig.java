@@ -35,6 +35,7 @@ public class MyNodeConfig {
 	public static NodeConfig config() {
 		return NodeConfig.builder()
 				.addModule(new AuditFeatures()
+						.withTrace()
 						.withMemoryTrace()
 						.build())
 				.build();

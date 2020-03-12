@@ -24,8 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.audit.AuditFeatures;
-import io.vertigo.commons.CommonsFeatures;
+import io.vertigo.audit.trace.MyNodeConfig;
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.node.config.NodeConfig;
 
@@ -36,11 +35,10 @@ public class LedgerManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private LedgerManager ledgerManager;
 
-	// cannot run on pic: wallets are not public !!
-	//	@Override
-	//	protected NodeConfig buildNodeConfig() {
-	//		return MyNodeConfig.config();
-	//	}
+	@Override
+	protected NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config();
+	}
 
 	@Test
 	public void writeDataTest() {
@@ -55,20 +53,6 @@ public class LedgerManagerTest extends AbstractTestCaseJU5 {
 
 		LOGGER.info("My ETH Balance after: " + ledgerManager.getMyWalletBalance());
 		LOGGER.info("Bob ETH Balance after: " + ledgerManager.getWalletBalance(bobLedgerAddress));
-	}
-
-	@Override
-	protected NodeConfig buildNodeConfig() {
-		// dummy config for no false failing test in pic
-		return NodeConfig.builder()
-				.beginBoot()
-				.endBoot()
-				.addModule(new CommonsFeatures()
-						.build())
-				.addModule(new AuditFeatures()
-						.withFakeBlockChain()
-						.build())
-				.build();
 	}
 
 }

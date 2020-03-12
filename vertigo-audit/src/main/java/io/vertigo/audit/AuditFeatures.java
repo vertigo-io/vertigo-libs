@@ -36,9 +36,24 @@ public class AuditFeatures extends Features<AuditFeatures> {
 		super("vertigo-audit");
 	}
 
-	@Feature("memoryTrace")
+	@Feature("trace")
+	public AuditFeatures withTrace() {
+		getModuleConfigBuilder()
+				.addDefinitionProvider(TraceDefinitionProvider.class)
+				.addComponent(TraceManager.class, TraceManagerImpl.class);
+		return this;
+	}
+
+	@Feature("trace.memory")
 	public AuditFeatures withMemoryTrace() {
 		getModuleConfigBuilder().addPlugin(MemoryTraceStorePlugin.class);
+		return this;
+	}
+
+	@Feature("ledger")
+	public AuditFeatures withLedger() {
+		getModuleConfigBuilder()
+				.addComponent(LedgerManager.class, LedgerManagerImpl.class);
 		return this;
 	}
 
@@ -66,11 +81,7 @@ public class AuditFeatures extends Features<AuditFeatures> {
 
 	@Override
 	protected void buildFeatures() {
-		getModuleConfigBuilder()
-				.addDefinitionProvider(TraceDefinitionProvider.class)
-				.addComponent(TraceManager.class, TraceManagerImpl.class)
-				.addComponent(LedgerManager.class, LedgerManagerImpl.class);
-
+		//
 	}
 
 }
