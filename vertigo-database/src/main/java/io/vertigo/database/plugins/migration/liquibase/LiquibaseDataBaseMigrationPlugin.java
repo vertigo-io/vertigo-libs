@@ -24,6 +24,7 @@ import liquibase.changelog.RanChangeSet;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 
@@ -66,9 +67,7 @@ public final class LiquibaseDataBaseMigrationPlugin implements DataBaseMigration
 		LOGGER.info("Liquibase  : checking  on connection {}", connectionName);
 		final SqlConnection sqlConnection = sqlDataBaseManager.getConnectionProvider(connectionName).obtainConnection();
 		try {
-			final JdbcConnection jdbcConnection = new JdbcConnection(sqlDataBaseManager.getConnectionProvider(connectionName).obtainConnection().getJdbcConnection());
-			final Database db = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(jdbcConnection);
-			final Liquibase lb = new Liquibase(masterFile, new ClassLoaderResourceAccessor(), db);
+			final Liquibase lb = createLiquibase();
 			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(new Contexts(), new LabelExpression());
 			Assertion.checkState(unexpectedChangeSets.isEmpty(), "Database is to recent. Please make sure you run the correct version of the app.");
 			lb.update(new Contexts());
@@ -85,14 +84,18 @@ public final class LiquibaseDataBaseMigrationPlugin implements DataBaseMigration
 
 	}
 
+	private Liquibase createLiquibase() throws DatabaseException {
+		final JdbcConnection jdbcConnection = new JdbcConnection(sqlDataBaseManager.getConnectionProvider(connectionName).obtainConnection().getJdbcConnection());
+		final Database db = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(jdbcConnection);
+		return new Liquibase(masterFile, new ClassLoaderResourceAccessor(), db);
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public void check() {
 		LOGGER.info("Liquibase  : updating  on connection {}", connectionName);
 		try {
-			final JdbcConnection jdbcConnection = new JdbcConnection(sqlDataBaseManager.getConnectionProvider(connectionName).obtainConnection().getJdbcConnection());
-			final Database db = DatabaseFactory.getInstance().findCorrectDatabaseImplementation(jdbcConnection);
-			final Liquibase lb = new Liquibase(masterFile, new ClassLoaderResourceAccessor(), db);
+			final Liquibase lb = createLiquibase();
 			final List<ChangeSet> changeSetList = lb.listUnrunChangeSets(new Contexts(), new LabelExpression());
 			Assertion.checkState(changeSetList.isEmpty(), "Database is not up to date. Please update it before launching the app.");
 			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(new Contexts(), new LabelExpression());
