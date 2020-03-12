@@ -18,6 +18,11 @@
  */
 package io.vertigo.datastore;
 
+import io.vertigo.commons.cache.CacheManager;
+import io.vertigo.commons.impl.cache.CacheManagerImpl;
+import io.vertigo.commons.plugins.cache.ehcache.EhCachePlugin;
+import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
+import io.vertigo.commons.plugins.cache.redis.RedisCachePlugin;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
@@ -138,6 +143,50 @@ public final class DataStoreFeatures extends Features<DataStoreFeatures> {
 	public DataStoreFeatures withDomainMetrics() {
 		getModuleConfigBuilder()
 				.addComponent(DomainMetricsProvider.class);
+		return this;
+	}
+
+	/**
+	 * Activates caches.
+	 * @return these features
+	 */
+	@Feature("cache")
+	public DataStoreFeatures withCache() {
+		getModuleConfigBuilder()
+				.addComponent(CacheManager.class, CacheManagerImpl.class);
+		return this;
+	}
+
+	/**
+	 * Activates caches.
+	 * @return these features
+	 */
+	@Feature("cache.redis")
+	public DataStoreFeatures withRedisCache(final Param... params) {
+		getModuleConfigBuilder()
+				.addPlugin(RedisCachePlugin.class, params);
+		return this;
+	}
+
+	/**
+	 * Activates caches.
+	 * @return these features
+	 */
+	@Feature("cache.memory")
+	public DataStoreFeatures withMemoryCache() {
+		getModuleConfigBuilder()
+				.addPlugin(MemoryCachePlugin.class);
+		return this;
+	}
+
+	/**
+	 * Activates caches.
+	 * @return these features
+	 */
+	@Feature("cache.eh")
+	public DataStoreFeatures withEhCache() {
+		getModuleConfigBuilder()
+				.addPlugin(EhCachePlugin.class);
 		return this;
 	}
 

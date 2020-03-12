@@ -41,14 +41,6 @@
 			<optional>false</optional><!-- pour JaninoExpressionEvaluatorPlugin -->
 		</dependency>
 
-		<!--cache -->
-		<dependency>
-			<groupId>org.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<version>3.8.1</version> 
-			<optional>true</optional> <!-- pour EhCachePlugin -->
-		</dependency>
-
 		<!--redis -->
 		<dependency>
 			<groupId>io.vertigo</groupId>

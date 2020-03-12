@@ -14,11 +14,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-core</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-commons</artifactId>
 			<version>${project.version}</version>
 		</dependency>
@@ -73,5 +68,20 @@
 			<optional>true</optional><!-- C3p0DataSourceProviderPlugin -->
 		</dependency>
 
+		<!--redis -->
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-redis-connector</artifactId>
+			<version>${vertigo.version}</version>
+			<optional>true</optional> <!-- pour RedisCache -->
+		</dependency>
+		
+		<!--cache -->
+		<dependency>
+			<groupId>org.ehcache</groupId>
+			<artifactId>ehcache</artifactId>
+			<version>3.8.1</version> 
+			<optional>true</optional> <!-- pour EhCachePlugin -->
+		</dependency>
 	</dependencies>
 </project>

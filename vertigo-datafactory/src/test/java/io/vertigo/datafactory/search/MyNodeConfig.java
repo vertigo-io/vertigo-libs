@@ -70,9 +70,7 @@ public final class MyNodeConfig {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.withCache()
 						.withScript()
-						.withMemoryCache()
 						.withJaninoScript()
 						.build());
 		if (withDb) {

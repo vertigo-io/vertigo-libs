@@ -39,8 +39,6 @@ public final class SqlTestConfigurator {
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.withCache()
-						.withMemoryCache()
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
@@ -51,6 +49,8 @@ public final class SqlTestConfigurator {
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
+						.withCache()
+						.withMemoryCache()
 						.withEntityStore()
 						.addPlugin(SqlEntityStorePlugin.class,
 								Param.of("sequencePrefix", "SEQ_"))

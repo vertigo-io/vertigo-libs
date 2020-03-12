@@ -25,7 +25,6 @@ import io.vertigo.account.AccountFeatures;
 import io.vertigo.account.plugins.authorization.loaders.JsonSecurityDefinitionProvider;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.plugins.app.infos.http.HttpAppNodeInfosPlugin;
-import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -89,12 +88,12 @@ public final class MyNodeConfig {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.withCache()
-						.addPlugin(MemoryCachePlugin.class)
 						.withNodeInfosPlugin(HttpAppNodeInfosPlugin.class)
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
+						.withCache()
+						.withMemoryCache()
 						.withEntityStore()
 						.withKVStore()
 						.addPlugin(DelayedMemoryKVStorePlugin.class,

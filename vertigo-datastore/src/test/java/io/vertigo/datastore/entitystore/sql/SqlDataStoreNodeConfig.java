@@ -19,7 +19,6 @@
 package io.vertigo.datastore.entitystore.sql;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -51,8 +50,6 @@ public class SqlDataStoreNodeConfig {
 				.addModule(new CommonsFeatures()
 						.withScript()
 						.withJaninoScript()
-						.withCache()
-						.addPlugin(MemoryCachePlugin.class)
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
@@ -65,6 +62,8 @@ public class SqlDataStoreNodeConfig {
 				.addModule(new DataStoreFeatures()
 						.withEntityStore()
 						.addPlugin(SqlEntityStorePlugin.class)
+						.withCache()
+						.withMemoryCache()
 						.build())
 				.addModule(ModuleConfig.builder("definition")
 						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)

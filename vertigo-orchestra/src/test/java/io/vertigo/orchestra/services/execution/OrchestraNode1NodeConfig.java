@@ -43,8 +43,6 @@ public final class OrchestraNode1NodeConfig {
 				.addPlugin(URLResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.withCache()
-						.withMemoryCache()
 						.withScript()
 						.withJaninoScript()
 						.build())
@@ -57,6 +55,8 @@ public final class OrchestraNode1NodeConfig {
 								Param.of("jdbcUrl", "jdbc:h2:~/vertigo/orchestra;MVCC=FALSE;AUTO_SERVER=TRUE"))
 						.build())
 				.addModule(new DataStoreFeatures()
+						.withCache()
+						.withMemoryCache()
 						.withKVStore()
 						.withDelayedMemoryKV(
 								Param.of("collections", "tokens"),

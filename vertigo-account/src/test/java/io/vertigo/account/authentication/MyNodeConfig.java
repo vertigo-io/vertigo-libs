@@ -114,8 +114,6 @@ public final class MyNodeConfig {
 				.addModule(new CommonsFeatures()
 						.withScript()
 						.withJaninoScript()
-						.withCache()
-						.withMemoryCache()
 						.build())
 				.addModule(databaseFeatures.build())
 				.addModule(new DataModelFeatures().build())

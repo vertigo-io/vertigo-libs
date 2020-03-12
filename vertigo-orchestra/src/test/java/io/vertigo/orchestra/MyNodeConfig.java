@@ -53,8 +53,6 @@ public final class MyNodeConfig {
 				.addPlugin(URLResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.withCache()
-						.withMemoryCache()
 						.withScript()
 						.withJaninoScript()
 						.build())
@@ -69,6 +67,8 @@ public final class MyNodeConfig {
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
+						.withCache()
+						.withMemoryCache()
 						.withKVStore()
 						.withDelayedMemoryKV(
 								Param.of("collections", "tokens"),

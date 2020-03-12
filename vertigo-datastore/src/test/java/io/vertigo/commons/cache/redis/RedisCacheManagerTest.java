@@ -18,13 +18,13 @@
  */
 package io.vertigo.commons.cache.redis;
 
-import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.cache.AbstractCacheManagerTest;
 import io.vertigo.commons.cache.TestCacheDefinitionProvider;
 import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
+import io.vertigo.datastore.DataStoreFeatures;
 
 /**
  * RedisCache Manager test class.
@@ -53,7 +53,7 @@ public class RedisCacheManagerTest extends AbstractCacheManagerTest {
 								Param.of("port", "6379"),
 								Param.of("database", "0"))
 						.build())
-				.addModule(new CommonsFeatures()
+				.addModule(new DataStoreFeatures()
 						.withCache()
 						.withRedisCache()
 						.build())

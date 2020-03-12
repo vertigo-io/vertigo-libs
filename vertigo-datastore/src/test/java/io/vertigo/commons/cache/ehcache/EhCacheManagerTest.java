@@ -16,20 +16,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.cache.memory;
+package io.vertigo.commons.cache.ehcache;
 
-import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.cache.AbstractCacheManagerTest;
 import io.vertigo.commons.cache.TestCacheDefinitionProvider;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
+import io.vertigo.datastore.DataStoreFeatures;
 
 /**
- * MemoryCache Manager test class
+ * EhCache Manager test class
  *
  * @author pchretien, dszniten
  */
-public class MemoryCacheManagerTest extends AbstractCacheManagerTest {
+public class EhCacheManagerTest extends AbstractCacheManagerTest {
 	// Unit tests use abstract class methods
 
 	@Override
@@ -37,9 +37,9 @@ public class MemoryCacheManagerTest extends AbstractCacheManagerTest {
 		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
-				.addModule(new CommonsFeatures()
+				.addModule(new DataStoreFeatures()
 						.withCache()
-						.withMemoryCache()
+						.withEhCache()
 						.build())
 				.addModule(ModuleConfig.builder("myApp")
 						.addDefinitionProvider(TestCacheDefinitionProvider.class)

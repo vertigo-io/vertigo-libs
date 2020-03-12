@@ -63,8 +63,6 @@ public class DaoTestClass extends AbstractTestCaseJU5 {
 				.withLogConfig(new LogConfig("/log4j.xml"))
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.withCache()
-						.withMemoryCache()
 						.withScript()
 						.withJaninoScript()
 						.build())
@@ -77,6 +75,8 @@ public class DaoTestClass extends AbstractTestCaseJU5 {
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
+						.withCache()
+						.withMemoryCache()
 						.withEntityStore()
 						.addPlugin(SqlEntityStorePlugin.class,
 								Param.of("sequencePrefix", "SEQ_"))

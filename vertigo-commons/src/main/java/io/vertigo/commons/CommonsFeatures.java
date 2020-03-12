@@ -19,14 +19,12 @@
 package io.vertigo.commons;
 
 import io.vertigo.commons.app.AppManager;
-import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.command.CommandManager;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.impl.app.AppManagerImpl;
 import io.vertigo.commons.impl.app.AppNodeInfosPlugin;
 import io.vertigo.commons.impl.app.AppNodeRegistryPlugin;
-import io.vertigo.commons.impl.cache.CacheManagerImpl;
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
 import io.vertigo.commons.impl.command.CommandManagerImpl;
 import io.vertigo.commons.impl.eventbus.EventBusManagerImpl;
@@ -36,9 +34,6 @@ import io.vertigo.commons.impl.transaction.VTransactionManagerImpl;
 import io.vertigo.commons.plugins.app.infos.http.HttpAppNodeInfosPlugin;
 import io.vertigo.commons.plugins.app.registry.db.DbAppNodeRegistryPlugin;
 import io.vertigo.commons.plugins.app.registry.redis.RedisAppNodeRegistryPlugin;
-import io.vertigo.commons.plugins.cache.ehcache.EhCachePlugin;
-import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
-import io.vertigo.commons.plugins.cache.redis.RedisCachePlugin;
 import io.vertigo.commons.plugins.script.janino.JaninoExpressionEvaluatorPlugin;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.transaction.VTransactionManager;
@@ -80,50 +75,6 @@ public final class CommonsFeatures extends Features<CommonsFeatures> {
 	public CommonsFeatures withJaninoScript() {
 		getModuleConfigBuilder()
 				.addPlugin(JaninoExpressionEvaluatorPlugin.class);
-		return this;
-	}
-
-	/**
-	 * Activates caches.
-	 * @return these features
-	 */
-	@Feature("cache")
-	public CommonsFeatures withCache() {
-		getModuleConfigBuilder()
-				.addComponent(CacheManager.class, CacheManagerImpl.class);
-		return this;
-	}
-
-	/**
-	 * Activates caches.
-	 * @return these features
-	 */
-	@Feature("cache.redis")
-	public CommonsFeatures withRedisCache(final Param... params) {
-		getModuleConfigBuilder()
-				.addPlugin(RedisCachePlugin.class, params);
-		return this;
-	}
-
-	/**
-	 * Activates caches.
-	 * @return these features
-	 */
-	@Feature("cache.memory")
-	public CommonsFeatures withMemoryCache() {
-		getModuleConfigBuilder()
-				.addPlugin(MemoryCachePlugin.class);
-		return this;
-	}
-
-	/**
-	 * Activates caches.
-	 * @return these features
-	 */
-	@Feature("cache.eh")
-	public CommonsFeatures withEhCache() {
-		getModuleConfigBuilder()
-				.addPlugin(EhCachePlugin.class);
 		return this;
 	}
 

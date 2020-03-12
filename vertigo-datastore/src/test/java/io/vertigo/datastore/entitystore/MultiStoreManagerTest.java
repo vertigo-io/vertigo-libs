@@ -73,9 +73,7 @@ public final class MultiStoreManagerTest extends AbstractTestCaseJU5 {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.withCache()
 						.withScript()
-						.withMemoryCache()
 						.withJaninoScript()
 						.build())
 				.addModule(new DatabaseFeatures()
@@ -92,6 +90,8 @@ public final class MultiStoreManagerTest extends AbstractTestCaseJU5 {
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
+						.withCache()
+						.withMemoryCache()
 						.withEntityStore()
 						.withSqlEntityStore()
 						.withSqlEntityStore(

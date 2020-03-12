@@ -9,7 +9,6 @@ import javax.inject.Inject;
 import org.h2.Driver;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -75,8 +74,6 @@ public class DbFileStoreManagerTest extends AbstractFileStoreManagerTest {
 				.addModule(new CommonsFeatures()
 						.withScript()
 						.withJaninoScript()
-						.withCache()
-						.addPlugin(MemoryCachePlugin.class)
 						.build())
 				.addModule(new DatabaseFeatures()
 						.withSqlDataBase()
@@ -87,6 +84,8 @@ public class DbFileStoreManagerTest extends AbstractFileStoreManagerTest {
 						.build())
 				.addModule(new DataModelFeatures().build())
 				.addModule(new DataStoreFeatures()
+						.withCache()
+						.withMemoryCache()
 						.withEntityStore()
 						.withFileStore()
 						.addPlugin(SqlEntityStorePlugin.class)

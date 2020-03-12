@@ -48,10 +48,10 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.withCache()
-						.withMemoryCache()
 						.build())
 				.addModule(new DataStoreFeatures()
+						.withCache()
+						.withMemoryCache()
 						.withKVStore()
 						.withBerkleyKV(
 								Param.of("collections", "flowers;TTL=10, trees;inMemory"),

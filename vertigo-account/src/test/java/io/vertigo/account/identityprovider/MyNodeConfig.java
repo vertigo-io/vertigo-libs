@@ -64,12 +64,12 @@ public final class MyNodeConfig {
 
 		final CommonsFeatures commonsFeatures = new CommonsFeatures()
 				.withScript()
-				.withJaninoScript()
-				.withCache()
-				.withMemoryCache();
+				.withJaninoScript();
 
 		final DatabaseFeatures databaseFeatures = new DatabaseFeatures();
 		final DataStoreFeatures datastoreFeatures = new DataStoreFeatures()
+				.withCache()
+				.withMemoryCache()
 				.withFileStore();
 		final AccountFeatures accountFeatures = new AccountFeatures()
 				.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))

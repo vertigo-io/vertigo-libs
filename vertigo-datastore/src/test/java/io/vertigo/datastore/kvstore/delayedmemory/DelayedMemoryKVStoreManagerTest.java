@@ -36,10 +36,10 @@ public final class DelayedMemoryKVStoreManagerTest extends AbstractKVStoreManage
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new CommonsFeatures()
-						.withCache()
-						.withMemoryCache()
 						.build())
 				.addModule(new DataStoreFeatures()
+						.withCache()
+						.withMemoryCache()
 						.withKVStore()
 						.withDelayedMemoryKV(
 								Param.of("collections", "flowers"),
