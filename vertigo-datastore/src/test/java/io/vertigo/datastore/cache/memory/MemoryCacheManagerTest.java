@@ -18,6 +18,7 @@
  */
 package io.vertigo.datastore.cache.memory;
 
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datastore.DataStoreFeatures;
@@ -37,6 +38,8 @@ public class MemoryCacheManagerTest extends AbstractCacheManagerTest {
 		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
 				.addModule(new DataStoreFeatures()
 						.withCache()
 						.withMemoryCache()

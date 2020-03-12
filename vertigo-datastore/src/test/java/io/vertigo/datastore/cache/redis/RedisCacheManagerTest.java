@@ -18,6 +18,7 @@
  */
 package io.vertigo.datastore.cache.redis;
 
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -47,6 +48,8 @@ public class RedisCacheManagerTest extends AbstractCacheManagerTest {
 		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
+				.addModule(new CommonsFeatures()
+						.build())
 				.addModule(new RedisFeatures()
 						.withJedis(
 								Param.of("host", "redis-pic.part.klee.lan.net"),
