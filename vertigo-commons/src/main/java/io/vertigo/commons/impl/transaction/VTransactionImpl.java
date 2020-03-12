@@ -403,7 +403,7 @@ final class VTransactionImpl implements VTransactionWritable {
 
 		@Override
 		public void close() throws Exception {
-			innerResource.release();
+			innerResource.close();
 		}
 	}
 

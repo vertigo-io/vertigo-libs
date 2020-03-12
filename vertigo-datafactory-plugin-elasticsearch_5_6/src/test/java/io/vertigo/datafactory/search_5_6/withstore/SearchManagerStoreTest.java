@@ -440,7 +440,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 
 		@Override
 		public void close() throws SQLException {
-			connection.release();
+			connection.close();
 		}
 	}
 

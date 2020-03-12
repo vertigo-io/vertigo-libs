@@ -69,7 +69,7 @@ final class BerkeleyResource implements VTransactionResource {
 
 	/** {@inheritDoc} */
 	@Override
-	public void release() {
+	public void close() {
 		//
 	}
 }

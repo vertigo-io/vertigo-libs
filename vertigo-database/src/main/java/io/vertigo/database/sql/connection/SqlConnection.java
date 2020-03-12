@@ -87,7 +87,7 @@ public final class SqlConnection implements VTransactionResource {
 
 	/** {@inheritDoc} */
 	@Override
-	public void release() throws SQLException {
+	public void close() throws SQLException {
 		if (closeable) {
 			jdbcConnection.close();
 		}

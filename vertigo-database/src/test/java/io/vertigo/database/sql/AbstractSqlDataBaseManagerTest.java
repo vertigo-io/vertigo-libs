@@ -107,15 +107,12 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 
 	@Override
 	protected final void doSetUp() throws Exception {
-		final SqlConnection connection = obtainMainConnection();
-		try {
+		try (final SqlConnection connection = obtainMainConnection()) {
 			execpreparedStatement(connection, createTableMovie());
 			execpreparedStatement(connection, createSequenceMovie());
 			if (commitRequiredOnSchemaModification()) {
 				connection.commit();
 			}
-		} finally {
-			connection.release();
 		}
 	}
 
@@ -127,27 +124,21 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 
 	@Override
 	protected final void doTearDown() throws Exception {
-		final SqlConnection connection = obtainMainConnection();
-		try {
+		try (final SqlConnection connection = obtainMainConnection()) {
 			// we use a shared database so we need to drop the table
 			execpreparedStatement(connection, DROP_SEQUENCE_MOVIE);
 			execpreparedStatement(connection, DROP_TABLE_MOVIE);
 			if (commitRequiredOnSchemaModification()) {
 				connection.commit();
 			}
-		} finally {
-			connection.release();
 		}
 	}
 
 	@Test
 	public void testConnection() throws Exception {
-		final SqlConnection connection = obtainMainConnection();
-		try {
+		try (SqlConnection connection = obtainMainConnection()) {
 			Assertions.assertNotNull(connection);
 			connection.commit();
-		} finally {
-			connection.release();
 		}
 	}
 
@@ -170,8 +161,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 	}
 
 	private void createDatas() throws Exception {
-		final SqlConnection connection = obtainMainConnection();
-		try {
+		try (final SqlConnection connection = obtainMainConnection()) {
 			insert(connection, Movies.createMovie(
 					1,
 					Movies.TITLE_MOVIE_1,
@@ -206,8 +196,6 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 					null,
 					null));
 			connection.commit();
-		} finally {
-			connection.release();
 		}
 	}
 
@@ -254,8 +242,7 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 			final String sql,
 			final SqlConnectionProvider sqlConnectionProvider,
 			final Integer limit) throws SQLException, Exception {
-		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
-		try {
+		try (final SqlConnection connection = sqlConnectionProvider.obtainConnection()) {
 			return dataBaseManager
 					.executeQuery(
 							SqlStatement.builder(sql).build(),
@@ -263,8 +250,6 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 							MAIL_ADAPTER,
 							limit,
 							connection);
-		} finally {
-			connection.release();
 		}
 	}
 
@@ -301,12 +286,12 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 		//On crée les données
 		createDatas();
 		//----
-		final SqlConnection connection = obtainMainConnection();
+		;
 		final List<Movie> movies;
 		final List<Movie> moviesParams = new ArrayList<>();
 		moviesParams.add(Movies.createMovie(1, Movies.TITLE_MOVIE_1, null, null, null, null, null, null, null));
 		moviesParams.add(Movies.createMovie(2, Movies.TITLE_MOVIE_2, null, null, null, null, null, null, null));
-		try {
+		try (final SqlConnection connection = obtainMainConnection()) {
 			movies = dataBaseManager.executeQuery(SqlStatement
 					.builder("select * from movie where movie.title in (#movies.0.title#, #movies.1.title#) ")
 					.bind("movies", List.class, moviesParams)
@@ -316,8 +301,6 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 					2,
 					connection);
 
-		} finally {
-			connection.release();
 		}
 		Assertions.assertEquals(2, movies.size());
 	}
@@ -327,9 +310,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 		//On crée les données
 		createDatas();
 		//----
-		final SqlConnection connection = obtainMainConnection();
 		final List<Movie> movies;
-		try {
+		try (final SqlConnection connection = obtainMainConnection()) {
 			movies = dataBaseManager.executeQuery(SqlStatement
 					.builder("select * from movie where movie.title = #title# ")
 					.bind("title", String.class, Movies.TITLE_MOVIE_1)
@@ -338,9 +320,6 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 					MAIL_ADAPTER,
 					1,
 					connection);
-
-		} finally {
-			connection.release();
 		}
 		Assertions.assertEquals(1, movies.size());
 		Assertions.assertEquals(Movies.TITLE_MOVIE_1, movies.get(0).getTitle());
@@ -352,9 +331,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 			//On crée les données
 			createDatas();
 			//----
-			final SqlConnection connection = obtainMainConnection();
 			final List<Movie> movies;
-			try {
+			try (SqlConnection connection = obtainMainConnection()) {
 				movies = dataBaseManager.executeQuery(SqlStatement
 						.builder("select * from movie where movie.title = '#title#' ")
 						.bind("title", String.class, Movies.TITLE_MOVIE_1)
@@ -364,8 +342,6 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 						1,
 						connection);
 
-			} finally {
-				connection.release();
 			}
 			Assertions.assertEquals(1, movies.size());
 			Assertions.assertEquals(Movies.TITLE_MOVIE_1, movies.get(0).getTitle());
@@ -395,9 +371,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 			batch.add(sqlParameters);
 		}
 
-		final SqlConnection connection = sqlConnectionProvider.obtainConnection();
 		final OptionalInt result;
-		try {
+		try (final SqlConnection connection = sqlConnectionProvider.obtainConnection()) {
 			final SqlStatementBuilder sqlStatementBuilder = SqlStatement.builder(sql);
 
 			for (final Movie movie : movies) {
@@ -407,8 +382,6 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 			}
 			result = dataBaseManager.executeBatch(sqlStatementBuilder.build(), MAIL_ADAPTER, connection);
 			connection.commit();
-		} finally {
-			connection.release();
 		}
 		//---
 		if (result.isPresent()) {
@@ -425,9 +398,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 		setupSecondary();
 
 		//on crée des données dans 'secondary'
-		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary")
-				.obtainConnection();
-		try {
+		try (final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary")
+				.obtainConnection()) {
 			execpreparedStatement(connection, "insert into movie values (1, 'Star wars', null, null, null, null, null, null, null, null)");
 			execpreparedStatement(connection, "insert into movie values (2, 'Will Hunting', null, null, null, null, null, null, null, null)");
 			execpreparedStatement(connection, "insert into movie values (3, 'Usual Suspects', null, null, null, null, null, null, null, null)");
@@ -444,8 +416,6 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 					null,
 					null));
 			connection.commit();
-		} finally {
-			connection.release();
 		}
 		//----
 		final List<Integer> result2 = executeQuery(Integer.class, "select count(*) from movie", dataBaseManager.getConnectionProvider("secondary"), 1);
@@ -462,13 +432,11 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 
 	private void setupSecondary() throws Exception {
 		//A chaque test on recrée la table famille
-		final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary")
-				.obtainConnection();
-		try {
+
+		try (final SqlConnection connection = dataBaseManager.getConnectionProvider("secondary").obtainConnection()) {
 			execpreparedStatement(connection, CREATE_TABLE_MOVIE);
-		} finally {
-			connection.release();
 		}
+
 	}
 
 	protected abstract GenerationMode getExpectedGenerationMode();
@@ -486,9 +454,8 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 		//We check that we have the right expected mode
 		Assertions.assertEquals(getExpectedGenerationMode(), generationMode);
 		//---
-		final SqlConnection connection = obtainMainConnection();
 		long generatedKey;
-		try {
+		try (final SqlConnection connection = obtainMainConnection()) {
 			final Movie movie = new Movie();
 			movie.setTitle("frankenstein");
 			generatedKey = dataBaseManager
@@ -501,8 +468,6 @@ public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5
 							connection)
 					.getVal2();
 			connection.commit();
-		} finally {
-			connection.release();
 		}
 		final List<Integer> result = executeQuery(Integer.class, "select count(*) from movie", null);
 		Assertions.assertEquals(1, result.size());

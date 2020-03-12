@@ -48,12 +48,10 @@ public class LiquibaseDataBaseMigrationManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public void updateAndCheck() throws SQLException {
 		dataBaseMigrationManager.check(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
-		final SqlConnection connection = sqlDataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection();
-		try {
+
+		try (final SqlConnection connection = sqlDataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection()) {
 			sqlDataBaseManager.executeQuery(SqlStatement.builder("select * from movie").build(), Movie.class, Collections.emptyMap(), 50, connection);
 			connection.rollback();
-		} finally {
-			connection.release();
 		}
 	}
 

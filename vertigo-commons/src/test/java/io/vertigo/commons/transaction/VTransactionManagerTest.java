@@ -491,7 +491,7 @@ public final class VTransactionManagerTest extends AbstractTestCaseJU5 {
 		}
 
 		@Override
-		public void release() throws Exception {
+		public void close() throws Exception {
 			releaseCalled = true;
 			if (throwOnRelease != null) {
 				doThrow(throwOnRelease);

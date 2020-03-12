@@ -370,7 +370,7 @@ abstract class AbstractSearchManagerStoreTest extends AbstractTestCaseJU5 {
 
 		@Override
 		public void close() throws SQLException {
-			connection.release();
+			connection.close();
 		}
 	}
 

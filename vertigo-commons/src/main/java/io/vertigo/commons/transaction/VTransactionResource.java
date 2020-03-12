@@ -32,7 +32,7 @@ package io.vertigo.commons.transaction;
  *
  * @author  pchretien
  */
-public interface VTransactionResource {
+public interface VTransactionResource extends AutoCloseable {
 
 	/**
 	 * Commits the resource.
@@ -45,13 +45,4 @@ public interface VTransactionResource {
 	 * @throws Exception
 	 */
 	void rollback() throws Exception;
-
-	/**
-	 * Releases the resource.
-	 * This methods is Systematically called after a rollback or a commit.
-	 * It's a kind of close.
-	 *
-	 * @throws Exception
-	 */
-	void release() throws Exception;
 }

@@ -65,20 +65,14 @@ public final class LiquibaseDataBaseMigrationPlugin implements DataBaseMigration
 	@Override
 	public void update() {
 		LOGGER.info("Liquibase  : checking  on connection {}", connectionName);
-		final SqlConnection sqlConnection = sqlDataBaseManager.getConnectionProvider(connectionName).obtainConnection();
-		try {
+
+		try (final SqlConnection sqlConnection = sqlDataBaseManager.getConnectionProvider(connectionName).obtainConnection()) {
 			final Liquibase lb = createLiquibase();
 			final Collection<RanChangeSet> unexpectedChangeSets = lb.listUnexpectedChangeSets(new Contexts(), new LabelExpression());
 			Assertion.checkState(unexpectedChangeSets.isEmpty(), "Database is to recent. Please make sure you run the correct version of the app.");
 			lb.update(new Contexts());
-		} catch (final LiquibaseException e) {
+		} catch (final LiquibaseException | SQLException e) {
 			throw WrappedException.wrap(e);
-		} finally {
-			try {
-				sqlConnection.release();
-			} catch (final SQLException e) {
-				WrappedException.wrap(e);
-			}
 		}
 		LOGGER.info("Liquibase  : finished checking on connection {}", connectionName);
 

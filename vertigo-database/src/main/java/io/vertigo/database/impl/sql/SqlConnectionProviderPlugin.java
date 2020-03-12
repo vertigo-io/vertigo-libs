@@ -51,16 +51,13 @@ public interface SqlConnectionProviderPlugin extends SqlConnectionProvider, Plug
 		try {
 
 			final SqlDataBaseManager sqlDataBaseManager = Home.getApp().getComponentSpace().resolve(SqlDataBaseManager.class);
-			final SqlConnection connection = obtainConnection();
-			try {
+			try (final SqlConnection connection = obtainConnection()) {
 				sqlDataBaseManager.executeQuery(
 						SqlStatement.builder(testQuery).build(),
 						Integer.class,
 						Collections.emptyMap(),
 						1,
 						connection);
-			} finally {
-				connection.release();
 			}
 			healthMeasureBuilder.withGreenStatus();
 		} catch (final Exception e) {

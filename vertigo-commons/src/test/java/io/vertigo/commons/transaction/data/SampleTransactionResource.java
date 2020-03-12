@@ -54,7 +54,7 @@ public final class SampleTransactionResource implements VTransactionResource, Sa
 
 	/** {@inheritDoc} */
 	@Override
-	public void release() {
+	public void close() {
 		check();
 		dataUpdated = null;
 		isUpdated = false;

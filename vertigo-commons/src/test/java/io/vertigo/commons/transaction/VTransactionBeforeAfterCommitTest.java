@@ -324,7 +324,7 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU5
 		}
 
 		@Override
-		public void release() throws Exception {
+		public void close() throws Exception {
 			if (throwOnRelease != null) {
 				doThrow(throwOnRelease);
 			}
