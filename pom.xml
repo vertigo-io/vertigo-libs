@@ -44,7 +44,6 @@
 		<module>vertigo-stella</module>
 		<module>vertigo-geo</module>
 		<module>vertigo-ui</module>
-		<module>vertigo-ledger</module>
 		<module>vertigo-dashboard</module>
 		<module>vertigo-orchestra</module>
 		<module>vertigo-social</module>

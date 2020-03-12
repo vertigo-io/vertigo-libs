@@ -16,36 +16,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ledger.impl.services;
+package io.vertigo.audit.ledger;
 
-import java.math.BigInteger;
-
-import io.vertigo.core.node.component.Plugin;
-import io.vertigo.ledger.services.LedgerAddress;
+import io.vertigo.commons.eventbus.Event;
+import io.vertigo.core.lang.Assertion;
 
 /**
- * @author xdurand
+ * This class defines the event that is emitted when a transaction is written in the ledger and send to myPublicAddress.
  *
+ * @author mlaroche
  */
-public interface LedgerPlugin extends Plugin {
+public final class LedgerTransactionEvent implements Event {
+
+	private final LedgerTransaction ledgerTransaction;
 
 	/**
-	 * Sent data to the default address on the ledger.
-	 * @param data data in clear to store
+	 * Constructor.
+	 * @param ledgerTransaction A ledgerTransaction
 	 */
-	void sendData(String data);
+	public LedgerTransactionEvent(final LedgerTransaction ledgerTransaction) {
+		Assertion.checkNotNull(ledgerTransaction);
+		//-----
+		this.ledgerTransaction = ledgerTransaction;
+	}
 
 	/**
-	 * Get the current balance of the provided address
-	 * @param ledgerAddress
-	 * @return
+	 * @return ledgerTransaction the newly written ledgerTransaction
 	 */
-	BigInteger getWalletBalance(LedgerAddress ledgerAddress);
-
-	/**
-	 * Get the current balance of the wallet
-	 * @return
-	 */
-	BigInteger getMyWalletBalance();
+	public LedgerTransaction getLedgerTransaction() {
+		return ledgerTransaction;
+	}
 
 }

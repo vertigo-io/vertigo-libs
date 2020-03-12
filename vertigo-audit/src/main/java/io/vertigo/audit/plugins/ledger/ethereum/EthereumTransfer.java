@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ledger.plugins.ethereum;
+package io.vertigo.audit.plugins.ledger.ethereum;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -33,7 +33,7 @@ import org.web3j.tx.Transfer;
 import org.web3j.utils.Convert;
 import org.web3j.utils.Numeric;
 
-import io.vertigo.ledger.services.LedgerTransactionPriorityEnum;
+import io.vertigo.audit.ledger.LedgerTransactionPriorityEnum;
 
 final class EthereumTransfer extends Transfer {
 

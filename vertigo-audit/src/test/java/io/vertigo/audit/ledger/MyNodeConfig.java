@@ -16,8 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ledger;
+package io.vertigo.audit.ledger;
 
+import io.vertigo.audit.AuditFeatures;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
@@ -41,7 +42,7 @@ public class MyNodeConfig {
 				.withLocales("fr")
 				.endBoot()
 				.addModule(new CommonsFeatures().build())
-				.addModule(new LedgerFeatures()
+				.addModule(new AuditFeatures()
 						.withEthereumBlockChain(
 								Param.of("urlRpcEthNode", "http://docker-vertigo:8545"),
 								Param.of("myAccountName", "Bob"),

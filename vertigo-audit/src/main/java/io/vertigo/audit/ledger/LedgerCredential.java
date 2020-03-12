@@ -16,36 +16,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ledger.services;
+package io.vertigo.audit.ledger;
 
-import java.math.BigInteger;
+public final class LedgerCredential {
 
-import io.vertigo.core.node.component.Manager;
+	private final String password;
+	private final String walletPath;
 
-public interface LedgerManager extends Manager {
-	/**
-	 * Sends data message on the ledger.
-	 * @param data
-	 * @return
-	 */
-	String sendData(String data);
+	public LedgerCredential(final String password, final String walletPath) {
+		this.password = password;
+		this.walletPath = walletPath;
+	}
 
 	/**
-	 * Sends data message on the ledger asynchronously with a callback.
-	 * @param data
+	 * @return the password
 	 */
-	void sendDataAsync(String data, Runnable callback);
+	public String getPassword() {
+		return password;
+	}
 
 	/**
-	 * Gets the current balance of the provided address
-	 * @param ledgerAddress
-	 * @return
+	 * @return the walletPath
 	 */
-	BigInteger getWalletBalance(LedgerAddress ledgerAddress);
-
-	/**
-	 * Gets the current balance of the wallet
-	 * @return
-	 */
-	BigInteger getMyWalletBalance();
+	public String getWalletPath() {
+		return walletPath;
+	}
 }

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ledger.impl.services;
+package io.vertigo.audit.impl.ledger;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -27,12 +27,12 @@ import javax.inject.Inject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import io.vertigo.audit.ledger.LedgerAddress;
+import io.vertigo.audit.ledger.LedgerManager;
 import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.core.daemon.DaemonScheduled;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
-import io.vertigo.ledger.services.LedgerAddress;
-import io.vertigo.ledger.services.LedgerManager;
 
 public final class LedgerManagerImpl implements LedgerManager {
 	private static final Logger LOGGER = LogManager.getLogger(LedgerManagerImpl.class);

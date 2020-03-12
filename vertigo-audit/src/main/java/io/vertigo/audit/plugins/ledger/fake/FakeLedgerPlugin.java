@@ -16,35 +16,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ledger.services;
+package io.vertigo.audit.plugins.ledger.fake;
 
-import io.vertigo.commons.eventbus.Event;
-import io.vertigo.core.lang.Assertion;
+import java.math.BigInteger;
+
+import io.vertigo.audit.impl.ledger.LedgerPlugin;
+import io.vertigo.audit.ledger.LedgerAddress;
 
 /**
- * This class defines the event that is emitted when a transaction is written in the ledger and send to myPublicAddress.
+ * Fake client
+ * @author pchretien
  *
- * @author mlaroche
  */
-public final class LedgerTransactionEvent implements Event {
-
-	private final LedgerTransaction ledgerTransaction;
-
-	/**
-	 * Constructor.
-	 * @param ledgerTransaction A ledgerTransaction
-	 */
-	public LedgerTransactionEvent(final LedgerTransaction ledgerTransaction) {
-		Assertion.checkNotNull(ledgerTransaction);
-		//-----
-		this.ledgerTransaction = ledgerTransaction;
+public final class FakeLedgerPlugin implements LedgerPlugin {
+	@Override
+	public BigInteger getMyWalletBalance() {
+		return BigInteger.ZERO;
 	}
 
-	/**
-	 * @return ledgerTransaction the newly written ledgerTransaction
-	 */
-	public LedgerTransaction getLedgerTransaction() {
-		return ledgerTransaction;
+	@Override
+	public BigInteger getWalletBalance(final LedgerAddress ledgerAddress) {
+		return BigInteger.ZERO;
 	}
 
+	@Override
+	public void sendData(final String data) {
+		//	
+	}
 }

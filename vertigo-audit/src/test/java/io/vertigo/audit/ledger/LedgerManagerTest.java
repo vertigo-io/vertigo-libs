@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ledger;
+package io.vertigo.audit.ledger;
 
 import javax.inject.Inject;
 
@@ -24,11 +24,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 
+import io.vertigo.audit.AuditFeatures;
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.ledger.services.LedgerAddress;
-import io.vertigo.ledger.services.LedgerManager;
 
 public class LedgerManagerTest extends AbstractTestCaseJU5 {
 
@@ -66,7 +65,7 @@ public class LedgerManagerTest extends AbstractTestCaseJU5 {
 				.endBoot()
 				.addModule(new CommonsFeatures()
 						.build())
-				.addModule(new LedgerFeatures()
+				.addModule(new AuditFeatures()
 						.withFakeBlockChain()
 						.build())
 				.build();

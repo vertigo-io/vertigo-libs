@@ -16,29 +16,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ledger.services;
+package io.vertigo.audit.ledger;
 
-public final class LedgerCredential {
+public final class LedgerAddress {
 
-	private final String password;
-	private final String walletPath;
+	private final String accountName;
+	private final String publicAddress;
 
-	public LedgerCredential(final String password, final String walletPath) {
-		this.password = password;
-		this.walletPath = walletPath;
+	public LedgerAddress(final String accountName, final String publicAddress) {
+		this.publicAddress = publicAddress;
+		this.accountName = accountName;
 	}
 
 	/**
-	 * @return the password
+	 * @return the accountName
 	 */
-	public String getPassword() {
-		return password;
+	public String getAccountName() {
+		return accountName;
 	}
 
 	/**
-	 * @return the walletPath
+	 * @return the publicAddress
 	 */
-	public String getWalletPath() {
-		return walletPath;
+	public String getPublicAddress() {
+		return publicAddress;
 	}
+
+	@Override
+	public String toString() {
+		return "LedgerAddress: " + accountName + " [" + publicAddress + "]";
+	}
+
 }

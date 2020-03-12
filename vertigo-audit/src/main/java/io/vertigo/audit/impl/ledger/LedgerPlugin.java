@@ -16,35 +16,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ledger.services;
+package io.vertigo.audit.impl.ledger;
 
-public final class LedgerAddress {
+import java.math.BigInteger;
 
-	private final String accountName;
-	private final String publicAddress;
+import io.vertigo.audit.ledger.LedgerAddress;
+import io.vertigo.core.node.component.Plugin;
 
-	public LedgerAddress(final String accountName, final String publicAddress) {
-		this.publicAddress = publicAddress;
-		this.accountName = accountName;
-	}
-
-	/**
-	 * @return the accountName
-	 */
-	public String getAccountName() {
-		return accountName;
-	}
+/**
+ * @author xdurand
+ *
+ */
+public interface LedgerPlugin extends Plugin {
 
 	/**
-	 * @return the publicAddress
+	 * Sent data to the default address on the ledger.
+	 * @param data data in clear to store
 	 */
-	public String getPublicAddress() {
-		return publicAddress;
-	}
+	void sendData(String data);
 
-	@Override
-	public String toString() {
-		return "LedgerAddress: " + accountName + " [" + publicAddress + "]";
-	}
+	/**
+	 * Get the current balance of the provided address
+	 * @param ledgerAddress
+	 * @return
+	 */
+	BigInteger getWalletBalance(LedgerAddress ledgerAddress);
+
+	/**
+	 * Get the current balance of the wallet
+	 * @return
+	 */
+	BigInteger getMyWalletBalance();
 
 }

@@ -16,31 +16,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ledger.services;
+package io.vertigo.audit.ledger;
 
-public enum LedgerTransactionPriorityEnum {
+import java.math.BigInteger;
 
-	VERYSLOW(5), //
-	SLOW(50), //ETH: ~0.15 GWEI (~$0.000728), ~12H00-35H00
-	MEDIUM(500), //ETH: ~1.5-4.5 GWEI (~$0.00728), ~10 minutes
-	FAST(650), // ETH: ~3-5 GWEI (~$0.02), ~3 minutes
-	VERYFAST(1000); // ETH: ~20 GWEI (~$0.10), ~10 secondes
+import io.vertigo.core.node.component.Manager;
 
-	private final int perMille;
+public interface LedgerManager extends Manager {
+	/**
+	 * Sends data message on the ledger.
+	 * @param data
+	 * @return
+	 */
+	String sendData(String data);
 
 	/**
-	 *
-	 * @param percentage
+	 * Sends data message on the ledger asynchronously with a callback.
+	 * @param data
 	 */
-	private LedgerTransactionPriorityEnum(final int perMille) {
-		this.perMille = perMille;
-	}
+	void sendDataAsync(String data, Runnable callback);
 
 	/**
-	 * @return the percentage
+	 * Gets the current balance of the provided address
+	 * @param ledgerAddress
+	 * @return
 	 */
-	public int getPermille() {
-		return perMille;
-	}
+	BigInteger getWalletBalance(LedgerAddress ledgerAddress);
 
+	/**
+	 * Gets the current balance of the wallet
+	 * @return
+	 */
+	BigInteger getMyWalletBalance();
 }

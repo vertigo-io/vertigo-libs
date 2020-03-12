@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.ledger.plugins.ethereum;
+package io.vertigo.audit.plugins.ledger.ethereum;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -39,17 +39,17 @@ import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
 import org.web3j.utils.Convert;
 
+import io.vertigo.audit.impl.ledger.LedgerPlugin;
+import io.vertigo.audit.ledger.LedgerAddress;
+import io.vertigo.audit.ledger.LedgerTransaction;
+import io.vertigo.audit.ledger.LedgerTransactionEvent;
+import io.vertigo.audit.ledger.LedgerTransactionPriorityEnum;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.ledger.impl.services.LedgerPlugin;
-import io.vertigo.ledger.services.LedgerAddress;
-import io.vertigo.ledger.services.LedgerTransactionEvent;
-import io.vertigo.ledger.services.LedgerTransaction;
-import io.vertigo.ledger.services.LedgerTransactionPriorityEnum;
 import rx.Subscription;
 
 /**
