@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
@@ -33,6 +32,7 @@ import io.vertigo.datamodel.structure.metamodel.DtStereotype;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
+import io.vertigo.datastore.cache.CacheDefinition;
 import io.vertigo.datastore.entitystore.MasterDataDefinition;
 import io.vertigo.datastore.impl.entitystore.cache.CacheData;
 

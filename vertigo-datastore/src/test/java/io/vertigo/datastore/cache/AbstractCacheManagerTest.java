@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.cache;
+package io.vertigo.datastore.cache;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datastore.cache.CacheManager;
 
 /**
  *

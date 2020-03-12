@@ -18,8 +18,8 @@
  */
 package io.vertigo.dashboard.ui.commons.model;
 
-import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datastore.cache.CacheDefinition;
 
 public class CacheModel {
 	private final CacheDefinition cacheDefinition;

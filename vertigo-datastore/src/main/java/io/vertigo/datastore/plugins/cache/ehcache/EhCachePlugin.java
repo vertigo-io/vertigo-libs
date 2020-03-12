@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.plugins.cache.ehcache;
+package io.vertigo.datastore.plugins.cache.ehcache;
 
 import java.io.Serializable;
 import java.time.Duration;
@@ -34,12 +34,12 @@ import org.ehcache.config.units.EntryUnit;
 import org.ehcache.config.units.MemoryUnit;
 import org.ehcache.expiry.ExpiryPolicy;
 
-import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.impl.cache.CachePlugin;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
+import io.vertigo.datastore.cache.CacheDefinition;
+import io.vertigo.datastore.impl.cache.CachePlugin;
 
 /**
  * Implémentation EHCache du CacheManager.

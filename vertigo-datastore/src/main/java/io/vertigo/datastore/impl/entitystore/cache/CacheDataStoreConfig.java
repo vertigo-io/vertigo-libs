@@ -21,9 +21,9 @@ package io.vertigo.datastore.impl.entitystore.cache;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
+import io.vertigo.datastore.cache.CacheManager;
 
 /**
  * Configuration des données mises en cache.

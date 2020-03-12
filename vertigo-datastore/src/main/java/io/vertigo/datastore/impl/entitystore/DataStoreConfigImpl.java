@@ -20,8 +20,8 @@ package io.vertigo.datastore.impl.entitystore;
 
 import java.util.List;
 
-import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.datastore.cache.CacheManager;
 import io.vertigo.datastore.entitystore.DataStoreConfig;
 import io.vertigo.datastore.impl.entitystore.cache.CacheDataStoreConfig;
 import io.vertigo.datastore.impl.entitystore.logical.LogicalDataStoreConfig;

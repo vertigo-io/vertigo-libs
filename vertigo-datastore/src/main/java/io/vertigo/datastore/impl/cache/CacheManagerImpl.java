@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.impl.cache;
+package io.vertigo.datastore.impl.cache;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -24,12 +24,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.cache.CacheDefinition;
-import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.datastore.cache.CacheDefinition;
+import io.vertigo.datastore.cache.CacheManager;
 
 /**
  * Manager de gestion du cache.

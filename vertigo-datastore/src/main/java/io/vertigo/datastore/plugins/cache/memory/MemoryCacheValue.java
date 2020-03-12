@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.plugins.cache.memory;
+package io.vertigo.datastore.plugins.cache.memory;
 
 /**
  * @author npiedeloup

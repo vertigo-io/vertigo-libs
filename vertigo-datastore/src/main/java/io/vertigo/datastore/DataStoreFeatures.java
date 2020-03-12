@@ -18,23 +18,23 @@
  */
 package io.vertigo.datastore;
 
-import io.vertigo.commons.cache.CacheManager;
-import io.vertigo.commons.impl.cache.CacheManagerImpl;
-import io.vertigo.commons.plugins.cache.ehcache.EhCachePlugin;
-import io.vertigo.commons.plugins.cache.memory.MemoryCachePlugin;
-import io.vertigo.commons.plugins.cache.redis.RedisCachePlugin;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.datamodel.impl.task.proxy.TaskProxyMethod;
+import io.vertigo.datastore.cache.CacheManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.FileStoreManager;
+import io.vertigo.datastore.impl.cache.CacheManagerImpl;
 import io.vertigo.datastore.impl.entitystore.EntityStoreManagerImpl;
 import io.vertigo.datastore.impl.filestore.FileManagerImpl;
 import io.vertigo.datastore.impl.filestore.FileStoreManagerImpl;
 import io.vertigo.datastore.impl.kvstore.KVStoreManagerImpl;
 import io.vertigo.datastore.kvstore.KVStoreManager;
+import io.vertigo.datastore.plugins.cache.ehcache.EhCachePlugin;
+import io.vertigo.datastore.plugins.cache.memory.MemoryCachePlugin;
+import io.vertigo.datastore.plugins.cache.redis.RedisCachePlugin;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 import io.vertigo.datastore.plugins.filestore.db.DbFileStorePlugin;
 import io.vertigo.datastore.plugins.filestore.fs.FsFileStorePlugin;

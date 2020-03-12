@@ -23,8 +23,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.cache.CacheDefinition;
-import io.vertigo.commons.cache.CacheManager;
 import io.vertigo.commons.eventbus.EventBusManager;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.core.lang.Assertion;
@@ -45,6 +43,8 @@ import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datamodel.structure.util.VCollectors;
 import io.vertigo.datamodel.task.TaskManager;
+import io.vertigo.datastore.cache.CacheDefinition;
+import io.vertigo.datastore.cache.CacheManager;
 import io.vertigo.datastore.entitystore.BrokerNN;
 import io.vertigo.datastore.entitystore.DataStoreConfig;
 import io.vertigo.datastore.entitystore.EntityStoreManager;

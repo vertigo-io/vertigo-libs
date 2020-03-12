@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.cache;
+package io.vertigo.datastore.cache;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,6 +24,7 @@ import java.util.List;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
+import io.vertigo.datastore.cache.CacheDefinition;
 
 /**
  * Initialisation du manager des caches.

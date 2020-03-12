@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.eventbus.EventBusSubscriptionDefinition;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.health.HealthCheck;
@@ -38,6 +37,7 @@ import io.vertigo.dashboard.ui.AbstractDashboardModuleControler;
 import io.vertigo.dashboard.ui.commons.model.CacheModel;
 import io.vertigo.dashboard.ui.commons.model.DaemonModel;
 import io.vertigo.dashboard.ui.commons.model.EventBusModel;
+import io.vertigo.datastore.cache.CacheDefinition;
 
 public class CommonsDashboardControler extends AbstractDashboardModuleControler {
 

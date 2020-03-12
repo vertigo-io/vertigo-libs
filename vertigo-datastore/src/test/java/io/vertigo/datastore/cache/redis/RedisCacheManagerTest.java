@@ -16,15 +16,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.cache.redis;
+package io.vertigo.datastore.cache.redis;
 
-import io.vertigo.commons.cache.AbstractCacheManagerTest;
-import io.vertigo.commons.cache.TestCacheDefinitionProvider;
 import io.vertigo.connectors.redis.RedisFeatures;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.datastore.DataStoreFeatures;
+import io.vertigo.datastore.cache.AbstractCacheManagerTest;
+import io.vertigo.datastore.cache.TestCacheDefinitionProvider;
 
 /**
  * RedisCache Manager test class.

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.commons.plugins.cache.redis;
+package io.vertigo.datastore.plugins.cache.redis;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,13 +24,13 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
-import io.vertigo.commons.cache.CacheDefinition;
 import io.vertigo.commons.codec.CodecManager;
-import io.vertigo.commons.impl.cache.CachePlugin;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
+import io.vertigo.datastore.cache.CacheDefinition;
+import io.vertigo.datastore.impl.cache.CachePlugin;
 import redis.clients.jedis.Jedis;
 
 /**
