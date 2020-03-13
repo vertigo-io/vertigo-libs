@@ -18,14 +18,14 @@
  */
 package io.vertigo.geo.geocoder;
 
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.Manager;
 
 /**
  * API de Geocoding d'adresses postales ou de POI.
  *
  * @author spoitrenaud, pchretien
  */
-public interface GeoCoderManager extends Component {
+public interface GeoCoderManager extends Manager {
 	/**
 	 * Geocoding d'une adresse.
 	 *

@@ -22,9 +22,9 @@ import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
 import io.vertigo.geo.geocoder.GeoCoderManager;
-import io.vertigo.geo.geosearch.GeoSearchServices;
+import io.vertigo.geo.geosearch.GeoSearchManager;
 import io.vertigo.geo.impl.geocoder.GeoCoderManagerImpl;
-import io.vertigo.geo.impl.geosearch.GeoSearchServicesImpl;
+import io.vertigo.geo.impl.geosearch.GeoSearchManagerImpl;
 import io.vertigo.geo.plugins.geocoder.ban.BanGeoCoderPlugin;
 import io.vertigo.geo.plugins.geocoder.google.GoogleGeoCoderPlugin;
 import io.vertigo.geo.plugins.geosearch.es.ESGeoSearchPlugin;
@@ -58,7 +58,7 @@ public final class GeoFeatures extends Features<GeoFeatures> {
 	 */
 	@Feature("geosearch")
 	public GeoFeatures withGeoSearch() {
-		getModuleConfigBuilder().addComponent(GeoSearchServices.class, GeoSearchServicesImpl.class);
+		getModuleConfigBuilder().addComponent(GeoSearchManager.class, GeoSearchManagerImpl.class);
 		return this;
 	}
 

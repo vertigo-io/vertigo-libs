@@ -2,13 +2,13 @@ package io.vertigo.geo.geosearch;
 
 import java.util.Optional;
 
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.Manager;
 import io.vertigo.datamodel.structure.metamodel.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.geo.geocoder.GeoLocation;
 
-public interface GeoSearchServices extends Component {
+public interface GeoSearchManager extends Manager {
 
 	<D extends DtObject> DtList<D> searchInBoundingBox(
 			final GeoLocation topLeft,

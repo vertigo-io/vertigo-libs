@@ -9,9 +9,9 @@ import io.vertigo.datamodel.structure.metamodel.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.geo.geocoder.GeoLocation;
-import io.vertigo.geo.geosearch.GeoSearchServices;
+import io.vertigo.geo.geosearch.GeoSearchManager;
 
-public class GeoSearchServicesImpl implements GeoSearchServices {
+public class GeoSearchManagerImpl implements GeoSearchManager {
 
 	private static final int DEFAULT_MAX_ROWS = 1000;
 	private static final int MAX_MAX_ROWS = 5000;
@@ -19,7 +19,7 @@ public class GeoSearchServicesImpl implements GeoSearchServices {
 	private final GeoSearchPlugin geoSearchPlugin;
 
 	@Inject
-	public GeoSearchServicesImpl(
+	public GeoSearchManagerImpl(
 			final GeoSearchPlugin geoSearchPlugin) {
 		Assertion.checkNotNull(geoSearchPlugin);
 		//---
