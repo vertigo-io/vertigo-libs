@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.quarto.impl.services.publisher.merger.processor.MergerProcessor;
+import io.vertigo.quarto.impl.publisher.merger.processor.MergerProcessor;
 import io.vertigo.quarto.publisher.model.PublisherData;
 
 /**

@@ -16,17 +16,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.quarto.impl.services.publisher.merger.grammar;
+package io.vertigo.quarto.impl.publisher.merger.script;
 
 /**
+ * Definition d'un Tag KScript.
  * @author pchretien, npiedeloup
  */
-//public car instancié dynamiquement
-public final class TagIfNotEquals extends AbstractTagIf {
+final class ScriptTagDefinition {
+	private final String name;
+	private final Class<? extends ScriptTag> classTag;
+	private final Boolean openTag;
+
+	ScriptTagDefinition(final String name, final Class<? extends ScriptTag> classTag, final Boolean openTag) {
+		this.name = name;
+		this.classTag = classTag;
+		this.openTag = openTag;
+	}
+
 	/**
-	 * Constructeur.
+	 * @return Classe du tag.
 	 */
-	public TagIfNotEquals() {
-		super(false, true);
+	Class<? extends ScriptTag> getClassTag() {
+		return this.classTag;
+	}
+
+	/**
+	 * @return Si balise ouvrante, false si balise fermante, null si pas de body
+	 */
+	Boolean isOpenTag() {
+		return this.openTag;
+	}
+
+	/**
+	 * @return Nom du tag
+	 */
+	String getName() {
+		return this.name;
 	}
 }

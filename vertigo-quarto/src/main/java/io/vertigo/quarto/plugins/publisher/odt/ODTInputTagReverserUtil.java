@@ -18,8 +18,8 @@
  */
 package io.vertigo.quarto.plugins.publisher.odt;
 
-import io.vertigo.quarto.impl.services.publisher.merger.processor.ParserXMLHandler;
-import io.vertigo.quarto.impl.services.publisher.merger.processor.ProcessorXMLUtil;
+import io.vertigo.quarto.impl.publisher.merger.processor.ParserXMLHandler;
+import io.vertigo.quarto.impl.publisher.merger.processor.ProcessorXMLUtil;
 
 /**
  * Classe de nettoyage d'une arborescence XML.

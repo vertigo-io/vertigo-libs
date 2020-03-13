@@ -16,34 +16,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.quarto.impl.services.publisher.merger.grammar;
+package io.vertigo.quarto.impl.publisher.merger.grammar;
 
-import io.vertigo.quarto.impl.services.publisher.merger.script.ScriptContext;
-import io.vertigo.quarto.impl.services.publisher.merger.script.ScriptTag;
-import io.vertigo.quarto.impl.services.publisher.merger.script.ScriptTagContent;
+import io.vertigo.core.util.StringUtil;
+import io.vertigo.quarto.impl.publisher.merger.script.ScriptContext;
+import io.vertigo.quarto.impl.publisher.merger.script.ScriptTag;
+import io.vertigo.quarto.impl.publisher.merger.script.ScriptTagContent;
 
 /**
  * @author pchretien, npiedeloup
  */
 //public car instancié dynamiquement
-public final class TagEncodedField extends AbstractScriptTag implements ScriptTag {
-	public static final String ENCODER = "encoder";
-
-	private static final String CALL = "=" + ENCODER + ".encode({0})";
-
+public final class TagBlock extends AbstractScriptTag implements ScriptTag {
 	/** {@inheritDoc} */
 	@Override
 	public String renderOpen(final ScriptTagContent tag, final ScriptContext context) {
-		final String[] parsing = parseAttribute(tag.getAttribute(), FIELD_PATH_CALL);
-		// le tag est dans le bon format
-		parsing[0] = getCallForFieldPath(parsing[0], tag.getCurrentVariable());
-
-		return getTagRepresentation(CALL, parsing);
+		return START_BLOC_JSP + decode(tag.getAttribute()) + END_BLOC_JSP;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String renderClose(final ScriptTagContent tag, final ScriptContext context) {
-		return "";
+		return START_BLOC_JSP + decode(tag.getAttribute()) + END_BLOC_JSP;
+	}
+
+	private static String decode(final String s) {
+		//On décode les caractères qui peuvent avoir du sens dans un block
+		final StringBuilder decode = new StringBuilder(s);
+		StringUtil.replace(decode, "&quot;", "\"");
+		StringUtil.replace(decode, "&lt;", "<");
+		StringUtil.replace(decode, "&gt;", ">");
+		return decode.toString();
 	}
 }

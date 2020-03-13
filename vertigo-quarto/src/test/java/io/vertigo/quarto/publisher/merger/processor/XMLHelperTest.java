@@ -25,9 +25,9 @@ import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.quarto.impl.services.publisher.merger.processor.GrammarXMLBalancerProcessor;
-import io.vertigo.quarto.impl.services.publisher.merger.processor.ProcessorXMLUtil;
-import io.vertigo.quarto.impl.services.publisher.merger.processor.TagXML;
+import io.vertigo.quarto.impl.publisher.merger.processor.GrammarXMLBalancerProcessor;
+import io.vertigo.quarto.impl.publisher.merger.processor.ProcessorXMLUtil;
+import io.vertigo.quarto.impl.publisher.merger.processor.TagXML;
 
 /**
  * Classe utilitaire pour une arborescence XML.

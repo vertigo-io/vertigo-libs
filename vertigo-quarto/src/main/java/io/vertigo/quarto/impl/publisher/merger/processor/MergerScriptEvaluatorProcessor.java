@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.quarto.impl.services.publisher.merger.processor;
+package io.vertigo.quarto.impl.publisher.merger.processor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ import io.vertigo.commons.script.ExpressionParameter;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.quarto.impl.services.publisher.merger.grammar.TagEncodedField;
+import io.vertigo.quarto.impl.publisher.merger.grammar.TagEncodedField;
 import io.vertigo.quarto.publisher.model.PublisherData;
 import io.vertigo.quarto.publisher.model.PublisherNode;
 

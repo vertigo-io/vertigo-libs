@@ -16,24 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.quarto.impl.services.publisher.merger.script;
+package io.vertigo.quarto.impl.publisher.merger.grammar;
 
 /**
- * Tag Script.
  * @author pchretien, npiedeloup
  */
-public interface ScriptTag {
+//public car instancié dynamiquement
+public final class TagIfEquals extends AbstractTagIf {
 	/**
-	 * @param content tag évalué
-	 * @param context Context d'évaluation
-	 * @return Contenu a substituer au tag
+	 * Constructor.
 	 */
-	String renderOpen(ScriptTagContent content, ScriptContext context);
-
-	/**
-	 * @param content tag évalué
-	 * @param context Context d'évaluation
-	 * @return Contenu a substituer au tag
-	 */
-	String renderClose(ScriptTagContent content, ScriptContext context);
+	public TagIfEquals() {
+		super(true, true);
+	}
 }

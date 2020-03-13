@@ -16,41 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.quarto.impl.services.publisher.merger.script;
+package io.vertigo.quarto.impl.publisher.merger.script;
 
 /**
- * Definition d'un Tag KScript.
+ * Contexte des Tag KScript.
  * @author pchretien, npiedeloup
  */
-final class ScriptTagDefinition {
-	private final String name;
-	private final Class<? extends ScriptTag> classTag;
-	private final Boolean openTag;
+public interface ScriptContext {
+	String pop();
 
-	ScriptTagDefinition(final String name, final Class<? extends ScriptTag> classTag, final Boolean openTag) {
-		this.name = name;
-		this.classTag = classTag;
-		this.openTag = openTag;
-	}
+	String peek();
 
-	/**
-	 * @return Classe du tag.
-	 */
-	Class<? extends ScriptTag> getClassTag() {
-		return this.classTag;
-	}
+	void push(String element);
 
-	/**
-	 * @return Si balise ouvrante, false si balise fermante, null si pas de body
-	 */
-	Boolean isOpenTag() {
-		return this.openTag;
-	}
-
-	/**
-	 * @return Nom du tag
-	 */
-	String getName() {
-		return this.name;
-	}
+	boolean empty();
 }

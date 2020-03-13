@@ -16,17 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.quarto.impl.services.publisher.merger.grammar;
+package io.vertigo.quarto.impl.publisher.merger.grammar;
 
 /**
  * @author pchretien, npiedeloup
  */
 //public car instancié dynamiquement
-public final class TagIfNot extends AbstractTagIf {
+public final class TagIfNotEquals extends AbstractTagIf {
 	/**
 	 * Constructeur.
 	 */
-	public TagIfNot() {
-		super(false, false);
+	public TagIfNotEquals() {
+		super(false, true);
 	}
 }

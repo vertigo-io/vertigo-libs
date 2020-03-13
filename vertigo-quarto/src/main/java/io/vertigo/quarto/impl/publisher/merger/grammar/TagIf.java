@@ -16,18 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.quarto.impl.services.publisher.merger.script;
+package io.vertigo.quarto.impl.publisher.merger.grammar;
 
 /**
- * Contexte des Tag KScript.
  * @author pchretien, npiedeloup
  */
-public interface ScriptContext {
-	String pop();
-
-	String peek();
-
-	void push(String element);
-
-	boolean empty();
+//public car instancié dynamiquement
+public final class TagIf extends AbstractTagIf {
+	/**
+	 * Constructor.
+	 */
+	public TagIf() {
+		super(true, false);
+	}
 }

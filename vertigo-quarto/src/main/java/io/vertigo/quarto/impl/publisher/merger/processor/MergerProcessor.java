@@ -16,17 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.quarto.impl.services.publisher.merger.grammar;
+package io.vertigo.quarto.impl.publisher.merger.processor;
+
+import java.io.IOException;
+
+import io.vertigo.quarto.publisher.model.PublisherData;
 
 /**
- * @author pchretien, npiedeloup
+ * Interface d'un processor pour le reportMerger.
+ * Ce processor à une entrée et une sortie de meme type,
+ * la sortie est issus d'un traitement prenant une entrée et les parametres du merger.
+ * @author npiedeloup
  */
-//public car instancié dynamiquement
-public final class TagIf extends AbstractTagIf {
+public interface MergerProcessor {
 	/**
-	 * Constructor.
+	 * Utilise la chaine d'entrée et les parametres de merge pour faire un traitement spécifique.
+	 * 
+	 * Attention la valeur du input peut avoir été mutée.
+	 * @param input Donnée d'entrée.
+	 * @param publisherData Données de la fusion d'édition
+	 * @return Chaine manipulée par le processor
+	 * @throws IOException Erreur I/O
 	 */
-	public TagIf() {
-		super(true, false);
-	}
+	String execute(String input, final PublisherData publisherData) throws IOException;
 }

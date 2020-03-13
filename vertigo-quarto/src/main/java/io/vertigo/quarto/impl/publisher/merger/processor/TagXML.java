@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.quarto.impl.services.publisher.merger.processor;
+package io.vertigo.quarto.impl.publisher.merger.processor;
 
 /**
  * Represente une balise XML pour faciliter les traitements des processor.

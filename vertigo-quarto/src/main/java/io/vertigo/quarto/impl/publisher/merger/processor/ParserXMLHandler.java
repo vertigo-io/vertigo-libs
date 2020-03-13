@@ -16,27 +16,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.quarto.impl.services.publisher.merger.processor;
-
-import java.io.IOException;
-
-import io.vertigo.quarto.publisher.model.PublisherData;
+package io.vertigo.quarto.impl.publisher.merger.processor;
 
 /**
- * Interface d'un processor pour le reportMerger.
- * Ce processor à une entrée et une sortie de meme type,
- * la sortie est issus d'un traitement prenant une entrée et les parametres du merger.
+ * Handler du parsing XML.
  * @author npiedeloup
  */
-public interface MergerProcessor {
+public interface ParserXMLHandler {
 	/**
-	 * Utilise la chaine d'entrée et les parametres de merge pour faire un traitement spécifique.
-	 * 
-	 * Attention la valeur du input peut avoir été mutée.
-	 * @param input Donnée d'entrée.
-	 * @param publisherData Données de la fusion d'édition
-	 * @return Chaine manipulée par le processor
-	 * @throws IOException Erreur I/O
+	 * Appelé sur un tag sans body.
+	 * @param tagXML Extrait du tag XML complet
+	 * @param output Flux d'ecriture, il contient tout jusqu'au caractère précédant le tag lui même
 	 */
-	String execute(String input, final PublisherData publisherData) throws IOException;
+	void onNoBodyEndTag(final String tagXML, final StringBuilder output);
+
+	/**
+	 * Appelé sur un tag sans body.
+	 * @param tagXML Extrait du tag XML complet (ie : avec son Body)
+	 * @param bodyContent Body du tag
+	 * @param output Flux d'ecriture, il contient tout jusqu'au caractère précédant le tag lui même
+	 */
+	void onBodyEndTag(final String tagXML, final String bodyContent, final StringBuilder output);
+
 }

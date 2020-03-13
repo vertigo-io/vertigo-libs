@@ -16,26 +16,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.quarto.impl.services.publisher.merger.processor;
+package io.vertigo.quarto.impl.publisher.merger.grammar;
 
 /**
- * Handler du parsing XML.
- * @author npiedeloup
+ * @author pchretien, npiedeloup
  */
-public interface ParserXMLHandler {
+//public car instancié dynamiquement
+public final class TagIfNot extends AbstractTagIf {
 	/**
-	 * Appelé sur un tag sans body.
-	 * @param tagXML Extrait du tag XML complet
-	 * @param output Flux d'ecriture, il contient tout jusqu'au caractère précédant le tag lui même
+	 * Constructeur.
 	 */
-	void onNoBodyEndTag(final String tagXML, final StringBuilder output);
-
-	/**
-	 * Appelé sur un tag sans body.
-	 * @param tagXML Extrait du tag XML complet (ie : avec son Body)
-	 * @param bodyContent Body du tag
-	 * @param output Flux d'ecriture, il contient tout jusqu'au caractère précédant le tag lui même
-	 */
-	void onBodyEndTag(final String tagXML, final String bodyContent, final StringBuilder output);
-
+	public TagIfNot() {
+		super(false, false);
+	}
 }

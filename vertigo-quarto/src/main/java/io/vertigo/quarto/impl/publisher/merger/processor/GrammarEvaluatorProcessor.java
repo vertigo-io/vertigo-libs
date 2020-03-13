@@ -16,13 +16,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.quarto.impl.services.publisher.merger.processor;
+package io.vertigo.quarto.impl.publisher.merger.processor;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.quarto.impl.services.publisher.merger.script.ScriptGrammar;
-import io.vertigo.quarto.impl.services.publisher.merger.script.ScriptHandlerImpl;
+import io.vertigo.quarto.impl.publisher.merger.script.ScriptGrammar;
+import io.vertigo.quarto.impl.publisher.merger.script.ScriptHandlerImpl;
 import io.vertigo.quarto.publisher.model.PublisherData;
 
 /**
