@@ -20,6 +20,8 @@ package io.vertigo.commons.command;
 
 import java.util.List;
 
+import io.vertigo.core.node.component.Manager;
+
 public interface CommandManager extends Manager {
 
 	List<CommandDefinition> searchCommands(final String prefix);
