@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.quarto.impl.services.publisher.merger.processor.MergerProcessor;
-import io.vertigo.quarto.services.publisher.model.PublisherData;
+import io.vertigo.quarto.publisher.model.PublisherData;
 
 /**
  * Mise en forme des tags et suppression des champs inutiles dans le document DOCX.

@@ -31,15 +31,15 @@ import javax.inject.Inject;
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ListBuilder;
-import io.vertigo.quarto.impl.services.publisher.MergerPlugin;
+import io.vertigo.quarto.impl.publisher.MergerPlugin;
 import io.vertigo.quarto.impl.services.publisher.merger.grammar.ScriptGrammarUtil;
 import io.vertigo.quarto.impl.services.publisher.merger.processor.GrammarEvaluatorProcessor;
 import io.vertigo.quarto.impl.services.publisher.merger.processor.GrammarXMLBalancerProcessor;
 import io.vertigo.quarto.impl.services.publisher.merger.processor.MergerProcessor;
 import io.vertigo.quarto.impl.services.publisher.merger.processor.MergerScriptEvaluatorProcessor;
 import io.vertigo.quarto.impl.services.publisher.merger.script.ScriptGrammar;
-import io.vertigo.quarto.services.publisher.PublisherFormat;
-import io.vertigo.quarto.services.publisher.model.PublisherData;
+import io.vertigo.quarto.publisher.PublisherFormat;
+import io.vertigo.quarto.publisher.model.PublisherData;
 
 /**
  * Gestionnaire des fusions de documents Docx.

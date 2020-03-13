@@ -20,7 +20,7 @@ package io.vertigo.quarto.impl.services.publisher.merger.processor;
 
 import java.io.IOException;
 
-import io.vertigo.quarto.services.publisher.model.PublisherData;
+import io.vertigo.quarto.publisher.model.PublisherData;
 
 /**
  * Interface d'un processor pour le reportMerger.

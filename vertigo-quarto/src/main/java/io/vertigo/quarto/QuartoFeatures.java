@@ -21,21 +21,21 @@ package io.vertigo.quarto;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.quarto.impl.services.converter.ConverterManagerImpl;
-import io.vertigo.quarto.impl.services.export.ExportManagerImpl;
-import io.vertigo.quarto.impl.services.publisher.PublisherManagerImpl;
+import io.vertigo.quarto.converter.ConverterManager;
+import io.vertigo.quarto.exporter.ExporterManager;
+import io.vertigo.quarto.impl.converter.ConverterManagerImpl;
+import io.vertigo.quarto.impl.exporter.ExporterManagerImpl;
+import io.vertigo.quarto.impl.publisher.PublisherManagerImpl;
 import io.vertigo.quarto.plugins.converter.openoffice.OpenOfficeLocalConverterPlugin;
 import io.vertigo.quarto.plugins.converter.openoffice.OpenOfficeRemoteConverterPlugin;
 import io.vertigo.quarto.plugins.converter.xdocreport.XDocReportConverterPlugin;
-import io.vertigo.quarto.plugins.export.csv.CSVExporterPlugin;
-import io.vertigo.quarto.plugins.export.pdf.PDFExporterPlugin;
-import io.vertigo.quarto.plugins.export.rtf.RTFExporterPlugin;
-import io.vertigo.quarto.plugins.export.xls.XLSExporterPlugin;
+import io.vertigo.quarto.plugins.exporter.csv.CSVExporterPlugin;
+import io.vertigo.quarto.plugins.exporter.pdf.PDFExporterPlugin;
+import io.vertigo.quarto.plugins.exporter.rtf.RTFExporterPlugin;
+import io.vertigo.quarto.plugins.exporter.xls.XLSExporterPlugin;
 import io.vertigo.quarto.plugins.publisher.docx.DOCXMergerPlugin;
 import io.vertigo.quarto.plugins.publisher.odt.OpenOfficeMergerPlugin;
-import io.vertigo.quarto.services.converter.ConverterManager;
-import io.vertigo.quarto.services.export.ExportManager;
-import io.vertigo.quarto.services.publisher.PublisherManager;
+import io.vertigo.quarto.publisher.PublisherManager;
 
 public class QuartoFeatures extends Features<QuartoFeatures> {
 
@@ -69,31 +69,31 @@ public class QuartoFeatures extends Features<QuartoFeatures> {
 	}
 
 	@Feature("export")
-	public QuartoFeatures withExport(final Param... params) {
+	public QuartoFeatures withExporter(final Param... params) {
 		getModuleConfigBuilder()
-				.addComponent(ExportManager.class, ExportManagerImpl.class);
+				.addComponent(ExporterManager.class, ExporterManagerImpl.class);
 		return this;
 	}
 
-	@Feature("export.csv")
+	@Feature("exporter.csv")
 	public QuartoFeatures withCSVExporter() {
 		getModuleConfigBuilder().addPlugin(CSVExporterPlugin.class);
 		return this;
 	}
 
-	@Feature("export.pdf")
+	@Feature("exporter.pdf")
 	public QuartoFeatures withPDFExporter() {
 		getModuleConfigBuilder().addPlugin(PDFExporterPlugin.class);
 		return this;
 	}
 
-	@Feature("export.rtf")
+	@Feature("exporter.rtf")
 	public QuartoFeatures withRTFExporter() {
 		getModuleConfigBuilder().addPlugin(RTFExporterPlugin.class);
 		return this;
 	}
 
-	@Feature("export.xls")
+	@Feature("exporter.xls")
 	public QuartoFeatures withXLSExporter() {
 		getModuleConfigBuilder().addPlugin(XLSExporterPlugin.class);
 		return this;

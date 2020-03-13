@@ -27,8 +27,8 @@ import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.quarto.impl.services.publisher.merger.grammar.TagEncodedField;
-import io.vertigo.quarto.services.publisher.model.PublisherData;
-import io.vertigo.quarto.services.publisher.model.PublisherNode;
+import io.vertigo.quarto.publisher.model.PublisherData;
+import io.vertigo.quarto.publisher.model.PublisherNode;
 
 /**
  * Processor String2String qui 'evalue la chaine d'entrée comme un script java.

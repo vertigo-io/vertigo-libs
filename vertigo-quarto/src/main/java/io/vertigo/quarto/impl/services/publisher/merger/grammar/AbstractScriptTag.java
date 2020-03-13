@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.quarto.services.publisher.model.PublisherNode;
+import io.vertigo.quarto.publisher.model.PublisherNode;
 
 /**
  * Classe abstraite représentant un ScriptTag.

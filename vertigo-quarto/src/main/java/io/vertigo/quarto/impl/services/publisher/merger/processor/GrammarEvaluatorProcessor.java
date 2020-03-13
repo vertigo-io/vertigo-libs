@@ -23,7 +23,7 @@ import io.vertigo.commons.script.SeparatorType;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.quarto.impl.services.publisher.merger.script.ScriptGrammar;
 import io.vertigo.quarto.impl.services.publisher.merger.script.ScriptHandlerImpl;
-import io.vertigo.quarto.services.publisher.model.PublisherData;
+import io.vertigo.quarto.publisher.model.PublisherData;
 
 /**
  * Processor String2String qui evalue la chaine d'entree en transformant les balises

@@ -21,7 +21,7 @@ package io.vertigo.quarto.impl.services.publisher.merger.processor;
 import java.util.Queue;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.quarto.services.publisher.model.PublisherData;
+import io.vertigo.quarto.publisher.model.PublisherData;
 
 /**
  * Replace les tags <# #> pour les inscrire correctement dans le xml

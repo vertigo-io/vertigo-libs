@@ -44,7 +44,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.util.TempFile;
 import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.quarto.impl.services.converter.ConverterPlugin;
+import io.vertigo.quarto.impl.converter.ConverterPlugin;
 
 /**
  * Plugin de conversion du format ODT au format PDF.

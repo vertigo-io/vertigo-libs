@@ -45,7 +45,7 @@ import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.util.TempFile;
 import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
-import io.vertigo.quarto.impl.services.converter.ConverterPlugin;
+import io.vertigo.quarto.impl.converter.ConverterPlugin;
 
 /**
  * Conversion des fichiers à partir de OpenOffice.

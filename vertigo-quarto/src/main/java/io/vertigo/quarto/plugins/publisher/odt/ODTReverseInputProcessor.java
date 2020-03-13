@@ -19,7 +19,7 @@
 package io.vertigo.quarto.plugins.publisher.odt;
 
 import io.vertigo.quarto.impl.services.publisher.merger.processor.MergerProcessor;
-import io.vertigo.quarto.services.publisher.model.PublisherData;
+import io.vertigo.quarto.publisher.model.PublisherData;
 
 /**
  * Inversion des textInput dans le fichier ODT.
