@@ -20,9 +20,9 @@ package io.vertigo.dashboard.ui;
 
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.Manager;
 
-public final class DashboardUiManager implements Component, Activeable {
+public final class DashboardUiManager implements Manager, Activeable {
 
 	@Override
 	public void start() {
