@@ -13,7 +13,7 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.database.impl.migration.DataBaseMigrationPlugin;
+import io.vertigo.database.impl.migration.MigrationPlugin;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import liquibase.Contexts;
@@ -33,9 +33,9 @@ import liquibase.resource.ClassLoaderResourceAccessor;
  * @author mlaroche
  *
  */
-public final class LiquibaseDataBaseMigrationPlugin implements DataBaseMigrationPlugin {
+public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 
-	private static final Logger LOGGER = LogManager.getLogger(LiquibaseDataBaseMigrationPlugin.class);
+	private static final Logger LOGGER = LogManager.getLogger(LiquibaseMigrationPlugin.class);
 
 	private final SqlDataBaseManager sqlDataBaseManager;
 
@@ -48,7 +48,7 @@ public final class LiquibaseDataBaseMigrationPlugin implements DataBaseMigration
 	 * @param sqlDataBaseManager sqlDataBaseManager
 	 */
 	@Inject
-	public LiquibaseDataBaseMigrationPlugin(
+	public LiquibaseMigrationPlugin(
 			@ParamValue("masterFile") final String masterFile,
 			@ParamValue("connectionName") final Optional<String> connectionNameOpt,
 			final SqlDataBaseManager sqlDataBaseManager) {

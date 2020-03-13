@@ -27,12 +27,12 @@ import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.impl.sql.vendor.oracle.Oracle11DataBase;
 import io.vertigo.database.impl.sql.vendor.oracle.OracleDataBase;
-import io.vertigo.database.sql.AbstractSqlDataBaseManagerTest;
+import io.vertigo.database.sql.AbstractSqlManagerTest;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
 @Disabled
-public final class OracleDataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
+public final class OracleDataBaseManagerTest extends AbstractSqlManagerTest {
 
 	private static final boolean ORACLE_11 = false;
 

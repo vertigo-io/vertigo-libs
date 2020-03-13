@@ -41,7 +41,7 @@ import io.vertigo.database.plugins.timeseries.influxdb.InfluxDbTimeSeriesPlugin;
  *
  * @author mlaroche
  */
-public final class TimeSeriesDataBaseTest extends AbstractTestCaseJU5 {
+public final class TimeSeriesTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private TimeSeriesDataBaseManager timeSeriesDataBaseManager;

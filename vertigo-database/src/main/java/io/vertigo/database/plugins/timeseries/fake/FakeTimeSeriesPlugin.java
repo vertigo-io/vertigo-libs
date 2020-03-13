@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
+import io.vertigo.database.impl.timeseries.TimeSeriesManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesPlugin;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
@@ -84,6 +84,6 @@ public final class FakeTimeSeriesPlugin implements TimeSeriesPlugin {
 
 	@Override
 	public List<String> getDbNames() {
-		return Collections.singletonList(TimeSeriesDataBaseManagerImpl.WILDCARD_PLUGIN);
+		return Collections.singletonList(TimeSeriesManagerImpl.WILDCARD_PLUGIN);
 	}
 }

@@ -21,9 +21,9 @@ import io.vertigo.database.migration.DataBaseMigrationManager;
  * @author mlaroche
  *
  */
-public final class DataBaseMigrationManagerImpl implements DataBaseMigrationManager, Activeable {
+public final class MigrationManagerImpl implements DataBaseMigrationManager, Activeable {
 
-	private final Map<String, DataBaseMigrationPlugin> dataBaseMigrationPlugins;
+	private final Map<String, MigrationPlugin> dataBaseMigrationPlugins;
 
 	private enum MigrationMode {
 		check,
@@ -39,14 +39,14 @@ public final class DataBaseMigrationManagerImpl implements DataBaseMigrationMana
 	 * @param dataBaseMigrationPlugins registered dataBaseMigrationPlugins
 	 */
 	@Inject
-	public DataBaseMigrationManagerImpl(
+	public MigrationManagerImpl(
 			@ParamValue("mode") final Optional<String> modeOpt,
-			final List<DataBaseMigrationPlugin> dataBaseMigrationPlugins) {
+			final List<MigrationPlugin> dataBaseMigrationPlugins) {
 		Assertion.checkNotNull(dataBaseMigrationPlugins);
 		//---
 		this.dataBaseMigrationPlugins = dataBaseMigrationPlugins
 				.stream()
-				.collect(Collectors.toMap(DataBaseMigrationPlugin::getConnectionName, Function.identity()));
+				.collect(Collectors.toMap(MigrationPlugin::getConnectionName, Function.identity()));
 		migrationMode = modeOpt.isPresent() ? MigrationMode.valueOf(modeOpt.get()) : MigrationMode.check;
 	}
 

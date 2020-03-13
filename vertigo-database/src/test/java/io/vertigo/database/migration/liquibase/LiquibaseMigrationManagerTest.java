@@ -19,7 +19,7 @@ import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
 
-public class LiquibaseDataBaseMigrationManagerTest extends AbstractTestCaseJU5 {
+public class LiquibaseMigrationManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private SqlDataBaseManager sqlDataBaseManager;

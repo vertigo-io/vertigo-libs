@@ -47,7 +47,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
+import io.vertigo.database.impl.timeseries.TimeSeriesManagerImpl;
 import io.vertigo.database.impl.timeseries.TimeSeriesPlugin;
 import io.vertigo.database.timeseries.ClusteredMeasure;
 import io.vertigo.database.timeseries.DataFilter;
@@ -82,7 +82,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 			dbNames = Arrays.asList(dbNamesOpt.get().split(";"));
 			createDatabases();
 		} else {
-			dbNames = Collections.singletonList(TimeSeriesDataBaseManagerImpl.WILDCARD_PLUGIN);
+			dbNames = Collections.singletonList(TimeSeriesManagerImpl.WILDCARD_PLUGIN);
 			// we do not create databases because we are the wildcard one...
 		}
 	}
@@ -109,7 +109,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 				.collect(Collectors.toSet());
 
 		for (final String dbName : dbNames) {
-			if (TimeSeriesDataBaseManagerImpl.WILDCARD_PLUGIN != dbName && !existingDatabases.contains(dbName)) {
+			if (TimeSeriesManagerImpl.WILDCARD_PLUGIN != dbName && !existingDatabases.contains(dbName)) {
 				influxDB.query(new Query("CREATE DATABASE \"" + dbName + "\"", dbName));
 			}
 		}

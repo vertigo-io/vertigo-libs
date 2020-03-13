@@ -40,7 +40,7 @@ import io.vertigo.database.timeseries.TimedDatas;
  * @author mlaroche
  *
  */
-public class TimeSeriesDataBaseManagerImpl implements TimeSeriesDataBaseManager {
+public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 
 	public static final String WILDCARD_PLUGIN = "*";
 
@@ -51,7 +51,7 @@ public class TimeSeriesDataBaseManagerImpl implements TimeSeriesDataBaseManager 
 	private final Optional<TimeSeriesPlugin> wildcardPluginOpt;
 
 	@Inject
-	public TimeSeriesDataBaseManagerImpl(
+	public TimeSeriesManagerImpl(
 			final AnalyticsManager analyticsManager,
 			final List<TimeSeriesPlugin> timeSeriesPlugins) {
 		Assertion.checkNotNull(analyticsManager);

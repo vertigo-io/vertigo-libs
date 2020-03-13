@@ -57,7 +57,7 @@ import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
  *
  * @author pchretien
  */
-public abstract class AbstractSqlDataBaseManagerTest extends AbstractTestCaseJU5 {
+public abstract class AbstractSqlManagerTest extends AbstractTestCaseJU5 {
 	private static final String DROP_TABLE_MOVIE = "DROP TABLE movie";
 	private static final String DROP_SEQUENCE_MOVIE = "DROP SEQUENCE seq_movie";
 

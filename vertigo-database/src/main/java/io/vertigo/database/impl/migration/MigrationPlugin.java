@@ -8,7 +8,7 @@ import io.vertigo.core.node.component.Plugin;
  * @author mlaroche
  *
  */
-public interface DataBaseMigrationPlugin extends Plugin {
+public interface MigrationPlugin extends Plugin {
 
 	/**
 	 * @return the name of the connection the plugin is for

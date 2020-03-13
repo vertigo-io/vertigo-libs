@@ -23,11 +23,11 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
-import io.vertigo.database.sql.AbstractSqlDataBaseManagerTest;
+import io.vertigo.database.sql.AbstractSqlManagerTest;
 import io.vertigo.database.sql.vendor.SqlDialect;
 import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
 
-public final class H2DataBaseManagerTest extends AbstractSqlDataBaseManagerTest {
+public final class H2DataBaseManagerTest extends AbstractSqlManagerTest {
 
 	@Override
 	public SqlDialect getDialect() {

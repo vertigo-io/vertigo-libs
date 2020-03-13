@@ -49,7 +49,7 @@ import io.vertigo.database.sql.vendor.SqlMapping;
 *
 * @author pchretien
 */
-public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
+public final class SqlManagerImpl implements SqlDataBaseManager {
 
 	private static final int REQUEST_HEADER_FOR_TRACER = 50;
 
@@ -67,7 +67,7 @@ public final class SqlDataBaseManagerImpl implements SqlDataBaseManager {
 	 * @param sqlConnectionProviderPlugins List of connectionProviderPlugin. Names must be unique.
 	 */
 	@Inject
-	public SqlDataBaseManagerImpl(
+	public SqlManagerImpl(
 			final LocaleManager localeManager,
 			final AnalyticsManager analyticsManager,
 			final List<SqlConnectionProviderPlugin> sqlConnectionProviderPlugins) {
