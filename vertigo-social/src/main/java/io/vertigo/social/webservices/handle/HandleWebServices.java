@@ -22,8 +22,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.vertigo.social.services.handle.Handle;
-import io.vertigo.social.services.handle.HandleServices;
+import io.vertigo.social.handle.Handle;
+import io.vertigo.social.handle.HandleManager;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.GET;
 import io.vertigo.vega.webservice.stereotype.InnerBodyParam;
@@ -39,7 +39,7 @@ import io.vertigo.vega.webservice.stereotype.PathPrefix;
 public final class HandleWebServices implements WebServices {
 
 	@Inject
-	private HandleServices handleServices;
+	private HandleManager handleServices;
 
 	@POST("/_search")
 	public List<Handle> search(@InnerBodyParam("prefix") final String prefix) {

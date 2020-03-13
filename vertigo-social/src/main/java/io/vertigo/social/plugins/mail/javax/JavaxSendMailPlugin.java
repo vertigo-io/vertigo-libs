@@ -53,7 +53,7 @@ import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.social.impl.mail.Resources;
 import io.vertigo.social.impl.mail.SendMailPlugin;
-import io.vertigo.social.services.mail.Mail;
+import io.vertigo.social.mail.Mail;
 
 /**
  * Plugin de gestion des mails, pour l'implémentation du jdk.

@@ -24,7 +24,7 @@ import java.util.UUID;
 import io.vertigo.account.account.Account;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.social.services.notification.Notification;
+import io.vertigo.social.notification.Notification;
 
 /**
  * @author pchretien

@@ -24,7 +24,7 @@ import java.util.UUID;
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.social.services.comment.Comment;
+import io.vertigo.social.comment.Comment;
 
 /**
  * @author pchretien

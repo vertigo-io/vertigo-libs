@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.social.services.notification;
+package io.vertigo.social.notification;
 
 import java.util.List;
 import java.util.Set;
@@ -29,7 +29,7 @@ import io.vertigo.datamodel.structure.model.UID;
 /**
  * @author pchretien, npiedeloup, btounkara
  */
-public interface NotificationServices extends Component {
+public interface NotificationManager extends Component {
 	/**
 	 * Sends a notification to a set of users
 	 * @param notification Notification

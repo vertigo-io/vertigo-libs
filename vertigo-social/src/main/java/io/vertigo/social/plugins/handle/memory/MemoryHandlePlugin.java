@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.social.handle.Handle;
 import io.vertigo.social.impl.handle.HandlePlugin;
-import io.vertigo.social.services.handle.Handle;
 
 public class MemoryHandlePlugin implements HandlePlugin {
 

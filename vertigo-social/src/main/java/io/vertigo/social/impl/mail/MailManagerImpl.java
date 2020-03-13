@@ -22,8 +22,8 @@ import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.locale.LocaleManager;
-import io.vertigo.social.services.mail.Mail;
-import io.vertigo.social.services.mail.MailManager;
+import io.vertigo.social.mail.Mail;
+import io.vertigo.social.mail.MailManager;
 
 /**
  * This class is the standard impl of the mailManager.

@@ -33,8 +33,8 @@ import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.social.SocialFeatures;
-import io.vertigo.social.services.mail.Mail;
-import io.vertigo.social.services.mail.MailManager;
+import io.vertigo.social.mail.Mail;
+import io.vertigo.social.mail.MailManager;
 
 /**
  * Test de l'implémentation standard.

@@ -31,10 +31,10 @@ import io.vertigo.core.node.Home;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.impl.notification.NotificationPlugin;
+import io.vertigo.social.notification.Notification;
+import io.vertigo.social.notification.NotificationManager;
 import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;
 import io.vertigo.social.plugins.notification.redis.RedisNotificationPlugin;
-import io.vertigo.social.services.notification.Notification;
-import io.vertigo.social.services.notification.NotificationServices;
 
 public abstract class AbstractNotificationServicesTest extends AbstractTestCaseJU5 {
 
@@ -43,7 +43,7 @@ public abstract class AbstractNotificationServicesTest extends AbstractTestCaseJ
 	@Inject
 	private AccountManager identityManager;
 	@Inject
-	private NotificationServices notificationServices;
+	private NotificationManager notificationServices;
 
 	private UID<Account> accountUID0;
 	private UID<Account> accountUID1;

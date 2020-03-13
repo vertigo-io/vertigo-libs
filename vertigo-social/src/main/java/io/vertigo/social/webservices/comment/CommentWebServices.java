@@ -36,8 +36,8 @@ import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.social.services.comment.Comment;
-import io.vertigo.social.services.comment.CommentServices;
+import io.vertigo.social.comment.Comment;
+import io.vertigo.social.comment.CommentManager;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.ExcludedFields;
@@ -60,7 +60,7 @@ public final class CommentWebServices implements WebServices {
 	private static final String IMPL_VERSION = "0.9.2";
 
 	@Inject
-	private CommentServices commentServices;
+	private CommentManager commentServices;
 
 	@Inject
 	private AuthenticationManager authenticationManager;

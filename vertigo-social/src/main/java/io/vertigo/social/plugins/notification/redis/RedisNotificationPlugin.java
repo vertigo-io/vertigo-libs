@@ -36,7 +36,7 @@ import io.vertigo.core.util.MapBuilder;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.impl.notification.NotificationEvent;
 import io.vertigo.social.impl.notification.NotificationPlugin;
-import io.vertigo.social.services.notification.Notification;
+import io.vertigo.social.notification.Notification;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Response;
 import redis.clients.jedis.Transaction;

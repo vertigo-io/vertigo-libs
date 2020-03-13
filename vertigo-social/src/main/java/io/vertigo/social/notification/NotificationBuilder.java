@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.social.services.notification;
+package io.vertigo.social.notification;
 
 import java.time.Instant;
 import java.util.Optional;

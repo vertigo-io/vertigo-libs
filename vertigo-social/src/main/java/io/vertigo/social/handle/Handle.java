@@ -1,4 +1,4 @@
-package io.vertigo.social.services.handle;
+package io.vertigo.social.handle;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.model.UID;

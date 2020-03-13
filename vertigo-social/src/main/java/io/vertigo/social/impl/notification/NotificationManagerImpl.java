@@ -27,13 +27,13 @@ import javax.inject.Inject;
 import io.vertigo.account.account.Account;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.social.services.notification.Notification;
-import io.vertigo.social.services.notification.NotificationServices;
+import io.vertigo.social.notification.Notification;
+import io.vertigo.social.notification.NotificationManager;
 
 /**
  * @author pchretien, npiedeloup, btounkara
  */
-public final class NotificationServicesImpl implements NotificationServices {
+public final class NotificationManagerImpl implements NotificationManager {
 
 	private final NotificationPlugin notificationsPlugin;
 
@@ -41,7 +41,7 @@ public final class NotificationServicesImpl implements NotificationServices {
 	 * @param notificationsPlugin Notifications plugin
 	 */
 	@Inject
-	public NotificationServicesImpl(final NotificationPlugin notificationsPlugin) {
+	public NotificationManagerImpl(final NotificationPlugin notificationsPlugin) {
 		Assertion.checkNotNull(notificationsPlugin);
 		// -----
 		this.notificationsPlugin = notificationsPlugin;

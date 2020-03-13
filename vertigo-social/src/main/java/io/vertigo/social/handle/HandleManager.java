@@ -1,11 +1,11 @@
-package io.vertigo.social.services.handle;
+package io.vertigo.social.handle;
 
 import java.util.List;
 
 import io.vertigo.core.node.component.Component;
 import io.vertigo.datamodel.structure.model.UID;
 
-public interface HandleServices extends Component {
+public interface HandleManager extends Component {
 
 	List<Handle> searchHandles(final String handlePrefix);
 

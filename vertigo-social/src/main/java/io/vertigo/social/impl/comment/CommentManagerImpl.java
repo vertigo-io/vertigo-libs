@@ -28,13 +28,13 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.social.services.comment.Comment;
-import io.vertigo.social.services.comment.CommentServices;
+import io.vertigo.social.comment.Comment;
+import io.vertigo.social.comment.CommentManager;
 
 /**
  * @author pchretien
  */
-public final class CommentServicesImpl implements CommentServices {
+public final class CommentManagerImpl implements CommentManager {
 	private final CommentPlugin commentsPlugin;
 
 	/**
@@ -42,7 +42,7 @@ public final class CommentServicesImpl implements CommentServices {
 	 * @param commentsPlugin Comment plugin
 	 */
 	@Inject
-	public CommentServicesImpl(final CommentPlugin commentsPlugin) {
+	public CommentManagerImpl(final CommentPlugin commentsPlugin) {
 		Assertion.checkNotNull(commentsPlugin);
 		//-----
 		this.commentsPlugin = commentsPlugin;

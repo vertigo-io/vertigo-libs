@@ -4,7 +4,7 @@ import java.util.List;
 
 import io.vertigo.core.node.component.Plugin;
 import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.social.services.handle.Handle;
+import io.vertigo.social.handle.Handle;
 
 public interface HandlePlugin extends Plugin {
 

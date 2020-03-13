@@ -21,10 +21,14 @@ package io.vertigo.social;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.social.impl.comment.CommentServicesImpl;
-import io.vertigo.social.impl.handle.HandleServicesImpl;
+import io.vertigo.social.comment.CommentManager;
+import io.vertigo.social.handle.HandleManager;
+import io.vertigo.social.impl.comment.CommentManagerImpl;
+import io.vertigo.social.impl.handle.HandleManagerImpl;
 import io.vertigo.social.impl.mail.MailManagerImpl;
-import io.vertigo.social.impl.notification.NotificationServicesImpl;
+import io.vertigo.social.impl.notification.NotificationManagerImpl;
+import io.vertigo.social.mail.MailManager;
+import io.vertigo.social.notification.NotificationManager;
 import io.vertigo.social.plugins.comment.memory.MemoryCommentPlugin;
 import io.vertigo.social.plugins.comment.redis.RedisCommentPlugin;
 import io.vertigo.social.plugins.handle.memory.MemoryHandlePlugin;
@@ -34,10 +38,6 @@ import io.vertigo.social.plugins.mail.javax.JndiMailSessionConnector;
 import io.vertigo.social.plugins.mail.javax.NativeMailSessionConnector;
 import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;
 import io.vertigo.social.plugins.notification.redis.RedisNotificationPlugin;
-import io.vertigo.social.services.comment.CommentServices;
-import io.vertigo.social.services.handle.HandleServices;
-import io.vertigo.social.services.mail.MailManager;
-import io.vertigo.social.services.notification.NotificationServices;
 import io.vertigo.social.webservices.account.AccountWebServices;
 import io.vertigo.social.webservices.comment.CommentWebServices;
 import io.vertigo.social.webservices.handle.HandleWebServices;
@@ -177,7 +177,7 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 	protected void buildFeatures() {
 		if (notificationsEnabled) {
 			getModuleConfigBuilder()
-					.addComponent(NotificationServices.class, NotificationServicesImpl.class);
+					.addComponent(NotificationManager.class, NotificationManagerImpl.class);
 			if (webapiEnabled) {
 				getModuleConfigBuilder()
 						.addComponent(AccountWebServices.class)
@@ -186,7 +186,7 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 		}
 		if (commentsEnabled) {
 			getModuleConfigBuilder()
-					.addComponent(CommentServices.class, CommentServicesImpl.class);
+					.addComponent(CommentManager.class, CommentManagerImpl.class);
 			if (webapiEnabled) {
 				getModuleConfigBuilder()
 						.addComponent(CommentWebServices.class);
@@ -194,7 +194,7 @@ public final class SocialFeatures extends Features<SocialFeatures> {
 		}
 		if (handlesEnabled) {
 			getModuleConfigBuilder()
-					.addComponent(HandleServices.class, HandleServicesImpl.class);
+					.addComponent(HandleManager.class, HandleManagerImpl.class);
 			if (webapiEnabled) {
 				getModuleConfigBuilder()
 						.addComponent(HandleWebServices.class);

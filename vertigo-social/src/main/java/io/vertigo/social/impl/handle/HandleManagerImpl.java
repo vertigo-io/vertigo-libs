@@ -25,10 +25,10 @@ import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.entitystore.StoreEvent;
-import io.vertigo.social.services.handle.Handle;
-import io.vertigo.social.services.handle.HandleServices;
+import io.vertigo.social.handle.Handle;
+import io.vertigo.social.handle.HandleManager;
 
-public final class HandleServicesImpl implements HandleServices, Activeable {
+public final class HandleManagerImpl implements HandleManager, Activeable {
 
 	private static final int CHUNK_SIZE = 1000;
 
@@ -39,7 +39,7 @@ public final class HandleServicesImpl implements HandleServices, Activeable {
 	private final HandlePlugin handlePlugin;
 
 	@Inject
-	public HandleServicesImpl(
+	public HandleManagerImpl(
 			final EntityStoreManager entityStoreManager,
 			final VTransactionManager transactionManager,
 			final HandlePlugin handlePlugin) {

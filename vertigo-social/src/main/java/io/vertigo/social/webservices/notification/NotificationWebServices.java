@@ -31,8 +31,8 @@ import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.social.services.notification.Notification;
-import io.vertigo.social.services.notification.NotificationServices;
+import io.vertigo.social.notification.Notification;
+import io.vertigo.social.notification.NotificationManager;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.stereotype.AnonymousAccessAllowed;
 import io.vertigo.vega.webservice.stereotype.DELETE;
@@ -52,7 +52,7 @@ public final class NotificationWebServices implements WebServices {
 	private static final String IMPL_VERSION = "0.9.4";
 
 	@Inject
-	private NotificationServices notificationServices;
+	private NotificationManager notificationServices;
 	@Inject
 	private AuthenticationManager authenticationManager;
 

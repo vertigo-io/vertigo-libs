@@ -46,9 +46,9 @@ import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.social.MyNodeConfig;
+import io.vertigo.social.comment.Comment;
+import io.vertigo.social.comment.CommentManager;
 import io.vertigo.social.data.MockIdentities;
-import io.vertigo.social.services.comment.Comment;
-import io.vertigo.social.services.comment.CommentServices;
 import redis.clients.jedis.Jedis;
 
 public final class CommentWebServicesTest {
@@ -64,7 +64,7 @@ public final class CommentWebServicesTest {
 	@Inject
 	private RedisConnector redisConnector;
 	@Inject
-	private CommentServices commentServices;
+	private CommentManager commentServices;
 	@Inject
 	private MockIdentities mockIdentities;
 

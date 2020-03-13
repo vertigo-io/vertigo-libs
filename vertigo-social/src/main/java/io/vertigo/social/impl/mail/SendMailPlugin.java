@@ -19,7 +19,7 @@
 package io.vertigo.social.impl.mail;
 
 import io.vertigo.core.node.component.Plugin;
-import io.vertigo.social.services.mail.Mail;
+import io.vertigo.social.mail.Mail;
 
 /**
  * Plugin d'envoi de mail.

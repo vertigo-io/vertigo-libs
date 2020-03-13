@@ -44,8 +44,8 @@ import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.data.MockIdentities;
-import io.vertigo.social.services.notification.Notification;
-import io.vertigo.social.services.notification.NotificationServices;
+import io.vertigo.social.notification.Notification;
+import io.vertigo.social.notification.NotificationManager;
 import redis.clients.jedis.Jedis;
 
 public final class NotificationWebServicesTest {
@@ -60,7 +60,7 @@ public final class NotificationWebServicesTest {
 	@Inject
 	private RedisConnector redisConnector;
 	@Inject
-	private NotificationServices notificationServices;
+	private NotificationManager notificationServices;
 
 	@BeforeAll
 	public static void setUp() {

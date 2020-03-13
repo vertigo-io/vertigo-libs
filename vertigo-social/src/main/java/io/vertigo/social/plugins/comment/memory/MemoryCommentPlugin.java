@@ -28,8 +28,8 @@ import java.util.stream.Collectors;
 
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
+import io.vertigo.social.comment.Comment;
 import io.vertigo.social.impl.comment.CommentPlugin;
-import io.vertigo.social.services.comment.Comment;
 
 /**
  * @author pchretien

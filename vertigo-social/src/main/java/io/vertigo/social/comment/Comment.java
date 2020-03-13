@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.social.services.comment;
+package io.vertigo.social.comment;
 
 import java.time.Instant;
 import java.util.UUID;
