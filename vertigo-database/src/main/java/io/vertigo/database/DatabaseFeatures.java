@@ -21,11 +21,11 @@ package io.vertigo.database;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
 import io.vertigo.core.param.Param;
-import io.vertigo.database.impl.migration.DataBaseMigrationManagerImpl;
-import io.vertigo.database.impl.sql.SqlDataBaseManagerImpl;
-import io.vertigo.database.impl.timeseries.TimeSeriesDataBaseManagerImpl;
+import io.vertigo.database.impl.migration.MigrationManagerImpl;
+import io.vertigo.database.impl.sql.SqlManagerImpl;
+import io.vertigo.database.impl.timeseries.TimeSeriesManagerImpl;
 import io.vertigo.database.migration.DataBaseMigrationManager;
-import io.vertigo.database.plugins.migration.liquibase.LiquibaseDataBaseMigrationPlugin;
+import io.vertigo.database.plugins.migration.liquibase.LiquibaseMigrationPlugin;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
 import io.vertigo.database.plugins.sql.connection.datasource.DataSourceConnectionProviderPlugin;
 import io.vertigo.database.plugins.timeseries.fake.FakeTimeSeriesPlugin;
@@ -54,7 +54,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	@Feature("sql")
 	public DatabaseFeatures withSqlDataBase() {
 		getModuleConfigBuilder()
-				.addComponent(SqlDataBaseManager.class, SqlDataBaseManagerImpl.class);
+				.addComponent(SqlDataBaseManager.class, SqlManagerImpl.class);
 		return this;
 	}
 
@@ -65,7 +65,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	@Feature("timeseries")
 	public DatabaseFeatures withTimeSeriesDataBase() {
 		getModuleConfigBuilder()
-				.addComponent(TimeSeriesDataBaseManager.class, TimeSeriesDataBaseManagerImpl.class);
+				.addComponent(TimeSeriesDataBaseManager.class, TimeSeriesManagerImpl.class);
 		return this;
 	}
 
@@ -76,7 +76,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	@Feature("migration")
 	public DatabaseFeatures withMigration(final Param... params) {
 		getModuleConfigBuilder()
-				.addComponent(DataBaseMigrationManager.class, DataBaseMigrationManagerImpl.class, params);
+				.addComponent(DataBaseMigrationManager.class, MigrationManagerImpl.class, params);
 		return this;
 	}
 
@@ -131,7 +131,7 @@ public final class DatabaseFeatures extends Features<DatabaseFeatures> {
 	@Feature("migration.liquibase")
 	public DatabaseFeatures withLiquibaseDataBaseMigrationPlugin(final Param... params) {
 		getModuleConfigBuilder()
-				.addPlugin(LiquibaseDataBaseMigrationPlugin.class, params);
+				.addPlugin(LiquibaseMigrationPlugin.class, params);
 		return this;
 	}
 
