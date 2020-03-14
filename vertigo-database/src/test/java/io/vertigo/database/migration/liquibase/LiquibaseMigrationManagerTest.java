@@ -2,9 +2,11 @@ package io.vertigo.database.migration.liquibase;
 
 import java.sql.SQLException;
 import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
@@ -50,8 +52,13 @@ public class LiquibaseMigrationManagerTest extends AbstractTestCaseJU5 {
 		dataBaseMigrationManager.check(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);
 
 		try (final SqlConnection connection = sqlDataBaseManager.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME).obtainConnection()) {
-			sqlDataBaseManager.executeQuery(SqlStatement.builder("select * from movie").build(), Movie.class, Collections.emptyMap(), 50, connection);
-			connection.rollback();
+			sqlDataBaseManager.executeUpdate(
+					SqlStatement.builder("insert into movie (id, title, category) values (1, 'vertigo', 'thriller')").build(),
+					Collections.emptyMap(), connection);
+			//---
+			Integer limit = null;
+			List<Movie> movies = sqlDataBaseManager.executeQuery(SqlStatement.builder("select * from movie").build(), Movie.class, Collections.emptyMap(), limit, connection);
+			Assertions.assertEquals(1, movies.size());
 		}
 	}
 
