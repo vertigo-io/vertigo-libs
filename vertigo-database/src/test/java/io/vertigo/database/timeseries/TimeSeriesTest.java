@@ -24,11 +24,14 @@ import java.util.Collections;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.connectors.influxdb.InfluxDbFeatures;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
@@ -41,10 +44,24 @@ import io.vertigo.database.plugins.timeseries.influxdb.InfluxDbTimeSeriesPlugin;
  *
  * @author mlaroche
  */
-public final class TimeSeriesTest extends AbstractTestCaseJU5 {
-
+public final class TimeSeriesTest {
 	@Inject
 	private TimeSeriesDataBaseManager timeSeriesDataBaseManager;
+
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
 
 	@Test
 	public void testInsertMeasure() {
@@ -124,8 +141,7 @@ public final class TimeSeriesTest extends AbstractTestCaseJU5 {
 				10);
 	}
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder().beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)

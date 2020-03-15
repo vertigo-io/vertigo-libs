@@ -34,13 +34,17 @@ import java.util.OptionalInt;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.core.lang.DataStream;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.data.Mail;
@@ -57,7 +61,7 @@ import io.vertigo.database.sql.vendor.SqlDialect.GenerationMode;
  *
  * @author pchretien
  */
-public abstract class AbstractSqlManagerTest extends AbstractTestCaseJU5 {
+public abstract class AbstractSqlManagerTest {
 	private static final String DROP_TABLE_MOVIE = "DROP TABLE movie";
 	private static final String DROP_SEQUENCE_MOVIE = "DROP SEQUENCE seq_movie";
 
@@ -99,14 +103,13 @@ public abstract class AbstractSqlManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	protected SqlDataBaseManager dataBaseManager;
 
-	protected SqlConnection obtainMainConnection() {
-		return dataBaseManager
-				.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME)
-				.obtainConnection();
-	}
+	private AutoCloseableApp app;
 
-	@Override
-	protected final void doSetUp() throws Exception {
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
 		try (final SqlConnection connection = obtainMainConnection()) {
 			execpreparedStatement(connection, createTableMovie());
 			execpreparedStatement(connection, createSequenceMovie());
@@ -116,14 +119,12 @@ public abstract class AbstractSqlManagerTest extends AbstractTestCaseJU5 {
 		}
 	}
 
-	protected abstract String createTableMovie();
-
-	protected abstract String createSequenceMovie();
-
-	protected abstract boolean commitRequiredOnSchemaModification();
-
-	@Override
-	protected final void doTearDown() throws Exception {
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+		//---
 		try (final SqlConnection connection = obtainMainConnection()) {
 			// we use a shared database so we need to drop the table
 			execpreparedStatement(connection, DROP_SEQUENCE_MOVIE);
@@ -133,6 +134,20 @@ public abstract class AbstractSqlManagerTest extends AbstractTestCaseJU5 {
 			}
 		}
 	}
+
+	protected abstract NodeConfig buildNodeConfig();
+
+	protected SqlConnection obtainMainConnection() {
+		return dataBaseManager
+				.getConnectionProvider(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME)
+				.obtainConnection();
+	}
+
+	protected abstract String createTableMovie();
+
+	protected abstract String createSequenceMovie();
+
+	protected abstract boolean commitRequiredOnSchemaModification();
 
 	@Test
 	public void testConnection() throws Exception {
