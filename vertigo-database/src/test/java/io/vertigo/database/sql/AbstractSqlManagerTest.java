@@ -122,15 +122,15 @@ public abstract class AbstractSqlManagerTest {
 	@AfterEach
 	public final void tearDown() throws Exception {
 		if (app != null) {
-			app.close();
-		}
-		//---
-		try (final SqlConnection connection = obtainMainConnection()) {
-			// we use a shared database so we need to drop the table
-			execpreparedStatement(connection, DROP_SEQUENCE_MOVIE);
-			execpreparedStatement(connection, DROP_TABLE_MOVIE);
-			if (commitRequiredOnSchemaModification()) {
-				connection.commit();
+			try (final SqlConnection connection = obtainMainConnection()) {
+				// we use a shared database so we need to drop the table
+				execpreparedStatement(connection, DROP_SEQUENCE_MOVIE);
+				execpreparedStatement(connection, DROP_TABLE_MOVIE);
+				if (commitRequiredOnSchemaModification()) {
+					connection.commit();
+				}
+			} finally {
+				app.close();
 			}
 		}
 	}
