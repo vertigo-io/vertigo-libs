@@ -20,10 +20,13 @@ package io.vertigo.geo.services.geocoder.ban;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.geo.GeoFeatures;
 import io.vertigo.geo.geocoder.GeoCoderManager;
@@ -32,9 +35,24 @@ import io.vertigo.geo.geocoder.GeoLocation;
 /**
  * @author spoitrenaud
  */
-public class BanGeoCoderManagerTest extends AbstractTestCaseJU5 {
+public class BanGeoCoderManagerTest {
 	@Inject
 	private GeoCoderManager geoCoderManager;
+
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
 
 	/**
 	 * Test de géolocalisation d'une chaîne null.
@@ -48,8 +66,7 @@ public class BanGeoCoderManagerTest extends AbstractTestCaseJU5 {
 		});
 	}
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
@@ -92,7 +109,7 @@ public class BanGeoCoderManagerTest extends AbstractTestCaseJU5 {
 	@Test
 	public final void testOneResult() {
 		// Géolocalisation
-		final GeoLocation geoLocation = geoCoderManager.findLocation("4, rue du vieux lavoir, 91190, Saint-Aubin");
+		final GeoLocation geoLocation = geoCoderManager.findLocation("4, rue du vieux lavoir, 91190, Saint-Aubin)");
 		AssertNear(geoLocation, 48.713709, 2.138841, 0.1);
 	}
 
