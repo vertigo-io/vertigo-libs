@@ -22,8 +22,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 import io.vertigo.commons.impl.codec.CodecManagerImpl;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 
@@ -32,14 +36,31 @@ import io.vertigo.core.node.config.NodeConfig;
  * @param <S> Type Source à encoder
  * @param <T> Type cible, résultat de l'encodage
  */
-public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends AbstractTestCaseJU5 {
+public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> {
 	protected static final String TEXT = "Les sanglots longs des violons de l'automne blessent mon coeur d'une langueur monotone.";
 	protected C codec;
 
 	@Inject
 	private CodecManager codecManager;
+	private AutoCloseableApp app;
 
-	@Override
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		codec = obtainCodec(codecManager);
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			codec = null;
+			//---
+			app.close();
+		}
+	}
+
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.addModule(ModuleConfig.builder("commons")
@@ -49,12 +70,6 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> extends
 	}
 
 	protected abstract C obtainCodec(CodecManager inCodecManager);
-
-	/** {@inheritDoc} */
-	@Override
-	public final void doSetUp() {
-		codec = obtainCodec(codecManager);
-	}
 
 	/**
 	 * test l'encodage et le décodage avec les chaines null.
