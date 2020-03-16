@@ -80,12 +80,12 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	private static final String DATE_PATTERN = "dd/MM/yyyy";
 	private static final Pattern RANGE_PATTERN = Pattern.compile("([a-z][a-zA-Z0-9]*):([\\[\\{])(.*) TO (.*)([\\}\\]])");
 
-	private final Map<Class, BasicTypeAdapter> typeAdapters;
+	private final Map<Class, BasicTypeAdapter> myTypeAdapters;
 	private SearchIndexDefinition myIndexDefinition;
 	private SearchQuery mySearchQuery;
 	private DtListState myListState;
 	protected int myDefaultMaxRows = 10;
-	private boolean useHighlight = false;
+	private boolean myUseHighlight = false;
 
 	/**
 	 * @param typeAdapters Mapping to basic type adapter
@@ -93,7 +93,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	public AsbtractESSearchRequestBuilder(final Map<Class, BasicTypeAdapter> typeAdapters) {
 		Assertion.checkNotNull(typeAdapters);
 		//-----
-		this.typeAdapters = typeAdapters;
+		this.myTypeAdapters = typeAdapters;
 	}
 
 	/**
@@ -135,7 +135,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	 * @return this builder
 	 */
 	public T withHighlight() {
-		useHighlight = true;
+		myUseHighlight = true;
 		return (T) this;
 	}
 
@@ -151,8 +151,8 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 						"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE);
 		//-----
 		appendListState(mySearchQuery, myListState, myDefaultMaxRows, myIndexDefinition);
-		appendSearchQuery(mySearchQuery, getSearchSourceBuilder(), useHighlight, typeAdapters);
-		appendFacetDefinition(mySearchQuery, getSearchSourceBuilder(), myIndexDefinition, myListState, useHighlight, typeAdapters);
+		appendSearchQuery(mySearchQuery, getSearchSourceBuilder(), myUseHighlight, myTypeAdapters);
+		appendFacetDefinition(mySearchQuery, getSearchSourceBuilder(), myIndexDefinition, myListState, myUseHighlight, myTypeAdapters);
 		return getSearchRequest();
 	}
 
@@ -168,8 +168,8 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 
 	protected abstract void addAggregation(S searchRequestBuilder, AggregationBuilder aggregationBuilder);
 
-	protected FieldSortBuilder getFieldSortBuilder(final SearchIndexDefinition myIndexDefinition, final DtListState myListState) {
-		final DtField sortField = myIndexDefinition.getIndexDtDefinition().getField(myListState.getSortFieldName().get());
+	protected FieldSortBuilder getFieldSortBuilder(final SearchIndexDefinition indexDefinition, final DtListState listState) {
+		final DtField sortField = indexDefinition.getIndexDtDefinition().getField(listState.getSortFieldName().get());
 		String sortIndexFieldName = sortField.getName();
 		final IndexType indexType = IndexType.readIndexType(sortField.getSmartTypeDefinition());
 
@@ -177,7 +177,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 			sortIndexFieldName = sortIndexFieldName + ".keyword";
 		}
 		return SortBuilders.fieldSort(sortIndexFieldName)
-				.order(myListState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
+				.order(listState.isSortDesc().get() ? SortOrder.DESC : SortOrder.ASC);
 	}
 
 	private void appendSearchQuery(final SearchQuery searchQuery, final S searchRequestBuilder, final boolean useHighlight, final Map<Class, BasicTypeAdapter> typeAdapters) {
@@ -279,8 +279,8 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	private void appendFacetDefinition(
 			final SearchQuery searchQuery,
 			final S searchRequestBuilder,
-			final SearchIndexDefinition myIndexDefinition,
-			final DtListState myListState,
+			final SearchIndexDefinition indexDefinition,
+			final DtListState listState,
 			final boolean useHighlight,
 			final Map<Class, BasicTypeAdapter> typeAdapters) {
 		Assertion.checkNotNull(searchRequestBuilder);
@@ -291,15 +291,15 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 
 			final AggregationBuilder aggregationBuilder = facetToAggregationBuilder(clusteringFacetDefinition, searchQuery.getCriteria(), typeAdapters);
 			final TopHitsAggregationBuilder topHitsBuilder = AggregationBuilders.topHits(TOPHITS_SUBAGGREGATION_NAME)
-					.size(myListState.getMaxRows().orElse(TOPHITS_SUBAGGREGATION_SIZE))
-					.from(myListState.getSkipRows());
+					.size(listState.getMaxRows().orElse(TOPHITS_SUBAGGREGATION_SIZE))
+					.from(listState.getSkipRows());
 
 			if (useHighlight) {
 				topHitsBuilder.highlighter(new HighlightBuilder().numOfFragments(3));//.addHighlightedField("*"); HOW TO ?
 			}
 
-			if (myListState.getSortFieldName().isPresent()) {
-				topHitsBuilder.sort(getFieldSortBuilder(myIndexDefinition, myListState));
+			if (listState.getSortFieldName().isPresent()) {
+				topHitsBuilder.sort(getFieldSortBuilder(indexDefinition, listState));
 			}
 
 			aggregationBuilder.subAggregation(topHitsBuilder);
