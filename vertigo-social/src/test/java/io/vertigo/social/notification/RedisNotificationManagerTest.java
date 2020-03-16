@@ -16,16 +16,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vertigo.social.notification.services;
+package io.vertigo.social.notification;
 
+import org.junit.jupiter.api.BeforeEach;
+
+import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.social.MyNodeConfig;
+import redis.clients.jedis.Jedis;
 
-public final class MemoryNotificationServicesTest extends AbstractNotificationServicesTest {
+public final class RedisNotificationManagerTest extends AbstractNotificationManagerTest {
 
 	@Override
 	protected NodeConfig buildNodeConfig() {
-		return MyNodeConfig.config(false);
+		return MyNodeConfig.config(true);
 	}
 
+	@BeforeEach
+	public void cleanUp() {
+		final RedisConnector redisConnector = getApp().getComponentSpace().resolve(RedisConnector.class);
+		try (final Jedis jedis = redisConnector.getClient()) {
+			jedis.flushAll();
+		}
+	}
 }
