@@ -21,10 +21,13 @@ package io.vertigo.datamodel.smarttype.constraint;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintBigDecimal;
 import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintBigDecimalLength;
@@ -39,7 +42,7 @@ import io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength;
  *
  * @author pchretien
  */
-public final class ConstraintTest extends AbstractTestCaseJU5 {
+public final class ConstraintTest {
 	//private ConstraintNotNull constraintNotNull;
 
 	private ConstraintBigDecimal constraintBigDecimal;
@@ -52,35 +55,38 @@ public final class ConstraintTest extends AbstractTestCaseJU5 {
 
 	private ConstraintRegex constraintRegex;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//--
+		//		constraintNotNull = new ConstraintNotNull();
+		//		constraintNotNull.initParameters(null);
+		constraintBigDecimal = new ConstraintBigDecimal("5,2", Optional.empty());
+		constraintBigDecimalLength = new ConstraintBigDecimalLength("3", Optional.empty()); //10^3
+		constraintDoubleLength = new ConstraintDoubleLength("3", Optional.empty()); //10^3
+		constraintIntegerLength = new ConstraintIntegerLength("3", Optional.empty()); //10^3
+		constraintLongLength = new ConstraintLongLength("3", Optional.empty()); //10^3
+		constraintStringLength = new ConstraintStringLength("3", Optional.empty()); //10^3
+		// \w signifie WORD [A-Za-z0-9_] et on ajoute le tiret -
+		constraintRegex = new ConstraintRegex("[\\w-]*", Optional.empty());
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
 				.endBoot()
 				.build();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public void doSetUp() {
-		//		constraintNotNull = new ConstraintNotNull();
-		//		constraintNotNull.initParameters(null);
-
-		constraintBigDecimal = new ConstraintBigDecimal("5,2", Optional.empty());
-
-		constraintBigDecimalLength = new ConstraintBigDecimalLength("3", Optional.empty()); //10^3
-
-		constraintDoubleLength = new ConstraintDoubleLength("3", Optional.empty()); //10^3
-
-		constraintIntegerLength = new ConstraintIntegerLength("3", Optional.empty()); //10^3
-
-		constraintLongLength = new ConstraintLongLength("3", Optional.empty()); //10^3
-
-		constraintStringLength = new ConstraintStringLength("3", Optional.empty()); //10^3
-
-		// \w signifie WORD [A-Za-z0-9_] et on ajoute le tiret -
-		constraintRegex = new ConstraintRegex("[\\w-]*", Optional.empty());
 	}
 
 	private void testBDTrue(final BigDecimal value) {

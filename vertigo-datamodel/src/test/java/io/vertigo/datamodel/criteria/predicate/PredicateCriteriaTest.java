@@ -25,9 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.Serializable;
 import java.util.function.Predicate;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -44,13 +47,26 @@ import io.vertigo.datamodel.structure.metamodel.DtFieldName;
 /**
  *
  */
-public final class PredicateCriteriaTest extends AbstractTestCaseJU5 {
+public final class PredicateCriteriaTest {
 
 	private static final DtFieldName<Movie2> year = () -> "year";
 	private static final DtFieldName<Movie2> title = () -> "title";
+	private AutoCloseableApp app;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)

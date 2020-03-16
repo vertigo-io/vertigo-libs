@@ -2,10 +2,13 @@ package io.vertigo.datamodel.smarttype;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -13,13 +16,26 @@ import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.smarttype.data.TestSmartTypes;
 import io.vertigo.datamodel.smarttype.data.domain.Base;
 
-public class SmartTypeDefinitionProviderTest extends AbstractTestCaseJU5 {
-
+public class SmartTypeDefinitionProviderTest {
 	@Inject
 	private ModelManager modelManager;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.addModule(new DataModelFeatures().build())
 				.addModule(ModuleConfig.builder("myModule")
@@ -33,13 +49,13 @@ public class SmartTypeDefinitionProviderTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testReadDefinition() {
-		getApp().getDefinitionSpace().getAll(SmartTypeDefinition.class)
+		app.getDefinitionSpace().getAll(SmartTypeDefinition.class)
 				.forEach(System.out::println);
 	}
 
 	@Test
 	public void testUpper() {
-		final SmartTypeDefinition smartTypeDefinition = getApp().getDefinitionSpace().resolve("STySiret2", SmartTypeDefinition.class);
+		final SmartTypeDefinition smartTypeDefinition = app.getDefinitionSpace().resolve("STySiret2", SmartTypeDefinition.class);
 		Assertions.assertEquals("AA", modelManager.valueToString(smartTypeDefinition, "aa"));
 		Assertions.assertEquals("AA", modelManager.valueToString(smartTypeDefinition, "AA"));
 		Assertions.assertEquals("AA", modelManager.valueToString(smartTypeDefinition, "Aa"));
