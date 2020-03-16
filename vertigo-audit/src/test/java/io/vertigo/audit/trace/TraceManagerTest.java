@@ -27,13 +27,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.audit.trace.Trace;
-import io.vertigo.audit.trace.TraceBuilder;
-import io.vertigo.audit.trace.TraceCriteria;
-import io.vertigo.audit.trace.TraceManager;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 
 /**
@@ -41,13 +40,26 @@ import io.vertigo.core.node.config.NodeConfig;
  * @author xdurand
  *
  */
-public class TraceManagerTest extends AbstractTestCaseJU5 {
-
+public class TraceManagerTest {
 	@Inject
 	private TraceManager auditManager;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return MyNodeConfig.config();
 	}
 
