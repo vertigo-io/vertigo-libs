@@ -22,22 +22,24 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.data.SampleDataBase;
 import io.vertigo.commons.transaction.data.SampleDataBaseConnection;
 import io.vertigo.commons.transaction.data.SampleTransactionResource;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 
 /**
  * @author npiedeloup
  */
-public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU5 {
-
+public final class VTransactionBeforeAfterCommitTest {
 	private final AtomicBoolean run1BeforeCommit = new AtomicBoolean(false);
 	private final AtomicBoolean run2BeforeCommit = new AtomicBoolean(false);
 	private final AtomicBoolean run3BeforeCommit = new AtomicBoolean(false);
@@ -49,8 +51,24 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU5
 	private VTransactionManager transactionManager;
 	private SampleDataBase dataBase;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		dataBase = new SampleDataBase();
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()
@@ -60,11 +78,6 @@ public final class VTransactionBeforeAfterCommitTest extends AbstractTestCaseJU5
 						.addComponent(SampleServices.class)
 						.build())
 				.build();
-	}
-
-	@Override
-	protected void doSetUp() {
-		dataBase = new SampleDataBase();
 	}
 
 	//Utilitaire

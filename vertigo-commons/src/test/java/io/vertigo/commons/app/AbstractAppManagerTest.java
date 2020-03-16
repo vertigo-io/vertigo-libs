@@ -21,19 +21,36 @@ package io.vertigo.commons.app;
 import java.time.Instant;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.commons.app.AppManager;
-import io.vertigo.commons.app.Node;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.config.NodeConfigBuilder;
 
-public abstract class AbstractAppManagerTest extends AbstractTestCaseJU5 {
+public abstract class AbstractAppManagerTest {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	protected abstract NodeConfig buildNodeConfig();
 
 	protected NodeConfigBuilder buildRootNodeConfig() {
 		return NodeConfig.builder()

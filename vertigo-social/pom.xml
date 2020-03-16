@@ -59,13 +59,6 @@
 		<!-- /Mail -->
 
 		<!-- Tests -->
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-core</artifactId>
-			<version>${vertigo.version}</version>
-			<type>test-jar</type>
-			<scope>test</scope>
-		</dependency>
 		<!-- For Rest Webservice testing -->
 		<dependency>
 			<groupId>io.rest-assured</groupId>

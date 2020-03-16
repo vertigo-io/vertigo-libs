@@ -20,23 +20,26 @@ package io.vertigo.social.notification;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.account.AccountManager;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.App;
+import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.data.MockIdentities;
 import io.vertigo.social.impl.notification.NotificationPlugin;
-import io.vertigo.social.notification.Notification;
-import io.vertigo.social.notification.NotificationManager;
 import io.vertigo.social.plugins.notification.memory.MemoryNotificationPlugin;
 import io.vertigo.social.plugins.notification.redis.RedisNotificationPlugin;
 
-public abstract class AbstractNotificationManagerTest extends AbstractTestCaseJU5 {
+public abstract class AbstractNotificationManagerTest {
 
 	@Inject
 	private MockIdentities mockIdentities;
@@ -50,15 +53,32 @@ public abstract class AbstractNotificationManagerTest extends AbstractTestCaseJU
 	private UID<Account> accountUID2;
 	private UID<AccountGroup> groupURI;
 
-	@Override
-	public void doSetUp() {
+	private AutoCloseableApp app;
 
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
 		accountUID0 = createAccountUID("0");
 		accountUID1 = createAccountUID("1");
 		accountUID2 = createAccountUID("2");
 		groupURI = UID.of(AccountGroup.class, "100");
 
 		mockIdentities.initData();
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	protected abstract NodeConfig buildNodeConfig();
+
+	protected final App getApp() {
+		return app;
 	}
 
 	private static UID<Account> createAccountUID(final String id) {
