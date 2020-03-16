@@ -41,7 +41,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
+import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.task.data.TestSmartTypes;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;

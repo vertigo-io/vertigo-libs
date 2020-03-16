@@ -26,7 +26,7 @@ import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionUtil;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
@@ -153,9 +153,9 @@ public final class PublisherDataUtil {
 	 */
 	public static String renderStringField(final DtObject dto, final DtField dtField) {
 		final String unit = dtField.getSmartTypeDefinition().getProperties().getValue(DtProperty.UNIT);
-		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
+		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		final Object value = dtField.getDataAccessor().getValue(dto);
-		final String formattedValue = modelManager.valueToString(dtField.getSmartTypeDefinition(), value);
+		final String formattedValue = smartTypeManager.valueToString(dtField.getSmartTypeDefinition(), value);
 		return formattedValue + (!StringUtil.isEmpty(unit) ? " " + unit : "");
 	}
 

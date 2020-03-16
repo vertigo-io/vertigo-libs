@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DataAccessor;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -55,7 +55,7 @@ public class DAO<E extends Entity, P> {
 	private final Class<? extends Entity> entityClass;
 	protected final EntityStoreManager entityStoreManager;
 	private final TaskManager taskManager;
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 
 	/**
 	 * Contructeur.
@@ -64,16 +64,16 @@ public class DAO<E extends Entity, P> {
 	 * @param entityStoreManager Manager de gestion de la persistance
 	 * @param taskManager Manager de gestion des tâches
 	 */
-	public DAO(final Class<? extends Entity> entityClass, final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
+	public DAO(final Class<? extends Entity> entityClass, final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {
 		Assertion.checkNotNull(entityClass);
 		Assertion.checkNotNull(entityStoreManager);
 		Assertion.checkNotNull(taskManager);
-		Assertion.checkNotNull(modelManager);
+		Assertion.checkNotNull(smartTypeManager);
 		//-----
 		this.entityClass = entityClass;
 		this.entityStoreManager = entityStoreManager;
 		this.taskManager = taskManager;
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 	}
 
 	protected final TaskManager getTaskManager() {
@@ -243,10 +243,10 @@ public class DAO<E extends Entity, P> {
 				throw new ClassCastException("Value " + value + " must be a list");
 			}
 			for (final Object element : List.class.cast(value)) {
-				modelManager.checkValue(dtField.getSmartTypeDefinition(), element);
+				smartTypeManager.checkValue(dtField.getSmartTypeDefinition(), element);
 			}
 		} else {
-			modelManager.checkValue(dtField.getSmartTypeDefinition(), value);
+			smartTypeManager.checkValue(dtField.getSmartTypeDefinition(), value);
 		}
 		return entityStoreManager.find(dtDefinition, criteria, dtListState);
 	}

@@ -11,7 +11,7 @@ import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.orchestra.domain.definition.OActivity;
 
@@ -28,8 +28,8 @@ public final class OActivityDAO extends DAO<OActivity, java.lang.Long> implement
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public OActivityDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
-		super(OActivity.class, entityStoreManager, taskManager, modelManager);
+	public OActivityDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {
+		super(OActivity.class, entityStoreManager, taskManager, smartTypeManager);
 	}
 
 

@@ -45,7 +45,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.datafactory.plugins.search.elasticsearch_5_6.AbstractESSearchServicesPlugin;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 
 //Vérifier
 /**
@@ -81,9 +81,9 @@ public final class ESEmbeddedSearchServicesPlugin extends AbstractESSearchServic
 			@ParamValue("http.port") final Optional<Integer> httpPortOpt,
 			@ParamValue("transport.tcp.port") final Optional<Integer> transportPortOpt,
 			final CodecManager codecManager,
-			final ModelManager modelManager,
+			final SmartTypeManager smartTypeManager,
 			final ResourceManager resourceManager) {
-		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, modelManager, resourceManager);
+		super(envIndex, envIndexIsPrefix.orElse(false), rowsPerQuery, configFile, codecManager, smartTypeManager, resourceManager);
 		Assertion.checkArgNotEmpty(elasticSearchHome);
 		//-----
 		elasticSearchHomeURL = resourceManager.resolve(elasticSearchHome);

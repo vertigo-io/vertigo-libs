@@ -22,7 +22,7 @@ import java.util.List;
 
 import io.vertigo.core.locale.MessageText;
 import io.vertigo.core.node.Home;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.ConstraintException;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -37,7 +37,7 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 	/** {@inheritDoc} */
 	@Override
 	protected void checkMonoFieldConstraints(final O dtObject, final DtField dtField, final DtObjectErrors dtObjectErrors) {
-		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
+		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		//---
 		final Object value = dtField.getDataAccessor().getValue(dtObject);
 		//pas d'assertion notNull, car le champs n'est pas forcément obligatoire
@@ -52,10 +52,10 @@ public final class DefaultDtObjectValidator<O extends DtObject> extends Abstract
 						throw new ClassCastException("Value " + value + " must be a list");
 					}
 					for (final Object element : List.class.cast(value)) {
-						modelManager.checkConstraints(dtField.getSmartTypeDefinition(), element);
+						smartTypeManager.checkConstraints(dtField.getSmartTypeDefinition(), element);
 					}
 				} else {
-					modelManager.checkConstraints(dtField.getSmartTypeDefinition(), value);
+					smartTypeManager.checkConstraints(dtField.getSmartTypeDefinition(), value);
 				}
 			} catch (final ConstraintException e) {
 				// Erreur lors du check de la valeur,

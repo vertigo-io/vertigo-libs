@@ -6,7 +6,7 @@ import io.vertigo.core.lang.Generated;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.studio.domain.stereotype.CommandType;
 
@@ -23,8 +23,8 @@ public final class CommandTypeDAO extends DAO<CommandType, java.lang.Long> imple
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public CommandTypeDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
-		super(CommandType.class, entityStoreManager, taskManager, modelManager);
+	public CommandTypeDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {
+		super(CommandType.class, entityStoreManager, taskManager, smartTypeManager);
 	}
 
 }

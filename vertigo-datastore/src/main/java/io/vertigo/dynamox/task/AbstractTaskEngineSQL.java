@@ -36,7 +36,7 @@ import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.connection.SqlConnectionProvider;
 import io.vertigo.database.sql.statement.SqlStatement;
 import io.vertigo.database.sql.statement.SqlStatementBuilder;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.task.metamodel.TaskAttribute;
 import io.vertigo.datamodel.task.model.TaskEngine;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
@@ -98,7 +98,7 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	private final VTransactionManager transactionManager;
 	private final EntityStoreManager entityStoreManager;
 	private final SqlDataBaseManager sqlDataBaseManager;
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 
 	/**
 	 * Constructor.
@@ -109,18 +109,18 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 			final VTransactionManager transactionManager,
 			final EntityStoreManager entityStoreManager,
 			final SqlDataBaseManager sqlDataBaseManager,
-			final ModelManager modelManager) {
+			final SmartTypeManager smartTypeManager) {
 		Assertion.checkNotNull(scriptManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(entityStoreManager);
 		Assertion.checkNotNull(sqlDataBaseManager);
-		Assertion.checkNotNull(modelManager);
+		Assertion.checkNotNull(smartTypeManager);
 		//-----
 		this.scriptManager = scriptManager;
 		this.transactionManager = transactionManager;
 		this.entityStoreManager = entityStoreManager;
 		this.sqlDataBaseManager = sqlDataBaseManager;
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 	}
 
 	/**
@@ -258,8 +258,8 @@ public abstract class AbstractTaskEngineSQL extends TaskEngine {
 	/**
 	 * @return Manager du modèle
 	 */
-	protected final ModelManager getModelManager() {
-		return modelManager;
+	protected final SmartTypeManager getModelManager() {
+		return smartTypeManager;
 	}
 
 	/**

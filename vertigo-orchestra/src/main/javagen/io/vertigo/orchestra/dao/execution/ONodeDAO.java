@@ -11,7 +11,7 @@ import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.orchestra.domain.execution.ONode;
 
@@ -28,8 +28,8 @@ public final class ONodeDAO extends DAO<ONode, java.lang.Long> implements StoreS
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public ONodeDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
-		super(ONode.class, entityStoreManager, taskManager, modelManager);
+	public ONodeDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {
+		super(ONode.class, entityStoreManager, taskManager, smartTypeManager);
 	}
 
 

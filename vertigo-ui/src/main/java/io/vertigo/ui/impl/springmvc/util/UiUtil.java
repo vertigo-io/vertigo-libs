@@ -27,7 +27,7 @@ import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -154,11 +154,11 @@ public final class UiUtil implements Serializable {
 	 * @return rendu du champs boolean
 	 */
 	public static String formatBoolean(final String fieldPath, final Boolean value) {
-		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
+		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans domain
 			return DEFAULT_FORMATTER.valueToString(value, BasicType.Boolean);
 		}
-		return modelManager.valueToString(getDtField(fieldPath).getSmartTypeDefinition(), value);
+		return smartTypeManager.valueToString(getDtField(fieldPath).getSmartTypeDefinition(), value);
 	}
 
 	public static Double getMinValue(final String fieldPath) {

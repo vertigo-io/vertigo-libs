@@ -29,7 +29,7 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
+import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.quarto.impl.publisher.PublisherDataUtil;
 import io.vertigo.quarto.impl.publisher.PublisherManagerImpl;

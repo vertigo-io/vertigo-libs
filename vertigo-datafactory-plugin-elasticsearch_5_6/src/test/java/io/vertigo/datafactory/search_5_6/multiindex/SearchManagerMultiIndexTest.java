@@ -43,7 +43,7 @@ import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
+import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.dynamox.search.DslListFilterBuilder;
 

@@ -24,7 +24,7 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
@@ -62,12 +62,12 @@ public final class ExporterUtil {
 	 */
 	public static String getText(
 			final EntityStoreManager entityStoreManager,
-			final ModelManager modelManager,
+			final SmartTypeManager smartTypeManager,
 			final Map<DtField, Map<Object, String>> referenceCache,
 			final Map<DtField, Map<Object, String>> denormCache,
 			final DtObject dto,
 			final ExportField exportColumn) {
-		return (String) getValue(entityStoreManager, modelManager, true, referenceCache, denormCache, dto, exportColumn);
+		return (String) getValue(entityStoreManager, smartTypeManager, true, referenceCache, denormCache, dto, exportColumn);
 	}
 
 	/**
@@ -84,17 +84,17 @@ public final class ExporterUtil {
 	 */
 	public static Object getValue(
 			final EntityStoreManager entityStoreManager,
-			final ModelManager modelManager,
+			final SmartTypeManager smartTypeManager,
 			final Map<DtField, Map<Object, String>> referenceCache,
 			final Map<DtField, Map<Object, String>> denormCache,
 			final DtObject dto,
 			final ExportField exportColumn) {
-		return getValue(entityStoreManager, modelManager, false, referenceCache, denormCache, dto, exportColumn);
+		return getValue(entityStoreManager, smartTypeManager, false, referenceCache, denormCache, dto, exportColumn);
 	}
 
 	private static Object getValue(
 			final EntityStoreManager entityStoreManager,
-			final ModelManager modelManager,
+			final SmartTypeManager smartTypeManager,
 			final boolean forceStringValue,
 			final Map<DtField, Map<Object, String>> referenceCache,
 			final Map<DtField, Map<Object, String>> denormCache,
@@ -106,7 +106,7 @@ public final class ExporterUtil {
 			if (dtField.getType() == DtField.FieldType.FOREIGN_KEY && entityStoreManager.getMasterDataConfig().containsMasterData(dtField.getFkDtDefinition())) {
 				Map<Object, String> referenceIndex = referenceCache.get(dtField);
 				if (referenceIndex == null) {
-					referenceIndex = createReferentielIndex(entityStoreManager, modelManager, dtField);
+					referenceIndex = createReferentielIndex(entityStoreManager, smartTypeManager, dtField);
 					referenceCache.put(dtField, referenceIndex);
 				}
 				value = referenceIndex.get(dtField.getDataAccessor().getValue(dto));
@@ -114,14 +114,14 @@ public final class ExporterUtil {
 				final ExportDenormField exportDenormColumn = (ExportDenormField) exportColumn;
 				Map<Object, String> denormIndex = denormCache.get(dtField);
 				if (denormIndex == null) {
-					denormIndex = createDenormIndex(modelManager, exportDenormColumn.getDenormList(), exportDenormColumn.getKeyField(), exportDenormColumn.getDisplayField());
+					denormIndex = createDenormIndex(smartTypeManager, exportDenormColumn.getDenormList(), exportDenormColumn.getKeyField(), exportDenormColumn.getDisplayField());
 					denormCache.put(dtField, denormIndex);
 				}
 				value = denormIndex.get(dtField.getDataAccessor().getValue(dto));
 			} else {
 				value = exportColumn.getDtField().getDataAccessor().getValue(dto);
 				if (forceStringValue) {
-					value = modelManager.valueToString(exportColumn.getDtField().getSmartTypeDefinition(), value);
+					value = smartTypeManager.valueToString(exportColumn.getDtField().getSmartTypeDefinition(), value);
 				}
 			}
 		} catch (final Exception e) {
@@ -134,7 +134,7 @@ public final class ExporterUtil {
 
 	private static Map<Object, String> createReferentielIndex(
 			final EntityStoreManager entityStoreManager,
-			final ModelManager modelManager,
+			final SmartTypeManager smartTypeManager,
 			final DtField dtField) {
 		// TODO ceci est un copier/coller de KSelectionListBean (qui resemble plus à un helper des MasterData qu'a un bean)
 		// La collection n'est pas précisé alors on va la chercher dans le repository du référentiel
@@ -142,17 +142,17 @@ public final class ExporterUtil {
 		final DtList<Entity> valueList = entityStoreManager.findAll(mdlUri);
 		final DtField dtFieldDisplay = mdlUri.getDtDefinition().getDisplayField().get();
 		final DtField dtFieldKey = valueList.getDefinition().getIdField().get();
-		return createDenormIndex(modelManager, valueList, dtFieldKey, dtFieldDisplay);
+		return createDenormIndex(smartTypeManager, valueList, dtFieldKey, dtFieldDisplay);
 	}
 
 	private static Map<Object, String> createDenormIndex(
-			final ModelManager modelManager,
+			final SmartTypeManager smartTypeManager,
 			final DtList<?> valueList,
 			final DtField keyField,
 			final DtField displayField) {
 		final Map<Object, String> denormIndex = new HashMap<>(valueList.size());
 		for (final DtObject dto : valueList) {
-			final String svalue = modelManager.valueToString(displayField.getSmartTypeDefinition(), displayField.getDataAccessor().getValue(dto));
+			final String svalue = smartTypeManager.valueToString(displayField.getSmartTypeDefinition(), displayField.getDataAccessor().getValue(dto));
 			denormIndex.put(keyField.getDataAccessor().getValue(dto), svalue);
 		}
 		return denormIndex;

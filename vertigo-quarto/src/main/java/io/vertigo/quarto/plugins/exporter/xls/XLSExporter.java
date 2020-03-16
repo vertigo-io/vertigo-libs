@@ -51,7 +51,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -77,18 +77,18 @@ final class XLSExporter {
 	private final Map<BasicType, HSSFCellStyle> oddHssfStyleCache = new EnumMap<>(BasicType.class);
 
 	private final EntityStoreManager entityStoreManager;
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 
 	/**
 	 * Constructor.
 	 * @param storeManager Store manager
 	 */
-	XLSExporter(final EntityStoreManager entityStoreManager, final ModelManager modelManager) {
+	XLSExporter(final EntityStoreManager entityStoreManager, final SmartTypeManager smartTypeManager) {
 		Assertion.checkNotNull(entityStoreManager);
-		Assertion.checkNotNull(modelManager);
+		Assertion.checkNotNull(smartTypeManager);
 		//-----
 		this.entityStoreManager = entityStoreManager;
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 	}
 
 	private static HSSFCellStyle createHeaderCellStyle(final HSSFWorkbook workbook) {
@@ -244,8 +244,8 @@ final class XLSExporter {
 			for (final ExportField exportColumn : parameters.getExportFields()) {
 				final HSSFCell cell = row.createCell(cellIndex);
 
-				value = ExporterUtil.getValue(entityStoreManager, modelManager, referenceCache, denormCache, dto, exportColumn);
-				putValueInCell(modelManager, value, cell, rowIndex % 2 == 0 ? evenHssfStyleCache : oddHssfStyleCache, cellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
+				value = ExporterUtil.getValue(entityStoreManager, smartTypeManager, referenceCache, denormCache, dto, exportColumn);
+				putValueInCell(smartTypeManager, value, cell, rowIndex % 2 == 0 ? evenHssfStyleCache : oddHssfStyleCache, cellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
 
 				cellIndex++;
 			}
@@ -269,15 +269,15 @@ final class XLSExporter {
 			updateMaxWidthPerColumn(label.getDisplay(), 1.2, labelCellIndex, maxWidthPerColumn); // +20% pour les majuscules
 
 			final HSSFCell valueCell = row.createCell(valueCellIndex);
-			value = ExporterUtil.getValue(entityStoreManager, modelManager, referenceCache, denormCache, dto, exportColumn);
-			putValueInCell(modelManager, value, valueCell, oddHssfStyleCache, valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
+			value = ExporterUtil.getValue(entityStoreManager, smartTypeManager, referenceCache, denormCache, dto, exportColumn);
+			putValueInCell(smartTypeManager, value, valueCell, oddHssfStyleCache, valueCellIndex, maxWidthPerColumn, exportColumn.getDtField().getSmartTypeDefinition());
 			rowIndex++;
 		}
 
 	}
 
 	private static void putValueInCell(
-			final ModelManager modelManager,
+			final SmartTypeManager smartTypeManager,
 			final Object value,
 			final HSSFCell cell,
 			final Map<BasicType, HSSFCellStyle> rowCellStyle,
@@ -308,7 +308,7 @@ final class XLSExporter {
 			} else if (value instanceof Boolean) {
 				final Boolean bValue = (Boolean) value;
 				//cell.setCellValue(bValue.booleanValue() ? "Oui" : "Non");
-				cell.setCellValue(modelManager.valueToString(smartTypeDefinition, bValue));
+				cell.setCellValue(smartTypeManager.valueToString(smartTypeDefinition, bValue));
 			} else if (value instanceof LocalDate) {
 				final LocalDate dateValue = (LocalDate) value;
 				// sans ce style "date" les dates apparaîtraient au format

@@ -72,7 +72,7 @@ import io.vertigo.core.util.ClassUtil;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField.FieldType;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
@@ -95,7 +95,7 @@ import io.vertigo.vega.webservice.model.UiObject;
 public final class GoogleJsonEngine implements JsonEngine, Activeable {
 	private static final String FIRST_LEVEL_KEY = "this";
 	private Gson gson;
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 	private final SearchApiVersion searchApiVersion;
 	private final Boolean serializeNulls;
 
@@ -120,17 +120,17 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 	public GoogleJsonEngine(
 			@ParamValue("serializeNulls") final Optional<Boolean> serializeNullsOpt,
 			@ParamValue("searchApiVersion") final Optional<String> searchApiVersionStr,
-			final ModelManager modelManager) {
-		Assertion.checkNotNull(modelManager);
+			final SmartTypeManager smartTypeManager) {
+		Assertion.checkNotNull(smartTypeManager);
 		//---
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 		serializeNulls = serializeNullsOpt.orElse(false);
 		searchApiVersion = SearchApiVersion.valueOf(searchApiVersionStr.orElse(SearchApiVersion.V4.name()));
 	}
 
 	@Override
 	public void start() {
-		gson = createGson(modelManager.getTypeAdapters("json"));
+		gson = createGson(smartTypeManager.getTypeAdapters("json"));
 
 	}
 
@@ -431,7 +431,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 				final DtDefinition entityDefinition = DtObjectUtil.findDtDefinition(entityClass);
 				Object entityId;
 				try {
-					entityId = modelManager.stringToValue(entityDefinition.getIdField().get().getSmartTypeDefinition(), uidJsonValue);
+					entityId = smartTypeManager.stringToValue(entityDefinition.getIdField().get().getSmartTypeDefinition(), uidJsonValue);
 				} catch (final FormatterException e) {
 					throw new JsonParseException("Unsupported UID format " + uidJsonValue, e);
 				}

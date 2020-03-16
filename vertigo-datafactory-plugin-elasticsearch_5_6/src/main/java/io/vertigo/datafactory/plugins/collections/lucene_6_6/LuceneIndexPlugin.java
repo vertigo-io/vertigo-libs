@@ -38,7 +38,7 @@ import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.impl.collections.IndexPlugin;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
@@ -57,7 +57,7 @@ import io.vertigo.datastore.entitystore.StoreEvent;
 public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionProvider {
 
 	private final CacheManager cacheManager;
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 
 	private static final String CACHE_LUCENE_INDEX = "CacheLuceneIndex";
 
@@ -72,14 +72,14 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 			final LocaleManager localeManager,
 			final CacheManager cacheManager,
 			final EventBusManager eventBusManager,
-			final ModelManager modelManager) {
+			final SmartTypeManager smartTypeManager) {
 		Assertion.checkNotNull(localeManager);
 		Assertion.checkNotNull(cacheManager);
-		Assertion.checkNotNull(modelManager);
+		Assertion.checkNotNull(smartTypeManager);
 		//-----
 		this.cacheManager = cacheManager;
 		localeManager.add(Resources.class.getName(), Resources.values());
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 	}
 
 	/**
@@ -129,7 +129,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 	private <D extends DtObject> RamLuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
 		Assertion.checkNotNull(fullDtc);
 		//-----
-		final RamLuceneIndex<D> luceneDb = new RamLuceneIndex<>(fullDtc.getDefinition(), modelManager);
+		final RamLuceneIndex<D> luceneDb = new RamLuceneIndex<>(fullDtc.getDefinition(), smartTypeManager);
 		luceneDb.addAll(fullDtc, storeValue);
 		return luceneDb;
 	}

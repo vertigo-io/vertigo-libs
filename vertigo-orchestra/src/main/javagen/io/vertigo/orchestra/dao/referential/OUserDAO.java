@@ -6,7 +6,7 @@ import io.vertigo.core.lang.Generated;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.orchestra.domain.referential.OUser;
 
@@ -23,8 +23,8 @@ public final class OUserDAO extends DAO<OUser, java.lang.Long> implements StoreS
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public OUserDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
-		super(OUser.class, entityStoreManager, taskManager, modelManager);
+	public OUserDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {
+		super(OUser.class, entityStoreManager, taskManager, smartTypeManager);
 	}
 
 }

@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionReference;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -273,12 +273,12 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		final DtField dtField = getDtField(fieldName);
 		final SmartTypeDefinition smartType = dtField.getSmartTypeDefinition();
 		if (!dtField.getCardinality().hasMany()) {
-			final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
+			final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 			if (smartType.getScope().isPrimitive()) {
-				return modelManager.valueToString(smartType, value);// encodeValue
+				return smartTypeManager.valueToString(smartType, value);// encodeValue
 			}
 			// find an adapter we are complex
-			return modelManager.getTypeAdapters("ui").get(smartType.getJavaClass()).toBasic(value).toString();// encodeValue
+			return smartTypeManager.getTypeAdapters("ui").get(smartType.getJavaClass()).toBasic(value).toString();// encodeValue
 
 		}
 		return null; // only non multiple are supported (from user input)
@@ -289,7 +289,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	public void setInputValue(final String fieldName, final String stringValue) {
 		Assertion.checkArgNotEmpty(fieldName);
 		Assertion.checkNotNull(stringValue, "formatted value can't be null, but may be empty : {0}", fieldName);
-		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
+		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		//-----
 		final DtField dtField = getDtField(fieldName);
 		//---
@@ -300,11 +300,11 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 			final SmartTypeDefinition smartTypeDefinition = dtField.getSmartTypeDefinition();
 			final Serializable typedValue;
 			if (smartTypeDefinition.getScope().isPrimitive()) {
-				typedValue = (Serializable) modelManager.stringToValue(smartTypeDefinition, stringValue);// we should use an encoder instead
+				typedValue = (Serializable) smartTypeManager.stringToValue(smartTypeDefinition, stringValue);// we should use an encoder instead
 				// succesful encoding we can format and put in the inputbuffer
-				formattedValue = modelManager.valueToString(dtField.getSmartTypeDefinition(), typedValue);
+				formattedValue = smartTypeManager.valueToString(dtField.getSmartTypeDefinition(), typedValue);
 			} else {
-				typedValue = (Serializable) modelManager.getTypeAdapters("ui").get(smartTypeDefinition.getJavaClass()).toJava(stringValue, smartTypeDefinition.getJavaClass());
+				typedValue = (Serializable) smartTypeManager.getTypeAdapters("ui").get(smartTypeDefinition.getJavaClass()).toJava(stringValue, smartTypeDefinition.getJavaClass());
 				formattedValue = stringValue;
 			}
 			doSetTypedValue(dtField, typedValue);

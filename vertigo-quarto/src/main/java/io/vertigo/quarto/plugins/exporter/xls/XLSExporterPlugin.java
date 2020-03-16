@@ -24,7 +24,7 @@ import java.io.OutputStream;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.quarto.exporter.model.Export;
 import io.vertigo.quarto.exporter.model.ExportFormat;
@@ -37,20 +37,20 @@ import io.vertigo.quarto.impl.exporter.ExporterPlugin;
  */
 public final class XLSExporterPlugin implements ExporterPlugin {
 	private final EntityStoreManager entityStoreManager;
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 
 	@Inject
 	public XLSExporterPlugin(
 			final EntityStoreManager entityStoreManager,
-			final ModelManager modelManager) {
+			final SmartTypeManager smartTypeManager) {
 		this.entityStoreManager = entityStoreManager;
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public void exportData(final Export export, final OutputStream out) throws IOException {
-		new XLSExporter(entityStoreManager, modelManager).exportData(export, out);
+		new XLSExporter(entityStoreManager, smartTypeManager).exportData(export, out);
 	}
 
 	/** {@inheritDoc} */

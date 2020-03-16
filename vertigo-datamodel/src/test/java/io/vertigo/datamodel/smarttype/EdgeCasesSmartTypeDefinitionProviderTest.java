@@ -8,6 +8,7 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterId;
 import io.vertigo.datamodel.smarttype.data.TestOverride;
 import io.vertigo.datamodel.smarttype.data.TestSmartTypes;

@@ -53,7 +53,7 @@ import io.vertigo.datafactory.search.data.domain.ItemDataBase;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchQuery;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
+import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.DataStoreFeatures;

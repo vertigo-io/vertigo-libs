@@ -54,7 +54,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.node.Home;
 import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
@@ -84,7 +84,7 @@ final class RamLuceneIndex<D extends DtObject> {
 
 	private final Analyzer indexAnalyser;
 	private final RamLuceneQueryFactory luceneQueryFactory;
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 
 	/**
 	 * @param dtDefinition DtDefinition des objets indexés
@@ -92,14 +92,14 @@ final class RamLuceneIndex<D extends DtObject> {
 	 */
 	RamLuceneIndex(
 			final DtDefinition dtDefinition,
-			final ModelManager modelManager) throws IOException {
+			final SmartTypeManager smartTypeManager) throws IOException {
 		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(modelManager);
+		Assertion.checkNotNull(smartTypeManager);
 		//-----
 		indexAnalyser = new DefaultAnalyzer(false); //les stop word marchent mal si asymétrique entre l'indexation et la query
 		luceneQueryFactory = new RamLuceneQueryFactory(indexAnalyser);
 		this.dtDefinition = dtDefinition;
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 		directory = new RAMDirectory();
 
 		//l'index est crée automatiquement la premiere fois.
@@ -197,7 +197,7 @@ final class RamLuceneIndex<D extends DtObject> {
 					final Object value = dtField.getDataAccessor().getValue(dto);
 					if (value != null && !dtField.equals(idField)) {
 						if (value instanceof String) {
-							final String valueAsString = getStringValue(dto, dtField, modelManager);
+							final String valueAsString = getStringValue(dto, dtField, smartTypeManager);
 							addIndexed(document, dtField.getName(), valueAsString, storeValue);
 						} else if (value instanceof Date) {
 							final String valueAsString = DateTools.dateToString((Date) value, DateTools.Resolution.DAY);
@@ -217,7 +217,7 @@ final class RamLuceneIndex<D extends DtObject> {
 		return Home.getApp().getComponentSpace().resolve(EntityStoreManager.class);
 	}
 
-	private static String getStringValue(final DtObject dto, final DtField field, final ModelManager modelManager) {
+	private static String getStringValue(final DtObject dto, final DtField field, final SmartTypeManager smartTypeManager) {
 		final String stringValue;
 		final Object value = field.getDataAccessor().getValue(dto);
 		if (value != null) {
@@ -228,7 +228,7 @@ final class RamLuceneIndex<D extends DtObject> {
 				final UID<Entity> uid = UID.of(field.getFkDtDefinition(), value);
 				final DtObject fkDto = getEntityStoreManager().readOne(uid);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
-				stringValue = modelManager.valueToString(displayField.getSmartTypeDefinition(), displayValue);
+				stringValue = smartTypeManager.valueToString(displayField.getSmartTypeDefinition(), displayValue);
 			} else {
 				stringValue = String.valueOf(field.getDataAccessor().getValue(dto));
 			}

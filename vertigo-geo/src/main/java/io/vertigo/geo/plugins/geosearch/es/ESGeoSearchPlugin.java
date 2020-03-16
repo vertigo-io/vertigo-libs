@@ -47,7 +47,7 @@ import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtFieldName;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -69,7 +69,7 @@ public final class ESGeoSearchPlugin implements GeoSearchPlugin, Activeable {
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<RestHighLevelElasticSearchConnector> elasticSearchConnectors,
 			final CodecManager codecManager,
-			final ModelManager modelManager,
+			final SmartTypeManager smartTypeManager,
 			final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(envIndexPrefix);
 		Assertion.checkNotNull(elasticSearchConnectors);

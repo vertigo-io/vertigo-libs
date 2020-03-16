@@ -19,7 +19,7 @@ import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.task.TaskManager;
 import ${dao.dtClassCanonicalName};
 
@@ -34,10 +34,11 @@ public final class ${dao.classSimpleName} extends DAO<${dao.dtClassSimpleName}, 
 	 * Contructeur.
 	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
+	 * @param smartTypeManager SmartTypeManager
 	 */
 	@Inject
-	public ${dao.classSimpleName}(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
-		super(${dao.dtClassSimpleName}.class, entityStoreManager, taskManager, modelManager);
+	public ${dao.classSimpleName}(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {
+		super(${dao.dtClassSimpleName}.class, entityStoreManager, taskManager, smartTypeManager);
 	}
 
 	<#if dao.keyConcept>

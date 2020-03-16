@@ -31,7 +31,7 @@ import io.vertigo.datafactory.search.data.TestSearchSmartTypes;
 import io.vertigo.datafactory.search.data.domain.ItemSearchLoader;
 import io.vertigo.datafactory.search_5_6.AbstractSearchManagerTest;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
+import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 
 /**
  * @author  npiedeloup

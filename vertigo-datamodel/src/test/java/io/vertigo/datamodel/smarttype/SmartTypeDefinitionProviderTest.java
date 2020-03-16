@@ -13,12 +13,13 @@ import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.DataModelFeatures;
+import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.smarttype.data.TestSmartTypes;
 import io.vertigo.datamodel.smarttype.data.domain.Base;
 
 public class SmartTypeDefinitionProviderTest {
 	@Inject
-	private ModelManager modelManager;
+	private SmartTypeManager smartTypeManager;
 
 	private AutoCloseableApp app;
 
@@ -56,10 +57,10 @@ public class SmartTypeDefinitionProviderTest {
 	@Test
 	public void testUpper() {
 		final SmartTypeDefinition smartTypeDefinition = app.getDefinitionSpace().resolve("STySiret2", SmartTypeDefinition.class);
-		Assertions.assertEquals("AA", modelManager.valueToString(smartTypeDefinition, "aa"));
-		Assertions.assertEquals("AA", modelManager.valueToString(smartTypeDefinition, "AA"));
-		Assertions.assertEquals("AA", modelManager.valueToString(smartTypeDefinition, "Aa"));
-		Assertions.assertEquals("AA", modelManager.valueToString(smartTypeDefinition, "aA"));
+		Assertions.assertEquals("AA", smartTypeManager.valueToString(smartTypeDefinition, "aa"));
+		Assertions.assertEquals("AA", smartTypeManager.valueToString(smartTypeDefinition, "AA"));
+		Assertions.assertEquals("AA", smartTypeManager.valueToString(smartTypeDefinition, "Aa"));
+		Assertions.assertEquals("AA", smartTypeManager.valueToString(smartTypeDefinition, "aA"));
 	}
 
 }

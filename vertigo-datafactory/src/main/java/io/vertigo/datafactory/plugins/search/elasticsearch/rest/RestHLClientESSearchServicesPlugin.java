@@ -73,7 +73,7 @@ import io.vertigo.datafactory.plugins.search.elasticsearch.IndexType;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -94,7 +94,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	public static final String SUFFIX_SORT_FIELD = ".keyword";
 
 	private static final Logger LOGGER = LogManager.getLogger(RestHLClientESSearchServicesPlugin.class);
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 	private final CodecManager codecManager;
 	private final RestHighLevelElasticSearchConnector elasticSearchConnector;
 
@@ -125,7 +125,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<RestHighLevelElasticSearchConnector> elasticSearchConnectors,
 			final CodecManager codecManager,
-			final ModelManager modelManager,
+			final SmartTypeManager smartTypeManager,
 			final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(envIndexPrefix);
 		Assertion.checkNotNull(elasticSearchConnectors);
@@ -133,7 +133,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		//Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
 		//Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
 		//-----
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 		this.codecManager = codecManager;
 		this.defaultMaxRows = defaultMaxRows;
 		defaultListState = DtListState.of(defaultMaxRows);
@@ -149,7 +149,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		typeAdapters = modelManager.getTypeAdapters("search");
+		typeAdapters = smartTypeManager.getTypeAdapters("search");
 		elasticDocumentCodec = new ESDocumentCodec(codecManager, typeAdapters);
 		//Init ElasticSearch Client
 		esClient = elasticSearchConnector.getClient();

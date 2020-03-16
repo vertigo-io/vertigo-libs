@@ -6,7 +6,7 @@ import io.vertigo.core.lang.Generated;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.studio.domain.fileinfo.VxFileInfo;
 
@@ -23,8 +23,8 @@ public final class VxFileInfoDAO extends DAO<VxFileInfo, java.lang.Long> impleme
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public VxFileInfoDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
-		super(VxFileInfo.class, entityStoreManager, taskManager, modelManager);
+	public VxFileInfoDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {
+		super(VxFileInfo.class, entityStoreManager, taskManager, smartTypeManager);
 	}
 
 }

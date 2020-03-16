@@ -33,7 +33,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicTypeAdapter;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DataAccessor;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -56,19 +56,19 @@ final class ESDocumentCodec {
 
 	//-----
 	private final CodecManager codecManager;
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 
 	/**
 	 * Constructor.
 	 * @param codecManager Manager des codecs
 	 * @param codecManager Manager de la modelisation (SmartTypes)
 	 */
-	ESDocumentCodec(final CodecManager codecManager, final ModelManager modelManager) {
+	ESDocumentCodec(final CodecManager codecManager, final SmartTypeManager smartTypeManager) {
 		Assertion.checkNotNull(codecManager);
-		Assertion.checkNotNull(modelManager);
+		Assertion.checkNotNull(smartTypeManager);
 		//-----
 		this.codecManager = codecManager;
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 	}
 
 	private <I extends DtObject> String encode(final I dto) {
@@ -146,7 +146,7 @@ final class ESDocumentCodec {
 			final DtObject dtIndex = index.getIndexDtObject();
 			final DtDefinition indexDtDefinition = DtObjectUtil.findDtDefinition(dtIndex);
 			final Set<DtField> copyToFields = index.getDefinition().getIndexCopyToFields();
-			final Map<Class, BasicTypeAdapter> typeAdapters = modelManager.getTypeAdapters("search");
+			final Map<Class, BasicTypeAdapter> typeAdapters = smartTypeManager.getTypeAdapters("search");
 			
 			for (final DtField dtField : indexDtDefinition.getFields()) {
 				if (!copyToFields.contains(dtField)) {//On index pas les copyFields
