@@ -60,13 +60,13 @@ public final class ScriptManagerTest {
 	private AutoCloseableApp app;
 
 	@BeforeEach
-	public final void setUp() throws Exception {
+	public void setUp() throws Exception {
 		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
 	}
 
 	@AfterEach
-	public final void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		if (app != null) {
 			app.close();
 		}
@@ -117,6 +117,7 @@ public final class ScriptManagerTest {
 			//On génère une erreur java
 			final String script = "<%if (nom.sttart(\"Dur\")) {%>Il s'agit bien de M.Duraton<%}%>";
 			final String result = scriptManager.evaluateScript(script, SeparatorType.CLASSIC, createParameters());
+			assertEquals("Il s'agit bien de M.Duraton", result);
 		});
 	}
 
