@@ -301,7 +301,6 @@ public abstract class AbstractSqlManagerTest {
 		//On crée les données
 		createDatas();
 		//----
-		;
 		final List<Movie> movies;
 		final List<Movie> moviesParams = new ArrayList<>();
 		moviesParams.add(Movies.createMovie(1, Movies.TITLE_MOVIE_1, null, null, null, null, null, null, null));

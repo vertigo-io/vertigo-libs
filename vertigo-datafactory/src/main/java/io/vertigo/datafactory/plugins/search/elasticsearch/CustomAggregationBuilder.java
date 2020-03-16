@@ -165,7 +165,7 @@ public final class CustomAggregationBuilder extends AggregationBuilder {
 	}
 
 	@Override
-	protected AggregationBuilder shallowCopy(final org.elasticsearch.search.aggregations.AggregatorFactories.Builder factoriesBuilder, final Map<String, Object> metaData) {
+	protected AggregationBuilder shallowCopy(final org.elasticsearch.search.aggregations.AggregatorFactories.Builder originalFactoriesBuilder, final Map<String, Object> originalMetaData) {
 		throw new UnsupportedOperationException("not yet");
 	}
 

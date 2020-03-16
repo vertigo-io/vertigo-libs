@@ -45,6 +45,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.impl.search.SearchResource;
+import io.vertigo.datafactory.plugins.search.elasticsearch.AsbtractESSearchRequestBuilder;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESDocumentCodec;
 import io.vertigo.datafactory.plugins.search.elasticsearch.ESFacetedQueryResultBuilder;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
@@ -146,7 +147,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 		Assertion.checkNotNull(query);
 		//-----
 		try {
-			final QueryBuilder queryBuilder = ESSearchRequestBuilder.translateToQueryBuilder(query);
+			final QueryBuilder queryBuilder = AsbtractESSearchRequestBuilder.translateToQueryBuilder(query);
 			final DeleteByQueryRequestBuilder deleteByQueryAction = new DeleteByQueryRequestBuilder(esClient, DeleteByQueryAction.INSTANCE)
 					.filter(queryBuilder);
 			deleteByQueryAction

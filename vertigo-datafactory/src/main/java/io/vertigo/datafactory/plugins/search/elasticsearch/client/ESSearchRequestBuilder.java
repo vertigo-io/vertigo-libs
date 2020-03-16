@@ -42,7 +42,7 @@ import io.vertigo.datamodel.structure.model.DtListState;
  */
 final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<SearchRequestBuilder, SearchRequestBuilder, ESSearchRequestBuilder> {
 
-	private final SearchRequestBuilder searchRequestBuilder;
+	private final SearchRequestBuilder mySearchRequestBuilder;
 
 	/**
 	 * @param indexName Index name (env name)
@@ -51,7 +51,7 @@ final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<Search
 	ESSearchRequestBuilder(final String indexName, final Client esClient, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		super(typeAdapters);
 		//-----
-		searchRequestBuilder = esClient.prepareSearch()
+		mySearchRequestBuilder = esClient.prepareSearch()
 				.setIndices(indexName)
 				.setSearchType(SearchType.QUERY_THEN_FETCH)
 				.setFetchSource(ESDocumentCodec.FULL_RESULT, null);
@@ -59,34 +59,34 @@ final class ESSearchRequestBuilder extends AsbtractESSearchRequestBuilder<Search
 
 	@Override
 	protected void appendListState(final SearchQuery searchQuery, final DtListState listState, final int defaultMaxRows, final SearchIndexDefinition indexDefinition) {
-		searchRequestBuilder.setFrom(listState.getSkipRows())
+		mySearchRequestBuilder.setFrom(listState.getSkipRows())
 				//If we send a clustering query, we don't retrieve result with hits response but with buckets
 				.setSize(searchQuery.isClusteringFacet() ? 0 : listState.getMaxRows().orElse(myDefaultMaxRows));
 		if (listState.getSortFieldName().isPresent()) {
-			searchRequestBuilder.addSort(getFieldSortBuilder(indexDefinition, listState));
+			mySearchRequestBuilder.addSort(getFieldSortBuilder(indexDefinition, listState));
 		}
 	}
 
 	@Override
 	protected SearchRequestBuilder getSearchSourceBuilder() {
-		return searchRequestBuilder;
+		return mySearchRequestBuilder;
 	}
 
 	@Override
 	protected SearchRequestBuilder getSearchRequest() {
-		return searchRequestBuilder;
+		return mySearchRequestBuilder;
 	}
 
 	@Override
 	protected void setQueryAndPostFilter(final QueryBuilder requestQueryBuilder, final BoolQueryBuilder postFilterBoolQueryBuilder) {
-		searchRequestBuilder
+		mySearchRequestBuilder
 				.setQuery(requestQueryBuilder)
 				.setPostFilter(postFilterBoolQueryBuilder);
 	}
 
 	@Override
 	protected void setHighlighter(final HighlightBuilder highlightBuilder) {
-		searchRequestBuilder.highlighter(highlightBuilder);
+		mySearchRequestBuilder.highlighter(highlightBuilder);
 	}
 
 	@Override
