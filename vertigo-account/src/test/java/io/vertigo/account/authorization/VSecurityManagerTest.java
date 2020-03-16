@@ -25,7 +25,9 @@ import java.util.function.Predicate;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.authorization.SecurityNames.GlobalAuthorizations;
@@ -38,8 +40,9 @@ import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.data.model.Record;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.Tuple;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.database.impl.sql.vendor.postgresql.PostgreSqlDataBase;
@@ -49,8 +52,7 @@ import io.vertigo.datastore.plugins.entitystore.sql.SqlCriteriaEncoder;
 /**
  * @author pchretien
  */
-public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
-
+public final class VSecurityManagerTest {
 	private static final long DEFAULT_REG_ID = 1L;
 	private static final long DEFAULT_DEP_ID = 2L;
 	private static final long DEFAULT_COM_ID = 3L;
@@ -66,8 +68,22 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private AuthorizationManager authorizationManager;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return MyNodeConfig.config();
 	}
 
@@ -121,7 +137,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 
 	@Test
 	public void testRole() {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
 		final Role admin = definitionSpace.resolve("RAdmin", Role.class);
 		Assertions.assertTrue("RAdmin".equals(admin.getName()));
 		final Role secretary = definitionSpace.resolve("RSecretary", Role.class);
@@ -643,7 +659,7 @@ public final class VSecurityManagerTest extends AbstractTestCaseJU5 {
 	}
 
 	private Authorization getAuthorization(final AuthorizationName authorizationName) {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
 		return definitionSpace.resolve(authorizationName.name(), Authorization.class);
 	}
 

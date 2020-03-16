@@ -20,7 +20,9 @@ package io.vertigo.account.authorization;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.authorization.SecurityNames.GlobalAuthorizations;
@@ -33,14 +35,15 @@ import io.vertigo.account.data.TestUserSession;
 import io.vertigo.account.data.model.Record;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 
 /**
  * @author pchretien
  */
-public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
+public final class VSecurityAspectTest {
 
 	private static final long DEFAULT_REG_ID = 1L;
 	private static final long DEFAULT_DEP_ID = 2L;
@@ -62,8 +65,22 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 	@Inject
 	private PartialSecuredServices partialSecuredServices;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return MyNodeConfig.config();
 	}
 
@@ -261,7 +278,7 @@ public final class VSecurityAspectTest extends AbstractTestCaseJU5 {
 	}
 
 	private Authorization getAuthorization(final AuthorizationName authorizationName) {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
 		return definitionSpace.resolve(authorizationName.name(), Authorization.class);
 	}
 

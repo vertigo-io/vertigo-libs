@@ -22,7 +22,9 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.account.Account;
@@ -30,29 +32,44 @@ import io.vertigo.account.impl.authentication.UsernameAuthenticationToken;
 import io.vertigo.account.impl.authentication.UsernamePasswordAuthenticationToken;
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.NodeConfig;
 
 /**
  * Implementation standard de la gestion centralisee des droits d'acces.
  *
  * @author npiedeloup
  */
-abstract class AbstractAuthenticationManagerTest extends AbstractTestCaseJU5 {
+abstract class AbstractAuthenticationManagerTest {
 
 	@Inject
 	protected VSecurityManager securityManager;
 	@Inject
 	protected AuthenticationManager authenticationManager;
 
-	@Override
-	public void doSetUp() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
 		securityManager.startCurrentUserSession(securityManager.createUserSession());
 	}
 
-	@Override
-	public void doTearDown() {
-		securityManager.stopCurrentUserSession();
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			try {
+				securityManager.stopCurrentUserSession();
+			} finally {
+				app.close();
+			}
+		}
 	}
+
+	protected abstract NodeConfig buildNodeConfig();
 
 	@Test
 	public void testLoginFail() {

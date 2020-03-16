@@ -23,7 +23,9 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.security.UserSession;
@@ -32,10 +34,12 @@ import io.vertigo.commons.transaction.VTransactionAfterCompletionFunction;
 import io.vertigo.commons.transaction.VTransactionResource;
 import io.vertigo.commons.transaction.VTransactionResourceId;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datamodel.structure.model.UID;
 
-public abstract class AbstractAccountManagerTest extends AbstractTestCaseJU5 {
+public abstract class AbstractAccountManagerTest {
 
 	@Inject
 	private AccountManager accountManager;
@@ -56,14 +60,28 @@ public abstract class AbstractAccountManagerTest extends AbstractTestCaseJU5 {
 		return UID.of(AccountGroup.class, id);
 	}
 
-	@Override
-	public void doSetUp() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
 		accountUID0 = createAccountUID("0");
 		accountUID1 = createAccountUID("1");
 		accountUID2 = createAccountUID("2");
 		groupURI = createGroupURI("100");
 		groupAllURI = createGroupURI("ALL");
 	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	protected abstract NodeConfig buildNodeConfig();
 
 	@Test
 	public void testLogin() {

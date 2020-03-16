@@ -23,7 +23,9 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.account.AccountFeatures;
@@ -33,7 +35,8 @@ import io.vertigo.account.data.model.DtDefinitions;
 import io.vertigo.account.identityprovider.model.User;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -47,7 +50,7 @@ import io.vertigo.datastore.filestore.model.VFile;
  *
  * @author npiedeloup
  */
-abstract class AbstractIdentityProviderManagerTest extends AbstractTestCaseJU5 {
+abstract class AbstractIdentityProviderManagerTest {
 
 	@Inject
 	private VSecurityManager securityManager;
@@ -55,7 +58,27 @@ abstract class AbstractIdentityProviderManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private IdentityProviderManager identityProviderManager;
 
-	@Override
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		securityManager.startCurrentUserSession(securityManager.createUserSession());
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			try {
+				app.close();
+			} finally {
+				securityManager.stopCurrentUserSession();
+			}
+		}
+	}
+
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
@@ -85,16 +108,6 @@ abstract class AbstractIdentityProviderManagerTest extends AbstractTestCaseJU5 {
 										.build())
 						.build())
 				.build();
-	}
-
-	@Override
-	public void doSetUp() {
-		securityManager.startCurrentUserSession(securityManager.createUserSession());
-	}
-
-	@Override
-	public void doTearDown() {
-		securityManager.stopCurrentUserSession();
 	}
 
 	@Test
