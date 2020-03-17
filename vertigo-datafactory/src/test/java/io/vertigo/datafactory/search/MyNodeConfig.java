@@ -85,6 +85,8 @@ public final class MyNodeConfig {
 		nodeConfigBuilder.addModule(new DataModelFeatures().build());
 		if (withDb) {
 			nodeConfigBuilder.addModule(new DataStoreFeatures()
+					.withCache()
+					.withMemoryCache()
 					.withEntityStore()
 					.withSqlEntityStore()
 					.build());
