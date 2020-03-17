@@ -25,13 +25,16 @@ import java.util.Collections;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -65,7 +68,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilder;
  *
  * @author npiedeloup
  */
-public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
+public class SearchManagerStoreTest {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
@@ -81,8 +84,25 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 
 	private long initialDbItemSize = 0;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		doSetUp();
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		doTearDown();
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private static NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
@@ -125,9 +145,8 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 				.build();
 	}
 
-	@Override
-	protected void doSetUp() throws SQLException {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+	private void doSetUp() throws SQLException {
+		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
 		itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 
 		//A chaque test on recrée la table famille
@@ -151,9 +170,7 @@ public class SearchManagerStoreTest extends AbstractTestCaseJU5 {
 		waitAndExpectIndexation(itemDataBase.size());
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected void doTearDown() throws SQLException {
+	private void doTearDown() throws SQLException {
 		//A chaque fin de test on arréte la base.
 		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
 			execCallableStatement(connectionCloseable.getConnection(), "shutdown;");

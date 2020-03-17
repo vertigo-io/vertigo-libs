@@ -28,6 +28,7 @@ import io.vertigo.datafactory.collections.data.SmartCarSearchClient;
 import io.vertigo.datafactory.collections.data.TestCollectionsSmartTypes;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
+import io.vertigo.datastore.DataStoreFeatures;
 
 /**
  * @author  npiedeloup
@@ -43,6 +44,10 @@ public final class FacetManagerLucene_6_6Test extends FacetManagerTest {
 				.endBoot()
 				.addModule(new CommonsFeatures().build())
 				.addModule(new DataModelFeatures().build())
+				.addModule(new DataStoreFeatures()
+						.withCache()
+						.withMemoryCache()
+						.build())
 				.addModule(new DataFactoryFeatures()
 						.addPlugin(io.vertigo.datafactory.plugins.collections.lucene_6_6.LuceneIndexPlugin.class)
 						.build())
