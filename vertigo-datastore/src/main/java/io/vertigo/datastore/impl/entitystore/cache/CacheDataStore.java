@@ -41,9 +41,9 @@ import io.vertigo.datamodel.structure.util.DtObjectUtil;
 import io.vertigo.datamodel.structure.util.VCollectors;
 import io.vertigo.datastore.entitystore.MasterDataConfig;
 import io.vertigo.datastore.entitystore.StoreEvent;
-import io.vertigo.datastore.impl.entitystore.DataStoreConfigImpl;
-import io.vertigo.datastore.impl.entitystore.DataStorePlugin;
-import io.vertigo.datastore.impl.entitystore.logical.LogicalDataStoreConfig;
+import io.vertigo.datastore.impl.entitystore.EntityStoreConfigImpl;
+import io.vertigo.datastore.impl.entitystore.EntityStorePlugin;
+import io.vertigo.datastore.impl.entitystore.logical.LogicalEntityStoreConfig;
 
 /**
  * Gestion des données mises en cache.
@@ -53,7 +53,7 @@ import io.vertigo.datastore.impl.entitystore.logical.LogicalDataStoreConfig;
 public final class CacheDataStore implements SimpleDefinitionProvider {
 	private final MasterDataConfig masterDataConfig;
 	private final CacheDataStoreConfig cacheDataStoreConfig;
-	private final LogicalDataStoreConfig logicalStoreConfig;
+	private final LogicalEntityStoreConfig logicalStoreConfig;
 
 	/**
 	 * Constructor.
@@ -62,7 +62,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	 */
 	public CacheDataStore(
 			final MasterDataConfig masterDataConfig,
-			final DataStoreConfigImpl dataStoreConfig) {
+			final EntityStoreConfigImpl dataStoreConfig) {
 		Assertion.checkNotNull(masterDataConfig);
 		Assertion.checkNotNull(dataStoreConfig);
 		//-----
@@ -71,7 +71,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
 	}
 
-	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
+	private EntityStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
 		return logicalStoreConfig.getPhysicalDataStore(dtDefinition);
 	}
 

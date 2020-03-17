@@ -27,7 +27,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Home;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.Formatter;
@@ -87,8 +87,8 @@ public final class UiUtil implements Serializable {
 		if (!fieldPath.contains(".")) { //cas des ContextRef sans smartType
 			return DEFAULT_FORMATTER.valueToString(value, BasicType.Boolean);
 		}
-		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
-		return modelManager.valueToString(getDtField(fieldPath).getSmartTypeDefinition(), value);
+		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+		return smartTypeManager.valueToString(getDtField(fieldPath).getSmartTypeDefinition(), value);
 	}
 
 	/**

@@ -54,7 +54,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.node.Home;
 import io.vertigo.datafactory.collections.ListFilter;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
@@ -79,7 +79,7 @@ final class RamLuceneIndex<D extends DtObject> {
 
 	//DtDefinition est non serializable
 	private final DtDefinition dtDefinition;
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 	private final Map<String, D> indexedObjectPerPk = new HashMap<>();
 	private final Directory directory;
 
@@ -90,14 +90,14 @@ final class RamLuceneIndex<D extends DtObject> {
 	 * @param dtDefinition DtDefinition des objets indexés
 	 * @throws IOException Exception I/O
 	 */
-	RamLuceneIndex(final DtDefinition dtDefinition, final ModelManager modelManager) throws IOException {
+	RamLuceneIndex(final DtDefinition dtDefinition, final SmartTypeManager smartTypeManager) throws IOException {
 		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(modelManager);
+		Assertion.checkNotNull(smartTypeManager);
 		//-----
 		indexAnalyser = new DefaultAnalyzer(false); //les stop word marchent mal si asymétrique entre l'indexation et la query
 		luceneQueryFactory = new RamLuceneQueryFactory(indexAnalyser);
 		this.dtDefinition = dtDefinition;
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 		directory = new RAMDirectory();
 
 		//l'index est crée automatiquement la premiere fois.
@@ -226,7 +226,7 @@ final class RamLuceneIndex<D extends DtObject> {
 				final UID<Entity> uid = UID.of(field.getFkDtDefinition(), value);
 				final DtObject fkDto = getEntityStoreManager().readOne(uid);
 				final Object displayValue = displayField.getDataAccessor().getValue(fkDto);
-				stringValue = modelManager.valueToString(displayField.getSmartTypeDefinition(), displayValue);
+				stringValue = smartTypeManager.valueToString(displayField.getSmartTypeDefinition(), displayValue);
 			} else {
 				stringValue = String.valueOf(field.getDataAccessor().getValue(dto));
 			}

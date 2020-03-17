@@ -41,7 +41,7 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
+import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.task.data.TestSmartTypes;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
@@ -60,13 +60,13 @@ public final class TaskManagerTest {
 	private AutoCloseableApp app;
 
 	@BeforeEach
-	public final void setUp() throws Exception {
+	public void setUp() throws Exception {
 		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
 	}
 
 	@AfterEach
-	public final void tearDown() throws Exception {
+	public void tearDown() throws Exception {
 		if (app != null) {
 			app.close();
 		}
@@ -114,6 +114,7 @@ public final class TaskManagerTest {
 			final DefinitionSpace definitionSpace = app.getDefinitionSpace();
 			//L'appel à la résolution doit remonter une assertion
 			final TaskDefinition taskDefinition = definitionSpace.resolve(null, TaskDefinition.class);
+			Assertions.assertNotNull(taskDefinition);
 		});
 	}
 

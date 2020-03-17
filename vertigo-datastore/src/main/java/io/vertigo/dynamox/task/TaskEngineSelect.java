@@ -31,7 +31,7 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
 import io.vertigo.database.sql.statement.SqlStatement;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datamodel.structure.util.VCollectors;
@@ -73,8 +73,8 @@ public class TaskEngineSelect extends AbstractTaskEngineSQL {
 			final VTransactionManager transactionManager,
 			final EntityStoreManager entityStoreManager,
 			final SqlDataBaseManager sqlDataBaseManager,
-			final ModelManager modelManager) {
-		super(scriptManager, transactionManager, entityStoreManager, sqlDataBaseManager, modelManager);
+			final SmartTypeManager smartTypeManager) {
+		super(scriptManager, transactionManager, entityStoreManager, sqlDataBaseManager, smartTypeManager);
 	}
 
 	/*

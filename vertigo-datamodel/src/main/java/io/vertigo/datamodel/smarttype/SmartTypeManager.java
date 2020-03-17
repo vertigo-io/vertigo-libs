@@ -7,7 +7,7 @@ import io.vertigo.core.node.component.Manager;
 import io.vertigo.datamodel.structure.metamodel.ConstraintException;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
 
-public interface ModelManager extends Manager {
+public interface SmartTypeManager extends Manager {
 
 	void checkValue(SmartTypeDefinition smartTypeDefinition, Object value);
 

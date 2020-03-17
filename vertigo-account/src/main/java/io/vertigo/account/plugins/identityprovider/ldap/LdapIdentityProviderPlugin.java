@@ -51,7 +51,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
@@ -74,7 +74,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 
 	private final LdapConnector ldapConnector;
 	private final CodecManager codecManager;
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 
 	private final String ldapAccountBaseDn;
 
@@ -104,14 +104,14 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 			@ParamValue("ldapUserAttributeMapping") final String ldapUserAttributeMappingStr,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final CodecManager codecManager,
-			final ModelManager modelManager,
+			final SmartTypeManager smartTypeManager,
 			final List<LdapConnector> ldapConnectors) {
 		Assertion.checkArgNotEmpty(ldapAccountBaseDn);
 		Assertion.checkArgNotEmpty(ldapUserAuthAttribute);
 		Assertion.checkArgNotEmpty(userIdentityEntity);
 		Assertion.checkArgNotEmpty(ldapUserAttributeMappingStr);
 		Assertion.checkNotNull(codecManager);
-		Assertion.checkNotNull(modelManager);
+		Assertion.checkNotNull(smartTypeManager);
 		Assertion.checkNotNull(ldapConnectors);
 		Assertion.checkArgument(!ldapConnectors.isEmpty(), "At least one LdapConnector espected");
 		//-----
@@ -119,7 +119,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 		this.ldapUserAuthAttribute = ldapUserAuthAttribute;
 		this.userIdentityEntity = userIdentityEntity;
 		this.ldapUserAttributeMappingStr = ldapUserAttributeMappingStr;
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 		this.codecManager = codecManager;
 		final String connectorName = connectorNameOpt.orElse("main");
 		ldapConnector = ldapConnectors.stream()
@@ -293,7 +293,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	}
 
 	private void setTypedValue(final DtField dtField, final Entity user, final String valueStr) throws FormatterException {
-		final Serializable typedValue = (Serializable) modelManager.stringToValue(dtField.getSmartTypeDefinition(), valueStr);
+		final Serializable typedValue = (Serializable) smartTypeManager.stringToValue(dtField.getSmartTypeDefinition(), valueStr);
 		dtField.getDataAccessor().setValue(user, typedValue);
 	}
 

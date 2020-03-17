@@ -3,7 +3,7 @@ package io.vertigo.struts2.data.dao.people;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Generated;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
@@ -23,8 +23,8 @@ public final class CastingDAO extends DAO<Casting, java.lang.Long> implements St
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public CastingDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
-		super(Casting.class, entityStoreManager, taskManager, modelManager);
+	public CastingDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {
+		super(Casting.class, entityStoreManager, taskManager, smartTypeManager);
 	}
 
 }

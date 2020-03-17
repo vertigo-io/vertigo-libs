@@ -30,7 +30,7 @@ import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListState;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datastore.impl.entitystore.DataStorePlugin;
+import io.vertigo.datastore.impl.entitystore.EntityStorePlugin;
 
 /**
  * Impl�mentation du MasterDataStore qui permet l'impl�mentation manuel des m�thodes de chargement.
@@ -42,7 +42,7 @@ import io.vertigo.datastore.impl.entitystore.DataStorePlugin;
  * @author npiedeloup
  * @version $Id: AbstractStaticDataStorePlugin.java,v 1.7 2014/08/04 16:57:50 npiedeloup Exp $
  */
-public class AbstractStaticMDDataStorePlugin implements DataStorePlugin {
+public class AbstractStaticMDDataStorePlugin implements EntityStorePlugin {
 
 	private static final String DEFAULT_CONNECTION_NAME = "main";
 	private final String dataSpace;

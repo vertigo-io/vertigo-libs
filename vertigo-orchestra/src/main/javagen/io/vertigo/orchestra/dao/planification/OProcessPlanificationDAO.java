@@ -11,7 +11,7 @@ import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.orchestra.domain.planification.OProcessPlanification;
 
@@ -28,8 +28,8 @@ public final class OProcessPlanificationDAO extends DAO<OProcessPlanification, j
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public OProcessPlanificationDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
-		super(OProcessPlanification.class, entityStoreManager, taskManager, modelManager);
+	public OProcessPlanificationDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {
+		super(OProcessPlanification.class, entityStoreManager, taskManager, smartTypeManager);
 	}
 
 

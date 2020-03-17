@@ -38,7 +38,7 @@ import com.lowagie.text.Rectangle;
 import com.lowagie.text.Table;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
@@ -56,18 +56,18 @@ public abstract class AbstractExporterIText {
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
 
 	private final EntityStoreManager entityStoreManager;
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 
 	/**
 	 * Constructor.
 	 * @param storeManager Store manager
 	 */
-	protected AbstractExporterIText(final EntityStoreManager entityStoreManager, final ModelManager modelManager) {
+	protected AbstractExporterIText(final EntityStoreManager entityStoreManager, final SmartTypeManager smartTypeManager) {
 		Assertion.checkNotNull(entityStoreManager);
-		Assertion.checkNotNull(modelManager);
+		Assertion.checkNotNull(smartTypeManager);
 		//-----
 		this.entityStoreManager = entityStoreManager;
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 	}
 
 	/**
@@ -167,7 +167,7 @@ public abstract class AbstractExporterIText {
 			}
 			datatable.getDefaultCell().setHorizontalAlignment(horizontalAlignement);
 
-			String text = ExporterUtil.getText(entityStoreManager, modelManager, referenceCache, denormCache, exportSheet.getDtObject(), exportColumn);
+			String text = ExporterUtil.getText(entityStoreManager, smartTypeManager, referenceCache, denormCache, exportSheet.getDtObject(), exportColumn);
 			if (text == null) {
 				text = "";
 			}
@@ -223,7 +223,7 @@ public abstract class AbstractExporterIText {
 				}
 				datatable.getDefaultCell().setHorizontalAlignment(horizontalAlignement);
 
-				String text = ExporterUtil.getText(entityStoreManager, modelManager, referenceCache, denormCache, dto, exportColumn);
+				String text = ExporterUtil.getText(entityStoreManager, smartTypeManager, referenceCache, denormCache, dto, exportColumn);
 				if (text == null) {
 					text = "";
 				}

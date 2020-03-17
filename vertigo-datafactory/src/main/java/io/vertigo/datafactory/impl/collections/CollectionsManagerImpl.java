@@ -38,7 +38,7 @@ import io.vertigo.datafactory.collections.model.FacetedQueryResult;
 import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datafactory.impl.collections.facet.model.FacetFactory;
 import io.vertigo.datafactory.impl.collections.functions.filter.DtListPatternFilter;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -60,12 +60,12 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	 */
 	@Inject
 	public CollectionsManagerImpl(
-			final ModelManager modelManager,
+			final SmartTypeManager smartTypeManager,
 			final Optional<IndexPlugin> indexPluginOpt) {
 		Assertion.checkNotNull(indexPluginOpt);
 		//-----
 		this.indexPluginOpt = indexPluginOpt;
-		facetFactory = new FacetFactory(this, modelManager);
+		facetFactory = new FacetFactory(this, smartTypeManager);
 	}
 
 	/** {@inheritDoc} */

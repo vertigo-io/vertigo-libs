@@ -36,7 +36,7 @@ import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
 import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
 import io.vertigo.datafactory.collections.model.Facet;
 import io.vertigo.datafactory.collections.model.FacetValue;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -49,7 +49,7 @@ import io.vertigo.datamodel.structure.util.VCollectors;
  */
 public final class FacetFactory {
 	private final CollectionsManager collectionManager;
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 
 	/**
 	 * Constructor.
@@ -57,12 +57,12 @@ public final class FacetFactory {
 	 */
 	public FacetFactory(
 			final CollectionsManager collectionManager,
-			final ModelManager modelManager) {
+			final SmartTypeManager smartTypeManager) {
 		Assertion.checkNotNull(collectionManager);
-		Assertion.checkNotNull(modelManager);
+		Assertion.checkNotNull(smartTypeManager);
 		//-----
 		this.collectionManager = collectionManager;
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 	}
 
 	/**
@@ -158,7 +158,7 @@ public final class FacetFactory {
 			final Object value = dtField.getDataAccessor().getValue(dto);
 			facetValue = facetFilterIndex.get(value);
 			if (facetValue == null) {
-				final String valueAsString = modelManager.valueToString(dtField.getSmartTypeDefinition(), value);
+				final String valueAsString = smartTypeManager.valueToString(dtField.getSmartTypeDefinition(), value);
 				final String label;
 				if (StringUtil.isEmpty(valueAsString)) {
 					label = "_empty_";

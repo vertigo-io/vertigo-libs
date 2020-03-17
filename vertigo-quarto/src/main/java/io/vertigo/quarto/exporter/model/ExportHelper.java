@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.DtListURIForMasterData;
@@ -36,7 +36,7 @@ import io.vertigo.datastore.entitystore.EntityStoreManager;
  */
 public final class ExportHelper {
 	private final EntityStoreManager entityStoreManager;
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 
 	/**
 	 * Constructor.
@@ -44,12 +44,12 @@ public final class ExportHelper {
 	 */
 	public ExportHelper(
 			final EntityStoreManager entityStoreManager,
-			final ModelManager modelManager) {
+			final SmartTypeManager smartTypeManager) {
 		Assertion.checkNotNull(entityStoreManager);
-		Assertion.checkNotNull(modelManager);
+		Assertion.checkNotNull(smartTypeManager);
 		//-----
 		this.entityStoreManager = entityStoreManager;
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 	}
 
 	/**
@@ -114,7 +114,7 @@ public final class ExportHelper {
 		} else {
 			value = exportColumn.getDtField().getDataAccessor().getValue(dto);
 			if (forceStringValue) {
-				value = modelManager.valueToString(exportColumn.getDtField().getSmartTypeDefinition(), value);
+				value = smartTypeManager.valueToString(exportColumn.getDtField().getSmartTypeDefinition(), value);
 			}
 		}
 		//Check if we should return some magic value ("??") when exception are throw here. Previous impl manage this "useless ?" case.
@@ -134,7 +134,7 @@ public final class ExportHelper {
 	private Map<Object, String> createDenormIndex(final DtList<?> valueList, final DtField keyField, final DtField displayField) {
 		final Map<Object, String> denormIndex = new HashMap<>(valueList.size());
 		for (final DtObject dto : valueList) {
-			final String svalue = modelManager.valueToString(displayField.getSmartTypeDefinition(), displayField.getDataAccessor().getValue(dto));
+			final String svalue = smartTypeManager.valueToString(displayField.getSmartTypeDefinition(), displayField.getDataAccessor().getValue(dto));
 			denormIndex.put(keyField.getDataAccessor().getValue(dto), svalue);
 		}
 		return denormIndex;

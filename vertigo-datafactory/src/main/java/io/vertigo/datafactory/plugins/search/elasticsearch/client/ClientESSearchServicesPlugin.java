@@ -70,7 +70,7 @@ import io.vertigo.datafactory.plugins.search.elasticsearch.IndexType;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -91,7 +91,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	public static final String SUFFIX_SORT_FIELD = ".keyword";
 
 	private static final Logger LOGGER = LogManager.getLogger(ClientESSearchServicesPlugin.class);
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 	private final CodecManager codecManager;
 	private final ElasticSearchConnector elasticSearchConnector;
 
@@ -123,7 +123,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<ElasticSearchConnector> elasticSearchConnectors,
 			final CodecManager codecManager,
-			final ModelManager modelManager,
+			final SmartTypeManager smartTypeManager,
 			final ResourceManager resourceManager) {
 		Assertion.checkArgNotEmpty(envIndexPrefix);
 		Assertion.checkNotNull(elasticSearchConnectors);
@@ -133,7 +133,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 		//-----
 		this.defaultMaxRows = defaultMaxRows;
 		defaultListState = DtListState.of(defaultMaxRows);
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 		this.codecManager = codecManager;
 		//------
 		this.envIndexPrefix = envIndexPrefix;
@@ -147,7 +147,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	/** {@inheritDoc} */
 	@Override
 	public void start() {
-		typeAdapters = modelManager.getTypeAdapters("search");
+		typeAdapters = smartTypeManager.getTypeAdapters("search");
 		elasticDocumentCodec = new ESDocumentCodec(codecManager, typeAdapters);
 		//Init ElasticSearch Client
 		esClient = elasticSearchConnector.getClient();

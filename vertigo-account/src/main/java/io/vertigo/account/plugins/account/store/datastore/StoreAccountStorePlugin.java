@@ -40,7 +40,7 @@ import io.vertigo.core.node.Home;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
@@ -66,7 +66,7 @@ import io.vertigo.datastore.filestore.model.VFile;
  */
 public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin implements AccountStorePlugin {
 
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 	private final VTransactionManager transactionManager;
 	private final EntityStoreManager entityStoreManager;
 	private final FileStoreManager fileStoreManager;
@@ -107,14 +107,14 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			@ParamValue("photoFileInfo") final Optional<String> photoFileInfo,
 			@ParamValue("userToAccountMapping") final String userToAccountMappingStr,
 			@ParamValue("groupToGroupAccountMapping") final String groupToGroupAccountMappingStr,
-			final ModelManager modelManager,
+			final SmartTypeManager smartTypeManager,
 			final EntityStoreManager entityStoreManager,
 			final FileStoreManager fileStoreManager,
 			final VTransactionManager transactionManager) {
 		super(userIdentityEntity, userToAccountMappingStr);
 		Assertion.checkArgNotEmpty(userIdentityEntity);
 		Assertion.checkArgNotEmpty(userAuthField);
-		Assertion.checkNotNull(modelManager);
+		Assertion.checkNotNull(smartTypeManager);
 		Assertion.checkNotNull(entityStoreManager);
 		Assertion.checkNotNull(fileStoreManager);
 		Assertion.checkArgNotEmpty(groupToGroupAccountMappingStr);
@@ -122,7 +122,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		this.groupIdentityEntity = groupIdentityEntity;
 		this.userAuthField = userAuthField;
 		this.photoFileInfo = photoFileInfo;
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 		this.entityStoreManager = entityStoreManager;
 		this.fileStoreManager = fileStoreManager;
 		this.transactionManager = transactionManager;
@@ -242,7 +242,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 
 		Serializable userAuthTokenValue;
 		try {
-			userAuthTokenValue = Serializable.class.cast(modelManager.stringToValue(getUserDtDefinition().getField(userAuthField).getSmartTypeDefinition(), userAuthToken));
+			userAuthTokenValue = Serializable.class.cast(smartTypeManager.stringToValue(getUserDtDefinition().getField(userAuthField).getSmartTypeDefinition(), userAuthToken));
 		} catch (final FormatterException e) {
 			throw WrappedException.wrap(e);
 		}
@@ -271,7 +271,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	private Entity readUserEntity(final UID<Account> accountURI) {
 		return executeInTransaction(() -> {
 			try {
-				final Serializable typedId = (Serializable) modelManager.stringToValue(userIdField.getSmartTypeDefinition(), (String) accountURI.getId()); //account id IS always a String
+				final Serializable typedId = (Serializable) smartTypeManager.stringToValue(userIdField.getSmartTypeDefinition(), (String) accountURI.getId()); //account id IS always a String
 				final UID<Entity> userURI = UID.of(getUserDtDefinition(), typedId);
 				return entityStoreManager.readOne(userURI);
 			} catch (final FormatterException e) {
@@ -283,7 +283,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 	private Entity readGroupEntity(final UID<AccountGroup> accountGroupURI) {
 		return executeInTransaction(() -> {
 			try {
-				final Serializable typedId = (Serializable) modelManager.stringToValue(groupIdField.getSmartTypeDefinition(), (String) accountGroupURI.getId()); //accountGroup id IS always a String
+				final Serializable typedId = (Serializable) smartTypeManager.stringToValue(groupIdField.getSmartTypeDefinition(), (String) accountGroupURI.getId()); //accountGroup id IS always a String
 				final UID<Entity> groupURI = UID.of(userGroupDtDefinition, typedId);
 				return entityStoreManager.readOne(groupURI);
 			} catch (final FormatterException e) {

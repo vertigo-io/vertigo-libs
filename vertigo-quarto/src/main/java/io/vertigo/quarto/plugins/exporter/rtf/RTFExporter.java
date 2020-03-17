@@ -33,7 +33,7 @@ import com.lowagie.text.rtf.field.RtfPageNumber;
 import com.lowagie.text.rtf.field.RtfTotalPageNumber;
 import com.lowagie.text.rtf.headerfooter.RtfHeaderFooter;
 
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.quarto.plugins.exporter.pdfrtf.AbstractExporterIText;
 
@@ -49,8 +49,8 @@ final class RTFExporter extends AbstractExporterIText {
 	 * Constructor.
 	 * @param storeManager Store manager
 	 */
-	RTFExporter(final EntityStoreManager entityStoreManager, final ModelManager modelManager) {
-		super(entityStoreManager, modelManager);
+	RTFExporter(final EntityStoreManager entityStoreManager, final SmartTypeManager smartTypeManager) {
+		super(entityStoreManager, smartTypeManager);
 	}
 
 	/** {@inheritDoc} */

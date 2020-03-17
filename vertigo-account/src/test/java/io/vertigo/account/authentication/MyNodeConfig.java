@@ -34,7 +34,7 @@ import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugi
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datamodel.DataModelFeatures;
-import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
+import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 
@@ -64,7 +64,9 @@ public final class MyNodeConfig {
 		}
 
 		final DatabaseFeatures databaseFeatures = new DatabaseFeatures();
-		final DataStoreFeatures dynamoFeatures = new DataStoreFeatures();
+		final DataStoreFeatures dataStoreFeatures = new DataStoreFeatures();
+		dataStoreFeatures.withCache();
+		dataStoreFeatures.withMemoryCache();
 		final AccountFeatures accountFeatures = new AccountFeatures()
 				.withSecurity(Param.of("userSessionClassName", TestUserSession.class.getName()))
 				.withAccount()
@@ -98,7 +100,7 @@ public final class MyNodeConfig {
 							Param.of("dataBaseClass", H2DataBase.class.getName()),
 							Param.of("jdbcDriver", "org.h2.Driver"),
 							Param.of("jdbcUrl", "jdbc:h2:mem:database"));
-			dynamoFeatures
+			dataStoreFeatures
 					.withEntityStore()
 					.addPlugin(SqlEntityStorePlugin.class);
 			accountFeatures.withStoreAuthentication(
@@ -117,7 +119,7 @@ public final class MyNodeConfig {
 						.build())
 				.addModule(databaseFeatures.build())
 				.addModule(new DataModelFeatures().build())
-				.addModule(dynamoFeatures.build())
+				.addModule(dataStoreFeatures.build())
 				.addModule(accountFeatures.build())
 				.addModule(ModuleConfig.builder("app")
 						.addDefinitionProvider(

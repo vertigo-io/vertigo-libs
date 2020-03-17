@@ -30,7 +30,7 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.commons.codec.Encoder;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
@@ -63,7 +63,7 @@ final class CSVExporter {
 	private final Map<DtField, Map<Object, String>> referenceCache = new HashMap<>();
 	private final Map<DtField, Map<Object, String>> denormCache = new HashMap<>();
 	private final EntityStoreManager entityStoreManager;
-	private final ModelManager modelManager;
+	private final SmartTypeManager smartTypeManager;
 
 	/**
 	 * Constructeur.
@@ -72,14 +72,14 @@ final class CSVExporter {
 	 */
 	CSVExporter(final CodecManager codecManager,
 			final EntityStoreManager entityStoreManager,
-			final ModelManager modelManager) {
+			final SmartTypeManager smartTypeManager) {
 		Assertion.checkNotNull(codecManager);
 		Assertion.checkNotNull(entityStoreManager);
-		Assertion.checkNotNull(modelManager);
+		Assertion.checkNotNull(smartTypeManager);
 		//-----
 		csvEncoder = codecManager.getCsvEncoder();
 		this.entityStoreManager = entityStoreManager;
-		this.modelManager = modelManager;
+		this.smartTypeManager = smartTypeManager;
 	}
 
 	/**
@@ -156,7 +156,7 @@ final class CSVExporter {
 		for (final ExportField exportColumn : parameters.getExportFields()) {
 			final DtField dtField = exportColumn.getDtField();
 			out.write(sep);
-			sValue = ExporterUtil.getText(entityStoreManager, modelManager, referenceCache, denormCache, dto, exportColumn);
+			sValue = ExporterUtil.getText(entityStoreManager, smartTypeManager, referenceCache, denormCache, dto, exportColumn);
 			if (dtField.getSmartTypeDefinition().getScope().isPrimitive() && dtField.getSmartTypeDefinition().getBasicType() == BasicType.BigDecimal) {
 				out.write(encodeNumber(sValue));
 			} else {

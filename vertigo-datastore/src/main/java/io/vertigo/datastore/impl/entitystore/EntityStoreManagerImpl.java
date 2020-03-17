@@ -46,14 +46,14 @@ import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datastore.cache.CacheDefinition;
 import io.vertigo.datastore.cache.CacheManager;
 import io.vertigo.datastore.entitystore.BrokerNN;
-import io.vertigo.datastore.entitystore.DataStoreConfig;
+import io.vertigo.datastore.entitystore.EntityStoreConfig;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.entitystore.MasterDataConfig;
 import io.vertigo.datastore.entitystore.MasterDataDefinition;
 import io.vertigo.datastore.entitystore.StoreEvent;
 import io.vertigo.datastore.impl.entitystore.cache.CacheData;
 import io.vertigo.datastore.impl.entitystore.cache.CacheDataStore;
-import io.vertigo.datastore.impl.entitystore.logical.LogicalDataStoreConfig;
+import io.vertigo.datastore.impl.entitystore.logical.LogicalEntityStoreConfig;
 
 /**
  * Implementation of DataStore.
@@ -69,8 +69,8 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 
 	private final BrokerNNImpl brokerNN;
 
-	private final LogicalDataStoreConfig logicalStoreConfig;
-	private final DataStoreConfigImpl dataStoreConfig;
+	private final LogicalEntityStoreConfig logicalStoreConfig;
+	private final EntityStoreConfigImpl dataStoreConfig;
 	private final MasterDataConfigImpl masterDataConfig;
 
 	/**
@@ -86,13 +86,13 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 			final VTransactionManager transactionManager,
 			final EventBusManager eventBusManager,
 			final TaskManager taskManager,
-			final List<DataStorePlugin> entityStorePlugins) {
+			final List<EntityStorePlugin> entityStorePlugins) {
 		Assertion.checkNotNull(cacheManager);
 		Assertion.checkNotNull(transactionManager);
 		Assertion.checkNotNull(eventBusManager);
 		Assertion.checkNotNull(taskManager);
 		//-----
-		dataStoreConfig = new DataStoreConfigImpl(entityStorePlugins, cacheManager);
+		dataStoreConfig = new EntityStoreConfigImpl(entityStorePlugins, cacheManager);
 		logicalStoreConfig = dataStoreConfig.getLogicalStoreConfig();
 		masterDataConfig = new MasterDataConfigImpl();
 		cacheDataStore = new CacheDataStore(masterDataConfig, dataStoreConfig);
@@ -120,7 +120,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 
 	}
 
-	private DataStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
+	private EntityStorePlugin getPhysicalStore(final DtDefinition dtDefinition) {
 		return logicalStoreConfig.getPhysicalDataStore(dtDefinition);
 	}
 
@@ -250,7 +250,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	 * @return Configuration du StoreManager
 	 */
 	@Override
-	public DataStoreConfig getDataStoreConfig() {
+	public EntityStoreConfig getDataStoreConfig() {
 		return dataStoreConfig;
 	}
 

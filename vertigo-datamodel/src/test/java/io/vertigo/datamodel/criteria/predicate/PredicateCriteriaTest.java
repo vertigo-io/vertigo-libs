@@ -41,7 +41,7 @@ import io.vertigo.datamodel.criteria.data.CriteriaTestSmartTypes;
 import io.vertigo.datamodel.criteria.data.DtDefinitions;
 import io.vertigo.datamodel.criteria.data.movies.Movie2;
 import io.vertigo.datamodel.criteria.data.movies.Movie2DataBase;
-import io.vertigo.datamodel.smarttype.ModelDefinitionProvider;
+import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.structure.metamodel.DtFieldName;
 
 /**

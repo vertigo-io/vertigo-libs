@@ -123,7 +123,7 @@ public interface EntityStoreManager extends Manager {
 	 */
 	BrokerNN getBrokerNN();
 
-	DataStoreConfig getDataStoreConfig();
+	EntityStoreConfig getDataStoreConfig();
 
 	MasterDataConfig getMasterDataConfig();
 

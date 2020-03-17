@@ -37,7 +37,7 @@ import io.vertigo.datamodel.structure.model.UID;
  *
  * @author  pchretien
  */
-public interface DataStorePlugin extends Plugin {
+public interface EntityStorePlugin extends Plugin {
 
 	/**
 	 * @return the dataSpace

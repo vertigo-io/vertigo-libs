@@ -25,7 +25,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionReference;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
@@ -64,8 +64,8 @@ public final class UID<E extends Entity> implements Serializable {
 	private UID(final DtDefinition definition, final Object id) {
 		Assertion.checkNotNull(id);
 		Assertion.checkNotNull(definition);
-		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
-		modelManager.checkValue(definition.getIdField().get().getSmartTypeDefinition(), id);
+		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
+		smartTypeManager.checkValue(definition.getIdField().get().getSmartTypeDefinition(), id);
 		//-----
 		this.id = Serializable.class.cast(id);
 		this.definitionRef = new DefinitionReference<>(definition);

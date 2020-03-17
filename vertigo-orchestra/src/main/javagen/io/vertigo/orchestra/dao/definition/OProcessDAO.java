@@ -11,7 +11,7 @@ import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
 import io.vertigo.datastore.impl.dao.DAO;
 import io.vertigo.datastore.impl.dao.StoreServices;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.orchestra.domain.definition.OProcess;
 
@@ -28,8 +28,8 @@ public final class OProcessDAO extends DAO<OProcess, java.lang.Long> implements 
 	 * @param taskManager Manager de Task
 	 */
 	@Inject
-	public OProcessDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final ModelManager modelManager) {
-		super(OProcess.class, entityStoreManager, taskManager, modelManager);
+	public OProcessDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {
+		super(OProcess.class, entityStoreManager, taskManager, smartTypeManager);
 	}
 
 

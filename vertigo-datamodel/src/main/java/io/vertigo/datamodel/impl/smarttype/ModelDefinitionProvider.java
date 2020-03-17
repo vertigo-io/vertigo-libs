@@ -1,4 +1,4 @@
-package io.vertigo.datamodel.smarttype;
+package io.vertigo.datamodel.impl.smarttype;
 
 import java.util.ArrayList;
 import java.util.HashMap;

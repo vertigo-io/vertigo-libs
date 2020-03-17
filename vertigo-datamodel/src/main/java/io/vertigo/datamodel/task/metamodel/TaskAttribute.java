@@ -25,7 +25,7 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.smarttype.ModelManager;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.ConstraintException;
 import io.vertigo.datamodel.structure.model.DtList;
@@ -104,7 +104,7 @@ public final class TaskAttribute {
 	 * @param value Valeur (Object primitif ou DtObject ou bien DtList)
 	 */
 	public void checkAttribute(final Object value) {
-		final ModelManager modelManager = Home.getApp().getComponentSpace().resolve(ModelManager.class);
+		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		if (cardinality.hasOne()) {
 			Assertion.checkNotNull(value, "Attribut task {0} ne doit pas etre null (cf. paramétrage task)", getName());
 		}
@@ -114,10 +114,10 @@ public final class TaskAttribute {
 					throw new ClassCastException("Value " + value + " must be a list");
 				}
 				for (final Object element : List.class.cast(value)) {
-					modelManager.checkConstraints(getSmartTypeDefinition(), element);
+					smartTypeManager.checkConstraints(getSmartTypeDefinition(), element);
 				}
 			} else {
-				modelManager.checkConstraints(getSmartTypeDefinition(), value);
+				smartTypeManager.checkConstraints(getSmartTypeDefinition(), value);
 			}
 		} catch (final ConstraintException e) {
 			//On retransforme en Runtime pour conserver une API sur les getters et setters.
