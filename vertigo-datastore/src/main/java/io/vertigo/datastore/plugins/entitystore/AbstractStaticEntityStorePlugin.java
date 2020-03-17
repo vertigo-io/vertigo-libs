@@ -24,13 +24,13 @@ import io.vertigo.datamodel.structure.metamodel.association.DtListURIForSimpleAs
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.model.Entity;
 import io.vertigo.datamodel.structure.model.UID;
-import io.vertigo.datastore.impl.entitystore.DataStorePlugin;
+import io.vertigo.datastore.impl.entitystore.EntityStorePlugin;
 
 /**
  * Class abstraite des Stores de données static et immutable.
  * @author npiedeloup
  */
-public abstract class AbstractStaticEntityStorePlugin implements DataStorePlugin {
+public abstract class AbstractStaticEntityStorePlugin implements EntityStorePlugin {
 
 	/** {@inheritDoc} */
 	@Override

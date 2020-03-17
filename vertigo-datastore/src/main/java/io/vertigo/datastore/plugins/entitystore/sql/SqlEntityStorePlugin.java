@@ -60,7 +60,7 @@ import io.vertigo.datamodel.task.model.Task;
 import io.vertigo.datamodel.task.model.TaskBuilder;
 import io.vertigo.datamodel.task.model.TaskEngine;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
-import io.vertigo.datastore.impl.entitystore.DataStorePlugin;
+import io.vertigo.datastore.impl.entitystore.EntityStorePlugin;
 import io.vertigo.dynamox.task.AbstractTaskEngineSQL;
 import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
@@ -71,7 +71,7 @@ import io.vertigo.dynamox.task.sqlserver.TaskEngineInsertWithGeneratedKeys;
  *
  * @author pchretien
  */
-public final class SqlEntityStorePlugin implements DataStorePlugin {
+public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	private static final int MAX_TASK_SPECIFIC_NAME_LENGTH = 40;
 	private static final String SMART_TYPE_PREFIX = DefinitionUtil.getPrefix(SmartTypeDefinition.class);
 

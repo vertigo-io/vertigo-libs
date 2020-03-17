@@ -22,30 +22,30 @@ import java.util.List;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datastore.cache.CacheManager;
-import io.vertigo.datastore.entitystore.DataStoreConfig;
+import io.vertigo.datastore.entitystore.EntityStoreConfig;
 import io.vertigo.datastore.impl.entitystore.cache.CacheDataStoreConfig;
-import io.vertigo.datastore.impl.entitystore.logical.LogicalDataStoreConfig;
+import io.vertigo.datastore.impl.entitystore.logical.LogicalEntityStoreConfig;
 
 /**
  * Implémentation Standard du StoreProvider.
  *
  * @author pchretien
  */
-public final class DataStoreConfigImpl implements DataStoreConfig {
+public final class EntityStoreConfigImpl implements EntityStoreConfig {
 	private final CacheDataStoreConfig cacheStoreConfig;
-	private final LogicalDataStoreConfig logicalDataStoreConfig;
+	private final LogicalEntityStoreConfig logicalDataStoreConfig;
 
 	/**
 	 * Constructor.
 	 * @param dataStorePlugins DataStorePlugins list
 	 * @param cacheManager Manager de gestion du cache
 	 */
-	public DataStoreConfigImpl(final List<DataStorePlugin> dataStorePlugins, final CacheManager cacheManager) {
+	public EntityStoreConfigImpl(final List<EntityStorePlugin> dataStorePlugins, final CacheManager cacheManager) {
 		Assertion.checkNotNull(dataStorePlugins);
 		Assertion.checkNotNull(cacheManager);
 		//-----
 		cacheStoreConfig = new CacheDataStoreConfig(cacheManager);
-		logicalDataStoreConfig = new LogicalDataStoreConfig(dataStorePlugins);
+		logicalDataStoreConfig = new LogicalEntityStoreConfig(dataStorePlugins);
 	}
 
 	/**
@@ -58,7 +58,7 @@ public final class DataStoreConfigImpl implements DataStoreConfig {
 	/**
 	 * @return logical data store config
 	 */
-	public LogicalDataStoreConfig getLogicalStoreConfig() {
+	public LogicalEntityStoreConfig getLogicalStoreConfig() {
 		return logicalDataStoreConfig;
 	}
 

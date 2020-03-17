@@ -23,7 +23,7 @@ package io.vertigo.datastore.entitystore;
  *
  * @author pchretien
  */
-public interface DataStoreConfig {
+public interface EntityStoreConfig {
 
 	/**
 	 * @param dataSpace the dataSpace

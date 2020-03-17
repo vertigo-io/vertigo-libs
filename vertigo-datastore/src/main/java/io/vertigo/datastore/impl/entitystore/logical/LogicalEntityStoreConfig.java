@@ -25,7 +25,7 @@ import java.util.Map;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
-import io.vertigo.datastore.impl.entitystore.DataStorePlugin;
+import io.vertigo.datastore.impl.entitystore.EntityStorePlugin;
 
 /**
  * This class defines how the dataSpaces are mapped to the physical stores.
@@ -35,23 +35,23 @@ import io.vertigo.datastore.impl.entitystore.DataStorePlugin;
  *
  * @author pchretien, npiedeloup
  */
-public final class LogicalDataStoreConfig {
+public final class LogicalEntityStoreConfig {
 	/**
 	 * Map (collection-dataStorePlugin).
 	 * This map defines the dataStore for each collection */
-	private final Map<String, DataStorePlugin> dataStorePluginsMap;
+	private final Map<String, EntityStorePlugin> dataStorePluginsMap;
 
 	/**
 	 * Constructor.
 	 * @param dataStorePlugins DataStore plugins
 	 */
-	public LogicalDataStoreConfig(final List<DataStorePlugin> dataStorePlugins) {
+	public LogicalEntityStoreConfig(final List<EntityStorePlugin> dataStorePlugins) {
 		Assertion.checkNotNull(dataStorePlugins);
 		//-----
-		final Map<String, DataStorePlugin> pluginsMap = new HashMap<>();
-		for (final DataStorePlugin dataStorePlugin : dataStorePlugins) {
+		final Map<String, EntityStorePlugin> pluginsMap = new HashMap<>();
+		for (final EntityStorePlugin dataStorePlugin : dataStorePlugins) {
 			final String dataSpace = dataStorePlugin.getDataSpace();
-			final DataStorePlugin previous = pluginsMap.put(dataSpace, dataStorePlugin);
+			final EntityStorePlugin previous = pluginsMap.put(dataSpace, dataStorePlugin);
 			Assertion.checkState(previous == null, "this dataSpace {0} is already registered", dataSpace);
 		}
 		dataStorePluginsMap = Collections.unmodifiableMap(pluginsMap);
@@ -63,7 +63,7 @@ public final class LogicalDataStoreConfig {
 	 * @param dtDefinition the DtDefinition
 	 * @return the dataStore used for the specified 'DtDefinition'
 	 */
-	public DataStorePlugin getPhysicalDataStore(final DtDefinition dtDefinition) {
+	public EntityStorePlugin getPhysicalDataStore(final DtDefinition dtDefinition) {
 		Assertion.checkNotNull(dtDefinition);
 		//-----
 		return getDataStorePlugin(dtDefinition.getDataSpace());
@@ -80,10 +80,10 @@ public final class LogicalDataStoreConfig {
 		return getDataStorePlugin(dataSpace).getConnectionName();
 	}
 
-	private DataStorePlugin getDataStorePlugin(final String dataSpace) {
+	private EntityStorePlugin getDataStorePlugin(final String dataSpace) {
 		Assertion.checkArgNotEmpty(dataSpace);
 		//-----
-		final DataStorePlugin dataStore = dataStorePluginsMap.get(dataSpace);
+		final EntityStorePlugin dataStore = dataStorePluginsMap.get(dataSpace);
 		Assertion.checkNotNull(dataStore, "No store found mapped to collection '{0}'", dataSpace);
 		return dataStore;
 	}
