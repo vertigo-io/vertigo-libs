@@ -85,6 +85,7 @@ public class FacetManagerTest {
 		}
 	}
 
+	//non final, to be overrided for previous lib version
 	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()

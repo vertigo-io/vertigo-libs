@@ -111,13 +111,12 @@ public abstract class AbstractSearchManagerTest {
 	public final void setUp() throws Exception {
 		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
-		//---
 		doSetUp();
 	}
 
-	protected abstract NodeConfig buildNodeConfig();
-
 	protected abstract void doSetUp();
+
+	protected abstract NodeConfig buildNodeConfig();
 
 	@AfterEach
 	public final void tearDown() throws Exception {
@@ -320,8 +319,10 @@ public abstract class AbstractSearchManagerTest {
 	@Test
 	public void testCopyFieldsQuery() {
 		index(false);
+		long size = query("*:*");
+		Assertions.assertEquals(itemDataBase.size(), size);
 
-		long size = query("_all:(+peugeot +diesel)");
+		size = query("_all:(+peugeot +diesel)");
 		Assertions.assertEquals(3L, size);
 
 		size = query("allText:(+peugeot +diesel)");
@@ -374,6 +375,41 @@ public abstract class AbstractSearchManagerTest {
 	}
 
 	/**
+	 * Test de requétage de l'index.
+	 * La création s'effectue dans une seule transaction.
+	 */
+	@Test
+	public void testUserBadSyntaxQuery() {
+		index(false);
+		long size;
+
+		size = queryWithCriteria("description:#query#", "(error or)");
+		Assertions.assertEquals(0L, size);
+
+		size = queryWithCriteria("description:#query#", "or");
+		Assertions.assertEquals(0L, size);
+
+		try {
+			size = queryWithCriteria("description:#query#", ": OR ");
+			Assertions.fail("VUserException expected");
+		} catch (final VUserException e) {
+			//ok
+		}
+
+		//common bad user input are escaped
+		size = queryWithCriteria("description:#query#", " OR ");
+		Assertions.assertEquals(0L, size);
+
+		//common bad user input are escaped
+		size = queryWithCriteria("description:#query#", "(error");
+		Assertions.assertEquals(0L, size);
+
+		//common bad user input are escaped
+		size = queryWithCriteria("description:#query#", "error) OR *:*");
+		Assertions.assertEquals(itemDataBase.size(), size); //*:* passe
+	}
+
+	/**
 	 * Test de requétage de l'index description : insenssible à la casse et aux accents.
 	 */
 	@Test
@@ -392,7 +428,7 @@ public abstract class AbstractSearchManagerTest {
 		Assertions.assertEquals(databaseResult, size);
 
 		//y compris en wildcard
-		size = query("description:sièg*");
+		size = query("description:sièg*"); //attention snowball retire la terminaison, ca fausse cette requete prefix
 		Assertions.assertEquals(databaseResult, size);
 		size = query("description:Sièg*");
 		Assertions.assertEquals(databaseResult, size);
@@ -410,6 +446,37 @@ public abstract class AbstractSearchManagerTest {
 		Assertions.assertEquals(databaseResult, size);
 		size = query("description:(+Sieg*)");
 		Assertions.assertEquals(databaseResult, size);
+	}
+
+	/**
+	 * Test de requétage de l'index description : insenssible à la casse et aux accents.
+	 */
+	@Test
+	public void testInsensitivity2Query() {
+		index(false);
+
+		final long databaseResult = itemDataBase.containsDescription("sieges") + itemDataBase.containsDescription("sièges");
+		long size;
+		//y compris en wildcard
+		size = query("description:siè*");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("description:Siè*");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("description:sie*");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("description:Sie*");
+		Assertions.assertEquals(databaseResult, size);
+
+		//y compris en wildcard mandatory
+		size = query("description:(+siè*)");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("description:(+Siè*)");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("description:(+sie*)");
+		Assertions.assertEquals(databaseResult, size);
+		size = query("description:(+Sie*)");
+		Assertions.assertEquals(databaseResult, size);
+
 	}
 
 	/**
@@ -559,7 +626,6 @@ public abstract class AbstractSearchManagerTest {
 	@Test
 	public void testFacetQueryByTerm() {
 		index(false);
-
 		final FacetedQueryResult<Item, SearchQuery> result = facetQuery("*:*");
 		testFacetResultByTerm(result);
 	}
@@ -567,7 +633,6 @@ public abstract class AbstractSearchManagerTest {
 	@Test
 	public void testFacetOptionalFieldByTerm() {
 		index(false);
-
 		final SearchQuery searchQuery = SearchQuery.builder("QryItemOptionalFacet")
 				.withCriteria("")
 				.withFacet(EMPTY_SELECTED_FACET_VALUES)
@@ -653,7 +718,6 @@ public abstract class AbstractSearchManagerTest {
 	@Test
 	public void testSecurityQuery() {
 		index(false);
-
 		long size;
 		size = queryWithSecurityFilter("*:*", "+year:[ 2005 TO * ]");
 		Assertions.assertEquals(itemDataBase.size() - itemDataBase.before(2005), size);
@@ -686,7 +750,8 @@ public abstract class AbstractSearchManagerTest {
 	@Test
 	public void testRemove() {
 		index(false);
-
+		final long size = query("*:*");
+		Assertions.assertEquals(itemDataBase.size(), size);
 		//On en supprime 2
 		doRemove(2);
 		waitAndExpectIndexation(itemDataBase.size() - 2);
@@ -699,7 +764,8 @@ public abstract class AbstractSearchManagerTest {
 	@Test
 	public void testRemoveByQuery() {
 		index(false);
-
+		final long size = query("*:*");
+		Assertions.assertEquals(itemDataBase.size(), size);
 		//on compte les Peugeots
 		final int nbPeugeot = itemDataBase.getItemsByManufacturer("Peugeot").size();
 		//On supprime toute les Peugeots
@@ -714,6 +780,8 @@ public abstract class AbstractSearchManagerTest {
 	@Test
 	public void testRemoveAll() {
 		index(false);
+		final long size = query("*:*");
+		Assertions.assertEquals(itemDataBase.size(), size);
 		//On supprime tout
 		removeAll();
 		waitAndExpectIndexation(0L);
@@ -740,7 +808,6 @@ public abstract class AbstractSearchManagerTest {
 	@Test
 	public void testFilterFacetListByRange() {
 		index(true);
-
 		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacet")
 				.withCriteria("")
 				.withFacet(EMPTY_SELECTED_FACET_VALUES)
@@ -792,7 +859,6 @@ public abstract class AbstractSearchManagerTest {
 	@Test
 	public void testFacetListByTerm() {
 		index(true);
-
 		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacet")
 				.withCriteria("")
 				.withFacet(EMPTY_SELECTED_FACET_VALUES)
@@ -808,7 +874,6 @@ public abstract class AbstractSearchManagerTest {
 	@Test
 	public void testFilterFacetListByTerm() {
 		index(true);
-
 		final SearchQuery searchQuery = SearchQuery.builder("QryItemFacet")
 				.withCriteria("")
 				.withFacet(EMPTY_SELECTED_FACET_VALUES)
@@ -831,7 +896,6 @@ public abstract class AbstractSearchManagerTest {
 	@Test
 	public void testFilterFacetListByTwoTerms() {
 		index(true);
-
 		final List<Item> peugeotItems = itemDataBase.getItemsByManufacturer("peugeot");
 		final long peugeotContainsCuirCount = ItemDataBase.containsDescription(peugeotItems, "cuir");
 
@@ -1230,14 +1294,6 @@ public abstract class AbstractSearchManagerTest {
 		doRemove("*:*");
 		waitAndExpectIndexation(0);
 	}
-	/*private void remove(final int count) {
-		doRemove(count);
-		waitAndExpectIndexation(itemDataBase.size()-count);
-	}*/
-
-	/*private void remove(final String query) {
-		doRemove(query);
-	}*/
 
 	private void doIndex(final boolean all) {
 		if (all) {
@@ -1274,6 +1330,15 @@ public abstract class AbstractSearchManagerTest {
 		//recherche
 		final SearchQuery searchQuery = SearchQuery.builder(query, DslListFilterBuilder.class)
 				.withCriteria("")
+				.build();
+
+		return doQuery(searchQuery, null).getCount();
+	}
+
+	private long queryWithCriteria(final String query, final String criteria) {
+		//recherche
+		final SearchQuery searchQuery = SearchQuery.builder(query, DslListFilterBuilder.class)
+				.withCriteria(criteria)
 				.build();
 
 		return doQuery(searchQuery, null).getCount();
@@ -1339,12 +1404,4 @@ public abstract class AbstractSearchManagerTest {
 		}
 		Assertions.assertEquals(expectedCount, size);
 	}
-
-	/*private static void waitIndexation() {
-		try {
-			Thread.sleep(1500); //wait index was done
-		} catch (final InterruptedException e) {
-			Thread.currentThread().interrupt(); //si interrupt on relance
-		}
-	}*/
 }

@@ -45,8 +45,8 @@ import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Builder;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.Builder;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
 import io.vertigo.datafactory.collections.metamodel.FacetedQueryDefinition;
@@ -357,7 +357,7 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
 			Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
-			filters.add(new KeyedFilter(filterValue, QueryBuilders.queryStringQuery(filterValue)));
+			filters.add(new KeyedFilter(facetRange.getCode(), QueryBuilders.queryStringQuery(filterValue)));
 		}
 		return AggregationBuilders.filters(facetDefinition.getName(), filters.toArray(new KeyedFilter[filters.size()]));
 	}
@@ -372,11 +372,11 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			final Optional<Double> minValue = convertToDouble(parsedFilter[3]);
 			final Optional<Double> maxValue = convertToDouble(parsedFilter[4]);
 			if (!minValue.isPresent()) {
-				rangeBuilder.addUnboundedTo(filterValue, maxValue.get());
+				rangeBuilder.addUnboundedTo(facetRange.getCode(), maxValue.get());
 			} else if (!maxValue.isPresent()) {
-				rangeBuilder.addUnboundedFrom(filterValue, minValue.get());
+				rangeBuilder.addUnboundedFrom(facetRange.getCode(), minValue.get());
 			} else {
-				rangeBuilder.addRange(filterValue, minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch
+				rangeBuilder.addRange(facetRange.getCode(), minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch
 			}
 		}
 		return rangeBuilder;
@@ -393,11 +393,11 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 			final String minValue = parsedFilter[3];
 			final String maxValue = parsedFilter[4];
 			if ("*".equals(minValue)) {
-				dateRangeBuilder.addUnboundedTo(filterValue, maxValue);
+				dateRangeBuilder.addUnboundedTo(facetRange.getCode(), maxValue);
 			} else if ("*".equals(maxValue)) {
-				dateRangeBuilder.addUnboundedFrom(filterValue, minValue);
+				dateRangeBuilder.addUnboundedFrom(facetRange.getCode(), minValue);
 			} else {
-				dateRangeBuilder.addRange(filterValue, minValue, maxValue); //always min include and max exclude in ElasticSearch
+				dateRangeBuilder.addRange(facetRange.getCode(), minValue, maxValue); //always min include and max exclude in ElasticSearch
 			}
 		}
 		return dateRangeBuilder;
