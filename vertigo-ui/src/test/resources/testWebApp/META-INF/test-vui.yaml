@@ -12,10 +12,8 @@ modules:
   io.vertigo.commons.CommonsFeatures:
     features:
       - script:
-      - cache:
     featuresConfig:
       - script.janino:
-      - cache.memory:
   io.vertigo.connectors.elasticsearch.ElasticSearchFeatures:
     features:
       - embeddedServer:
@@ -34,9 +32,11 @@ modules:
   io.vertigo.datamodel.DataModelFeatures:
   io.vertigo.datastore.DataStoreFeatures:
     features:
+      - cache:
       - entitystore:
       - kvStore:
     featuresConfig:
+      - cache.memory:
       - entitystore.sql:
       - kvStore.berkeley:
           collections: VViewContext;TTL=43200
