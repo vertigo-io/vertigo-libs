@@ -20,10 +20,13 @@ package io.vertigo.datafactory.search.multiindex;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.datafactory.collections.ListFilter;
@@ -41,7 +44,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilder;
 /**
  * @author  npiedeloup
  */
-public class RestHLSearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
+public class RestHLSearchManagerMultiIndexTest {
 	//Index
 	private static final String IDX_ITEM = "IdxItem";
 
@@ -51,15 +54,25 @@ public class RestHLSearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 
 	private ItemDataBase itemDataBase;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
-		return MyNodeConfig.config(true, false);
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		itemDataBase = new ItemDataBase();
 	}
 
-	/**{@inheritDoc}*/
-	@Override
-	protected void doSetUp() {
-		itemDataBase = new ItemDataBase();
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
+		return MyNodeConfig.config(true, false);
 	}
 
 	/**
@@ -69,7 +82,7 @@ public class RestHLSearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testIndex() {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
 		final SearchIndexDefinition itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 
 		for (final Item item : itemDataBase.getAllItems()) {
@@ -89,7 +102,7 @@ public class RestHLSearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testClean() {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
 		final SearchIndexDefinition itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 		final ListFilter removeQuery = ListFilter.of("*:*");
 		searchManager.removeAll(itemIndexDefinition, removeQuery);

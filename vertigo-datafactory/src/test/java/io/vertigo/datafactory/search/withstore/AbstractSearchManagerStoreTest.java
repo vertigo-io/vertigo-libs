@@ -25,12 +25,16 @@ import java.util.Collections;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.database.sql.SqlDataBaseManager;
 import io.vertigo.database.sql.connection.SqlConnection;
@@ -52,7 +56,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilder;
  *
  * @author npiedeloup
  */
-abstract class AbstractSearchManagerStoreTest extends AbstractTestCaseJU5 {
+abstract class AbstractSearchManagerStoreTest {
 	@Inject
 	private SqlDataBaseManager dataBaseManager;
 	@Inject
@@ -68,9 +72,14 @@ abstract class AbstractSearchManagerStoreTest extends AbstractTestCaseJU5 {
 
 	private long initialDbItemSize = 0;
 
-	@Override
-	protected void doSetUp() throws SQLException {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
 		itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 
 		//A chaque test on recrée la table famille
@@ -94,14 +103,19 @@ abstract class AbstractSearchManagerStoreTest extends AbstractTestCaseJU5 {
 		waitAndExpectIndexation(initialDbItemSize);
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	protected void doTearDown() throws SQLException {
-		//A chaque fin de test on arréte la base.
-		try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
-			execCallableStatement(connectionCloseable.getConnection(), "shutdown;");
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			//A chaque fin de test on arréte la base.
+			try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {
+				execCallableStatement(connectionCloseable.getConnection(), "shutdown;");
+			} finally {
+				app.close();
+			}
 		}
 	}
+
+	protected abstract NodeConfig buildNodeConfig();
 
 	private void execCallableStatement(final SqlConnection connection, final String sql) throws SQLException {
 		dataBaseManager.executeUpdate(

@@ -38,14 +38,17 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.datafactory.collections.ListFilter;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
@@ -69,7 +72,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilder;
 /**
  * @author  npiedeloup
  */
-public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
+public abstract class AbstractSearchManagerTest {
 	private static final SelectedFacetValues EMPTY_SELECTED_FACET_VALUES = SelectedFacetValues.empty().build();
 
 	/** Logger. */
@@ -78,6 +81,27 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	/** Manager de recherche. */
 	@Inject
 	private SearchManager searchManager;
+
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//--
+		doSetUp();
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	protected abstract void doSetUp();
+
+	protected abstract NodeConfig buildNodeConfig();
 
 	/** IndexDefinition. */
 	private SearchIndexDefinition itemIndexDefinition;
@@ -93,10 +117,10 @@ public abstract class AbstractSearchManagerTest extends AbstractTestCaseJU5 {
 	 * @param indexName Nom de l'index
 	 */
 	protected final void init(final String indexName) {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
 		//On construit la BDD des voitures
 		itemDataBase = new ItemDataBase();
-		final ItemSearchLoader itemSearchLoader = getApp().getComponentSpace().resolve(ItemSearchLoader.class);
+		final ItemSearchLoader itemSearchLoader = app.getComponentSpace().resolve(ItemSearchLoader.class);
 		itemSearchLoader.bindDataBase(itemDataBase);
 
 		manufacturerFacetDefinition = definitionSpace.resolve("FctManufacturerItem", FacetDefinition.class);

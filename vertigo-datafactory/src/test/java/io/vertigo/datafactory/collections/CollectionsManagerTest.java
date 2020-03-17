@@ -26,11 +26,14 @@ import java.util.function.UnaryOperator;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -54,16 +57,31 @@ import io.vertigo.datastore.DataStoreFeatures;
  * @author pchretien
  */
 //non final, to be overrided for previous lib version
-public class CollectionsManagerTest extends AbstractTestCaseJU5 {
+public class CollectionsManagerTest {
 	private static final String Ba_aa = "Ba aa";
 	private static final String aaa_ba = "aaa ba";
 	private static final String bb_aa = "bb aa";
 	private DtDefinition dtDefinitionItem;
 	@Inject
 	private CollectionsManager collectionsManager;
+	private AutoCloseableApp app;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		dtDefinitionItem = DtObjectUtil.findDtDefinition(SmartItem.class);
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -87,12 +105,6 @@ public class CollectionsManagerTest extends AbstractTestCaseJU5 {
 								.build())
 						.build())
 				.build();
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	protected void doSetUp() {
-		dtDefinitionItem = DtObjectUtil.findDtDefinition(SmartItem.class);
 	}
 
 	@Test

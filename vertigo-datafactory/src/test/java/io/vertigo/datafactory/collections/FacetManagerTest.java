@@ -24,12 +24,15 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -55,14 +58,33 @@ import io.vertigo.datamodel.structure.model.DtList;
  * @author  npiedeloup
  */
 //non final, to be overrided for previous lib version
-public class FacetManagerTest extends AbstractTestCaseJU5 {
+public class FacetManagerTest {
 	@Inject
 	private CollectionsManager collectionsManager;
 	private FacetedQueryDefinition carFacetQueryDefinition;
 	private SmartCarDataBase smartCarDataBase;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		//On construit la BDD des voitures
+		smartCarDataBase = new SmartCarDataBase();
+		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
+		carFacetQueryDefinition = definitionSpace.resolve("QryCarFacet", FacetedQueryDefinition.class);
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -81,15 +103,6 @@ public class FacetManagerTest extends AbstractTestCaseJU5 {
 								.build())
 						.build())
 				.build();
-	}
-
-	/**{@inheritDoc}*/
-	@Override
-	protected void doSetUp() {
-		//On construit la BDD des voitures
-		smartCarDataBase = new SmartCarDataBase();
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
-		carFacetQueryDefinition = definitionSpace.resolve("QryCarFacet", FacetedQueryDefinition.class);
 	}
 
 	private void testFacetResultByRange(final FacetedQueryResult<SmartCar, ?> result) {
