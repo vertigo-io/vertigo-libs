@@ -42,7 +42,6 @@ import io.vertigo.datastore.filestore.FileManager;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.filestore.util.FileUtil;
 import io.vertigo.quarto.impl.publisher.PublisherDataUtil;
-import io.vertigo.quarto.publisher.PublisherManager;
 import io.vertigo.quarto.publisher.data.domain.Address;
 import io.vertigo.quarto.publisher.data.domain.Enquete;
 import io.vertigo.quarto.publisher.data.domain.Enqueteur;
@@ -63,7 +62,7 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 	//Répertoire de test
 	private static String OUTPUT_PATH = "c:/tmp/";
 
-	private static final String DATA_PACKAGE = "io/vertigo/quarto/services/publisher/data/documents/";
+	private static final String DATA_PACKAGE = "io/vertigo/quarto/publisher/data/documents/";
 
 	@Inject
 	private PublisherManager publisherManager;
