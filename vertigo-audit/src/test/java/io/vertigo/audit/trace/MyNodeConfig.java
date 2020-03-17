@@ -19,6 +19,7 @@
 package io.vertigo.audit.trace;
 
 import io.vertigo.audit.AuditFeatures;
+import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.config.NodeConfig;
 
 /**
@@ -34,9 +35,12 @@ public class MyNodeConfig {
 	 */
 	public static NodeConfig config() {
 		return NodeConfig.builder()
+				.addModule(new CommonsFeatures().build())
 				.addModule(new AuditFeatures()
 						.withTrace()
 						.withMemoryTrace()
+						.withLedger()
+						.withFakeBlockChain()
 						.build())
 				.build();
 	}
