@@ -89,8 +89,8 @@ public abstract class AbstractSearchManagerTest {
 		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		//--
-		removeAll();
 		doSetUp();
+		removeAll();
 	}
 
 	@AfterEach
