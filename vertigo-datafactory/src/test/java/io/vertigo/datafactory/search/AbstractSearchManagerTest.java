@@ -90,7 +90,6 @@ public abstract class AbstractSearchManagerTest {
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		//--
 		doSetUp();
-		removeAll();
 	}
 
 	@AfterEach

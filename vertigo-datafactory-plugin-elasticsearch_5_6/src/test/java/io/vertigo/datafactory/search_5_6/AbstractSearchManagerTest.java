@@ -111,7 +111,6 @@ public abstract class AbstractSearchManagerTest {
 	public final void setUp() throws Exception {
 		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
-		removeAll();
 		doSetUp();
 	}
 
