@@ -37,7 +37,6 @@
 		<module>vertigo-account</module>
 		<module>vertigo-vega</module>
 		
-		<module>vertigo-studio</module>
 		<module>vertigo-audit</module>
 		<module>vertigo-struts2</module>
 		<module>vertigo-quarto</module>
