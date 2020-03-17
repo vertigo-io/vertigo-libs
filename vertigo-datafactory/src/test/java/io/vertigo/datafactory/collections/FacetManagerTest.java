@@ -53,6 +53,7 @@ import io.vertigo.datafactory.collections.model.SelectedFacetValues;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
 import io.vertigo.datamodel.structure.model.DtList;
+import io.vertigo.datastore.DataStoreFeatures;
 
 /**
  * @author  npiedeloup
@@ -93,6 +94,10 @@ public class FacetManagerTest {
 				.endBoot()
 				.addModule(new CommonsFeatures().build())
 				.addModule(new DataModelFeatures().build())
+				.addModule(new DataStoreFeatures()
+						.withCache()
+						.withMemoryCache()
+						.build())
 				.addModule(new DataFactoryFeatures()
 						.withLuceneIndex()
 						.build())
