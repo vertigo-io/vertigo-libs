@@ -81,7 +81,7 @@ public class CollectionsManagerTest {
 		}
 	}
 
-	private NodeConfig buildNodeConfig() {
+	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)

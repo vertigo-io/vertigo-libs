@@ -85,7 +85,7 @@ public class FacetManagerTest {
 		}
 	}
 
-	private NodeConfig buildNodeConfig() {
+	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
