@@ -53,9 +53,9 @@ public class RedisWorkManagerTest extends AbstractWorkManagerTest {
 				.build();
 	}
 
-	@Override
-	protected void doSetUp() throws Exception {
-		//		final RedisDB redisDB = new RedisDB(new CodecManagerImpl(), Home.getApp().getComponentSpace().resolve(RedisConnector.class), 10);
-		//		redisDB.reset();
-	}
+	//	@Override
+	//	protected void doSetUp() throws Exception {
+	//		//		final RedisDB redisDB = new RedisDB(new CodecManagerImpl(), Home.getApp().getComponentSpace().resolve(RedisConnector.class), 10);
+	//		//		redisDB.reset();
+	//	}
 }

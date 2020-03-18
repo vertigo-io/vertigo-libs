@@ -22,10 +22,14 @@ import java.util.function.Function;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.stella.master.MasterManager;
 import io.vertigo.stella.master.WorkResultHandler;
 import io.vertigo.stella.work.mock.DivideWork;
@@ -38,12 +42,46 @@ import io.vertigo.stella.work.mock.ThreadLocalWorkEngine;
 /**
  * @author pchretien
  */
-public abstract class AbstractWorkManagerTest extends AbstractTestCaseJU5 {
+public abstract class AbstractWorkManagerTest {
 	private final long warmupTime = 5000; //en fonction du mode de distribution la prise en compte d'une tache est plus ou moins longue. Pour les TU on estime à 2s
 	private static final int WORKER_COUNT = 5; //Doit correspondre au workerCount déclaré dans managers.xlm
 
 	@Inject
 	private MasterManager workManager;
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		doSetUp();
+	}
+
+	protected void doSetUp() throws Exception {
+		//
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			try {
+				doTearDown();
+			} finally {
+				app.close();
+			}
+		}
+	}
+
+	protected void doTearDown() throws Exception {
+		//
+	}
+
+	protected abstract NodeConfig buildNodeConfig();
+
+	protected final void nop(Object o) {
+		//nada
+	}
 
 	//=========================================================================
 	//===========================PROCESS=======================================
