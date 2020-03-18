@@ -90,6 +90,8 @@ public abstract class AbstractSearchManagerTest {
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		//--
 		doSetUp();
+		removeAll();
+
 	}
 
 	@AfterEach
@@ -129,7 +131,7 @@ public abstract class AbstractSearchManagerTest {
 		geoCircleFacetDefinition = definitionSpace.resolve("FctLocalisationCircleItem", FacetDefinition.class);
 		geoHashClusterFacetDefinition = definitionSpace.resolve("FctLocalisationHashItem", FacetDefinition.class);
 		itemIndexDefinition = definitionSpace.resolve(indexName, SearchIndexDefinition.class);
-		clean(itemIndexDefinition);
+		removeAll();
 	}
 
 	@BeforeAll
@@ -162,20 +164,13 @@ public abstract class AbstractSearchManagerTest {
 	}
 
 	/**
-	 * @param indexDefinition Definition de l'index
-	 */
-	private void clean(final SearchIndexDefinition indexDefinition) {
-		final ListFilter removeQuery = ListFilter.of("*:*");
-		searchManager.removeAll(indexDefinition, removeQuery);
-	}
-
-	/**
 	 * Test de création nettoyage de l'index.
 	 * La création s'effectue dans une seule transaction.
 	 */
 	@Test
 	public void testClean() {
-		clean(itemIndexDefinition);
+		final ListFilter removeQuery = ListFilter.of("*:*");
+		searchManager.removeAll(itemIndexDefinition, removeQuery);
 		waitAndExpectIndexation(0);
 	}
 

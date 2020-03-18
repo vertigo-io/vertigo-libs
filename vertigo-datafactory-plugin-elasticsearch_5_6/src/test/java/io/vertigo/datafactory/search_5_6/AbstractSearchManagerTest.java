@@ -104,7 +104,7 @@ public abstract class AbstractSearchManagerTest {
 		manufacturerFacetDefinition = definitionSpace.resolve("FctManufacturerItem", FacetDefinition.class);
 		yearFacetDefinition = definitionSpace.resolve("FctYearItem", FacetDefinition.class);
 		itemIndexDefinition = definitionSpace.resolve(indexName, SearchIndexDefinition.class);
-		clean(itemIndexDefinition);
+		removeAll();
 	}
 
 	@BeforeEach
@@ -155,20 +155,13 @@ public abstract class AbstractSearchManagerTest {
 	}
 
 	/**
-	 * @param indexDefinition Definition de l'index
-	 */
-	private void clean(final SearchIndexDefinition indexDefinition) {
-		final ListFilter removeQuery = ListFilter.of("*:*");
-		searchManager.removeAll(indexDefinition, removeQuery);
-	}
-
-	/**
 	 * Test de création nettoyage de l'index.
 	 * La création s'effectue dans une seule transaction.
 	 */
 	@Test
 	public void testClean() {
-		clean(itemIndexDefinition);
+		final ListFilter removeQuery = ListFilter.of("*:*");
+		searchManager.removeAll(itemIndexDefinition, removeQuery);
 		waitAndExpectIndexation(0);
 	}
 
