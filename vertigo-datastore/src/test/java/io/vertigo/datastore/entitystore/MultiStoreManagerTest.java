@@ -24,13 +24,16 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -56,7 +59,7 @@ import io.vertigo.datastore.entitystore.sql.SqlUtil;
  *
  * @author pchretien
  */
-public final class MultiStoreManagerTest extends AbstractTestCaseJU5 {
+public final class MultiStoreManagerTest {
 
 	@Inject
 	private VTransactionManager transactionManager;
@@ -65,8 +68,47 @@ public final class MultiStoreManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private EntityStoreManager entityStoreManager;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		//A chaque test on recrée la table famille dans l'autre base
+		SqlUtil.execRequests(
+				transactionManager,
+				taskManager,
+				getCreateMainStoreRequests(),
+				"TkInit",
+				Optional.empty());
+		//A chaque test on recrée la table famille dans l'autre base
+		SqlUtil.execRequests(
+				transactionManager,
+				taskManager,
+				getCreateFamilleRequests(),
+				"TkInitOther",
+				Optional.of("otherStore"));
+
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			try {
+				SqlUtil.execRequests(
+						transactionManager,
+						taskManager,
+						getDropRequests(),
+						"TkShutDown",
+						Optional.empty());
+			} finally {
+				app.close();
+			}
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
@@ -108,25 +150,6 @@ public final class MultiStoreManagerTest extends AbstractTestCaseJU5 {
 				.build();
 	}
 
-	@Override
-	protected void doSetUp() throws Exception {
-		//A chaque test on recrée la table famille dans l'autre base
-		SqlUtil.execRequests(
-				transactionManager,
-				taskManager,
-				getCreateMainStoreRequests(),
-				"TkInit",
-				Optional.empty());
-		//A chaque test on recrée la table famille dans l'autre base
-		SqlUtil.execRequests(
-				transactionManager,
-				taskManager,
-				getCreateFamilleRequests(),
-				"TkInitOther",
-				Optional.of("otherStore"));
-
-	}
-
 	protected List<String> getCreateMainStoreRequests() {
 		return new ListBuilder<String>()
 				.addAll(getCreateFamilleRequests())
@@ -150,16 +173,6 @@ public final class MultiStoreManagerTest extends AbstractTestCaseJU5 {
 				.add(" create table car(ID BIGINT, FAM_ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50) )")
 				.add(" create sequence SEQ_CAR start with 10001 increment by 1")
 				.build();
-	}
-
-	@Override
-	protected void doTearDown() throws Exception {
-		SqlUtil.execRequests(
-				transactionManager,
-				taskManager,
-				getDropRequests(),
-				"TkShutDown",
-				Optional.empty());
 	}
 
 	protected List<String> getDropRequests() {

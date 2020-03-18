@@ -22,14 +22,17 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
-import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.analytics.AnalyticsManager;
 import io.vertigo.core.analytics.metric.Metric;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -51,7 +54,7 @@ import io.vertigo.dynamox.metric.task.TasksMetricsProvider;
 /**
  * @author mlaroche
  */
-public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
+public final class MetricAnalyticsTest {
 
 	@Inject
 	private AnalyticsManager analyticsManager;
@@ -64,8 +67,26 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 
 	private SuperHeroDataBase superHeroDataBase;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		superHeroDataBase = new SuperHeroDataBase(transactionManager, taskManager);
+		superHeroDataBase.createDataBase();
+		superHeroDataBase.populateSuperHero(entityStoreManager, 33);
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
@@ -102,13 +123,6 @@ public final class MetricAnalyticsTest extends AbstractTestCaseJU5 {
 						.addComponent(TasksMetricsProvider.class)
 						.build())
 				.build();
-	}
-
-	@Override
-	protected void doSetUp() throws Exception {
-		superHeroDataBase = new SuperHeroDataBase(transactionManager, taskManager);
-		superHeroDataBase.createDataBase();
-		superHeroDataBase.populateSuperHero(entityStoreManager, 33);
 	}
 
 	@Test

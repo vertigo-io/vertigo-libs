@@ -23,14 +23,17 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -57,7 +60,7 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
  *
  * @author dszniten
  */
-public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
+public final class TaskEngineProcBatchTest {
 	private static final String DTC_SUPER_HERO_IN = "dtcSuperHeroIn";
 	private static final String SUPER_HERO_ID_LIST_IN = "superHeroIdListIn";
 	private static final String DTC_SUPER_HERO_OUT = "dtcSuperHeroOut";
@@ -73,8 +76,25 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 
 	private SuperHeroDataBase superHeroDataBase;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		superHeroDataBase = new SuperHeroDataBase(transactionManager, taskManager);
+		superHeroDataBase.createDataBase();
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
@@ -107,12 +127,6 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.build();
 	}
 
-	@Override
-	protected void doSetUp() throws Exception {
-		superHeroDataBase = new SuperHeroDataBase(transactionManager, taskManager);
-		superHeroDataBase.createDataBase();
-	}
-
 	/**
 	 * Tests batch insertion with a task
 	 */
@@ -124,7 +138,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInAttribute(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
+				.addInAttribute(DTC_SUPER_HERO_IN, app.getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
 				.withRequest(request)
 				.build();
 
@@ -154,8 +168,8 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInAttribute(DTC_SUPER_HERO_IN, getApp().getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
-				.addInAttribute(OTHER_PARAM_IN, getApp().getDefinitionSpace().resolve(STY_STRING, SmartTypeDefinition.class), Cardinality.ONE)
+				.addInAttribute(DTC_SUPER_HERO_IN, app.getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
+				.addInAttribute(OTHER_PARAM_IN, app.getDefinitionSpace().resolve(STY_STRING, SmartTypeDefinition.class), Cardinality.ONE)
 				.withRequest(request)
 				.build();
 
@@ -185,7 +199,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 				.toString();
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkTestInsertBatch")
 				.withEngine(TaskEngineProcBatch.class)
-				.addInAttribute(SUPER_HERO_ID_LIST_IN, getApp().getDefinitionSpace().resolve(STY_ID, SmartTypeDefinition.class), Cardinality.MANY)
+				.addInAttribute(SUPER_HERO_ID_LIST_IN, app.getDefinitionSpace().resolve(STY_ID, SmartTypeDefinition.class), Cardinality.MANY)
 				.withRequest(request)
 				.build();
 
@@ -208,7 +222,7 @@ public final class TaskEngineProcBatchTest extends AbstractTestCaseJU5 {
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkSelectHeroes")
 				.withEngine(TaskEngineSelect.class)
 				.withRequest("select * from SUPER_HERO")
-				.withOutAttribute(DTC_SUPER_HERO_OUT, getApp().getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
+				.withOutAttribute(DTC_SUPER_HERO_OUT, app.getDefinitionSpace().resolve(STY_DT_SUPER_HERO, SmartTypeDefinition.class), Cardinality.MANY)
 				.build();
 		final Task task = Task.builder(taskDefinition).build();
 		try (VTransactionWritable tx = transactionManager.createCurrentTransaction()) {

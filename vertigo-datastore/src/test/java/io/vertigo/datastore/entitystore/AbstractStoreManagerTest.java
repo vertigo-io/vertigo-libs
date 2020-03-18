@@ -25,15 +25,20 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.lang.Cardinality;
+import io.vertigo.core.node.App;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.criteria.Criterions;
@@ -62,7 +67,7 @@ import io.vertigo.dynamox.task.TaskEngineSelect;
  *
  * @author pchretien
  */
-public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
+public abstract class AbstractStoreManagerTest {
 	@Inject
 	protected EntityStoreManager entityStoreManager;
 	@Inject
@@ -77,7 +82,34 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 
 	private CarDataBase carDataBase;
 
-	@Override
+	private AutoCloseableApp app;
+
+	protected App getApp() {
+		return app;
+	}
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		doSetUp();
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			try {
+				doTearDown();
+			} finally {
+				app.close();
+			}
+		}
+
+	}
+
+	protected abstract NodeConfig buildNodeConfig();
+
 	protected void doSetUp() throws Exception {
 		carDataBase = new CarDataBase();
 		dtDefinitionFamille = DtObjectUtil.findDtDefinition(Famille.class);
@@ -151,7 +183,6 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 				.build();
 	}
 
-	@Override
 	protected void doTearDown() throws Exception {
 		cleanDb();
 	}
@@ -238,7 +269,7 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 	protected void nativeInsertCar(final Car car) {
 		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
 		final SmartTypeDefinition smartTypeCar = definitionSpace.resolve("STyDtCar", SmartTypeDefinition.class);
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkInsertCar")
@@ -256,8 +287,12 @@ public abstract class AbstractStoreManagerTest extends AbstractTestCaseJU5 {
 		nop(taskResult);
 	}
 
+	protected void nop(TaskResult taskResult) {
+		//nop
+	}
+
 	protected final DtList<Car> nativeLoadCarList() {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
 		final SmartTypeDefinition smartTypeCar = definitionSpace.resolve("STyDtCar", SmartTypeDefinition.class);
 
 		final TaskDefinition taskDefinition = TaskDefinition.builder("TkLoadAllCars")

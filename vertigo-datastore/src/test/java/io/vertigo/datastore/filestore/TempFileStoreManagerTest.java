@@ -12,13 +12,16 @@ import java.util.stream.Stream;
 import javax.inject.Inject;
 
 import org.h2.Driver;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -45,7 +48,7 @@ import io.vertigo.datastore.impl.filestore.FileStorePlugin;
 import io.vertigo.datastore.plugins.entitystore.sql.SqlEntityStorePlugin;
 import io.vertigo.datastore.plugins.filestore.fs.FsFullFileStorePlugin;
 
-public class TempFileStoreManagerTest extends AbstractTestCaseJU5 {
+public class TempFileStoreManagerTest {
 
 	@Inject
 	private VTransactionManager transactionManager;
@@ -58,8 +61,45 @@ public class TempFileStoreManagerTest extends AbstractTestCaseJU5 {
 	@Inject
 	private List<FileStorePlugin> fileStorePlugins;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		//A chaque test on recrée la table famille
+		final List<String> requests = new ListBuilder<String>()
+				.add(" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_PATH varchar(255), FILE_DATA BLOB)")
+				.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1")
+				.build();
+		SqlUtil.execRequests(
+				transactionManager,
+				taskManager,
+				requests,
+				"TkInitMain",
+				Optional.empty());
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			try {
+				SqlUtil.execRequests(
+						transactionManager,
+						taskManager,
+						Arrays.asList(
+								" drop table if exists VX_FILE_INFO ",
+								" drop sequence if exists SEQ_VX_FILE_INFO"),
+						"TkShutDown",
+						Optional.empty());
+			} finally {
+				app.close();
+			}
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
@@ -100,33 +140,6 @@ public class TempFileStoreManagerTest extends AbstractTestCaseJU5 {
 								.build())
 						.build())
 				.build();
-	}
-
-	@Override
-	protected void doSetUp() throws Exception {
-		//A chaque test on recrée la table famille
-		final List<String> requests = new ListBuilder<String>()
-				.add(" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_PATH varchar(255), FILE_DATA BLOB)")
-				.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1")
-				.build();
-		SqlUtil.execRequests(
-				transactionManager,
-				taskManager,
-				requests,
-				"TkInitMain",
-				Optional.empty());
-	}
-
-	@Override
-	protected void doTearDown() {
-		SqlUtil.execRequests(
-				transactionManager,
-				taskManager,
-				Arrays.asList(
-						" drop table if exists VX_FILE_INFO ",
-						" drop sequence if exists SEQ_VX_FILE_INFO"),
-				"TkShutDown",
-				Optional.empty());
 	}
 
 	@Test

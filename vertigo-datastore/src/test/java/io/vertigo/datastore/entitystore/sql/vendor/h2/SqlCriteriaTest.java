@@ -24,12 +24,15 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import org.h2.Driver;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
@@ -48,7 +51,7 @@ import io.vertigo.datastore.entitystore.sql.SqlUtil;
 /**
  *
  */
-public final class SqlCriteriaTest extends AbstractTestCaseJU5 {
+public final class SqlCriteriaTest {
 
 	@Inject
 	private VTransactionManager transactionManager;
@@ -57,16 +60,13 @@ public final class SqlCriteriaTest extends AbstractTestCaseJU5 {
 	@Inject
 	private TaskManager taskManager;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
-		return SqlDataStoreNodeConfig.build(
-				H2DataBase.class.getCanonicalName(),
-				Driver.class.getCanonicalName(),
-				"jdbc:h2:mem:database");
-	}
+	private AutoCloseableApp app;
 
-	@Override
-	protected void doSetUp() throws Exception {
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
 		//A chaque test on recrée la table famille
 		SqlUtil.execRequests(
 				transactionManager,
@@ -82,6 +82,20 @@ public final class SqlCriteriaTest extends AbstractTestCaseJU5 {
 			}
 			transaction.commit();
 		}
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
+		return SqlDataStoreNodeConfig.build(
+				H2DataBase.class.getCanonicalName(),
+				Driver.class.getCanonicalName(),
+				"jdbc:h2:mem:database");
 	}
 
 	protected List<String> getCreateCarRequests() {

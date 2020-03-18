@@ -22,30 +22,59 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
-import io.vertigo.core.AbstractTestCaseJU5;
-import io.vertigo.datastore.kvstore.KVStoreManager;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.datastore.kvstore.data.Flower;
 
 /**
  * @author pchretien
  */
-public abstract class AbstractKVStoreManagerTest extends AbstractTestCaseJU5 {
+public abstract class AbstractKVStoreManagerTest {
 	protected static final String COLLECTION = "MyDB:flowers";
 	@Inject
 	protected KVStoreManager kvStoreManager;
 	@Inject
 	protected VTransactionManager transactionManager;
 
-	//	protected static Tree buildTree(final String name, final double price) {
-	//		return new Tree()
-	//				.setName(name)
-	//				.setPrice(price);
-	//	}
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		doSetUp();
+	}
+
+	protected void doSetUp() throws Exception {
+		//
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			try {
+				doTearDown();
+			} finally {
+				app.close();
+			}
+		}
+
+	}
+
+	protected void doTearDown() throws Exception {
+		//
+	}
+
+	protected abstract NodeConfig buildNodeConfig();
 
 	protected static Flower buildFlower(final String name, final double price) {
 		return new Flower()

@@ -26,12 +26,15 @@ import java.time.Instant;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -48,13 +51,27 @@ import io.vertigo.datastore.filestore.model.VFile;
  *
  * @author dchallas
  */
-public final class FileManagerTest extends AbstractTestCaseJU5 {
+public final class FileManagerTest {
 
 	@Inject
 	private FileManager fileManager;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -138,6 +155,10 @@ public final class FileManagerTest extends AbstractTestCaseJU5 {
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}
+	}
+
+	private static void nop(InputStream in) {
+		//nada
 	}
 
 	private static void checVFile(final File outFile, final File inFile) {

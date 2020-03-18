@@ -28,17 +28,20 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.datastore.cache.CacheManager;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.NodeConfig;
 
 /**
  *
  * @author dchallas
  */
-public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU5 {
+public abstract class AbstractCacheManagerTest {
 	private static final String KEY = "ma clé";
 	private static final String CONTEXT_EDITABLE = TestCacheDefinitionProvider.CONTEXT_EDITABLE;
 	private static final String CONTEXT_READONLY = TestCacheDefinitionProvider.CONTEXT_READONLY;
@@ -47,6 +50,22 @@ public abstract class AbstractCacheManagerTest extends AbstractTestCaseJU5 {
 
 	@Inject
 	private CacheManager cacheManager;
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	protected abstract NodeConfig buildNodeConfig();
 
 	public AbstractCacheManagerTest() {
 		maxNbRow = 10000;
