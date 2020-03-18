@@ -27,6 +27,7 @@ import io.vertigo.datafactory.DataFactoryFeatures;
 import io.vertigo.datafactory.collections.data.TestCollectionsSmartTypes;
 import io.vertigo.datamodel.DataModelFeatures;
 import io.vertigo.datamodel.impl.smarttype.ModelDefinitionProvider;
+import io.vertigo.datastore.DataStoreFeatures;
 
 /**
  * @author npiedeloup
@@ -42,6 +43,10 @@ public class CollectionsManagerLucene_6_6Test extends CollectionsManagerTest {
 				.endBoot()
 				.addModule(new CommonsFeatures().build())
 				.addModule(new DataModelFeatures().build())
+				.addModule(new DataStoreFeatures()
+						.withCache()
+						.withMemoryCache()
+						.build())
 				.addModule(new DataFactoryFeatures()
 						.addPlugin(io.vertigo.datafactory.plugins.collections.lucene_6_6.LuceneIndexPlugin.class)
 						.build())

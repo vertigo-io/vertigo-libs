@@ -90,6 +90,8 @@ public abstract class AbstractSearchManagerTest {
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		//--
 		doSetUp();
+		removeAll();
+
 	}
 
 	@AfterEach
@@ -129,7 +131,7 @@ public abstract class AbstractSearchManagerTest {
 		geoCircleFacetDefinition = definitionSpace.resolve("FctLocalisationCircleItem", FacetDefinition.class);
 		geoHashClusterFacetDefinition = definitionSpace.resolve("FctLocalisationHashItem", FacetDefinition.class);
 		itemIndexDefinition = definitionSpace.resolve(indexName, SearchIndexDefinition.class);
-		clean(itemIndexDefinition);
+		removeAll();
 	}
 
 	@BeforeAll
@@ -162,25 +164,13 @@ public abstract class AbstractSearchManagerTest {
 	}
 
 	/**
-	 * @param indexDefinition Definition de l'index
-	 */
-	private void clean(final SearchIndexDefinition indexDefinition) {
-		final ListFilter removeQuery = ListFilter.of("*:*");
-		searchManager.removeAll(indexDefinition, removeQuery);
-	}
-
-	@BeforeEach
-	public void clean() {
-		removeAll();
-	}
-
-	/**
 	 * Test de création nettoyage de l'index.
 	 * La création s'effectue dans une seule transaction.
 	 */
 	@Test
 	public void testClean() {
-		clean(itemIndexDefinition);
+		final ListFilter removeQuery = ListFilter.of("*:*");
+		searchManager.removeAll(itemIndexDefinition, removeQuery);
 		waitAndExpectIndexation(0);
 	}
 
@@ -192,6 +182,7 @@ public abstract class AbstractSearchManagerTest {
 	public void testIndex() {
 		index(false);
 		index(true);
+		waitAndExpectIndexation(itemDataBase.size());
 	}
 
 	/**
@@ -220,6 +211,7 @@ public abstract class AbstractSearchManagerTest {
 
 		//On supprime tout
 		removeAll();
+		waitAndExpectIndexation(0);
 		size = searchManager.count(itemIndexDefinition);
 		Assertions.assertEquals(0L, size);
 
@@ -288,8 +280,7 @@ public abstract class AbstractSearchManagerTest {
 	@Test
 	public void testQuery() {
 		index(false);
-		long size;
-		size = query("*:*");
+		long size = query("*:*");
 		Assertions.assertEquals(itemDataBase.size(), size);
 
 		size = query("manufacturer:Peugeot"); //Les constructeur sont des mots clés donc sensible à la casse
@@ -408,8 +399,7 @@ public abstract class AbstractSearchManagerTest {
 	@Test
 	public void testCopyFieldsQuery() {
 		index(false);
-		long size;
-		size = query("*:*");
+		long size = query("*:*");
 		Assertions.assertEquals(itemDataBase.size(), size);
 
 		/* _all deprecated in 6.x
@@ -1704,7 +1694,7 @@ public abstract class AbstractSearchManagerTest {
 		return searchManager.loadList(itemIndexDefinition, searchQuery, listState);
 	}
 
-	private static UID<io.vertigo.datafactory.search.data.domain.Item> createURI(final long id) {
+	private static UID<Item> createURI(final long id) {
 		return UID.of(Item.class, id);
 	}
 

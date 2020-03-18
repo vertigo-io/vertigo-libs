@@ -12,10 +12,8 @@ modules:
   io.vertigo.commons.CommonsFeatures:
     features:
       - script:
-      - cache:
     featuresConfig:
       - script.janino:
-      - cache.memory:
   io.vertigo.database.DatabaseFeatures:
     features:
       - sql:
@@ -29,11 +27,13 @@ modules:
     features:
       - entitystore:
       - kvStore:
+      - cache:
     featuresConfig:
       - entitystore.sql:
       - kvStore.berkeley:
           collections: VActionContext;TTL=43200
           dbFilePath: ${java.io.tmpdir}/vertigo/TestVActionContext
+      - cache.memory:
     plugins:
       - io.vertigo.struts2.services.util.StaticStorePlugin:
           values: "true=Oui;false=Non"

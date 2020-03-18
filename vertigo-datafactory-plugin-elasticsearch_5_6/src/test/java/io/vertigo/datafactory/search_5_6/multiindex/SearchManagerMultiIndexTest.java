@@ -20,11 +20,14 @@ package io.vertigo.datafactory.search_5_6.multiindex;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -50,7 +53,7 @@ import io.vertigo.dynamox.search.DslListFilterBuilder;
 /**
  * @author  npiedeloup
  */
-public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
+public class SearchManagerMultiIndexTest {
 	//Index
 	private static final String IDX_ITEM = "IdxItem";
 
@@ -60,8 +63,24 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 
 	private ItemDataBase itemDataBase;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() throws Exception {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+		//---
+		itemDataBase = new ItemDataBase();
+	}
+
+	@AfterEach
+	public final void tearDown() throws Exception {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private static NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.withLocales("fr_FR")
@@ -88,12 +107,6 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 				.build();
 	}
 
-	/**{@inheritDoc}*/
-	@Override
-	protected void doSetUp() {
-		itemDataBase = new ItemDataBase();
-	}
-
 	/**
 	 * Test de création de n enregistrements dans l'index.
 	 * La création s'effectue dans une seule transaction mais sur deux indexes.
@@ -101,7 +114,7 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testIndex() {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
 		final SearchIndexDefinition itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 
 		for (final Item item : itemDataBase.getAllItems()) {
@@ -117,7 +130,7 @@ public class SearchManagerMultiIndexTest extends AbstractTestCaseJU5 {
 	 */
 	@Test
 	public void testClean() {
-		final DefinitionSpace definitionSpace = getApp().getDefinitionSpace();
+		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
 		final SearchIndexDefinition itemIndexDefinition = definitionSpace.resolve(IDX_ITEM, SearchIndexDefinition.class);
 		final ListFilter removeQuery = ListFilter.of("*:*");
 		searchManager.removeAll(itemIndexDefinition, removeQuery);

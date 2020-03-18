@@ -81,7 +81,8 @@ public class CollectionsManagerTest {
 		}
 	}
 
-	private NodeConfig buildNodeConfig() {
+	//non final, to be overrided for previous lib version
+	protected NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)

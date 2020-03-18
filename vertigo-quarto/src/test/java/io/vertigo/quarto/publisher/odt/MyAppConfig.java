@@ -51,7 +51,7 @@ class MyNodeConfig {
 						.addPlugin(OpenOfficeMergerPlugin.class)
 						.addDefinitionProvider(DefinitionProviderConfig.builder(ModelDefinitionProvider.class)
 								.addDefinitionResource("smarttypes", TestPublisherSmartTypes.class.getName())
-								.addDefinitionResource("dtobjects", "io.vertigo.quarto.services.publisher.data.domain*")
+								.addDefinitionResource("dtobjects", "io.vertigo.quarto.publisher.data.domain*")
 								.build())
 						.addDefinitionProvider(TestPublisherDefinitionProvider.class)
 						.build())

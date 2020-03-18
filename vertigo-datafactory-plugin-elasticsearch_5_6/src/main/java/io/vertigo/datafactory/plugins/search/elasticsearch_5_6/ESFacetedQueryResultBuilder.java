@@ -141,7 +141,7 @@ final class ESFacetedQueryResultBuilder<I extends DtObject> implements Builder<F
 			//Cas des facettes par 'range'
 			final MultiBucketsAggregation multiBuckets = (MultiBucketsAggregation) facetAggregation;
 			for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
-				final Bucket value = getBucketByKey(multiBuckets, facetRange.getListFilter().getFilterValue());
+				final Bucket value = getBucketByKey(multiBuckets, facetRange.getCode());
 				populateCluster(value, facetRange, resultCluster, dtcIndex, resultHighlights);
 			}
 		} else {
