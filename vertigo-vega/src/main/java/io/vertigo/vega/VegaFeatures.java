@@ -21,8 +21,6 @@ package io.vertigo.vega;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.config.Feature;
 import io.vertigo.core.node.config.Features;
-import io.vertigo.core.node.config.PluginConfig;
-import io.vertigo.core.node.config.PluginConfigBuilder;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.util.ListBuilder;
 import io.vertigo.vega.engines.webservice.json.GoogleJsonEngine;
@@ -133,13 +131,11 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 		Assertion.checkState(params.length == 1 && "originCORSFilter".equals(params[0].getName()), "originCORSFilter param should be provided ");
 		final String myOriginCORSFilter = params[0].getValue();
 		//---
-		final PluginConfigBuilder corsAllowerPluginConfigBuilder = PluginConfig.builder(CorsAllowerWebServiceHandlerPlugin.class);
 		if (myOriginCORSFilter != null) {
-			corsAllowerPluginConfigBuilder.addParam(Param.of("originCORSFilter", myOriginCORSFilter));
+			getModuleConfigBuilder().addPlugin(CorsAllowerWebServiceHandlerPlugin.class);
+		} else {
+			getModuleConfigBuilder().addPlugin(CorsAllowerWebServiceHandlerPlugin.class, Param.of("originCORSFilter", myOriginCORSFilter));
 		}
-
-		getModuleConfigBuilder()
-				.addPlugin(corsAllowerPluginConfigBuilder.build());
 		return this;
 	}
 
@@ -166,13 +162,13 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 			if (myApiPrefix != null) {
 				params.add(Param.of("apiPrefix", myApiPrefix));
 			}
-			getModuleConfigBuilder().addPlugin(new PluginConfig(SparkJavaEmbeddedWebServerPlugin.class, params.build()));
+			getModuleConfigBuilder().addPlugin(SparkJavaEmbeddedWebServerPlugin.class, params.build());
 		} else {
 			final ListBuilder<Param> params = new ListBuilder<>();
 			if (myApiPrefix != null) {
 				params.add(Param.of("apiPrefix", myApiPrefix));
 			}
-			getModuleConfigBuilder().addPlugin(new PluginConfig(SparkJavaServletFilterWebServerPlugin.class, params.build()));
+			getModuleConfigBuilder().addPlugin(SparkJavaServletFilterWebServerPlugin.class, params.build());
 		}
 
 		getModuleConfigBuilder()
