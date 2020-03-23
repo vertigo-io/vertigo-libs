@@ -35,7 +35,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.AopPlugin;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
 import io.vertigo.core.util.ClassUtil;
@@ -48,11 +48,11 @@ public final class CommandManagerImpl implements CommandManager, SimpleDefinitio
 		final AopPlugin aopPlugin = Home.getApp().getNodeConfig().getBootConfig().getAopPlugin();
 		return Home.getApp().getComponentSpace().keySet()
 				.stream()
-				.flatMap(id -> createCommandDefinition(Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream())
+				.flatMap(id -> createCommandDefinition(Home.getApp().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
 				.collect(Collectors.toList());
 	}
 
-	private static List<CommandDefinition> createCommandDefinition(final Component component, final AopPlugin aopPlugin) {
+	private static List<CommandDefinition> createCommandDefinition(final CoreComponent component, final AopPlugin aopPlugin) {
 		return Stream.of(aopPlugin.unwrap(component).getClass().getMethods())
 				.filter(method -> method.isAnnotationPresent(Command.class))
 				.map(

@@ -32,7 +32,7 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.node.component.AopPlugin;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.CoreComponent;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
@@ -59,7 +59,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 		final AopPlugin aopPlugin = Home.getApp().getNodeConfig().getBootConfig().getAopPlugin();
 		return Home.getApp().getComponentSpace().keySet()
 				.stream()
-				.flatMap(id -> createEventSubscriptions(id, Home.getApp().getComponentSpace().resolve(id, Component.class), aopPlugin).stream())
+				.flatMap(id -> createEventSubscriptions(id, Home.getApp().getComponentSpace().resolve(id, CoreComponent.class), aopPlugin).stream())
 				.collect(Collectors.toList());
 	}
 
@@ -67,7 +67,7 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 	 * Registers all methods annotated with @Suscriber on the object
 	 * @param suscriberInstance
 	 */
-	private static List<EventBusSubscriptionDefinition> createEventSubscriptions(final String componentId, final Component subscriberInstance, final AopPlugin aopPlugin) {
+	private static List<EventBusSubscriptionDefinition> createEventSubscriptions(final String componentId, final CoreComponent subscriberInstance, final AopPlugin aopPlugin) {
 		Assertion.checkNotNull(subscriberInstance);
 		//-----
 		//1. search all methods
