@@ -32,6 +32,7 @@ import javax.servlet.http.HttpSession;
 
 import io.vertigo.account.security.UserSession;
 import io.vertigo.account.security.VSecurityManager;
+import io.vertigo.core.lang.Tuple;
 import io.vertigo.core.node.Home;
 import io.vertigo.vega.webservice.exception.SessionException;
 
@@ -48,6 +49,8 @@ public final class SecurityFilter extends AbstractFilter {
 	private static final String USER_SESSION = "io.vertigo.Session";
 
 	private static final String NO_AUTHENTIFICATION_PATTERN_PARAM_NAME = "url-no-authentification";
+	private static final String DELEGATE_AUTHENTICATION_HANDLER_PARAM_NAME = "delegate-authentication-handler-component";
+	private Optional<DelegateAuthenticationFilterHandler> authenticationHandlerOpt;
 
 	/**
 	 * Le gestionnaire de sécurité
@@ -61,6 +64,8 @@ public final class SecurityFilter extends AbstractFilter {
 	public void doInit() {
 		securityManager = Home.getApp().getComponentSpace().resolve(VSecurityManager.class);
 		noAuthentificationPattern = parsePattern(getFilterConfig().getInitParameter(NO_AUTHENTIFICATION_PATTERN_PARAM_NAME));
+		authenticationHandlerOpt = Optional.ofNullable(getFilterConfig().getInitParameter(DELEGATE_AUTHENTICATION_HANDLER_PARAM_NAME))
+				.map(authenticationHandlerName -> Home.getApp().getComponentSpace().resolve(authenticationHandlerName, DelegateAuthenticationFilterHandler.class));
 	}
 
 	/** {@inheritDoc} */
@@ -100,7 +105,23 @@ public final class SecurityFilter extends AbstractFilter {
 				//} else if (checkRequestAccess && needsAuthentification && false) { //TODO
 				//	httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
 			} else {
-				chain.doFilter(httpRequest, httpResponse);
+				if (authenticationHandlerOpt.isPresent()) {
+					// authent workflow
+					final DelegateAuthenticationFilterHandler authenticationHandler = authenticationHandlerOpt.get();
+					try {
+						final Tuple<Boolean, HttpServletRequest> beforeOutcome = authenticationHandler.doBeforeChain(httpRequest, httpResponse);
+						if (beforeOutcome.getVal1()) {
+							return;
+						}
+						chain.doFilter(beforeOutcome.getVal2(), httpResponse);
+						authenticationHandler.doAfterChain(beforeOutcome.getVal2(), httpResponse);
+					} finally {
+						authenticationHandler.doFinally(httpRequest, httpResponse);
+					}
+				} else {
+					// nothing particular to do
+					chain.doFilter(httpRequest, httpResponse);
+				}
 			}
 		} finally {
 			// On retire le user du ThreadLocal (il est déjà en session)

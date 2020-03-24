@@ -45,6 +45,13 @@
 			</exclusions>
 		</dependency>
 		
+		<dependency>
+			<groupId>io.vertigo</groupId>
+			<artifactId>vertigo-keycloak-connector</artifactId> <!-- For io.vertigo.vega.impl.servlet.filter.AbstactKeycloakDelegateAuthenticationHandler -->
+			<version>${project.version}</version>
+			<optional>true</optional>
+		</dependency>
+		
 
 		<!-- libs -->
 
