@@ -39,7 +39,10 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.config.RestAssuredConfig;
 import io.restassured.filter.session.SessionFilter;
+import io.restassured.mapper.ObjectMapperType;
 import io.restassured.parsing.Parser;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -56,6 +59,7 @@ abstract class AbstractWebServiceManagerTest {
 
 	@BeforeEach
 	public void preTestLogin() {
+		RestAssured.config = RestAssuredConfig.config().objectMapperConfig(ObjectMapperConfig.objectMapperConfig().defaultObjectMapperType(ObjectMapperType.GSON));
 		RestAssured.registerParser("plain/text", Parser.TEXT);
 		RestAssured.given()
 				.filter(loggedSessionFilter)
