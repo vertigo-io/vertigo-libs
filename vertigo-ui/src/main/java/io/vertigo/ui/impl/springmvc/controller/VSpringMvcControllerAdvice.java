@@ -126,6 +126,12 @@ public final class VSpringMvcControllerAdvice {
 		final ModelAndView modelAndView = new ModelAndView();
 		viewContext.markDirty();
 		modelAndView.addObject("model", viewContext.asMap());
+		modelAndView.addObject("viewContextAsJson", new Supplier<String>() {
+			@Override
+			public String get() {
+				return viewContext.getFilteredViewContextAsJson();
+			}
+		});
 		modelAndView.addObject("uiMessageStack", uiMessageStack);
 		return modelAndView;
 	}
