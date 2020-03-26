@@ -374,9 +374,6 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	}
 
 	private static AggregationBuilder customFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
-		/*return AggregationBuilders.geohashGrid(facetDefinition.getName())
-				.field("localisation")
-				.precision(5);*/
 		return new CustomAggregationBuilder(facetDefinition.getName(), facetDefinition.getCustomParams());
 	}
 
