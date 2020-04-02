@@ -78,7 +78,7 @@ public abstract class AbstractSqlManagerTest {
 			+ "release_instant timestamp , "
 			+ "icon blob );";
 
-	private static final Map<Class, BasicTypeAdapter> MAIL_ADAPTER = new HashMap<Class, BasicTypeAdapter>() {
+	private static final Map<Class, BasicTypeAdapter> MAIL_ADAPTER = new HashMap<>() {
 		private static final long serialVersionUID = 1L;
 
 		{

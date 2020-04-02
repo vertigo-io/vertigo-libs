@@ -49,6 +49,7 @@ import io.vertigo.social.MyNodeConfig;
 import io.vertigo.social.comment.Comment;
 import io.vertigo.social.comment.CommentManager;
 import io.vertigo.social.data.MockIdentities;
+import io.vertigo.vega.engines.webservice.json.UTCDateUtil;
 import redis.clients.jedis.Jedis;
 
 public final class CommentWebServicesTest {
@@ -277,7 +278,7 @@ public final class CommentWebServicesTest {
 	}*/
 
 	private static String convertDate(final Instant instant) {
-		return instant == null ? null : instant.toString();
+		return instant == null ? null : UTCDateUtil.formatInstant(instant);
 	}
 
 	private static Map<String, Object> commentToMap(final Comment comment) {

@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
@@ -109,7 +108,7 @@ public final class FileManagerImpl implements FileManager {
 	@Override
 	public VFile createFile(final File file) {
 		try {
-			return new FSFile(file.getName(), new MimetypesFileTypeMap().getContentType(file), file.toPath());
+			return new FSFile(file.getName(), Files.probeContentType(file.toPath()), file.toPath());
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e);
 		}
@@ -128,7 +127,7 @@ public final class FileManagerImpl implements FileManager {
 	/** {@inheritDoc} */
 	@Override
 	public VFile createFile(final String fileName, final Instant lastModified, final long length, final InputStreamBuilder inputStreamBuilder) {
-		return createFile(fileName, new MimetypesFileTypeMap().getContentType(fileName), lastModified, length, inputStreamBuilder);
+		return createFile(fileName, URLConnection.guessContentTypeFromName(fileName), lastModified, length, inputStreamBuilder);
 	}
 
 	/** {@inheritDoc} */

@@ -80,7 +80,7 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 		Assertion.checkNotNull(workEngineClass);
 		//-----
 		final WorkItem<W, R> workItem = new WorkItem<>(createWorkId(), work, workEngineClass);
-		final WorkResultHandler<R> emptyWorkResultHandler = new WorkResultHandler<R>() {
+		final WorkResultHandler<R> emptyWorkResultHandler = new WorkResultHandler<>() {
 			@Override
 			public void onStart() {
 				//nothing

@@ -230,7 +230,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 	/** {@inheritDoc} */
 	@Override
 	public Iterator<Class<?>> iterator() {
-		return new Iterator<Class<?>>() {
+		return new Iterator<>() {
 			private final Iterator<Definitions> it = Arrays.asList(Definitions.values()).iterator();
 
 			/** {@inheritDoc} */

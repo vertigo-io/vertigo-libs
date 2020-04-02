@@ -60,7 +60,7 @@ final class WorkDispatcher implements Runnable {
 	private <W, R> void doRun() throws InterruptedException {
 		final WorkItem<W, R> workItem = workerPlugin.pollWorkItem(nodeId, workType);
 		if (workItem != null) {
-			final WorkResultHandler<R> workResultHandler = new WorkResultHandler<R>() {
+			final WorkResultHandler<R> workResultHandler = new WorkResultHandler<>() {
 				@Override
 				public void onStart() {
 					workerPlugin.putStart(workItem.getId());

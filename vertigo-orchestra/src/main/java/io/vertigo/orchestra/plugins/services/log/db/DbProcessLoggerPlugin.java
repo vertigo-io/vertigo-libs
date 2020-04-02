@@ -24,8 +24,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Optional;
 
-import javax.activation.FileTypeMap;
 import javax.inject.Inject;
+
+import org.eclipse.jetty.http.MimeTypes;
 
 import io.vertigo.commons.transaction.Transactional;
 import io.vertigo.core.lang.Assertion;
@@ -87,7 +88,7 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 			final InputStreamBuilder inputStreamBuilder = () -> new ByteArrayInputStream(stringByteArray);
 
 			final String fileName = TECHNICAL_LOG_PREFIX + actityExecutionId + TECHNICAL_LOG_EXTENSION;
-			final VFile file = fileManager.createFile(fileName, FileTypeMap.getDefaultFileTypeMap().getContentType(fileName), Instant.now(), stringByteArray.length, inputStreamBuilder);
+			final VFile file = fileManager.createFile(fileName, MimeTypes.getDefaultMimeByExtension(fileName), Instant.now(), stringByteArray.length, inputStreamBuilder);
 
 			return Optional.<VFile> of(file);
 		}
