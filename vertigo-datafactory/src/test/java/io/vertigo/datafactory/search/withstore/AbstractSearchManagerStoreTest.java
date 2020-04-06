@@ -75,7 +75,7 @@ abstract class AbstractSearchManagerStoreTest {
 	private AutoCloseableApp app;
 
 	@BeforeEach
-	public final void setUp() throws Exception {
+	public final void setUp() throws SQLException {
 		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		//---
@@ -104,7 +104,7 @@ abstract class AbstractSearchManagerStoreTest {
 	}
 
 	@AfterEach
-	public final void tearDown() throws Exception {
+	public final void tearDown() throws SQLException {
 		if (app != null) {
 			//A chaque fin de test on arréte la base.
 			try (final SqlConnectionCloseable connectionCloseable = new SqlConnectionCloseable(dataBaseManager)) {

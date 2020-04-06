@@ -89,7 +89,7 @@ public abstract class AbstractStoreManagerTest {
 	}
 
 	@BeforeEach
-	public final void setUp() throws Exception {
+	public final void setUp() {
 		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		//---
@@ -97,7 +97,7 @@ public abstract class AbstractStoreManagerTest {
 	}
 
 	@AfterEach
-	public final void tearDown() throws Exception {
+	public final void tearDown() {
 		if (app != null) {
 			try {
 				doTearDown();
@@ -110,7 +110,7 @@ public abstract class AbstractStoreManagerTest {
 
 	protected abstract NodeConfig buildNodeConfig();
 
-	protected void doSetUp() throws Exception {
+	protected void doSetUp() {
 		carDataBase = new CarDataBase();
 		dtDefinitionFamille = DtObjectUtil.findDtDefinition(Famille.class);
 
@@ -183,7 +183,7 @@ public abstract class AbstractStoreManagerTest {
 				.build();
 	}
 
-	protected void doTearDown() throws Exception {
+	protected void doTearDown() {
 		cleanDb();
 	}
 

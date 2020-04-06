@@ -51,25 +51,25 @@ public abstract class AbstractOrchestraTestCase {
 	private TaskManager taskManager;
 
 	@BeforeAll
-	public static final void setUp() throws Exception {
+	public static final void setUp() {
 		app = new AutoCloseableApp(MyNodeConfig.config());
 	}
 
 	@AfterAll
-	public static final void tearDown() throws Exception {
+	public static final void tearDown() {
 		if (app != null) {
 			app.close();
 		}
 	}
 
-	public final void setUpInjection() throws Exception {
+	public final void setUpInjection() {
 		if (app != null) {
 			InjectorUtil.injectMembers(this);
 		}
 	}
 
 	@BeforeEach
-	public void doSetUp() throws Exception {
+	public void doSetUp() {
 		setUpInjection();
 		//A chaque test on supprime tout
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {

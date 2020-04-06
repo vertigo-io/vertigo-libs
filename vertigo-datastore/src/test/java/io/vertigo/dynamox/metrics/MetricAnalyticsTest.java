@@ -116,7 +116,7 @@ public final class MetricAnalyticsTest {
 								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", "io.vertigo.datastore.task.data.DtDefinitions")
 								.build())
-						.addProxy(SuperHeroDao.class)
+						.addAmplifier(SuperHeroDao.class)
 						.build())
 				.addModule(ModuleConfig.builder("analytics-metric")
 						.addComponent(DomainMetricsProvider.class)

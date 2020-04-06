@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import io.vertigo.commons.transaction.Transactional;
-import io.vertigo.core.node.component.Component;
+import io.vertigo.core.node.component.Amplifier;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.task.proxy.TaskInput;
 import io.vertigo.datamodel.task.proxy.TaskOutput;
@@ -32,7 +32,7 @@ import io.vertigo.dynamox.task.TaskEngineProc;
 import io.vertigo.dynamox.task.TaskEngineSelect;
 
 @Transactional
-public interface SuperHeroDao extends Component {
+public interface SuperHeroDao extends Amplifier {
 	@TaskProxyAnnotation(
 			name = "TkCarCount",
 			request = "select count(*) from super_hero ",

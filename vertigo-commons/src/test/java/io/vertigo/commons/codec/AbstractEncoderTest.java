@@ -45,7 +45,7 @@ public abstract class AbstractEncoderTest<C extends Encoder<S, T>, S, T> {
 	private AutoCloseableApp app;
 
 	@BeforeEach
-	public final void setUp() throws Exception {
+	public final void setUp() {
 		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		//---

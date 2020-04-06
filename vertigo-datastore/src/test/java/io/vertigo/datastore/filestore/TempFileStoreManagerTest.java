@@ -64,7 +64,7 @@ public class TempFileStoreManagerTest {
 	private AutoCloseableApp app;
 
 	@BeforeEach
-	public final void setUp() throws Exception {
+	public final void setUp() {
 		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		//---
@@ -82,7 +82,7 @@ public class TempFileStoreManagerTest {
 	}
 
 	@AfterEach
-	public final void tearDown() throws Exception {
+	public final void tearDown() {
 		if (app != null) {
 			try {
 				SqlUtil.execRequests(

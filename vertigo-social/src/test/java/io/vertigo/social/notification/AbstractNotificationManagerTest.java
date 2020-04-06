@@ -56,7 +56,7 @@ public abstract class AbstractNotificationManagerTest {
 	private AutoCloseableApp app;
 
 	@BeforeEach
-	public final void setUp() throws Exception {
+	public final void setUp() {
 		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		//---
@@ -69,7 +69,7 @@ public abstract class AbstractNotificationManagerTest {
 	}
 
 	@AfterEach
-	public final void tearDown() throws Exception {
+	public final void tearDown() {
 		if (app != null) {
 			app.close();
 		}

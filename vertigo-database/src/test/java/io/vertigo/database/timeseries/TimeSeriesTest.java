@@ -51,13 +51,13 @@ public final class TimeSeriesTest {
 	private AutoCloseableApp app;
 
 	@BeforeEach
-	public final void setUp() throws Exception {
+	public final void setUp() {
 		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
 	}
 
 	@AfterEach
-	public final void tearDown() throws Exception {
+	public final void tearDown() {
 		if (app != null) {
 			app.close();
 		}

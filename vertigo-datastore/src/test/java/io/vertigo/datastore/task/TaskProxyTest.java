@@ -115,7 +115,7 @@ public final class TaskProxyTest {
 								.addDefinitionResource("smarttypes", TestSmartTypes.class.getName())
 								.addDefinitionResource("dtobjects", "io.vertigo.datastore.task.data.DtDefinitions")
 								.build())
-						.addProxy(SuperHeroDao.class)
+						.addAmplifier(SuperHeroDao.class)
 						.build())
 				.build();
 	}

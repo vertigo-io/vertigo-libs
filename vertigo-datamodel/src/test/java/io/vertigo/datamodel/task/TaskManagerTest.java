@@ -60,13 +60,13 @@ public final class TaskManagerTest {
 	private AutoCloseableApp app;
 
 	@BeforeEach
-	public void setUp() throws Exception {
+	public void setUp() {
 		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
 	}
 
 	@AfterEach
-	public void tearDown() throws Exception {
+	public void tearDown() {
 		if (app != null) {
 			app.close();
 		}

@@ -56,13 +56,13 @@ public final class MailManagerTest {
 	private AutoCloseableApp app;
 
 	@BeforeEach
-	public final void setUp() throws Exception {
+	public final void setUp() {
 		app = new AutoCloseableApp(buildNodeConfig());
 		DIInjector.injectMembers(this, app.getComponentSpace());
 	}
 
 	@AfterEach
-	public final void tearDown() throws Exception {
+	public final void tearDown() {
 		if (app != null) {
 			app.close();
 		}
@@ -92,10 +92,9 @@ public final class MailManagerTest {
 	}
 
 	/**
-	 * @throws Exception manager null
 	 */
 	@Test
-	public void testNotNull() throws Exception {
+	public void testNotNull() {
 		Assertion.checkNotNull(mailManager);
 	}
 

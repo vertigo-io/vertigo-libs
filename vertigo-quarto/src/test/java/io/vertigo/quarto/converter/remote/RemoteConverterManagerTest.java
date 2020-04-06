@@ -78,13 +78,13 @@ public final class RemoteConverterManagerTest extends AbstractTestCaseJU5 {
 
 	/** {@inheritDoc} */
 	@Override
-	protected void doSetUp() throws Exception {
+	protected void doSetUp() {
 		//rien
 	}
 
 	/** {@inheritDoc} */
 	@Override
-	protected void doTearDown() throws Exception {
+	protected void doTearDown() {
 		if (resultFile != null) {
 			resultFile = null; //Les fichiers temporaires étant en WeakRef, cela supprime le fichier
 		}
