@@ -143,9 +143,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				label,
 				cardinality,
 				persistent,
-				fkDtDefinitionName,
-				null);
-		//On suppose que le build est déjà effectué. TODO: WTF
+				fkDtDefinitionName);
 		myFields.add(dtField);
 		return this;
 	}
@@ -157,15 +155,13 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param label the label of the field
 	 * @param smartType the smartType of the field
 	 * @param cardinality cardinality of the field see {@code Cardinality}
-	 * @param computedExpression the expression use to compute the field
 	 * @return this builder
 	 */
 	public DtDefinitionBuilder addComputedField(
 			final String fieldName,
 			final String label,
 			final SmartTypeDefinition smartType,
-			final Cardinality cardinality,
-			final ComputedExpression computedExpression) {
+			final Cardinality cardinality) {
 		final boolean persistent = false;
 		final DtField dtField = createField(
 				fieldName,
@@ -174,8 +170,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				label,
 				cardinality,
 				persistent,
-				null,
-				computedExpression);
+				null);
 		myFields.add(dtField);
 		return this;
 	}
@@ -205,7 +200,6 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				label,
 				cardinality,
 				persistent,
-				null,
 				null);
 		myFields.add(dtField);
 		return this;
@@ -238,7 +232,6 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				label,
 				cardinality,
 				persistent,
-				null,
 				null);
 		myIdField = dtField;
 		myFields.add(dtField);
@@ -252,8 +245,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 			final String strLabel,
 			final Cardinality cardinality,
 			final boolean persistent,
-			final String fkDtDefinitionName,
-			final ComputedExpression computedExpression) {
+			final String fkDtDefinitionName) {
 
 		final String shortName = DefinitionUtil.getLocalName(myName, DtDefinition.class);
 		//-----
@@ -273,8 +265,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 				labelMsg,
 				cardinality,
 				persistent,
-				fkDtDefinitionName,
-				computedExpression);
+				fkDtDefinitionName);
 	}
 
 	/**

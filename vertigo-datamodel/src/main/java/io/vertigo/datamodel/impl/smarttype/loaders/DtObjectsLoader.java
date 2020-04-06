@@ -42,7 +42,6 @@ import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition.Scope;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinitionBuilder;
 import io.vertigo.datamodel.smarttype.annotations.Adapter;
-import io.vertigo.datamodel.structure.metamodel.ComputedExpression;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtDefinitionBuilder;
 import io.vertigo.datamodel.structure.metamodel.DtField.FieldType;
@@ -363,7 +362,6 @@ public final class DtObjectsLoader implements Loader {
 		final FieldType type = FieldType.valueOf(field.type());
 		switch (type) {
 			case ID:
-
 				dtDefinitionBuilder.addIdField(fieldName, field.label(), definitionSpace.resolve(field.smartType(), SmartTypeDefinition.class));
 				break;
 			case DATA:
@@ -371,12 +369,10 @@ public final class DtObjectsLoader implements Loader {
 				break;
 			case COMPUTED:
 				//Valeurs renseignées automatiquement parce que l'on est dans le cas d'un champ calculé
-				dtDefinitionBuilder.addComputedField(fieldName, field.label(), definitionSpace.resolve(field.smartType(), SmartTypeDefinition.class), field.cardinality(), new ComputedExpression(null));
+				dtDefinitionBuilder.addComputedField(fieldName, field.label(), definitionSpace.resolve(field.smartType(), SmartTypeDefinition.class), field.cardinality());
 				break;
 			case FOREIGN_KEY:
-				// TODO : a refaire de toute urgence
-				dtDefinitionBuilder.addForeignKey(fieldName, field.label(), definitionSpace.resolve(field.smartType(), SmartTypeDefinition.class), field.cardinality(), "DtWtf");
-				break;
+				throw new IllegalArgumentException("field of type  FOREIGN_KEY must be declared with a method annotated with @ForeignKey");
 			default:
 				throw new IllegalArgumentException("case " + type + " not implemented");
 		}

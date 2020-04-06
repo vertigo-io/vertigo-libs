@@ -95,9 +95,6 @@ public final class DtField {
 	/** Cas des FK ; référence à une FK. */
 	private final String fkDtDefinitionName;
 
-	/** ComputedExpression des champs Computed. */
-	private final ComputedExpression computedExpression;
-
 	private final String id;
 
 	@JsonExclude
@@ -126,8 +123,7 @@ public final class DtField {
 			final MessageText label,
 			final Cardinality cardinality,
 			final boolean persistent,
-			final String fkDtDefinitionName,
-			final ComputedExpression computedExpression) {
+			final String fkDtDefinitionName) {
 		Assertion.checkArgNotEmpty(id);
 		Assertion.checkNotNull(type);
 		Assertion.checkNotNull(smartType);
@@ -156,13 +152,6 @@ public final class DtField {
 			Assertion.checkState(fkDtDefinitionName == null, "Le champ {0} n''est pas une clé étrangère", fieldName);
 		}
 		this.fkDtDefinitionName = fkDtDefinitionName;
-		//-----
-		if (getType() == DtField.FieldType.COMPUTED) {
-			Assertion.checkNotNull(computedExpression, "the field {0}, declared as computed, must have an expression", fieldName);
-		} else {
-			Assertion.checkState(computedExpression == null, "the field {0}, not declared as computed, must have an empty expression", fieldName);
-		}
-		this.computedExpression = computedExpression;
 		//-----
 		dataAccessor = new DataAccessor(this);
 	}
@@ -229,16 +218,6 @@ public final class DtField {
 		Assertion.checkNotNull(fkDtDefinitionName);
 		//-----
 		return Home.getApp().getDefinitionSpace().resolve(fkDtDefinitionName, DtDefinition.class);
-	}
-
-	/**
-	 * Expression dans le cas d'un champ calculé.
-	 *  @return ComputedExpression du champs calculé (caractère obligatoire lié au type)
-	 */
-	public ComputedExpression getComputedExpression() {
-		Assertion.checkNotNull(computedExpression);
-		//-----
-		return computedExpression;
 	}
 
 	/**

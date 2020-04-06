@@ -50,7 +50,7 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Objet de données OUser. */
 		OUser(io.vertigo.orchestra.domain.referential.OUser.class),
 		/** Objet de données TriggerType. */
-		TriggerType(io.vertigo.orchestra.domain.referential.TriggerType.class)		;
+		TriggerType(io.vertigo.orchestra.domain.referential.TriggerType.class);
 
 		private final Class<?> clazz;
 
@@ -58,9 +58,9 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 			this.clazz = clazz;
 		}
 
-		/** 
+		/**
 		 * Classe associée.
-		 * @return Class d'implémentation de l'objet 
+		 * @return Class d'implémentation de l'objet
 		 */
 		public Class<?> getDtClass() {
 			return clazz;
@@ -84,7 +84,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Implémentation de l'activité'. */
 		engine,
 		/** Propriété 'Processus'. */
-		proId	}
+		proId
+	}
 
 	/**
 	 * Enumération des champs de OActivityExecution.
@@ -109,7 +110,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Node'. */
 		nodId,
 		/** Propriété 'ExecutionState'. */
-		estCd	}
+		estCd
+	}
 
 	/**
 	 * Enumération des champs de OActivityExecutionUi.
@@ -134,7 +136,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Fichier de log'. */
 		hasAttachment,
 		/** Propriété 'Log technique'. */
-		hasTechnicalLog	}
+		hasTechnicalLog
+	}
 
 	/**
 	 * Enumération des champs de OActivityLog.
@@ -147,7 +150,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Fichier joint'. */
 		attachment,
 		/** Propriété 'ActivityExecution'. */
-		aceId	}
+		aceId
+	}
 
 	/**
 	 * Enumération des champs de OActivityWorkspace.
@@ -160,7 +164,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Contenu du workspace'. */
 		workspace,
 		/** Propriété 'ActivityExecution'. */
-		aceId	}
+		aceId
+	}
 
 	/**
 	 * Enumération des champs de OExecutionState.
@@ -169,7 +174,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Code'. */
 		estCd,
 		/** Propriété 'Libellé'. */
-		label	}
+		label
+	}
 
 	/**
 	 * Enumération des champs de OExecutionSummary.
@@ -196,7 +202,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Durée moyenne d'exécution'. */
 		averageExecutionTime,
 		/** Propriété 'Santé du processus'. */
-		health	}
+		health
+	}
 
 	/**
 	 * Enumération des champs de ONode.
@@ -207,7 +214,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Nom du noeud'. */
 		name,
 		/** Propriété 'Date de dernière activité'. */
-		heartbeat	}
+		heartbeat
+	}
 
 	/**
 	 * Enumération des champs de OProcess.
@@ -238,7 +246,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'TriggerType'. */
 		trtCd,
 		/** Propriété 'ProcessType'. */
-		prtCd	}
+		prtCd
+	}
 
 	/**
 	 * Enumération des champs de OProcessExecution.
@@ -263,7 +272,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'ExecutionState'. */
 		estCd,
 		/** Propriété 'User'. */
-		usrId	}
+		usrId
+	}
 
 	/**
 	 * Enumération des champs de OProcessExecutionUi.
@@ -286,7 +296,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Commentaire'. */
 		checkingComment,
 		/** Propriété 'Fichier de log'. */
-		hasAttachment	}
+		hasAttachment
+	}
 
 	/**
 	 * Enumération des champs de OProcessPlanification.
@@ -303,7 +314,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Node'. */
 		nodId,
 		/** Propriété 'PlanificationState'. */
-		sstCd	}
+		sstCd
+	}
 
 	/**
 	 * Enumération des champs de OProcessType.
@@ -312,7 +324,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Code'. */
 		prtCd,
 		/** Propriété 'Libellé'. */
-		label	}
+		label
+	}
 
 	/**
 	 * Enumération des champs de OProcessUi.
@@ -335,7 +348,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Temps de validité d'une planification'. */
 		rescuePeriod,
 		/** Propriété 'Métadonnées du processus'. */
-		metadatas	}
+		metadatas
+	}
 
 	/**
 	 * Enumération des champs de OSchedulerState.
@@ -344,7 +358,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Code'. */
 		sstCd,
 		/** Propriété 'Libellé'. */
-		label	}
+		label
+	}
 
 	/**
 	 * Enumération des champs de OUser.
@@ -363,7 +378,8 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Alerté en cas d'erreur'. */
 		mailAlert,
 		/** Propriété 'Compte Actif'. */
-		active	}
+		active
+	}
 
 	/**
 	 * Enumération des champs de TriggerType.
@@ -372,13 +388,14 @@ public final class DtDefinitions implements Iterable<Class<?>> {
 		/** Propriété 'Code'. */
 		trtCd,
 		/** Propriété 'Libellé'. */
-		label	}
+		label
+	}
 
 	/** {@inheritDoc} */
 	@Override
 	public Iterator<Class<?>> iterator() {
-		return new Iterator<Class<?>>() {
-			private Iterator<Definitions> it = Arrays.asList(Definitions.values()).iterator();
+		return new Iterator<>() {
+			private final Iterator<Definitions> it = Arrays.asList(Definitions.values()).iterator();
 
 			/** {@inheritDoc} */
 			@Override

@@ -94,7 +94,7 @@ public abstract class AbstractSearchLoader<P extends Serializable, K extends Key
 	}
 
 	private Iterator<SearchChunk<K>> createIterator(final Class<K> keyConceptClass) {
-		return new Iterator<SearchChunk<K>>() {
+		return new Iterator<>() {
 			private final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(keyConceptClass);
 			private SearchChunk<K> current;
 			private SearchChunk<K> next = firstChunk();
