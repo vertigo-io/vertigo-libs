@@ -218,9 +218,8 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 				final VUserException vue = new VUserException(SearchResource.DYNAMO_SEARCH_QUERY_SYNTAX_ERROR);
 				vue.initCause(e);
 				throw vue;
-			} else {
-				throw WrappedException.wrap(e, "Error in loadList() on {0}", indexName);
 			}
+			throw WrappedException.wrap(e, "Error in loadList() on {0}", indexName);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error in loadList() on {0}", indexName);
 		}

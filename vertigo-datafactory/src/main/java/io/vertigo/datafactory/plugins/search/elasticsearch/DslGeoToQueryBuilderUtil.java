@@ -45,13 +45,12 @@ public final class DslGeoToQueryBuilderUtil {
 				return rangeDistanceBoolQueryBuilder //ie: !(dist <= min) && (dist <= max)
 						.must(endGeoDistanceQuery)
 						.mustNot(startGeoDistanceQuery);
-			} else { //boundingbox
-				final GeoPoint geoPointTopLeft = computeGeoPoint(geoRangeQuery.getStartGeoPoint(), myCriteria, typeAdapters);
-				final GeoPoint geoPointBottomRight = computeGeoPoint(geoRangeQuery.getEndGeoPoint(), myCriteria, typeAdapters);
-				if (geoPointTopLeft != null || geoPointBottomRight != null) {
-					return QueryBuilders.geoBoundingBoxQuery(fieldName)
-							.setCorners(geoPointTopLeft, geoPointBottomRight);
-				}
+			}
+			final GeoPoint geoPointTopLeft = computeGeoPoint(geoRangeQuery.getStartGeoPoint(), myCriteria, typeAdapters);
+			final GeoPoint geoPointBottomRight = computeGeoPoint(geoRangeQuery.getEndGeoPoint(), myCriteria, typeAdapters);
+			if (geoPointTopLeft != null || geoPointBottomRight != null) {
+				return QueryBuilders.geoBoundingBoxQuery(fieldName)
+						.setCorners(geoPointTopLeft, geoPointBottomRight);
 			}
 			return QueryBuilders.matchAllQuery();
 

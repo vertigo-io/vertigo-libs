@@ -37,7 +37,6 @@ public final class NamedComponentContentComponent {
 
 	private final IModel innerModel;
 	private final String name;
-	private final boolean elementTag;
 	private final boolean standaloneTag;
 	private final boolean openTag;
 	private final boolean closeTag;
@@ -49,7 +48,6 @@ public final class NamedComponentContentComponent {
 		this.innerModel = innerModel;
 		final IElementTag firstLevelTag = (IElementTag) innerModel.get(0);
 		name = firstLevelTag.getElementDefinition().getElementName().getElementName();
-		elementTag = firstLevelTag instanceof IElementTag;
 		standaloneTag = firstLevelTag instanceof IStandaloneElementTag;
 		openTag = firstLevelTag instanceof IOpenElementTag;
 		closeTag = firstLevelTag instanceof ICloseElementTag;
@@ -68,10 +66,10 @@ public final class NamedComponentContentComponent {
 	public boolean isTag(final String testedName) {
 		return name.equals(testedName);
 	}
-
-	public boolean isElement() {
-		return elementTag;
-	}
+	//
+	//	public boolean isElement() {
+	//		return elementTag;
+	//	}
 
 	public boolean isStandalone() {
 		return standaloneTag;

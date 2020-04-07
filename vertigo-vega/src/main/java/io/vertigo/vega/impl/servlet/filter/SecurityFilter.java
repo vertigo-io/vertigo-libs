@@ -99,9 +99,8 @@ public final class SecurityFilter extends AbstractFilter {
 					httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Session Expired"); //No session found
 					httpRequest.setAttribute("SessionExpired", true);
 					throw new ServletException(new SessionException("Session Expired"));//will override the 401 error code and send a 500
-				} else {
-					httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED); //User not authenticated
 				}
+				httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED); //User not authenticated
 				//} else if (checkRequestAccess && needsAuthentification && false) { //TODO
 				//	httpResponse.sendError(HttpServletResponse.SC_FORBIDDEN);
 			} else {

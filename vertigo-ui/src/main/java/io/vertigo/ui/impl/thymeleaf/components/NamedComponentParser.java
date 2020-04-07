@@ -135,9 +135,8 @@ public class NamedComponentParser extends AbstractMarkupHandler {
 			thymeleafComponents.add(new NamedComponentDefinition(name, "components/" + componentName + ".html", selector, parameters, frag));
 			thymeleafComponents.add(new NamedComponentDefinition(frag, "components/" + componentName + ".html", parameters, frag)); //Fragment always accessible without selector
 			return thymeleafComponents;
-		} else {
-			return Collections.singleton(new NamedComponentDefinition(name, "components/" + componentName + ".html", parameters, frag));
 		}
+		return Collections.singleton(new NamedComponentDefinition(name, "components/" + componentName + ".html", parameters, frag));
 	}
 
 	private static boolean isThymeleafComponent(final Element element) {

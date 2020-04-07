@@ -105,14 +105,13 @@ public abstract class AbstactKeycloakDelegateAuthenticationHandler implements De
 			final AuthenticatedActionsHandler actions = new AuthenticatedActionsHandler(deployment, facade);
 			if (actions.handledRequest()) {
 				return Tuple.of(true, request);
-			} else {
-				final HttpServletRequestWrapper wrapper = tokenStore.buildWrapper();
-				final boolean isHandledInLogin = doLogin(wrapper, response);
-				if (isHandledInLogin) {
-					return Tuple.of(true, wrapper);
-				}
-				return Tuple.of(false, wrapper);
 			}
+			final HttpServletRequestWrapper wrapper = tokenStore.buildWrapper();
+			final boolean isHandledInLogin = doLogin(wrapper, response);
+			if (isHandledInLogin) {
+				return Tuple.of(true, wrapper);
+			}
+			return Tuple.of(false, wrapper);
 		}
 
 		final AuthChallenge challenge = authenticator.getChallenge();
