@@ -25,6 +25,7 @@ public final class OProcessExecutionDAO extends DAO<OProcessExecution, java.lang
 	 * Contructeur.
 	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
+	 * @param smartTypeManager SmartTypeManager
 	 */
 	@Inject
 	public OProcessExecutionDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {

@@ -21,6 +21,7 @@ public final class OExecutionStateDAO extends DAO<OExecutionState, java.lang.Str
 	 * Contructeur.
 	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
+	 * @param smartTypeManager SmartTypeManager
 	 */
 	@Inject
 	public OExecutionStateDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {

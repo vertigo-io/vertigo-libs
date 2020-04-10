@@ -28,9 +28,9 @@ import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.util.InjectorUtil;
-import io.vertigo.dynamo.plugins.environment.StudioDefinitionProvider;
 import io.vertigo.studio.StudioFeatures;
 import io.vertigo.studio.mda.MdaManager;
+import io.vertigo.studio.plugins.metamodel.vertigo.StudioDefinitionProvider;
 
 public class Studio {
 

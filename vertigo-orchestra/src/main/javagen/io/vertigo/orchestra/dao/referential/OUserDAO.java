@@ -21,6 +21,7 @@ public final class OUserDAO extends DAO<OUser, java.lang.Long> implements StoreS
 	 * Contructeur.
 	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
+	 * @param smartTypeManager SmartTypeManager
 	 */
 	@Inject
 	public OUserDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {

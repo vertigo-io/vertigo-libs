@@ -21,6 +21,7 @@ public final class OProcessTypeDAO extends DAO<OProcessType, java.lang.String> i
 	 * Contructeur.
 	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
+	 * @param smartTypeManager SmartTypeManager
 	 */
 	@Inject
 	public OProcessTypeDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {

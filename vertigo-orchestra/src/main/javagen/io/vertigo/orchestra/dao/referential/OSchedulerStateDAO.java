@@ -21,6 +21,7 @@ public final class OSchedulerStateDAO extends DAO<OSchedulerState, java.lang.Str
 	 * Contructeur.
 	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
+	 * @param smartTypeManager SmartTypeManager
 	 */
 	@Inject
 	public OSchedulerStateDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {
