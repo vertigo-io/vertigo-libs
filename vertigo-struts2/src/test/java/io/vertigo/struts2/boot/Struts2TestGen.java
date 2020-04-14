@@ -61,7 +61,7 @@ public final class Struts2TestGen {
 
 		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
 			app.getComponentSpace().resolve(MdaManager.class)
-					.generate()
+					.generate(app.getDefinitionSpace())
 					/* Impression du Rapport d'exécution. */
 					.displayResultMessage(System.out);
 		} catch (final Exception e) {

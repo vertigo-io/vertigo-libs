@@ -18,8 +18,6 @@
  */
 package io.vertigo.orchestra.mda;
 
-import javax.inject.Inject;
-
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
@@ -27,7 +25,6 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.core.util.InjectorUtil;
 import io.vertigo.studio.StudioFeatures;
 import io.vertigo.studio.mda.MdaManager;
 import io.vertigo.studio.plugins.metamodel.vertigo.StudioDefinitionProvider;
@@ -69,20 +66,13 @@ public class Studio {
 
 	}
 
-	@Inject
-	private MdaManager mdaManager;
-
 	public static void main(final String[] args) {
 		try (final AutoCloseableApp app = new AutoCloseableApp(buildNodeConfig())) {
-			final Studio sample = new Studio();
-			InjectorUtil.injectMembers(sample);
+			final MdaManager mdaManager = app.getComponentSpace().resolve(MdaManager.class);
 			//-----
-			sample.cleanGenerate();
+			mdaManager.clean();
+			mdaManager.generate(app.getDefinitionSpace()).displayResultMessage(System.out);
 		}
 	}
 
-	void cleanGenerate() {
-		mdaManager.clean();
-		mdaManager.generate().displayResultMessage(System.out);
-	}
 }
