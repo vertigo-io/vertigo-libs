@@ -40,18 +40,8 @@ public class Studio {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new CommonsFeatures().build())
-				//----Definitions
-				//				.addModule(ModuleConfig.builder("ressources")
-				//						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioDefinitionProvider.class)
-				//								.addParam(Param.of("encoding", "UTF-8"))
-				//								.addDefinitionResource("kpr", "io/vertigo/orchestra/domains.kpr")
-				//								.addDefinitionResource("kpr", "io/vertigo/orchestra/model.kpr")
-				//								.addDefinitionResource("kpr", "io/vertigo/orchestra/tasks.kpr")
-				//								.build())
-				//						.build())
 				// ---StudioFeature
 				.addModule(new StudioFeatures()
-						.withMasterData()
 						.withMetamodel()
 						.withVertigoMetamodel()
 						.withMda(

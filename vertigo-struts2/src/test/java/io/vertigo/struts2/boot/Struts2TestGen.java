@@ -18,18 +18,20 @@
  */
 package io.vertigo.struts2.boot;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 
 import io.vertigo.core.node.AutoCloseableApp;
-import io.vertigo.core.node.config.DefinitionProviderConfig;
-import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
 import io.vertigo.core.plugins.resource.url.URLResourceResolverPlugin;
 import io.vertigo.studio.StudioFeatures;
 import io.vertigo.studio.mda.MdaManager;
-import io.vertigo.studio.plugins.metamodel.vertigo.StudioDefinitionProvider;
+import io.vertigo.studio.metamodel.MetamodelResource;
+import io.vertigo.studio.metamodel.StudioMetamodelManager;
 
 public final class Struts2TestGen {
 
@@ -41,7 +43,6 @@ public final class Struts2TestGen {
 				.addPlugin(URLResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new StudioFeatures()
-						.withMasterData()
 						.withMda(
 								Param.of("targetGenDir", "src/test/resources/"),
 								Param.of("encoding", "UTF-8"),
@@ -51,17 +52,16 @@ public final class Struts2TestGen {
 								Param.of("baseCible", "H2"),
 								Param.of("generateDrop", "false"))
 						.build())
-				.addModule(ModuleConfig.builder("myApp")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioDefinitionProvider.class)
-								.addDefinitionResource("classes", "io.vertigo.struts2.domain.DtDefinitions")
-								.addDefinitionResource("kpr", "./testWebApp/META-INF/io/vertigo/struts2/execution.kpr")
-								.build())
-						.build())
 				.build();
 
-		try (AutoCloseableApp app = new AutoCloseableApp(nodeConfig)) {
-			app.getComponentSpace().resolve(MdaManager.class)
-					.generate(app.getDefinitionSpace())
+		try (AutoCloseableApp studioApp = new AutoCloseableApp(nodeConfig)) {
+			final StudioMetamodelManager studioMetamodelManager = studioApp.getComponentSpace().resolve(StudioMetamodelManager.class);
+			final MdaManager mdaManager = studioApp.getComponentSpace().resolve(MdaManager.class);
+			//-----
+			final List<MetamodelResource> resources = Arrays.asList(
+					new MetamodelResource("classes", "io.vertigo.struts2.domain.DtDefinitions"),
+					new MetamodelResource("kpr", "./testWebApp/META-INF/io/vertigo/struts2/execution.kpr"));
+			mdaManager.generate(studioMetamodelManager.parseResources(resources))
 					/* Impression du Rapport d'exécution. */
 					.displayResultMessage(System.out);
 		} catch (final Exception e) {
