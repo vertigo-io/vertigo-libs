@@ -18,6 +18,7 @@
  */
 package io.vertigo.orchestra.webservices;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
@@ -25,7 +26,6 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.DateUtil;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.services.OrchestraServices;
@@ -98,7 +98,7 @@ public class WsExecutionControl implements WebServices {
 		// ---
 		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, DateUtil.newInstant(), initialParams);
+				.scheduleAt(processDefinition, Instant.now(), initialParams);
 	}
 
 	/**
@@ -111,7 +111,7 @@ public class WsExecutionControl implements WebServices {
 		// ---
 		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
 		orchestraServices.getScheduler()
-				.scheduleAt(processDefinition, DateUtil.newInstant(), Collections.emptyMap());
+				.scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 	}
 
 }

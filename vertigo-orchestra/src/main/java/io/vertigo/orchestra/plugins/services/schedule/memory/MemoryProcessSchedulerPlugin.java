@@ -39,7 +39,6 @@ import org.apache.logging.log4j.Logger;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
-import io.vertigo.core.util.DateUtil;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
 import io.vertigo.orchestra.definitions.ProcessType;
@@ -86,7 +85,7 @@ public class MemoryProcessSchedulerPlugin implements ProcessSchedulerPlugin, Act
 	}
 
 	private void scheduleWithCron(final ProcessDefinition processDefinition) {
-		scheduleAtRecurrent(processDefinition, DateUtil.newInstant(), Collections.emptyMap());
+		scheduleAtRecurrent(processDefinition, Instant.now(), Collections.emptyMap());
 
 	}
 
