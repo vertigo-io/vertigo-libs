@@ -37,7 +37,6 @@ import io.vertigo.account.authorization.VSecurityException;
 import io.vertigo.account.security.VSecurityManager;
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.vega.engines.webservice.json.UiContext;
 import io.vertigo.vega.webservice.WebServices;
@@ -325,7 +324,7 @@ public final class SimplerTestWebServices implements WebServices {
 		}
 		result.setMetaData("testLong", 12);
 		result.setMetaData("testString", "the String test");
-		result.setMetaData("testDate", DateUtil.newDate());
+		result.setMetaData("testDate", LocalDate.now());
 		result.setMetaData("testEscapedString", "the EscapedString \",} test");
 		return result;
 	}
@@ -358,7 +357,7 @@ public final class SimplerTestWebServices implements WebServices {
 		final DtList<Contact> result = loadListMeta();
 		result.setMetaData("testLong", 12);
 		result.setMetaData("testString", "the String test");
-		result.setMetaData("testDate", DateUtil.newDate());
+		result.setMetaData("testDate", LocalDate.now());
 		result.setMetaData("testEscapedString", "the EscapedString \",} test");
 		result.setMetaData("contact1", result.get(1));
 		result.setMetaData("contact2", result.get(2));

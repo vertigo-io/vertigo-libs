@@ -19,6 +19,7 @@
 package io.vertigo.stella.plugins.work.redis;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,6 @@ import io.vertigo.commons.codec.CodecManager;
 import io.vertigo.connectors.redis.RedisConnector;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.ClassUtil;
-import io.vertigo.core.util.DateUtil;
 import io.vertigo.core.util.MapBuilder;
 import io.vertigo.stella.impl.master.WorkResult;
 import io.vertigo.stella.impl.work.WorkItem;
@@ -77,7 +77,7 @@ public final class RedisDB {
 			final Map<String, String> datas = new MapBuilder<String, String>()
 					.put("work64", encode(workItem.getWork()))
 					.put("provider64", encode(workItem.getWorkEngineClass().getName()))
-					.put("x-date", DateUtil.newDate().toString())
+					.put("x-date", LocalDate.now().toString())
 					.build();
 
 			try (final Transaction tx = jedis.multi()) {

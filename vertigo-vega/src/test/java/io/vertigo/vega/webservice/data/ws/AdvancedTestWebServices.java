@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -33,7 +34,6 @@ import javax.inject.Inject;
 
 import io.vertigo.core.lang.VUserException;
 import io.vertigo.core.resource.ResourceManager;
-import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.criteria.CriterionLimit;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -188,7 +188,7 @@ public final class AdvancedTestWebServices implements WebServices {
 		uiContext.put("contactTo", contactDao.get(contactIdTo));
 		uiContext.put("testLong", 12);
 		uiContext.put("testString", "the String test");
-		uiContext.put("testDate", DateUtil.newDate());
+		uiContext.put("testDate", LocalDate.now());
 		uiContext.put("testEscapedString", "the EscapedString \",} test");
 		//offset + range ?
 		//code 200
