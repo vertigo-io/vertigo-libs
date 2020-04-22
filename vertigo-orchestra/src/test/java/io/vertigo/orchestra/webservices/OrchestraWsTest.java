@@ -18,6 +18,7 @@
  */
 package io.vertigo.orchestra.webservices;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,6 @@ import io.restassured.filter.session.SessionFilter;
 import io.restassured.parsing.Parser;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.Home;
-import io.vertigo.core.util.DateUtil;
 import io.vertigo.orchestra.MyNodeConfig;
 import io.vertigo.orchestra.definitions.OrchestraDefinitionManager;
 import io.vertigo.orchestra.definitions.ProcessDefinition;
@@ -73,9 +73,9 @@ public class OrchestraWsTest {
 				.build();
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
-		orchestraServices.getScheduler().scheduleAt(processDefinition, DateUtil.newInstant(), Collections.emptyMap());
+		orchestraServices.getScheduler().scheduleAt(processDefinition, Instant.now(), Collections.emptyMap());
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition2);
-		orchestraServices.getScheduler().scheduleAt(processDefinition2, DateUtil.newInstant(), Collections.emptyMap());
+		orchestraServices.getScheduler().scheduleAt(processDefinition2, Instant.now(), Collections.emptyMap());
 
 		RestAssured.registerParser("plain/text", Parser.TEXT);
 		RestAssured.given()

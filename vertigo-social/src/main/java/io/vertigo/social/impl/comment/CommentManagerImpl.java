@@ -25,7 +25,6 @@ import javax.inject.Inject;
 
 import io.vertigo.account.account.Account;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.social.comment.Comment;
@@ -54,7 +53,7 @@ public final class CommentManagerImpl implements CommentManager {
 		Assertion.checkNotNull(comment);
 		Assertion.checkNotNull(keyConceptUri);
 		//-----
-		final Instant creationDate = DateUtil.newInstant();
+		final Instant creationDate = Instant.now();
 		final Comment savedComment = Comment.builder()
 				.withAuthor(accountURI)
 				.withCreationDate(creationDate)
@@ -86,7 +85,7 @@ public final class CommentManagerImpl implements CommentManager {
 				.withAuthor(accountURI)
 				.withCreationDate(originalComment.getCreationDate())
 				.withMsg(comment.getMsg())
-				.withLastModified(DateUtil.newInstant())
+				.withLastModified(Instant.now())
 				.build();
 		commentsPlugin.update(savedComment);
 	}

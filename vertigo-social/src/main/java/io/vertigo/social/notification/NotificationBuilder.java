@@ -24,7 +24,6 @@ import java.util.UUID;
 
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
-import io.vertigo.core.util.DateUtil;
 
 /**
  * @author pchretien
@@ -156,7 +155,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	@Override
 	public Notification build() {
 		if (myCreationInstant == null) {
-			myCreationInstant = DateUtil.newInstant();
+			myCreationInstant = Instant.now();
 		}
 
 		return new Notification(uuid, mySender, myType, myTitle, myContent, myTtlInSeconds, myCreationInstant, myTargetUrl, Optional.ofNullable(myUserContent));

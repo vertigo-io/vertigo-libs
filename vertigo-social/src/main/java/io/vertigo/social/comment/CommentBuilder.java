@@ -26,7 +26,6 @@ import io.vertigo.account.account.AccountManager;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Builder;
 import io.vertigo.core.node.Home;
-import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.structure.model.UID;
 
 /**
@@ -116,7 +115,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	@Override
 	public Comment build() {
 		if (myCreationInstant == null) {
-			myCreationInstant = DateUtil.newInstant();
+			myCreationInstant = Instant.now();
 		}
 		if (myUuid == null) {
 			myUuid = UUID.randomUUID();
