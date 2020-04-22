@@ -25,6 +25,7 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.datamodel.structure.model.KeyConcept;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datamodel.structure.stereotype.Field;
+import io.vertigo.datamodel.structure.stereotype.ForeignKey;
 import io.vertigo.datamodel.structure.util.DtObjectUtil;
 
 public final class Item implements KeyConcept {
@@ -133,7 +134,7 @@ public final class Item implements KeyConcept {
 		this.motorType = motorType;
 	}
 
-	@Field(smartType = "STyIdentifiant", type = "FOREIGN_KEY", cardinality = Cardinality.ONE, label = "Famille")
+	@ForeignKey(smartType = "STyIdentifiant", fkDefinition = "DtFamille", cardinality = Cardinality.ONE, label = "Famille")
 	public Long getFamId() {
 		return famId;
 	}

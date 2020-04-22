@@ -26,6 +26,7 @@ public final class OActivityWorkspaceDAO extends DAO<OActivityWorkspace, java.la
 	 * Contructeur.
 	 * @param entityStoreManager Manager de persistance
 	 * @param taskManager Manager de Task
+	 * @param smartTypeManager SmartTypeManager
 	 */
 	@Inject
 	public OActivityWorkspaceDAO(final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {

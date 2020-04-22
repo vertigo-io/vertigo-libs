@@ -18,19 +18,18 @@
  */
 package io.vertigo.orchestra.mda;
 
-import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
 
 import io.vertigo.commons.CommonsFeatures;
 import io.vertigo.core.node.AutoCloseableApp;
-import io.vertigo.core.node.config.DefinitionProviderConfig;
-import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.core.util.InjectorUtil;
-import io.vertigo.dynamo.plugins.environment.StudioDefinitionProvider;
 import io.vertigo.studio.StudioFeatures;
 import io.vertigo.studio.mda.MdaManager;
+import io.vertigo.studio.metamodel.MetamodelResource;
+import io.vertigo.studio.metamodel.StudioMetamodelManager;
 
 public class Studio {
 
@@ -41,18 +40,10 @@ public class Studio {
 				.addPlugin(ClassPathResourceResolverPlugin.class)
 				.endBoot()
 				.addModule(new CommonsFeatures().build())
-				//----Definitions
-				.addModule(ModuleConfig.builder("ressources")
-						.addDefinitionProvider(DefinitionProviderConfig.builder(StudioDefinitionProvider.class)
-								.addParam(Param.of("encoding", "UTF-8"))
-								.addDefinitionResource("kpr", "io/vertigo/orchestra/domains.kpr")
-								.addDefinitionResource("kpr", "io/vertigo/orchestra/model.kpr")
-								.addDefinitionResource("kpr", "io/vertigo/orchestra/tasks.kpr")
-								.build())
-						.build())
 				// ---StudioFeature
 				.addModule(new StudioFeatures()
-						.withMasterData()
+						.withMetamodel()
+						.withVertigoMetamodel()
 						.withMda(
 								Param.of("projectPackageName", "io.vertigo.orchestra"))
 						.withJavaDomainGenerator(
@@ -69,20 +60,18 @@ public class Studio {
 
 	}
 
-	@Inject
-	private MdaManager mdaManager;
-
 	public static void main(final String[] args) {
-		try (final AutoCloseableApp app = new AutoCloseableApp(buildNodeConfig())) {
-			final Studio sample = new Studio();
-			InjectorUtil.injectMembers(sample);
+		try (final AutoCloseableApp studioApp = new AutoCloseableApp(buildNodeConfig())) {
+			final StudioMetamodelManager studioMetamodelManager = studioApp.getComponentSpace().resolve(StudioMetamodelManager.class);
+			final MdaManager mdaManager = studioApp.getComponentSpace().resolve(MdaManager.class);
 			//-----
-			sample.cleanGenerate();
+			final List<MetamodelResource> resources = Arrays.asList(
+					new MetamodelResource("kpr", "io/vertigo/orchestra/domains.kpr"),
+					new MetamodelResource("kpr", "io/vertigo/orchestra/model.kpr"),
+					new MetamodelResource("kpr", "io/vertigo/orchestra/tasks.kpr"));
+			mdaManager.clean();
+			mdaManager.generate(studioMetamodelManager.parseResources(resources)).displayResultMessage(System.out);
 		}
 	}
 
-	void cleanGenerate() {
-		mdaManager.clean();
-		mdaManager.generate().displayResultMessage(System.out);
-	}
 }
