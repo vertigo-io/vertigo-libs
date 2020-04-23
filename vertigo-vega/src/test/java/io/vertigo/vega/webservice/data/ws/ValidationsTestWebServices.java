@@ -18,10 +18,10 @@
  */
 package io.vertigo.vega.webservice.data.ws;
 
+import java.time.Duration;
 import java.time.LocalDate;
 
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.core.util.DateUtil;
 import io.vertigo.vega.webservice.WebServices;
 import io.vertigo.vega.webservice.data.domain.Contact;
 import io.vertigo.vega.webservice.stereotype.POST;
@@ -40,7 +40,7 @@ public final class ValidationsTestWebServices implements WebServices {
 		uiErrorBuilder.checkFieldDateAfter(contact, "birthday", "birthday", MessageText.of("Test birthday after birthday"));
 		uiErrorBuilder.checkFieldEquals(contact, "name", "name", MessageText.of("Test name equals name"));
 		uiErrorBuilder.checkFieldLongAfter(contact, "conId", "conId", MessageText.of("Test conId after conId"));
-		if (DateUtil.daysBetween(contact.getBirthday(), LocalDate.now()) < 16 * 365) { //if less than 16
+		if (Duration.between(contact.getBirthday().atStartOfDay(), LocalDate.now().atStartOfDay()).toDays() < 16 * 365) { //if less than 16
 			uiErrorBuilder.addError(contact, "birthday", MessageText.of("You can't add contact younger than 16"));
 		}
 		uiErrorBuilder.addError(contact, "email", MessageText.of("Test error : email"));
