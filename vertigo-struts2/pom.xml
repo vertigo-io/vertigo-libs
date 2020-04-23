@@ -83,12 +83,6 @@
 		<!-- for Embedded Jetty Server and tests -->
 		<!-- Connections Pool -->
 		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-studio</artifactId>
-			<version>${vertigo.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.200</version>

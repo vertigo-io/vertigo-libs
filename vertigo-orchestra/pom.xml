@@ -37,11 +37,6 @@
 			<artifactId>vertigo-vega</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency> 
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-studio</artifactId>
-			<version>${vertigo.version}</version>
-		</dependency>
 
 		<!-- Dependencies for tests -->
 		<dependency>
