@@ -21,7 +21,6 @@ package io.vertigo.vega.webservice.data.domain;
 import java.time.LocalDate;
 
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.core.util.DateUtil;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.vega.webservice.validation.AbstractDtObjectValidator;
 import io.vertigo.vega.webservice.validation.DtObjectErrors;
@@ -38,7 +37,7 @@ public class ContactValidator extends AbstractDtObjectValidator<Contact> {
 		final String camelCaseFieldName = dtField.getName();
 		if ("birthday".equals(camelCaseFieldName) && !dtObjectErrors.hasError(camelCaseFieldName)) {
 			final LocalDate birthday = dtObject.getBirthday();
-			if (DateUtil.daysBetween(birthday, LocalDate.now()) < 16 * 365) { //if less than 16
+			if (LocalDate.now().minusYears(16).isBefore(birthday)) { //if less than 16
 				dtObjectErrors.addError(camelCaseFieldName, MessageText.of("You can't add contact younger than 16"));
 			}
 		}
