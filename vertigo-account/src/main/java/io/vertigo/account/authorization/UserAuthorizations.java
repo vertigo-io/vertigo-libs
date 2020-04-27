@@ -46,7 +46,7 @@ public final class UserAuthorizations implements Serializable {
 	private static final long serialVersionUID = -7924146007592711123L;
 
 	/**
-	 * Global authorizations list of this user.
+	 * All authorizations list of this user (global and keyConcept)
 	 */
 	private final Map<String, DefinitionReference<Authorization>> authorizationRefs = new HashMap<>();
 
@@ -77,6 +77,8 @@ public final class UserAuthorizations implements Serializable {
 		Assertion.checkNotNull(role);
 		//-----
 		roleRefs.add(new DefinitionReference<>(role));
+		role.getAuthorizations().stream()
+				.forEach(this::addAuthorization);
 		return this;
 	}
 
@@ -106,6 +108,7 @@ public final class UserAuthorizations implements Serializable {
 	 */
 	public void clearRoles() {
 		roleRefs.clear();
+		clearAuthorizations();
 	}
 
 	/**
@@ -129,6 +132,15 @@ public final class UserAuthorizations implements Serializable {
 			}
 		}
 		return this;
+	}
+
+	/**
+	 * Return uncontextual authorizations set of this user.
+	 * It may be limited by entity right. It's usefull for UI rendering rights based.
+	 * @return authorizations set
+	 */
+	public Set<String> getPriorAuthorizationNames() {
+		return authorizationRefs.keySet();
 	}
 
 	/**

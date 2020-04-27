@@ -21,6 +21,7 @@ package io.vertigo.account.impl.authorization;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -68,11 +69,11 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 	/** {@inheritDoc} */
 	@Override
 	public UserAuthorizations obtainUserAuthorizations() {
-		return getUserPermissionsOpt().orElseThrow(() -> new IllegalArgumentException("Can't getUserPermissions, check your have create an UserSession before."));
+		return getUserAuthorizationsOpt().orElseThrow(() -> new IllegalArgumentException("Can't getUserAuthorizations, check your have create an UserSession before."));
 
 	}
 
-	private Optional<UserAuthorizations> getUserPermissionsOpt() {
+	private Optional<UserAuthorizations> getUserAuthorizationsOpt() {
 		final Optional<UserSession> userSessionOpt = securityManager.getCurrentUserSession();
 		if (!userSessionOpt.isPresent()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
@@ -92,7 +93,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 	public boolean hasAuthorization(final AuthorizationName... permissionNames) {
 		Assertion.checkNotNull(permissionNames);
 		//---
-		return getUserPermissionsOpt()
+		return getUserAuthorizationsOpt()
 				.map(userPermissions -> userPermissions.hasAuthorization(permissionNames))
 				// Si il n'y a pas de userPermissions alors pas d'autorisation.
 				.orElse(false);
@@ -105,7 +106,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		Assertion.checkNotNull(keyConcept);
 		Assertion.checkNotNull(operationName);
 		//---
-		final Optional<UserAuthorizations> userPermissionsOpt = getUserPermissionsOpt();
+		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (!userPermissionsOpt.isPresent()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return false;
@@ -133,7 +134,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		Assertion.checkNotNull(keyConceptClass);
 		Assertion.checkNotNull(operation);
 		//---
-		final Optional<UserAuthorizations> userPermissionsOpt = getUserPermissionsOpt();
+		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (!userPermissionsOpt.isPresent()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return Criterions.alwaysFalse();
@@ -176,7 +177,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		Assertion.checkNotNull(keyConceptClass);
 		Assertion.checkNotNull(operationName);
 		//---
-		final Optional<UserAuthorizations> userPermissionsOpt = getUserPermissionsOpt();
+		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (!userPermissionsOpt.isPresent()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return ""; //Attention : pas de *:*
@@ -201,12 +202,20 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		return securityRuleTranslator.toSearchQuery();
 	}
 
+	@Override
+	public Set<String> getPriorAuthorizations() {
+		return getUserAuthorizationsOpt()
+				.map(userPermissions -> userPermissions.getPriorAuthorizationNames())
+				// Si il n'y a pas de userPermissions alors pas d'autorisation.
+				.orElse(Collections.<String> emptySet());
+	}
+
 	/** {@inheritDoc} */
 	@Override
 	public <K extends KeyConcept> List<String> getAuthorizedOperations(final K keyConcept) {
 		Assertion.checkNotNull(keyConcept);
 		//---
-		final Optional<UserAuthorizations> userPermissionsOpt = getUserPermissionsOpt();
+		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (!userPermissionsOpt.isPresent()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return Collections.emptyList();
