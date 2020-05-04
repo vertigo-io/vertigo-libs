@@ -28,10 +28,10 @@ import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression.Value
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleFixedValue;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression.BoolOperator;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.structure.metamodel.DtField;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
 
 /**
  *
@@ -97,12 +97,13 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 				final boolean useParenthesisAroundValue = userValues.size() > 1;
 				String sep = "";
 				for (final Serializable userValue : userValues) {
-					Assertion.checkNotNull(userValue);
+					Assertion.check()
+							.notNull(userValue);
 					Assertion.when(!userValue.getClass().isArray())
-							.check(() -> userValue instanceof Comparable,
+							.state(() -> userValue instanceof Comparable,
 									"Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName());
 					Assertion.when(userValue.getClass().isArray())
-							.check(() -> Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
+							.state(() -> Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
 									"Security keys must be serializable AND comparable (here : {0})", userValue.getClass().getComponentType());
 					//----
 					query.append(sep);

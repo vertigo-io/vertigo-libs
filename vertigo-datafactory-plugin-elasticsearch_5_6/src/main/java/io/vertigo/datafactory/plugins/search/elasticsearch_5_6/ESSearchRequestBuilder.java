@@ -142,12 +142,12 @@ final class ESSearchRequestBuilder implements Builder<SearchRequestBuilder> {
 	/** {@inheritDoc} */
 	@Override
 	public SearchRequestBuilder build() {
-		Assertion.checkNotNull(myIndexDefinition, "You must set IndexDefinition");
-		Assertion.checkNotNull(mySearchQuery, "You must set SearchQuery");
-		Assertion.checkNotNull(myListState, "You must set ListState");
-		Assertion
-				.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent()) //si il y a un cluster on vérifie le maxRows
-				.check(() -> myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
+		Assertion.check()
+				.notNull(myIndexDefinition, "You must set IndexDefinition")
+				.notNull(mySearchQuery, "You must set SearchQuery")
+				.notNull(myListState, "You must set ListState");
+		Assertion.when(mySearchQuery.isClusteringFacet() && myListState.getMaxRows().isPresent()) //si il y a un cluster on vérifie le maxRows
+				.state(() -> myListState.getMaxRows().get() < TOPHITS_SUBAGGREGATION_MAXSIZE,
 						"ListState.top = {0} invalid. Can't show more than {1} elements when grouping", myListState.getMaxRows().orElse(null), TOPHITS_SUBAGGREGATION_MAXSIZE);
 		//-----
 		appendListState();

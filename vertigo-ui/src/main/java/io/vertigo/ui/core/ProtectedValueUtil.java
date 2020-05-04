@@ -54,11 +54,11 @@ public final class ProtectedValueUtil {
 		if (protectedValue == null) {
 			return null;
 		}
-		final V unprotectedValue;
 		try (VTransactionWritable transactionWritable = getTransactionManager().createCurrentTransaction()) {
+			final V unprotectedValue;
 			unprotectedValue = getKVStoreManager().find(PROTECTED_VALUE_COLLECTION_NAME, protectedValue, clazz).orElse(null);
+			return unprotectedValue;
 		}
-		return unprotectedValue;
 	}
 
 	private static VTransactionManager getTransactionManager() {

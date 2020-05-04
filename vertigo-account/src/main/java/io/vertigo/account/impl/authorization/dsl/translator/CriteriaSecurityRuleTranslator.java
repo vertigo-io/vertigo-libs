@@ -28,13 +28,13 @@ import io.vertigo.account.authorization.metamodel.rulemodel.RuleExpression.Value
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleFixedValue;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression;
 import io.vertigo.account.authorization.metamodel.rulemodel.RuleMultiExpression.BoolOperator;
+import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.datamodel.criteria.Criteria;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.DtFieldName;
 import io.vertigo.datamodel.structure.model.Entity;
-import io.vertigo.account.authorization.metamodel.rulemodel.RuleUserPropertyValue;
 
 /**
  * Translate a security rule into a criteria to be used in SQL queries and as a Java predicate.
@@ -52,7 +52,8 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		for (final RuleMultiExpression expression : getMultiExpressions()) {
 			mainCriteria = orCriteria(mainCriteria, toCriteria(expression));
 		}
-		Assertion.checkNotNull(mainCriteria);//can't be null
+		Assertion.check()
+				.notNull(mainCriteria);//can't be null
 		return mainCriteria;
 	}
 
@@ -76,7 +77,8 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 				mainCriteria = orCriteria(mainCriteria, toCriteria(expression));
 			}
 		}
-		Assertion.checkNotNull(mainCriteria);//can be null ?
+		Assertion.check()
+				.notNull(mainCriteria);//can be null ?
 		return mainCriteria;
 	}
 
@@ -87,19 +89,21 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			if (!userValues.isEmpty()) {
 				Criteria<E> mainCriteria = null; //comment collecter en stream ?
 				for (final Serializable userValue : userValues) {
-					Assertion.checkNotNull(userValue);
+					Assertion.check()
+							.notNull(userValue);
 					Assertion
 							.when(!userValue.getClass().isArray())
-							.check(() -> userValue instanceof Comparable,
+							.state(() -> userValue instanceof Comparable,
 									"Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName());
 					Assertion
 							.when(userValue.getClass().isArray())
-							.check(() -> Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
+							.state(() -> Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
 									"Security keys must be serializable AND comparable (here : {0})", userValue.getClass().getComponentType());
 					//----
 					mainCriteria = orCriteria(mainCriteria, toCriteria(expression.getFieldName(), expression.getOperator(), userValue));
 				}
-				Assertion.checkNotNull(mainCriteria);//can't be null
+				Assertion.check()
+						.notNull(mainCriteria);//can't be null
 				return mainCriteria;
 			}
 			return Criterions.alwaysFalse();
@@ -269,7 +273,8 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 				}
 			}
 		}
-		Assertion.checkNotNull(mainCriteria);//can be null ?
+		Assertion.check()
+				.notNull(mainCriteria);//can be null ?
 		return mainCriteria;
 	}
 

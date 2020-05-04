@@ -76,14 +76,16 @@ public final class AccountMapperHelper<S, D> {
 	}
 
 	public AccountMapperHelper<S, D> withReservedDestField(final String... fieldNames) {
-		Assertion.checkNotNull(fieldNames);
+		Assertion.check()
+				.notNull(fieldNames);
 		//-----
 		reservedDestField.addAll(Arrays.asList(fieldNames));
 		return this;
 	}
 
 	public AccountMapperHelper<S, D> withMandatoryDestField(final D... fields) {
-		Assertion.checkNotNull(fields);
+		Assertion.check()
+				.notNull(fields);
 		//-----
 		mandatoryDestField.addAll(Arrays.asList(fields));
 		return this;
@@ -95,7 +97,7 @@ public final class AccountMapperHelper<S, D> {
 			Assertion.checkArgument(splitedMapping.length == 2,
 					"Mapping should respect the pattern sourceFields:destFields :(like sourceAttr1:destAttr1, sourceAttr2:destAttr2, ... (check : {0})", sourceToDestMappingStr);
 			Assertion.when(sourceDtDefinition.isPresent())
-					.check(() -> sourceDtDefinition.get().contains(splitedMapping[1]), "sourceField {0} must be in DtDefinition {1}", splitedMapping[1], sourceDtDefinition.orElse(null));
+					.state(() -> sourceDtDefinition.get().contains(splitedMapping[1]), "sourceField {0} must be in DtDefinition {1}", splitedMapping[1], sourceDtDefinition.orElse(null));
 			//It's reverse compared to config String : we keep a map of key:destAttribute -> value:sourceAttribute
 			final S source;
 			if (sourceDtDefinition.isPresent()) {
@@ -105,7 +107,7 @@ public final class AccountMapperHelper<S, D> {
 			}
 			if (!reservedDestField.contains(splitedMapping[0])) {
 				Assertion.when(destDtDefinition.isPresent())
-						.check(() -> destDtDefinition.get().contains(splitedMapping[0]), "destField {0} must be in DtDefinition {1}", splitedMapping[0], destDtDefinition.orElse(null));
+						.state(() -> destDtDefinition.get().contains(splitedMapping[0]), "destField {0} must be in DtDefinition {1}", splitedMapping[0], destDtDefinition.orElse(null));
 				final D dest;
 				if (destDtDefinition.isPresent()) {
 					dest = (D) destDtDefinition.get().getField(splitedMapping[0]);

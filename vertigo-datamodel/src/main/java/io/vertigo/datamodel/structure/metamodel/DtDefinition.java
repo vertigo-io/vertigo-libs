@@ -106,7 +106,7 @@ public final class DtDefinition implements Definition {
 
 		for (final DtField dtField : dtFields) {
 			Assertion.when(stereotype.isPersistent() && dtField.isPersistent())
-					.check(() -> !dtField.getCardinality().hasMany(),
+					.state(() -> !dtField.getCardinality().hasMany(),
 							"Only non multiple smarttype are allowed in entity '{0}'", name);
 			if (dtField.getType().isId()) {
 				Assertion.checkState(id == null, "Only one ID Field is allowed : {0}", name);
@@ -118,12 +118,12 @@ public final class DtDefinition implements Definition {
 		this.dataSpace = dataSpace;
 		//-----
 		Assertion.when(fragment.isPresent())
-				.check(() -> DtStereotype.Fragment == stereotype, "Error on {0} with sterotype {1}, If an object is a fragment then it must have this stereotype", name, stereotype);
+				.state(() -> DtStereotype.Fragment == stereotype, "Error on {0} with sterotype {1}, If an object is a fragment then it must have this stereotype", name, stereotype);
 		//Persistent => ID
 		Assertion.when(stereotype.isPersistent())
-				.check(idFieldOpt::isPresent, "Error on {0}, If an object is persistent then it must have an ID", name);
+				.state(idFieldOpt::isPresent, "Error on {0}, If an object is persistent then it must have an ID", name);
 		Assertion.when(!stereotype.isPersistent())
-				.check(() -> !idFieldOpt.isPresent(), "Error on {0}, If an object is not persistent then it must have no ID", name);
+				.state(() -> !idFieldOpt.isPresent(), "Error on {0}, If an object is not persistent then it must have no ID", name);
 	}
 
 	/**

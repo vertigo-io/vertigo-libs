@@ -32,8 +32,9 @@ public final class CommandResponse<P> {
 			final String display,
 			final P payload,
 			final String targetUrl) {
-		Assertion.checkNotNull(responseStatus);
-		Assertion.checkNotNull(display);
+		Assertion.check()
+				.notNull(responseStatus)
+				.notNull(display);
 		//---
 		this.responseStatus = responseStatus;
 		this.display = display;

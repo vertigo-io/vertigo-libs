@@ -57,8 +57,9 @@ public final class GenericUID<O extends Object> implements Serializable {
 	 * @param id the entity id
 	 */
 	private GenericUID(final String type, final Serializable id) {
-		Assertion.checkNotNull(id);
-		Assertion.checkNotNull(type);
+		Assertion.check()
+				.notNull(id)
+				.notNull(type);
 		//-----
 		this.id = Serializable.class.cast(id);
 		this.type = type;

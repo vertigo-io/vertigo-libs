@@ -47,9 +47,10 @@ public final class EventBusSubscriptionDefinition<E extends Event> implements De
 	 * @param eventListener the consumer of the event (what will be done with it)
 	 */
 	public EventBusSubscriptionDefinition(final String name, final Class<E> eventType, final Consumer<E> eventListener) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(eventType);
-		Assertion.checkNotNull(eventListener);
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(eventType)
+				.notNull(eventListener);
 		//-----
 		this.name = name;
 		this.eventType = eventType;

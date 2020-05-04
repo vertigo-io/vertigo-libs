@@ -60,8 +60,8 @@ import io.vertigo.datafactory.impl.search.SearchServicesPlugin;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -109,10 +109,13 @@ public abstract class AbstractESSearchServicesPlugin implements SearchServicesPl
 			final CodecManager codecManager,
 			final SmartTypeManager smartTypeManager,
 			final ResourceManager resourceManager) {
-		Assertion.checkArgNotEmpty(indexNameOrPrefix);
-		Assertion.checkNotNull(codecManager);
-		Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
-		Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
+		Assertion.check()
+				.argNotEmpty(indexNameOrPrefix)
+				.notNull(codecManager);
+		Assertion.when(indexNameIsPrefix)
+				.state(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
+		Assertion.when(!indexNameIsPrefix)
+				.state(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
 		//-----
 		this.defaultMaxRows = defaultMaxRows;
 		defaultListState = DtListState.of(defaultMaxRows);

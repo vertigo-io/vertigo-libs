@@ -52,8 +52,9 @@ public final class VTransactionResourceId<R extends VTransactionResource> {
 	 * @param name Nom de code de la ressource.
 	 */
 	public VTransactionResourceId(final Priority priority, final String name) {
-		Assertion.checkNotNull(priority);
-		Assertion.checkNotNull(name);
+		Assertion.check()
+				.notNull(priority)
+				.notNull(name);
 		//-----
 		this.priority = priority;
 		this.name = name;

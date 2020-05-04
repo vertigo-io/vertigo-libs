@@ -61,7 +61,8 @@ public final class Notification {
 		Assertion.checkArgNotEmpty(targetUrl);
 		Assertion.checkNotNull(creationDate);
 		Assertion.checkNotNull(userContent);
-		Assertion.when(userContent.isPresent()).check(() -> userContent.get().length() > 0, "userContent can't be empty if set");
+		Assertion.when(userContent.isPresent())
+				.state(() -> userContent.get().length() > 0, "userContent can't be empty if set");
 		//-----
 		this.uuid = uuid;
 		this.sender = sender;

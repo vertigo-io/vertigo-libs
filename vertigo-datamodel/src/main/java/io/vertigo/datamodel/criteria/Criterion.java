@@ -44,13 +44,14 @@ final class Criterion<E extends Entity> extends Criteria<E> {
 	private final Serializable[] values;
 
 	Criterion(final DtFieldName<E> dtFieldName, final CriterionOperator criterionOperator, final Serializable... values) {
-		Assertion.checkNotNull(dtFieldName);
-		Assertion.checkNotNull(criterionOperator);
+		Assertion.check()
+				.notNull(dtFieldName)
+				.notNull(criterionOperator)
+				.notNull(values);
 		Assertion.when(CriterionOperator.IN != criterionOperator)
-				.check(() -> criterionOperator.getArity() == values.length, "Only {0} argument(s) functions are allowed for operator '{1}'",
+				.state(() -> criterionOperator.getArity() == values.length, "Only {0} argument(s) functions are allowed for operator '{1}'",
 						criterionOperator.getArity(),
 						criterionOperator);
-		Assertion.checkNotNull(values);
 		//---
 		this.criterionOperator = criterionOperator;
 		this.dtFieldName = dtFieldName;

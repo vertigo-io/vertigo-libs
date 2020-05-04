@@ -93,16 +93,16 @@ public final class FacetDefinition implements Definition {
 			final boolean rangeFacet,
 			final boolean multiSelectable,
 			final FacetOrder order) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(dtField);
-		Assertion.checkNotNull(label);
-		Assertion.checkNotNull(facetValues);
-		Assertion.checkNotNull(customFacetParams);
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(dtField)
+				.notNull(label)
+				.notNull(facetValues)
+				.notNull(customFacetParams)
+				.notNull(order);
 		Assertion.when(rangeFacet)
-				.check(() -> !facetValues.isEmpty(), "La FacetDefinition '" + name + "' de type 'range' doit fournir la liste des segments non vides (FacetValues)");
-		Assertion.when(!rangeFacet)
-				.check(facetValues::isEmpty, "La FacetDefinition '" + name + "' de type 'term' doit fournir une liste des segments vide");
-		Assertion.checkNotNull(order);
+				.state(() -> !facetValues.isEmpty(), "La FacetDefinition '" + name + "' de type 'range' doit fournir la liste des segments non vides (FacetValues)")
+				.state(facetValues::isEmpty, "La FacetDefinition '" + name + "' de type 'term' doit fournir une liste des segments vide");
 		//-----
 		this.name = name;
 		this.dtField = dtField;

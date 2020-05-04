@@ -102,15 +102,13 @@ public final class DtListState {
 			final String sortFieldName,
 			final Boolean sortDesc) {
 		Assertion.when(maxRows != null)
-				.check(() -> maxRows != Integer.MAX_VALUE, " maxRows should be null");
-		Assertion.when(maxRows != null)
-				.check(() -> maxRows > 0, "maxRows must be positive ({0})", maxRows);
-		Assertion.when(maxRows != null)
-				.check(() -> maxRows <= ABSOLUTE_MAX_ROWS, "maxRows must be less than {0}", ABSOLUTE_MAX_ROWS);
+				.state(() -> maxRows != Integer.MAX_VALUE, " maxRows should be null")
+				.state(() -> maxRows > 0, "maxRows must be positive ({0})", maxRows)
+				.state(() -> maxRows <= ABSOLUTE_MAX_ROWS, "maxRows must be less than {0}", ABSOLUTE_MAX_ROWS);
 
 		Assertion.checkArgument(skipRows >= 0, "skipRows must be positive ({0})", skipRows);
 		Assertion.when(sortFieldName != null)
-				.check(() -> sortDesc != null, "When sorting, sortFieldName and sortDesc are both mandatory.");
+				.state(() -> sortDesc != null, "When sorting, sortFieldName and sortDesc are both mandatory.");
 		//-----
 		this.maxRows = Optional.ofNullable(maxRows);
 		this.skipRows = skipRows;

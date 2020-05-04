@@ -52,16 +52,15 @@ public final class SecurityDimension {
 			final SecurityDimensionType type,
 			final List<DtField> fields,
 			final List<String> values) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(type);
-		Assertion.checkNotNull(fields);
-		Assertion.checkNotNull(values);
-		Assertion
-				.when(SecurityDimensionType.ENUM == type) // == because enum
-				.check(() -> fields.isEmpty() && values.size() > 1, "SecurityDimension of type ENUM ({0}) needs the ordered list of values and no field (name is use)", name);
-		Assertion
-				.when(SecurityDimensionType.TREE == type) // == because enum
-				.check(() -> fields.size() > 1 && values.isEmpty(), "SecurityDimension of type TREE ({0}) needs more than on fields and the no values", name);
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(type)
+				.notNull(fields)
+				.notNull(values);
+		Assertion.when(SecurityDimensionType.ENUM == type) // == because enum
+				.state(() -> fields.isEmpty() && values.size() > 1, "SecurityDimension of type ENUM ({0}) needs the ordered list of values and no field (name is use)", name);
+		Assertion.when(SecurityDimensionType.TREE == type) // == because enum
+				.state(() -> fields.size() > 1 && values.isEmpty(), "SecurityDimension of type TREE ({0}) needs more than on fields and the no values", name);
 		//----
 		this.name = name;
 		this.type = type;

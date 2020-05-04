@@ -94,23 +94,24 @@ public final class WebServiceDefinition implements Definition {
 			final String doc,
 			final boolean corsProtected,
 			final boolean fileAttachment) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(verb);
-		Assertion.checkArgNotEmpty(path);
-		Assertion.checkArgNotEmpty(sortPath);
-		Assertion.checkArgNotEmpty(acceptType);
-		Assertion.checkNotNull(method);
-		Assertion.checkNotNull(includedFields);
-		Assertion.checkNotNull(excludedFields);
-		Assertion.checkNotNull(webServiceParams);
-		Assertion.checkNotNull(doc); //doc can be empty
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(verb)
+				.argNotEmpty(path)
+				.argNotEmpty(sortPath)
+				.argNotEmpty(acceptType)
+				.notNull(method)
+				.notNull(includedFields)
+				.notNull(excludedFields)
+				.notNull(webServiceParams)
+				.notNull(doc); //doc can be empty
 		final String userFriendlyMethodName = method.getDeclaringClass().getSimpleName() + "." + method.getName();
 		Assertion.when(accessTokenConsume)
-				.check(() -> accessTokenMandatory, "AccessToken mandatory for accessTokenConsume ({0})", userFriendlyMethodName);
+				.state(() -> accessTokenMandatory, "AccessToken mandatory for accessTokenConsume ({0})", userFriendlyMethodName);
 		Assertion.when(serverSideSave)
-				.check(() -> needSession, "Session mandatory for serverSideState ({0})", userFriendlyMethodName);
+				.state(() -> needSession, "Session mandatory for serverSideState ({0})", userFriendlyMethodName);
 		Assertion.when(serverSideSave)
-				.check(() -> !Void.TYPE.equals(method.getReturnType()), "Return object mandatory for serverSideState ({0})", userFriendlyMethodName);
+				.state(() -> !Void.TYPE.equals(method.getReturnType()), "Return object mandatory for serverSideState ({0})", userFriendlyMethodName);
 		checkPathParams(path, webServiceParams, userFriendlyMethodName);
 		//-----
 		this.name = name;

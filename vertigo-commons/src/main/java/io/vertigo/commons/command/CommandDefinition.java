@@ -49,11 +49,13 @@ public final class CommandDefinition implements Definition {
 			final List<String> questions,
 			final List<CommandParam> commandParams,
 			final Function<Object[], CommandResponse> action) {
-		Assertion.checkArgNotEmpty(command);
-		Assertion.checkArgNotEmpty(description);
-		Assertion.checkNotNull(questions);
-		Assertion.checkState(COMMAND_PATTERN.matcher(command).matches(), "handle '{0}' must respect the pattern '{1}'", command, COMMAND_PATTERN);
-		Assertion.checkNotNull(action);
+		Assertion.check()
+				.argNotEmpty(command)
+				.argNotEmpty(description)
+				.notNull(questions)
+				.state(COMMAND_PATTERN.matcher(command).matches(), "handle '{0}' must respect the pattern '{1}'", command, COMMAND_PATTERN)
+				.notNull(action);
+		//---
 		commandParams
 				.forEach(commandParam -> {
 					final Type type = commandParam.getType();

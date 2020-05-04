@@ -67,12 +67,13 @@ public final class Node {
 			final Instant startDate,
 			final Optional<String> endPointOpt,
 			final List<String> skills) {
-		Assertion.checkArgNotEmpty(id);
-		Assertion.checkArgNotEmpty(appName);
-		Assertion.checkNotNull(lastStatus);
-		Assertion.checkNotNull(lastTouch);
-		Assertion.checkNotNull(endPointOpt);
-		Assertion.checkNotNull(skills);
+		Assertion.check()
+				.argNotEmpty(id)
+				.argNotEmpty(appName)
+				.notNull(lastStatus)
+				.notNull(lastTouch)
+				.notNull(endPointOpt)
+				.notNull(skills);
 		// ---
 		this.id = id;
 		this.appName = appName;

@@ -55,8 +55,9 @@ public final class ScriptSeparator implements Serializable {
 	 * @param endSeparator Séparateur de fin
 	 */
 	public ScriptSeparator(final String beginSeparator, final String endSeparator) {
-		Assertion.checkArgNotEmpty(beginSeparator);
-		Assertion.checkArgNotEmpty(endSeparator);
+		Assertion.check()
+				.argNotEmpty(beginSeparator)
+				.argNotEmpty(endSeparator);
 		//-----
 		this.beginSeparator = beginSeparator;
 		this.endSeparator = endSeparator;
