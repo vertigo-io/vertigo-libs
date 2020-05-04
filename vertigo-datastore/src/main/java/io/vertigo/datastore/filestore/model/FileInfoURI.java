@@ -61,8 +61,9 @@ public final class FileInfoURI implements Serializable {
 	 * @param key Clé de la ressource
 	 */
 	public FileInfoURI(final FileInfoDefinition fileInfoDefinition, final Object key) {
-		Assertion.checkNotNull(key);
-		Assertion.checkNotNull(fileInfoDefinition);
+		Assertion.check()
+				.notNull(key)
+				.notNull(fileInfoDefinition);
 		//-----
 		this.key = Serializable.class.cast(key);
 		fileInfoDefinitionRef = new DefinitionReference<>(fileInfoDefinition);

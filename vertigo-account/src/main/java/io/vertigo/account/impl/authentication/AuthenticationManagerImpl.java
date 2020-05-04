@@ -52,9 +52,10 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 			final AccountManager accountManager,
 			final VSecurityManager securityManager,
 			final List<AuthenticationPlugin> authenticationPlugins) {
-		Assertion.checkNotNull(accountManager);
-		Assertion.checkNotNull(securityManager);
-		Assertion.checkNotNull(authenticationPlugins);
+		Assertion.check()
+				.notNull(accountManager)
+				.notNull(securityManager)
+				.notNull(authenticationPlugins);
 		//----
 		this.accountManager = accountManager;
 		this.securityManager = securityManager;

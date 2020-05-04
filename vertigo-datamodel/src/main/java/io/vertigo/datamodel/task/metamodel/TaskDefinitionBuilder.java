@@ -115,9 +115,10 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder addInAttribute(final String attributeName, final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {
-		Assertion.checkNotNull(attributeName);
-		Assertion.checkNotNull(smartTypeDefinition);
-		Assertion.checkNotNull(cardinality);
+		Assertion.check()
+				.notNull(attributeName)
+				.notNull(smartTypeDefinition)
+				.notNull(cardinality);
 		//-----
 		final TaskAttribute taskAttribute = new TaskAttribute(attributeName, smartTypeDefinition, cardinality);
 		myInTaskAttributes.add(taskAttribute);

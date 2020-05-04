@@ -69,9 +69,10 @@ public final class DtListPatternFilterUtil {
 	}
 
 	static <D extends DtObject> Predicate<D> createDtListFilterForPattern(final FilterPattern filterPattern, final String[] parsedFilter, final DtDefinition dtDefinition) {
-		Assertion.checkNotNull(filterPattern);
-		Assertion.checkNotNull(parsedFilter);
-		Assertion.checkNotNull(dtDefinition);
+		Assertion.check()
+				.notNull(filterPattern)
+				.notNull(parsedFilter)
+				.notNull(dtDefinition);
 		//-----
 		//Si on trouve un pattern, on passe sur du code spécifique
 		final String fieldName = parsedFilter[1]; //attention parsedFilter[0] = filtre entier

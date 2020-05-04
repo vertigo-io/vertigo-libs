@@ -66,9 +66,10 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<RedisConnector> redisConnectors,
 			final CodecManager codecManager) {
-		Assertion.checkNotNull(connectorNameOpt);
-		Assertion.checkNotNull(redisConnectors);
-		Assertion.checkNotNull(codecManager);
+		Assertion.check()
+				.notNull(connectorNameOpt)
+				.notNull(redisConnectors)
+				.notNull(codecManager);
 		//-----
 
 		final String connectorName = connectorNameOpt.orElse("main");
@@ -183,8 +184,9 @@ public final class RedisAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void attach(final UID<Account> accountUID, final Set<UID<AccountGroup>> groupUIDs) {
-		Assertion.checkNotNull(accountUID);
-		Assertion.checkNotNull(groupUIDs);
+		Assertion.check()
+				.notNull(accountUID)
+				.notNull(groupUIDs);
 		//-----
 		try (final Jedis jedis = redisConnector.getClient()) {
 			try (final Transaction tx = jedis.multi()) {

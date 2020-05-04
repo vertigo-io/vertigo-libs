@@ -80,10 +80,11 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	public GoogleGeoCoderPlugin(
 			final @ParamValue("proxyHost") Optional<String> proxyHost,
 			@ParamValue("proxyPort") final Optional<String> proxyPort) {
-		Assertion.checkNotNull(proxyHost);
-		Assertion.checkNotNull(proxyPort);
-		Assertion.checkArgument((proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()),
-				"les deux paramètres host et port doivent être tous les deux remplis ou vides");
+		Assertion.check()
+				.notNull(proxyHost)
+				.notNull(proxyPort)
+				.argument((proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()),
+						"les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		//-----
 		if (proxyHost.isPresent()) {
 			proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.get(), Integer.parseInt(proxyPort.get())));

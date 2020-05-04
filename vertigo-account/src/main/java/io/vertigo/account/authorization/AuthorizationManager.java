@@ -19,6 +19,7 @@
 package io.vertigo.account.authorization;
 
 import java.util.List;
+import java.util.Set;
 
 import io.vertigo.account.authorization.metamodel.AuthorizationName;
 import io.vertigo.account.authorization.metamodel.OperationName;
@@ -83,8 +84,16 @@ public interface AuthorizationManager extends Manager {
 	<K extends KeyConcept> String getSearchSecurity(final Class<K> keyConceptClass, OperationName<K> operation);
 
 	/**
+	 * Get all prior authorizations of current user.
+	 * This can be use by UI to show or not some features.
+	 *
+	 * @return authorizations set
+	 */
+	Set<String> getPriorAuthorizations();
+
+	/**
 	 * Get all operation doable on this object by current user.
-	 * This can be use by IHM to show or not some features.
+	 * This can be use by UI to show or not some features.
 	 *
 	 * @param keyConcept secured data to check
 	 * @return operations list

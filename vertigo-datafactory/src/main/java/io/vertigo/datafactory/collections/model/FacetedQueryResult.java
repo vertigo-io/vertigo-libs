@@ -71,13 +71,14 @@ public final class FacetedQueryResult<R extends DtObject, S> implements Serializ
 			final Map<FacetValue, DtList<R>> clusteredDtc,
 			final Map<R, Map<DtField, String>> highlights,
 			final S source) {
-		Assertion.checkNotNull(query);
-		Assertion.checkNotNull(dtc);
-		Assertion.checkNotNull(facets);
-		Assertion.checkNotNull(source);
-		Assertion.checkNotNull(clusterFacetDefinition);
-		Assertion.checkNotNull(clusteredDtc);
-		Assertion.checkNotNull(highlights);
+		Assertion.check()
+				.notNull(query)
+				.notNull(dtc)
+				.notNull(facets)
+				.notNull(source)
+				.notNull(clusterFacetDefinition)
+				.notNull(clusteredDtc)
+				.notNull(highlights);
 		//-----
 		this.facetedQueryOpt = query.orElse(null);
 		this.count = count;

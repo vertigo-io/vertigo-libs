@@ -228,9 +228,10 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 	@Override
 	public void updateProcessDefinitionProperties(final ProcessDefinition processDefinition, final Optional<String> cronExpression, final boolean multiExecution, final int rescuePeriod,
 			final boolean active) {
-		Assertion.checkNotNull(processDefinition);
-		Assertion.checkNotNull(cronExpression);
-		Assertion.checkNotNull(rescuePeriod);
+		Assertion.check()
+				.notNull(processDefinition)
+				.notNull(cronExpression)
+				.notNull(rescuePeriod);
 		// ---
 		final OProcess process = getOProcessByName(processDefinition.getName());
 		if (cronExpression.isPresent()) {

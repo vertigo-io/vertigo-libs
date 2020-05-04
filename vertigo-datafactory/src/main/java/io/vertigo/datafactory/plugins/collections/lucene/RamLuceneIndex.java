@@ -93,8 +93,9 @@ final class RamLuceneIndex<D extends DtObject> {
 	RamLuceneIndex(
 			final DtDefinition dtDefinition,
 			final SmartTypeManager smartTypeManager) throws IOException {
-		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(smartTypeManager);
+		Assertion.check()
+				.notNull(dtDefinition)
+				.notNull(smartTypeManager);
 		//-----
 		indexAnalyser = new DefaultAnalyzer(false); //les stop word marchent mal si asymétrique entre l'indexation et la query
 		luceneQueryFactory = new RamLuceneQueryFactory(indexAnalyser);

@@ -38,6 +38,7 @@ public final class RuleMultiExpression {
 		OR("OR", "Or", "or", "||"),
 		/** AND. */
 		AND("AND", "And", "and", "&&");
+
 		private final String[] asString;
 
 		BoolOperator(final String... asString) {
@@ -90,9 +91,10 @@ public final class RuleMultiExpression {
 			final BoolOperator boolOperator,
 			final List<RuleExpression> expressions,
 			final List<RuleMultiExpression> multiExpressions) {
-		Assertion.checkNotNull(boolOperator);
-		Assertion.checkNotNull(expressions);
-		Assertion.checkNotNull(multiExpressions);
+		Assertion.check()
+				.notNull(boolOperator)
+				.notNull(expressions)
+				.notNull(multiExpressions);
 		//-----
 		this.block = block;
 		alwaysTrue = false;

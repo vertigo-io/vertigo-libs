@@ -63,9 +63,10 @@ public final class Authorization implements Definition {
 	 * @param comment Comment
 	 */
 	public Authorization(final String code, final String label, final Optional<String> comment) {
-		Assertion.checkArgNotEmpty(code);
-		Assertion.checkArgNotEmpty(label);
-		Assertion.checkNotNull(comment);
+		Assertion.check()
+				.argNotEmpty(code)
+				.argNotEmpty(label)
+				.notNull(comment);
 		//-----
 		name = PREFIX + code;
 		this.label = label;
@@ -97,13 +98,14 @@ public final class Authorization implements Definition {
 			final DtDefinition entityDefinition,
 			final List<RuleMultiExpression> rules,
 			final Optional<String> comment) {
-		Assertion.checkArgNotEmpty(operation);
-		Assertion.checkArgNotEmpty(label);
-		Assertion.checkNotNull(overrides);
-		Assertion.checkNotNull(grants);
-		Assertion.checkNotNull(entityDefinition);
-		Assertion.checkNotNull(rules);
-		Assertion.checkNotNull(comment);
+		Assertion.check()
+				.argNotEmpty(operation)
+				.argNotEmpty(label)
+				.notNull(overrides)
+				.notNull(grants)
+				.notNull(entityDefinition)
+				.notNull(rules)
+				.notNull(comment);
 		//-----
 		name = PREFIX + entityDefinition.getLocalName() + '$' + operation;
 		this.label = label;

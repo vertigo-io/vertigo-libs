@@ -118,11 +118,12 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 			@ParamValue("sequencePrefix") final Optional<String> optSequencePrefix,
 			final TaskManager taskManager,
 			final SqlDataBaseManager sqlDataBaseManager) {
-		Assertion.checkNotNull(optDataSpace);
-		Assertion.checkNotNull(optConnectionName);
-		Assertion.checkNotNull(optSequencePrefix);
-		Assertion.checkNotNull(taskManager);
-		Assertion.checkNotNull(sqlDataBaseManager);
+		Assertion.check()
+				.notNull(optDataSpace)
+				.notNull(optConnectionName)
+				.notNull(optSequencePrefix)
+				.notNull(taskManager)
+				.notNull(sqlDataBaseManager);
 		//-----
 		dataSpace = optDataSpace.orElse(EntityStoreManager.MAIN_DATA_SPACE_NAME);
 		connectionName = optConnectionName.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);

@@ -87,9 +87,10 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 			@ParamValue("developmentMode") final boolean developmentMode,
 			@ParamValue("developmentMailTo") final String developmentMailTo,
 			@ParamValue("charset") final Optional<String> charsetOpt) {
-		Assertion.checkNotNull(fileManager);
-		Assertion.checkNotNull(mailSessionConnector);
-		Assertion.checkArgNotEmpty(developmentMailTo);
+		Assertion.check()
+				.notNull(fileManager)
+				.notNull(mailSessionConnector)
+				.argNotEmpty(developmentMailTo);
 		//-----
 		this.fileManager = fileManager;
 		this.mailSessionConnector = mailSessionConnector;
@@ -186,9 +187,10 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	}
 
 	private void setDestAddress(final List<String> addressList, final Message message, final Message.RecipientType type) throws MessagingException {
-		Assertion.checkNotNull(addressList);
-		Assertion.checkArgument(!addressList.isEmpty(), "La liste des destinataires ne doit pas être vide");
-		Assertion.checkNotNull(message);
+		Assertion.check()
+				.notNull(addressList)
+				.argument(!addressList.isEmpty(), "La liste des destinataires ne doit pas être vide")
+				.notNull(message);
 		//-----
 		final InternetAddress[] addresses = new InternetAddress[addressList.size()];
 		for (int i = 0; i < addressList.size(); i++) {

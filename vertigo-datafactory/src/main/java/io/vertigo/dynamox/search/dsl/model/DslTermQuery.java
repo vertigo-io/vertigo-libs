@@ -67,13 +67,14 @@ public final class DslTermQuery implements DslQuery {
 			final EscapeMode escapeMode,
 			final Optional<String> defaultValue,
 			final String postBody) {
-		Assertion.checkNotNull(preBody);
-		Assertion.checkNotNull(preTerm);
-		Assertion.checkNotNull(termField);
-		Assertion.checkNotNull(postTerm);
-		Assertion.checkNotNull(escapeMode);
-		Assertion.checkNotNull(defaultValue);
-		Assertion.checkNotNull(postBody);
+		Assertion.check()
+				.notNull(preBody)
+				.notNull(preTerm)
+				.notNull(termField)
+				.notNull(postTerm)
+				.notNull(escapeMode)
+				.notNull(defaultValue)
+				.notNull(postBody);
 		//-----
 		this.preBody = preBody;
 		this.preTerm = preTerm;

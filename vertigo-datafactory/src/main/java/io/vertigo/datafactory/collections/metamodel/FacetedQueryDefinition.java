@@ -77,11 +77,12 @@ public final class FacetedQueryDefinition implements Definition {
 			final Class<? extends ListFilterBuilder> listFilterBuilderClass,
 			final String listFilterBuilderQuery,
 			final String geoSearchQuery) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(facetDefinitions);
-		Assertion.checkNotNull(criteriaSmartType);
-		Assertion.checkNotNull(listFilterBuilderClass);
-		Assertion.checkNotNull(listFilterBuilderQuery);
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(facetDefinitions)
+				.notNull(criteriaSmartType)
+				.notNull(listFilterBuilderClass)
+				.notNull(listFilterBuilderQuery);
 		//Assertion.checkNotNull(geoSearchQuery);
 		//-----
 		this.name = name;

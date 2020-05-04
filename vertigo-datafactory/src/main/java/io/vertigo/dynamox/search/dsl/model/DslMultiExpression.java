@@ -48,10 +48,11 @@ public final class DslMultiExpression {
 			final List<DslExpression> expressions,
 			final List<DslMultiExpression> multiExpressions,
 			final String postBody) {
-		Assertion.checkNotNull(preBody);
-		Assertion.checkNotNull(expressions);
-		Assertion.checkNotNull(multiExpressions);
-		Assertion.checkNotNull(postBody);
+		Assertion.check()
+				.notNull(preBody)
+				.notNull(expressions)
+				.notNull(multiExpressions)
+				.notNull(postBody);
 		//-----
 		this.preBody = preBody;
 		this.block = block;

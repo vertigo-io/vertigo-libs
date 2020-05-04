@@ -65,12 +65,13 @@ public final class ProcessDefinition implements Definition {
 			final boolean needUpdate,
 			final ProcessTriggeringStrategy triggeringStrategy,
 			final List<ActivityDefinition> activities) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkArgNotEmpty(label);
-		Assertion.checkNotNull(processType);
-		Assertion.checkNotNull(metadatas);
-		Assertion.checkNotNull(triggeringStrategy);
-		Assertion.checkNotNull(activities);
+		Assertion.check()
+				.argNotEmpty(name)
+				.argNotEmpty(label)
+				.notNull(processType)
+				.notNull(metadatas)
+				.notNull(triggeringStrategy)
+				.notNull(activities);
 		//---
 		this.name = name;
 		this.label = label;

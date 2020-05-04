@@ -67,13 +67,14 @@ public final class Mail {
 			final String textContent,
 			final String htmlContent,
 			final List<VFile> attachments) {
-		Assertion.checkArgNotEmpty(subject, "Sujet du mail obligatoire");
-		Assertion.checkArgNotEmpty(fromAddress, "Adresse email de l'émetteur obligatoire");
-		Assertion.checkNotNull(toAddresses);
-		Assertion.checkArgument(!toAddresses.isEmpty(), "Le mail doit avoir au moins un destinataire.");
-		Assertion.checkNotNull(ccAddresses);
-		Assertion.checkArgument(textContent != null || htmlContent != null, "Le mail doit avoir un contenu, soit en text, soit en html");
-		Assertion.checkNotNull(attachments);
+		Assertion.check()
+				.argNotEmpty(subject, "Sujet du mail obligatoire")
+				.argNotEmpty(fromAddress, "Adresse email de l'émetteur obligatoire")
+				.notNull(toAddresses)
+				.argument(!toAddresses.isEmpty(), "Le mail doit avoir au moins un destinataire.")
+				.notNull(ccAddresses)
+				.argument(textContent != null || htmlContent != null, "Le mail doit avoir un contenu, soit en text, soit en html")
+				.notNull(attachments);
 		//-----
 		this.subject = subject;
 		this.replyTo = replyTo;

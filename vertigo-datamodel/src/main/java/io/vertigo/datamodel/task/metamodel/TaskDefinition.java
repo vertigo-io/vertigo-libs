@@ -74,12 +74,13 @@ public final class TaskDefinition implements Definition {
 			final List<TaskAttribute> inTaskAttributes,
 			final Optional<TaskAttribute> outTaskAttributeOption) {
 		DefinitionUtil.checkName(name, TaskDefinition.class);
-		Assertion.checkArgNotEmpty(dataSpace);
-		Assertion.checkState(DtDefinition.REGEX_DATA_SPACE.matcher(dataSpace).matches(), "collection {0} must match pattern {1}", dataSpace, DtDefinition.REGEX_DATA_SPACE);
-		Assertion.checkNotNull(taskEngineClass, "a taskEngineClass is required");
-		Assertion.checkNotNull(request, "a request is required");
-		Assertion.checkNotNull(inTaskAttributes);
-		Assertion.checkNotNull(outTaskAttributeOption);
+		Assertion.check()
+				.argNotEmpty(dataSpace)
+				.state(DtDefinition.REGEX_DATA_SPACE.matcher(dataSpace).matches(), "collection {0} must match pattern {1}", dataSpace, DtDefinition.REGEX_DATA_SPACE)
+				.notNull(taskEngineClass, "a taskEngineClass is required")
+				.notNull(request, "a request is required")
+				.notNull(inTaskAttributes)
+				.notNull(outTaskAttributeOption);
 		//-----
 		this.name = name;
 		this.packageName = packageName;

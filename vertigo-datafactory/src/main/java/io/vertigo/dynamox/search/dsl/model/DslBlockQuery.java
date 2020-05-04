@@ -38,9 +38,10 @@ public final class DslBlockQuery implements DslQuery {
 	 * @param postBody String after body
 	 */
 	public DslBlockQuery(final String preBody, final List<DslQuery> queries, final String postBody) {
-		Assertion.checkNotNull(preBody);
-		Assertion.checkNotNull(queries);
-		Assertion.checkNotNull(postBody);
+		Assertion.check()
+				.notNull(preBody)
+				.notNull(queries)
+				.notNull(postBody);
 		//-----
 		this.preBody = preBody;
 		this.queries = queries;

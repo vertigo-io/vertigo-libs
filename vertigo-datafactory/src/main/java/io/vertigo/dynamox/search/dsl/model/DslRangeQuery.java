@@ -46,12 +46,13 @@ public final class DslRangeQuery implements DslQuery {
 			final DslQuery endQueryDefinitions,
 			final String endRange,
 			final String postBody) {
-		Assertion.checkNotNull(preBody);
-		Assertion.checkArgNotEmpty(startRange);
-		Assertion.checkNotNull(startQueryDefinitions);
-		Assertion.checkNotNull(endQueryDefinitions);
-		Assertion.checkArgNotEmpty(endRange);
-		Assertion.checkNotNull(postBody);
+		Assertion.check()
+				.notNull(preBody)
+				.argNotEmpty(startRange)
+				.notNull(startQueryDefinitions)
+				.notNull(endQueryDefinitions)
+				.argNotEmpty(endRange)
+				.notNull(postBody);
 		//-----
 		this.preBody = preBody;
 		this.startRange = startRange;

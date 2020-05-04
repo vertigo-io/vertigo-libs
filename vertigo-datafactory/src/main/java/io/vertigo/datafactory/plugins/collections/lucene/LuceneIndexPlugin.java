@@ -73,9 +73,10 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 			final CacheManager cacheManager,
 			final EventBusManager eventBusManager,
 			final SmartTypeManager smartTypeManager) {
-		Assertion.checkNotNull(localeManager);
-		Assertion.checkNotNull(cacheManager);
-		Assertion.checkNotNull(smartTypeManager);
+		Assertion.check()
+				.notNull(localeManager)
+				.notNull(cacheManager)
+				.notNull(smartTypeManager);
 		//-----
 		this.cacheManager = cacheManager;
 		this.smartTypeManager = smartTypeManager;

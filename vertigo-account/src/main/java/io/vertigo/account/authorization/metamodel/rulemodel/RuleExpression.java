@@ -31,18 +31,18 @@ public final class RuleExpression {
 	 * Should be ordered for parsing.
 	 */
 	public enum ValueOperator implements RuleOperator {
-	/** Lesser Than or Equals. */
-	LTE("<="),
-	/** Greater Than or Equals. */
-	GTE(">="),
-	/** Not Equals. */
-	NEQ("!="),
-	/** Equals. */
-	EQ("="),
-	/** Lesser Than. */
-	LT("<"),
-	/** Greater Than. */
-	GT(">");
+		/** Lesser Than or Equals. */
+		LTE("<="),
+		/** Greater Than or Equals. */
+		GTE(">="),
+		/** Not Equals. */
+		NEQ("!="),
+		/** Equals. */
+		EQ("="),
+		/** Lesser Than. */
+		LT("<"),
+		/** Greater Than. */
+		GT(">");
 
 		private final String[] asString;
 
@@ -74,9 +74,10 @@ public final class RuleExpression {
 	 * @param value QueryDefinition
 	 */
 	public RuleExpression(final String fieldName, final ValueOperator operator, final RuleValue value) {
-		Assertion.checkArgNotEmpty(fieldName);
-		Assertion.checkNotNull(operator);
-		Assertion.checkNotNull(value);
+		Assertion.check()
+				.argNotEmpty(fieldName)
+				.notNull(operator)
+				.notNull(value);
 		//-----
 		this.fieldName = fieldName;
 		this.operator = operator;

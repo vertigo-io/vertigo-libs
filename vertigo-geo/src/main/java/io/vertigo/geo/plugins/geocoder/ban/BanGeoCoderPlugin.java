@@ -58,10 +58,11 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 	public BanGeoCoderPlugin(
 			final @ParamValue("proxyHost") Optional<String> proxyHost,
 			final @ParamValue("proxyPort") Optional<String> proxyPort) {
-		Assertion.checkNotNull(proxyHost);
-		Assertion.checkNotNull(proxyPort);
-		Assertion.checkArgument((proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()),
-				"les deux paramètres host et port doivent être tous les deux remplis ou vides");
+		Assertion.check()
+				.notNull(proxyHost)
+				.notNull(proxyPort)
+				.argument((proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()),
+						"les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		//-----
 		if (proxyHost.isPresent()) {
 			proxyOpt = Optional.of(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost.get(), Integer.parseInt(proxyPort.get()))));

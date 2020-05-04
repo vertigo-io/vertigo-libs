@@ -97,9 +97,10 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 			final boolean multiExecution,
 			final int rescuePeriod,
 			final boolean active) {
-		Assertion.checkArgNotEmpty(processName);
-		Assertion.checkNotNull(cronExpression);
-		Assertion.checkNotNull(rescuePeriod);
+		Assertion.check()
+				.argNotEmpty(processName)
+				.notNull(cronExpression)
+				.notNull(rescuePeriod);
 		//---
 		final ProcessDefinition processDefinition = getProcessDefinition(processName);
 		getPluginByType(processDefinition.getProcessType()).updateProcessDefinitionProperties(processDefinition, cronExpression, multiExecution, rescuePeriod, active);
@@ -108,8 +109,9 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 	/** {@inheritDoc} */
 	@Override
 	public void updateProcessDefinitionInitialParams(final String processName, final Map<String, String> initialParams) {
-		Assertion.checkArgNotEmpty(processName);
-		Assertion.checkNotNull(initialParams);
+		Assertion.check()
+				.argNotEmpty(processName)
+				.notNull(initialParams);
 		//---
 		final ProcessDefinition processDefinition = getProcessDefinition(processName);
 		getPluginByType(processDefinition.getProcessType()).updateProcessDefinitionInitialParams(processDefinition, initialParams);

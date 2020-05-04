@@ -92,12 +92,13 @@ public final class SmartTypeDefinition implements Definition {
 			final FormatterConfig formatterConfig,
 			final List<ConstraintConfig> constraintConfigs,
 			final Properties properties) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(scope);
-		Assertion.checkNotNull(valueObjectClassName);
-		Assertion.checkNotNull(adapterConfigs);
-		Assertion.checkNotNull(constraintConfigs);
-		Assertion.checkNotNull(properties);
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(scope)
+				.notNull(valueObjectClassName)
+				.notNull(adapterConfigs)
+				.notNull(constraintConfigs)
+				.notNull(properties);
 		//-----
 		this.name = name;
 		this.scope = scope;

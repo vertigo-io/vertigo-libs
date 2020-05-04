@@ -25,8 +25,8 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.util.StringUtil;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.ConstraintException;
 import io.vertigo.datamodel.structure.model.DtList;
 
@@ -61,10 +61,11 @@ public final class TaskAttribute {
 	 * @param required if the attribute is required
 	 */
 	TaskAttribute(final String attributeName, final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {
-		Assertion.checkNotNull(attributeName);
-		Assertion.checkNotNull(cardinality);
-		Assertion.checkArgument(StringUtil.isLowerCamelCase(attributeName), "the name of the attribute {0} must be in lowerCamelCase", attributeName);
-		Assertion.checkNotNull(smartTypeDefinition);
+		Assertion.check()
+				.notNull(attributeName)
+				.notNull(cardinality)
+				.argument(StringUtil.isLowerCamelCase(attributeName), "the name of the attribute {0} must be in lowerCamelCase", attributeName)
+				.notNull(smartTypeDefinition);
 		//-----
 		name = attributeName;
 		this.smartTypeDefinition = smartTypeDefinition;

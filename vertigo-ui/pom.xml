@@ -34,11 +34,6 @@
 		</dependency>		
 		<dependency>
 			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-studio</artifactId>
-			<version>${vertigo.version}</version>
-		</dependency>	
-		<dependency>
-			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-spring-connector</artifactId>
 			<version>${vertigo.version}</version>
 		</dependency>	
@@ -67,12 +62,6 @@
 		<!-- for tests -->
 		<!-- for Embedded Jetty Server and tests -->
 		<!-- Connections Pool -->
-		<dependency>
-			<groupId>io.vertigo</groupId>
-			<artifactId>vertigo-studio</artifactId>
-			<version>${vertigo.version}</version>
-			<scope>test</scope>
-		</dependency>
 		<dependency>
 			<groupId>io.vertigo</groupId>
 			<artifactId>vertigo-elasticsearch-connector</artifactId>
