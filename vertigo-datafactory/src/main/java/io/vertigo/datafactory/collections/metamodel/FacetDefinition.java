@@ -101,7 +101,8 @@ public final class FacetDefinition implements Definition {
 				.notNull(customFacetParams)
 				.notNull(order);
 		Assertion.when(rangeFacet)
-				.state(() -> !facetValues.isEmpty(), "La FacetDefinition '" + name + "' de type 'range' doit fournir la liste des segments non vides (FacetValues)")
+				.state(!facetValues.isEmpty(), "La FacetDefinition '" + name + "' de type 'range' doit fournir la liste des segments non vides (FacetValues)");
+		Assertion.when(!rangeFacet)
 				.state(facetValues::isEmpty, "La FacetDefinition '" + name + "' de type 'term' doit fournir une liste des segments vide");
 		//-----
 		this.name = name;
