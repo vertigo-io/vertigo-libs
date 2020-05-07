@@ -54,8 +54,9 @@ public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 	public TimeSeriesManagerImpl(
 			final AnalyticsManager analyticsManager,
 			final List<TimeSeriesPlugin> timeSeriesPlugins) {
-		Assertion.checkNotNull(analyticsManager);
-		Assertion.checkNotNull(timeSeriesPlugins);
+		Assertion.check()
+				.notNull(analyticsManager)
+				.notNull(timeSeriesPlugins);
 		//---
 		this.analyticsManager = analyticsManager;
 		timeSeriesPlugins.forEach(
@@ -96,10 +97,11 @@ public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 
 	@Override
 	public TimedDatas getTimeSeries(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
-		Assertion.checkArgNotEmpty(dbName);
-		Assertion.checkNotNull(measures);
-		Assertion.checkNotNull(dataFilter);
-		Assertion.checkNotNull(timeFilter.getDim());// we check dim is not null because we need it
+		Assertion.check()
+				.argNotEmpty(dbName)
+				.notNull(measures)
+				.notNull(dataFilter)
+				.notNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
 		return analyticsManager.traceWithReturn(
 				TIMESERIES_CATEGORY,
@@ -110,11 +112,12 @@ public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 
 	@Override
 	public TimedDatas getClusteredTimeSeries(final String dbName, final ClusteredMeasure clusteredMeasure, final DataFilter dataFilter, final TimeFilter timeFilter) {
-		Assertion.checkArgNotEmpty(dbName);
-		Assertion.checkNotNull(dataFilter);
-		Assertion.checkNotNull(timeFilter);
-		Assertion.checkNotNull(timeFilter.getDim()); // we check dim is not null because we need it
-		Assertion.checkNotNull(clusteredMeasure);
+		Assertion.check()
+				.argNotEmpty(dbName)
+				.notNull(dataFilter)
+				.notNull(timeFilter)
+				.notNull(timeFilter.getDim()) // we check dim is not null because we need it
+				.notNull(clusteredMeasure);
 		//---
 		Assertion.checkArgNotEmpty(clusteredMeasure.getMeasure());
 		Assertion.checkNotNull(clusteredMeasure.getThresholds());

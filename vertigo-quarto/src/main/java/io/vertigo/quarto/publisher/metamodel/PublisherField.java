@@ -46,9 +46,10 @@ public final class PublisherField {
 	 * @param publisherDataNodeDefinition Définition du noeud sous-jacent
 	 */
 	PublisherField(final String name, final PublisherFieldType fieldType, final PublisherNodeDefinition publisherDataNodeDefinition) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(fieldType);
-		Assertion.checkArgument(REGEX_FIELD_NAME.matcher(name).matches(), "Le nom du champ {0} doit matcher le pattern {1}", name, REGEX_FIELD_NAME);
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(fieldType)
+				.argument(REGEX_FIELD_NAME.matcher(name).matches(), "Le nom du champ {0} doit matcher le pattern {1}", name, REGEX_FIELD_NAME);
 		if (publisherDataNodeDefinition != null) {
 			Assertion.checkArgument(
 					fieldType == PublisherFieldType.Node || fieldType == PublisherFieldType.List,

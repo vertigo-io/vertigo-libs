@@ -67,8 +67,9 @@ public final class ExecutionSummary implements Serializable {
 			final Integer averageExecutionTime,
 			final String health) {
 		this.proId = proId;
-		Assertion.checkNotNull(proId);
-		Assertion.checkNotNull(processName);
+		Assertion.check()
+				.notNull(proId)
+				.notNull(processName);
 		// ---
 		this.processName = processName;
 		this.processLabel = processLabel;

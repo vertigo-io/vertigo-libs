@@ -41,8 +41,9 @@ public final class MailManagerImpl implements MailManager {
 	 */
 	@Inject
 	public MailManagerImpl(final LocaleManager localeManager, final SendMailPlugin sendMailPlugin) {
-		Assertion.checkNotNull(localeManager);
-		Assertion.checkNotNull(sendMailPlugin);
+		Assertion.check()
+				.notNull(localeManager)
+				.notNull(sendMailPlugin);
 		//-----
 		localeManager.add("io.vertigo.social.impl.mail.Mail", io.vertigo.social.impl.mail.Resources.values());
 		this.sendMailPlugin = sendMailPlugin;

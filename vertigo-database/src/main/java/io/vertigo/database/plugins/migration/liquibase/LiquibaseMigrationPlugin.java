@@ -52,9 +52,10 @@ public final class LiquibaseMigrationPlugin implements MigrationPlugin {
 			@ParamValue("masterFile") final String masterFile,
 			@ParamValue("connectionName") final Optional<String> connectionNameOpt,
 			final SqlDataBaseManager sqlDataBaseManager) {
-		Assertion.checkNotNull(masterFile);
-		Assertion.checkNotNull(connectionNameOpt);
-		Assertion.checkNotNull(sqlDataBaseManager);
+		Assertion.check()
+				.notNull(masterFile)
+				.notNull(connectionNameOpt)
+				.notNull(sqlDataBaseManager);
 		//---
 		this.masterFile = masterFile;
 		connectionName = connectionNameOpt.orElse(SqlDataBaseManager.MAIN_CONNECTION_PROVIDER_NAME);

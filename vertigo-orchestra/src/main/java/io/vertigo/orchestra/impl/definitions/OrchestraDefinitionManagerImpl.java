@@ -46,8 +46,9 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 	 */
 	@Inject
 	public OrchestraDefinitionManagerImpl(final List<ProcessDefinitionStorePlugin> processDefinitionStorePlugins) {
-		Assertion.checkNotNull(processDefinitionStorePlugins);
-		Assertion.checkState(!processDefinitionStorePlugins.isEmpty(), "At least one ProcessDefinitionStorePlugin is required");
+		Assertion.check()
+				.notNull(processDefinitionStorePlugins)
+				.state(!processDefinitionStorePlugins.isEmpty(), "At least one ProcessDefinitionStorePlugin is required");
 		// ---
 		for (final ProcessDefinitionStorePlugin storePlugin : processDefinitionStorePlugins) {
 			Assertion.checkState(!processDefinitionStorePluginsByProcessType.containsKey(storePlugin.getHandledProcessType()), "Only one plugin can manage the processType {0}",

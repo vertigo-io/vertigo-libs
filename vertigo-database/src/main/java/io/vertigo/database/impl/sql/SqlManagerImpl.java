@@ -71,9 +71,10 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 			final LocaleManager localeManager,
 			final AnalyticsManager analyticsManager,
 			final List<SqlConnectionProviderPlugin> sqlConnectionProviderPlugins) {
-		Assertion.checkNotNull(localeManager);
-		Assertion.checkNotNull(analyticsManager);
-		Assertion.checkNotNull(sqlConnectionProviderPlugins);
+		Assertion.check()
+				.notNull(localeManager)
+				.notNull(analyticsManager)
+				.notNull(sqlConnectionProviderPlugins);
 		//-----
 		this.analyticsManager = analyticsManager;
 		connectionProviderPluginMap = new HashMap<>();
@@ -103,9 +104,10 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final Integer limit,
 			final SqlConnection connection) throws SQLException {
-		Assertion.checkNotNull(sqlStatement);
-		Assertion.checkNotNull(dataType);
-		Assertion.checkNotNull(connection);
+		Assertion.check()
+				.notNull(sqlStatement)
+				.notNull(dataType)
+				.notNull(connection);
 		//-----
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
 			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), basicTypeAdapters, connection);
@@ -146,11 +148,12 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 			final Class<O> dataType,
 			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException {
-		Assertion.checkNotNull(sqlStatement);
-		Assertion.checkNotNull(generationMode);
-		Assertion.checkNotNull(columnName);
-		Assertion.checkNotNull(dataType);
-		Assertion.checkNotNull(connection);
+		Assertion.check()
+				.notNull(sqlStatement)
+				.notNull(generationMode)
+				.notNull(columnName)
+				.notNull(dataType)
+				.notNull(connection);
 		//---
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), generationMode, new String[] { columnName }, connection)) {
 			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), basicTypeAdapters, connection);
@@ -170,8 +173,9 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 			final SqlStatement sqlStatement,
 			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException {
-		Assertion.checkNotNull(sqlStatement);
-		Assertion.checkNotNull(connection);
+		Assertion.check()
+				.notNull(sqlStatement)
+				.notNull(connection);
 		//---
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
 			sqlStatementDriver.setParameters(statement, sqlStatement.getSqlParameters(), basicTypeAdapters, connection);
@@ -214,8 +218,9 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 			final SqlStatement sqlStatement,
 			final Map<Class, BasicTypeAdapter> basicTypeAdapters,
 			final SqlConnection connection) throws SQLException {
-		Assertion.checkNotNull(sqlStatement);
-		Assertion.checkNotNull(connection);
+		Assertion.check()
+				.notNull(sqlStatement)
+				.notNull(connection);
 		//---
 		try (final PreparedStatement statement = sqlStatementDriver.createStatement(sqlStatement.getSqlQuery(), connection)) {
 			for (final List<SqlParameter> parameters : sqlStatement.getSqlParametersForBatch()) {

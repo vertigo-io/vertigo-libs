@@ -72,8 +72,9 @@ public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	 * @return Builder
 	 */
 	public WebServiceParamBuilder with(final WebServiceParamType restParamType, final String restParamName) {
-		Assertion.checkNotNull(restParamType);
-		Assertion.checkNotNull(restParamName); //empty names were check on WebServiceParam constructor
+		Assertion.check()
+				.notNull(restParamType)
+				.notNull(restParamName); //empty names were check on WebServiceParam constructor
 		//-----
 		myWebServiceParamType = restParamType;
 		myWebServiceParamName = restParamName;

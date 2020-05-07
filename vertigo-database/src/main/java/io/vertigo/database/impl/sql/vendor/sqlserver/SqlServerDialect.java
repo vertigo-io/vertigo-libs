@@ -35,9 +35,10 @@ final class SqlServerDialect implements SqlDialect {
 	/** {@inheritDoc} */
 	@Override
 	public String createInsertQuery(final String idFieldName, final List<String> dataFieldsName, final String sequencePrefix, final String tableName) {
-		Assertion.checkArgNotEmpty(idFieldName);
-		Assertion.checkNotNull(dataFieldsName);
-		Assertion.checkArgNotEmpty(tableName);
+		Assertion.check()
+				.argNotEmpty(idFieldName)
+				.notNull(dataFieldsName)
+				.argNotEmpty(tableName);
 		//---
 		return new StringBuilder()
 				.append("insert into ").append(tableName).append(" ( ")

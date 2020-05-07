@@ -43,8 +43,9 @@ public final class ProcessSchedulerImpl implements ProcessScheduler {
 	 * @param schedulerPlugins la liste des plugins de gestion de la planification
 	 */
 	public ProcessSchedulerImpl(final List<ProcessSchedulerPlugin> schedulerPlugins, final ProcessExecutor processExecutor) {
-		Assertion.checkNotNull(schedulerPlugins);
-		Assertion.checkNotNull(processExecutor);
+		Assertion.check()
+				.notNull(schedulerPlugins)
+				.notNull(processExecutor);
 		//---
 		for (final ProcessSchedulerPlugin schedulerPlugin : schedulerPlugins) {
 			//-1-- start
@@ -62,9 +63,10 @@ public final class ProcessSchedulerImpl implements ProcessScheduler {
 	/** {@inheritDoc} */
 	@Override
 	public void scheduleAt(final ProcessDefinition processDefinition, final Instant planifiedTime, final Map<String, String> initialParams) {
-		Assertion.checkNotNull(processDefinition);
-		Assertion.checkNotNull(planifiedTime);
-		Assertion.checkNotNull(initialParams);
+		Assertion.check()
+				.notNull(processDefinition)
+				.notNull(planifiedTime)
+				.notNull(initialParams);
 		// ---
 		getPluginByType(processDefinition.getProcessType())
 				.scheduleAt(processDefinition, planifiedTime, initialParams);

@@ -84,9 +84,10 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 			final DaemonManager daemonManager,
 			@ParamValue("windowSeconds") final Optional<Integer> windowSeconds,
 			@ParamValue("limitValue") final Optional<Long> limitValue) {
-		Assertion.checkNotNull(securityManager);
-		Assertion.checkNotNull(limitValue);
-		Assertion.checkNotNull(windowSeconds);
+		Assertion.check()
+				.notNull(securityManager)
+				.notNull(limitValue)
+				.notNull(windowSeconds);
 		//-----
 		this.securityManager = securityManager;
 		this.limitValue = limitValue.orElse(DEFAULT_LIMIT_VALUE);
@@ -108,10 +109,11 @@ public final class RateLimitingWebServiceHandlerPlugin implements WebServiceHand
 	/** {@inheritDoc}  */
 	@Override
 	public Object handle(final Request request, final Response response, final WebServiceCallContext routeContext, final HandlerChain chain) throws SessionException {
-		Assertion.checkNotNull(request);
-		Assertion.checkNotNull(response);
-		Assertion.checkNotNull(routeContext);
-		Assertion.checkNotNull(chain);
+		Assertion.check()
+				.notNull(request)
+				.notNull(response)
+				.notNull(routeContext)
+				.notNull(chain);
 		//-----
 		final String userKey = obtainUserKey(request, securityManager.getCurrentUserSession());
 		response.header(RATE_LIMIT_LIMIT, String.valueOf(limitValue));

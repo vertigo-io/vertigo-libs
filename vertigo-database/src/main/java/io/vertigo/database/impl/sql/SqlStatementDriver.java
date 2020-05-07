@@ -149,9 +149,10 @@ final class SqlStatementDriver {
 			final SqlMapping sqlMapping,
 			final ResultSet resultSet,
 			final Integer limit) throws SQLException {
-		Assertion.checkNotNull(dataType);
-		Assertion.checkNotNull(sqlMapping);
-		Assertion.checkNotNull(resultSet);
+		Assertion.check()
+				.notNull(dataType)
+				.notNull(sqlMapping)
+				.notNull(resultSet);
 		//-----
 		return retrieveData(dataType, basicTypeAdapters, sqlMapping, resultSet, limit);
 	}
@@ -273,8 +274,9 @@ final class SqlStatementDriver {
 			final String columnName,
 			final Class<O> dataType,
 			final SqlConnection connection) throws SQLException {
-		Assertion.checkArgNotEmpty(columnName);
-		Assertion.checkNotNull(dataType);
+		Assertion.check()
+				.argNotEmpty(columnName)
+				.notNull(dataType);
 		//-----
 		// L'utilisation des generatedKeys permet d'avoir un seul appel réseau entre le
 		// serveur d'application et la base de données pour un insert et la récupération de la

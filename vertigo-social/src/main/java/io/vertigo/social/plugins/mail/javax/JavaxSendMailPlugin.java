@@ -158,8 +158,9 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	}
 
 	private static void setReplyToAddress(final String replyTo, final Message message) throws MessagingException {
-		Assertion.checkNotNull(message);
-		Assertion.checkNotNull(replyTo);
+		Assertion.check()
+				.notNull(message)
+				.notNull(replyTo);
 		//-----
 		try {
 			final InternetAddress[] replyToArray = { createInternetAddress(replyTo) };

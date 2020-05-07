@@ -60,10 +60,11 @@ public final class OrchestraServicesImpl implements OrchestraServices {
 			final Optional<ProcessLoggerPlugin> logProviderPlugin,
 			final Optional<ProcessReportPlugin> processReportPlugin,
 			final List<ProcessSchedulerPlugin> processSchedulerPlugins) {
-		Assertion.checkNotNull(processExecutorPlugins);
-		Assertion.checkNotNull(logProviderPlugin);
-		Assertion.checkNotNull(processReportPlugin);
-		Assertion.checkNotNull(processSchedulerPlugins);
+		Assertion.check()
+				.notNull(processExecutorPlugins)
+				.notNull(logProviderPlugin)
+				.notNull(processReportPlugin)
+				.notNull(processSchedulerPlugins);
 		// ---
 		processExecutor = new ProcessExecutorImpl(processExecutorPlugins);
 		processScheduler = new ProcessSchedulerImpl(processSchedulerPlugins, processExecutor);

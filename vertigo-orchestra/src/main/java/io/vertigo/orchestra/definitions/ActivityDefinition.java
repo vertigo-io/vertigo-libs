@@ -36,9 +36,10 @@ public final class ActivityDefinition {
 	 * Constructor only used by its builder.
 	 */
 	ActivityDefinition(final String name, final String label, final Class<? extends ActivityEngine> engineClass) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkArgNotEmpty(label);
-		Assertion.checkNotNull(engineClass);
+		Assertion.check()
+				.argNotEmpty(name)
+				.argNotEmpty(label)
+				.notNull(engineClass);
 		//-----
 		this.name = name;
 		this.label = label;

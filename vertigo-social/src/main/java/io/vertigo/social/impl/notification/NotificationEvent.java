@@ -38,8 +38,9 @@ public final class NotificationEvent {
 	 * @param accountURIs To accounts uri
 	 */
 	NotificationEvent(final Notification notification, final Set<UID<Account>> accountURIs) {
-		Assertion.checkNotNull(notification);
-		Assertion.checkNotNull(accountURIs);
+		Assertion.check()
+				.notNull(notification)
+				.notNull(accountURIs);
 		//-----
 		this.notification = notification;
 		this.accountURIs = accountURIs;

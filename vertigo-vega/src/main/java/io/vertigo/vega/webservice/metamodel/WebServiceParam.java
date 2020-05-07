@@ -146,14 +146,15 @@ public final class WebServiceParam {
 			final boolean needServerSideToken,
 			final boolean consumeServerSideToken,
 			final List<Class<? extends DtObjectValidator>> dtObjectValidatorClasses) {
-		Assertion.checkNotNull(paramType);
-		Assertion.checkNotNull(type);
-		Assertion.checkNotNull(includedFields);
-		Assertion.checkNotNull(excludedFields);
-		Assertion.checkNotNull(dtObjectValidatorClasses);
-		Assertion.checkArgument(dtObjectValidatorClasses.isEmpty()
-				|| WebServiceTypeUtil.isAssignableFrom(DtObject.class, type)
-				|| WebServiceTypeUtil.isParameterizedBy(DtObject.class, type), "Validators aren't supported for {0}", type);
+		Assertion.check()
+				.notNull(paramType)
+				.notNull(type)
+				.notNull(includedFields)
+				.notNull(excludedFields)
+				.notNull(dtObjectValidatorClasses)
+				.argument(dtObjectValidatorClasses.isEmpty()
+						|| WebServiceTypeUtil.isAssignableFrom(DtObject.class, type)
+						|| WebServiceTypeUtil.isParameterizedBy(DtObject.class, type), "Validators aren't supported for {0}", type);
 		//-----
 		this.paramType = paramType;
 		this.type = type;

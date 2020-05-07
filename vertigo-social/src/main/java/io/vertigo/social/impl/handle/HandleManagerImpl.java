@@ -43,9 +43,10 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 			final EntityStoreManager entityStoreManager,
 			final VTransactionManager transactionManager,
 			final HandlePlugin handlePlugin) {
-		Assertion.checkNotNull(entityStoreManager);
-		Assertion.checkNotNull(transactionManager);
-		Assertion.checkNotNull(handlePlugin);
+		Assertion.check()
+				.notNull(entityStoreManager)
+				.notNull(transactionManager)
+				.notNull(handlePlugin);
 		//---
 		this.entityStoreManager = entityStoreManager;
 		this.transactionManager = transactionManager;

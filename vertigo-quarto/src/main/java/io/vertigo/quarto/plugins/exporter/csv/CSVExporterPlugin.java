@@ -52,9 +52,10 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 			final EntityStoreManager entityStoreManager,
 			final CodecManager codecManager,
 			final SmartTypeManager smartTypeManager) {
-		Assertion.checkNotNull(entityStoreManager);
-		Assertion.checkNotNull(codecManager);
-		Assertion.checkNotNull(smartTypeManager);
+		Assertion.check()
+				.notNull(entityStoreManager)
+				.notNull(codecManager)
+				.notNull(smartTypeManager);
 		//-----
 		this.codecManager = codecManager;
 		this.entityStoreManager = entityStoreManager;
