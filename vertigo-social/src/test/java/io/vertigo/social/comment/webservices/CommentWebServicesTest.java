@@ -26,8 +26,7 @@ import javax.inject.Inject;
 
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +54,7 @@ import redis.clients.jedis.Jedis;
 public final class CommentWebServicesTest {
 	private static final int WS_PORT = 8088;
 	private final SessionFilter sessionFilter = new SessionFilter();
-	private static AutoCloseableApp app;
+	private AutoCloseableApp app;
 
 	private static String CONCEPT_KEY_NAME;
 	private static UID<Account> account1Uri;
@@ -69,15 +68,15 @@ public final class CommentWebServicesTest {
 	@Inject
 	private MockIdentities mockIdentities;
 
-	@BeforeAll
-	public static void setUp() {
-		beforeSetUp();
-		app = new AutoCloseableApp(MyNodeConfig.vegaConfig());
-	}
-
 	@BeforeEach
-	public void setUpInstance() {
+	public void setUp() {
+		//RestAsssured init
+		RestAssured.baseURI = "http://localhost";
+		RestAssured.port = WS_PORT;
+		//---
+		app = new AutoCloseableApp(MyNodeConfig.vegaConfig());
 		InjectorUtil.injectMembers(this);
+		//---
 		try (final Jedis jedis = redisConnector.getClient()) {
 			jedis.flushAll();
 		}
@@ -93,17 +92,11 @@ public final class CommentWebServicesTest {
 		preTestLogin();
 	}
 
-	@AfterAll
-	public static void tearDown() {
+	@AfterEach
+	public void tearDown() {
 		if (app != null) {
 			app.close();
 		}
-	}
-
-	private static void beforeSetUp() {
-		//RestAsssured init
-		RestAssured.baseURI = "http://localhost";
-		RestAssured.port = WS_PORT;
 	}
 
 	private void preTestLogin() {
