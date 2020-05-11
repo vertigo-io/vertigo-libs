@@ -26,11 +26,14 @@ import javax.inject.Inject;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.Assertion;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.util.TempFile;
 import io.vertigo.datastore.DataStoreFeatures;
@@ -45,7 +48,7 @@ import io.vertigo.quarto.converter.ConverterManager;
  *
  * @author jgarnier
  */
-public final class XDocReportConverterManagerTest extends AbstractTestCaseJU5 {
+public final class XDocReportConverterManagerTest {
 	/** Logger. */
 	private final Logger log = LogManager.getLogger(getClass());
 
@@ -57,8 +60,23 @@ public final class XDocReportConverterManagerTest extends AbstractTestCaseJU5 {
 
 	private VFile resultFile;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	@AfterEach
+	public final void tearDown() {
+		resultFile = null; //Les fichiers temporaires étant en WeakRef, cela supprime le fichier
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.endBoot()

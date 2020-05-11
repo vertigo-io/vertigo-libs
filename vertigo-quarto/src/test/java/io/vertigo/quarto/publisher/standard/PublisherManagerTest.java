@@ -20,11 +20,14 @@ package io.vertigo.quarto.publisher.standard;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.AbstractTestCaseJU5;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -47,12 +50,26 @@ import io.vertigo.quarto.publisher.model.PublisherData;
  *
  * @author npiedeloup
  */
-public final class PublisherManagerTest extends AbstractTestCaseJU5 {
+public final class PublisherManagerTest {
 	/** Logger. */
 	private final Logger log = LogManager.getLogger(getClass());
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	@AfterEach
+	public final void tearDown() {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder().beginBoot()
 				.withLocales("fr_FR")
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -132,6 +149,10 @@ public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 		});
 	}
 
+	private void nop(PublisherNodeDefinition rootDefinition) {
+		// nop
+	}
+
 	/**
 	 * Crée une Définition simple avec 1 bool, 1 string et un sous objet.
 	 */
@@ -193,7 +214,7 @@ public final class PublisherManagerTest extends AbstractTestCaseJU5 {
 	}
 
 	private PublisherData createPublisherData(final String definitionName) {
-		final PublisherDataDefinition publisherDataDefinition = getApp().getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
+		final PublisherDataDefinition publisherDataDefinition = app.getDefinitionSpace().resolve(definitionName, PublisherDataDefinition.class);
 		Assertions.assertNotNull(publisherDataDefinition);
 
 		final PublisherData publisherData = new PublisherData(publisherDataDefinition);

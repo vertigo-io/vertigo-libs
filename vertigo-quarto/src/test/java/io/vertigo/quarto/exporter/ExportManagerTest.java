@@ -24,11 +24,14 @@ import java.time.temporal.ChronoUnit;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import io.vertigo.commons.CommonsFeatures;
-import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.locale.MessageText;
+import io.vertigo.core.node.AutoCloseableApp;
+import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.DefinitionProviderConfig;
 import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
@@ -53,15 +56,29 @@ import io.vertigo.quarto.exporter.model.ExportFormat;
  *
  * @author dchallas
  */
-public final class ExportManagerTest extends AbstractTestCaseJU5 {
+public final class ExportManagerTest {
 	// Répertoire de test
 	private static String OUTPUT_PATH = "c:/tmp/";
 
 	@Inject
 	private ExporterManager exportManager;
 
-	@Override
-	protected NodeConfig buildNodeConfig() {
+	private AutoCloseableApp app;
+
+	@BeforeEach
+	public final void setUp() {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	@AfterEach
+	public final void tearDown() {
+		if (app != null) {
+			app.close();
+		}
+	}
+
+	private NodeConfig buildNodeConfig() {
 		return NodeConfig.builder()
 				.beginBoot()
 				.addPlugin(ClassPathResourceResolverPlugin.class)
@@ -102,6 +119,10 @@ public final class ExportManagerTest extends AbstractTestCaseJU5 {
 				.build();
 		final VFile result = exportManager.createExportFile(export);
 		nop(result);
+	}
+
+	private void nop(Object o) {
+		// nop
 	}
 
 	/**

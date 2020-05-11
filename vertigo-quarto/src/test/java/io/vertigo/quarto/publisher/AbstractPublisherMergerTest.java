@@ -28,13 +28,18 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import io.vertigo.core.AbstractTestCaseJU5;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.WrappedException;
+import io.vertigo.core.node.App;
+import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.di.DIInjector;
+import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.resource.ResourceManager;
 import io.vertigo.core.util.TempFile;
 import io.vertigo.datamodel.structure.model.DtList;
@@ -57,7 +62,7 @@ import io.vertigo.quarto.publisher.model.PublisherNode;
  *
  * @author npiedeloup
  */
-public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
+public abstract class AbstractPublisherMergerTest {
 	private static final boolean KEEP_OUTPUT_FILE = false;
 	//Répertoire de test
 	private static String OUTPUT_PATH = "c:/tmp/";
@@ -70,6 +75,27 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 	private ResourceManager resourceManager;
 	@Inject
 	private FileManager fileManager;
+
+	private AutoCloseableApp app;
+
+	protected final App getApp() {
+		return app;
+	}
+
+	@BeforeEach
+	public final void setUp() {
+		app = new AutoCloseableApp(buildNodeConfig());
+		DIInjector.injectMembers(this, app.getComponentSpace());
+	}
+
+	protected abstract NodeConfig buildNodeConfig();
+
+	@AfterEach
+	public final void tearDown() {
+		if (app != null) {
+			app.close();
+		}
+	}
 
 	/**
 	 * @return Extension du model utilisé
@@ -118,6 +144,10 @@ public abstract class AbstractPublisherMergerTest extends AbstractTestCaseJU5 {
 			nop(result);
 			Assertions.fail("La fusion ne doit pas être possible quand le modèle contient une erreur");
 		});
+	}
+
+	private void nop(VFile result) {
+		//nop
 	}
 
 	@Test
