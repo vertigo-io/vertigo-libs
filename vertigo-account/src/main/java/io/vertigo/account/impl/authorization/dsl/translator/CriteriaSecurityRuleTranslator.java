@@ -93,7 +93,9 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 							.notNull(userValue);
 					Assertion.when(!userValue.getClass().isArray())
 							.state(() -> userValue instanceof Comparable,
-									"Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName())
+									"Security keys must be serializable AND comparable (here : {0})", userValues.getClass().getSimpleName());
+					Assertion
+							.when(userValue.getClass().isArray())
 							.state(() -> Comparable.class.isAssignableFrom(userValue.getClass().getComponentType()),
 									"Security keys must be serializable AND comparable (here : {0})", userValue.getClass().getComponentType());
 					//----
