@@ -23,7 +23,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import io.vertigo.core.node.component.proxy.ProxyMethodAnnotation;
+import amplifier.ProxyMethodAnnotation;
 import io.vertigo.datamodel.task.model.TaskEngine;
 
 @Target({ ElementType.METHOD })
