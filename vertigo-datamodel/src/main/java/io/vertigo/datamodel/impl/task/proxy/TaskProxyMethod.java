@@ -23,10 +23,10 @@ import java.lang.reflect.Parameter;
 import java.util.List;
 import java.util.Optional;
 
-import amplifier.ProxyMethod;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.Home;
+import io.vertigo.core.node.component.amplifier.ProxyMethod;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
