@@ -74,7 +74,7 @@ create Task TkGetActivitiyByAceId {
         	join o_activity_workspace acw on acw.ACE_ID = ace.ACE_ID
         	left join o_activity_log acl on acl.ACE_ID = ace.ACE_ID
         	where ace.ACE_ID = #aceId#
-        	group by ace.ACE_ID, act.LABEL, ace.BEGIN_TIME, ace.END_TIME, acl.ATTACHMENT, acl.LOG
+        	group by ace.ACE_ID, act.LABEL, ace.BEGIN_TIME, ace.END_TIME, acl.ATTACHMENT, acl.LOG, ace.EST_CD
         	
 			"
 	attribute aceId	 	{domain : DoOIdentifiant		cardinality: "1" 	inOut :"in"}
@@ -100,7 +100,7 @@ create Task TkGetActivitiesByPreId {
         	join o_activity_workspace acw on acw.ACE_ID = ace.ACE_ID
         	left join o_activity_log acl on acl.ACE_ID = ace.ACE_ID
         	where ace.PRE_ID = #preId#
-        	group by ace.ACE_ID, act.LABEL, ace.BEGIN_TIME, ace.END_TIME, acl.ATTACHMENT, acl.LOG
+        	group by ace.ACE_ID, act.LABEL, ace.BEGIN_TIME, ace.END_TIME, acl.ATTACHMENT, acl.LOG, ace.EST_CD
         	
 			"
 	attribute preId	 	{domain : DoOIdentifiant		cardinality: "1" 	inOut :"in"}
