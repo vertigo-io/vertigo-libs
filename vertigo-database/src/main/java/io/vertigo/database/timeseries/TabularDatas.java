@@ -37,8 +37,9 @@ public final class TabularDatas implements Serializable {
 	public TabularDatas(
 			final List<TabularDataSerie> tabularDataSeries,
 			final List<String> seriesNames) {
-		Assertion.checkNotNull(tabularDataSeries);
-		Assertion.checkNotNull(seriesNames);
+		Assertion.check()
+				.notNull(tabularDataSeries)
+				.notNull(seriesNames);
 		//---
 		this.tabularDataSeries = tabularDataSeries;
 		this.seriesNames = seriesNames;

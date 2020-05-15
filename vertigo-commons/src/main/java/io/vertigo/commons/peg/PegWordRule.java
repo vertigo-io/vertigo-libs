@@ -56,9 +56,10 @@ public final class PegWordRule implements PegRule<String> {
 	 */
 	PegWordRule(final boolean emptyAccepted, final String checkedChars, final Mode mode, final String readableCheckedChar) {
 		super();
-		Assertion.checkNotNull(mode);
-		Assertion.checkNotNull(checkedChars);
-		Assertion.checkArgNotEmpty(readableCheckedChar);
+		Assertion.check()
+				.notNull(mode)
+				.notNull(checkedChars)
+				.argNotEmpty(readableCheckedChar);
 		//-----
 		this.emptyAccepted = emptyAccepted;
 		this.mode = mode;

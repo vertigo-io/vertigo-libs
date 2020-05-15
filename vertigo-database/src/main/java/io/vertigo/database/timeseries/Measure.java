@@ -53,9 +53,10 @@ public final class Measure {
 			final Instant instant,
 			final Map<String, Object> fields,
 			final Map<String, String> tags) {
-		Assertion.checkArgNotEmpty(measurement);
-		Assertion.checkNotNull(instant);
-		Assertion.checkState(fields.size() > 0, "At least one field is required on a measure");
+		Assertion.check()
+				.argNotEmpty(measurement)
+				.notNull(instant)
+				.state(fields.size() > 0, "At least one field is required on a measure");
 		//---
 		this.measurement = measurement;
 		this.instant = instant;

@@ -32,8 +32,9 @@ final class PegGrammarRule<R> implements PegRule<R> {
 	private final PegRule<R> mainRule;
 
 	PegGrammarRule(final PegRule<R> mainRule, final String ruleName) {
-		Assertion.checkNotNull(mainRule, "MainRule is required");
-		Assertion.checkArgNotEmpty(ruleName, "Name is required");
+		Assertion.check()
+				.notNull(mainRule, "MainRule is required")
+				.argNotEmpty(ruleName, "Name is required");
 		//-----
 		this.mainRule = mainRule;
 		this.ruleName = ruleName;

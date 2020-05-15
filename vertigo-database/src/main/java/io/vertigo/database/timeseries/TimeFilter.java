@@ -38,8 +38,9 @@ public final class TimeFilter implements Serializable {
 			final String from,
 			final String to,
 			final String dim) {
-		Assertion.checkNotNull(from);
-		Assertion.checkNotNull(to);
+		Assertion.check()
+				.notNull(from)
+				.notNull(to);
 		//---
 		this.from = from;
 		this.to = to;

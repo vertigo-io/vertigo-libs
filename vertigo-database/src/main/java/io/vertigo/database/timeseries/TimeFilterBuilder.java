@@ -33,8 +33,9 @@ public final class TimeFilterBuilder implements Builder<TimeFilter> {
 
 	TimeFilterBuilder(
 			final String from, final String to) {
-		Assertion.checkArgNotEmpty(from);
-		Assertion.checkArgNotEmpty(to);
+		Assertion.check()
+				.argNotEmpty(from)
+				.argNotEmpty(to);
 		//---
 		myFrom = from;
 		myTo = to;

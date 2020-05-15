@@ -41,38 +41,42 @@ public final class MeasureBuilder implements Builder<Measure> {
 	 * @param measurement
 	 */
 	MeasureBuilder(final String measurement) {
-		Assertion.checkArgNotEmpty(measurement);
+		Assertion.check()
+				.argNotEmpty(measurement);
 		//---
 		this.measurement = measurement;
 	}
 
 	public MeasureBuilder addField(final String field, final boolean value) {
-		Assertion.checkArgNotEmpty(field);
-		Assertion.checkNotNull(value);
+		Assertion.check()
+				.argNotEmpty(field)
+				.notNull(value);
 		//---
 		fields.put(field, value);
 		return this;
 	}
 
 	public MeasureBuilder addField(final String field, final double value) {
-		Assertion.checkArgNotEmpty(field);
-		Assertion.checkNotNull(value);
+		Assertion.check()
+				.argNotEmpty(field)
+				.notNull(value);
 		//---
 		fields.put(field, value);
 		return this;
 	}
 
 	public MeasureBuilder addField(final String field, final long value) {
-		Assertion.checkArgNotEmpty(field);
-		Assertion.checkNotNull(value);
+		Assertion.check().argNotEmpty(field)
+				.notNull(value);
 		//---
 		fields.put(field, value);
 		return this;
 	}
 
 	public MeasureBuilder addField(final String field, final String value) {
-		Assertion.checkArgNotEmpty(field);
-		Assertion.checkNotNull(value);
+		Assertion.check()
+				.argNotEmpty(field)
+				.notNull(value);
 		//---
 		fields.put(field, value);
 		return this;
@@ -96,8 +100,9 @@ public final class MeasureBuilder implements Builder<Measure> {
 	 * @return the Builder instance.
 	 */
 	public MeasureBuilder tag(final String tagName, final String value) {
-		Assertion.checkArgNotEmpty(tagName);
-		Assertion.checkNotNull(value);
+		Assertion.check()
+				.argNotEmpty(tagName)
+				.notNull(value);
 		//---
 		tags.put(tagName, value);
 		return this;
@@ -111,7 +116,8 @@ public final class MeasureBuilder implements Builder<Measure> {
 	 * @return the Builder instance.
 	 */
 	public MeasureBuilder time(final Instant measureInstant) {
-		Assertion.checkNotNull(measureInstant);
+		Assertion.check()
+				.notNull(measureInstant);
 		//---
 		instant = measureInstant;
 		return this;

@@ -56,9 +56,10 @@ final class ScriptParserHandlerImpl implements ScriptParserHandler {
 	 * @param parameters Map des paramètres
 	 */
 	ScriptParserHandlerImpl(final ExpressionEvaluatorPlugin expressionEvaluatorPlugin, final String originalScript, final List<ExpressionParameter> parameters) {
-		Assertion.checkNotNull(expressionEvaluatorPlugin);
-		Assertion.checkArgNotEmpty(originalScript);
-		Assertion.checkNotNull(parameters);
+		Assertion.check()
+				.notNull(expressionEvaluatorPlugin)
+				.argNotEmpty(originalScript)
+				.notNull(parameters);
 		//-----
 		this.expressionEvaluatorPlugin = expressionEvaluatorPlugin;
 		this.originalScript = originalScript;

@@ -74,10 +74,11 @@ public final class EventBusManagerImpl implements EventBusManager, Activeable, S
 		return Stream.of(aopPlugin.unwrap(subscriberInstance).getClass().getMethods())
 				.filter(method -> method.isAnnotationPresent(EventBusSubscribed.class))
 				.map(method -> {
-					Assertion.checkArgument(void.class.equals(method.getReturnType()), "subscriber's methods  of class {0} must be void instead of {1}", subscriberInstance.getClass(), method.getReturnType());
-					Assertion.checkArgument(method.getName().startsWith("on"), "subscriber's methods of class {0} must start with on", subscriberInstance.getClass());
-					Assertion.checkArgument(method.getParameterTypes().length == 1, "subscriber's methods of class {0} must be void onXXX(Event e)", subscriberInstance.getClass());
-					Assertion.checkArgument(Event.class.isAssignableFrom(method.getParameterTypes()[0]), "subscriber's methods of class {0} must be 'void onXXX(E extends Event)'", subscriberInstance.getClass());
+					Assertion.check()
+							.argument(void.class.equals(method.getReturnType()), "subscriber's methods  of class {0} must be void instead of {1}", subscriberInstance.getClass(), method.getReturnType())
+							.argument(method.getName().startsWith("on"), "subscriber's methods of class {0} must start with on", subscriberInstance.getClass())
+							.argument(method.getParameterTypes().length == 1, "subscriber's methods of class {0} must be void onXXX(Event e)", subscriberInstance.getClass())
+							.argument(Event.class.isAssignableFrom(method.getParameterTypes()[0]), "subscriber's methods of class {0} must be 'void onXXX(E extends Event)'", subscriberInstance.getClass());
 					//-----
 					//2. For each method register a listener
 					final Class<? extends Event> eventType = (Class<? extends Event>) method.getParameterTypes()[0];

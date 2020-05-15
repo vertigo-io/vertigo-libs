@@ -66,8 +66,9 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 	public DbAppNodeRegistryPlugin(
 			@ParamValue("driverClassName") final String driverClassName,
 			@ParamValue("jdbcUrl") final String jdbcUrl) {
-		Assertion.checkArgNotEmpty(driverClassName);
-		Assertion.checkArgNotEmpty(jdbcUrl);
+		Assertion.check()
+				.argNotEmpty(driverClassName)
+				.argNotEmpty(jdbcUrl);
 		// ---
 		gson = createGson();
 		// ---

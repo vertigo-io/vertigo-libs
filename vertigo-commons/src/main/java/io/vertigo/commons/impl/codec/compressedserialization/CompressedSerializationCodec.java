@@ -39,8 +39,9 @@ public final class CompressedSerializationCodec implements Codec<Serializable, b
 	 * @param compressionCodec Codec
 	 */
 	public CompressedSerializationCodec(final Codec<Serializable, byte[]> serializationCodec, final Codec<byte[], byte[]> compressionCodec) {
-		Assertion.checkNotNull(serializationCodec);
-		Assertion.checkNotNull(compressionCodec);
+		Assertion.check()
+				.notNull(serializationCodec)
+				.notNull(compressionCodec);
 		//-----
 		this.serializationCodec = serializationCodec;
 		this.compressionCodec = compressionCodec;

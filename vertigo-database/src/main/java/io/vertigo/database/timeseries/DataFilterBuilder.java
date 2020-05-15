@@ -42,8 +42,9 @@ public final class DataFilterBuilder implements Builder<DataFilter> {
 	}
 
 	public DataFilterBuilder addFilter(final String field, final String value) {
-		Assertion.checkArgNotEmpty(field);
-		Assertion.checkNotNull(value);
+		Assertion.check()
+				.argNotEmpty(field)
+				.notNull(value);
 		//---
 		myFilters.put(field, value);
 		return this;

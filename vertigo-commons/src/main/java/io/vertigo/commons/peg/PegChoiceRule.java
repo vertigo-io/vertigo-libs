@@ -39,7 +39,7 @@ final class PegChoiceRule implements PegRule<PegChoice> {
 	 * @param rules the list of rules to test
 	 */
 	PegChoiceRule(final List<PegRule<?>> rules) {
-		Assertion.checkNotNull(rules);
+		Assertion.check().notNull(rules);
 		//-----
 		this.rules = Collections.unmodifiableList(rules);
 		//---

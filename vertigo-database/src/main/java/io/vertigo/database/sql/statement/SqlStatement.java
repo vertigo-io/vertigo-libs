@@ -44,8 +44,9 @@ public final class SqlStatement {
 	public SqlStatement(
 			final String sqlQuery,
 			final List<List<SqlParameter>> sqlParameters) {
-		Assertion.checkArgNotEmpty(sqlQuery);
-		Assertion.checkNotNull(sqlParameters);
+		Assertion.check()
+				.argNotEmpty(sqlQuery)
+				.notNull(sqlParameters);
 		//-----
 		this.sqlQuery = sqlQuery;
 		this.sqlParameters = sqlParameters;

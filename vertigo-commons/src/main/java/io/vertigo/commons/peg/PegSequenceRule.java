@@ -42,8 +42,9 @@ final class PegSequenceRule implements PegRule<List<Object>> {
 	 * Constructor.
 	 */
 	PegSequenceRule(final List<PegRule<?>> rules) {
-		Assertion.checkNotNull(rules);
-		Assertion.checkArgument(rules.size() > 1, "A sequence must contain at least 2 rules");
+		Assertion.check()
+				.notNull(rules)
+				.argument(rules.size() > 1, "A sequence must contain at least 2 rules");
 		//-----
 		this.rules = Collections.unmodifiableList(rules);
 		//---

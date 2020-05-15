@@ -49,7 +49,7 @@ final class PegManyRule<R> implements PegRule<List<R>> {
 	 * @param untilEnd if the evaluation must parse all text
 	 */
 	PegManyRule(final PegRule<R> rule, final boolean zeroAccepted, final boolean untilEnd) {
-		Assertion.checkNotNull(rule);
+		Assertion.check().notNull(rule);
 		//-----
 		this.rule = rule;
 		this.zeroAccepted = zeroAccepted;

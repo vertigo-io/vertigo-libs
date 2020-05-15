@@ -41,7 +41,7 @@ public final class PegResult<R> {
 	 * @param result
 	 */
 	PegResult(final int index, final R result) {
-		Assertion.checkNotNull(result);
+		Assertion.check().notNull(result);
 		//---
 		this.index = index;
 		this.value = result;
