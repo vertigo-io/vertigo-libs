@@ -56,8 +56,9 @@ public final class DomainMetricsProvider implements Component {
 	 */
 	@Inject
 	public DomainMetricsProvider(final VTransactionManager transactionManager, final EntityStoreManager entityStoreManager) {
-		Assertion.checkNotNull(transactionManager);
-		Assertion.checkNotNull(entityStoreManager);
+		Assertion.check()
+				.notNull(transactionManager)
+				.notNull(entityStoreManager);
 		//-----
 		this.transactionManager = transactionManager;
 		this.entityStoreManager = entityStoreManager;

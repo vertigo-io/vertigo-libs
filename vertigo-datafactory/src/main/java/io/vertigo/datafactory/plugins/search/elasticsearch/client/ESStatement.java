@@ -83,10 +83,10 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 * @param esClient Client ElasticSearch.
 	 */
 	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final Client esClient, final Map<Class, BasicTypeAdapter> typeAdapters) {
-		Assertion.checkArgNotEmpty(indexName);
-		Assertion.checkNotNull(esDocumentCodec);
-		Assertion.checkNotNull(esClient);
-		Assertion.checkNotNull(typeAdapters);
+		Assertion.check().argNotEmpty(indexName)
+				.notNull(esDocumentCodec)
+				.notNull(esClient)
+				.notNull(typeAdapters);
 		//-----
 		this.indexName = indexName;
 		this.esClient = esClient;

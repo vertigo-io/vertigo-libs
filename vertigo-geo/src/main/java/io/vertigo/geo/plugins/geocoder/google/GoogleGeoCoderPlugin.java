@@ -167,8 +167,9 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	 * @return NodeList contenant les données du fichier XML
 	 */
 	private NodeList findNodes(final Document xml, final String xPathString) {
-		Assertion.checkNotNull(xml);
-		Assertion.checkArgNotEmpty(xPathString);
+		Assertion.check()
+				.notNull(xml)
+				.argNotEmpty(xPathString);
 		//-----
 		final XPath xpath = xPathFactory.newXPath();
 
@@ -187,8 +188,9 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	 * @return Node contenant les données du fichier XML
 	 */
 	private Node findNode(final Document xml, final String xPathString) {
-		Assertion.checkNotNull(xml);
-		Assertion.checkArgNotEmpty(xPathString);
+		Assertion.check()
+				.notNull(xml)
+				.argNotEmpty(xPathString);
 		//-----
 		final XPath xpath = xPathFactory.newXPath();
 		try {

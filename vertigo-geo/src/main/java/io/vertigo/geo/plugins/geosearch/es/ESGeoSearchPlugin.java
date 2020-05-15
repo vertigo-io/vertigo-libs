@@ -71,9 +71,10 @@ public final class ESGeoSearchPlugin implements GeoSearchPlugin, Activeable {
 			final CodecManager codecManager,
 			final SmartTypeManager smartTypeManager,
 			final ResourceManager resourceManager) {
-		Assertion.checkArgNotEmpty(envIndexPrefix);
-		Assertion.checkNotNull(elasticSearchConnectors);
-		Assertion.checkArgument(!elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
+		Assertion.check()
+				.argNotEmpty(envIndexPrefix)
+				.notNull(elasticSearchConnectors)
+				.argument(!elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
 		//-----
 		//------
 		this.envIndexPrefix = envIndexPrefix;

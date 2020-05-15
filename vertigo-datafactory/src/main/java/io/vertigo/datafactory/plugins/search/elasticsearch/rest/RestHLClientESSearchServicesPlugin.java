@@ -73,8 +73,8 @@ import io.vertigo.datafactory.plugins.search.elasticsearch.IndexType;
 import io.vertigo.datafactory.search.metamodel.SearchIndexDefinition;
 import io.vertigo.datafactory.search.model.SearchIndex;
 import io.vertigo.datafactory.search.model.SearchQuery;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtListState;
@@ -127,9 +127,10 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 			final CodecManager codecManager,
 			final SmartTypeManager smartTypeManager,
 			final ResourceManager resourceManager) {
-		Assertion.checkArgNotEmpty(envIndexPrefix);
-		Assertion.checkNotNull(elasticSearchConnectors);
-		Assertion.checkArgument(!elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
+		Assertion.check()
+				.argNotEmpty(envIndexPrefix)
+				.notNull(elasticSearchConnectors)
+				.argument(!elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
 		//Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);
 		//Assertion.when(!indexNameIsPrefix).check(() -> !indexNameOrPrefix.endsWith("_"), "When envIndex isn't declared as prefix, it can't ends with _ (current : {0})", indexNameOrPrefix);
 		//-----
@@ -261,9 +262,10 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void put(final SearchIndexDefinition indexDefinition, final SearchIndex<S, I> index) {
 		//On vérifie la cohérence des données SO et SOD.
-		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkNotNull(index);
-		Assertion.checkArgument(indexDefinition.equals(index.getDefinition()), "les Définitions ne sont pas conformes");
+		Assertion.check()
+				.notNull(indexDefinition)
+				.notNull(index)
+				.argument(indexDefinition.equals(index.getDefinition()), "les Définitions ne sont pas conformes");
 		//-----
 		final ESStatement<S, I> statement = createElasticStatement(indexDefinition);
 		statement.put(index);

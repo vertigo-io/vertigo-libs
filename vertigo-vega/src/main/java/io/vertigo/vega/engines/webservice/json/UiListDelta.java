@@ -52,10 +52,11 @@ public final class UiListDelta<D extends DtObject> implements Serializable {
 	 */
 	// TODO remettre protected
 	public UiListDelta(final Class<D> objectType, final Map<String, UiObject<D>> collCreates, final Map<String, UiObject<D>> collUpdates, final Map<String, UiObject<D>> collDeletes) {
-		Assertion.checkNotNull(objectType);
-		Assertion.checkNotNull(collCreates);
-		Assertion.checkNotNull(collUpdates);
-		Assertion.checkNotNull(collDeletes);
+		Assertion.check()
+				.notNull(objectType)
+				.notNull(collCreates)
+				.notNull(collUpdates)
+				.notNull(collDeletes);
 		//-----
 		this.objectType = objectType;
 		this.collCreates = collCreates;

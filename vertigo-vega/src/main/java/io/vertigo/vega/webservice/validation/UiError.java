@@ -39,9 +39,10 @@ public final class UiError {
 	 * @param messageText Champs portant le message
 	 */
 	UiError(final DtObject dtObject, final DtField dtField, final MessageText messageText) {
-		Assertion.checkNotNull(dtObject);
-		Assertion.checkNotNull(dtField);
-		Assertion.checkNotNull(messageText);
+		Assertion.check()
+				.notNull(dtObject)
+				.notNull(dtField)
+				.notNull(messageText);
 		//-----
 		this.dtObject = dtObject;
 		this.dtField = dtField;

@@ -83,14 +83,15 @@ public final class DtDefinition implements Definition {
 			final Optional<DtField> displayField,
 			final Optional<DtField> handleField) {
 		DefinitionUtil.checkName(name, DtDefinition.class);
-		Assertion.checkNotNull(fragment);
-		Assertion.checkNotNull(stereotype);
-		Assertion.checkNotNull(dtFields);
-		Assertion.checkArgNotEmpty(dataSpace);
-		Assertion.checkState(REGEX_DATA_SPACE.matcher(dataSpace).matches(), "dataSpace {0} must match pattern {1}", dataSpace, REGEX_DATA_SPACE);
-		Assertion.checkNotNull(sortField);
-		Assertion.checkNotNull(displayField);
-		Assertion.checkNotNull(handleField);
+		Assertion.check()
+				.notNull(fragment)
+				.notNull(stereotype)
+				.notNull(dtFields)
+				.argNotEmpty(dataSpace)
+				.state(REGEX_DATA_SPACE.matcher(dataSpace).matches(), "dataSpace {0} must match pattern {1}", dataSpace, REGEX_DATA_SPACE)
+				.notNull(sortField)
+				.notNull(displayField)
+				.notNull(handleField);
 		//-----
 		this.name = name;
 		//
@@ -137,15 +138,17 @@ public final class DtDefinition implements Definition {
 
 	//TODO A fermer
 	void registerDtField(final DtField dtField) {
-		Assertion.checkNotNull(dtField);
-		Assertion.checkArgument(!dtField.getType().isId(), "interdit d'ajouter les champs ID ");
+		Assertion.check()
+				.notNull(dtField)
+				.argument(!dtField.getType().isId(), "interdit d'ajouter les champs ID ");
 		//-----
 		doRegisterDtField(dtField);
 	}
 
 	private void doRegisterDtField(final DtField dtField) {
-		Assertion.checkNotNull(dtField);
-		Assertion.checkArgument(!mappedFields.containsKey(dtField.getName()), "Field {0} déjà enregistré sur {1}", dtField.getName(), this);
+		Assertion.check()
+				.notNull(dtField)
+				.argument(!mappedFields.containsKey(dtField.getName()), "Field {0} déjà enregistré sur {1}", dtField.getName(), this);
 		//-----
 		fields.add(dtField);
 		mappedFields.put(dtField.getName(), dtField);

@@ -36,9 +36,10 @@ public class MasterDataDefinition implements Definition {
 			final String name,
 			final DtListURIForMasterData uri,
 			final Predicate predicate) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(uri);
-		Assertion.checkNotNull(predicate);
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(uri)
+				.notNull(predicate);
 		//---
 		this.name = name;
 		this.uri = uri;

@@ -65,8 +65,9 @@ abstract class AbstractSparkJavaWebServerPlugin implements WebServerPlugin, Acti
 	/** {@inheritDoc} */
 	@Override
 	public final void registerWebServiceRoute(final HandlerChain handlerChain, final Collection<WebServiceDefinition> webServiceDefinitions) {
-		Assertion.checkNotNull(handlerChain);
-		Assertion.checkNotNull(webServiceDefinitions);
+		Assertion.check()
+				.notNull(handlerChain)
+				.notNull(webServiceDefinitions);
 		//-----
 		boolean corsProtected = false;
 		for (final WebServiceDefinition webServiceDefinition : webServiceDefinitions) {

@@ -58,8 +58,9 @@ public final class FacetFactory {
 	public FacetFactory(
 			final CollectionsManager collectionManager,
 			final SmartTypeManager smartTypeManager) {
-		Assertion.checkNotNull(collectionManager);
-		Assertion.checkNotNull(smartTypeManager);
+		Assertion.check()
+				.notNull(collectionManager)
+				.notNull(smartTypeManager);
 		//-----
 		this.collectionManager = collectionManager;
 		this.smartTypeManager = smartTypeManager;
@@ -72,8 +73,9 @@ public final class FacetFactory {
 	 * @return Liste des facettes.
 	 */
 	public List<Facet> createFacets(final FacetedQueryDefinition facetedQueryDefinition, final DtList<?> dtList) {
-		Assertion.checkNotNull(facetedQueryDefinition);
-		Assertion.checkNotNull(dtList);
+		Assertion.check()
+				.notNull(facetedQueryDefinition)
+				.notNull(dtList);
 		//-----
 		return facetedQueryDefinition.getFacetDefinitions()
 				.stream()
@@ -89,8 +91,9 @@ public final class FacetFactory {
 	 * @return Map du cluster
 	 */
 	public <D extends DtObject> Map<FacetValue, DtList<D>> createCluster(final FacetDefinition facetDefinition, final DtList<D> dtList) {
-		Assertion.checkNotNull(facetDefinition);
-		Assertion.checkNotNull(dtList);
+		Assertion.check()
+				.notNull(facetDefinition)
+				.notNull(dtList);
 		//-----
 		if (facetDefinition.isRangeFacet()) {
 			//Cas des facettes par 'range'

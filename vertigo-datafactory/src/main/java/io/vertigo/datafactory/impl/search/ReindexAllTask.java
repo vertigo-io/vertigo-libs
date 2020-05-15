@@ -57,9 +57,10 @@ final class ReindexAllTask<S extends KeyConcept> implements Runnable {
 	 * @param searchManager Search manager
 	 */
 	ReindexAllTask(final SearchIndexDefinition searchIndexDefinition, final WritableFuture<Long> reindexFuture, final SearchManager searchManager) {
-		Assertion.checkNotNull(searchIndexDefinition);
-		Assertion.checkNotNull(reindexFuture);
-		Assertion.checkNotNull(searchManager);
+		Assertion.check()
+				.notNull(searchIndexDefinition)
+				.notNull(reindexFuture)
+				.notNull(searchManager);
 		//-----
 		this.searchIndexDefinition = searchIndexDefinition;
 		this.reindexFuture = reindexFuture;

@@ -61,8 +61,9 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param title Sheet title
 	 */
 	ExportSheetBuilder(final ExportBuilder exportBuilder, final DtObject dto, final String title) {
-		Assertion.checkNotNull(exportBuilder);
-		Assertion.checkNotNull(dto);
+		Assertion.check()
+				.notNull(exportBuilder)
+				.notNull(dto);
 		// title may be null
 		//-----
 		this.exportBuilder = exportBuilder;
@@ -79,8 +80,9 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @param title Sheet title
 	 */
 	ExportSheetBuilder(final ExportBuilder exportBuilder, final DtList<?> dtc, final String title) {
-		Assertion.checkNotNull(exportBuilder);
-		Assertion.checkNotNull(dtc);
+		Assertion.check()
+				.notNull(exportBuilder)
+				.notNull(dtc);
 		// title may be null
 		//-----
 		this.exportBuilder = exportBuilder;
@@ -137,10 +139,11 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @return ExportSheetBuilder
 	 */
 	public ExportSheetBuilder addField(final DtFieldName fieldName, final DtList<?> list, final DtFieldName displayfield, final MessageText overridedLabel) {
-		Assertion.checkNotNull(fieldName);
-		// On vérifie que la colonne est bien dans la définition de la DTC
-		Assertion.checkArgument(dtDefinition.contains(fieldName.name()), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter");
-		Assertion.checkArgument(list.getDefinition().contains(displayfield.name()), "Le champ " + displayfield.name() + " n'est pas dans la liste de dénorm");
+		Assertion.check()
+				.notNull(fieldName)
+				// On vérifie que la colonne est bien dans la définition de la DTC
+				.argument(dtDefinition.contains(fieldName.name()), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter")
+				.argument(list.getDefinition().contains(displayfield.name()), "Le champ " + displayfield.name() + " n'est pas dans la liste de dénorm");
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
 		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
 		//-----

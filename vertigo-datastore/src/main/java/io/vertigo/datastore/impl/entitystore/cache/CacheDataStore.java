@@ -63,8 +63,9 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	public CacheDataStore(
 			final MasterDataConfig masterDataConfig,
 			final EntityStoreConfigImpl dataStoreConfig) {
-		Assertion.checkNotNull(masterDataConfig);
-		Assertion.checkNotNull(dataStoreConfig);
+		Assertion.check()
+				.notNull(masterDataConfig)
+				.notNull(dataStoreConfig);
 		//-----
 		this.masterDataConfig = masterDataConfig;
 		cacheDataStoreConfig = dataStoreConfig.getCacheStoreConfig();

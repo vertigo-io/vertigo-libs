@@ -124,20 +124,22 @@ public final class DtField {
 			final Cardinality cardinality,
 			final boolean persistent,
 			final String fkDtDefinitionName) {
-		Assertion.checkArgNotEmpty(id);
-		Assertion.checkNotNull(type);
-		Assertion.checkNotNull(smartType);
-		Assertion.checkNotNull(type);
-		Assertion.checkNotNull(cardinality);
+		Assertion.check()
+				.argNotEmpty(id)
+				.notNull(type)
+				.notNull(smartType)
+				.notNull(type)
+				.notNull(cardinality);
 		//-----
 		this.id = id;
 		smartTypeRef = new DefinitionReference<>(smartType);
 		this.type = type;
 		this.cardinality = cardinality;
 		//-----
-		Assertion.checkNotNull(fieldName);
-		Assertion.checkArgument(fieldName.length() <= FIELD_NAME_MAX_LENGTH, "the name of the field {0} has a limit size of {1}", fieldName, FIELD_NAME_MAX_LENGTH);
-		Assertion.checkArgument(StringUtil.isLowerCamelCase(fieldName), "the name of the field {0} must be in lowerCamelCase", fieldName);
+		Assertion.check()
+				.notNull(fieldName)
+				.argument(fieldName.length() <= FIELD_NAME_MAX_LENGTH, "the name of the field {0} has a limit size of {1}", fieldName, FIELD_NAME_MAX_LENGTH)
+				.argument(StringUtil.isLowerCamelCase(fieldName), "the name of the field {0} must be in lowerCamelCase", fieldName);
 		name = fieldName;
 		//-----
 		Assertion.checkNotNull(label);

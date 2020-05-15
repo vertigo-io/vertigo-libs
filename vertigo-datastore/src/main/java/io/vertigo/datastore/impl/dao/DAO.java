@@ -65,10 +65,11 @@ public class DAO<E extends Entity, P> {
 	 * @param taskManager Manager de gestion des tâches
 	 */
 	public DAO(final Class<? extends Entity> entityClass, final EntityStoreManager entityStoreManager, final TaskManager taskManager, final SmartTypeManager smartTypeManager) {
-		Assertion.checkNotNull(entityClass);
-		Assertion.checkNotNull(entityStoreManager);
-		Assertion.checkNotNull(taskManager);
-		Assertion.checkNotNull(smartTypeManager);
+		Assertion.check()
+				.notNull(entityClass)
+				.notNull(entityStoreManager)
+				.notNull(taskManager)
+				.notNull(smartTypeManager);
 		//-----
 		this.entityClass = entityClass;
 		this.entityStoreManager = entityStoreManager;

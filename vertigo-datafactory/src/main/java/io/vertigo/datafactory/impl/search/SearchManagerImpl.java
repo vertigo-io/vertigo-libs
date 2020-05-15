@@ -80,8 +80,9 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 			final SearchServicesPlugin searchServicesPlugin,
 			final LocaleManager localeManager,
 			final AnalyticsManager analyticsManager) {
-		Assertion.checkNotNull(searchServicesPlugin);
-		Assertion.checkNotNull(analyticsManager);
+		Assertion.check()
+				.notNull(searchServicesPlugin)
+				.notNull(analyticsManager);
 		//-----
 		this.searchServicesPlugin = searchServicesPlugin;
 		this.analyticsManager = analyticsManager;

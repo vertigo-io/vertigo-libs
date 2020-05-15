@@ -58,8 +58,9 @@ public final class Property<T> {
 	 * @param clazz Classe java représentant le type de la propriété.
 	 */
 	public Property(final String name, final Class<T> clazz) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(clazz);
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(clazz);
 		//-----
 		this.clazz = clazz;
 		this.name = name;
