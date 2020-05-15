@@ -15,3 +15,4 @@ vertigo-release/
 vertigo-x-release/
 mvn-release.txt
 createSymLink.bat
+.factorypath
