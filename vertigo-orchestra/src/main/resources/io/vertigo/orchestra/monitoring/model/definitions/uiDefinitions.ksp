@@ -11,7 +11,7 @@ create DtDefinition DtOProcessUi {
 	field rescuePeriod			{domain : DoONombre, label :"Temps de validité d'une planification", cardinality: "1",},
 	field metadatas				{domain : DoOMetadatas, label :"Métadonnées du processus", cardinality: "?",},
   
-},
+}
 
 
 

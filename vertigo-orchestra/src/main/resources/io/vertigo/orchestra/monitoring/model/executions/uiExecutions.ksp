@@ -11,7 +11,7 @@ create DtDefinition DtOProcessExecutionUi {
 	field checkingComment		{domain : DoOText, label :"Commentaire", cardinality: "?",},
 	field hasAttachment			{domain : DoOBooleen, label :"Fichier de log", cardinality: "?",},
   	
-},
+}
 
 create DtDefinition DtOActivityExecutionUi {
 	field aceId   					{domain : DoOIdentifiant, label :"Id de l'activité", cardinality: "1",},
@@ -25,7 +25,7 @@ create DtDefinition DtOActivityExecutionUi {
 	field hasAttachment			{domain : DoOBooleen, label :"Fichier de log", cardinality: "?",},
 	field hasTechnicalLog 		{domain : DoOBooleen, label :"Log technique", cardinality: "?",},
   
-},
+}
 
 
 

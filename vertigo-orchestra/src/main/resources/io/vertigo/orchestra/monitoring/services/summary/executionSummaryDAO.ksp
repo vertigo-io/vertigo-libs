@@ -82,7 +82,7 @@ create Task TkGetExecutionSummariesByDate {
 	attribute dateMin	 	{domain : DoOTimestamp 		cardinality: "1" 	inOut :"in"}
 	attribute dateMax	 	{domain : DoOTimestamp 		cardinality: "1" 	inOut :"in"}
 	attribute status	 	{domain : DoOCodeIdentifiant		cardinality: "1" 	inOut :"in"}
-},
+}
 
 create Task TkGetExecutionSummaryByDateAndName {
 	storeName : "orchestra"
@@ -160,4 +160,4 @@ create Task TkGetExecutionSummaryByDateAndName {
 	attribute dateMin	 	{domain : DoOTimestamp 		cardinality: "1" 	inOut :"in"}
 	attribute dateMax	 	{domain : DoOTimestamp 		cardinality: "1" 	inOut :"in"}
 	attribute name	 		{domain : DoOLibelle 		cardinality: "1" 	inOut :"in"}
-},
+}

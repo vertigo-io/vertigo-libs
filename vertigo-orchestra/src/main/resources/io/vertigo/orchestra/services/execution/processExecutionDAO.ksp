@@ -12,7 +12,7 @@ create Task TkGetActiveProcessExecutionByProId {
 			"
 		attribute proId					{domain : DoOIdentifiant 						cardinality: "1" 	inOut :"in"}
 		attribute dtcProcessExecution	 	{domain : DoDtOProcessExecution 		cardinality: "*" 	inOut :"out"}
-},
+}
 
 create Task TkGetLogByPreId {
 	storeName : "orchestra"
@@ -27,7 +27,7 @@ create Task TkGetLogByPreId {
 			"
 		attribute preId					{domain : DoOIdentifiant 				cardinality: "1" 		inOut :"in" }
 		attribute dtActivityLog	 		{domain : DoDtOActivityLog 		cardinality: "?" 	inOut :"out"}
-},
+}
 
 create Task TkUpdateProcessExecutionTreatment {
 	storeName : "orchestra"
@@ -44,6 +44,6 @@ create Task TkUpdateProcessExecutionTreatment {
 		attribute checked					{domain : DoOBooleen 			cardinality: "1" 		inOut :"in" }
 		attribute checkingDate				{domain : DoOTimestamp 			cardinality: "1" 		inOut :"in" }
 		attribute checkingComment			{domain : DoOText 				cardinality: "1" 		inOut :"in" }
-},
+}
 
 

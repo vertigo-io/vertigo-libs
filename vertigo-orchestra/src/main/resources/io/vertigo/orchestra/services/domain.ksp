@@ -7,75 +7,75 @@ create Domain DoOIdentifiant {
 	dataType : Long
 	formatter : FmtODefault
 	storeType : "NUMERIC"
-},
+}
 
 create Domain DoOCodeIdentifiant {
 	dataType : String
 	formatter : FmtODefault
 	constraint : [CkOCode,CkOMaxLength20]
 	storeType : "VARCHAR(20)"
-},
+}
 
 create Domain DoOLibelle {
 	dataType : String
 	formatter : FmtODefault
 	constraint : [CkOMaxLength100]
 	storeType : "VARCHAR(100)"
-},
+}
 
 create Domain DoOToken {
 	dataType : String
 	formatter : FmtODefault
 	constraint : [CkOMaxLength100]
 	storeType : "VARCHAR(100)"
-},
+}
 
 create Domain DoOClasse {
 	dataType : String
 	formatter : FmtODefault
 	constraint : [CkOMaxLength200]
 	storeType : "VARCHAR(200)"
-},
+}
 
 
 create Domain DoOBooleen {
 	dataType : Boolean
 	formatter : FmtOOuiNon
 	storeType : "BOOL"
-},
+}
 
 
 create Domain DoOTimestamp {
 	dataType : Instant
 	formatter : FmtODateHeure
 	storeType : "TIMESTAMP"
-},
+}
 
 
 create Domain DoONombre {
 	dataType : Integer
 	formatter : FmtODefault
 	storeType : "NUMERIC"
-},
+}
 
 create Domain DoOJsonText {
 	dataType : String
 	formatter : FmtODefault
 	storeType : "TEXT"
-},
+}
 
 create Domain DoOMetadatas {
 	dataType : String
 	formatter : FmtODefault
 	storeType : "TEXT"
-},
+}
 
 
 create Domain DoOText {
 	dataType : String
 	formatter : FmtODefault
 	storeType : "TEXT"
-},
+}
 
 
 /**************************************************************************************************/
@@ -85,38 +85,38 @@ create Domain DoOText {
 create Formatter FmtOOuiNon {
       className :"io.vertigo.datamodel.impl.smarttype.formatter.FormatterBoolean"
       args : "Oui;Non"
-},
+}
 
 create Formatter FmtODefault {
 	className : "io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault"
-},
+}
 
 create Formatter FmtODateHeure {
      className :"io.vertigo.datamodel.impl.smarttype.formatter.FormatterDate"
      args : "dd/MM/yyyy HH:mm"
-},
+}
 
 /**************************************************************************************************/
 /* 											Gestion des contraintes 							  */
 /**************************************************************************************************/
 
 create Constraint CkOMaxLength20 {
-	className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength",
-	args :"20",
-},
+	className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength"
+	args :"20"
+}
 
 create Constraint CkOMaxLength100 {
-	className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength",
-	args :"100",
-},
+	className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength"
+	args :"100"
+}
 
 create Constraint CkOMaxLength200 {
-	className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength",
-	args :"200",
-},
+	className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintStringLength"
+	args :"200"
+}
 
 create Constraint CkOCode {
-	className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintRegex",
-	args : "([0-9A-Z_-]+)*$",
-	msg : "La liste des identifiants n'est pas valide",
-},
+	className: "io.vertigo.datamodel.impl.smarttype.constraint.ConstraintRegex"
+	args : "([0-9A-Z_-]+)*$"
+	msg : "La liste des identifiants n'est pas valide"
+}

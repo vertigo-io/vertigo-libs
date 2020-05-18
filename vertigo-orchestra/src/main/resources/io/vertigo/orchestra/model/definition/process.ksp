@@ -13,7 +13,7 @@ create DtDefinition DtOProcess {
 	field rescuePeriod			{domain : DoONombre, label :"Temps de validité d'une planification", cardinality: "1",}
 	field metadatas				{domain : DoOMetadatas, label :"Meta-données du processus", cardinality: "?",}
   	field needUpdate  			{domain : DoOBooleen, label :"Doit être mise à jour lors du démarrage", cardinality: "1",}
-},
+}
 
 
 
@@ -34,7 +34,7 @@ create Association AProTrt {
 	roleA : "Process"
 	roleB : "TriggerType"
 			
-},
+}
 
 create Association AProPrt {
   fkFieldName : "prtCd"
@@ -53,4 +53,4 @@ create Association AProPrt {
 	roleA : "Process"
 	roleB : "ProcessType"
 			
-},
+}

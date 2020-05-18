@@ -9,7 +9,7 @@ create DtDefinition DtOActivityExecution {
 	field engine   	{domain : DoOClasse, label :"Implémentation effective de l'execution", cardinality: "?",},
 	field token   	{domain : DoOToken, label :"Token d'identification", cardinality: "?",},
   
-},
+}
 
 create Association AAceAct {
   fkFieldName : "actId"

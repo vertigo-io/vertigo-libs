@@ -13,7 +13,7 @@ create Task TkGetActivitiesToLaunch {
 			"
 	attribute dtcActivityExecution	 	{domain : DoDtOActivityExecution 		cardinality: "*" 	inOut :"out"}
 	attribute nodId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
-},
+}
 
 
 create Task TkGetActivityExecutionByToken {
@@ -30,7 +30,7 @@ create Task TkGetActivityExecutionByToken {
 	attribute dtActivityExecution	 	{domain : DoDtOActivityExecution 		cardinality: "1" 	inOut :"out"}
 	attribute aceId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
 	attribute token	 	{domain : DoOToken 		cardinality: "1" 	inOut :"in"}
-},
+}
 
 create Task TkReserveActivitiesToLaunch {
 	storeName : "orchestra"

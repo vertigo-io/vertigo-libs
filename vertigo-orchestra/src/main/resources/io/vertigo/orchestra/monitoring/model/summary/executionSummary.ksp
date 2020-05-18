@@ -13,5 +13,5 @@ create DtDefinition DtOExecutionSummary {
 	field averageExecutionTime   	{domain : DoONombre, label :"Durée moyenne d'exécution", cardinality: "?",},
 	field health   					{domain : DoOCodeIdentifiant, label :"Santé du processus", cardinality: "1",},
   
-},
+}
 

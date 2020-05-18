@@ -11,7 +11,7 @@ create Task TkGetNodeByName {
 			"
 	attribute dtoONode	 	{domain : DoDtONode 		cardinality: "?" 	inOut :"out"}
 	attribute nodeName	 	{domain : DoOLibelle 		cardinality: "1" 	inOut :"in"}
-},
+}
 
 
 create Task TkHandleProcessesOfDeadNodes {
@@ -36,7 +36,7 @@ create Task TkHandleProcessesOfDeadNodes {
         	
 			"
 	attribute maxDate	 	{domain : DoOTimestamp 		cardinality: "1" 	inOut :"in"}
-},
+}
 
 create Task TkHandleDeadProcessesOfNode {
 	storeName : "orchestra"
@@ -59,6 +59,6 @@ create Task TkHandleDeadProcessesOfNode {
         	
 			"
 	attribute nodId	 	{domain : DoOIdentifiant 		cardinality: "1" 	inOut :"in"}
-},
+}
 
 

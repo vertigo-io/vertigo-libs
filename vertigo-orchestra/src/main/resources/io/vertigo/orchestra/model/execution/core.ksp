@@ -7,6 +7,6 @@ create DtDefinition DtONode {
 	field heartbeat   	{domain : DoOTimestamp, label :"Date de dernière activité", cardinality: "?",}
 	
   
-},
+}
 
 

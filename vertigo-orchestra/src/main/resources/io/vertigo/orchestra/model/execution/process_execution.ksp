@@ -11,7 +11,7 @@ create DtDefinition DtOProcessExecution {
 	field checkingComment		{domain : DoOText, label :"Commentaire", cardinality: "?",}
 	
   
-},
+}
 
 
 create Association APrePro {

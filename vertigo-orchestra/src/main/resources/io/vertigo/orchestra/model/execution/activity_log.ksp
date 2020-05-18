@@ -6,7 +6,7 @@ create DtDefinition DtOActivityLog {
 	field log 			{domain : DoOText, label :"Contenu du log", cardinality: "?",}
 	field attachment 		{domain : DoOText, label :"Fichier joint", cardinality: "?",}
   
-},
+}
 
 
 

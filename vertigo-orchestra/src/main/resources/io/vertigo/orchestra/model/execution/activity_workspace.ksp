@@ -6,7 +6,7 @@ create DtDefinition DtOActivityWorkspace {
 	field isIn  		{domain : DoOBooleen, label :"Workspace in/out", cardinality: "1",}
 	field workspace 	{domain : DoOJsonText, label :"Contenu du workspace", cardinality: "?",}
   
-},
+}
 
 
 
