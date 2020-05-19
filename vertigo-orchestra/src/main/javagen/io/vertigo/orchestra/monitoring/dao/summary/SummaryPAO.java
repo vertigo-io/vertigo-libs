@@ -163,7 +163,8 @@ public final class SummaryPAO implements StoreServices {
  "						pro.name as PROCESS_NAME," + 
  "						pro.label as PROCESS_LABEL" + 
  "						from o_process pro " + 
- "						where pro.NAME = #name#) as from_process" + 
+ "						where pro.NAME = #name#" + 
+ "						  and pro.ACTIVE_VERSION) as from_process" + 
  "				left join lateral (" + 
  "					select " + 
  "						sum(exec.SI_SUCCESS) as SUCCESSFUL_COUNT," + 
