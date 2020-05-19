@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -32,8 +33,8 @@ import java.util.stream.Collectors;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.node.Home;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
 import io.vertigo.datamodel.structure.model.DtObject;
@@ -227,11 +228,11 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	 * @return HashMap (needed for Serializable)
 	 */
 	public HashMap<String, Serializable> mapForClient(final Set<String> fieldsForClient, final Map<String, Function<Serializable, String>> valueTransformers) {
-		final Set<String> filterSet;
+		final Set<String> filterSet = new HashSet<>();
+		filterSet.addAll(fieldsForClient);
 		if (fieldsForClient.contains("*")) {
-			filterSet = fieldIndex;
-		} else {
-			filterSet = fieldsForClient;
+			filterSet.remove("*");
+			filterSet.addAll(fieldIndex);
 		}
 		final HashMap<String, Serializable> mapForClient = new HashMap<>(filterSet.size());
 		filterSet
