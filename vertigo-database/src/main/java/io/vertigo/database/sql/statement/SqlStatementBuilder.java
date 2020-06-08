@@ -50,9 +50,8 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 	 * @param sqlQuery a sql query
 	 * @param connection Connexion
 	 */
-	SqlStatementBuilder(
-			final String sqlQuery) {
-		Assertion.checkArgNotEmpty(sqlQuery);
+	SqlStatementBuilder(final String sqlQuery) {
+		Assertion.check().argNotEmpty(sqlQuery);
 		//-----
 		final Tuple<String, List<SqlNamedParam>> parsedQuery = parseQuery(sqlQuery);
 		rawSqlQuery = parsedQuery.getVal1();

@@ -36,7 +36,6 @@ import io.vertigo.database.sql.vendor.SqlDataBase;
 public final class SqlConnection implements VTransactionResource {
 	private final Connection jdbcConnection;
 	private final SqlDataBase dataBase;
-	private final boolean closeable;
 
 	/**
 	 * Constructor.
@@ -46,15 +45,14 @@ public final class SqlConnection implements VTransactionResource {
 	 * @param closeable Si cette connection peut-être fermée
 	 * @throws SQLException Exception sql
 	 */
-	public SqlConnection(final Connection jdbcConnection, final SqlDataBase dataBase, final boolean closeable) throws SQLException {
+	public SqlConnection(final Connection jdbcConnection, final SqlDataBase dataBase) throws SQLException {
 		Assertion.check()
 				.notNull(jdbcConnection)
 				.notNull(dataBase);
 		//-----
 		this.jdbcConnection = jdbcConnection;
 		this.dataBase = dataBase;
-		this.closeable = closeable;
-		//On ne se met jamais en mode autocommit !!
+		//mode autocommit MUST NEVER be activated.
 		jdbcConnection.setAutoCommit(false);
 	}
 
@@ -89,9 +87,6 @@ public final class SqlConnection implements VTransactionResource {
 	/** {@inheritDoc} */
 	@Override
 	public void close() throws SQLException {
-		if (closeable) {
-			jdbcConnection.close();
-		}
+		jdbcConnection.close();
 	}
-
 }

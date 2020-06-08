@@ -33,7 +33,6 @@ import io.vertigo.core.lang.Assertion;
  * @author mlaroche,pchretien
  */
 public final class SqlStatement {
-
 	private final String sqlQuery;
 	private final List<List<SqlParameter>> sqlParameters;
 
@@ -50,7 +49,6 @@ public final class SqlStatement {
 		//-----
 		this.sqlQuery = sqlQuery;
 		this.sqlParameters = sqlParameters;
-		//-----
 	}
 
 	public String getSqlQuery() {
@@ -62,7 +60,8 @@ public final class SqlStatement {
 	}
 
 	public List<SqlParameter> getSqlParameters() {
-		Assertion.checkState(sqlParameters.size() <= 1, "when a query is not in batch mode only one list of parameters can be provided ");
+		Assertion.check().state(sqlParameters.size() <= 1, "when a query is not in batch mode only one list of parameters can be provided ");
+		//---
 		if (sqlParameters.size() == 0) {
 			return Collections.emptyList();
 		}

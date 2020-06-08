@@ -73,7 +73,7 @@ public final class DataSourceConnectionProviderPlugin extends AbstractSqlConnect
 	public SqlConnection obtainConnection() {
 		try {
 			final java.sql.Connection connection = dataSource.getConnection();
-			return new SqlConnection(connection, getDataBase(), true);
+			return new SqlConnection(connection, getDataBase());
 		} catch (final SQLException e) {
 			throw WrappedException.wrap(e, "Can't open connection");
 		}
