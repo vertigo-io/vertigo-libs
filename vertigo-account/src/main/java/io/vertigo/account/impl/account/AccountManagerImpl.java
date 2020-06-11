@@ -53,9 +53,9 @@ public final class AccountManagerImpl implements AccountManager {
 			final AccountStorePlugin accountStorePlugin,
 			final Optional<AccountCachePlugin> accountCachePlugin,
 			final FileManager fileManager) {
-		Assertion.checkNotNull(accountStorePlugin);
-		Assertion.checkNotNull(accountCachePlugin);
-		Assertion.checkNotNull(fileManager);
+		Assertion.check().notNull(accountStorePlugin)
+				.notNull(accountCachePlugin)
+				.notNull(fileManager);
 		//-----
 		this.accountStorePlugin = accountStorePlugin;
 		this.accountCachePlugin = accountCachePlugin;

@@ -99,10 +99,11 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 			@ParamValue("groupFilePath") final String groupFilePath,
 			@ParamValue("groupFilePattern") final String groupFilePatternStr,
 			final ResourceManager resourceManager) {
-		Assertion.checkNotNull(resourceManager);
-		Assertion.checkArgNotEmpty(accountFilePatternStr);
-		Assertion.checkArgument(accountFilePatternStr.contains("(?<"),
-				"accountFilePattern should be a regexp of named group for each Account's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>)(?<authToken>[^\\s;]+);(?<photoUrl>[^\\s;]+)' )");
+		Assertion.check()
+				.notNull(resourceManager)
+				.argNotEmpty(accountFilePatternStr)
+				.argument(accountFilePatternStr.contains("(?<"),
+						"accountFilePattern should be a regexp of named group for each Account's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>)(?<authToken>[^\\s;]+);(?<photoUrl>[^\\s;]+)' )");
 		Assertion.checkArgument(groupFilePatternStr.contains("(?<"),
 				"groupFilePattern should be a regexp of named group for each group's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )");
 		for (final AccountProperty accountProperty : AccountProperty.values()) {
@@ -163,7 +164,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	@Override
 	public Optional<VFile> getPhoto(final UID<Account> accountURI) {
 		final AccountInfo accountInfo = accounts.get(accountURI.getId());
-		Assertion.checkNotNull(accountInfo, "No account found for {0}", accountURI);
+		Assertion.check().notNull(accountInfo, "No account found for {0}", accountURI);
 		if (accountInfo.getPhotoUrl() == null || accountInfo.getPhotoUrl().isEmpty()) {
 			return Optional.empty();
 		}
@@ -254,7 +255,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		for (final String accountId : accountIds.split(";")) {
 			groupsPerAccount.computeIfAbsent(accountId, k -> new ArrayList<>()).add(accountGroup);
 			final Account account = accounts.get(accountId).getAccount();
-			Assertion.checkNotNull(account, "Group {0} reference an undeclared account {1}", groupId, accountId);
+			Assertion.check().notNull(account, "Group {0} reference an undeclared account {1}", groupId, accountId);
 			groupAccounts.add(account);
 		}
 		accountsPerGroup.put(groupId, groupAccounts);

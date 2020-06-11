@@ -60,8 +60,9 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 			@ParamValue("userLoginTemplate") final String userLoginTemplate,
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<LdapConnector> ldapConnectors) {
-		Assertion.checkNotNull(ldapConnectors);
-		Assertion.checkArgument(!ldapConnectors.isEmpty(), "At least one LdapConnector espected");
+		Assertion.check()
+				.notNull(ldapConnectors)
+				.argument(!ldapConnectors.isEmpty(), "At least one LdapConnector espected");
 		//----
 		parseUserLoginTemplate(userLoginTemplate);
 		final String connectorName = connectorNameOpt.orElse("main");
@@ -80,7 +81,7 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<String> authenticateAccount(final AuthenticationToken token) {
-		Assertion.checkNotNull(token);
+		Assertion.check().notNull(token);
 		//---
 		final UsernamePasswordAuthenticationToken usernamePasswordToken = (UsernamePasswordAuthenticationToken) token;
 		LdapContext ldapContext = null;

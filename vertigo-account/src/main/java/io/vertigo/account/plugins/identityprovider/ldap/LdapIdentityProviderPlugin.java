@@ -106,14 +106,15 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 			final CodecManager codecManager,
 			final SmartTypeManager smartTypeManager,
 			final List<LdapConnector> ldapConnectors) {
-		Assertion.checkArgNotEmpty(ldapAccountBaseDn);
-		Assertion.checkArgNotEmpty(ldapUserAuthAttribute);
-		Assertion.checkArgNotEmpty(userIdentityEntity);
-		Assertion.checkArgNotEmpty(ldapUserAttributeMappingStr);
-		Assertion.checkNotNull(codecManager);
-		Assertion.checkNotNull(smartTypeManager);
-		Assertion.checkNotNull(ldapConnectors);
-		Assertion.checkArgument(!ldapConnectors.isEmpty(), "At least one LdapConnector espected");
+		Assertion.check()
+				.argNotEmpty(ldapAccountBaseDn)
+				.argNotEmpty(ldapUserAuthAttribute)
+				.argNotEmpty(userIdentityEntity)
+				.argNotEmpty(ldapUserAttributeMappingStr)
+				.notNull(codecManager)
+				.notNull(smartTypeManager)
+				.notNull(ldapConnectors)
+				.argument(!ldapConnectors.isEmpty(), "At least one LdapConnector espected");
 		//-----
 		this.ldapAccountBaseDn = ldapAccountBaseDn;
 		this.ldapUserAuthAttribute = ldapUserAuthAttribute;
@@ -227,7 +228,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 			if (attribute != null) {
 				try {
 					final Object value = attribute.get();
-					Assertion.checkNotNull(value);
+					Assertion.check().notNull(value);
 					return String.valueOf(value);
 				} catch (final NamingException e) {
 					throw WrappedException.wrap(e, "Ldap attribute {0} found, but is empty", attributeName);
@@ -243,7 +244,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 			if (attribute != null) {
 				try {
 					final Object value = attribute.get();
-					Assertion.checkNotNull(value);
+					Assertion.check().notNull(value);
 					return value;
 				} catch (final NamingException e) {
 					throw WrappedException.wrap(e, "Ldap attribute {0} found, but is empty", attributeName);
@@ -317,7 +318,7 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	}
 
 	private static String[] buildReturingAttributes(final Collection<String> returningAttributes) {
-		Assertion.checkNotNull(returningAttributes);
+		Assertion.check().notNull(returningAttributes);
 		//-----
 		return returningAttributes.toArray(new String[returningAttributes.size()]);
 	}

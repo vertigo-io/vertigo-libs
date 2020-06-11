@@ -27,8 +27,9 @@ final class AccountInfo {
 	private final String photoUrl;
 
 	AccountInfo(final Account account, final String photoUrl) {
-		Assertion.checkNotNull(account);
-		Assertion.checkNotNull(photoUrl);
+		Assertion.check()
+				.notNull(account)
+				.notNull(photoUrl);
 		//-----
 		this.account = account;
 		this.photoUrl = photoUrl;

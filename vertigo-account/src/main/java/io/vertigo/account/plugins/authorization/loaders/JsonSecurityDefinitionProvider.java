@@ -61,7 +61,7 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 	 */
 	@Inject
 	public JsonSecurityDefinitionProvider(final ResourceManager resourceManager) {
-		Assertion.checkNotNull(resourceManager);
+		Assertion.check().notNull(resourceManager);
 		// -----
 		this.resourceManager = resourceManager;
 		definitionSuppliers = new ArrayList<>();

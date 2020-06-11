@@ -61,7 +61,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 	 */
 	@Inject
 	public AuthorizationManagerImpl(final VSecurityManager securityManager) {
-		Assertion.checkNotNull(securityManager);
+		Assertion.check().notNull(securityManager);
 		//-----
 		this.securityManager = securityManager;
 	}
@@ -91,7 +91,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 	/** {@inheritDoc} */
 	@Override
 	public boolean hasAuthorization(final AuthorizationName... permissionNames) {
-		Assertion.checkNotNull(permissionNames);
+		Assertion.check().notNull(permissionNames);
 		//---
 		return getUserAuthorizationsOpt()
 				.map(userPermissions -> userPermissions.hasAuthorization(permissionNames))
@@ -103,8 +103,8 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 	/** {@inheritDoc} */
 	@Override
 	public <K extends KeyConcept> boolean isAuthorized(final K keyConcept, final OperationName<K> operationName) {
-		Assertion.checkNotNull(keyConcept);
-		Assertion.checkNotNull(operationName);
+		Assertion.check().notNull(keyConcept)
+				.notNull(operationName);
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (!userPermissionsOpt.isPresent()) {
@@ -131,8 +131,8 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 	/** {@inheritDoc} */
 	@Override
 	public <K extends KeyConcept> Criteria<K> getCriteriaSecurity(final Class<K> keyConceptClass, final OperationName<K> operation) {
-		Assertion.checkNotNull(keyConceptClass);
-		Assertion.checkNotNull(operation);
+		Assertion.check().notNull(keyConceptClass)
+				.notNull(operation);
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (!userPermissionsOpt.isPresent()) {
@@ -174,8 +174,9 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 	/** {@inheritDoc} */
 	@Override
 	public <K extends KeyConcept> String getSearchSecurity(final Class<K> keyConceptClass, final OperationName<K> operationName) {
-		Assertion.checkNotNull(keyConceptClass);
-		Assertion.checkNotNull(operationName);
+		Assertion.check()
+				.notNull(keyConceptClass)
+				.notNull(operationName);
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (!userPermissionsOpt.isPresent()) {
@@ -213,7 +214,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 	/** {@inheritDoc} */
 	@Override
 	public <K extends KeyConcept> List<String> getAuthorizedOperations(final K keyConcept) {
-		Assertion.checkNotNull(keyConcept);
+		Assertion.check().notNull(keyConcept);
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
 		if (!userPermissionsOpt.isPresent()) {
@@ -232,7 +233,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 	 * @return SecuredEntity
 	 */
 	public static SecuredEntity findSecuredEntity(final DtDefinition dtDefinition) {
-		Assertion.checkNotNull(dtDefinition);
+		Assertion.check().notNull(dtDefinition);
 		//---
 		final String name = DefinitionUtil.getPrefix(SecuredEntity.class) + dtDefinition.getName();
 		return Home.getApp().getDefinitionSpace().resolve(name, SecuredEntity.class);

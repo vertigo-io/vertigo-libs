@@ -123,7 +123,7 @@ public final class AccountMapperHelper<S, D> {
 			}
 		}
 		for (final D destField : mandatoryDestField) {
-			Assertion.checkNotNull(destToSourceMapping.get(destField), "Mapping must declare mapping for destProperty {0}" + destField);
+			Assertion.check().notNull(destToSourceMapping.get(destField), "Mapping must declare mapping for destProperty {0}" + destField);
 		}
 
 		return this;

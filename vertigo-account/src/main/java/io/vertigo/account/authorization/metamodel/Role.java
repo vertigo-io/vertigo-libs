@@ -45,9 +45,10 @@ public final class Role implements Definition {
 	 * @param authorizations Authorizations list of this role
 	 */
 	public Role(final String name, final String description, final List<Authorization> authorizations) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkArgNotEmpty(description);
-		Assertion.checkNotNull(authorizations);
+		Assertion.check()
+				.argNotEmpty(name)
+				.argNotEmpty(description)
+				.notNull(authorizations);
 		//-----
 		this.name = name;
 		this.description = description;

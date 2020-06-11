@@ -69,7 +69,7 @@ public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeabl
 	 */
 	@Inject
 	public TextAuthenticationPlugin(@ParamValue("filePath") final String filePath, final ResourceManager resourceManager) {
-		Assertion.checkNotNull(resourceManager);
+		Assertion.check().notNull(resourceManager);
 		// -----
 		this.resourceManager = resourceManager;
 		this.filePath = filePath;

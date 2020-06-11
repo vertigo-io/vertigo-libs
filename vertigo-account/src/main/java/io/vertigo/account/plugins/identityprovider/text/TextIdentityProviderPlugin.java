@@ -98,17 +98,18 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 			@ParamValue("userIdentityEntity") final String userIdentityEntity,
 			final ResourceManager resourceManager,
 			final SmartTypeManager smartTypeManager) {
-		Assertion.checkNotNull(resourceManager);
-		Assertion.checkNotNull(smartTypeManager);
-		Assertion.checkArgNotEmpty(filePatternStr);
-		Assertion.checkArgument(filePatternStr.contains("(?<"),
-				"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' (like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )", PHOTO_URL_RESERVED_FIELD);
-		Assertion.checkArgument(filePatternStr.contains("(?<" + PHOTO_URL_RESERVED_FIELD + ">"),
-				"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' (like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )", PHOTO_URL_RESERVED_FIELD);
-		Assertion.checkArgument(filePatternStr.contains("(?<" + userAuthField + ">"),
-				"filePattern should contains the userAuthField : {0}", userAuthField);
-		Assertion.checkArgNotEmpty(userIdentityEntity);
-		Assertion.checkArgNotEmpty(userAuthField);
+		Assertion.check()
+				.notNull(resourceManager)
+				.notNull(smartTypeManager)
+				.argNotEmpty(filePatternStr)
+				.argument(filePatternStr.contains("(?<"),
+						"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' (like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )", PHOTO_URL_RESERVED_FIELD)
+				.argument(filePatternStr.contains("(?<" + PHOTO_URL_RESERVED_FIELD + ">"),
+						"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' (like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )", PHOTO_URL_RESERVED_FIELD)
+				.argument(filePatternStr.contains("(?<" + userAuthField + ">"),
+						"filePattern should contains the userAuthField : {0}", userAuthField)
+				.argNotEmpty(userIdentityEntity)
+				.argNotEmpty(userAuthField);
 		// -----
 		this.resourceManager = resourceManager;
 		this.smartTypeManager = smartTypeManager;
@@ -155,7 +156,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	@Override
 	public <E extends Entity> Optional<VFile> getPhoto(final UID<E> accountURI) {
 		final IdentityUserInfo identityAccountInfo = idsToUsers.get(accountURI.getId());
-		Assertion.checkNotNull(identityAccountInfo, "No identity found for {0}", accountURI);
+		Assertion.check().notNull(identityAccountInfo, "No identity found for {0}", accountURI);
 		final String photoUrl = identityAccountInfo.getPhotoUrl();
 		if (photoUrl == null || photoUrl.isEmpty()) {
 			return Optional.empty();

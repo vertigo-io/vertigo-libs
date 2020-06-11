@@ -48,7 +48,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public synchronized Optional<Account> getAccount(final UID<Account> accountUID) {
-		Assertion.checkNotNull(accountUID);
+		Assertion.check().notNull(accountUID);
 		//-----
 		return Optional.ofNullable(accountByUID.get(accountUID));
 	}
@@ -56,7 +56,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public synchronized void putAccount(final Account account) {
-		Assertion.checkNotNull(account);
+		Assertion.check().notNull(account);
 		//-----
 		final UID<Account> uid = account.getUID();
 		//----
@@ -71,7 +71,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public synchronized Optional<AccountGroup> getGroup(final UID<AccountGroup> groupUID) {
-		Assertion.checkNotNull(groupUID);
+		Assertion.check().notNull(groupUID);
 		//-----
 		return Optional.ofNullable(groupByUID.get(groupUID));
 	}
@@ -79,7 +79,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public synchronized void putGroup(final AccountGroup group) {
-		Assertion.checkNotNull(group);
+		Assertion.check().notNull(group);
 		//-----
 		final UID<AccountGroup> uid = group.getUID();
 		//----
@@ -93,8 +93,9 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public synchronized void attach(final Set<UID<Account>> accountsUID, final UID<AccountGroup> groupUID) {
-		Assertion.checkNotNull(accountsUID);
-		Assertion.checkNotNull(groupUID);
+		Assertion.check()
+				.notNull(accountsUID)
+				.notNull(groupUID);
 		//-----
 		accountsUID.forEach(accountURI -> this.attach(accountURI, groupUID));
 	}
@@ -107,8 +108,9 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	}
 
 	private synchronized void attach(final UID<Account> accountUID, final UID<AccountGroup> groupUID) {
-		Assertion.checkNotNull(accountUID);
-		Assertion.checkNotNull(groupUID);
+		Assertion.check()
+				.notNull(accountUID)
+				.notNull(groupUID);
 		//-----
 		final Set<UID<AccountGroup>> groupUIDs = groupByAccountUID.computeIfAbsent(accountUID, key -> new HashSet<>());
 		groupUIDs.add(groupUID);
@@ -120,7 +122,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public synchronized Set<UID<AccountGroup>> getGroupUIDs(final UID<Account> accountUID) {
-		Assertion.checkNotNull(accountUID);
+		Assertion.check().notNull(accountUID);
 		//-----
 		final Set<UID<AccountGroup>> groupUIDs = groupByAccountUID.get(accountUID);
 		if (groupUIDs == null) {
@@ -132,7 +134,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public synchronized Set<UID<Account>> getAccountUIDs(final UID<AccountGroup> groupUID) {
-		Assertion.checkNotNull(groupUID);
+		Assertion.check().notNull(groupUID);
 		//-----
 		final Set<UID<Account>> accountURIs = accountByGroupUID.get(groupUID);
 		if (accountURIs == null) {
@@ -144,8 +146,9 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void setPhoto(final UID<Account> accountUID, final VFile photo) {
-		Assertion.checkNotNull(accountUID);
-		Assertion.checkNotNull(photo);
+		Assertion.check()
+				.notNull(accountUID)
+				.notNull(photo);
 		//-----
 		photoByAccountUID.put(accountUID, photo);
 	}
@@ -153,7 +156,7 @@ public final class MemoryAccountCachePlugin implements AccountCachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<VFile> getPhoto(final UID<Account> accountUID) {
-		Assertion.checkNotNull(accountUID);
+		Assertion.check().notNull(accountUID);
 		//-----
 		return Optional.ofNullable(photoByAccountUID.get(accountUID));
 	}

@@ -112,12 +112,12 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			final FileStoreManager fileStoreManager,
 			final VTransactionManager transactionManager) {
 		super(userIdentityEntity, userToAccountMappingStr);
-		Assertion.checkArgNotEmpty(userIdentityEntity);
-		Assertion.checkArgNotEmpty(userAuthField);
-		Assertion.checkNotNull(smartTypeManager);
-		Assertion.checkNotNull(entityStoreManager);
-		Assertion.checkNotNull(fileStoreManager);
-		Assertion.checkArgNotEmpty(groupToGroupAccountMappingStr);
+		Assertion.check().argNotEmpty(userIdentityEntity)
+				.argNotEmpty(userAuthField)
+				.notNull(smartTypeManager)
+				.notNull(entityStoreManager)
+				.notNull(fileStoreManager)
+				.argNotEmpty(groupToGroupAccountMappingStr);
 
 		this.groupIdentityEntity = groupIdentityEntity;
 		this.userAuthField = userAuthField;
@@ -159,7 +159,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 				break;
 			}
 		}
-		Assertion.checkNotNull(associationUserGroup, "Association between User ({0}) and Group ({1}) not found",
+		Assertion.check().notNull(associationUserGroup, "Association between User ({0}) and Group ({1}) not found",
 				getUserDtDefinition().getClassSimpleName(), userGroupDtDefinition.getClassSimpleName());
 		Assertion.checkState(associationUserGroup instanceof AssociationSimpleDefinition || associationUserGroup instanceof AssociationNNDefinition,
 				"Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());

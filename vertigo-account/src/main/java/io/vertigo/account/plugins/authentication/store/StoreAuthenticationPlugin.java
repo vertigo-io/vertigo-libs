@@ -67,9 +67,10 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 			@ParamValue("userPasswordField") final String userPasswordField,
 			@ParamValue("userTokenIdField") final String userTokenIdField,
 			final EntityStoreManager entityStoreManager) {
-		Assertion.checkNotNull(entityStoreManager);
-		Assertion.checkArgNotEmpty(userLoginField);
-		Assertion.checkArgNotEmpty(userPasswordField);
+		Assertion.check()
+				.notNull(entityStoreManager)
+				.argNotEmpty(userLoginField)
+				.argNotEmpty(userPasswordField);
 		// -----
 		this.entityStoreManager = entityStoreManager;
 		this.userCredentialEntity = userCredentialEntity;

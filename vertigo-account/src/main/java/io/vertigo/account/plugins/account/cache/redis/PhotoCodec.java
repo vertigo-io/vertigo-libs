@@ -40,7 +40,7 @@ final class PhotoCodec {
 	 * @param codecManager the codecManager
 	 */
 	PhotoCodec(final CodecManager codecManager) {
-		Assertion.checkNotNull(codecManager);
+		Assertion.check().notNull(codecManager);
 		//-----
 		this.codecManager = codecManager;
 	}
@@ -52,7 +52,7 @@ final class PhotoCodec {
 	 * @return the photo as a map of metadata
 	 */
 	Map<String, String> vFile2Map(final VFile vFile) {
-		Assertion.checkNotNull(vFile);
+		Assertion.check().notNull(vFile);
 		//-----
 		final String lastModified = vFile.getLastModified().toString();
 		final String base64Content = encode2Base64(vFile);
@@ -71,7 +71,7 @@ final class PhotoCodec {
 	 * @return the photo
 	 */
 	VFile map2vFile(final Map<String, String> vFileMap) {
-		Assertion.checkNotNull(vFileMap);
+		Assertion.check().notNull(vFileMap);
 		//-----
 		try {
 			final String fileName = vFileMap.get("fileName");

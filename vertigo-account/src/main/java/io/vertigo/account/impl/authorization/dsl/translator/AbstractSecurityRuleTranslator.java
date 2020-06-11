@@ -50,7 +50,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	 * @return this builder
 	 */
 	public S on(final SecuredEntity securedEntity) {
-		Assertion.checkNotNull(securedEntity);
+		Assertion.check().notNull(securedEntity);
 		//-----
 		this.mySecuredEntity = securedEntity;
 		return (S) this;
@@ -62,7 +62,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	 * @return this builder
 	 */
 	public final S withRule(final RuleMultiExpression securityMultiExpression) {
-		Assertion.checkNotNull(securityMultiExpression);
+		Assertion.check().notNull(securityMultiExpression);
 		//-----
 		myMultiExpressions.add(securityMultiExpression);
 		return (S) this;
@@ -74,7 +74,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	 * @return this builder
 	 */
 	public final S withRule(final String securityRule) {
-		Assertion.checkNotNull(securityRule);
+		Assertion.check().notNull(securityRule);
 		//-----
 		try {
 			final RuleMultiExpression myMultiExpression = DslParserUtil.parseMultiExpression(securityRule);
@@ -95,8 +95,9 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	 * @return this builder
 	 */
 	public final S withCriteria(final Map<String, List<Serializable>> userCriteria) {
-		Assertion.checkNotNull(userCriteria);
-		Assertion.checkState(myUserCriteria == null, "criteria was already set : {0}", myUserCriteria);
+		Assertion.check()
+				.notNull(userCriteria)
+				.state(myUserCriteria == null, "criteria was already set : {0}", myUserCriteria);
 		//-----
 		myUserCriteria = userCriteria;
 		return (S) this;
@@ -111,7 +112,7 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	}
 
 	protected final SecurityDimension getSecurityDimension(final String fieldName) {
-		Assertion.checkNotNull(mySecuredEntity, "Can't use SecurityDimension when no SecuredEntity definition was set");
+		Assertion.check().notNull(mySecuredEntity, "Can't use SecurityDimension when no SecuredEntity definition was set");
 		//-----
 		return mySecuredEntity.getSecurityDimensions().stream()
 				.filter(securityDimension -> fieldName.equals(securityDimension.getName()))
@@ -120,13 +121,13 @@ abstract class AbstractSecurityRuleTranslator<S extends AbstractSecurityRuleTran
 	}
 
 	protected final List<RuleMultiExpression> getMultiExpressions() {
-		Assertion.checkNotNull(myMultiExpressions, "MultiExpressions was not set");
+		Assertion.check().notNull(myMultiExpressions, "MultiExpressions was not set");
 		//----
 		return myMultiExpressions;
 	}
 
 	protected final List<Serializable> getUserCriteria(final String userProperty) {
-		Assertion.checkNotNull(myUserCriteria, "UserCriteria was not set");
+		Assertion.check().notNull(myUserCriteria, "UserCriteria was not set");
 		//----
 		return myUserCriteria.getOrDefault(userProperty, Collections.emptyList());
 	}

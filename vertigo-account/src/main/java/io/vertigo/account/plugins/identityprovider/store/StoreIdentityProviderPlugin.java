@@ -72,10 +72,11 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 			@ParamValue("photoFileInfo") final Optional<String> photoFileInfo,
 			final EntityStoreManager entityStoreManager,
 			final FileStoreManager fileStoreManager) {
-		Assertion.checkArgNotEmpty(userIdentityEntity);
-		Assertion.checkArgNotEmpty(userAuthField);
-		Assertion.checkNotNull(entityStoreManager);
-		Assertion.checkNotNull(fileStoreManager);
+		Assertion.check()
+				.argNotEmpty(userIdentityEntity)
+				.argNotEmpty(userAuthField)
+				.notNull(entityStoreManager)
+				.notNull(fileStoreManager);
 		//---
 		this.userIdentityEntity = userIdentityEntity;
 		this.userAuthField = userAuthField;

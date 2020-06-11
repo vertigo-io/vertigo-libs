@@ -27,8 +27,9 @@ final class IdentityUserInfo {
 	private final String photoUrl;
 
 	IdentityUserInfo(final Entity user, final String photoUrl) {
-		Assertion.checkNotNull(user);
-		Assertion.checkNotNull(photoUrl);
+		Assertion.check()
+				.notNull(user)
+				.notNull(photoUrl);
 		//-----
 		this.user = user;
 		this.photoUrl = photoUrl;

@@ -126,7 +126,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 	}
 
 	private static RuleMultiExpression parseRule(final String securityRule) {
-		Assertion.checkNotNull(securityRule);
+		Assertion.check().notNull(securityRule);
 		//-----
 		try {
 			return DslParserUtil.parseMultiExpression(securityRule);
