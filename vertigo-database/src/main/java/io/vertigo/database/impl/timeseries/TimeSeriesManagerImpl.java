@@ -119,9 +119,10 @@ public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 				.notNull(timeFilter.getDim()) // we check dim is not null because we need it
 				.notNull(clusteredMeasure);
 		//---
-		Assertion.checkArgNotEmpty(clusteredMeasure.getMeasure());
-		Assertion.checkNotNull(clusteredMeasure.getThresholds());
-		Assertion.checkState(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
+		Assertion.check()
+				.argNotEmpty(clusteredMeasure.getMeasure())
+				.notNull(clusteredMeasure.getThresholds())
+				.state(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
 		//we use the natural order
 		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
 		//---

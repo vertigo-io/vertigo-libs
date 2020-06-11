@@ -42,7 +42,7 @@ public final class MigrationManagerImpl implements DataBaseMigrationManager, Act
 	public MigrationManagerImpl(
 			@ParamValue("mode") final Optional<String> modeOpt,
 			final List<MigrationPlugin> dataBaseMigrationPlugins) {
-		Assertion.checkNotNull(dataBaseMigrationPlugins);
+		Assertion.check().notNull(dataBaseMigrationPlugins);
 		//---
 		this.dataBaseMigrationPlugins = dataBaseMigrationPlugins
 				.stream()

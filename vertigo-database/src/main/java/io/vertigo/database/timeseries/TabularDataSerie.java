@@ -34,7 +34,7 @@ public final class TabularDataSerie implements Serializable {
 	private final Map<String, Object> values;
 
 	public TabularDataSerie(final Map<String, Object> values) {
-		Assertion.checkNotNull(values);
+		Assertion.check().notNull(values);
 		//---
 		this.values = values;
 	}

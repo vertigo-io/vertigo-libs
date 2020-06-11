@@ -74,7 +74,7 @@ final class SqlNamedParam {
 		} else {
 			throw new IllegalStateException();
 		}
-		Assertion.checkNotNull(attributeName);
+		Assertion.check().notNull(attributeName);
 	}
 
 	/**
@@ -137,7 +137,7 @@ final class SqlNamedParam {
 	 * @return Numéro de ligne dans le cas d'un paramètre représentant un élément d'une liste
 	 */
 	public int getRowNumber() {
-		Assertion.checkNotNull(rowNumber, "il ne s'agit pas d'une liste");
+		Assertion.check().notNull(rowNumber, "il ne s'agit pas d'une liste");
 		//-----
 		return rowNumber;
 	}

@@ -56,8 +56,9 @@ public final class SqlDataStreamMappingUtil {
 	 * @throws SQLException Exception SQL.
 	 */
 	public static DataStream getDataStream(final ResultSet rs, final int col) throws SQLException {
-		Assertion.checkNotNull(rs);
-		Assertion.checkNotNull(col);
+		Assertion.check()
+				.notNull(rs)
+				.notNull(col);
 		//-----
 		try (final InputStream in = rs.getBinaryStream(col)) {
 			if (in != null) { //le flux est null, s'il n'a jamais été setté (si champs non persistant par exemple)
@@ -122,7 +123,7 @@ public final class SqlDataStreamMappingUtil {
 		private final byte[] bytes;
 
 		ByteArrayDataStream(final byte[] bytes) {
-			Assertion.checkNotNull(bytes);
+			Assertion.check().notNull(bytes);
 			//-----
 			this.bytes = bytes;
 		}

@@ -40,8 +40,9 @@ public abstract class AbstractSqlConnectionProviderPlugin implements SqlConnecti
 	 * @param dataBase Type de base de données
 	 */
 	protected AbstractSqlConnectionProviderPlugin(final String name, final SqlDataBase dataBase) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(dataBase);
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(dataBase);
 		//-----
 		this.name = name;
 		this.dataBase = dataBase;

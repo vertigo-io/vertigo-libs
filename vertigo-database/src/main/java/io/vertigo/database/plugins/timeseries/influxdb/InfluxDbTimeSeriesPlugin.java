@@ -220,14 +220,15 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	@Override
 	public TimedDatas getClusteredTimeSeries(final String appName, final ClusteredMeasure clusteredMeasure, final DataFilter dataFilter, final TimeFilter timeFilter) {
-		Assertion.checkNotNull(dataFilter);
-		Assertion.checkNotNull(timeFilter);
-		Assertion.checkNotNull(timeFilter.getDim()); // we check dim is not null because we need it
-		Assertion.checkNotNull(clusteredMeasure);
-		//---
-		Assertion.checkArgNotEmpty(clusteredMeasure.getMeasure());
-		Assertion.checkNotNull(clusteredMeasure.getThresholds());
-		Assertion.checkState(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
+		Assertion.check()
+				.notNull(dataFilter)
+				.notNull(timeFilter)
+				.notNull(timeFilter.getDim()) // we check dim is not null because we need it
+				.notNull(clusteredMeasure)
+				//---
+				.argNotEmpty(clusteredMeasure.getMeasure())
+				.notNull(clusteredMeasure.getThresholds())
+				.state(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
 		//we use the natural order
 		clusteredMeasure.getThresholds().sort(Comparator.naturalOrder());
 		//---
@@ -279,7 +280,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	@Override
 	public TimedDatas getFlatTabularTimedData(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final Optional<Long> limit) {
-		Assertion.checkNotNull(limit);
+		Assertion.check().notNull(limit);
 		// -----
 		final Long resolvedLimit = limit.map(l -> Math.min(l, 5000L)).orElse(500L);
 
@@ -342,9 +343,10 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	@Override
 	public TimedDatas getTimeSeries(final String appName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
-		Assertion.checkNotNull(measures);
-		Assertion.checkNotNull(dataFilter);
-		Assertion.checkNotNull(timeFilter.getDim());// we check dim is not null because we need it
+		Assertion.check()
+				.notNull(measures)
+				.notNull(dataFilter)
+				.notNull(timeFilter.getDim());// we check dim is not null because we need it
 		//---
 		final String q = buildQuery(measures, dataFilter, timeFilter, true)
 				.append(" group by time(").append(timeFilter.getDim()).append(')')
@@ -370,8 +372,9 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	@Override
 	public void insertMeasure(final String dbName, final Measure measure) {
-		Assertion.checkArgNotEmpty(dbName);
-		Assertion.checkNotNull(measure);
+		Assertion.check()
+				.argNotEmpty(dbName)
+				.notNull(measure);
 		//---
 		influxDB.setDatabase(dbName);
 		influxDB.write(Point.measurement(measure.getMeasurement())
@@ -441,7 +444,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	}
 
 	private static StringBuilder buildQuery(final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter, final boolean needAggregatedMeasures) {
-		Assertion.checkNotNull(measures);
+		Assertion.check().notNull(measures);
 		//---
 		final StringBuilder queryBuilder = new StringBuilder("select ");
 		String separator = "";

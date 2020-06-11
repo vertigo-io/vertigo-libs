@@ -92,7 +92,7 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 	@Override
 	public SqlConnectionProvider getConnectionProvider(final String name) {
 		final SqlConnectionProvider sqlConnectionProvider = connectionProviderPluginMap.get(name);
-		Assertion.checkNotNull(sqlConnectionProvider, "ConnectionProvider {0}, wasn't registered.", name);
+		Assertion.check().notNull(sqlConnectionProvider, "ConnectionProvider {0}, wasn't registered.", name);
 		return sqlConnectionProvider;
 	}
 
@@ -201,7 +201,7 @@ public final class SqlManagerImpl implements SqlDataBaseManager {
 		private final SQLException sqlException;
 
 		WrappedSqlException(final SQLException sqlException) {
-			Assertion.checkNotNull(sqlException);
+			Assertion.check().notNull(sqlException);
 			//---
 			this.sqlException = sqlException;
 		}
