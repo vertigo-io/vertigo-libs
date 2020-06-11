@@ -102,7 +102,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void sendMail(final Mail mail) {
-		Assertion.checkNotNull(mail);
+		Assertion.check().notNull(mail);
 		//-----
 		final Session session = mailSessionConnector.createSession();
 		try {
@@ -146,8 +146,9 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	}
 
 	private static void setFromAddress(final String from, final Message message) throws MessagingException {
-		Assertion.checkNotNull(from);
-		Assertion.checkNotNull(message);
+		Assertion.check()
+				.notNull(from)
+				.notNull(message);
 		//-----
 		try {
 			message.setFrom(createInternetAddress(from));
@@ -210,8 +211,9 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 	}
 
 	private void setBodyContent(final String textContent, final String htmlContent, final Part bodyPart) throws MessagingException {
-		Assertion.checkArgument(textContent != null || htmlContent != null, "Le mail n'a pas de contenu, ni en text, ni en html");
-		Assertion.checkNotNull(bodyPart);
+		Assertion.check()
+				.argument(textContent != null || htmlContent != null, "Le mail n'a pas de contenu, ni en text, ni en html")
+				.notNull(bodyPart);
 		//-----
 		if (textContent != null && htmlContent != null) {
 			final Multipart multipart = new MimeMultipart("alternative");

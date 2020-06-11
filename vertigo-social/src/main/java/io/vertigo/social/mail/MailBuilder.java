@@ -93,7 +93,7 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder to(final String... addresses) {
-		Assertion.checkNotNull(addresses);
+		Assertion.check().notNull(addresses);
 		//-----
 		for (final String address : addresses) {
 			Assertion.checkArgNotEmpty(address);
@@ -108,7 +108,7 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder cc(final String... addresses) {
-		Assertion.checkNotNull(addresses);
+		Assertion.check().notNull(addresses);
 		//-----
 		for (final String address : addresses) {
 			Assertion.checkArgNotEmpty(address);
@@ -149,10 +149,10 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder withAttachments(final VFile... files) {
-		Assertion.checkNotNull(files);
+		Assertion.check().notNull(files);
 		//-----
 		for (final VFile attachment : files) {
-			Assertion.checkNotNull(attachment);
+			Assertion.check().notNull(attachment);
 			myAttachments.add(attachment);
 		}
 		return this;

@@ -52,7 +52,7 @@ public final class MailManagerImpl implements MailManager {
 	/** {@inheritDoc} */
 	@Override
 	public void sendMail(final Mail mail) {
-		Assertion.checkNotNull(mail);
+		Assertion.check().notNull(mail);
 		//-----
 		sendMailPlugin.sendMail(mail);
 	}

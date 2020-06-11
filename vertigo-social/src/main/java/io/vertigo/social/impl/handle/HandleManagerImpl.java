@@ -111,7 +111,7 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 
 	@Override
 	public List<Handle> searchHandles(final String handlePrefix) {
-		Assertion.checkNotNull(handlePrefix);
+		Assertion.check().notNull(handlePrefix);
 		//---
 		if (!StringUtil.isEmpty(handlePrefix) && isStartingByDtDefinition(handlePrefix).isPresent()) {
 			// search with the plugin

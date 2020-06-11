@@ -42,7 +42,7 @@ public final class NotificationManagerImpl implements NotificationManager {
 	 */
 	@Inject
 	public NotificationManagerImpl(final NotificationPlugin notificationsPlugin) {
-		Assertion.checkNotNull(notificationsPlugin);
+		Assertion.check().notNull(notificationsPlugin);
 		// -----
 		this.notificationsPlugin = notificationsPlugin;
 	}
@@ -57,7 +57,7 @@ public final class NotificationManagerImpl implements NotificationManager {
 	/** {@inheritDoc} */
 	@Override
 	public List<Notification> getCurrentNotifications(final UID<Account> userProfileURI) {
-		Assertion.checkNotNull(userProfileURI);
+		Assertion.check().notNull(userProfileURI);
 		// -----
 		return notificationsPlugin.getCurrentNotifications(userProfileURI);
 	}

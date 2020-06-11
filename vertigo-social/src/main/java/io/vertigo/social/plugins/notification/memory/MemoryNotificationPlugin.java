@@ -43,7 +43,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void send(final NotificationEvent notificationEvent) {
-		Assertion.checkNotNull(notificationEvent);
+		Assertion.check().notNull(notificationEvent);
 		//-----
 		//0 - Remplir la pile des événements
 
@@ -58,8 +58,9 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void updateUserContent(final UID<Account> accountURI, final UUID notificationUUID, final String userContent) {
-		Assertion.checkNotNull(accountURI);
-		Assertion.checkNotNull(notificationUUID);
+		Assertion.check()
+				.notNull(accountURI)
+				.notNull(notificationUUID);
 		//-----
 		//on recopie la notification et on ajoute la modif
 		final List<Notification> newNotifications = getCurrentNotifications(accountURI)
@@ -89,7 +90,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public List<Notification> getCurrentNotifications(final UID<Account> userProfileURI) {
-		Assertion.checkNotNull(userProfileURI);
+		Assertion.check().notNull(userProfileURI);
 		//-----
 		final List<Notification> notifications = notificationsByAccountURI.get(userProfileURI);
 		if (notifications == null) {
@@ -100,7 +101,7 @@ public final class MemoryNotificationPlugin implements NotificationPlugin {
 	}
 
 	private List<Notification> obtainNotifications(final UID<Account> accountURI) {
-		Assertion.checkNotNull(accountURI);
+		Assertion.check().notNull(accountURI);
 		//-----
 		final List<Notification> notifications = notificationsByAccountURI.computeIfAbsent(accountURI, uri -> new ArrayList<>());
 		cleanTooOldNotifications(notifications);

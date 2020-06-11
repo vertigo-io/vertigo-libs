@@ -55,8 +55,9 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * @return this builder
 	 */
 	public CommentBuilder withAuthor(final UID<Account> author) {
-		Assertion.checkArgument(myAuthor == null, "author already set");
-		Assertion.checkNotNull(author);
+		Assertion.check()
+				.argument(myAuthor == null, "author already set")
+				.notNull(author);
 		//-----
 		myAuthor = author;
 		myAuthorDisplayName = getIdentityManager().getAccount(author).getDisplayName();
@@ -68,8 +69,9 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * @return this builder
 	 */
 	public CommentBuilder withUuid(final UUID uuid) {
-		Assertion.checkArgument(myUuid == null, "UUID already set");
-		Assertion.checkNotNull(uuid);
+		Assertion.check()
+				.argument(myUuid == null, "UUID already set")
+				.notNull(uuid);
 		//-----
 		myUuid = uuid;
 		return this;
@@ -92,8 +94,9 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * @return this builder
 	 */
 	public CommentBuilder withCreationDate(final Instant creationInstant) {
-		Assertion.checkArgument(myCreationInstant == null, "creationDate already set");
-		Assertion.checkNotNull(creationInstant);
+		Assertion.check()
+				.argument(myCreationInstant == null, "creationDate already set")
+				.notNull(creationInstant);
 		//-----
 		myCreationInstant = creationInstant;
 		return this;

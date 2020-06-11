@@ -53,8 +53,9 @@ public final class RedisCommentPlugin implements CommentPlugin {
 	public RedisCommentPlugin(
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<RedisConnector> redisConnectors) {
-		Assertion.checkNotNull(connectorNameOpt);
-		Assertion.checkNotNull(redisConnectors);
+		Assertion.check()
+				.notNull(connectorNameOpt)
+				.notNull(redisConnectors);
 		//-----
 		final String connectorName = connectorNameOpt.orElse("main");
 		redisConnector = redisConnectors.stream()

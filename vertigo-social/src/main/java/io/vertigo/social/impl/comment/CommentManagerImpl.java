@@ -42,7 +42,7 @@ public final class CommentManagerImpl implements CommentManager {
 	 */
 	@Inject
 	public CommentManagerImpl(final CommentPlugin commentsPlugin) {
-		Assertion.checkNotNull(commentsPlugin);
+		Assertion.check().notNull(commentsPlugin);
 		//-----
 		this.commentsPlugin = commentsPlugin;
 	}
@@ -50,8 +50,9 @@ public final class CommentManagerImpl implements CommentManager {
 	/** {@inheritDoc} */
 	@Override
 	public void publish(final UID<Account> accountURI, final Comment comment, final UID<? extends KeyConcept> keyConceptUri) {
-		Assertion.checkNotNull(comment);
-		Assertion.checkNotNull(keyConceptUri);
+		Assertion.check()
+				.notNull(comment)
+				.notNull(keyConceptUri);
 		//-----
 		final Instant creationDate = Instant.now();
 		final Comment savedComment = Comment.builder()
@@ -66,7 +67,7 @@ public final class CommentManagerImpl implements CommentManager {
 	/** {@inheritDoc} */
 	@Override
 	public List<Comment> getComments(final UID<? extends KeyConcept> keyConceptUri) {
-		Assertion.checkNotNull(keyConceptUri);
+		Assertion.check().notNull(keyConceptUri);
 		//-----
 		return commentsPlugin.getComments(keyConceptUri);
 	}
@@ -74,7 +75,7 @@ public final class CommentManagerImpl implements CommentManager {
 	/** {@inheritDoc} */
 	@Override
 	public void update(final UID<Account> accountURI, final Comment comment) {
-		Assertion.checkNotNull(comment);
+		Assertion.check().notNull(comment);
 		//-----
 		final Comment originalComment = commentsPlugin.get(comment.getUuid());
 		final boolean authorized = accountURI.equals(comment.getAuthor()) && originalComment.getAuthor().equals(comment.getAuthor());

@@ -11,8 +11,9 @@ public final class Handle {
 	public Handle(
 			final UID uid,
 			final String code) {
-		Assertion.checkNotNull(uid);
-		Assertion.checkArgNotEmpty(code);
+		Assertion.check()
+				.notNull(uid)
+				.argNotEmpty(code);
 		//---
 		this.uid = uid;
 		this.code = code;

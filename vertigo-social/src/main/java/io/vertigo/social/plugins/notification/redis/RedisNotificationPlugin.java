@@ -57,8 +57,9 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	public RedisNotificationPlugin(
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<RedisConnector> redisConnectors) {
-		Assertion.checkNotNull(connectorNameOpt);
-		Assertion.checkNotNull(redisConnectors);
+		Assertion.check()
+				.notNull(connectorNameOpt)
+				.notNull(redisConnectors);
 		//-----
 		final String connectorName = connectorNameOpt.orElse("main");
 		redisConnector = redisConnectors.stream()
@@ -69,7 +70,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void send(final NotificationEvent notificationEvent) {
-		Assertion.checkNotNull(notificationEvent);
+		Assertion.check().notNull(notificationEvent);
 		//-----
 		//1 notif is store 5 times :
 		// - data in map with key= notif:$uuid (with expiration)
@@ -141,7 +142,7 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public List<Notification> getCurrentNotifications(final UID<Account> accountURI) {
-		Assertion.checkNotNull(accountURI);
+		Assertion.check().notNull(accountURI);
 		//-----
 		final List<Response<Map<String, String>>> responses = new ArrayList<>();
 		final List<Response<String>> responsesUserContent = new ArrayList<>();
@@ -171,8 +172,9 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void updateUserContent(final UID<Account> accountURI, final UUID notificationUUID, final String userContent) {
-		Assertion.checkNotNull(accountURI);
-		Assertion.checkNotNull(notificationUUID);
+		Assertion.check()
+				.notNull(accountURI)
+				.notNull(notificationUUID);
 		//-----
 		try (final Jedis jedis = redisConnector.getClient()) {
 			final String uuid = notificationUUID.toString();
@@ -189,8 +191,9 @@ public final class RedisNotificationPlugin implements NotificationPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void remove(final UID<Account> accountURI, final UUID notificationUUID) {
-		Assertion.checkNotNull(accountURI);
-		Assertion.checkNotNull(notificationUUID);
+		Assertion.check()
+				.notNull(accountURI)
+				.notNull(notificationUUID);
 		//-----
 		try (final Jedis jedis = redisConnector.getClient()) {
 			final String notifiedAccount = "notifs:" + accountURI.getId();
