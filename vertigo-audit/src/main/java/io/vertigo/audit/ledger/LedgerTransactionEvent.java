@@ -35,7 +35,7 @@ public final class LedgerTransactionEvent implements Event {
 	 * @param ledgerTransaction A ledgerTransaction
 	 */
 	public LedgerTransactionEvent(final LedgerTransaction ledgerTransaction) {
-		Assertion.checkNotNull(ledgerTransaction);
+		Assertion.check().notNull(ledgerTransaction);
 		//-----
 		this.ledgerTransaction = ledgerTransaction;
 	}

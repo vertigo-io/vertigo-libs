@@ -47,9 +47,10 @@ public final class TraceBuilder implements Builder<Trace> {
 	 * @param item
 	 */
 	public TraceBuilder(final String category, final String user, final Long item, final String message) {
-		Assertion.checkNotNull(item);
-		Assertion.checkArgNotEmpty(category);
-		Assertion.checkArgNotEmpty(user);
+		Assertion.check()
+				.notNull(item)
+				.argNotEmpty(category)
+				.argNotEmpty(user);
 		//---
 		myCategory = category;
 		myUser = user;
@@ -64,7 +65,7 @@ public final class TraceBuilder implements Builder<Trace> {
 	 * @return the builder (for fluent style)
 	 */
 	public TraceBuilder withDateBusiness(final Instant dateBusiness) {
-		Assertion.checkNotNull(dateBusiness);
+		Assertion.check().notNull(dateBusiness);
 		//---
 		myBusinessDate = dateBusiness;
 		return this;
@@ -76,8 +77,9 @@ public final class TraceBuilder implements Builder<Trace> {
 	 * @return the builder (for fluent style)
 	 */
 	public TraceBuilder withContext(final List<String> context) {
-		Assertion.checkNotNull(context);
-		Assertion.checkArgument(context.isEmpty() == false, "The provided context is empty");
+		Assertion.check()
+				.notNull(context)
+				.argument(context.isEmpty() == false, "The provided context is empty");
 		//---
 		myContext = context
 				.stream()

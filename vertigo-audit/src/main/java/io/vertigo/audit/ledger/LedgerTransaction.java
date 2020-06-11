@@ -49,15 +49,16 @@ public final class LedgerTransaction {
 			final String to,
 			final BigInteger value,
 			final String message) {
-		Assertion.checkNotNull(hash);
-		Assertion.checkNotNull(nonce);
-		Assertion.checkNotNull(blockHash);
-		Assertion.checkNotNull(blockNumber);
-		Assertion.checkNotNull(transactionIndex);
-		Assertion.checkNotNull(from);
-		Assertion.checkNotNull(to);
-		Assertion.checkNotNull(value);
-		Assertion.checkNotNull(message);
+		Assertion.check()
+				.notNull(hash)
+				.notNull(nonce)
+				.notNull(blockHash)
+				.notNull(blockNumber)
+				.notNull(transactionIndex)
+				.notNull(from)
+				.notNull(to)
+				.notNull(value)
+				.notNull(message);
 		//-----
 		this.hash = hash;
 		this.nonce = nonce;

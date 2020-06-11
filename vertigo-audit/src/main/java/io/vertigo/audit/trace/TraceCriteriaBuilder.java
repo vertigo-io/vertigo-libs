@@ -43,7 +43,7 @@ public final class TraceCriteriaBuilder implements Builder<TraceCriteria> {
 	 * @return the builder (for fluent style)
 	 */
 	public TraceCriteriaBuilder withCategory(final String category) {
-		Assertion.checkNotNull(category);
+		Assertion.check().notNull(category);
 		//---
 		myCategory = category;
 		return this;
@@ -55,7 +55,7 @@ public final class TraceCriteriaBuilder implements Builder<TraceCriteria> {
 	 * @return the builder (for fluent style)
 	 */
 	public TraceCriteriaBuilder withUsername(final String username) {
-		Assertion.checkNotNull(username);
+		Assertion.check().notNull(username);
 		//---
 		myUsername = username;
 		return this;
@@ -67,7 +67,7 @@ public final class TraceCriteriaBuilder implements Builder<TraceCriteria> {
 	 * @return the builder (for fluent style)
 	 */
 	public TraceCriteriaBuilder withDateBusinessStart(final Instant startBusinessDate) {
-		Assertion.checkNotNull(startBusinessDate);
+		Assertion.check().notNull(startBusinessDate);
 		//---
 		myStartBusinessDate = startBusinessDate;
 		return this;
@@ -79,7 +79,7 @@ public final class TraceCriteriaBuilder implements Builder<TraceCriteria> {
 	 * @return the builder (for fluent style)
 	 */
 	public TraceCriteriaBuilder withDateBusinessEnd(final Instant endBusinessDate) {
-		Assertion.checkNotNull(endBusinessDate);
+		Assertion.check().notNull(endBusinessDate);
 		//---
 		myEndBusinessDate = endBusinessDate;
 		return this;
@@ -91,7 +91,7 @@ public final class TraceCriteriaBuilder implements Builder<TraceCriteria> {
 	 * @return the builder (for fluent style)
 	 */
 	public TraceCriteriaBuilder withDateExecutionStart(final Instant startExecutionDate) {
-		Assertion.checkNotNull(startExecutionDate);
+		Assertion.check().notNull(startExecutionDate);
 		//---
 		myStartExecutionDate = startExecutionDate;
 		return this;
@@ -103,7 +103,7 @@ public final class TraceCriteriaBuilder implements Builder<TraceCriteria> {
 	 * @return the builder (for fluent style)
 	 */
 	public TraceCriteriaBuilder withDateExecutionEnd(final Instant endExecutionDate) {
-		Assertion.checkNotNull(endExecutionDate);
+		Assertion.check().notNull(endExecutionDate);
 		//---
 		myEndExecutionDate = endExecutionDate;
 		return this;
@@ -115,7 +115,7 @@ public final class TraceCriteriaBuilder implements Builder<TraceCriteria> {
 	 * @return the builder (for fluent style)
 	 */
 	public TraceCriteriaBuilder withItem(final Long item) {
-		Assertion.checkNotNull(item);
+		Assertion.check().notNull(item);
 		//---
 		myItem = item;
 		return this;

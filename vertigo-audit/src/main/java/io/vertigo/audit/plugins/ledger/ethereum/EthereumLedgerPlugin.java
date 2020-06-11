@@ -79,15 +79,15 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 			@ParamValue("defaultDestPublicAddr") final String defaultDestPublicAddr,
 			@ParamValue("walletPassword") final String walletPassword,
 			@ParamValue("walletPath") final String walletPath) {
-		Assertion.checkNotNull(eventBusManager);
-		//---
-		Assertion.checkArgNotEmpty(myAccountName);
-		Assertion.checkArgNotEmpty(myPublicAddr);
-		Assertion.checkArgNotEmpty(defaultDestAccountName);
-		Assertion.checkArgNotEmpty(defaultDestPublicAddr);
-		Assertion.checkArgNotEmpty(walletPassword);
-		Assertion.checkArgNotEmpty(walletPath);
-		Assertion.checkNotNull(eventBusManager);
+		Assertion.check()
+				.notNull(eventBusManager)
+				.argNotEmpty(myAccountName)
+				.argNotEmpty(myPublicAddr)
+				.argNotEmpty(defaultDestAccountName)
+				.argNotEmpty(defaultDestPublicAddr)
+				.argNotEmpty(walletPassword)
+				.argNotEmpty(walletPath)
+				.notNull(eventBusManager);
 		//---
 		this.eventBusManager = eventBusManager;
 		//---
@@ -127,7 +127,7 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 
 	@Override
 	public BigInteger getWalletBalance(final LedgerAddress ledgerAddress) {
-		Assertion.checkNotNull(ledgerAddress);
+		Assertion.check().notNull(ledgerAddress);
 		//---
 		final EthGetBalance balance;
 		try {
@@ -149,9 +149,10 @@ public final class EthereumLedgerPlugin implements LedgerPlugin, Activeable {
 	}
 
 	private void sendData(final String data, final LedgerAddress ledgerAddress, final LedgerTransactionPriorityEnum priority) {
-		Assertion.checkArgNotEmpty(data);
-		Assertion.checkNotNull(ledgerAddress);
-		Assertion.checkNotNull(priority);
+		Assertion.check()
+				.argNotEmpty(data)
+				.notNull(ledgerAddress)
+				.notNull(priority);
 		//---
 		try {
 			final TransactionReceipt transactionReceipt = EthereumTransfer.sendFunds(web3j, credentials, ledgerAddress.getPublicAddress(),
