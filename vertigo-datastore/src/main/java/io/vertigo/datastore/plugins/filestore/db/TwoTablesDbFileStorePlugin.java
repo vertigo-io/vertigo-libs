@@ -78,7 +78,7 @@ public final class TwoTablesDbFileStorePlugin extends AbstractDbFileStorePlugin 
 			@ParamValue("fileInfoClass") final String fileInfoClassName,
 			final FileManager fileManager) {
 		super(name, fileInfoClassName);
-		Assertion.checkNotNull(fileManager);
+		Assertion.check().notNull(fileManager);
 		//-----
 		this.fileManager = fileManager;
 		storeMetaDataDtDefinition = Home.getApp().getDefinitionSpace().resolve(storeMetaDataDtDefinitionName, DtDefinition.class);

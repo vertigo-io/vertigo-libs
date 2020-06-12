@@ -53,7 +53,7 @@ final class WhereInPreProcessor {
 	 * @param inTaskAttributes Valeur des paramètres
 	 */
 	WhereInPreProcessor(final Map<TaskAttribute, Object> inTaskAttributes) {
-		Assertion.checkNotNull(inTaskAttributes);
+		Assertion.check().notNull(inTaskAttributes);
 		//-----
 		this.inTaskAttributes = inTaskAttributes;
 	}

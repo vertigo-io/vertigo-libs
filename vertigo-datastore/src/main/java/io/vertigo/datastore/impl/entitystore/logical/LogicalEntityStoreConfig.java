@@ -46,7 +46,7 @@ public final class LogicalEntityStoreConfig {
 	 * @param dataStorePlugins DataStore plugins
 	 */
 	public LogicalEntityStoreConfig(final List<EntityStorePlugin> dataStorePlugins) {
-		Assertion.checkNotNull(dataStorePlugins);
+		Assertion.check().notNull(dataStorePlugins);
 		//-----
 		final Map<String, EntityStorePlugin> pluginsMap = new HashMap<>();
 		for (final EntityStorePlugin dataStorePlugin : dataStorePlugins) {
@@ -64,7 +64,7 @@ public final class LogicalEntityStoreConfig {
 	 * @return the dataStore used for the specified 'DtDefinition'
 	 */
 	public EntityStorePlugin getPhysicalDataStore(final DtDefinition dtDefinition) {
-		Assertion.checkNotNull(dtDefinition);
+		Assertion.check().notNull(dtDefinition);
 		//-----
 		return getDataStorePlugin(dtDefinition.getDataSpace());
 	}
@@ -84,7 +84,7 @@ public final class LogicalEntityStoreConfig {
 		Assertion.checkArgNotEmpty(dataSpace);
 		//-----
 		final EntityStorePlugin dataStore = dataStorePluginsMap.get(dataSpace);
-		Assertion.checkNotNull(dataStore, "No store found mapped to collection '{0}'", dataSpace);
+		Assertion.check().notNull(dataStore, "No store found mapped to collection '{0}'", dataSpace);
 		return dataStore;
 	}
 }

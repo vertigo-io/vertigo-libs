@@ -39,7 +39,7 @@ final class BerkeleyResource implements VTransactionResource {
 	 * @param environment Berkeley Environment.
 	 */
 	BerkeleyResource(final Environment environment) {
-		Assertion.checkNotNull(environment);
+		Assertion.check().notNull(environment);
 		//-----
 		try {
 			transaction = environment.beginTransaction(null, null);

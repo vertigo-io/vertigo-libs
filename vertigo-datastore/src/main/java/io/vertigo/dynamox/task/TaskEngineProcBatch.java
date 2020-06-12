@@ -66,8 +66,9 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 	public OptionalInt doExecute(
 			final SqlStatement sqlStatement,
 			final SqlConnection connection) throws SQLException {
-		Assertion.checkNotNull(sqlStatement);
-		Assertion.checkNotNull(connection);
+		Assertion.check()
+				.notNull(sqlStatement)
+				.notNull(connection);
 		//---
 		return getDataBaseManager().executeBatch(sqlStatement, getModelManager().getTypeAdapters("sql"), connection);
 	}

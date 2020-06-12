@@ -89,9 +89,10 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 			@ParamValue("dbFilePath") final String dbFilePath,
 			final VTransactionManager transactionManager,
 			final CodecManager codecManager) {
-		Assertion.checkArgNotEmpty(collections);
-		Assertion.checkArgNotEmpty(dbFilePath);
-		Assertion.checkNotNull(transactionManager);
+		Assertion.check()
+				.argNotEmpty(collections)
+				.argNotEmpty(dbFilePath)
+				.notNull(transactionManager);
 		//-----
 		collectionConfigs = parseCollectionConfigs(collections);
 		collectionNames = collectionConfigs
@@ -217,7 +218,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 
 	private BerkeleyDatabase getDatabase(final String collection) {
 		final BerkeleyDatabase database = databases.get(collection);
-		Assertion.checkNotNull("database {0} not null", collection);
+		Assertion.check().notNull("database {0} not null", collection);
 		return database;
 	}
 

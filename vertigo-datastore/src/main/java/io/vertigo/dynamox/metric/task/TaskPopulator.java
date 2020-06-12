@@ -47,7 +47,7 @@ final class TaskPopulator {
 	 * @param taskDefinition Definition de la tache
 	 */
 	public TaskPopulator(final TaskDefinition taskDefinition) {
-		Assertion.checkNotNull(taskDefinition);
+		Assertion.check().notNull(taskDefinition);
 		//-----
 		this.taskDefinition = taskDefinition;
 		taskBuilder = Task.builder(taskDefinition);

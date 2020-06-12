@@ -77,8 +77,9 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 			@ParamValue("fileInfoClass") final String fileInfoClassName,
 			final FileManager fileManager) {
 		super(name, fileInfoClassName);
-		Assertion.checkArgNotEmpty(storeDtDefinitionName);
-		Assertion.checkNotNull(fileManager);
+		Assertion.check()
+				.argNotEmpty(storeDtDefinitionName)
+				.notNull(fileManager);
 		//-----
 		this.storeDtDefinitionName = storeDtDefinitionName;
 		this.fileManager = fileManager;
@@ -99,7 +100,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	/** {@inheritDoc} */
 	@Override
 	public FileInfo read(final FileInfoURI uri) {
-		Assertion.checkNotNull(uri);
+		Assertion.check().notNull(uri);
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
 		final UID<Entity> dtoUri = UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getSmartTypeDefinition().getJavaClass()));
@@ -117,7 +118,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	@Override
 	public FileInfo create(final FileInfo fileInfo) {
 		checkReadonly();
-		Assertion.checkNotNull(fileInfo.getURI() == null, "Only file without any id can be created.");
+		Assertion.check().notNull(fileInfo.getURI() == null, "Only file without any id can be created.");
 		checkDefinitionStoreBinding(fileInfo.getDefinition());
 		//-----
 		final Entity fileInfoDto = createFileInfoDto(fileInfo);
@@ -125,7 +126,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 		getEntityStoreManager().create(fileInfoDto);
 		//-----
 		final Object fileInfoDtoId = DtObjectUtil.getId(fileInfoDto);
-		Assertion.checkNotNull(fileInfoDtoId, "File's id must be set");
+		Assertion.check().notNull(fileInfoDtoId, "File's id must be set");
 		final FileInfoURI uri = new FileInfoURI(fileInfo.getDefinition(), fileInfoDtoId);
 		fileInfo.setURIStored(uri);
 		return fileInfo;
@@ -135,7 +136,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	@Override
 	public void update(final FileInfo fileInfo) {
 		checkReadonly();
-		Assertion.checkNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
+		Assertion.check().notNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
 		checkDefinitionStoreBinding(fileInfo.getDefinition());
 		//-----
 		final Entity fileInfoDto = createFileInfoDto(fileInfo);
@@ -147,7 +148,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 	@Override
 	public void delete(final FileInfoURI uri) {
 		checkReadonly();
-		Assertion.checkNotNull(uri, "uri du fichier doit être renseignée.");
+		Assertion.check().notNull(uri, "uri du fichier doit être renseignée.");
 		checkDefinitionStoreBinding(uri.getDefinition());
 		//-----
 		final UID<Entity> dtoUri = UID.of(storeDtDefinition, uri.getKeyAs(storeIdField.getSmartTypeDefinition().getJavaClass()));

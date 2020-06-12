@@ -56,9 +56,10 @@ public class RedisCachePlugin implements CachePlugin {
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<RedisConnector> redisConnectors,
 			final CodecManager codecManager) {
-		Assertion.checkNotNull(connectorNameOpt);
-		Assertion.checkNotNull(redisConnectors);
-		Assertion.checkNotNull(codecManager);
+		Assertion.check()
+				.notNull(connectorNameOpt)
+				.notNull(redisConnectors)
+				.notNull(codecManager);
 		//-----
 		this.codecManager = codecManager;
 		final String connectorName = connectorNameOpt.orElse("main");
@@ -70,11 +71,12 @@ public class RedisCachePlugin implements CachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void put(final String context, final Serializable key, final Object value) {
-		Assertion.checkNotNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", context, key);
-		Assertion.checkState(!(value instanceof byte[]), "CachePlugin can't cache byte[] values");
-		Assertion.checkArgument(value instanceof Serializable,
-				"Object to cache isn't Serializable. Make it unmodifiable or add it in noSerialization's plugin parameter. (context: {0}, key:{1}, class:{2})",
-				context, key, value.getClass().getSimpleName());
+		Assertion.check()
+				.notNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", context, key)
+				.state(!(value instanceof byte[]), "CachePlugin can't cache byte[] values")
+				.argument(value instanceof Serializable,
+						"Object to cache isn't Serializable. Make it unmodifiable or add it in noSerialization's plugin parameter. (context: {0}, key:{1}, class:{2})",
+						context, key, value.getClass().getSimpleName());
 		//---
 		final String redisKey = buildRedisKey(context, key);
 
@@ -140,8 +142,9 @@ public class RedisCachePlugin implements CachePlugin {
 	 * redisKey = "vertigo:cache:" + context + key
 	 */
 	private static String buildRedisKey(final String context, final Serializable key) {
-		Assertion.checkArgNotEmpty(context);
-		Assertion.checkNotNull(key);
+		Assertion.check()
+				.argNotEmpty(context)
+				.notNull(key);
 		//---
 		return VERTIGO_CACHE + ":" + context + ":" + keyToString(key);
 	}
@@ -161,7 +164,7 @@ public class RedisCachePlugin implements CachePlugin {
 	 * An empty key is considered as null.
 	 */
 	private static String keyToString(final Serializable key) {
-		Assertion.checkNotNull(key);
+		Assertion.check().notNull(key);
 		//---
 		if (key instanceof String) {
 			Assertion.checkArgNotEmpty((String) key, "a key cannot be an empty string");

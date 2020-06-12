@@ -87,7 +87,7 @@ final class DtListURIForCriteria<E extends Entity> extends DtListURI {
 	* @return Criteria resultant
 	*/
 	public static <E extends Entity> Criteria<E> createCriteria(final DtObject dtoCriteria) {
-		Assertion.checkNotNull(dtoCriteria);
+		Assertion.check().notNull(dtoCriteria);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dtoCriteria);
 

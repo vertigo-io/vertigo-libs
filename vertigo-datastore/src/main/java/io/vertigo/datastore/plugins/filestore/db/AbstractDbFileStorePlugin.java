@@ -62,8 +62,9 @@ abstract class AbstractDbFileStorePlugin {
 	AbstractDbFileStorePlugin(
 			@ParamValue("name") final Optional<String> name,
 			final String fileInfoClassName) {
-		Assertion.checkNotNull(name);
-		Assertion.checkArgNotEmpty(fileInfoClassName);
+		Assertion.check()
+				.notNull(name)
+				.argNotEmpty(fileInfoClassName);
 		//-----
 		readOnly = false;
 		this.name = name.orElse(FileStoreManager.MAIN_DATA_SPACE_NAME);

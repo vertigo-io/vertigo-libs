@@ -102,12 +102,13 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			final FileManager fileManager,
 			final VTransactionManager transactionManager,
 			@ParamValue("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
-		Assertion.checkNotNull(name);
-		Assertion.checkArgNotEmpty(path);
-		Assertion.checkArgNotEmpty(fileInfoClassName);
-		Assertion.checkNotNull(fileManager);
-		Assertion.checkNotNull(transactionManager);
-		Assertion.checkArgument(path.endsWith("/"), "store path must ends with / ({0})", path);
+		Assertion.check()
+				.notNull(name)
+				.argNotEmpty(path)
+				.argNotEmpty(fileInfoClassName)
+				.notNull(fileManager)
+				.notNull(transactionManager)
+				.argument(path.endsWith("/"), "store path must ends with / ({0})", path);
 		//-----
 		this.name = name.orElse(DEFAULT_STORE_NAME);
 		this.fileManager = fileManager;
@@ -203,8 +204,9 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public FileInfo create(final FileInfo fileInfo) {
-		Assertion.checkNotNull(fileInfo);
-		Assertion.checkArgument(fileInfo.getURI() == null, "Only file without any id can be created.");
+		Assertion.check()
+				.notNull(fileInfo)
+				.argument(fileInfo.getURI() == null, "Only file without any id can be created.");
 		//-----
 		final VFile vFile = fileInfo.getVFile();
 		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN)
@@ -231,7 +233,7 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void update(final FileInfo fileInfo) {
-		Assertion.checkNotNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
+		Assertion.check().notNull(fileInfo.getURI() != null, "Only file with an id can be updated.");
 		//-----
 		final VFile vFile = fileInfo.getVFile();
 		final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INFOS_DATE_PATTERN)

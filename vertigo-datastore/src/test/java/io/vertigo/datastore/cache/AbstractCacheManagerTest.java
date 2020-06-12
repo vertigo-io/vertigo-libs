@@ -81,7 +81,7 @@ public abstract class AbstractCacheManagerTest {
 	 */
 	@Test
 	public void testNotNull() throws Exception {
-		Assertion.checkNotNull(cacheManager);
+		Assertion.check().notNull(cacheManager);
 	}
 
 	/**

@@ -49,8 +49,9 @@ public final class StoreEvent implements Event {
 	 * @param uid UID of stored element
 	 */
 	public StoreEvent(final Type type, final UID uid) {
-		Assertion.checkNotNull(type);
-		Assertion.checkNotNull(uid);
+		Assertion.check()
+				.notNull(type)
+				.notNull(uid);
 		//-----
 		this.type = type;
 		this.uid = uid;

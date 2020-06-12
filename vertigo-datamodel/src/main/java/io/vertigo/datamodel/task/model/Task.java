@@ -63,7 +63,6 @@ public final class Task {
 				.notNull(inTaskAttributes);
 		//-----
 		this.taskDefinition = taskDefinition;
-		//---
 		this.inTaskAttributes = inTaskAttributes;
 		checkValues();
 	}

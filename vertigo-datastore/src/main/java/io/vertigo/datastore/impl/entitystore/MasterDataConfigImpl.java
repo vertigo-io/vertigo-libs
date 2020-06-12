@@ -39,16 +39,17 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	/** {@inheritDoc} */
 	@Override
 	public void register(final MasterDataDefinition masterDataDefinition) {
-		Assertion.checkNotNull(masterDataDefinition);
+		Assertion.check().notNull(masterDataDefinition);
 		//-----
 		register(masterDataDefinition.getUri(), masterDataDefinition.getPredicate());
 	}
 
 	private void register(final DtListURIForMasterData uri, final Predicate dtListFilter) {
-		Assertion.checkNotNull(uri);
-		Assertion.checkArgument(!mdlUriFilterMap.containsKey(uri), "Il existe deja une liste de référence enregistrée {0}.", uri);
-		//Criteria peut être null
-		Assertion.checkNotNull(dtListFilter);
+		Assertion.check()
+				.notNull(uri)
+				.argument(!mdlUriFilterMap.containsKey(uri), "Il existe deja une liste de référence enregistrée {0}.", uri)
+				//Criteria peut être null
+				.notNull(dtListFilter);
 		//-----
 
 		mdlUriFilterMap.put(uri, dtListFilter);
@@ -62,7 +63,7 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	/** {@inheritDoc} */
 	@Override
 	public boolean containsMasterData(final DtDefinition dtDefinition) {
-		Assertion.checkNotNull(dtDefinition);
+		Assertion.check().notNull(dtDefinition);
 		//-----
 		return defaultMdlMap2.containsKey(dtDefinition);
 	}
@@ -70,7 +71,7 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	/** {@inheritDoc} */
 	@Override
 	public DtListURIForMasterData getDtListURIForMasterData(final DtDefinition dtDefinition) {
-		Assertion.checkNotNull(dtDefinition);
+		Assertion.check().notNull(dtDefinition);
 		//-----
 		final DtListURIForMasterData uri = defaultMdlMap2.get(dtDefinition);
 		return uri;
@@ -79,7 +80,7 @@ public final class MasterDataConfigImpl implements MasterDataConfig {
 	/** {@inheritDoc} */
 	@Override
 	public Predicate getFilter(final DtListURIForMasterData uri) {
-		Assertion.checkNotNull(uri);
+		Assertion.check().notNull(uri);
 		//-----
 		final Predicate predicate = mdlUriFilterMap.get(uri);
 		return predicate != null ? predicate : x -> true;

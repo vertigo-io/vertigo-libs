@@ -45,7 +45,7 @@ public final class CacheManagerImpl implements CacheManager, SimpleDefinitionPro
 	 */
 	@Inject
 	public CacheManagerImpl(final CachePlugin cachePlugin) {
-		Assertion.checkNotNull(cachePlugin);
+		Assertion.check().notNull(cachePlugin);
 		//-----
 		this.cachePlugin = cachePlugin;
 	}

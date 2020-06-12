@@ -1,5 +1,5 @@
 /**
- * vertigo - simple java starter
+Assertion.check().notNull * vertigo - simple java starter
  *
  * Copyright (C) 2013-2019, Vertigo.io, KleeGroup, direction.technique@kleegroup.com (http://www.kleegroup.com)
  * KleeGroup, Centre d'affaire la Boursidiere - BP 159 - 92357 Le Plessis Robinson Cedex - France
@@ -70,7 +70,7 @@ public final class CacheDataStoreConfig {
 	public void registerCacheable(
 			final DtDefinition dtDefinition,
 			final boolean isReloadedByList) {
-		Assertion.checkNotNull(dtDefinition);
+		Assertion.check().notNull(dtDefinition);
 		//-----
 		cacheableDtDefinitionMap.put(dtDefinition, isReloadedByList);
 	}
@@ -80,7 +80,7 @@ public final class CacheDataStoreConfig {
 	 * @return Si ce type d'objet doit être chargé de façon ensembliste ou non.
 	 */
 	boolean isReloadedByList(final DtDefinition dtDefinition) {
-		Assertion.checkNotNull(dtDefinition);
+		Assertion.check().notNull(dtDefinition);
 		//-----
 		return cacheableDtDefinitionMap.get(dtDefinition);
 	}

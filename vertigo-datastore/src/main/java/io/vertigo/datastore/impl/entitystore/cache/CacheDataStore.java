@@ -82,7 +82,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	 * @return Element by uid
 	 */
 	public <E extends Entity> E readNullable(final UID<E> uid) {
-		Assertion.checkNotNull(uid);
+		Assertion.check().notNull(uid);
 		//-----
 		final DtDefinition dtDefinition = uid.getDefinition();
 		E entity;
@@ -118,7 +118,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	}
 
 	private <E extends Entity> DtList<E> doLoadList(final DtDefinition dtDefinition, final DtListURI listUri) {
-		Assertion.checkNotNull(listUri);
+		Assertion.check().notNull(listUri);
 		//-----
 		final DtList<E> list;
 		if (listUri instanceof DtListURIForMasterData) {
@@ -137,8 +137,9 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	}
 
 	private <E extends Entity> DtList<E> loadMDList(final DtListURIForMasterData uri) {
-		Assertion.checkNotNull(uri);
-		Assertion.checkArgument(uri.getDtDefinition().getSortField().isPresent(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
+		Assertion.check()
+				.notNull(uri)
+				.argument(uri.getDtDefinition().getSortField().isPresent(), "Sortfield on definition {0} wasn't set. It's mandatory for MasterDataList.", uri.getDtDefinition().getName());
 		//-----
 		//On cherche la liste complete
 		final DtList<E> unFilteredDtc = getPhysicalStore(uri.getDtDefinition()).findByCriteria(uri.getDtDefinition(), Criterions.alwaysTrue(), DtListState.of(null, 0, uri.getDtDefinition().getSortField().get().getName(), false));
@@ -158,7 +159,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 	 * @return List of this uri
 	 */
 	public <E extends Entity> DtList<E> findAll(final DtListURI uri) {
-		Assertion.checkNotNull(uri);
+		Assertion.check().notNull(uri);
 		//-----
 		//- Prise en compte du cache
 		//On ne met pas en cache les URI d'une association NN
@@ -191,7 +192,7 @@ public final class CacheDataStore implements SimpleDefinitionProvider {
 
 	/* On notifie la mise à jour du cache, celui-ci est donc vidé. */
 	private void clearCache(final DtDefinition dtDefinition) {
-		Assertion.checkNotNull(dtDefinition);
+		Assertion.check().notNull(dtDefinition);
 		//-----
 		// On ne vérifie pas que la definition est cachable, Lucene utilise le même cache
 		// A changer si on gère lucene différemment

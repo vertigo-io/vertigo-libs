@@ -43,7 +43,7 @@ final class FileActionDelete implements VTransactionAfterCompletionFunction {
 	 * @param path Location of the file
 	 */
 	FileActionDelete(final String path) {
-		Assertion.checkNotNull(path);
+		Assertion.check().notNull(path);
 		//-----
 		file = new File(path);
 

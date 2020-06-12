@@ -89,7 +89,7 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withPackageName(final String packageName) {
-		//packageName peut être null
+		//packageName can be null
 		//-----
 		myPackageName = packageName;
 		return this;
@@ -116,11 +116,6 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder addInAttribute(final String attributeName, final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {
-		Assertion.check()
-				.notNull(attributeName)
-				.notNull(smartTypeDefinition)
-				.notNull(cardinality);
-		//-----
 		final TaskAttribute taskAttribute = new TaskAttribute(attributeName, smartTypeDefinition, cardinality);
 		myInTaskAttributes.add(taskAttribute);
 		return this;
@@ -135,7 +130,6 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 	 * @return this builder
 	 */
 	public TaskDefinitionBuilder withOutAttribute(final String attributeName, final SmartTypeDefinition smartTypeDefinition, final Cardinality cardinality) {
-		//-----
 		myOutTaskAttribute = new TaskAttribute(attributeName, smartTypeDefinition, cardinality);
 		return this;
 	}
@@ -152,5 +146,4 @@ public final class TaskDefinitionBuilder implements Builder<TaskDefinition> {
 				myInTaskAttributes,
 				Optional.ofNullable(myOutTaskAttribute));
 	}
-
 }

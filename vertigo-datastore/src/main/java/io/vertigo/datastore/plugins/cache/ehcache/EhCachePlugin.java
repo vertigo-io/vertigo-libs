@@ -56,7 +56,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	 */
 	@Inject
 	public EhCachePlugin(final CodecManager codecManager) {
-		Assertion.checkNotNull(codecManager);
+		Assertion.check().notNull(codecManager);
 		//-----
 		this.codecManager = codecManager;
 		manager = CacheManagerBuilder.newCacheManagerBuilder().build();
@@ -115,8 +115,9 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void put(final String cacheName, final Serializable key, final Object value) {
-		Assertion.checkNotNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", cacheName, key);
-		Assertion.checkState(!(value instanceof byte[]), "CachePlugin can't cache byte[] values");
+		Assertion.check()
+				.notNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", cacheName, key)
+				.state(!(value instanceof byte[]), "CachePlugin can't cache byte[] values");
 		//-----
 		//On regarde la conf du cache pour vérifier s'il on serialize/clone les éléments ou non.
 		if (getCacheDefinition(cacheName).shouldSerializeElements()) {
@@ -180,7 +181,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 
 	private Cache<Serializable, Object> getEHCache(final String context) {
 		final Cache<Serializable, Object> ehCache = manager.getCache(context, Serializable.class, Object.class);
-		Assertion.checkNotNull(ehCache, "Cache {0} are not yet registered. Add it into a file ehcache.xml and put it into the WEB-INF directory of your webapp.", context);
+		Assertion.check().notNull(ehCache, "Cache {0} are not yet registered. Add it into a file ehcache.xml and put it into the WEB-INF directory of your webapp.", context);
 		return ehCache;
 	}
 

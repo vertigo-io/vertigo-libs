@@ -43,10 +43,11 @@ abstract class AbstractVFile implements VFile {
 	 * @param length Longueur du fichier (en octet)
 	 */
 	protected AbstractVFile(final String fileName, final String mimeType, final Instant lastModified, final long length) {
-		Assertion.checkNotNull(fileName);
-		Assertion.checkNotNull(mimeType);
-		Assertion.checkNotNull(lastModified);
-		Assertion.checkNotNull(length);
+		Assertion.check()
+				.notNull(fileName)
+				.notNull(mimeType)
+				.notNull(lastModified)
+				.notNull(length);
 		//-----
 		this.fileName = fileName;
 		this.mimeType = mimeType;

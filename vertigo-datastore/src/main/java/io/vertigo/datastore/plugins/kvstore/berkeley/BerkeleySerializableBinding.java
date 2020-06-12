@@ -38,7 +38,7 @@ final class BerkeleySerializableBinding extends TupleBinding<Serializable> {
 	 * @param codec codec de serialization
 	 */
 	BerkeleySerializableBinding(final Codec<Serializable, byte[]> codec) {
-		Assertion.checkNotNull(codec);
+		Assertion.check().notNull(codec);
 		//-----
 		this.codec = codec;
 	}

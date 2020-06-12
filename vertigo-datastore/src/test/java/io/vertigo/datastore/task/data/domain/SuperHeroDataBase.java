@@ -33,8 +33,9 @@ public final class SuperHeroDataBase {
 	private final TaskManager taskManager;
 
 	public SuperHeroDataBase(final VTransactionManager transactionManager, final TaskManager taskManager) {
-		Assertion.checkNotNull(transactionManager);
-		Assertion.checkNotNull(taskManager);
+		Assertion.check()
+				.notNull(transactionManager)
+				.notNull(taskManager);
 		//---
 		this.transactionManager = transactionManager;
 		this.taskManager = taskManager;

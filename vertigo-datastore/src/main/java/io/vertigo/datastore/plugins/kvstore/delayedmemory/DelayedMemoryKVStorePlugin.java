@@ -95,7 +95,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 
 	private Map<String, DelayedMemoryCacheValue> getCollectionData(final String collection) {
 		final Map<String, DelayedMemoryCacheValue> collectionData = collectionsData.get(collection);
-		Assertion.checkNotNull(collectionData, "collection {0} is null", collection);
+		Assertion.check().notNull(collectionData, "collection {0} is null", collection);
 		return collectionData;
 	}
 
@@ -108,9 +108,10 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	/** {@inheritDoc} */
 	@Override
 	public void put(final String collection, final String key, final Object element) {
-		Assertion.checkArgNotEmpty(collection);
-		Assertion.checkArgNotEmpty(key);
-		Assertion.checkNotNull(element);
+		Assertion.check()
+				.argNotEmpty(collection)
+				.argNotEmpty(key)
+				.notNull(element);
 		//-----
 		final DelayedMemoryCacheValue cacheValue = new DelayedMemoryCacheValue(element);
 		getCollectionData(collection).put(key, cacheValue);
@@ -137,9 +138,10 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	/** {@inheritDoc} */
 	@Override
 	public <C> Optional<C> find(final String collection, final String key, final Class<C> clazz) {
-		Assertion.checkArgNotEmpty(collection);
-		Assertion.checkArgNotEmpty(key);
-		Assertion.checkNotNull(clazz);
+		Assertion.check()
+				.argNotEmpty(collection)
+				.argNotEmpty(key)
+				.notNull(clazz);
 		//-----
 		final DelayedMemoryCacheValue cacheValue = getCollectionData(collection).get(key);
 		if (cacheValue != null && !isTooOld(cacheValue)) {
@@ -189,7 +191,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 		 * @param delayedMemoryKVDataStorePlugin This plugin
 		 */
 		public RemoveTooOldElementsDaemon(final DelayedMemoryKVStorePlugin delayedMemoryKVDataStorePlugin) {
-			Assertion.checkNotNull(delayedMemoryKVDataStorePlugin);
+			Assertion.check().notNull(delayedMemoryKVDataStorePlugin);
 			//------
 			this.delayedMemoryKVDataStorePlugin = delayedMemoryKVDataStorePlugin;
 		}

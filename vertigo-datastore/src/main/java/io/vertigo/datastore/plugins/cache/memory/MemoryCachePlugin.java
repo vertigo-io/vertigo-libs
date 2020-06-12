@@ -46,7 +46,7 @@ public final class MemoryCachePlugin implements Activeable, CachePlugin {
 	 */
 	@Inject
 	public MemoryCachePlugin(final CodecManager codecManager) {
-		Assertion.checkNotNull(codecManager);
+		Assertion.check().notNull(codecManager);
 		//-----
 		this.codecManager = codecManager;
 	}
@@ -79,8 +79,9 @@ public final class MemoryCachePlugin implements Activeable, CachePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public void put(final String context, final Serializable key, final Object value) {
-		Assertion.checkNotNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", context, key);
-		Assertion.checkState(!(value instanceof byte[]), "Ce CachePlugin ne permet pas de mettre en cache des byte[].");
+		Assertion.check()
+				.notNull(value, "CachePlugin can't cache null value. (context: {0}, key:{1})", context, key)
+				.state(!(value instanceof byte[]), "Ce CachePlugin ne permet pas de mettre en cache des byte[].");
 		//-----
 		//On regarde la conf du cache pour vérifier s'il on serialize/clone les éléments ou non.
 		if (getCacheDefinition(context).shouldSerializeElements()) {
@@ -145,7 +146,7 @@ public final class MemoryCachePlugin implements Activeable, CachePlugin {
 
 	private synchronized MemoryCache getMapCache(final String context) {
 		final MemoryCache mapCache = cachesPerContext.get(context);
-		Assertion.checkNotNull(mapCache, "Cache {0} are not yet registered.", context);
+		Assertion.check().notNull(mapCache, "Cache {0} are not yet registered.", context);
 		return mapCache;
 	}
 

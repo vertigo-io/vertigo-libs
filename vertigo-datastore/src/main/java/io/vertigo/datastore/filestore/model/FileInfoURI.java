@@ -174,7 +174,7 @@ public final class FileInfoURI implements Serializable {
 	 * @return FileInfoURI for this URN
 	 */
 	public static FileInfoURI fromURN(final String urn) {
-		Assertion.checkNotNull(urn);
+		Assertion.check().notNull(urn);
 		//-----
 		final int i = urn.indexOf(D2A_SEPARATOR);
 		final String dname = urn.substring(0, i);

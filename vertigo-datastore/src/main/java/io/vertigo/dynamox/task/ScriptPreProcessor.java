@@ -49,9 +49,10 @@ final class ScriptPreProcessor {
 	 * @param separatorType Type de preprocessing CLASSIC ou HTML
 	 */
 	ScriptPreProcessor(final ScriptManager scriptManager, final Map<TaskAttribute, Object> inTaskAttributes, final SeparatorType separatorType) {
-		Assertion.checkNotNull(scriptManager);
-		Assertion.checkNotNull(inTaskAttributes);
-		Assertion.checkNotNull(separatorType);
+		Assertion.check()
+				.notNull(scriptManager)
+				.notNull(inTaskAttributes)
+				.notNull(separatorType);
 		//-----
 		this.scriptManager = scriptManager;
 		this.inTaskAttributes = inTaskAttributes;
@@ -59,8 +60,9 @@ final class ScriptPreProcessor {
 	}
 
 	private static List<ExpressionParameter> createParameters(final ScriptManager scriptManager, final Map<TaskAttribute, Object> inTaskAttributes) {
-		Assertion.checkNotNull(scriptManager);
-		Assertion.checkNotNull(inTaskAttributes);
+		Assertion.check()
+				.notNull(scriptManager)
+				.notNull(inTaskAttributes);
 		//-----
 		final List<ExpressionParameter> tmpParameters = new ArrayList<>(inTaskAttributes.size());
 

@@ -42,7 +42,7 @@ public final class KVStoreManagerImpl implements KVStoreManager {
 	 */
 	@Inject
 	public KVStoreManagerImpl(final List<KVStorePlugin> kvStorePlugins) {
-		Assertion.checkNotNull(kvStorePlugins);
+		Assertion.check().notNull(kvStorePlugins);
 		//-----
 		final MapBuilder<String, KVStorePlugin> mapBuilder = new MapBuilder<>();
 		for (final KVStorePlugin kvDataStorePlugin : kvStorePlugins) {
@@ -57,7 +57,7 @@ public final class KVStoreManagerImpl implements KVStoreManager {
 		Assertion.checkArgNotEmpty(collection);
 		//-----
 		final KVStorePlugin kvStorePlugin = kvStoreByCollection.get(collection);
-		Assertion.checkNotNull(kvStorePlugin, "no store found for collection '{0}'", collection);
+		Assertion.check().notNull(kvStorePlugin, "no store found for collection '{0}'", collection);
 		return kvStorePlugin;
 	}
 

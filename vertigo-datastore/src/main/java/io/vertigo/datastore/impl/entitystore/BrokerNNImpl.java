@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Set;
 
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
@@ -61,7 +61,7 @@ final class BrokerNNImpl implements BrokerNN {
 		private final DtField targetField;
 
 		DescriptionNN(final DtListURIForNNAssociation dtListURIForAssociation) {
-			Assertion.checkNotNull(dtListURIForAssociation);
+			Assertion.check().notNull(dtListURIForAssociation);
 			final AssociationNNDefinition associationNNDefinition = dtListURIForAssociation.getAssociationDefinition();
 
 			tableName = associationNNDefinition.getTableName();
@@ -83,7 +83,7 @@ final class BrokerNNImpl implements BrokerNN {
 	 * @param taskManager Manager des Tasks
 	 */
 	BrokerNNImpl(final TaskManager taskManager) {
-		Assertion.checkNotNull(taskManager);
+		Assertion.check().notNull(taskManager);
 		//-----
 		this.taskManager = taskManager;
 		integerSmartType = SmartTypeDefinition.builder("STyIntegerBroker", BasicType.Integer).build();
@@ -92,7 +92,7 @@ final class BrokerNNImpl implements BrokerNN {
 	/** {@inheritDoc} */
 	@Override
 	public void appendNN(final DtListURIForNNAssociation dtListURI, final UID uriToAppend) {
-		Assertion.checkNotNull(uriToAppend);
+		Assertion.check().notNull(uriToAppend);
 		//-----
 		appendNN(new DescriptionNN(dtListURI), uriToAppend.getId());
 	}
@@ -107,7 +107,7 @@ final class BrokerNNImpl implements BrokerNN {
 	/** {@inheritDoc} */
 	@Override
 	public void removeNN(final DtListURIForNNAssociation dtListURI, final UID uriToDelete) {
-		Assertion.checkNotNull(uriToDelete);
+		Assertion.check().notNull(uriToDelete);
 		//-----
 		removeNN(new DescriptionNN(dtListURI), uriToDelete.getId());
 	}
@@ -115,7 +115,7 @@ final class BrokerNNImpl implements BrokerNN {
 	/** {@inheritDoc} */
 	@Override
 	public void updateNN(final DtListURIForNNAssociation dtListURI, final List<UID> newUriList) {
-		Assertion.checkNotNull(newUriList);
+		Assertion.check().notNull(newUriList);
 		//-----
 		final DescriptionNN descriptionNN = new DescriptionNN(dtListURI);
 		//1. on supprime tout
