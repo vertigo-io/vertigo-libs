@@ -108,7 +108,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	}
 
 	private HttpURLConnection doCreateConnection(final URL url) throws IOException {
-		Assertion.checkNotNull(url);
+		Assertion.check().notNull(url);
 		//-----
 		final HttpURLConnection connection = (HttpURLConnection) url.openConnection(proxy);
 		connection.setDoOutput(true);
@@ -122,7 +122,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	 * @return Document
 	 */
 	private Document geoCode(final String address) {
-		Assertion.checkNotNull(address);
+		Assertion.check().notNull(address);
 		//-----
 		final String urlString;
 		try {
@@ -221,7 +221,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public GeoLocation findLocation(final String address) {
-		Assertion.checkNotNull(address);
+		Assertion.check().notNull(address);
 		//-----
 		final Document geocoderResultDocument = geoCode(address);
 		if (geocoderResultDocument == null) {

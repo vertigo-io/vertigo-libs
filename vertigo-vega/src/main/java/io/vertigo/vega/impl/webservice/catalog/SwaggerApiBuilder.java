@@ -111,7 +111,7 @@ public final class SwaggerApiBuilder implements Builder<SwaggerApi> {
 	@Override
 	public SwaggerApi build() {
 		Assertion.check()
-				.notNull(builderWebServiceDefinitions, "webServiceDefinitions must be set");
+		.notNull(builderWebServiceDefinitions, "webServiceDefinitions must be set");
 		//-----
 		final SwaggerApi swagger = new SwaggerApi();
 		swagger.put("swagger", "2.0");

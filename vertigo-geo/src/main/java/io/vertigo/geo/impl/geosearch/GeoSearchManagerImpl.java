@@ -21,7 +21,7 @@ public class GeoSearchManagerImpl implements GeoSearchManager {
 	@Inject
 	public GeoSearchManagerImpl(
 			final GeoSearchPlugin geoSearchPlugin) {
-		Assertion.checkNotNull(geoSearchPlugin);
+		Assertion.check().notNull(geoSearchPlugin);
 		//---
 		this.geoSearchPlugin = geoSearchPlugin;
 	}

@@ -78,7 +78,7 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 	 * @return Document
 	 */
 	private BanResponse geoCode(final String address) {
-		Assertion.checkNotNull(address);
+		Assertion.check().notNull(address);
 		//-----
 		final String urlString;
 		try {
@@ -95,7 +95,7 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 		}
 
 		//-----
-		Assertion.checkNotNull(url);
+		Assertion.check().notNull(url);
 		try {
 			final HttpURLConnection connection = proxyOpt.isPresent() ? (HttpURLConnection) url.openConnection(proxyOpt.get()) : (HttpURLConnection) url.openConnection();
 			connection.setConnectTimeout(500); //500 ms timeout
@@ -116,7 +116,7 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public GeoLocation findLocation(final String address) {
-		Assertion.checkNotNull(address);
+		Assertion.check().notNull(address);
 		//-----
 		final BanResponse banResponse = geoCode(address);
 		if (banResponse == null) {
