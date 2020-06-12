@@ -45,7 +45,7 @@ public abstract class AbstactKeycloakDelegateAuthenticationHandler implements De
 	protected NodesRegistrationManagement nodesRegistrationManagement;
 
 	public void init(final KeycloakDeploymentConnector keycloakDeploymentConnector) {
-		Assertion.checkNotNull(keycloakDeploymentConnector);
+		Assertion.check().notNull(keycloakDeploymentConnector);
 		//---
 		deploymentContext = keycloakDeploymentConnector.getClient();
 		nodesRegistrationManagement = new NodesRegistrationManagement();

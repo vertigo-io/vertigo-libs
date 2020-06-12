@@ -42,7 +42,7 @@ public final class HandlerChain {
 	 * @param handlers Handlers
 	 */
 	public HandlerChain(final List<WebServiceHandlerPlugin> handlers) {
-		Assertion.checkNotNull(handlers);
+		Assertion.check().notNull(handlers);
 		//-----
 		this.handlers = Collections.unmodifiableList(new ArrayList<>(handlers));
 		offset = 0;

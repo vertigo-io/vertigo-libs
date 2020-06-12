@@ -43,7 +43,7 @@ public final class DtListJsonConverter implements JsonConverter {
 	 */
 	@Inject
 	public DtListJsonConverter(final JsonEngine jsonReaderEngine) {
-		Assertion.checkNotNull(jsonReaderEngine);
+		Assertion.check().notNull(jsonReaderEngine);
 		//-----
 		this.jsonReaderEngine = jsonReaderEngine;
 	}
@@ -73,7 +73,7 @@ public final class DtListJsonConverter implements JsonConverter {
 			objectPath = "";
 		} else if (input instanceof UiContext) {
 			uiList = (UiListModifiable<DtObject>) ((UiContext) input).get(webServiceParam.getName());
-			Assertion.checkNotNull(uiList, "InnerParam not found : {0}", webServiceParam);
+			Assertion.check().notNull(uiList, "InnerParam not found : {0}", webServiceParam);
 			objectPath = webServiceParam.getName();
 		} else {
 			throw new IllegalArgumentException(String.format("This JsonConverter can't read the asked type %s. Only %s is supported", paramClass.getSimpleName(), UiListDelta.class.getSimpleName()));

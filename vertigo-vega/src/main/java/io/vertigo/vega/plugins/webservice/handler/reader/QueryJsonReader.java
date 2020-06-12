@@ -44,7 +44,7 @@ public final class QueryJsonReader implements JsonReader<String> {
 	 */
 	@Inject
 	public QueryJsonReader(final JsonEngine jsonWriterEngine) {
-		Assertion.checkNotNull(jsonWriterEngine);
+		Assertion.check().notNull(jsonWriterEngine);
 		//-----
 		this.jsonWriterEngine = jsonWriterEngine;
 	}

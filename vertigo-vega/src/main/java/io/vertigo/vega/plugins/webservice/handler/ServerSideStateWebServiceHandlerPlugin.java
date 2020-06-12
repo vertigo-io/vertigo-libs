@@ -65,7 +65,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 	 */
 	@Inject
 	public ServerSideStateWebServiceHandlerPlugin(final TokenManager tokenManager) {
-		Assertion.checkNotNull(tokenManager);
+		Assertion.check().notNull(tokenManager);
 		//-----
 		this.tokenManager = tokenManager;
 	}
@@ -143,11 +143,12 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 	}
 
 	private Serializable writeServerSideObject(final Object returnValue) {
-		Assertion.checkNotNull(returnValue, "Return null value can't be saved ServerSide");
-		Assertion.checkArgument(DtObject.class.isInstance(returnValue)
-				|| DtList.class.isInstance(returnValue)
-				|| UiContext.class.isInstance(returnValue)
-				|| ExtendedObject.class.isInstance(returnValue), "Return type can't be saved ServerSide : {0}", returnValue.getClass().getSimpleName());
+		Assertion.check()
+				.notNull(returnValue, "Return null value can't be saved ServerSide")
+				.argument(DtObject.class.isInstance(returnValue)
+						|| DtList.class.isInstance(returnValue)
+						|| UiContext.class.isInstance(returnValue)
+						|| ExtendedObject.class.isInstance(returnValue), "Return type can't be saved ServerSide : {0}", returnValue.getClass().getSimpleName());
 
 		final Object savedObject; //Object sauvé coté serveur
 		final Map<String, Serializable> overridedReturnValue; //Object retourné au client (globalement l'objet sauvé + le tokenId)

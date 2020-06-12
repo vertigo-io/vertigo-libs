@@ -61,7 +61,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	 * @param method Method to bind to this webService
 	 */
 	WebServiceDefinitionBuilder(final Method method) {
-		Assertion.checkNotNull(method);
+		Assertion.check().notNull(method);
 		//-----
 		myMethod = method;
 	}
@@ -195,7 +195,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	 * @return this builder
 	 */
 	public WebServiceDefinitionBuilder addExcludedFields(final String... excludedFields) {
-		Assertion.checkNotNull(excludedFields);
+		Assertion.check().notNull(excludedFields);
 		//-----
 		myExcludedFields.addAll(Arrays.asList(excludedFields));
 		return this;
@@ -206,7 +206,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	 * @return this builder
 	 */
 	public WebServiceDefinitionBuilder addIncludedFields(final String... includedFields) {
-		Assertion.checkNotNull(includedFields);
+		Assertion.check().notNull(includedFields);
 		//-----
 		myIncludedFields.addAll(Arrays.asList(includedFields));
 		return this;

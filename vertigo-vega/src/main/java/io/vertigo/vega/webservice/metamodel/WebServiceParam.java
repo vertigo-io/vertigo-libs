@@ -117,9 +117,9 @@ public final class WebServiceParam {
 				consumeServerSideToken,
 				dtObjectValidatorClasses);
 
+		Assertion.check().notNull(name);
 		Assertion.when(paramType == WebServiceParamType.Implicit)
 				.state(() -> isImplicitParam(name), "When ImplicitParam, name ({1}) must be one of {0}", ImplicitParam.values(), name);
-		Assertion.checkNotNull(name);
 		Assertion.when(name.isEmpty())
 				.state(() -> WebServiceTypeUtil.isAssignableFrom(DtListState.class, type)
 						|| WebServiceTypeUtil.isAssignableFrom(DtObject.class, type),

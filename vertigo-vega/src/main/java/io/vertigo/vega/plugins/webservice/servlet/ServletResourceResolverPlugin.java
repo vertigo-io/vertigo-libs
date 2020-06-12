@@ -40,7 +40,7 @@ public final class ServletResourceResolverPlugin implements ResourceResolverPlug
 	 * @param servletContext ServletContext
 	 */
 	public static synchronized void setServletContext(final ServletContext servletContext) {
-		Assertion.checkNotNull(servletContext);
+		Assertion.check().notNull(servletContext);
 		//-----
 		servletContextRef = new WeakReference<>(servletContext);
 	}
@@ -49,7 +49,7 @@ public final class ServletResourceResolverPlugin implements ResourceResolverPlug
 	 * Constructor.
 	 */
 	public ServletResourceResolverPlugin() {
-		Assertion.checkNotNull(servletContextRef.get(), "Ce servletContext n'est plus accessible");
+		Assertion.check().notNull(servletContextRef.get(), "Ce servletContext n'est plus accessible");
 		//-----
 		servletContext = servletContextRef.get();
 	}
@@ -57,7 +57,7 @@ public final class ServletResourceResolverPlugin implements ResourceResolverPlug
 	/** {@inheritDoc} */
 	@Override
 	public Optional<URL> resolve(final String resource) {
-		Assertion.checkNotNull(resource);
+		Assertion.check().notNull(resource);
 		//-----
 		// 2. On recherche dans le context de la webapp
 		try {

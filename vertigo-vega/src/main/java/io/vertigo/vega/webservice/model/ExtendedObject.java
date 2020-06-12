@@ -37,7 +37,7 @@ public final class ExtendedObject<O> extends HashMap<String, Serializable> {
 	 * @param innerObject inner object
 	 */
 	public ExtendedObject(final O innerObject) {
-		Assertion.checkNotNull(innerObject);
+		Assertion.check().notNull(innerObject);
 		//-----
 		this.innerObject = innerObject;
 	}

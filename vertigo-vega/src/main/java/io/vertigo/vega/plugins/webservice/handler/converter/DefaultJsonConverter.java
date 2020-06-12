@@ -43,7 +43,7 @@ public final class DefaultJsonConverter implements JsonConverter {
 	 */
 	@Inject
 	public DefaultJsonConverter(final JsonEngine jsonReaderEngine) {
-		Assertion.checkNotNull(jsonReaderEngine);
+		Assertion.check().notNull(jsonReaderEngine);
 		//-----
 		this.jsonReaderEngine = jsonReaderEngine;
 	}
@@ -57,10 +57,11 @@ public final class DefaultJsonConverter implements JsonConverter {
 	/** {@inheritDoc}*/
 	@Override
 	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
-		Assertion.checkNotNull(input, "This JsonConverter doesn't support null input");
-		Assertion.checkArgument(
-				getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input),
-				"This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
+		Assertion.check()
+				.notNull(input, "This JsonConverter doesn't support null input")
+				.argument(
+						getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input),
+						"This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
 		//-----
 		final Class<?> paramClass = webServiceParam.getType();
 		final Object value;

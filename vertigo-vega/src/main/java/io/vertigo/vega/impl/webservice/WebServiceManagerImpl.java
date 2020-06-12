@@ -88,11 +88,12 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 			final WebServiceScannerPlugin webServiceScannerPlugin,
 			final WebServerPlugin webServerPlugin,
 			final List<WebServiceHandlerPlugin> restHandlerPlugins) {
-		Assertion.checkNotNull(webServiceScannerPlugin);
-		Assertion.checkNotNull(webServerPlugin);
-		Assertion.checkArgument(!restHandlerPlugins.isEmpty(), "No WebServiceHandlerPlugins found, check you have declared your WebServiceHandlerPlugins in RestManagerImpl.\n{0}",
-				STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
-		Assertion.checkNotNull(webServerPlugin);
+		Assertion.check()
+				.notNull(webServiceScannerPlugin)
+				.notNull(webServerPlugin)
+				.argument(!restHandlerPlugins.isEmpty(), "No WebServiceHandlerPlugins found, check you have declared your WebServiceHandlerPlugins in RestManagerImpl.\n{0}",
+						STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG)
+				.notNull(webServerPlugin);
 		//-----
 		final List<WebServiceHandlerPlugin> sortedWebServiceHandlerPlugins = restHandlerPlugins
 				.stream()

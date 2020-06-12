@@ -89,7 +89,7 @@ public final class UiErrorBuilder {
 	 * @param dtField Champ
 	 */
 	void clearErrors(final DtObject dtObject, final DtField dtField) {
-		Assertion.checkNotNull(dtField);
+		Assertion.check().notNull(dtField);
 		//-----
 		uiObjectErrors.removeIf(uiError -> uiError.getDtObject().equals(dtObject) && uiError.getDtField().equals(dtField));
 		obtainUiErrorIndex(dtObject).remove(dtField);

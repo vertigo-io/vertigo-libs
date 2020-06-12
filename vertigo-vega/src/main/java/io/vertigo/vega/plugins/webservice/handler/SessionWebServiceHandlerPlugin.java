@@ -54,7 +54,7 @@ public final class SessionWebServiceHandlerPlugin implements WebServiceHandlerPl
 	 */
 	@Inject
 	public SessionWebServiceHandlerPlugin(final VSecurityManager securityManager) {
-		Assertion.checkNotNull(securityManager);
+		Assertion.check().notNull(securityManager);
 		//-----
 		this.securityManager = securityManager;
 	}

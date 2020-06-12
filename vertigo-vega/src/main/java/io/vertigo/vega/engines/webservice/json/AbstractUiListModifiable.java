@@ -70,7 +70,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	 * @param dtList Inner DtList
 	 */
 	protected AbstractUiListModifiable(final DtList<D> dtList, final String inputKey) {
-		Assertion.checkNotNull(dtList);
+		Assertion.check().notNull(dtList);
 		//-----
 		this.dtList = dtList;
 		this.inputKey = inputKey;
@@ -118,7 +118,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	}
 
 	private String findContextKey(final UiObject<D> uiObject) {
-		Assertion.checkNotNull(uiObject);
+		Assertion.check().notNull(uiObject);
 		final int index = indexOfUiObject(uiObject);
 		Assertion.checkState(index >= 0, "UiObjet {0} not found in UiList with key {1}", uiObject, inputKey);
 		// ---
@@ -185,7 +185,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	 * @return DtListDelta
 	 */
 	public DtListDelta<D> getDtListDelta() {
-		Assertion.checkNotNull(dtListDelta);
+		Assertion.check().notNull(dtListDelta);
 		//
 		return dtListDelta;
 	}
@@ -196,7 +196,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 		//id>=0 : par index dans la UiList (pour boucle, uniquement dans la même request)
 		Assertion.checkState(row >= 0, "Le getteur utilisé n'est pas le bon: utiliser getByRowId");
 		final UiObject<D> uiObject = bufferUiObjects.get(row);
-		Assertion.checkNotNull(uiObject);
+		Assertion.check().notNull(uiObject);
 		return uiObject;
 	}
 
@@ -216,7 +216,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	 * @return index de l'objet dans la liste
 	 */
 	private int indexOfDtObject(final DtObject dtObject) {
-		Assertion.checkNotNull(dtObject);
+		Assertion.check().notNull(dtObject);
 		//-----
 		for (int i = 0; i < bufferUiObjects.size(); i++) {
 			if (dtObject.equals(bufferUiObjects.get(i).getServerSideObject())) {
@@ -231,7 +231,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	 * @return index de l'objet dans la liste
 	 */
 	private int indexOfUiObject(final UiObject<D> uiObject) {
-		Assertion.checkNotNull(uiObject);
+		Assertion.check().notNull(uiObject);
 		//-----
 		return bufferUiObjects.indexOf(uiObject);
 	}

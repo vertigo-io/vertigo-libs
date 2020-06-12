@@ -56,7 +56,7 @@ public final class VegaUiMessageStack implements UiMessageStack {
 	 * @param uiContextResolver Resolver object to contextKey in request
 	 */
 	public VegaUiMessageStack(final UiContextResolver uiContextResolver) {
-		Assertion.checkNotNull(uiContextResolver);
+		Assertion.check().notNull(uiContextResolver);
 		//-----
 		this.uiContextResolver = uiContextResolver;
 	}

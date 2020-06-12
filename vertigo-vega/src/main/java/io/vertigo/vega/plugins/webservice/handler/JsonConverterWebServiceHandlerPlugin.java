@@ -90,7 +90,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 	*/
 	@Inject
 	public JsonConverterWebServiceHandlerPlugin(final JsonEngine jsonReaderEngine) {
-		Assertion.checkNotNull(jsonReaderEngine);
+		Assertion.check().notNull(jsonReaderEngine);
 		//-----
 		for (final Class<? extends JsonConverter> jsonConverterClass : JSON_CONVERTER_CLASSES) {
 			final JsonConverter jsonConverter = InjectorUtil.newInstance(jsonConverterClass);
@@ -156,13 +156,13 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 				}
 			}
 			//-----
-			Assertion.checkNotNull(jsonReaderToApply,
+			Assertion.check().notNull(jsonReaderToApply,
 					"Can't parse param {0} of service {1} {2} no compatible JsonReader found for {3}",
 					webServiceParam.getFullName(),
 					routeContext.getWebServiceDefinition().getVerb(),
 					routeContext.getWebServiceDefinition().getPath(),
 					webServiceParam.getParamType());
-			Assertion.checkNotNull(jsonConverterToApply,
+			Assertion.check().notNull(jsonConverterToApply,
 					"Can't parse param {0} of service {1} {2} no compatible JsonConverter found for {3} {4}",
 					webServiceParam.getFullName(),
 					routeContext.getWebServiceDefinition().getVerb(),
@@ -176,7 +176,7 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 			} else if (webServiceParam.isOptional()) {
 				routeContext.setParamValue(webServiceParam, null /*converterSource*/);
 			}
-			Assertion.checkNotNull(routeContext.getParamValue(webServiceParam), "RestParam not found : {0}", webServiceParam);
+			Assertion.check().notNull(routeContext.getParamValue(webServiceParam), "RestParam not found : {0}", webServiceParam);
 		} catch (final JsonSyntaxException e) {
 			throw new JsonSyntaxException("Error parsing param " + webServiceParam.getFullName() + " on service " + routeContext.getWebServiceDefinition().getVerb() + " " + routeContext.getWebServiceDefinition().getPath(), e);
 		}
@@ -200,9 +200,9 @@ public final class JsonConverterWebServiceHandlerPlugin implements WebServiceHan
 			}
 		}
 		//-----
-		Assertion.checkNotNull(jsonWriterToApply, "Can't send result of service {0} {1} no compatible JsonConverter found for {2}", routeContext.getWebServiceDefinition().getVerb(), routeContext.getWebServiceDefinition().getPath(), result.getClass().getName());
+		Assertion.check().notNull(jsonWriterToApply, "Can't send result of service {0} {1} no compatible JsonConverter found for {2}", routeContext.getWebServiceDefinition().getVerb(), routeContext.getWebServiceDefinition().getPath(), result.getClass().getName());
 		final String json = jsonWriterToApply.toJson(result, response, routeContext.getWebServiceDefinition());
-		Assertion.checkNotNull(json, "Can't convert result to json");
+		Assertion.check().notNull(json, "Can't convert result to json");
 		return json;
 	}
 

@@ -43,7 +43,7 @@ public final class InnerBodyJsonReader implements JsonReader<UiContext> {
 	 */
 	@Inject
 	public InnerBodyJsonReader(final JsonEngine jsonReaderEngine) {
-		Assertion.checkNotNull(jsonReaderEngine);
+		Assertion.check().notNull(jsonReaderEngine);
 		//-----
 		this.jsonReaderEngine = jsonReaderEngine;
 	}

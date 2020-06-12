@@ -121,7 +121,7 @@ public final class GoogleJsonEngine implements JsonEngine, Activeable {
 			@ParamValue("serializeNulls") final Optional<Boolean> serializeNullsOpt,
 			@ParamValue("searchApiVersion") final Optional<String> searchApiVersionStr,
 			final SmartTypeManager smartTypeManager) {
-		Assertion.checkNotNull(smartTypeManager);
+		Assertion.check().notNull(smartTypeManager);
 		//---
 		this.smartTypeManager = smartTypeManager;
 		serializeNulls = serializeNullsOpt.orElse(false);

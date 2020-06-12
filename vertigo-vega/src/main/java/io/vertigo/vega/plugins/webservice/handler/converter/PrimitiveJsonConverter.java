@@ -42,7 +42,7 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 	 */
 	@Inject
 	public PrimitiveJsonConverter(final JsonEngine jsonReaderEngine) {
-		Assertion.checkNotNull(jsonReaderEngine);
+		Assertion.check().notNull(jsonReaderEngine);
 		//-----
 		this.jsonReaderEngine = jsonReaderEngine;
 	}
@@ -90,7 +90,7 @@ public final class PrimitiveJsonConverter implements JsonConverter {
 	}
 
 	private <D> D readPrimitiveValue(final String json, final Class<D> paramClass) {
-		Assertion.checkNotNull(json); //never null (because after instanceof)
+		Assertion.check().notNull(json); //never null (because after instanceof)
 		//-----
 		if (paramClass.isPrimitive()) {
 			return jsonReaderEngine.fromJson(json, paramClass);

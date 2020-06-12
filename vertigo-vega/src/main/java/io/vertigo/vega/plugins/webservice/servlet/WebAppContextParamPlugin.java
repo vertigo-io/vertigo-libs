@@ -33,7 +33,7 @@ public final class WebAppContextParamPlugin implements ParamPlugin {
 	private static Map<String, Param> params;
 
 	public static void setParams(final Map<String, Param> params) {
-		Assertion.checkNotNull(params);
+		Assertion.check().notNull(params);
 		//-----
 		WebAppContextParamPlugin.params = params;
 	}

@@ -40,7 +40,7 @@ public final class DtObjectJsonConverter implements JsonConverter {
 	 */
 	@Inject
 	public DtObjectJsonConverter(final JsonEngine jsonReaderEngine) {
-		Assertion.checkNotNull(jsonReaderEngine);
+		Assertion.check().notNull(jsonReaderEngine);
 		//-----
 		this.jsonReaderEngine = jsonReaderEngine;
 	}

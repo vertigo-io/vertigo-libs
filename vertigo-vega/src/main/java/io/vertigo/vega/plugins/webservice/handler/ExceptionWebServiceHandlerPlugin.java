@@ -59,7 +59,7 @@ public final class ExceptionWebServiceHandlerPlugin implements WebServiceHandler
 	 */
 	@Inject
 	public ExceptionWebServiceHandlerPlugin(final JsonEngine jsonWriterEngine) {
-		Assertion.checkNotNull(jsonWriterEngine);
+		Assertion.check().notNull(jsonWriterEngine);
 		//-----
 		this.jsonWriterEngine = jsonWriterEngine;
 	}

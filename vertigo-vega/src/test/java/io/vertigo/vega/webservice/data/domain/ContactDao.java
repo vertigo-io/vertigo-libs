@@ -65,8 +65,9 @@ public class ContactDao implements Activeable, StoreServices {
 	}
 
 	public void post(final Contact contact) {
-		Assertion.checkNotNull(contact);
-		Assertion.checkArgument(contact.getConId() == null, "post");
+		Assertion.check()
+				.notNull(contact)
+				.argument(contact.getConId() == null, "post");
 		//------
 		final long nextId = getNextId();
 		contact.setConId(nextId);
@@ -74,8 +75,9 @@ public class ContactDao implements Activeable, StoreServices {
 	}
 
 	public void put(final Contact contact) {
-		Assertion.checkNotNull(contact);
-		Assertion.checkNotNull(contact.getConId());
+		Assertion.check()
+				.notNull(contact)
+				.notNull(contact.getConId());
 		//------
 		contacts.put(contact.getConId(), contact);
 	}

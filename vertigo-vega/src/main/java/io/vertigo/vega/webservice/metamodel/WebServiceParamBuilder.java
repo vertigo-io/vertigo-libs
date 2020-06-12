@@ -54,7 +54,7 @@ public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	 * @param paramType param type
 	 */
 	WebServiceParamBuilder(final Type paramType) {
-		Assertion.checkNotNull(paramType);
+		Assertion.check().notNull(paramType);
 		//-----
 		optional = WebServiceTypeUtil.isAssignableFrom(Optional.class, paramType);
 		if (optional) {
@@ -86,7 +86,7 @@ public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	 * @return Builder
 	 */
 	public WebServiceParamBuilder addValidatorClasses(final Class<? extends DtObjectValidator>... validatorClasses) {
-		Assertion.checkNotNull(validatorClasses);
+		Assertion.check().notNull(validatorClasses);
 		//-----
 		myValidatorClasses.addAll(Arrays.asList(validatorClasses));
 		return this;
@@ -97,7 +97,7 @@ public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	 * @return Builder
 	 */
 	public WebServiceParamBuilder addExcludedFields(final String... excludedFields) {
-		Assertion.checkNotNull(excludedFields);
+		Assertion.check().notNull(excludedFields);
 		//-----
 		myExcludedFields.addAll(Arrays.asList(excludedFields));
 		return this;
@@ -108,7 +108,7 @@ public final class WebServiceParamBuilder implements Builder<WebServiceParam> {
 	 * @return Builder
 	 */
 	public WebServiceParamBuilder addIncludedFields(final String... includedFields) {
-		Assertion.checkNotNull(includedFields);
+		Assertion.check().notNull(includedFields);
 		//-----
 		myIncludedFields.addAll(Arrays.asList(includedFields));
 		return this;

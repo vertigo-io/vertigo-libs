@@ -31,8 +31,8 @@ import java.util.stream.Collectors;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.node.definition.DefinitionReference;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.FormatterException;
@@ -82,8 +82,9 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @param modifiedFields modified fieldNames
 	 */
 	public VegaUiObject(final D inputDto, final Set<String> modifiedFields) {
-		Assertion.checkNotNull(inputDto, "inputObject can't be null");
-		Assertion.checkNotNull(modifiedFields, "modifiedFields can't be null");
+		Assertion.check()
+				.notNull(inputDto, "inputObject can't be null")
+				.notNull(modifiedFields, "modifiedFields can't be null");
 		//-----
 		this.inputDto = inputDto;
 		this.dtDefinitionRef = new DefinitionReference<>(DtObjectUtil.findDtDefinition(inputDto));
@@ -128,7 +129,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	@Override
 	public void setServerSideObject(final D serverSideDto) {
-		Assertion.checkNotNull(serverSideDto, "ServerSideObject can't be null");
+		Assertion.check().notNull(serverSideDto, "ServerSideObject can't be null");
 		//-----
 		this.serverSideDto = serverSideDto;
 	}
@@ -167,8 +168,9 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	// ==========================================================================
 
 	private void mergeInput() {
-		Assertion.checkNotNull(serverSideDto, "serverSideDto is mandatory");
-		Assertion.checkNotNull(inputDto, "inputDto is mandatory");
+		Assertion.check()
+				.notNull(serverSideDto, "serverSideDto is mandatory")
+				.notNull(inputDto, "inputDto is mandatory");
 		//-----
 		for (final DtField dtField : getDtDefinition().getFields()) {
 			if (isModified(dtField.getName())) {
@@ -199,7 +201,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	@Override
 	public D mergeAndCheckInput(final List<DtObjectValidator<D>> dtObjectValidators, final UiMessageStack uiMessageStack) {
-		Assertion.checkNotNull(dtObjectValidators);
+		Assertion.check().notNull(dtObjectValidators);
 		//-----
 		if (!isChecked) {
 			checkFormat(uiMessageStack);
@@ -287,8 +289,9 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	/** {@inheritDoc} */
 	@Override
 	public void setInputValue(final String fieldName, final String stringValue) {
-		Assertion.checkArgNotEmpty(fieldName);
-		Assertion.checkNotNull(stringValue, "formatted value can't be null, but may be empty : {0}", fieldName);
+		Assertion.check()
+				.argNotEmpty(fieldName)
+				.notNull(stringValue, "formatted value can't be null, but may be empty : {0}", fieldName);
 		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		//-----
 		final DtField dtField = getDtField(fieldName);
@@ -326,8 +329,9 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @throws IllegalAccessError Si le champs possède une erreur de formatage
 	 */
 	public <T> T getTypedValue(final String fieldName, final Class<T> type) {
-		Assertion.checkArgNotEmpty(fieldName);
-		Assertion.checkNotNull(type);
+		Assertion.check()
+				.argNotEmpty(fieldName)
+				.notNull(type);
 		//-----
 		if (hasFormatError(fieldName)) {
 			throw new IllegalAccessError("Le champ " + fieldName + " possède une erreur de formattage et doit être lu par son UiObject");

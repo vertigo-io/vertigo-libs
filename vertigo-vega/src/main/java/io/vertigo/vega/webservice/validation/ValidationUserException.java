@@ -79,8 +79,9 @@ public final class ValidationUserException extends VUserException {
 
 	private ValidationUserException(final MessageText messageText, final String constFieldName, final DtObject dto) {
 		super(messageText);
-		Assertion.checkNotNull(dto, "L'objet est obligatoire");
-		Assertion.checkArgNotEmpty(constFieldName, "Le champs est obligatoire");
+		Assertion.check()
+				.notNull(dto, "L'objet est obligatoire")
+				.argNotEmpty(constFieldName, "Le champs est obligatoire");
 		//-----
 		final DtField dtField = DtObjectUtil.findDtDefinition(dto).getField(constFieldName);
 		uiErrors.add(new UiError(dto, dtField, messageText));
