@@ -55,9 +55,10 @@ public final class ContextListModifiable<O extends DtObject> {
 	 * @param action Action struts
 	 */
 	public ContextListModifiable(final String contextKey, final DtObjectValidator<O> validator, final AbstractActionSupport action) {
-		Assertion.checkArgNotEmpty(contextKey);
-		Assertion.checkNotNull(action);
-		Assertion.checkNotNull(validator);
+		Assertion.check()
+				.argNotEmpty(contextKey)
+				.notNull(action)
+				.notNull(validator);
 		//-----
 		this.contextKey = contextKey;
 		this.action = action;

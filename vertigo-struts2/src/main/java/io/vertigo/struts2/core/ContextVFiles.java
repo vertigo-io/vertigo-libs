@@ -51,9 +51,10 @@ public final class ContextVFiles {
 	 * @param action Action struts
 	 */
 	public ContextVFiles(final String contextKey, final AbstractActionSupport action) {
-		Assertion.checkArgNotEmpty(contextKey);
-		Assertion.checkNotNull(action);
-		//-----
+		Assertion.check()
+				.argNotEmpty(contextKey)
+				.notNull(action);
+		//---
 		contextKeyVFile = contextKey + VFILE_SUFFIX;
 		contextKeyFile = contextKey;
 		contextKeyFileName = contextKey + FILE_NAME_SUFFIX;

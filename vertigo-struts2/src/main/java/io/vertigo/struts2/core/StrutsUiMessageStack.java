@@ -48,7 +48,7 @@ public final class StrutsUiMessageStack implements UiMessageStack {
 	 * @param actionSupport Action où déverser les messages
 	 */
 	public StrutsUiMessageStack(final AbstractActionSupport actionSupport) {
-		Assertion.checkNotNull(actionSupport);
+		Assertion.check().notNull(actionSupport);
 		//-----
 		this.actionSupport = actionSupport;
 	}
@@ -150,11 +150,12 @@ public final class StrutsUiMessageStack implements UiMessageStack {
 	}
 
 	private void addObjectFieldMessage(final String contextKey, final Level level, final String message, final DtDefinition dtDefinition, final String fieldName) {
-		Assertion.checkArgNotEmpty(contextKey);
-		Assertion.checkNotNull(level);
-		Assertion.checkArgNotEmpty(message);
-		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkArgNotEmpty(fieldName);
+		Assertion.check()
+				.argNotEmpty(contextKey)
+				.notNull(level)
+				.argNotEmpty(message)
+				.notNull(dtDefinition)
+				.argNotEmpty(fieldName);
 		//-----
 		if (level == Level.ERROR) {
 			actionSupport.addFieldError(contextKey + "." + fieldName, message);

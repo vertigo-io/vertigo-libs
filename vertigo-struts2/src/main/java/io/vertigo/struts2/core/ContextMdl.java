@@ -39,8 +39,9 @@ public final class ContextMdl<O extends Entity> {
 	 * @param action Action struts
 	 */
 	public ContextMdl(final String contextKey, final AbstractActionSupport action) {
-		Assertion.checkArgNotEmpty(contextKey);
-		Assertion.checkNotNull(action);
+		Assertion.check()
+				.argNotEmpty(contextKey)
+				.notNull(action);
 		//-----
 		this.contextKey = contextKey;
 		this.action = action;

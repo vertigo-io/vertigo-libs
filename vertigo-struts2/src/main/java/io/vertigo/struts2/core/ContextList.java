@@ -76,10 +76,11 @@ public final class ContextList<O extends DtObject> {
 	 * @param action Action struts
 	 */
 	public ContextList(final String contextKey, final DtObjectValidator<O> validator, final Optional<DtFieldName<O>> keyFieldNameOpt, final AbstractActionSupport action) {
-		Assertion.checkArgNotEmpty(contextKey);
-		Assertion.checkNotNull(action);
-		Assertion.checkNotNull(validator);
-		Assertion.checkNotNull(keyFieldNameOpt);
+		Assertion.check()
+				.argNotEmpty(contextKey)
+				.notNull(action)
+				.notNull(validator)
+				.notNull(keyFieldNameOpt);
 		//-----
 		this.contextKey = contextKey;
 		this.action = action;

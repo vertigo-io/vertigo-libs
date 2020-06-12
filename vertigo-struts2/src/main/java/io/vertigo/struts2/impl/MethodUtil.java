@@ -64,8 +64,9 @@ public final class MethodUtil {
 	 * @return R Valeur retournée par l'invocation
 	 */
 	public static Object invoke(final Object instance, final Method method, final Container container) {
-		Assertion.checkNotNull(instance);
-		Assertion.checkNotNull(method);
+		Assertion.check()
+				.notNull(instance)
+				.notNull(method);
 		//-----
 		final Object[] args = findMethodParameters(container, method);
 		return ClassUtil.invoke(instance, method, args);
@@ -110,13 +111,13 @@ public final class MethodUtil {
 			return Optional.empty();
 		}
 		final Object value = container.resolve(id, method.getParameterTypes()[i]);
-		Assertion.checkNotNull(value);
+		Assertion.check().notNull(value);
 		//-----
 		return value;
 	}
 
 	private static boolean isOptional(final Method method, final int i) {
-		Assertion.checkNotNull(method);
+		Assertion.check().notNull(method);
 		//-----
 		return Optional.class.isAssignableFrom(method.getParameterTypes()[i]);
 	}
