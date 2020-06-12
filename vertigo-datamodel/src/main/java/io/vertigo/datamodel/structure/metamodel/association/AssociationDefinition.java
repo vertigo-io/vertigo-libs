@@ -58,9 +58,10 @@ public abstract class AssociationDefinition implements Definition {
 	 * @param associationNodeB Noeud B
 	 */
 	AssociationDefinition(final String name, final AssociationNode associationNodeA, final AssociationNode associationNodeB) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(associationNodeA);
-		Assertion.checkNotNull(associationNodeB);
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(associationNodeA)
+				.notNull(associationNodeB);
 		//-----
 		this.name = name;
 		this.associationNodeA = associationNodeA;

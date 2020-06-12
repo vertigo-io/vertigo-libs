@@ -13,9 +13,10 @@ public class AdapterConfig {
 	public AdapterConfig(
 			final String type,
 			final Class<? extends BasicTypeAdapter> adapterClass, final BasicType targetBasicType) {
-		Assertion.checkArgNotEmpty(type);
-		Assertion.checkNotNull(adapterClass);
-		Assertion.checkNotNull(targetBasicType);
+		Assertion.check()
+				.argNotEmpty(type)
+				.notNull(adapterClass)
+				.notNull(targetBasicType);
 		//---
 		this.type = type;
 		this.adapterClass = adapterClass;

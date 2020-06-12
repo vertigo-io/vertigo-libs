@@ -142,14 +142,14 @@ public final class DtField {
 				.argument(StringUtil.isLowerCamelCase(fieldName), "the name of the field {0} must be in lowerCamelCase", fieldName);
 		name = fieldName;
 		//-----
-		Assertion.checkNotNull(label);
+		Assertion.check().notNull(label);
 		this.label = label;
 		//-----
 		Assertion.checkArgument(!(getType() == FieldType.COMPUTED && persistent), "a computed field can't be persistent");
 		this.persistent = persistent;
 		//-----
 		if (getType() == FieldType.FOREIGN_KEY) {
-			Assertion.checkNotNull(fkDtDefinitionName, "Le champ {0} de type clé étrangère doit référencer une définition ", fieldName);
+			Assertion.check().notNull(fkDtDefinitionName, "Le champ {0} de type clé étrangère doit référencer une définition ", fieldName);
 		} else {
 			Assertion.checkState(fkDtDefinitionName == null, "Le champ {0} n''est pas une clé étrangère", fieldName);
 		}
@@ -217,7 +217,7 @@ public final class DtField {
 	 */
 	//Todo changer le nom
 	public DtDefinition getFkDtDefinition() {
-		Assertion.checkNotNull(fkDtDefinitionName);
+		Assertion.check().notNull(fkDtDefinitionName);
 		//-----
 		return Home.getApp().getDefinitionSpace().resolve(fkDtDefinitionName, DtDefinition.class);
 	}

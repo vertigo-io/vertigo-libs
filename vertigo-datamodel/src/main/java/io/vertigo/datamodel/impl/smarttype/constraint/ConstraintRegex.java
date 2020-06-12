@@ -41,8 +41,9 @@ public final class ConstraintRegex implements Constraint<String, String> {
 	 * @param regex Expression régulière
 	 */
 	public ConstraintRegex(final String regex, final Optional<String> overrideMessageOpt) {
-		Assertion.checkArgNotEmpty(regex);
-		Assertion.checkNotNull(overrideMessageOpt);
+		Assertion.check()
+				.argNotEmpty(regex)
+				.notNull(overrideMessageOpt);
 		//---
 		pattern = Pattern.compile(regex);
 		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get()) : MessageText.of(Resources.DYNAMO_CONSTRAINT_REGEXP, pattern.pattern());

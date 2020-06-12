@@ -28,8 +28,9 @@ public final class DynamicDefinitionSolver {
 	* On appelle SyntaxHandler dans le bon Ordre
 	*/
 	public static List<DynamicDefinition> solve(final DefinitionSpace definitionSpace, final Map<String, DynamicDefinition> definitionRepository) {
-		Assertion.checkNotNull(definitionSpace);
-		Assertion.checkNotNull(definitionRepository);
+		Assertion.check()
+				.notNull(definitionSpace)
+				.notNull(definitionRepository);
 		//-----
 		//Liste des clés résolues
 		final List<DynamicDefinition> sortedList = new ArrayList<>();

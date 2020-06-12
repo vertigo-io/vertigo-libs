@@ -43,7 +43,7 @@ public final class AssociationNNDefinition extends AssociationDefinition {
 			final AssociationNode associationNodeB) {
 		super(name, associationNodeA, associationNodeB);
 		//-----
-		Assertion.checkNotNull(tableName);
+		Assertion.check().notNull(tableName);
 		this.tableName = tableName;
 	}
 

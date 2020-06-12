@@ -51,10 +51,11 @@ public final class AssociationNode {
 			final String label,
 			final boolean isMultiple,
 			final boolean isNotNull) {
-		Assertion.checkNotNull(dtDefinition);
-		Assertion.checkNotNull(label);
-		Assertion.checkNotNull(role);
-		Assertion.checkArgument(role.indexOf(' ') == -1, "Le role ne doit pas être un label : {0}", role);
+		Assertion.check()
+				.notNull(dtDefinition)
+				.notNull(label)
+				.notNull(role)
+				.argument(role.indexOf(' ') == -1, "Le role ne doit pas être un label : {0}", role);
 		//-----
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 		this.role = role;

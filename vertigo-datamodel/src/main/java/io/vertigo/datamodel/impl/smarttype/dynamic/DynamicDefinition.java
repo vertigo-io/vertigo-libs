@@ -18,9 +18,10 @@ public final class DynamicDefinition {
 			final String name,
 			final List<String> definitionLinkNames,
 			final DefinitionSupplier definitionSupplier) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(definitionLinkNames);
-		Assertion.checkNotNull(definitionSupplier);
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(definitionLinkNames)
+				.notNull(definitionSupplier);
 		//---
 		this.name = name;
 		this.definitionLinkNames = definitionLinkNames;

@@ -49,7 +49,9 @@ import io.vertigo.datamodel.structure.metamodel.Properties;
 @DefinitionPrefix("STy")
 public final class SmartTypeDefinition implements Definition {
 	public enum Scope {
-		PRIMITIVE, VALUE_OBJECT, DATA_OBJECT;
+		PRIMITIVE,
+		VALUE_OBJECT,
+		DATA_OBJECT;
 
 		/**
 		 * @return if the smartType is a primitive type

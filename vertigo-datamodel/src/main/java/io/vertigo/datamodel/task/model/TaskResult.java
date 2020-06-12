@@ -41,7 +41,7 @@ public final class TaskResult {
 	 * Le constructeur est protégé, il est nécessaire de passer par le Builder.
 	 */
 	TaskResult(final TaskDefinition taskDefinition, final Object result) {
-		Assertion.checkNotNull(taskDefinition);
+		Assertion.check().notNull(taskDefinition);
 		//-----
 		outTaskAttributeOptional = taskDefinition.getOutAttributeOption();
 		outTaskAttributeOptional.ifPresent(outTaskAttribute -> outTaskAttribute.checkAttribute(result));

@@ -61,8 +61,9 @@ public class VAccessor<E extends Entity> implements Serializable {
 	 * @param role the role of the association (case of multiple associations with the same entity)
 	 */
 	public VAccessor(final DtDefinition targetDtDefinition, final String role) {
-		Assertion.checkNotNull(targetDtDefinition);
-		Assertion.checkArgNotEmpty(role);
+		Assertion.check()
+				.notNull(targetDtDefinition)
+				.argNotEmpty(role);
 		//---
 		this.targetDtDefinitionRef = new DefinitionReference(targetDtDefinition);
 		this.role = role;
@@ -96,7 +97,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 	 * @param entity the entity
 	 */
 	public final void set(final E entity) {
-		Assertion.checkNotNull(entity);
+		Assertion.check().notNull(entity);
 		//---
 		value = entity;
 		targetURI = entity.getUID();
@@ -131,7 +132,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 	 * @param uid the entity uri
 	 */
 	public final void setUID(final UID<E> uid) {
-		Assertion.checkNotNull(uid);
+		Assertion.check().notNull(uid);
 		//---
 		targetURI = uid; //maybe null
 		//we have to reset the value and the state

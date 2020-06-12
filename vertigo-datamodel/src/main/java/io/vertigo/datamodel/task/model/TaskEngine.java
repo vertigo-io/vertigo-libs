@@ -51,7 +51,7 @@ public abstract class TaskEngine {
 	 * @return TaskResult contenant les résultats
 	 */
 	public final TaskResult process(final Task task) {
-		Assertion.checkNotNull(task);
+		Assertion.check().notNull(task);
 		//-----
 		input = task;
 		execute();

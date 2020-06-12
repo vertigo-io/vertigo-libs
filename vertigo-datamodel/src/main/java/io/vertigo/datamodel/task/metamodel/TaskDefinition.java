@@ -107,8 +107,9 @@ public final class TaskDefinition implements Definition {
 	private static Map<String, TaskAttribute> createMap(final List<TaskAttribute> taskAttributes) {
 		final Map<String, TaskAttribute> map = new LinkedHashMap<>();
 		for (final TaskAttribute taskAttribute : taskAttributes) {
-			Assertion.checkNotNull(taskAttribute);
-			Assertion.checkArgument(!map.containsKey(taskAttribute.getName()), "attribut {0} existe déjà", taskAttribute.getName());
+			Assertion.check()
+					.notNull(taskAttribute)
+					.argument(!map.containsKey(taskAttribute.getName()), "attribut {0} existe déjà", taskAttribute.getName());
 			//-----
 			map.put(taskAttribute.getName(), taskAttribute);
 		}
@@ -122,10 +123,10 @@ public final class TaskDefinition implements Definition {
 	 * @return Définition de l'attribut.
 	 */
 	public TaskAttribute getInAttribute(final String attributeName) {
-		Assertion.checkNotNull(attributeName);
+		Assertion.check().notNull(attributeName);
 		//-----
 		final TaskAttribute taskAttribute = inTaskAttributes.get(attributeName);
-		Assertion.checkNotNull(taskAttribute, "nom d''attribut :{0} non trouvé pour le service :{1}", attributeName, this);
+		Assertion.check().notNull(taskAttribute, "nom d''attribut :{0} non trouvé pour le service :{1}", attributeName, this);
 		return taskAttribute;
 	}
 

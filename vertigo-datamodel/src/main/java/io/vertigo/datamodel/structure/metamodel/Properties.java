@@ -35,7 +35,7 @@ public final class Properties {
 	private final Map<Property<?>, Object> properties;
 
 	Properties(final Map<Property<?>, Object> properties) {
-		Assertion.checkNotNull(properties);
+		Assertion.check().notNull(properties);
 		//-----
 		if (properties.isEmpty()) {
 			this.properties = Collections.emptyMap();
@@ -67,7 +67,7 @@ public final class Properties {
 	 * @return valeur de la propriété
 	 */
 	public <T> T getValue(final Property<T> property) {
-		Assertion.checkNotNull(property);
+		Assertion.check().notNull(property);
 		//On ne vérifie rien sur le type retourné par le getter.
 		//le type a été validé lors du put.
 		//-----

@@ -58,8 +58,9 @@ public final class Task {
 	 * Le constructeur est protégé, il est nécessaire de passer par le Builder.
 	 */
 	Task(final TaskDefinition taskDefinition, final Map<TaskAttribute, Object> inTaskAttributes) {
-		Assertion.checkNotNull(taskDefinition);
-		Assertion.checkNotNull(inTaskAttributes);
+		Assertion.check()
+				.notNull(taskDefinition)
+				.notNull(inTaskAttributes);
 		//-----
 		this.taskDefinition = taskDefinition;
 		//---

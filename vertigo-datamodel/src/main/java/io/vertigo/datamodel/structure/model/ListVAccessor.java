@@ -61,9 +61,10 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 	 * @param roleName the role of the association (case of multiple associations with the same entity)
 	 */
 	public ListVAccessor(final Entity entity, final String associationDefinitionName, final String roleName) {
-		Assertion.checkNotNull(entity);
-		Assertion.checkArgNotEmpty(associationDefinitionName);
-		Assertion.checkArgNotEmpty(roleName);
+		Assertion.check()
+				.notNull(entity)
+				.argNotEmpty(associationDefinitionName)
+				.argNotEmpty(roleName);
 		//---
 		this.entity = entity;
 		this.roleName = roleName;
@@ -102,7 +103,7 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 	}
 
 	public void set(final DtList<E> dtList) {
-		Assertion.checkNotNull(dtList);
+		Assertion.check().notNull(dtList);
 		//---
 		value = dtList;
 		//--

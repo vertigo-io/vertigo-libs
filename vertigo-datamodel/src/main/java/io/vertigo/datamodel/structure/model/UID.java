@@ -62,8 +62,9 @@ public final class UID<E extends Entity> implements Serializable {
 	 * @param id the entity id
 	 */
 	private UID(final DtDefinition definition, final Object id) {
-		Assertion.checkNotNull(id);
-		Assertion.checkNotNull(definition);
+		Assertion.check()
+				.notNull(id)
+				.notNull(definition);
 		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		smartTypeManager.checkValue(definition.getIdField().get().getSmartTypeDefinition(), id);
 		//-----
@@ -81,7 +82,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 * @return URI to result
 	 */
 	public static <E extends Entity> UID<E> of(final String urn) {
-		Assertion.checkNotNull(urn);
+		Assertion.check().notNull(urn);
 		//-----
 		final int i = urn.indexOf(SEPARATOR);
 		final String dname = urn.substring(0, i);
@@ -108,13 +109,13 @@ public final class UID<E extends Entity> implements Serializable {
 	/**
 	 * Builds an UID for an entity defined by
 	 * - an object
-
+	
 	 * @param entity the entity
 	 * @param <E> the entity type
 	 * @return the entity UID
 	 */
 	public static <E extends Entity> UID<E> of(final E entity) {
-		Assertion.checkNotNull(entity);
+		Assertion.check().notNull(entity);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(entity);
 		return new UID<>(dtDefinition, DtObjectUtil.getId(entity));
@@ -124,7 +125,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 * Builds an UID for an entity defined by
 	 * - a class
 	 * - an id
-
+	
 	 * @param entityClass the entity class
 	 * @param id the entity id
 	 * @param <E> the entity type
@@ -201,7 +202,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 * @return Chaine représentant la clé
 	 */
 	private static String idToString(final Serializable id) {
-		Assertion.checkNotNull(id);
+		Assertion.check().notNull(id);
 		//---
 		if (id instanceof String) {
 			return StringUtil.isEmpty((String) id) ? null : "s-" + ((String) id).trim();

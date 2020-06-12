@@ -175,8 +175,9 @@ public final class AssociationUtil {
 	 * TODO : voir si passer en arg une URI de collection et/ou d'objet ?
 	 */
 	public static AssociationNode getAssociationNode(final AssociationDefinition associationDefinition, final String roleNameSource) {
-		Assertion.checkNotNull(associationDefinition);
-		Assertion.checkNotNull(roleNameSource);
+		Assertion.check()
+				.notNull(associationDefinition)
+				.notNull(roleNameSource);
 		//-----
 		if (roleNameSource.equals(associationDefinition.getAssociationNodeA().getRole())) {
 			return associationDefinition.getAssociationNodeA();
@@ -193,7 +194,7 @@ public final class AssociationUtil {
 	 * @return AssociationNode
 	 */
 	public static AssociationNode getAssociationNodeTarget(final AssociationDefinition associationDefinition, final String roleNameSource) {
-		Assertion.checkNotNull(roleNameSource);
+		Assertion.check().notNull(roleNameSource);
 		//-----
 		if (roleNameSource.equals(associationDefinition.getAssociationNodeA().getRole())) {
 			return associationDefinition.getAssociationNodeB();

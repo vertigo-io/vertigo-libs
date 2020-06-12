@@ -60,9 +60,10 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 			throw WrappedException.wrap(e, "{0} : second part is a not an integer", args);
 		}
 		// ---
-		Assertion.checkNotNull(maxPrecision, "Le nombre de chiffres ne peut pas être null");
-		Assertion.checkNotNull(maxScale, "Le nombre de chiffres après la virgule ne peut pas être null");
-		Assertion.checkArgument(maxScale <= maxPrecision, "Le nombre de chiffres après la virgule doit être inférieur au nombre total de chiffres");
+		Assertion.check()
+				.notNull(maxPrecision, "Le nombre de chiffres ne peut pas être null")
+				.notNull(maxScale, "Le nombre de chiffres après la virgule ne peut pas être null")
+				.argument(maxScale <= maxPrecision, "Le nombre de chiffres après la virgule doit être inférieur au nombre total de chiffres");
 		errorMessage = overrideMessageOpt.isPresent() ? MessageText.of(overrideMessageOpt.get())
 				: MessageText.of(Resources.DYNAMO_CONSTRAINT_DECIMAL_EXCEEDED,
 						new BigDecimal(new BigInteger("1"), 0 - maxPrecision - maxScale),

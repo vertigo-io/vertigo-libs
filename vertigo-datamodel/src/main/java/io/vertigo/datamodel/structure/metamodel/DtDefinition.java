@@ -193,11 +193,11 @@ public final class DtDefinition implements Definition {
 	 * @return Champ correspondant
 	 */
 	public DtField getField(final String fieldName) {
-		Assertion.checkArgNotEmpty(fieldName);
+		Assertion.check().argNotEmpty(fieldName);
 		//-----
 		final DtField dtField = mappedFields.get(fieldName);
 		//-----
-		Assertion.checkNotNull(dtField, "field '{0}' not found on '{1}'. Available fields are :{2}", fieldName, this, mappedFields.keySet());
+		Assertion.check().notNull(dtField, "field '{0}' not found on '{1}'. Available fields are :{2}", fieldName, this, mappedFields.keySet());
 		return dtField;
 	}
 
@@ -216,7 +216,7 @@ public final class DtDefinition implements Definition {
 	 * @return if this field exists in this DtDefinition
 	 */
 	public boolean contains(final String fieldName) {
-		Assertion.checkNotNull(fieldName);
+		Assertion.check().notNull(fieldName);
 		//-----
 		return mappedFields.containsKey(fieldName);
 	}

@@ -64,7 +64,7 @@ public final class TaskProxyMethod implements ProxyMethod {
 
 	private static SmartTypeDefinition findOutSmartType(final Method method) {
 		final TaskOutput taskOutput = method.getAnnotation(TaskOutput.class);
-		Assertion.checkNotNull(taskOutput, "The return method '{0}' must be annotated with '{1}'", method, TaskOutput.class);
+		Assertion.check().notNull(taskOutput, "The return method '{0}' must be annotated with '{1}'", method, TaskOutput.class);
 		return resolveSmartTypeDefinition(taskOutput.smartType());
 	}
 

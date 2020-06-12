@@ -97,7 +97,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @return this builder
 	 */
 	public DtDefinitionBuilder withFragment(final DtDefinition fragment) {
-		Assertion.checkNotNull(fragment);
+		Assertion.check().notNull(fragment);
 		//---
 		myStereotype = DtStereotype.Fragment;
 		myFragmentRef = new DefinitionReference<>(fragment);
@@ -111,7 +111,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @return this builder
 	 */
 	public DtDefinitionBuilder withStereoType(final DtStereotype stereotype) {
-		Assertion.checkNotNull(stereotype);
+		Assertion.check().notNull(stereotype);
 		//-----
 		myStereotype = stereotype;
 		return this;

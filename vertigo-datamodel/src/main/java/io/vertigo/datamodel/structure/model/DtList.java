@@ -79,7 +79,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 * @param uri DtList uri
 	 */
 	public DtList(final DtList<D> dtList, final DtListURI uri) {
-		Assertion.checkNotNull(uri);
+		Assertion.check().notNull(uri);
 		//---
 		this.dtDefinitionRef = dtList.dtDefinitionRef; //The same DtDefinition
 		this.uri = uri;
@@ -104,8 +104,9 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 */
 	@SafeVarargs
 	public static <D extends DtObject> DtList<D> of(final D dto, final D... dtos) {
-		Assertion.checkNotNull(dto);
-		Assertion.checkNotNull(dtos);
+		Assertion.check()
+				.notNull(dto)
+				.notNull(dtos);
 		Arrays.stream(dtos)
 				.forEach(other -> Assertion.checkArgument(dto.getClass().equals(other.getClass()), "all dtos must have the same type"));
 		//---
@@ -158,7 +159,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	/** {@inheritDoc} */
 	@Override
 	public boolean add(final D dto) {
-		Assertion.checkNotNull(dto);
+		Assertion.check().notNull(dto);
 		final DtDefinition foundDtDefinition = DtObjectUtil.findDtDefinition(dto);
 		Assertion.checkArgument(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
 		//-----

@@ -91,8 +91,9 @@ public final class DtObjectsLoader implements Loader {
 	/** {@inheritDoc} */
 	@Override
 	public void load(final String resourcePath, final Map<String, DynamicDefinition> dynamicDefinitions) {
-		Assertion.checkArgNotEmpty(resourcePath);
-		Assertion.checkNotNull(dynamicDefinitions);
+		Assertion.check()
+				.argNotEmpty(resourcePath)
+				.notNull(dynamicDefinitions);
 		//-----
 		//--Enregistrement des fichiers java annotés
 		for (final Class<DtObject> javaClass : selectClasses(resourcePath, DtObject.class)) {
@@ -101,7 +102,7 @@ public final class DtObjectsLoader implements Loader {
 	}
 
 	private static void load(final Class<DtObject> clazz, final Map<String, DynamicDefinition> dslDefinitionRepository) {
-		Assertion.checkNotNull(dslDefinitionRepository);
+		Assertion.check().notNull(dslDefinitionRepository);
 		//-----
 		parseDynamicDefinitionBuilder(clazz, dslDefinitionRepository);
 	}
@@ -307,10 +308,11 @@ public final class DtObjectsLoader implements Loader {
 					final String multiplicityB = association.foreignMultiplicity();
 					final Boolean navigabilityB = association.foreignIsNavigable();
 					//---
-					Assertion.checkNotNull(multiplicityA);
-					Assertion.checkNotNull(navigabilityA);
-					Assertion.checkNotNull(multiplicityB);
-					Assertion.checkNotNull(navigabilityB);
+					Assertion.check()
+							.notNull(multiplicityA)
+							.notNull(navigabilityA)
+							.notNull(multiplicityB)
+							.notNull(navigabilityB);
 					// Vérification que l'on est bien dans le cas d'une association simple de type 1-n
 					if (AssociationUtil.isMultiple(multiplicityB) && AssociationUtil.isMultiple(multiplicityA)) {
 						//Relation n-n
@@ -384,7 +386,7 @@ public final class DtObjectsLoader implements Loader {
 	 * @return Constante représentant le nom du champ
 	 */
 	private static String createFieldName(final Field field) {
-		Assertion.checkNotNull(field);
+		Assertion.check().notNull(field);
 		//-----
 		final String fieldName = field.getName();
 		if (StringUtil.isLowerCamelCase(fieldName)) {
@@ -399,7 +401,7 @@ public final class DtObjectsLoader implements Loader {
 	 * @return Constante représentant le nom du champ
 	 */
 	private static String createFieldName(final Method method) {
-		Assertion.checkNotNull(method);
+		Assertion.check().notNull(method);
 		//-----
 		if (method.getName().startsWith("get")) {
 			final String propertyName = method.getName().substring("get".length());

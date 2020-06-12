@@ -36,7 +36,7 @@ public final class DataAccessor {
 	private final DtField dtField;
 
 	DataAccessor(final DtField dtField) {
-		Assertion.checkNotNull(dtField);
+		Assertion.check().notNull(dtField);
 		//-----
 		this.dtField = dtField;
 	}
