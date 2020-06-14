@@ -79,9 +79,10 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> {
 			final String resultFilter,
 			final String resultLabel,
 			final MessageKey resultLabelKey) {
-		Assertion.checkArgNotEmpty(resultcode);
-		Assertion.checkNotNull(result);
-		Assertion.checkArgNotEmpty(resultFilter);
+		Assertion.check()
+				.argNotEmpty(resultcode)
+				.notNull(result)
+				.argNotEmpty(resultFilter);
 		//---
 		if (firstResult == null) {
 			firstResult = result;

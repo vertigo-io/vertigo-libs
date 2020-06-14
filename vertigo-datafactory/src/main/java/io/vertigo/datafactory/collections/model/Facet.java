@@ -51,10 +51,11 @@ public final class Facet implements Serializable {
 	 * @param facetValues Liste des valeurs de facette (ordonnée)
 	 */
 	public Facet(final FacetDefinition facetDefinition, final Map<FacetValue, Long> facetValues) {
-		Assertion.checkNotNull(facetDefinition);
-		Assertion.checkNotNull(facetValues);
-		Assertion.checkArgument(facetValues instanceof LinkedHashMap || facetValues instanceof SortedMap,
-				"FacetValues must be sorted, shoud implements SortedMap or LinkedHashMap ({0})", facetValues.getClass().getSimpleName());
+		Assertion.check()
+				.notNull(facetDefinition)
+				.notNull(facetValues)
+				.argument(facetValues instanceof LinkedHashMap || facetValues instanceof SortedMap,
+						"FacetValues must be sorted, shoud implements SortedMap or LinkedHashMap ({0})", facetValues.getClass().getSimpleName());
 		//-----
 		facetDefinitionRef = new DefinitionReference<>(facetDefinition);
 		this.facetValues = Collections.unmodifiableMap(facetValues);

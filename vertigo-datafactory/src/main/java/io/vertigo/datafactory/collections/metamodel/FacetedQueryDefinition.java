@@ -83,7 +83,7 @@ public final class FacetedQueryDefinition implements Definition {
 				.notNull(criteriaSmartType)
 				.notNull(listFilterBuilderClass)
 				.notNull(listFilterBuilderQuery);
-		//Assertion.checkNotNull(geoSearchQuery);
+		//Assertion.check().notNull(geoSearchQuery);
 		//-----
 		this.name = name;
 		for (final FacetDefinition facetDefinition : facetDefinitions) {
@@ -106,7 +106,7 @@ public final class FacetedQueryDefinition implements Definition {
 		//-----
 		final FacetDefinition facetDefinition = facetDefinitions.get(facetName);
 		//-----
-		Assertion.checkNotNull(facetDefinition, "Aucune Définition de facette trouvée pour {0}", facetName);
+		Assertion.check().notNull(facetDefinition, "Aucune Définition de facette trouvée pour {0}", facetName);
 		return facetDefinition;
 	}
 

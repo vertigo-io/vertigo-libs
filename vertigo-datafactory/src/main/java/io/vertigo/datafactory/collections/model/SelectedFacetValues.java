@@ -53,7 +53,7 @@ public final class SelectedFacetValues implements Serializable {
 		}
 
 		private SelectedFacetValuesBuilder(final Map<String, List<FacetValue>> selectedFacetValues) {
-			Assertion.checkNotNull(selectedFacetValues);
+			Assertion.check().notNull(selectedFacetValues);
 			//----
 			selectedFacetValues //on fait un clone (Map et List)
 					.forEach((k, v) -> selectedFacetValuesByFacetName.put(k, new ArrayList<>(v)));
@@ -82,7 +82,7 @@ public final class SelectedFacetValues implements Serializable {
 	 * @param selectedFacetValues Liste des valeurs de facette par facette
 	 */
 	private SelectedFacetValues(final Map<String, List<FacetValue>> selectedFacetValues) {
-		Assertion.checkNotNull(selectedFacetValues);
+		Assertion.check().notNull(selectedFacetValues);
 		//----
 		selectedFacetValuesByFacetName = Collections.unmodifiableMap(selectedFacetValues);
 	}

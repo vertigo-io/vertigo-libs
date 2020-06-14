@@ -62,7 +62,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	public CollectionsManagerImpl(
 			final SmartTypeManager smartTypeManager,
 			final Optional<IndexPlugin> indexPluginOpt) {
-		Assertion.checkNotNull(indexPluginOpt);
+		Assertion.check().notNull(indexPluginOpt);
 		//-----
 		this.indexPluginOpt = indexPluginOpt;
 		facetFactory = new FacetFactory(this, smartTypeManager);
@@ -71,8 +71,9 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	/** {@inheritDoc} */
 	@Override
 	public <R extends DtObject> FacetedQueryResult<R, DtList<R>> facetList(final DtList<R> dtList, final FacetedQuery facetedQuery, final Optional<FacetDefinition> clusterFacetDefinition) {
-		Assertion.checkNotNull(dtList);
-		Assertion.checkNotNull(facetedQuery);
+		Assertion.check()
+				.notNull(dtList)
+				.notNull(facetedQuery);
 		//-----
 		//1- on applique les filtres
 		final DtList<R> resultDtList;

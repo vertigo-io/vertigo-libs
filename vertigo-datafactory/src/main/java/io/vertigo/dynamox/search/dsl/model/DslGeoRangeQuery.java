@@ -42,16 +42,16 @@ public final class DslGeoRangeQuery implements DslQuery {
 			final DslQuery startGeoPoint,
 			final DslQuery endGeoPoint,
 			final String postBody) {
-		Assertion.checkNotNull(preBody);
-		Assertion.checkNotNull(startGeoPoint);
-		Assertion.checkNotNull(endGeoPoint);
-		Assertion.checkArgument(startGeoPoint instanceof DslGeoPointCriteria
-				|| startGeoPoint instanceof DslGeoPointFixed
-				|| startGeoPoint instanceof DslGeoDistanceQuery, "DslGeoDistanceQuery only support Criteria or Fixed startGeoPoint, may have distance and unit ({0})", startGeoPoint);
-		Assertion.checkArgument(endGeoPoint instanceof DslGeoPointCriteria
-				|| endGeoPoint instanceof DslGeoPointFixed
-				|| endGeoPoint instanceof DslGeoDistanceQuery, "DslGeoDistanceQuery only support Criteria or Fixed endGeoPoint, may have distance and unit ({0})", endGeoPoint);
-		Assertion.checkNotNull(postBody);
+		Assertion.check().notNull(preBody)
+				.notNull(startGeoPoint)
+				.notNull(endGeoPoint)
+				.argument(startGeoPoint instanceof DslGeoPointCriteria
+						|| startGeoPoint instanceof DslGeoPointFixed
+						|| startGeoPoint instanceof DslGeoDistanceQuery, "DslGeoDistanceQuery only support Criteria or Fixed startGeoPoint, may have distance and unit ({0})", startGeoPoint)
+				.argument(endGeoPoint instanceof DslGeoPointCriteria
+						|| endGeoPoint instanceof DslGeoPointFixed
+						|| endGeoPoint instanceof DslGeoDistanceQuery, "DslGeoDistanceQuery only support Criteria or Fixed endGeoPoint, may have distance and unit ({0})", endGeoPoint)
+				.notNull(postBody);
 		//-----
 		this.preBody = preBody;
 		this.startGeoPoint = startGeoPoint;

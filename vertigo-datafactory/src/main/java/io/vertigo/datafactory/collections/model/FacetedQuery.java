@@ -40,8 +40,9 @@ public final class FacetedQuery implements Serializable {
 	 * @param selectedFacetValue Liste des valeurs de facette selectionnées par facette
 	 */
 	public FacetedQuery(final FacetedQueryDefinition facetedQueryDefinition, final SelectedFacetValues selectedFacetValue) {
-		Assertion.checkNotNull(facetedQueryDefinition);
-		Assertion.checkNotNull(selectedFacetValue);
+		Assertion.check()
+				.notNull(facetedQueryDefinition)
+				.notNull(selectedFacetValue);
 		//-----
 		facetedQueryDefinitionRef = new DefinitionReference<>(facetedQueryDefinition);
 		selectedFacetValues = selectedFacetValue;

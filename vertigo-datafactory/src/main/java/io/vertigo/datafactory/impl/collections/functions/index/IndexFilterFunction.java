@@ -56,7 +56,7 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 	 * @param indexPlugin Index plugin
 	 */
 	public IndexFilterFunction(final IndexPlugin indexPlugin) {
-		Assertion.checkNotNull(indexPlugin, "An IndexPlugin is required to use this method");
+		Assertion.check().notNull(indexPlugin, "An IndexPlugin is required to use this method");
 		//-----
 		this.indexPlugin = indexPlugin;
 	}
@@ -68,9 +68,10 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 	 * @param keywordsSearchedFields searched fields
 	 */
 	public void filter(final String userKeywords, final int maxRows, final Collection<DtField> keywordsSearchedFields) {
-		Assertion.checkState(keywords == null, "Keywords was already set on this processor : {0}. Only one is supported.", keywords);
-		Assertion.checkNotNull(userKeywords);
-		Assertion.checkNotNull(keywordsSearchedFields);
+		Assertion.check()
+				.state(keywords == null, "Keywords was already set on this processor : {0}. Only one is supported.", keywords)
+				.notNull(userKeywords)
+				.notNull(keywordsSearchedFields);
 		//-----
 		keywords = userKeywords;
 		top = maxRows;
@@ -114,7 +115,7 @@ public final class IndexFilterFunction<D extends DtObject> implements UnaryOpera
 	/** {@inheritDoc} */
 	@Override
 	public DtList<D> apply(final DtList<D> dtc) {
-		Assertion.checkNotNull(dtc);
+		Assertion.check().notNull(dtc);
 		//-----
 		final DtListState dtListState = DtListState.of(top, skip, sortFieldName, sortDesc);
 		return indexPlugin.getCollection(keywords, searchedFields, listFilters, dtListState, Optional.empty(), dtc);

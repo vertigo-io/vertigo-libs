@@ -128,7 +128,7 @@ public final class LuceneIndexPlugin implements IndexPlugin, SimpleDefinitionPro
 	}
 
 	private <D extends DtObject> RamLuceneIndex<D> createIndex(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
-		Assertion.checkNotNull(fullDtc);
+		Assertion.check().notNull(fullDtc);
 		//-----
 		final RamLuceneIndex<D> luceneDb = new RamLuceneIndex<>(fullDtc.getDefinition(), smartTypeManager);
 		luceneDb.addAll(fullDtc, storeValue);

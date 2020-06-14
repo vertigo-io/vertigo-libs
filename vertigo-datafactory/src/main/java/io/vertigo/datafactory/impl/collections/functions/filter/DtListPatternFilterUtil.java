@@ -100,8 +100,9 @@ public final class DtListPatternFilterUtil {
 	 * @return Resulting String array (Optional)
 	 **/
 	public static Optional<String[]> parseFilter(final String filterString, final Pattern parsingPattern) {
-		Assertion.checkNotNull(filterString);
-		Assertion.checkNotNull(parsingPattern);
+		Assertion.check()
+				.notNull(filterString)
+				.notNull(parsingPattern);
 		//-----
 		final Matcher matcher = parsingPattern.matcher(filterString);
 		if (!matcher.matches()) {

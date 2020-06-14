@@ -75,9 +75,10 @@ public final class SearchQuery implements Serializable {
 			final DtField boostedDocumentDateField,
 			final Integer numDaysOfBoostRefDocument,
 			final Integer mostRecentBoost) {
-		Assertion.checkNotNull(facetedQuery);
-		Assertion.checkNotNull(queryCriteria);
-		Assertion.checkNotNull(securityListFilter);
+		Assertion.check()
+				.notNull(facetedQuery)
+				.notNull(queryCriteria)
+				.notNull(securityListFilter);
 		Assertion.when(boostedDocumentDateField != null)
 				.state(() -> numDaysOfBoostRefDocument != null && mostRecentBoost != null, "Lorsque le boost des documents récents est activé, numDaysOfBoostRefDocument et mostRecentBoost sont obligatoires.");
 		Assertion.when(boostedDocumentDateField == null)

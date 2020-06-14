@@ -62,7 +62,7 @@ public final class WritableFuture<V> implements Future<V> {
 	/** {@inheritDoc} */
 	@Override
 	public synchronized V get(final long timeout, final TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-		Assertion.checkNotNull(unit, "Time unit was null");
+		Assertion.check().notNull(unit, "Time unit was null");
 		//-----
 		final long msecs = unit.toMillis(timeout);
 		final long startTime = msecs <= 0 ? 0 : System.currentTimeMillis();

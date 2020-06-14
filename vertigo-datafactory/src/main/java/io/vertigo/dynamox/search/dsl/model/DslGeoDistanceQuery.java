@@ -36,9 +36,10 @@ public final class DslGeoDistanceQuery implements DslQuery {
 	 * @param distanceUnit distance unit
 	 */
 	public DslGeoDistanceQuery(final DslQuery geoPoint, final int distance, final String distanceUnit) {
-		Assertion.checkNotNull(geoPoint);
-		Assertion.checkArgNotEmpty(distanceUnit);
-		Assertion.checkArgument(geoPoint instanceof DslGeoPointCriteria || geoPoint instanceof DslGeoPointFixed, "DslGeoDistanceQuery only support Criteria or Fixed geoPoint ({0})", geoPoint);
+		Assertion.check()
+				.notNull(geoPoint)
+				.argNotEmpty(distanceUnit)
+				.argument(geoPoint instanceof DslGeoPointCriteria || geoPoint instanceof DslGeoPointFixed, "DslGeoDistanceQuery only support Criteria or Fixed geoPoint ({0})", geoPoint);
 		//-----
 		this.geoPoint = geoPoint;
 		this.distance = distance;

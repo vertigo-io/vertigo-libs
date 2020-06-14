@@ -55,9 +55,10 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 	 * @param uid UID de l'objet indexé
 	 */
 	private SearchIndex(final SearchIndexDefinition indexDefinition, final UID<K> uid, final I indexDtObject) {
-		Assertion.checkNotNull(uid);
-		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkNotNull(indexDtObject);
+		Assertion.check()
+				.notNull(uid)
+				.notNull(indexDefinition)
+				.notNull(indexDtObject);
 		//On vérifie la consistance des données.
 		Assertion.checkArgument(
 				indexDefinition.getKeyConceptDtDefinition().equals(uid.getDefinition()),

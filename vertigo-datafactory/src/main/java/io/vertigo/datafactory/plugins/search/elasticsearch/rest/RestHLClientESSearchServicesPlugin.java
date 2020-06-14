@@ -252,7 +252,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept, I extends DtObject> void putAll(final SearchIndexDefinition indexDefinition, final Collection<SearchIndex<S, I>> indexCollection) {
-		Assertion.checkNotNull(indexCollection);
+		Assertion.check().notNull(indexCollection);
 		//-----
 		final ESStatement<S, I> statement = createElasticStatement(indexDefinition);
 		statement.putAll(indexCollection);
@@ -274,8 +274,9 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	/** {@inheritDoc} */
 	@Override
 	public <S extends KeyConcept> void remove(final SearchIndexDefinition indexDefinition, final UID<S> uri) {
-		Assertion.checkNotNull(uri);
-		Assertion.checkNotNull(indexDefinition);
+		Assertion.check()
+				.notNull(uri)
+				.notNull(indexDefinition);
 		//-----
 		createElasticStatement(indexDefinition).remove(uri);
 		markToOptimize(obtainIndexName(indexDefinition));
@@ -284,7 +285,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	/** {@inheritDoc} */
 	@Override
 	public <R extends DtObject> FacetedQueryResult<R, SearchQuery> loadList(final SearchIndexDefinition indexDefinition, final SearchQuery searchQuery, final DtListState listState) {
-		Assertion.checkNotNull(searchQuery);
+		Assertion.check().notNull(searchQuery);
 		//-----
 		final ESStatement<KeyConcept, R> statement = createElasticStatement(indexDefinition);
 		final DtListState usedListState = listState != null ? listState : defaultListState;
@@ -294,7 +295,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	/** {@inheritDoc} */
 	@Override
 	public long count(final SearchIndexDefinition indexDefinition) {
-		Assertion.checkNotNull(indexDefinition);
+		Assertion.check().notNull(indexDefinition);
 		//-----
 		return createElasticStatement(indexDefinition).count();
 	}
@@ -302,8 +303,9 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	/** {@inheritDoc} */
 	@Override
 	public void remove(final SearchIndexDefinition indexDefinition, final ListFilter listFilter) {
-		Assertion.checkNotNull(indexDefinition);
-		Assertion.checkNotNull(listFilter);
+		Assertion.check()
+				.notNull(indexDefinition)
+				.notNull(listFilter);
 		//-----
 		createElasticStatement(indexDefinition).remove(listFilter);
 		markToOptimize(obtainIndexName(indexDefinition));
@@ -312,7 +314,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
 		Assertion.checkArgument(indexSettingsValid,
 				"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
-		Assertion.checkNotNull(indexDefinition);
+		Assertion.check().notNull(indexDefinition);
 		//-----
 		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), esClient, typeAdapters);
 	}
@@ -344,7 +346,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	 * @throws IOException
 	 */
 	private void updateTypeMapping(final SearchIndexDefinition indexDefinition, final boolean sortableNormalizer) throws IOException {
-		Assertion.checkNotNull(indexDefinition);
+		Assertion.check().notNull(indexDefinition);
 		//-----
 		final String myIndexName = obtainIndexName(indexDefinition);
 

@@ -37,7 +37,7 @@ public final class SearchChunk<K extends KeyConcept> {
 	 * @param uids the list of keyConcept uids
 	 */
 	public SearchChunk(final List<UID<K>> uids) {
-		Assertion.checkNotNull(uids);
+		Assertion.check().notNull(uids);
 		//---
 		this.uids = Collections.unmodifiableList(uids); // pas de clone pour l'instant
 	}

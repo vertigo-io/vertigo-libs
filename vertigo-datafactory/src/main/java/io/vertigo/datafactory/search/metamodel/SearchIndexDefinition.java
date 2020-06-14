@@ -82,14 +82,15 @@ public final class SearchIndexDefinition implements Definition {
 			final DtDefinition indexDtDefinition,
 			final Map<DtField, List<DtField>> indexCopyFromFieldsMap,
 			final String searchLoaderId) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(keyConceptDtDefinition);
-		Assertion.checkArgument(
-				keyConceptDtDefinition.getStereotype() == DtStereotype.KeyConcept,
-				"keyConceptDtDefinition ({0}) must be a DtDefinition of a KeyConcept class", keyConceptDtDefinition.getName());
-		Assertion.checkNotNull(indexDtDefinition);
-		Assertion.checkNotNull(indexCopyFromFieldsMap);
-		Assertion.checkArgNotEmpty(searchLoaderId);
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(keyConceptDtDefinition)
+				.argument(
+						keyConceptDtDefinition.getStereotype() == DtStereotype.KeyConcept,
+						"keyConceptDtDefinition ({0}) must be a DtDefinition of a KeyConcept class", keyConceptDtDefinition.getName())
+				.notNull(indexDtDefinition)
+				.notNull(indexCopyFromFieldsMap)
+				.argNotEmpty(searchLoaderId);
 		//-----
 		this.name = name;
 		this.keyConceptDtDefinition = keyConceptDtDefinition;
@@ -129,7 +130,7 @@ public final class SearchIndexDefinition implements Definition {
 	 */
 	public List<DtField> getIndexCopyToFields(final DtField fromField) {
 		final List<DtField> copyToFields = indexCopyToFieldsMap.get(fromField);
-		Assertion.checkNotNull(copyToFields);
+		Assertion.check().notNull(copyToFields);
 		//-----
 		return Collections.unmodifiableList(copyToFields);
 	}

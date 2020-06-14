@@ -50,7 +50,7 @@ public final class IndexType {
 	private final boolean indexFieldData;
 
 	private IndexType(final String indexType, final SmartTypeDefinition smartTypeDefinition) {
-		Assertion.checkNotNull(smartTypeDefinition);
+		Assertion.check().notNull(smartTypeDefinition);
 		//-----
 		checkIndexType(indexType, smartTypeDefinition);
 		if (indexType == null) {

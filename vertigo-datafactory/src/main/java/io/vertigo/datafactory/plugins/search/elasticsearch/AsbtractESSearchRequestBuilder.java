@@ -91,7 +91,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	 * @param typeAdapters Mapping to basic type adapter
 	 */
 	public AsbtractESSearchRequestBuilder(final Map<Class, BasicTypeAdapter> typeAdapters) {
-		Assertion.checkNotNull(typeAdapters);
+		Assertion.check().notNull(typeAdapters);
 		//-----
 		this.myTypeAdapters = typeAdapters;
 	}
@@ -101,7 +101,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	 * @return this builder
 	 */
 	public T withSearchIndexDefinition(final SearchIndexDefinition indexDefinition) {
-		Assertion.checkNotNull(indexDefinition);
+		Assertion.check().notNull(indexDefinition);
 		//-----
 		myIndexDefinition = indexDefinition;
 		return (T) this;
@@ -112,7 +112,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	 * @return this builder
 	 */
 	public T withSearchQuery(final SearchQuery searchQuery) {
-		Assertion.checkNotNull(searchQuery);
+		Assertion.check().notNull(searchQuery);
 		//-----
 		mySearchQuery = searchQuery;
 		return (T) this;
@@ -124,7 +124,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	 * @return this builder
 	 */
 	public T withListState(final DtListState listState, final int defaultMaxRows) {
-		Assertion.checkNotNull(listState);
+		Assertion.check().notNull(listState);
 		//-----
 		myListState = listState;
 		myDefaultMaxRows = defaultMaxRows;
@@ -283,7 +283,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 			final DtListState listState,
 			final boolean useHighlight,
 			final Map<Class, BasicTypeAdapter> typeAdapters) {
-		Assertion.checkNotNull(searchRequestBuilder);
+		Assertion.check().notNull(searchRequestBuilder);
 		//-----
 		//On ajoute le cluster, si présent
 		if (searchQuery.isClusteringFacet()) { //si il y a un cluster on le place en premier
@@ -506,7 +506,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	 * @return QueryBuilder
 	 */
 	public static QueryBuilder translateToQueryBuilder(final ListFilter listFilter) {
-		Assertion.checkNotNull(listFilter);
+		Assertion.check().notNull(listFilter);
 		//-----
 		final String query = new StringBuilder()
 				.append(" +(")

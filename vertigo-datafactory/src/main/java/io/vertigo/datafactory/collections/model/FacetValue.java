@@ -52,9 +52,10 @@ public final class FacetValue implements Serializable {
 	 * @param label the label of the facet
 	 */
 	public FacetValue(final String code, final ListFilter listFilter, final MessageText label) {
-		Assertion.checkArgNotEmpty(code);
-		Assertion.checkNotNull(listFilter);
-		Assertion.checkNotNull(label);
+		Assertion.check()
+				.argNotEmpty(code)
+				.notNull(listFilter)
+				.notNull(label);
 		//-----
 		this.code = code;
 		this.listFilter = listFilter;

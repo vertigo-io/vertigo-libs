@@ -182,7 +182,7 @@ final class RamLuceneIndex<D extends DtObject> {
 	 * @throws IOException Indexation error
 	 */
 	public void addAll(final DtList<D> fullDtc, final boolean storeValue) throws IOException {
-		Assertion.checkNotNull(fullDtc);
+		Assertion.check().notNull(fullDtc);
 		//-----
 		try (final IndexWriter indexWriter = createIndexWriter()) {
 			final DtField idField = fullDtc.getDefinition().getIdField().get();
@@ -191,7 +191,7 @@ final class RamLuceneIndex<D extends DtObject> {
 			for (final D dto : fullDtc) {
 				final Document document = new Document();
 				final Object pkValue = idField.getDataAccessor().getValue(dto);
-				Assertion.checkNotNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", fullDtc.getDefinition().getName(), idField.getName());
+				Assertion.check().notNull(pkValue, "Indexed DtObject must have a not null primary key. {0}.{1} was null.", fullDtc.getDefinition().getName(), idField.getName());
 				final String indexedPkValue = String.valueOf(pkValue);
 				addKeyword(document, idField.getName(), indexedPkValue, true);
 				for (final DtField dtField : dtFields) {
@@ -254,9 +254,10 @@ final class RamLuceneIndex<D extends DtObject> {
 			final List<ListFilter> listFilters,
 			final DtListState dtListState,
 			final Optional<DtField> boostedField) throws IOException {
-		Assertion.checkNotNull(searchedFields);
-		Assertion.checkNotNull(dtListState);
-		Assertion.checkArgument(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");
+		Assertion.check()
+				.notNull(searchedFields)
+				.notNull(dtListState)
+				.argument(dtListState.getMaxRows().isPresent(), "MaxRows is mandatory, can't get all data :(");
 		//-----
 		final Query filterQuery = luceneQueryFactory.createFilterQuery(keywords, searchedFields, listFilters, boostedField);
 		final Optional<Sort> optSort = createSort(dtListState);

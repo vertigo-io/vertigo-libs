@@ -67,14 +67,14 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	}
 
 	public SearchQueryBuilder withGeoSearchQuery(final String geoSearchQuery) {
-		Assertion.checkNotNull(geoSearchQuery);
+		Assertion.check().notNull(geoSearchQuery);
 		//-----
 		this.myGeoSearchQuery = geoSearchQuery;
 		return this;
 	}
 
 	public SearchQueryBuilder withCriteria(final Object criteria) {
-		Assertion.checkNotNull(criteria);
+		Assertion.check().notNull(criteria);
 		//-----
 		myCriteria = criteria;
 		return this;
@@ -92,8 +92,9 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @return SearchQuery.
 	 */
 	public SearchQueryBuilder withDateBoost(final DtField dateField, final int numDaysOfBoostRef, final int mostRecentBoost) {
-		Assertion.checkNotNull(dateField);
-		Assertion.checkArgument(numDaysOfBoostRef > 1 && mostRecentBoost > 1, "numDaysOfBoostRef et mostRecentBoost doivent être strictement supérieurs à 1.");
+		Assertion.check()
+				.notNull(dateField)
+				.argument(numDaysOfBoostRef > 1 && mostRecentBoost > 1, "numDaysOfBoostRef et mostRecentBoost doivent être strictement supérieurs à 1.");
 		//-----
 		myDateField = dateField;
 		myNumDaysOfBoostRef = numDaysOfBoostRef;
@@ -114,8 +115,9 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @return this builder
 	 */
 	public SearchQueryBuilder withFacet(final FacetedQuery facetedQuery) {
-		Assertion.checkNotNull(facetedQuery);
-		Assertion.checkState(myFacetedQuery == null, "Facets already set (may have set via FacetedQueryDefinition {0})", facetedQueryDefinition.getName());
+		Assertion.check()
+				.notNull(facetedQuery)
+				.state(myFacetedQuery == null, "Facets already set (may have set via FacetedQueryDefinition {0})", facetedQueryDefinition.getName());
 		//-----
 		myFacetedQuery = facetedQuery;
 		return this;
@@ -126,7 +128,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @return this builder
 	 */
 	public SearchQueryBuilder withSecurityFilter(final ListFilter securityListFilter) {
-		Assertion.checkNotNull(securityListFilter);
+		Assertion.check().notNull(securityListFilter);
 		//-----
 		mySecurityListFilter = securityListFilter;
 		return this;
@@ -138,7 +140,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @return this builder
 	 */
 	public SearchQueryBuilder withFacetClustering(final FacetDefinition clusteringFacetDefinition) {
-		Assertion.checkNotNull(clusteringFacetDefinition);
+		Assertion.check().notNull(clusteringFacetDefinition);
 		//-----
 		myClusteringFacetDefinition = clusteringFacetDefinition;
 		return this;

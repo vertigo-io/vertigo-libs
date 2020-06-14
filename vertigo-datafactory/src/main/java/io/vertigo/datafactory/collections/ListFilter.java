@@ -33,7 +33,7 @@ public final class ListFilter implements Serializable {
 	private final String filterValue;
 
 	private ListFilter(final String filterValue) {
-		Assertion.checkNotNull(filterValue);
+		Assertion.check().notNull(filterValue);
 		//---
 		this.filterValue = filterValue;
 	}

@@ -233,12 +233,13 @@ public final class SearchManagerImpl implements SearchManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public void markAsDirty(final List<UID<? extends KeyConcept>> keyConceptUris) {
-		Assertion.checkNotNull(keyConceptUris);
-		Assertion.checkArgument(!keyConceptUris.isEmpty(), "dirty keyConceptUris cant be empty");
+		Assertion.check()
+				.notNull(keyConceptUris)
+				.argument(!keyConceptUris.isEmpty(), "dirty keyConceptUris cant be empty");
 		//-----
 		final DtDefinition keyConceptDefinition = keyConceptUris.get(0).getDefinition();
 		final List<SearchIndexDefinition> searchIndexDefinitions = findIndexDefinitionByKeyConcept(keyConceptDefinition);
-		Assertion.checkNotNull(!searchIndexDefinitions.isEmpty(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
+		Assertion.check().notNull(!searchIndexDefinitions.isEmpty(), "No SearchIndexDefinition was defined for this keyConcept : {0}", keyConceptDefinition.getName());
 		//-----
 		for (final SearchIndexDefinition searchIndexDefinition : searchIndexDefinitions) {
 			final Set<UID<? extends KeyConcept>> dirtyElements = dirtyElementsPerIndexName.get(searchIndexDefinition.getName());
