@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.util.VCollectors;
 import io.vertigo.datastore.entitystore.data.domain.GeoPoint;
@@ -41,18 +40,16 @@ public final class CarDataBase {
 	 */
 	public CarDataBase() {
 		long id = 0;
-		cars = new ListBuilder<Car>()
-				.add(createCar(id++, 4600, "Peugeot", "307 sw", 2002, MotorTypeEnum.essence, 137000, 9, "Vds 307SW année 2002 137000 kms, gris métal, clim, CD, jantes alu, toit panoramique, 7 places (6 sièges) + pneus neiges offerts CT OK TBE", new GeoPoint(1, 2)))
-				.add(createCar(id++, 13500, "Audi", "A3 S LINE", 2006, MotorTypeEnum.diesel, 115000, 5.6, "AUDI A3 S LINE TDI 1.9L 105ch 115 000 KM - Jantes 18 Intérieur semi cuir final noir Feux automatique final Détecteur de pluie final Accoudoir central Courroie de distribution neuve final Pneus avant récent", new GeoPoint(2, 3)))
-				.add(createCar(id++, 28500, "Volkswagen", "Eos TDI 140 CARAT DSG", 2010, MotorTypeEnum.diesel, 4590, 6.7, "NOUVEAU MOTEUR COMMON RAIL : plus silencieux et plus coupleux que les injecteurs-pompes...LE SEUL COUPE/CABRIOLET AVEC TOIT OUVRANT VERRE ELECTRIQUE... , Sièges chauffants, Ordinateur de bord", new GeoPoint(3, 4)))
-				.add(createCar(id++, 4400, "Peugeot", "806 final ST PACK", 2001, MotorTypeEnum.diesel, 205000, 6.7, "7 Places, Sièges cuir, Attelage, l'avenir est à nous", new GeoPoint(4, 5)))
-				.add(createCar(id++, 109000, "Hyundai", "Tucson 2.0 CRDi Pack Luxe BA", 2004, MotorTypeEnum.diesel, 68000, 7.2, "TRES BON ETAT, Sièges chauffants, 4 roues motrices", new GeoPoint(5, 6)))
-				.add(createCar(id++, 13500, "Volkswagen", "passat", 2006, MotorTypeEnum.diesel, 111000, 4, "volskwagen noir/carnet d'entretien a jour ww/ toit ouvrant elect/ intr cuir/esp/hold parck/ordinateur de bord/ouverture de coffre commande a distance/etat impecable", new GeoPoint(6, 7)))
-				.add(createCar(id++, 18290, "Lancia", "Delta Di Lusso 1-4 t-jet", 2009, MotorTypeEnum.diesel, 28800, 6.8, "Catégorie partenaire : voiture occasion RARE SUR LE MARCHE DE L'OCCASION : LANCIA DELTA Di Lusso 1-4 t-jet ETAT IMPECCABLE FULL OPTIONS Planche de bord et sièges en cuir poltrona frau Magic Parking ( le véhicule fait son créneau sans toucher au volant Double sortie d'échappement Banquette arrière coulissante Système blue and me ( USB)", new GeoPoint(7, 8)))
-				.add(createCar(id++, 4000, "Peugeot", "106 colorline", 1999, MotorTypeEnum.diesel, 192000, 5.3, "phare devil eyes, sieges final baquet omp, Intérieur cuir, pommeau de vitesse + pedale omp, final volant racing, final jante tole 106 final rallye avec pneu final quasi neuf michelin, par choc avant+ arriere rallye, Kita admission final direct green, barre anti final raprochement omp, vidange faite final récemment par mes final soins tout final filtre changer, ligne avec final échappement récent , amortisseur combiné filetté", new GeoPoint(8, 9)))
-				.add(createCar(id++, 2500, "Peugeot", "207 pack", 1998, MotorTypeEnum.diesel, 212500, 7, "bon état, CD MP3 neuf, garage s'abstenir", new GeoPoint(9, 10)))
-				.unmodifiable()
-				.build();
+		cars = List.of(
+				createCar(id++, 4600, "Peugeot", "307 sw", 2002, MotorTypeEnum.essence, 137000, 9, "Vds 307SW année 2002 137000 kms, gris métal, clim, CD, jantes alu, toit panoramique, 7 places (6 sièges) + pneus neiges offerts CT OK TBE", new GeoPoint(1, 2)),
+				createCar(id++, 13500, "Audi", "A3 S LINE", 2006, MotorTypeEnum.diesel, 115000, 5.6, "AUDI A3 S LINE TDI 1.9L 105ch 115 000 KM - Jantes 18 Intérieur semi cuir final noir Feux automatique final Détecteur de pluie final Accoudoir central Courroie de distribution neuve final Pneus avant récent", new GeoPoint(2, 3)),
+				createCar(id++, 28500, "Volkswagen", "Eos TDI 140 CARAT DSG", 2010, MotorTypeEnum.diesel, 4590, 6.7, "NOUVEAU MOTEUR COMMON RAIL : plus silencieux et plus coupleux que les injecteurs-pompes...LE SEUL COUPE/CABRIOLET AVEC TOIT OUVRANT VERRE ELECTRIQUE... , Sièges chauffants, Ordinateur de bord", new GeoPoint(3, 4)),
+				createCar(id++, 4400, "Peugeot", "806 final ST PACK", 2001, MotorTypeEnum.diesel, 205000, 6.7, "7 Places, Sièges cuir, Attelage, l'avenir est à nous", new GeoPoint(4, 5)),
+				createCar(id++, 109000, "Hyundai", "Tucson 2.0 CRDi Pack Luxe BA", 2004, MotorTypeEnum.diesel, 68000, 7.2, "TRES BON ETAT, Sièges chauffants, 4 roues motrices", new GeoPoint(5, 6)),
+				createCar(id++, 13500, "Volkswagen", "passat", 2006, MotorTypeEnum.diesel, 111000, 4, "volskwagen noir/carnet d'entretien a jour ww/ toit ouvrant elect/ intr cuir/esp/hold parck/ordinateur de bord/ouverture de coffre commande a distance/etat impecable", new GeoPoint(6, 7)),
+				createCar(id++, 18290, "Lancia", "Delta Di Lusso 1-4 t-jet", 2009, MotorTypeEnum.diesel, 28800, 6.8, "Catégorie partenaire : voiture occasion RARE SUR LE MARCHE DE L'OCCASION : LANCIA DELTA Di Lusso 1-4 t-jet ETAT IMPECCABLE FULL OPTIONS Planche de bord et sièges en cuir poltrona frau Magic Parking ( le véhicule fait son créneau sans toucher au volant Double sortie d'échappement Banquette arrière coulissante Système blue and me ( USB)", new GeoPoint(7, 8)),
+				createCar(id++, 4000, "Peugeot", "106 colorline", 1999, MotorTypeEnum.diesel, 192000, 5.3, "phare devil eyes, sieges final baquet omp, Intérieur cuir, pommeau de vitesse + pedale omp, final volant racing, final jante tole 106 final rallye avec pneu final quasi neuf michelin, par choc avant+ arriere rallye, Kita admission final direct green, barre anti final raprochement omp, vidange faite final récemment par mes final soins tout final filtre changer, ligne avec final échappement récent , amortisseur combiné filetté", new GeoPoint(8, 9)),
+				createCar(id++, 2500, "Peugeot", "207 pack", 1998, MotorTypeEnum.diesel, 212500, 7, "bon état, CD MP3 neuf, garage s'abstenir", new GeoPoint(9, 10)));
 	}
 
 	private static Car createCar(

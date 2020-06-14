@@ -27,7 +27,6 @@ import io.vertigo.core.node.config.ModuleConfig;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.database.DatabaseFeatures;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.database.plugins.sql.connection.c3p0.C3p0ConnectionProviderPlugin;
@@ -69,10 +68,9 @@ public class TempFileStoreManagerTest {
 		DIInjector.injectMembers(this, app.getComponentSpace());
 		//---
 		//A chaque test on recrée la table famille
-		final List<String> requests = new ListBuilder<String>()
-				.add(" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_PATH varchar(255), FILE_DATA BLOB)")
-				.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1")
-				.build();
+		final List<String> requests = List.of(
+				" create table VX_FILE_INFO(FIL_ID BIGINT , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH BIGINT, LAST_MODIFIED date, FILE_PATH varchar(255), FILE_DATA BLOB)",
+				" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1");
 		SqlUtil.execRequests(
 				transactionManager,
 				taskManager,

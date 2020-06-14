@@ -20,12 +20,11 @@ package io.vertigo.audit.impl.trace;
 
 import java.util.List;
 
-import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 
@@ -58,15 +57,14 @@ public final class TraceDefinitionProvider implements SimpleDefinitionProvider {
 				.addDataField("context", "context", smartTypeAuditContext, Cardinality.OPTIONAL_OR_NULLABLE, true)
 				.build();
 
-		return new ListBuilder<Definition>()
-				.add(smartTypeAuditId)
-				.add(smartTypeAuditCategory)
-				.add(smartTypeAuditUser)
-				.add(smartTypeAuditInstant)
-				.add(smartTypeAuditItem)
-				.add(smartTypeAuditContext)
-				.add(auditTraceDtDefinition)
-				.build();
+		return List.of(
+				smartTypeAuditId,
+				smartTypeAuditCategory,
+				smartTypeAuditUser,
+				smartTypeAuditInstant,
+				smartTypeAuditItem,
+				smartTypeAuditContext,
+				auditTraceDtDefinition);
 	}
 
 }

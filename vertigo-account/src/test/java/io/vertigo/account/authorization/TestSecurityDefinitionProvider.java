@@ -25,18 +25,16 @@ import io.vertigo.account.authorization.metamodel.Role;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
-import io.vertigo.core.util.ListBuilder;
 
 public final class TestSecurityDefinitionProvider implements SimpleDefinitionProvider {
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return new ListBuilder<Definition>()
-				.add(createRole("RAdmin"))
-				.add(createRole("RUser"))
-				.add(createRole("RManager"))
-				.add(createRole("RSecretary"))
-				.build();
+		return List.of(
+				createRole("RAdmin"),
+				createRole("RUser"),
+				createRole("RManager"),
+				createRole("RSecretary"));
 	}
 
 	private static Role createRole(final String name) {

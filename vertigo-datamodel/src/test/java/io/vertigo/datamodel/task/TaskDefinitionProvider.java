@@ -30,7 +30,6 @@ import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
 
@@ -43,13 +42,11 @@ public final class TaskDefinitionProvider implements SimpleDefinitionProvider {
 
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		return new ListBuilder<Definition>()
-				.add(buildTaskDefinition(definitionSpace, TK_MULTIPLICATION, "*"))
-				.add(buildTaskDefinition(definitionSpace, TK_ADDITION, "+"))
-				.add(buildTaskDefinition2(definitionSpace, TK_MULTIPLICATION_2, "*"))
-				.add(buildTaskDefinition2(definitionSpace, TK_ADDITION_2, "+"))
-				.build();
-
+		return List.of(
+				buildTaskDefinition(definitionSpace, TK_MULTIPLICATION, "*"),
+				buildTaskDefinition(definitionSpace, TK_ADDITION, "+"),
+				buildTaskDefinition2(definitionSpace, TK_MULTIPLICATION_2, "*"),
+				buildTaskDefinition2(definitionSpace, TK_ADDITION_2, "+"));
 	}
 
 	private TaskDefinition buildTaskDefinition(

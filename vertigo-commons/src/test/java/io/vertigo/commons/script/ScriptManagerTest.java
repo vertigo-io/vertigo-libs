@@ -36,7 +36,6 @@ import io.vertigo.commons.script.parser.ScriptSeparator;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.core.util.ListBuilder;
 
 /**
  * @author pchretien
@@ -50,11 +49,10 @@ public final class ScriptManagerTest {
 	//	private ExpressionEvaluatorPlugin mvelExpressionEvaluatorPlugin;
 
 	private static List<ExpressionParameter> createParameters() {
-		return new ListBuilder<ExpressionParameter>()
-				.add(new ExpressionParameter("nom", String.class, "Duraton"))
-				.add(new ExpressionParameter("prenom", String.class, "jean paul"))
-				.add(new ExpressionParameter("age", Integer.class, 54))
-				.build();
+		return List.of(
+				new ExpressionParameter("nom", String.class, "Duraton"),
+				new ExpressionParameter("prenom", String.class, "jean paul"),
+				new ExpressionParameter("age", Integer.class, 54));
 	}
 
 	private AutoCloseableApp app;

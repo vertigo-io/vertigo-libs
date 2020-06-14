@@ -31,7 +31,6 @@ import io.vertigo.core.lang.VSystemException;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.param.Param;
 import io.vertigo.core.plugins.resource.classpath.ClassPathResourceResolverPlugin;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datastore.DataStoreFeatures;
 import io.vertigo.datastore.kvstore.AbstractKVStoreManagerTest;
 import io.vertigo.datastore.kvstore.data.Flower;
@@ -83,13 +82,12 @@ public final class BerkeleyKVStoreManagerTest extends AbstractKVStoreManagerTest
 
 	@Test
 	public void testFindAll() {
-		final List<Flower> flowers = new ListBuilder<Flower>()
-				.add(buildFlower("daisy", 60))
-				.add(buildFlower("tulip", 100))
-				.add(buildFlower("rose", 110))
-				.add(buildFlower("lily", 120))
-				.add(buildFlower("orchid", 200))
-				.build();
+		final List<Flower> flowers = List.of(
+				buildFlower("daisy", 60),
+				buildFlower("tulip", 100),
+				buildFlower("rose", 110),
+				buildFlower("lily", 120),
+				buildFlower("orchid", 200));
 
 		try (final VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
 			final List<Flower> foundFlowers = kvStoreManager.findAll("flowers", 0, null, Flower.class);

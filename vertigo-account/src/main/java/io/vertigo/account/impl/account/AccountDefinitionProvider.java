@@ -20,12 +20,11 @@ package io.vertigo.account.impl.account;
 
 import java.util.List;
 
-import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.lang.BasicType;
+import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterString;
 import io.vertigo.datamodel.smarttype.FormatterConfig;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
@@ -66,13 +65,12 @@ public final class AccountDefinitionProvider implements SimpleDefinitionProvider
 				.withDisplayField(DISPLAY_NAME)
 				.build();
 
-		return new ListBuilder<Definition>()
-				.add(smartTypeAccountId)
-				.add(smartTypeAccountName)
-				.add(smartTypeAccountEmail)
-				.add(accountDtDefinition)
-				.add(accountGroupDtDefinition)
-				.build();
+		return List.of(
+				smartTypeAccountId,
+				smartTypeAccountName,
+				smartTypeAccountEmail,
+				accountDtDefinition,
+				accountGroupDtDefinition);
 	}
 
 }

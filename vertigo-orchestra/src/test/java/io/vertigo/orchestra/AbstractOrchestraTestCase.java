@@ -30,7 +30,6 @@ import io.vertigo.commons.transaction.VTransactionManager;
 import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.util.InjectorUtil;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.task.TaskManager;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
 import io.vertigo.datamodel.task.model.Task;
@@ -73,15 +72,14 @@ public abstract class AbstractOrchestraTestCase {
 		setUpInjection();
 		//A chaque test on supprime tout
 		try (VTransactionWritable transaction = transactionManager.createCurrentTransaction()) {
-			final List<String> requests = new ListBuilder<String>()
-					.add(" delete from o_activity_log;")
-					.add(" delete from o_activity_workspace;")
-					.add(" delete from o_process_planification;")
-					.add(" delete from o_activity_execution;")
-					.add(" delete from o_process_execution;")
-					.add(" delete from o_activity;")
-					.add(" delete from o_process;")
-					.build();
+			final List<String> requests = List.of(
+					" delete from o_activity_log;",
+					" delete from o_activity_workspace;",
+					" delete from o_process_planification;",
+					" delete from o_activity_execution;",
+					" delete from o_process_execution;",
+					" delete from o_activity;",
+					" delete from o_process;");
 
 			for (final String request : requests) {
 				final TaskDefinition taskDefinition = TaskDefinition.builder("TkClean")

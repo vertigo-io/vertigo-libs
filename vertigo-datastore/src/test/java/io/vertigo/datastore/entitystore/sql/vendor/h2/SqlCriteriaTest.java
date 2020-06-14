@@ -34,7 +34,6 @@ import io.vertigo.commons.transaction.VTransactionWritable;
 import io.vertigo.core.node.AutoCloseableApp;
 import io.vertigo.core.node.component.di.DIInjector;
 import io.vertigo.core.node.config.NodeConfig;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.database.impl.sql.vendor.h2.H2DataBase;
 import io.vertigo.datamodel.criteria.Criterions;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
@@ -99,13 +98,12 @@ public final class SqlCriteriaTest {
 	}
 
 	protected List<String> getCreateCarRequests() {
-		return new ListBuilder<String>()
-				.add(" create table motor_type(MTY_CD varchar(50) , LABEL varchar(255))")
-				.add("insert into motor_type(MTY_CD, LABEL) values ('ESSENCE', 'Essence')")
-				.add("insert into motor_type(MTY_CD, LABEL) values ('DIESEL', 'Diesel')")
-				.add(" create table car(ID BIGINT, FAM_ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50), GEO_POINT TEXT )")
-				.add(" create sequence SEQ_CAR start with 10001 increment by 1")
-				.build();
+		return List.of(
+				" create table motor_type(MTY_CD varchar(50) , LABEL varchar(255))",
+				"insert into motor_type(MTY_CD, LABEL) values ('ESSENCE', 'Essence')",
+				"insert into motor_type(MTY_CD, LABEL) values ('DIESEL', 'Diesel')",
+				" create table car(ID BIGINT, FAM_ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50), GEO_POINT TEXT )",
+				" create sequence SEQ_CAR start with 10001 increment by 1");
 	}
 
 	@Test

@@ -26,7 +26,6 @@ import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.Cardinality;
 import io.vertigo.core.node.config.NodeConfig;
 import io.vertigo.core.node.definition.DefinitionSpace;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.database.impl.sql.vendor.oracle.Oracle11DataBase;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
 import io.vertigo.datamodel.task.metamodel.TaskDefinition;
@@ -55,40 +54,36 @@ public final class OracleSqlStoreManagerTest extends AbstractSqlStoreManagerTest
 
 	@Override
 	protected List<String> getCreateFamilleRequests() {
-		return new ListBuilder<String>()
-				.add(" create table famille(fam_id NUMBER , LIBELLE varchar(255))")
-				.add(" create sequence SEQ_FAMILLE start with 10001 increment by 1")
-				.build();
+		return List.of(
+				" create table famille(fam_id NUMBER , LIBELLE varchar(255))",
+				" create sequence SEQ_FAMILLE start with 10001 increment by 1");
 	}
 
 	@Override
 	protected List<String> getCreateCarRequests() {
-		return new ListBuilder<String>()
-				.add(" create table fam_car_location(fam_id NUMBER , ID NUMBER)")
-				.add(" create table car(ID NUMBER, FAM_ID NUMBER, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50) )")
-				.add(" create sequence SEQ_CAR start with 10001 increment by 1")
-				.build();
+		return List.of(
+				" create table fam_car_location(fam_id NUMBER , ID NUMBER)",
+				" create table car(ID NUMBER, FAM_ID NUMBER, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50) )",
+				" create sequence SEQ_CAR start with 10001 increment by 1");
 	}
 
 	@Override
 	protected List<String> getCreateFileInfoRequests() {
-		return new ListBuilder<String>()
-				.add(" create table VX_FILE_INFO(FIL_ID NUMBER , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH NUMBER, LAST_MODIFIED date, FILE_DATA BLOB)")
-				.add(" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1")
-				.build();
+		return List.of(
+				" create table VX_FILE_INFO(FIL_ID NUMBER , FILE_NAME varchar(255), MIME_TYPE varchar(255), LENGTH NUMBER, LAST_MODIFIED date, FILE_DATA BLOB)",
+				" create sequence SEQ_VX_FILE_INFO start with 10001 increment by 1");
 	}
 
 	@Override
 	protected final List<String> getDropRequests() {
-		return new ListBuilder<String>()
-				.add(" drop table VX_FILE_INFO ")
-				.add(" drop sequence SEQ_VX_FILE_INFO")
-				.add(" drop table fam_car_location")
-				.add(" drop table car")
-				.add(" drop sequence SEQ_CAR")
-				.add(" drop table famille")
-				.add(" drop sequence SEQ_FAMILLE")
-				.build();
+		return List.of(
+				" drop table VX_FILE_INFO ",
+				" drop sequence SEQ_VX_FILE_INFO",
+				" drop table fam_car_location",
+				" drop table car",
+				" drop sequence SEQ_CAR",
+				" drop table famille",
+				" drop sequence SEQ_FAMILLE");
 	}
 
 	@Override

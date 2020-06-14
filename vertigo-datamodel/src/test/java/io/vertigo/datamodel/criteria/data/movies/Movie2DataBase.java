@@ -20,7 +20,6 @@ package io.vertigo.datamodel.criteria.data.movies;
 
 import java.util.List;
 
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.structure.model.DtList;
 import io.vertigo.datamodel.structure.util.VCollectors;
 
@@ -29,22 +28,20 @@ import io.vertigo.datamodel.structure.util.VCollectors;
  * @author pchretien
  */
 public final class Movie2DataBase {
-	private final List<Movie2> movies = new ListBuilder<Movie2>()
-			.add(createMovie2(1933, "king kong"))
-			.add(createMovie2(1951, "pandora"))
-			.add(createMovie2(1959, "vertigo"))
-			.add(createMovie2(1979, "alien"))
-			.add(createMovie2(1980, "shining"))
-			.add(createMovie2(1984, "amadeus"))
-			.add(createMovie2(1984, "1984"))
-			.add(createMovie2(1984, "terminator"))
-			.add(createMovie2(1985, "porco rosso"))
-			.add(createMovie2(2000, "gladiator"))
-			.add(createMovie2(2014, "interstellar"))
-			.add(createMovie2(2014, "mommy"))
-			.add(createMovie2(null, "ordet"))
-			.unmodifiable()
-			.build();
+	private final List<Movie2> movies = List.of(
+			createMovie2(1933, "king kong"),
+			createMovie2(1951, "pandora"),
+			createMovie2(1959, "vertigo"),
+			createMovie2(1979, "alien"),
+			createMovie2(1980, "shining"),
+			createMovie2(1984, "amadeus"),
+			createMovie2(1984, "1984"),
+			createMovie2(1984, "terminator"),
+			createMovie2(1985, "porco rosso"),
+			createMovie2(2000, "gladiator"),
+			createMovie2(2014, "interstellar"),
+			createMovie2(2014, "mommy"),
+			createMovie2(null, "ordet"));
 
 	private static Movie2 createMovie2(final Integer year, final String title) {
 		final Movie2 movie = new Movie2();

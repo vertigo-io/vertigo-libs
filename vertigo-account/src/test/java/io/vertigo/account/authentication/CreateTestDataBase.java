@@ -53,20 +53,19 @@ final class CreateTestDataBase {
 	}
 
 	private static List<String> getCreateUserCredentialRequests() {
-		return new ListBuilder<String>()
-				.add(" create table USER_CREDENTIAL(UCR_ID varchar(50), LOGIN varchar(100), PASSWORD varchar(100), MAIL varchar(100))")
-				.add(" create sequence SEQ_USER_CREDENTIAL start with 10001 increment by 1")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (0, 'admin', '5vIy0buT0cyhh7ODeWKEv5fvaWN1mdoNE_rmkCkjvhN8u05S_Et_Q=', 'admin@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (1, 'jdoe', '', 'john.doe@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (2, 'pluckey', '', 'palmer.luckey@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (3, 'bclinton', '', 'bill.clinton@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (4, 'pmormon', '', 'phil.mormon@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (5, 'npi', '', 'npi@vertigo.io')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (10, 'bdufour', '', 'bdufour@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (11, 'nlegendre', '', 'nicolas.legendre@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (12, 'mgarnier', '', 'marie.garnier@yopmail.com')")
-				.add("insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (13, 'hbertrand', '', 'hb@yopmail.com')")
-				.build();
+		return List.of(
+				" create table USER_CREDENTIAL(UCR_ID varchar(50), LOGIN varchar(100), PASSWORD varchar(100), MAIL varchar(100))",
+				" create sequence SEQ_USER_CREDENTIAL start with 10001 increment by 1",
+				"insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (0, 'admin', '5vIy0buT0cyhh7ODeWKEv5fvaWN1mdoNE_rmkCkjvhN8u05S_Et_Q=', 'admin@yopmail.com')",
+				"insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (1, 'jdoe', '', 'john.doe@yopmail.com')",
+				"insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (2, 'pluckey', '', 'palmer.luckey@yopmail.com')",
+				"insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (3, 'bclinton', '', 'bill.clinton@yopmail.com')",
+				"insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (4, 'pmormon', '', 'phil.mormon@yopmail.com')",
+				"insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (5, 'npi', '', 'npi@vertigo.io')",
+				"insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (10, 'bdufour', '', 'bdufour@yopmail.com')",
+				"insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (11, 'nlegendre', '', 'nicolas.legendre@yopmail.com')",
+				"insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (12, 'mgarnier', '', 'marie.garnier@yopmail.com')",
+				"insert into USER_CREDENTIAL(UCR_ID, LOGIN, PASSWORD, MAIL) values (13, 'hbertrand', '', 'hb@yopmail.com')");
 	}
 
 }

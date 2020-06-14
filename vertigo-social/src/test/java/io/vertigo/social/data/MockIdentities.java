@@ -32,7 +32,6 @@ import io.vertigo.account.account.AccountGroup;
 import io.vertigo.account.plugins.account.store.loader.AccountLoader;
 import io.vertigo.account.plugins.account.store.loader.GroupLoader;
 import io.vertigo.core.node.component.Component;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.filestore.model.VFile;
 
@@ -93,18 +92,17 @@ public final class MockIdentities implements Component, AccountLoader, GroupLoad
 	private static int SEQ_ID = 10;
 
 	private static List<Account> createAccounts() {
-		return new ListBuilder<Account>()
-				.add(createAccount("Jean Meunier", "jmeunier@yopmail.com"))
-				.add(createAccount("Emeline Granger", "egranger@yopmail.com"))
-				.add(createAccount("Silvia Robert", "sylv.robert@yopmail.com"))
-				.add(createAccount("Manuel Long", "manu@yopmail.com"))
-				.add(createAccount("David Martin", "david.martin@yopmail.com"))
-				.add(createAccount("Véronique LeBourgeois", "vero89@yopmail.com"))
-				.add(createAccount("Bernard Dufour", "bdufour@yopmail.com"))
-				.add(createAccount("Nicolas Legendre", "nicolas.legendre@yopmail.com"))
-				.add(createAccount("Marie Garnier", "marie.garnier@yopmail.com"))
-				.add(createAccount("Hugo Bertrand", "hb@yopmail.com"))
-				.build();
+		return List.of(
+				createAccount("Jean Meunier", "jmeunier@yopmail.com"),
+				createAccount("Emeline Granger", "egranger@yopmail.com"),
+				createAccount("Silvia Robert", "sylv.robert@yopmail.com"),
+				createAccount("Manuel Long", "manu@yopmail.com"),
+				createAccount("David Martin", "david.martin@yopmail.com"),
+				createAccount("Véronique LeBourgeois", "vero89@yopmail.com"),
+				createAccount("Bernard Dufour", "bdufour@yopmail.com"),
+				createAccount("Nicolas Legendre", "nicolas.legendre@yopmail.com"),
+				createAccount("Marie Garnier", "marie.garnier@yopmail.com"),
+				createAccount("Hugo Bertrand", "hb@yopmail.com"));
 	}
 
 	private static Account createAccount(final String displayName, final String email) {
