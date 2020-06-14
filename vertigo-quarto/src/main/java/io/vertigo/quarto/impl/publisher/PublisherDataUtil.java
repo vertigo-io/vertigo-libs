@@ -86,8 +86,9 @@ public final class PublisherDataUtil {
 	 * @param publisherDataNode PublisherDataNode
 	 */
 	public static void populateData(final DtObject dto, final PublisherNode publisherDataNode) {
-		Assertion.checkNotNull(dto);
-		Assertion.checkNotNull(publisherDataNode);
+		Assertion.check()
+				.notNull(dto)
+				.notNull(publisherDataNode);
 		//-----
 		final DtDefinition dtDefinition = DtObjectUtil.findDtDefinition(dto);
 		final List<String> dtFieldNames = getDtFieldList(dtDefinition);

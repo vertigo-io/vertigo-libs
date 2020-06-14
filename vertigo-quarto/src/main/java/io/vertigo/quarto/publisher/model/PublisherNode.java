@@ -51,7 +51,7 @@ public final class PublisherNode implements Serializable {
 	private final Map<String, Object> dataMap = new HashMap<>();
 
 	PublisherNode(final PublisherNodeDefinition nodeDefinition) {
-		Assertion.checkNotNull(nodeDefinition);
+		Assertion.check().notNull(nodeDefinition);
 		//-----
 		this.nodeDefinition = nodeDefinition;
 		//On initialise toutes les champs de type liste à vide.
@@ -70,8 +70,9 @@ public final class PublisherNode implements Serializable {
 	}
 
 	private void check(final PublisherFieldType fieldType, final String fieldName, final Object value) {
-		Assertion.checkNotNull(fieldName, "Le nom du champ est obligatoire.");
-		Assertion.checkNotNull(value, "La valeur du champ {0} est obligatoire.", fieldName);
+		Assertion.check()
+				.notNull(fieldName, "Le nom du champ est obligatoire.")
+				.notNull(value, "La valeur du champ {0} est obligatoire.", fieldName);
 		//-----
 		final PublisherFieldType currentFieldType = nodeDefinition.getField(fieldName).getFieldType();
 		Assertion.checkArgument(currentFieldType == fieldType, "Le field {0} n''est pas du type {1} mais de type {2}", fieldName, fieldType, currentFieldType);

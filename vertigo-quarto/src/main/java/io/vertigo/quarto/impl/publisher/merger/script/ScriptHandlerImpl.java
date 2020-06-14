@@ -86,7 +86,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	 * @return Handler du tag pour ce tag (même instance que pour l'ouverture)
 	 */
 	private ScriptTag closeBlock(final String tagName) {
-		Assertion.checkNotNull(tagName);
+		Assertion.check().notNull(tagName);
 		//-----
 		if (!blockStack.isEmpty()) {
 			final TagStackEntry tagStackEntry = blockStack.pop();
@@ -105,8 +105,9 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 	 * @param tagHandler instance du handler de tag
 	 */
 	private void openBlock(final String tagName, final ScriptTag tagHandler) {
-		Assertion.checkNotNull(tagName);
-		Assertion.checkNotNull(tagHandler);
+		Assertion.check()
+				.notNull(tagName)
+				.notNull(tagHandler);
 		//-----
 		blockStack.push(new TagStackEntry(tagName, tagHandler));
 	}
@@ -170,7 +171,7 @@ public final class ScriptHandlerImpl implements ScriptParserHandler {
 		try {
 			return tagDefinition.getClassTag().newInstance();
 		} catch (final InstantiationException | IllegalAccessException e) {
-			throw WrappedException.wrap(e, "Probleme a l'initialisation du tag personalise : {0}",  tagDefinition.getName());
+			throw WrappedException.wrap(e, "Probleme a l'initialisation du tag personalise : {0}", tagDefinition.getName());
 		}
 	}
 

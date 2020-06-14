@@ -95,7 +95,7 @@ public final class OpenOfficeRemoteConverterPlugin extends AbstractOpenOfficeCon
 			final PropertyValue[] loadProps = getFileProperties(docType, inputStream);
 			final XComponent xDoc = openOfficeConnection.getDesktop().loadComponentFromURL("private:stream", "_blank", 0, loadProps);
 			//-----
-			Assertion.checkNotNull(xDoc, "Le document n''a pas été chargé : {0}", inputUrl);
+			Assertion.check().notNull(xDoc, "Le document n''a pas été chargé : {0}", inputUrl);
 			return xDoc;
 		} finally {
 			inputStream.closeInput();

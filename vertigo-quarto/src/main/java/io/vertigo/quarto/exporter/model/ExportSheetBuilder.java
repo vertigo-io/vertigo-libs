@@ -120,9 +120,10 @@ public final class ExportSheetBuilder implements Builder<ExportSheet> {
 	 * @return ExportSheetBuilder
 	 */
 	public ExportSheetBuilder addField(final DtFieldName fieldName, final MessageText overridedLabel) {
-		Assertion.checkNotNull(fieldName);
-		// On vérifie que la colonne est bien dans la définition de la DTC
-		Assertion.checkArgument(dtDefinition.contains(fieldName.name()), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter");
+		Assertion.check()
+				.notNull(fieldName)
+				// On vérifie que la colonne est bien dans la définition de la DTC
+				.argument(dtDefinition.contains(fieldName.name()), "Le champ " + fieldName.name() + " n'est pas dans la liste à exporter");
 		// On ne vérifie pas que les champs ne sont placés qu'une fois
 		// car pour des raisons diverses ils peuvent l'être plusieurs fois.
 		//-----

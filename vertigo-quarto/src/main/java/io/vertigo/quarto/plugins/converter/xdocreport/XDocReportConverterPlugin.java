@@ -60,13 +60,14 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 	@Override
 	public VFile convertToFormat(final VFile file, final String targetFormat) {
 		final ConverterFormat targetConverterFormat = ConverterFormat.find(targetFormat);
-		Assertion.checkArgument(!targetConverterFormat.getTypeMime().equals(file.getMimeType()),
+		Assertion.check().argument(!targetConverterFormat.getTypeMime().equals(file.getMimeType()),
 				"Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
 		final DocumentKind inputFormat = DocumentKind.fromMimeType(file.getMimeType());
-		Assertion.checkNotNull(inputFormat,
-				"Seul les formats " + Arrays.toString(DocumentKind.values()) + " peuvent être utilisés en entrée (typeMime " + file.getMimeType() + " non supporté)");
-		Assertion.checkArgument(targetFormat.equalsIgnoreCase(ConverterFormat.PDF.name()),
-				"Seul le format PDF peut être utilisé en sortie");
+		Assertion.check()
+				.notNull(inputFormat,
+						"Seul les formats " + Arrays.toString(DocumentKind.values()) + " peuvent être utilisés en entrée (typeMime " + file.getMimeType() + " non supporté)")
+				.argument(targetFormat.equalsIgnoreCase(ConverterFormat.PDF.name()),
+						"Seul le format PDF peut être utilisé en sortie");
 		//-----
 
 		final Options options = Options.getFrom(inputFormat).to(ConverterTypeTo.PDF);

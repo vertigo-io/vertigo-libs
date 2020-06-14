@@ -75,7 +75,7 @@ public final class ExportSheet {
 	 * @return Données sous forme d'un DTO, ceci est un cast donc il y a levé d'une assertion si ce n'est pas un DTO
 	 */
 	public DtObject getDtObject() {
-		Assertion.checkNotNull(dto);
+		Assertion.check().notNull(dto);
 		//-----
 		return dto;
 	}
@@ -84,7 +84,7 @@ public final class ExportSheet {
 	 * @return Données sous forme d'une DTC, ceci est un cast donc il y a levé d'une assertion si ce n'est pas une DTC
 	 */
 	public DtList<?> getDtList() {
-		Assertion.checkNotNull(dtc);
+		Assertion.check().notNull(dtc);
 		//-----
 		return dtc;
 	}

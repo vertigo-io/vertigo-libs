@@ -71,7 +71,7 @@ public final class CSVExporterPlugin implements ExporterPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public boolean accept(final ExportFormat exportFormat) {
-		Assertion.checkNotNull(exportFormat);
+		Assertion.check().notNull(exportFormat);
 		//---
 		return exportFormat == ExportFormat.CSV;
 	}

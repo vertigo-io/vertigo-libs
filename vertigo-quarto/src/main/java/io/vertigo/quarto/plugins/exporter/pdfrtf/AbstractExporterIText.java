@@ -63,8 +63,9 @@ public abstract class AbstractExporterIText {
 	 * @param storeManager Store manager
 	 */
 	protected AbstractExporterIText(final EntityStoreManager entityStoreManager, final SmartTypeManager smartTypeManager) {
-		Assertion.checkNotNull(entityStoreManager);
-		Assertion.checkNotNull(smartTypeManager);
+		Assertion.check()
+				.notNull(entityStoreManager)
+				.notNull(smartTypeManager);
 		//-----
 		this.entityStoreManager = entityStoreManager;
 		this.smartTypeManager = smartTypeManager;

@@ -40,7 +40,7 @@ public final class OOoFileOutputStream implements XOutputStream {
 	 * @throws java.io.IOException
 	 */
 	public OOoFileOutputStream(final File file) throws java.io.IOException {
-		Assertion.checkNotNull(file);
+		Assertion.check().notNull(file);
 		//-----
 		fileOutputStream = Files.newOutputStream(file.toPath());
 	}

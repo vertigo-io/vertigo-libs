@@ -57,10 +57,11 @@ public final class ZipUtil {
 	 * @throws IOException Si une exception d'entrée-sortie de fichier a lieu
 	 */
 	public static String readEntry(final ZipFile odtFile, final String entryName) throws IOException {
-		Assertion.checkNotNull(odtFile);
-		Assertion.checkArgNotEmpty(entryName);
+		Assertion.check()
+				.notNull(odtFile)
+				.argNotEmpty(entryName);
 		final ZipEntry zipEntry = odtFile.getEntry(entryName);
-		Assertion.checkNotNull(zipEntry, "Le modèle {0} ne contient pas {1}, vérifier que le modèle est un document valide et du bon type.", odtFile.getName(), entryName);
+		Assertion.check().notNull(zipEntry, "Le modèle {0} ne contient pas {1}, vérifier que le modèle est un document valide et du bon type.", odtFile.getName(), entryName);
 		//-----
 		final StringBuilder resultat = new StringBuilder();
 

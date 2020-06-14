@@ -51,8 +51,8 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import io.vertigo.core.lang.Assertion;
 import io.vertigo.core.lang.BasicType;
 import io.vertigo.core.locale.MessageText;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.model.DtObject;
 import io.vertigo.datastore.entitystore.EntityStoreManager;
@@ -84,8 +84,9 @@ final class XLSExporter {
 	 * @param storeManager Store manager
 	 */
 	XLSExporter(final EntityStoreManager entityStoreManager, final SmartTypeManager smartTypeManager) {
-		Assertion.checkNotNull(entityStoreManager);
-		Assertion.checkNotNull(smartTypeManager);
+		Assertion.check()
+				.notNull(entityStoreManager)
+				.notNull(smartTypeManager);
 		//-----
 		this.entityStoreManager = entityStoreManager;
 		this.smartTypeManager = smartTypeManager;

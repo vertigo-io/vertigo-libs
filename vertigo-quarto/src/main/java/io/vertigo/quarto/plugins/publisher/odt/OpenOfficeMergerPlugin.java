@@ -58,8 +58,9 @@ public final class OpenOfficeMergerPlugin implements MergerPlugin {
 	}
 
 	private static List<MergerProcessor> createMergerProcessors(final ScriptManager scriptManager, final ScriptGrammar scriptGrammar) {
-		Assertion.checkNotNull(scriptManager);
-		Assertion.checkNotNull(scriptGrammar);
+		Assertion.check()
+				.notNull(scriptManager)
+				.notNull(scriptGrammar);
 		//-----
 		final List<MergerProcessor> localMergerProcessors = new ArrayList<>();
 
@@ -82,8 +83,9 @@ public final class OpenOfficeMergerPlugin implements MergerPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public File execute(final URL modelFileURL, final PublisherData data) throws IOException {
-		Assertion.checkNotNull(modelFileURL);
-		Assertion.checkNotNull(data);
+		Assertion.check()
+				.notNull(modelFileURL)
+				.notNull(data);
 		//-----
 		File file;
 		try {

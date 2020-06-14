@@ -369,7 +369,7 @@ public abstract class AbstractPublisherMergerTest {
 
 	private static VFile createVFile(final FileManager fileManager, final String fileName, final Class<?> baseClass) throws IOException {
 		try (final InputStream in = baseClass.getResourceAsStream(fileName)) {
-			Assertion.checkNotNull(in, "fichier non trouvé : {0}", fileName);
+			Assertion.check().notNull(in, "fichier non trouvé : {0}", fileName);
 			final String fileExtension = FileUtil.getFileExtension(fileName);
 			final File file = new TempFile("tmp", '.' + fileExtension);
 			FileUtil.copy(in, file);

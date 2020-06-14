@@ -49,7 +49,7 @@ public final class ExportXlsHelper<R extends DtObject> {
 	 * @param title titre de la feuille principale de l'export
 	 */
 	public ExportXlsHelper(final String fileName, final String title) {
-		Assertion.checkNotNull(fileName);
+		Assertion.check().notNull(fileName);
 		//-----
 		exportBuilder = new ExportBuilder(ExportFormat.XLS, fileName)
 				.withTitle(title);
@@ -112,8 +112,9 @@ public final class ExportXlsHelper<R extends DtObject> {
 	 * @param criterionExcludedColumnNames names of the columns to be excluded
 	 */
 	public final void addDtObject(final DtObject criterion, final List<String> criterionExcludedColumnNames) {
-		Assertion.checkNotNull(criterion);
-		Assertion.checkArgument(criterionExcludedColumnNames != null, "The list of the columns to be excluded must exist");
+		Assertion.check()
+				.notNull(criterion)
+				.argument(criterionExcludedColumnNames != null, "The list of the columns to be excluded must exist");
 
 		//-----
 

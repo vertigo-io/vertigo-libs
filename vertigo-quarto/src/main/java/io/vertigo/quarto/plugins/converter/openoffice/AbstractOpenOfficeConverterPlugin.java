@@ -73,9 +73,10 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 	 */
 	protected AbstractOpenOfficeConverterPlugin(final FileManager fileManager, final String unoHost, final String unoPort, final int convertTimeoutSeconds) {
 		super();
-		Assertion.checkNotNull(fileManager);
-		Assertion.checkArgNotEmpty(unoHost);
-		Assertion.checkArgument(convertTimeoutSeconds >= 1 && convertTimeoutSeconds <= 900, "Le timeout de conversion est exprimé en seconde et doit-être compris entre 1s et 15min (900s)");
+		Assertion.check()
+				.notNull(fileManager)
+				.argNotEmpty(unoHost)
+				.argument(convertTimeoutSeconds >= 1 && convertTimeoutSeconds <= 900, "Le timeout de conversion est exprimé en seconde et doit-être compris entre 1s et 15min (900s)");
 		//-----
 		this.fileManager = fileManager;
 		this.unoHost = unoHost;
@@ -104,10 +105,11 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 	}
 
 	private VFile convertToFormat(final VFile file, final ConverterFormat targetFormat) {
-		Assertion.checkNotNull(file);
-		Assertion.checkNotNull(targetFormat);
-		// si le format de sortie est celui d'entrée la convertion est inutile
-		Assertion.checkArgument(!targetFormat.getTypeMime().equals(file.getMimeType()), "Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
+		Assertion.check()
+				.notNull(file)
+				.notNull(targetFormat)
+				// si le format de sortie est celui d'entrée la convertion est inutile
+				.argument(!targetFormat.getTypeMime().equals(file.getMimeType()), "Le format de sortie est identique à celui d'entrée ; la conversion est inutile");
 		//-----
 		final File inputFile = fileManager.obtainReadOnlyFile(file);
 		final Callable<File> convertTask = new Callable<>() {
@@ -202,8 +204,9 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 	}
 
 	private static PropertyValue[] getFileProperties(final ConverterFormat docType, final XOutputStream outputStream, final XInputStream inputStream) {
-		Assertion.checkNotNull(docType, "Le type du format de sortie est obligatoire");
-		Assertion.checkArgument(outputStream == null || inputStream == null, "Les properties pointent soit un fichier local, soit un flux d'entrée, soit un flux de sortie");
+		Assertion.check()
+				.notNull(docType, "Le type du format de sortie est obligatoire")
+				.argument(outputStream == null || inputStream == null, "Les properties pointent soit un fichier local, soit un flux d'entrée, soit un flux de sortie");
 		final List<PropertyValue> fileProps = new ArrayList<>(3);
 
 		PropertyValue fileProp = new PropertyValue();
