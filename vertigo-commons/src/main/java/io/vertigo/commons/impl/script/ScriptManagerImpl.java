@@ -48,7 +48,7 @@ public final class ScriptManagerImpl implements ScriptManager {
 	 */
 	@Inject
 	public ScriptManagerImpl(final ExpressionEvaluatorPlugin expressionEvaluatorPlugin) {
-		Assertion.checkNotNull(expressionEvaluatorPlugin);
+		Assertion.check().notNull(expressionEvaluatorPlugin);
 		//-----
 		this.expressionEvaluatorPlugin = expressionEvaluatorPlugin;
 	}

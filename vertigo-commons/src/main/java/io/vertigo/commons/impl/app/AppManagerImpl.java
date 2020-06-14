@@ -58,7 +58,7 @@ public final class AppManagerImpl implements AppManager, Activeable {
 	public AppManagerImpl(
 			final Optional<AppNodeRegistryPlugin> nodeRegistryPluginOpt,
 			final List<AppNodeInfosPlugin> nodeInfosPlugins) {
-		Assertion.checkNotNull(nodeRegistryPluginOpt);
+		Assertion.check().notNull(nodeRegistryPluginOpt);
 		// ---
 		nodeRegistryPlugin = nodeRegistryPluginOpt.orElseGet(() -> new SingleAppNodeRegistryPlugin());
 		nodeInfosPlugins

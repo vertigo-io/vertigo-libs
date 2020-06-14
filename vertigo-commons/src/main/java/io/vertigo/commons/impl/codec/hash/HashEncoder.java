@@ -50,6 +50,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 		 * SHA256.
 		 */
 		SHA256("SHA-256");
+
 		//-----
 		//the name of the algo
 		private final String algoName;
@@ -74,7 +75,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 	 * @param hash méthode de hashage
 	 */
 	public HashEncoder(final Hash hash) {
-		Assertion.checkNotNull(hash);
+		Assertion.check().notNull(hash);
 		//-----
 		this.hash = hash;
 	}
@@ -82,7 +83,7 @@ public final class HashEncoder implements Encoder<byte[], byte[]> {
 	/** {@inheritDoc} */
 	@Override
 	public byte[] encode(final byte[] data) {
-		Assertion.checkNotNull(data);
+		Assertion.check().notNull(data);
 		//-----
 		final MessageDigest messageDigest = hash.getMessageDigest();
 		messageDigest.update(data);

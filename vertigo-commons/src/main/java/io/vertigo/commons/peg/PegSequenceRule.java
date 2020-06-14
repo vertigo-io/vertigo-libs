@@ -89,7 +89,7 @@ final class PegSequenceRule implements PegRule<List<Object>> {
 	}
 
 	private PegNoMatchFoundException keepBestUncompleteRule(final PegNoMatchFoundException first, final PegNoMatchFoundException otherNullable) {
-		Assertion.checkNotNull(first);
+		Assertion.check().notNull(first);
 		//----
 		if (otherNullable == null || otherNullable.getIndex() < first.getIndex()) {
 			return first;

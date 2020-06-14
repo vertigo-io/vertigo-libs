@@ -35,7 +35,7 @@ public final class Base64Codec implements Codec<byte[], String> {
 	/** {@inheritDoc} */
 	@Override
 	public byte[] decode(final String coded) {
-		Assertion.checkNotNull(coded);
+		Assertion.check().notNull(coded);
 		//-----
 		return Base64.getUrlDecoder().decode(coded);
 	}
@@ -43,7 +43,7 @@ public final class Base64Codec implements Codec<byte[], String> {
 	/** {@inheritDoc} */
 	@Override
 	public String encode(final byte[] raw) {
-		Assertion.checkNotNull(raw);
+		Assertion.check().notNull(raw);
 		//-----
 		return Base64.getUrlEncoder().encodeToString(raw);
 	}

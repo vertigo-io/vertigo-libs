@@ -69,7 +69,7 @@ public final class VTransactionManagerImpl implements VTransactionManager {
 	 */
 	private static VTransactionImpl getCurrentTransactionImpl() {
 		final VTransactionImpl transaction = VTransactionImpl.getLocalCurrentTransaction();
-		Assertion.checkNotNull(transaction, "current transaction not found");
+		Assertion.check().notNull(transaction, "current transaction not found");
 		return transaction.getDeepestTransaction();
 	}
 }

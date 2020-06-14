@@ -40,7 +40,7 @@ public final class SerializationCodec implements Codec<Serializable, byte[]> {
 	/** {@inheritDoc} */
 	@Override
 	public byte[] encode(final Serializable object) {
-		Assertion.checkNotNull(object);
+		Assertion.check().notNull(object);
 		//-----
 		try (final ByteArrayOutputStream baos = new ByteArrayOutputStream(); final ObjectOutputStream oos = new ObjectOutputStream(baos)) {
 			oos.writeObject(object);
@@ -54,7 +54,7 @@ public final class SerializationCodec implements Codec<Serializable, byte[]> {
 	/** {@inheritDoc} */
 	@Override
 	public Serializable decode(final byte[] serializedObject) {
-		Assertion.checkNotNull(serializedObject);
+		Assertion.check().notNull(serializedObject);
 		//-----
 		try (final InputStream bais = new ByteArrayInputStream(serializedObject); final ObjectInputStream ois = new ObjectInputStream(bais)) {
 			return (Serializable) ois.readObject();

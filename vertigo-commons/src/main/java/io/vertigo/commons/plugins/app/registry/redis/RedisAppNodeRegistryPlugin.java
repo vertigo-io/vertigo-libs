@@ -63,7 +63,7 @@ public final class RedisAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 	public RedisAppNodeRegistryPlugin(
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<RedisConnector> redisConnectors) {
-		Assertion.checkNotNull(redisConnectors);
+		Assertion.check().notNull(redisConnectors);
 		//---
 		final String connectorName = connectorNameOpt.orElse("main");
 		redisConnector = redisConnectors.stream()

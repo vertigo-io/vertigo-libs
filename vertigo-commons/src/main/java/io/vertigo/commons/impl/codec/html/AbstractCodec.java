@@ -189,7 +189,7 @@ abstract class AbstractCodec implements Codec<String, String> {
 	 * @return Chaine encodée
 	 */
 	final String doEncode(final String s) {
-		Assertion.checkNotNull(s);
+		Assertion.check().notNull(s);
 		//-----
 		if (s.length() == 0) { // perf
 			return "";
@@ -206,7 +206,7 @@ abstract class AbstractCodec implements Codec<String, String> {
 	 * @return Chaine décodée
 	 */
 	final String doDecode(final String s) {
-		Assertion.checkNotNull(s);
+		Assertion.check().notNull(s);
 		//-----
 		if (s.length() == 0) { // perf
 			return "";

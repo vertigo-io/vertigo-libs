@@ -39,9 +39,10 @@ final class ScriptEvaluator {
 	 * @param separatorType SeparatorType.CLASSIC ou SeparatorType.XML ou SeparatorType.XML_CODE
 	 */
 	ScriptEvaluator(final ExpressionEvaluatorPlugin expressionEvaluatorPlugin, final SeparatorType separatorType, final List<ExpressionParameter> parameters) {
-		Assertion.checkNotNull(expressionEvaluatorPlugin);
-		Assertion.checkNotNull(parameters);
-		Assertion.checkNotNull(parameters);
+		Assertion.check()
+				.notNull(expressionEvaluatorPlugin)
+				.notNull(parameters)
+				.notNull(parameters);
 		//-----
 		this.separatorType = separatorType;
 		this.parameters = parameters;
@@ -54,8 +55,9 @@ final class ScriptEvaluator {
 	 * @return Script évalué
 	 */
 	String evaluate(final String script) {
-		Assertion.checkNotNull(script);
-		Assertion.checkNotNull(parameters);
+		Assertion.check()
+				.notNull(script)
+				.notNull(parameters);
 		//-----
 		final ScriptParserHandlerImpl scriptHandler = new ScriptParserHandlerImpl(expressionEvaluatorPlugin, script, parameters);
 

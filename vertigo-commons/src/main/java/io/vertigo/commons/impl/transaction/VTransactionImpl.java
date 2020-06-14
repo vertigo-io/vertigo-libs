@@ -112,7 +112,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	 * @param transactionListener the listener of the event fired during the execution of the tranasction
 	 */
 	VTransactionImpl(final VTransactionListener transactionListener) {
-		Assertion.checkNotNull(transactionListener);
+		Assertion.check().notNull(transactionListener);
 		//-----
 		parentTransaction = null;
 		this.transactionListener = transactionListener;
@@ -126,7 +126,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	 * @param parentTransaction the parent transaction
 	 */
 	VTransactionImpl(final VTransactionImpl parentTransaction) {
-		Assertion.checkNotNull(parentTransaction);
+		Assertion.check().notNull(parentTransaction);
 		//-----
 		this.parentTransaction = parentTransaction;
 		parentTransaction.addInnerTransaction(this);
@@ -142,7 +142,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	@Override
 	public <R extends VTransactionResource> R getResource(final VTransactionResourceId<R> transactionResourceId) {
 		state.assertIsAlive();
-		Assertion.checkNotNull(transactionResourceId);
+		Assertion.check().notNull(transactionResourceId);
 		//-----
 		return (R) resources.get(transactionResourceId);
 	}
@@ -164,8 +164,9 @@ final class VTransactionImpl implements VTransactionWritable {
 	 * @param newInnerTransaction the inner transaction to add
 	 */
 	private void addInnerTransaction(final VTransactionImpl newInnerTransaction) {
-		Assertion.checkState(innerTransaction == null, "the current transaction has already an inner transaction");
-		Assertion.checkNotNull(newInnerTransaction);
+		Assertion.check()
+				.state(innerTransaction == null, "the current transaction has already an inner transaction")
+				.notNull(newInnerTransaction);
 		newInnerTransaction.state.assertIsAlive();
 		//-----
 		innerTransaction = newInnerTransaction;
@@ -178,7 +179,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	 * The inner transaction must be closed.
 	 */
 	private void removeInnerTransaction() {
-		Assertion.checkNotNull(innerTransaction, "The current transaction doesn't have any inner transaction");
+		Assertion.check().notNull(innerTransaction, "The current transaction doesn't have any inner transaction");
 		innerTransaction.state.assertIsClosed();
 		//-----
 		innerTransaction = null;
@@ -188,8 +189,9 @@ final class VTransactionImpl implements VTransactionWritable {
 	@Override
 	public <R extends VTransactionResource> void addResource(final VTransactionResourceId<R> id, final R resource) {
 		state.assertIsAlive();
-		Assertion.checkNotNull(resource);
-		Assertion.checkNotNull(id);
+		Assertion.check()
+				.notNull(resource)
+				.notNull(id);
 		//-----
 		final Object o = resources.put(id, resource);
 		Assertion.checkState(o == null, "Ressource déjà enregistrée");
@@ -301,7 +303,7 @@ final class VTransactionImpl implements VTransactionWritable {
 		for (final VTransactionResourceId<?> id : getOrderedListByPriority()) {
 			final VTransactionResource ktr = resources.remove(id);
 			//On termine toutes les resources utilisées en les otant de la map.
-			Assertion.checkNotNull(ktr);
+			Assertion.check().notNull(ktr);
 			final Throwable throwable = doEnd(ktr, shouldRollback);
 			if (throwable != null) {
 				shouldRollback = true;
@@ -346,7 +348,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	 * @return Exception à lancer.
 	 */
 	private static Throwable doEnd(final VTransactionResource resource, final boolean rollback) {
-		Assertion.checkNotNull(resource);
+		Assertion.check().notNull(resource);
 		//-----
 		Throwable throwable = null;
 		//autoCloseableResource is use to call release() in a finally/suppressedException block
@@ -429,7 +431,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	/** {@inheritDoc} */
 	@Override
 	public void addBeforeCommit(final Runnable function) {
-		Assertion.checkNotNull(function);
+		Assertion.check().notNull(function);
 		//-----
 		beforeCommitFunctions.add(function);
 	}
@@ -437,7 +439,7 @@ final class VTransactionImpl implements VTransactionWritable {
 	/** {@inheritDoc} */
 	@Override
 	public void addAfterCompletion(final VTransactionAfterCompletionFunction function) {
-		Assertion.checkNotNull(function);
+		Assertion.check().notNull(function);
 		//-----
 		afterCompletionFunctions.add(function);
 	}

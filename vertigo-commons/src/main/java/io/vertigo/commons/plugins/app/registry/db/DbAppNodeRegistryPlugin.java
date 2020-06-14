@@ -92,7 +92,7 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	@Override
 	public void register(final Node node) {
-		Assertion.checkNotNull(node);
+		Assertion.check().notNull(node);
 		//---
 		final String request = "insert into V_NODE(NODE_ID,JSON) values (?,?)";
 		executeCallableSql(request, node.getId(), gson.toJson(node));
@@ -101,7 +101,7 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	@Override
 	public void unregister(final Node node) {
-		Assertion.checkNotNull(node);
+		Assertion.check().notNull(node);
 		// ---
 		final String request = "delete from V_NODE where NODE_ID = ?";
 		executeCallableSql(request, node.getId());
@@ -132,7 +132,7 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	@Override
 	public void updateStatus(final Node node) {
-		Assertion.checkNotNull(node);
+		Assertion.check().notNull(node);
 		// ---
 		final String request = "update V_NODE set JSON = ? where NODE_ID = ?";
 		executeCallableSql(request, gson.toJson(node), node.getId());

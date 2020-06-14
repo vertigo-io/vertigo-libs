@@ -63,7 +63,7 @@ public final class EventBusSubscriptionDefinition<E extends Event> implements De
 	 * @return true if it matches
 	 */
 	public boolean match(final Event event) {
-		Assertion.checkNotNull(event);
+		Assertion.check().notNull(event);
 		//-----
 		return eventType.isInstance(event);
 	}

@@ -75,7 +75,7 @@ public final class GenericUID<O extends Object> implements Serializable {
 	 * @return URI to result
 	 */
 	public static <O extends Object> GenericUID<O> of(final String urn) {
-		Assertion.checkNotNull(urn);
+		Assertion.check().notNull(urn);
 		//-----
 		final int i = urn.indexOf(SEPARATOR);
 		final String dname = urn.substring(0, i);
@@ -158,7 +158,7 @@ public final class GenericUID<O extends Object> implements Serializable {
 	 * @return Chaine représentant la clé
 	 */
 	private static String idToString(final Serializable id) {
-		Assertion.checkNotNull(id);
+		Assertion.check().notNull(id);
 		//---
 		if (id instanceof String) {
 			return StringUtil.isEmpty((String) id) ? null : "s-" + ((String) id).trim();
