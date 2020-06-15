@@ -94,9 +94,10 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	/** {@inheritDoc} */
 	@Override
 	public String put(final String fieldName, final Serializable value) {
-		Assertion.checkArgNotEmpty(fieldName);
-		Assertion.checkNotNull(value, "La valeur formatée ne doit pas être null mais vide ({0})", fieldName);
-		Assertion.checkState(value instanceof String || value instanceof String[], "Les données saisies doivent être de type String ou String[] ({0} : {1})", fieldName, value.getClass());
+		Assertion.check()
+				.argNotEmpty(fieldName)
+				.notNull(value, "La valeur formatée ne doit pas être null mais vide ({0})", fieldName)
+				.state(value instanceof String || value instanceof String[], "Les données saisies doivent être de type String ou String[] ({0} : {1})", fieldName, value.getClass());
 		//-----
 		final DtField dtField = getDtField(fieldName);
 		String strValue;

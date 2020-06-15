@@ -177,7 +177,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 			if (tapDepth == 0) {
 				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
-					Assertion.checkNotNull(slotName);
+					Assertion.check().notNull(slotName);
 					//Si on est à la base, on ajout que le model qu'on a préparé, on le close et on reset pour la boucle suivante
 					final IModel firstLevelTagModel = buildingModel.cloneModel();
 					if (isVisible(context, firstLevelTagModel)) {

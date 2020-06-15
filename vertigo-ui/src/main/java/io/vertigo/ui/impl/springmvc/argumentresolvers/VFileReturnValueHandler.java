@@ -39,7 +39,7 @@ public class VFileReturnValueHandler implements HandlerMethodReturnValueHandler 
 
 	@Override
 	public void handleReturnValue(final Object returnValue, final MethodParameter returnType, final ModelAndViewContainer mavContainer, final NativeWebRequest webRequest) throws Exception {
-		Assertion.checkNotNull(mavContainer);
+		Assertion.check().notNull(mavContainer);
 		//---
 		mavContainer.setRequestHandled(true);
 		final HttpServletResponse response = getResponse(webRequest);

@@ -46,7 +46,7 @@ public final class UiSelectedFacetValues extends HashMap<String, List<String>> {
 	}
 
 	public UiSelectedFacetValues(final SelectedFacetValues selectedFacetValues, final Collection<String> facetNames) {
-		Assertion.checkNotNull(selectedFacetValues);
+		Assertion.check().notNull(selectedFacetValues);
 		//---
 		facetNames
 				.forEach(facetName -> put(facetName, selectedFacetValues

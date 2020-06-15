@@ -25,7 +25,7 @@ public final class MoviesPAO implements StoreServices {
 	 */
 	@Inject
 	public MoviesPAO(final TaskManager taskManager) {
-		Assertion.checkNotNull(taskManager);
+		Assertion.check().notNull(taskManager);
 		//-----
 		this.taskManager = taskManager;
 	}

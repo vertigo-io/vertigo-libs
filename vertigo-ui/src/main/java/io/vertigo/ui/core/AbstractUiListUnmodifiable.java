@@ -77,7 +77,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @param dtDefinition DtDefinition
 	 */
 	AbstractUiListUnmodifiable(final DtDefinition dtDefinition, final Optional<DtFieldName<O>> keyFieldNameOpt) {
-		Assertion.checkNotNull(dtDefinition);
+		Assertion.check().notNull(dtDefinition);
 		//-----
 		dtDefinitionRef = new DefinitionReference<>(dtDefinition);
 		final Optional<DtField> idFieldOption = getDtDefinition().getIdField();
@@ -167,7 +167,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @return index de l'objet dans la liste
 	 */
 	private int indexOfUiObject(final UiObject<O> uiObject) {
-		Assertion.checkNotNull(uiObject);
+		Assertion.check().notNull(uiObject);
 		//-----
 		return obtainDtList().indexOf(uiObject.getServerSideObject());
 	}
@@ -177,7 +177,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @return index de l'objet dans la liste
 	 */
 	private int indexOfDtObject(final DtObject dtObject) {
-		Assertion.checkNotNull(dtObject);
+		Assertion.check().notNull(dtObject);
 		//-----
 		return obtainDtList().indexOf(dtObject);
 	}
@@ -191,7 +191,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 	 * @throws FormatterException Format error
 	 */
 	public UiObject<O> getById(final String keyFieldName, final Serializable keyValue) {
-		Assertion.checkNotNull(keyValue);
+		Assertion.check().notNull(keyValue);
 		//-----
 		final Map<Serializable, UiObject<O>> uiObjectById = obtainUiObjectByIdMap(keyFieldName);
 		UiObject<O> uiObject = uiObjectById.get(keyValue);

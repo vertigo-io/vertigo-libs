@@ -71,8 +71,9 @@ public final class ViewContext implements Serializable {
 	private final JsonEngine jsonEngine;
 
 	public ViewContext(final ViewContextMap viewContextMap, final JsonEngine jsonEngine) {
-		Assertion.checkNotNull(viewContextMap);
-		Assertion.checkNotNull(jsonEngine);
+		Assertion.check()
+				.notNull(viewContextMap)
+				.notNull(jsonEngine);
 		//---
 		this.viewContextMap = viewContextMap;
 		this.jsonEngine = jsonEngine;

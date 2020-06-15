@@ -41,7 +41,7 @@ public class VegaJsonHttpMessageConverter extends AbstractJsonHttpMessageConvert
 	 */
 	@Inject
 	public VegaJsonHttpMessageConverter(final JsonEngine jsonEngine) {
-		Assertion.checkNotNull(jsonEngine);
+		Assertion.check().notNull(jsonEngine);
 		//---
 		this.jsonEngine = jsonEngine;
 	}

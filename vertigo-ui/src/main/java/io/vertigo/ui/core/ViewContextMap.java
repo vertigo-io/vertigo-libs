@@ -69,10 +69,10 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	/** {@inheritDoc} */
 	@Override
 	public Serializable get(final Object key) {
-		Assertion.checkNotNull(key);
+		Assertion.check().notNull(key);
 		//-----
 		final Serializable o = super.get(key);
-		Assertion.checkNotNull(o, "Objet :{0} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Clés disponibles {1}", key, keySet());
+		Assertion.check().notNull(o, "Objet :{0} non trouvé! Vérifier que l objet est bien enregistré avec la clé. Clés disponibles {1}", key, keySet());
 		return o;
 	}
 
@@ -141,7 +141,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	/** {@inheritDoc} */
 	@Override
 	public boolean containsKey(final Object key) {
-		Assertion.checkNotNull(key);
+		Assertion.check().notNull(key);
 		//-----
 		return super.containsKey(key);
 	}
@@ -151,7 +151,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @return Clé de context de l'élément (null si non trouvé)
 	 */
 	public String findKey(final UiObject<?> uiObject) {
-		Assertion.checkNotNull(uiObject);
+		Assertion.check().notNull(uiObject);
 		//-----
 		final String contextKey = reverseUiObjectIndex.get(uiObject);
 		if (contextKey != null) {
@@ -171,7 +171,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * @return Clé de context de l'élément (null si non trouvé)
 	 */
 	public String findKey(final DtObject dtObject) {
-		Assertion.checkNotNull(dtObject);
+		Assertion.check().notNull(dtObject);
 		//-----
 		final String contextKey = reverseUiObjectIndex.get(dtObject);
 		if (contextKey != null) {
@@ -189,11 +189,12 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	/** {@inheritDoc} */
 	@Override
 	public Serializable put(final String key, final Serializable value) {
-		Assertion.checkState(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX));
-		Assertion.checkArgNotEmpty(key);
-		Assertion.checkNotNull(value, "la valeur doit être renseignée pour {0}", key);
-		Assertion.checkArgument(!(value instanceof DtObject), "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key);
-		Assertion.checkArgument(!(value instanceof DtList), "Vous devez poser des uiList dans le context pas des listes d'objets métiers ({0})", key);
+		Assertion.check()
+				.state(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX))
+				.argNotEmpty(key)
+				.notNull(value, "la valeur doit être renseignée pour {0}", key)
+				.argument(!(value instanceof DtObject), "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key)
+				.argument(!(value instanceof DtList), "Vous devez poser des uiList dans le context pas des listes d'objets métiers ({0})", key);
 		//-----
 		if (value instanceof UiObject) {
 			reverseUiObjectIndex.put(value, key);

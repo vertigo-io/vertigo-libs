@@ -56,7 +56,7 @@ public final class UiRequestUtil {
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
 		final ViewContext viewContext = (ViewContext) attributes.getAttribute("viewContext", RequestAttributes.SCOPE_REQUEST);
 		//---
-		Assertion.checkNotNull(viewContext);
+		Assertion.check().notNull(viewContext);
 		//---
 		return viewContext;
 	}
@@ -86,8 +86,9 @@ public final class UiRequestUtil {
 	}
 
 	public static <O extends Object> Optional<O> getRequestScopedAttribute(final String name, final Class<O> valueClass) {
-		Assertion.checkArgNotEmpty(name);
-		Assertion.checkNotNull(valueClass);
+		Assertion.check()
+				.argNotEmpty(name)
+				.notNull(valueClass);
 		//---
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
 		final O value = valueClass.cast(attributes.getAttribute(name, RequestAttributes.SCOPE_REQUEST));

@@ -27,8 +27,8 @@ import io.vertigo.core.locale.LocaleManager;
 import io.vertigo.core.node.Home;
 import io.vertigo.core.util.StringUtil;
 import io.vertigo.datamodel.impl.smarttype.formatter.FormatterDefault;
-import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.smarttype.SmartTypeDefinition;
+import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
 import io.vertigo.datamodel.structure.metamodel.DtProperty;
@@ -170,9 +170,10 @@ public final class UiUtil implements Serializable {
 	}
 
 	public static Double getStep(final Double minValue, final Double maxValue) {
-		Assertion.checkNotNull(minValue);
-		Assertion.checkNotNull(maxValue);
-		Assertion.checkState(maxValue > minValue, "Unable to calculate step : maxValue '{0}' must be superior to minValue '{1}'", maxValue, minValue);
+		Assertion.check()
+				.notNull(minValue)
+				.notNull(maxValue)
+				.state(maxValue > minValue, "Unable to calculate step : maxValue '{0}' must be superior to minValue '{1}'", maxValue, minValue);
 		//---
 		final Double rawStep = (maxValue - minValue) / 200; // we allow at max 200 possible values
 
@@ -268,9 +269,10 @@ public final class UiUtil implements Serializable {
 		final String fieldName = fieldPath.substring(fieldPath.lastIndexOf('.') + 1);
 		final ViewContext viewContext = UiRequestUtil.getCurrentViewContext();
 		final Object contextObject = viewContext.get(contextKey);
-		Assertion.checkNotNull(contextObject, "{0} n''est pas dans le context", contextKey);
-		Assertion.checkArgument(contextObject instanceof UiObject || contextObject instanceof UiList, "{0}({1}) doit être un UiObject ou une UiList ", contextKey,
-				contextObject.getClass().getSimpleName());
+		Assertion.check()
+				.notNull(contextObject, "{0} n''est pas dans le context", contextKey)
+				.argument(contextObject instanceof UiObject || contextObject instanceof UiList, "{0}({1}) doit être un UiObject ou une UiList ", contextKey,
+						contextObject.getClass().getSimpleName());
 
 		final DtDefinition dtDefinition;
 		if (contextObject instanceof UiObject) {
@@ -278,8 +280,9 @@ public final class UiUtil implements Serializable {
 		} else {
 			dtDefinition = ((UiList<?>) contextObject).getDtDefinition();
 		}
-		Assertion.checkNotNull(dtDefinition); //, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
-		Assertion.checkNotNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
+		Assertion.check()
+				.notNull(dtDefinition) //, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
+				.notNull(dtDefinition, "{0}({1}) doit être un UiObject ou un UiList ", contextKey, contextObject.getClass().getSimpleName());
 		return dtDefinition.getField(fieldName);
 
 	}

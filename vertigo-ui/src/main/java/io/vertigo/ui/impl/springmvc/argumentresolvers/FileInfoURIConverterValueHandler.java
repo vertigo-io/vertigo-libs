@@ -86,7 +86,7 @@ public final class FileInfoURIConverterValueHandler extends AbstractMessageConve
 			final WebDataBinderFactory binderFactory) throws Exception {
 		final HttpServletRequest request = getRequest(webRequest);
 		final QueryParam requestParam = parameter.getParameterAnnotation(QueryParam.class);
-		Assertion.checkNotNull(requestParam, "Parameter name wasnt't found. Use @QueryParam('myFileParam') in your controller.");
+		Assertion.check().notNull(requestParam, "Parameter name wasnt't found. Use @QueryParam('myFileParam') in your controller.");
 		final String fileUriProtected = request.getParameter(requestParam.value());
 
 		return parameterizedTypeValueHandlerHelper.convert(fileUriProtected, parameter);
