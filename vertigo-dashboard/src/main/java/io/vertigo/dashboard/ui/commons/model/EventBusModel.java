@@ -31,8 +31,9 @@ public final class EventBusModel {
 	public EventBusModel(
 			final Class eventType,
 			final List<EventBusSubscriptionDefinition> subscriptions) {
-		Assertion.checkNotNull(eventType);
-		Assertion.checkNotNull(subscriptions);
+		Assertion.check()
+				.notNull(eventType)
+				.notNull(subscriptions);
 		//---
 		this.eventType = eventType;
 		this.subscriptions = subscriptions;

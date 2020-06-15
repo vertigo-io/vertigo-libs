@@ -29,8 +29,9 @@ public final class DaemonModel {
 	public DaemonModel(
 			final DaemonDefinition daemonDefinition,
 			final DaemonStat daemonStat) {
-		Assertion.checkNotNull(daemonDefinition);
-		Assertion.checkNotNull(daemonStat);
+		Assertion.check()
+				.notNull(daemonDefinition)
+				.notNull(daemonStat);
 		//---
 		this.daemonDefinition = daemonDefinition;
 		this.daemonStat = daemonStat;

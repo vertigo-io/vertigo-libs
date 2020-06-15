@@ -25,7 +25,7 @@ public class CacheModel {
 	private final CacheDefinition cacheDefinition;
 
 	public CacheModel(final CacheDefinition cacheDefinition) {
-		Assertion.checkNotNull(cacheDefinition);
+		Assertion.check().notNull(cacheDefinition);
 		//---
 		this.cacheDefinition = cacheDefinition;
 	}
