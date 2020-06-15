@@ -75,7 +75,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 
 	private Optional<UserAuthorizations> getUserAuthorizationsOpt() {
 		final Optional<UserSession> userSessionOpt = securityManager.getCurrentUserSession();
-		if (!userSessionOpt.isPresent()) {
+		if (userSessionOpt.isEmpty()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return Optional.empty();
 		}
@@ -107,7 +107,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 				.notNull(operationName);
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
-		if (!userPermissionsOpt.isPresent()) {
+		if (userPermissionsOpt.isEmpty()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return false;
 		}
@@ -135,7 +135,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 				.notNull(operation);
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
-		if (!userPermissionsOpt.isPresent()) {
+		if (userPermissionsOpt.isEmpty()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return Criterions.alwaysFalse();
 		}
@@ -179,7 +179,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 				.notNull(operationName);
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
-		if (!userPermissionsOpt.isPresent()) {
+		if (userPermissionsOpt.isEmpty()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return ""; //Attention : pas de *:*
 		}
@@ -217,7 +217,7 @@ public final class AuthorizationManagerImpl implements AuthorizationManager {
 		Assertion.check().notNull(keyConcept);
 		//---
 		final Optional<UserAuthorizations> userPermissionsOpt = getUserAuthorizationsOpt();
-		if (!userPermissionsOpt.isPresent()) {
+		if (userPermissionsOpt.isEmpty()) {
 			// Si il n'y a pas de session alors pas d'autorisation.
 			return Collections.emptyList();
 		}
