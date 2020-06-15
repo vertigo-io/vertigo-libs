@@ -275,7 +275,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	}
 
 	private Optional<OProcessPlanification> getLastPlanificationsByProcess(final Long proId) {
-		Assertion.check().notNul(proId);
+		Assertion.check().notNull(proId);
 		// ---
 		return processPlanificationDAO.getLastPlanificationByProId(proId);
 	}
