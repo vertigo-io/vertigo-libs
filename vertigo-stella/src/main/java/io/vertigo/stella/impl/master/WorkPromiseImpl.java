@@ -35,7 +35,7 @@ final class WorkPromiseImpl implements WorkPromise {
 	private final Future internal;
 
 	WorkPromiseImpl(final Future future) {
-		Assertion.checkNotNull(future);
+		Assertion.check().notNull(future);
 		//---
 		this.internal = future;
 	}

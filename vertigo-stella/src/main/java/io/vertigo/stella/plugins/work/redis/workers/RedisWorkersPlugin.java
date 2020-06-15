@@ -51,8 +51,9 @@ public final class RedisWorkersPlugin implements WorkersPlugin {
 			@ParamValue("connectorName") final Optional<String> connectorNameOpt,
 			final List<RedisConnector> redisConnectors,
 			final CodecManager codecManager) {
-		Assertion.checkNotNull(codecManager);
-		Assertion.checkNotNull(redisConnectors);
+		Assertion.check()
+				.notNull(codecManager)
+				.notNull(redisConnectors);
 		//-----
 		final String connectorName = connectorNameOpt.orElse("main");
 		final RedisConnector redisConnector = redisConnectors.stream()

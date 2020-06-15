@@ -39,9 +39,10 @@ public final class WorkItem<W, R> {
 	 * @param work Travail dont on représente l'état.
 	 */
 	public WorkItem(final String id, final W work, final Class<? extends WorkEngine<W, R>> workEngineClass) {
-		Assertion.checkNotNull(id);
-		//work can be null
-		Assertion.checkNotNull(workEngineClass);
+		Assertion.check()
+				.notNull(id)
+				//work can be null
+				.notNull(workEngineClass);
 		//-----
 		this.id = id;
 		this.work = work;

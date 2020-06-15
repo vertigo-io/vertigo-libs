@@ -79,7 +79,7 @@ public final class WorkersCoordinator implements Coordinator, Closeable {
 	 */
 	@Override
 	public <W, R> Future<R> submit(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
-		Assertion.checkNotNull(workItem);
+		Assertion.check().notNull(workItem);
 		//-----
 		return workers.submit(new Worker<>(workItem, workResultHandler));
 	}

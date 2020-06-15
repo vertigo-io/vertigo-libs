@@ -30,7 +30,7 @@ public final class TaskModel {
 			final TaskDefinition taskDefinition,
 			final Double executionCount,
 			final Double medianDuration) {
-		Assertion.checkNotNull(taskDefinition);
+		Assertion.check().notNull(taskDefinition);
 		//---
 		this.taskDefinition = taskDefinition;
 		this.executionCount = executionCount;

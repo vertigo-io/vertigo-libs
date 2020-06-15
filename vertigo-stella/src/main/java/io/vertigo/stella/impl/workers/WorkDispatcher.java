@@ -33,11 +33,12 @@ final class WorkDispatcher implements Runnable {
 	private final String nodeId;
 
 	WorkDispatcher(final String nodeId, final String workType, final WorkersCoordinator localWorker, final WorkersPlugin nodePlugin) {
-		Assertion.checkArgNotEmpty(nodeId);
-		Assertion.checkArgNotEmpty(workType);
-		Assertion.checkArgument(workType.indexOf('^') == -1, "Number of dispatcher per WorkType must be managed by NodeManager {0}", workType);
-		Assertion.checkNotNull(localWorker);
-		Assertion.checkNotNull(nodePlugin);
+		Assertion.check()
+				.argNotEmpty(nodeId)
+				.argNotEmpty(workType)
+				.argument(workType.indexOf('^') == -1, "Number of dispatcher per WorkType must be managed by NodeManager {0}", workType)
+				.notNull(localWorker)
+				.notNull(nodePlugin);
 		//-----
 		this.nodeId = nodeId;
 		this.workType = workType;

@@ -49,7 +49,7 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 	 */
 	@Inject
 	public MasterManagerImpl(final MasterPlugin masterPlugin) {
-		Assertion.checkNotNull(masterPlugin);
+		Assertion.check().notNull(masterPlugin);
 		//-----
 		workListener = new WorkListenerImpl(/*analyticsManager*/);
 		masterCoordinator = new MasterCoordinator(masterPlugin);
@@ -76,8 +76,9 @@ public final class MasterManagerImpl implements MasterManager, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public <W, R> WorkPromise<R> process(final W work, final Class<? extends WorkEngine<W, R>> workEngineClass) {
-		Assertion.checkNotNull(work);
-		Assertion.checkNotNull(workEngineClass);
+		Assertion.check()
+				.notNull(work)
+				.notNull(workEngineClass);
 		//-----
 		final WorkItem<W, R> workItem = new WorkItem<>(createWorkId(), work, workEngineClass);
 		final WorkResultHandler<R> emptyWorkResultHandler = new WorkResultHandler<>() {

@@ -66,15 +66,16 @@ final class Worker<R, W> implements Callable<R> {
 	 * @param workItem WorkItem à traiter
 	 */
 	Worker(final WorkItem<W, R> workItem, final WorkResultHandler<R> workResultHandler) {
-		Assertion.checkNotNull(workItem);
-		Assertion.checkNotNull(workResultHandler);
+		Assertion.check()
+				.notNull(workItem)
+				.notNull(workResultHandler);
 		//-----
 		this.workItem = workItem;
 		this.workResultHandler = workResultHandler;
 	}
 
 	private static <W, R> R executeNow(final WorkItem<W, R> workItem) {
-		Assertion.checkNotNull(workItem);
+		Assertion.check().notNull(workItem);
 		//-----
 		return InjectorUtil.newInstance(workItem.getWorkEngineClass())
 				.process(workItem.getWork());

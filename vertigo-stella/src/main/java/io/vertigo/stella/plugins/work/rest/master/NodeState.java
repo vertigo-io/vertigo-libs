@@ -42,8 +42,9 @@ final class NodeState {
 	 * @param nodeWorkType type de work pris en charge (cumulatif)
 	 */
 	public NodeState(final String nodeUID, final String nodeWorkType) {
-		Assertion.checkArgNotEmpty(nodeUID);
-		Assertion.checkNotNull(nodeWorkType);
+		Assertion.check()
+				.argNotEmpty(nodeUID)
+				.notNull(nodeWorkType);
 		//-----
 		this.nodeUID = nodeUID;
 		nodeWorkTypes.add(nodeWorkType);

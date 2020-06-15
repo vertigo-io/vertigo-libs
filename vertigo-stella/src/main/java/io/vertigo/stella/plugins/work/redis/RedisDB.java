@@ -47,8 +47,9 @@ public final class RedisDB {
 	 * @param redisConnector the redis connector
 	 */
 	public RedisDB(final CodecManager codecManager, final RedisConnector redisConnector) {
-		Assertion.checkNotNull(redisConnector);
-		Assertion.checkNotNull(codecManager);
+		Assertion.check()
+				.notNull(redisConnector)
+				.notNull(codecManager);
 		//-----
 		this.redisConnector = redisConnector;
 		this.codecManager = codecManager;
@@ -69,7 +70,7 @@ public final class RedisDB {
 	 * @param workItem the workItem
 	 */
 	public <R, W> void putWorkItem(final WorkItem<R, W> workItem) {
-		Assertion.checkNotNull(workItem);
+		Assertion.check().notNull(workItem);
 		//-----
 		try (Jedis jedis = redisConnector.getClient()) {
 			//out.println("creating work [" + workId + "] : " + work.getClass().getSimpleName());
@@ -97,7 +98,7 @@ public final class RedisDB {
 	 * @return null or a workitem
 	 */
 	public <R, W> WorkItem<R, W> pollWorkItem(final String workType) {
-		Assertion.checkNotNull(workType);
+		Assertion.check().notNull(workType);
 		//-----
 		final long start = System.currentTimeMillis();
 		while ((System.currentTimeMillis() - start) < 1 * 1000) {
@@ -191,7 +192,7 @@ public final class RedisDB {
 	}
 
 	//	public void registerNode(final Node node) {
-	//		Assertion.checkNotNull(node);
+	//		Assertion.check().notNull(node);
 	//		//-----
 	//		try (Jedis jedis = jedisPool.getResource()) {
 	//			jedis.lpush("nodes", node.getUID());
