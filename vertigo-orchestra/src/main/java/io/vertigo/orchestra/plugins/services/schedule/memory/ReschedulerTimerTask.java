@@ -42,9 +42,10 @@ final class ReschedulerTimerTask extends TimerTask {
 	 * @param minute Minute du prochaine lancement
 	 */
 	ReschedulerTimerTask(final MemoryProcessSchedulerPlugin simpleSchedulerPlugin, final ProcessDefinition processDefinition, final Instant nextExecutionDate) {
-		Assertion.checkNotNull(simpleSchedulerPlugin);
-		Assertion.checkNotNull(processDefinition);
-		Assertion.checkNotNull(nextExecutionDate);
+		Assertion.check()
+				.notNull(simpleSchedulerPlugin)
+				.notNull(processDefinition)
+				.notNull(nextExecutionDate);
 		//-----
 		this.simpleSchedulerPlugin = simpleSchedulerPlugin;
 		this.processDefinition = processDefinition;

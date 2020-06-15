@@ -68,7 +68,7 @@ public final class ActivityExecution implements Serializable {
 			final String workspaceOut,
 			final Boolean hasLogFile,
 			final Boolean hasTechnicalLog) {
-		Assertion.checkNotNull(aceId);
+		Assertion.check().notNull(aceId);
 		// ---
 		this.aceId = aceId;
 		this.label = label;

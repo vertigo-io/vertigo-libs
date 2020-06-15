@@ -60,7 +60,7 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<VFile> getLogFileForProcess(final Long processExecutionId) {
-		Assertion.checkNotNull(processExecutionId);
+		Assertion.check().notNull(processExecutionId);
 		// ---
 		final Optional<OActivityLog> activityLog = activityLogDAO.getLogByPreId(processExecutionId);
 		return getLogFileFromActivityLog(activityLog);
@@ -69,7 +69,7 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<VFile> getActivityAttachment(final Long actityExecutionId) {
-		Assertion.checkNotNull(actityExecutionId);
+		Assertion.check().notNull(actityExecutionId);
 		// ---
 		final Optional<OActivityLog> activityLog = activityLogDAO.getActivityLogByAceId(actityExecutionId);
 		return getLogFileFromActivityLog(activityLog);
@@ -78,7 +78,7 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<VFile> getActivityLogFile(final Long actityExecutionId) {
-		Assertion.checkNotNull(actityExecutionId);
+		Assertion.check().notNull(actityExecutionId);
 		// ---
 
 		final Optional<OActivityLog> activityLog = activityLogDAO.getActivityLogByAceId(actityExecutionId);
@@ -96,7 +96,7 @@ public class DbProcessLoggerPlugin implements ProcessLoggerPlugin {
 	}
 
 	private Optional<VFile> getLogFileFromActivityLog(final Optional<OActivityLog> activityLog) {
-		Assertion.checkNotNull(activityLog);
+		Assertion.check().notNull(activityLog);
 		// ---
 		if (activityLog.isPresent()) {
 			final File file = new File(paramManager.getParam(ROOT_DIRECTORY).getValueAsString() + activityLog.get().getAttachment());

@@ -53,8 +53,9 @@ public class DbProcessReportPlugin implements ProcessReportPlugin {
 	private SummaryPAO summaryPAO;
 
 	private static void checkProcessDefinition(final ProcessDefinition processDefinition) {
-		Assertion.checkNotNull(processDefinition);
-		Assertion.checkState(processDefinition.getProcessType() == ProcessType.SUPERVISED, "Only supervised process can retrieve executions. Process {0} isn't", processDefinition.getName());
+		Assertion.check()
+				.notNull(processDefinition)
+				.state(processDefinition.getProcessType() == ProcessType.SUPERVISED, "Only supervised process can retrieve executions. Process {0} isn't", processDefinition.getName());
 	}
 
 	@Override

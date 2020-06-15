@@ -77,7 +77,7 @@ public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition
 	 * @return this
 	 */
 	public ProcessDefinitionBuilder withProcessType(final ProcessType type) {
-		Assertion.checkNotNull(type);
+		Assertion.check().notNull(type);
 		myType = type;
 		return this;
 	}
@@ -128,7 +128,7 @@ public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition
 	 * @return this
 	 */
 	public ProcessDefinitionBuilder withCronExpression(final String cronExpression) {
-		Assertion.checkNotNull(cronExpression);
+		Assertion.check().notNull(cronExpression);
 		// ---
 		myCronExpression = Optional.of(cronExpression);
 		return this;
@@ -153,7 +153,7 @@ public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition
 	 * @return this
 	 */
 	public ProcessDefinitionBuilder withMetadatas(final Map<String, String> metadatas) {
-		Assertion.checkNotNull(metadatas);
+		Assertion.check().notNull(metadatas);
 		// ---
 		myMetadatas.putAll(metadatas);
 		return this;

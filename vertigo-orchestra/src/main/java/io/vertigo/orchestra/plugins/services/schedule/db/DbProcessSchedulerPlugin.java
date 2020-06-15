@@ -111,12 +111,13 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 			@ParamValue("nodeName") final String nodeName,
 			@ParamValue("planningPeriodSeconds") final Optional<Integer> planningPeriodSecondsOpt,
 			@ParamValue("forecastDurationSeconds") final Optional<Integer> forecastDurationSecondsOpt) {
-		Assertion.checkNotNull(nodeManager);
-		Assertion.checkNotNull(transactionManager);
-		Assertion.checkNotNull(definitionManager);
-		Assertion.checkArgNotEmpty(nodeName);
-		Assertion.checkNotNull(planningPeriodSecondsOpt);
-		Assertion.checkNotNull(forecastDurationSecondsOpt);
+		Assertion.check()
+				.notNull(nodeManager)
+				.notNull(transactionManager)
+				.notNull(definitionManager)
+				.argNotEmpty(nodeName)
+				.notNull(planningPeriodSecondsOpt)
+				.notNull(forecastDurationSecondsOpt);
 		//-----
 		this.nodeManager = nodeManager;
 		this.transactionManager = transactionManager;
@@ -158,7 +159,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	@Override
 	public void setProcessExecutor(final ProcessExecutor processExecutor) {
-		Assertion.checkNotNull(processExecutor);
+		Assertion.check().notNull(processExecutor);
 		//---
 		myProcessExecutor = processExecutor;
 	}
@@ -185,9 +186,10 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 
 	@Override
 	public void scheduleAt(final ProcessDefinition processDefinition, final Instant planifiedTime, final Map<String, String> initialParams) {
-		Assertion.checkNotNull(processDefinition);
-		Assertion.checkNotNull(planifiedTime);
-		Assertion.checkNotNull(initialParams);
+		Assertion.check()
+				.notNull(processDefinition)
+				.notNull(planifiedTime)
+				.notNull(initialParams);
 		//---
 		if (transactionManager.hasCurrentTransaction()) {
 			doScheduleAt(processDefinition, planifiedTime, initialParams);
@@ -204,7 +206,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	//--------------------------------------------------------------------------------------------------
 
 	private void doScheduleAt(final ProcessDefinition processDefinition, final Instant planifiedTime, final Map<String, String> initialParams) {
-		Assertion.checkNotNull(processDefinition);
+		Assertion.check().notNull(processDefinition);
 		// ---
 		final OProcessPlanification processPlanification = new OProcessPlanification();
 		processPlanification.setProId(processDefinition.getId());
@@ -273,7 +275,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	}
 
 	private Optional<OProcessPlanification> getLastPlanificationsByProcess(final Long proId) {
-		Assertion.checkNotNull(proId);
+		Assertion.check().notNul(proId);
 		// ---
 		return processPlanificationDAO.getLastPlanificationByProId(proId);
 	}
@@ -309,8 +311,9 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 	}
 
 	private void changeState(final OProcessPlanification processPlanification, final SchedulerState planificationState) {
-		Assertion.checkNotNull(processPlanification);
-		Assertion.checkNotNull(planificationState);
+		Assertion.check()
+				.notNull(processPlanification)
+				.notNull(planificationState);
 		// ---
 		processPlanification.setSstCd(planificationState.name());
 	}

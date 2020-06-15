@@ -34,7 +34,7 @@ public final class ProcessExecutorImpl implements ProcessExecutor {
 	private final Map<ProcessType, ProcessExecutorPlugin> executorPluginsMap = new EnumMap<>(ProcessType.class);
 
 	public ProcessExecutorImpl(final List<ProcessExecutorPlugin> processExecutorPlugins) {
-		Assertion.checkNotNull(processExecutorPlugins);
+		Assertion.check().notNull(processExecutorPlugins);
 		// ---
 		for (final ProcessExecutorPlugin processExecutorPlugin : processExecutorPlugins) {
 			Assertion.checkState(!executorPluginsMap.containsKey(processExecutorPlugin.getHandledProcessType()), "Only one plugin can manage the processType {0}",
@@ -46,8 +46,9 @@ public final class ProcessExecutorImpl implements ProcessExecutor {
 	/** {@inheritDoc} */
 	@Override
 	public void execute(final ProcessDefinition processDefinition, final Optional<String> initialParams) {
-		Assertion.checkNotNull(processDefinition);
-		Assertion.checkNotNull(initialParams);
+		Assertion.check()
+				.notNull(processDefinition)
+				.notNull(initialParams);
 		// ---
 		getPluginByType(processDefinition.getProcessType()).execute(processDefinition, initialParams);
 	}
@@ -68,7 +69,7 @@ public final class ProcessExecutorImpl implements ProcessExecutor {
 
 	private ProcessExecutorPlugin getPluginByType(final ProcessType processType) {
 		final ProcessExecutorPlugin executorPlugin = executorPluginsMap.get(processType);
-		Assertion.checkNotNull(executorPlugin, "No plugin found for managing processType {0}", processType.name());
+		Assertion.check().notNull(executorPlugin, "No plugin found for managing processType {0}", processType.name());
 		return executorPlugin;
 	}
 }

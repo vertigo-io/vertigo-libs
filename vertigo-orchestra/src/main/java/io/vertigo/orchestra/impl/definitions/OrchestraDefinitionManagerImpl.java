@@ -82,10 +82,10 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 	/** {@inheritDoc} */
 	@Override
 	public void createOrUpdateDefinition(final ProcessDefinition processDefinition) {
-		Assertion.checkNotNull(processDefinition);
+		Assertion.check().notNull(processDefinition);
 		//---
 		final ProcessDefinitionStorePlugin storePlugin = processDefinitionStorePluginsByProcessType.get(processDefinition.getProcessType());
-		Assertion.checkNotNull(storePlugin, "No plugin found for managing processType {0}", processDefinition.getProcessType());
+		Assertion.check().notNull(storePlugin, "No plugin found for managing processType {0}", processDefinition.getProcessType());
 		// ---
 		storePlugin.createOrUpdateDefinition(processDefinition);
 	}
@@ -120,13 +120,13 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 
 	private ProcessDefinitionStorePlugin getPluginByType(final ProcessType processType) {
 		final ProcessDefinitionStorePlugin storePlugin = processDefinitionStorePluginsByProcessType.get(processType);
-		Assertion.checkNotNull(storePlugin, "No plugin found for managing processType {0}", processType.name());
+		Assertion.check().notNull(storePlugin, "No plugin found for managing processType {0}", processType.name());
 		return storePlugin;
 	}
 
 	@Override
 	public List<ProcessDefinition> getAllProcessDefinitionsByType(final ProcessType processType) {
-		Assertion.checkNotNull(processType);
+		Assertion.check().notNull(processType);
 		//---
 		return getPluginByType(processType).getAllProcessDefinitions();
 	}

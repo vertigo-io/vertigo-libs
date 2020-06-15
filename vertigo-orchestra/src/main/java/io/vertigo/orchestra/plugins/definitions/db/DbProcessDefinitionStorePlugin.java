@@ -70,7 +70,7 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 	private final MapCodec mapCodec = new MapCodec();
 
 	private void createDefinition(final ProcessDefinition processDefinition) {
-		Assertion.checkNotNull(processDefinition);
+		Assertion.check().notNull(processDefinition);
 		//-----
 		final OProcess process = new OProcess();
 
@@ -147,8 +147,9 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 	}
 
 	private ProcessDefinition decodeProcessDefinition(final OProcess process, final List<OActivity> oActivities) {
-		Assertion.checkNotNull(process);
-		Assertion.checkNotNull(oActivities);
+		Assertion.check()
+				.notNull(process)
+				.notNull(oActivities);
 		// ---
 		final ProcessDefinitionBuilder processDefinitionBuilder = ProcessDefinition.builder(process.getName(), process.getLabel());
 		processDefinitionBuilder.withRescuePeriod(process.getRescuePeriod());
@@ -196,7 +197,7 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 	/** {@inheritDoc} */
 	@Override
 	public void createOrUpdateDefinition(final ProcessDefinition processDefinition) {
-		Assertion.checkNotNull(processDefinition);
+		Assertion.check().notNull(processDefinition);
 		// ---
 		final String processName = processDefinition.getName();
 
@@ -214,7 +215,7 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 	}
 
 	private void updateDefinition(final ProcessDefinition processDefinition) {
-		Assertion.checkNotNull(processDefinition);
+		Assertion.check().notNull(processDefinition);
 		// ---
 		final String processName = processDefinition.getName();
 		definitionPAO.disableOldProcessDefinitions(processName);
@@ -251,8 +252,9 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 	/** {@inheritDoc} */
 	@Override
 	public void updateProcessDefinitionInitialParams(final ProcessDefinition processDefinition, final Map<String, String> initialParams) {
-		Assertion.checkNotNull(processDefinition);
-		Assertion.checkNotNull(initialParams);
+		Assertion.check()
+				.notNull(processDefinition)
+				.notNull(initialParams);
 		// ---
 		final OProcess process = getOProcessByName(processDefinition.getName());
 		process.setInitialParams(mapCodec.encode(initialParams));

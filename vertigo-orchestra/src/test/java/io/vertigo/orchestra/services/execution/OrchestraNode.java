@@ -78,7 +78,7 @@ final class OrchestraNode {
 	}
 
 	private static String properSystemPath(final String path) {
-		Assertion.checkNotNull(path);
+		Assertion.check().notNull(path);
 		//---
 		return path.replaceAll("([^;]+);([^;]+)", "\"$1\";\"$2\"");
 	}

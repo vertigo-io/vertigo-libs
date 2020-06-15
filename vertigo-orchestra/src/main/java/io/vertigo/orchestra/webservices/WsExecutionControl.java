@@ -60,8 +60,9 @@ public class WsExecutionControl implements WebServices {
 	@SessionLess
 	@AnonymousAccessAllowed
 	public void endExecution(@InnerBodyParam("aceId") final Long activityExecutionId, @InnerBodyParam("token") final String token) {
-		Assertion.checkNotNull(activityExecutionId);
-		Assertion.checkArgNotEmpty(token);
+		Assertion.check()
+				.notNull(activityExecutionId)
+				.argNotEmpty(token);
 		// ---
 		orchestraServices.getExecutor()
 				.endPendingActivityExecution(activityExecutionId, token, ExecutionState.DONE, Optional.empty());
@@ -77,9 +78,10 @@ public class WsExecutionControl implements WebServices {
 	@SessionLess
 	@AnonymousAccessAllowed
 	public void onError(@InnerBodyParam("aceId") final Long activityExecutionId, @InnerBodyParam("token") final String token, @InnerBodyParam("errorMessage") final String errorMessage) {
-		Assertion.checkNotNull(activityExecutionId);
-		Assertion.checkArgNotEmpty(token);
-		Assertion.checkArgNotEmpty(errorMessage);
+		Assertion.check()
+				.notNull(activityExecutionId)
+				.argNotEmpty(token)
+				.argNotEmpty(errorMessage);
 		// ---
 		orchestraServices.getExecutor()
 				.endPendingActivityExecution(activityExecutionId, token, ExecutionState.ERROR, Optional.of(errorMessage));
@@ -94,7 +96,7 @@ public class WsExecutionControl implements WebServices {
 	@SessionLess
 	@AnonymousAccessAllowed
 	public void executeNow(@InnerBodyParam("processName") final String processName, @InnerBodyParam("initialParams") final Map<String, String> initialParams) {
-		Assertion.checkNotNull(processName);
+		Assertion.check().notNull(processName);
 		// ---
 		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
 		orchestraServices.getScheduler()

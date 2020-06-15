@@ -25,7 +25,7 @@ public final class SummaryPAO implements StoreServices {
 	 */
 	@Inject
 	public SummaryPAO(final TaskManager taskManager) {
-		Assertion.checkNotNull(taskManager);
+		Assertion.check().notNull(taskManager);
 		//-----
 		this.taskManager = taskManager;
 	}

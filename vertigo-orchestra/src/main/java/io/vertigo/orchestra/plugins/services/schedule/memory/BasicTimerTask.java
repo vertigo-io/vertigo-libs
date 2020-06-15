@@ -44,9 +44,10 @@ final class BasicTimerTask extends TimerTask {
 	 * @param jobManager Manager des jobs.
 	 */
 	BasicTimerTask(final ProcessDefinition processDefinition, final Map<String, String> params, final ProcessExecutor processExecutor) {
-		Assertion.checkNotNull(processDefinition);
-		Assertion.checkNotNull(params);
-		Assertion.checkNotNull(processExecutor);
+		Assertion.check()
+				.notNull(processDefinition)
+				.notNull(params)
+				.notNull(processExecutor);
 		//-----
 		this.processDefinition = processDefinition;
 		this.params = params;

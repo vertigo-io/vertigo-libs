@@ -46,8 +46,9 @@ public final class ProcessTriggeringStrategy {
 			final Map<String, String> initialParams,
 			final boolean multiExecution,
 			final int rescuePeriodInSeconds) {
-		Assertion.checkNotNull(cronExpression);
-		Assertion.checkNotNull(initialParams);
+		Assertion.check()
+				.notNull(cronExpression)
+				.notNull(initialParams);
 		// --
 		this.cronExpression = cronExpression;
 		this.initialParams = initialParams;

@@ -74,7 +74,7 @@ public final class ProcessSchedulerImpl implements ProcessScheduler {
 
 	private ProcessSchedulerPlugin getPluginByType(final ProcessType processType) {
 		final ProcessSchedulerPlugin schedulerPlugin = schedulerPluginsMap.get(processType);
-		Assertion.checkNotNull(schedulerPlugin, "No plugin found for managing processType {0}", processType.name());
+		Assertion.check().notNull(schedulerPlugin, "No plugin found for managing processType {0}", processType.name());
 		return schedulerPlugin;
 	}
 
