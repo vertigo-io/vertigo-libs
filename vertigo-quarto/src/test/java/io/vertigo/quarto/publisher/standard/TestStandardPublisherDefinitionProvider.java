@@ -23,7 +23,6 @@ import java.util.List;
 import io.vertigo.core.node.definition.Definition;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.SimpleDefinitionProvider;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.quarto.publisher.metamodel.PublisherDataDefinition;
 import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinition;
 import io.vertigo.quarto.publisher.metamodel.PublisherNodeDefinitionBuilder;
@@ -166,14 +165,13 @@ public final class TestStandardPublisherDefinitionProvider implements SimpleDefi
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
 
-		return new ListBuilder<Definition>()
-				.add(createTest())
-				.add(createTest2())
-				.add(createTest3())
-				.add(createTest4())
-				.add(createTest5())
-				.add(createTestEnquete())
-				.build();
+		return List.of(
+				createTest(),
+				createTest2(),
+				createTest3(),
+				createTest4(),
+				createTest5(),
+				createTestEnquete());
 	}
 
 }

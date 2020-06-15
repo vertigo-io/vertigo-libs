@@ -47,7 +47,6 @@ import io.restassured.parsing.Parser;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.core.util.MapBuilder;
 
 abstract class AbstractWebServiceManagerTest {
@@ -658,11 +657,10 @@ abstract class AbstractWebServiceManagerTest {
 	@Test
 	public void testPutContactViewError() {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
-		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
-				.add(createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
-				.add(createAddress(24L, "24, avenue General De Gaulle", "", "Paris", "75001", "France"))
-				.add(createAddress(38L, "38, impasse des puits -- too long -- overrided DO_TEXT_50 length constraint -- too long -- too long", "", "Versaille", "78000", "France"))
-				.build();
+		final List<Map<String, Object>> addresses = List.of(
+				createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
+				createAddress(24L, "24, avenue General De Gaulle", "", "Paris", "75001", "France"),
+				createAddress(38L, "38, impasse des puits -- too long -- overrided DO_TEXT_50 length constraint -- too long -- too long", "", "Versaille", "78000", "France"));
 
 		newContactView.remove("address");
 		newContactView.put("addresses", addresses);
@@ -1521,14 +1519,13 @@ abstract class AbstractWebServiceManagerTest {
 		final Map<String, Object> newContact = createDefaultContact(123L);
 		newContact.remove("name");
 
-		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
-				.add(createDefaultContact(120L))
-				.add(createDefaultContact(121L))
-				.add(newContact)
-				.add(createDefaultContact(124L))
-				.add(createDefaultContact(125L))
-				.add(createDefaultContact(126L))
-				.build();
+		final List<Map<String, Object>> dtList = List.of(
+				createDefaultContact(120L),
+				createDefaultContact(121L),
+				newContact,
+				createDefaultContact(124L),
+				createDefaultContact(125L),
+				createDefaultContact(126L));
 
 		loggedAndExpect(given().body(dtList))
 				.body("globalErrors", Matchers.contains("Name is mandatory"))
@@ -1548,13 +1545,12 @@ abstract class AbstractWebServiceManagerTest {
 
 	@Test
 	public void testSaveUiListContact() {
-		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
-				.add(createDefaultContact(130L))
-				.add(createDefaultContact(131L))
-				.add(createDefaultContact(133L))
-				.add(createDefaultContact(134L))
-				.add(createDefaultContact(135L))
-				.build();
+		final List<Map<String, Object>> dtList = List.of(
+				createDefaultContact(130L),
+				createDefaultContact(131L),
+				createDefaultContact(133L),
+				createDefaultContact(134L),
+				createDefaultContact(135L));
 
 		loggedAndExpect(given().body(dtList))
 				.body(Matchers.equalTo("OK : received 5 contacts"))
@@ -1594,13 +1590,12 @@ abstract class AbstractWebServiceManagerTest {
 
 	@Test
 	public void testSaveListContact() {
-		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
-				.add(createDefaultContact(130L))
-				.add(createDefaultContact(131L))
-				.add(createDefaultContact(133L))
-				.add(createDefaultContact(134L))
-				.add(createDefaultContact(135L))
-				.build();
+		final List<Map<String, Object>> dtList = List.of(
+				createDefaultContact(130L),
+				createDefaultContact(131L),
+				createDefaultContact(133L),
+				createDefaultContact(134L),
+				createDefaultContact(135L));
 
 		loggedAndExpect(given().body(dtList))
 				.body(Matchers.equalTo("OK : received 5 contacts"))
@@ -1614,7 +1609,7 @@ abstract class AbstractWebServiceManagerTest {
 		final Map<String, Object> newContact = createDefaultContact(123L);
 		newContact.put("birthday", "2012-10-24");
 
-		final List<Map<String, Object>> dtList = List / of(
+		final List<Map<String, Object>> dtList = List.of(
 				createDefaultContact(120L),
 				createDefaultContact(121L),
 				newContact,

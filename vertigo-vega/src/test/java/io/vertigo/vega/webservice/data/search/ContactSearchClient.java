@@ -6,7 +6,6 @@ import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder;
 import io.vertigo.datafactory.collections.metamodel.FacetRangeDefinitionSupplier;
 import io.vertigo.datafactory.collections.metamodel.FacetTermDefinitionSupplier;
@@ -33,26 +32,25 @@ public class ContactSearchClient implements Component, DefinitionProvider {
 	/** {@inheritDoc} */
 	@Override
 	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
-		return new ListBuilder<DefinitionSupplier>()
+		return List.of(
 				//---
 				// SearchIndexDefinition
 				//-----
-				.add(new SearchIndexDefinitionSupplier("IdxContact")
+				new SearchIndexDefinitionSupplier("IdxContact")
 						.withKeyConcept("DtContact")
 						.withIndexDtDefinition("DtContact")
 						.withLoaderId("ContactSearchLoader")
-						.withCopyToFields("allText", "conId", "honorificCode", "name", "firstName", "birthday", "email"))
-
+						.withCopyToFields("allText", "conId", "honorificCode", "name", "firstName", "birthday", "email"),
 				//---
 				// FacetTermDefinition
 				//-----
-				.add(new FacetTermDefinitionSupplier("FctHonorificCode")
+				new FacetTermDefinitionSupplier("FctHonorificCode")
 						.withDtDefinition("DtContact")
 						.withFieldName("honorificCode")
 						.withLabel("Par code honorific")
 						.withOrder(FacetOrder.count)
-						.withMultiSelectable())
-				.add(new FacetRangeDefinitionSupplier("FctBirthday")
+						.withMultiSelectable(),
+				new FacetRangeDefinitionSupplier("FctBirthday")
 						.withDtDefinition("DtContact")
 						.withFieldName("birthday")
 						.withLabel("Par date")
@@ -61,18 +59,15 @@ public class ContactSearchClient implements Component, DefinitionProvider {
 						.withRange("r3", "birthday:[01/01/1990 TO 01/01/2000]", "1990-2000")
 						.withRange("r4", "birthday:[01/01/2000 TO 01/01/2010]", "2000-2010")
 						.withRange("r5", "birthday:[01/01/2010 TO *]", "apres 2010")
-						.withOrder(FacetOrder.definition))
-
+						.withOrder(FacetOrder.definition),
 				//---
 				// FacetedQueryDefinition
 				//-----
-				.add(new FacetedQueryDefinitionSupplier("QryContactFacet")
+				new FacetedQueryDefinitionSupplier("QryContactFacet")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("#criteria#")
 						.withCriteriaSmartType("STyTexte50")
 						.withFacet("FctHonorificCode")
-						.withFacet("FctBirthday"))
-
-				.build();
+						.withFacet("FctBirthday"));
 	}
 }

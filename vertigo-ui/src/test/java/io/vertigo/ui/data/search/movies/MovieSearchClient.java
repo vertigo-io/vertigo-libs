@@ -11,7 +11,6 @@ import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder;
 import io.vertigo.datafactory.collections.metamodel.FacetRangeDefinitionSupplier;
 import io.vertigo.datafactory.collections.metamodel.FacetTermDefinitionSupplier;
@@ -112,24 +111,23 @@ public final class MovieSearchClient implements Component, DefinitionProvider {
 	/** {@inheritDoc} */
 	@Override
 	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
-		return new ListBuilder<DefinitionSupplier>()
+		return List.of(
 				//---
 				// SearchIndexDefinition
 				//-----
-				.add(new SearchIndexDefinitionSupplier("IdxMovie")
+				new SearchIndexDefinitionSupplier("IdxMovie")
 						.withKeyConcept("DtMovie")
 						.withIndexDtDefinition("DtMovieIndex")
-						.withLoaderId("MovieSearchLoader"))
-
+						.withLoaderId("MovieSearchLoader"),
 				//---
 				// FacetTermDefinition
 				//-----
-				.add(new FacetTermDefinitionSupplier("FctMovieType")
+				new FacetTermDefinitionSupplier("FctMovieType")
 						.withDtDefinition("DtMovieIndex")
 						.withFieldName("movieType")
 						.withLabel("Par type")
-						.withOrder(FacetOrder.count))
-				.add(new FacetRangeDefinitionSupplier("FctMovieTitle")
+						.withOrder(FacetOrder.count),
+				new FacetRangeDefinitionSupplier("FctMovieTitle")
 						.withDtDefinition("DtMovieIndex")
 						.withFieldName("titleSortOnly")
 						.withLabel("Par titre")
@@ -138,8 +136,8 @@ public final class MovieSearchClient implements Component, DefinitionProvider {
 						.withRange("r3", "titleSortOnly:[g TO n]", "g-m")
 						.withRange("r4", "titleSortOnly:[n TO t]", "n-s")
 						.withRange("r5", "titleSortOnly:[t TO *]", "t-z")
-						.withOrder(FacetOrder.definition))
-				.add(new FacetRangeDefinitionSupplier("FctMovieYear")
+						.withOrder(FacetOrder.definition),
+				new FacetRangeDefinitionSupplier("FctMovieYear")
 						.withDtDefinition("DtMovieIndex")
 						.withFieldName("productionYear")
 						.withLabel("Par date")
@@ -153,28 +151,24 @@ public final class MovieSearchClient implements Component, DefinitionProvider {
 						.withRange("r8", "productionYear:[1990 TO 2000]", "années 90")
 						.withRange("r9", "productionYear:[2000 TO 2010]", "années 2000")
 						.withRange("r10", "productionYear:[2010 TO *]", "> années 2010")
-						.withOrder(FacetOrder.definition))
-
+						.withOrder(FacetOrder.definition),
 				//---
 				// FacetedQueryDefinition
 				//-----
-				.add(new FacetedQueryDefinitionSupplier("QryMovie")
+				new FacetedQueryDefinitionSupplier("QryMovie")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("_all:#+query*#")
 						.withCriteriaSmartType("STyLabel")
 						.withFacet("FctMovieType")
 						.withFacet("FctMovieTitle")
-						.withFacet("FctMovieYear"))
-
-				.add(new FacetedQueryDefinitionSupplier("QryMovieWithPoster")
+						.withFacet("FctMovieYear"),
+				new FacetedQueryDefinitionSupplier("QryMovieWithPoster")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("_all:#+query*# +_exists_:poster")
 						.withCriteriaSmartType("STyLabel")
 						.withFacet("FctMovieType")
 						.withFacet("FctMovieTitle")
-						.withFacet("FctMovieYear"))
-
-				.build();
+						.withFacet("FctMovieYear"));
 	}
 
 }

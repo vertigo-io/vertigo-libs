@@ -30,7 +30,6 @@ import javax.inject.Inject;
 
 import io.vertigo.commons.script.ScriptManager;
 import io.vertigo.core.lang.Assertion;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.quarto.impl.publisher.MergerPlugin;
 import io.vertigo.quarto.impl.publisher.merger.grammar.ScriptGrammarUtil;
 import io.vertigo.quarto.impl.publisher.merger.processor.GrammarEvaluatorProcessor;
@@ -66,18 +65,17 @@ public final class DOCXMergerPlugin implements MergerPlugin {
 				.notNull(scriptManager)
 				.notNull(scriptGrammar);
 		//-----
-		return new ListBuilder<MergerProcessor>()
+		return List.of(
 				// Extraction des variables.
-				.add(new DOCXReverseInputProcessor())
+				new DOCXReverseInputProcessor(),
 				// équilibrage de l'arbre xml.
-				.add(new GrammarXMLBalancerProcessor())
+				new GrammarXMLBalancerProcessor(),
 				// kscript <##> => jsp <%%>.
-				.add(new GrammarEvaluatorProcessor(scriptManager, scriptGrammar))
+				new GrammarEvaluatorProcessor(scriptManager, scriptGrammar),
 				// Traitement Janino (TEXT balisé en java + Données => TEXT).
-				.add(new MergerScriptEvaluatorProcessor(scriptManager, new DOCXValueEncoder()))
+				new MergerScriptEvaluatorProcessor(scriptManager, new DOCXValueEncoder()),
 				// Post traitements (TEXT => XML(DOCX)).
-				.add(new DOCXCleanerProcessor())
-				.build();
+				new DOCXCleanerProcessor());
 	}
 
 	/**

@@ -158,34 +158,31 @@ public final class MultiStoreManagerTest {
 	}
 
 	protected List<String> getCreateFamilleRequests() {
-		return new ListBuilder<String>()
-				.add(" create table famille(FAM_ID BIGINT , LIBELLE varchar(255))")
-				.add(" create sequence SEQ_FAMILLE start with 10001 increment by 1")
-				.build();
+		return List.of(
+				" create table famille(FAM_ID BIGINT , LIBELLE varchar(255))",
+				" create sequence SEQ_FAMILLE start with 10001 increment by 1");
 	}
 
 	protected List<String> getCreateCarRequests() {
-		return new ListBuilder<String>()
-				.add(" create table fam_car_location(FAM_ID BIGINT, ID BIGINT)")
-				.add(" create table motor_type(MTY_CD varchar(50) , LABEL varchar(255))")
-				.add("insert into motor_type(MTY_CD, LABEL) values ('ESSENCE', 'Essence')")
-				.add("insert into motor_type(MTY_CD, LABEL) values ('DIESEL', 'Diesel')")
-				.add(" create table car(ID BIGINT, FAM_ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50) )")
-				.add(" create sequence SEQ_CAR start with 10001 increment by 1")
-				.build();
+		return List.of(
+				" create table fam_car_location(FAM_ID BIGINT, ID BIGINT)",
+				" create table motor_type(MTY_CD varchar(50) , LABEL varchar(255))",
+				"insert into motor_type(MTY_CD, LABEL) values ('ESSENCE', 'Essence')",
+				"insert into motor_type(MTY_CD, LABEL) values ('DIESEL', 'Diesel')",
+				" create table car(ID BIGINT, FAM_ID BIGINT, MANUFACTURER varchar(50), MODEL varchar(255), DESCRIPTION varchar(512), YEAR INT, KILO INT, PRICE INT, CONSOMMATION NUMERIC(8,2), MTY_CD varchar(50) )",
+				" create sequence SEQ_CAR start with 10001 increment by 1");
 	}
 
 	protected List<String> getDropRequests() {
-		return new ListBuilder<String>()
-				.add(" drop table if exists VX_FILE_INFO ")
-				.add(" drop sequence if exists SEQ_VX_FILE_INFO")
-				.add(" drop table if exists fam_car_location")
-				.add(" drop table if exists car")
-				.add(" drop table if exists motor_type")
-				.add(" drop sequence if exists SEQ_CAR")
-				.add(" drop table if exists famille")
-				.add(" drop sequence if exists SEQ_FAMILLE")
-				.build();
+		return List.of(
+				" drop table if exists VX_FILE_INFO ",
+				" drop sequence if exists SEQ_VX_FILE_INFO",
+				" drop table if exists fam_car_location",
+				" drop table if exists car",
+				" drop table if exists motor_type",
+				" drop sequence if exists SEQ_CAR",
+				" drop table if exists famille",
+				" drop sequence if exists SEQ_FAMILLE");
 	}
 
 	/**
