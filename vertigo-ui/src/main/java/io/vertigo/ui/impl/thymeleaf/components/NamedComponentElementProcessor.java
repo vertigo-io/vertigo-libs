@@ -105,7 +105,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 
 	@Override
 	protected void doProcess(final ITemplateContext context, final IModel model, final IElementModelStructureHandler structureHandler) {
-		if (!selectionExpression.isPresent() //no selector
+		if (selectionExpression.isEmpty() //no selector
 				|| (boolean) selectionExpression.get().execute(context)) { //or selector valid
 
 			final IProcessableElementTag tag = processElementTag(context, model);

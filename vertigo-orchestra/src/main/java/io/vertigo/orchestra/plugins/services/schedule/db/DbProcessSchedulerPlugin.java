@@ -286,7 +286,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 		try {
 			final CronExpression cronExpression = new CronExpression(processDefinition.getTriggeringStrategy().getCronExpression().get());
 
-			if (!lastPlanificationOption.isPresent()) {
+			if (lastPlanificationOption.isEmpty()) {
 				final Instant compatibleNow = Instant.now().plusMillis(planningPeriodSeconds / 2L * 1000);// Normalement ca doit être bon quelque soit la synchronisation entre les deux timers (même fréquence)
 				return Optional.of(cronExpression.getNextValidTimeAfter(compatibleNow));
 			}

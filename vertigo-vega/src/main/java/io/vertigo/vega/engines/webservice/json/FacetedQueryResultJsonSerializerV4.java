@@ -86,7 +86,7 @@ final class FacetedQueryResultJsonSerializerV4 implements JsonSerializer<Faceted
 		final JsonObject jsonObject = new JsonObject();
 
 		//1- add result list as data, with highlight
-		if (!facetedQueryResult.getClusterFacetDefinition().isPresent()) {
+		if (facetedQueryResult.getClusterFacetDefinition().isEmpty()) {
 			final DtList<?> dtList = facetedQueryResult.getDtList();
 			final JsonArray jsonList = (JsonArray) context.serialize(dtList);
 			jsonObject.add("list", jsonList);

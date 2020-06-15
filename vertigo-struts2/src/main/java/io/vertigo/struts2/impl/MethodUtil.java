@@ -48,7 +48,7 @@ public final class MethodUtil {
 	 */
 	public static Object invoke(final Object instance, final String methodName, final Container container) {
 		final Optional<Method> actionMethod = findMethodByName(instance.getClass(), methodName);
-		if (!actionMethod.isPresent()) {
+		if (actionMethod.isEmpty()) {
 			throw new VSystemException("Méthode {0} non trouvée sur {1}", methodName, instance.getClass().getName());
 		}
 		actionMethod.get().setAccessible(true); //la méthode peut être protected

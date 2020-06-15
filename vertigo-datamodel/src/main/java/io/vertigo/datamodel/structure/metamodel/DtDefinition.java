@@ -124,7 +124,7 @@ public final class DtDefinition implements Definition {
 		Assertion.when(stereotype.isPersistent())
 				.state(idFieldOpt::isPresent, "Error on {0}, If an object is persistent then it must have an ID", name);
 		Assertion.when(!stereotype.isPersistent())
-				.state(() -> !idFieldOpt.isPresent(), "Error on {0}, If an object is not persistent then it must have no ID", name);
+				.state(() -> idFieldOpt.isEmpty(), "Error on {0}, If an object is not persistent then it must have no ID", name);
 	}
 
 	/**

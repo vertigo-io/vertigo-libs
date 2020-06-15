@@ -83,7 +83,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 		Assertion.check()
 				.notNull(proxyHost)
 				.notNull(proxyPort)
-				.argument((proxyHost.isPresent() && proxyPort.isPresent()) || (!proxyHost.isPresent() && !proxyPort.isPresent()),
+				.argument((proxyHost.isPresent() && proxyPort.isPresent()) || (proxyHost.isEmpty() && proxyPort.isEmpty()),
 						"les deux paramètres host et port doivent être tous les deux remplis ou vides");
 		//-----
 		if (proxyHost.isPresent()) {

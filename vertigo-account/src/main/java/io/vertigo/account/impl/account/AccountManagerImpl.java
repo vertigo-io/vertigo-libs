@@ -135,7 +135,7 @@ public final class AccountManagerImpl implements AccountManager {
 			final Supplier<Consumer<O>> cacheRegister) {
 		if (accountCachePlugin.isPresent()) {
 			final Optional<O> resultOpt = cacheSupplier.get().apply(uid);
-			if (!resultOpt.isPresent()) {
+			if (resultOpt.isEmpty()) {
 				final Optional<O> result = storeSupplier.apply(uid);
 				if (result.isPresent()) {
 					cacheRegister.get().accept(result.get());
@@ -173,7 +173,7 @@ public final class AccountManagerImpl implements AccountManager {
 			final Supplier<Consumer<O>> cacheRegister) {
 		if (accountCachePlugin.isPresent()) {
 			final Optional<O> resultOpt = cacheSupplier.get().apply(uid);
-			if (!resultOpt.isPresent()) {
+			if (resultOpt.isEmpty()) {
 				final O result = storeSupplier.apply(uid);
 				cacheRegister.get().accept(result);
 				return result;

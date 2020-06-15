@@ -75,7 +75,7 @@ public final class AccessTokenWebServiceHandlerPlugin implements WebServiceHandl
 				throw new VSecurityException(INVALID_ACCESS_TOKEN_MSG); //same message for no AccessToken or bad AccessToken
 			}
 			final Optional<Serializable> tokenData = tokenManager.get(accessTokenKey);
-			if (!tokenData.isPresent()) {
+			if (tokenData.isEmpty()) {
 				throw new VSecurityException(INVALID_ACCESS_TOKEN_MSG); //same message for no AccessToken or bad AccessToken
 			}
 		} else {

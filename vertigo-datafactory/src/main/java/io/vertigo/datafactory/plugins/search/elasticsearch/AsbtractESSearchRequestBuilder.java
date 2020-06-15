@@ -413,9 +413,9 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 			final Optional<Double> minValue = convertToDouble(parsedFilter[3]);
 			final Optional<Double> maxValue = convertToDouble(parsedFilter[4]);
-			if (!minValue.isPresent()) {
+			if (minValue.isEmpty()) {
 				rangeBuilder.addUnboundedTo(facetRange.getCode(), maxValue.get());
-			} else if (!maxValue.isPresent()) {
+			} else if (maxValue.isEmpty()) {
 				rangeBuilder.addUnboundedFrom(facetRange.getCode(), minValue.get());
 			} else {
 				rangeBuilder.addRange(facetRange.getCode(), minValue.get(), maxValue.get()); //always min include and max exclude in ElasticSearch

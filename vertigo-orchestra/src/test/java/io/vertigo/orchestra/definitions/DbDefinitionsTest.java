@@ -90,7 +90,7 @@ public class DbDefinitionsTest extends AbstractOrchestraTestCase {
 
 		orchestraDefinitionManager.createOrUpdateDefinition(processDefinition);
 		// no initialParams
-		Assertions.assertTrue(!orchestraDefinitionManager.getProcessDefinition("TestUpdateCron").getTriggeringStrategy().getCronExpression().isPresent());
+		Assertions.assertTrue(orchestraDefinitionManager.getProcessDefinition("TestUpdateCron").getTriggeringStrategy().getCronExpression().isEmpty());
 
 		orchestraDefinitionManager.updateProcessDefinitionProperties("TestUpdateCron", Optional.of("*/15 * * * * ?"), processDefinition.getTriggeringStrategy().isMultiExecution(),
 				processDefinition.getTriggeringStrategy().getRescuePeriod(),

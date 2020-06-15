@@ -62,11 +62,11 @@ public class InjectParamsToActionMethodHandler implements UnknownHandler {
 	@Override
 	public Object handleUnknownActionMethod(final Object action, final String methodName) {
 		Optional<Method> actionMethod = MethodUtil.findMethodByName(action.getClass(), methodName);
-		if (!actionMethod.isPresent()) {
+		if (actionMethod.isEmpty()) {
 			//method non trouvée, on test doXXX comme struts2 le fait de base
 			final String prefixedMethodName = getPrefixedMethodName(methodName);
 			actionMethod = MethodUtil.findMethodByName(action.getClass(), prefixedMethodName);
-			if (!actionMethod.isPresent()) {
+			if (actionMethod.isEmpty()) {
 				//method non trouvée
 				return null;
 			}

@@ -351,7 +351,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 		viewContextMapForClient.put(CTX, get(CTX));
 		for (final Map.Entry<String, Serializable> entry : entrySet()) {
 			final String key = entry.getKey();
-			if (keysForClient.containsKey(key) && (!subFilterOpt.isPresent() || subFilterOpt.get().contains(key))) {
+			if (keysForClient.containsKey(key) && (subFilterOpt.isEmpty() || subFilterOpt.get().contains(key))) {
 				if (entry.getValue() instanceof MapUiObject) {
 					viewContextMapForClient.put(entry.getKey(), ((MapUiObject) entry.getValue()).mapForClient(keysForClient.get(key), createTransformers(key)));
 				} else if (entry.getValue() instanceof AbstractUiListUnmodifiable) {
