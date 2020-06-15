@@ -634,11 +634,10 @@ abstract class AbstractWebServiceManagerTest {
 	public void testPutContactView() {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
 
-		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
-				.add(createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
-				.add(createAddress(24L, "24, avenue General De Gaulle", "", "Paris", "75001", "France"))
-				.add(createAddress(38L, "38, impasse des puits", "", "Versaille", "78000", "France"))
-				.build();
+		final List<Map<String, Object>> addresses = List.of(
+				createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
+				createAddress(24L, "24, avenue General De Gaulle", "", "Paris", "75001", "France"),
+				createAddress(38L, "38, impasse des puits", "", "Versaille", "78000", "France"));
 
 		newContactView.remove("address");
 		newContactView.put("addresses", addresses);
@@ -1502,14 +1501,13 @@ abstract class AbstractWebServiceManagerTest {
 
 	@Test
 	public void testSaveDtListContact() {
-		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
-				.add(createDefaultContact(120L))
-				.add(createDefaultContact(121L))
-				.add(createDefaultContact(123L))
-				.add(createDefaultContact(124L))
-				.add(createDefaultContact(125L))
-				.add(createDefaultContact(126L))
-				.build();
+		final List<Map<String, Object>> dtList = List.of(
+				createDefaultContact(120L),
+				createDefaultContact(121L),
+				createDefaultContact(123L),
+				createDefaultContact(124L),
+				createDefaultContact(125L),
+				createDefaultContact(126L));
 
 		loggedAndExpect(given().body(dtList))
 				.body(Matchers.equalTo("OK : received 6 contacts"))
@@ -1570,14 +1568,13 @@ abstract class AbstractWebServiceManagerTest {
 		final Map<String, Object> newContact = createDefaultContact(123L);
 		newContact.remove("name");
 
-		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
-				.add(createDefaultContact(120L))
-				.add(createDefaultContact(121L))
-				.add(newContact)
-				.add(createDefaultContact(124L))
-				.add(createDefaultContact(125L))
-				.add(createDefaultContact(126L))
-				.build();
+		final List<Map<String, Object>> dtList = List.of(
+				createDefaultContact(120L),
+				createDefaultContact(121L),
+				newContact,
+				createDefaultContact(124L),
+				createDefaultContact(125L),
+				createDefaultContact(126L));
 
 		loggedAndExpect(given().body(dtList))
 				.body("globalErrors", Matchers.contains("Name is mandatory"))
@@ -1617,14 +1614,13 @@ abstract class AbstractWebServiceManagerTest {
 		final Map<String, Object> newContact = createDefaultContact(123L);
 		newContact.put("birthday", "2012-10-24");
 
-		final List<Map<String, Object>> dtList = new ListBuilder<Map<String, Object>>()
-				.add(createDefaultContact(120L))
-				.add(createDefaultContact(121L))
-				.add(newContact)
-				.add(createDefaultContact(124L))
-				.add(createDefaultContact(125L))
-				.add(createDefaultContact(126L))
-				.build();
+		final List<Map<String, Object>> dtList = List / of(
+				createDefaultContact(120L),
+				createDefaultContact(121L),
+				newContact,
+				createDefaultContact(124L),
+				createDefaultContact(125L),
+				createDefaultContact(126L));
 
 		loggedAndExpect(given().body(dtList))
 				.body("objectFieldErrors.idx2.birthday", Matchers.contains("You can't add contact younger than 16"))

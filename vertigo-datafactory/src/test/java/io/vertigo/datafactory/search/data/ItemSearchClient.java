@@ -10,7 +10,6 @@ import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datafactory.collections.metamodel.FacetCustomDefinitionSupplier;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition.FacetOrder;
 import io.vertigo.datafactory.collections.metamodel.FacetRangeDefinitionSupplier;
@@ -108,60 +107,53 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 	/** {@inheritDoc} */
 	@Override
 	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
-		return new ListBuilder<DefinitionSupplier>()
+		return List.of(
 				//---
 				// SearchIndexDefinition
 				//-----
-				.add(new SearchIndexDefinitionSupplier("IdxItem")
+				new SearchIndexDefinitionSupplier("IdxItem")
 						.withKeyConcept("DtItem")
 						.withIndexDtDefinition("DtItem")
 						.withLoaderId("ItemSearchLoader")
-						.withCopyToFields("allText", "manufacturer", "model", "description", "year", "kilo", "price", "motorType"))
-
+						.withCopyToFields("allText", "manufacturer", "model", "description", "year", "kilo", "price", "motorType"),
 				//---
 				// FacetTermDefinition
 				//-----
-				.add(new FacetTermDefinitionSupplier("FctDescriptionItem")
+				new FacetTermDefinitionSupplier("FctDescriptionItem")
 						.withDtDefinition("DtItem")
 						.withFieldName("description")
 						.withLabel("Description")
-						.withOrder(FacetOrder.count))
-
-				.add(new FacetTermDefinitionSupplier("FctOptionalStringItem")
+						.withOrder(FacetOrder.count),
+				new FacetTermDefinitionSupplier("FctOptionalStringItem")
 						.withDtDefinition("DtItem")
 						.withFieldName("optionalString")
 						.withLabel("optionalString")
-						.withOrder(FacetOrder.count))
-
-				.add(new FacetTermDefinitionSupplier("FctManufacturerItem")
+						.withOrder(FacetOrder.count),
+				new FacetTermDefinitionSupplier("FctManufacturerItem")
 						.withDtDefinition("DtItem")
 						.withFieldName("manufacturer")
 						.withLabel("Par constructeur")
-						.withOrder(FacetOrder.count))
-
-				.add(new FacetTermDefinitionSupplier("FctManufacturerItemAlpha")
+						.withOrder(FacetOrder.count),
+				new FacetTermDefinitionSupplier("FctManufacturerItemAlpha")
 						.withDtDefinition("DtItem")
 						.withFieldName("manufacturer")
 						.withLabel("Par constructeur")
-						.withOrder(FacetOrder.alpha))
-
-				.add(new FacetTermDefinitionSupplier("FctManufacturerItemMulti")
+						.withOrder(FacetOrder.alpha),
+				new FacetTermDefinitionSupplier("FctManufacturerItemMulti")
 						.withDtDefinition("DtItem")
 						.withFieldName("manufacturer")
 						.withLabel("Par constructeur")
 						.withMultiSelectable()
-						.withOrder(FacetOrder.alpha))
-
-				.add(new FacetRangeDefinitionSupplier("FctYearItem")
+						.withOrder(FacetOrder.alpha),
+				new FacetRangeDefinitionSupplier("FctYearItem")
 						.withDtDefinition("DtItem")
 						.withFieldName("year")
 						.withLabel("Par date")
 						.withRange("R1", "year:[* TO 2000]", "avant 2000")
 						.withRange("R2", "year:[2000 TO 2005]", "2000-2005")
 						.withRange("R3", "year:[2005 TO *]", "apres 2005")
-						.withOrder(FacetOrder.definition))
-
-				.add(new FacetRangeDefinitionSupplier("FctLocalisationItem")
+						.withOrder(FacetOrder.definition),
+				new FacetRangeDefinitionSupplier("FctLocalisationItem")
 						.withDtDefinition("DtItem")
 						.withLabel("Par distance")
 						.withFieldName("localisation") //fieldname in index
@@ -171,9 +163,8 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withRange("R3", "localisation:#localisation#~8500m", "< 8.5km")
 						.withRange("R4", "localisation:#localisation#~10km", "< 10km")
 						.withRange("R5", "localisation:#localisation#~20km", "< 20km")
-						.withOrder(FacetOrder.definition))
-
-				.add(new FacetRangeDefinitionSupplier("FctLocalisationCircleItem")
+						.withOrder(FacetOrder.definition),
+				new FacetRangeDefinitionSupplier("FctLocalisationCircleItem")
 						.withDtDefinition("DtItem")
 						.withLabel("Par distance")
 						.withFieldName("localisation") //fieldname in index
@@ -183,60 +174,51 @@ public class ItemSearchClient implements Component, DefinitionProvider {
 						.withRange("R4", "localisation:[#localisation#~8500m to #localisation#~10km]", "8.5 à 10km")
 						.withRange("R5", "localisation:[#localisation#~10km to #localisation#~20km]", "10 à 20km")
 						.withRange("R6", "localisation:[#localisation#~20km to #localisation#~0km]", "> 20km")
-						.withOrder(FacetOrder.definition))
-
-				.add(new FacetCustomDefinitionSupplier("FctLocalisationHashItem")
+						.withOrder(FacetOrder.definition),
+				new FacetCustomDefinitionSupplier("FctLocalisationHashItem")
 						.withDtDefinition("DtItem")
 						.withLabel("Par geohash")
 						.withFieldName("localisation") //fieldname in index
 						.withParams("geohash_grid", "{\"field\" : \"localisation\",\"precision\" : 5 }")
 						.withParams("innerWriteTo", "writeVInt(5);writeVInt(1000);writeVInt(-1)")
-						.withOrder(FacetOrder.count))
-
+						.withOrder(FacetOrder.count),
 				//---
 				// FacetedQueryDefinition
 				//-----
-
-				.add(new FacetedQueryDefinitionSupplier("QryItemFacet")
+				new FacetedQueryDefinitionSupplier("QryItemFacet")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
 						.withCriteriaSmartType("STyString")
 						.withFacet("FctDescriptionItem")
 						.withFacet("FctManufacturerItem")
 						.withFacet("FctManufacturerItemAlpha")
-						.withFacet("FctYearItem"))
-
-				.add(new FacetedQueryDefinitionSupplier("QryItemOptionalFacet")
+						.withFacet("FctYearItem"),
+				new FacetedQueryDefinitionSupplier("QryItemOptionalFacet")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
 						.withCriteriaSmartType("STyString")
-						.withFacet("FctOptionalStringItem"))
-
-				.add(new FacetedQueryDefinitionSupplier("QryItemFacetMulti")
+						.withFacet("FctOptionalStringItem"),
+				new FacetedQueryDefinitionSupplier("QryItemFacetMulti")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#query# manufacturer:#query#")
 						.withCriteriaSmartType("STyString")
 						.withFacet("FctDescriptionItem")
 						.withFacet("FctManufacturerItemMulti")
-						.withFacet("FctYearItem"))
-
-				.add(new FacetedQueryDefinitionSupplier("QryItemFacetGeo")
+						.withFacet("FctYearItem"),
+				new FacetedQueryDefinitionSupplier("QryItemFacetGeo")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#+description*#")
 						.withGeoSearchQuery("localisation:#localisation#~50km") // distance
 						.withCriteriaSmartType("STyDtItem")
 						.withFacet("FctLocalisationItem")
-						.withFacet("FctLocalisationCircleItem"))
-
-				.add(new FacetedQueryDefinitionSupplier("QryItemFacetGeo2")
+						.withFacet("FctLocalisationCircleItem"),
+				new FacetedQueryDefinitionSupplier("QryItemFacetGeo2")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("description:#+description*#")
 						.withGeoSearchQuery("localisation:[#localisation#~5km to #localisation#~50km]") // distance circle
 						.withCriteriaSmartType("STyDtItem")
 						.withFacet("FctLocalisationCircleItem")
-						.withFacet("FctLocalisationHashItem"))
-
-				.build();
+						.withFacet("FctLocalisationHashItem"));
 	}
 
 }

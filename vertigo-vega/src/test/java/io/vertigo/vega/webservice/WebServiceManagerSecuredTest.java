@@ -99,11 +99,10 @@ public final class WebServiceManagerSecuredTest {
 	public void testPutContactView() {
 		final Map<String, Object> newContactView = createDefaultContact(100L);
 
-		final List<Map<String, Object>> addresses = new ListBuilder<Map<String, Object>>()
-				.add(createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"))
-				.add(createAddress(24L, "24, avenue General De Gaulle", "", "Paris", "75001", "France"))
-				.add(createAddress(38L, "38, impasse des puits", "", "Versaille", "78000", "France"))
-				.build();
+		final List<Map<String, Object>> addresses = List.of(
+				createAddress(10L, "10, avenue Claude Vellefaux", "", "Paris", "75010", "France"),
+				createAddress(24L, "24, avenue General De Gaulle", "", "Paris", "75001", "France"),
+				createAddress(38L, "38, impasse des puits", "", "Versaille", "78000", "France"));
 
 		newContactView.remove("address");
 		newContactView.put("addresses", addresses);

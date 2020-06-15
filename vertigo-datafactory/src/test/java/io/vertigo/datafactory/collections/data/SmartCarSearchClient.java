@@ -10,7 +10,6 @@ import io.vertigo.core.node.component.Component;
 import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
-import io.vertigo.core.util.ListBuilder;
 import io.vertigo.datafactory.collections.CollectionsManager;
 import io.vertigo.datafactory.collections.data.domain.SmartCar;
 import io.vertigo.datafactory.collections.metamodel.FacetDefinition;
@@ -37,40 +36,38 @@ public class SmartCarSearchClient implements Component, DefinitionProvider {
 	/** {@inheritDoc} */
 	@Override
 	public List<DefinitionSupplier> get(final DefinitionSpace definitionSpace) {
-		return new ListBuilder<DefinitionSupplier>()
+		return List.of(
 				//---
 				// FacetTermDefinition
 				//-----
-				.add(new FacetTermDefinitionSupplier("FctDescriptionCar")
+				new FacetTermDefinitionSupplier("FctDescriptionCar")
 						.withDtDefinition("DtSmartCar")
 						.withFieldName("description")
 						.withLabel("Par description")
-						.withOrder(FacetOrder.count))
-				.add(new FacetTermDefinitionSupplier("FctManufacturerCar")
+						.withOrder(FacetOrder.count),
+				new FacetTermDefinitionSupplier("FctManufacturerCar")
 						.withDtDefinition("DtSmartCar")
 						.withFieldName("manufacturer")
 						.withLabel("Par constructeur")
-						.withOrder(FacetOrder.count))
-				.add(new FacetRangeDefinitionSupplier("FctYearCar")
+						.withOrder(FacetOrder.count),
+				new FacetRangeDefinitionSupplier("FctYearCar")
 						.withDtDefinition("DtSmartCar")
 						.withFieldName("year")
 						.withLabel("Par année")
 						.withRange("r1", "year:[* TO 2000]", "avant 2000")
 						.withRange("r2", "year:[2000 TO 2005]", "2000-2005")
 						.withRange("r3", "year:[2005 TO *]", "après 2005")
-						.withOrder(FacetOrder.definition))
+						.withOrder(FacetOrder.definition),
 
 				//---
 				// FacetedQueryDefinition
 				//-----
-				.add(new FacetedQueryDefinitionSupplier("QryCarFacet")
+				new FacetedQueryDefinitionSupplier("QryCarFacet")
 						.withListFilterBuilderClass(io.vertigo.dynamox.search.DslListFilterBuilder.class)
 						.withListFilterBuilderQuery("#query#")
 						.withCriteriaSmartType("STyText")
 						.withFacet("FctDescriptionCar")
 						.withFacet("FctManufacturerCar")
-						.withFacet("FctYearCar"))
-
-				.build();
+						.withFacet("FctYearCar"));
 	}
 }
