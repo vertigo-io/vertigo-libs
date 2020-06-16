@@ -47,7 +47,7 @@ final class DelayedMemoryKey implements Delayed {
 	/** {@inheritDoc} */
 	@Override
 	public int compareTo(final Delayed o) {
-		Assertion.checkArgument(o instanceof DelayedMemoryKey, "Only DelayedKey is supported ({0})", o.getClass());
+		Assertion.check().argument(o instanceof DelayedMemoryKey, "Only DelayedKey is supported ({0})", o.getClass());
 		//-----
 		return (int) (timeoutTime - ((DelayedMemoryKey) o).timeoutTime);
 	}

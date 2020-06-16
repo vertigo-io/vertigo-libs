@@ -89,7 +89,7 @@ abstract class AbstractDbFileStorePlugin {
 	 * Check readonly.
 	 */
 	protected void checkReadonly() {
-		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
+		Assertion.check().argument(!readOnly, STORE_READ_ONLY);
 	}
 
 	/**
@@ -97,7 +97,7 @@ abstract class AbstractDbFileStorePlugin {
 	 * @param fileInfoDefinition Definition du FileInfo
 	 */
 	protected void checkDefinitionStoreBinding(final FileInfoDefinition fileInfoDefinition) {
-		Assertion.checkArgument(
+		Assertion.check().argument(
 				name.equals(fileInfoDefinition.getStoreName()),
 				"This store {0} isn't the good one for this definition {1}, expect {2}.", name, fileInfoDefinition.getName(), fileInfoDefinition.getStoreName());
 	}

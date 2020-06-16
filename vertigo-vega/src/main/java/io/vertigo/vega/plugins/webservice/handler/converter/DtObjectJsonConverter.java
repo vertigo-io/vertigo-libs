@@ -55,10 +55,11 @@ public final class DtObjectJsonConverter implements JsonConverter {
 	@Override
 	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
 		final Class<?> paramClass = webServiceParam.getType();
-		Assertion.checkArgument(DtObject.class.isAssignableFrom(paramClass), "This JsonConverter can't read the asked type {0}. Only {1} is supported", paramClass.getSimpleName(),
-				DtObject.class.getSimpleName());
-		Assertion.checkArgument(getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported",
-				input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
+		Assertion.check()
+				.argument(DtObject.class.isAssignableFrom(paramClass), "This JsonConverter can't read the asked type {0}. Only {1} is supported", paramClass.getSimpleName(),
+						DtObject.class.getSimpleName())
+				.argument(getSupportedInputs()[0].isInstance(input) || getSupportedInputs()[1].isInstance(input), "This JsonConverter doesn't support this input type {0}. Only {1} is supported",
+						input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
 		//-----
 		final Type paramGenericType = webServiceParam.getGenericType();
 		final String objectPath;

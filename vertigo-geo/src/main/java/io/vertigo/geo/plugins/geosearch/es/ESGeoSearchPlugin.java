@@ -145,7 +145,7 @@ public final class ESGeoSearchPlugin implements GeoSearchPlugin, Activeable {
 
 			final ClusterHealthResponse response = esClient.cluster().health(request, RequestOptions.DEFAULT);
 			//-----
-			Assertion.checkArgument(!response.isTimedOut(), "ElasticSearch cluster waiting yellow status Timedout");
+			Assertion.check().argument(!response.isTimedOut(), "ElasticSearch cluster waiting yellow status Timedout");
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error on waitForYellowStatus");
 		}

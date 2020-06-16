@@ -77,8 +77,9 @@ public abstract class TaskEngine {
 	 * @param o Valeur
 	 */
 	protected final void setResult(final Object o) {
-		Assertion.checkArgument(o != Void.TYPE, "you can't  invoke setResult with Void, use null instead");
-		Assertion.checkState(result == Void.TYPE, "you can't  invoke setResult more than one time");
+		Assertion.check()
+				.argument(o != Void.TYPE, "you can't  invoke setResult with Void, use null instead")
+				.state(result == Void.TYPE, "you can't  invoke setResult more than one time");
 		//-----
 		result = o;
 	}

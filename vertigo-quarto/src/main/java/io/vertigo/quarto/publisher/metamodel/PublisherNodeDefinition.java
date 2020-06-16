@@ -48,7 +48,7 @@ public final class PublisherNodeDefinition {
 	}
 
 	private void registerField(final PublisherField publisherField) {
-		Assertion.checkArgument(!publisherFieldMap.containsKey(publisherField.getName()), "Le champ {0} est déjà déclaré.", publisherField.getName());
+		Assertion.check().argument(!publisherFieldMap.containsKey(publisherField.getName()), "Le champ {0} est déjà déclaré.", publisherField.getName());
 		//-----
 		publisherFieldMap.put(publisherField.getName(), publisherField);
 	}

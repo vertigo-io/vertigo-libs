@@ -70,7 +70,7 @@ public final class FileInfoURI implements Serializable {
 
 		//Calcul de l'urn
 		urn = toURN(this);
-		Assertion.checkArgument(FileInfoURI.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, FileInfoURI.REGEX_URN);
+		Assertion.check().argument(FileInfoURI.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, FileInfoURI.REGEX_URN);
 	}
 
 	/**

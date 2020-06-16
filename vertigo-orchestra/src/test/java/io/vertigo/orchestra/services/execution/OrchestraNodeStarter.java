@@ -40,7 +40,7 @@ public class OrchestraNodeStarter {
 	 */
 	public static void main(final String[] args) throws Exception {
 		//
-		Assertion.checkArgument(args.length >= 1 && args.length <= 2, "Usage WorkerNodeStarter <NodeConfigClass> <maxLifeTime>");
+		Assertion.check().argument(args.length >= 1 && args.length <= 2, "Usage WorkerNodeStarter <NodeConfigClass> <maxLifeTime>");
 		//-----
 		final long timeToWait = args.length == 2 ? Long.parseLong(args[1]) * 1000L : 5 * 60 * 1000L;
 		final Class<?> nodeConfigClass = ClassUtil.classForName(args[0]);

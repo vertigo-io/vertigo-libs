@@ -71,7 +71,7 @@ public final class RuleMultiExpression {
 	 * @param alwaysTrue Is alwaysTrue
 	 */
 	public RuleMultiExpression(final boolean alwaysTrue) {
-		Assertion.checkArgument(alwaysTrue, "Always true constructor, must be use when rule mean alwaysTrue");
+		Assertion.check().argument(alwaysTrue, "Always true constructor, must be use when rule mean alwaysTrue");
 		//-----
 		block = false;
 		this.alwaysTrue = true;

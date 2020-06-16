@@ -145,7 +145,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 					.setRefreshPolicy(DEFAULT_REFRESH);
 			final IndexResponse indexeResponse = esClient.index(indexRequest, RequestOptions.DEFAULT);
 			//-----
-			Assertion.checkArgument(indexeResponse.getResult() == DocWriteResponse.Result.CREATED
+			Assertion.check().argument(indexeResponse.getResult() == DocWriteResponse.Result.CREATED
 					|| indexeResponse.getResult() == DocWriteResponse.Result.UPDATED, "Can't put on {0}", indexName);
 		} catch (final IOException e) {
 			handleIOException(e);

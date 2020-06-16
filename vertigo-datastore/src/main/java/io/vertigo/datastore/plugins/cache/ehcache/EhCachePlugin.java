@@ -121,7 +121,7 @@ public final class EhCachePlugin implements Activeable, CachePlugin {
 		//-----
 		//On regarde la conf du cache pour vérifier s'il on serialize/clone les éléments ou non.
 		if (getCacheDefinition(cacheName).shouldSerializeElements()) {
-			Assertion.checkArgument(value instanceof Serializable,
+			Assertion.check().argument(value instanceof Serializable,
 					"Object to cache isn't Serializable. Make it unmodifiable or add it in noSerialization's plugin parameter. (context: {0}, key:{1}, class:{2})",
 					cacheName, key, value.getClass().getSimpleName());
 			// Sérialisation avec compression

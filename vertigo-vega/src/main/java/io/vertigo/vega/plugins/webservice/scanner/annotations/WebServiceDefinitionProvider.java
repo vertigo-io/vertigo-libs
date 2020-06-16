@@ -44,7 +44,7 @@ public final class WebServiceDefinitionProvider implements SimpleDefinitionProvi
 	/** {@inheritDoc} */
 	@Override
 	public List<Definition> provideDefinitions(final DefinitionSpace definitionSpace) {
-		Assertion.checkArgument(!definitionResourceConfigs.isEmpty(), "No definitionResource registered");
+		Assertion.check().argument(!definitionResourceConfigs.isEmpty(), "No definitionResource registered");
 		//-----
 		final List<Definition> webServiceDefinitions = new ArrayList<>();
 		for (final DefinitionResourceConfig definitionResourceConfig : definitionResourceConfigs) {
@@ -56,7 +56,7 @@ public final class WebServiceDefinitionProvider implements SimpleDefinitionProvi
 				webServiceDefinitions.addAll(scanWebServices(webServicesClass));
 			}
 		}
-		Assertion.checkArgument(!webServiceDefinitions.isEmpty(), "No webService found by WebServiceDefinitionProvider");
+		Assertion.check().argument(!webServiceDefinitions.isEmpty(), "No webService found by WebServiceDefinitionProvider");
 		//----
 		return webServiceDefinitions;
 	}
@@ -80,7 +80,7 @@ public final class WebServiceDefinitionProvider implements SimpleDefinitionProvi
 	/** {@inheritDoc} */
 	@Override
 	public void addDefinitionResourceConfig(final DefinitionResourceConfig definitionResourceConfig) {
-		Assertion.checkArgument("webservice".equals(definitionResourceConfig.getType()), "This DefinitionProvider Support only 'webservice' type (not {0})", definitionResourceConfig.getType());
+		Assertion.check().argument("webservice".equals(definitionResourceConfig.getType()), "This DefinitionProvider Support only 'webservice' type (not {0})", definitionResourceConfig.getType());
 		//-----
 		definitionResourceConfigs.add(definitionResourceConfig);
 	}

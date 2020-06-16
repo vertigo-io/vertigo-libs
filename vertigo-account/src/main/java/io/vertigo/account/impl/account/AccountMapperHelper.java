@@ -94,7 +94,7 @@ public final class AccountMapperHelper<S, D> {
 	public AccountMapperHelper<S, D> parseAttributeMapping() {
 		for (final String mapping : ATTRIBUTES_PATTERN.split(sourceToDestMappingStr)) {
 			final String[] splitedMapping = ATTRIBUTE_VALUE_PATTERN.split(mapping);
-			Assertion.checkArgument(splitedMapping.length == 2,
+			Assertion.check().argument(splitedMapping.length == 2,
 					"Mapping should respect the pattern sourceFields:destFields :(like sourceAttr1:destAttr1, sourceAttr2:destAttr2, ... (check : {0})", sourceToDestMappingStr);
 			Assertion.when(sourceDtDefinition.isPresent())
 					.state(() -> sourceDtDefinition.get().contains(splitedMapping[1]), "sourceField {0} must be in DtDefinition {1}", splitedMapping[1], sourceDtDefinition.orElse(null));

@@ -57,7 +57,7 @@ public final class TaskResult {
 	 * @return Result
 	 */
 	public <V> V getResult() {
-		Assertion.checkArgument(outTaskAttributeOptional.isPresent(), "this task does not provide any result");
+		Assertion.check().argument(outTaskAttributeOptional.isPresent(), "this task does not provide any result");
 		return (V) result;
 	}
 }

@@ -76,8 +76,9 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	@Override
 	public Serializable get(final Object key) {
 		final String keyFieldName = String.class.cast(key);
-		Assertion.checkArgNotEmpty(keyFieldName);
-		Assertion.checkArgument(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
+		Assertion.check()
+				.argNotEmpty(keyFieldName)
+				.argument(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//-----
 		final DtField dtField = getDtField(keyFieldName);
 		if (isMultiple(dtField)) {
@@ -268,8 +269,9 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 
 	private Serializable getEncodedValue(final String key) {
 		final String keyFieldName = String.class.cast(key);
-		Assertion.checkArgNotEmpty(keyFieldName);
-		Assertion.checkArgument(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
+		Assertion.check()
+				.argNotEmpty(keyFieldName)
+				.argument(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//---
 		final DtField dtField = getDtField(keyFieldName);
 		final SmartTypeDefinition smartType = dtField.getSmartTypeDefinition();

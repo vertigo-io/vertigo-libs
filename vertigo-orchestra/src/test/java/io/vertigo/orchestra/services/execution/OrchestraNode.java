@@ -46,8 +46,9 @@ final class OrchestraNode {
 	 * @param maxLifeTime Durée de vie max en seconde
 	 */
 	OrchestraNode(final int nodeId, final int maxLifeTime) {
-		Assertion.checkArgument(nodeId == 1 || nodeId == 2, "You must specified nodeId : 1 or 2");
-		Assertion.checkArgument(maxLifeTime >= 0 && maxLifeTime < 30000, "MaxLifeTime is in seconde and must be less than 30000 ({0}). Use 0 if you need infinit life.", maxLifeTime);
+		Assertion.check()
+				.argument(nodeId == 1 || nodeId == 2, "You must specified nodeId : 1 or 2")
+				.argument(maxLifeTime >= 0 && maxLifeTime < 30000, "MaxLifeTime is in seconde and must be less than 30000 ({0}). Use 0 if you need infinit life.", maxLifeTime);
 		//-----
 		this.maxLifeTime = maxLifeTime;
 		this.nodeId = nodeId;

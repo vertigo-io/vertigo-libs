@@ -71,7 +71,7 @@ public final class AuthorizationAspect implements Aspect {
 			//On repère les paramètres qui ont le @SecuredOperation
 			if (securedOperation != null) {
 				//Ils doivent être de type KeyConcept (et même securedEntity mais il y aura une exception dans le isAuthorized)
-				Assertion.checkArgument(args[i] instanceof KeyConcept, "Can't check authorization on arg{0} ({1})", i, args[i]);
+				Assertion.check().argument(args[i] instanceof KeyConcept, "Can't check authorization on arg{0} ({1})", i, args[i]);
 				if (!authorizationManager.isAuthorized((KeyConcept) args[i], securedOperation::value)) {
 					throw new VSecurityException(MessageText.of("Not enought authorizations"));//no too sharp info here : may use log
 				}

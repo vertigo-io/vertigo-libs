@@ -179,8 +179,9 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		} catch (final URISyntaxException e) {
 			return Optional.empty();
 		}
-		Assertion.checkArgument(photoFile.toFile().exists(), "Identity {0} photo {1} not found", accountURI, photoUrl);
-		Assertion.checkArgument(photoFile.toFile().isFile(), "Identity {0} photo {1} must be a file", accountURI, photoUrl);
+		Assertion.check()
+				.argument(photoFile.toFile().exists(), "Identity {0} photo {1} not found", accountURI, photoUrl)
+				.argument(photoFile.toFile().isFile(), "Identity {0} photo {1} must be a file", accountURI, photoUrl);
 		try {
 			final String contentType = Files.probeContentType(photoFile);
 			return Optional.of(new FSFile(photoFile.getFileName().toString(), contentType, photoFile));

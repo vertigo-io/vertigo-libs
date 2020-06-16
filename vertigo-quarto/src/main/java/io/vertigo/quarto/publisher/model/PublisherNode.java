@@ -75,8 +75,9 @@ public final class PublisherNode implements Serializable {
 				.notNull(value, "La valeur du champ {0} est obligatoire.", fieldName);
 		//-----
 		final PublisherFieldType currentFieldType = nodeDefinition.getField(fieldName).getFieldType();
-		Assertion.checkArgument(currentFieldType == fieldType, "Le field {0} n''est pas du type {1} mais de type {2}", fieldName, fieldType, currentFieldType);
-		Assertion.checkArgument(fieldType.checkValue(value), "La valeur {0} n'est pas conforme au type '{1}' sur le champ '{2}'", value, fieldType, fieldName);
+		Assertion.check()
+				.argument(currentFieldType == fieldType, "Le field {0} n''est pas du type {1} mais de type {2}", fieldName, fieldType, currentFieldType)
+				.argument(fieldType.checkValue(value), "La valeur {0} n'est pas conforme au type '{1}' sur le champ '{2}'", value, fieldType, fieldName);
 	}
 
 	/**

@@ -78,8 +78,9 @@ abstract class AbstractCodec implements Codec<String, String> {
 			if (!replaceByMap.containsKey(replaceBy[i])) {
 				replaceByMap.put(replaceBy[i], toReplace[i]);
 				//Assertion.isNull(old, "Double insertion pour {0}", replaceBy[i])
-				Assertion.checkArgument(replaceBy[i].charAt(0) == startEscape, "Les caractères encodés ({1}) doivent commencer par le caractère {0}", startEscape, replaceBy[i]);
-				Assertion.checkArgument(replaceBy[i].charAt(replaceBy[i].length() - 1) == endEscape, "Les caractères encodés ({1}) doivent terminer par le caractère {0}", endEscape, replaceBy[i]);
+				Assertion.check()
+						.argument(replaceBy[i].charAt(0) == startEscape, "Les caractères encodés ({1}) doivent commencer par le caractère {0}", startEscape, replaceBy[i])
+						.argument(replaceBy[i].charAt(replaceBy[i].length() - 1) == endEscape, "Les caractères encodés ({1}) doivent terminer par le caractère {0}", endEscape, replaceBy[i]);
 				if (replaceBy[i].length() > replaceByMaxSize) {
 					replaceByMaxSize = replaceBy[i].length();
 				}

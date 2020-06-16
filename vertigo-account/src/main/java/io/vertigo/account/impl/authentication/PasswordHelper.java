@@ -110,7 +110,7 @@ public final class PasswordHelper {
 	}
 
 	private static String encodeInt(final int value) {
-		Assertion.checkArgument(value < MAX_POWER_ITERATION, "Can't support 2^{0} iterations (max 255)", value);
+		Assertion.check().argument(value < MAX_POWER_ITERATION, "Can't support 2^{0} iterations (max 255)", value);
 		//-----
 		return String.format("%02x", value);
 	}

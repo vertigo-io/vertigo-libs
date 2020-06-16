@@ -205,7 +205,7 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 	 */
 	@DaemonScheduled(name = "DmnPurgeBerkeleyKvStore", periodInSeconds = REMOVED_TOO_OLD_ELEMENTS_PERIODE_SECONDS)
 	public void removeTooOldElements() {
-		Assertion.checkArgument(MAX_REMOVED_TOO_OLD_ELEMENTS > 0 && MAX_REMOVED_TOO_OLD_ELEMENTS < 100000, "maxRemovedTooOldElements must stay between 1 and 100000");
+		Assertion.check().argument(MAX_REMOVED_TOO_OLD_ELEMENTS > 0 && MAX_REMOVED_TOO_OLD_ELEMENTS < 100000, "maxRemovedTooOldElements must stay between 1 and 100000");
 		//---
 		for (final String collection : collectionNames) {
 			try {

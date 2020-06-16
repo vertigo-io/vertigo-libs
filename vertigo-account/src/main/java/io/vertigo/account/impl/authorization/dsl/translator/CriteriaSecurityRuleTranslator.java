@@ -123,7 +123,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 			case SIMPLE: //TODO not use yet ?
 				return toCriteria(fieldName::toString, operator, value);
 			case ENUM:
-				Assertion.checkArgument(value instanceof String, "Enum criteria must be a code String ({0})", value);
+				Assertion.check().argument(value instanceof String, "Enum criteria must be a code String ({0})", value);
 				//----
 				return enumToCriteria(securityDimension, operator, String.class.cast(value));
 			case TREE:
@@ -177,7 +177,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 	}
 
 	private Criteria<E> treeToCriteria(final SecurityDimension securityDimension, final ValueOperator operator, final Serializable value) {
-		Assertion.checkArgument(value instanceof String[]
+		Assertion.check().argument(value instanceof String[]
 				|| value instanceof Integer[]
 				|| value instanceof Long[], "Security TREE axe ({0}) must be set in UserSession as Arrays (current:{1})", securityDimension.getName(), value.getClass().getName());
 		if (value instanceof String[]) {

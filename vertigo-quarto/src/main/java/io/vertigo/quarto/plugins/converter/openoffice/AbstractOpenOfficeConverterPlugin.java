@@ -137,7 +137,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 	 */
 	synchronized File doConvertToFormat(final File inputFile, final ConverterFormat targetFormat) throws Exception {
 		try (final OpenOfficeConnection openOfficeConnection = connectOpenOffice()) {
-			Assertion.checkArgument(inputFile.exists(), "Le document à convertir n''existe pas : {0}", inputFile.getAbsolutePath());
+			Assertion.check().argument(inputFile.exists(), "Le document à convertir n''existe pas : {0}", inputFile.getAbsolutePath());
 			final XComponent xDoc = loadDocument(inputFile, openOfficeConnection);
 			try {
 				refreshDocument(xDoc);

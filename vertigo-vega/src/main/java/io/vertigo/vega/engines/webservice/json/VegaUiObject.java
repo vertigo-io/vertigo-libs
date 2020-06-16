@@ -265,8 +265,9 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	/** {@inheritDoc} */
 	@Override
 	public String getInputValue(final String fieldName) {
-		Assertion.checkArgNotEmpty(fieldName);
-		Assertion.checkArgument(Character.isLowerCase(fieldName.charAt(0)) && !fieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", fieldName);
+		Assertion.check()
+				.argNotEmpty(fieldName)
+				.argument(Character.isLowerCase(fieldName.charAt(0)) && !fieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", fieldName);
 		//-----
 		if (hasFormatError(fieldName)) {
 			return inputBuffer.get(fieldName);

@@ -328,7 +328,7 @@ public final class SqlEntityStorePlugin implements EntityStorePlugin {
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E create(final DtDefinition dtDefinition, final E entity) {
-		Assertion.checkArgument(DtObjectUtil.getId(entity) == null, "Only object without any id can be created");
+		Assertion.check().argument(DtObjectUtil.getId(entity) == null, "Only object without any id can be created");
 		//------
 		final boolean insert = true;
 		put(entity, insert);

@@ -108,7 +108,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	 * @return this builder
 	 */
 	public CommentBuilder withLastModified(final Instant lastModified) {
-		Assertion.checkArgument(myLastModified == null, "lastModified already set");
+		Assertion.check().argument(myLastModified == null, "lastModified already set");
 		//lastModified is optional
 		//-----
 		myLastModified = lastModified;

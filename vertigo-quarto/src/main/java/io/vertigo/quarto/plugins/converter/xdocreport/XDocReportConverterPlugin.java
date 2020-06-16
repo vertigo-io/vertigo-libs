@@ -106,7 +106,7 @@ public final class XDocReportConverterPlugin implements ConverterPlugin {
 		public SnapshotBuiltinFont() {
 			super(null, false);
 			synchronized (BuiltinFonts14) {
-				Assertion.checkArgument(BuiltinFonts14.size() >= 14, "Default iText BuiltinFonts14, not correclty loaded (only {0} elements instead of 14)", BuiltinFonts14.size());
+				Assertion.check().argument(BuiltinFonts14.size() >= 14, "Default iText BuiltinFonts14, not correclty loaded (only {0} elements instead of 14)", BuiltinFonts14.size());
 				//----
 				savedBuiltinFonts14 = Collections.unmodifiableMap(new HashMap<String, PdfName>(BuiltinFonts14));
 			}

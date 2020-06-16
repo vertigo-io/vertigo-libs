@@ -100,7 +100,7 @@ public final class WebServiceManagerImpl implements WebServiceManager, SimpleDef
 				.sorted(Comparator.comparingInt(WebServiceHandlerPlugin::getStackIndex))
 				.collect(Collectors.toList());
 		//-----
-		Assertion.checkArgument(sortedWebServiceHandlerPlugins.get(sortedWebServiceHandlerPlugins.size() - 1) instanceof RestfulServiceWebServiceHandlerPlugin,
+		Assertion.check().argument(sortedWebServiceHandlerPlugins.get(sortedWebServiceHandlerPlugins.size() - 1) instanceof RestfulServiceWebServiceHandlerPlugin,
 				"WebServiceHandlerPlugins must end with a RestfulServiceHandler in order to dispatch request to WebService, check your WebServiceHandlerPlugins in RestManagerImpl.\n{0}",
 				STANDARD_REST_HANDLER_PLUGINS_SETTINGS_MSG);
 		//-----

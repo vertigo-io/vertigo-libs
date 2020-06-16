@@ -53,7 +53,7 @@ public class SlotAttributeTagProcessor extends AbstractAttributeTagProcessor {
 			final ITemplateContext context, final IProcessableElementTag tag,
 			final AttributeName attributeName, final String attributeValue,
 			final IElementTagStructureHandler structureHandler) {
-		Assertion.checkArgument(
+		Assertion.check().argument(
 				attributeValue.endsWith(VARIABLE_PLACEHOLDER_SEPARATOR + SLOTS_SUFFIX),
 				"{0} isn't a slot. Attribute vu:slot supports only slots, names must ends with '_slot'", attributeValue);
 		//-----

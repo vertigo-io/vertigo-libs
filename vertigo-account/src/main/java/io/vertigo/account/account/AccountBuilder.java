@@ -61,7 +61,7 @@ public final class AccountBuilder implements Builder<Account> {
 	 * @return this builder
 	 */
 	public AccountBuilder withEmail(final String email) {
-		Assertion.checkArgument(myEmail == null, "email already set");
+		Assertion.check().argument(myEmail == null, "email already set");
 		//email is nullable, we accept null value in case this builder is use by deserializer
 		//-----
 		myEmail = email;
@@ -74,7 +74,7 @@ public final class AccountBuilder implements Builder<Account> {
 	 * @return this builder
 	 */
 	public AccountBuilder withPhoto(final String photo) {
-		Assertion.checkArgument(myPhoto == null, "photo already set");
+		Assertion.check().argument(myPhoto == null, "photo already set");
 		//photo is nullable, we accept null value in case this builder is use by deserializer
 		//-----
 		myPhoto = photo;
@@ -87,8 +87,9 @@ public final class AccountBuilder implements Builder<Account> {
 	 * @return this builder
 	 */
 	public AccountBuilder withAuthToken(final String authToken) {
-		Assertion.checkArgument(myAuthToken == null, "authToken already set");
-		Assertion.checkArgNotEmpty(authToken);
+		Assertion.check()
+				.argument(myAuthToken == null, "authToken already set")
+				.argNotEmpty(authToken);
 		//-----
 		myAuthToken = authToken;
 		return this;

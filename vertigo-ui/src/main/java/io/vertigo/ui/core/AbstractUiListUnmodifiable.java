@@ -208,7 +208,7 @@ public abstract class AbstractUiListUnmodifiable<O extends DtObject> extends Abs
 		// ---
 		UiObject<O> uiObject;
 		final DtField dtField = dtDefinition.getField(keyFieldName);
-		Assertion.checkArgument(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
+		Assertion.check().argument(dtField.getType().isId(), "La clé {0} de la liste doit être la PK", keyFieldName);
 
 		final O entity = (O) loadDto(keyValue);
 		uiObject = new MapUiObject<>(entity);

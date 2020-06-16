@@ -76,7 +76,7 @@ final class DslGeoExpressionRule {
 	static DslGeoExpression parse(final String geoString) {
 		final DslGeoExpression dslGeoExpression;
 		final Matcher geoValueMatcher = GEO_EXPRESSION_PATTERN.matcher(geoString);
-		Assertion.checkArgument(geoValueMatcher.find(), "Can't parse geoExpression ({0})", geoString);
+		Assertion.check().argument(geoValueMatcher.find(), "Can't parse geoExpression ({0})", geoString);
 
 		if (geoValueMatcher.group(4) != null) {
 			//found geoDistance

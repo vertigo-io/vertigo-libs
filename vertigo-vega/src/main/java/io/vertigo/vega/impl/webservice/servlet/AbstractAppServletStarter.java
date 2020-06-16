@@ -71,7 +71,7 @@ abstract class AbstractAppServletStarter {
 			WebAppContextParamPlugin.setParams(webAppConf);
 			//-----
 			final Properties bootConf = createBootProperties(servletContext);
-			Assertion.checkArgument(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
+			Assertion.check().argument(bootConf.containsKey("boot.applicationConfiguration"), "Param \"boot.applicationConfiguration\" is mandatory, check your .properties or web.xml.");
 
 			// Initialisation de l'état de l'application
 			app = new AutoCloseableApp(buildNodeConfig(bootConf));

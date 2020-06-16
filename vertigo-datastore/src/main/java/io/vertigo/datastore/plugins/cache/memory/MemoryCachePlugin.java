@@ -85,7 +85,7 @@ public final class MemoryCachePlugin implements Activeable, CachePlugin {
 		//-----
 		//On regarde la conf du cache pour vérifier s'il on serialize/clone les éléments ou non.
 		if (getCacheDefinition(context).shouldSerializeElements()) {
-			Assertion.checkArgument(value instanceof Serializable,
+			Assertion.check().argument(value instanceof Serializable,
 					"Object to cache isn't Serializable. Make it Serializable or change its CacheConfig 'serializeElement' parameter. (context: {0}, key:{1}, class:{2})",
 					context, key, value.getClass().getSimpleName());
 			// Sérialisation avec compression

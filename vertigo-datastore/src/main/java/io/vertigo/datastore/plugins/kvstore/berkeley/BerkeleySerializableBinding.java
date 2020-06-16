@@ -47,7 +47,7 @@ final class BerkeleySerializableBinding extends TupleBinding<Serializable> {
 	@Override
 	public Serializable entryToObject(final TupleInput ti) {
 		final String prefix = ti.readString();
-		Assertion.checkArgument(PREFIX.equals(prefix), "Can't read this entry {0}", prefix);
+		Assertion.check().argument(PREFIX.equals(prefix), "Can't read this entry {0}", prefix);
 		//-----
 		final int size = ti.readInt();
 		final byte[] buffer = new byte[size];

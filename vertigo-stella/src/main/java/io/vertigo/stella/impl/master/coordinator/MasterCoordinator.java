@@ -73,8 +73,9 @@ public final class MasterCoordinator implements Coordinator, Activeable {
 	}
 
 	private <R> void setResult(final String workId, final R result, final Throwable error) {
-		Assertion.checkArgNotEmpty(workId);
-		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
+		Assertion.check()
+				.argNotEmpty(workId)
+				.argument(result == null ^ error == null, "result xor error is null");
 		//-----
 		final WorkResultHandler workResultHandler = workResultHandlers.remove(workId);
 		if (workResultHandler != null) {

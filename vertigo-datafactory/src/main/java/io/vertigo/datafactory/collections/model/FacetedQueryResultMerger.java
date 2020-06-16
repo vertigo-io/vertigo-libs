@@ -113,7 +113,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> {
 	 * @return get merged result as a new result
 	 */
 	public FacetedQueryResult<R, S> toFacetedQueryResult() {
-		Assertion.checkArgument(otherResults.size() > 0, "You need at least one FacetedQueryResult in order to build a FacetedQueryResult");
+		Assertion.check().argument(otherResults.size() > 0, "You need at least one FacetedQueryResult in order to build a FacetedQueryResult");
 		//On accepte de ne pas avoir de FacetedQueryResults pour les cas ou les resultats sont filtrés par la sécurité, certains éléments à merger sont peut-être absent.
 
 		//-----

@@ -400,7 +400,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 					.setType("_doc")
 					.setSource(typeMapping.prettyPrint())
 					.get();
-			Assertion.checkArgument(putMappingResponse.isAcknowledged(), "Can't put index mapping of {0}", myIndexName);
+			Assertion.check().argument(putMappingResponse.isAcknowledged(), "Can't put index mapping of {0}", myIndexName);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Serveur ElasticSearch indisponible");
 		}

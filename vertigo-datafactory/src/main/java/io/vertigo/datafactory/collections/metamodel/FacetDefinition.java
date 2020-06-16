@@ -198,7 +198,7 @@ public final class FacetDefinition implements Definition {
 	 * @return Liste des sélections/range.
 	 */
 	public List<FacetValue> getFacetRanges() {
-		Assertion.checkArgument(rangeFacet, "Cette facette ({0}) n'est pas segmentée.", getName());
+		Assertion.check().argument(rangeFacet, "Cette facette ({0}) n'est pas segmentée.", getName());
 		//-----
 		return facetValues;
 	}
@@ -207,7 +207,7 @@ public final class FacetDefinition implements Definition {
 	 * @return Custom facet params
 	 */
 	public Map<String, String> getCustomParams() {
-		Assertion.checkArgument(!customFacetParams.isEmpty(), "Cette facette ({0}) n'est pas custom.", getName());
+		Assertion.check().argument(!customFacetParams.isEmpty(), "Cette facette ({0}) n'est pas custom.", getName());
 		//-----
 		return customFacetParams;
 	}

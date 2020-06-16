@@ -54,7 +54,7 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder withSubject(final String subject) {
-		Assertion.checkArgNotEmpty(subject);
+		Assertion.check().argNotEmpty(subject);
 		Assertion.checkState(mySubject == null, "subject is already completed");
 		//-----
 		mySubject = subject;
@@ -80,8 +80,8 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder replyTo(final String replyTo) {
-		Assertion.checkState(myReplyTo == null, "replyTo is already completed");
-		Assertion.checkArgNotEmpty(replyTo);
+		Assertion.check().state(myReplyTo == null, "replyTo is already completed")
+				.argNotEmpty(replyTo);
 		//-----
 		myReplyTo = replyTo;
 		return this;
@@ -111,7 +111,7 @@ public class MailBuilder implements Builder<Mail> {
 		Assertion.check().notNull(addresses);
 		//-----
 		for (final String address : addresses) {
-			Assertion.checkArgNotEmpty(address);
+			Assertion.check().argNotEmpty(address);
 			myCcAddresses.add(address);
 		}
 		return this;

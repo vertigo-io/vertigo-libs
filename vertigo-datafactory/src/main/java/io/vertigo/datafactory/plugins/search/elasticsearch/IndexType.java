@@ -90,16 +90,16 @@ public final class IndexType {
 		for (int i = 1; i < indexTypeArray.length; i++) {
 			final String indexTypeParam = indexTypeArray[i];
 			if (INDEX_STORED.equals(indexTypeParam) || INDEX_NOT_STORED.equals(indexTypeParam)) {
-				Assertion.checkArgument(!parsedIndexType.containsKey(INDEX_STORED_KEY), INDEX_TYPE_ERROR_MSG, indexType);
+				Assertion.check().argument(!parsedIndexType.containsKey(INDEX_STORED_KEY), INDEX_TYPE_ERROR_MSG, indexType);
 				parsedIndexType.put(INDEX_STORED_KEY, INDEX_STORED.equals(indexTypeParam));
 			} else if (INDEX_SORTABLE.equals(indexTypeParam) || INDEX_NOT_SORTABLE.equals(indexTypeParam)) {
-				Assertion.checkArgument(!parsedIndexType.containsKey(INDEX_SUB_KEYWORD_KEY), INDEX_TYPE_ERROR_MSG, indexType);
+				Assertion.check().argument(!parsedIndexType.containsKey(INDEX_SUB_KEYWORD_KEY), INDEX_TYPE_ERROR_MSG, indexType);
 				parsedIndexType.put(INDEX_SUB_KEYWORD_KEY, INDEX_SORTABLE.equals(indexTypeParam));
 			} else if (INDEX_FACETABLE.equals(indexTypeParam) || INDEX_NOT_FACETABLE.equals(indexTypeParam)) {
-				Assertion.checkArgument(!parsedIndexType.containsKey(INDEX_FIELD_DATA_KEY), INDEX_TYPE_ERROR_MSG, indexType);
+				Assertion.check().argument(!parsedIndexType.containsKey(INDEX_FIELD_DATA_KEY), INDEX_TYPE_ERROR_MSG, indexType);
 				parsedIndexType.put(INDEX_FIELD_DATA_KEY, INDEX_FACETABLE.equals(indexTypeParam));
 			} else {
-				Assertion.checkArgument(!parsedIndexType.containsKey(INDEX_DATA_TYPE_KEY), INDEX_TYPE_ERROR_MSG, indexType);
+				Assertion.check().argument(!parsedIndexType.containsKey(INDEX_DATA_TYPE_KEY), INDEX_TYPE_ERROR_MSG, indexType);
 				parsedIndexType.put(INDEX_DATA_TYPE_KEY, indexTypeParam);
 			}
 		}
