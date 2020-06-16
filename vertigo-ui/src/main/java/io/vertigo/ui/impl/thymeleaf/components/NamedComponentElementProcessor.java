@@ -447,13 +447,13 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			final Object attributeValue,
 			final IElementModelStructureHandler structureHandler,
 			final Map<String, Map<String, Object>> placeholders) {
-		Assertion.checkArgNotEmpty(attributeKey, "Variable name can't be null or empty");
+		Assertion.check().argNotEmpty(attributeKey, "Variable name can't be null or empty");
 		//-----
 		if (isPlaceholder(attributeKey)) {
 			//We prepared prefixed placeholders variables.
 			addPlaceholderVariable(placeholders, attributeKey, attributeValue);
 		} else if (!parameterNames.contains(attributeKey)) {
-			Assertion.checkState(
+			Assertion.check().state(
 					unnamedPlaceholderPrefix.isPresent(),
 					"Component '{0}' can't accept this parameter : '{1}' (accepted params : {2})", componentName, attributeKey, parameterNames);
 			//We prepared unnamed placeholder variable

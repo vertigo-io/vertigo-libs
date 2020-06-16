@@ -233,7 +233,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 				}
 			}
 		}
-		Assertion.checkArgNotEmpty(userAuthToken, "User AuthToken not found in file");
+		Assertion.check().argNotEmpty(userAuthToken, "User AuthToken not found in file");
 		final IdentityUserInfo userInfo = new IdentityUserInfo(user, photoUrl);
 		authToUsers.put(userAuthToken, userInfo);
 		idsToUsers.put(user.getUID().getId(), userInfo);

@@ -173,7 +173,7 @@ public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 	}
 
 	private TimeSeriesPlugin getPluginByDb(final String dbName) {
-		Assertion.checkArgNotEmpty(dbName);
+		Assertion.check().argNotEmpty(dbName);
 		// ---
 		final TimeSeriesPlugin adequatePlugin = timeSeriesPluginByDb.get(dbName);
 		if (adequatePlugin != null) {

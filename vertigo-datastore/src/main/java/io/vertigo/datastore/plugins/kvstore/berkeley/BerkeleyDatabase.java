@@ -193,7 +193,7 @@ final class BerkeleyDatabase {
 	 * @param id Element id to remove
 	 */
 	void delete(final String id) {
-		Assertion.checkArgNotEmpty(id);
+		Assertion.check().argNotEmpty(id);
 		//-----
 		final DatabaseEntry idEntry = new DatabaseEntry();
 

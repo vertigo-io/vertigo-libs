@@ -43,7 +43,7 @@ final class MemoryCache {
 	 * @param timeToLiveSeconds Durée de vie en secondes
 	 */
 	MemoryCache(final String name, final int timeToLiveSeconds) {
-		Assertion.checkArgNotEmpty(name);
+		Assertion.check().argNotEmpty(name);
 		//-----
 		this.name = name;
 		this.timeToLiveSeconds = timeToLiveSeconds;

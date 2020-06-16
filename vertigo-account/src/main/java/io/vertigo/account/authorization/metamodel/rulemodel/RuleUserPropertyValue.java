@@ -32,7 +32,7 @@ public final class RuleUserPropertyValue implements RuleValue {
 	 * @param userProperty User property name
 	 */
 	public RuleUserPropertyValue(final String userProperty) {
-		Assertion.checkArgNotEmpty(userProperty);
+		Assertion.check().argNotEmpty(userProperty);
 		//-----
 		this.userProperty = userProperty;
 	}

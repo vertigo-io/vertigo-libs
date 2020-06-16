@@ -167,7 +167,7 @@ public class RedisCachePlugin implements CachePlugin {
 		Assertion.check().notNull(key);
 		//---
 		if (key instanceof String) {
-			Assertion.checkArgNotEmpty((String) key, "a key cannot be an empty string");
+			Assertion.check().argNotEmpty((String) key, "a key cannot be an empty string");
 			//--
 			return ((String) key).trim();
 		} else if (key instanceof Integer) {

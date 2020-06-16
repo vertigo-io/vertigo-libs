@@ -102,7 +102,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> {
 	 * @return this builder
 	 */
 	public FacetedQueryResultMerger<R, S> withFacet(final String facetDefinitionName) {
-		Assertion.checkArgNotEmpty(facetDefinitionName);
+		Assertion.check().argNotEmpty(facetDefinitionName);
 		//-----
 		this.facetDefinitionNameOpt = Optional.of(facetDefinitionName);
 		return this;

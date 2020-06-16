@@ -58,8 +58,9 @@ public final class StrutsUiObject<D extends DtObject> extends VegaUiObject<D> im
 	@Override
 	public Serializable get(final Object key) {
 		final String keyFieldName = String.class.cast(key);
-		Assertion.checkArgNotEmpty(keyFieldName);
-		Assertion.checkArgument(StringUtil.isLowerCamelCase(keyFieldName), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
+		Assertion.check()
+				.argNotEmpty(keyFieldName)
+				.argument(StringUtil.isLowerCamelCase(keyFieldName), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//-----
 		final DtField dtField = getDtField(keyFieldName);
 		if (isMultiple(dtField)) {

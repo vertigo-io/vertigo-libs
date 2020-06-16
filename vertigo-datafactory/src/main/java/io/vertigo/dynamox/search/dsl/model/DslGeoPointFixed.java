@@ -32,7 +32,7 @@ public final class DslGeoPointFixed implements DslQuery {
 	 * @param geoPoint geoPoint value
 	 */
 	public DslGeoPointFixed(final String geoPointValue) {
-		Assertion.checkArgNotEmpty(geoPointValue);
+		Assertion.check().argNotEmpty(geoPointValue);
 		//-----
 		this.geoPointValue = geoPointValue;
 	}

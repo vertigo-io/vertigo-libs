@@ -32,7 +32,7 @@ public final class DslGeoPointCriteria implements DslQuery {
 	 * @param geoPointFieldName geoPoint fieldName
 	 */
 	public DslGeoPointCriteria(final String geoPointFieldName) {
-		Assertion.checkArgNotEmpty(geoPointFieldName);
+		Assertion.check().argNotEmpty(geoPointFieldName);
 		//-----
 		this.geoPointFieldName = geoPointFieldName;
 	}

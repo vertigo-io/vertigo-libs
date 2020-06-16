@@ -50,8 +50,9 @@ public abstract class AbstractAccountStorePlugin implements Activeable {
 	protected AbstractAccountStorePlugin(
 			@ParamValue("userDtDefinitionName") final String userDtDefinitionName,
 			@ParamValue("userToAccountMapping") final String userToAccountMappingStr) {
-		Assertion.checkArgNotEmpty(userDtDefinitionName);
-		Assertion.checkArgNotEmpty(userToAccountMappingStr);
+		Assertion.check()
+				.argNotEmpty(userDtDefinitionName)
+				.argNotEmpty(userToAccountMappingStr);
 		//-----
 		this.userDtDefinitionName = userDtDefinitionName;
 		this.userToAccountMappingStr = userToAccountMappingStr;

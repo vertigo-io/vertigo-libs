@@ -99,7 +99,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 	/** {@inheritDoc} */
 	@Override
 	public final VFile convertToFormat(final VFile file, final String targetFormat) {
-		Assertion.checkArgNotEmpty(targetFormat);
+		Assertion.check().argNotEmpty(targetFormat);
 		//-----
 		return convertToFormat(file, ConverterFormat.find(targetFormat));
 	}

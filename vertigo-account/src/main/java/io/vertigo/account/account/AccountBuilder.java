@@ -36,7 +36,7 @@ public final class AccountBuilder implements Builder<Account> {
 	 * @param id the id of the account
 	 */
 	AccountBuilder(final String id) {
-		Assertion.checkArgNotEmpty(id);
+		Assertion.check().argNotEmpty(id);
 		//-----
 		myId = id;
 	}
@@ -47,8 +47,9 @@ public final class AccountBuilder implements Builder<Account> {
 	 * @return this builder
 	 */
 	public AccountBuilder withDisplayName(final String displayName) {
-		Assertion.checkArgument(myDisplayName == null, "displayName already set");
-		Assertion.checkArgNotEmpty(displayName);
+		Assertion.check()
+				.argument(myDisplayName == null, "displayName already set")
+				.argNotEmpty(displayName);
 		//-----
 		myDisplayName = displayName;
 		return this;

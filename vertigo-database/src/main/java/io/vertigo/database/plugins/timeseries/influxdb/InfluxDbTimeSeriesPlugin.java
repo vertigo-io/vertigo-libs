@@ -425,8 +425,9 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	}
 
 	private static String buildMeasureQuery(final String measure, final String alias) {
-		Assertion.checkArgNotEmpty(measure);
-		Assertion.checkArgNotEmpty(alias);
+		Assertion.check()
+				.argNotEmpty(measure)
+				.argNotEmpty(alias);
 		//----
 		final String[] measureDetails = measure.split(":");
 		final Tuple<String, List<String>> aggregateFunction = parseAggregateFunction(measureDetails[1]);

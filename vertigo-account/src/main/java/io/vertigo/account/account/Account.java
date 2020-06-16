@@ -48,7 +48,7 @@ public final class Account implements Entity {
 	private final String authToken;
 
 	Account(final String id, final String displayName, final String email, final String photo, final String authToken) {
-		Assertion.checkArgNotEmpty(id);
+		Assertion.check().argNotEmpty(id);
 		//-----
 		this.id = id;
 		this.displayName = displayName;

@@ -116,7 +116,7 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 	/** {@inheritDoc} */
 	@Override
 	public ProcessDefinition getProcessDefinition(final String processName) {
-		Assertion.checkArgNotEmpty(processName);
+		Assertion.check().argNotEmpty(processName);
 		// ---
 		final OProcess process = getOProcessByName(processName);
 		final DtList<OActivity> activities = activityDAO.getActivitiesByProId(process.getProId());
@@ -263,7 +263,7 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 	}
 
 	private OProcess getOProcessByName(final String processName) {
-		Assertion.checkArgNotEmpty(processName);
+		Assertion.check().argNotEmpty(processName);
 		// ---
 		return processDao.getActiveProcessByName(processName)
 				.orElseThrow(() -> new VSystemException("Cannot find process with name {0}", processName));
@@ -271,7 +271,7 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 
 	@Override
 	public boolean processDefinitionExists(final String processName) {
-		Assertion.checkArgNotEmpty(processName);
+		Assertion.check().argNotEmpty(processName);
 		// ---
 		return processDao.getActiveProcessByName(processName).isPresent();
 	}

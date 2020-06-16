@@ -152,7 +152,7 @@ public final class SearchQueryBuilder implements Builder<SearchQuery> {
 	 * @return this builder
 	 */
 	public SearchQueryBuilder withFacetClustering(final String clusteringFacetName) {
-		Assertion.checkArgNotEmpty(clusteringFacetName);
+		Assertion.check().argNotEmpty(clusteringFacetName);
 		//-----
 		final FacetDefinition clusteringFacetDefinition = Home.getApp().getDefinitionSpace().resolve(clusteringFacetName, FacetDefinition.class);
 		withFacetClustering(clusteringFacetDefinition);

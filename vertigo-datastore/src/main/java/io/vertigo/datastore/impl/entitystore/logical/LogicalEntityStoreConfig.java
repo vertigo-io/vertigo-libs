@@ -75,13 +75,13 @@ public final class LogicalEntityStoreConfig {
 	 * @return the name of the connection
 	 */
 	public String getConnectionName(final String dataSpace) {
-		Assertion.checkArgNotEmpty(dataSpace);
+		Assertion.check().argNotEmpty(dataSpace);
 		//-----
 		return getDataStorePlugin(dataSpace).getConnectionName();
 	}
 
 	private EntityStorePlugin getDataStorePlugin(final String dataSpace) {
-		Assertion.checkArgNotEmpty(dataSpace);
+		Assertion.check().argNotEmpty(dataSpace);
 		//-----
 		final EntityStorePlugin dataStore = dataStorePluginsMap.get(dataSpace);
 		Assertion.check().notNull(dataStore, "No store found mapped to collection '{0}'", dataSpace);

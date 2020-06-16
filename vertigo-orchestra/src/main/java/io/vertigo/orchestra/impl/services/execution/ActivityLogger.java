@@ -42,7 +42,7 @@ public final class ActivityLogger {
 	 * @param engineName le nom de l'engine de l'activité
 	 */
 	ActivityLogger(final String engineName) {
-		Assertion.checkArgNotEmpty(engineName);
+		Assertion.check().argNotEmpty(engineName);
 		// ---
 		// Creates or get the logger
 		loggerActivity = LogManager.getLogger(engineName);

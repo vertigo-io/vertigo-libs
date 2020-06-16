@@ -76,7 +76,7 @@ public class FormatterNumberLocalized extends FormatterNumber {
 			//séparateur de décimal
 			if (st.hasMoreTokens()) {
 				decimalSep = MessageText.of(st.nextToken().trim());//trim => l'espace ne peut être un séparateur de décimal
-				Assertion.checkArgNotEmpty(decimalSep.getDisplay(), "Il faut au moins un séparateur de décimal");
+				Assertion.check().argNotEmpty(decimalSep.getDisplay(), "Il faut au moins un séparateur de décimal");
 			}
 
 			//séparateur de millier

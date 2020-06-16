@@ -71,7 +71,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 			final @ParamValue("collections") String collections,
 			final DaemonManager daemonManager,
 			final @ParamValue("timeToLiveSeconds") int timeToLiveSeconds) {
-		Assertion.checkArgNotEmpty(collections);
+		Assertion.check().argNotEmpty(collections);
 		//-----
 		this.collections = Arrays.stream(collections.split(", "))
 				.map(String::trim)
@@ -121,8 +121,9 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	/** {@inheritDoc} */
 	@Override
 	public void remove(final String collection, final String key) {
-		Assertion.checkArgNotEmpty(collection);
-		Assertion.checkArgNotEmpty(key);
+		Assertion.check()
+				.argNotEmpty(collection)
+				.argNotEmpty(key);
 		//-----
 		getCollectionData(collection).remove(key);
 	}
@@ -130,7 +131,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	/** {@inheritDoc} */
 	@Override
 	public void clear(final String collection) {
-		Assertion.checkArgNotEmpty(collection);
+		Assertion.check().argNotEmpty(collection);
 		//-----
 		getCollectionData(collection).clear();
 	}

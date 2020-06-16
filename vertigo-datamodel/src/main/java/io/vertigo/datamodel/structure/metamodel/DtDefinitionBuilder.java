@@ -74,7 +74,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	 * @param name the name of the dtDefinition
 	 */
 	DtDefinitionBuilder(final String name) {
-		Assertion.checkArgNotEmpty(name);
+		Assertion.check().argNotEmpty(name);
 		//-----
 		myName = name;
 	}
@@ -363,7 +363,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	}
 
 	private Optional<DtField> findFieldByName(final String fieldName) {
-		Assertion.checkArgNotEmpty(fieldName);
+		Assertion.check().argNotEmpty(fieldName);
 		return myFields
 				.stream()
 				.filter(dtField -> fieldName.equals(dtField.getName()))
