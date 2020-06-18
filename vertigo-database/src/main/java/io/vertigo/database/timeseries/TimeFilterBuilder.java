@@ -50,7 +50,7 @@ public final class TimeFilterBuilder implements Builder<TimeFilter> {
 	}
 
 	public TimeFilterBuilder withTimeDim(final String dim) {
-		Assertion.checkArgNotEmpty(dim);
+		Assertion.check().argNotEmpty(dim);
 		//---
 		myDim = dim;
 		return this;

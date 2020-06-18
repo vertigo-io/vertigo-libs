@@ -137,8 +137,9 @@ public final class RedisDB {
 	 * @param error if an error occurred
 	 */
 	public <R> void putResult(final String workId, final R result, final Throwable error) {
-		Assertion.checkArgNotEmpty(workId);
-		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
+		Assertion.check()
+				.argNotEmpty(workId)
+				.argument(result == null ^ error == null, "result xor error is null");
 		//-----
 		final Map<String, String> datas = new HashMap<>();
 		try (Jedis jedis = redisConnector.getClient()) {

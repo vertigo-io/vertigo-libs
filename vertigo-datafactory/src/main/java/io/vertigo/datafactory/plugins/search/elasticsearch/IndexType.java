@@ -120,7 +120,7 @@ public final class IndexType {
 	private static String obtainDefaultIndexDataType(final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
-		Assertion.checkState(smartTypeDefinition.getScope().isPrimitive()
+		Assertion.check().state(smartTypeDefinition.getScope().isPrimitive()
 				|| smartTypeDefinition.getScope().isValueObject(), "Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition + "].");
 		final BasicType basicType;
 		if (smartTypeDefinition.getScope().isPrimitive()) {
@@ -151,7 +151,7 @@ public final class IndexType {
 	private static void checkIndexType(final String indexType, final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
-		Assertion.checkState(smartTypeDefinition.getScope().isPrimitive()
+		Assertion.check().state(smartTypeDefinition.getScope().isPrimitive()
 				|| smartTypeDefinition.getScope().isValueObject(), "Type de donnée non pris en charge pour le keyconcept indexé [" + smartTypeDefinition + "].");
 
 		final BasicType basicType;

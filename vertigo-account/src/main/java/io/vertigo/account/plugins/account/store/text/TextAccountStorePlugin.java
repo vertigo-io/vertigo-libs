@@ -104,14 +104,14 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 				.argNotEmpty(accountFilePatternStr)
 				.argument(accountFilePatternStr.contains("(?<"),
 						"accountFilePattern should be a regexp of named group for each Account's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>)(?<authToken>[^\\s;]+);(?<photoUrl>[^\\s;]+)' )");
-		Assertion.checkArgument(groupFilePatternStr.contains("(?<"),
+		Assertion.check().argument(groupFilePatternStr.contains("(?<"),
 				"groupFilePattern should be a regexp of named group for each group's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )");
 		for (final AccountProperty accountProperty : AccountProperty.values()) {
-			Assertion.checkArgument(accountFilePatternStr.contains("(?<" + accountProperty.name() + ">"),
+			Assertion.check().argument(accountFilePatternStr.contains("(?<" + accountProperty.name() + ">"),
 					"filePattern should be a regexp of named group for each Account fields (missing {0} field) (like : '(?<id>\\S+);(?<displayName>\\S+);(?<email>)(?<authToken>\\S+);(?<photoUrl>\\S+)' )", accountProperty.name());
 		}
 		for (final GroupProperty groupProperty : GroupProperty.values()) {
-			Assertion.checkArgument(groupFilePatternStr.contains("(?<" + groupProperty.name() + ">"),
+			Assertion.check().argument(groupFilePatternStr.contains("(?<" + groupProperty.name() + ">"),
 					"filePattern should be a regexp of named group for each Group fields (missing {0} field) (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<accountIds>([^\\s;]+(;[^\\s;]+)*)' )", groupProperty.name());
 		}
 		// -----
@@ -186,8 +186,9 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		} catch (final URISyntaxException e) {
 			return Optional.empty();
 		}
-		Assertion.checkArgument(photoFile.toFile().exists(), "Account {0} photo {1} not found", accountURI, photoUrl);
-		Assertion.checkArgument(photoFile.toFile().isFile(), "Account {0} photo {1} must be a file", accountURI, photoUrl);
+		Assertion.check()
+				.argument(photoFile.toFile().exists(), "Account {0} photo {1} not found", accountURI, photoUrl)
+				.argument(photoFile.toFile().isFile(), "Account {0} photo {1} must be a file", accountURI, photoUrl);
 		try {
 			final String contentType = Files.probeContentType(photoFile);
 			return Optional.of(new FSFile(photoFile.getFileName().toString(), contentType, photoFile));
@@ -227,7 +228,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	private void parseAccounts(final String line) {
 		final Matcher matcher = accountFilePattern.matcher(line);
 		final boolean matches = matcher.matches();
-		Assertion.checkState(matches, "AccountFile ({2}) can't be parse by this regexp :\nline:{0}\nregexp:{1}", line, matches, accountFilePath);
+		Assertion.check().state(matches, "AccountFile ({2}) can't be parse by this regexp :\nline:{0}\nregexp:{1}", line, matches, accountFilePath);
 		final String id = matcher.group(AccountProperty.id.name());
 		final String displayName = matcher.group(AccountProperty.displayName.name());
 		final String email = matcher.group(AccountProperty.email.name());
@@ -244,7 +245,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	private void parseGroups(final String line) {
 		final Matcher matcher = groupFilePattern.matcher(line);
 		final boolean matches = matcher.matches();
-		Assertion.checkState(matches, "GroupFile ({2}) can't be parse by this regexp :\nline:{0}\nregexp:{1}", line, matches, groupFilePath);
+		Assertion.check().state(matches, "GroupFile ({2}) can't be parse by this regexp :\nline:{0}\nregexp:{1}", line, matches, groupFilePath);
 		final String groupId = matcher.group(GroupProperty.id.name());
 		final String displayName = matcher.group(GroupProperty.displayName.name());
 		final String accountIds = matcher.group(GroupProperty.accountIds.name());

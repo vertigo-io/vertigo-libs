@@ -231,7 +231,7 @@ public final class DtObjectUtil {
 	 * @return compare value1 to value2
 	 */
 	public static int compareFieldValues(final DtObject dtoObject1, final DtObject dtoObject2, final DtField dtField, final boolean sortDesc) {
-		Assertion.checkState(DtObjectUtil.findDtDefinition(dtoObject1).equals(DtObjectUtil.findDtDefinition(dtoObject2)), "Only Dtobjects of the same type can be compared, you try to compare object types '{0}' and '{1}'", dtoObject1.getClass(), dtoObject2.getClass());
+		Assertion.check().state(DtObjectUtil.findDtDefinition(dtoObject1).equals(DtObjectUtil.findDtDefinition(dtoObject2)), "Only Dtobjects of the same type can be compared, you try to compare object types '{0}' and '{1}'", dtoObject1.getClass(), dtoObject2.getClass());
 		final DataAccessor dataAccessor = dtField.getDataAccessor();
 		return compareFieldValues(dataAccessor.getValue(dtoObject1), dataAccessor.getValue(dtoObject2), sortDesc);
 	}

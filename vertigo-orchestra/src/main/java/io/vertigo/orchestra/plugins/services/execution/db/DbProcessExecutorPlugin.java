@@ -137,7 +137,7 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 		this.nodeName = nodeName;
 		workersCount = workersCountOpt.orElse(10);
 		// ---
-		Assertion.checkState(workersCount >= 1, "We need at least 1 worker");
+		Assertion.check().state(workersCount >= 1, "We need at least 1 worker");
 		// ---
 		executionPeriodSeconds = executionPeriodSecondsOpt.orElse(30);
 		// ---
@@ -229,8 +229,9 @@ public final class DbProcessExecutorPlugin implements ProcessExecutorPlugin, Act
 			transaction.commit();
 		}
 		// ---
-		Assertion.checkState(ExecutionState.PENDING.name().equals(activityExecution.getEstCd()), "Only pending executions can be ended remotly");
-		Assertion.checkState(workspace != null, "Workspace for activityExecution not found");
+		Assertion.check()
+				.state(ExecutionState.PENDING.name().equals(activityExecution.getEstCd()), "Only pending executions can be ended remotly")
+				.state(workspace != null, "Workspace for activityExecution not found");
 
 		// We execute the postTreatment of the pending activity when it's released
 		// ---

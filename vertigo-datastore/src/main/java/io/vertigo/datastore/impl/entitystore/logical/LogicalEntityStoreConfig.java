@@ -52,7 +52,7 @@ public final class LogicalEntityStoreConfig {
 		for (final EntityStorePlugin dataStorePlugin : dataStorePlugins) {
 			final String dataSpace = dataStorePlugin.getDataSpace();
 			final EntityStorePlugin previous = pluginsMap.put(dataSpace, dataStorePlugin);
-			Assertion.checkState(previous == null, "this dataSpace {0} is already registered", dataSpace);
+			Assertion.check().state(previous == null, "this dataSpace {0} is already registered", dataSpace);
 		}
 		dataStorePluginsMap = Collections.unmodifiableMap(pluginsMap);
 	}

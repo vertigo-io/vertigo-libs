@@ -145,13 +145,13 @@ public final class DtField {
 		Assertion.check().notNull(label);
 		this.label = label;
 		//-----
-		Assertion.checkArgument(!(getType() == FieldType.COMPUTED && persistent), "a computed field can't be persistent");
+		Assertion.check().argument(!(getType() == FieldType.COMPUTED && persistent), "a computed field can't be persistent");
 		this.persistent = persistent;
 		//-----
 		if (getType() == FieldType.FOREIGN_KEY) {
 			Assertion.check().notNull(fkDtDefinitionName, "Le champ {0} de type clé étrangère doit référencer une définition ", fieldName);
 		} else {
-			Assertion.checkState(fkDtDefinitionName == null, "Le champ {0} n''est pas une clé étrangère", fieldName);
+			Assertion.check().state(fkDtDefinitionName == null, "Le champ {0} n''est pas une clé étrangère", fieldName);
 		}
 		this.fkDtDefinitionName = fkDtDefinitionName;
 		//-----

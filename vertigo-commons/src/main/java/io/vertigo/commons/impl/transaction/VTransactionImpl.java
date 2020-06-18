@@ -194,7 +194,7 @@ final class VTransactionImpl implements VTransactionWritable {
 				.notNull(id);
 		//-----
 		final Object o = resources.put(id, resource);
-		Assertion.checkState(o == null, "Ressource déjà enregistrée");
+		Assertion.check().state(o == null, "Ressource déjà enregistrée");
 	}
 
 	/** {@inheritDoc} */

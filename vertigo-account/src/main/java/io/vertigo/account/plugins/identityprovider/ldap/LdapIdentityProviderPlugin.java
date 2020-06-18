@@ -187,8 +187,9 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 
 	private Entity getUserByAuthToken(final String authToken, final LdapContext ctx) {
 		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, "(&(" + ldapUserAuthAttribute + "=" + protectLdap(authToken) + "))", 2, mapperHelper.sourceAttributes(), ctx);
-		Assertion.checkState(!result.isEmpty(), "Can't found any user with authToken : {0}", ldapUserAuthAttribute);
-		Assertion.checkState(result.size() == 1, "Too many user with same authToken ({0} shoud be unique)", ldapUserAuthAttribute);
+		Assertion.check()
+				.state(!result.isEmpty(), "Can't found any user with authToken : {0}", ldapUserAuthAttribute)
+				.state(result.size() == 1, "Too many user with same authToken ({0} shoud be unique)", ldapUserAuthAttribute);
 		return parseUser(result.get(0));
 	}
 
@@ -202,8 +203,9 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 	private Attributes getLdapAttributes(final Serializable accountId, final Set<String> returningAttributes, final LdapContext ldapContext) {
 		final String ldapIdAttr = mapperHelper.getSourceIdField();
 		final List<Attributes> result = searchLdapAttributes(ldapAccountBaseDn, "(" + ldapIdAttr + "=" + accountId + ")", 2, returningAttributes, ldapContext);
-		Assertion.checkState(!result.isEmpty(), "Can't found any user with id : {0}", accountId);
-		Assertion.checkState(result.size() == 1, "Too many user with same id ({0} shoud be unique)", accountId);
+		Assertion.check()
+				.state(!result.isEmpty(), "Can't found any user with id : {0}", accountId)
+				.state(result.size() == 1, "Too many user with same id ({0} shoud be unique)", accountId);
 		return result.get(0);
 	}
 

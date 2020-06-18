@@ -111,23 +111,24 @@ public final class GrammarXMLBalancerProcessor implements MergerProcessor {
 
 			final int endTagNameIndex = output.indexOf(" ", beginGramarIndex);
 
-			Assertion.checkState(endTagNameIndex > 0,
+			Assertion.check().state(endTagNameIndex > 0,
 					"La gramaire du XML source est incorrecte, le tag {0} (i:{1}) n''est pas construit correctement (il manque l'espace apres le nom de tag) ",
 					output.substring(beginGramarIndex, beginGramarIndex + 10) + "...", beginGramarIndex);
 			grammarTag = output.substring(beginGramarIndex + BEGIN_XML_CODE.length(), endTagNameIndex);
 			beginGramarLenght = output.indexOf(END_XML_CODE, beginGramarIndex + BEGIN_XML_CODE.length()) - beginGramarIndex + END_XML_CODE.length();
-			Assertion.checkState(beginGramarLenght > 0,
+			Assertion.check().state(beginGramarLenght > 0,
 					"La gramaire du XML source est incorrecte, le tag <#{0} (i:{1}) n''est pas fermé correctement (il manque #>) ",
 					grammarTag, beginGramarIndex);
 
 			endGramarIndex = findEndGrammarIndex(output, grammarTag, beginGramarIndex + beginGramarLenght);
 			endGramarLenght = output.indexOf(END_XML_CODE, endGramarIndex + (BEGIN_END_XML_CODE + grammarTag).length()) - endGramarIndex + END_XML_CODE.length();
-			Assertion.checkState(endGramarIndex > 0,
-					"La gramaire du XML source est incorrecte, le tag {0} (i:{1}) n''est pas construit correctement (la balise de fin est introuvable)",
-					grammarTag, beginGramarIndex);
-			Assertion.checkState(endGramarLenght > 0,
-					"La gramaire du XML source est incorrecte, le tag <#end{0} (i:{1}) n''est pas fermé correctement (il manque #>)",
-					grammarTag, endGramarIndex);
+			Assertion.check()
+					.state(endGramarIndex > 0,
+							"La gramaire du XML source est incorrecte, le tag {0} (i:{1}) n''est pas construit correctement (la balise de fin est introuvable)",
+							grammarTag, beginGramarIndex)
+					.state(endGramarLenght > 0,
+							"La gramaire du XML source est incorrecte, le tag <#end{0} (i:{1}) n''est pas fermé correctement (il manque #>)",
+							grammarTag, endGramarIndex);
 			// on determine la pile des tags internes non closes ou ouverte :
 			final String content = output.substring(beginGramarIndex + beginGramarLenght, endGramarIndex);
 			pileTag = ProcessorXMLUtil.extractUnrepeatableTag(content.toCharArray());
@@ -157,7 +158,7 @@ public final class GrammarXMLBalancerProcessor implements MergerProcessor {
 					final int moveBackwardToIndex = output.lastIndexOf('<' + lastCloseTag.getName(), beginGramarIndex);
 					// Ou exclure le tag fermant
 					final int moveForwardToIndex = lastCloseTag.getIndex() + indexOffset + lastCloseTag.getLength();
-					Assertion.checkState(moveBackwardToIndex != -1, "Le XML source est incorrect, la tag de début : {0} n''a pas été trouvée", '<' + lastCloseTag.toString() + '>');
+					Assertion.check().state(moveBackwardToIndex != -1, "Le XML source est incorrect, la tag de début : {0} n''a pas été trouvée", '<' + lastCloseTag.toString() + '>');
 					if (!MODE_CLOSER_CLOSED_XML ||
 							beginGramarIndex - moveBackwardToIndex <= moveForwardToIndex - beginGramarIndex - beginGramarLenght
 							|| moveForwardToIndex > firstBodyIndex) {
@@ -173,7 +174,7 @@ public final class GrammarXMLBalancerProcessor implements MergerProcessor {
 					moveForwardToIndex = output.indexOf(">", moveForwardToIndex) + 1;
 					// ou pour exclure le tag ouvrant
 					final int moveBackwardToIndex = firstOpenTag.getIndex() + indexOffset;
-					Assertion.checkState(moveForwardToIndex != -1, "Le XML source est incorrect, la tag de fin : {0} n''a pas été trouvée", "</" + firstOpenTag + '>');
+					Assertion.check().state(moveForwardToIndex != -1, "Le XML source est incorrect, la tag de fin : {0} n''a pas été trouvée", "</" + firstOpenTag + '>');
 
 					if (MODE_CLOSER_CLOSED_XML && endGramarIndex - moveBackwardToIndex < moveForwardToIndex - endGramarIndex - endGramarLenght && moveBackwardToIndex >= lastBodyEndIndex) {
 						endXmlMoveToIndex = moveBackwardToIndex;
@@ -206,11 +207,11 @@ public final class GrammarXMLBalancerProcessor implements MergerProcessor {
 
 				// on test
 				pileTag = ProcessorXMLUtil.extractUnrepeatableTag(output.substring(beginGramarIndex + beginGramarLenght, endGramarIndex).toCharArray());
-				Assertion.checkState(nbIteration++ < 2 || pileTag.isEmpty(),
+				Assertion.check().state(nbIteration++ < 2 || pileTag.isEmpty(),
 						"Le XML n''a pas été corrigé aprés 3 itérations : il reste : {1}\ndans le corps de la balise {2}\ncontent: {0}",
 						output.toString(), pileTag, output.substring(beginGramarIndex, beginGramarIndex + beginGramarLenght));
 			}
-			Assertion.checkState(pileTag.isEmpty(),
+			Assertion.check().state(pileTag.isEmpty(),
 					"Le XML n''a pas été corrigé : il reste : {1}\ndans le corps de la balise {2}\ncontent: {0}",
 					output.toString(), pileTag, output.substring(beginGramarIndex, beginGramarIndex + beginGramarLenght));
 			// On recupére le prochain

@@ -203,11 +203,12 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	/** {@inheritDoc} */
 	@Override
 	public Serializable remove(final Object key) {
-		Assertion.checkState(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX));
-		Assertion.checkState(key instanceof String, "La clé doit être de type String");
+		Assertion.check()
+				.state(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX))
+				.state(key instanceof String, "La clé doit être de type String");
 		//---
 		final String keyString = (String) key;
-		Assertion.checkArgNotEmpty(keyString);
+		Assertion.check().argNotEmpty(keyString);
 		//---
 		// on garde les index en cohérence après un remove
 		reverseUiObjectIndex.values().removeIf(keyString::equals);
@@ -235,7 +236,7 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	 * passe le context en non-modifiable.
 	 */
 	public void makeUnmodifiable() {
-		Assertion.checkState(!dirty, "Can't fixed a dirty context");
+		Assertion.check().state(!dirty, "Can't fixed a dirty context");
 		//-----
 		super.put(CTX, UUID.randomUUID().toString());
 		unmodifiable = true;

@@ -36,7 +36,7 @@ public class DashboardFeatures extends Features<DashboardFeatures> {
 	@Feature("analytics")
 	public DashboardFeatures withAnalytics(final Param... params) {
 		if (params.length > 0) {
-			Assertion.checkState(params.length == 1 && "appName".equals(params[0].getName()), "appName param should be provided ");
+			Assertion.check().state(params.length == 1 && "appName".equals(params[0].getName()), "appName param should be provided ");
 			//---
 			getModuleConfigBuilder()
 					.addComponent(DataProvider.class, DataProviderImpl.class, params);

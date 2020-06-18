@@ -265,7 +265,7 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 	/** {@inheritDoc} */
 	@Override
 	public void delete(final FileInfoURI uri) {
-		Assertion.checkArgument(!readOnly, STORE_READ_ONLY);
+		Assertion.check().argument(!readOnly, STORE_READ_ONLY);
 
 		final UID<Entity> dtoUri = createDtObjectURI(uri);
 		//-----suppression du fichier

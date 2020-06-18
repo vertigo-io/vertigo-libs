@@ -243,7 +243,7 @@ public final class DtObjectsLoader implements Loader {
 
 	private static String parseDataSpaceAnnotation(final Class<?> clazz) {
 		final DataSpace[] dataSpaceAnnotations = clazz.getAnnotationsByType(DataSpace.class);
-		Assertion.checkState(dataSpaceAnnotations.length <= 1, "Entity {0} can have at max one DataSpace", clazz.getSimpleName());
+		Assertion.check().state(dataSpaceAnnotations.length <= 1, "Entity {0} can have at max one DataSpace", clazz.getSimpleName());
 		// ---
 		if (dataSpaceAnnotations.length == 1) {
 			return dataSpaceAnnotations[0].value();

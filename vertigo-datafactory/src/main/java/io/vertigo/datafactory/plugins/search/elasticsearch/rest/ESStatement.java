@@ -187,7 +187,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 					.setRefreshPolicy(DEFAULT_REFRESH);
 			final DeleteResponse deleteResponse = esClient.delete(request, RequestOptions.DEFAULT);
 			//----
-			Assertion.checkArgument(deleteResponse.getResult() == DocWriteResponse.Result.DELETED,
+			Assertion.check().argument(deleteResponse.getResult() == DocWriteResponse.Result.DELETED,
 					"Can't remove on {0}", indexName);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error in remove() on {0}", indexName);

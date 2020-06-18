@@ -60,9 +60,9 @@ public final class CommandDefinition implements Definition {
 				.forEach(commandParam -> {
 					final Type type = commandParam.getType();
 					if (type instanceof Class) {
-						Assertion.checkState(String.class.isAssignableFrom((Class) type), "Only ParamUID and String params are allowed for command");
+						Assertion.check().state(String.class.isAssignableFrom((Class) type), "Only ParamUID and String params are allowed for command");
 					} else if (type instanceof ParameterizedType) {
-						Assertion.checkState(GenericUID.class.isAssignableFrom((Class) ((ParameterizedType) type).getRawType()), "Only ParamUID and String params are allowed for command");
+						Assertion.check().state(GenericUID.class.isAssignableFrom((Class) ((ParameterizedType) type).getRawType()), "Only ParamUID and String params are allowed for command");
 					}
 				});
 

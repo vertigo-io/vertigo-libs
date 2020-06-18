@@ -116,7 +116,7 @@ public abstract class AbstractVSpringMvcController {
 			//initContextUrlParameters(request, viewContext);
 			//TODO vérifier que l'action demandée n'attendait pas de context : il va etre recrée vide ce qui n'est pas bon dans certains cas.
 			preInitContext(viewContext);
-			Assertion.checkState(viewContext.containsKey(UTIL_CONTEXT_KEY), "Pour surcharger preInitContext vous devez rappeler les parents super.preInitContext(). Action: {0}",
+			Assertion.check().state(viewContext.containsKey(UTIL_CONTEXT_KEY), "Pour surcharger preInitContext vous devez rappeler les parents super.preInitContext(). Action: {0}",
 					getClass().getSimpleName());
 			//initContext();
 		}
@@ -140,7 +140,7 @@ public abstract class AbstractVSpringMvcController {
 		//package is
 		// group.id.project.feature.controllers and we look in feature/...
 		// or group.id.project.controllers and we look in project/
-		Assertion.checkState(path.contains(".controllers"), "Default naming only works if your package contains .controllers, it's not the case for the controller {0}", controller.getClass());
+		Assertion.check().state(path.contains(".controllers"), "Default naming only works if your package contains .controllers, it's not the case for the controller {0}", controller.getClass());
 		path = path.substring(path.lastIndexOf('.', path.indexOf(".controllers") - 1) + 1);
 		path = path.replaceAll("\\.controllers", "");
 		path = path.replaceAll("\\.", SLASH);

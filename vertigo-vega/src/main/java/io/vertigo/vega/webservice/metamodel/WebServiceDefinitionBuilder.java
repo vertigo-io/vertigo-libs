@@ -136,7 +136,7 @@ public final class WebServiceDefinitionBuilder implements Builder<WebServiceDefi
 	 * @return this builder
 	 */
 	public WebServiceDefinitionBuilder with(final Verb verb, final String path) {
-		Assertion.checkState(myVerb == null, "A verb is already specified on {0}.{1} ({2})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName(), myVerb);
+		Assertion.check().state(myVerb == null, "A verb is already specified on {0}.{1} ({2})", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName(), myVerb);
 		Assertion.when(StringUtil.isEmpty(myPathPrefix))
 				.state(() -> !StringUtil.isEmpty(path), "Route path must be specified on {0}.{1} (at least you should defined a pathPrefix)", myMethod.getDeclaringClass().getSimpleName(), myMethod.getName());
 		Assertion.when(!StringUtil.isEmpty(path))

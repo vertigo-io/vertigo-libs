@@ -108,7 +108,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 				.notNull(dto)
 				.notNull(dtos);
 		Arrays.stream(dtos)
-				.forEach(other -> Assertion.checkArgument(dto.getClass().equals(other.getClass()), "all dtos must have the same type"));
+				.forEach(other -> Assertion.check().argument(dto.getClass().equals(other.getClass()), "all dtos must have the same type"));
 		//---
 		final DtList<D> dtList = new DtList<>(DtObjectUtil.findDtDefinition(dto));
 		//---
@@ -161,7 +161,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	public boolean add(final D dto) {
 		Assertion.check().notNull(dto);
 		final DtDefinition foundDtDefinition = DtObjectUtil.findDtDefinition(dto);
-		Assertion.checkArgument(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
+		Assertion.check().argument(getDefinition().equals(foundDtDefinition), "Ne peut pas inserer un dto '{0}' dans une collection '{1}'", foundDtDefinition, getDefinition());
 		//-----
 		return dtObjects.add(dto);
 	}
@@ -226,7 +226,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 * @return MetaData value
 	 */
 	public <O extends Serializable> Optional<O> getMetaData(final String metaDataName, final Class<O> metaDataClass) {
-		Assertion.checkArgNotEmpty(metaDataName);
+		Assertion.check().argNotEmpty(metaDataName);
 		//-----
 		final Object value = metaDatas.get(metaDataName);
 		if (value == null) {
@@ -244,7 +244,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 * @param value MetaData value
 	 */
 	public void setMetaData(final String metaDataName, final Serializable value) {
-		Assertion.checkArgNotEmpty(metaDataName);
+		Assertion.check().argNotEmpty(metaDataName);
 		//-----
 		if (value == null) {
 			metaDatas.remove(metaDataName);

@@ -74,7 +74,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 		final Map<String, Authorization> permissionPerOperations = new HashMap<>();// on garde la map des operations pour resoudre les grants
 		for (final JsonElement operation : jsonSecuredEntity.get("operations").getAsJsonArray()) { //TODO if null ?
 			final Authorization permission = deserializeOperations(entityDefinition, operation.getAsJsonObject(), context, permissionPerOperations);
-			Assertion.checkArgument(!permissionPerOperations.containsKey(permission.getOperation().get()),
+			Assertion.check().argument(!permissionPerOperations.containsKey(permission.getOperation().get()),
 					"Operation {0} already declared on {1}", permission.getOperation().get(), entityDefinition.getName());
 			permissionPerOperations.put(permission.getOperation().get(), permission);
 		}
@@ -119,7 +119,7 @@ public final class SecuredEntityDeserializer implements JsonDeserializer<Secured
 	}
 
 	private static Authorization resolvePermission(final String operationName, final Map<String, Authorization> permissionPerOperations, final DtDefinition entityDefinition) {
-		Assertion.checkArgument(permissionPerOperations.containsKey(operationName),
+		Assertion.check().argument(permissionPerOperations.containsKey(operationName),
 				"Operation {0} not declared on {1} (may check declaration order)", operationName, entityDefinition.getName());
 		//-----
 		return permissionPerOperations.get(operationName);

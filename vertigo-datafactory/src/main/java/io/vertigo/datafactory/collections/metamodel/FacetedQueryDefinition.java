@@ -102,7 +102,7 @@ public final class FacetedQueryDefinition implements Definition {
 	 * @return Définition de la facette.
 	 */
 	public FacetDefinition getFacetDefinition(final String facetName) {
-		Assertion.checkArgNotEmpty(facetName);
+		Assertion.check().argNotEmpty(facetName);
 		//-----
 		final FacetDefinition facetDefinition = facetDefinitions.get(facetName);
 		//-----

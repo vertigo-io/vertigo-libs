@@ -93,7 +93,7 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 		final Criteria criteriaByLogin = Criterions.isEqualTo(() -> userLoginField, token.getPrincipal());
 		final DtList<DtObject> results = entityStoreManager.find(userCredentialDefinition, criteriaByLogin, DtListState.of(2));
 		//may ensure, that valid or invalid login took the same time, so we don't assert no result here
-		Assertion.checkState(results.size() <= 1, "Too many matching credentials for {0}", token.getPrincipal());
+		Assertion.check().state(results.size() <= 1, "Too many matching credentials for {0}", token.getPrincipal());
 
 		final AuthenticationToken trustedAuthenticationToken;
 		if (token instanceof UsernamePasswordAuthenticationToken) {

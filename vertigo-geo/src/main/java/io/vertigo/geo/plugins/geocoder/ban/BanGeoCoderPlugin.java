@@ -124,7 +124,7 @@ public final class BanGeoCoderPlugin implements GeoCoderPlugin {
 		}
 		//-----
 		// 0- Vérification du status
-		Assertion.checkState(banResponse.features.size() <= 1, "Only one address when looking for a single location");
+		Assertion.check().state(banResponse.features.size() <= 1, "Only one address when looking for a single location");
 		if (banResponse.features.size() == 0) {
 			return GeoLocation.UNDEFINED;
 		}

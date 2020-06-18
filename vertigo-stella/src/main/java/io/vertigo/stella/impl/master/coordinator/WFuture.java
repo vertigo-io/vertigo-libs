@@ -50,7 +50,7 @@ final class WFuture<R> implements Future<R>, WorkResultHandler<R> {
 	/** {@inheritDoc} */
 	@Override
 	public void onDone(final R result, final Throwable error) {
-		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
+		Assertion.check().argument(result == null ^ error == null, "result xor error is null");
 		//-----
 		if (done.compareAndSet(false, true)) {
 			myResult = result;

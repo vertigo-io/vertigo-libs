@@ -131,7 +131,7 @@ public final class CollectionsManagerImpl implements CollectionsManager {
 	/** {@inheritDoc} */
 	@Override
 	public <D extends DtObject> IndexDtListFunctionBuilder<D> createIndexDtListFunctionBuilder() {
-		Assertion.checkState(indexPluginOpt.isPresent(), "An IndexPlugin is required to use this function");
+		Assertion.check().state(indexPluginOpt.isPresent(), "An IndexPlugin is required to use this function");
 		//-----
 		return new IndexDtListFunctionBuilderImpl<>(indexPluginOpt.get());
 	}

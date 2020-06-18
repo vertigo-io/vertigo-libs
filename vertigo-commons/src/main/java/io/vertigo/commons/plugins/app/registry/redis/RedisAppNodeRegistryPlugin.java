@@ -76,7 +76,7 @@ public final class RedisAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 	public void register(final Node node) {
 		try (final Jedis jedis = redisConnector.getClient()) {
 			final Boolean isIdUsed = jedis.sismember(VERTIGO_NODES, node.getId());
-			Assertion.checkState(!isIdUsed, "A node id must be unique : Id '{0}' is already used ", node.getId());
+			Assertion.check().state(!isIdUsed, "A node id must be unique : Id '{0}' is already used ", node.getId());
 			// ---
 			try (final Transaction tx = jedis.multi()) {
 				tx.hset(VERTIGO_NODE + node.getId(), "json", gson.toJson(node));

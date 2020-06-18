@@ -78,9 +78,9 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 	@Feature("webservices.token")
 	public VegaFeatures withWebServicesTokens(final Param... params) {
 		//-----
-		Assertion.checkState(params.length == 1 && "tokens".equals(params[0].getName()), "tokens param should be provided ");
+		Assertion.check().state(params.length == 1 && "tokens".equals(params[0].getName()), "tokens param should be provided ");
 		final String myTokens = params[0].getValue();
-		Assertion.checkArgNotEmpty(myTokens);
+		Assertion.check().argNotEmpty(myTokens);
 		//---
 		getModuleConfigBuilder()
 				.addPlugin(ServerSideStateWebServiceHandlerPlugin.class)
@@ -108,7 +108,7 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 
 	@Feature("webservices.apiPrefix")
 	public VegaFeatures withWebServicesApiPrefix(final Param... params) {
-		Assertion.checkState(params.length == 1 && "apiPrefix".equals(params[0].getName()), "apiPrefix param should be provided ");
+		Assertion.check().state(params.length == 1 && "apiPrefix".equals(params[0].getName()), "apiPrefix param should be provided ");
 		myApiPrefix = params[0].getValue();
 		return this;
 	}
@@ -121,14 +121,14 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 
 	@Feature("webservices.embeddedServer")
 	public VegaFeatures withWebServicesEmbeddedServer(final Param... params) {
-		Assertion.checkState(params.length == 1 && "port".equals(params[0].getName()), "port param should be provided ");
+		Assertion.check().state(params.length == 1 && "port".equals(params[0].getName()), "port param should be provided ");
 		myPort = params[0].getValue();
 		return this;
 	}
 
 	@Feature("webservices.cors")
 	public VegaFeatures withWebServicesOriginCORSFilter(final Param... params) {
-		Assertion.checkState(params.length == 1 && "originCORSFilter".equals(params[0].getName()), "originCORSFilter param should be provided ");
+		Assertion.check().state(params.length == 1 && "originCORSFilter".equals(params[0].getName()), "originCORSFilter param should be provided ");
 		final String myOriginCORSFilter = params[0].getValue();
 		//---
 		if (myOriginCORSFilter != null) {

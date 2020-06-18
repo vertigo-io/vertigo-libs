@@ -54,8 +54,9 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder withSubject(final String subject) {
-		Assertion.check().argNotEmpty(subject);
-		Assertion.checkState(mySubject == null, "subject is already completed");
+		Assertion.check()
+				.argNotEmpty(subject)
+				.state(mySubject == null, "subject is already completed");
 		//-----
 		mySubject = subject;
 		return this;
@@ -67,8 +68,9 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder from(final String from) {
-		Assertion.checkState(myFrom == null, "from is already completed");
-		Assertion.checkArgNotEmpty(from);
+		Assertion.check()
+				.state(myFrom == null, "from is already completed")
+				.argNotEmpty(from);
 		//-----
 		myFrom = from;
 		return this;
@@ -96,7 +98,7 @@ public class MailBuilder implements Builder<Mail> {
 		Assertion.check().notNull(addresses);
 		//-----
 		for (final String address : addresses) {
-			Assertion.checkArgNotEmpty(address);
+			Assertion.check().argNotEmpty(address);
 			myToAddresses.add(address);
 		}
 		return this;
@@ -123,8 +125,9 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder withTextContent(final String textContent) {
-		Assertion.checkState(myTextContent == null, "textContent is already completed");
-		Assertion.checkArgNotEmpty(textContent);
+		Assertion.check()
+				.state(myTextContent == null, "textContent is already completed")
+				.argNotEmpty(textContent);
 		//-----
 		myTextContent = textContent;
 		return this;
@@ -136,8 +139,9 @@ public class MailBuilder implements Builder<Mail> {
 	 * @return MailBuilder
 	 */
 	public MailBuilder withHtmlContent(final String htmlContent) {
-		Assertion.checkState(myHtmlContent == null, "htmlContent is already completed");
-		Assertion.checkArgNotEmpty(htmlContent);
+		Assertion.check()
+				.state(myHtmlContent == null, "htmlContent is already completed")
+				.argNotEmpty(htmlContent);
 		//-----
 		myHtmlContent = htmlContent;
 		return this;

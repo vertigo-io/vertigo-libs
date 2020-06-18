@@ -79,7 +79,7 @@ public final class UiRequestUtil {
 	}
 
 	public static void setRequestScopedAttribute(final String name, final Object value) {
-		Assertion.checkArgNotEmpty(name);
+		Assertion.check().argNotEmpty(name);
 		//---
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
 		attributes.setAttribute(name, value, RequestAttributes.SCOPE_REQUEST);

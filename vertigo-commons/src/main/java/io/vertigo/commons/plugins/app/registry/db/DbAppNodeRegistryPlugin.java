@@ -116,11 +116,11 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	@Override
 	public Optional<Node> find(final String nodeId) {
-		Assertion.checkArgNotEmpty(nodeId);
+		Assertion.check().argNotEmpty(nodeId);
 		// ---
 		final String request = "select NODE_ID, JSON from V_NODE where NODE_ID = ?";
 		final List<Node> result = retrieveNodes(request, nodeId);
-		Assertion.checkState(result.size() <= 1, "Loaded two many rows when retrieving node with id : '{0}'", nodeId);
+		Assertion.check().state(result.size() <= 1, "Loaded two many rows when retrieving node with id : '{0}'", nodeId);
 
 		if (result.size() == 1) {
 			return Optional.of(result.get(0));

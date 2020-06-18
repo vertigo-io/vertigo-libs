@@ -73,9 +73,10 @@ public final class ImplicitJsonConverter implements JsonConverter, JsonSerialize
 	/** {@inheritDoc} */
 	@Override
 	public String toJson(final Object result, final Response response, final WebServiceDefinition webServiceDefinition) {
-		Assertion.checkArgument(HttpServletResponse.class.isInstance(result), "This JsonConverter doesn't support this output type {0}. Only {1} is supported", result.getClass().getSimpleName(), HttpServletResponse.class.getSimpleName());
-		//-----
-		Assertion.checkState(((HttpServletResponse) result).isCommitted(), "The httpResponse returned wasn't close. Ensure you have close your streams.");
+		Assertion.check()
+				.argument(HttpServletResponse.class.isInstance(result), "This JsonConverter doesn't support this output type {0}. Only {1} is supported", result.getClass().getSimpleName(), HttpServletResponse.class.getSimpleName())
+				//-----
+				.state(((HttpServletResponse) result).isCommitted(), "The httpResponse returned wasn't close. Ensure you have close your streams.");
 		//-----
 		return ""; // response already send but can't send null : javaspark understand it as : not consumed here
 	}

@@ -44,7 +44,7 @@ public final class FileStoreConfig {
 		for (final FileStorePlugin fileStorePlugin : fileStorePlugins) {
 			final String name = fileStorePlugin.getName();
 			final FileStorePlugin previous = fileStoresMap.put(name, fileStorePlugin);
-			Assertion.checkState(previous == null, "FileStorePlugin {0}, was already registered", name);
+			Assertion.check().state(previous == null, "FileStorePlugin {0}, was already registered", name);
 		}
 	}
 

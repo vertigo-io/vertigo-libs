@@ -48,7 +48,7 @@ public final class ConstraintBigDecimal implements Constraint<String, BigDecimal
 	 */
 	public ConstraintBigDecimal(final String args, final Optional<String> overrideMessageOpt) {
 		final String[] beforeAfter = args.split(SEPARATOR_ARGS);
-		Assertion.checkState(beforeAfter.length == 2, "L'argument doit être au format M,D. M le nombre de chiffre au total (precision) et D le nombre de chiffre à droite de la virgule (scale).");
+		Assertion.check().state(beforeAfter.length == 2, "L'argument doit être au format M,D. M le nombre de chiffre au total (precision) et D le nombre de chiffre à droite de la virgule (scale).");
 		try {
 			maxPrecision = Integer.valueOf(beforeAfter[0]);
 		} catch (final NumberFormatException e) {

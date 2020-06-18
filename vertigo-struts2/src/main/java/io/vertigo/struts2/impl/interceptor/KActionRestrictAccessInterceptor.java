@@ -49,7 +49,7 @@ public class KActionRestrictAccessInterceptor extends AbstractInterceptor {
 		//on test la présence de l'annotation @GET
 		if ("GET".equals(request.getMethod()) && !"execute".equals(methodName)) {
 			final Optional<Method> actionMethod = MethodUtil.findMethodByName(actionInvocation.getAction().getClass(), methodName);
-			Assertion.checkArgument(actionMethod.isPresent(), "Method {0} not found in {1}", methodName, actionInvocation.getAction().getClass());
+			Assertion.check().argument(actionMethod.isPresent(), "Method {0} not found in {1}", methodName, actionInvocation.getAction().getClass());
 			if (!actionMethod.get().isAnnotationPresent(GET.class)) {
 				throw new IllegalAccessException("Vous ne pouvez pas appeler " + actionInvocation.getAction().getClass().getSimpleName() + "." + methodName + " directement.");
 			}

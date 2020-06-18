@@ -51,7 +51,7 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 				.state(!processDefinitionStorePlugins.isEmpty(), "At least one ProcessDefinitionStorePlugin is required");
 		// ---
 		for (final ProcessDefinitionStorePlugin storePlugin : processDefinitionStorePlugins) {
-			Assertion.checkState(!processDefinitionStorePluginsByProcessType.containsKey(storePlugin.getHandledProcessType()), "Only one plugin can manage the processType {0}",
+			Assertion.check().state(!processDefinitionStorePluginsByProcessType.containsKey(storePlugin.getHandledProcessType()), "Only one plugin can manage the processType {0}",
 					storePlugin.getHandledProcessType());
 			processDefinitionStorePluginsByProcessType.put(storePlugin.getHandledProcessType(), storePlugin);
 		}
@@ -60,7 +60,7 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 	/** {@inheritDoc} */
 	@Override
 	public ProcessDefinition getProcessDefinition(final String processName) {
-		Assertion.checkArgNotEmpty(processName);
+		Assertion.check().argNotEmpty(processName);
 		// ---
 		return processDefinitionStorePluginsByProcessType.values()
 				.stream()

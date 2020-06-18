@@ -76,7 +76,7 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 	/** {@inheritDoc} */
 	@Override
 	public void addDefinitionResourceConfig(final DefinitionResourceConfig definitionResourceConfig) {
-		Assertion.checkState("security".equals(definitionResourceConfig.getType()), "Type {0} not supported",
+		Assertion.check().state("security".equals(definitionResourceConfig.getType()), "Type {0} not supported",
 				definitionResourceConfig.getType());
 		// -----
 		final URL authConfURL = resourceManager.resolve(definitionResourceConfig.getPath());

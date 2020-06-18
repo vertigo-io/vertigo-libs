@@ -46,7 +46,7 @@ public class IE8CompatablityFixServlet implements Filter {
 	@Override
 	public void init(final FilterConfig filterConfig) throws ServletException {
 		mode = filterConfig.getInitParameter("mode");
-		Assertion.checkState(ACCEPTED_MODES.contains(mode), "Mode de compatibilité IE non géré {0} (modes ok :{1})", mode, ACCEPTED_MODES);
+		Assertion.check().state(ACCEPTED_MODES.contains(mode), "Mode de compatibilité IE non géré {0} (modes ok :{1})", mode, ACCEPTED_MODES);
 	}
 
 	/** {@inheritDoc} */

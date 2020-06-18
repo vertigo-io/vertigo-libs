@@ -67,7 +67,7 @@ public final class DtListPatternFilter<D extends DtObject> implements Predicate<
 			}
 		}
 		//On passe par des objets intermédiaires pour permettre le 'final' sur les attributs de la class
-		Assertion.checkArgument(foundFilterPattern != null && foundParsedFilter != null, "La chaine de filtrage ne respecte pas la syntaxe.\nFiltre: {0}.", filterString);
+		Assertion.check().argument(foundFilterPattern != null && foundParsedFilter != null, "La chaine de filtrage ne respecte pas la syntaxe.\nFiltre: {0}.", filterString);
 		this.filterPattern = foundFilterPattern;
 		this.parsedFilter = foundParsedFilter;
 	}

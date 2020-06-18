@@ -313,7 +313,7 @@ public final class DtDefinitionBuilder implements Builder<DtDefinition> {
 	/** {@inheritDoc} */
 	@Override
 	public DtDefinition build() {
-		Assertion.checkState(dtDefinition == null, "build() already executed");
+		Assertion.check().state(dtDefinition == null, "build() already executed");
 		//-----
 		if (myStereotype == null) {
 			myStereotype = myIdField == null ? DtStereotype.ValueObject : DtStereotype.Entity;

@@ -79,8 +79,9 @@ public final class MigrationManagerImpl implements DataBaseMigrationManager, Act
 	/** {@inheritDoc} */
 	@Override
 	public void check(final String connectionName) {
-		Assertion.checkArgNotEmpty(connectionName);
-		Assertion.checkState(dataBaseMigrationPlugins.containsKey(connectionName), "No DataBaseMigrationPlugin for connection", connectionName);
+		Assertion.check()
+				.argNotEmpty(connectionName)
+				.state(dataBaseMigrationPlugins.containsKey(connectionName), "No DataBaseMigrationPlugin for connection", connectionName);
 		//---
 		dataBaseMigrationPlugins.get(connectionName).check();
 	}
@@ -88,8 +89,9 @@ public final class MigrationManagerImpl implements DataBaseMigrationManager, Act
 	/** {@inheritDoc} */
 	@Override
 	public void update(final String connectionName) {
-		Assertion.checkArgNotEmpty(connectionName);
-		Assertion.checkState(dataBaseMigrationPlugins.containsKey(connectionName), "No DataBaseMigrationPlugin for connection", connectionName);
+		Assertion.check()
+				.argNotEmpty(connectionName)
+				.state(dataBaseMigrationPlugins.containsKey(connectionName), "No DataBaseMigrationPlugin for connection", connectionName);
 		//---
 		dataBaseMigrationPlugins.get(connectionName).update();
 	}

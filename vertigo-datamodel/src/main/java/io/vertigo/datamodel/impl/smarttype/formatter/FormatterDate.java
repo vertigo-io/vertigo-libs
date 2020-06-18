@@ -81,13 +81,13 @@ public final class FormatterDate implements Formatter {
 	}
 
 	private static void assertArgs(final boolean test) {
-		Assertion.checkArgument(test, "Les arguments pour la construction de FormatterDate sont invalides :format affichage;{autres formats de saisie}");
+		Assertion.check().argument(test, "Les arguments pour la construction de FormatterDate sont invalides :format affichage;{autres formats de saisie}");
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public String valueToString(final Object objValue, final BasicType dataType) {
-		Assertion.checkArgument(dataType.isAboutDate(), "this formatter only applies on date formats");
+		Assertion.check().argument(dataType.isAboutDate(), "this formatter only applies on date formats");
 		//-----
 		if (objValue == null) {
 			return ""; //Affichage d'une date non renseignée;
@@ -105,7 +105,7 @@ public final class FormatterDate implements Formatter {
 	/** {@inheritDoc} */
 	@Override
 	public Object stringToValue(final String strValue, final BasicType dataType) throws FormatterException {
-		Assertion.checkArgument(dataType.isAboutDate(), "Formatter ne s'applique qu'aux dates");
+		Assertion.check().argument(dataType.isAboutDate(), "Formatter ne s'applique qu'aux dates");
 		//-----
 		if (StringUtil.isEmpty(strValue)) {
 			return null;

@@ -73,7 +73,7 @@ public final class UID<E extends Entity> implements Serializable {
 		//---
 		//Calcul de l'urn
 		urn = toURN(this);
-		Assertion.checkArgument(UID.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, UID.REGEX_URN);
+		Assertion.check().argument(UID.REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, UID.REGEX_URN);
 	}
 
 	/**
@@ -220,7 +220,7 @@ public final class UID<E extends Entity> implements Serializable {
 	 * @return Clé lue é partir de la chaine
 	 */
 	private static Serializable stringToId(final String strValue) {
-		Assertion.checkArgNotEmpty(strValue);
+		Assertion.check().argNotEmpty(strValue);
 		//---
 		if (strValue.startsWith("s-")) {
 			return strValue.substring(2);

@@ -122,7 +122,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			if (!slotNames.isEmpty()) {
 				final Map<String, IModel> slotContents = removeAndExtractSlots(contentModel, context);
 				for (final Map.Entry<String, IModel> entry : slotContents.entrySet()) {
-					Assertion.checkState(slotNames.contains(entry.getKey()), "Component {0} have no slot {1} (accepted slots : {3})", componentName, entry.getKey(), slotNames);
+					Assertion.check().state(slotNames.contains(entry.getKey()), "Component {0} have no slot {1} (accepted slots : {3})", componentName, entry.getKey(), slotNames);
 					//-----
 					structureHandler.setLocalVariable(entry.getKey(), entry.getValue());
 				}
@@ -155,7 +155,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			final ITemplateEvent templateEvent = contentModel.get(0); //get always first (because we remove it)
 			if (templateEvent instanceof IOpenElementTag) {
 				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
-					Assertion.checkState(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
+					Assertion.check().state(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
 					slotName = ((IProcessableElementTag) templateEvent).getAttributeValue("name");
 				} else if (tapDepth == 0) {
 					break; //slots must be set at first
@@ -166,7 +166,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 			} else if (templateEvent instanceof IStandaloneElementTag) {
 				if ("vu:slot".equals(((IElementTag) templateEvent).getElementCompleteName())) {
 					//we accept empty slot (to clear a component default slot)
-					Assertion.checkState(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
+					Assertion.check().state(tapDepth == 0, "Can't parse slot {0} it contains another slot", slotName);
 					slotName = ((IProcessableElementTag) templateEvent).getAttributeValue("name");
 				} else if (tapDepth == 0) {
 					break;
@@ -190,7 +190,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 				}
 			}
 		}
-		Assertion.checkState(tapDepth == 0, "Can't extract component slots, tags may be missclosed in slot {0}", slotName);
+		Assertion.check().state(tapDepth == 0, "Can't extract component slots, tags may be missclosed in slot {0}", slotName);
 		return slotContents;
 	}
 

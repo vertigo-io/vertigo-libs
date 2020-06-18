@@ -61,8 +61,9 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 * @return this builder
 	 */
 	public NotificationBuilder withSender(final String sender) {
-		Assertion.checkArgument(mySender == null, "sender already set");
-		Assertion.checkArgNotEmpty(sender);
+		Assertion.check()
+				.argument(mySender == null, "sender already set")
+				.argNotEmpty(sender);
 		//-----
 		mySender = sender;
 		return this;
@@ -73,7 +74,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 * @return this builder
 	 */
 	public NotificationBuilder withType(final String type) {
-		Assertion.checkArgument(myType == null, "type already set");
+		Assertion.check().argument(myType == null, "type already set");
 		//type is nullable
 		//-----
 		myType = type;
@@ -98,8 +99,9 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 * @return this builder
 	 */
 	public NotificationBuilder withTitle(final String title) {
-		Assertion.checkArgument(myTitle == null, "title already set");
-		Assertion.checkArgNotEmpty(title);
+		Assertion.check()
+				.argument(myTitle == null, "title already set")
+				.argNotEmpty(title);
 		//-----
 		myTitle = title;
 		return this;
@@ -123,7 +125,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 * @return this builder
 	 */
 	public NotificationBuilder withTTLInSeconds(final int ttlInSeconds) {
-		Assertion.checkArgument(ttlInSeconds > 0 || ttlInSeconds == -1, "ttl must be strictly positive or undefined.");
+		Assertion.check().argument(ttlInSeconds > 0 || ttlInSeconds == -1, "ttl must be strictly positive or undefined.");
 		//-----
 		myTtlInSeconds = ttlInSeconds;
 		return this;
@@ -134,8 +136,9 @@ public final class NotificationBuilder implements Builder<Notification> {
 	 * @return this builder
 	 */
 	public NotificationBuilder withTargetUrl(final String targetUrl) {
-		Assertion.checkArgument(myTargetUrl == null, "targetUrl already set");
-		Assertion.checkArgNotEmpty(targetUrl);
+		Assertion.check()
+				.argument(myTargetUrl == null, "targetUrl already set")
+				.argNotEmpty(targetUrl);
 		//-----
 		myTargetUrl = targetUrl;
 		return this;

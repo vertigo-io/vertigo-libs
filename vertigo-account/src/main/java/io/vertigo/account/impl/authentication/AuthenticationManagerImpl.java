@@ -100,7 +100,7 @@ public final class AuthenticationManagerImpl implements AuthenticationManager {
 				}
 			}
 		}
-		Assertion.checkState(tokenSupported, "No authenticationPlugin found to support this token ({0}), in plugins ({1})", token.getClass().getSimpleName(), authenticationPlugins);
+		Assertion.check().state(tokenSupported, "No authenticationPlugin found to support this token ({0}), in plugins ({1})", token.getClass().getSimpleName(), authenticationPlugins);
 		return Optional.empty();
 	}
 }

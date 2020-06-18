@@ -398,7 +398,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 		final List<KeyedFilter> filters = new ArrayList<>();
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
-			Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().state(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 			filters.add(new KeyedFilter(facetRange.getCode(), QueryBuilders.queryStringQuery(filterValue)));
 		}
 		return AggregationBuilders.filters(facetDefinition.getName(), filters.toArray(new KeyedFilter[filters.size()]));
@@ -409,7 +409,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 				.field(dtField.getName());
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
-			Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().state(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 			final Optional<Double> minValue = convertToDouble(parsedFilter[3]);
 			final Optional<Double> maxValue = convertToDouble(parsedFilter[4]);
@@ -430,7 +430,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 				.format(DATE_PATTERN);
 		for (final FacetValue facetRange : facetDefinition.getFacetRanges()) {
 			final String filterValue = facetRange.getListFilter().getFilterValue();
-			Assertion.checkState(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().state(filterValue.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 			final String[] parsedFilter = DtListPatternFilterUtil.parseFilter(filterValue, RANGE_PATTERN).get();
 			final String minValue = parsedFilter[3];
 			final String maxValue = parsedFilter[4];
@@ -446,7 +446,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 	}
 
 	private static AggregationBuilder geoRangeFacetToAggregationBuilder(final FacetDefinition facetDefinition, final DtField dtField, final Object myCriteria, final Map<Class, BasicTypeAdapter> typeAdapters) {
-		Assertion.checkArgument(!facetDefinition.getFacetRanges().isEmpty(), "Range facet can't be empty {0}", facetDefinition.getName());
+		Assertion.check().argument(!facetDefinition.getFacetRanges().isEmpty(), "Range facet can't be empty {0}", facetDefinition.getName());
 		//-----
 		String originExpression = null;
 		GeoDistanceAggregationBuilder rangeBuilder = null;//AggregationBuilders.geoDistance(name, origin)range(facetDefinition.getName())//
@@ -455,7 +455,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 			final String filterValue = facetRange.getListFilter().getFilterValue();
 			final DslGeoExpression dslGeoExpression = DslParserUtil.parseGeoExpression(filterValue);
 			final String geoFieldName = dslGeoExpression.getField().getFieldName();
-			Assertion.checkState(geoFieldName.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
+			Assertion.check().state(geoFieldName.contains(dtField.getName()), "RangeFilter query ({1}) should use defined fieldName {0}", dtField.getName(), filterValue);
 
 			final DslGeoDistanceQuery geoStartDistanceQuery;
 			final DslGeoDistanceQuery geoEndDistanceQuery;
@@ -467,7 +467,7 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 					originExpression = geoEndDistanceQuery.getGeoPoint().toString();
 					rangeBuilder = AggregationBuilders.geoDistance(facetDefinition.getName(), geoPoint).field(geoFieldName);
 				} else {
-					Assertion.checkState(geoEndDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoEndDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
+					Assertion.check().state(geoEndDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoEndDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
 				}
 			} else if (dslGeoExpression.getGeoQuery() instanceof DslGeoRangeQuery) {
 				final DslGeoRangeQuery geoRangeQuery = (DslGeoRangeQuery) dslGeoExpression.getGeoQuery();
@@ -478,8 +478,9 @@ public abstract class AsbtractESSearchRequestBuilder<R extends Object, S extends
 					originExpression = geoStartDistanceQuery.getGeoPoint().toString();
 					rangeBuilder = AggregationBuilders.geoDistance(facetDefinition.getName(), geoPoint).field(geoFieldName);
 				} else {
-					Assertion.checkState(geoStartDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoStartDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
-					Assertion.checkState(geoEndDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoEndDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
+					Assertion.check()
+							.state(geoStartDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoStartDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName())
+							.state(geoEndDistanceQuery.getGeoPoint().toString().equals(originExpression), "All facets must have the same origin : {0} != {1} in {2}", geoEndDistanceQuery.getGeoPoint().toString(), originExpression, facetDefinition.getName());
 				}
 			} else {
 				throw new IllegalArgumentException("Only GeoDistanceQuery or Range of GeoDistanceQuery are supported in range facet (in " + facetDefinition.getName() + ")");

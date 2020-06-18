@@ -154,7 +154,7 @@ public class RedisCachePlugin implements CachePlugin {
 	 * redisKey = "vertigo:cache:" + context + key
 	 */
 	private static String buildPatternFromContext(final String context) {
-		Assertion.checkArgNotEmpty(context);
+		Assertion.check().argNotEmpty(context);
 		//---
 		return VERTIGO_CACHE + ":" + context + ":*";
 	}

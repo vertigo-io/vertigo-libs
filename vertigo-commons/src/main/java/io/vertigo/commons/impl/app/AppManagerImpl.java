@@ -63,7 +63,7 @@ public final class AppManagerImpl implements AppManager, Activeable {
 		nodeRegistryPlugin = nodeRegistryPluginOpt.orElseGet(() -> new SingleAppNodeRegistryPlugin());
 		nodeInfosPlugins
 				.forEach(plugin -> {
-					Assertion.checkState(!nodeInfosPluginMap.containsKey(plugin.getProtocol()), "A plugin for the protocol {0} is already registered", plugin.getProtocol());
+					Assertion.check().state(!nodeInfosPluginMap.containsKey(plugin.getProtocol()), "A plugin for the protocol {0} is already registered", plugin.getProtocol());
 					//---
 					nodeInfosPluginMap.put(plugin.getProtocol(), plugin);
 				});
@@ -146,7 +146,7 @@ public final class AppManagerImpl implements AppManager, Activeable {
 	}
 
 	private AppNodeInfosPlugin getInfosPlugin(final Node app) {
-		Assertion.checkState(nodeInfosPluginMap.containsKey(app.getProtocol()), "No status plugin found for the protocol {0} when reach attempt on {1} ", app.getProtocol(), app.getEndPoint());
+		Assertion.check().state(nodeInfosPluginMap.containsKey(app.getProtocol()), "No status plugin found for the protocol {0} when reach attempt on {1} ", app.getProtocol(), app.getEndPoint());
 		//---
 		return nodeInfosPluginMap.get(app.getProtocol());
 	}

@@ -125,13 +125,13 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 	}
 
 	private static Tuple<String, List<SqlNamedParam>> parseQuery(final String query) {
-		Assertion.checkArgNotEmpty(query);
+		Assertion.check().argNotEmpty(query);
 		//-----
 		//we add a space before and after to avoid side effects
 		final String[] tokens = (" " + query + " ").split(String.valueOf(SEPARATOR));
 		//...#p1#..... => 3 tokens
 		//...#p1#.....#p2#... => 5 tokens
-		Assertion.checkState(tokens.length % 2 == 1, "a tag is missing on query {0}", query);
+		Assertion.check().state(tokens.length % 2 == 1, "a tag is missing on query {0}", query);
 
 		final List<SqlNamedParam> sqlNamedParams = new ArrayList<>();
 		final StringBuilder sql = new StringBuilder();

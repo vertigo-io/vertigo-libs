@@ -71,11 +71,11 @@ final class VFileUtil {
 
 	static VFile readQueryFile(final HttpServletRequest request, final String requestParamName) {
 		try {
-			Assertion.checkArgument(
-					request.getContentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", requestParamName);
-			Assertion.checkArgument(!request.getParts().isEmpty(),
-					"File {0} not found. Request is multipart but there is no Parts. : Check you have defined MultipartConfig (example for Tomcat set allowCasualMultipartParsing=\"true\" on context tag in your context definition, for Jetty use JettyMultipartConfig)",
-					requestParamName);
+			Assertion.check()
+					.argument(request.getContentType().contains("multipart/form-data"), "File {0} not found. Request contentType isn't \"multipart/form-data\"", requestParamName)
+					.argument(!request.getParts().isEmpty(),
+							"File {0} not found. Request is multipart but there is no Parts. : Check you have defined MultipartConfig (example for Tomcat set allowCasualMultipartParsing=\"true\" on context tag in your context definition, for Jetty use JettyMultipartConfig)",
+							requestParamName);
 			final Part file = request.getPart(requestParamName);
 			if (file == null) {
 				final String sentParts = request.getParts()
@@ -93,7 +93,7 @@ final class VFileUtil {
 	private static void send(final VFile vFile, final boolean isAttachment, final HttpServletResponse response)
 			throws IOException {
 		final Long length = vFile.getLength();
-		Assertion.checkArgument(length < Integer.MAX_VALUE, "Too big file to be send. It's "
+		Assertion.check().argument(length < Integer.MAX_VALUE, "Too big file to be send. It's "
 				+ length / 1024 + " Ko long, but maximum was " + Integer.MAX_VALUE / 1024
 				+ " Ko.");
 		response.setContentLength(length.intValue());

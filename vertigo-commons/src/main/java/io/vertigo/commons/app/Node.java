@@ -121,7 +121,7 @@ public final class Node {
 	 * @return the protocol
 	 */
 	public String getProtocol() {
-		Assertion.checkState(endPointOpt.isPresent(), "Cannot get a protocol if no Endpoint is defined");
+		Assertion.check().state(endPointOpt.isPresent(), "Cannot get a protocol if no Endpoint is defined");
 		// ---
 		final String endPoint = endPointOpt.get();
 		return endPoint.substring(0, endPoint.indexOf(':'));

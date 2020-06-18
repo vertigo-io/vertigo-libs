@@ -271,7 +271,7 @@ public class DAO<E extends Entity, P> {
 	 */
 	public final Optional<E> findOptional(final Criteria<E> criteria) {
 		final DtList<E> list = entityStoreManager.find(getDtDefinition(), criteria, DtListState.of(2));
-		Assertion.checkState(list.size() <= 1, "Too many results");
+		Assertion.check().state(list.size() <= 1, "Too many results");
 		return list.isEmpty() ? Optional.empty() : Optional.of(list.get(0));
 	}
 

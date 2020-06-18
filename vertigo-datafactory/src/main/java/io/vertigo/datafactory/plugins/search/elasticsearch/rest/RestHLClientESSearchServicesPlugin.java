@@ -205,7 +205,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 				}
 			}
 			final AcknowledgedResponse createIndexResponse = esClient.indices().create(createIndexRequest, RequestOptions.DEFAULT);
-			Assertion.checkArgument(createIndexResponse.isAcknowledged(), "Can't create index settings of {0}", myIndexName);
+			Assertion.check().argument(createIndexResponse.isAcknowledged(), "Can't create index settings of {0}", myIndexName);
 		} else if (configFileUrl != null) {
 			// If we use local config file, we check config against ES server
 			try (InputStream is = configFileUrl.openStream()) {
@@ -312,9 +312,10 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	}
 
 	private <S extends KeyConcept, I extends DtObject> ESStatement<S, I> createElasticStatement(final SearchIndexDefinition indexDefinition) {
-		Assertion.checkArgument(indexSettingsValid,
-				"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.");
-		Assertion.check().notNull(indexDefinition);
+		Assertion.check()
+				.argument(indexSettingsValid,
+						"Index settings have changed and are no more compatible, you must recreate your index : stop server, delete your index data folder, restart server and launch indexation job.")
+				.notNull(indexDefinition);
 		//-----
 		return new ESStatement<>(elasticDocumentCodec, obtainIndexName(indexDefinition), esClient, typeAdapters);
 	}
@@ -322,7 +323,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 	private static String obtainPkIndexDataType(final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
-		Assertion.checkState(smartTypeDefinition.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
+		Assertion.check().state(smartTypeDefinition.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
 		switch (smartTypeDefinition.getBasicType()) {
 			case Boolean:
 			case Double:
@@ -394,7 +395,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 
 			LOGGER.info("set index mapping of {} as {}", myIndexName, typeMapping);
 			final AcknowledgedResponse putMappingResponse = esClient.indices().putMapping(putMappingRequest, RequestOptions.DEFAULT);
-			Assertion.checkArgument(putMappingResponse.isAcknowledged(), "Can't put index mapping of {0}", myIndexName);
+			Assertion.check().argument(putMappingResponse.isAcknowledged(), "Can't put index mapping of {0}", myIndexName);
 		}
 	}
 
@@ -431,7 +432,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 		esClient.indices().forcemergeAsync(request, RequestOptions.DEFAULT, null);
 		/*try {
 			final ForceMergeResponse forceMergeResponse = esClient.indices().forcemerge(request, RequestOptions.DEFAULT);
-			Assertion.checkArgument(forceMergeResponse.getStatus() == RestStatus.OK, "Can't forceMerge on {0}", myIndexName);
+			Assertion.check().argument(forceMergeResponse.getStatus() == RestStatus.OK, "Can't forceMerge on {0}", myIndexName);
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error on index {0}", myIndexName);
 		}*/
@@ -445,7 +446,7 @@ public final class RestHLClientESSearchServicesPlugin implements SearchServicesP
 
 			final ClusterHealthResponse response = esClient.cluster().health(request, RequestOptions.DEFAULT);
 			//-----
-			Assertion.checkArgument(!response.isTimedOut(), "ElasticSearch cluster waiting yellow status Timedout");
+			Assertion.check().argument(!response.isTimedOut(), "ElasticSearch cluster waiting yellow status Timedout");
 		} catch (final IOException e) {
 			throw WrappedException.wrap(e, "Error on waitForYellowStatus");
 		}

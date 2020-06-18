@@ -51,7 +51,7 @@ public final class FormatterDefault implements Formatter {
 	 */
 	public FormatterDefault(final String args) {
 		// Les arguments doivent être vides.
-		Assertion.checkArgument(args == null, "Les arguments pour la construction de FormatterDefault sont invalides");
+		Assertion.check().argument(args == null, "Les arguments pour la construction de FormatterDefault sont invalides");
 		//-----
 		final ParamManager paramManager = Home.getApp().getComponentSpace().resolve(ParamManager.class);
 		booleanFormatter = obtainFormatterBoolean(paramManager);

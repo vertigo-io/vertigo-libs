@@ -109,7 +109,7 @@ public class WsExecutionControl implements WebServices {
 	 */
 	@POST("/executeNow")
 	public void executeNowIhm(@InnerBodyParam("processName") final String processName) {
-		Assertion.checkArgNotEmpty(processName);
+		Assertion.check().argNotEmpty(processName);
 		// ---
 		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
 		orchestraServices.getScheduler()

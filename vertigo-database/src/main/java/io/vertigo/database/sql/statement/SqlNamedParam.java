@@ -40,7 +40,7 @@ final class SqlNamedParam {
 	 * @param betweenCar String
 	 */
 	private SqlNamedParam(final String betweenCar) {
-		Assertion.checkArgNotEmpty(betweenCar);
+		Assertion.check().argNotEmpty(betweenCar);
 		//---
 		this.betweenCar = betweenCar;
 		final String[] tokens = betweenCar.split("\\.");
@@ -89,7 +89,7 @@ final class SqlNamedParam {
 	private static int parseDtcRowNumber(final String betweenPoints) {
 		try {
 			final Integer dtcRowNumber = Integer.valueOf(betweenPoints);
-			Assertion.checkState(dtcRowNumber != null && dtcRowNumber >= 0, "Paramètre incohérent : {0} doit être positif ou null.", betweenPoints);
+			Assertion.check().state(dtcRowNumber != null && dtcRowNumber >= 0, "Paramètre incohérent : {0} doit être positif ou null.", betweenPoints);
 			return dtcRowNumber;
 		} catch (final NumberFormatException nfe) {
 			throw WrappedException.wrap(nfe, "Param {0} must be an integer.", betweenPoints);

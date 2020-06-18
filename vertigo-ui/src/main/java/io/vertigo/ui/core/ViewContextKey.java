@@ -28,13 +28,12 @@ import io.vertigo.core.lang.Assertion;
  * @param <S> Object type
  */
 public interface ViewContextKey<S extends Serializable> {
-	
+
 	static <O extends Serializable> ViewContextKey<O> of(final String name) {
-		Assertion.checkArgNotEmpty(name);
+		Assertion.check().argNotEmpty(name);
 		//---
 		return () -> name;
 	}
-	
 
 	/**
 	 * @return Clé de ce context

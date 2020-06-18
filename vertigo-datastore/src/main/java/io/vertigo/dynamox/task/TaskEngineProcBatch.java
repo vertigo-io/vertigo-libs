@@ -80,7 +80,7 @@ public final class TaskEngineProcBatch extends AbstractTaskEngineSQL {
 				.filter(inAttribute -> inAttribute.getCardinality().hasMany())// multiple
 				.collect(Collectors.toList());
 
-		Assertion.checkState(potentialBatchAttributes.size() == 1, "For batch a single List param is required");
+		Assertion.check().state(potentialBatchAttributes.size() == 1, "For batch a single List param is required");
 		final TaskAttribute listAttribute = potentialBatchAttributes.get(0);
 
 		final List<TaskAttribute> otherAttributes = getTaskDefinition().getInAttributes()

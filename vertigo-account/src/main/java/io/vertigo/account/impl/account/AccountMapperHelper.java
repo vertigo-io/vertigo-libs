@@ -150,11 +150,11 @@ public final class AccountMapperHelper<S, D> {
 	}
 
 	public S getSourceIdField() {
-		Assertion.checkArgument(destDtDefinition.isPresent() || sourceDtDefinition.isPresent(), "Can't determine id field, if nor source nor dest are Entity");
+		Assertion.check().argument(destDtDefinition.isPresent() || sourceDtDefinition.isPresent(), "Can't determine id field, if nor source nor dest are Entity");
 		if (destDtDefinition.isPresent() && destDtDefinition.get().getIdField().isPresent()) {
 			return getSourceAttribute((D) destDtDefinition.get().getIdField().get());
 		} else if (sourceDtDefinition.isPresent()) {
-			Assertion.checkArgument(sourceDtDefinition.get().getIdField().isPresent(), "Can't determine id field, if nor source nor dest are Entity");
+			Assertion.check().argument(sourceDtDefinition.get().getIdField().isPresent(), "Can't determine id field, if nor source nor dest are Entity");
 			return (S) sourceDtDefinition.get().getIdField().get();
 		}
 		throw new IllegalArgumentException("Can't determine id field, if nor source nor dest are Entity");

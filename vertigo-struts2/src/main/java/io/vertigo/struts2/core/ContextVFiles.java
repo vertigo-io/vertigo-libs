@@ -67,7 +67,7 @@ public final class ContextVFiles {
 	 * @return Object du context
 	 */
 	public VFile[] get() {
-		Assertion.checkState(action.getModel().containsKey(contextKeyFile) //when file arrived by struts fileUpload (usefull, if context is reused)
+		Assertion.check().state(action.getModel().containsKey(contextKeyFile) //when file arrived by struts fileUpload (usefull, if context is reused)
 				|| !action.getModel().containsKey(contextKeyVFile), //when VFile already extracted
 				"File {0} already extracted. Extract it once and keep it, think about store it", contextKeyFile);
 		final UploadedFile[] filesRef = UploadedFile[].class.cast(action.getModel().get(contextKeyFile));

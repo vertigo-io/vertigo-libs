@@ -79,7 +79,7 @@ public final class CommentManagerImpl implements CommentManager {
 		//-----
 		final Comment originalComment = commentsPlugin.get(comment.getUuid());
 		final boolean authorized = accountURI.equals(comment.getAuthor()) && originalComment.getAuthor().equals(comment.getAuthor());
-		Assertion.checkState(authorized, "The comment editing is only available for the comment's author.");
+		Assertion.check().state(authorized, "The comment editing is only available for the comment's author.");
 
 		final Comment savedComment = Comment.builder()
 				.withUuid(originalComment.getUuid())

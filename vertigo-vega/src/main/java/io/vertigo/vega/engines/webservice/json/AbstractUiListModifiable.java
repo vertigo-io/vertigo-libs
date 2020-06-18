@@ -120,7 +120,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	private String findContextKey(final UiObject<D> uiObject) {
 		Assertion.check().notNull(uiObject);
 		final int index = indexOfUiObject(uiObject);
-		Assertion.checkState(index >= 0, "UiObjet {0} not found in UiList with key {1}", uiObject, inputKey);
+		Assertion.check().state(index >= 0, "UiObjet {0} not found in UiList with key {1}", uiObject, inputKey);
 		// ---
 		return inputKey + ".get(" + index + ")";
 	}
@@ -149,7 +149,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	public UiObject<D> remove(final int index) {
 		final UiObject<D> dto = get(index);
 		final boolean result = remove(dto);
-		Assertion.checkState(result, "Erreur de suppression i={0}", index);
+		Assertion.check().state(result, "Erreur de suppression i={0}", index);
 		return dto;
 	}
 
@@ -194,7 +194,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 	@Override
 	public UiObject<D> get(final int row) {
 		//id>=0 : par index dans la UiList (pour boucle, uniquement dans la même request)
-		Assertion.checkState(row >= 0, "Le getteur utilisé n'est pas le bon: utiliser getByRowId");
+		Assertion.check().state(row >= 0, "Le getteur utilisé n'est pas le bon: utiliser getByRowId");
 		final UiObject<D> uiObject = bufferUiObjects.get(row);
 		Assertion.check().notNull(uiObject);
 		return uiObject;
@@ -294,7 +294,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 			dtList.removeAll(dtListDelta.getDeleted());
 		}
 		//-----
-		Assertion.checkState(bufferUiObjects.size() == dtList.size(), "bufferList.size() <> dtList.size() : mauvaise synchronisation dtList / bufferList");
+		Assertion.check().stateAssertion.check().state(bufferUiObjects.size() == dtList.size(), "bufferList.size() <> dtList.size() : mauvaise synchronisation dtList / bufferList");
 
 		//3. On reconstruit buffer et indexes
 		rebuildBuffer();

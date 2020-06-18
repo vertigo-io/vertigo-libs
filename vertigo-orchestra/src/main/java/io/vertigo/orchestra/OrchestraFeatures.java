@@ -76,7 +76,7 @@ public final class OrchestraFeatures extends Features<OrchestraFeatures> {
 	}
 
 	private static Param findParamByName(final String paramName, final Param[] params) {
-		Assertion.checkArgNotEmpty(paramName);
+		Assertion.check().argNotEmpty(paramName);
 		//---
 		return Stream.of(params)
 				.filter(param -> paramName.equals(param.getName()))

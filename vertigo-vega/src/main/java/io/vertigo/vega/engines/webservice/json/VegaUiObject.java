@@ -206,7 +206,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 		if (!isChecked) {
 			checkFormat(uiMessageStack);
 		}
-		Assertion.checkState(!getDtObjectErrors().hasError(), "Unable to merge input on a object that as format errors : {0}", this);
+		Assertion.check().state(!getDtObjectErrors().hasError(), "Unable to merge input on a object that as format errors : {0}", this);
 		//we update inputBuffer with older datas
 		if (serverSideDto != null) { //If serverSideObject was kept, we merge input with server object
 			mergeInput();
@@ -238,7 +238,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	@Override
 	public boolean isModified(final String fieldName) {
-		Assertion.checkArgNotEmpty(fieldName);
+		Assertion.check().argNotEmpty(fieldName);
 		//-----
 		return inputBuffer.containsKey(fieldName);
 	}
@@ -361,7 +361,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @return Valeur formatée (typée)
 	 */
 	private Object doGetTypedValue(final String fieldName) {
-		Assertion.checkArgNotEmpty(fieldName);
+		Assertion.check().argNotEmpty(fieldName);
 		//
 		final DtField dtField = getDtField(fieldName);
 		if (isModified(fieldName)) {
@@ -384,7 +384,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @return Si le champs a une erreur de formatage
 	 */
 	protected boolean hasFormatError(final String fieldName) {
-		Assertion.checkArgNotEmpty(fieldName);
+		Assertion.check().argNotEmpty(fieldName);
 		//-----
 		return isModified(fieldName) && getDtObjectErrors().hasError(fieldName);
 	}

@@ -263,7 +263,7 @@ public abstract class AbstractStoreManagerTest {
 	}
 
 	protected void nativeInsertCar(final Car car) {
-		Assertion.checkArgument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
+		Assertion.check().argument(car.getId() == null, "L'id n'est pas null {0}", car.getId());
 		//-----
 		final DefinitionSpace definitionSpace = app.getDefinitionSpace();
 		final SmartTypeDefinition smartTypeCar = definitionSpace.resolve("STyDtCar", SmartTypeDefinition.class);

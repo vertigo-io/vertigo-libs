@@ -58,14 +58,12 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 		Assertion.check()
 				.notNull(uid)
 				.notNull(indexDefinition)
-				.notNull(indexDtObject);
-		//On vérifie la consistance des données.
-		Assertion.checkArgument(
-				indexDefinition.getKeyConceptDtDefinition().equals(uid.getDefinition()),
-				"Le type de l'URI de l'objet indexé  ({0}) ne correspond pas au KeyConcept de l'index ({1})", uid.toString(), indexDefinition.getKeyConceptDtDefinition().getName());
-		Assertion.checkArgument(
-				indexDefinition.getIndexDtDefinition().equals(DtObjectUtil.findDtDefinition(indexDtObject)),
-				"Le type l'objet indexé ({1}) ne correspond pas à celui de l'index ({1})", DtObjectUtil.findDtDefinition(indexDtObject).getName(), indexDefinition.getIndexDtDefinition().getName());
+				.notNull(indexDtObject)
+				//On vérifie la consistance des données.
+				.argument(indexDefinition.getKeyConceptDtDefinition().equals(uid.getDefinition()),
+						"Le type de l'URI de l'objet indexé  ({0}) ne correspond pas au KeyConcept de l'index ({1})", uid.toString(), indexDefinition.getKeyConceptDtDefinition().getName())
+				.argument(indexDefinition.getIndexDtDefinition().equals(DtObjectUtil.findDtDefinition(indexDtObject)),
+						"Le type l'objet indexé ({1}) ne correspond pas à celui de l'index ({1})", DtObjectUtil.findDtDefinition(indexDtObject).getName(), indexDefinition.getIndexDtDefinition().getName());
 		//-----
 		this.uid = uid;
 		this.indexDefinition = indexDefinition;
@@ -93,7 +91,7 @@ public final class SearchIndex<K extends KeyConcept, I extends DtObject> {
 	 * @return Objet contenant les champs à indexer
 	 */
 	public I getIndexDtObject() {
-		Assertion.checkArgument(hasIndex(), "Index n'est pas dans l'état indexable.");
+		Assertion.check().argument(hasIndex(), "Index n'est pas dans l'état indexable.");
 		//-----
 		return indexDtObject;
 	}

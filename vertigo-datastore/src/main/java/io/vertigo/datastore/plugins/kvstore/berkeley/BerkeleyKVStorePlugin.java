@@ -115,13 +115,13 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 			boolean inMemory = false;
 			for (final String collectionDetail : collection.split(";")) {
 				if (collectionDetail.startsWith("TTL=")) {
-					Assertion.checkState(timeToLiveSeconds == -1L, "Time to live already defined on {0}", collection);
+					Assertion.check().state(timeToLiveSeconds == -1L, "Time to live already defined on {0}", collection);
 					timeToLiveSeconds = Long.parseLong(collectionDetail.substring("TTL=".length()));
 				} else if (collectionDetail.startsWith("inMemory")) {
-					Assertion.checkState(!inMemory, "inMemory already defined on {0}", collection);
+					Assertion.check().state(!inMemory, "inMemory already defined on {0}", collection);
 					inMemory = true;
 				} else {
-					Assertion.checkState(collectionName == null, "collectionName already defined on {0}", collection);
+					Assertion.check().state(collectionName == null, "collectionName already defined on {0}", collection);
 					collectionName = collectionDetail;
 				}
 			}

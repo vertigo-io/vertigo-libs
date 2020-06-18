@@ -91,8 +91,9 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 	public <E extends Entity> E getUserByAuthToken(final String userAuthToken) {
 		final Criteria<Entity> criteriaByAuthToken = Criterions.isEqualTo(() -> userAuthField, userAuthToken);
 		final DtList<Entity> results = entityStoreManager.find(userIdentityDefinition, criteriaByAuthToken, DtListState.of(2));
-		Assertion.checkState(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken);
-		Assertion.checkState(!results.isEmpty(), "No user found for this authToken {0}", userAuthToken);
+		Assertion.check()
+				.state(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken)
+				.state(!results.isEmpty(), "No user found for this authToken {0}", userAuthToken);
 		return (E) results.get(0);
 	}
 

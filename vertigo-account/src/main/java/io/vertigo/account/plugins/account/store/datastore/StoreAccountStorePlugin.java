@@ -159,10 +159,11 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 				break;
 			}
 		}
-		Assertion.check().notNull(associationUserGroup, "Association between User ({0}) and Group ({1}) not found",
-				getUserDtDefinition().getClassSimpleName(), userGroupDtDefinition.getClassSimpleName());
-		Assertion.checkState(associationUserGroup instanceof AssociationSimpleDefinition || associationUserGroup instanceof AssociationNNDefinition,
-				"Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
+		Assertion.check()
+				.notNull(associationUserGroup, "Association between User ({0}) and Group ({1}) not found",
+						getUserDtDefinition().getClassSimpleName(), userGroupDtDefinition.getClassSimpleName())
+				.state(associationUserGroup instanceof AssociationSimpleDefinition || associationUserGroup instanceof AssociationNNDefinition,
+						"Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
 	}
 
 	/** {@inheritDoc} */
@@ -210,7 +211,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		if (associationUserGroup instanceof AssociationSimpleDefinition) {
 			userDtListURI = new DtListURIForSimpleAssociation((AssociationSimpleDefinition) associationUserGroup, groupUID, associationUserRoleName);
 		} else { //autres cas éliminés par assertion dans le postStart
-			Assertion.checkArgument(associationUserGroup instanceof AssociationNNDefinition,
+			Assertion.check().argument(associationUserGroup instanceof AssociationNNDefinition,
 
 					"Association ({0}) between User and Group must be an AssociationSimpleDefinition or an AssociationNNDefinition", associationUserGroup.getName());
 			userDtListURI = new DtListURIForNNAssociation((AssociationNNDefinition) associationUserGroup, groupUID, associationUserRoleName);
@@ -249,7 +250,7 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 		final Criteria<Entity> criteriaByAuthToken = Criterions.isEqualTo(() -> userAuthField, userAuthTokenValue);
 		return executeInTransaction(() -> {
 			final DtList<Entity> results = entityStoreManager.find(getUserDtDefinition(), criteriaByAuthToken, DtListState.of(2));
-			Assertion.checkState(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken);
+			Assertion.check().state(results.size() <= 1, "Too many matching for authToken {0}", userAuthToken);
 			if (!results.isEmpty()) {
 				return Optional.of(userToAccount(results.get(0)));
 			}

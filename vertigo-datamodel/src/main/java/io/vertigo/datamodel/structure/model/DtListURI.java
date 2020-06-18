@@ -85,7 +85,7 @@ public abstract class DtListURI implements Serializable {
 	public final synchronized String urn() {
 		if (urn == null) {
 			urn = buildUrn();
-			Assertion.checkArgument(REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, REGEX_URN);
+			Assertion.check().argument(REGEX_URN.matcher(urn).matches(), "urn {0} doit matcher le pattern {1}", urn, REGEX_URN);
 		}
 		return urn;
 	}

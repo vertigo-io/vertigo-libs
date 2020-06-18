@@ -38,7 +38,7 @@ public final class SingleAppNodeRegistryPlugin implements AppNodeRegistryPlugin 
 
 	@Override
 	public void register(final Node node) {
-		Assertion.checkState(localNode == null, "SingleNode has already been registered");
+		Assertion.check().state(localNode == null, "SingleNode has already been registered");
 		// ---
 		Assertion.check().notNull(node);
 		// ---

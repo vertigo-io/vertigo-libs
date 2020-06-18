@@ -93,7 +93,7 @@ public final class SelectedFacetValues implements Serializable {
 	 * @return Liste des valeurs de facette selectionnées
 	 */
 	public List<FacetValue> getFacetValues(final String facetDefinitionName) {
-		Assertion.checkArgNotEmpty(facetDefinitionName);
+		Assertion.check().argNotEmpty(facetDefinitionName);
 		//---
 		return selectedFacetValuesByFacetName.getOrDefault(facetDefinitionName, Collections.emptyList());
 	}

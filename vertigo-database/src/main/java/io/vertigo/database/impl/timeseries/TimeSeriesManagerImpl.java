@@ -62,7 +62,7 @@ public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 		timeSeriesPlugins.forEach(
 				plugin -> plugin.getDbNames()
 						.forEach(dbName -> {
-							Assertion.checkState(!timeSeriesPluginByDb.containsKey(dbName), "Db '{0}' already registered ", dbName);
+							Assertion.check().state(!timeSeriesPluginByDb.containsKey(dbName), "Db '{0}' already registered ", dbName);
 							//---
 							timeSeriesPluginByDb.put(dbName, plugin);
 

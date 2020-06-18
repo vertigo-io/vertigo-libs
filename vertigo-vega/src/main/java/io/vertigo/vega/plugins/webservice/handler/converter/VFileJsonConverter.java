@@ -39,7 +39,7 @@ public final class VFileJsonConverter implements JsonConverter, JsonSerializer {
 	/** {@inheritDoc} */
 	@Override
 	public void populateWebServiceCallContext(final Object input, final WebServiceParam webServiceParam, final WebServiceCallContext routeContext) {
-		Assertion.checkArgument(
+		Assertion.check().argument(
 				getSupportedInputs()[0].isInstance(input),
 				"This JsonConverter doesn't support this input type {0}. Only {1} is supported", input.getClass().getSimpleName(), Arrays.toString(getSupportedInputs()));
 		//-----

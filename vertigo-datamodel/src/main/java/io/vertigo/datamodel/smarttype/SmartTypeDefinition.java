@@ -140,7 +140,7 @@ public final class SmartTypeDefinition implements Definition {
 	}
 
 	public BasicType getBasicType() {
-		Assertion.checkState(basicTypeOpt.isPresent(), "Only smarttypes that are derived from BasicTypes have a basic type, use a dedicated adapter instead to convert the value into a BasicType");
+		Assertion.check().state(basicTypeOpt.isPresent(), "Only smarttypes that are derived from BasicTypes have a basic type, use a dedicated adapter instead to convert the value into a BasicType");
 		return basicTypeOpt.get();
 	}
 

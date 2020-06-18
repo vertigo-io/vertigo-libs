@@ -144,11 +144,11 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 
 	private Serializable writeServerSideObject(final Object returnValue) {
 		Assertion.check()
-		.notNull(returnValue, "Return null value can't be saved ServerSide")
-		.argument(DtObject.class.isInstance(returnValue)
-				|| DtList.class.isInstance(returnValue)
-				|| UiContext.class.isInstance(returnValue)
-				|| ExtendedObject.class.isInstance(returnValue), "Return type can't be saved ServerSide : {0}", returnValue.getClass().getSimpleName());
+				.notNull(returnValue, "Return null value can't be saved ServerSide")
+				.argument(DtObject.class.isInstance(returnValue)
+						|| DtList.class.isInstance(returnValue)
+						|| UiContext.class.isInstance(returnValue)
+						|| ExtendedObject.class.isInstance(returnValue), "Return type can't be saved ServerSide : {0}", returnValue.getClass().getSimpleName());
 
 		final Object savedObject; //Object sauvé coté serveur
 		final Map<String, Serializable> overridedReturnValue; //Object retourné au client (globalement l'objet sauvé + le tokenId)
@@ -172,7 +172,7 @@ public final class ServerSideStateWebServiceHandlerPlugin implements WebServiceH
 		} else if (returnValue instanceof ExtendedObject) {
 			overridedReturnValue = (ExtendedObject<Object>) returnValue;
 			savedObject = ((ExtendedObject<Object>) returnValue).getInnerObject();
-			Assertion.checkArgument(DtObject.class.isInstance(savedObject)
+			Assertion.check().argument(DtObject.class.isInstance(savedObject)
 					|| DtList.class.isInstance(savedObject)
 					|| UiContext.class.isInstance(savedObject), "Return type can't be saved ServerSide : {0}", savedObject.getClass().getSimpleName());
 		} else {

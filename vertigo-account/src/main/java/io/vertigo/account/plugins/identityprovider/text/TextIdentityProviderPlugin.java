@@ -194,7 +194,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 	@Override
 	public void start() {
 		final DtDefinition userDtDefinition = Home.getApp().getDefinitionSpace().resolve(userIdentityEntity, DtDefinition.class);
-		Assertion.checkState(userDtDefinition.contains(userAuthField), "User definition ({0}) should contains the userAuthField ({1})", userIdentityEntity, userAuthField);
+		Assertion.check().state(userDtDefinition.contains(userAuthField), "User definition ({0}) should contains the userAuthField ({1})", userIdentityEntity, userAuthField);
 
 		final URL realmURL = resourceManager.resolve(filePath);
 		int lineNumber = -1;

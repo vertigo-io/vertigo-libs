@@ -72,8 +72,9 @@ public final class StaticStorePlugin extends AbstractStaticEntityStorePlugin imp
 	@Override
 	public void start() {
 		staticDtDefinition = Home.getApp().getDefinitionSpace().resolve(dtDefinitionName, DtDefinition.class);
-		Assertion.checkArgument(staticDtDefinition.getIdField().isPresent(), "The Static MasterDataList {0} must have a IdField", staticDtDefinition.getClassSimpleName());
-		Assertion.checkArgument(staticDtDefinition.getDisplayField().isPresent(), "The Static MasterDataList {0} must have a DisplayField", staticDtDefinition.getClassSimpleName());
+		Assertion.check()
+				.argument(staticDtDefinition.getIdField().isPresent(), "The Static MasterDataList {0} must have a IdField", staticDtDefinition.getClassSimpleName())
+				.argument(staticDtDefinition.getDisplayField().isPresent(), "The Static MasterDataList {0} must have a DisplayField", staticDtDefinition.getClassSimpleName());
 		idField = staticDtDefinition.getIdField().get();
 		displayField = staticDtDefinition.getDisplayField().get();
 		dataSpace = staticDtDefinition.getDataSpace();
@@ -133,14 +134,14 @@ public final class StaticStorePlugin extends AbstractStaticEntityStorePlugin imp
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E readNullable(final DtDefinition dtDefinition, final UID<E> uri) {
-		Assertion.checkArgument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
+		Assertion.check().argument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
 		throw new UnsupportedOperationException();
 	}
 
 	/** {@inheritDoc} */
 	@Override
 	public <E extends Entity> E readNullableForUpdate(final DtDefinition dtDefinition, final UID<?> uri) {
-		Assertion.checkArgument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
+		Assertion.check().argument(dtDefinition.equals(staticDtDefinition), "This store should be use for {0} only, not {1}", staticDtDefinition.getClassSimpleName(), dtDefinition.getClassSimpleName());
 		throw new UnsupportedOperationException();
 	}
 

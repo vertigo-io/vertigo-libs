@@ -209,11 +209,12 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	/** {@inheritDoc} */
 	@Override
 	public Serializable remove(final Object key) {
-		Assertion.checkState(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX));
-		Assertion.checkState(key instanceof String, "La clé doit être de type String");
+		Assertion.check()
+				.state(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX))
+				.state(key instanceof String, "La clé doit être de type String");
 		//---
 		final String keyString = (String) key;
-		Assertion.checkArgNotEmpty(keyString);
+		Assertion.check().argNotEmpty(keyString);
 		//---
 		// on garde les index en cohérence après un remove
 		reverseUiObjectIndex.values().removeIf(val -> keyString.equals(val));
@@ -241,7 +242,7 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	 * passe le context en non-modifiable.
 	 */
 	public void makeUnmodifiable() {
-		Assertion.checkState(!dirty, "Can't fixed a dirty context");
+		Assertion.check().state(!dirty, "Can't fixed a dirty context");
 		//-----
 		unmodifiable = true;
 	}
@@ -307,19 +308,19 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	public void addKeyForClient(final String object, final String fieldName) {
-		Assertion.checkState(containsKey(object), "No {0} in context", object);
+		Assertion.check().state(containsKey(object), "No {0} in context", object);
 		//----
 		keysForClient.computeIfAbsent(object, k -> new HashSet<>()).add(fieldName);
 	}
 
 	public void addKeyForClient(final String object) {
-		Assertion.checkState(containsKey(object), "No {0} in context", object);
+		Assertion.check().state(containsKey(object), "No {0} in context", object);
 		//----
 		keysForClient.put(object, Collections.emptySet());// notmodifiable because used only for primitives
 	}
 
 	public void addProtectedValueTransformer(final String objectKey, final String objectFieldName) {
-		Assertion.checkState(containsKey(objectKey), "No {0} in context", objectKey);
+		Assertion.check().state(containsKey(objectKey), "No {0} in context", objectKey);
 		//----
 		valueTransformers.computeIfAbsent(objectKey,
 				k -> new HashMap<>()).put(objectFieldName,
@@ -327,8 +328,9 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	public String obtainFkList(final String objectKey, final String objectFieldName) {
-		Assertion.checkState(containsKey(objectKey), "No {0} in context", objectKey);
-		Assertion.checkState(objectFieldName.endsWith("_display"), "Can't accept {0}, only '_display' transformer is accepted", objectKey);
+		Assertion.check()
+				.state(containsKey(objectKey), "No {0} in context", objectKey)
+				.state(objectFieldName.endsWith("_display"), "Can't accept {0}, only '_display' transformer is accepted", objectKey);
 		//----
 		final String fieldName = objectFieldName.substring(0, objectFieldName.length() - "_display".length());
 		final DtDefinition fkDefinition = getUiObject(objectKey).getDtDefinition().getField(fieldName).getFkDtDefinition();
@@ -380,13 +382,13 @@ public final class ViewContextMap extends HashMap<String, Serializable> {
 	}
 
 	private Function<Serializable, String> createValueTransformer(final List<String> params) {
-		Assertion.checkState(params.size() > 0, "ValueTransformer should be typed in first param, provided params {0}", params);
+		Assertion.check().state(params.size() > 0, "ValueTransformer should be typed in first param, provided params {0}", params);
 		final String transformerType = params.get(0);
 
 		if (PROTECTED_VALUE_TRANSFORMER.equals(transformerType)) {
 			return ProtectedValueUtil::generateProtectedValue;
 		} else if (MAP_VALUE_TRANSFORMER.equals(transformerType)) {
-			Assertion.checkState(params.size() == 3 + 1, "ListValueTransformer requires 3 params, provided params {0}", params);
+			Assertion.check().state(params.size() == 3 + 1, "ListValueTransformer requires 3 params, provided params {0}", params);
 			// ---
 			final String listKey = params.get(1);
 			final String listKeyFieldName = params.get(2);

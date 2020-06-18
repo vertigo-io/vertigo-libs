@@ -97,7 +97,7 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 	 * Loads the value if needed.
 	 */
 	public final DtList<E> get() {
-		Assertion.checkState(status == State.LOADED, "Accessor is not loaded, you must load it before calling get method");
+		Assertion.check().state(status == State.LOADED, "Accessor is not loaded, you must load it before calling get method");
 		//--
 		return value;
 	}

@@ -328,7 +328,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 	private static String obtainPkIndexDataType(final SmartTypeDefinition smartTypeDefinition) {
 		// On peut préciser pour chaque smartType le type d'indexation
 		// Calcul automatique  par default.
-		Assertion.checkState(smartTypeDefinition.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
+		Assertion.check().state(smartTypeDefinition.getScope().isPrimitive(), "Type de donnée non pris en charge comme PK pour le keyconcept indexé [" + smartTypeDefinition + "].");
 		switch (smartTypeDefinition.getBasicType()) {
 			case Boolean:
 			case Double:

@@ -106,7 +106,7 @@ public final class DtListState {
 				.state(() -> maxRows > 0, "maxRows must be positive ({0})", maxRows)
 				.state(() -> maxRows <= ABSOLUTE_MAX_ROWS, "maxRows must be less than {0}", ABSOLUTE_MAX_ROWS);
 
-		Assertion.checkArgument(skipRows >= 0, "skipRows must be positive ({0})", skipRows);
+		Assertion.check().argument(skipRows >= 0, "skipRows must be positive ({0})", skipRows);
 		Assertion.when(sortFieldName != null)
 				.state(() -> sortDesc != null, "When sorting, sortFieldName and sortDesc are both mandatory.");
 		//-----

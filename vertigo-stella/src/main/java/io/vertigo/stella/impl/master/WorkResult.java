@@ -37,8 +37,9 @@ public final class WorkResult<R> {
 	 * @param error Work error (null if result)
 	 */
 	public WorkResult(final String workId, final R result, final Throwable error) {
-		Assertion.checkArgNotEmpty(workId);
-		Assertion.checkArgument(result == null ^ error == null, "result xor error is null");
+		Assertion.check()
+				.argNotEmpty(workId)
+				.argument(result == null ^ error == null, "result xor error is null");
 		//-----
 		this.workId = workId;
 		this.error = error;

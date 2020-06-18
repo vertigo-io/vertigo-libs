@@ -74,7 +74,7 @@ public final class FormatterString implements Formatter {
 	/** {@inheritDoc} */
 	@Override
 	public String stringToValue(final String strValue, final BasicType dataType) {
-		Assertion.checkArgument(dataType == BasicType.String, "Formatter ne s'applique qu'aux Strings");
+		Assertion.check().argument(dataType == BasicType.String, "Formatter ne s'applique qu'aux Strings");
 		//-----
 		return apply(strValue);
 	}
@@ -82,7 +82,7 @@ public final class FormatterString implements Formatter {
 	/** {@inheritDoc} */
 	@Override
 	public String valueToString(final Object objValue, final BasicType dataType) {
-		Assertion.checkArgument(dataType == BasicType.String, "Formatter ne s'applique qu'aux Strings");
+		Assertion.check().argument(dataType == BasicType.String, "Formatter ne s'applique qu'aux Strings");
 		//-----
 		final String result = apply((String) objValue);
 		if (result == null) {

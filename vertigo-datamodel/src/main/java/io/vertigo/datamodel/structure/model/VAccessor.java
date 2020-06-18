@@ -73,7 +73,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 	 * @return the entity
 	 */
 	public final E get() {
-		Assertion.checkState(status == State.LOADED, "Accessor is not loaded, you must load it before calling get method");
+		Assertion.check().state(status == State.LOADED, "Accessor is not loaded, you must load it before calling get method");
 		//---
 		return value;
 	}

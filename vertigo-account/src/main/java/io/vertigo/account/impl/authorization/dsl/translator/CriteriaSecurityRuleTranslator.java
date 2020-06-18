@@ -194,7 +194,7 @@ public final class CriteriaSecurityRuleTranslator<E extends Entity> extends Abst
 		final List<String> strDimensionfields = securityDimension.getFields().stream()
 				.map(DtField::getName)
 				.collect(Collectors.toList());
-		Assertion.checkArgument(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
+		Assertion.check().argument(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
 		Criteria<E> mainCriteria = null;
 
 		//cas particuliers du == et du !=

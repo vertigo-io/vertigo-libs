@@ -42,8 +42,9 @@ public final class UsernamePasswordAuthenticationToken implements Authentication
 	 * @param password the password string submitted for authentication
 	 */
 	public UsernamePasswordAuthenticationToken(final String username, final String password) {
-		Assertion.checkArgNotEmpty(username);
-		Assertion.checkArgNotEmpty(password);
+		Assertion.check()
+				.argNotEmpty(username)
+				.argNotEmpty(password);
 		//----
 		this.username = username;
 		this.password = password;

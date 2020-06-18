@@ -63,7 +63,7 @@ public final class ContextRef<O extends Serializable> {
 	 */
 	public void set(final O value) {
 		if (value != null) {
-			Assertion.checkArgument(valueClass.isInstance(value), "Cette valeur n'est pas du bon type ({0} au lieu de {1})", value.getClass(), valueClass);
+			Assertion.check().argument(valueClass.isInstance(value), "Cette valeur n'est pas du bon type ({0} au lieu de {1})", value.getClass(), valueClass);
 		}
 		action.getModel().put(contextKey, value);
 	}

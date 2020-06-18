@@ -50,7 +50,7 @@ public class SmartTypesLoader implements Loader {
 						throw WrappedException.wrap(e);
 					}
 				}).forEach(dynamicDefinition -> {
-					Assertion.checkState(!dynamicDefinitions.containsKey(dynamicDefinition.getName()), "SmartType with name {0} is declared twice", dynamicDefinition.getName());
+					Assertion.check().state(!dynamicDefinitions.containsKey(dynamicDefinition.getName()), "SmartType with name {0} is declared twice", dynamicDefinition.getName());
 					dynamicDefinitions.put(dynamicDefinition.getName(), dynamicDefinition);
 				});
 
@@ -78,9 +78,9 @@ public class SmartTypesLoader implements Loader {
 			}
 			if (DtObject.class.isAssignableFrom(targetJavaClass)) {
 				scope = Scope.DATA_OBJECT;
-				Assertion.checkState(field.getName().equals(DefinitionUtil.getPrefix(DtDefinition.class) + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}", field.getName(), targetJavaClass);
+				Assertion.check().state(field.getName().equals(DefinitionUtil.getPrefix(DtDefinition.class) + targetJavaClass.getSimpleName()), "The name of the SmartType {0} is not consistent with the class {1}", field.getName(), targetJavaClass);
 			} else {
-				Assertion.checkState(adapters.length > 0,
+				Assertion.check().state(adapters.length > 0,
 						"Your smarttype '{0}' is associated with a value object, you need to specify a mapper to a targeted DataType with the @Adapter annotation", smartTypeName);
 				scope = Scope.VALUE_OBJECT;
 			}

@@ -96,7 +96,7 @@ public final class UiUtil implements Serializable {
 	 * @return Si le champs est obligatoire
 	 */
 	public static boolean required(final String fieldPath) {
-		Assertion.checkArgument(fieldPath.indexOf('.') != 0, "FieldPath shouldn't starts with . ({0})", fieldPath);
+		Assertion.check().argument(fieldPath.indexOf('.') != 0, "FieldPath shouldn't starts with . ({0})", fieldPath);
 		//-----
 		if (fieldPath.indexOf('.') > 0) { //Le champs est porté par un Object
 			return getDtField(fieldPath).getCardinality().hasOne();
@@ -123,8 +123,8 @@ public final class UiUtil implements Serializable {
 	}
 
 	private static DtField getDtField(final String fieldPath) {
-		Assertion.checkArgument(fieldPath.indexOf('.') > 0, "Le champs n'est pas porté par un Object ({0})", fieldPath);
-		//Assertion.checkArgument(fieldPath.indexOf('.') == fieldPath.lastIndexOf('.'), "Seul un point est autorisé ({0})", fieldPath);
+		Assertion.check().argument(fieldPath.indexOf('.') > 0, "Le champs n'est pas porté par un Object ({0})", fieldPath);
+		//Assertion.check().argument(fieldPath.indexOf('.') == fieldPath.lastIndexOf('.'), "Seul un point est autorisé ({0})", fieldPath);
 		final String contextKey = fieldPath.substring(0, fieldPath.lastIndexOf('.'));
 		final String fieldName = fieldPath.substring(fieldPath.lastIndexOf('.') + 1);
 		final ActionContext actionContext = ActionContext.getContext();

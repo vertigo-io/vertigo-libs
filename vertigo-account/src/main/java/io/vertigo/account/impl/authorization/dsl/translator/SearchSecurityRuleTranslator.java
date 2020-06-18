@@ -173,7 +173,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 					appendSimpleExpression(query, fieldName, operator, value, false);
 					break;
 				case ENUM:
-					Assertion.checkArgument(value instanceof String, "Enum criteria must be a code String ({0})", value);
+					Assertion.check().argument(value instanceof String, "Enum criteria must be a code String ({0})", value);
 					//----
 					appendEnumExpression(query, securityDimension, operator, String.class.cast(value));
 					break;
@@ -212,7 +212,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 	}
 
 	private void appendTreeExpression(final StringBuilder query, final SecurityDimension securityDimension, final ValueOperator operator, final Serializable value) {
-		Assertion.checkArgument(value instanceof String[]
+		Assertion.check().argument(value instanceof String[]
 				|| value instanceof Integer[]
 				|| value instanceof Long[], "Security TREE axe ({0}) must be set in UserSession as Arrays (current:{1})", securityDimension.getName(), value.getClass().getName());
 		if (value instanceof String[]) {
@@ -229,7 +229,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 		final List<String> strDimensionfields = securityDimension.getFields().stream()
 				.map(DtField::getName)
 				.collect(Collectors.toList());
-		Assertion.checkArgument(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
+		Assertion.check().argument(strDimensionfields.size() == treeKeys.length, "User securityKey for tree axes must match declared fields: ({0})", strDimensionfields);
 		query.append('(');
 
 		//cas particuliers du == et du !=
