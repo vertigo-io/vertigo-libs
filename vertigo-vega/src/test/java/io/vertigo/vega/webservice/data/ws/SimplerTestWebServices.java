@@ -243,7 +243,7 @@ public final class SimplerTestWebServices implements WebServices {
 	public List<Contact> testInnerBodyLong(@InnerBodyParam("contactId1") final long contactIdFrom, @InnerBodyParam("contactId2") final long contactIdTo) {
 		//offset + range ?
 		//code 200
-		return Arrays.asList(
+		return List.of(
 				contactDao.get(contactIdFrom),
 				contactDao.get(contactIdTo));
 	}

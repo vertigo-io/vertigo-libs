@@ -19,6 +19,7 @@
 package io.vertigo.commons.peg;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -49,7 +50,7 @@ public class PegRulesTest {
 
 	@Test
 	public void sequence() throws PegNoMatchFoundException {
-		Assertions.assertEquals(Arrays.asList("hi", "ho", "ha"), sequence.parse("hihoha", 0).getValue());
+		Assertions.assertEquals(List.of("hi", "ho", "ha"), sequence.parse("hihoha", 0).getValue());
 	}
 
 	@Test
@@ -69,7 +70,7 @@ public class PegRulesTest {
 
 	@Test
 	public void oneOrMoreUntilTheEnd() throws PegNoMatchFoundException {
-		Assertions.assertEquals(Arrays.asList("hi", "hi", "hi"), oneOrMore.parse("hihihi", 0).getValue());
+		Assertions.assertEquals(List.of("hi", "hi", "hi"), oneOrMore.parse("hihihi", 0).getValue());
 	}
 
 	@Test
@@ -80,7 +81,7 @@ public class PegRulesTest {
 	@Test
 	public void zerOrMoreUntilTheEnd() throws PegNoMatchFoundException {
 		Assertions.assertEquals(0, zeroOrMore.parse("", 0).getIndex());
-		Assertions.assertEquals(Arrays.asList("hi", "hi", "hi"), zeroOrMore.parse("hihihi", 0).getValue());
+		Assertions.assertEquals(List.of("hi", "hi", "hi"), zeroOrMore.parse("hihihi", 0).getValue());
 	}
 
 	@Test

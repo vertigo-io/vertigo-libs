@@ -18,7 +18,6 @@
  */
 package io.vertigo.dashboard.impl.services.data;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -109,7 +108,7 @@ public final class DataProviderImpl implements DataProvider {
 	@Override
 	public List<HealthCheck> getHealthChecks() {
 
-		final List<String> measures = Arrays.asList("status:last", "message:last", "name:last", "module:last", "feature:last", "checker:last");
+		final List<String> measures = List.of("status:last", "message:last", "name:last", "module:last", "feature:last", "checker:last");
 		final DataFilter dataFilter = DataFilter.builder("healthcheck").build();
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
 
@@ -152,7 +151,7 @@ public final class DataProviderImpl implements DataProvider {
 
 	@Override
 	public List<Metric> getMetrics() {
-		final List<String> measures = Arrays.asList("value:last", "name:last", "feature:last");
+		final List<String> measures = List.of("value:last", "name:last", "feature:last");
 		final DataFilter dataFilter = DataFilter.builder("metric").build();
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 5w", "now()").build();// before 5 weeks we consider that we don't have data
 

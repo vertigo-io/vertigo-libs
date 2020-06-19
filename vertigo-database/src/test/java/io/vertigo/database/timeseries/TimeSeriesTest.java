@@ -19,8 +19,8 @@
 package io.vertigo.database.timeseries;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -82,7 +82,7 @@ public final class TimeSeriesTest {
 				.time(Instant.now())
 				.addField("temp", 12)
 				.build();
-		timeSeriesDataBaseManager.insertMeasures("vertigo-test", Arrays.asList(measure1, measure2));
+		timeSeriesDataBaseManager.insertMeasures("vertigo-test", List.of(measure1, measure2));
 	}
 
 	@Test

@@ -18,7 +18,7 @@
  */
 package io.vertigo.account.authorization;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -218,10 +218,10 @@ public final class VSecurityManagerTest {
 			Assertions.assertTrue(authorizationManager.isAuthorized(recordOtherUser, RecordOperations.read));
 			Assertions.assertFalse(authorizationManager.isAuthorized(recordOtherUserAndTooExpensive, RecordOperations.read));
 
-			Assertions.assertFalse(Arrays.asList("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(record)));
-			Assertions.assertFalse(Arrays.asList("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(recordTooExpensive)));
-			Assertions.assertFalse(Arrays.asList("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(recordOtherUser)));
-			Assertions.assertFalse(Arrays.asList("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(recordOtherUserAndTooExpensive)));
+			Assertions.assertFalse(List.of("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(record)));
+			Assertions.assertFalse(List.of("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(recordTooExpensive)));
+			Assertions.assertFalse(List.of("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(recordOtherUser)));
+			Assertions.assertFalse(List.of("read", "read2", "read3").retainAll(authorizationManager.getAuthorizedOperations(recordOtherUserAndTooExpensive)));
 
 		} finally {
 			securityManager.stopCurrentUserSession();

@@ -372,7 +372,7 @@ public abstract class AbstractSqlManagerTest {
 		//--prepare data
 		final List<List<SqlParameter>> batch = new ArrayList<>();
 		for (final Movie movie : movies) {
-			final List<SqlParameter> sqlParameters = Arrays.asList(
+			final List<SqlParameter> sqlParameters = List.of(
 					SqlParameter.of(Long.class, movie.getId()),
 					SqlParameter.of(String.class, movie.getTitle()),
 					SqlParameter.of(Double.class, movie.getFps()),

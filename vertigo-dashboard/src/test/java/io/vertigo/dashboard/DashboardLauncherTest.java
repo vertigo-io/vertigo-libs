@@ -20,6 +20,7 @@ package io.vertigo.dashboard;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.h2.Driver;
@@ -152,7 +153,7 @@ public class DashboardLauncherTest {
 	public void testSimpleSeries() {
 		final Map<String, Object> params = new HashMap<>();
 
-		params.put("measures", Arrays.asList("duration:mean"));
+		params.put("measures", List.of("duration:mean"));
 		params.put("dataFilter", DataFilter.builder("webservices").addFilter("location", "*").build());
 		params.put("timeFilter", TimeFilter.builder("now() - 1w", "now() + 1w").withTimeDim("1h").build());
 
@@ -186,7 +187,7 @@ public class DashboardLauncherTest {
 	public void testTabularData() {
 		final Map<String, Object> params = new HashMap<>();
 
-		params.put("measures", Arrays.asList("duration:mean"));
+		params.put("measures", List.of("duration:mean"));
 		params.put("dataFilter", DataFilter.builder("webservices").addFilter("location", "*").build());
 		params.put("timeFilter", TimeFilter.builder("now() - 1w", "now() + 1w").withTimeDim("1h").build());
 		params.put("groupBy", "name");

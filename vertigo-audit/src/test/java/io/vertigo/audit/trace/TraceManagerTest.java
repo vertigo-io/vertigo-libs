@@ -22,7 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -86,7 +85,7 @@ public class TraceManagerTest {
 
 		final Trace auditTrace2 = new TraceBuilder("CAT3", "USER3", 3L, "My message 3")
 				.withDateBusiness(Instant.now())
-				.withContext(Arrays.asList("Context 3"))
+				.withContext(List.of("Context 3"))
 				.build();
 
 		auditManager.addTrace(auditTrace2);

@@ -18,7 +18,7 @@
  */
 package io.vertigo.dashboard.ui.vega;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import io.vertigo.core.lang.VUserException;
@@ -43,8 +43,8 @@ public final class VegaDashboardControler extends AbstractDashboardModuleControl
 				.build();
 		final TimeFilter timeFilter = TimeFilter.builder("now() - 1w", "now()").withTimeDim("3w").build();
 		//---
-		final TimedDatas countAndMeanDuration = getDataProvider().getTimeSeries(Arrays.asList("duration:count", "duration:mean"), dataFilter, timeFilter);
-		final TimedDatas numOfTechnicalExceptions = getDataProvider().getTimeSeries(Arrays.asList("duration:count"), dataFilterExceptions, timeFilter);
+		final TimedDatas countAndMeanDuration = getDataProvider().getTimeSeries(List.of("duration:count", "duration:mean"), dataFilter, timeFilter);
+		final TimedDatas numOfTechnicalExceptions = getDataProvider().getTimeSeries(List.of("duration:count"), dataFilterExceptions, timeFilter);
 
 		double count = 0;
 		final double meanDuration = 0;
