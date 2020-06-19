@@ -294,7 +294,7 @@ public abstract class AbstractUiListModifiable<D extends DtObject> extends Abstr
 			dtList.removeAll(dtListDelta.getDeleted());
 		}
 		//-----
-		Assertion.check().stateAssertion.check().state(bufferUiObjects.size() == dtList.size(), "bufferList.size() <> dtList.size() : mauvaise synchronisation dtList / bufferList");
+		Assertion.check().state(bufferUiObjects.size() == dtList.size(), "bufferList.size() <> dtList.size() : mauvaise synchronisation dtList / bufferList");
 
 		//3. On reconstruit buffer et indexes
 		rebuildBuffer();
