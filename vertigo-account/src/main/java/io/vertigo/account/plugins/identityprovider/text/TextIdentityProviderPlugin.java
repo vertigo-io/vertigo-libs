@@ -18,13 +18,10 @@
  */
 package io.vertigo.account.plugins.identityprovider.text;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,6 +44,7 @@ import io.vertigo.core.node.Home;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.util.FileUtil;
 import io.vertigo.datamodel.smarttype.SmartTypeManager;
 import io.vertigo.datamodel.structure.metamodel.DtDefinition;
 import io.vertigo.datamodel.structure.metamodel.DtField;
@@ -199,7 +197,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		final URL realmURL = resourceManager.resolve(filePath);
 		int lineNumber = -1;
 		try {
-			final String confTest = parseFile(realmURL);
+			final String confTest = FileUtil.parse(realmURL);
 			try (final Scanner scanner = new Scanner(confTest)) {
 				while (scanner.hasNextLine()) {
 					lineNumber++;
@@ -244,20 +242,6 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		final DtField dtField = userDtDefinition.getField(fieldName);
 		final Serializable typedValue = (Serializable) smartTypeManager.stringToValue(dtField.getSmartTypeDefinition(), valueStr);
 		dtField.getDataAccessor().setValue(user, typedValue);
-	}
-
-	private static String parseFile(final URL url) throws IOException {
-		try (final BufferedReader reader = new BufferedReader(
-				new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
-			final StringBuilder buff = new StringBuilder();
-			String line = reader.readLine();
-			while (line != null) {
-				buff.append(line);
-				line = reader.readLine();
-				buff.append("\r\n");
-			}
-			return buff.toString();
-		}
 	}
 
 	/** {@inheritDoc} */

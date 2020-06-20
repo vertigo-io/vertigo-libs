@@ -18,13 +18,10 @@
  */
 package io.vertigo.account.plugins.account.store.text;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -51,6 +48,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.util.FileUtil;
 import io.vertigo.datamodel.structure.model.UID;
 import io.vertigo.datastore.filestore.model.VFile;
 import io.vertigo.datastore.impl.filestore.model.FSFile;
@@ -207,7 +205,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	private void readData(final Consumer<String> parser, final String filePath) {
 		final URL fileURL = resourceManager.resolve(filePath);
 		try {
-			final String confTest = parseFile(fileURL);
+			final String confTest = FileUtil.parse(fileURL);
 			try (final Scanner scanner = new Scanner(confTest)) {
 				while (scanner.hasNextLine()) {
 					final String line = scanner.nextLine();
@@ -262,19 +260,4 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 		accountsPerGroup.put(groupId, groupAccounts);
 
 	}
-
-	private static String parseFile(final URL url) throws IOException {
-		try (final BufferedReader reader = new BufferedReader(
-				new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
-			final StringBuilder buff = new StringBuilder();
-			String line = reader.readLine();
-			while (line != null) {
-				buff.append(line);
-				line = reader.readLine();
-				buff.append("\r\n");
-			}
-			return buff.toString();
-		}
-	}
-
 }

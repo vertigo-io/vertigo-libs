@@ -18,11 +18,7 @@
  */
 package io.vertigo.account.plugins.authentication.text;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -41,6 +37,7 @@ import io.vertigo.core.lang.WrappedException;
 import io.vertigo.core.node.component.Activeable;
 import io.vertigo.core.param.ParamValue;
 import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.util.FileUtil;
 
 /**
  * A simple implementation of the Realm interface that
@@ -101,7 +98,7 @@ public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeabl
 	public void start() {
 		final URL realmURL = resourceManager.resolve(filePath);
 		try {
-			final String confTest = parseFile(realmURL);
+			final String confTest = FileUtil.parse(realmURL);
 			try (final Scanner scanner = new Scanner(confTest)) {
 				while (scanner.hasNextLine()) {
 					final String line = scanner.nextLine();
@@ -128,20 +125,6 @@ public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeabl
 			authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
 		}
 		users.put(username, new AuthenticationAccountInfo(accountKey, authenticationToken));
-	}
-
-	private static String parseFile(final URL url) throws IOException {
-		try (final BufferedReader reader = new BufferedReader(
-				new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
-			final StringBuilder buff = new StringBuilder();
-			String line = reader.readLine();
-			while (line != null) {
-				buff.append(line);
-				line = reader.readLine();
-				buff.append("\r\n");
-			}
-			return buff.toString();
-		}
 	}
 
 	/** {@inheritDoc} */

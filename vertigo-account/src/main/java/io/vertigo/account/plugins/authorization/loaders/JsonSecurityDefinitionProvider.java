@@ -21,11 +21,7 @@
  */
 package io.vertigo.account.plugins.authorization.loaders;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +39,7 @@ import io.vertigo.core.node.definition.DefinitionProvider;
 import io.vertigo.core.node.definition.DefinitionSpace;
 import io.vertigo.core.node.definition.DefinitionSupplier;
 import io.vertigo.core.resource.ResourceManager;
+import io.vertigo.core.util.FileUtil;
 
 /**
  * Loader du fichier de configuration de la sécurité avancée.
@@ -82,7 +79,7 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 		final URL authConfURL = resourceManager.resolve(definitionResourceConfig.getPath());
 		final Gson gson = createGson();
 		try {
-			final String confJson = parseFile(authConfURL);
+			final String confJson = FileUtil.parse(authConfURL);
 			final AdvancedSecurityConfiguration config = gson.fromJson(confJson, AdvancedSecurityConfiguration.class);
 			registerDefinitions(config);
 		} catch (final Exception e) {
@@ -97,20 +94,6 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 				.registerTypeAdapter(SecuredEntity.class, new SecuredEntityDeserializer())
 				.registerTypeAdapter(Authorization.class, new AuthorizationDeserializer())
 				.create();
-	}
-
-	private static String parseFile(final URL url) throws IOException {
-		try (final BufferedReader reader = new BufferedReader(
-				new InputStreamReader(url.openStream(), StandardCharsets.UTF_8))) {
-			final StringBuilder buff = new StringBuilder();
-			String line = reader.readLine();
-			while (line != null) {
-				buff.append(line);
-				line = reader.readLine();
-				buff.append("\r\n");
-			}
-			return buff.toString();
-		}
 	}
 
 	private void registerDefinitions(final AdvancedSecurityConfiguration config) {
