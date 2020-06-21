@@ -85,17 +85,13 @@ public class DataBaseInitializer implements ComponentInitializer {
 					crebaseSql.setLength(0);
 				}
 			}
-		} catch (final IOException e) {
+		} catch (final IOException | SQLException e) {
 			throw WrappedException.wrap(e, "Can't exec script {0}", scriptPath);
 		}
 	}
 
-	private static void execCallableStatement(final SqlConnection connection, final SqlDataBaseManager sqlDataBaseManager, final String sql) {
-		try {
-			sqlDataBaseManager.executeUpdate(SqlStatement.builder(sql).build(), Collections.emptyMap(), connection);
-		} catch (final SQLException e) {
-			throw WrappedException.wrap(e, "Can't exec command {0}", sql);
-		}
+	private static void execCallableStatement(final SqlConnection connection, final SqlDataBaseManager sqlDataBaseManager, final String sql) throws SQLException {
+		sqlDataBaseManager.executeUpdate(SqlStatement.builder(sql).build(), Collections.emptyMap(), connection);
 	}
 
 	private static void createInitialMovies(final MovieDAO movieDao, final VTransactionManager transactionManager) {
