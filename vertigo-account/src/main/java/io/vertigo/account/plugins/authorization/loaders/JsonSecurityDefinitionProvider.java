@@ -79,7 +79,7 @@ public final class JsonSecurityDefinitionProvider implements DefinitionProvider 
 		final URL authConfURL = resourceManager.resolve(definitionResourceConfig.getPath());
 		final Gson gson = createGson();
 		try {
-			final String confJson = FileUtil.parse(authConfURL);
+			final String confJson = FileUtil.read(authConfURL);
 			final AdvancedSecurityConfiguration config = gson.fromJson(confJson, AdvancedSecurityConfiguration.class);
 			registerDefinitions(config);
 		} catch (final Exception e) {

@@ -197,7 +197,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		final URL realmURL = resourceManager.resolve(filePath);
 		int lineNumber = -1;
 		try {
-			final String confTest = FileUtil.parse(realmURL);
+			final String confTest = FileUtil.read(realmURL);
 			try (final Scanner scanner = new Scanner(confTest)) {
 				while (scanner.hasNextLine()) {
 					lineNumber++;

@@ -98,7 +98,7 @@ public class TextAuthenticationPlugin implements AuthenticationPlugin, Activeabl
 	public void start() {
 		final URL realmURL = resourceManager.resolve(filePath);
 		try {
-			final String confTest = FileUtil.parse(realmURL);
+			final String confTest = FileUtil.read(realmURL);
 			try (final Scanner scanner = new Scanner(confTest)) {
 				while (scanner.hasNextLine()) {
 					final String line = scanner.nextLine();

@@ -205,7 +205,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 	private void readData(final Consumer<String> parser, final String filePath) {
 		final URL fileURL = resourceManager.resolve(filePath);
 		try {
-			final String confTest = FileUtil.parse(fileURL);
+			final String confTest = FileUtil.read(fileURL);
 			try (final Scanner scanner = new Scanner(confTest)) {
 				while (scanner.hasNextLine()) {
 					final String line = scanner.nextLine();
