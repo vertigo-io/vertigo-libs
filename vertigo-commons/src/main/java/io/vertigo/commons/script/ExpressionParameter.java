@@ -34,13 +34,17 @@ public final class ExpressionParameter {
 	private final Class<?> type;
 	private final Object value;
 
+	public static ExpressionParameter of(final String name, final Class<?> type, final Object value) {
+		return new ExpressionParameter(name, type, value);
+	}
+
 	/**
 	 * Constructeur definit un paramètre pour le ScriptEvaluator.
 	 * @param name Nom du paramètre
 	 * @param type Type du paramètre
 	 * @param value Valeur du paramètre
 	 */
-	public ExpressionParameter(final String name, final Class<?> type, final Object value) {
+	private ExpressionParameter(final String name, final Class<?> type, final Object value) {
 		Assertion.check()
 				.argNotEmpty(name)
 				.notNull(type);

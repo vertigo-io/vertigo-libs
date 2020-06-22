@@ -18,7 +18,6 @@
  */
 package io.vertigo.quarto.impl.publisher.merger.processor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.vertigo.commons.codec.Encoder;
@@ -55,13 +54,13 @@ public final class MergerScriptEvaluatorProcessor implements MergerProcessor {
 	/** {@inheritDoc} */
 	@Override
 	public String execute(final String script, final PublisherData publisherData) {
-		final List<ExpressionParameter> scriptEvaluatorParameters = new ArrayList<>();
 
 		final Class<PublisherNode> dataClass = PublisherNode.class;
-		final ExpressionParameter data = new ExpressionParameter(DATA, dataClass, publisherData.getRootNode());
-		final ExpressionParameter encoder = new ExpressionParameter(TagEncodedField.ENCODER, valueEncoder.getClass(), valueEncoder);
-		scriptEvaluatorParameters.add(data);
-		scriptEvaluatorParameters.add(encoder);
+		final ExpressionParameter data = ExpressionParameter.of(DATA, dataClass, publisherData.getRootNode());
+		final ExpressionParameter encoder = ExpressionParameter.of(TagEncodedField.ENCODER, valueEncoder.getClass(), valueEncoder);
+		final List<ExpressionParameter> scriptEvaluatorParameters = List.of(
+				data,
+				encoder);
 
 		return scriptManager.evaluateScript(script, SeparatorType.XML, scriptEvaluatorParameters);
 	}

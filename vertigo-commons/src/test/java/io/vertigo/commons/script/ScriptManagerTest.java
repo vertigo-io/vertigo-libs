@@ -50,9 +50,9 @@ public final class ScriptManagerTest {
 
 	private static List<ExpressionParameter> createParameters() {
 		return List.of(
-				new ExpressionParameter("nom", String.class, "Duraton"),
-				new ExpressionParameter("prenom", String.class, "jean paul"),
-				new ExpressionParameter("age", Integer.class, 54));
+				ExpressionParameter.of("nom", String.class, "Duraton"),
+				ExpressionParameter.of("prenom", String.class, "jean paul"),
+				ExpressionParameter.of("age", Integer.class, 54));
 	}
 
 	private AutoCloseableApp app;
