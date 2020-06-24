@@ -76,16 +76,14 @@ public final class AccountMapperHelper<S, D> {
 	}
 
 	public AccountMapperHelper<S, D> withReservedDestField(final String... fieldNames) {
-		Assertion.check()
-				.notNull(fieldNames);
+		Assertion.check().notNull(fieldNames);
 		//-----
 		reservedDestField.addAll(Arrays.asList(fieldNames));
 		return this;
 	}
 
 	public AccountMapperHelper<S, D> withMandatoryDestField(final D... fields) {
-		Assertion.check()
-				.notNull(fields);
+		Assertion.check().notNull(fields);
 		//-----
 		mandatoryDestField.addAll(Arrays.asList(fields));
 		return this;

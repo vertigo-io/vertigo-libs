@@ -104,7 +104,7 @@ public class SmartTypesLoader implements Loader {
 
 			constraintConfigs.stream()
 					.forEach(constraintConfig -> {
-						final Optional<String> msgOpt = StringUtil.isEmpty(constraintConfig.getMsg()) ? Optional.empty() : Optional.of(constraintConfig.getMsg());
+						final Optional<String> msgOpt = StringUtil.isBlank(constraintConfig.getMsg()) ? Optional.empty() : Optional.of(constraintConfig.getMsg());
 						final Constructor<? extends io.vertigo.datamodel.structure.metamodel.Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(), new Class[] { String.class, Optional.class });
 						final io.vertigo.datamodel.structure.metamodel.Constraint newConstraint = ClassUtil.newInstance(constructor, new Object[] { constraintConfig.getArg(), msgOpt });
 						propertiesBuilder.addValue(newConstraint.getProperty(), newConstraint.getPropertyValue());

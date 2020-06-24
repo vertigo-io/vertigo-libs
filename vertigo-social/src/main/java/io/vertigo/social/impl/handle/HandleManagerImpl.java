@@ -113,7 +113,7 @@ public final class HandleManagerImpl implements HandleManager, Activeable {
 	public List<Handle> searchHandles(final String handlePrefix) {
 		Assertion.check().notNull(handlePrefix);
 		//---
-		if (!StringUtil.isEmpty(handlePrefix) && isStartingByDtDefinition(handlePrefix).isPresent()) {
+		if (!StringUtil.isBlank(handlePrefix) && isStartingByDtDefinition(handlePrefix).isPresent()) {
 			// search with the plugin
 			return handlePlugin.search(handlePrefix);
 		}

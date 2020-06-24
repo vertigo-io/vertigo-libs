@@ -76,7 +76,7 @@ public class SmartTypeManagerImpl implements SmartTypeManager, Activeable {
 		return smartTypeDefinition.getConstraintConfigs()
 				.stream()
 				.map(constraintConfig -> {
-					final Optional<String> msgOpt = StringUtil.isEmpty(constraintConfig.getMsg()) ? Optional.empty() : Optional.of(constraintConfig.getMsg());
+					final Optional<String> msgOpt = StringUtil.isBlank(constraintConfig.getMsg()) ? Optional.empty() : Optional.of(constraintConfig.getMsg());
 					final Constructor<? extends Constraint> constructor = ClassUtil.findConstructor(constraintConfig.getConstraintClass(), new Class[] { String.class, Optional.class });
 					return ClassUtil.newInstance(constructor, new Object[] { constraintConfig.getArg(), msgOpt });
 				})

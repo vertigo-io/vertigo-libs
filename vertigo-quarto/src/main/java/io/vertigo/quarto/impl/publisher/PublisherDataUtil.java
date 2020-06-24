@@ -157,7 +157,7 @@ public final class PublisherDataUtil {
 		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		final Object value = dtField.getDataAccessor().getValue(dto);
 		final String formattedValue = smartTypeManager.valueToString(dtField.getSmartTypeDefinition(), value);
-		return formattedValue + (!StringUtil.isEmpty(unit) ? " " + unit : "");
+		return formattedValue + (!StringUtil.isBlank(unit) ? " " + unit : "");
 	}
 
 	private static List<String> getDtFieldList(final DtDefinition dtDefinition) {

@@ -253,7 +253,7 @@ public final class ESFacetedQueryResultBuilder<I extends DtObject> implements Bu
 		final String valueAsString = value.getKeyAsString();
 		final String label;
 		final String query;
-		if (!StringUtil.isEmpty(valueAsString)) {
+		if (!StringUtil.isBlank(valueAsString)) {
 			label = valueAsString;
 		} else {
 			label = EMPTY_TERM;

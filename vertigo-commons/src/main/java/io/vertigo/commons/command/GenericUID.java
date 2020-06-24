@@ -161,7 +161,7 @@ public final class GenericUID<O extends Object> implements Serializable {
 		Assertion.check().notNull(id);
 		//---
 		if (id instanceof String) {
-			return StringUtil.isEmpty((String) id) ? null : "s-" + ((String) id).trim();
+			return StringUtil.isBlank((String) id) ? null : "s-" + ((String) id).trim();
 		} else if (id instanceof Integer) {
 			return "i-" + id;
 		} else if (id instanceof Long) {

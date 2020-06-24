@@ -93,7 +93,7 @@ public final class FormatterString implements Formatter {
 
 	private String apply(final String strValue) {
 		final String result;
-		final String sValue = StringUtil.isEmpty(strValue) ? null : strValue.trim();
+		final String sValue = StringUtil.isBlank(strValue) ? null : strValue.trim();
 
 		if (sValue == null) {
 			result = null;

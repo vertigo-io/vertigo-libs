@@ -163,7 +163,7 @@ public final class FacetFactory {
 			if (facetValue == null) {
 				final String valueAsString = smartTypeManager.valueToString(dtField.getSmartTypeDefinition(), value);
 				final String label;
-				if (StringUtil.isEmpty(valueAsString)) {
+				if (StringUtil.isBlank(valueAsString)) {
 					label = "_empty_";
 				} else {
 					label = valueAsString;

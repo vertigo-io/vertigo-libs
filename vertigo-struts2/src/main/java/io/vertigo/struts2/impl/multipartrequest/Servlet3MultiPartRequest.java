@@ -107,7 +107,7 @@ public final class Servlet3MultiPartRequest extends JakartaMultiPartRequest {
 
 			this.part = part;
 
-			if (isFormField() || StringUtil.isEmpty(getName())) {
+			if (isFormField() || StringUtil.isBlank(getName())) {
 				// si on est sur un champ (et donc pas sur un fichier uploadé) ou si on est sur une entrée de fichier vide
 				// => on a pas besoin d'un File, on reste donc juste avec l'inputStream du Part sans créer le fichier temporaire
 				storeLocation = null;

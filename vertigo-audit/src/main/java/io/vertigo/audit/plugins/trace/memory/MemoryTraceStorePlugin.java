@@ -95,12 +95,12 @@ public final class MemoryTraceStorePlugin implements TraceStorePlugin {
 	}
 
 	private static boolean matchUser(final TraceCriteria auditTraceCriteria, final Trace auditTrace) {
-		return !StringUtil.isEmpty(auditTraceCriteria.getUsername())
+		return !StringUtil.isBlank(auditTraceCriteria.getUsername())
 				&& auditTraceCriteria.getUsername().equals(auditTrace.getUsername());
 	}
 
 	private static boolean matchCategory(final TraceCriteria auditTraceCriteria, final Trace auditTrace) {
-		return !StringUtil.isEmpty(auditTraceCriteria.getCategory())
+		return !StringUtil.isBlank(auditTraceCriteria.getCategory())
 				&& auditTraceCriteria.getCategory().equals(auditTrace.getCategory());
 	}
 }

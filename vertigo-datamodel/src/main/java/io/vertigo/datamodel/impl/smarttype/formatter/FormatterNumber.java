@@ -114,7 +114,7 @@ public class FormatterNumber implements Formatter {
 		checkType(dataType);
 		//-----
 		//Pour les nombres on "trim" à droite et à gauche
-		String sValue = StringUtil.isEmpty(strValue) ? null : strValue.trim();
+		String sValue = StringUtil.isBlank(strValue) ? null : strValue.trim();
 
 		if (sValue == null) {
 			return null;

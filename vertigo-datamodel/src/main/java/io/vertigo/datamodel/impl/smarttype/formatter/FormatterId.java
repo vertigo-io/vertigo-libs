@@ -43,7 +43,7 @@ public final class FormatterId implements Formatter {
 	public Long stringToValue(final String strValue, final BasicType dataType) throws FormatterException {
 		Assertion.check().argument(dataType == BasicType.Long, "Formatter ne s'applique qu'aux Long");
 		//---
-		if (StringUtil.isEmpty(strValue)) {
+		if (StringUtil.isBlank(strValue)) {
 			return null;
 		}
 		try {

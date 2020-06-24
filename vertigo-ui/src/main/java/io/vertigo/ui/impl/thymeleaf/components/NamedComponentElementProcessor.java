@@ -237,7 +237,7 @@ public class NamedComponentElementProcessor extends AbstractElementModelProcesso
 		for (int i = size - 1; i > 0; i--) { //We loop decreasly for remove by index
 			if (cleanerModel.get(i) instanceof IText) {
 				final IText innerText = (IText) cleanerModel.get(i);
-				if (StringUtil.isEmpty(innerText.getText())) {
+				if (StringUtil.isBlank(innerText.getText())) {
 					cleanerModel.remove(i);
 				}
 			}

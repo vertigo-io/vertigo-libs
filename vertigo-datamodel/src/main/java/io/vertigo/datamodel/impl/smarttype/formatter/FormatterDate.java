@@ -107,7 +107,7 @@ public final class FormatterDate implements Formatter {
 	public Object stringToValue(final String strValue, final BasicType dataType) throws FormatterException {
 		Assertion.check().argument(dataType.isAboutDate(), "Formatter ne s'applique qu'aux dates");
 		//-----
-		if (StringUtil.isEmpty(strValue)) {
+		if (StringUtil.isBlank(strValue)) {
 			return null;
 		}
 		final String sValue = strValue.trim();

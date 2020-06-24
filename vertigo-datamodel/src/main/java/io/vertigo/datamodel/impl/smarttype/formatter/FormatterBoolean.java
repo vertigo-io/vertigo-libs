@@ -86,7 +86,7 @@ public final class FormatterBoolean implements Formatter {
 	public Boolean stringToValue(final String strValue, final BasicType dataType) throws FormatterException {
 		Assertion.check().argument(dataType == BasicType.Boolean, "Formatter ne s'applique qu'aux booléens");
 		//-----
-		final String sValue = StringUtil.isEmpty(strValue) ? null : strValue.trim();
+		final String sValue = StringUtil.isBlank(strValue) ? null : strValue.trim();
 
 		return stringToBoolean(sValue);
 	}

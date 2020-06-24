@@ -153,14 +153,14 @@ public class DbProcessDefinitionStorePlugin implements ProcessDefinitionStorePlu
 		// ---
 		final ProcessDefinitionBuilder processDefinitionBuilder = ProcessDefinition.builder(process.getName(), process.getLabel());
 		processDefinitionBuilder.withRescuePeriod(process.getRescuePeriod());
-		if (!StringUtil.isEmpty(process.getCronExpression())) {
+		if (!StringUtil.isBlank(process.getCronExpression())) {
 			processDefinitionBuilder.withCronExpression(process.getCronExpression());
 		}
 		processDefinitionBuilder.addInitialParams(mapCodec.decode(process.getInitialParams()));
 		if (process.getNeedUpdate() != null && process.getNeedUpdate()) {
 			processDefinitionBuilder.withNeedUpdate();
 		}
-		if (!StringUtil.isEmpty(process.getMetadatas())) {
+		if (!StringUtil.isBlank(process.getMetadatas())) {
 			// voir si on fait mieux
 			processDefinitionBuilder.withMetadatas(new GsonBuilder().create().fromJson(process.getMetadatas(),
 					new TypeToken<Map<String, String>>() {

@@ -124,7 +124,7 @@ public final class SearchSecurityRuleTranslator extends AbstractSecurityRuleTran
 	}
 
 	private static void appendSimpleExpression(final StringBuilder query, final String fieldName, final ValueOperator operator, final Serializable userValue, final boolean strict) {
-		if (userValue != null && !StringUtil.isEmpty(String.valueOf(userValue))) {
+		if (userValue != null && !StringUtil.isBlank(String.valueOf(userValue))) {
 			if (operator == ValueOperator.NEQ) {
 				query.append('-');
 			}

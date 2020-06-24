@@ -201,7 +201,7 @@ public final class FileInfoURI implements Serializable {
 			return null;
 		}
 		if (key instanceof String) {
-			return StringUtil.isEmpty((String) key) ? null : "s-" + ((String) key).trim();
+			return StringUtil.isBlank((String) key) ? null : "s-" + ((String) key).trim();
 		} else if (key instanceof Integer) {
 			return "i-" + key;
 		} else if (key instanceof Long) {
@@ -216,7 +216,7 @@ public final class FileInfoURI implements Serializable {
 	 * @return Clé lue é partir de la chaine
 	 */
 	private static Serializable stringToKey(final String strValue) {
-		if (StringUtil.isEmpty(strValue)) {
+		if (StringUtil.isBlank(strValue)) {
 			return null;
 		}
 		if (strValue.startsWith("s-")) {

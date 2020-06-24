@@ -46,7 +46,7 @@ public final class DtListStateMethodArgumentResolver implements HandlerMethodArg
 		//---
 		final Integer top = parametersMap.containsKey("top") ? Integer.parseInt(webRequest.getParameter("top")) : null;
 		final int skip = parametersMap.containsKey("skip") ? Integer.parseInt(webRequest.getParameter("skip")) : 0;
-		final String sortFieldName = parametersMap.containsKey("sortFieldName") ? !StringUtil.isEmpty(webRequest.getParameter("sortFieldName")) ? webRequest.getParameter("sortFieldName") : null : null;
+		final String sortFieldName = parametersMap.containsKey("sortFieldName") ? !StringUtil.isBlank(webRequest.getParameter("sortFieldName")) ? webRequest.getParameter("sortFieldName") : null : null;
 		final Boolean sortDesc = parametersMap.containsKey("sortDesc") ? Boolean.valueOf(webRequest.getParameter("sortDesc")) : null;
 
 		return DtListState.of(top, skip, sortFieldName, sortDesc);
