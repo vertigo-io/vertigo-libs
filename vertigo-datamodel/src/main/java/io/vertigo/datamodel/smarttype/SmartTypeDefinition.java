@@ -95,7 +95,7 @@ public final class SmartTypeDefinition implements Definition {
 			final List<ConstraintConfig> constraintConfigs,
 			final Properties properties) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(scope)
 				.notNull(valueObjectClassName)
 				.notNull(adapterConfigs)

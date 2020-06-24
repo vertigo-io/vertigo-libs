@@ -40,8 +40,8 @@ public final class FacetCustomDefinitionSupplier implements DefinitionSupplier {
 
 	public FacetCustomDefinitionSupplier withParams(final String name, final String value) {
 		Assertion.check()
-				.argNotEmpty(name)
-				.argNotEmpty(value);
+				.isNotBlank(name)
+				.isNotBlank(value);
 		//----
 		myParams.put(name, value);
 		return this;

@@ -42,7 +42,7 @@ public final class SetCharsetEncodingFilter implements Filter {
 	@Override
 	public void init(final FilterConfig filterConfig) {
 		charset = filterConfig.getInitParameter("charset");
-		Assertion.check().argNotEmpty(charset);
+		Assertion.check().isNotBlank(charset);
 	}
 
 	/** {@inheritDoc} */

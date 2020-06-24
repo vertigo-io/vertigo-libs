@@ -54,12 +54,12 @@ public final class Notification {
 			final int ttlInSeconds, final Instant creationDate, final String targetUrl, final Optional<String> userContent) {
 		Assertion.check()
 				.notNull(uuid)
-				.argNotEmpty(sender)
-				.argNotEmpty(type)
-				.argNotEmpty(title)
-				.argNotEmpty(content)
+				.isNotBlank(sender)
+				.isNotBlank(type)
+				.isNotBlank(title)
+				.isNotBlank(content)
 				.argument(ttlInSeconds == -1 || ttlInSeconds > 0, "ttl must be positive or undefined (-1).")
-				.argNotEmpty(targetUrl)
+				.isNotBlank(targetUrl)
 				.notNull(creationDate)
 				.notNull(userContent);
 		Assertion.when(userContent.isPresent())

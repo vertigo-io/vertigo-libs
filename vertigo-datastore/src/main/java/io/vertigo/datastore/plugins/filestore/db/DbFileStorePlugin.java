@@ -78,7 +78,7 @@ public final class DbFileStorePlugin extends AbstractDbFileStorePlugin implement
 			final FileManager fileManager) {
 		super(name, fileInfoClassName);
 		Assertion.check()
-				.argNotEmpty(storeDtDefinitionName)
+				.isNotBlank(storeDtDefinitionName)
 				.notNull(fileManager);
 		//-----
 		this.storeDtDefinitionName = storeDtDefinitionName;

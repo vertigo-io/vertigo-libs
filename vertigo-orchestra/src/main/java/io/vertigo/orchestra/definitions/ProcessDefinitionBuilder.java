@@ -54,7 +54,7 @@ public final class ProcessDefinitionBuilder implements Builder<ProcessDefinition
 	 * @param processLabel le libellé du processus
 	 */
 	ProcessDefinitionBuilder(final String processName, final String processLabel) {
-		Assertion.check().argNotEmpty(processName);
+		Assertion.check().isNotBlank(processName);
 		//-----
 		name = processName;
 		label = processLabel;

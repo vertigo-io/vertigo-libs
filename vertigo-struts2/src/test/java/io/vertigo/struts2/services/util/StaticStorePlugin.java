@@ -62,7 +62,7 @@ public final class StaticStorePlugin extends AbstractStaticEntityStorePlugin imp
 		super();
 		Assertion.check()
 				.notNull(dtDefinitionName)
-				.argNotEmpty(values)
+				.isNotBlank(values)
 				.argument(values.contains("="), "StaticStorePlugin takes a list of key value like : key1=Label1;key2=Label2;...");
 		//----
 		this.dtDefinitionName = dtDefinitionName;

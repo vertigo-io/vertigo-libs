@@ -56,7 +56,7 @@ public final class TokenManagerImpl implements TokenManager {
 			final VSecurityManager securityManager,
 			final KVStoreManager kvStoreManager) {
 		Assertion.check()
-				.argNotEmpty(collection)
+				.isNotBlank(collection)
 				.notNull(securityManager)
 				.notNull(kvStoreManager);
 		//-----
@@ -83,7 +83,7 @@ public final class TokenManagerImpl implements TokenManager {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Serializable> get(final String objectUUID) {
-		Assertion.check().argNotEmpty(objectUUID, "Security key is mandatory");
+		Assertion.check().isNotBlank(objectUUID, "Security key is mandatory");
 		//-----
 		final String tokenKey = makeTokenKey(objectUUID);
 		return kvStoreManager.find(collection, tokenKey, Serializable.class);
@@ -92,7 +92,7 @@ public final class TokenManagerImpl implements TokenManager {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Serializable> getAndRemove(final String objectUUID) {
-		Assertion.check().argNotEmpty(objectUUID, "Security key is mandatory");
+		Assertion.check().isNotBlank(objectUUID, "Security key is mandatory");
 		//-----
 		final String tokenKey = makeTokenKey(objectUUID);
 		final Optional<Serializable> result = kvStoreManager.find(collection, tokenKey, Serializable.class);

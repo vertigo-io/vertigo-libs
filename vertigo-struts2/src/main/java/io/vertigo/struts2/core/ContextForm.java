@@ -56,7 +56,7 @@ public final class ContextForm<O extends DtObject> {
 	 */
 	public ContextForm(final String contextKey, final DtObjectValidator<O> validator, final AbstractActionSupport action) {
 		Assertion.check()
-				.argNotEmpty(contextKey)
+				.isNotBlank(contextKey)
 				.notNull(action)
 				.notNull(validator);
 		//-----

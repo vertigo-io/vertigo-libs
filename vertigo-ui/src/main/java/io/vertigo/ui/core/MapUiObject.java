@@ -77,7 +77,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	public Serializable get(final Object key) {
 		final String keyFieldName = String.class.cast(key);
 		Assertion.check()
-				.argNotEmpty(keyFieldName)
+				.isNotBlank(keyFieldName)
 				.argument(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//-----
 		final DtField dtField = getDtField(keyFieldName);
@@ -96,7 +96,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	@Override
 	public String put(final String fieldName, final Serializable value) {
 		Assertion.check()
-				.argNotEmpty(fieldName)
+				.isNotBlank(fieldName)
 				.notNull(value, "La valeur formatée ne doit pas être null mais vide ({0})", fieldName)
 				.state(value instanceof String || value instanceof String[], "Les données saisies doivent être de type String ou String[] ({0} : {1})", fieldName, value.getClass());
 		//-----
@@ -270,7 +270,7 @@ public final class MapUiObject<D extends DtObject> extends VegaUiObject<D> imple
 	private Serializable getEncodedValue(final String key) {
 		final String keyFieldName = String.class.cast(key);
 		Assertion.check()
-				.argNotEmpty(keyFieldName)
+				.isNotBlank(keyFieldName)
 				.argument(Character.isLowerCase(keyFieldName.charAt(0)) && !keyFieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//---
 		final DtField dtField = getDtField(keyFieldName);

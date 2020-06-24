@@ -14,7 +14,7 @@ public class AdapterConfig {
 			final String type,
 			final Class<? extends BasicTypeAdapter> adapterClass, final BasicType targetBasicType) {
 		Assertion.check()
-				.argNotEmpty(type)
+				.isNotBlank(type)
 				.notNull(adapterClass)
 				.notNull(targetBasicType);
 		//---

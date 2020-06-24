@@ -115,9 +115,9 @@ public final class FsFileStorePlugin implements FileStorePlugin, Activeable {
 			final FileManager fileManager) {
 		Assertion.check()
 				.notNull(name)
-				.argNotEmpty(storeDtDefinitionName)
-				.argNotEmpty(path)
-				.argNotEmpty(fileInfoClassName)
+				.isNotBlank(storeDtDefinitionName)
+				.isNotBlank(path)
+				.isNotBlank(fileInfoClassName)
 				.notNull(transactionManager)
 				.notNull(fileManager)
 				.argument(path.endsWith("/"), "store path must ends with / ({0})", path);

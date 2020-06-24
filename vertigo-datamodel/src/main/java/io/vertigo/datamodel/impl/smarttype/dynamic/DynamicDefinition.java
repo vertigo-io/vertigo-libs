@@ -19,7 +19,7 @@ public final class DynamicDefinition {
 			final List<String> definitionLinkNames,
 			final DefinitionSupplier definitionSupplier) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(definitionLinkNames)
 				.notNull(definitionSupplier);
 		//---

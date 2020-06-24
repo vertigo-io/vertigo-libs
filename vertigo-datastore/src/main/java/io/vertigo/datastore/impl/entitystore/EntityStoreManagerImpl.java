@@ -261,7 +261,7 @@ public final class EntityStoreManagerImpl implements EntityStoreManager, Activea
 	public <D extends DtObject> DtList<D> sort(final DtList<D> list, final String fieldName, final boolean desc) {
 		Assertion.check()
 				.notNull(list)
-				.argNotEmpty(fieldName);
+				.isNotBlank(fieldName);
 		//-----
 		final Comparator<D> comparator = new DtObjectComparator<>(this, list.getDefinition().getField(fieldName), desc);
 		return list.stream()

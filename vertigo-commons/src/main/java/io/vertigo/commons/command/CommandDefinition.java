@@ -50,8 +50,8 @@ public final class CommandDefinition implements Definition {
 			final List<CommandParam> commandParams,
 			final Function<Object[], CommandResponse> action) {
 		Assertion.check()
-				.argNotEmpty(command)
-				.argNotEmpty(description)
+				.isNotBlank(command)
+				.isNotBlank(description)
 				.notNull(questions)
 				.state(COMMAND_PATTERN.matcher(command).matches(), "handle '{0}' must respect the pattern '{1}'", command, COMMAND_PATTERN)
 				.notNull(action);

@@ -45,14 +45,14 @@ public class MemoryProcessDefinitionStorePlugin implements ProcessDefinitionStor
 
 	@Override
 	public boolean processDefinitionExists(final String processName) {
-		Assertion.check().argNotEmpty(processName);
+		Assertion.check().isNotBlank(processName);
 		// ---
 		return processDefinitions.containsKey(processName);
 	}
 
 	@Override
 	public ProcessDefinition getProcessDefinition(final String processName) {
-		Assertion.check().argNotEmpty(processName);
+		Assertion.check().isNotBlank(processName);
 		// ---
 		final ProcessDefinition processDefinition = processDefinitions.get(processName);
 		Assertion.check().notNull(processDefinition, "ProcessDefinition '{0}' not found in ({1})", processName, processDefinitions.keySet());

@@ -92,7 +92,7 @@ final class ESStatement<K extends KeyConcept, I extends DtObject> {
 	 */
 	ESStatement(final ESDocumentCodec esDocumentCodec, final String indexName, final RestHighLevelClient esClient, final Map<Class, BasicTypeAdapter> typeAdapters) {
 		Assertion.check()
-				.argNotEmpty(indexName)
+				.isNotBlank(indexName)
 				.notNull(esDocumentCodec)
 				.notNull(esClient)
 				.notNull(typeAdapters);

@@ -30,7 +30,7 @@ import io.vertigo.core.lang.Assertion;
 public interface ViewContextKey<S extends Serializable> {
 
 	static <O extends Serializable> ViewContextKey<O> of(final String name) {
-		Assertion.check().argNotEmpty(name);
+		Assertion.check().isNotBlank(name);
 		//---
 		return () -> name;
 	}

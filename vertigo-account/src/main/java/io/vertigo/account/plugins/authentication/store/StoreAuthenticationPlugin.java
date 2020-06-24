@@ -69,8 +69,8 @@ public class StoreAuthenticationPlugin implements AuthenticationPlugin, Activeab
 			final EntityStoreManager entityStoreManager) {
 		Assertion.check()
 				.notNull(entityStoreManager)
-				.argNotEmpty(userLoginField)
-				.argNotEmpty(userPasswordField);
+				.isNotBlank(userLoginField)
+				.isNotBlank(userPasswordField);
 		// -----
 		this.entityStoreManager = entityStoreManager;
 		this.userCredentialEntity = userCredentialEntity;

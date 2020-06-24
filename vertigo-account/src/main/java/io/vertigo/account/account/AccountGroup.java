@@ -42,8 +42,8 @@ public final class AccountGroup implements Entity {
 	 */
 	public AccountGroup(final String id, final String displayName) {
 		Assertion.check()
-				.argNotEmpty(id)
-				.argNotEmpty(displayName);
+				.isNotBlank(id)
+				.isNotBlank(displayName);
 		//-----
 		this.displayName = displayName;
 		this.id = id;

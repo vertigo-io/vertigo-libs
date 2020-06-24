@@ -169,7 +169,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	private NodeList findNodes(final Document xml, final String xPathString) {
 		Assertion.check()
 				.notNull(xml)
-				.argNotEmpty(xPathString);
+				.isNotBlank(xPathString);
 		//-----
 		final XPath xpath = xPathFactory.newXPath();
 
@@ -190,7 +190,7 @@ public final class GoogleGeoCoderPlugin implements GeoCoderPlugin {
 	private Node findNode(final Document xml, final String xPathString) {
 		Assertion.check()
 				.notNull(xml)
-				.argNotEmpty(xPathString);
+				.isNotBlank(xPathString);
 		//-----
 		final XPath xpath = xPathFactory.newXPath();
 		try {

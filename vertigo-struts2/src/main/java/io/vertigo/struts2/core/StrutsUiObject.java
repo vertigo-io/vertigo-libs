@@ -59,7 +59,7 @@ public final class StrutsUiObject<D extends DtObject> extends VegaUiObject<D> im
 	public Serializable get(final Object key) {
 		final String keyFieldName = String.class.cast(key);
 		Assertion.check()
-				.argNotEmpty(keyFieldName)
+				.isNotBlank(keyFieldName)
 				.argument(StringUtil.isLowerCamelCase(keyFieldName), "Le nom du champs doit-être en camelCase ({0}).", keyFieldName);
 		//-----
 		final DtField dtField = getDtField(keyFieldName);
@@ -78,7 +78,7 @@ public final class StrutsUiObject<D extends DtObject> extends VegaUiObject<D> im
 	@Override
 	public String put(final String fieldName, final Serializable value) {
 		Assertion.check()
-				.argNotEmpty(fieldName)
+				.isNotBlank(fieldName)
 				.notNull(value, "La valeur formatée ne doit pas être null mais vide ({0})", fieldName)
 				.state(value instanceof String || value instanceof String[], "Les données saisies doivent être de type String ou String[] ({0} : {1})", fieldName, value.getClass());
 		//-----

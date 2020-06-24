@@ -66,8 +66,8 @@ public final class ProcessDefinition implements Definition {
 			final ProcessTriggeringStrategy triggeringStrategy,
 			final List<ActivityDefinition> activities) {
 		Assertion.check()
-				.argNotEmpty(name)
-				.argNotEmpty(label)
+				.isNotBlank(name)
+				.isNotBlank(label)
 				.notNull(processType)
 				.notNull(metadatas)
 				.notNull(triggeringStrategy)

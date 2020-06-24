@@ -40,7 +40,7 @@ public final class WorkDispatcherConfUtil {
 	 * @return configuration as Map<workTypeName, workDispatsherCount>.
 	 */
 	public static Map<String, Integer> readWorkTypeConf(final String workTypes) {
-		Assertion.check().argNotEmpty(workTypes);
+		Assertion.check().isNotBlank(workTypes);
 		//-----
 		final Map<String, Integer> workTypesConf = new HashMap<>();
 		for (final String workTypeConf : workTypes.trim().split(";")) {

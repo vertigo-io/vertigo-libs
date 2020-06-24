@@ -115,7 +115,7 @@ public class DbProcessSchedulerPlugin implements ProcessSchedulerPlugin, Activea
 				.notNull(nodeManager)
 				.notNull(transactionManager)
 				.notNull(definitionManager)
-				.argNotEmpty(nodeName)
+				.isNotBlank(nodeName)
 				.notNull(planningPeriodSecondsOpt)
 				.notNull(forecastDurationSecondsOpt);
 		//-----

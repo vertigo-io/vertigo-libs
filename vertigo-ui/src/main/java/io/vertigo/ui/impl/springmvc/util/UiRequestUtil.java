@@ -79,7 +79,7 @@ public final class UiRequestUtil {
 	}
 
 	public static void setRequestScopedAttribute(final String name, final Object value) {
-		Assertion.check().argNotEmpty(name);
+		Assertion.check().isNotBlank(name);
 		//---
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
 		attributes.setAttribute(name, value, RequestAttributes.SCOPE_REQUEST);
@@ -87,7 +87,7 @@ public final class UiRequestUtil {
 
 	public static <O extends Object> Optional<O> getRequestScopedAttribute(final String name, final Class<O> valueClass) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(valueClass);
 		//---
 		final RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();

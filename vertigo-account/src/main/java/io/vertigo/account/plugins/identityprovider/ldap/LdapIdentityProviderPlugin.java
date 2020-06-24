@@ -107,10 +107,10 @@ public final class LdapIdentityProviderPlugin implements IdentityProviderPlugin,
 			final SmartTypeManager smartTypeManager,
 			final List<LdapConnector> ldapConnectors) {
 		Assertion.check()
-				.argNotEmpty(ldapAccountBaseDn)
-				.argNotEmpty(ldapUserAuthAttribute)
-				.argNotEmpty(userIdentityEntity)
-				.argNotEmpty(ldapUserAttributeMappingStr)
+				.isNotBlank(ldapAccountBaseDn)
+				.isNotBlank(ldapUserAuthAttribute)
+				.isNotBlank(userIdentityEntity)
+				.isNotBlank(ldapUserAttributeMappingStr)
 				.notNull(codecManager)
 				.notNull(smartTypeManager)
 				.notNull(ldapConnectors)

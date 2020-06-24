@@ -43,8 +43,8 @@ public final class UsernamePasswordAuthenticationToken implements Authentication
 	 */
 	public UsernamePasswordAuthenticationToken(final String username, final String password) {
 		Assertion.check()
-				.argNotEmpty(username)
-				.argNotEmpty(password);
+				.isNotBlank(username)
+				.isNotBlank(password);
 		//----
 		this.username = username;
 		this.password = password;

@@ -60,7 +60,7 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 	/** {@inheritDoc} */
 	@Override
 	public ProcessDefinition getProcessDefinition(final String processName) {
-		Assertion.check().argNotEmpty(processName);
+		Assertion.check().isNotBlank(processName);
 		// ---
 		return processDefinitionStorePluginsByProcessType.values()
 				.stream()
@@ -99,7 +99,7 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 			final int rescuePeriod,
 			final boolean active) {
 		Assertion.check()
-				.argNotEmpty(processName)
+				.isNotBlank(processName)
 				.notNull(cronExpression)
 				.notNull(rescuePeriod);
 		//---
@@ -111,7 +111,7 @@ public class OrchestraDefinitionManagerImpl implements OrchestraDefinitionManage
 	@Override
 	public void updateProcessDefinitionInitialParams(final String processName, final Map<String, String> initialParams) {
 		Assertion.check()
-				.argNotEmpty(processName)
+				.isNotBlank(processName)
 				.notNull(initialParams);
 		//---
 		final ProcessDefinition processDefinition = getProcessDefinition(processName);

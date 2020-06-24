@@ -37,8 +37,8 @@ public final class ActivityDefinition {
 	 */
 	ActivityDefinition(final String name, final String label, final Class<? extends ActivityEngine> engineClass) {
 		Assertion.check()
-				.argNotEmpty(name)
-				.argNotEmpty(label)
+				.isNotBlank(name)
+				.isNotBlank(label)
 				.notNull(engineClass);
 		//-----
 		this.name = name;

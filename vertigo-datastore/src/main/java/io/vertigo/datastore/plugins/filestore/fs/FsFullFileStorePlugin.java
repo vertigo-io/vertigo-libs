@@ -104,8 +104,8 @@ public final class FsFullFileStorePlugin implements FileStorePlugin {
 			@ParamValue("purgeDelayMinutes") final Optional<Integer> purgeDelayMinutesOpt) {
 		Assertion.check()
 				.notNull(name)
-				.argNotEmpty(path)
-				.argNotEmpty(fileInfoClassName)
+				.isNotBlank(path)
+				.isNotBlank(fileInfoClassName)
 				.notNull(fileManager)
 				.notNull(transactionManager)
 				.argument(path.endsWith("/"), "store path must ends with / ({0})", path);

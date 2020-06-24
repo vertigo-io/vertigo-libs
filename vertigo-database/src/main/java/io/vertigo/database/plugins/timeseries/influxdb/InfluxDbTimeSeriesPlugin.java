@@ -226,7 +226,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 				.notNull(timeFilter.getDim()) // we check dim is not null because we need it
 				.notNull(clusteredMeasure)
 				//---
-				.argNotEmpty(clusteredMeasure.getMeasure())
+				.isNotBlank(clusteredMeasure.getMeasure())
 				.notNull(clusteredMeasure.getThresholds())
 				.state(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
 		//we use the natural order
@@ -373,7 +373,7 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 	@Override
 	public void insertMeasure(final String dbName, final Measure measure) {
 		Assertion.check()
-				.argNotEmpty(dbName)
+				.isNotBlank(dbName)
 				.notNull(measure);
 		//---
 		influxDB.setDatabase(dbName);
@@ -426,8 +426,8 @@ public final class InfluxDbTimeSeriesPlugin implements TimeSeriesPlugin, Activea
 
 	private static String buildMeasureQuery(final String measure, final String alias) {
 		Assertion.check()
-				.argNotEmpty(measure)
-				.argNotEmpty(alias);
+				.isNotBlank(measure)
+				.isNotBlank(alias);
 		//----
 		final String[] measureDetails = measure.split(":");
 		final Tuple<String, List<String>> aggregateFunction = parseAggregateFunction(measureDetails[1]);

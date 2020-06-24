@@ -48,7 +48,7 @@ public class AbstractStaticMDDataStorePlugin implements EntityStorePlugin {
 	private final String dataSpace;
 
 	protected AbstractStaticMDDataStorePlugin(final String dataSpace) {
-		Assertion.check().argNotEmpty(dataSpace);
+		Assertion.check().isNotBlank(dataSpace);
 		//-----
 		this.dataSpace = dataSpace;
 	}

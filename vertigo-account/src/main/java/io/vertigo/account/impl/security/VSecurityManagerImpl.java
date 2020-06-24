@@ -58,7 +58,7 @@ public final class VSecurityManagerImpl implements VSecurityManager, Activeable 
 	@Inject
 	public VSecurityManagerImpl(final LocaleManager localeManager, @ParamValue("userSessionClassName") final String userSessionClassName) {
 		Assertion.check().notNull(localeManager)
-				.argNotEmpty(userSessionClassName);
+				.isNotBlank(userSessionClassName);
 		//-----
 		this.localeManager = localeManager;
 		this.userSessionClassName = userSessionClassName;

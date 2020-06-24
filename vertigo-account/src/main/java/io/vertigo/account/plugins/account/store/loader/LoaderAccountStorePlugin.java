@@ -53,7 +53,7 @@ public final class LoaderAccountStorePlugin implements AccountStorePlugin, Activ
 			@ParamValue("accountLoaderName") final String accountLoaderName,
 			@ParamValue("groupLoaderName") final Optional<String> groupLoaderName) {
 		Assertion.check()
-				.argNotEmpty(accountLoaderName)
+				.isNotBlank(accountLoaderName)
 				.notNull(groupLoaderName);
 
 		this.accountLoaderName = accountLoaderName;

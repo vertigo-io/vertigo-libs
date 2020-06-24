@@ -37,13 +37,13 @@ public final class NamedComponentDefinition {
 
 	public NamedComponentDefinition(final String name, final String fragmentTemplate, final String selectionExpression, final Optional<String> parameters, final String frag) {
 		Assertion.check()
-				.argNotEmpty(name)
-				.argNotEmpty(fragmentTemplate)
-				.argNotEmpty(selectionExpression)
+				.isNotBlank(name)
+				.isNotBlank(fragmentTemplate)
+				.isNotBlank(selectionExpression)
 				.argument(
 						selectionExpression.startsWith("${") && selectionExpression.endsWith("}"),
 						"Component {0} selector expression must starts with $\\{ and ends with \\} ({1})", name, selectionExpression);
-		Assertion.check().argNotEmpty(frag);
+		Assertion.check().isNotBlank(frag);
 		//-----
 		this.name = name;
 		this.fragmentTemplate = fragmentTemplate;
@@ -55,9 +55,9 @@ public final class NamedComponentDefinition {
 
 	public NamedComponentDefinition(final String name, final String fragmentTemplate, final Optional<String> parameters, final String frag) {
 		Assertion.check()
-				.argNotEmpty(name)
-				.argNotEmpty(fragmentTemplate)
-				.argNotEmpty(frag);
+				.isNotBlank(name)
+				.isNotBlank(fragmentTemplate)
+				.isNotBlank(frag);
 		//-----
 		this.name = name;
 		this.fragmentTemplate = fragmentTemplate;

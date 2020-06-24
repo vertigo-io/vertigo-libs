@@ -90,8 +90,8 @@ public final class BerkeleyKVStorePlugin implements KVStorePlugin, Activeable {
 			final VTransactionManager transactionManager,
 			final CodecManager codecManager) {
 		Assertion.check()
-				.argNotEmpty(collections)
-				.argNotEmpty(dbFilePath)
+				.isNotBlank(collections)
+				.isNotBlank(dbFilePath)
 				.notNull(transactionManager);
 		//-----
 		collectionConfigs = parseCollectionConfigs(collections);

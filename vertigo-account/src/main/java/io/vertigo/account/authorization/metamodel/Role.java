@@ -46,8 +46,8 @@ public final class Role implements Definition {
 	 */
 	public Role(final String name, final String description, final List<Authorization> authorizations) {
 		Assertion.check()
-				.argNotEmpty(name)
-				.argNotEmpty(description)
+				.isNotBlank(name)
+				.isNotBlank(description)
 				.notNull(authorizations);
 		//-----
 		this.name = name;

@@ -36,14 +36,14 @@ public final class DataFilterBuilder implements Builder<DataFilter> {
 
 	DataFilterBuilder(
 			final String measurement) {
-		Assertion.check().argNotEmpty(measurement);
+		Assertion.check().isNotBlank(measurement);
 		//---
 		myMeasurement = measurement;
 	}
 
 	public DataFilterBuilder addFilter(final String field, final String value) {
 		Assertion.check()
-				.argNotEmpty(field)
+				.isNotBlank(field)
 				.notNull(value);
 		//---
 		myFilters.put(field, value);
@@ -51,7 +51,7 @@ public final class DataFilterBuilder implements Builder<DataFilter> {
 	}
 
 	public DataFilterBuilder withAdditionalWhereClause(final String additionalWhereClause) {
-		Assertion.check().argNotEmpty(additionalWhereClause);
+		Assertion.check().isNotBlank(additionalWhereClause);
 		//---
 		myAdditionalWhereClause = additionalWhereClause;
 		return this;

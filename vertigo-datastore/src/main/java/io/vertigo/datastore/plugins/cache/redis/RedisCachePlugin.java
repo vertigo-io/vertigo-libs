@@ -143,7 +143,7 @@ public class RedisCachePlugin implements CachePlugin {
 	 */
 	private static String buildRedisKey(final String context, final Serializable key) {
 		Assertion.check()
-				.argNotEmpty(context)
+				.isNotBlank(context)
 				.notNull(key);
 		//---
 		return VERTIGO_CACHE + ":" + context + ":" + keyToString(key);
@@ -154,7 +154,7 @@ public class RedisCachePlugin implements CachePlugin {
 	 * redisKey = "vertigo:cache:" + context + key
 	 */
 	private static String buildPatternFromContext(final String context) {
-		Assertion.check().argNotEmpty(context);
+		Assertion.check().isNotBlank(context);
 		//---
 		return VERTIGO_CACHE + ":" + context + ":*";
 	}
@@ -167,7 +167,7 @@ public class RedisCachePlugin implements CachePlugin {
 		Assertion.check().notNull(key);
 		//---
 		if (key instanceof String) {
-			Assertion.check().argNotEmpty((String) key, "a key cannot be an empty string");
+			Assertion.check().isNotBlank((String) key, "a key cannot be an empty string");
 			//--
 			return ((String) key).trim();
 		} else if (key instanceof Integer) {

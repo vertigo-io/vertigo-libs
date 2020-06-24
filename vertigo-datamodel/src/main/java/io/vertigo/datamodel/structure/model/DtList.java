@@ -226,7 +226,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 * @return MetaData value
 	 */
 	public <O extends Serializable> Optional<O> getMetaData(final String metaDataName, final Class<O> metaDataClass) {
-		Assertion.check().argNotEmpty(metaDataName);
+		Assertion.check().isNotBlank(metaDataName);
 		//-----
 		final Object value = metaDatas.get(metaDataName);
 		if (value == null) {
@@ -244,7 +244,7 @@ public final class DtList<D extends DtObject> extends AbstractList<D> implements
 	 * @param value MetaData value
 	 */
 	public void setMetaData(final String metaDataName, final Serializable value) {
-		Assertion.check().argNotEmpty(metaDataName);
+		Assertion.check().isNotBlank(metaDataName);
 		//-----
 		if (value == null) {
 			metaDatas.remove(metaDataName);

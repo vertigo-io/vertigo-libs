@@ -94,7 +94,7 @@ public final class FacetDefinition implements Definition {
 			final boolean multiSelectable,
 			final FacetOrder order) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(dtField)
 				.notNull(label)
 				.notNull(facetValues)

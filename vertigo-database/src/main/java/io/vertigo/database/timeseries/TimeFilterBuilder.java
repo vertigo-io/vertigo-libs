@@ -34,8 +34,8 @@ public final class TimeFilterBuilder implements Builder<TimeFilter> {
 	TimeFilterBuilder(
 			final String from, final String to) {
 		Assertion.check()
-				.argNotEmpty(from)
-				.argNotEmpty(to);
+				.isNotBlank(from)
+				.isNotBlank(to);
 		//---
 		myFrom = from;
 		myTo = to;
@@ -50,7 +50,7 @@ public final class TimeFilterBuilder implements Builder<TimeFilter> {
 	}
 
 	public TimeFilterBuilder withTimeDim(final String dim) {
-		Assertion.check().argNotEmpty(dim);
+		Assertion.check().isNotBlank(dim);
 		//---
 		myDim = dim;
 		return this;

@@ -80,7 +80,7 @@ public final class MigrationManagerImpl implements DataBaseMigrationManager, Act
 	@Override
 	public void check(final String connectionName) {
 		Assertion.check()
-				.argNotEmpty(connectionName)
+				.isNotBlank(connectionName)
 				.state(dataBaseMigrationPlugins.containsKey(connectionName), "No DataBaseMigrationPlugin for connection", connectionName);
 		//---
 		dataBaseMigrationPlugins.get(connectionName).check();
@@ -90,7 +90,7 @@ public final class MigrationManagerImpl implements DataBaseMigrationManager, Act
 	@Override
 	public void update(final String connectionName) {
 		Assertion.check()
-				.argNotEmpty(connectionName)
+				.isNotBlank(connectionName)
 				.state(dataBaseMigrationPlugins.containsKey(connectionName), "No DataBaseMigrationPlugin for connection", connectionName);
 		//---
 		dataBaseMigrationPlugins.get(connectionName).update();

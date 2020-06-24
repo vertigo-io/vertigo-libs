@@ -50,9 +50,9 @@ public final class WorkersManagerImpl implements WorkersManager, Activeable {
 			@ParamValue("workTypes") final String workTypes,
 			final WorkersPlugin workerPlugin) {
 		Assertion.check()
-				.argNotEmpty(nodeId)
+				.isNotBlank(nodeId)
 				.notNull(workerPlugin)
-				.argNotEmpty(workTypes);
+				.isNotBlank(workTypes);
 		//-----
 		workersCoordinator = new WorkersCoordinator(workersCount);
 		final Map<String, Integer> workTypesMap = WorkDispatcherConfUtil.readWorkTypeConf(workTypes);

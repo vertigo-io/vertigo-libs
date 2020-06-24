@@ -77,7 +77,7 @@ public final class ContextList<O extends DtObject> {
 	 */
 	public ContextList(final String contextKey, final DtObjectValidator<O> validator, final Optional<DtFieldName<O>> keyFieldNameOpt, final AbstractActionSupport action) {
 		Assertion.check()
-				.argNotEmpty(contextKey)
+				.isNotBlank(contextKey)
 				.notNull(action)
 				.notNull(validator)
 				.notNull(keyFieldNameOpt);

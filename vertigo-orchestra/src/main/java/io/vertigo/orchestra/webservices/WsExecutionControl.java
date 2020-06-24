@@ -62,7 +62,7 @@ public class WsExecutionControl implements WebServices {
 	public void endExecution(@InnerBodyParam("aceId") final Long activityExecutionId, @InnerBodyParam("token") final String token) {
 		Assertion.check()
 				.notNull(activityExecutionId)
-				.argNotEmpty(token);
+				.isNotBlank(token);
 		// ---
 		orchestraServices.getExecutor()
 				.endPendingActivityExecution(activityExecutionId, token, ExecutionState.DONE, Optional.empty());
@@ -80,8 +80,8 @@ public class WsExecutionControl implements WebServices {
 	public void onError(@InnerBodyParam("aceId") final Long activityExecutionId, @InnerBodyParam("token") final String token, @InnerBodyParam("errorMessage") final String errorMessage) {
 		Assertion.check()
 				.notNull(activityExecutionId)
-				.argNotEmpty(token)
-				.argNotEmpty(errorMessage);
+				.isNotBlank(token)
+				.isNotBlank(errorMessage);
 		// ---
 		orchestraServices.getExecutor()
 				.endPendingActivityExecution(activityExecutionId, token, ExecutionState.ERROR, Optional.of(errorMessage));
@@ -109,7 +109,7 @@ public class WsExecutionControl implements WebServices {
 	 */
 	@POST("/executeNow")
 	public void executeNowIhm(@InnerBodyParam("processName") final String processName) {
-		Assertion.check().argNotEmpty(processName);
+		Assertion.check().isNotBlank(processName);
 		// ---
 		final ProcessDefinition processDefinition = orchestraDefinitionManager.getProcessDefinition(processName);
 		orchestraServices.getScheduler()

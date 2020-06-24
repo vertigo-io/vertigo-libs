@@ -52,7 +52,7 @@ public final class ContextVFiles {
 	 */
 	public ContextVFiles(final String contextKey, final AbstractActionSupport action) {
 		Assertion.check()
-				.argNotEmpty(contextKey)
+				.isNotBlank(contextKey)
 				.notNull(action);
 		//---
 		contextKeyVFile = contextKey + VFILE_SUFFIX;

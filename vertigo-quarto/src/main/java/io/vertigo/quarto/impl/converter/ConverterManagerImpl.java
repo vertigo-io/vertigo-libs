@@ -55,7 +55,7 @@ public final class ConverterManagerImpl implements ConverterManager {
 	public VFile convert(final VFile inputFile, final String format) {
 		Assertion.check()
 				.notNull(inputFile)
-				.argNotEmpty(format);
+				.isNotBlank(format);
 		//-----
 		return converterPlugin.convertToFormat(inputFile, format);
 	}

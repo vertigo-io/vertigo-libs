@@ -151,11 +151,11 @@ public final class StrutsUiMessageStack implements UiMessageStack {
 
 	private void addObjectFieldMessage(final String contextKey, final Level level, final String message, final DtDefinition dtDefinition, final String fieldName) {
 		Assertion.check()
-				.argNotEmpty(contextKey)
+				.isNotBlank(contextKey)
 				.notNull(level)
-				.argNotEmpty(message)
+				.isNotBlank(message)
 				.notNull(dtDefinition)
-				.argNotEmpty(fieldName);
+				.isNotBlank(fieldName);
 		//-----
 		if (level == Level.ERROR) {
 			actionSupport.addFieldError(contextKey + "." + fieldName, message);

@@ -53,7 +53,7 @@ public final class FacetValue implements Serializable {
 	 */
 	public FacetValue(final String code, final ListFilter listFilter, final MessageText label) {
 		Assertion.check()
-				.argNotEmpty(code)
+				.isNotBlank(code)
 				.notNull(listFilter)
 				.notNull(label);
 		//-----

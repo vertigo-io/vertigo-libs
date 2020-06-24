@@ -275,7 +275,7 @@ final class SqlStatementDriver {
 			final Class<O> dataType,
 			final SqlConnection connection) throws SQLException {
 		Assertion.check()
-				.argNotEmpty(columnName)
+				.isNotBlank(columnName)
 				.notNull(dataType);
 		//-----
 		// L'utilisation des generatedKeys permet d'avoir un seul appel réseau entre le

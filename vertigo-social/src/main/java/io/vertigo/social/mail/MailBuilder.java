@@ -55,7 +55,7 @@ public class MailBuilder implements Builder<Mail> {
 	 */
 	public MailBuilder withSubject(final String subject) {
 		Assertion.check()
-				.argNotEmpty(subject)
+				.isNotBlank(subject)
 				.state(mySubject == null, "subject is already completed");
 		//-----
 		mySubject = subject;
@@ -70,7 +70,7 @@ public class MailBuilder implements Builder<Mail> {
 	public MailBuilder from(final String from) {
 		Assertion.check()
 				.state(myFrom == null, "from is already completed")
-				.argNotEmpty(from);
+				.isNotBlank(from);
 		//-----
 		myFrom = from;
 		return this;
@@ -83,7 +83,7 @@ public class MailBuilder implements Builder<Mail> {
 	 */
 	public MailBuilder replyTo(final String replyTo) {
 		Assertion.check().state(myReplyTo == null, "replyTo is already completed")
-				.argNotEmpty(replyTo);
+				.isNotBlank(replyTo);
 		//-----
 		myReplyTo = replyTo;
 		return this;
@@ -98,7 +98,7 @@ public class MailBuilder implements Builder<Mail> {
 		Assertion.check().notNull(addresses);
 		//-----
 		for (final String address : addresses) {
-			Assertion.check().argNotEmpty(address);
+			Assertion.check().isNotBlank(address);
 			myToAddresses.add(address);
 		}
 		return this;
@@ -113,7 +113,7 @@ public class MailBuilder implements Builder<Mail> {
 		Assertion.check().notNull(addresses);
 		//-----
 		for (final String address : addresses) {
-			Assertion.check().argNotEmpty(address);
+			Assertion.check().isNotBlank(address);
 			myCcAddresses.add(address);
 		}
 		return this;
@@ -127,7 +127,7 @@ public class MailBuilder implements Builder<Mail> {
 	public MailBuilder withTextContent(final String textContent) {
 		Assertion.check()
 				.state(myTextContent == null, "textContent is already completed")
-				.argNotEmpty(textContent);
+				.isNotBlank(textContent);
 		//-----
 		myTextContent = textContent;
 		return this;
@@ -141,7 +141,7 @@ public class MailBuilder implements Builder<Mail> {
 	public MailBuilder withHtmlContent(final String htmlContent) {
 		Assertion.check()
 				.state(myHtmlContent == null, "htmlContent is already completed")
-				.argNotEmpty(htmlContent);
+				.isNotBlank(htmlContent);
 		//-----
 		myHtmlContent = htmlContent;
 		return this;

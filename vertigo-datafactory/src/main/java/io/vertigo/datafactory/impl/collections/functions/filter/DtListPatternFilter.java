@@ -52,7 +52,7 @@ public final class DtListPatternFilter<D extends DtObject> implements Predicate<
 	 * @param filterString Chaine représentant le filtre
 	 */
 	public DtListPatternFilter(final String filterString) {
-		Assertion.check().argNotEmpty(filterString);
+		Assertion.check().isNotBlank(filterString);
 		//-----
 		FilterPattern foundFilterPattern = null;
 		String[] foundParsedFilter = null;

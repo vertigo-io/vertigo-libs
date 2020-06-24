@@ -80,7 +80,7 @@ public final class VegaFeatures extends Features<VegaFeatures> {
 		//-----
 		Assertion.check().state(params.length == 1 && "tokens".equals(params[0].getName()), "tokens param should be provided ");
 		final String myTokens = params[0].getValue();
-		Assertion.check().argNotEmpty(myTokens);
+		Assertion.check().isNotBlank(myTokens);
 		//---
 		getModuleConfigBuilder()
 				.addPlugin(ServerSideStateWebServiceHandlerPlugin.class)

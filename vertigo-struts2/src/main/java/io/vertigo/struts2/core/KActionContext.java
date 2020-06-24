@@ -179,7 +179,7 @@ public final class KActionContext extends HashMap<String, Serializable> {
 	public Serializable put(final String key, final Serializable value) {
 		Assertion.check()
 				.state(!unmodifiable, "Ce context ({0}) a été figé et n'est plus modifiable.", super.get(CTX))
-				.argNotEmpty(key)
+				.isNotBlank(key)
 				.notNull(value, "la valeur doit être renseignée pour {0}", key)
 				.argument(!(value instanceof DtObject), "Vous devez poser des uiObject dans le context pas des objets métiers ({0})", key)
 				.argument(!(value instanceof DtList), "Vous devez poser des uiList dans le context pas des listes d'objets métiers ({0})", key);
@@ -208,7 +208,7 @@ public final class KActionContext extends HashMap<String, Serializable> {
 				.state(key instanceof String, "La clé doit être de type String");
 		//---
 		final String keyString = (String) key;
-		Assertion.check().argNotEmpty(keyString);
+		Assertion.check().isNotBlank(keyString);
 		//---
 		// on garde les index en cohérence après un remove
 		reverseUiObjectIndex.values().removeIf(keyString::equals);

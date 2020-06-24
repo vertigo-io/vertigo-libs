@@ -80,9 +80,9 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> {
 			final String resultLabel,
 			final MessageKey resultLabelKey) {
 		Assertion.check()
-				.argNotEmpty(resultcode)
+				.isNotBlank(resultcode)
 				.notNull(result)
-				.argNotEmpty(resultFilter);
+				.isNotBlank(resultFilter);
 		//---
 		if (firstResult == null) {
 			firstResult = result;
@@ -102,7 +102,7 @@ public final class FacetedQueryResultMerger<R extends DtObject, S> {
 	 * @return this builder
 	 */
 	public FacetedQueryResultMerger<R, S> withFacet(final String facetDefinitionName) {
-		Assertion.check().argNotEmpty(facetDefinitionName);
+		Assertion.check().isNotBlank(facetDefinitionName);
 		//-----
 		this.facetDefinitionNameOpt = Optional.of(facetDefinitionName);
 		return this;

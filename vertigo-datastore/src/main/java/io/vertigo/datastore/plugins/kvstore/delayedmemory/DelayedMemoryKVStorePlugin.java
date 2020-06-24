@@ -71,7 +71,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 			final @ParamValue("collections") String collections,
 			final DaemonManager daemonManager,
 			final @ParamValue("timeToLiveSeconds") int timeToLiveSeconds) {
-		Assertion.check().argNotEmpty(collections);
+		Assertion.check().isNotBlank(collections);
 		//-----
 		this.collections = Arrays.stream(collections.split(", "))
 				.map(String::trim)
@@ -109,8 +109,8 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	@Override
 	public void put(final String collection, final String key, final Object element) {
 		Assertion.check()
-				.argNotEmpty(collection)
-				.argNotEmpty(key)
+				.isNotBlank(collection)
+				.isNotBlank(key)
 				.notNull(element);
 		//-----
 		final DelayedMemoryCacheValue cacheValue = new DelayedMemoryCacheValue(element);
@@ -122,8 +122,8 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	@Override
 	public void remove(final String collection, final String key) {
 		Assertion.check()
-				.argNotEmpty(collection)
-				.argNotEmpty(key);
+				.isNotBlank(collection)
+				.isNotBlank(key);
 		//-----
 		getCollectionData(collection).remove(key);
 	}
@@ -131,7 +131,7 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	/** {@inheritDoc} */
 	@Override
 	public void clear(final String collection) {
-		Assertion.check().argNotEmpty(collection);
+		Assertion.check().isNotBlank(collection);
 		//-----
 		getCollectionData(collection).clear();
 	}
@@ -140,8 +140,8 @@ public final class DelayedMemoryKVStorePlugin implements KVStorePlugin, SimpleDe
 	@Override
 	public <C> Optional<C> find(final String collection, final String key, final Class<C> clazz) {
 		Assertion.check()
-				.argNotEmpty(collection)
-				.argNotEmpty(key)
+				.isNotBlank(collection)
+				.isNotBlank(key)
 				.notNull(clazz);
 		//-----
 		final DelayedMemoryCacheValue cacheValue = getCollectionData(collection).get(key);

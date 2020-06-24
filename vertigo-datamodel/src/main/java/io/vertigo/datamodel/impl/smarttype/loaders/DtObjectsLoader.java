@@ -92,7 +92,7 @@ public final class DtObjectsLoader implements Loader {
 	@Override
 	public void load(final String resourcePath, final Map<String, DynamicDefinition> dynamicDefinitions) {
 		Assertion.check()
-				.argNotEmpty(resourcePath)
+				.isNotBlank(resourcePath)
 				.notNull(dynamicDefinitions);
 		//-----
 		//--Enregistrement des fichiers java annotés

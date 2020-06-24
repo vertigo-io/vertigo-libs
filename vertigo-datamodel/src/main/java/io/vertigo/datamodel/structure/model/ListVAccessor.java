@@ -63,8 +63,8 @@ public class ListVAccessor<E extends Entity> implements Serializable {
 	public ListVAccessor(final Entity entity, final String associationDefinitionName, final String roleName) {
 		Assertion.check()
 				.notNull(entity)
-				.argNotEmpty(associationDefinitionName)
-				.argNotEmpty(roleName);
+				.isNotBlank(associationDefinitionName)
+				.isNotBlank(roleName);
 		//---
 		this.entity = entity;
 		this.roleName = roleName;

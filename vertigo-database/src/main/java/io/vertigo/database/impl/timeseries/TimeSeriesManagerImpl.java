@@ -98,7 +98,7 @@ public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 	@Override
 	public TimedDatas getTimeSeries(final String dbName, final List<String> measures, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		Assertion.check()
-				.argNotEmpty(dbName)
+				.isNotBlank(dbName)
 				.notNull(measures)
 				.notNull(dataFilter)
 				.notNull(timeFilter.getDim());// we check dim is not null because we need it
@@ -113,14 +113,14 @@ public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 	@Override
 	public TimedDatas getClusteredTimeSeries(final String dbName, final ClusteredMeasure clusteredMeasure, final DataFilter dataFilter, final TimeFilter timeFilter) {
 		Assertion.check()
-				.argNotEmpty(dbName)
+				.isNotBlank(dbName)
 				.notNull(dataFilter)
 				.notNull(timeFilter)
 				.notNull(timeFilter.getDim()) // we check dim is not null because we need it
 				.notNull(clusteredMeasure);
 		//---
 		Assertion.check()
-				.argNotEmpty(clusteredMeasure.getMeasure())
+				.isNotBlank(clusteredMeasure.getMeasure())
 				.notNull(clusteredMeasure.getThresholds())
 				.state(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
 		//we use the natural order
@@ -173,7 +173,7 @@ public class TimeSeriesManagerImpl implements TimeSeriesDataBaseManager {
 	}
 
 	private TimeSeriesPlugin getPluginByDb(final String dbName) {
-		Assertion.check().argNotEmpty(dbName);
+		Assertion.check().isNotBlank(dbName);
 		// ---
 		final TimeSeriesPlugin adequatePlugin = timeSeriesPluginByDb.get(dbName);
 		if (adequatePlugin != null) {

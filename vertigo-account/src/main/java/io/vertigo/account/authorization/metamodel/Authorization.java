@@ -64,8 +64,8 @@ public final class Authorization implements Definition {
 	 */
 	public Authorization(final String code, final String label, final Optional<String> comment) {
 		Assertion.check()
-				.argNotEmpty(code)
-				.argNotEmpty(label)
+				.isNotBlank(code)
+				.isNotBlank(label)
 				.notNull(comment);
 		//-----
 		name = PREFIX + code;
@@ -99,8 +99,8 @@ public final class Authorization implements Definition {
 			final List<RuleMultiExpression> rules,
 			final Optional<String> comment) {
 		Assertion.check()
-				.argNotEmpty(operation)
-				.argNotEmpty(label)
+				.isNotBlank(operation)
+				.isNotBlank(label)
 				.notNull(overrides)
 				.notNull(grants)
 				.notNull(entityDefinition)

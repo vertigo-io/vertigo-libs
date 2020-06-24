@@ -63,7 +63,7 @@ public class VAccessor<E extends Entity> implements Serializable {
 	public VAccessor(final DtDefinition targetDtDefinition, final String role) {
 		Assertion.check()
 				.notNull(targetDtDefinition)
-				.argNotEmpty(role);
+				.isNotBlank(role);
 		//---
 		this.targetDtDefinitionRef = new DefinitionReference(targetDtDefinition);
 		this.role = role;

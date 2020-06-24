@@ -42,7 +42,7 @@ public final class ConstraintRegex implements Constraint<String, String> {
 	 */
 	public ConstraintRegex(final String regex, final Optional<String> overrideMessageOpt) {
 		Assertion.check()
-				.argNotEmpty(regex)
+				.isNotBlank(regex)
 				.notNull(overrideMessageOpt);
 		//---
 		pattern = Pattern.compile(regex);

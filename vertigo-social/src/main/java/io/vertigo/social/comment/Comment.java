@@ -40,8 +40,8 @@ public final class Comment {
 		Assertion.check()
 				.notNull(uuid)
 				.notNull(author)
-				.argNotEmpty(authorDisplayName)
-				.argNotEmpty(msg)
+				.isNotBlank(authorDisplayName)
+				.isNotBlank(msg)
 				.notNull(creationDate);
 		//lastModified is nullable
 		//-----

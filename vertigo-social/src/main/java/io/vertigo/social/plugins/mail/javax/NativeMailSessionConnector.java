@@ -59,8 +59,8 @@ public final class NativeMailSessionConnector implements MailSessionConnector {
 			@ParamValue("login") final Optional<String> mailLogin,
 			@ParamValue("pwd") final Optional<String> mailPassword) {
 		Assertion.check()
-				.argNotEmpty(mailStoreProtocol)
-				.argNotEmpty(mailHost)
+				.isNotBlank(mailStoreProtocol)
+				.isNotBlank(mailHost)
 				.notNull(mailPort)
 				.notNull(mailLogin)
 				.notNull(mailPassword);

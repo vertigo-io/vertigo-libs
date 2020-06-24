@@ -41,7 +41,7 @@ public final class WebAppContextParamPlugin implements ParamPlugin {
 	/** {@inheritDoc} */
 	@Override
 	public Optional<Param> getParam(final String paramName) {
-		Assertion.check().argNotEmpty(paramName);
+		Assertion.check().isNotBlank(paramName);
 		//-----
 		return Optional.ofNullable(params.get(paramName));
 	}

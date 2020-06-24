@@ -94,7 +94,7 @@ public final class HttpAppNodeInfosPlugin implements AppNodeInfosPlugin {
 	}
 
 	private static <R> R callRestWS(final String wsUrl, final Type returnType) {
-		Assertion.check().argNotEmpty(wsUrl);
+		Assertion.check().isNotBlank(wsUrl);
 		// ---
 		try {
 			final URL url = new URL(wsUrl);

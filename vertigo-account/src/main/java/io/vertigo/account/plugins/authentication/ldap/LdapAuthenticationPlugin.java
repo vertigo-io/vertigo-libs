@@ -107,7 +107,7 @@ public final class LdapAuthenticationPlugin implements AuthenticationPlugin {
 	}
 
 	private void parseUserLoginTemplate(final String template) {
-		Assertion.check().argNotEmpty(template, "User DN template cannot be null or empty.");
+		Assertion.check().isNotBlank(template, "User DN template cannot be null or empty.");
 		//----
 		final int index = template.indexOf(USERDN_SUBSTITUTION_TOKEN);
 		if (index < 0) {

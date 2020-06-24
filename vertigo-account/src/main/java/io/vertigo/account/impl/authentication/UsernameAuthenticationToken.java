@@ -35,7 +35,7 @@ public final class UsernameAuthenticationToken implements AuthenticationToken {
 	 * @param username the username submitted for authentication
 	 */
 	public UsernameAuthenticationToken(final String username) {
-		Assertion.check().argNotEmpty(username);
+		Assertion.check().isNotBlank(username);
 		//----
 		this.username = username;
 	}

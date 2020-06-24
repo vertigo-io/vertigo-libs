@@ -42,14 +42,14 @@ public final class MeasureBuilder implements Builder<Measure> {
 	 */
 	MeasureBuilder(final String measurement) {
 		Assertion.check()
-				.argNotEmpty(measurement);
+				.isNotBlank(measurement);
 		//---
 		this.measurement = measurement;
 	}
 
 	public MeasureBuilder addField(final String field, final boolean value) {
 		Assertion.check()
-				.argNotEmpty(field)
+				.isNotBlank(field)
 				.notNull(value);
 		//---
 		fields.put(field, value);
@@ -58,7 +58,7 @@ public final class MeasureBuilder implements Builder<Measure> {
 
 	public MeasureBuilder addField(final String field, final double value) {
 		Assertion.check()
-				.argNotEmpty(field)
+				.isNotBlank(field)
 				.notNull(value);
 		//---
 		fields.put(field, value);
@@ -66,7 +66,7 @@ public final class MeasureBuilder implements Builder<Measure> {
 	}
 
 	public MeasureBuilder addField(final String field, final long value) {
-		Assertion.check().argNotEmpty(field)
+		Assertion.check().isNotBlank(field)
 				.notNull(value);
 		//---
 		fields.put(field, value);
@@ -75,7 +75,7 @@ public final class MeasureBuilder implements Builder<Measure> {
 
 	public MeasureBuilder addField(final String field, final String value) {
 		Assertion.check()
-				.argNotEmpty(field)
+				.isNotBlank(field)
 				.notNull(value);
 		//---
 		fields.put(field, value);
@@ -101,7 +101,7 @@ public final class MeasureBuilder implements Builder<Measure> {
 	 */
 	public MeasureBuilder tag(final String tagName, final String value) {
 		Assertion.check()
-				.argNotEmpty(tagName)
+				.isNotBlank(tagName)
 				.notNull(value);
 		//---
 		tags.put(tagName, value);

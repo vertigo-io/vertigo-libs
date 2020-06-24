@@ -48,7 +48,7 @@ public final class EventBusSubscriptionDefinition<E extends Event> implements De
 	 */
 	public EventBusSubscriptionDefinition(final String name, final Class<E> eventType, final Consumer<E> eventListener) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(eventType)
 				.notNull(eventListener);
 		//-----

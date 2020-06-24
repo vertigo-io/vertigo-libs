@@ -131,7 +131,7 @@ final class BerkeleyDatabase {
 	 */
 	void put(final String id, final Object object) {
 		Assertion.check()
-				.argNotEmpty(id)
+				.isNotBlank(id)
 				.notNull(object)
 				.argument(object instanceof Serializable, "Value must be Serializable {0}", object.getClass().getSimpleName());
 		//-----
@@ -193,7 +193,7 @@ final class BerkeleyDatabase {
 	 * @param id Element id to remove
 	 */
 	void delete(final String id) {
-		Assertion.check().argNotEmpty(id);
+		Assertion.check().isNotBlank(id);
 		//-----
 		final DatabaseEntry idEntry = new DatabaseEntry();
 

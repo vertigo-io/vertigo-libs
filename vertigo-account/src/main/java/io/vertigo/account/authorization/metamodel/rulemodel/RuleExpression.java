@@ -75,7 +75,7 @@ public final class RuleExpression {
 	 */
 	public RuleExpression(final String fieldName, final ValueOperator operator, final RuleValue value) {
 		Assertion.check()
-				.argNotEmpty(fieldName)
+				.isNotBlank(fieldName)
 				.notNull(operator)
 				.notNull(value);
 		//-----

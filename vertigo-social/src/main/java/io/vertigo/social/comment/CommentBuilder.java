@@ -84,7 +84,7 @@ public final class CommentBuilder implements Builder<Comment> {
 	public CommentBuilder withMsg(final String msg) {
 		Assertion.check()
 				.argument(myMsg == null, "msg already set")
-				.argNotEmpty(msg);
+				.isNotBlank(msg);
 		//-----
 		myMsg = msg;
 		return this;

@@ -83,14 +83,14 @@ public final class SearchIndexDefinition implements Definition {
 			final Map<DtField, List<DtField>> indexCopyFromFieldsMap,
 			final String searchLoaderId) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(keyConceptDtDefinition)
 				.argument(
 						keyConceptDtDefinition.getStereotype() == DtStereotype.KeyConcept,
 						"keyConceptDtDefinition ({0}) must be a DtDefinition of a KeyConcept class", keyConceptDtDefinition.getName())
 				.notNull(indexDtDefinition)
 				.notNull(indexCopyFromFieldsMap)
-				.argNotEmpty(searchLoaderId);
+				.isNotBlank(searchLoaderId);
 		//-----
 		this.name = name;
 		this.keyConceptDtDefinition = keyConceptDtDefinition;

@@ -54,7 +54,7 @@ public final class Measure {
 			final Map<String, Object> fields,
 			final Map<String, String> tags) {
 		Assertion.check()
-				.argNotEmpty(measurement)
+				.isNotBlank(measurement)
 				.notNull(instant)
 				.state(fields.size() > 0, "At least one field is required on a measure");
 		//---

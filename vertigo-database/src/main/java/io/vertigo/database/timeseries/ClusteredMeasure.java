@@ -38,7 +38,7 @@ public class ClusteredMeasure implements Serializable {
 			final String measure,
 			final List<Integer> thresholds) {
 		Assertion.check()
-				.argNotEmpty(measure)
+				.isNotBlank(measure)
 				.notNull(thresholds);
 		//---
 		this.measure = measure;

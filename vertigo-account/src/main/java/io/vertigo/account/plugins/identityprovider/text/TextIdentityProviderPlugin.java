@@ -99,15 +99,15 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 		Assertion.check()
 				.notNull(resourceManager)
 				.notNull(smartTypeManager)
-				.argNotEmpty(filePatternStr)
+				.isNotBlank(filePatternStr)
 				.argument(filePatternStr.contains("(?<"),
 						"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' (like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )", PHOTO_URL_RESERVED_FIELD)
 				.argument(filePatternStr.contains("(?<" + PHOTO_URL_RESERVED_FIELD + ">"),
 						"filePattern should be a regexp of named group for each User's entity fields plus reserved field '{0}' (like : '(?<id>\\S+);(?<name>\\S+);(?<email>\\S+);;(?<{0}>\\S+)' )", PHOTO_URL_RESERVED_FIELD)
 				.argument(filePatternStr.contains("(?<" + userAuthField + ">"),
 						"filePattern should contains the userAuthField : {0}", userAuthField)
-				.argNotEmpty(userIdentityEntity)
-				.argNotEmpty(userAuthField);
+				.isNotBlank(userIdentityEntity)
+				.isNotBlank(userAuthField);
 		// -----
 		this.resourceManager = resourceManager;
 		this.smartTypeManager = smartTypeManager;
@@ -232,7 +232,7 @@ public class TextIdentityProviderPlugin implements IdentityProviderPlugin, Activ
 				}
 			}
 		}
-		Assertion.check().argNotEmpty(userAuthToken, "User AuthToken not found in file");
+		Assertion.check().isNotBlank(userAuthToken, "User AuthToken not found in file");
 		final IdentityUserInfo userInfo = new IdentityUserInfo(user, photoUrl);
 		authToUsers.put(userAuthToken, userInfo);
 		idsToUsers.put(user.getUID().getId(), userInfo);

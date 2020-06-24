@@ -47,7 +47,7 @@ public final class PublisherField {
 	 */
 	PublisherField(final String name, final PublisherFieldType fieldType, final PublisherNodeDefinition publisherDataNodeDefinition) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(fieldType)
 				.argument(REGEX_FIELD_NAME.matcher(name).matches(), "Le nom du champ {0} doit matcher le pattern {1}", name, REGEX_FIELD_NAME);
 		if (publisherDataNodeDefinition != null) {

@@ -52,7 +52,7 @@ public final class DslUserCriteria {
 				.notNull(preMissingPart)
 				.notNull(overridedFieldName)
 				.notNull(overridedPreModifier)
-				.argNotEmpty(criteriaWord)
+				.isNotBlank(criteriaWord)
 				.notNull(overridedPostModifier)
 				.notNull(postMissingPart);
 		//-----

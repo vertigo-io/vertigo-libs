@@ -112,12 +112,12 @@ public final class StoreAccountStorePlugin extends AbstractAccountStorePlugin im
 			final FileStoreManager fileStoreManager,
 			final VTransactionManager transactionManager) {
 		super(userIdentityEntity, userToAccountMappingStr);
-		Assertion.check().argNotEmpty(userIdentityEntity)
-				.argNotEmpty(userAuthField)
+		Assertion.check().isNotBlank(userIdentityEntity)
+				.isNotBlank(userAuthField)
 				.notNull(smartTypeManager)
 				.notNull(entityStoreManager)
 				.notNull(fileStoreManager)
-				.argNotEmpty(groupToGroupAccountMappingStr);
+				.isNotBlank(groupToGroupAccountMappingStr);
 
 		this.groupIdentityEntity = groupIdentityEntity;
 		this.userAuthField = userAuthField;

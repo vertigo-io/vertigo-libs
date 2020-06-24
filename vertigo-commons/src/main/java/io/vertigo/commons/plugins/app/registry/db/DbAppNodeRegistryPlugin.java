@@ -67,8 +67,8 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 			@ParamValue("driverClassName") final String driverClassName,
 			@ParamValue("jdbcUrl") final String jdbcUrl) {
 		Assertion.check()
-				.argNotEmpty(driverClassName)
-				.argNotEmpty(jdbcUrl);
+				.isNotBlank(driverClassName)
+				.isNotBlank(jdbcUrl);
 		// ---
 		gson = createGson();
 		// ---
@@ -116,7 +116,7 @@ public final class DbAppNodeRegistryPlugin implements AppNodeRegistryPlugin {
 
 	@Override
 	public Optional<Node> find(final String nodeId) {
-		Assertion.check().argNotEmpty(nodeId);
+		Assertion.check().isNotBlank(nodeId);
 		// ---
 		final String request = "select NODE_ID, JSON from V_NODE where NODE_ID = ?";
 		final List<Node> result = retrieveNodes(request, nodeId);

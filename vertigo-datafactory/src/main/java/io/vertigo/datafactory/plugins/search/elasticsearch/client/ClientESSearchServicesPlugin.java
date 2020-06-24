@@ -126,7 +126,7 @@ public final class ClientESSearchServicesPlugin implements SearchServicesPlugin,
 			final SmartTypeManager smartTypeManager,
 			final ResourceManager resourceManager) {
 		Assertion.check()
-				.argNotEmpty(envIndexPrefix)
+				.isNotBlank(envIndexPrefix)
 				.notNull(elasticSearchConnectors)
 				.argument(!elasticSearchConnectors.isEmpty(), "At least one ElasticSearchConnector espected");
 		//Assertion.when(indexNameIsPrefix).check(() -> indexNameOrPrefix.endsWith("_"), "When envIndex is use as prefix, it must ends with _ (current : {0})", indexNameOrPrefix);

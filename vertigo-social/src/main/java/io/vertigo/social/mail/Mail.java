@@ -68,8 +68,8 @@ public final class Mail {
 			final String htmlContent,
 			final List<VFile> attachments) {
 		Assertion.check()
-				.argNotEmpty(subject, "Sujet du mail obligatoire")
-				.argNotEmpty(fromAddress, "Adresse email de l'émetteur obligatoire")
+				.isNotBlank(subject, "Sujet du mail obligatoire")
+				.isNotBlank(fromAddress, "Adresse email de l'émetteur obligatoire")
 				.notNull(toAddresses)
 				.argument(!toAddresses.isEmpty(), "Le mail doit avoir au moins un destinataire.")
 				.notNull(ccAddresses)

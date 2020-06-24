@@ -75,7 +75,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 		super();
 		Assertion.check()
 				.notNull(fileManager)
-				.argNotEmpty(unoHost)
+				.isNotBlank(unoHost)
 				.argument(convertTimeoutSeconds >= 1 && convertTimeoutSeconds <= 900, "Le timeout de conversion est exprimé en seconde et doit-être compris entre 1s et 15min (900s)");
 		//-----
 		this.fileManager = fileManager;
@@ -99,7 +99,7 @@ abstract class AbstractOpenOfficeConverterPlugin implements ConverterPlugin, Act
 	/** {@inheritDoc} */
 	@Override
 	public final VFile convertToFormat(final VFile file, final String targetFormat) {
-		Assertion.check().argNotEmpty(targetFormat);
+		Assertion.check().isNotBlank(targetFormat);
 		//-----
 		return convertToFormat(file, ConverterFormat.find(targetFormat));
 	}

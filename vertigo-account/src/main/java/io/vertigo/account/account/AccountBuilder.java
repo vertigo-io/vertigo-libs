@@ -36,7 +36,7 @@ public final class AccountBuilder implements Builder<Account> {
 	 * @param id the id of the account
 	 */
 	AccountBuilder(final String id) {
-		Assertion.check().argNotEmpty(id);
+		Assertion.check().isNotBlank(id);
 		//-----
 		myId = id;
 	}
@@ -49,7 +49,7 @@ public final class AccountBuilder implements Builder<Account> {
 	public AccountBuilder withDisplayName(final String displayName) {
 		Assertion.check()
 				.argument(myDisplayName == null, "displayName already set")
-				.argNotEmpty(displayName);
+				.isNotBlank(displayName);
 		//-----
 		myDisplayName = displayName;
 		return this;
@@ -89,7 +89,7 @@ public final class AccountBuilder implements Builder<Account> {
 	public AccountBuilder withAuthToken(final String authToken) {
 		Assertion.check()
 				.argument(myAuthToken == null, "authToken already set")
-				.argNotEmpty(authToken);
+				.isNotBlank(authToken);
 		//-----
 		myAuthToken = authToken;
 		return this;

@@ -54,7 +54,7 @@ public final class KVStoreManagerImpl implements KVStoreManager {
 	}
 
 	private KVStorePlugin getKVStorePlugin(final String collection) {
-		Assertion.check().argNotEmpty(collection);
+		Assertion.check().isNotBlank(collection);
 		//-----
 		final KVStorePlugin kvStorePlugin = kvStoreByCollection.get(collection);
 		Assertion.check().notNull(kvStorePlugin, "no store found for collection '{0}'", collection);

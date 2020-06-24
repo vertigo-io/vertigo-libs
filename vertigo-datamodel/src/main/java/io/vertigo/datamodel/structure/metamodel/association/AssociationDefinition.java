@@ -59,7 +59,7 @@ public abstract class AssociationDefinition implements Definition {
 	 */
 	AssociationDefinition(final String name, final AssociationNode associationNodeA, final AssociationNode associationNodeB) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(associationNodeA)
 				.notNull(associationNodeB);
 		//-----

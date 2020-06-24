@@ -125,7 +125,7 @@ public final class DtField {
 			final boolean persistent,
 			final String fkDtDefinitionName) {
 		Assertion.check()
-				.argNotEmpty(id)
+				.isNotBlank(id)
 				.notNull(type)
 				.notNull(smartType)
 				.notNull(type)

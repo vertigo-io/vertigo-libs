@@ -35,10 +35,10 @@ final class H2SqlDialect implements SqlDialect {
 			final String sequencePrefix,
 			final String tableName) {
 		Assertion.check()
-				.argNotEmpty(idFieldName)
+				.isNotBlank(idFieldName)
 				.notNull(dataFieldsName)
-				.argNotEmpty(sequencePrefix)
-				.argNotEmpty(tableName);
+				.isNotBlank(sequencePrefix)
+				.isNotBlank(tableName);
 		//---
 		return new StringBuilder()
 				.append("insert into ").append(tableName).append(" (")

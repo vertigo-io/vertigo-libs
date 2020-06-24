@@ -64,7 +64,7 @@ final class RestQueueClient {
 	 */
 	RestQueueClient(final String serverUrl, final int timeoutSeconds, final CodecManager codecManager) {
 		Assertion.check()
-				.argNotEmpty(serverUrl)
+				.isNotBlank(serverUrl)
 				.notNull(codecManager);
 		//-----
 		this.serverUrl = serverUrl;
@@ -141,7 +141,7 @@ final class RestQueueClient {
 
 	<R> void putResult(final String workId, final R result, final Throwable error) {
 		Assertion.check()
-				.argNotEmpty(workId)
+				.isNotBlank(workId)
 				.argument(result == null ^ error == null, "result xor error is null");
 		//-----
 		final String address;

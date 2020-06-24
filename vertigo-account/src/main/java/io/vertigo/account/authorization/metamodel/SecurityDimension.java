@@ -53,7 +53,7 @@ public final class SecurityDimension {
 			final List<DtField> fields,
 			final List<String> values) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(type)
 				.notNull(fields)
 				.notNull(values);

@@ -73,8 +73,8 @@ public final class StoreIdentityProviderPlugin implements IdentityProviderPlugin
 			final EntityStoreManager entityStoreManager,
 			final FileStoreManager fileStoreManager) {
 		Assertion.check()
-				.argNotEmpty(userIdentityEntity)
-				.argNotEmpty(userAuthField)
+				.isNotBlank(userIdentityEntity)
+				.isNotBlank(userAuthField)
 				.notNull(entityStoreManager)
 				.notNull(fileStoreManager);
 		//---

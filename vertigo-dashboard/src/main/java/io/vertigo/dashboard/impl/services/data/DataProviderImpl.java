@@ -76,7 +76,7 @@ public final class DataProviderImpl implements DataProvider {
 				.notNull(timeFilter.getDim()) // we check dim is not null because we need it
 				.notNull(clusteredMeasure)
 				//---
-				.argNotEmpty(clusteredMeasure.getMeasure())
+				.isNotBlank(clusteredMeasure.getMeasure())
 				.notNull(clusteredMeasure.getThresholds())
 				.state(!clusteredMeasure.getThresholds().isEmpty(), "For clustering the measure '{0}' you need to provide at least one threshold", clusteredMeasure.getMeasure());
 		//we use the natural order

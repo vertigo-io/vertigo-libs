@@ -43,7 +43,7 @@ final class NodeState {
 	 */
 	public NodeState(final String nodeUID, final String nodeWorkType) {
 		Assertion.check()
-				.argNotEmpty(nodeUID)
+				.isNotBlank(nodeUID)
 				.notNull(nodeWorkType);
 		//-----
 		this.nodeUID = nodeUID;

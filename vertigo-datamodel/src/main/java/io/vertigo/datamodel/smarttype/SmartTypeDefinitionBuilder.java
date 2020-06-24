@@ -56,7 +56,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	 */
 	SmartTypeDefinitionBuilder(final String name, final BasicType dataType) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(dataType);
 		//---
 		myName = name;
@@ -72,7 +72,7 @@ public final class SmartTypeDefinitionBuilder implements Builder<SmartTypeDefini
 	 */
 	SmartTypeDefinitionBuilder(final String name, final Class valueObjectClass) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(valueObjectClass);
 		//---
 		myName = name;

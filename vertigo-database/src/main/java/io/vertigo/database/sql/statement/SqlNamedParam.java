@@ -40,7 +40,7 @@ final class SqlNamedParam {
 	 * @param betweenCar String
 	 */
 	private SqlNamedParam(final String betweenCar) {
-		Assertion.check().argNotEmpty(betweenCar);
+		Assertion.check().isNotBlank(betweenCar);
 		//---
 		this.betweenCar = betweenCar;
 		final String[] tokens = betweenCar.split("\\.");

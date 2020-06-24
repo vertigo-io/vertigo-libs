@@ -90,7 +90,7 @@ public final class JavaxSendMailPlugin implements SendMailPlugin {
 		Assertion.check()
 				.notNull(fileManager)
 				.notNull(mailSessionConnector)
-				.argNotEmpty(developmentMailTo);
+				.isNotBlank(developmentMailTo);
 		//-----
 		this.fileManager = fileManager;
 		this.mailSessionConnector = mailSessionConnector;

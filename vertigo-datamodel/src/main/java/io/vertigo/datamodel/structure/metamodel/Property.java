@@ -59,7 +59,7 @@ public final class Property<T> {
 	 */
 	public Property(final String name, final Class<T> clazz) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(clazz);
 		//-----
 		this.clazz = clazz;

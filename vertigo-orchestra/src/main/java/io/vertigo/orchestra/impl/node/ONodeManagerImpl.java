@@ -48,7 +48,7 @@ public class ONodeManagerImpl implements ONodeManager {
 
 	@Override
 	public Long registerNode(final String nodeName) {
-		Assertion.check().argNotEmpty(nodeName);
+		Assertion.check().isNotBlank(nodeName);
 		// ---
 		final Optional<ONode> existingNode = nodeDAO.getNodeByName(nodeName);
 		final ONode node = existingNode.orElseGet(ONode::new);

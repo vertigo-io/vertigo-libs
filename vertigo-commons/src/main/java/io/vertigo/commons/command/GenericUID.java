@@ -176,7 +176,7 @@ public final class GenericUID<O extends Object> implements Serializable {
 	 * @return Clé lue é partir de la chaine
 	 */
 	private static Serializable stringToId(final String strValue) {
-		Assertion.check().argNotEmpty(strValue);
+		Assertion.check().isNotBlank(strValue);
 		//---
 		if (strValue.startsWith("s-")) {
 			return strValue.substring(2);

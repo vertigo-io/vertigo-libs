@@ -70,7 +70,7 @@ public final class ComponentCmdWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/vertigo/components/{componentId}")
 	public String getComponentConfig(@PathParam("componentId") final String componentId) {
-		Assertion.check().argNotEmpty(componentId);
+		Assertion.check().isNotBlank(componentId);
 		//-----
 		final JsonArray jsonModuleConfigs = doGetModuleConfigs();
 		for (int i = 0; i < jsonModuleConfigs.size(); i++) {
@@ -104,7 +104,7 @@ public final class ComponentCmdWebServices implements WebServices {
 	@AnonymousAccessAllowed
 	@GET("/vertigo/components/modules/{moduleName}")
 	public String getModuleConfig(@PathParam("moduleName") final String moduleName) {
-		Assertion.check().argNotEmpty(moduleName);
+		Assertion.check().isNotBlank(moduleName);
 		//-----
 		final JsonArray jsonModuleConfigs = doGetModuleConfigs();
 		for (int i = 0; i < jsonModuleConfigs.size(); i++) {

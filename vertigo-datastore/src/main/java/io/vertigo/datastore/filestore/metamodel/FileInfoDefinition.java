@@ -52,8 +52,8 @@ public final class FileInfoDefinition implements Definition {
 	 */
 	public FileInfoDefinition(final String name, final String storeName) {
 		Assertion.check()
-				.argNotEmpty(name)
-				.argNotEmpty(storeName);
+				.isNotBlank(name)
+				.isNotBlank(storeName);
 		//-----
 		this.name = name;
 		this.storeName = storeName;

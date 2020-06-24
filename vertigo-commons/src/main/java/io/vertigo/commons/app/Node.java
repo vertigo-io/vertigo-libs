@@ -68,8 +68,8 @@ public final class Node {
 			final Optional<String> endPointOpt,
 			final List<String> skills) {
 		Assertion.check()
-				.argNotEmpty(id)
-				.argNotEmpty(appName)
+				.isNotBlank(id)
+				.isNotBlank(appName)
 				.notNull(lastStatus)
 				.notNull(lastTouch)
 				.notNull(endPointOpt)

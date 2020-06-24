@@ -63,7 +63,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	public NotificationBuilder withSender(final String sender) {
 		Assertion.check()
 				.argument(mySender == null, "sender already set")
-				.argNotEmpty(sender);
+				.isNotBlank(sender);
 		//-----
 		mySender = sender;
 		return this;
@@ -101,7 +101,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	public NotificationBuilder withTitle(final String title) {
 		Assertion.check()
 				.argument(myTitle == null, "title already set")
-				.argNotEmpty(title);
+				.isNotBlank(title);
 		//-----
 		myTitle = title;
 		return this;
@@ -114,7 +114,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	public NotificationBuilder withContent(final String content) {
 		Assertion.check()
 				.argument(myContent == null, "content already set")
-				.argNotEmpty(content);
+				.isNotBlank(content);
 		//-----
 		myContent = content;
 		return this;
@@ -138,7 +138,7 @@ public final class NotificationBuilder implements Builder<Notification> {
 	public NotificationBuilder withTargetUrl(final String targetUrl) {
 		Assertion.check()
 				.argument(myTargetUrl == null, "targetUrl already set")
-				.argNotEmpty(targetUrl);
+				.isNotBlank(targetUrl);
 		//-----
 		myTargetUrl = targetUrl;
 		return this;

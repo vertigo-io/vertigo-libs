@@ -95,11 +95,11 @@ public final class WebServiceDefinition implements Definition {
 			final boolean corsProtected,
 			final boolean fileAttachment) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(verb)
-				.argNotEmpty(path)
-				.argNotEmpty(sortPath)
-				.argNotEmpty(acceptType)
+				.isNotBlank(path)
+				.isNotBlank(sortPath)
+				.isNotBlank(acceptType)
 				.notNull(method)
 				.notNull(includedFields)
 				.notNull(excludedFields)

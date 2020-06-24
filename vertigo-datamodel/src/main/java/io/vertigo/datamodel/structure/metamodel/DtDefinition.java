@@ -87,7 +87,7 @@ public final class DtDefinition implements Definition {
 				.notNull(fragment)
 				.notNull(stereotype)
 				.notNull(dtFields)
-				.argNotEmpty(dataSpace)
+				.isNotBlank(dataSpace)
 				.state(REGEX_DATA_SPACE.matcher(dataSpace).matches(), "dataSpace {0} must match pattern {1}", dataSpace, REGEX_DATA_SPACE)
 				.notNull(sortField)
 				.notNull(displayField)
@@ -193,7 +193,7 @@ public final class DtDefinition implements Definition {
 	 * @return Champ correspondant
 	 */
 	public DtField getField(final String fieldName) {
-		Assertion.check().argNotEmpty(fieldName);
+		Assertion.check().isNotBlank(fieldName);
 		//-----
 		final DtField dtField = mappedFields.get(fieldName);
 		//-----

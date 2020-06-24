@@ -99,7 +99,7 @@ public class TextAccountStorePlugin implements AccountStorePlugin, Activeable {
 			final ResourceManager resourceManager) {
 		Assertion.check()
 				.notNull(resourceManager)
-				.argNotEmpty(accountFilePatternStr)
+				.isNotBlank(accountFilePatternStr)
 				.argument(accountFilePatternStr.contains("(?<"),
 						"accountFilePattern should be a regexp of named group for each Account's fields (like : '(?<id>[^\\s;]+);(?<displayName>[^\\s;]+);(?<email>)(?<authToken>[^\\s;]+);(?<photoUrl>[^\\s;]+)' )");
 		Assertion.check().argument(groupFilePatternStr.contains("(?<"),

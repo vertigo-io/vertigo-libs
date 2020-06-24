@@ -238,7 +238,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	@Override
 	public boolean isModified(final String fieldName) {
-		Assertion.check().argNotEmpty(fieldName);
+		Assertion.check().isNotBlank(fieldName);
 		//-----
 		return inputBuffer.containsKey(fieldName);
 	}
@@ -266,7 +266,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	@Override
 	public String getInputValue(final String fieldName) {
 		Assertion.check()
-				.argNotEmpty(fieldName)
+				.isNotBlank(fieldName)
 				.argument(Character.isLowerCase(fieldName.charAt(0)) && !fieldName.contains("_"), "Le nom du champs doit-être en camelCase ({0}).", fieldName);
 		//-----
 		if (hasFormatError(fieldName)) {
@@ -291,7 +291,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	@Override
 	public void setInputValue(final String fieldName, final String stringValue) {
 		Assertion.check()
-				.argNotEmpty(fieldName)
+				.isNotBlank(fieldName)
 				.notNull(stringValue, "formatted value can't be null, but may be empty : {0}", fieldName);
 		final SmartTypeManager smartTypeManager = Home.getApp().getComponentSpace().resolve(SmartTypeManager.class);
 		//-----
@@ -331,7 +331,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 */
 	public <T> T getTypedValue(final String fieldName, final Class<T> type) {
 		Assertion.check()
-				.argNotEmpty(fieldName)
+				.isNotBlank(fieldName)
 				.notNull(type);
 		//-----
 		if (hasFormatError(fieldName)) {
@@ -361,7 +361,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @return Valeur formatée (typée)
 	 */
 	private Object doGetTypedValue(final String fieldName) {
-		Assertion.check().argNotEmpty(fieldName);
+		Assertion.check().isNotBlank(fieldName);
 		//
 		final DtField dtField = getDtField(fieldName);
 		if (isModified(fieldName)) {
@@ -384,7 +384,7 @@ public class VegaUiObject<D extends DtObject> implements io.vertigo.vega.webserv
 	 * @return Si le champs a une erreur de formatage
 	 */
 	protected boolean hasFormatError(final String fieldName) {
-		Assertion.check().argNotEmpty(fieldName);
+		Assertion.check().isNotBlank(fieldName);
 		//-----
 		return isModified(fieldName) && getDtObjectErrors().hasError(fieldName);
 	}

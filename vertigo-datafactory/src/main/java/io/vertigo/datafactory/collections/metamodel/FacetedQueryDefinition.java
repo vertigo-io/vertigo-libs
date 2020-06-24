@@ -78,7 +78,7 @@ public final class FacetedQueryDefinition implements Definition {
 			final String listFilterBuilderQuery,
 			final String geoSearchQuery) {
 		Assertion.check()
-				.argNotEmpty(name)
+				.isNotBlank(name)
 				.notNull(facetDefinitions)
 				.notNull(criteriaSmartType)
 				.notNull(listFilterBuilderClass)
@@ -102,7 +102,7 @@ public final class FacetedQueryDefinition implements Definition {
 	 * @return Définition de la facette.
 	 */
 	public FacetDefinition getFacetDefinition(final String facetName) {
-		Assertion.check().argNotEmpty(facetName);
+		Assertion.check().isNotBlank(facetName);
 		//-----
 		final FacetDefinition facetDefinition = facetDefinitions.get(facetName);
 		//-----

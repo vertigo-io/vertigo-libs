@@ -51,7 +51,7 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 	 * @param connection Connexion
 	 */
 	SqlStatementBuilder(final String sqlQuery) {
-		Assertion.check().argNotEmpty(sqlQuery);
+		Assertion.check().isNotBlank(sqlQuery);
 		//-----
 		final Tuple<String, List<SqlNamedParam>> parsedQuery = parseQuery(sqlQuery);
 		rawSqlQuery = parsedQuery.getVal1();
@@ -125,7 +125,7 @@ public final class SqlStatementBuilder implements Builder<SqlStatement> {
 	}
 
 	private static Tuple<String, List<SqlNamedParam>> parseQuery(final String query) {
-		Assertion.check().argNotEmpty(query);
+		Assertion.check().isNotBlank(query);
 		//-----
 		//we add a space before and after to avoid side effects
 		final String[] tokens = (" " + query + " ").split(String.valueOf(SEPARATOR));
